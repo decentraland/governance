@@ -1,0 +1,7 @@
+#root > .dcl.tabs {
+  background: var(--background);
+}
+
+#root > .dcl.tabs a {
+  color: var(--text)
+}

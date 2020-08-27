@@ -1,0 +1,109 @@
+.ProposalStatus {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: .2rem .5rem;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border: 1px solid var(--neutral)
+}
+
+.ProposalStatus > img {
+  display: block;
+}
+
+.ProposalStatus > div {
+  width: 80px;
+  text-align: center;
+}
+
+.ProposalStatus.ProposalStatusEnacted {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: var(--text-on-success);
+}
+
+.ProposalStatus.ProposalStatusPassed {
+  background-color: white;
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.ProposalStatus.ProposalStatusRejected {
+  background-color: white;
+  border-color: var(--rejected);
+  color: var(--rejected);
+}
+
+.ProposalStatusBarContainer {
+  display: flex;
+}
+
+.ProposalStatusDescription {
+  color: var(--neutral);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.ProposalStatusBar {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: 6px 12px 6px 0;
+  width: 100px;
+  height: 12px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.ProposalStatusBar .ProposalStatusBackground,
+.ProposalStatusBar .ProposalStatusYea,
+.ProposalStatusBar .ProposalStatusNay {
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ProposalStatusBar .ProposalStatusBackground {
+  position: absolute;
+  background-color: var(--neutral);
+  border-radius: 4px;
+  opacity: .2;
+}
+
+.ProposalStatusBar .ProposalStatusYea,
+.ProposalStatusBar .ProposalStatusNay {
+  position: relative
+}
+
+
+.ProposalStatusBar .ProposalStatusYea {
+  background-color: var(--success);
+  border-right: 1px solid white;
+  border-radius: 4px 0 0 4px;
+}
+
+.ProposalStatusBar.EmptyYea .ProposalStatusYea {
+  display: none;
+}
+
+.ProposalStatusBar.EmptyNay .ProposalStatusYea {
+  border-right-color: var(--success);
+  border-radius: 4px;
+}
+
+.ProposalStatusBar .ProposalStatusNay {
+  background-color: var(--rejected);
+  border-radius: 0 4px 4px 0;
+}
+
+.ProposalStatusBar.EmptyNay .ProposalStatusNay {
+  display: none;
+}
+
+.ProposalStatusBar.EmptyYea .ProposalStatusNay {
+  border-radius: 4px;
+}

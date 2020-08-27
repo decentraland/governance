@@ -1,0 +1,8 @@
+:root {
+  --success: #44B600;
+  --text-on-success: #ffffff;
+  --rejected: #FF2D55;
+  --text-on-rejected: #ffffff;
+  --neutral: #736E7D;
+  --text-on-neutral: #ffffff;
+}

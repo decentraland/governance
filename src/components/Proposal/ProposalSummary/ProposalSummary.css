@@ -1,0 +1,15 @@
+.ui.card.ProposalSummary {
+  min-width: auto;
+  width: 100%;
+}
+
+.ui.card.ProposalSummary .content .header {
+  font-size: 21px;
+line-height: 28px;
+}
+
+.ui.card.ProposalSummary .ProposalSummaryActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

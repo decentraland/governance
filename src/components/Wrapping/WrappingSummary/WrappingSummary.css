@@ -1,0 +1,15 @@
+.ui.card.WrappingSummary {
+  min-width: auto;
+  width: 100%;
+}
+
+.ui.card.WrappingSummary > .SignInContent {
+  min-height: 174px;
+  padding: 48px 60px
+}
+
+.ui.card.WrappingSummary .SignInContent p {
+  color: var(--secondary-text);
+  font-size: 15px;
+  margin: 1.2em 2.2em;
+}
