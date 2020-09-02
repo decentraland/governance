@@ -14,12 +14,18 @@ import { Props } from './ProposalStatus.types'
 // import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import './ProposalStatus.css'
-import { env } from 'decentraland-commons'
+import { APP_NAME, APP_DELAY } from 'modules/app/types'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-const VOTING_TIME = Number(env.get('REACT_APP_VOTING_TIME', '0'))
-const enactedCheck = require('../../../images/check-enacted.svg')
-const passedCheck = require('../../../images/check-passed.svg')
-const rejectedCheck = require('../../../images/check-rejected.svg')
+const enactedIcon = require('../../../images/check-enacted.svg')
+const passedIcon = require('../../../images/check-passed.svg')
+const rejectedIcon = require('../../../images/check-rejected.svg')
+const timeLeftIcon = require('../../../images/time-left.svg')
+
+const Second = 1000
+const Minute = Second * 60
+const Hour = Minute * 60
+const Day = Hour * 14
 
 export default class ProposalStatus extends React.PureComponent<Props, any> {
 
@@ -29,7 +35,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
 
   renderEnacted() {
     return <div className="ProposalStatus ProposalStatusEnacted">
-      <img src={enactedCheck} width="20" height="20" />
+      <img src={enactedIcon} width="20" height="20" />
       <div>ENACTED</div>
     </div>
   }
@@ -75,6 +81,13 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     }
   }
 
+  getExpiration() {
+    const { vote } = this.props
+    const appAddress: keyof typeof APP_DELAY = vote.appAddress as any
+    const votingTime = APP_DELAY[appAddress] || APP_DELAY.DEFAULT
+    return Number(this.props.vote.startDate) + votingTime
+  }
+
   wasPassed() {
     const { vote } = this.props
     const minAcceptQuorumPct = Number(vote.minAcceptQuorum) / 10e18
@@ -99,25 +112,24 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
 
   renderPassed() {
     return <div className="ProposalStatus ProposalStatusPassed">
-      <img src={passedCheck} width="20" height="20" />
+      <img src={passedIcon} width="20" height="20" />
       <div>PASSED</div>
     </div>
   }
 
   wasRejected() {
-    const expiredTime = Number(this.props.vote.startDate) + VOTING_TIME
-
-    return Date.now() > expiredTime
+    const expiration = this.getExpiration()
+    return Date.now() > expiration
   }
 
   renderRejected() {
     return <div className="ProposalStatus ProposalStatusRejected">
-      <img src={rejectedCheck} width="20" height="20" />
+      <img src={rejectedIcon} width="20" height="20" />
       <div>REJECTED</div>
     </div>
   }
 
-  renderStatus() {
+  renderProgress() {
     const { yea, nay } = this.getPercentages()
 
     let className = 'ProposalStatusBar'
@@ -141,7 +153,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     </div>
   }
 
-  render() {
+  renderStatus() {
     if (this.wasEnacted()) {
       return this.renderEnacted()
     }
@@ -154,6 +166,54 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
       return this.renderRejected()
     }
 
-    return this.renderStatus()
+    return this.renderProgress()
+  }
+
+  renderApp() {
+    const { vote } = this.props
+    const appAddress: keyof typeof APP_NAME = vote.appAddress as any
+    return <div className="ProposalStatus">
+      <div>{APP_NAME[appAddress] || appAddress}</div>
+    </div>
+  }
+
+  renderReminderTime() {
+    const expiration = this.getExpiration()
+    const now = Date.now()
+    const { vote } = this.props
+    const diff = Number(vote.startDate) + expiration - now
+
+    if (diff <= 0) {
+      return null
+    }
+
+    const days = Math.floor(diff / Day)
+    const hours = Math.floor((diff % Day) / Hour)
+    const minutes = Math.floor((diff % Hour) / Minute)
+    const seconds = Math.floor((diff & Minute) / Second)
+    const values = { days, hours, minutes, seconds }
+    let key = 'proposal.'
+    if (days > 0) {
+      key += 'days_left'
+    } else if (hours > 0) {
+      key += 'hours_left'
+    } else if (minutes > 0) {
+      key += 'minutes_left'
+    } else {
+      key += 'seconds_left'
+    }
+
+    return <div className="ProposalStatus ProposalStatusTime">
+      <img src={timeLeftIcon} width="20" height="20" />
+      <div>{t(key, values)}</div>
+    </div>
+  }
+
+  render() {
+    return <div className="ProposalStatusContainer">
+      {this.renderStatus()}
+      {this.renderApp()}
+      {this.renderReminderTime()}
+    </div>
   }
 }

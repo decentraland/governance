@@ -2,8 +2,8 @@ import React from 'react'
 import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './ProposalPage.types'
-import Navbar from 'components/Navbar/Navbar'
-import Footer from 'components/Footer/Footer'
+import { Navbar } from 'components/Navbar'
+import { Footer } from 'components/Footer'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
   render() {

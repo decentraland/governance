@@ -4,7 +4,7 @@ import { Dispatch } from 'redux'
 // import { SortBy } from 'modules/ui/dashboard/types'
 // import { PaginationOptions } from 'routing/utils'
 // import { LoginRequestAction, loginRequest } from 'modules/identity/actions'
-import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { enableWalletRequest, EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 export type DefaultProps = {
 }
@@ -13,7 +13,7 @@ export type Props = DefaultProps & {
   isConnected: boolean
   isConnecting: boolean
   isLoading: boolean
-  onConnect: typeof connectWalletRequest
+  onConnect: typeof enableWalletRequest
   // page: number
   // sortBy: SortBy
   // totalPages: number
@@ -26,4 +26,4 @@ export type Props = DefaultProps & {
 
 export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onConnect'>
-export type MapDispatch = Dispatch<ConnectWalletRequestAction>
+export type MapDispatch = Dispatch<EnableWalletRequestAction>

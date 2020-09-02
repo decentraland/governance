@@ -13,14 +13,9 @@ export function* voteSaga() {
   yield takeLatest(LOAD_VOTES_REQUEST, loadVotes)
 }
 
-// const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-// console.log(provider.detectNetwork().then(console.log))
-// console.log(provider)
-
 function* loadVotes() {
   try {
     const org: Organization = yield select(getOrganization)
-    console.log(org)
     const votingApps: App[] = yield select(getVotingApps)
     const votingList: Voting[] = yield select(getVoting)
     const votesPerVoting: AragonVote[][] = yield call(() => Promise.all(votingList.map(voting => voting.votes())))
@@ -30,7 +25,6 @@ function* loadVotes() {
         for (const vote of votes) {
           const loader = describeScript(vote.script, votingApps, org.connection.ethersProvider)
           .then((scripts) => {
-            console.log(vote.id, vote, scripts)
             const description = scripts.map(script => script.description).filter(Boolean).join('\n')
             return Object.assign(vote, { description }) as any
           })

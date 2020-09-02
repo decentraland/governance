@@ -1,13 +1,13 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { NavbarProps } from 'decentraland-ui'
+import { enableWalletRequest, EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 export type Props = Partial<NavbarProps> & {
-  // pathname: string
-  // hasPendingTransactions: boolean
-  // onNavigate: (path: string) => void
+  isConnected: boolean
+  isConnecting: boolean
+  onConnect: typeof enableWalletRequest
 }
 
-export type MapStateProps = {} //Pick<Props, 'pathname' | 'hasPendingTransactions'>
-export type MapDispatchProps = {} //Pick<Props, 'onNavigate'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction>
+export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting'>
+export type MapDispatchProps = Pick<Props, 'onConnect'>
+export type MapDispatch = Dispatch<EnableWalletRequestAction>

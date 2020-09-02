@@ -4,13 +4,21 @@
     "sign_in_detail": "Sign in to see your Voting Power",
     "enacted": "enacted",
     "passed": "passed",
-    "rejected": "rejected"
+    "rejected": "rejected",
+    "total": "total",
+    "voting_power": "{value, number}"
   },
   "navigation": {
     "proposals": "Proposals",
     "wrapping": "Voting Power"
   },
-  "proposals": {
+  "proposal": {
+    "days_left": "{days, number} {days, plural, one {day} other {days}} left",
+    "hours_left": "{hours, number} {hours, plural, one {hour} other {hours}} left",
+    "minutes_left": "{minutes, number} {minutes, plural, one {minute} other {minutes}} left",
+    "seconds_left": "less than a minute left"
+  },
+  "proposals_page": {
     "wrapping_header": "VOTING POWER",
     "proposals_header": "{proposals, number} {proposals, plural, one {PROPOSAL} other {PROPOSALS}}",
     "empty": "No proposals planned yet."

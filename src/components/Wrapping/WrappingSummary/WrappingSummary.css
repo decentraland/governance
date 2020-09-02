@@ -13,3 +13,25 @@
   font-size: 15px;
   margin: 1.2em 2.2em;
 }
+
+.ui.card.WrappingSummary .WrappingSummarySection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.ui.card.WrappingSummary .WrappingSummarySection .WrappingSummaryValue {
+  color: var(--text);
+  font-size: 17px;
+  line-height: 17px;
+  letter-spacing: -0.2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+.ui.card.WrappingSummary .WrappingSummarySection .WrappingSummaryValue img {
+  margin-right: 16px;
+}

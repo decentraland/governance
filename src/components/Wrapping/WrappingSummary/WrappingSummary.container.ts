@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
@@ -23,7 +23,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(connectWalletRequest())
+  onConnect: () => dispatch(enableWalletRequest())
 })
 
 export default connect(mapState, mapDispatch)(WrappingSummary)

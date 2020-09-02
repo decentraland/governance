@@ -1,26 +1,37 @@
-import { put, call, takeLatest } from 'redux-saga/effects'
+import { put, call, takeLatest, select } from 'redux-saga/effects'
 import { connect } from '@aragon/connect'
-import { loadOrganizationFailure, loadOrganizationSuccess, LOAD_ORGANIZATION_REQUEST } from './actions'
+import { loadOrganizationFailure, loadOrganizationSuccess, LOAD_ORGANIZATION_REQUEST, loadOrganizationRequest } from './actions'
+import { CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
-import { env } from 'decentraland-commons'
 import { loadAppsRequest } from 'modules/app/actions'
-
-const ORGANIZATION_LOCATION = env.get('REACT_APP_ORGANIZATION_LOCATION', '')
-const ORGANIZATION_CONNECTOR = env.get('REACT_APP_ORGANIZATION_CONNECTOR', '')
-const ORGANIZATION_NETWORK = Number(env.get('REACT_APP_ORGANIZATION_NETWORK', 4))
+import { getNetwork } from 'modules/wallet/selectors'
+import { ORGANIZATION_LOCATION, ORGANIZATION_CONNECTOR, Organization } from './types'
+import { Network } from 'modules/wallet/types'
 
 export function* organizationSaga() {
-  yield takeLatest(STORAGE_LOAD, connectAragon)
   yield takeLatest(LOAD_ORGANIZATION_REQUEST, connectAragon)
+  yield takeLatest(STORAGE_LOAD, connectAragon)
+  yield takeLatest(CHANGE_ACCOUNT, reconnectAragon)
+  yield takeLatest(CHANGE_NETWORK, reconnectAragon)
+}
+
+function* reconnectAragon() {
+  yield put(loadOrganizationRequest())
 }
 
 function* connectAragon() {
   try {
-    const organization = yield call(() => connect(ORGANIZATION_LOCATION, ORGANIZATION_CONNECTOR, {
-      network: ORGANIZATION_NETWORK,
-    }))
+    const network: Network = yield select(getNetwork)
+
+    const organization: Organization = yield call(() => connect(
+      ORGANIZATION_LOCATION[network],
+      ORGANIZATION_CONNECTOR[network],
+      { network }
+    ))
+
     yield put(loadOrganizationSuccess(organization))
     yield put(loadAppsRequest())
+
   } catch (e) {
     yield put(loadOrganizationFailure(e.message))
   }

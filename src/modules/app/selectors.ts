@@ -2,10 +2,8 @@ import { Voting } from '@aragon/connect-thegraph-voting'
 import { RootState } from 'modules/root/types'
 import { createSelector } from 'reselect'
 import { AppState } from './reducer'
-import { env } from 'decentraland-commons'
-
-const VOTING_APP_NAME = env.get('REACT_APP_VOTING_APP_NAME', '')
-const VOTING_GRAPH = env.get('REACT_APP_VOTING_GRAPH', '')
+import { VOTING_APP, VOTING_GRAPH } from './types'
+import { getNetwork } from 'modules/wallet/selectors'
 
 export const getState: (state: RootState) => AppState = state => state.app
 
@@ -15,6 +13,14 @@ export const getError: (state: RootState) => AppState['error'] = state => getSta
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getVotingApps = createSelector(getData, (apps) => Array.from(Object.values(apps)).filter(app => app.appName === VOTING_APP_NAME))
+export const getVotingApps = createSelector(
+  getNetwork,
+  getData,
+  (network, apps) => Array.from(Object.values(apps)).filter(app => app.appName === VOTING_APP[network])
+)
 
-export const getVoting = createSelector(getVotingApps, (apps) => apps.map(app => new Voting(app.address, VOTING_GRAPH)))
+export const getVoting = createSelector(
+  getNetwork,
+  getVotingApps,
+  (network, apps) => apps.map(app => new Voting(app.address, VOTING_GRAPH[network]))
+)
