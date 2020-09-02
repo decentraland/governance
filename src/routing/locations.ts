@@ -2,6 +2,7 @@ export const locations = {
   root: () => '/',
   proposal: (id: string = `:proposalId`) => '/proposal/' + id,
   wrapping: () => '/wrapping/',
+  debug: () => '/debug'
   // home: () => '/home',
 
   // avatar: () => '/avatar',

@@ -1,7 +1,7 @@
 import { createStore, compose, applyMiddleware } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
-import { createLogger } from 'redux-logger'
+// import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
 
 import { env } from 'decentraland-commons'
@@ -31,10 +31,10 @@ const history = createBrowserHistory()
 const rootReducer = storageReducerWrapper(createRootReducer(history))
 
 const sagasMiddleware = createSagasMiddleware()
-const loggerMiddleware = createLogger({
-  predicate: () => env.isDevelopment(),
-  collapsed: () => true
-})
+// const loggerMiddleware = createLogger({
+//   predicate: () => env.isDevelopment(),
+//   collapsed: () => true
+// })
 
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: 'dao', // this is the key used to save the state in localStorage (required)
@@ -47,7 +47,7 @@ const transactionMiddleware = createTransactionMiddleware()
 const enhancer = composeEnhancers(applyMiddleware(
   sagasMiddleware,
   routerMiddleware(history),
-  loggerMiddleware,
+  // loggerMiddleware,
   transactionMiddleware,
   storageMiddleware,
   analyticsMiddleware
