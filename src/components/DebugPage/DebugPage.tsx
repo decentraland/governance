@@ -97,7 +97,7 @@ export default class DebugPage extends React.Component<{}, State> {
   renderCode(value: any) {
     const items = Array.isArray(value) ? value : [ value ]
     return <>
-      { items.map(item => <pre style={styled}>
+      { items.map((item, i) => <pre key={'code-' + i} style={styled}>
         {inspect(item)}
       </pre>) }
     </>
