@@ -126,9 +126,9 @@ export default class DebugPage extends React.Component<{}, State> {
     const intent = organization.appIntent(voting.appAddress, 'newVote', ['0x00000001', 'new dao vote?'])
     const paths = await intent.paths(provider.selectedAddress)
     for (const tx of paths.transactions) {
-      await provider.request({
+      await provider.send({
         method: 'eth_sendTransaction',
-        params: [tx],
+        params: [tx]
       })
     }
   }
@@ -145,15 +145,14 @@ export default class DebugPage extends React.Component<{}, State> {
     console.log(app)
     console.log(voting)
 
-    // const script = parseInt('0000000000000000000000000000000000000000000000000000000000000010', 16)
-    // const intent = organization.appIntent(voting.appAddress, 'newVote', [script, 'new dao vote?'])
-    // const paths = await intent.paths(provider.selectedAddress)
-    // for (const tx of paths.transactions) {
-    //   await provider.request({
-    //     method: 'eth_sendTransaction',
-    //     params: [tx],
-    //   })
-    // }
+    const intent = organization.appIntent(voting.appAddress, 'add', ['11,11'])
+    const paths = await intent.paths(provider.selectedAddress)
+    for (const tx of paths.transactions) {
+      await provider.request({
+        method: 'eth_sendTransaction',
+        params: [tx]
+      })
+    }
   }
 
   handleCatalyst = async () => {
@@ -168,15 +167,14 @@ export default class DebugPage extends React.Component<{}, State> {
     console.log(app)
     console.log(voting)
 
-    // const script = parseInt('0000000000000000000000000000000000000000000000000000000000000010', 16)
-    // const intent = organization.appIntent(voting.appAddress, 'newVote', [script, 'new dao vote?'])
-    // const paths = await intent.paths(provider.selectedAddress)
-    // for (const tx of paths.transactions) {
-    //   await provider.request({
-    //     method: 'eth_sendTransaction',
-    //     params: [tx],
-    //   })
-    // }
+    const intent = organization.appIntent(voting.appAddress, 'addCatalyst', ['0x326923D43226d9824aab694A3C1C566FeDa50AEb', 'peer.dcl.gg'])
+    const paths = await intent.paths(provider.selectedAddress)
+    for (const tx of paths.transactions) {
+      await provider.request({
+        method: 'eth_sendTransaction',
+        params: [tx]
+      })
+    }
   }
 
   handleDenyName = async () => {
@@ -191,15 +189,36 @@ export default class DebugPage extends React.Component<{}, State> {
     console.log(app)
     console.log(voting)
 
-    // const script = parseInt('0000000000000000000000000000000000000000000000000000000000000010', 16)
-    // const intent = organization.appIntent(voting.appAddress, 'newVote', [script, 'new dao vote?'])
-    // const paths = await intent.paths(provider.selectedAddress)
-    // for (const tx of paths.transactions) {
-    //   await provider.request({
-    //     method: 'eth_sendTransaction',
-    //     params: [tx],
-    //   })
-    // }
+    const intent = organization.appIntent(voting.appAddress, 'add', ['decentraland'])
+    const paths = await intent.paths(provider.selectedAddress)
+    for (const tx of paths.transactions) {
+      await provider.request({
+        method: 'eth_sendTransaction',
+        params: [tx]
+      })
+    }
+  }
+
+  handleVote = async () => {
+    const organization = this.state.data.organization!
+    const provider: any = this.state.data.provider!
+    const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
+    const votingGraph = VOTING_GRAPH[network]
+    const app = this.state.data.apps!.find(app => app.address === '0x37187b0f2089b028482809308e776f92eeb7334e')!
+    const voting = new Voting(app.address, votingGraph)
+    console.log(provider.selectedAddress)
+    console.log(app)
+    console.log(voting)
+
+    const intent = organization.appIntent(voting.appAddress, 'vote', ['0x15', true, true])
+    const paths = await intent.paths(provider.selectedAddress)
+    console.log(paths)
+    for (const tx of paths.transactions) {
+      await provider.request({
+        method: 'eth_sendTransaction',
+        params: [tx]
+      })
+    }
   }
 
   renderCode(value: any) {
@@ -220,6 +239,7 @@ export default class DebugPage extends React.Component<{}, State> {
         <Button onClick={this.handlePoi} basic disabled={!Boolean(this.state.data.apps)}>new poi</Button>
         <Button onClick={this.handleCatalyst} basic disabled={!Boolean(this.state.data.apps)}>new catalyst</Button>
         <Button onClick={this.handleDenyName} basic disabled={!Boolean(this.state.data.apps)}>deny name</Button>
+        <Button onClick={this.handleVote} basic disabled={!Boolean(this.state.data.votes)}>vote</Button>
         <Card style={{ width: '100%' }}>
           <Card.Content>
             <Accordion
