@@ -13,10 +13,15 @@ export const getError: (state: RootState) => AppState['error'] = state => getSta
 
 export const getLoading = (state: RootState) => getState(state).loading
 
+export const getApps = createSelector(
+  getData,
+  (apps) => Array.from(Object.values(apps))
+)
+
 export const getVotingApps = createSelector(
   getNetwork,
-  getData,
-  (network, apps) => Array.from(Object.values(apps)).filter(app => app.appName === VOTING_APP[network])
+  getApps,
+  (network, apps) => apps.filter(app => app.appName === VOTING_APP[network])
 )
 
 export const getVoting = createSelector(

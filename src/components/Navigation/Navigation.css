@@ -5,3 +5,16 @@
 #root > .dcl.tabs a {
   color: var(--text)
 }
+
+#root > .dcl.tabs .ui.container {
+  display: flex;
+}
+
+/* #root > .dcl.tabs .ui.container .ui.sub.header {
+  display: block;
+  background-color: #ff7f0e;
+  color: white;
+  border-radius: 1rem;
+  line-height: 13px;
+  padding: .5rem 1rem
+} */

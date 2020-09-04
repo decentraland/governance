@@ -2,11 +2,15 @@
   "general": {
     "sign_in": "Sing In",
     "sign_in_detail": "Sign in to see your Voting Power",
+    "edit": "edit",
     "enacted": "enacted",
     "passed": "passed",
     "rejected": "rejected",
     "total": "total",
-    "voting_power": "{value, number}"
+    "number": "{value, number}",
+    "land": "{land, number} {land, plural, one {Land} other {Lands}}",
+    "estate": "{estate, number} {estate, plural, one {Estate} other {Estates}}",
+    "mana": "Mana"
   },
   "navigation": {
     "proposals": "Proposals",
@@ -21,6 +25,28 @@
   "proposals_page": {
     "wrapping_header": "VOTING POWER",
     "proposals_header": "{proposals, number} {proposals, plural, one {PROPOSAL} other {PROPOSALS}}",
-    "empty": "No proposals planned yet."
+    "empty": "No proposals planned yet.",
+    "create_proposal": "NEW PROPOSAL",
+    "wrapped": "wrapped"
+  },
+  "wrapping_page": {
+    "total": "total voting power",
+    "get_mana": "get tokens",
+    "get_land": "get lands",
+    "mana_title": "Tokens",
+    "mana_wrapped": "WRAPPED TOKENS",
+    "mana_available": "AVAILABLE TO WRAP",
+    "mana_unwrap": "UNWRAP TOKENS",
+    "mana_wrap": "WRAP TOKENS",
+    "mana_rate": "CONVERT TOKENS",
+    "land_title": "Land Balance",
+    "land_balance": "BALANCE",
+    "land_total": "TOTAL VOTING POWER",
+    "land_commit": "COMMIT LAND",
+    "estate_title": "Estate Balance",
+    "estate_balance": "BALANCE",
+    "estate_composition": "TOTAL LAND",
+    "estate_total": "TOTAL VOTING POWER",
+    "estate_commit": "COMMIT ESTATE"
   }
 }

@@ -1,5 +1,5 @@
 export type Props = {
   value?: number
-  size?: 'huge' | 'big' | 'small',
+  size?: 'huge' | 'large' | 'medium' | 'small' | 'tiny',
   secondary?: boolean
 }

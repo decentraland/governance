@@ -12,7 +12,6 @@ export type DefaultProps = {
 export type Props = DefaultProps & {
   isConnected: boolean
   isConnecting: boolean
-  isLoading: boolean
   onConnect: typeof enableWalletRequest
   // page: number
   // sortBy: SortBy
@@ -24,6 +23,6 @@ export type Props = DefaultProps & {
   // votes: Vote[] | null
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting'>
 export type MapDispatchProps = Pick<Props, 'onConnect'>
 export type MapDispatch = Dispatch<EnableWalletRequestAction>

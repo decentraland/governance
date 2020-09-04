@@ -1,0 +1,39 @@
+.WrappingPage .WrappingAmount,
+.WrappingPage .WrappingOptions {
+  padding-top: 2rem;
+}
+
+.WrappingPage .WrappingOptions .ui.card {
+  width: 100%;
+  min-height: 300px;
+}
+
+.WrappingPage .ui.card>.content,
+.WrappingPage .ui.cards>.card>.content {
+  flex-grow: 0;
+}
+
+.ui.grid.WrappingOptions>.column,
+.ui.grid.WrappingOptions>.row>.column {
+  width: 33%
+}
+
+.ui.grid.WrappingOptions>.column>.dcl.header-menu,
+.ui.grid.WrappingOptions>.row>.column>.dcl.header-menu {
+  margin-bottom: 0;
+  min-height: 34px;
+  flex-grow: 0;
+}
+
+.ui.grid.WrappingOptions>.column>.ui.card,
+.ui.grid.WrappingOptions>.row>.column>.ui.card {
+  margin-top: .5rem;
+}
+
+.WrappingPage .WrappingOptions .ui.card .ui.header {
+  margin-top: 8px
+}
+
+.WrappingPage .WrappingOptions .ui.card .content:first-child .ui.header:first-child {
+  margin-bottom: 16px
+}

@@ -169,6 +169,14 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     return this.renderProgress()
   }
 
+  renderCreator() {
+    const { vote } = this.props
+    const appAddress: keyof typeof APP_NAME = vote.creator as any
+    return <div className="ProposalStatus">
+      <div>{APP_NAME[appAddress] || appAddress}</div>
+    </div>
+  }
+
   renderApp() {
     const { vote } = this.props
     const appAddress: keyof typeof APP_NAME = vote.appAddress as any
@@ -212,6 +220,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
   render() {
     return <div className="ProposalStatusContainer">
       {this.renderStatus()}
+      {this.renderCreator()}
       {this.renderApp()}
       {this.renderReminderTime()}
     </div>

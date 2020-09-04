@@ -6,3 +6,12 @@
   --neutral: #736E7D;
   --text-on-neutral: #ffffff;
 }
+
+.ui.header b {
+  font-weight: 600;
+}
+
+.ui.card>.content>.header.sub,
+.ui.cards>.card>.content>.header.sub {
+  color: var(--secondary-text);
+}

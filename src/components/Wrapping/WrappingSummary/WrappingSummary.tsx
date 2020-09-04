@@ -1,20 +1,15 @@
 import React from 'react'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-// import { Page } from 'decentraland-ui/dist/components/Page/Page'
-// import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-// import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './WrappingSummary.types'
-// import Navbar from 'components/Navbar/Navbar'
-// import Footer from 'components/Footer/Footer'
-// import { Navigation } from 'components/Navigation'
-// import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import './WrappingSummary.css'
-import { VotingPower } from '../VotingPower'
+import VotingPower from 'components/Token/VotingPower'
+import Token from 'components/Token'
+import WrappingSummarySection from './WrappingSummarySection'
 
 const signIn = require('../../../images/sign-in.svg')
 const manaIcon = require('../../../images/mana.svg')
@@ -43,46 +38,34 @@ export default class WrappingSummary extends React.PureComponent<Props, any> {
   renderVotingPower() {
     return <>
       <Card.Content>
-          <Header sub>{t('general.total')}</Header>
-          <VotingPower size="big" />
+          <Header sub><b>{t('general.total')}</b></Header>
+          <VotingPower size="large" />
       </Card.Content>
       <Card.Content>
-        <Header sub>{t('general.total')}</Header>
-        <div className="WrappingSummarySection">
-          <div className="WrappingSummaryValue">
-            <img src={landIcon} width="36" height="36" />
-            <div>10 Land</div>
-          </div>
-          <VotingPower secondary />
-        </div>
-        <div className="WrappingSummarySection">
-          <div className="WrappingSummaryValue">
-            <img src={estateIcon} width="36" height="36" />
-            <div>2 Estate</div>
-          </div>
-          <VotingPower secondary />
-        </div>
-        <div className="WrappingSummarySection">
-          <div className="WrappingSummaryValue">
-            <img src={manaIcon} width="36" height="36" />
-            <div>Mana</div>
-          </div>
-          <VotingPower secondary />
-        </div>
+        <Header sub><b>{t('general.total')}</b></Header>
+        <WrappingSummarySection icon={landIcon} label={t('general.land', { land: 0 })}>
+          <Token symbol="VP" size="small" secondary />
+        </WrappingSummarySection>
+        <WrappingSummarySection icon={estateIcon} label={t('general.estate', { estate: 0 })}>
+          <Token symbol="VP" size="small" secondary />
+        </WrappingSummarySection>
+        <WrappingSummarySection icon={manaIcon} label={t('general.mana')}>
+          <Token symbol="VP" size="small" secondary />
+        </WrappingSummarySection>
       </Card.Content>
     </>
   }
 
   render() {
-    const { isLoading, isConnected } = this.props
+    const { isConnected, isConnecting } = this.props
 
     return <Card className="WrappingSummary">
 
-      {isLoading && this.renderLoading()}
+      {isConnecting && this.renderLoading()}
 
-      {!isLoading && !isConnected && this.renderSignIn()}
+      {!isConnecting && !isConnected && this.renderSignIn()}
 
-      {!isLoading && isConnected && this.renderVotingPower()}
+      {!isConnecting && isConnected && this.renderVotingPower()}
     </Card>
   }
 }
