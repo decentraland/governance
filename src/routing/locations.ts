@@ -1,18 +1,8 @@
+import { params } from './utils'
+
 export const locations = {
-  root: () => '/',
-  proposal: (id: string = `:proposalId`) => '/proposal/' + id,
+  root: (options?: Record<string, any>) => '/' + params(options),
+  proposal: (app: string = ':app', id: string | number = `:id`) => `/proposal/${app}/vote/${id}`,
   wrapping: () => '/wrapping/',
   debug: () => '/debug'
-  // home: () => '/home',
-
-  // avatar: () => '/avatar',
-
-  // creator: () => '/creator',
-  // createAvatarSuccess: () => '/avatar-created',
-  // claim: () => '/claim',
-  // claimSuccess: () => '/claim-success',
-  // minibio: () => '/minibio',
-  // callback: () => '/callback',
-
-  // selector: () => '/accounts'
 }

@@ -1,0 +1,55 @@
+.dcl.page.ProposalPage .ui.card {
+  width: 100%;
+  min-height: 100px;
+}
+
+.dcl.page.ProposalPage > .ui.container {
+  display: flex;
+}
+
+.dcl.page.ProposalPage > .ui.container > .ProposalPageBack {
+  flex: 0 0 64px;
+}
+
+.dcl.page.ProposalPage > .ui.container > .ui.stackable.grid {
+  flex-grow: 1;
+}
+
+.dcl.page.ProposalPage .ProposalTitle {
+  min-height: 42px;
+  padding-bottom: 24px;
+}
+
+.dcl.page.ProposalPage .ProposalTitle .ui.loader {
+  margin: 0 auto
+}
+
+.dcl.page.ProposalPage .ProposalTitle .ui.header {
+  font-size: 34px;
+  line-height: 42px;
+  letter-spacing: 0.4px;
+}
+
+.dcl.page.ProposalPage .ProposalDetail .ui.header {
+  text-transform: capitalize;
+  margin-bottom: 4px;
+}
+
+.dcl.page.ProposalPage .ProposalDetail .ui.header.sub {
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.dcl.page.ProposalPage .ProposalDetail span {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--secondary-text);
+}
+
+.dcl.page.ProposalPage .ProposalActions {
+  align-items: center;
+}
+
+.dcl.page.ProposalPage .ProposalActions .ui.button {
+  width: 100%;
+}

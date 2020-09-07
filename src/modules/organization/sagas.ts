@@ -9,10 +9,10 @@ import { ORGANIZATION_LOCATION, ORGANIZATION_CONNECTOR, Organization } from './t
 import { Network } from 'modules/wallet/types'
 
 export function* organizationSaga() {
-  yield takeLatest('skip - ' + LOAD_ORGANIZATION_REQUEST, connectAragon)
-  yield takeLatest('skip - ' + STORAGE_LOAD, connectAragon)
-  yield takeLatest('skip - ' + CHANGE_ACCOUNT, reconnectAragon)
-  yield takeLatest('skip - ' + CHANGE_NETWORK, reconnectAragon)
+  yield takeLatest('_' + LOAD_ORGANIZATION_REQUEST, connectAragon)
+  yield takeLatest('_' + STORAGE_LOAD, connectAragon)
+  yield takeLatest('_' + CHANGE_ACCOUNT, reconnectAragon)
+  yield takeLatest('_' + CHANGE_NETWORK, reconnectAragon)
 }
 
 function* reconnectAragon() {

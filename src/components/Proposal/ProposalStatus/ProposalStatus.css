@@ -15,8 +15,41 @@
   align-content: center;
   color: var(--neutral);
   border: 1px solid var(--neutral);
-  margin-right: .7em;
   text-transform: uppercase;
+}
+
+.ProposalStatusContainer .ProposalStatus {
+  margin-right: .7em;
+}
+
+.ProposalStatus.voting {
+  color: rgb(205,198,64);
+  background-color: rgba(205,198,64,.2);
+  border-color: rgba(205,198,64,.2);
+}
+
+.ProposalStatus.delay {
+  color: rgb(205,128,64);
+  background-color: rgba(205,128,64,.2);
+  border-color: rgba(205,128,64,.2);
+}
+
+.ProposalStatus.sab {
+  color: rgb(255,45,85);
+  background-color: rgba(255,45,85,.2);
+  border-color: rgba(255,45,85,.2);
+}
+
+.ProposalStatus.catalyst {
+  color: rgb(198,64,205);
+  background-color: rgba(198,64,205,.2);
+  border-color: rgba(198,64,205,.2);
+}
+
+.ProposalStatus.tokens {
+  color: rgb(45,163,255);
+  background-color: rgba(45,163,255,.2);
+  border-color: rgba(45,163,255,.2);
 }
 
 .ProposalStatus > img {
@@ -69,15 +102,50 @@
   line-height: 20px;
 }
 
+.ProposalApproval .ProposalApprovalItem {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text);
+  margin-right: 2em;
+  text-transform: uppercase;
+}
+
+.ProposalApproval .ProposalApprovalItem::before {
+  display: inline-block;
+  content: " ";
+  width: 13px;
+  height: 13px;
+  border-radius: 13px;
+  margin-right: .5em;
+  background: var(--neutral);
+}
+
+.ProposalApproval .ProposalApprovalItem.yea::before {
+  background: var(--success);
+}
+
+.ProposalApproval .ProposalApprovalItem.nay::before {
+  background: var(--rejected);
+}
+
+.ProposalApproval .ProposalApprovalItem span {
+  color: var(--secondary-text);
+}
+
 .ProposalStatusBar {
   display: flex;
   justify-content: center;
   align-content: center;
-  margin: 6px 12px 6px 0;
+  margin: 0 12px;
   width: 100px;
-  height: 12px;
+  height: 14px;
   border-radius: 4px;
   position: relative;
+}
+
+.ProposalStatusBar.full {
+  width: 100%;
+  margin: 0;
 }
 
 .ProposalStatusBar .ProposalStatusBackground,

@@ -1,13 +1,13 @@
 import { put, call, takeLatest, select } from 'redux-saga/effects'
 import { describeScript, App } from '@aragon/connect'
-import { Voting } from '@aragon/connect-thegraph-voting'
+import connectVoting, { Voting, Vote as AragonVote } from '@aragon/connect-voting'
 // import { ethers } from 'ethers'
 
 import { loadVotesFailure, loadVotesSuccess, LOAD_VOTES_REQUEST } from './actions'
 import { getOrganization } from 'modules/organization/selectors'
 import { Organization } from 'modules/organization/types'
-import { getVoting, getVotingApps } from 'modules/app/selectors'
-import { Vote, AragonVote } from './types'
+import { Vote } from './types'
+import { loadAllVotes } from './utils'
 
 export function* voteSaga() {
   yield takeLatest(LOAD_VOTES_REQUEST, loadVotes)
@@ -16,21 +16,28 @@ export function* voteSaga() {
 function* loadVotes() {
   try {
     const org: Organization = yield select(getOrganization)
-    const votingApps: App[] = yield select(getVotingApps)
-    const votingList: Voting[] = yield select(getVoting)
-    const votesPerVoting: AragonVote[][] = yield call(() => Promise.all(votingList.map(voting => voting.votes())))
+    const apps: App[] = yield call(() => org.apps())
+    const votingList: Voting[] = yield call(() => Promise.all(apps.filter(app => app.name === 'voting').map(app => connectVoting(app))))
+    const allVotes: AragonVote[] = yield call(() => loadAllVotes(votingList))
     const votesWithDescription: Vote[] = yield call(() => {
       const loaders: Promise<Vote>[] = []
-      for (const votes of votesPerVoting) {
-        for (const vote of votes) {
-          const loader = describeScript(vote.script, votingApps, org.connection.ethersProvider)
-          .then((scripts) => {
-            const description = scripts.map(script => script.description).filter(Boolean).join('\n')
-            return Object.assign(vote, { description }) as any
-          })
+      for (const vote of allVotes) {
 
-          loaders.push(loader)
-        }
+        const describe = describeScript(vote.script, apps)
+        .then((scripts) => {
+          const description = scripts.map(script => script.description).filter(Boolean).join('\n')
+          return Object.assign(vote, { description }) as any
+        })
+        .catch((err) => {
+          console.log(err)
+          return Object.assign(vote, { description: err.message }) as any
+        })
+
+        const casts = vote.casts()
+          .then((casted) => Object.assign(vote, { casted }) as any)
+          .catch(console.error)
+
+        loaders.push(Promise.all([describe, casts]).then(() => vote as any))
       }
       return Promise.all(loaders)
     })
@@ -39,12 +46,6 @@ function* loadVotes() {
     for (const vote of votesWithDescription) {
       record[vote.id] = vote
     }
-
-    // const intet = org.appIntent(votingApps[0].address, 'vote', ['11', true, true])
-    // const path = yield call(() => intet.paths('0x8Cff6832174091DAe86F0244e3Fd92d4CeD2Fe07'))
-    // for (const transaction of path.transactions) {
-    //   yield call(() => provider.sendTransaction(transaction))
-    // }
 
     yield put(loadVotesSuccess(record))
   } catch (e) {

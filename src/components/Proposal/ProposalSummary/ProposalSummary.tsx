@@ -14,19 +14,32 @@ import { Props } from './ProposalSummary.types'
 // import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalStatus } from '../ProposalStatus'
 import './ProposalSummary.css'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { getVoteUrl } from 'modules/vote/utils'
 
 export default class ProposalSummary extends React.PureComponent<Props, any> {
 
+  handleClick = (event: React.MouseEvent<any>) => {
+    event.preventDefault()
+    const url = getVoteUrl(this.props.vote)
+    if (url) {
+      this.props.onNavigate(url)
+    }
+  }
+
   render() {
-    const { vote, app } = this.props
-    return <Card className="ProposalSummary">
+    const { vote } = this.props
+    const url = getVoteUrl(this.props.vote)
+    return <Card as="a" className="ProposalSummary" href={url} onClick={this.handleClick}>
       <Card.Content>
-      <Card.Header>{vote.description}</Card.Header>
-        <pre style={{ overflow: 'auto' }}>{JSON.stringify({ organization: app.organization.address, address: app.address }, null, 2)}</pre>
-        <pre style={{ overflow: 'auto' }}>{JSON.stringify(vote, null, 2)}</pre>
+        <Card.Header>
+          <div>
+            {vote.metadata || vote.description || <Header sub>No description</Header>}
+          </div>
+          <ProposalStatus.Creator vote={vote} />
+        </Card.Header>
         <div className="ProposalSummaryActions">
           <div><ProposalStatus vote={vote} /></div>
-          <div></div>
         </div>
       </Card.Content>
     </Card>

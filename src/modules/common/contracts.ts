@@ -9,7 +9,7 @@ export const MANAToken = {
 // wMANA
 // WrappedMana
 export const MANAMiniMeToken = { 
-  [Network.MAINNET]: '',
+  [Network.MAINNET]: '0xfd09cf7cfffa9932e33668311c4777cb9db3c9be',
   [Network.RINKEBY]: '0xfb2712a1246f712b889692c7ce55fec25c06bc33'
 }
 
@@ -21,7 +21,6 @@ export const LANDProxy = {
 export const LANDRegistry = {
   [Network.MAINNET]: '0xa57e126b341b18c262ad25b86bb4f65b5e2ade45',
   [Network.RINKEBY]: '0xbeea8bfb0e582be1c3fb464824e61c218ba0c1b1'
-
 }
 
 export const LANDMiniMeToken = {

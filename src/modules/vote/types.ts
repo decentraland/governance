@@ -1,8 +1,11 @@
-import { Vote as AragonVote } from '@aragon/connect-thegraph-voting'
+import type { Vote as AragonVote, Cast } from '@aragon/connect-voting'
+import type TransactionRequest from '@aragon/connect-core/dist/cjs/transactions/TransactionRequest'
 
 export type Vote = AragonVote & {
-  description: string
   appAddress: string
+  description: string
+  casted: Cast[]
+  transactions: TransactionRequest[]
 }
 
 export { AragonVote }

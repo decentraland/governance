@@ -3,6 +3,7 @@ import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Empty } from 'decentraland-ui/dist/components/Empty/Empty'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './HomePage.types'
 import { Navbar } from 'components/Navbar'
@@ -14,8 +15,17 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import './HomePage.css'
+import { HeaderMenu } from 'decentraland-ui'
+import { locations } from 'routing/locations'
+import { NewProposalModal } from 'components/Proposal/NewProposalModal'
 
 export default class HomePage extends React.PureComponent<Props, any> {
+
+  handleCreateProposal = (event: React.MouseEvent<any>) => {
+    event.preventDefault()
+    this.props.onChangeParams({ modal: 'new' })
+  }
+
   render() {
     const { isLoading, votes } = this.props
     return <>
@@ -29,7 +39,14 @@ export default class HomePage extends React.PureComponent<Props, any> {
               <WrappingSummary />
             </Grid.Column>
             <Grid.Column mobile="11">
-              <Header sub>{t('proposals_page.proposals_header', { proposals: votes?.length || 0 })}</Header>
+              <HeaderMenu>
+                <HeaderMenu.Left>
+                  <Header sub>{t('proposals_page.proposals_header', { proposals: votes?.length || 0 })}</Header>
+                </HeaderMenu.Left>
+                <HeaderMenu.Right>
+                  <Button as="a" href={locations.root({ modal: 'new' })} onClick={this.handleCreateProposal} primary size="small">{t('proposals_page.create_proposal')}</Button>
+                </HeaderMenu.Right>
+              </HeaderMenu>
               {isLoading && <Loader size="huge" active/>}
               {!isLoading && (!votes || votes.length === 0) && <Empty height={100}>{t('proposals_page.empty')}</Empty>}
               {!isLoading && votes && votes.length > 0 && votes.map(vote => <ProposalSummary key={vote.id} vote={vote}/>)}
@@ -37,6 +54,7 @@ export default class HomePage extends React.PureComponent<Props, any> {
           </Grid.Row>
         </Grid>
       </Page>
+      <NewProposalModal />
       <Footer />
       </>
   }

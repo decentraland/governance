@@ -19,7 +19,7 @@ export default class Routes extends React.PureComponent<any, any> {
         <Route exact path={locations.root()} component={HomePage} />
         <Route exact path={locations.proposal()} component={ProposalPage} />
         <Route exact path={locations.wrapping()} component={WrappingPage} />
-        <Route exact path={locations.debug()} component={DebugPage} />
+        {env.isDevelopment() && <Route exact path={locations.debug()} component={DebugPage} />}
         <Redirect to={locations.root()} />
       </Switch>
       <Intercom appId={INTERCOM_APP_ID} settings={{ alignment: 'right' }} />

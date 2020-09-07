@@ -1,14 +1,18 @@
 import { connect } from 'react-redux'
 import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isConnected, isConnecting, isEnabling } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/root/types'
+import { isLoading, getData } from 'modules/wallet/selectors'
 import WrappingSummary from './WrappingSummary'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './WrappingSummary.types'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isConnected(state),
-  isConnecting: isConnecting(state)
+  isConnecting: isConnecting(state),
+  isEnabling: isEnabling(state),
+  isLoading: isConnecting(state) || isEnabling(state) || isLoading(state),
+  wallet: getData(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

@@ -1,13 +1,14 @@
-import { all, takeLatest, call, select } from 'redux-saga/effects'
+import { all, takeLatest, call, select, put } from 'redux-saga/effects'
+import { FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
-// import { getEth } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getInjectedProvider } from 'decentraland-dapps/dist/providers/WalletProvider/utils'
-import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
-import { MANAToken, LANDProxy, LANDRegistry, MANAMiniMeToken } from 'modules/common/contracts'
-import { getNetwork } from './selectors'
-import { Network } from './types'
+import { getData } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { getManaMiniMeContract, getLandContract, getEstateContract } from 'modules/common/selectors'
+import { Contract, BigNumber } from 'ethers'
+import { loadBalanceRequest, LOAD_BALANCE_REQUEST, loadBalanceFailure, loadBalanceSuccess, REGISTER_LAND_BALANCE_REQUEST, registerLandBalanceSuccess, registerLandBalanceFailure, REGISTER_ESTATE_BALANCE_REQUEST, registerEstateBalanceSuccess, registerEstateBalanceFailure } from './actions'
 
+const VOTING_POWER_BY_LAND = 2_000
 const baseWalletSaga = createWalletSaga()
 
 export function* walletSaga() {
@@ -15,27 +16,98 @@ export function* walletSaga() {
 }
 
 function* projectWalletSaga() {
-  yield takeLatest(CONNECT_WALLET_SUCCESS, getBalance)
-  yield takeLatest(CHANGE_ACCOUNT, getBalance)
-  yield takeLatest(CHANGE_NETWORK, getBalance)
-  yield takeLatest(STORAGE_LOAD, getBalance)
+  yield takeLatest(CONNECT_WALLET_SUCCESS, requestBalance)
+  yield takeLatest(CHANGE_ACCOUNT, requestBalance)
+  yield takeLatest(CHANGE_NETWORK, requestBalance)
+  yield takeLatest(FETCH_TRANSACTION_SUCCESS, requestBalance)
+  yield takeLatest(LOAD_BALANCE_REQUEST, getBalance)
+  yield takeLatest(REGISTER_LAND_BALANCE_REQUEST, registerLandBalance)
+  yield takeLatest(REGISTER_ESTATE_BALANCE_REQUEST, registerEstateBalance)
 }
 
-function* getBalance () {
-  const provider = getInjectedProvider()!
+function* requestBalance() {
+  yield put(loadBalanceRequest())
+}
 
-  if (provider) {
+function* getBalance(): any {
+  const wallet: Wallet | null = yield select(getData)
+
+  if (wallet) {
     try {
-      const network: Network = yield select(getNetwork)
-      const balance = yield call(() => Promise.all([
-        provider.send('eth_getBalance', [ MANAToken[network], 'latest' ]),
-        provider.send('eth_getBalance', [ MANAMiniMeToken[network], 'latest' ]),
-        provider.send('eth_getBalance', [ LANDProxy[network], 'latest' ]),
-        provider.send('eth_getBalance', [ LANDRegistry[network], 'latest' ])
+      const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
+      const landContract = yield select(getLandContract)
+      const estateContract = yield select(getEstateContract)
+      let [
+        manaMiniMe,
+        land,
+        landCommit,
+        estate,
+        estateSize,
+        estateCommit
+      ] = yield call(() => Promise.all([
+        manaMiniMeContract.balanceOf(wallet.address).catch(console.error),
+        landContract.balanceOf(wallet.address).catch(console.error),
+        landContract.registeredBalance(wallet.address).catch(console.error),
+        estateContract.balanceOf(wallet.address).catch(console.error),
+        estateContract.getLANDsSize(wallet.address).catch(console.error),
+        estateContract.registeredBalance(wallet.address).catch(console.error)
       ]))
-      console.log(balance)
+
+      manaMiniMe = (manaMiniMe || 0) / 1e18
+      land = BigNumber.from(land || 0).toNumber()
+      landCommit = !!landCommit
+      estate = BigNumber.from(estate || 0).toNumber()
+      estateSize = BigNumber.from(estateSize || 0).toNumber()
+      estateCommit = !!estateCommit
+
+      const manaVotingPower = manaMiniMe
+      const landVotingPower = landCommit ? land * VOTING_POWER_BY_LAND : 0
+      const estateVotingPower = estate * estateSize * VOTING_POWER_BY_LAND
+      const votingPower = manaVotingPower + landVotingPower + estateVotingPower
+
+      yield put(loadBalanceSuccess({
+        ...wallet,
+        manaMiniMe,
+        land,
+        landCommit,
+        estate,
+        estateSize,
+        estateCommit,
+        manaVotingPower,
+        landVotingPower,
+        estateVotingPower,
+        votingPower
+      }))
+
+      if (landCommit) {
+        yield put(registerLandBalanceSuccess())
+      }
+
+      if (estateCommit) {
+        yield put(registerEstateBalanceSuccess())
+      }
     } catch (err) {
-      console.log(err)
+      yield put(loadBalanceFailure(err.message))
     }
+  } else {
+    yield put(loadBalanceSuccess(wallet))
+  }
+}
+
+function* registerLandBalance() {
+  try {
+    const landContract = yield select(getLandContract)
+    yield call(() => landContract.registerBalance())
+  } catch (err) {
+    yield put(registerLandBalanceFailure(err.message))
+  }
+}
+
+function* registerEstateBalance() {
+  try {
+    const estateContract = yield select(getEstateContract)
+    yield call(() => estateContract.registerBalance())
+  } catch (err) {
+    yield put(registerEstateBalanceFailure(err.message))
   }
 }

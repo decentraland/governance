@@ -1,3 +1,7 @@
+.WrappingPage {
+  min-height: 400px;
+}
+
 .WrappingPage .WrappingAmount,
 .WrappingPage .WrappingOptions {
   padding-top: 2rem;

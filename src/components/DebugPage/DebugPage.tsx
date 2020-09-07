@@ -11,8 +11,7 @@ import { Network } from 'modules/wallet/types'
 import { Card, Header, Icon, Button } from 'decentraland-ui'
 import { ORGANIZATION_CONNECTOR, ORGANIZATION_LOCATION } from 'modules/organization/types'
 import connect, { describeScript, Organization, App } from '@aragon/connect'
-import { VOTING_GRAPH } from 'modules/app/types'
-import { Voting, Vote } from '@aragon/connect-thegraph-voting'
+import connectVoting, { Voting, Vote, } from '@aragon/connect-voting'
 
 type Step = {
   title: string,
@@ -69,7 +68,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
     const orgConnector = ORGANIZATION_CONNECTOR[network]
     const orgLocation = ORGANIZATION_LOCATION[network]
-    const votingGraph = VOTING_GRAPH[network]
+    // const votingGraph = VOTING_GRAPH[network]
     const settings = {
       network,
       orgConnector,
@@ -78,6 +77,8 @@ export default class DebugPage extends React.Component<{}, State> {
 
     add('settings', settings)
     add('provider', provider)
+
+
 
     const organization = await connect(orgLocation, orgConnector, { network })
     add('organization', organization)
@@ -89,7 +90,9 @@ export default class DebugPage extends React.Component<{}, State> {
       .filter(app => ['voting.aragonpm.eth'].includes(app.appName))
     add('voting_apps', votingApps)
 
-    const votingList = votingApps.map(app => new Voting(app.address, votingGraph))
+    // Connect the Voting app using the corresponding connector:
+    // const votingList = connectVoting(organization.app('voting'))
+    const votingList = await Promise.all(votingApps.map(app => connectVoting(app)))
     add('voting', votingList)
 
     const votesByVoting = await Promise.all(votingList.map(voting => voting.votes()))
@@ -98,7 +101,7 @@ export default class DebugPage extends React.Component<{}, State> {
       .flat()
       .sort((a, b) => Number(b.startDate) - Number(a.startDate))
       .map(async (vote) => {
-        const transactions = await describeScript(vote.script, votingApps).catch(() => null)
+        const transactions = await describeScript(vote.script, apps).catch(() => null)
         const description = transactions ? transactions.map(tx => tx.description).filter(Boolean).join('\n') : ''
         return {
           id: vote.id,
@@ -115,15 +118,13 @@ export default class DebugPage extends React.Component<{}, State> {
   handleNewVote = async () => {
     const organization = this.state.data.organization!
     const provider: any = this.state.data.provider!
-    const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
-    const votingGraph = VOTING_GRAPH[network]
     const app = this.state.data.apps!.find(app => app.address === '0x37187b0f2089b028482809308e776f92eeb7334e')!
-    const voting = new Voting(app.address, votingGraph)
+    const voting: Voting = await connectVoting(app)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)
 
-    const intent = organization.appIntent(voting.appAddress, 'newVote', ['0x00000001', 'new dao vote?'])
+    const intent = organization.appIntent(app.address, 'newVote', ['0x00000001', 'new dao vote?'])
     const paths = await intent.paths(provider.selectedAddress)
     for (const tx of paths.transactions) {
       await provider.send({
@@ -136,16 +137,14 @@ export default class DebugPage extends React.Component<{}, State> {
   handlePoi = async () => {
     const organization = this.state.data.organization!
     const provider: any = this.state.data.provider!
-    const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
-    const votingGraph = VOTING_GRAPH[network]
     const app = this.state.data.apps!.find(app => app.address === '0xde839e6cee47d9e24ac12e9215b7a45112923141')!
-    const voting = new Voting(app.address, votingGraph)
+    const voting: Voting = await connectVoting(app)
     console.log(provider.selectedAddress)
     console.log(organization)
     console.log(app)
     console.log(voting)
 
-    const intent = organization.appIntent(voting.appAddress, 'add', ['11,11'])
+    const intent = organization.appIntent(app.address, 'add', ['11,11'])
     const paths = await intent.paths(provider.selectedAddress)
     for (const tx of paths.transactions) {
       await provider.request({
@@ -158,16 +157,14 @@ export default class DebugPage extends React.Component<{}, State> {
   handleCatalyst = async () => {
     const organization = this.state.data.organization!
     const provider: any = this.state.data.provider!
-    const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
-    const votingGraph = VOTING_GRAPH[network]
     const app = this.state.data.apps!.find(app => app.address === '0x594709fed0d43fdf511e3ba055e4da14a8f6b53b')!
-    const voting = new Voting(app.address, votingGraph)
+    const voting: Voting = await connectVoting(app)
     console.log(provider.selectedAddress)
     console.log(organization)
     console.log(app)
     console.log(voting)
 
-    const intent = organization.appIntent(voting.appAddress, 'addCatalyst', ['0x326923D43226d9824aab694A3C1C566FeDa50AEb', 'peer.dcl.gg'])
+    const intent = organization.appIntent(app.address, 'addCatalyst', ['0x326923D43226d9824aab694A3C1C566FeDa50AEb', 'peer.dcl.gg'])
     const paths = await intent.paths(provider.selectedAddress)
     for (const tx of paths.transactions) {
       await provider.request({
@@ -180,16 +177,14 @@ export default class DebugPage extends React.Component<{}, State> {
   handleDenyName = async () => {
     const organization = this.state.data.organization!
     const provider: any = this.state.data.provider!
-    const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
-    const votingGraph = VOTING_GRAPH[network]
     const app = this.state.data.apps!.find(app => app.address === '0x8b8fc0e17c2900d669cc883e3b067e4135362402')!
-    const voting = new Voting(app.address, votingGraph)
+    const voting: Voting = await connectVoting(app)
     console.log(provider.selectedAddress)
     console.log(organization)
     console.log(app)
     console.log(voting)
 
-    const intent = organization.appIntent(voting.appAddress, 'add', ['decentraland'])
+    const intent = organization.appIntent(app.address, 'add', ['decentraland'])
     const paths = await intent.paths(provider.selectedAddress)
     for (const tx of paths.transactions) {
       await provider.request({
@@ -202,15 +197,13 @@ export default class DebugPage extends React.Component<{}, State> {
   handleVote = async () => {
     const organization = this.state.data.organization!
     const provider: any = this.state.data.provider!
-    const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
-    const votingGraph = VOTING_GRAPH[network]
     const app = this.state.data.apps!.find(app => app.address === '0x37187b0f2089b028482809308e776f92eeb7334e')!
-    const voting = new Voting(app.address, votingGraph)
+    const voting: Voting = await connectVoting(app)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)
 
-    const intent = organization.appIntent(voting.appAddress, 'vote', ['0x15', true, true])
+    const intent = organization.appIntent(app.address, 'vote', ['0x15', true, true])
     const paths = await intent.paths(provider.selectedAddress)
     console.log(paths)
     for (const tx of paths.transactions) {

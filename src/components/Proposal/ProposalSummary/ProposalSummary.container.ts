@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 // import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 // import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
@@ -14,9 +15,11 @@ import { MapDispatchProps, MapStateProps, MapDispatch, DefaultProps } from './Pr
 
 const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
   const app = props.vote && getApps(state)[props.vote.appAddress]
+  const creator = props.vote && getApps(state)[props.vote.creator]
 
   return {
     app,
+    creator,
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
@@ -25,7 +28,8 @@ const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
   }
 }
 
-const mapDispatch = (_dispatch: MapDispatch): MapDispatchProps => ({
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onNavigate: (href: string) => dispatch(push(href))
   // onConnect: () => dispatch(connectWalletRequest())
 })
 
