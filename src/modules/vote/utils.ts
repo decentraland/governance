@@ -20,7 +20,7 @@ export async function loadAllVotes(votingList: Voting[]): Promise<AragonVote[]> 
 }
 
 export function getVoteExpiration(vote: Vote) {
-  const appAddress: keyof typeof APP_DELAY = vote.appAddress as any
+  const appAddress: keyof typeof APP_DELAY = '' as any // vote.appAddress as any
   const votingTime = APP_DELAY[appAddress] || APP_DELAY.DEFAULT
   return Number(vote.startDate) + votingTime
 }
@@ -140,5 +140,6 @@ export function getVoteTimeLeft(vote: Vote) {
 
 export function getVoteUrl(vote: Vote) {
   const decimalId = Number(vote.id.slice(vote.id.lastIndexOf(':') + 1))
-  return locations.proposal(vote.appAddress, decimalId)
+  const address = '' as any // vote.appAddress
+  return locations.proposal(address, decimalId)
 }

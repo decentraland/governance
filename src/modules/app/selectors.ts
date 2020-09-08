@@ -1,8 +1,6 @@
 import { RootState } from 'modules/root/types'
 import { createSelector } from 'reselect'
 import { AppState } from './reducer'
-import { VOTING_APP } from './types'
-import { getNetwork } from 'modules/wallet/selectors'
 
 export const getState: (state: RootState) => AppState = state => state.app
 
@@ -15,10 +13,4 @@ export const getLoading = (state: RootState) => getState(state).loading
 export const getApps = createSelector(
   getData,
   (apps) => Array.from(Object.values(apps))
-)
-
-export const getVotingApps = createSelector(
-  getNetwork,
-  getApps,
-  (network, apps) => apps.filter(app => app.appName === VOTING_APP[network])
 )

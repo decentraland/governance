@@ -9,10 +9,7 @@ import { ensureNetwork } from "modules/wallet/utils"
 import { getInjectedProvider } from "decentraland-dapps/dist/providers/WalletProvider/utils"
 import { Network } from "modules/wallet/types"
 import { Card, Header, Icon, Button } from "decentraland-ui"
-import {
-  ORGANIZATION_CONNECTOR,
-  ORGANIZATION_LOCATION,
-} from "modules/organization/types"
+import { ORGANIZATION_CONNECTOR, ORGANIZATION_LOCATION } from "modules/organization/types"
 import connect, { Organization, App } from "@aragon/connect"
 import connectVoting, { Voting, Vote } from "@aragon/connect-voting"
 
@@ -74,7 +71,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const settings = {
       network,
       orgConnector,
-      orgLocation,
+      orgLocation
     }
 
     add("settings", settings)
@@ -89,10 +86,8 @@ export default class DebugPage extends React.Component<{}, State> {
     const votingApps = await organization.apps("voting")
     add("voting_apps", votingApps)
 
-    // Connect the Voting app using the corresponding connector:
-    // const votingList = connectVoting(organization.app('voting'))
     const votingList = await Promise.all(
-      votingApps.map((app) => connectVoting(app))
+      votingApps.map((app) => connectVoting(app as any))
     )
     add("voting", votingList)
 
@@ -105,21 +100,31 @@ export default class DebugPage extends React.Component<{}, State> {
         .flat()
         .sort((a, b) => Number(b.startDate) - Number(a.startDate))
         .map(async (vote) => {
-          const { describedSteps } = await organization.describeScript(
-            vote.script
-          )
 
-          const description = describedSteps
-            .map((step) => step.description)
-            .filter(Boolean)
-            .join("\n")
+          try {
+            const { describedSteps } = await organization.describeScript(
+              vote.script
+            )
 
-          return {
-            id: vote.id,
-            metadata: vote.metadata,
-            description,
-            describedSteps,
-            vote,
+            const description = describedSteps
+              .map((step) => step.description)
+              .filter(Boolean)
+              .join("\n")
+
+            return {
+              id: vote.id,
+              metadata: vote.metadata,
+              description,
+              describedSteps,
+              vote,
+            }
+          } catch (error) {
+            return {
+              id: vote.id,
+              metadata: vote.metadata,
+              vote,
+              error
+            }
           }
         })
     )
@@ -132,7 +137,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const app = this.state.data.apps!.find(
       (app) => app.address === "0x37187b0f2089b028482809308e776f92eeb7334e"
     )!
-    const voting: Voting = await connectVoting(app)
+    const voting: Voting = await connectVoting(app as any)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)
@@ -156,7 +161,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const app = this.state.data.apps!.find(
       (app) => app.address === "0xde839e6cee47d9e24ac12e9215b7a45112923141"
     )!
-    const voting: Voting = await connectVoting(app)
+    const voting: Voting = await connectVoting(app as any)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)
@@ -180,7 +185,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const app = this.state.data.apps!.find(
       (app) => app.address === "0x594709fed0d43fdf511e3ba055e4da14a8f6b53b"
     )!
-    const voting: Voting = await connectVoting(app)
+    const voting: Voting = await connectVoting(app as any)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)
@@ -208,7 +213,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const app = this.state.data.apps!.find(
       (app) => app.address === "0x8b8fc0e17c2900d669cc883e3b067e4135362402"
     )!
-    const voting: Voting = await connectVoting(app)
+    const voting: Voting = await connectVoting(app as any)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)
@@ -232,7 +237,7 @@ export default class DebugPage extends React.Component<{}, State> {
     const app = this.state.data.apps!.find(
       (app) => app.address === "0x37187b0f2089b028482809308e776f92eeb7334e"
     )!
-    const voting: Voting = await connectVoting(app)
+    const voting: Voting = await connectVoting(app as any)
     console.log(provider.selectedAddress)
     console.log(app)
     console.log(voting)

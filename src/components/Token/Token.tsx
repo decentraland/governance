@@ -13,7 +13,7 @@ export default class Token extends React.PureComponent<Props> {
 
     switch (this.props.symbol) {
       case 'MANA':
-        return <Mana size={size} className={secondary && 'secondary' || ''}>{t('general.number', { value })}</Mana>
+        return <Mana size={size} className={secondary ? 'secondary' : ''}>{t('general.number', { value })}</Mana>
 
       case 'VP':
         return <VotingPower size={size} secondary={secondary} value={value} />

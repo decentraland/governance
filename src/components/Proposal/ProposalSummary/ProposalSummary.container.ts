@@ -14,7 +14,8 @@ import ProposalSummary from './ProposalSummary'
 import { MapDispatchProps, MapStateProps, MapDispatch, DefaultProps } from './ProposalSummary.types'
 
 const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
-  const app = props.vote && getApps(state)[props.vote.appAddress]
+  const address = '' as any // props.vote.appAddress
+  const app = props.vote && getApps(state)[address]
   const creator = props.vote && getApps(state)[props.vote.creator]
 
   return {

@@ -17,7 +17,7 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   getStep() {
     const { vote } = this.props
-    const address: keyof typeof APP_NAME = vote.appAddress as any
+    const address: keyof typeof APP_NAME = '' as any// vote.appAddress as any
     const name = APP_NAME[address]
 
     if (name === AppName.SAB) {

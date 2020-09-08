@@ -1,5 +1,4 @@
 import { put, call, takeLatest, select } from 'redux-saga/effects'
-
 import { loadAppsSuccess, loadAppsFailure, LOAD_APPS_REQUEST } from './actions'
 import { getOrganization } from 'modules/organization/selectors'
 import { Organization, App } from '@aragon/connect'

@@ -23,8 +23,8 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     </div>
   }
 
-  static AppName = (props: Props) => {
-    const address: keyof typeof APP_NAME = props.vote.appAddress as any
+  static AppName = (_props: Props) => {
+    const address: keyof typeof APP_NAME = '' as any // props.vote.appAddress ||  as any
     return <ProposalStatus.Badge name={APP_NAME[address]} />
   }
 
@@ -43,22 +43,22 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
 
   static Enacted = () => {
     return <div className="ProposalStatus ProposalStatusEnacted">
-      <img src={enactedIcon} width="20" height="20" />
-      <div>ENACTED</div>
+      <img src={enactedIcon} width="20" height="20" alt="enacted" />
+      <div>{t('general.enacted')}</div>
     </div>
   }
 
   static Passed = () => {
     return <div className="ProposalStatus ProposalStatusPassed">
-      <img src={passedIcon} width="20" height="20" />
-      <div>PASSED</div>
+      <img src={passedIcon} width="20" height="20" alt="passed"/>
+      <div>{t('general.passed')}</div>
     </div>
   }
 
   static Rejected = () => {
     return <div className="ProposalStatus ProposalStatusRejected">
-      <img src={rejectedIcon} width="20" height="20" />
-      <div>REJECTED</div>
+      <img src={rejectedIcon} width="20" height="20" alt="rejected"/>
+      <div>{t('general.rejected')}</div>
     </div>
   }
 
@@ -97,7 +97,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     }
 
     return <div className="ProposalStatus ProposalStatusTime">
-      <img src={timeLeftIcon} width="20" height="20" />
+      <img src={timeLeftIcon} width="20" height="20" alt="time" />
       <div>{timeLeft}</div>
     </div>
   }

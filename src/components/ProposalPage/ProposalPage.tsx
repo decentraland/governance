@@ -27,7 +27,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     const { isLoading, vote } = this.props
     const description = vote?.metadata || vote?.description
     const creator: keyof typeof CREATOR_NAME = vote?.creator as any
-    const balance: Partial<ReturnType<typeof getVotePercentages>> = vote && getVotePercentages(vote) || {}
+    const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
 
     return <>
       <Navbar />

@@ -1,11 +1,10 @@
 import type { Vote as AragonVote, Cast } from '@aragon/connect-voting'
-import type TransactionRequest from '@aragon/connect-core/dist/cjs/transactions/TransactionRequest'
+import ForwardingPathDescription from '@aragon/connect-core/dist/cjs/utils/descriptor'
 
 export type Vote = AragonVote & {
-  appAddress: string
-  description: string
-  casted: Cast[]
-  transactions: TransactionRequest[]
+  description?: string
+  descriptionPath?: ForwardingPathDescription
+  casted?: Cast[]
 }
 
 export { AragonVote }

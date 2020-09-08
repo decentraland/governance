@@ -53,6 +53,10 @@
   align-content: space-between;
 }
 
+.NewProposalModal .NewProposalModalStep .dcl.field {
+  min-width: auto;
+}
+
 .NewProposalModal .NewProposalModalStep .header {
   flex: 0 0 100%;
   margin-bottom: 1em;
