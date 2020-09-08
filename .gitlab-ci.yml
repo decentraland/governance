@@ -1,0 +1,15 @@
+image: decentraland/ci-node:latest
+
+build:
+  only:
+    - master
+    - staging
+    - release
+  script:
+    - ./setupEnv.sh
+    - npm install && npm run build
+    - dcl-lock-sync
+    - cd .ci && npm install && dcl-up website-dao
+    - dcl-sync-release
+    - dcl-upload build
+    - cd .ci && dcl-cache-invalidation
