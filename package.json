@@ -37,7 +37,8 @@
     "ts-node": "^9.0.0",
     "tslint-plugin-prettier": "^2.3.0",
     "typescript": "^3.9.7",
-    "util-inspect": "^0.1.8"
+    "util-inspect": "^0.1.8",
+    "validator": "^13.1.1"
   },
   "scripts": {
     "start": "node ./bin/ssl.js && HTTPS=true SSL_CRT_FILE=.ssl/cert.crt SSL_KEY_FILE=.ssl/cert.key react-scripts start",
