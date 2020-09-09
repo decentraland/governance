@@ -4,6 +4,7 @@
     "sign_in_detail": "Sign in to see your Voting Power",
     "yes": "yes",
     "no": "no",
+    "close": "close",
     "edit": "edit",
     "created": "created",
     "under_review": "under review",
@@ -42,7 +43,9 @@
     "confirm_catalyst": "You are about to propose {url} with owner {owner} to be a {catalyst} in Decentraland. Want to proceed?",
     "confirm_poi": "You are about to propose {position} to be a {poi} in Decentraland. Want to proceed?",
     "confirm_ban": "You are about to propose the name {name} to be banned in Decentraland. Want to proceed?",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "confirmed_title": "Awesome!",
+    "confirmed": "Your proposal was committed!"
   },
   "proposals_page": {
     "wrapping_header": "VOTING POWER",

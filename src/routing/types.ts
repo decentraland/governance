@@ -5,5 +5,6 @@ export type NewProposalParams = {
   question?: string,
   catalystOwner?: string,
   catalystUrl?: string,
-  banName?: string
+  banName?: string,
+  completed?: true
 }

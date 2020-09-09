@@ -14,3 +14,11 @@ export function isValidPosition(raw?: string | number) {
 
   return true
 }
+
+export function isValidName(name?: string): boolean {
+  if (!name) {
+    return false
+  }
+  
+  return /^[_A-z0-9]*((-|s)*[_A-z0-9])*$/.test(name)
+}

@@ -10,7 +10,7 @@ import PoiForm from './PoiForm'
 import BanForm from './BanForm/BanForm'
 import QuestionForm from './QuestionForm/QuestionForm'
 import CatalystForm from './CatalystForm/CatalystForm'
-import { isValidPosition } from './utils'
+import { isValidPosition, isValidName } from './utils'
 import { NewProposalParams } from 'routing/types'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
@@ -22,7 +22,11 @@ const question = require('../../../images/question-220.png')
 
 export default class NewProposalModal extends React.PureComponent<Props, any> {
 
-  handleClose = () => this.props.onChangeParams({})
+  handleClose = () => {
+    if (!this.props.isCreating) {
+      this.props.onChangeParams({})
+    }
+  }
 
   handleCreateQuestion = (event: React.MouseEvent<any>) => {
     event.preventDefault()
@@ -90,11 +94,19 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
   }
 
   getBan() {
-    return this.props.params.banName || undefined
+    if (isValidName(this.props.params.banName)) {
+      return this.props.params.banName!
+    }
+
+    return undefined
   }
 
   getQuestion() {
-    return this.props.params.question || undefined
+    if (this.props.params.question) {
+      return this.props.params.question
+    }
+
+    return undefined
   }
 
   getCatalyst() {
@@ -112,6 +124,10 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       (position.x !== undefined && position.y !== undefined) ||
       (catalyst.owner !== undefined && catalyst.url !== undefined)
     ) {
+      if (this.props.params.completed) {
+        return 4
+      }
+
       return 3
     } else if (this.props.params.create) {
       return 2
@@ -162,10 +178,19 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     }
   }
 
-  handleConfirmQuestion = () => ({})
+  handleConfirmQuestion = () => {
+    const question = this.getQuestion()
+    if (question) {
+      this.props.onCreateQuestion(question)
+    }
+  }
 
   renderConfirmQuestion() {
     const question = this.getQuestion()
+    if (question === undefined) {
+      return this.renderEmpty()
+    }
+
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header>
         <Header>{t('proposal_modal.title_question')}</Header>
@@ -173,14 +198,23 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       <Modal.Description>
         {t('proposal_modal.confirm_question', { question: <b>{question}</b> })}
       </Modal.Description>
-      <Button primary onClick={this.handleConfirmQuestion}>{t('proposal_modal.confirm')}</Button>
+      <Button primary loading={this.props.isCreating} onClick={this.handleConfirmQuestion}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
 
-  handleConfirmCatalyst = () => ({})
+  handleConfirmCatalyst = () => {
+    const { url, owner } = this.getCatalyst()
+    if (owner && url) {
+      this.props.onCreateCatalyst(owner, url)
+    }
+  }
 
   renderConfirmCatalyst() {
     const { url, owner } = this.getCatalyst()
+    if (url === undefined || owner === undefined) {
+      return this.renderEmpty()
+    }
+
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header>
         <Header>{t('proposal_modal.title_catalyst')}</Header>
@@ -194,14 +228,22 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           catalyst: <b>Catalyst Server</b>
         })}
       </Modal.Description>
-      <Button primary onClick={this.handleConfirmCatalyst}>{t('proposal_modal.confirm')}</Button>
+      <Button primary loading={this.props.isCreating} onClick={this.handleConfirmCatalyst}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
 
-  handleConfirmPoi = () => ({})
+  handleConfirmPoi = () => {
+    const { x, y } = this.getPosition()
+    if (isValidPosition(x) && isValidPosition(y)) {
+      this.props.onCreatePoi(x!, y!)
+    }
+  }
 
   renderConfirmPoi() {
     const { x, y } = this.getPosition()
+    if (x === undefined || y === undefined) {
+      return this.renderEmpty()
+    }
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header>
         <Header>{t('proposal_modal.title_poi')}</Header>
@@ -212,22 +254,41 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           poi: <b>{t('proposal_modal.title_poi')}</b>
         })}
       </Modal.Description>
-      <Button primary onClick={this.handleConfirmPoi}>{t('proposal_modal.confirm')}</Button>
+      <Button primary loading={this.props.isCreating} onClick={this.handleConfirmPoi}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
 
-  handleConfirmBan = () => ({})
+  handleConfirmBan = () => {
+    const name = this.getBan()
+    if (isValidName(name)) {
+      this.props.onCreateBan(name!)
+    }
+  }
 
   renderConfirmBan() {
     const name = this.getBan()
+    if (name === undefined) {
+      return this.renderEmpty()
+    }
+
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header>
         <Header>{t('proposal_modal.title_ban')}</Header>
       </Modal.Header>
       <Modal.Description>
-        {t('proposal_modal.confirm_ban', { name })}
+        {t('proposal_modal.confirm_ban', { name: <b>{name}</b> })}
       </Modal.Description>
-      <Button primary onClick={this.handleConfirmPoi}>{t('proposal_modal.confirm')}</Button>
+      <Button primary loading={this.props.isCreating} onClick={this.handleConfirmBan}>{t('proposal_modal.confirm')}</Button>
+    </Modal.Content>
+  }
+
+  renderConfirmed() {
+    return <Modal.Content className="NewProposalModalStep">
+      <Modal.Header>
+        <Header>{t('proposal_modal.confirmed_title')}</Header>
+      </Modal.Header>
+      <Modal.Description>{t('proposal_modal.confirmed')}</Modal.Description>
+      <Button primary onClick={this.handleClose}>{t('general.close')}</Button>
     </Modal.Content>
   }
 
@@ -248,6 +309,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           {this.renderOptions()}
           {this.renderForm()}
           {this.renderConfirm()}
+          {this.renderConfirmed()}
         </div>
       </div>
     </Modal>

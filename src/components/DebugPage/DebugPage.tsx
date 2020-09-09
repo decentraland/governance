@@ -137,10 +137,6 @@ export default class DebugPage extends React.Component<{}, State> {
     const app = this.state.data.apps!.find(
       (app) => app.address === "0x37187b0f2089b028482809308e776f92eeb7334e"
     )!
-    const voting: Voting = await connectVoting(app as any)
-    console.log(provider.selectedAddress)
-    console.log(app)
-    console.log(voting)
 
     const path = await app.intent("newVote", ["0x00000001", "new dao vote?"], {
       actAs: provider.selectedAddress,
@@ -148,12 +144,12 @@ export default class DebugPage extends React.Component<{}, State> {
 
     console.log(path)
 
-    path.sign((tx) =>
-      provider.send({
+    path.sign((tx) => {
+      return provider.send({
         method: "eth_sendTransaction",
         params: [tx],
       })
-    )
+    })
   }
 
   handlePoi = async () => {

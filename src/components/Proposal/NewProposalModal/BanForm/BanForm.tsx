@@ -6,6 +6,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { isValidName } from '../utils'
 
 export default class BanForm extends React.Component<Props, State> {
 
@@ -15,7 +16,7 @@ export default class BanForm extends React.Component<Props, State> {
   }
 
   isValid() {
-    return !!this.state.value
+    return isValidName(this.state.value)
   }
 
   handleChange = (_: React.FormEvent<any>, props: Record<string, string>) => {

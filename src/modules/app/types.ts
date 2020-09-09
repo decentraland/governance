@@ -61,11 +61,14 @@ export const Delay = {
 export const AppName = {
   Tokens: 'tokens',
   Voting: 'voting',
+  SAB: 'sab',
+  COMMUNITY: 'community',
+  INBOX: 'inbox',
   Delay: 'delay',
   Catalyst: 'catalyst',
   Finance: 'finance',
   Agent: 'agent',
-  DenyName: 'deny_name',
+  DenyName: 'deny name',
   POI: 'poi'
 }
 

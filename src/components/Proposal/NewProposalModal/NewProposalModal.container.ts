@@ -7,8 +7,8 @@ import { RootState } from 'modules/root/types'
 import { getLoading as getLoadingOrganization } from 'modules/organization/selectors'
 import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
-import { getLoading as getLoadingVotes } from 'modules/vote/selectors'
-import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
+import { getLoading as getLoadingVotes, isCreating } from 'modules/vote/selectors'
+import { LOAD_VOTES_REQUEST, createBanRequest, createQuestionRequest, createPoiRequest, createCatalystRequest } from 'modules/vote/actions'
 import NewProposalModal from './NewProposalModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './NewProposalModal.types'
 import { locations } from 'routing/locations'
@@ -19,6 +19,7 @@ import { getQuery } from 'routing/selectors'
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isConnected(state),
   isConnecting: isConnecting(state),
+  isCreating: isCreating(state),
   isLoading: (
     getLoadingOrganization(state) ||
     isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
@@ -29,7 +30,11 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
-  onChangeParams: (options: NewProposalParams = {}) => dispatch(push(locations.root(options)))
+  onChangeParams: (options: NewProposalParams = {}) => dispatch(push(locations.root(options))),
+  onCreateQuestion: (question: string) => dispatch(createQuestionRequest(question)),
+  onCreateBan: (name: string) => dispatch(createBanRequest(name)),
+  onCreatePoi: (x: number, y: number) => dispatch(createPoiRequest(x, y)),
+  onCreateCatalyst: (owner: string, url: string) => dispatch(createCatalystRequest(owner, url))
 })
 
 export default connect(mapState, mapDispatch)(NewProposalModal)
