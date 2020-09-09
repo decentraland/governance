@@ -21,6 +21,7 @@ import { getVoteTimeLeft, getVotePercentages, isVoteExpired } from 'modules/vote
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
 import './ProposalPage.css'
+import { env } from 'decentraland-commons'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
   render() {
@@ -39,7 +40,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
         </div>
         <Grid stackable>
           <Grid.Row>
-            <Grid.Column mobile="11" className="ProposalTitle">
+            <Grid.Column mobile="16" className="ProposalTitle">
               <ProposalTitle vote={vote} description={description} />
             </Grid.Column>
           </Grid.Row>
@@ -95,13 +96,12 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                 {/* <Card.Content className="DetailDescription">
                   <Header sub>{t('proposal_detail_page.description')}</Header>
                 </Card.Content> */}
-                {/* {env.isDevelopment() && <Card.Content className="DetailDebug">
+                {env.isDevelopment() && <Card.Content className="DetailDebug">
                   <Header sub>INFO</Header>
                   <div className="DetailDebugContainer">
-                    <pre>{inspect(vote)}</pre>
-                    <pre>{inspect(description)}</pre>
+                    <pre>{JSON.stringify(description, null ,2)}</pre>
                   </div>
-                </Card.Content>} */}
+                </Card.Content>}
               </Card>}
             </Grid.Column>
             <Grid.Column mobile="5">

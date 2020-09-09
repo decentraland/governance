@@ -9,6 +9,7 @@ export { ForwardingPathDescription }
 
 export type VoteDescription = {
   description?: string
-  descriptionAnnotated?: Annotation[]
   describedSteps?: ForwardingPathDescription['describedSteps']
+  firstDescribedSteps?: ForwardingPathDescription['describedSteps']
+  firstDescriptionAnnotated?: Annotation[]
 }

@@ -27,3 +27,12 @@
 .dcl.blockie-wrapper {
   white-space: nowrap;
 }
+
+.ui.header .dcl.blockie {
+  width: 1em;
+  border-radius: .1em;
+}
+
+.ui.header .dcl.blockie-wrapper .dcl.blockie-children {
+  margin-left: .2em;
+}

@@ -31,24 +31,24 @@ function* loadVoteDescription(vote: Vote) {
     const describedSteps: ForwardingPathDescription['describedSteps'] = yield call(concurrent(() => {
       return describePath(decodeForwardingPath(vote.script), apps, org.connection.ethersProvider)
     }))
-    let currentStep = describedSteps
-    while (currentStep.length && currentStep[0].children) {
-      currentStep = currentStep[0].children as any
+    let firstDescribedSteps = describedSteps
+    while (firstDescribedSteps.length && firstDescribedSteps[0].children) {
+      firstDescribedSteps = firstDescribedSteps[0].children as any
     }
 
-    let descriptionAnnotated: Annotation[] = []
-    for (const step of currentStep) {
+    let firstDescriptionAnnotated: Annotation[] = []
+    for (const step of firstDescribedSteps) {
       if (step.annotatedDescription) {
-        descriptionAnnotated = descriptionAnnotated.concat(step.annotatedDescription)
+        firstDescriptionAnnotated = firstDescriptionAnnotated.concat(step.annotatedDescription)
       }
     }
 
-    const description = currentStep
+    const description = firstDescribedSteps
       .map((step) => step.description)
       .filter(Boolean)
       .join("\n")
 
-    yield put(loadVoteDescriptionSuccess({ [vote.id]: { description, describedSteps, descriptionAnnotated } }))
+    yield put(loadVoteDescriptionSuccess({ [vote.id]: { description, describedSteps, firstDescribedSteps, firstDescriptionAnnotated } }))
   } catch (err) {
     yield put(loadVoteDescriptionFailure({ [vote.id]: err.message }))
   }

@@ -12,7 +12,8 @@
 }
 
 .dcl.page.ProposalPage > .ui.container > .ui.stackable.grid {
-  flex-grow: 1;
+  flex: 1 0 100%;
+  overflow: hidden;
 }
 
 .dcl.page.ProposalPage .ProposalTitle {
@@ -57,5 +58,5 @@
 
 .dcl.page.ProposalPage .DetailDebugContainer {
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
