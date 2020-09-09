@@ -34,7 +34,6 @@ const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: (href: string) => dispatch(push(href))
-  // onConnect: () => dispatch(connectWalletRequest())
 })
 
 export default connect(mapState, mapDispatch)(ProposalSummary)

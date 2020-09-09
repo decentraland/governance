@@ -34,7 +34,7 @@ export default class WrappingSummary extends React.PureComponent<Props, any> {
     const { isConnecting, isEnabling } = this.props
 
     return <Card.Content textAlign="center" className="SignInContent">
-      <img src={signIn} />
+      <img src={signIn} alt="sign-in" />
       <p>{t("general.sign_in_detail")}</p>
       <Button primary size="small" loading={isConnecting || isEnabling} onClick={this.props.onConnect}>
         {t("general.sign_in")}

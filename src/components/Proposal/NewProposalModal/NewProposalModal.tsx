@@ -14,6 +14,7 @@ import { isValidPosition, isValidName } from './utils'
 import { NewProposalParams } from 'routing/types'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+import { locations } from 'routing/locations'
 
 const ban = require('../../../images/ban-name-220.png')
 const catalyst = require('../../../images/catalyst-220.png')
@@ -22,62 +23,41 @@ const question = require('../../../images/question-220.png')
 
 export default class NewProposalModal extends React.PureComponent<Props, any> {
 
-  handleClose = () => {
-    if (!this.props.isCreating) {
-      this.props.onChangeParams({})
+  handleChangeParams = (options: NewProposalParams = {}) => {
+    this.props.onNavigate(locations.root(options))
+  }
+
+  handleNavigate = (event: React.MouseEvent<any>) => {
+    event.preventDefault()
+    if (event.currentTarget.getAttribute('href')) {
+      this.props.onNavigate(event.currentTarget.getAttribute('href'))
     }
   }
 
-  handleCreateQuestion = (event: React.MouseEvent<any>) => {
-    event.preventDefault()
-    this.props.onChangeParams({
-      modal: 'new',
-      create: 'question'
-    })
-  }
-
-  handleCreatePoi = (event: React.MouseEvent<any>) => {
-    event.preventDefault()
-    this.props.onChangeParams({
-      modal: 'new',
-      create: 'poi'
-    })
-  }
-
-  handleCreateCatalyst = (event: React.MouseEvent<any>) => {
-    event.preventDefault()
-    this.props.onChangeParams({
-      modal: 'new',
-      create: 'catalyst'
-    })
-  }
-
-  handleCreateBan = (event: React.MouseEvent<any>) => {
-    event.preventDefault()
-    this.props.onChangeParams({
-      modal: 'new',
-      create: 'ban'
-    })
+  handleClose = () => {
+    if (!this.props.isCreating) {
+      this.handleChangeParams({})
+    }
   }
 
   handleBack = () => {
     const step = this.getStep()
     if (step === 3) {
-      this.props.onChangeParams({
+      this.handleChangeParams({
         modal: this.props.params.modal,
         create: this.props.params.create
       })
     } else if (step === 2) {
-      this.props.onChangeParams({
+      this.handleChangeParams({
         modal: this.props.params.modal
       })
     } else {
-      this.props.onChangeParams({})
+      this.handleChangeParams({})
     }
   }
 
   addParams(options: NewProposalParams = {}) {
-    this.props.onChangeParams({
+    this.handleChangeParams({
       ...this.props.params,
       ...options
     })
@@ -141,10 +121,10 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
   renderOptions() {
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header><Header>{t('proposal_modal.title')}</Header></Modal.Header>
-      <a onClick={this.handleCreateQuestion} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a>
-      <a onClick={this.handleCreateCatalyst} style={{ backgroundImage: `url(${catalyst})` }}>{t('proposal_modal.title_catalyst')}</a>
-      <a onClick={this.handleCreatePoi} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
-      <a onClick={this.handleCreateBan} style={{ backgroundImage: `url(${ban})` }}>{t('proposal_modal.title_ban')}</a>
+      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'question' })} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a>
+      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'catalyst' })} style={{ backgroundImage: `url(${catalyst})` }}>{t('proposal_modal.title_catalyst')}</a>
+      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
+      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'ban' })} style={{ backgroundImage: `url(${ban})` }}>{t('proposal_modal.title_ban')}</a>
     </Modal.Content>
   }
 

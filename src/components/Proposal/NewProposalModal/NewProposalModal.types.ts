@@ -15,7 +15,7 @@ export type Props = DefaultProps & {
   isCreating: boolean
   params: NewProposalParams
   onConnect: typeof connectWalletRequest
-  onChangeParams: (options?: NewProposalParams) => void
+  onNavigate: (path: string) => void
   onCreateQuestion: typeof createQuestionRequest
   onCreateBan: typeof createBanRequest
   onCreatePoi: typeof createPoiRequest
@@ -23,5 +23,5 @@ export type Props = DefaultProps & {
 }
 
 export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isLoading' | 'isCreating' | 'params'>
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onChangeParams' | 'onCreateQuestion' | 'onCreateBan' | 'onCreatePoi' | 'onCreateCatalyst'>
+export type MapDispatchProps = Pick<Props, 'onConnect' | 'onNavigate' | 'onCreateQuestion' | 'onCreateBan' | 'onCreatePoi' | 'onCreateCatalyst'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction | CallHistoryMethodAction | CreateQuestionRequestAction | CreateBanRequestAction | CreatePoiRequestAction | CreateCatalystRequestAction>
