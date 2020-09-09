@@ -13,31 +13,18 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { locations } from 'routing/locations'
 
-import './ProposalPage.css'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
 import { CREATOR_NAME, AppName } from 'modules/app/types'
 import { getVoteTimeLeft, getVotePercentages, isVoteExpired } from 'modules/vote/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-// import { env } from 'decentraland-commons'
-// import { inspect } from 'util'
-// import { ProposalTitle } from 'components/Proposal/ProposalTitle'
+import { ProposalTitle } from 'components/Proposal/ProposalTitle'
+import './ProposalPage.css'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
-
-  getDescription() {
-    const { vote, description, isLoading } = this.props
-
-    if (isLoading || !vote || (!vote.metadata && !description)) {
-      return <Loader active size="medium" />
-    }
-
-    return null //<ProposalTitle value={vote.metadata || description.description} />
-  }
-
   render() {
-    const { isLoading, vote } = this.props
+    const { isLoading, vote, description } = this.props
     const creator: keyof typeof CREATOR_NAME = vote?.creator as any
     const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
 
@@ -53,7 +40,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
         <Grid stackable>
           <Grid.Row>
             <Grid.Column mobile="11" className="ProposalTitle">
-              {this.getDescription()}
+              <ProposalTitle vote={vote} description={description} />
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>

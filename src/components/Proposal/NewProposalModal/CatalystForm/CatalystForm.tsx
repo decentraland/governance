@@ -49,10 +49,10 @@ export default class CatalystForm extends React.Component<Props, State> {
   render() {
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header>
-        <Header>{t('proposal_modal.title_poi')}</Header>
+        <Header>{t('proposal_modal.title_catalyst')}</Header>
       </Modal.Header>
       <Modal.Description>
-        {t('proposal_modal.description_poi')}
+        {t('proposal_modal.description_catalyst')}
       </Modal.Description>
       <Grid>
         <Grid.Row>
