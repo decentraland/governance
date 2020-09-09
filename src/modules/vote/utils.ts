@@ -98,7 +98,7 @@ export function getVotePercentages(vote: Vote) {
 export function getVoteTimeLeft(vote: Vote) {
   const expiration = getVoteExpiration(vote)
   const now = Date.now()
-  const diff = Number(vote.startDate) + expiration - now
+  const diff = expiration - now
 
   if (diff <= 0) {
     return null

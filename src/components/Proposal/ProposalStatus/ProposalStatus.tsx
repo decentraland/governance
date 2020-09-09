@@ -97,6 +97,10 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
   }
 
   static ReminderTime = (props: Props) => {
+    if (props.vote.executed) {
+      return null
+    }
+
     const timeLeft = getVoteTimeLeft(props.vote)
     if (!timeLeft) {
       return null
