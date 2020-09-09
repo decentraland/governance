@@ -24,6 +24,18 @@ const BUY_LAND_URL = env.get('REACT_APP_BUY_LAND_URL', '#')
 
 export default class WrappingPage extends React.PureComponent<Props, any> {
 
+  handleWrapMana = () => {
+    if (this.props.onWrapToken) {
+      this.props.onWrapToken(100)
+    }
+  }
+
+  handleUnwrapMana = () => {
+    if (this.props.onUnwrapToken) {
+      this.props.onUnwrapToken(100)
+    }
+  }
+
   handleRegisterLandBalance = () => {
     const wallet = this.props.wallet!
     if (!wallet.landCommit && this.props.onRegisterLand) {
@@ -79,6 +91,7 @@ export default class WrappingPage extends React.PureComponent<Props, any> {
           <Header sub>{t('wrapping_page.mana_available')}</Header>
           <Token symbol="MANA" size="medium" value={wallet.mana} />
           <Header sub>{t('wrapping_page.mana_rate')}</Header>
+          <Button primary size="small" loading={this.props.isWrappingMana} onClick={this.handleWrapMana}>wrap tokens</Button>
         </Card.Content>}
       </Card>
     </>

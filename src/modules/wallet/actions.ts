@@ -36,3 +36,27 @@ export const registerEstateBalanceFailure = (error: string) => action(REGISTER_E
 export type RegisterEstateBalanceRequestAction = ReturnType<typeof registerEstateBalanceRequest>
 export type RegisterEstateBalanceSuccessAction = ReturnType<typeof registerEstateBalanceSuccess>
 export type RegisterEstateBalanceFailureAction = ReturnType<typeof registerEstateBalanceFailure>
+
+export const WRAP_MANA_REQUEST = '[Request] Wrap MANA'
+export const WRAP_MANA_SUCCESS = '[Success] Wrap MANA'
+export const WRAP_MANA_FAILURE = '[Failure] Wrap MANA'
+
+export const wrapManaRequest = (amount: number) => action(WRAP_MANA_REQUEST, { amount })
+export const wrapManaSuccess = (transactions: any[]) => action(WRAP_MANA_SUCCESS, { transactions })
+export const wrapManaFailure = (error: string) => action(WRAP_MANA_FAILURE, { error })
+
+export type WrapManaRequestAction = ReturnType<typeof wrapManaRequest>
+export type WrapManaSuccessAction = ReturnType<typeof wrapManaSuccess>
+export type WrapManaFailureAction = ReturnType<typeof wrapManaFailure>
+
+export const UNWRAP_MANA_REQUEST = '[Request] Unwrap MANA'
+export const UNWRAP_MANA_SUCCESS = '[Success] Unwrap MANA'
+export const UNWRAP_MANA_FAILURE = '[Failure] Unwrap MANA'
+
+export const unwrapManaRequest = (amount: number) => action(UNWRAP_MANA_REQUEST, { amount })
+export const unwrapManaSuccess = (transactions: any[]) => action(UNWRAP_MANA_SUCCESS, { transactions })
+export const unwrapManaFailure = (error: string) => action(UNWRAP_MANA_FAILURE, { error })
+
+export type UnwrapManaRequestAction = ReturnType<typeof unwrapManaRequest>
+export type UnwrapManaSuccessAction = ReturnType<typeof unwrapManaSuccess>
+export type UnwrapManaFailureAction = ReturnType<typeof unwrapManaFailure>

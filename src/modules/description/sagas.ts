@@ -32,7 +32,7 @@ function* loadVoteDescription(vote: Vote) {
       return describePath(decodeForwardingPath(vote.script), apps, org.connection.ethersProvider)
     }))
     let currentStep = describedSteps
-    while (currentStep[0].children) {
+    while (currentStep.length && currentStep[0].children) {
       currentStep = currentStep[0].children as any
     }
 

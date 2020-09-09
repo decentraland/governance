@@ -2,11 +2,11 @@ import { connect } from 'react-redux'
 import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { isConnected, isConnecting, isEnabling } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-import { RootState } from 'modules/root/types'
 import WrappingPage from './WrappingPage'
+import { RootState } from 'modules/root/types'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './WrappingPage.types'
-import { getData, isLoading, isRegisteringEstate, isRegisteringLand } from 'modules/wallet/selectors'
-import { registerLandBalanceRequest, registerEstateBalanceRequest} from 'modules/wallet/actions'
+import { getData, isLoading, isRegisteringEstate, isRegisteringLand, isWrappingMana, isUnwrappingMana } from 'modules/wallet/selectors'
+import { registerLandBalanceRequest, registerEstateBalanceRequest, wrapManaRequest } from 'modules/wallet/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isConnected(state),
@@ -15,11 +15,15 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoading: isConnecting(state) || isEnabling(state) || isLoading(state),
   isRegisteringLand: isRegisteringLand(state),
   isRegisteringEstate: isRegisteringEstate(state),
+  isWrappingMana: isWrappingMana(state),
+  isUnwrappingMana: isUnwrappingMana(state),
   wallet: getData(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
+  onWrapToken: (amount) => dispatch(wrapManaRequest(amount)),
+  onUnwrapToken: (amount) => dispatch(wrapManaRequest(amount)),
   onRegisterLand: () => dispatch(registerLandBalanceRequest()),
   onRegisterEstate: () => dispatch(registerEstateBalanceRequest())
 })

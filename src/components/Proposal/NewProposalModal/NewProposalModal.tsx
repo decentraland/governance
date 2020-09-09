@@ -162,6 +162,8 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     }
   }
 
+  handleConfirmQuestion = () => ({})
+
   renderConfirmQuestion() {
     const question = this.getQuestion()
     return <Modal.Content className="NewProposalModalStep">
@@ -171,9 +173,11 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       <Modal.Description>
         {t('proposal_modal.confirm_question', { question: <b>{question}</b> })}
       </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
+      <Button primary onClick={this.handleConfirmQuestion}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
+
+  handleConfirmCatalyst = () => ({})
 
   renderConfirmCatalyst() {
     const { url, owner } = this.getCatalyst()
@@ -190,9 +194,11 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           catalyst: <b>Catalyst Server</b>
         })}
       </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
+      <Button primary onClick={this.handleConfirmCatalyst}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
+
+  handleConfirmPoi = () => ({})
 
   renderConfirmPoi() {
     const { x, y } = this.getPosition()
@@ -206,9 +212,11 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           poi: <b>{t('proposal_modal.title_poi')}</b>
         })}
       </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
+      <Button primary onClick={this.handleConfirmPoi}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
+
+  handleConfirmBan = () => ({})
 
   renderConfirmBan() {
     const name = this.getBan()
@@ -219,7 +227,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       <Modal.Description>
         {t('proposal_modal.confirm_ban', { name })}
       </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
+      <Button primary onClick={this.handleConfirmPoi}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
 

@@ -2,11 +2,30 @@ import { all, takeLatest, call, select, put } from 'redux-saga/effects'
 import { FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getData } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { getManaMiniMeContract, getLandContract, getEstateContract } from 'modules/common/selectors'
+import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
 import { Contract, BigNumber } from 'ethers'
-import { loadBalanceRequest, LOAD_BALANCE_REQUEST, loadBalanceFailure, loadBalanceSuccess, REGISTER_LAND_BALANCE_REQUEST, registerLandBalanceSuccess, registerLandBalanceFailure, REGISTER_ESTATE_BALANCE_REQUEST, registerEstateBalanceSuccess, registerEstateBalanceFailure } from './actions'
+import {
+  loadBalanceRequest,
+  LOAD_BALANCE_REQUEST,
+  loadBalanceFailure,
+  loadBalanceSuccess,
+  REGISTER_LAND_BALANCE_REQUEST,
+  registerLandBalanceSuccess,
+  registerLandBalanceFailure,
+  REGISTER_ESTATE_BALANCE_REQUEST,
+  registerEstateBalanceSuccess,
+  registerEstateBalanceFailure,
+  WRAP_MANA_REQUEST,
+  wrapManaFailure,
+  WrapManaRequestAction,
+  wrapManaSuccess,
+  UnwrapManaRequestAction,
+  UNWRAP_MANA_REQUEST
+} from './actions'
+import { Wallet, Network } from './types'
+import { getNetwork } from './selectors'
+import { MANAMiniMeToken } from 'modules/common/contracts'
 
 const VOTING_POWER_BY_LAND = 2_000
 const baseWalletSaga = createWalletSaga()
@@ -23,6 +42,8 @@ function* projectWalletSaga() {
   yield takeLatest(LOAD_BALANCE_REQUEST, getBalance)
   yield takeLatest(REGISTER_LAND_BALANCE_REQUEST, registerLandBalance)
   yield takeLatest(REGISTER_ESTATE_BALANCE_REQUEST, registerEstateBalance)
+  yield takeLatest(WRAP_MANA_REQUEST, wrapMana)
+  yield takeLatest(UNWRAP_MANA_REQUEST, unwrapMana)
 }
 
 function* requestBalance() {
@@ -109,5 +130,52 @@ function* registerEstateBalance() {
     yield call(() => estateContract.registerBalance())
   } catch (err) {
     yield put(registerEstateBalanceFailure(err.message))
+  }
+}
+
+function* wrapMana(action: WrapManaRequestAction) {
+  try {
+    const mana: number = yield select(getMana)
+    const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
+    const address: string = yield select(getAddress)
+    const network: Network = yield select(getNetwork)
+    const wrapAddress = MANAMiniMeToken[network]
+    const manaContract: Contract = yield select(getManaContract)
+    const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
+
+    const allowance: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
+
+    const allowed = BigInt(allowance[0].toString())
+    const value = BigInt(amount) * BigInt(1e18)
+    let transactions: any[] = []
+
+    if (value > allowed) {
+      const approveTx = yield call(() => manaContract.functions.approve(wrapAddress, value - allowed))
+      transactions.push(approveTx)
+    }
+
+    const depositTx = yield call(() => manaMiniMeContract.functions.deposit(value))
+    transactions.push(depositTx)
+
+    yield put(wrapManaSuccess([transactions]))
+
+  } catch (err) {
+    yield put(wrapManaFailure(err.message))
+  }
+}
+
+function* unwrapMana(action: UnwrapManaRequestAction) {
+  try {
+    const mana: number = yield select(getMana)
+    const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
+    const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
+
+    const value = BigInt(amount) * BigInt(1e18)
+    const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(value))
+
+    yield put(wrapManaSuccess([depositTx]))
+
+  } catch (err) {
+    yield put(wrapManaFailure(err.message))
   }
 }

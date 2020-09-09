@@ -21,7 +21,19 @@ import {
   REGISTER_ESTATE_BALANCE_FAILURE,
   REGISTER_LAND_BALANCE_FAILURE,
   REGISTER_ESTATE_BALANCE_REQUEST,
-  REGISTER_LAND_BALANCE_REQUEST
+  REGISTER_LAND_BALANCE_REQUEST,
+  WRAP_MANA_FAILURE,
+  WRAP_MANA_REQUEST,
+  WRAP_MANA_SUCCESS,
+  WrapManaFailureAction,
+  WrapManaRequestAction,
+  WrapManaSuccessAction,
+  UNWRAP_MANA_FAILURE,
+  UNWRAP_MANA_REQUEST,
+  UNWRAP_MANA_SUCCESS,
+  UnwrapManaFailureAction,
+  UnwrapManaRequestAction,
+  UnwrapManaSuccessAction
 } from './actions'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
@@ -48,9 +60,17 @@ export type WalletReducerAction =
   | RegisterEstateBalanceRequestAction
   | RegisterEstateBalanceSuccessAction
   | BaseWalletReducerAction
+  | WrapManaRequestAction
+  | WrapManaSuccessAction
+  | WrapManaFailureAction
+  | UnwrapManaRequestAction
+  | UnwrapManaSuccessAction
+  | UnwrapManaFailureAction
 
 export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction): WalletState => {
   switch (action.type) {
+    case WRAP_MANA_REQUEST:
+    case UNWRAP_MANA_REQUEST:
     case REGISTER_LAND_BALANCE_REQUEST:
     case REGISTER_ESTATE_BALANCE_REQUEST:
     case LOAD_BALANCE_REQUEST: {
@@ -59,6 +79,9 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
         loading: loadingReducer(state.loading, action)
       }
     }
+
+    case WRAP_MANA_SUCCESS:
+    case UNWRAP_MANA_SUCCESS:
     case REGISTER_LAND_BALANCE_FAILURE:
     case REGISTER_ESTATE_BALANCE_FAILURE: {
       return {
@@ -67,9 +90,11 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
       }
     }
 
+    case WRAP_MANA_FAILURE:
+    case UNWRAP_MANA_FAILURE:
     case LOAD_BALANCE_FAILURE: {
       return {
-        data: null,
+        ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }

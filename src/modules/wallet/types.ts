@@ -5,6 +5,11 @@ export enum Network {
   RINKEBY = 4
 }
 
+export type NetworkEnum = {
+  [Network.MAINNET]: string
+  [Network.RINKEBY]: string
+}
+
 export const NetworkName = {
   [Network.MAINNET]: "mainnet",
   [Network.RINKEBY]: "rinkeby"

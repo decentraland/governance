@@ -8,6 +8,7 @@ import { getData as getVoteDescription } from 'modules/description/selectors'
 import { loadVotesFailure, loadVotesSuccess, LOAD_VOTES_REQUEST, loadVotesRequest } from './actions'
 import { VoteDescription } from 'modules/description/types'
 import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
+import { AppName } from 'modules/app/types'
 
 export function* voteSaga() {
   yield takeLatest(LOAD_APPS_SUCCESS, reloadVotes)
@@ -22,7 +23,7 @@ function* loadVotes() {
   try {
     const org: Organization = yield select(getOrganization)
     const voteDescriptions: Record<string, VoteDescription> = yield select(getVoteDescription)
-    const votingApps: App[] = yield call(async () => org.apps(['voting', 'delay' ]))
+    const votingApps: App[] = yield call(async () => org.apps([AppName.Voting, AppName.Delay]))
     const aragonVoting: Voting[] = yield call(() => Promise.all(votingApps.map(app => connectVoting(app as any))))
 
     const votes: Vote[] = yield call(async () => {

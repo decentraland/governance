@@ -1,11 +1,12 @@
 import { Vote } from './types'
-import { APP_DELAY, Delay } from 'modules/app/types'
+import { Time } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAppDelay } from 'modules/app/utils'
 
 export function getVoteExpiration(vote: Vote) {
-  const appAddress: keyof typeof APP_DELAY = '' as any // vote.appAddress as any
-  const votingTime = APP_DELAY[appAddress] || APP_DELAY.DEFAULT
+  const details = getVoteIdDetails(vote)
+  const votingTime = getAppDelay(details.appAddress)
   return Number(vote.startDate) + votingTime
 }
 
@@ -103,10 +104,10 @@ export function getVoteTimeLeft(vote: Vote) {
     return null
   }
 
-  const days = Math.floor(diff / Delay.Day)
-  const hours = Math.floor((diff % Delay.Day) / Delay.Hour)
-  const minutes = Math.floor((diff % Delay.Hour) / Delay.Minute)
-  const seconds = Math.floor((diff & Delay.Minute) / Delay.Second)
+  const days = Math.floor(diff / Time.Day)
+  const hours = Math.floor((diff % Time.Day) / Time.Hour)
+  const minutes = Math.floor((diff % Time.Hour) / Time.Minute)
+  const seconds = Math.floor((diff & Time.Minute) / Time.Second)
   const values = { days, hours, minutes, seconds }
   let key = 'proposal.'
   if (days > 0) {

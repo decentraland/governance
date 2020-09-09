@@ -8,7 +8,7 @@ export const MANAToken = {
 
 // wMANA
 // WrappedMana
-export const MANAMiniMeToken = { 
+export const MANAMiniMeToken = {
   [Network.MAINNET]: '0xfd09cf7cfffa9932e33668311c4777cb9db3c9be',
   [Network.RINKEBY]: '0xfb2712a1246f712b889692c7ce55fec25c06bc33'
 }

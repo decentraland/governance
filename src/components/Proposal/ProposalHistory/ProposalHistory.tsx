@@ -2,10 +2,11 @@ import React from 'react'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Props, HistoryStep } from './ProposalHistory.types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { AppName, APP_NAME } from 'modules/app/types'
+import { AppName, SAB, COMMUNITY, Delay } from 'modules/app/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isVoteEnacted, isVotePassed, isVoteRejected } from 'modules/vote/utils'
+import { isVoteEnacted, isVotePassed, isVoteRejected, getVoteIdDetails } from 'modules/vote/utils'
 import './ProposalHistory.css'
+import { isApp } from 'modules/app/utils'
 
 const created = require('../../../images/history-created.svg')
 const waiting = require('../../../images/history-waiting.svg')
@@ -52,10 +53,9 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   getStep() {
     const { vote } = this.props
-    const address: keyof typeof APP_NAME = '' as any// vote.appAddress as any
-    const name = APP_NAME[address]
+    const details = getVoteIdDetails(this.props.vote)
 
-    if (name === AppName.SAB) {
+    if (isApp(details.appAddress, SAB)) {
       switch (true) {
         case isVoteEnacted(vote):
           return HistoryStep.SabEnacted
@@ -66,7 +66,7 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
         default:
           return HistoryStep.SabCreated
       }
-    } else if (name === AppName.COMMUNITY) {
+    } else if (isApp(details.appAddress, COMMUNITY)) {
       switch (true) {
         case isVoteEnacted(vote):
           return HistoryStep.CommunityEnacted
@@ -77,7 +77,7 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
         default:
           return HistoryStep.CommunityCreated
       }
-    } else if (name === AppName.Delay) {
+    } else if (isApp(details.appAddress, Delay)) {
       switch (true) {
         case isVoteEnacted(vote):
         case isVotePassed(vote):
@@ -100,7 +100,7 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
     if (step >= HistoryStep.SabCreated) {
       return <Card className="ProposalHistory">
         <Card.Content>
-          <Header sub>{AppName.SAB}</Header>
+          <Header sub>{AppName.Voting}</Header>
         </Card.Content>
         <ProposalHistory.Created />
         {step === HistoryStep.SabRejected && <ProposalHistory.Rejected />}
@@ -111,7 +111,7 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
     return <Card className="ProposalHistory">
       <Card.Content>
-        <Header sub>{AppName.INBOX}</Header>
+        <Header sub>{AppName.Voting}</Header>
       </Card.Content>
       <ProposalHistory.Created />
       {step === HistoryStep.InboxRejected && <ProposalHistory.Rejected />}
@@ -120,7 +120,7 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
       {step >= HistoryStep.DelayPassed && <>
         <ProposalHistory.Passed />
         <Card.Content>
-          <Header sub>{AppName.COMMUNITY}</Header>
+          <Header sub>{AppName.Voting}</Header>
         </Card.Content>
         <ProposalHistory.Created />
         {step >= HistoryStep.CommunityPassed && <ProposalHistory.Passed />}
