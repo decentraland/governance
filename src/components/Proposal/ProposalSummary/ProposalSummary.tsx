@@ -6,6 +6,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { getVoteUrl } from 'modules/vote/utils'
 import { Loader } from 'decentraland-ui'
 import './ProposalSummary.css'
+import { ProposalTitle } from '../ProposalTitle'
 
 export default class ProposalSummary extends React.PureComponent<Props, any> {
 
@@ -39,12 +40,12 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
   }
 
   render() {
-    const { vote } = this.props
+    const { vote, description } = this.props
     const url = getVoteUrl(this.props.vote)
     return <Card as="a" className="ProposalSummary" href={url} onClick={this.handleClick}>
       <Card.Content>
         <Card.Header>
-          {this.getDescription()}
+          <ProposalTitle vote={vote} description={description} />
           <ProposalStatus.Creator address={vote.creator} />
         </Card.Header>
         <div className="ProposalSummaryActions">
