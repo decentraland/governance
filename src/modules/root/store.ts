@@ -14,6 +14,7 @@ import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/a
 
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
+import { LOAD_VOTE_DESCRIPTION_SUCCESS } from 'modules/description/actions'
 
 const version = require('../../../package.json').version
 
@@ -38,8 +39,8 @@ const loggerMiddleware = createLogger({
 
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: 'dao', // this is the key used to save the state in localStorage (required)
-  paths: [['vote', 'wallet']], // array of paths from state to be persisted (optional)
-  actions: [CONNECT_WALLET_SUCCESS] // array of actions types that will trigger a SAVE (optional)
+  paths: ['wallet', ['description', 'data']], // array of paths from state to be persisted (optional)
+  actions: [CONNECT_WALLET_SUCCESS, LOAD_VOTE_DESCRIPTION_SUCCESS] // array of actions types that will trigger a SAVE (optional)
 })
 
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))

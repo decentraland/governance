@@ -13,8 +13,8 @@ export default class PoiForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      x: props.defaultValue?.x || 0,
-      y: props.defaultValue?.y || 0
+      x: props.defaultValue?.x,
+      y: props.defaultValue?.y
     }
   }
 
@@ -57,14 +57,14 @@ export default class PoiForm extends React.Component<Props, State> {
         <Grid.Row>
           <Grid.Column mobile="2" />
           <Grid.Column mobile="6">
-            <Field type="number" placeholder="X" value={this.state.x} onChange={this.handleChangeX} />
+            <Field type="number" label="X" placeholder="150" value={this.state.x} onChange={this.handleChangeX} />
           </Grid.Column>
           <Grid.Column mobile="6">
-            <Field type="number" placeholder="Y" value={this.state.y} onChange={this.handleChangeY} />
+            <Field type="number" label="Y" placeholder="150" value={this.state.y} onChange={this.handleChangeY} />
           </Grid.Column>
         </Grid.Row>
       </Grid>
-      <Button primary onClick={this.handleConfirm} disabled={this.isValid()}>{t('proposal_modal.confirm')}</Button>
+      <Button primary onClick={this.handleConfirm} disabled={!this.isValid()}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
 }

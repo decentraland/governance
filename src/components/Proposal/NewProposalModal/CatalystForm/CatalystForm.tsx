@@ -32,7 +32,7 @@ export default class CatalystForm extends React.Component<Props, State> {
 
   handleChangeOwner = (_: React.FormEvent<any>, props: Record<string, string>) => {
     this.setState({
-      url: this.state.owner,
+      url: this.state.url,
       owner: props.value
     })
   }
@@ -57,11 +57,14 @@ export default class CatalystForm extends React.Component<Props, State> {
       <Grid>
         <Grid.Row>
           <Grid.Column mobile="2" />
-          <Grid.Column mobile="6">
-            <Field placeholder="Owner" value={this.state.owner} onChange={this.handleChangeOwner} />
+          <Grid.Column mobile="12">
+            <Field placeholder="Owner (Address)" value={this.state.owner} onChange={this.handleChangeOwner} type="address" />
           </Grid.Column>
-          <Grid.Column mobile="6">
-            <Field placeholder="URL" value={this.state.url} onChange={this.handleChangeUrl} />
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column mobile="2" />
+          <Grid.Column mobile="12">
+            <Field placeholder="URL" message="eg: decentraland.org" value={this.state.url} onChange={this.handleChangeUrl} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

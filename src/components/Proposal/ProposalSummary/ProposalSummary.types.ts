@@ -1,13 +1,9 @@
 import { Dispatch } from 'redux'
 
-// import { openModal, OpenModalAction } from 'modules/modal/actions'
-// import { SortBy } from 'modules/ui/dashboard/types'
-// import { PaginationOptions } from 'routing/utils'
-// import { LoginRequestAction, loginRequest } from 'modules/identity/actions'
-// import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { App } from 'modules/app/types'
 import { Vote } from 'modules/vote/types'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { VoteDescription } from 'modules/description/types'
 
 export type DefaultProps = {
   vote: Vote
@@ -16,17 +12,12 @@ export type DefaultProps = {
 export type Props = DefaultProps & {
   app: App
   creator: App
+  description: VoteDescription
+  descriptionError: string
   isLoading: boolean
-  // page: number
-  // sortBy: SortBy
-  // totalPages: number
-  // onOpenModal: typeof openModal
-  // onPageChange: (options: PaginationOptions) => void
   onNavigate: (path: string) => void
-  // onLogin: typeof loginRequest
-  // votes: Vote[] | null
 }
 
-export type MapStateProps = Pick<Props, 'app' | 'creator' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'app' | 'creator' | 'description' | 'descriptionError' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

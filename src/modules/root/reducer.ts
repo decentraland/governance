@@ -11,6 +11,8 @@ import { appReducer as app } from 'modules/app/reducer'
 import { organizationReducer as organization } from 'modules/organization/reducer'
 import { walletReducer as wallet } from 'modules/wallet/reducer'
 import { voteReducer as vote } from 'modules/vote/reducer'
+import { voteDescriptionReducer as description } from 'modules/description/reducer'
+import { castsReducer as cast } from 'modules/cast/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -22,6 +24,8 @@ export function createRootReducer(history: History) {
       organization,
       app,
       vote,
+      description,
+      cast,
       modal,
       router: connectRouter(history)
     })

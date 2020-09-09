@@ -6,13 +6,12 @@ import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 import { getNetwork } from 'modules/wallet/selectors'
 import { ORGANIZATION_LOCATION, ORGANIZATION_CONNECTOR, Organization } from './types'
 import { Network } from 'modules/wallet/types'
-import { loadVotesRequest } from 'modules/vote/actions'
 
 export function* organizationSaga() {
-  yield takeLatest('-' + LOAD_ORGANIZATION_REQUEST, connectAragon)
-  yield takeLatest('-' + STORAGE_LOAD, connectAragon)
-  yield takeLatest('-' + CHANGE_ACCOUNT, reconnectAragon)
-  yield takeLatest('-' + CHANGE_NETWORK, reconnectAragon)
+  yield takeLatest(LOAD_ORGANIZATION_REQUEST, connectAragon)
+  yield takeLatest(STORAGE_LOAD, connectAragon)
+  yield takeLatest(CHANGE_ACCOUNT, reconnectAragon)
+  yield takeLatest(CHANGE_NETWORK, reconnectAragon)
 }
 
 function* reconnectAragon() {
@@ -30,7 +29,6 @@ function* connectAragon() {
     ))
 
     yield put(loadOrganizationSuccess(organization))
-    yield put(loadVotesRequest())
   } catch (e) {
     yield put(loadOrganizationFailure(e.message))
   }

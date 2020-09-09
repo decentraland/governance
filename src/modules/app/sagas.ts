@@ -1,11 +1,16 @@
 import { put, call, takeLatest, select } from 'redux-saga/effects'
-import { loadAppsSuccess, loadAppsFailure, LOAD_APPS_REQUEST } from './actions'
+import { loadAppsSuccess, loadAppsFailure, LOAD_APPS_REQUEST, loadAppsRequest } from './actions'
 import { getOrganization } from 'modules/organization/selectors'
 import { Organization, App } from '@aragon/connect'
-import { loadVotesRequest } from 'modules/vote/actions'
+import { LOAD_ORGANIZATION_SUCCESS } from 'modules/organization/actions'
 
 export function* appSaga() {
+  yield takeLatest(LOAD_ORGANIZATION_SUCCESS, reloadLoadApps)
   yield takeLatest(LOAD_APPS_REQUEST, loadApps)
+}
+
+function* reloadLoadApps() {
+  yield put(loadAppsRequest())
 }
 
 function* loadApps() {
@@ -18,7 +23,6 @@ function* loadApps() {
     }
 
     yield put(loadAppsSuccess(record))
-    yield put(loadVotesRequest())
   } catch (e) {
     yield put(loadAppsFailure(e.message))
   }

@@ -18,14 +18,26 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
 import { CREATOR_NAME, AppName } from 'modules/app/types'
-import { getVoteTimeLeft, getVotePercentages } from 'modules/vote/utils'
+import { getVoteTimeLeft, getVotePercentages, isVoteExpired } from 'modules/vote/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+// import { env } from 'decentraland-commons'
+// import { inspect } from 'util'
+// import { ProposalTitle } from 'components/Proposal/ProposalTitle'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
-  render() {
 
+  getDescription() {
+    const { vote, description, isLoading } = this.props
+
+    if (isLoading || !vote || (!vote.metadata && !description)) {
+      return <Loader active size="medium" />
+    }
+
+    return null //<ProposalTitle value={vote.metadata || description.description} />
+  }
+
+  render() {
     const { isLoading, vote } = this.props
-    const description = vote?.metadata || vote?.description
     const creator: keyof typeof CREATOR_NAME = vote?.creator as any
     const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
 
@@ -41,8 +53,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
         <Grid stackable>
           <Grid.Row>
             <Grid.Column mobile="11" className="ProposalTitle">
-              {isLoading && <Loader active size="medium" />}
-              {!isLoading && <Header sub={!description}>{description || 'No description'}</Header>}
+              {this.getDescription()}
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -85,18 +96,25 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                       <Grid.Column mobile="6">
                         <ProposalStatus.Approval vote={vote} />
                       </Grid.Column>
-                      <Grid.Column mobile="5">
+                      {!isVoteExpired(vote) && <Grid.Column mobile="5">
                         <Button inverted>Vote YES</Button>
-                      </Grid.Column>
-                      <Grid.Column mobile="5">
+                      </Grid.Column>}
+                      {!isVoteExpired(vote) && <Grid.Column mobile="5">
                         <Button inverted>Vote NO</Button>
-                      </Grid.Column>
+                      </Grid.Column>}
                     </Grid.Row>
                   </Grid>
                 </Card.Content>
-                <Card.Content className="DetailProgressBar">
+                {/* <Card.Content className="DetailDescription">
                   <Header sub>{t('proposal_detail_page.description')}</Header>
-                </Card.Content>
+                </Card.Content> */}
+                {/* {env.isDevelopment() && <Card.Content className="DetailDebug">
+                  <Header sub>INFO</Header>
+                  <div className="DetailDebugContainer">
+                    <pre>{inspect(vote)}</pre>
+                    <pre>{inspect(description)}</pre>
+                  </div>
+                </Card.Content>} */}
               </Card>}
             </Grid.Column>
             <Grid.Column mobile="5">

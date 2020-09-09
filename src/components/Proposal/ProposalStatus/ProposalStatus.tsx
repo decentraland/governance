@@ -2,7 +2,7 @@ import React from 'react'
 import { Props } from './ProposalStatus.types'
 
 import { APP_NAME, CREATOR_NAME } from 'modules/app/types'
-import { isVoteEnacted, isVoteExpired, isVotePassed, getVotePercentages, getVoteTimeLeft } from 'modules/vote/utils'
+import { isVoteEnacted, isVoteExpired, isVotePassed, getVotePercentages, getVoteTimeLeft, getVoteIdDetails } from 'modules/vote/utils'
 import './ProposalStatus.css'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -23,14 +23,20 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     </div>
   }
 
-  static AppName = (_props: Props) => {
-    const address: keyof typeof APP_NAME = '' as any // props.vote.appAddress ||  as any
-    return <ProposalStatus.Badge name={APP_NAME[address]} />
+  static AppName = (props: { address?: string }) => {
+    if (!props.address) {
+      return null
+    }
+
+    return <ProposalStatus.Badge name={APP_NAME[props.address]} />
   }
 
-  static Creator = (props: Props) => {
-    const address: keyof typeof CREATOR_NAME = props.vote.creator as any
-    return <ProposalStatus.Badge name={CREATOR_NAME[address]} />
+  static Creator = (props: { address?: string }) => {
+    if (!props.address) {
+      return null
+    }
+
+    return <ProposalStatus.Badge name={CREATOR_NAME[props.address]} />
   }
 
   static Approval = (props: Props) => {
@@ -120,9 +126,10 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
 
   render() {
     const { vote } = this.props
+    const detail = getVoteIdDetails(vote)
     return <div className="ProposalStatusContainer">
       <ProposalStatus.Status vote={vote} />
-      <ProposalStatus.AppName vote={vote} />
+      <ProposalStatus.AppName address={detail.appAddress} />
       <ProposalStatus.ReminderTime vote={vote} />
     </div>
   }

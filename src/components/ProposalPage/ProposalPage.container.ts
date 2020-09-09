@@ -9,18 +9,20 @@ import { getLoading as getLoadingOrganization } from 'modules/organization/selec
 import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
 import { getData as getVotes, getLoading as getLoadingVotes } from 'modules/vote/selectors'
+import { getData as getVoteDescription } from 'modules/description/selectors'
 import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 
 const mapState = (state: RootState, props: any): MapStateProps => {
   const { app, id } = props?.match?.params || {}
+  const voteId = `appAddress:${app}-voteId:0x${Number(id).toString(16)}`
   return ({
-    vote: getVotes(state)[`appAddress:${app}-voteId:0x${Number(id).toString(16)}`],
+    vote: getVotes(state)[voteId],
+    description: getVoteDescription(state)[voteId],
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
     isEnabling: isEnabling(state),
     isLoading: (
-      isConnecting(state) ||
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
       isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)

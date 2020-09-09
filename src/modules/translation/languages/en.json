@@ -11,6 +11,7 @@
     "passed": "passed",
     "enacted": "enacted",
     "total": "total",
+    "wrapped": "wrapped",
     "number": "{value, number}",
     "land": "{land, number} {land, plural, one {Land} other {Lands}}",
     "estate": "{estate, number} {estate, plural, one {Estate} other {Estates}}",

@@ -31,6 +31,7 @@
 }
 
 .dcl.page.ProposalPage .ProposalDetail .ui.header {
+  overflow: hidden;
   text-transform: capitalize;
   margin-bottom: 4px;
 }
@@ -52,4 +53,9 @@
 
 .dcl.page.ProposalPage .ProposalActions .ui.button {
   width: 100%;
+}
+
+.dcl.page.ProposalPage .DetailDebugContainer {
+  width: 100%;
+  overflow: hidden;
 }

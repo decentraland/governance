@@ -2,10 +2,10 @@ import { App } from '@aragon/connect'
 import { Network } from 'modules/wallet/types'
 
 export const VOTING_GRAPH = {
-  [Network.MAINNET]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet',
-  [Network.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-rinkeby',
-  // [Network.MAINNET]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-mainnet',
-  // [Network.RINKEBY]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-rinkeby'
+  // [Network.MAINNET]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet',
+  // [Network.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-rinkeby',
+  [Network.MAINNET]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-mainnet',
+  [Network.RINKEBY]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-rinkeby'
 }
 
 export const VOTING_APP = {
@@ -43,7 +43,7 @@ export const APP_DELAY = {
   "0x38daca8c123145ead833c42590f4e359fd6bfa0c": Delay.Day
 }
 
-export const CREATOR_NAME = {
+export const CREATOR_NAME: Record<string, string> = {
   "0xd871799aecc2a29443509ae8880a33f26924d804": AppName.Tokens,
   "0xb43504e5381ec9941cead3d74377cb63cba3b901": AppName.Tokens,
   "0xbc1863a593aaebb40b4f43665de30174c9d3fe29": AppName.Voting,
@@ -66,7 +66,7 @@ export const CREATOR_NAME = {
   "0xde839e6cee47d9e24ac12e9215b7a45112923141": AppName.POI
 }
 
-export const APP_NAME = {
+export const APP_NAME: Record<string, string> = {
   "0xd871799aecc2a29443509ae8880a33f26924d804": AppName.Tokens,
   "0xb43504e5381ec9941cead3d74377cb63cba3b901": AppName.Tokens,
   "0xbc1863a593aaebb40b4f43665de30174c9d3fe29": AppName.SAB,

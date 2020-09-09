@@ -15,3 +15,15 @@
 .ui.cards>.card>.content>.header.sub {
   color: var(--secondary-text);
 }
+
+.dcl.header-menu {
+  margin-bottom: 0;
+}
+
+.dcl.header-menu .ui.sub.header {
+  line-height: 32px;
+}
+
+.dcl.blockie-wrapper {
+  white-space: nowrap;
+}

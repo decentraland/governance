@@ -15,16 +15,18 @@ import { locations } from 'routing/locations'
 import { NewProposalParams } from 'routing/types'
 import { push } from 'connected-react-router'
 
-const mapState = (state: RootState): MapStateProps => ({
-  votes: getVotes(state),
-  isConnected: isConnected(state),
-  isConnecting: isConnecting(state),
-  isLoading: (
-    getLoadingOrganization(state) ||
-    isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
-    isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)
-  )
-})
+const mapState = (state: RootState): MapStateProps => {
+  return {
+    votes: getVotes(state),
+    isConnected: isConnected(state),
+    isConnecting: isConnecting(state),
+    isLoading: (
+      getLoadingOrganization(state) ||
+      isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
+      isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)
+    )
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),

@@ -6,9 +6,14 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import './NewProposalModal.css'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import PoiForm from './PoiForm'
 import BanForm from './BanForm/BanForm'
+import QuestionForm from './QuestionForm/QuestionForm'
+import CatalystForm from './CatalystForm/CatalystForm'
+import { isValidPosition } from './utils'
+import { NewProposalParams } from 'routing/types'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
 const ban = require('../../../images/ban-name-220.png')
 const catalyst = require('../../../images/catalyst-220.png')
@@ -67,28 +72,19 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     }
   }
 
-  parsePosition = (raw: string) => {
-    if (!raw) {
-      return undefined
-    }
-
-    const position = Number(raw)
-    if (Number.isNaN(position)) {
-      return undefined
-    }
-
-    if (position > 150 || position < -150) {
-      return undefined
-    }
-
-    return position
+  addParams(options: NewProposalParams = {}) {
+    this.props.onChangeParams({
+      ...this.props.params,
+      ...options
+    })
   }
 
   getPosition() {
     let [x, y] = (this.props.params.position || '')
       .split(',')
       .slice(0, 2)
-      .map(this.parsePosition)
+      .filter(isValidPosition)
+      .map(Number) as (number | undefined)[]
 
     return { x, y }
   }
@@ -139,65 +135,16 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
   renderForm() {
     switch (this.props.params.create) {
       case "question":
-        return this.renderFormQuestion()
+        return <QuestionForm defaultValue={this.getQuestion()} onConfirm={(_, question) => this.addParams({ question })} />
       case "catalyst":
-        return this.renderFormCatalyst()
+        return <CatalystForm defaultValue={this.getCatalyst()} onConfirm={(_, { owner, url }) => this.addParams({ catalystOwner: owner, catalystUrl: url })} />
       case "poi":
-        return <PoiForm defaultValue={this.getPosition()} onConfirm={(_, position) => console.log(position)} />
+        return <PoiForm defaultValue={this.getPosition()} onConfirm={(_, { x, y }) => this.addParams({ position: [x,y].join(',') })} />
       case "ban":
-        return <BanForm defaultValue={this.getBan()} onConfirm={(_, ban) => console.log(ban)} />
+        return <BanForm defaultValue={this.getBan()} onConfirm={(_, banName) => this.addParams({ banName })} />
       default:
         return this.renderEmpty()
     }
-  }
-
-  renderFormQuestion() {
-    return <Modal.Content className="NewProposalModalStep">
-      <Modal.Header>
-        <Header>{t('proposal_modal.title_question')}</Header>
-      </Modal.Header>
-      <Modal.Description>
-        {t('proposal_modal.description_question')}
-      </Modal.Description>
-      <Modal.Description>
-        <Field />
-      </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
-    </Modal.Content>
-  }
-
-  renderFormCatalyst() {
-    return <Modal.Content className="NewProposalModalStep">
-      <Modal.Header>
-        <Header>{t('proposal_modal.title_catalyst')}</Header>
-      </Modal.Header>
-      <Modal.Description>
-        {t('proposal_modal.description_catalyst')}
-      </Modal.Description>
-      <Modal.Description>
-        <Field />
-      </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
-    </Modal.Content>
-  }
-
-  renderFormPoi() {
-    return <PoiForm defaultValue={this.getPosition()} onConfirm={(_, position) => { console.log(position) }} />
-  }
-
-  renderFormBan() {
-    return <Modal.Content className="NewProposalModalStep">
-      <Modal.Header>
-        <Header>{t('proposal_modal.title_ban')}</Header>
-      </Modal.Header>
-      <Modal.Description>
-        {t('proposal_modal.description_ban')}
-      </Modal.Description>
-    <Modal.Description>
-        <Field label={t('proposal_modal.title_ban')} />
-      </Modal.Description>
-      <Button primary>{t('proposal_modal.confirm')}</Button>
-    </Modal.Content>
   }
 
   renderConfirm() {
@@ -222,10 +169,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
         <Header>{t('proposal_modal.title_question')}</Header>
       </Modal.Header>
       <Modal.Description>
-      {t('proposal_modal.confirm_question', { question: <b>{question}</b> })}
-      </Modal.Description>
-      <Modal.Description>
-        <Field />
+        {t('proposal_modal.confirm_question', { question: <b>{question}</b> })}
       </Modal.Description>
       <Button primary>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
@@ -240,12 +184,11 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       <Modal.Description>
         {t('proposal_modal.confirm_catalyst', {
           url: <b>{url}</b>,
-          owner: <b>{owner}</b>,
+          owner: <Blockie scale={3} seed={owner!}>
+          <Address value={owner!} strong />
+        </Blockie>,
           catalyst: <b>Catalyst Server</b>
         })}
-      </Modal.Description>
-      <Modal.Description>
-        <Field />
       </Modal.Description>
       <Button primary>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
@@ -263,9 +206,6 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           poi: <b>{t('proposal_modal.title_poi')}</b>
         })}
       </Modal.Description>
-      <Modal.Description>
-        <Field />
-      </Modal.Description>
       <Button primary>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
@@ -278,9 +218,6 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       </Modal.Header>
       <Modal.Description>
         {t('proposal_modal.confirm_ban', { name })}
-      </Modal.Description>
-    <Modal.Description>
-        <Field />
       </Modal.Description>
       <Button primary>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
@@ -304,11 +241,6 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           {this.renderForm()}
           {this.renderConfirm()}
         </div>
-      </div>
-      <div className="NewProposalModalState">
-        {Array.from(new Array(3), (_, i) => {
-          return <div key={i} className={step > i ? 'active' : ''} />
-        })}
       </div>
     </Modal>
   }

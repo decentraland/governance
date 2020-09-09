@@ -6,6 +6,7 @@ import { RootState } from 'modules/root/types'
 import { isLoading, getData } from 'modules/wallet/selectors'
 import WrappingSummary from './WrappingSummary'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './WrappingSummary.types'
+import { push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isConnected(state),
@@ -16,7 +17,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(enableWalletRequest())
+  onConnect: () => dispatch(enableWalletRequest()),
+  onNavigate: (href: string) => dispatch(push(href))
 })
 
 export default connect(mapState, mapDispatch)(WrappingSummary)

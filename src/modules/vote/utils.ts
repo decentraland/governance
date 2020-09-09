@@ -2,22 +2,6 @@ import { Vote } from './types'
 import { APP_DELAY, Delay } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Voting, Vote as AragonVote } from '@aragon/connect-voting'
-
-export async function loadAllVotes(votingList: Voting[]): Promise<AragonVote[]> {
-
-  let votes: AragonVote[] = []
-
-  for (const voting of votingList) {
-    const voteData = await voting.votes().catch(error => console.error(voting, error))
-    votes = votes.concat((voteData || []).map(vote => {
-      (vote as any)._connector = (voting as any)._connector
-      return vote
-    }))
-  }
-
-  return votes
-}
 
 export function getVoteExpiration(vote: Vote) {
   const appAddress: keyof typeof APP_DELAY = '' as any // vote.appAddress as any
@@ -138,8 +122,13 @@ export function getVoteTimeLeft(vote: Vote) {
   return t(key, values)
 }
 
+export function getVoteIdDetails(vote: Vote) {
+  // eg: appAddress:0x37187b0f2089b028482809308e776f92eeb7334e-voteId:0x0
+  const entries = vote.id.split('-').map(section => section.split(':'))
+  return Object.fromEntries(entries) as { appAddress: string, voteId: string }
+}
+
 export function getVoteUrl(vote: Vote) {
-  const decimalId = Number(vote.id.slice(vote.id.lastIndexOf(':') + 1))
-  const address = '' as any // vote.appAddress
-  return locations.proposal(address, decimalId)
+  const { appAddress, voteId } = getVoteIdDetails(vote)
+  return locations.proposal(appAddress, Number(voteId))
 }

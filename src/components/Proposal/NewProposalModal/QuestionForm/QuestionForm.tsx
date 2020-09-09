@@ -7,8 +7,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import './QuestionForm.css'
-
 export default class QuestionForm extends React.Component<Props, State> {
 
   constructor(props: Props) {
@@ -42,7 +40,7 @@ export default class QuestionForm extends React.Component<Props, State> {
         <Grid.Row>
           <Grid.Column mobile="2" />
           <Grid.Column mobile="12">
-            <Field type="text" placeholder="Name" value={this.state.value} onChange={this.handleChangeUrl} />
+            <Field type="text" label={t('proposal_modal.title_question')} value={this.state.value} onChange={this.handleChangeUrl} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

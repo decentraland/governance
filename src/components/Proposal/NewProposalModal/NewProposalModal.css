@@ -45,7 +45,7 @@
 
 .NewProposalModal .NewProposalModalSteps .NewProposalModalStep {
   flex: 0 0 100%;
-  padding: 2rem 3rem;
+  padding: 2rem 4rem;
   text-align: center;
   display: flex;
   flex-wrap: wrap;
@@ -53,8 +53,10 @@
   align-content: space-between;
 }
 
+.NewProposalModal .NewProposalModalStep .ui.grid,
 .NewProposalModal .NewProposalModalStep .dcl.field {
   min-width: auto;
+  width: 100%;
 }
 
 .NewProposalModal .NewProposalModalStep .header {

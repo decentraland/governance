@@ -15,6 +15,41 @@ const enacted = require('../../../images/history-enacted.svg')
 
 export default class ProposalHistory extends React.PureComponent<Props, any> {
 
+  static Created() {
+    return <Card.Content>
+    <img src={created} width="36" height="36" alt="created" />
+      <Header>{t('general.created')}</Header>
+    </Card.Content>
+  }
+
+  static Waiting() {
+    return <Card.Content>
+      <img src={waiting} width="36" height="36" alt="waiting" />
+      <Header>{t('general.under_review')}</Header>
+    </Card.Content>
+  }
+
+  static Rejected() {
+    return <Card.Content>
+    <img src={rejected} width="36" height="36" alt="rejected" />
+      <Header>{t('general.rejected')}</Header>
+    </Card.Content>
+  }
+
+  static Passed() {
+    return <Card.Content>
+    <img src={passed} width="36" height="36" alt="passed" />
+      <Header>{t('general.passed')}</Header>
+    </Card.Content>
+  }
+
+  static Enacted() {
+    return <Card.Content>
+    <img src={enacted} width="36" height="36" alt="enacted" />
+      <Header>{t('general.enacted')}</Header>
+    </Card.Content>
+  }
+
   getStep() {
     const { vote } = this.props
     const address: keyof typeof APP_NAME = '' as any// vote.appAddress as any
@@ -63,25 +98,14 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
     const step = this.getStep()
 
     if (step >= HistoryStep.SabCreated) {
-      return <Card className="ProposalHistory"><Card.Content>
-        <Header sub>{AppName.SAB}</Header>
-        </Card.Content>
+      return <Card className="ProposalHistory">
         <Card.Content>
-          <img src={created} width="36" height="36" />
-          <Header>{t('general.created')}</Header>
+          <Header sub>{AppName.SAB}</Header>
         </Card.Content>
-        {step === HistoryStep.SabRejected && <Card.Content>
-          <img src={rejected} width="36" height="36" />
-          <Header>{t('general.rejected')}</Header>
-        </Card.Content>}
-        {step >= HistoryStep.SabPassed && <Card.Content>
-          <img src={passed} width="36" height="36" />
-          <Header>{t('general.passed')}</Header>
-        </Card.Content>}
-        {step >= HistoryStep.SabEnacted && <Card.Content>
-          <img src={enacted} width="36" height="36" />
-          <Header>{t('general.enacted')}</Header>
-        </Card.Content>}
+        <ProposalHistory.Created />
+        {step === HistoryStep.SabRejected && <ProposalHistory.Rejected />}
+        {step >= HistoryStep.SabPassed && <ProposalHistory.Passed />}
+        {step >= HistoryStep.SabEnacted && <ProposalHistory.Enacted />}
       </Card>
     }
 
@@ -89,42 +113,18 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
       <Card.Content>
         <Header sub>{AppName.INBOX}</Header>
       </Card.Content>
-      <Card.Content>
-        <img src={created} width="36" height="36" />
-        <Header>{t('general.created')}</Header>
-      </Card.Content>
-      {step === HistoryStep.InboxRejected && <Card.Content>
-        <img src={rejected} width="36" height="36" />
-        <Header>{t('general.rejected')}</Header>
-      </Card.Content>}
-      {step >= HistoryStep.InboxPassed && <Card.Content>
-        <img src={waiting} width="36" height="36" />
-        <Header>{t('general.under_review')}</Header>
-      </Card.Content>}
-      {step === HistoryStep.DelayRejected && <Card.Content>
-        <img src={rejected} width="36" height="36" />
-        <Header>{t('general.rejected')}</Header>
-      </Card.Content>}
+      <ProposalHistory.Created />
+      {step === HistoryStep.InboxRejected && <ProposalHistory.Rejected />}
+      {step >= HistoryStep.InboxPassed && <ProposalHistory.Waiting />}
+      {step === HistoryStep.DelayRejected && <ProposalHistory.Rejected />}
       {step >= HistoryStep.DelayPassed && <>
-        <Card.Content>
-          <img src={passed} width="36" height="36" />
-          <Header>{t('general.passed')}</Header>
-        </Card.Content>
+        <ProposalHistory.Passed />
         <Card.Content>
           <Header sub>{AppName.COMMUNITY}</Header>
         </Card.Content>
-        <Card.Content>
-          <img src={created} width="36" height="36" />
-          <Header>{t('general.created')}</Header>
-        </Card.Content>
-        {step >= HistoryStep.CommunityPassed && <Card.Content>
-          <img src={passed} width="36" height="36" />
-          <Header>{t('general.passed')}</Header>
-        </Card.Content>}
-        {step >= HistoryStep.CommunityEnacted && <Card.Content>
-          <img src={enacted} width="36" height="36" />
-          <Header>{t('general.enacted')}</Header>
-        </Card.Content>}
+        <ProposalHistory.Created />
+        {step >= HistoryStep.CommunityPassed && <ProposalHistory.Passed />}
+        {step >= HistoryStep.CommunityEnacted && <ProposalHistory.Enacted />}
       </>}
     </Card>
   }
