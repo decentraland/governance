@@ -7,7 +7,7 @@ import { getAppDelay } from 'modules/app/utils'
 export function getVoteExpiration(vote: Vote) {
   const details = getVoteIdDetails(vote)
   const votingTime = getAppDelay(details.appAddress)
-  return Number(vote.startDate) + votingTime
+  return Number(String(vote.startDate) + '000') + votingTime
 }
 
 export function isVoteExpired(vote: Vote) {
