@@ -10,7 +10,7 @@ import { getInjectedProvider } from "decentraland-dapps/dist/providers/WalletPro
 import { Network } from "modules/wallet/types"
 import { Card, Header, Icon, Button } from "decentraland-ui"
 import { ORGANIZATION_CONNECTOR, ORGANIZATION_LOCATION } from "modules/organization/types"
-import connect, { Organization, App } from "@aragon/connect"
+import connect, { describePath, decodeForwardingPath, Organization, App } from "@aragon/connect"
 import connectVoting, { Voting, Vote } from "@aragon/connect-voting"
 
 type Step = {
@@ -102,8 +102,15 @@ export default class DebugPage extends React.Component<{}, State> {
         .map(async (vote) => {
 
           try {
-            const { describedSteps } = await organization.describeScript(
-              vote.script
+            
+            // const { describedSteps } = await organization.describeScript(
+            //   vote.script
+            // )
+
+            const describedSteps = await describePath(
+              decodeForwardingPath(vote.script),
+              apps,
+              organization.connection.ethersProvider
             )
 
             const description = describedSteps
