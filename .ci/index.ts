@@ -3,7 +3,7 @@ import { buildStatic } from 'dcl-ops-lib/buildStatic'
 
 async function main() {
   const site = buildStatic({
-    domain: `dao.decentraland.${env === 'prd' ? 'org' : envTLD}`,
+    domain: `governance.decentraland.${env === 'prd' ? 'org' : envTLD}`,
     defaultPath: 'index.html'
   })
 
