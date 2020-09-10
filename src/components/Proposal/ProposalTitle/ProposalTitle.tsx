@@ -24,14 +24,22 @@ export default class ProposalTitle extends React.PureComponent<Props> {
           return <React.Fragment>{description.firstDescriptionAnnotated.map((annotations, i) => {
             return <Header key={i}>{annotations.map((annotation, j) => {
               switch (annotation.type) {
-                case 'dcl:name':
+                case 'dcl:name': {
                   return <b className="primary">"{annotation.value}"</b>
+                }
 
-                case 'dcl:domain':
-                  return <a target="_blank" rel="noopener noreferrer" href={`https://${annotation.value}/comms/status`}>"{annotation.value}"</a>
+                case 'dcl:domain': {
+                  let href = annotation.value + '/comms/status'
+                  if (!href.startsWith('https://')) {
+                    href += 'https://'
+                  }
 
-                case 'dcl:position':
+                  return <a target="_blank" rel="noopener noreferrer" href={href}>"{annotation.value}"</a>
+                }
+
+                case 'dcl:position': {
                   return <a target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
+                }
 
                 case 'address':
                   return <span title={annotation.value}><Blockie key={j} seed={annotation.value}>
