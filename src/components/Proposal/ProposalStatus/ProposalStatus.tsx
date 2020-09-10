@@ -93,7 +93,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
         <div className="ProposalStatusNay" style={{ width: nay + '%' }}/>
       </div>
       {!props.full && <div className="ProposalStatusDescription">
-        {yea}% in favor, {nay}% againts
+        {t('proposal.percentages', { yea, nay })}
       </div>}
     </div>
   }

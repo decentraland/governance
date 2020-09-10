@@ -78,7 +78,9 @@ export function getVotePercentages(vote: Vote) {
   }
 
   const acceptPct = Math.floor((yea / votingPower) * 100)
-  const supportPct = Math.floor((yea / supportTotal) * 100)
+  const supportPct = supportTotal > 0 ? Math.floor((yea / supportTotal) * 100) : 0
+  const yeaPct = supportTotal > 0 ? Math.floor((yea / supportTotal) * 100) : 0
+  const nayPct = supportTotal > 0 ? Math.floor((nay / supportTotal) * 100) : 0
 
   return {
     acceptRequiredPct: Math.ceil(acceptRequiredPct * 100),
@@ -88,8 +90,8 @@ export function getVotePercentages(vote: Vote) {
     votingPower,
     acceptPct,
     supportPct,
-    yeaPct: Math.floor((yea / supportTotal) * 100),
-    nayPct: Math.floor((nay / supportTotal) * 100),
+    yeaPct,
+    nayPct,
     yea: yeaSize,
     nay: naySize
   }

@@ -23,6 +23,7 @@
     "wrapping": "Voting Power"
   },
   "proposal": {
+    "percentages": "{yea, number}% in favor, {nay, number}% againts",
     "days_left": "{days, number} {days, plural, one {day} other {days}} left",
     "hours_left": "{hours, number} {hours, plural, one {hour} other {hours}} left",
     "minutes_left": "{minutes, number} {minutes, plural, one {minute} other {minutes}} left",
@@ -85,5 +86,11 @@
     "estate_composition": "TOTAL LAND",
     "estate_total": "TOTAL VOTING POWER",
     "estate_commit": "COMMIT ESTATE"
+  },
+  "unwrapping_modal": {
+    "title": "Unwrap tokens",
+    "description": "Enter the amount of MANA you want to unwrap, this will be reduced from your VP.",
+    "label": "Wrapped MANA",
+    "action": "unwrap tokens"
   }
 }
