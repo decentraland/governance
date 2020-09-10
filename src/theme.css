@@ -28,9 +28,14 @@
   white-space: nowrap;
 }
 
+.dcl.address,
 .ui.header pre {
   font-family: inherit;
   font-size: inherit;
+  color: inherit;
+}
+
+.ui.header pre {
   font-weight: inherit;
   margin: 0;
   white-space: pre-wrap;
