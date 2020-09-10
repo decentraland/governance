@@ -28,7 +28,7 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                   return <b className="primary">"{annotation.value}"</b>
 
                 case 'dcl:domain':
-                  return <a target="_blank" rel="noopener noreferrer" href={`https://${annotation.value}`}>"{annotation.value}"</a>
+                  return <a target="_blank" rel="noopener noreferrer" href={`https://${annotation.value}/comms/status`}>"{annotation.value}"</a>
 
                 case 'dcl:position':
                   return <a target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
