@@ -9,11 +9,13 @@ import './Token.css'
 export default class Token extends React.PureComponent<Props> {
   render() {
     const { size, secondary } = this.props
-    const value = this.props.value || 0
+    const value = this.props.value
 
     switch (this.props.symbol) {
       case 'MANA':
-        return <Mana size={size} className={secondary ? 'secondary' : ''}>{t('general.number', { value })}</Mana>
+        return <Mana size={size} className={secondary ? 'secondary' : ''}>
+          {value !== undefined ? t('general.number', { value }) : ''}
+        </Mana>
 
       case 'VP':
         return <VotingPower size={size} secondary={secondary} value={value} />

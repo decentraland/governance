@@ -3,7 +3,7 @@ import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import { Props } from './WrappingPage.types'
+import { Props, State } from './WrappingPage.types'
 import { Navbar } from 'components/Navbar'
 import { Footer } from 'components/Footer'
 import { Navigation } from 'components/Navigation'
@@ -18,21 +18,26 @@ import Token from 'components/Token'
 import './WrappingPage.css'
 import { SignInPage } from 'decentraland-dapps/dist/containers'
 import { env } from 'decentraland-commons'
+import WrappingInput from 'components/Wrapping/WrappingInput'
 
 const BUY_MANA_URL = env.get('REACT_APP_BUY_MANA_URL', '#')
 const BUY_LAND_URL = env.get('REACT_APP_BUY_LAND_URL', '#')
 
-export default class WrappingPage extends React.PureComponent<Props, any> {
+export default class WrappingPage extends React.PureComponent<Props, State> {
 
-  handleWrapMana = () => {
-    if (this.props.onWrapToken) {
-      this.props.onWrapToken(100)
-    }
+  handleChangeWrapValue = (event: React.FormEvent<HTMLInputElement>) => {
+    const raw = event.currentTarget.value || 0
+    const value = Number.isNaN(Number(raw)) ? undefined : Number(raw)
+    this.setState({ value: value })
   }
 
-  handleUnwrapMana = () => {
-    if (this.props.onUnwrapToken) {
-      this.props.onUnwrapToken(100)
+  handleWrapMana = () => {
+    if (
+      this.state.value &&
+      this.state.value > 0 &&
+      this.props.onWrapToken
+    ) {
+      this.props.onWrapToken(this.state.value)
     }
   }
 
@@ -91,6 +96,7 @@ export default class WrappingPage extends React.PureComponent<Props, any> {
           <Header sub>{t('wrapping_page.mana_available')}</Header>
           <Token symbol="MANA" size="medium" value={wallet.mana} />
           <Header sub>{t('wrapping_page.mana_rate')}</Header>
+          <WrappingInput min={0} onChange={this.handleChangeWrapValue}/>
           <Button primary size="small" loading={this.props.isWrappingMana} onClick={this.handleWrapMana}>wrap tokens</Button>
         </Card.Content>}
       </Card>

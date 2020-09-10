@@ -3,6 +3,10 @@ import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-d
 import { Wallet } from 'modules/wallet/types'
 import { registerLandBalanceRequest, registerEstateBalanceRequest, RegisterLandBalanceRequestAction, RegisterEstateBalanceRequestAction, wrapManaRequest, WrapManaRequestAction } from 'modules/wallet/actions'
 
+export type State = {
+  value?: number
+}
+
 export type DefaultProps = {}
 
 export type Props = DefaultProps & {

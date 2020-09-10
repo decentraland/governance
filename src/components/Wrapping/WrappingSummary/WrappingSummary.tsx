@@ -11,6 +11,7 @@ import Token from 'components/Token'
 import WrappingSummarySection from './WrappingSummarySection'
 import './WrappingSummary.css'
 import { locations } from 'routing/locations'
+// import Tooltip from 'components/Tooltip'
 
 const signIn = require('../../../images/sign-in.svg')
 const manaIcon = require('../../../images/mana.svg')
@@ -48,13 +49,18 @@ export default class WrappingSummary extends React.PureComponent<Props, any> {
 
     return <>
       <Card.Content>
-        <Header sub><b>{t('general.total')}</b></Header>
+        <Header sub>
+          <b>{t('general.total')}</b>
+          {/* <Tooltip position="top center" /> */}
+        </Header>
         <VotingPower value={wallet.votingPower} size="large" />
       </Card.Content>
       <Card.Content>
         <HeaderMenu>
           <HeaderMenu.Left>
-            <Header sub><b>{t('general.wrapped')}</b></Header>
+            <Header sub>
+              <b>{t('general.wrapped')}</b>
+            </Header>
           </HeaderMenu.Left>
           <HeaderMenu.Right>
             <Button as="a" basic size="small" href={locations.wrapping()} onClick={this.handleEdit} >{t('general.edit')}</Button>
