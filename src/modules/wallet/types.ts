@@ -16,8 +16,8 @@ export const NetworkName = {
 }
 
 export const EtherScan = {
-  [Network.MAINNET]: "https://etherscan.io/",
-  [Network.RINKEBY]: "https://rinkeby.etherscan.io/"
+  [Network.MAINNET]: "https://etherscan.io",
+  [Network.RINKEBY]: "https://rinkeby.etherscan.io"
 }
 
 export type Wallet = BaseWallet & {
