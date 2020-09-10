@@ -15,6 +15,11 @@ export const NetworkName = {
   [Network.RINKEBY]: "rinkeby"
 }
 
+export const EtherScan = {
+  [Network.MAINNET]: "https://etherscan.io/",
+  [Network.RINKEBY]: "https://rinkeby.etherscan.io/"
+}
+
 export type Wallet = BaseWallet & {
   land?: number
   landCommit?: boolean

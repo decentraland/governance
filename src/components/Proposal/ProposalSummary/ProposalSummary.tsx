@@ -46,7 +46,7 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
     return <Card as="a" className="ProposalSummary" href={url} onClick={this.handleClick}>
       <Card.Content>
         <Card.Header>
-          <div><ProposalTitle vote={vote} description={description} /></div>
+          <div><ProposalTitle vote={vote} /></div>
           <ProposalStatus.AppName address={getVoteInitialAddress(description)} />
         </Card.Header>
         <div className="ProposalSummaryActions">

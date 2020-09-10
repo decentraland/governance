@@ -1,18 +1,21 @@
 import React from 'react'
-import { Props } from './ProposalTitle.props'
+import { Props } from './ProposalTitle.types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { getAppName } from 'modules/app/utils'
 import { env } from 'decentraland-commons'
+import { getAddressName } from 'modules/common/utils'
+import { EtherScan } from 'modules/wallet/types'
 
 const DECENTRALAND_URL = env.get('REACT_APP_DECENTRALAND_URL', '')
 
 export default class ProposalTitle extends React.PureComponent<Props> {
   render() {
 
-    const { vote, description } = this.props
+    const { vote, description, network } = this.props
+
     if (vote) {
       if (vote.metadata) {
         return <Header><pre>{vote.metadata}</pre></Header>
@@ -41,10 +44,17 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                   return <a target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
                 }
 
-                case 'address':
-                  return <span title={annotation.value}><Blockie key={j} seed={annotation.value}>
-                    <Address value={annotation.value} strong />
-                  </Blockie></span>
+                case 'address': {
+                  const name = getAddressName(annotation.value)
+                  const href = `${EtherScan[network]}/address/${annotation.value}`
+
+                  return <a key={i} title={annotation.value} target="_blank" rel="noopener noreferrer" href={href}>
+                    {name && <b>{name}</b>}
+                    {!name && <Blockie key={j} seed={annotation.value}>
+                      <Address value={annotation.value} strong />
+                    </Blockie>}
+                  </a>
+                }
 
                 case 'app': {
                   return <b title={annotation.value.address}>

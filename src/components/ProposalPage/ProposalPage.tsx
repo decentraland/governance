@@ -43,7 +43,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
         <Grid stackable>
           <Grid.Row>
             <Grid.Column mobile="16" className="ProposalTitle">
-              <ProposalTitle vote={vote} description={description} />
+              <ProposalTitle vote={vote} />
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>

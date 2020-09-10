@@ -1,2 +1,2 @@
-import ProposalTitle from './ProposalTitle'
+import ProposalTitle from './ProposalTitle.container'
 export { ProposalTitle }
