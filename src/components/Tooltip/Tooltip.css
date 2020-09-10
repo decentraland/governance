@@ -1,0 +1,7 @@
+.ui.header.sub > img.tooltip {
+  width: 1.2em;
+  margin-left: .5em;
+  margin-bottom: 0;
+  display: inline-block;
+  vertical-align: text-bottom;
+}
