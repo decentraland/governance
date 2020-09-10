@@ -63,7 +63,7 @@
     "category": "category",
     "left": "time left",
     "support": "support",
-    "approval": "minimum approval",
+    "approval": "approval",
     "needed": "(>{needed, number}% needed)"
   },
   "wrapping_page": {

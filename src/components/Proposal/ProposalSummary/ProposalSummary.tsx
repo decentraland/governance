@@ -7,6 +7,7 @@ import { getVoteUrl } from 'modules/vote/utils'
 import { Loader } from 'decentraland-ui'
 import './ProposalSummary.css'
 import { ProposalTitle } from '../ProposalTitle'
+import { getVoteInitialAddress } from 'modules/description/utils'
 
 export default class ProposalSummary extends React.PureComponent<Props, any> {
 
@@ -45,8 +46,8 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
     return <Card as="a" className="ProposalSummary" href={url} onClick={this.handleClick}>
       <Card.Content>
         <Card.Header>
-          <ProposalTitle vote={vote} description={description} />
-          <ProposalStatus.Creator address={vote.creator} />
+          <div><ProposalTitle vote={vote} description={description} /></div>
+          <ProposalStatus.AppName address={getVoteInitialAddress(description)} />
         </Card.Header>
         <div className="ProposalSummaryActions">
           <div><ProposalStatus vote={vote} /></div>

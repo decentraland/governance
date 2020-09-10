@@ -59,17 +59,17 @@ export const Delay = {
 }
 
 export const AppName = {
-  Tokens: 'tokens',
-  Voting: 'voting',
-  SAB: 'sab',
-  COMMUNITY: 'community',
-  INBOX: 'inbox',
-  Delay: 'delay',
-  Catalyst: 'catalyst',
-  Finance: 'finance',
-  Agent: 'agent',
-  DenyName: 'deny name',
-  POI: 'poi'
+  Tokens: 'Tokens',
+  Voting: 'Voting',
+  SAB: 'SAB',
+  COMMUNITY: 'Community',
+  INBOX: 'INBOX',
+  Delay: 'Delay',
+  Catalyst: 'Catalyst',
+  Finance: 'Finance',
+  Agent: 'Agent',
+  BanName: 'Deny name',
+  POI: 'POI'
 }
 
 export const Time = {
@@ -97,8 +97,8 @@ export const CREATOR_NAME: Record<string, string> = {
   "0x08cde5fec827ecad8c2ef0ed5b895ab38409dd43": AppName.Finance,
   "0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce": AppName.Agent,
   "0x40a056bd2ec121b5966df0f3270a392d07e52629": AppName.Agent,
-  "0x8b8fc0e17c2900d669cc883e3b067e4135362402": AppName.DenyName,
-  "0x0c4c90a4f29872a2e9ef4c4be3d419792bca9a36": AppName.DenyName,
+  "0x8b8fc0e17c2900d669cc883e3b067e4135362402": AppName.BanName,
+  "0x0c4c90a4f29872a2e9ef4c4be3d419792bca9a36": AppName.BanName,
   "0x0ef15a1c7a49429a36cb46d4da8c53119242b54e": AppName.POI,
   "0xde839e6cee47d9e24ac12e9215b7a45112923141": AppName.POI
 }
@@ -120,8 +120,8 @@ export const APP_NAME: Record<string, string> = {
   "0x08cde5fec827ecad8c2ef0ed5b895ab38409dd43": AppName.Finance,
   "0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce": AppName.Agent,
   "0x40a056bd2ec121b5966df0f3270a392d07e52629": AppName.Agent,
-  "0x8b8fc0e17c2900d669cc883e3b067e4135362402": AppName.DenyName,
-  "0x0c4c90a4f29872a2e9ef4c4be3d419792bca9a36": AppName.DenyName,
+  "0x8b8fc0e17c2900d669cc883e3b067e4135362402": AppName.BanName,
+  "0x0c4c90a4f29872a2e9ef4c4be3d419792bca9a36": AppName.BanName,
   "0x0ef15a1c7a49429a36cb46d4da8c53119242b54e": AppName.POI,
   "0xde839e6cee47d9e24ac12e9215b7a45112923141": AppName.POI
 }

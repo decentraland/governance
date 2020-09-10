@@ -37,7 +37,9 @@ export default class HomePage extends React.PureComponent<Props, any> {
             <Grid.Column mobile="5">
               <HeaderMenu >
                 <HeaderMenu.Left>
-                  <Header sub><b>{t('proposals_page.wrapping_header')}</b></Header>
+                  <Header sub>
+                    <b>{t('proposals_page.wrapping_header')}</b>
+                  </Header>
                 </HeaderMenu.Left>
               </HeaderMenu>
               <WrappingSummary />

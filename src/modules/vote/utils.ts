@@ -88,8 +88,8 @@ export function getVotePercentages(vote: Vote) {
     votingPower,
     acceptPct,
     supportPct,
-    yeaPct: Math.floor((yea / votingPower) * 100),
-    nayPct: Math.floor((nay / votingPower) * 100),
+    yeaPct: Math.floor((yea / supportTotal) * 100),
+    nayPct: Math.floor((nay / supportTotal) * 100),
     yea: yeaSize,
     nay: naySize
   }

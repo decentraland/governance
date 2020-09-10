@@ -1,10 +1,10 @@
 import React from 'react'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Props, HistoryStep } from './ProposalHistory.types'
+import { Props } from './ProposalHistory.types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { SAB, COMMUNITY, Delay, AppName } from 'modules/app/types'
+import { SAB, COMMUNITY, AppName } from 'modules/app/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isVoteEnacted, isVotePassed, isVoteRejected, getVoteIdDetails } from 'modules/vote/utils'
+import { isVoteEnacted, isVotePassed, getVoteIdDetails, isVoteExpired } from 'modules/vote/utils'
 import './ProposalHistory.css'
 import { isApp } from 'modules/app/utils'
 
@@ -51,81 +51,86 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
     </Card.Content>
   }
 
-  getStep() {
+  renderSAB() {
     const { vote } = this.props
-    const details = getVoteIdDetails(this.props.vote)
+    const enacted = isVoteEnacted(vote)
+    const passed = enacted || isVotePassed(vote)
+    const rejected = !passed && isVoteExpired(vote)
+    return <Card className="ProposalHistory">
+      <Card.Content>
+        <Header sub>{AppName.SAB}</Header>
+      </Card.Content>
+      <ProposalHistory.Created />
+      {passed && <ProposalHistory.Passed />}
+      {enacted && <ProposalHistory.Enacted />}
+      {rejected && <ProposalHistory.Rejected />}
+    </Card>
+  }
 
-    if (isApp(details.appAddress, SAB)) {
-      switch (true) {
-        case isVoteEnacted(vote):
-          return HistoryStep.SabEnacted
-        case isVotePassed(vote):
-          return HistoryStep.SabPassed
-        case isVoteRejected(vote):
-          return HistoryStep.SabRejected
-        default:
-          return HistoryStep.SabCreated
-      }
-    } else if (isApp(details.appAddress, COMMUNITY)) {
-      switch (true) {
-        case isVoteEnacted(vote):
-          return HistoryStep.CommunityEnacted
-        case isVotePassed(vote):
-          return HistoryStep.CommunityPassed
-        case isVoteRejected(vote):
-          return HistoryStep.CommunityRejected
-        default:
-          return HistoryStep.CommunityCreated
-      }
-    } else if (isApp(details.appAddress, Delay)) {
-      switch (true) {
-        case isVoteEnacted(vote):
-        case isVotePassed(vote):
-          return HistoryStep.DelayPassed
-        case isVoteRejected(vote):
-          return HistoryStep.DelayRejected
-        default:
-          return HistoryStep.DelayCreated
-      }
-    } else if (isVoteRejected(vote)) {
-      return HistoryStep.InboxRejected
-    } else {
-      return HistoryStep.InboxCreated
-    }
+  renderCOMMUNITY() {
+    const { vote } = this.props
+    const enacted = isVoteEnacted(vote)
+    const passed = enacted || isVotePassed(vote)
+    const rejected = !passed && isVoteExpired(vote)
+    return <Card className="ProposalHistory">
+      <Card.Content>
+        <Header sub>{AppName.INBOX}</Header>
+      </Card.Content>
+      <ProposalHistory.Created />
+      <ProposalHistory.Waiting />
+      <ProposalHistory.Passed />
+      <Card.Content>
+        <Header sub>{AppName.COMMUNITY}</Header>
+      </Card.Content>
+      <ProposalHistory.Created />
+      {passed && <ProposalHistory.Passed />}
+      {enacted && <ProposalHistory.Enacted />}
+      {rejected && <ProposalHistory.Rejected />}
+    </Card>
+  }
+
+  renderDelay() {
+    const { vote } = this.props
+    const enacted = vote.executed
+    const passed = enacted || isVotePassed(vote)
+    const rejected = !passed && isVoteExpired(vote)
+    return <Card className="ProposalHistory">
+      <Card.Content>
+        <Header sub>{AppName.INBOX}</Header>
+      </Card.Content>
+      <ProposalHistory.Created />
+      <ProposalHistory.Waiting />
+      {passed && <ProposalHistory.Passed />}
+      {rejected && <ProposalHistory.Rejected />}
+    </Card>
+  }
+
+  renderINBOX() {
+    const { vote } = this.props
+    const enacted = vote.executed
+    const expired = isVoteExpired(vote)
+    const passed = enacted || isVotePassed(vote)
+    return <Card className="ProposalHistory">
+      <Card.Content>
+        <Header sub>{AppName.INBOX}</Header>
+      </Card.Content>
+      <ProposalHistory.Created />
+      {expired && passed && <ProposalHistory.Waiting />}
+      {expired && !passed && <ProposalHistory.Rejected />}
+    </Card>
   }
 
   render() {
-    const step = this.getStep()
+    const details = getVoteIdDetails(this.props.vote)
 
-    if (step >= HistoryStep.SabCreated) {
-      return <Card className="ProposalHistory">
-        <Card.Content>
-          <Header sub>{AppName.SAB}</Header>
-        </Card.Content>
-        <ProposalHistory.Created />
-        {step === HistoryStep.SabRejected && <ProposalHistory.Rejected />}
-        {step >= HistoryStep.SabPassed && <ProposalHistory.Passed />}
-        {step >= HistoryStep.SabEnacted && <ProposalHistory.Enacted />}
-      </Card>
+    if (isApp(details.appAddress, SAB)) {
+      return this.renderSAB()
     }
 
-    return <Card className="ProposalHistory">
-      <Card.Content>
-  <Header sub>{AppName.INBOX}</Header>
-      </Card.Content>
-      <ProposalHistory.Created />
-      {step === HistoryStep.InboxRejected && <ProposalHistory.Rejected />}
-      {step >= HistoryStep.InboxPassed && <ProposalHistory.Waiting />}
-      {step === HistoryStep.DelayRejected && <ProposalHistory.Rejected />}
-      {step >= HistoryStep.DelayPassed && <>
-        <ProposalHistory.Passed />
-        <Card.Content>
-          <Header sub>{AppName.COMMUNITY}</Header>
-        </Card.Content>
-        <ProposalHistory.Created />
-        {step >= HistoryStep.CommunityPassed && <ProposalHistory.Passed />}
-        {step >= HistoryStep.CommunityEnacted && <ProposalHistory.Enacted />}
-      </>}
-    </Card>
+    if (isApp(details.appAddress, COMMUNITY)) {
+      return this.renderCOMMUNITY()
+    }
+
+    return this.renderINBOX()
   }
 }

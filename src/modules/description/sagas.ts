@@ -9,6 +9,8 @@ import { getData as getVoteDescriptions } from './selectors'
 import { concurrent } from './utils'
 import { LOAD_VOTES_SUCCESS, LoadVotesSuccessAction } from 'modules/vote/actions'
 import { getApps } from 'modules/app/selectors'
+import { isApp } from 'modules/app/utils'
+import { Catalyst, BanName, POI } from 'modules/app/types'
 
 export function* voteDescriptionSaga() {
   yield takeEvery(LOAD_VOTES_SUCCESS, loadVotesDescriptions)
@@ -31,15 +33,47 @@ function* loadVoteDescription(vote: Vote) {
     const describedSteps: ForwardingPathDescription['describedSteps'] = yield call(concurrent(() => {
       return describePath(decodeForwardingPath(vote.script), apps, org.connection.ethersProvider)
     }))
+
     let firstDescribedSteps = describedSteps
     while (firstDescribedSteps.length && firstDescribedSteps[0].children) {
       firstDescribedSteps = firstDescribedSteps[0].children as any
     }
 
-    let firstDescriptionAnnotated: Annotation[] = []
+    let firstDescriptionAnnotated: Annotation[][] = []
     for (const step of firstDescribedSteps) {
       if (step.annotatedDescription) {
-        firstDescriptionAnnotated = firstDescriptionAnnotated.concat(step.annotatedDescription)
+        const newAnnotatedDescription: Annotation[] = (step.annotatedDescription || [])
+          .flatMap((annotation, i) => {
+            switch (true) {
+              case isApp(step.to, POI) && i === 0: {
+                const [first, position, last] = annotation.value.split('"', 3)
+                const [ x, y ] = position.split(',').map(Number)
+                return [
+                  { type: 'text', value: first },
+                  { type: 'dcl:position', value: { position, x, y } },
+                  { type: 'text', value: last.slice(0, last.indexOf('.')) }
+                ]
+              }
+              case isApp(step.to, BanName) && i === 0: {
+                const [first, name, last] = annotation.value.split('"', 3)
+                return [
+                  { type: 'text', value: first },
+                  { type: 'dcl:name', value: name },
+                  { type: 'text', value: last }
+                ]
+              }
+              case isApp(step.to, Catalyst) && annotation.value.startsWith('and domain '): {
+                return [
+                  { type: 'text', value: 'and domain ' },
+                  { type: 'dcl:domain', value: annotation.value.slice('and domain '.length) }
+                ]
+              }
+              default:
+                return annotation
+            }
+          }) as any
+
+        firstDescriptionAnnotated.push(newAnnotatedDescription)
       }
     }
 

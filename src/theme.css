@@ -28,6 +28,14 @@
   white-space: nowrap;
 }
 
+.ui.header pre {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
 .ui.header .dcl.blockie {
   width: 1em;
   border-radius: .1em;
@@ -35,4 +43,8 @@
 
 .ui.header .dcl.blockie-wrapper .dcl.blockie-children {
   margin-left: .2em;
+}
+
+b.primary {
+  color: var(--primary)
 }

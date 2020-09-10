@@ -16,17 +16,19 @@ import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
-import { CREATOR_NAME, AppName } from 'modules/app/types'
+import { AppName } from 'modules/app/types'
 import { getVoteTimeLeft, getVotePercentages, isVoteExpired } from 'modules/vote/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
 import './ProposalPage.css'
 import { env } from 'decentraland-commons'
+import { getVoteInitialAddress } from 'modules/description/utils'
+import { getAppName } from 'modules/app/utils'
+import inspect from 'util-inspect'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
   render() {
     const { isLoading, vote, description } = this.props
-    const creator: keyof typeof CREATOR_NAME = vote?.creator as any
     const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
 
     return <>
@@ -56,7 +58,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                     <Grid.Row className="ProposalDetail">
                       <Grid.Column mobile="4">
                         <Header sub>{t('proposal_detail_page.category')}</Header>
-                        <Header>{CREATOR_NAME[creator] || AppName.Voting}</Header>
+                        <Header>{getAppName(getVoteInitialAddress(description)) || AppName.Voting}</Header>
                       </Grid.Column>
                       <Grid.Column mobile="4">
                         <Header sub>{t('proposal_detail_page.left')}</Header>
@@ -98,6 +100,9 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                 </Card.Content> */}
                 {env.isDevelopment() && <Card.Content className="DetailDebug">
                   <Header sub>INFO</Header>
+                  <div className="DetailDebugContainer">
+                    <pre>{inspect(vote, null ,2)}</pre>
+                  </div>
                   <div className="DetailDebugContainer">
                     <pre>{JSON.stringify(description, null ,2)}</pre>
                   </div>

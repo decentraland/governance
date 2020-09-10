@@ -1,11 +1,9 @@
 import { put, call, takeLatest, select } from 'redux-saga/effects'
 import { App } from '@aragon/connect'
 import connectVoting, { Voting, Vote } from '@aragon/connect-voting'
-import { getOrganization } from 'modules/organization/selectors'
-import { Organization } from 'modules/organization/types'
 import { loadVoteDescriptionRequest } from 'modules/description/actions'
 import { getData as getVoteDescription } from 'modules/description/selectors'
-import { getData as getApp } from 'modules/app/selectors'
+import { getData as getApps } from 'modules/app/selectors'
 import {
   loadVotesFailure,
   loadVotesSuccess,
@@ -30,7 +28,7 @@ import {
 } from './actions'
 import { VoteDescription } from 'modules/description/types'
 import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
-import { AppName, INBOX, BanName, Catalyst, POI } from 'modules/app/types'
+import { SAB, COMMUNITY, INBOX, Delay, BanName, Catalyst, POI } from 'modules/app/types'
 import { getNetwork, getProvider } from 'modules/wallet/selectors'
 import { Network } from 'modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -54,9 +52,17 @@ function* reloadVotes() {
 
 function* loadVotes() {
   try {
-    const org: Organization = yield select(getOrganization)
+    const network: Network = yield select(getNetwork)
     const voteDescriptions: Record<string, VoteDescription> = yield select(getVoteDescription)
-    const votingApps: App[] = yield call(async () => org.apps([AppName.Voting, AppName.Delay]))
+    const apps: Record<string, App> = yield select(getApps)
+    const votingApps: App[] = [
+      apps[SAB[network]],
+      apps[COMMUNITY[network]],
+      apps[INBOX[network]],
+      apps[Delay[network]]
+    ]
+
+    console.log(apps[Delay[network]])
     const aragonVoting: Voting[] = yield call(() => Promise.all(votingApps.map(app => connectVoting(app as any))))
 
     const votes: Vote[] = yield call(async () => {
@@ -93,7 +99,7 @@ function* createQuestion(action: CreateQuestionRequestAction) {
     const actAs: string = yield select(getAddress)
     const provider: Web3Provider = yield select(getProvider)
     const network: Network = yield select(getNetwork)
-    const apps: Record<string, App> = yield select(getApp)
+    const apps: Record<string, App> = yield select(getApps)
     const app = apps[INBOX[network]]
 
     yield call(async () => {
@@ -115,7 +121,7 @@ function* createBan(action: CreateBanRequestAction) {
     const actAs: string = yield select(getAddress)
     const provider: Web3Provider = yield select(getProvider)
     const network: Network = yield select(getNetwork)
-    const apps: Record<string, App> = yield select(getApp)
+    const apps: Record<string, App> = yield select(getApps)
     const app = apps[BanName[network]]
 
     yield call(async () => {
@@ -138,7 +144,7 @@ function* createCatalyst(action: CreateCatalystRequestAction) {
     const actAs: string = yield select(getAddress)
     const provider: Web3Provider = yield select(getProvider)
     const network: Network = yield select(getNetwork)
-    const apps: Record<string, App> = yield select(getApp)
+    const apps: Record<string, App> = yield select(getApps)
     const app = apps[Catalyst[network]]
 
     yield call(async () => {
@@ -161,7 +167,7 @@ function* createPoi(action: CreatePoiRequestAction) {
     const actAs: string = yield select(getAddress)
     const provider: Web3Provider = yield select(getProvider)
     const network: Network = yield select(getNetwork)
-    const apps: Record<string, App> = yield select(getApp)
+    const apps: Record<string, App> = yield select(getApps)
     const app = apps[POI[network]]
 
     yield call(async () => {

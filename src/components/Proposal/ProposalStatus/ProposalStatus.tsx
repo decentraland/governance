@@ -1,10 +1,11 @@
 import React from 'react'
 import { Props } from './ProposalStatus.types'
 
-import { APP_NAME, CREATOR_NAME } from 'modules/app/types'
+import { CREATOR_NAME } from 'modules/app/types'
 import { isVoteEnacted, isVoteExpired, isVotePassed, getVotePercentages, getVoteTimeLeft, getVoteIdDetails } from 'modules/vote/utils'
 import './ProposalStatus.css'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAppName } from 'modules/app/utils'
 
 const enactedIcon = require('../../../images/check-enacted.svg')
 const passedIcon = require('../../../images/check-passed.svg')
@@ -18,17 +19,18 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
       return null
     }
 
-    return <div className={'ProposalStatus ' + props.name}>
+    return <div className={'ProposalStatus ' + props.name.replace(/\W+/, '-').toLowerCase()}>
       <div>{props.name}</div>
     </div>
   }
 
   static AppName = (props: { address?: string }) => {
-    if (!props.address) {
+    const name = getAppName(props.address)
+    if (!name) {
       return null
     }
 
-    return <ProposalStatus.Badge name={APP_NAME[props.address]} />
+    return <ProposalStatus.Badge name={name} />
   }
 
   static Creator = (props: { address?: string }) => {

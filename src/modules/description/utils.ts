@@ -1,4 +1,5 @@
 import { createPool, Factory } from 'generic-pool'
+import { VoteDescription } from './types'
 
 const factory: Factory<any> = {
   create: async () => () => null,
@@ -19,4 +20,12 @@ export function concurrent(fn: () => Promise<any>) {
       return Promise.reject(error)
     }
   }
+}
+
+export function getVoteInitialAddress(description?: VoteDescription) {
+  if (!description?.firstDescribedSteps?.length) {
+    return undefined
+  }
+
+  return description.firstDescribedSteps[0].to
 }

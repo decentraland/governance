@@ -12,6 +12,11 @@
   align-items: flex-start;
 }
 
+.ui.card.ProposalSummary > .content > .header .ui.header {
+  margin: 0;
+  margin-bottom: .2em;
+}
+
 .ui.card.ProposalSummary .ProposalSummaryActions {
   display: flex;
   justify-content: space-between;
