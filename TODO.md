@@ -1,92 +1,13 @@
-## Definitions
-- `vote.appAddress` => to app name (catalys, voting)
-- time to vote: `delay`, `sab`: 1d, `other`: 7d
+# TODO
 
-## task
-- [ ] vote button
-- [ ] voted button
-- [ ] connect vote button
-- [ ] ask for tokens
-- [ ] connect wallet
-- [ ] connect wallet
-- [ ] connect wallet
-- [ ] connect wallet
-- [ ] calculate voting power
-- [ ] voting power total
-- [ ] voting power total tooltip
-- [ ] voting power land
-- [ ] voting power state
-- [ ] voting power mana
-- [ ] voting power summary card
-- [ ] filters by app
-- [ ] filters by outcomes
-- [ ] apply filters into url
-- [ ] apply filters in UI
-- [ ] new proposal button
-- [ ] new proposal modal
-- [ ] new proposal select type
-- [ ] new proposal question form
-- [ ] new proposal question confirmation form
-- [ ] new proposal question request
-- [ ] new proposal catalyst form
-- [ ] new proposal catalyst confirmation form
-- [ ] new proposal catalyst request
-- [ ] new proposal POI form
-- [ ] new proposal POI confirmation form
-- [ ] new proposal POI request
-- [ ] new proposal Ban Name form
-- [ ] new proposal Ban Name confirmation form
-- [ ] new proposal Ban Name request
-- [ ] vote page
-- [ ] vote history card
-- [ ] vote history flow
-- [ ] vote history tooltip
-- [ ] vote detail
-- [ ] collect votting appName
-- [ ] voting appName map
-- [ ] voting details category section
-- [ ] voting details time section
-- [ ] voting details support section
-- [ ] voting details quorum section
-- [ ] voting details status bar
-- [ ] voting details yes description
-- [ ] voting details no description
-- [ ] voting details vote button
-- [ ] voting details voted button
-- [ ] voting details vote popup
-- [ ] voting details vote saga
-- [ ] voting details description
-- [ ] voting power page
-- [ ] voting power total
-- [ ] ask for mana token
-- [ ] ask for land token
-- [ ] ask for estate token
-- [ ] token cards
-- [ ] convert tokens mana
-- [ ] convert tokens vp
-- [ ] get token button
-- [ ] unwrap button
-- [ ] wrap button
-- [ ] wrap transaction
-- [ ] unwrap popup
-- [ ] unwrap form
-- [ ] unwrap transaction
-- [ ] land balance card
-- [ ] land balance
-- [ ] estate balance card
-- [ ] estate balance
-- [ ] get land button
-- [ ] commit land
-- [ ] commit land transaction
-- [ ] commit estate
-- [ ] commit estate transaction
-- [ ] connection require page
-- [ ] intercom
-- [ ] ci build state
-- [ ] ci deploy state
-- [ ] pulumi setup
-- [ ] pulumi prod environment
-- [ ] pulumi stage environment
-- [ ] pulumi release environment
-- [ ] pulumi deploy scrip
-- [ ] pulumi variable environment
+- [x] wrap
+- [ ] unwrap
+- [ ] vote
+- [ ] description
+- [ ] auto-update
+- [ ] hide duplicated
+
+## UX
+
+- [ ] open wallet when you try to vote but you are not connected
+
