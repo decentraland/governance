@@ -8,3 +8,9 @@ export type NewProposalParams = {
   banName?: string,
   completed?: true
 }
+
+export type UnwrapParams = {
+  modal?: 'unwrap',
+  amount?: string,
+  completed?: true
+}

@@ -23,7 +23,9 @@
 }
 
 .ui.grid.WrappingOptions>.column>.dcl.header-menu,
-.ui.grid.WrappingOptions>.row>.column>.dcl.header-menu {
+.ui.grid.WrappingOptions>.row>.column>.dcl.header-menu,
+.ui.grid.WrappingOptions>.column .ui.card .dcl.header-menu,
+.ui.grid.WrappingOptions>.row>.column .ui.card .dcl.header-menu {
   margin-bottom: 0;
   min-height: 34px;
   flex-grow: 0;
@@ -40,4 +42,9 @@
 
 .WrappingPage .WrappingOptions .ui.card .content:first-child .ui.header:first-child {
   margin-bottom: 16px
+}
+
+.WrappingPage .WrappingOptions .ui.card .dcl.header-menu .dcl.header-menu-left .ui.header.sub,
+.WrappingPage .WrappingOptions .ui.card .dcl.header-menu .dcl.header-menu-right .ui.header.sub {
+  margin: 0
 }

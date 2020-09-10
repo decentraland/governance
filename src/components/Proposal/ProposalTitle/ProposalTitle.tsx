@@ -25,7 +25,7 @@ export default class ProposalTitle extends React.PureComponent<Props> {
             return <Header key={i}>{annotations.map((annotation, j) => {
               switch (annotation.type) {
                 case 'dcl:name': {
-                  return <b className="primary">"{annotation.value}"</b>
+                  return <b>"{annotation.value}"</b>
                 }
 
                 case 'dcl:domain': {
@@ -47,13 +47,13 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                   </Blockie></span>
 
                 case 'app': {
-                  return <b className="primary" title={annotation.value.address}>
+                  return <b title={annotation.value.address}>
                     {getAppName(annotation.value.address) || annotation.value.name}
                   </b>
                 }
 
                 case 'role':
-                  return <b className="primary">{` ${annotation.value.id} `}</b>
+                  return <b>{` ${annotation.value.id} `}</b>
 
                 case 'apmPackage':
                   return ' ' + annotation.value.name + ' '

@@ -7,7 +7,7 @@ import { Network } from './types'
 import { ensureNetwork } from './utils'
 import { createSelector } from 'reselect'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { LOAD_BALANCE_REQUEST, REGISTER_ESTATE_BALANCE_REQUEST, REGISTER_LAND_BALANCE_REQUEST, WRAP_MANA_REQUEST } from './actions'
+import { LOAD_BALANCE_REQUEST, REGISTER_ESTATE_BALANCE_REQUEST, REGISTER_LAND_BALANCE_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST } from './actions'
 
 const DEFAULT_NETWORK: Network = Number(env.get('REACT_APP_DEFAULT_NETWORK', 1))
 
@@ -18,7 +18,7 @@ export const isLoading = (state: RootState) => isConnecting(state) || isLoadingT
 export const isRegisteringLand = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, REGISTER_LAND_BALANCE_REQUEST)
 export const isRegisteringEstate = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, REGISTER_ESTATE_BALANCE_REQUEST)
 export const isWrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, WRAP_MANA_REQUEST)
-export const isUnwrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, WRAP_MANA_REQUEST)
+export const isUnwrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, UNWRAP_MANA_REQUEST)
 
 export const getNetwork = (state: RootState): Network => {
   return ensureNetwork(getStoreNetwork(state)) ||

@@ -74,7 +74,7 @@
     "mana_title": "Tokens",
     "mana_wrapped": "WRAPPED TOKENS",
     "mana_available": "AVAILABLE TO WRAP",
-    "mana_unwrap": "UNWRAP TOKENS",
+    "mana_unwrap": "UNWRAP",
     "mana_wrap": "WRAP TOKENS",
     "mana_rate": "CONVERT TOKENS",
     "land_title": "Land Balance",
@@ -90,6 +90,7 @@
   "unwrapping_modal": {
     "title": "Unwrap tokens",
     "description": "Enter the amount of MANA you want to unwrap, this will be reduced from your VP.",
+    "completed": "Your transaction was sent successfully! It only remains to wait for the confirmation",
     "label": "Wrapped MANA",
     "action": "unwrap tokens"
   }

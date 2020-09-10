@@ -21,11 +21,16 @@ import {
   WrapManaRequestAction,
   wrapManaSuccess,
   UnwrapManaRequestAction,
-  UNWRAP_MANA_REQUEST
+  UNWRAP_MANA_REQUEST,
+  unwrapManaSuccess,
+  unwrapManaFailure
 } from './actions'
 import { Wallet, Network } from './types'
 import { getNetwork } from './selectors'
 import { MANAMiniMeToken } from 'modules/common/contracts'
+import { getQuery } from 'routing/selectors'
+import { push } from 'connected-react-router'
+import { locations } from 'routing/locations'
 
 const VOTING_POWER_BY_LAND = 2_000
 const baseWalletSaga = createWalletSaga()
@@ -173,9 +178,10 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
     const value = BigInt(amount) * BigInt(1e18)
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(value))
 
-    yield put(wrapManaSuccess([depositTx]))
-
+    yield put(unwrapManaSuccess([depositTx]))
+    const query: Record<string, string> = yield select(getQuery)
+    yield put(push(locations.wrapping({ ...query, completed: true })))
   } catch (err) {
-    yield put(wrapManaFailure(err.message))
+    yield put(unwrapManaFailure(err.message))
   }
 }

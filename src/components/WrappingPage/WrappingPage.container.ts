@@ -7,6 +7,7 @@ import { RootState } from 'modules/root/types'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './WrappingPage.types'
 import { getData, isLoading, isRegisteringEstate, isRegisteringLand, isWrappingMana, isUnwrappingMana } from 'modules/wallet/selectors'
 import { registerLandBalanceRequest, registerEstateBalanceRequest, wrapManaRequest } from 'modules/wallet/actions'
+import { push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isConnected(state),
@@ -22,6 +23,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
+  onNavigate: (href: string) => dispatch(push(href)),
   onWrapToken: (amount) => dispatch(wrapManaRequest(amount)),
   onUnwrapToken: (amount) => dispatch(wrapManaRequest(amount)),
   onRegisterLand: () => dispatch(registerLandBalanceRequest()),

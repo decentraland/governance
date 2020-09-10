@@ -19,6 +19,8 @@ import './WrappingPage.css'
 import { SignInPage } from 'decentraland-dapps/dist/containers'
 import { env } from 'decentraland-commons'
 import WrappingInput from 'components/Wrapping/WrappingInput'
+import UnwrapModal from 'components/Wrapping/UnwrapModal'
+import { locations } from 'routing/locations'
 
 const BUY_MANA_URL = env.get('REACT_APP_BUY_MANA_URL', '#')
 const BUY_LAND_URL = env.get('REACT_APP_BUY_LAND_URL', '#')
@@ -39,6 +41,11 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
     ) {
       this.props.onWrapToken(this.state.value)
     }
+  }
+
+  handleUnwrapMana = (event: React.MouseEvent<any>) => {
+    event.preventDefault()
+    this.props.onNavigate(locations.wrapping({ modal: 'unwrap' }))
   }
 
   handleRegisterLandBalance = () => {
@@ -89,7 +96,16 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
         {isLoading && <Loader size="medium" active />}
         {!isLoading && <Card.Content>
           <Header><b>{t('wrapping_page.mana_title')}</b></Header>
-          <Header sub>{t('wrapping_page.mana_wrapped')}</Header>
+          <HeaderMenu>
+            <HeaderMenu.Left>
+              <Header sub>{t('wrapping_page.mana_wrapped')}</Header>
+            </HeaderMenu.Left>
+            <HeaderMenu.Right>
+              <Button as='a' basic size="small" onClick={this.handleUnwrapMana} href={locations.wrapping({ modal: 'unwrap' })}>
+                {t('wrapping_page.mana_unwrap')}
+              </Button>
+            </HeaderMenu.Right>
+          </HeaderMenu>
           <Token symbol="VP" size="medium" value={wallet.manaVotingPower} />
         </Card.Content>}
         {!isLoading && <Card.Content>
@@ -97,7 +113,13 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Token symbol="MANA" size="medium" value={wallet.mana} />
           <Header sub>{t('wrapping_page.mana_rate')}</Header>
           <WrappingInput min={0} onChange={this.handleChangeWrapValue}/>
-          <Button primary size="small" loading={this.props.isWrappingMana} onClick={this.handleWrapMana}>wrap tokens</Button>
+          <Button
+            primary
+            size="small"
+            disabled={this.props.isConnecting || this.props.isWrappingMana || !this.state?.value}
+            loading={this.props.isConnecting || this.props.isWrappingMana}
+            onClick={this.handleWrapMana}
+        >{t('wrapping_page.mana_wrap')}</Button>
         </Card.Content>}
       </Card>
     </>
@@ -175,6 +197,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
       <Navigation activeTab={NavigationTab.Wrapping} />
       {!isLoading && !isConnected && <Page className="WrappingPage"><SignInPage /></Page>}
       {(isLoading || isConnected) && <Page className="WrappingPage">
+        <UnwrapModal />
         {this.renderTotal()}
         <Grid stackable stretched className="WrappingOptions">
           <Grid.Row>

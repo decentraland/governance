@@ -37,7 +37,6 @@
 }
 
 .NewProposalModal .NewProposalModalSteps {
-
   display: flex;
   flex-direction: row;
   transition: transform .5s ease;
