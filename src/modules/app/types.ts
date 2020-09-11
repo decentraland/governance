@@ -60,7 +60,7 @@ export const Delay = {
 
 export const AppName = {
   Tokens: 'Tokens',
-  Voting: 'Voting',
+  Question: 'Question',
   SAB: 'SAB',
   COMMUNITY: 'Community',
   INBOX: 'INBOX',
@@ -69,7 +69,8 @@ export const AppName = {
   Finance: 'Finance',
   Agent: 'Agent',
   BanName: 'Deny name',
-  POI: 'POI'
+  POI: 'POI',
+  System: 'System'
 }
 
 export const Time = {
@@ -83,12 +84,12 @@ export const Time = {
 export const CREATOR_NAME: Record<string, string> = {
   "0xd871799aecc2a29443509ae8880a33f26924d804": AppName.Tokens,
   "0xb43504e5381ec9941cead3d74377cb63cba3b901": AppName.Tokens,
-  "0xbc1863a593aaebb40b4f43665de30174c9d3fe29": AppName.Voting,
-  "0x41e83d829459f99bf4ee2e26d0d79748fb16b94f": AppName.Voting,
-  "0x5616500b003475136ee6b0844896a2e1ccc68140": AppName.Voting,
-  "0x2aa9074caa11e30838caf681d34b981ffd025a8b": AppName.Voting,
-  "0x37187b0f2089b028482809308e776f92eeb7334e": AppName.Voting,
-  "0x0741ab50b28ed40ed81acc1867cf4d57004c29b6": AppName.Voting,
+  "0xbc1863a593aaebb40b4f43665de30174c9d3fe29": AppName.Question,
+  "0x41e83d829459f99bf4ee2e26d0d79748fb16b94f": AppName.Question,
+  "0x5616500b003475136ee6b0844896a2e1ccc68140": AppName.Question,
+  "0x2aa9074caa11e30838caf681d34b981ffd025a8b": AppName.Question,
+  "0x37187b0f2089b028482809308e776f92eeb7334e": AppName.Question,
+  "0x0741ab50b28ed40ed81acc1867cf4d57004c29b6": AppName.Question,
   "0x4c0071d31cc9aecb8748c686b56cdb0a2cb08b21": AppName.Delay,
   "0x38daca8c123145ead833c42590f4e359fd6bfa0c": AppName.Delay,
   "0x4a2f10076101650f40342885b99b6b101d83c486": AppName.Catalyst,
@@ -106,12 +107,12 @@ export const CREATOR_NAME: Record<string, string> = {
 export const APP_NAME: Record<string, string> = {
   "0xd871799aecc2a29443509ae8880a33f26924d804": AppName.Tokens,
   "0xb43504e5381ec9941cead3d74377cb63cba3b901": AppName.Tokens,
-  "0xbc1863a593aaebb40b4f43665de30174c9d3fe29": AppName.Voting, // AppName.SAB,
-  "0x41e83d829459f99bf4ee2e26d0d79748fb16b94f": AppName.Voting, // AppName.SAB,
-  "0x5616500b003475136ee6b0844896a2e1ccc68140": AppName.Voting, // AppName.COMMUNITY,
-  "0x2aa9074caa11e30838caf681d34b981ffd025a8b": AppName.Voting, // AppName.COMMUNITY,
-  "0x37187b0f2089b028482809308e776f92eeb7334e": AppName.Voting, // AppName.INBOX,
-  "0x0741ab50b28ed40ed81acc1867cf4d57004c29b6": AppName.Voting, // AppName.INBOX,
+  "0xbc1863a593aaebb40b4f43665de30174c9d3fe29": AppName.Question, // AppName.SAB,
+  "0x41e83d829459f99bf4ee2e26d0d79748fb16b94f": AppName.Question, // AppName.SAB,
+  "0x5616500b003475136ee6b0844896a2e1ccc68140": AppName.Question, // AppName.COMMUNITY,
+  "0x2aa9074caa11e30838caf681d34b981ffd025a8b": AppName.Question, // AppName.COMMUNITY,
+  "0x37187b0f2089b028482809308e776f92eeb7334e": AppName.Question, // AppName.INBOX,
+  "0x0741ab50b28ed40ed81acc1867cf4d57004c29b6": AppName.Question, // AppName.INBOX,
   "0x4c0071d31cc9aecb8748c686b56cdb0a2cb08b21": AppName.Delay,
   "0x38daca8c123145ead833c42590f4e359fd6bfa0c": AppName.Delay,
   "0x4a2f10076101650f40342885b99b6b101d83c486": AppName.Catalyst,
