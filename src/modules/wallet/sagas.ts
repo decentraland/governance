@@ -33,6 +33,8 @@ import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 
 const VOTING_POWER_BY_LAND = 2_000
+const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0xfffffffffffffffffffffffffffffffffffffffffffffffa9438a1d29cefffff')
+const EMPTY_ALLOWANCE_AMOUNT = BigNumber.from(0)
 const baseWalletSaga = createWalletSaga()
 
 export function* walletSaga() {
@@ -143,13 +145,17 @@ function* wrapMana(action: WrapManaRequestAction) {
     const manaContract: Contract = yield select(getManaContract)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
 
-    const allowance: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
-
-    const allowed = BigInt(allowance[0].toString())
+    const [ allowed ]: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
     const value = BigInt(amount) * BigInt(1e18)
 
-    if (value > allowed) {
-      yield call(() => manaContract.functions.approve(wrapAddress, value - allowed))
+    if (!allowed.eq(MAX_ALLOWANCE_AMOUNT) && !allowed.eq(EMPTY_ALLOWANCE_AMOUNT)) {
+      const clearTx = yield call(() => manaContract.functions.approve(wrapAddress, EMPTY_ALLOWANCE_AMOUNT))
+      yield call(() => clearTx.wait(1))
+    }
+
+    if (!allowed.eq(MAX_ALLOWANCE_AMOUNT)) {
+      const approveTx = yield call(() => manaContract.functions.approve(wrapAddress, MAX_ALLOWANCE_AMOUNT))
+      yield call(() => approveTx.wait(1))
     }
 
     const depositTx = yield call(() => manaMiniMeContract.functions.deposit(value))
