@@ -12,7 +12,6 @@ import Token from 'components/Token'
 import WrappingSummarySection from './WrappingSummarySection'
 import './WrappingSummary.css'
 import { locations } from 'routing/locations'
-// import Tooltip from 'components/Tooltip'
 
 const signIn = require('../../../images/sign-in.svg')
 const manaIcon = require('../../../images/mana.svg')
