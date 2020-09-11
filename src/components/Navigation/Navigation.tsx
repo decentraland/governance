@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Tabs, Header } from 'decentraland-ui'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from '../../routing/locations'
 import { Props, NavigationTab } from './Navigation.types'

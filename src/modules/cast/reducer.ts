@@ -5,7 +5,13 @@ import {
   LOAD_CASTS_SUCCESS,
   LoadCastsFailureAction,
   LoadCastsRequestAction,
-  LoadCastsSuccessAction
+  LoadCastsSuccessAction,
+  CREATE_CAST_FAILURE,
+  CREATE_CAST_REQUEST,
+  CREATE_CAST_SUCCESS,
+  CreateCastFailureAction,
+  CreateCastRequestAction,
+  CreateCastSuccessAction
 } from './actions'
 import { Cast } from '@aragon/connect-voting'
 
@@ -25,6 +31,9 @@ export type CastReducerAction =
   | LoadCastsFailureAction
   | LoadCastsRequestAction
   | LoadCastsSuccessAction
+  | CreateCastFailureAction
+  | CreateCastRequestAction
+  | CreateCastSuccessAction
 
 export const castsReducer = (state = INITIAL_STATE, action: CastReducerAction): CastState => {
   switch (action.type) {
@@ -33,7 +42,7 @@ export const castsReducer = (state = INITIAL_STATE, action: CastReducerAction): 
         ...state,
         loading: [
           ...state.loading,
-          ...action.payload.votes.map(() => action)
+          ...action.payload.votes.map((vote) => ({ ...action, vote }))
         ]
       }
     }
@@ -54,6 +63,14 @@ export const castsReducer = (state = INITIAL_STATE, action: CastReducerAction): 
         data
       }
     }
+    case CREATE_CAST_SUCCESS:
+    case CREATE_CAST_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case CREATE_CAST_FAILURE:
     case LOAD_CASTS_FAILURE: {
       return {
         ...state,

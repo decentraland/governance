@@ -17,24 +17,52 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
 import { AppName } from 'modules/app/types'
-import { getVoteTimeLeft, getVotePercentages, isVoteExpired } from 'modules/vote/utils'
+import { getVoteTimeLeft, getVotePercentages, isVoteExpired, getVoteUrl } from 'modules/vote/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
-import './ProposalPage.css'
+import { ProposalSupportModal } from 'components/Proposal/ProposalSupportModal'
 import { env } from 'decentraland-commons'
 import { getVoteInitialAddress } from 'modules/description/utils'
 import { getAppName } from 'modules/app/utils'
 import inspect from 'util-inspect'
+import './ProposalPage.css'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
+
+  componentDidMount() {
+    if (this.props.vote && !Array.isArray(this.props.casts)) {
+      this.props.onRequireCasts([ this.props.vote.id ])
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.vote && this.props.vote !== prevProps.vote) {
+      this.props.onRequireCasts([ this.props.vote.id ])
+    }
+  }
+
+  handleApprove = () => {
+    if (this.props.vote) {
+      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: true }))
+    }
+  }
+
+  handleReject = () => {
+    if (this.props.vote) {
+      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: false }))
+    }
+  }
+
   render() {
-    const { isLoading, vote, description } = this.props
+    const { isLoading, vote, description, casts, cast } = this.props
     const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
+    const expired = vote && isVoteExpired(vote)
 
     return <>
       <Navbar />
       <Navigation activeTab={NavigationTab.Proposals} />
       <Page className="ProposalPage">
+        <ProposalSupportModal vote={vote} />
         <div className="ProposalPageBack">
           <Link to={locations.root()}>
             <Back />
@@ -56,7 +84,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                 <Card.Content>
                   <Grid stackable>
                     <Grid.Row className="ProposalDetail">
-                      <Grid.Column mobile="4">
+                      <Grid.Column mobile="3">
                         <Header sub>{t('proposal_detail_page.category')}</Header>
                         <Header>{getAppName(getVoteInitialAddress(description)) || AppName.Voting}</Header>
                       </Grid.Column>
@@ -69,7 +97,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                         <Header>{balance.supportPct || 0} %</Header>
                         <span>{t('proposal_detail_page.needed', { needed: balance.supportRequiredPct || 0 })}</span>
                       </Grid.Column>
-                      <Grid.Column mobile="4">
+                      <Grid.Column mobile="5">
                         <Header sub>{t('proposal_detail_page.approval')}</Header>
                         <Header>{balance.acceptPct || 0} %</Header>
                         <span>{t('proposal_detail_page.needed', { needed: balance.acceptRequiredPct || 0 })}</span>
@@ -83,14 +111,23 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                     </Grid.Row>
 
                     <Grid.Row className="ProposalActions">
-                      <Grid.Column mobile="6">
+                      <Grid.Column mobile="7">
                         <ProposalStatus.Approval vote={vote} />
                       </Grid.Column>
-                      {!isVoteExpired(vote) && <Grid.Column mobile="5">
-                        <Button inverted>Vote YES</Button>
+                      {!casts && <Grid.Column mobile="9">
+                        <Button inverted loading={true} className="pending">loading</Button>
                       </Grid.Column>}
-                      {!isVoteExpired(vote) && <Grid.Column mobile="5">
-                        <Button inverted>Vote NO</Button>
+                      {casts && !cast && <Grid.Column mobile="9">
+                        <div className="VotePending">
+                          <Button inverted disabled={expired} className="pending" onClick={this.handleApprove}>Vote YES</Button>
+                          <Button inverted disabled={expired} className="pending" onClick={this.handleReject}>Vote NO</Button>
+                        </div>
+                      </Grid.Column>}
+                      {cast && cast.supports && <Grid.Column mobile="9">
+                        <Button inverted disabled={expired} className="yea">Voted YES</Button>
+                      </Grid.Column>}
+                      {cast && !cast.supports && <Grid.Column mobile="9">
+                        <Button inverted disabled={expired} className="no">Voted NO</Button>
                       </Grid.Column>}
                     </Grid.Row>
                   </Grid>

@@ -3,6 +3,7 @@ import { Time } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppDelay } from 'modules/app/utils'
+import { CastParams } from 'routing/types'
 
 export function getVoteExpiration(vote: Vote) {
   const details = getVoteIdDetails(vote)
@@ -131,7 +132,16 @@ export function getVoteIdDetails(vote: Vote) {
   return Object.fromEntries(entries) as { appAddress: string, voteId: string }
 }
 
-export function getVoteUrl(vote: Vote) {
+export function getVoteUrl(vote: Vote, params?: CastParams) {
   const { appAddress, voteId } = getVoteIdDetails(vote)
-  return locations.proposal(appAddress, Number(voteId))
+  return locations.proposal(appAddress, Number(voteId), params)
+}
+
+export function sortVotes(voteA: Vote, voteB: Vote) {
+
+  // if (Boolean(voteA.executed) !== Boolean(voteB.executed)) {
+  //   return Number(voteA.executed) - Number(voteB.executed)
+  // }
+
+  return voteB.startDate.localeCompare(voteA.startDate, undefined, { sensitivity: 'base', ignorePunctuation: true })
 }

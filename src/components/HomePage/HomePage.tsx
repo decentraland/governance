@@ -14,10 +14,10 @@ import { ProposalSummary } from 'components/Proposal/ProposalSummary'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import './HomePage.css'
-import { HeaderMenu } from 'decentraland-ui'
 import { locations } from 'routing/locations'
+import { HeaderMenu } from 'decentraland-ui/dist/components/HeaderMenu/HeaderMenu'
 import { NewProposalModal } from 'components/Proposal/NewProposalModal'
+import './HomePage.css'
 
 export default class HomePage extends React.PureComponent<Props, any> {
 

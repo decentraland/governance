@@ -13,6 +13,7 @@
     "enacted": "enacted",
     "total": "total",
     "wrapped": "wrapped",
+    "proceed": "proceed",
     "number": "{value, number}",
     "land": "{land, number} {land, plural, one {Land} other {Lands}}",
     "estate": "{estate, number} {estate, plural, one {Estate} other {Estates}}",
@@ -23,7 +24,7 @@
     "wrapping": "Voting Power"
   },
   "proposal": {
-    "percentages": "{yea, number}% in favor, {nay, number}% againts",
+    "percentages": "{yea, number}% in favor, {nay, number}% against",
     "days_left": "{days, number} {days, plural, one {day} other {days}} left",
     "hours_left": "{hours, number} {hours, plural, one {hour} other {hours}} left",
     "minutes_left": "{minutes, number} {minutes, plural, one {minute} other {minutes}} left",
@@ -64,8 +65,15 @@
     "category": "category",
     "left": "time left",
     "support": "support",
-    "approval": "approval",
+    "approval": "minimum approval",
     "needed": "(>{needed, number}% needed)"
+  },
+  "proposal_support_modal": {
+    "title": "Vote Confirmation",
+    "description": "Are you sure you want to vote {support} of this proposal? you won’t be able to change the vote afterwards.",
+    "favor":"in favor",
+    "against":"against",
+    "confirm": "You vote was submitted!"
   },
   "wrapping_page": {
     "total": "total voting power",

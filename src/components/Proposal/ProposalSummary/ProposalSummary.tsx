@@ -3,11 +3,11 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Props } from './ProposalSummary.types'
 import { ProposalStatus } from '../ProposalStatus'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { getVoteUrl } from 'modules/vote/utils'
-import { Loader } from 'decentraland-ui'
-import './ProposalSummary.css'
 import { ProposalTitle } from '../ProposalTitle'
 import { getVoteInitialAddress } from 'modules/description/utils'
+import './ProposalSummary.css'
 
 export default class ProposalSummary extends React.PureComponent<Props, any> {
 

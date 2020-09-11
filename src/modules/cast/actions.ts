@@ -12,3 +12,15 @@ export const loadCastsFailure = (error: Record<string, string>) => action(LOAD_C
 export type LoadCastsRequestAction = ReturnType<typeof loadCastsRequest>
 export type LoadCastsSuccessAction = ReturnType<typeof loadCastsSuccess>
 export type LoadCastsFailureAction = ReturnType<typeof loadCastsFailure>
+
+export const CREATE_CAST_REQUEST = '[Request] Create cast'
+export const CREATE_CAST_SUCCESS = '[Success] Create cast'
+export const CREATE_CAST_FAILURE = '[Failure] Create cast'
+
+export const createCastRequest = (voteId: string, support: boolean) => action(CREATE_CAST_REQUEST, { voteId, support })
+export const createCastSuccess = (transactions: any[]) => action(CREATE_CAST_SUCCESS, { transactions })
+export const createCastFailure = (error: Record<string, string>) => action(CREATE_CAST_FAILURE, error)
+
+export type CreateCastRequestAction = ReturnType<typeof createCastRequest>
+export type CreateCastSuccessAction = ReturnType<typeof createCastSuccess>
+export type CreateCastFailureAction = ReturnType<typeof createCastFailure>

@@ -6,11 +6,17 @@ export type NewProposalParams = {
   catalystOwner?: string,
   catalystUrl?: string,
   banName?: string,
-  completed?: true
+  completed?: boolean
+}
+
+export type CastParams = {
+  modal?: 'vote',
+  support?: boolean,
+  completed?: boolean
 }
 
 export type UnwrapParams = {
   modal?: 'unwrap',
   amount?: string,
-  completed?: true
+  completed?: boolean
 }

@@ -5,6 +5,7 @@
   --text-on-rejected: #ffffff;
   --neutral: #736E7D;
   --text-on-neutral: #ffffff;
+  --neutral-background: rgba(115, 110, 125, 0.32);
 }
 
 .ui.header b {

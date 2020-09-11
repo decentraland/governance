@@ -62,7 +62,6 @@ function* loadVotes() {
       apps[Delay[network]]
     ]
 
-    console.log(apps[Delay[network]])
     const aragonVoting: Voting[] = yield call(() => Promise.all(votingApps.map(app => connectVoting(app as any))))
 
     const votes: Vote[] = yield call(async () => {

@@ -268,7 +268,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
         <Header>{t('proposal_modal.confirmed_title')}</Header>
       </Modal.Header>
       <Modal.Description>{t('proposal_modal.confirmed')}</Modal.Description>
-      <Button primary onClick={this.handleClose}>{t('general.close')}</Button>
+      <Button onClick={this.handleClose}>{t('general.close')}</Button>
     </Modal.Content>
   }
 

@@ -28,54 +28,56 @@ export default class ProposalTitle extends React.PureComponent<Props> {
             return <Header key={i}>{annotations.map((annotation, j) => {
               switch (annotation.type) {
                 case 'dcl:name': {
-                  return <b>"{annotation.value}"</b>
+                  return <b key={j} >"{annotation.value}"</b>
                 }
 
                 case 'dcl:domain': {
                   let href = annotation.value + '/comms/status'
                   if (!href.startsWith('https://')) {
-                    href += 'https://'
+                    href = 'https://' + href
                   }
 
-                  return <a target="_blank" rel="noopener noreferrer" href={href}>"{annotation.value}"</a>
+                  return <a key={j} target="_blank" rel="noopener noreferrer" href={href}>"{annotation.value}"</a>
                 }
 
                 case 'dcl:position': {
-                  return <a target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
+                  return <a key={j} target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
                 }
 
                 case 'address': {
                   const name = getAddressName(annotation.value)
-                  const href = `${EtherScan[network]}/address/${annotation.value}`
+                  if (name) {
+                    const href = `${EtherScan[network]}/address/${annotation.value}`
+                    return <a key={i} title={annotation.value} target="_blank" rel="noopener noreferrer" href={href}>
+                      {name && <b>{name}</b>}
+                    </a>
+                  }
 
-                  return <a key={i} title={annotation.value} target="_blank" rel="noopener noreferrer" href={href}>
-                    {name && <b>{name}</b>}
-                    {!name && <Blockie key={j} seed={annotation.value}>
-                      <Address value={annotation.value} strong />
-                    </Blockie>}
-                  </a>
+                  return <Blockie key={j} seed={annotation.value}>
+                    <Address value={annotation.value} strong />
+                  </Blockie>
                 }
 
                 case 'app': {
-                  return <b title={annotation.value.address}>
+                  return <b key={j} title={annotation.value.address}>
                     {getAppName(annotation.value.address) || annotation.value.name}
                   </b>
                 }
 
                 case 'role':
-                  return <b>{` ${annotation.value.id} `}</b>
+                  return <b key={j} >{` ${annotation.value.id} `}</b>
 
                 case 'apmPackage':
-                  return ' ' + annotation.value.name + ' '
+                  return <React.Fragment key={j}>{` ${annotation.value.name} `}</React.Fragment>
 
                 case 'kernelNamespace':
-                  return ' ' + annotation.value.name + ' '
+                  return <React.Fragment key={j}>{` ${annotation.value.name} `}</React.Fragment>
 
                 case 'bytes32':
-                  return ' ' + annotation.value + ' '
+                  return <React.Fragment key={j}>{` ${annotation.value} `}</React.Fragment>
 
                 case 'text':
-                  return ' ' + annotation.value + ' '
+                  return <React.Fragment key={j}>{` ${annotation.value} `}</React.Fragment>
 
                 default:
                   return 'MISSING'

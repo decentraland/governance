@@ -1,5 +1,4 @@
 import React from 'react'
-// import { Menu, Icon } from 'decentraland-ui'
 import { Navbar as BaseNavbar } from 'decentraland-dapps/dist/containers'
 
 import { Props } from './Navbar.types'

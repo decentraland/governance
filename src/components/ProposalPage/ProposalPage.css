@@ -60,3 +60,26 @@
   width: 100%;
   overflow: auto;
 }
+
+.dcl.page.ProposalPage .VotePending {
+  display: flex;
+  justify-content: space-around;
+}
+
+.dcl.page.ProposalPage .VotePending .ui.button {
+  flex: 0 0 48%
+}
+
+.dcl.page.ProposalPage .ui.button.pending {
+  border-color: var(--neutral-background);
+}
+
+.dcl.page.ProposalPage .ui.button.yea {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.dcl.page.ProposalPage .ui.button.nay {
+  border-color: var(--rejected);
+  color: var(--rejected);
+}

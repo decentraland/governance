@@ -3,10 +3,10 @@ import { Props, State } from './UnwrapModal.types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Field } from 'decentraland-ui'
 import './UnwrapModal.css'
 
 export default class UnwrapModal extends React.PureComponent<Props, State> {
@@ -57,7 +57,7 @@ export default class UnwrapModal extends React.PureComponent<Props, State> {
         </Modal.Actions>}
         {completed && <Modal.Description>{t('unwrapping_modal.completed')}</Modal.Description>}
         {completed && <Modal.Actions>
-          <Button primary onClick={this.handleClose}>{t('general.close')}</Button>
+          <Button onClick={this.handleClose}>{t('general.close')}</Button>
         </Modal.Actions>}
       </Modal.Content>
     </Modal>
