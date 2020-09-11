@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Cast } from '@aragon/connect-voting'
+import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 
 export const LOAD_CASTS_REQUEST = '[Request] Load cast'
 export const LOAD_CASTS_SUCCESS = '[Success] Load cast'
@@ -18,7 +19,7 @@ export const CREATE_CAST_SUCCESS = '[Success] Create cast'
 export const CREATE_CAST_FAILURE = '[Failure] Create cast'
 
 export const createCastRequest = (voteId: string, support: boolean) => action(CREATE_CAST_REQUEST, { voteId, support })
-export const createCastSuccess = (transactions: any[]) => action(CREATE_CAST_SUCCESS, { transactions })
+export const createCastSuccess = (voteId: string, hash: string) => action(CREATE_CAST_SUCCESS, buildTransactionPayload(hash, { voteId }))
 export const createCastFailure = (error: Record<string, string>) => action(CREATE_CAST_FAILURE, error)
 
 export type CreateCastRequestAction = ReturnType<typeof createCastRequest>

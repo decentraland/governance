@@ -60,8 +60,8 @@ function* createCast(action: CreateCastRequestAction) {
       const path = await app.intent('vote', [ details.voteId, support, true ], { actAs })
       return path.sign((tx) => provider.send('eth_sendTransaction', [tx]))
     })
-    yield put(createCastSuccess([ tx ]))
 
+    yield put(createCastSuccess(vote.id, tx.hash))
     const query: Record<string, string> = yield select(getQuery)
     yield put(push(getVoteUrl(vote, { ...query, completed: true })))
 

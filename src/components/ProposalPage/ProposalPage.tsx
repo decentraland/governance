@@ -54,7 +54,8 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   }
 
   render() {
-    const { isLoading, vote, description, casts, cast } = this.props
+    const { isLoading, isPending, vote, description, casts, cast } = this.props
+    const loadingCast = !casts || (!cast && isPending)
     const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
     const expired = vote && isVoteExpired(vote)
 
@@ -115,20 +116,20 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                       <Grid.Column mobile="7">
                         <ProposalStatus.Approval vote={vote} />
                       </Grid.Column>
-                      {!casts && <Grid.Column mobile="9">
+                      {loadingCast && <Grid.Column mobile="9">
                         <Button inverted loading={true} className="pending">loading</Button>
                       </Grid.Column>}
-                      {casts && !cast && <Grid.Column mobile="9">
+                      {!loadingCast && !cast && <Grid.Column mobile="9">
                         <div className="VotePending">
                           <Button inverted disabled={expired} className="pending" onClick={this.handleApprove}>Vote YES</Button>
                           <Button inverted disabled={expired} className="pending" onClick={this.handleReject}>Vote NO</Button>
                         </div>
                       </Grid.Column>}
-                      {cast && cast.supports && <Grid.Column mobile="9">
+                      {!loadingCast && cast && cast.supports && <Grid.Column mobile="9">
                         <Button inverted disabled={expired} className="yea">Voted YES</Button>
                       </Grid.Column>}
-                      {cast && !cast.supports && <Grid.Column mobile="9">
-                        <Button inverted disabled={expired} className="no">Voted NO</Button>
+                      {!loadingCast && cast && !cast.supports && <Grid.Column mobile="9">
+                        <Button inverted disabled={expired} className="nay">Voted NO</Button>
                       </Grid.Column>}
                     </Grid.Row>
                   </Grid>

@@ -13,6 +13,7 @@ export type Props = DefaultProps & {
   isConnecting: boolean
   isEnabling: boolean
   isLoading: boolean
+  isPending: boolean
   vote?: Vote
   description?: VoteDescription
   casts?: Cast[]
@@ -22,6 +23,6 @@ export type Props = DefaultProps & {
   onRequireCasts: typeof loadCastsRequest
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isEnabling' | 'isLoading' | 'vote' | 'description' | 'casts' | 'cast'>
+export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isEnabling' | 'isLoading' | 'isPending' | 'vote' | 'description' | 'casts' | 'cast'>
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onRequireCasts' | 'onNavigate'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction | LoadCastsRequestAction | CallHistoryMethodAction>

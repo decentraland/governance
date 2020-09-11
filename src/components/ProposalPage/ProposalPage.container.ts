@@ -10,7 +10,7 @@ import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
 import { getData as getVotes, getLoading as getLoadingVotes } from 'modules/vote/selectors'
 import { getData as getVoteDescription } from 'modules/description/selectors'
-import { getData as getCasts } from 'modules/cast/selectors'
+import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
 import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
@@ -33,6 +33,7 @@ const mapState = (state: RootState, props: any): MapStateProps => {
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
     isEnabling: isEnabling(state),
+    isPending: getPendingCasts(state).includes(voteId),
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||

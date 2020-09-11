@@ -10,16 +10,17 @@ export function createPendingTransactionSelector(actionType: string) {
     getTransactions,
     (connecting, address, transactions) => {
       if (connecting) {
-        return true
+        return []
       }
 
-      for (const tx of transactions || []) {
-        if (tx.from === address && tx.actionType === actionType && isPending(tx.status)) {
-          return true
-        }
-      }
-
-      return false
+      return (transactions || []).filter(tx => tx.from === address && tx.actionType === actionType && isPending(tx.status))
     }
+  )
+}
+
+export function createIsPendingTransactionSelector(actionType: string) {
+  return createSelector(
+    createPendingTransactionSelector(actionType),
+    (transactions) => transactions.length > 0
   )
 }
