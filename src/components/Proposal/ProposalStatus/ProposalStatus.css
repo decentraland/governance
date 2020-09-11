@@ -22,34 +22,46 @@
   margin-right: .7em;
 }
 
-.ProposalStatus.agent {
-  color: rgb(205,198,64);
-  background-color: rgba(205,198,64,.2);
-  border-color: rgba(205,198,64,.2);
+.ProposalStatus.catalyst {
+  color: #4e79a7;
+  background-color: rgba(78, 121, 167, .2);
+  border-color: rgba(78, 121, 167, .2);
 }
 
-.ProposalStatus.delay {
-  color: rgb(205,128,64);
-  background-color: rgba(205,128,64,.2);
-  border-color: rgba(205,128,64,.2);
+.ProposalStatus.question {
+  color: #f28e2c;
+  background-color: rgba(242, 142, 44, .2);
+  border-color: rgba(242, 142, 44, .2);
 }
 
 .ProposalStatus.deny-name {
-  color: rgb(255,45,85);
-  background-color: rgba(255,45,85,.2);
-  border-color: rgba(255,45,85,.2);
+  color: #e15759;
+  background-color: rgba(225, 87, 89, .2);
+  border-color: rgba(225, 87, 89, .2);
+}
+
+.ProposalStatus.agent {
+  color: #76b7b2;
+  background-color: rgba(118, 183, 178, .2);
+  border-color: rgba(118, 183, 178, .2);
 }
 
 .ProposalStatus.poi {
-  color: rgb(198,64,205);
-  background-color: rgba(198,64,205,.2);
-  border-color: rgba(198,64,205,.2);
+  color: #59a14f;
+  background-color: rgba(89, 161, 79, .2);
+  border-color: rgba(89, 161, 79, .2);
 }
 
-.ProposalStatus.catalyst {
-  color: rgb(45,163,255);
-  background-color: rgba(45,163,255,.2);
-  border-color: rgba(45,163,255,.2);
+.ProposalStatus.delay {
+  color: #edc949;
+  background-color: rgba(237, 201, 73, .2);
+  border-color: rgba(237, 201, 73, .2);
+}
+
+.ProposalStatus.system {
+  color: #af7aa1;
+  background-color: rgba(175, 122, 161, .2);
+  border-color: rgba(175, 122, 161, .2);
 }
 
 .ProposalStatus > img {
