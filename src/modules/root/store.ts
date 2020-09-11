@@ -9,8 +9,9 @@ import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage
 import { storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
-import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CLEAR_TRANSACTIONS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
@@ -40,7 +41,7 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: 'dao', // this is the key used to save the state in localStorage (required)
   paths: ['wallet', ['description', 'data']], // array of paths from state to be persisted (optional)
-  actions: [CONNECT_WALLET_SUCCESS, LOAD_VOTE_DESCRIPTION_SUCCESS] // array of actions types that will trigger a SAVE (optional)
+  actions: [CLEAR_TRANSACTIONS, CONNECT_WALLET_SUCCESS, LOAD_VOTE_DESCRIPTION_SUCCESS] // array of actions types that will trigger a SAVE (optional)
 })
 
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))

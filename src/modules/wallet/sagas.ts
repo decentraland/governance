@@ -105,13 +105,6 @@ function* getBalance(): any {
         votingPower
       }))
 
-      if (landCommit) {
-        yield put(registerLandBalanceSuccess())
-      }
-
-      if (estateCommit) {
-        yield put(registerEstateBalanceSuccess())
-      }
     } catch (err) {
       yield put(loadBalanceFailure(err.message))
     }
@@ -123,7 +116,8 @@ function* getBalance(): any {
 function* registerLandBalance() {
   try {
     const landContract = yield select(getLandContract)
-    yield call(() => landContract.registerBalance())
+    const tx = yield call(() => landContract.registerBalance())
+    yield put(registerLandBalanceSuccess(tx.hash))
   } catch (err) {
     yield put(registerLandBalanceFailure(err.message))
   }
@@ -132,7 +126,8 @@ function* registerLandBalance() {
 function* registerEstateBalance() {
   try {
     const estateContract = yield select(getEstateContract)
-    yield call(() => estateContract.registerBalance())
+    const tx = yield call(() => estateContract.registerBalance())
+    yield put(registerEstateBalanceSuccess(tx.hash))
   } catch (err) {
     yield put(registerEstateBalanceFailure(err.message))
   }
@@ -152,17 +147,13 @@ function* wrapMana(action: WrapManaRequestAction) {
 
     const allowed = BigInt(allowance[0].toString())
     const value = BigInt(amount) * BigInt(1e18)
-    let transactions: any[] = []
 
     if (value > allowed) {
-      const approveTx = yield call(() => manaContract.functions.approve(wrapAddress, value - allowed))
-      transactions.push(approveTx)
+      yield call(() => manaContract.functions.approve(wrapAddress, value - allowed))
     }
 
     const depositTx = yield call(() => manaMiniMeContract.functions.deposit(value))
-    transactions.push(depositTx)
-
-    yield put(wrapManaSuccess([transactions]))
+    yield put(wrapManaSuccess(depositTx.hash))
 
   } catch (err) {
     yield put(wrapManaFailure(err.message))
@@ -178,7 +169,7 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
     const value = BigInt(amount) * BigInt(1e18)
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(value))
 
-    yield put(unwrapManaSuccess([depositTx]))
+    yield put(unwrapManaSuccess(depositTx.hash))
     const query: Record<string, string> = yield select(getQuery)
     yield put(push(locations.wrapping({ ...query, completed: true })))
   } catch (err) {

@@ -116,8 +116,8 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Button
             primary
             size="small"
-            disabled={this.props.isConnecting || this.props.isWrappingMana || !this.state?.value}
-            loading={this.props.isConnecting || this.props.isWrappingMana}
+            disabled={this.props.isConnecting || this.props.isWrappingMana || this.props.isUnwrappingMana || !this.state?.value}
+            loading={this.props.isConnecting || this.props.isWrappingMana || this.props.isUnwrappingMana}
             onClick={this.handleWrapMana}
         >{t('wrapping_page.mana_wrap')}</Button>
         </Card.Content>}

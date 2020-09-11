@@ -1,13 +1,14 @@
 import { Eth } from 'web3x-es/eth'
 import { ethers } from 'ethers'
-import { getNetwork as getStoreNetwork, getAddress, isConnecting, getError } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { createSelector } from 'reselect'
 import { env } from 'decentraland-commons'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getNetwork as getStoreNetwork, getAddress, isConnecting, getError } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/root/types'
 import { Network } from './types'
 import { ensureNetwork } from './utils'
-import { createSelector } from 'reselect'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { LOAD_BALANCE_REQUEST, REGISTER_ESTATE_BALANCE_REQUEST, REGISTER_LAND_BALANCE_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST } from './actions'
+import { LOAD_BALANCE_REQUEST, REGISTER_ESTATE_BALANCE_REQUEST, REGISTER_LAND_BALANCE_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST, REGISTER_LAND_BALANCE_SUCCESS, REGISTER_ESTATE_BALANCE_SUCCESS, WRAP_MANA_SUCCESS, UNWRAP_MANA_SUCCESS } from './actions'
+import { createPendingTransactionSelector } from 'modules/transaction/selectors'
 
 const DEFAULT_NETWORK: Network = Number(env.get('REACT_APP_DEFAULT_NETWORK', 1))
 
@@ -19,6 +20,10 @@ export const isRegisteringLand = (state: RootState) => isConnecting(state) || is
 export const isRegisteringEstate = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, REGISTER_ESTATE_BALANCE_REQUEST)
 export const isWrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, WRAP_MANA_REQUEST)
 export const isUnwrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, UNWRAP_MANA_REQUEST)
+export const isRegisterLandPending = createPendingTransactionSelector(REGISTER_LAND_BALANCE_SUCCESS)
+export const isRegisterEstatePending = createPendingTransactionSelector(REGISTER_ESTATE_BALANCE_SUCCESS)
+export const isWrapManaPending = createPendingTransactionSelector(WRAP_MANA_SUCCESS)
+export const isUnwrapManaPending = createPendingTransactionSelector(UNWRAP_MANA_SUCCESS)
 
 export const getNetwork = (state: RootState): Network => {
   return ensureNetwork(getStoreNetwork(state)) ||

@@ -28,6 +28,16 @@ export type Props = DefaultProps & {
   onRegisterEstate: typeof registerEstateBalanceRequest
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isEnabling' | 'isLoading' | 'isRegisteringLand' | 'isRegisteringEstate' | 'isWrappingMana' | 'isUnwrappingMana' | 'wallet'>
+export type MapStateProps = Pick<Props,
+  | 'isConnected'
+  | 'isConnecting'
+  | 'isEnabling'
+  | 'isLoading'
+  | 'isRegisteringLand'
+  | 'isRegisteringEstate'
+  | 'isWrappingMana'
+  | 'isUnwrappingMana'
+  | 'wallet'
+>
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onNavigate' | 'onRegisterLand' | 'onRegisterEstate' | 'onWrapToken' | 'onUnwrapToken'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction | CallHistoryMethodAction | RegisterEstateBalanceRequestAction | RegisterLandBalanceRequestAction | WrapManaRequestAction>

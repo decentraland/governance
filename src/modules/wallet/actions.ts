@@ -1,3 +1,4 @@
+import { buildTransactionPayload } from 'decentraland-dapps/dist//modules/transaction/utils'
 import { action } from 'typesafe-actions'
 import { Wallet } from './types'
 
@@ -18,7 +19,7 @@ export const REGISTER_LAND_BALANCE_SUCCESS = '[Success] Register land balance'
 export const REGISTER_LAND_BALANCE_FAILURE = '[Failure] Register land balance'
 
 export const registerLandBalanceRequest = () => action(REGISTER_LAND_BALANCE_REQUEST, {})
-export const registerLandBalanceSuccess = () => action(REGISTER_LAND_BALANCE_SUCCESS, {})
+export const registerLandBalanceSuccess = (hash: string) => action(REGISTER_LAND_BALANCE_SUCCESS, buildTransactionPayload(hash))
 export const registerLandBalanceFailure = (error: string) => action(REGISTER_LAND_BALANCE_FAILURE, { error })
 
 export type RegisterLandBalanceRequestAction = ReturnType<typeof registerLandBalanceRequest>
@@ -30,7 +31,7 @@ export const REGISTER_ESTATE_BALANCE_SUCCESS = '[Success] Register estate balanc
 export const REGISTER_ESTATE_BALANCE_FAILURE = '[Failure] Register estate balance'
 
 export const registerEstateBalanceRequest = () => action(REGISTER_ESTATE_BALANCE_REQUEST, {})
-export const registerEstateBalanceSuccess = () => action(REGISTER_ESTATE_BALANCE_SUCCESS, {})
+export const registerEstateBalanceSuccess = (hash: string) => action(REGISTER_ESTATE_BALANCE_SUCCESS, buildTransactionPayload(hash))
 export const registerEstateBalanceFailure = (error: string) => action(REGISTER_ESTATE_BALANCE_FAILURE, { error })
 
 export type RegisterEstateBalanceRequestAction = ReturnType<typeof registerEstateBalanceRequest>
@@ -42,7 +43,7 @@ export const WRAP_MANA_SUCCESS = '[Success] Wrap MANA'
 export const WRAP_MANA_FAILURE = '[Failure] Wrap MANA'
 
 export const wrapManaRequest = (amount: number) => action(WRAP_MANA_REQUEST, { amount })
-export const wrapManaSuccess = (transactions: any[]) => action(WRAP_MANA_SUCCESS, { transactions })
+export const wrapManaSuccess = (hash: string) => action(WRAP_MANA_SUCCESS, buildTransactionPayload(hash))
 export const wrapManaFailure = (error: string) => action(WRAP_MANA_FAILURE, { error })
 
 export type WrapManaRequestAction = ReturnType<typeof wrapManaRequest>
@@ -54,7 +55,7 @@ export const UNWRAP_MANA_SUCCESS = '[Success] Unwrap MANA'
 export const UNWRAP_MANA_FAILURE = '[Failure] Unwrap MANA'
 
 export const unwrapManaRequest = (amount: number) => action(UNWRAP_MANA_REQUEST, { amount })
-export const unwrapManaSuccess = (transactions: any[]) => action(UNWRAP_MANA_SUCCESS, { transactions })
+export const unwrapManaSuccess = (hash: string) => action(UNWRAP_MANA_SUCCESS, buildTransactionPayload(hash))
 export const unwrapManaFailure = (error: string) => action(UNWRAP_MANA_FAILURE, { error })
 
 export type UnwrapManaRequestAction = ReturnType<typeof unwrapManaRequest>
