@@ -86,7 +86,8 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                     <Grid.Row className="ProposalDetail">
                       <Grid.Column mobile="3">
                         <Header sub>{t('proposal_detail_page.category')}</Header>
-                        <Header>{getAppName(getVoteInitialAddress(description)) || AppName.System}</Header>
+                        {!!vote.metadata && <Header>{AppName.Question}</Header>}
+                        {!vote.metadata && <Header>{getAppName(getVoteInitialAddress(description)) || AppName.System}</Header>}
                       </Grid.Column>
                       <Grid.Column mobile="4">
                         <Header sub>{t('proposal_detail_page.left')}</Header>
