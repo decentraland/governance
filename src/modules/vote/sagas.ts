@@ -62,13 +62,17 @@ function* loadVotes() {
       apps[Delay[network]]
     ]
 
-    const aragonVoting: Voting[] = yield call(() => Promise.all(votingApps.map(app => connectVoting(app as any))))
+    const aragonVoting: (Voting | undefined)[] = yield call(() => Promise.all(votingApps
+      .map(app => connectVoting(app as any).catch((err) => console.error(app, err)))
+    ))
 
     const votes: Vote[] = yield call(async () => {
       let result: Vote[] = []
       for (const voting of aragonVoting) {
-        const newVotes = await voting.votes()
-        result = result.concat(newVotes)
+        if (voting) {
+          const newVotes = await voting.votes()
+          result = result.concat(newVotes)
+        }
       }
 
       return result
