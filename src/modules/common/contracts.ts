@@ -15,7 +15,7 @@ export const MANAMiniMeToken = {
 
 export const LANDProxy = {
   [Network.MAINNET]: '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d',
-  [Network.RINKEBY]: '0x28bef22df3e2040a4be64a9ca0e8b5ae2b91462d'
+  [Network.RINKEBY]: null
 }
 
 export const LANDRegistry = {
@@ -26,6 +26,11 @@ export const LANDRegistry = {
 export const LANDMiniMeToken = {
   [Network.MAINNET]: '0x20dfe381ca71ade2582094cf569a8cb020af5ab1',
   [Network.RINKEBY]: '0x576c4577aAd561EA79acbd49215a0cC1473BfCCA'
+}
+
+export const EstateProxy = {
+  [Network.MAINNET]: '0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95',
+  [Network.RINKEBY]: null
 }
 
 export const EstateRegistry = {
