@@ -1,7 +1,6 @@
 import React from 'react'
 import { Props } from './ProposalStatus.types'
 
-import { CREATOR_NAME } from 'modules/app/types'
 import { isVoteEnacted, isVoteExpired, isVotePassed, getVotePercentages, getVoteTimeLeft, getVoteIdDetails } from 'modules/vote/utils'
 import './ProposalStatus.css'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -31,14 +30,6 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     }
 
     return <ProposalStatus.Badge name={name} />
-  }
-
-  static Creator = (props: { address?: string }) => {
-    if (!props.address) {
-      return null
-    }
-
-    return <ProposalStatus.Badge name={CREATOR_NAME[props.address]} />
   }
 
   static Approval = (props: Props) => {

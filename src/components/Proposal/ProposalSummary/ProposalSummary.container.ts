@@ -3,8 +3,8 @@ import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import { RootState } from 'modules/root/types'
-import { /* getData, */ getLoading as getLoadingOrganization } from 'modules/organization/selectors'
-import { getData as getApps, getLoading as getLoadingApps } from 'modules/app/selectors'
+import { getLoading as getLoadingOrganization } from 'modules/organization/selectors'
+import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
 import { getLoading as getLoadingVotes } from 'modules/vote/selectors'
 import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
@@ -13,15 +13,10 @@ import ProposalSummary from './ProposalSummary'
 import { MapDispatchProps, MapStateProps, MapDispatch, DefaultProps } from './ProposalSummary.types'
 
 const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
-  const address = '' as any // props.vote.appAddress
-  const app = props.vote && getApps(state)[address]
-  const creator = props.vote && getApps(state)[props.vote.creator]
   const description = props.vote && getVoteDescription(state)[props.vote.id]
   const descriptionError = props.vote && getVoteDescriptionError(state)[props.vote.id]
 
   return {
-    app,
-    creator,
     description,
     descriptionError,
     isLoading: (

@@ -2,12 +2,10 @@ import React from 'react'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Props } from './ProposalSummary.types'
 import { ProposalStatus } from '../ProposalStatus'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { getVoteUrl } from 'modules/vote/utils'
 import { ProposalTitle } from '../ProposalTitle'
 import { getVoteInitialAddress } from 'modules/description/utils'
-import { AppName } from 'modules/app/types'
+import { AppName, HiddenApps } from 'modules/app/types'
 import { getAppName } from 'modules/app/utils'
 import './ProposalSummary.css'
 
@@ -21,25 +19,14 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
     }
   }
 
-  getDescription() {
-    const { vote, description, descriptionError } = this.props
-    if (vote.metadata) {
-      return <Header>{vote.metadata}</Header>
-    }
+  shouldHide() {
+    const { description } = this.props
 
-    if (descriptionError) {
-      return <Header>{descriptionError}</Header>
-    }
-
-    if (description) {
-      if (description.description) {
-        return <Header>{description.description}</Header>
-      }
-
-      return <Header sub>No description</Header>
-    }
-
-    return <Loader active inline size="small" />
+    return description &&
+      description.firstDescribedSteps &&
+      description.firstDescribedSteps[0] &&
+      description.firstDescribedSteps[0].to &&
+      HiddenApps.has(description.firstDescribedSteps[0].to)
   }
 
   render() {
@@ -47,6 +34,11 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
     const initialAddress = getVoteInitialAddress(description)
     const initialAddressName = getAppName(initialAddress)
     const url = getVoteUrl(this.props.vote)
+
+    if (this.shouldHide()) {
+      return null
+    }
+
     return <Card as="a" className="ProposalSummary" href={url} onClick={this.handleClick}>
       <Card.Content>
         <Card.Header>
