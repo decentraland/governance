@@ -3,8 +3,9 @@
 - [x] wrap
 - [x] unwrap
 - [x] vote
-- [ ] hide duplicated
+- [x] waite for transactions
 - [ ] auto-update
+- [ ] hide duplicated
 - [ ] description
 
 ## UX
