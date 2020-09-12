@@ -9,7 +9,7 @@ import { ensureNetwork } from "modules/wallet/utils"
 import { getInjectedProvider } from "decentraland-dapps/dist/providers/WalletProvider/utils"
 import { Network } from "modules/wallet/types"
 import { Card, Header, Icon, Button } from "decentraland-ui"
-import { ORGANIZATION_CONNECTOR, ORGANIZATION_LOCATION } from "modules/organization/types"
+import { ORGANIZATION_LOCATION } from "modules/organization/types"
 import connect, { Organization, App } from "@aragon/connect"
 import connectVoting, { Voting, Vote } from "@aragon/connect-voting"
 
@@ -65,19 +65,23 @@ export default class DebugPage extends React.Component<{}, State> {
     }
 
     const network = ensureNetwork(Number(provider.chainId)) || Network.RINKEBY
-    const orgConnector = ORGANIZATION_CONNECTOR[network]
     const orgLocation = ORGANIZATION_LOCATION[network]
     // const votingGraph = VOTING_GRAPH[network]
     const settings = {
       network,
-      orgConnector,
       orgLocation
     }
 
     add("settings", settings)
     add("provider", provider)
 
-    const organization = await connect(orgLocation, orgConnector, { network })
+    const organization = await connect(orgLocation, [
+      "thegraph",
+      {
+        orgSubgraphUrl:
+          "https://api.thegraph.com/subgraphs/name/0xgabi/aragon-mainnet-staging-dcl",
+      },
+    ], { network })
     add("organization", organization)
 
     const apps = await organization.apps()
