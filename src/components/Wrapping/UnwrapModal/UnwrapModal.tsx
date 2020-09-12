@@ -46,7 +46,7 @@ export default class UnwrapModal extends React.PureComponent<Props, State> {
         <Modal.Header><Header>{t('unwrapping_modal.title')}</Header></Modal.Header>
         {!completed && <Modal.Description>{t('unwrapping_modal.description')}</Modal.Description>}
         {!completed && <Modal.Description>
-          <Field type="number" min={0} max={wallet && wallet.manaMiniMe || 0} onChange={this.handleChangeWrapValue} defaultValue={this.props.params.amount}/>
+          <Field type="number" min={0} max={wallet ? wallet.manaMiniMe || 0 : 0} onChange={this.handleChangeWrapValue} defaultValue={this.props.params.amount}/>
         </Modal.Description>}
         {!completed && <Modal.Actions>
           <Button
