@@ -1,0 +1,10 @@
+.Img {
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.Img img {
+  width: 100%;
+  height: auto;
+}

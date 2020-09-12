@@ -7,6 +7,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { isValidPosition } from '../utils'
+import Wide from 'components/Img/Wide'
+import { Loader } from 'decentraland-ui'
 
 export default class PoiForm extends React.Component<Props, State> {
 
@@ -57,13 +59,17 @@ export default class PoiForm extends React.Component<Props, State> {
         <Grid.Row>
           <Grid.Column mobile="2" />
           <Grid.Column mobile="6">
-            <Field type="number" label="X" placeholder="150" value={this.state.x} onChange={this.handleChangeX} />
+            <Field type="number" placeholder="X" value={this.state.x} onChange={this.handleChangeX} />
           </Grid.Column>
           <Grid.Column mobile="6">
-            <Field type="number" label="Y" placeholder="150" value={this.state.y} onChange={this.handleChangeY} />
+            <Field type="number" placeholder="Y" value={this.state.y} onChange={this.handleChangeY} />
           </Grid.Column>
         </Grid.Row>
       </Grid>
+      <div style={{ width: '100%', borderRadius: '8px', position: 'relative' }}>
+        <Loader active={this.isValid()} size="small"/>
+        <Wide style={{ borderRadius: '8px', zIndex: 1000, position: 'relative' }} src={this.isValid() ? `https://api.decentraland.org/v1/parcels/${this.state.x}/${this.state.y}/map.png` : `https://api.decentraland.org/v1/map.png`}/>
+      </div>
       <Button primary onClick={this.handleConfirm} disabled={!this.isValid()}>{t('proposal_modal.confirm')}</Button>
     </Modal.Content>
   }
