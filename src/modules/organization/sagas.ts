@@ -4,7 +4,7 @@ import { loadOrganizationFailure, loadOrganizationSuccess, LOAD_ORGANIZATION_REQ
 import { CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 import { getNetwork } from 'modules/wallet/selectors'
-import { ORGANIZATION_LOCATION, ORGANIZATION_CONNECTOR, Organization } from './types'
+import { ORGANIZATION_LOCATION, ORGANIZATION_CONNECTOR, ORGANIZATION_OPTIONS, Organization } from './types'
 import { Network } from 'modules/wallet/types'
 
 export function* organizationSaga() {
@@ -25,7 +25,7 @@ function* connectAragon() {
     const organization: Organization = yield call(() => connect(
       ORGANIZATION_LOCATION[network],
       ORGANIZATION_CONNECTOR[network],
-      { network }
+      ORGANIZATION_OPTIONS[network]
     ))
 
     yield put(loadOrganizationSuccess(organization))

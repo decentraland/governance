@@ -74,7 +74,9 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                   return <React.Fragment key={j}>{` ${annotation.value.name} `}</React.Fragment>
 
                 case 'bytes32':
-                  return <React.Fragment key={j}>{` ${annotation.value} `}</React.Fragment>
+                  return <i key={j} title={annotation.value}>
+                    {` ${annotation.value.slice(0,6)}...${annotation.value.slice(-4)} `}
+                  </i>
 
                 case 'text':
                   return <React.Fragment key={j}>{` ${annotation.value} `}</React.Fragment>

@@ -39,7 +39,7 @@ const loggerMiddleware = createLogger({
 })
 
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
-  storageKey: 'dao', // this is the key used to save the state in localStorage (required)
+  storageKey: 'governance', // this is the key used to save the state in localStorage (required)
   paths: [['transaction'], ['description', 'data']], // array of paths from state to be persisted (optional)
   actions: [CLEAR_TRANSACTIONS, CONNECT_WALLET_SUCCESS, LOAD_VOTE_DESCRIPTION_SUCCESS] // array of actions types that will trigger a SAVE (optional)
 })

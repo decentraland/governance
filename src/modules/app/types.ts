@@ -5,7 +5,7 @@ export const VOTING_GRAPH = {
   // [Network.MAINNET]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet',
   // [Network.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-rinkeby',
   // [Network.MAINNET]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-mainnet',
-  [Network.MAINNET]: 'https://thegraph.com/explorer/subgraph/0xgabi/aragon-mainnet-staging-dcl',
+  [Network.MAINNET]: 'https://api.thegraph.com/subgraphs/name/0xgabi/aragon-mainnet-staging-dcl',
   [Network.RINKEBY]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-rinkeby'
 }
 
