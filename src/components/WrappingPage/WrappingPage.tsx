@@ -50,15 +50,15 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
 
   handleRegisterLandBalance = () => {
     const wallet = this.props.wallet!
-    if (!wallet.landCommit && this.props.onRegisterLand) {
-      this.props.onRegisterLand()
+    if (!wallet.landCommit && this.props.onAllowLand) {
+      this.props.onAllowLand()
     }
   }
 
   handleRegisterEstateBalance = () => {
     const wallet = this.props.wallet!
-    if (!wallet.estateCommit && this.props.onRegisterEstate) {
-      this.props.onRegisterEstate()
+    if (!wallet.estateCommit && this.props.onAllowEstate) {
+      this.props.onAllowEstate()
     }
   }
 
@@ -78,7 +78,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
   }
 
   renderWrapMana() {
-    const { isLoading } = this.props
+    const { isLoading, isAllowingMana } = this.props
     const wallet = this.props.wallet!
     return <>
       <HeaderMenu>
@@ -108,25 +108,29 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           </HeaderMenu>
           <Token symbol="VP" size="medium" value={wallet.manaVotingPower} />
         </Card.Content>}
-        {!isLoading && <Card.Content>
+        {!isLoading && <Card.Content style={{ flexGrow: 1 }}>
           <Header sub>{t('wrapping_page.mana_available')}</Header>
           <Token symbol="MANA" size="medium" value={wallet.mana} />
-          <Header sub>{t('wrapping_page.mana_rate')}</Header>
-          <WrappingInput min={0} onChange={this.handleChangeWrapValue}/>
-          <Button
+          {wallet.manaCommit && <Header sub>{t('wrapping_page.mana_rate')}</Header>}
+          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana} onChange={this.handleChangeWrapValue}/>}
+          {wallet.manaCommit && <Button
             primary
             size="small"
             disabled={this.props.isConnecting || this.props.isWrappingMana || this.props.isUnwrappingMana || !this.state?.value}
             loading={this.props.isConnecting || this.props.isWrappingMana || this.props.isUnwrappingMana}
             onClick={this.handleWrapMana}
-        >{t('wrapping_page.mana_wrap')}</Button>
+        >{t('wrapping_page.mana_wrap')}</Button>}
+        </Card.Content>}
+        {!isLoading && !wallet.manaCommit && <Card.Content>
+          {isAllowingMana && <Loader inline active size="small" />}
+          {!isAllowingMana && <Radio toggle label={t('wrapping_page.mana_commit')} checked={wallet.manaCommit} onClick={this.handleRegisterEstateBalance}/>}
         </Card.Content>}
       </Card>
     </>
   }
 
   renderWrapLand() {
-    const { isLoading, isRegisteringLand } = this.props
+    const { isLoading, isAllowingLand } = this.props
     const wallet = this.props.wallet!
 
     return <>
@@ -146,16 +150,16 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header sub>{t('wrapping_page.land_total')}</Header>
           <Token symbol="VP" size="medium" value={wallet.landVotingPower} />
         </Card.Content>}
-        {!isLoading && <Card.Content>
-          {isRegisteringLand && <Loader active inline size="small" />}
-          {!isRegisteringLand && <Radio toggle label={t('wrapping_page.land_commit')} checked={wallet.landCommit} onClick={this.handleRegisterLandBalance} />}
+        {!isLoading && <Card.Content style={{ flexGrow: 0 }}>
+          {isAllowingLand && <Loader active inline size="small" />}
+          {!isAllowingLand && <Radio toggle label={t('wrapping_page.land_commit')} checked={wallet.landCommit} onClick={this.handleRegisterLandBalance} />}
         </Card.Content>}
       </Card>
     </>
   }
 
   renderWrapEstate() {
-    const { isLoading, isRegisteringEstate } = this.props
+    const { isLoading, isAllowingEstate } = this.props
     const wallet = this.props.wallet!
 
     return <>
@@ -183,8 +187,8 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Token symbol="VP" size="medium" value={wallet.estateVotingPower} />
         </Card.Content>}
         {!isLoading && <Card.Content>
-          {isRegisteringEstate && <Loader inline active size="small" />}
-          {!isRegisteringEstate && <Radio toggle label={t('wrapping_page.estate_commit')} checked={wallet.estateCommit} onClick={this.handleRegisterEstateBalance}/>}
+          {isAllowingEstate && <Loader inline active size="small" />}
+          {!isAllowingEstate && <Radio toggle label={t('wrapping_page.estate_commit')} checked={wallet.estateCommit} onClick={this.handleRegisterEstateBalance}/>}
         </Card.Content>}
       </Card></>
   }

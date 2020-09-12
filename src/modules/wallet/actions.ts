@@ -14,29 +14,41 @@ export type LoadBalanceRequestAction = ReturnType<typeof loadBalanceRequest>
 export type LoadBalanceSuccessAction = ReturnType<typeof loadBalanceSuccess>
 export type LoadBalanceFailureAction = ReturnType<typeof loadBalanceFailure>
 
-export const REGISTER_LAND_BALANCE_REQUEST = '[Request] Register land balance'
-export const REGISTER_LAND_BALANCE_SUCCESS = '[Success] Register land balance'
-export const REGISTER_LAND_BALANCE_FAILURE = '[Failure] Register land balance'
+export const ALLOW_MANA_REQUEST = '[Request] Allow mana'
+export const ALLOW_MANA_SUCCESS = '[Success] Allow mana'
+export const ALLOW_MANA_FAILURE = '[Failure] Allow mana'
 
-export const registerLandBalanceRequest = () => action(REGISTER_LAND_BALANCE_REQUEST, {})
-export const registerLandBalanceSuccess = (hash: string) => action(REGISTER_LAND_BALANCE_SUCCESS, buildTransactionPayload(hash))
-export const registerLandBalanceFailure = (error: string) => action(REGISTER_LAND_BALANCE_FAILURE, { error })
+export const allowManaRequest = () => action(ALLOW_MANA_REQUEST, {})
+export const allowManaSuccess = (hash?: string) => action(ALLOW_MANA_SUCCESS, hash ? buildTransactionPayload(hash) : {})
+export const allowManaFailure = (error: string) => action(ALLOW_MANA_FAILURE, { error })
 
-export type RegisterLandBalanceRequestAction = ReturnType<typeof registerLandBalanceRequest>
-export type RegisterLandBalanceSuccessAction = ReturnType<typeof registerLandBalanceSuccess>
-export type RegisterLandBalanceFailureAction = ReturnType<typeof registerLandBalanceFailure>
+export type AllowManaRequestAction = ReturnType<typeof allowManaRequest>
+export type AllowManaSuccessAction = ReturnType<typeof allowManaSuccess>
+export type AllowManaFailureAction = ReturnType<typeof allowManaFailure>
 
-export const REGISTER_ESTATE_BALANCE_REQUEST = '[Request] Register estate balance'
-export const REGISTER_ESTATE_BALANCE_SUCCESS = '[Success] Register estate balance'
-export const REGISTER_ESTATE_BALANCE_FAILURE = '[Failure] Register estate balance'
+export const ALLOW_LAND_REQUEST = '[Request] Allow land'
+export const ALLOW_LAND_SUCCESS = '[Success] Allow land'
+export const ALLOW_LAND_FAILURE = '[Failure] Allow land'
 
-export const registerEstateBalanceRequest = () => action(REGISTER_ESTATE_BALANCE_REQUEST, {})
-export const registerEstateBalanceSuccess = (hash: string) => action(REGISTER_ESTATE_BALANCE_SUCCESS, buildTransactionPayload(hash))
-export const registerEstateBalanceFailure = (error: string) => action(REGISTER_ESTATE_BALANCE_FAILURE, { error })
+export const allowLandRequest = () => action(ALLOW_LAND_REQUEST, {})
+export const allowLandSuccess = (hash: string) => action(ALLOW_LAND_SUCCESS, buildTransactionPayload(hash))
+export const allowLandFailure = (error: string) => action(ALLOW_LAND_FAILURE, { error })
 
-export type RegisterEstateBalanceRequestAction = ReturnType<typeof registerEstateBalanceRequest>
-export type RegisterEstateBalanceSuccessAction = ReturnType<typeof registerEstateBalanceSuccess>
-export type RegisterEstateBalanceFailureAction = ReturnType<typeof registerEstateBalanceFailure>
+export type AllowLandRequestAction = ReturnType<typeof allowLandRequest>
+export type AllowLandSuccessAction = ReturnType<typeof allowLandSuccess>
+export type AllowLandFailureAction = ReturnType<typeof allowLandFailure>
+
+export const ALLOW_ESTATE_REQUEST = '[Request] Allow estate'
+export const ALLOW_ESTATE_SUCCESS = '[Success] Allow estate'
+export const ALLOW_ESTATE_FAILURE = '[Failure] Allow estate'
+
+export const allowEstateRequest = () => action(ALLOW_ESTATE_REQUEST, {})
+export const allowEstateSuccess = (hash: string) => action(ALLOW_ESTATE_SUCCESS, buildTransactionPayload(hash))
+export const allowEstateFailure = (error: string) => action(ALLOW_ESTATE_FAILURE, { error })
+
+export type AllowEstateRequestAction = ReturnType<typeof allowEstateRequest>
+export type AllowEstateSuccessAction = ReturnType<typeof allowEstateSuccess>
+export type AllowEstateFailureAction = ReturnType<typeof allowEstateFailure>
 
 export const WRAP_MANA_REQUEST = '[Request] Wrap MANA'
 export const WRAP_MANA_SUCCESS = '[Success] Wrap MANA'

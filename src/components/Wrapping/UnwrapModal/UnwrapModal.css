@@ -53,8 +53,10 @@
 
 .ui.modal.UnwrapModal .dcl.field {
   min-width: auto;
+  width: 100%;
 }
 
+.ui.modal.UnwrapModal .dcl.field,
 .ui.modal.UnwrapModal .ui.button {
   width: 250px;
 }

@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'modules/wallet/types'
-import { registerLandBalanceRequest, registerEstateBalanceRequest, RegisterLandBalanceRequestAction, RegisterEstateBalanceRequestAction, wrapManaRequest, WrapManaRequestAction } from 'modules/wallet/actions'
+import { allowLandRequest, allowEstateRequest, AllowLandRequestAction, AllowEstateRequestAction, wrapManaRequest, WrapManaRequestAction } from 'modules/wallet/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type State = {
@@ -15,8 +15,9 @@ export type Props = DefaultProps & {
   isConnecting: boolean
   isEnabling: boolean
   isLoading: boolean
-  isRegisteringLand: boolean
-  isRegisteringEstate: boolean
+  isAllowingMana: boolean
+  isAllowingLand: boolean
+  isAllowingEstate: boolean
   isWrappingMana: boolean
   isUnwrappingMana: boolean
   wallet: Wallet | null | undefined
@@ -24,8 +25,8 @@ export type Props = DefaultProps & {
   onNavigate: (path: string) => void
   onWrapToken: typeof wrapManaRequest
   onUnwrapToken: typeof wrapManaRequest
-  onRegisterLand: typeof registerLandBalanceRequest
-  onRegisterEstate: typeof registerEstateBalanceRequest
+  onAllowLand: typeof allowLandRequest
+  onAllowEstate: typeof allowEstateRequest
 }
 
 export type MapStateProps = Pick<Props,
@@ -33,11 +34,12 @@ export type MapStateProps = Pick<Props,
   | 'isConnecting'
   | 'isEnabling'
   | 'isLoading'
-  | 'isRegisteringLand'
-  | 'isRegisteringEstate'
+  | 'isAllowingMana'
+  | 'isAllowingLand'
+  | 'isAllowingEstate'
   | 'isWrappingMana'
   | 'isUnwrappingMana'
   | 'wallet'
 >
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onNavigate' | 'onRegisterLand' | 'onRegisterEstate' | 'onWrapToken' | 'onUnwrapToken'>
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | CallHistoryMethodAction | RegisterEstateBalanceRequestAction | RegisterLandBalanceRequestAction | WrapManaRequestAction>
+export type MapDispatchProps = Pick<Props, 'onConnect' | 'onNavigate' | 'onAllowLand' | 'onAllowEstate' | 'onWrapToken' | 'onUnwrapToken'>
+export type MapDispatch = Dispatch<ConnectWalletRequestAction | CallHistoryMethodAction | AllowEstateRequestAction | AllowLandRequestAction | WrapManaRequestAction>

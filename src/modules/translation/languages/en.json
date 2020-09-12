@@ -85,6 +85,7 @@
     "mana_unwrap": "UNWRAP",
     "mana_wrap": "WRAP TOKENS",
     "mana_rate": "CONVERT TOKENS",
+    "mana_commit": "COMMIT MANA",
     "land_title": "Land Balance",
     "land_balance": "BALANCE",
     "land_total": "TOTAL VOTING POWER",

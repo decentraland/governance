@@ -10,12 +10,12 @@ import {
   LOAD_BALANCE_REQUEST,
   loadBalanceFailure,
   loadBalanceSuccess,
-  REGISTER_LAND_BALANCE_REQUEST,
-  registerLandBalanceSuccess,
-  registerLandBalanceFailure,
-  REGISTER_ESTATE_BALANCE_REQUEST,
-  registerEstateBalanceSuccess,
-  registerEstateBalanceFailure,
+  ALLOW_LAND_REQUEST,
+  allowLandSuccess,
+  allowLandFailure,
+  ALLOW_ESTATE_REQUEST,
+  allowEstateSuccess,
+  allowEstateFailure,
   WRAP_MANA_REQUEST,
   wrapManaFailure,
   WrapManaRequestAction,
@@ -23,7 +23,10 @@ import {
   UnwrapManaRequestAction,
   UNWRAP_MANA_REQUEST,
   unwrapManaSuccess,
-  unwrapManaFailure
+  unwrapManaFailure,
+  ALLOW_MANA_REQUEST,
+  allowManaSuccess,
+  allowManaFailure
 } from './actions'
 import { Wallet, Network } from './types'
 import { getNetwork } from './selectors'
@@ -33,7 +36,7 @@ import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 
 const VOTING_POWER_BY_LAND = 2_000
-const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0xfffffffffffffffffffffffffffffffffffffffffffffffa9438a1d29cefffff')
+const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0xf' + '0'.repeat(63))
 const EMPTY_ALLOWANCE_AMOUNT = BigNumber.from(0)
 const baseWalletSaga = createWalletSaga()
 
@@ -47,8 +50,9 @@ function* projectWalletSaga() {
   yield takeLatest(CHANGE_NETWORK, requestBalance)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, requestBalance)
   yield takeLatest(LOAD_BALANCE_REQUEST, getBalance)
-  yield takeLatest(REGISTER_LAND_BALANCE_REQUEST, registerLandBalance)
-  yield takeLatest(REGISTER_ESTATE_BALANCE_REQUEST, registerEstateBalance)
+  yield takeLatest(ALLOW_MANA_REQUEST, allowManaBalance)
+  yield takeLatest(ALLOW_LAND_REQUEST, allowLandBalance)
+  yield takeLatest(ALLOW_ESTATE_REQUEST, allowEstateBalance)
   yield takeLatest(WRAP_MANA_REQUEST, wrapMana)
   yield takeLatest(UNWRAP_MANA_REQUEST, unwrapMana)
 }
@@ -62,10 +66,15 @@ function* getBalance(): any {
 
   if (wallet) {
     try {
+      const address: string = yield select(getAddress)
+      const network: Network = yield select(getNetwork)
+      const wrapAddress = MANAMiniMeToken[network]
+      const manaContract: Contract = yield select(getManaContract)
       const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
       const landContract = yield select(getLandContract)
       const estateContract = yield select(getEstateContract)
       let [
+        [ manaAllowance ],
         manaMiniMe,
         land,
         landCommit,
@@ -73,6 +82,7 @@ function* getBalance(): any {
         estateSize,
         estateCommit
       ] = yield call(() => Promise.all([
+        manaContract.functions.allowance(address, wrapAddress),
         manaMiniMeContract.balanceOf(wallet.address).catch(console.error),
         landContract.balanceOf(wallet.address).catch(console.error),
         landContract.registeredBalance(wallet.address).catch(console.error),
@@ -81,6 +91,7 @@ function* getBalance(): any {
         estateContract.registeredBalance(wallet.address).catch(console.error)
       ]))
 
+      const manaCommit = manaAllowance.gte(MAX_ALLOWANCE_AMOUNT)
       manaMiniMe = (manaMiniMe || 0) / 1e18
       land = BigNumber.from(land || 0).toNumber()
       landCommit = !!landCommit
@@ -95,6 +106,7 @@ function* getBalance(): any {
 
       yield put(loadBalanceSuccess({
         ...wallet,
+        manaCommit,
         manaMiniMe,
         land,
         landCommit,
@@ -115,23 +127,49 @@ function* getBalance(): any {
   }
 }
 
-function* registerLandBalance() {
+function* allowManaBalance() {
   try {
-    const landContract = yield select(getLandContract)
-    const tx = yield call(() => landContract.registerBalance())
-    yield put(registerLandBalanceSuccess(tx.hash))
+    const address: string = yield select(getAddress)
+    const network: Network = yield select(getNetwork)
+    const wrapAddress = MANAMiniMeToken[network]
+    const manaContract: Contract = yield select(getManaContract)
+
+    const [ allowed ]: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
+
+    if (!allowed.eq(MAX_ALLOWANCE_AMOUNT) && !allowed.eq(EMPTY_ALLOWANCE_AMOUNT)) {
+      const clearTx = yield call(() => manaContract.functions.approve(wrapAddress, EMPTY_ALLOWANCE_AMOUNT))
+      yield call(() => clearTx.wait(1))
+    }
+
+    if (!allowed.eq(MAX_ALLOWANCE_AMOUNT)) {
+      const approveTx = yield call(() => manaContract.functions.approve(wrapAddress, MAX_ALLOWANCE_AMOUNT))
+      yield put(allowManaSuccess(approveTx.hash))
+    } else {
+      yield put(allowManaSuccess())
+    }
+
   } catch (err) {
-    yield put(registerLandBalanceFailure(err.message))
+    yield put(allowManaFailure(err.message))
   }
 }
 
-function* registerEstateBalance() {
+function* allowLandBalance() {
+  try {
+    const landContract = yield select(getLandContract)
+    const tx = yield call(() => landContract.registerBalance())
+    yield put(allowLandSuccess(tx.hash))
+  } catch (err) {
+    yield put(allowLandFailure(err.message))
+  }
+}
+
+function* allowEstateBalance() {
   try {
     const estateContract = yield select(getEstateContract)
     const tx = yield call(() => estateContract.registerBalance())
-    yield put(registerEstateBalanceSuccess(tx.hash))
+    yield put(allowEstateSuccess(tx.hash))
   } catch (err) {
-    yield put(registerEstateBalanceFailure(err.message))
+    yield put(allowEstateFailure(err.message))
   }
 }
 

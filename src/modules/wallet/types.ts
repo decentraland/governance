@@ -26,6 +26,7 @@ export type Wallet = BaseWallet & {
   estate?: number
   estateSize?: number
   estateCommit?: boolean
+  manaCommit?: boolean
   manaMiniMe?: number
   manaVotingPower?: number
   landVotingPower?: number

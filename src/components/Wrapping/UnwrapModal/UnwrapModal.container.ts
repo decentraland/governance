@@ -6,7 +6,7 @@ import UnwrapModal from './UnwrapModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './UnwrapModal.types'
 import { push } from 'connected-react-router'
 import { getQuery } from 'routing/selectors'
-import { isWrappingMana, isUnwrappingMana } from 'modules/wallet/selectors'
+import { isWrappingMana, isUnwrappingMana, getData } from 'modules/wallet/selectors'
 import { unwrapManaRequest } from 'modules/wallet/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -14,7 +14,8 @@ const mapState = (state: RootState): MapStateProps => ({
   isConnecting: isConnecting(state),
   isWrappingMana: isWrappingMana(state),
   isUnwrappingMana: isUnwrappingMana(state),
-  params: getQuery(state)
+  params: getQuery(state),
+  wallet: getData(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

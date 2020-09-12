@@ -10,18 +10,24 @@ import {
   LoadBalanceFailureAction,
   LoadBalanceRequestAction,
   LoadBalanceSuccessAction,
-  RegisterLandBalanceFailureAction,
-  RegisterLandBalanceRequestAction,
-  RegisterLandBalanceSuccessAction,
-  RegisterEstateBalanceFailureAction,
-  RegisterEstateBalanceRequestAction,
-  RegisterEstateBalanceSuccessAction,
-  REGISTER_ESTATE_BALANCE_SUCCESS,
-  REGISTER_LAND_BALANCE_SUCCESS,
-  REGISTER_ESTATE_BALANCE_FAILURE,
-  REGISTER_LAND_BALANCE_FAILURE,
-  REGISTER_ESTATE_BALANCE_REQUEST,
-  REGISTER_LAND_BALANCE_REQUEST,
+  ALLOW_MANA_FAILURE,
+  ALLOW_MANA_REQUEST,
+  ALLOW_MANA_SUCCESS,
+  AllowManaFailureAction,
+  AllowManaRequestAction,
+  AllowManaSuccessAction,
+  AllowLandFailureAction,
+  AllowLandRequestAction,
+  AllowLandSuccessAction,
+  AllowEstateFailureAction,
+  AllowEstateRequestAction,
+  AllowEstateSuccessAction,
+  ALLOW_ESTATE_SUCCESS,
+  ALLOW_LAND_SUCCESS,
+  ALLOW_ESTATE_FAILURE,
+  ALLOW_LAND_FAILURE,
+  ALLOW_ESTATE_REQUEST,
+  ALLOW_LAND_REQUEST,
   WRAP_MANA_FAILURE,
   WRAP_MANA_REQUEST,
   WRAP_MANA_SUCCESS,
@@ -53,12 +59,12 @@ export type WalletReducerAction =
   | LoadBalanceFailureAction
   | LoadBalanceRequestAction
   | LoadBalanceSuccessAction
-  | RegisterLandBalanceFailureAction
-  | RegisterLandBalanceRequestAction
-  | RegisterLandBalanceSuccessAction
-  | RegisterEstateBalanceFailureAction
-  | RegisterEstateBalanceRequestAction
-  | RegisterEstateBalanceSuccessAction
+  | AllowLandFailureAction
+  | AllowLandRequestAction
+  | AllowLandSuccessAction
+  | AllowEstateFailureAction
+  | AllowEstateRequestAction
+  | AllowEstateSuccessAction
   | BaseWalletReducerAction
   | WrapManaRequestAction
   | WrapManaSuccessAction
@@ -66,13 +72,17 @@ export type WalletReducerAction =
   | UnwrapManaRequestAction
   | UnwrapManaSuccessAction
   | UnwrapManaFailureAction
+  | AllowManaFailureAction
+  | AllowManaRequestAction
+  | AllowManaSuccessAction
 
 export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction): WalletState => {
   switch (action.type) {
+    case ALLOW_MANA_REQUEST:
+    case ALLOW_LAND_REQUEST:
+    case ALLOW_ESTATE_REQUEST:
     case WRAP_MANA_REQUEST:
     case UNWRAP_MANA_REQUEST:
-    case REGISTER_LAND_BALANCE_REQUEST:
-    case REGISTER_ESTATE_BALANCE_REQUEST:
     case LOAD_BALANCE_REQUEST: {
       return {
         ...state,
@@ -82,8 +92,9 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
 
     case WRAP_MANA_SUCCESS:
     case UNWRAP_MANA_SUCCESS:
-    case REGISTER_LAND_BALANCE_FAILURE:
-    case REGISTER_ESTATE_BALANCE_FAILURE: {
+    case ALLOW_MANA_FAILURE:
+    case ALLOW_LAND_FAILURE:
+    case ALLOW_ESTATE_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -100,8 +111,9 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
       }
     }
 
-    case REGISTER_LAND_BALANCE_SUCCESS:
-    case REGISTER_ESTATE_BALANCE_SUCCESS:
+    case ALLOW_MANA_SUCCESS:
+    case ALLOW_LAND_SUCCESS:
+    case ALLOW_ESTATE_SUCCESS:
     case LOAD_BALANCE_SUCCESS: {
       return {
         data: {

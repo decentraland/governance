@@ -7,7 +7,7 @@ import { getNetwork as getStoreNetwork, getAddress, isConnecting, getError } fro
 import { RootState } from 'modules/root/types'
 import { Network } from './types'
 import { ensureNetwork } from './utils'
-import { LOAD_BALANCE_REQUEST, REGISTER_ESTATE_BALANCE_REQUEST, REGISTER_LAND_BALANCE_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST, REGISTER_LAND_BALANCE_SUCCESS, REGISTER_ESTATE_BALANCE_SUCCESS, WRAP_MANA_SUCCESS, UNWRAP_MANA_SUCCESS } from './actions'
+import { LOAD_BALANCE_REQUEST, ALLOW_ESTATE_REQUEST, ALLOW_LAND_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST, ALLOW_LAND_SUCCESS, ALLOW_ESTATE_SUCCESS, WRAP_MANA_SUCCESS, UNWRAP_MANA_SUCCESS, ALLOW_MANA_REQUEST, ALLOW_MANA_SUCCESS } from './actions'
 import { createIsPendingTransactionSelector } from 'modules/transaction/selectors'
 
 const DEFAULT_NETWORK: Network = Number(env.get('REACT_APP_DEFAULT_NETWORK', 1))
@@ -16,14 +16,18 @@ export { getError }
 export const getState = (state: RootState) => state.wallet
 export const getData = (state: RootState) => getState(state).data
 export const isLoading = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, LOAD_BALANCE_REQUEST)
-export const isRegisteringLand = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, REGISTER_LAND_BALANCE_REQUEST)
-export const isRegisteringEstate = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, REGISTER_ESTATE_BALANCE_REQUEST)
-export const isWrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, WRAP_MANA_REQUEST)
-export const isUnwrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, UNWRAP_MANA_REQUEST)
-export const isRegisterLandPending = createIsPendingTransactionSelector(REGISTER_LAND_BALANCE_SUCCESS)
-export const isRegisterEstatePending = createIsPendingTransactionSelector(REGISTER_ESTATE_BALANCE_SUCCESS)
+
+export const isAllowingManaPending = createIsPendingTransactionSelector(ALLOW_MANA_SUCCESS)
+export const isAllowingLandPending = createIsPendingTransactionSelector(ALLOW_LAND_SUCCESS)
+export const isAllowingEstatePending = createIsPendingTransactionSelector(ALLOW_ESTATE_SUCCESS)
 export const isWrapManaPending = createIsPendingTransactionSelector(WRAP_MANA_SUCCESS)
 export const isUnwrapManaPending = createIsPendingTransactionSelector(UNWRAP_MANA_SUCCESS)
+
+export const isAllowingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, ALLOW_MANA_REQUEST) || isAllowingManaPending(state)
+export const isAllowingLand = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, ALLOW_LAND_REQUEST) || isAllowingLandPending(state)
+export const isAllowingEstate = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, ALLOW_ESTATE_REQUEST) || isAllowingEstatePending(state)
+export const isWrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, WRAP_MANA_REQUEST) || isWrapManaPending(state)
+export const isUnwrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, UNWRAP_MANA_REQUEST) || isUnwrapManaPending(state)
 
 export const getNetwork = (state: RootState): Network => {
   return ensureNetwork(getStoreNetwork(state)) ||

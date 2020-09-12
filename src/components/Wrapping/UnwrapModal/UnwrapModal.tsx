@@ -39,13 +39,14 @@ export default class UnwrapModal extends React.PureComponent<Props, State> {
 
   render() {
     const { completed } = this.props.params
+    const wallet = this.props.wallet
     return <Modal className="UnwrapModal" open={this.isOpen()} onClose={this.handleClose}>
       <Icon name="close" onClick={this.handleClose} />
       <Modal.Content>
         <Modal.Header><Header>{t('unwrapping_modal.title')}</Header></Modal.Header>
         {!completed && <Modal.Description>{t('unwrapping_modal.description')}</Modal.Description>}
         {!completed && <Modal.Description>
-          <Field type="number" min="0" onChange={this.handleChangeWrapValue} defaultValue={this.props.params.amount}/>
+          <Field type="number" min={0} max={wallet && wallet.manaMiniMe || 0} onChange={this.handleChangeWrapValue} defaultValue={this.props.params.amount}/>
         </Modal.Description>}
         {!completed && <Modal.Actions>
           <Button
