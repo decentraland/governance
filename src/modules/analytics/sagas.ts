@@ -5,7 +5,6 @@ import { getData } from 'modules/wallet/selectors'
 
 import { ConnectWalletSuccessAction, CONNECT_WALLET_FAILURE, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { CREATE_CAST_FAILURE, CREATE_CAST_REQUEST, CREATE_CAST_SUCCESS, LOAD_CASTS_FAILURE } from 'modules/cast/actions'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import {
   ALLOW_ESTATE_FAILURE,
   ALLOW_ESTATE_REQUEST,
