@@ -11,7 +11,7 @@ export default class Navbar extends React.PureComponent<Props, any> {
       <BaseNavbar
         {...this.props}
         activePage="dao"
-        isFullscreen
+        isFullscreen={this.props.isFullscreen ?? true}
         onSignIn={this.props.onConnect}
         // onClickAccount={handleOnClickAccount}
         middleMenu={

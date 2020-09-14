@@ -1,3 +1,7 @@
+.dcl.page.ProposalPage {
+  padding-top: 24px;
+}
+
 .dcl.page.ProposalPage .ui.card {
   width: 100%;
   min-height: 100px;

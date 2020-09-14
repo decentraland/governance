@@ -4,8 +4,6 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './ProposalPage.types'
 import { Navbar } from 'components/Navbar'
 import { Footer } from 'components/Footer'
-import { Navigation } from 'components/Navigation'
-import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -72,8 +70,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     const expired = vote?.status !== VoteStatus.Progress
 
     return <>
-      <Navbar />
-      <Navigation activeTab={NavigationTab.Proposals} />
+      <Navbar isFullscreen={false} />
       <Page className="ProposalPage">
         <ProposalSupportModal vote={vote} />
         <div className="ProposalPageBack">
