@@ -5,6 +5,7 @@ import { VoteDescription } from 'modules/description/types'
 import { Cast } from '@aragon/connect-voting'
 import { loadCastsRequest, LoadCastsRequestAction } from 'modules/cast/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { Wallet } from 'modules/wallet/types'
 
 export type Props = {
   isConnected: boolean
@@ -16,12 +17,13 @@ export type Props = {
   description?: VoteDescription
   casts?: Cast[]
   cast?: Cast
+  wallet?: Wallet | null
   onNavigate: (path: string, replace?: boolean) => void
   onBack: () => void
   onConnect: typeof connectWalletRequest
   onRequireCasts: typeof loadCastsRequest
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isEnabling' | 'isLoading' | 'isPending' | 'vote' | 'description' | 'casts' | 'cast'>
+export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isEnabling' | 'isLoading' | 'isPending' | 'vote' | 'description' | 'casts' | 'cast' | 'wallet'>
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onRequireCasts' | 'onNavigate' | 'onBack'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction | LoadCastsRequestAction | CallHistoryMethodAction>

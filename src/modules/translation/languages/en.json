@@ -68,7 +68,8 @@
     "left": "time left",
     "support": "support",
     "approval": "minimum approval",
-    "needed": "(>{needed, number}% needed)"
+    "needed": "(>{needed, number}% needed)",
+    "wrap": "wrap tokens"
   },
   "proposal_support_modal": {
     "title": "Vote Confirmation",

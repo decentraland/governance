@@ -11,6 +11,7 @@ import { LOAD_APPS_REQUEST } from 'modules/app/actions'
 import { getData as getVotes, getLoading as getLoadingVotes } from 'modules/vote/selectors'
 import { getData as getVoteDescription } from 'modules/description/selectors'
 import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
+import { getData as getWallet } from 'modules/wallet/selectors'
 import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
@@ -29,6 +30,7 @@ const mapState = (state: RootState, props: any): MapStateProps => {
     vote,
     casts,
     cast,
+    wallet: getWallet(state),
     description: getVoteDescription(state)[voteId],
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),

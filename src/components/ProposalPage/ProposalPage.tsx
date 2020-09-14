@@ -25,6 +25,7 @@ import { getAppName } from 'modules/app/utils'
 import inspect from 'util-inspect'
 import { AggregatedVote, VoteStatus } from 'modules/vote/types'
 import './ProposalPage.css'
+import { locations } from 'routing/locations'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
 
@@ -40,6 +41,10 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     }
   }
 
+  handleWrap = () => {
+    this.props.onNavigate(locations.wrapping())
+  }
+
   handleApprove = () => {
     if (this.props.vote) {
       this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: true }), true)
@@ -53,8 +58,9 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   }
 
   render() {
-    const { isLoading, isPending, vote, description, casts, cast } = this.props
+    const { isLoading, isPending, vote, description, casts, cast, wallet } = this.props
     const loadingCast = !casts || (!cast && isPending)
+    const votingPower = wallet?.votingPower || 0
     const balance = vote?.balance || {} as Partial<AggregatedVote['balance']>
     const expired = vote?.status !== VoteStatus.Progress
 
@@ -116,16 +122,19 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                       {loadingCast && <Grid.Column mobile="9">
                         <Button inverted loading={true} className="pending">loading</Button>
                       </Grid.Column>}
-                      {!loadingCast && !cast && <Grid.Column mobile="9">
+                      {!loadingCast && votingPower === 0 && <Grid.Column mobile="9">
+                        <Button inverted className="pending" onClick={this.handleWrap}>{t('proposal_detail_page.wrap')}</Button>
+                      </Grid.Column>}
+                      {!loadingCast && votingPower > 0 && !cast && <Grid.Column mobile="9">
                         <div className="VotePending">
                           <Button inverted disabled={expired} className="pending" onClick={this.handleApprove}>Vote YES</Button>
                           <Button inverted disabled={expired} className="pending" onClick={this.handleReject}>Vote NO</Button>
                         </div>
                       </Grid.Column>}
-                      {!loadingCast && cast && cast.supports && <Grid.Column mobile="9">
+                      {!loadingCast && votingPower > 0 && cast && cast.supports && <Grid.Column mobile="9">
                         <Button inverted disabled={expired} className="yea">Voted YES</Button>
                       </Grid.Column>}
-                      {!loadingCast && cast && !cast.supports && <Grid.Column mobile="9">
+                      {!loadingCast && votingPower > 0 && cast && !cast.supports && <Grid.Column mobile="9">
                         <Button inverted disabled={expired} className="nay">Voted NO</Button>
                       </Grid.Column>}
                     </Grid.Row>
