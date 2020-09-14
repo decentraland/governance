@@ -4,7 +4,7 @@ import { select, takeEvery } from 'redux-saga/effects'
 import { getData } from 'modules/wallet/selectors'
 
 import { CONNECT_WALLET_FAILURE, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { CREATE_CAST_FAILURE, CREATE_CAST_SUCCESS, LOAD_CASTS_FAILURE } from 'modules/cast/actions'
+import { CREATE_CAST_FAILURE, CREATE_CAST_REQUEST, CREATE_CAST_SUCCESS, LOAD_CASTS_FAILURE } from 'modules/cast/actions'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import {
   ALLOW_ESTATE_FAILURE,
@@ -24,13 +24,41 @@ import {
   WRAP_MANA_REQUEST,
   WRAP_MANA_SUCCESS
 } from 'modules/wallet/actions'
-import { LOAD_VOTES_FAILURE } from 'modules/vote/actions'
+import {
+  CREATE_BAN_FAILURE,
+  CREATE_BAN_REQUEST,
+  CREATE_BAN_SUCCESS,
+  CREATE_CATALYST_FAILURE,
+  CREATE_CATALYST_REQUEST,
+  CREATE_CATALYST_SUCCESS,
+  CREATE_POI_REQUEST,
+  CREATE_POI_FAILURE,
+  CREATE_POI_SUCCESS,
+  CREATE_QUESTION_REQUEST,
+  CREATE_QUESTION_FAILURE,
+  CREATE_QUESTION_SUCCESS,
+  LOAD_VOTES_FAILURE
+} from 'modules/vote/actions'
 import { LOAD_APPS_FAILURE } from 'modules/app/actions'
 
 export function* segmentSaga() {
   yield takeEvery(CONNECT_WALLET_SUCCESS, segmentTrack)
   yield takeEvery(CONNECT_WALLET_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_CAST_REQUEST, segmentTrack)
   yield takeEvery(CREATE_CAST_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_CAST_SUCCESS, segmentTrack)
+  yield takeEvery(CREATE_BAN_REQUEST, segmentTrack)
+  yield takeEvery(CREATE_BAN_SUCCESS, segmentTrack)
+  yield takeEvery(CREATE_BAN_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_CATALYST_REQUEST, segmentTrack)
+  yield takeEvery(CREATE_CATALYST_SUCCESS, segmentTrack)
+  yield takeEvery(CREATE_CATALYST_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_POI_REQUEST, segmentTrack)
+  yield takeEvery(CREATE_POI_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_POI_SUCCESS, segmentTrack)
+  yield takeEvery(CREATE_QUESTION_REQUEST, segmentTrack)
+  yield takeEvery(CREATE_QUESTION_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_QUESTION_SUCCESS, segmentTrack)
   yield takeEvery(CREATE_CAST_SUCCESS, segmentTrack)
   yield takeEvery(LOCATION_CHANGE, segmentTrack)
   yield takeEvery(LOAD_VOTES_FAILURE, segmentTrack)
