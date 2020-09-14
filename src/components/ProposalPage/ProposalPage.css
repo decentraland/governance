@@ -56,6 +56,31 @@
   width: 100%;
 }
 
+.dcl.page.ProposalPage .ProposalActions .voted .current {
+  display: block
+}
+
+.dcl.page.ProposalPage .ProposalActions .voted .ui.button.switch {
+  display: none;
+  color: white;
+}
+
+.dcl.page.ProposalPage .ProposalActions .voted .ui.button.switch.nay {
+  background-color: var(--rejected);
+}
+
+.dcl.page.ProposalPage .ProposalActions .voted .ui.button.switch.yea {
+  background-color: var(--success);
+}
+
+.dcl.page.ProposalPage .ProposalActions .voted:hover .current {
+  display: none
+}
+
+.dcl.page.ProposalPage .ProposalActions .voted:hover .ui.button.switch {
+  display: block
+}
+
 .dcl.page.ProposalPage .DetailDebugContainer {
   width: 100%;
   overflow: auto;

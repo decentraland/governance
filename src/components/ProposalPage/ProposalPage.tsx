@@ -57,6 +57,13 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     }
   }
 
+  handleSwitch = () => {
+    if (this.props.vote && this.props.cast) {
+      const support = !this.props.cast.supports
+      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support }), true)
+    }
+  }
+
   render() {
     const { isLoading, isPending, vote, description, casts, cast, wallet } = this.props
     const loadingCast = !casts || (!cast && isPending)
@@ -131,11 +138,13 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                           <Button inverted disabled={expired} className="pending" onClick={this.handleReject}>Vote NO</Button>
                         </div>
                       </Grid.Column>}
-                      {!loadingCast && votingPower > 0 && cast && cast.supports && <Grid.Column mobile="9">
-                        <Button inverted disabled={expired} className="yea">Voted YES</Button>
+                      {!loadingCast && votingPower > 0 && cast && cast.supports && <Grid.Column mobile="9" className="voted">
+                        <Button inverted disabled={expired} className="yea current">Voted YES</Button>
+                        <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>Vote NO</Button>
                       </Grid.Column>}
-                      {!loadingCast && votingPower > 0 && cast && !cast.supports && <Grid.Column mobile="9">
-                        <Button inverted disabled={expired} className="nay">Voted NO</Button>
+                      {!loadingCast && votingPower > 0 && cast && !cast.supports && <Grid.Column mobile="9" className="voted">
+                        <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>Vote YES</Button>
+                        <Button inverted disabled={expired} className="nay current">Voted NO</Button>
                       </Grid.Column>}
                     </Grid.Row>
                   </Grid>
