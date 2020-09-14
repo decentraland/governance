@@ -44,7 +44,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   actions: [CLEAR_TRANSACTIONS, CONNECT_WALLET_SUCCESS, LOAD_VOTE_DESCRIPTION_SUCCESS] // array of actions types that will trigger a SAVE (optional)
 })
 
-const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))
+const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_KEY'))
 const transactionMiddleware = createTransactionMiddleware()
 const enhancer = composeEnhancers(applyMiddleware(
   sagasMiddleware,
