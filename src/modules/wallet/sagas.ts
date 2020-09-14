@@ -1,5 +1,7 @@
 import { all, takeLatest, call, select, put } from 'redux-saga/effects'
-import { FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+// import { FETCH_TRANSACTION_SUCCESS, FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
+// import { getData as getTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
+// import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -37,7 +39,8 @@ import { locations } from 'routing/locations'
 import { UnwrapParams } from 'routing/types'
 
 const VOTING_POWER_BY_LAND = 2_000
-const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0x0f' + '0'.repeat(62))
+const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0x' + 'f'.repeat(64))
+const REQUIRE_ALLOWANCE_AMOUNT = BigNumber.from('0x01' + '0'.repeat(62))
 const EMPTY_ALLOWANCE_AMOUNT = BigNumber.from(0)
 const baseWalletSaga = createWalletSaga()
 
@@ -49,7 +52,7 @@ function* projectWalletSaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, requestBalance)
   yield takeLatest(CHANGE_ACCOUNT, requestBalance)
   yield takeLatest(CHANGE_NETWORK, requestBalance)
-  yield takeLatest(FETCH_TRANSACTION_SUCCESS, requestBalance)
+  // yield takeLatest(FETCH_TRANSACTION_SUCCESS, checkBalance)
   yield takeLatest(LOAD_BALANCE_REQUEST, getBalance)
   yield takeLatest(ALLOW_MANA_REQUEST, allowManaBalance)
   yield takeLatest(ALLOW_LAND_REQUEST, allowLandBalance)
@@ -57,6 +60,15 @@ function* projectWalletSaga() {
   yield takeLatest(WRAP_MANA_REQUEST, wrapMana)
   yield takeLatest(UNWRAP_MANA_REQUEST, unwrapMana)
 }
+
+// function* checkBalance(action: FetchTransactionSuccessAction) {
+//   const transactions: Transaction[] = yield select(getTransactions)
+//   const transaction = transactions.find(tx => tx.hash === action?.payload?.transaction?.hash)
+//   console.log(transaction, action?.payload?.transaction)
+//   if (transaction?.status === TransactionStatus.CONFIRMED) {
+//     // yield put(loadBalanceRequest())
+//   }
+// }
 
 function* requestBalance() {
   yield put(loadBalanceRequest())
@@ -92,7 +104,7 @@ function* getBalance(): any {
         estateContract.registeredBalance(wallet.address).catch(console.error)
       ]))
 
-      const manaCommit = manaAllowance.gte(MAX_ALLOWANCE_AMOUNT)
+      const manaCommit = manaAllowance.gte(REQUIRE_ALLOWANCE_AMOUNT)
       manaMiniMe = (manaMiniMe || 0) / 1e18
       land = BigNumber.from(land || 0).toNumber()
       landCommit = !!landCommit
@@ -137,7 +149,7 @@ function* allowManaBalance() {
 
     const [ allowed ]: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
 
-    if (!allowed.eq(MAX_ALLOWANCE_AMOUNT) && !allowed.eq(EMPTY_ALLOWANCE_AMOUNT)) {
+    if (!allowed.gte(REQUIRE_ALLOWANCE_AMOUNT) && !allowed.eq(EMPTY_ALLOWANCE_AMOUNT)) {
       const clearTx = yield call(() => manaContract.functions.approve(wrapAddress, EMPTY_ALLOWANCE_AMOUNT))
       yield call(() => clearTx.wait(1))
     }
