@@ -11,12 +11,14 @@ import { voteSaga } from 'modules/vote/sagas'
 import { castSaga } from 'modules/cast/sagas'
 import { voteDescriptionSaga } from 'modules/description/sagas'
 import { subscriptionSaga } from 'modules/subscription/sagas'
+import { segmentSaga } from 'modules/analytics/sagas'
 
 const analyticsSaga = createAnalyticsSaga()
 
 export function* rootSaga() {
   yield all([
     analyticsSaga(),
+    segmentSaga(),
     transactionSaga(),
     translationSaga(),
     organizationSaga(),
