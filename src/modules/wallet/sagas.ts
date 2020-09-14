@@ -31,9 +31,10 @@ import {
 import { Wallet, Network } from './types'
 import { getNetwork } from './selectors'
 import { MANAMiniMeToken } from 'modules/common/contracts'
-import { getQuery } from 'routing/selectors'
+import { getUnwrapParams } from 'routing/selectors'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
+import { UnwrapParams } from 'routing/types'
 
 const VOTING_POWER_BY_LAND = 2_000
 const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0xf' + '0'.repeat(63))
@@ -214,7 +215,7 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(value))
 
     yield put(unwrapManaSuccess(depositTx.hash))
-    const query: Record<string, string> = yield select(getQuery)
+    const query: UnwrapParams = yield select(getUnwrapParams)
     yield put(push(locations.wrapping({ ...query, completed: true })))
   } catch (err) {
     yield put(unwrapManaFailure(err.message))

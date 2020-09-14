@@ -5,7 +5,7 @@ import { RootState } from 'modules/root/types'
 import ProposalSupportModal from './ProposalSupportModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalSupportModal.types'
 import { push } from 'connected-react-router'
-import { getQuery } from 'routing/selectors'
+import { getCastParams } from 'routing/selectors'
 import { createCastRequest } from 'modules/cast/actions'
 import { isCreating } from 'modules/cast/selectors'
 
@@ -14,7 +14,7 @@ const mapState = (state: RootState): MapStateProps => {
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
     isCreating: isCreating(state),
-    params: getQuery(state)
+    params: getCastParams(state)
   }
 }
 

@@ -1,10 +1,32 @@
-import type { Vote as AragonVote, Cast } from '@aragon/connect-voting'
-import ForwardingPathDescription from '@aragon/connect-core/dist/cjs/utils/descriptor'
+import { Vote } from '@aragon/connect-voting'
 
-export type Vote = AragonVote & {
-  description?: string
-  descriptionPath?: ForwardingPathDescription
-  casted?: Cast[]
+export type AggregatedVote = Vote & {
+  status: VoteStatus
+  identifier: {
+    appAddress: string,
+    voteId: string
+  },
+  balance: {
+    acceptRequiredPercentage: number
+    supportRequiredPercentage: number
+    supportRequired: number
+    acceptRequired: number
+    acceptPercentage: number
+    supportPercentage: number
+    votingPower: number
+    yeaPercentage: number
+    nayPercentage: number
+    yea: number
+    nay: number
+  }
 }
 
-export { AragonVote }
+export enum VoteStatus {
+  All = 'all',
+  Enacted = 'enacted',
+  Passed = 'passed',
+  Rejected = 'rejected',
+  Progress = 'progress'
+}
+
+export { Vote }

@@ -12,7 +12,7 @@ import { LOAD_VOTES_REQUEST, createBanRequest, createQuestionRequest, createPoiR
 import NewProposalModal from './NewProposalModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './NewProposalModal.types'
 import { push } from 'connected-react-router'
-import { getQuery } from 'routing/selectors'
+import { getFilterProposalParams, getNewProposalParams } from 'routing/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isConnected(state),
@@ -23,7 +23,10 @@ const mapState = (state: RootState): MapStateProps => ({
     isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
     isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)
   ),
-  params: getQuery(state)
+  params: {
+    ...getFilterProposalParams(state),
+    ...getNewProposalParams(state)
+  }
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

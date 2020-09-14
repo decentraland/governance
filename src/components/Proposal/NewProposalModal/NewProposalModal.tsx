@@ -11,7 +11,7 @@ import BanForm from './BanForm/BanForm'
 import QuestionForm from './QuestionForm/QuestionForm'
 import CatalystForm from './CatalystForm/CatalystForm'
 import { isValidPosition, isValidName } from './utils'
-import { NewProposalParams } from 'routing/types'
+import { FilterProposalParams, NewProposalParams } from 'routing/types'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { locations } from 'routing/locations'
@@ -23,8 +23,17 @@ const question = require('../../../images/question-220.png')
 
 export default class NewProposalModal extends React.PureComponent<Props, any> {
 
+  getUrl(options: NewProposalParams = {}) {
+    return locations.root({
+      ...{
+        status: this.props.params.status
+      } as FilterProposalParams,
+      ...options
+    })
+  }
+
   handleChangeParams = (options: NewProposalParams = {}) => {
-    this.props.onNavigate(locations.root(options))
+    this.props.onNavigate(this.getUrl(options))
   }
 
   handleNavigate = (event: React.MouseEvent<any>) => {
@@ -121,10 +130,10 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
   renderOptions() {
     return <Modal.Content className="NewProposalModalStep">
       <Modal.Header><Header>{t('proposal_modal.title')}</Header></Modal.Header>
-      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'question' })} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a>
-      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'catalyst' })} style={{ backgroundImage: `url(${catalyst})` }}>{t('proposal_modal.title_catalyst')}</a>
-      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
-      <a onClick={this.handleNavigate} href={locations.root({ modal: 'new', create: 'ban' })} style={{ backgroundImage: `url(${ban})` }}>{t('proposal_modal.title_ban')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'question' })} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'catalyst' })} style={{ backgroundImage: `url(${catalyst})` }}>{t('proposal_modal.title_catalyst')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'ban' })} style={{ backgroundImage: `url(${ban})` }}>{t('proposal_modal.title_ban')}</a>
     </Modal.Content>
   }
 

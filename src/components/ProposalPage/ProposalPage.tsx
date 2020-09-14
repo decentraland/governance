@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './ProposalPage.types'
@@ -11,13 +10,12 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { locations } from 'routing/locations'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
 import { AppName } from 'modules/app/types'
-import { getVoteTimeLeft, getVotePercentages, isVoteExpired, getVoteUrl } from 'modules/vote/utils'
+import { getVoteTimeLeft, getVoteUrl } from 'modules/vote/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
 import { ProposalSupportModal } from 'components/Proposal/ProposalSupportModal'
@@ -25,6 +23,7 @@ import { env } from 'decentraland-commons'
 import { getVoteInitialAddress } from 'modules/description/utils'
 import { getAppName } from 'modules/app/utils'
 import inspect from 'util-inspect'
+import { AggregatedVote, VoteStatus } from 'modules/vote/types'
 import './ProposalPage.css'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
@@ -56,8 +55,8 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   render() {
     const { isLoading, isPending, vote, description, casts, cast } = this.props
     const loadingCast = !casts || (!cast && isPending)
-    const balance: Partial<ReturnType<typeof getVotePercentages>> = vote ? getVotePercentages(vote) : {}
-    const expired = vote && isVoteExpired(vote)
+    const balance = vote?.balance || {} as Partial<AggregatedVote['balance']>
+    const expired = vote?.status !== VoteStatus.Progress
 
     return <>
       <Navbar />
@@ -65,9 +64,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       <Page className="ProposalPage">
         <ProposalSupportModal vote={vote} />
         <div className="ProposalPageBack">
-          <Link to={locations.root()}>
-            <Back />
-          </Link>
+            <Back onClick={this.props.onBack} />
         </div>
         <Grid stackable>
           <Grid.Row>
@@ -96,13 +93,13 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                       </Grid.Column>
                       <Grid.Column mobile="4">
                         <Header sub>{t('proposal_detail_page.support')}</Header>
-                        <Header>{balance.supportPct || 0} %</Header>
-                        <span>{t('proposal_detail_page.needed', { needed: balance.supportRequiredPct || 0 })}</span>
+                        <Header>{balance.supportPercentage || 0} %</Header>
+                        <span>{t('proposal_detail_page.needed', { needed: balance.supportRequiredPercentage || 0 })}</span>
                       </Grid.Column>
                       <Grid.Column mobile="5">
                         <Header sub>{t('proposal_detail_page.approval')}</Header>
-                        <Header>{balance.acceptPct || 0} %</Header>
-                        <span>{t('proposal_detail_page.needed', { needed: balance.acceptRequiredPct || 0 })}</span>
+                        <Header>{balance.acceptPercentage || 0} %</Header>
+                        <span>{t('proposal_detail_page.needed', { needed: balance.acceptRequiredPercentage || 0 })}</span>
                       </Grid.Column>
                     </Grid.Row>
 

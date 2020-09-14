@@ -14,6 +14,8 @@
     "total": "total",
     "wrapped": "wrapped",
     "proceed": "proceed",
+    "progress": "in progress",
+    "all": "all",
     "number": "{value, number}",
     "land": "{land, number} {land, plural, one {Land} other {Lands}}",
     "estate": "{estate, number} {estate, plural, one {Estate} other {Estates}}",

@@ -1,3 +1,15 @@
 .HomePage .dcl.empty {
   margin: 1em 0 0;
 }
+
+.HomePage .dcl.header-menu .dcl.header-menu-right {
+  margin-right: 1em;
+} 
+
+.HomePage .dcl.header-menu .dcl.header-menu-right:last-child {
+  margin-right: 0;
+}
+
+.HomePage .dropdown .item .text {
+  text-transform: capitalize;
+}

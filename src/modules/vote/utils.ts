@@ -1,12 +1,32 @@
-import { Vote } from './types'
+import { AggregatedVote, Vote, VoteStatus } from './types'
 import { Time } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppDelay } from 'modules/app/utils'
 import { CastParams } from 'routing/types'
 
+export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
+  let status: VoteStatus = VoteStatus.Progress
+
+  if (isVoteEnacted(vote)) {
+    status = VoteStatus.Enacted
+  } else if (isVoteExpired(vote)) {
+    if (isVotePassed(vote)) {
+      status = VoteStatus.Passed
+
+    } else {
+      status = VoteStatus.Rejected
+    }
+  }
+
+  const balance = getVoteBalance(vote)
+  const identifier = getVoteIdentifier(vote)
+
+  return Object.assign(vote, { status, balance, identifier })
+}
+
 export function getVoteExpiration(vote: Vote) {
-  const details = getVoteIdDetails(vote)
+  const details = getVoteIdentifier(vote)
   const votingTime = getAppDelay(details.appAddress)
   return Number(String(vote.startDate) + '000') + votingTime
 }
@@ -20,14 +40,14 @@ export function isVoteRejected(vote: Vote) {
 }
 
 export function isVotePassed(vote: Vote) {
-  const minAcceptQuorumPct = Number(vote.minAcceptQuorum) / 1e18
-  const supportRequiredPct = Number(vote.supportRequiredPct) / 1e18
+  const minAcceptQuorumPercentage = Number(vote.minAcceptQuorum) / 1e18
+  const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
   const votingPower = Number(vote.votingPower)
   const yea = Number(vote.yea)
   const nay = Number(vote.nay)
 
-  const quorumRequired = votingPower * minAcceptQuorumPct
-  const supportRequired = (yea + nay) * supportRequiredPct
+  const quorumRequired = votingPower * minAcceptQuorumPercentage
+  const supportRequired = (yea + nay) * supportRequiredPercentage
 
   if (yea < quorumRequired) {
     return false
@@ -45,56 +65,58 @@ export function isVoteEnacted(vote: Vote) {
 }
 
 export function getVoteQuorumRequired(vote: Vote) {
-  const acceptQuorumPct = Number(vote.minAcceptQuorum) / 1e18
+  const acceptQuorumPercentage = Number(vote.minAcceptQuorum) / 1e18
   const votingPower = Number(vote.votingPower)
-  return votingPower * acceptQuorumPct
+  return votingPower * acceptQuorumPercentage
 }
 
 export function getVoteSupportRequired(vote: Vote) {
-  const supportRequiredPct = Number(vote.supportRequiredPct) / 1e18
+  const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
   const yea = Number(vote.yea)
   const nay = Number(vote.nay)
-  return (yea + nay) * supportRequiredPct
+  return (yea + nay) * supportRequiredPercentage
 }
 
-export function getVotePercentages(vote: Vote) {
-  const acceptRequiredPct = Number(vote.minAcceptQuorum) / 1e18
-  const supportRequiredPct = Number(vote.supportRequiredPct) / 1e18
+export function getVoteBalance(vote: Vote) {
+  const acceptRequiredPercentage = Number(vote.minAcceptQuorum) / 1e18
+  const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
   const votingPower = Number(vote.votingPower)
   const yea = Number(vote.yea)
   const nay = Number(vote.nay)
 
-  const supportRequired = votingPower * supportRequiredPct
-  const acceptRequired = votingPower * acceptRequiredPct
+  const supportRequired = votingPower * supportRequiredPercentage
+  const acceptRequired = votingPower * acceptRequiredPercentage
   const supportTotal = yea + nay
-  let yeaSize = 0
-  let naySize = 0
+  let yeaPercentage = 0
+  let nayPercentage = 0
+  let supportPercentage = 0
+  let acceptPercentage = 0
 
-  if (supportTotal < supportRequired) {
-    yeaSize = Math.floor((yea / supportRequired) * 100)
-    naySize = Math.floor((nay / supportRequired) * 100)
-  } else {
-    yeaSize = yea === 0 ? 0 : nay === 0 ? 100 : Math.ceil((yea / supportTotal) * 100)
-    naySize = nay === 0 ? 0 : 100 - yeaSize
+  if (supportTotal > 0) {
+    supportPercentage = Math.floor((yea / supportTotal) * 100)
+    acceptPercentage = Math.floor((yea / votingPower) * 100)
+
+    if (supportTotal < supportRequired) {
+      yeaPercentage = Math.floor((yea / supportRequired) * 100)
+      nayPercentage = Math.floor((nay / supportRequired) * 100)
+    } else {
+      yeaPercentage = yea === 0 ? 0 : nay === 0 ? 100 : Math.ceil((yea / supportTotal) * 100)
+      nayPercentage = nay === 0 ? 0 : 100 - yeaPercentage
+    }
   }
 
-  const acceptPct = Math.floor((yea / votingPower) * 100)
-  const supportPct = supportTotal > 0 ? Math.floor((yea / supportTotal) * 100) : 0
-  const yeaPct = supportTotal > 0 ? Math.floor((yea / supportTotal) * 100) : 0
-  const nayPct = supportTotal > 0 ? Math.floor((nay / supportTotal) * 100) : 0
-
   return {
-    acceptRequiredPct: Math.ceil(acceptRequiredPct * 100),
-    supportRequiredPct: Math.ceil(supportRequiredPct * 100),
+    acceptRequiredPercentage: Math.ceil(acceptRequiredPercentage * 100),
+    supportRequiredPercentage: Math.ceil(supportRequiredPercentage * 100),
     supportRequired,
     acceptRequired,
+    acceptPercentage,
+    supportPercentage,
     votingPower,
-    acceptPct,
-    supportPct,
-    yeaPct,
-    nayPct,
-    yea: yeaSize,
-    nay: naySize
+    yeaPercentage,
+    nayPercentage,
+    yea,
+    nay
   }
 }
 
@@ -126,22 +148,17 @@ export function getVoteTimeLeft(vote: Vote) {
   return t(key, values)
 }
 
-export function getVoteIdDetails(vote: Vote) {
+export function getVoteIdentifier(vote: Vote) {
   // eg: appAddress:0x37187b0f2089b028482809308e776f92eeb7334e-voteId:0x0
   const entries = vote.id.split('-').map(section => section.split(':'))
   return Object.fromEntries(entries) as { appAddress: string, voteId: string }
 }
 
 export function getVoteUrl(vote: Vote, params?: CastParams) {
-  const { appAddress, voteId } = getVoteIdDetails(vote)
+  const { appAddress, voteId } = getVoteIdentifier(vote)
   return locations.proposal(appAddress, Number(voteId), params)
 }
 
 export function sortVotes(voteA: Vote, voteB: Vote) {
-
-  // if (Boolean(voteA.executed) !== Boolean(voteB.executed)) {
-  //   return Number(voteA.executed) - Number(voteB.executed)
-  // }
-
   return voteB.startDate.localeCompare(voteA.startDate, undefined, { sensitivity: 'base', ignorePunctuation: true })
 }

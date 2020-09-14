@@ -4,9 +4,9 @@ import { Props } from './ProposalHistory.types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SAB, COMMUNITY, AppName } from 'modules/app/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isVoteEnacted, isVotePassed, getVoteIdDetails, isVoteExpired } from 'modules/vote/utils'
-import './ProposalHistory.css'
 import { isApp } from 'modules/app/utils'
+import { VoteStatus } from 'modules/vote/types'
+import './ProposalHistory.css'
 
 const created = require('../../../images/history-created.svg')
 const waiting = require('../../../images/history-waiting.svg')
@@ -53,9 +53,9 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   renderSAB() {
     const { vote } = this.props
-    const enacted = isVoteEnacted(vote)
-    const passed = enacted || isVotePassed(vote)
-    const rejected = !passed && isVoteExpired(vote)
+    const enacted = vote.status === VoteStatus.Enacted
+    const passed = enacted || vote.status === VoteStatus.Passed
+    const rejected = vote.status === VoteStatus.Rejected
     return <Card className="ProposalHistory">
       <Card.Content>
         <Header sub>{AppName.SAB}</Header>
@@ -69,9 +69,9 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   renderCOMMUNITY() {
     const { vote } = this.props
-    const enacted = isVoteEnacted(vote)
-    const passed = enacted || isVotePassed(vote)
-    const rejected = !passed && isVoteExpired(vote)
+    const enacted = vote.status === VoteStatus.Enacted
+    const passed = enacted || vote.status === VoteStatus.Passed
+    const rejected = vote.status === VoteStatus.Rejected
     return <Card className="ProposalHistory">
       <Card.Content>
         <Header sub>{AppName.INBOX}</Header>
@@ -91,9 +91,9 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   renderDelay() {
     const { vote } = this.props
-    const enacted = vote.executed
-    const passed = enacted || isVotePassed(vote)
-    const rejected = !passed && isVoteExpired(vote)
+    const enacted = vote.status === VoteStatus.Enacted
+    const passed = enacted || vote.status === VoteStatus.Passed
+    const rejected = vote.status === VoteStatus.Rejected
     return <Card className="ProposalHistory">
       <Card.Content>
         <Header sub>{AppName.INBOX}</Header>
@@ -107,27 +107,27 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   renderINBOX() {
     const { vote } = this.props
-    const enacted = vote.executed
-    const expired = isVoteExpired(vote)
-    const passed = enacted || isVotePassed(vote)
+    const enacted = vote.status === VoteStatus.Enacted
+    const passed = enacted || vote.status === VoteStatus.Passed
+    const rejected = vote.status === VoteStatus.Rejected
     return <Card className="ProposalHistory">
       <Card.Content>
         <Header sub>{AppName.INBOX}</Header>
       </Card.Content>
       <ProposalHistory.Created />
-      {expired && passed && <ProposalHistory.Waiting />}
-      {expired && !passed && <ProposalHistory.Rejected />}
+      {passed && <ProposalHistory.Waiting />}
+      {rejected && <ProposalHistory.Rejected />}
     </Card>
   }
 
   render() {
-    const details = getVoteIdDetails(this.props.vote)
+    const identifier = this.props.vote.identifier
 
-    if (isApp(details.appAddress, SAB)) {
+    if (isApp(identifier.appAddress, SAB)) {
       return this.renderSAB()
     }
 
-    if (isApp(details.appAddress, COMMUNITY)) {
+    if (isApp(identifier.appAddress, COMMUNITY)) {
       return this.renderCOMMUNITY()
     }
 

@@ -12,14 +12,19 @@ import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
 import HomePage from './HomePage'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './HomePage.types'
 import { locations } from 'routing/locations'
-import { NewProposalParams } from 'routing/types'
+import { NewProposalParams, FilterProposalParams } from 'routing/types'
 import { push } from 'connected-react-router'
+import { getNewProposalParams, getFilterProposalParams } from 'routing/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     votes: getVotes(state),
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
+    params: {
+      ...getFilterProposalParams(state),
+      ...getNewProposalParams(state)
+    },
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
@@ -30,7 +35,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
-  onChangeParams: (options: NewProposalParams = {}) => dispatch(push(locations.root(options)))
+  onChangeParams: (options: NewProposalParams | FilterProposalParams = {}) => dispatch(push(locations.root(options)))
 })
 
 export default connect(mapState, mapDispatch)(HomePage)

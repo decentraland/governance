@@ -35,7 +35,10 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Web3Provider } from '@ethersproject/providers'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
-import { getQuery } from 'routing/selectors'
+import { getNewProposalParams } from 'routing/selectors'
+import { AggregatedVote } from './types'
+import { aggregatedVote } from './utils'
+import { NewProposalParams } from 'routing/types'
 
 export function* voteSaga() {
   yield takeLatest(LOAD_APPS_SUCCESS, reloadVotes)
@@ -66,7 +69,7 @@ function* loadVotes() {
       .map(app => connectVoting(app as any).catch((err) => console.error(app, err)))
     ))
 
-    const votes: Vote[] = yield call(async () => {
+    const votes: AggregatedVote[] = yield call(async () => {
       let result: Vote[] = []
       for (const voting of aragonVoting) {
         if (voting) {
@@ -75,10 +78,10 @@ function* loadVotes() {
         }
       }
 
-      return result
+      return Promise.all(result.map(aggregatedVote))
     })
 
-    const record = {} as Record<string, Vote>
+    const record = {} as Record<string, AggregatedVote>
     for (const vote of votes) {
       record[vote.id] = vote
     }
@@ -112,7 +115,7 @@ function* createQuestion(action: CreateQuestionRequestAction) {
 
     yield put(createQuestionSuccess())
 
-    const query: Record<string, string> = yield select(getQuery)
+    const query: NewProposalParams = yield select(getNewProposalParams)
     yield put(push(locations.root({ ...query, completed: true })))
   } catch (err) {
     yield put(createQuestionFailure(err.message))
@@ -134,7 +137,7 @@ function* createBan(action: CreateBanRequestAction) {
 
     yield put(createBanSuccess())
 
-    const query: Record<string, string> = yield select(getQuery)
+    const query: NewProposalParams = yield select(getNewProposalParams)
     yield put(push(locations.root({ ...query, completed: true })))
   } catch (err) {
     yield put(createBanFailure(err.message))
@@ -157,7 +160,7 @@ function* createCatalyst(action: CreateCatalystRequestAction) {
 
     yield put(createCatalystSuccess())
 
-    const query: Record<string, string> = yield select(getQuery)
+    const query: NewProposalParams = yield select(getNewProposalParams)
     yield put(push(locations.root({ ...query, completed: true })))
   } catch (err) {
     yield put(createCatalystFailure(err.message))
@@ -180,7 +183,7 @@ function* createPoi(action: CreatePoiRequestAction) {
 
     yield put(createPoiSuccess())
 
-    const query: Record<string, string> = yield select(getQuery)
+    const query: NewProposalParams = yield select(getNewProposalParams)
     yield put(push(locations.root({ ...query, completed: true })))
   } catch (err) {
     yield put(createPoiFailure(err.message))

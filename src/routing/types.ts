@@ -9,6 +9,10 @@ export type NewProposalParams = {
   completed?: boolean
 }
 
+export type FilterProposalParams = {
+  status?: string
+}
+
 export type CastParams = {
   modal?: 'vote',
   support?: boolean,
@@ -17,6 +21,6 @@ export type CastParams = {
 
 export type UnwrapParams = {
   modal?: 'unwrap',
-  amount?: string,
+  amount?: number | string,
   completed?: boolean
 }

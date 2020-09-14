@@ -1,11 +1,11 @@
 import { Dispatch } from 'redux'
 
-import { Vote } from 'modules/vote/types'
+import { AggregatedVote } from 'modules/vote/types'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { VoteDescription } from 'modules/description/types'
 
 export type DefaultProps = {
-  vote: Vote
+  vote: AggregatedVote
 }
 
 export type Props = DefaultProps & {

@@ -31,10 +31,10 @@ import {
   CreateQuestionRequestAction,
   CreateQuestionSuccessAction
 } from './actions'
-import { Vote } from './types'
+import { AggregatedVote } from './types'
 
 export type VoteState = {
-  data: Record<string, Vote>,
+  data: Record<string, AggregatedVote>,
   loading: LoadingState
   error: Record<string, string>
 }
