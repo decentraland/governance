@@ -1,9 +1,10 @@
 import { RootState } from 'modules/root/types'
+import { getData as getDescription } from 'modules/description/selectors'
 import { createSelector } from 'reselect'
 import { VoteState } from './reducer'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { CREATE_POI_REQUEST, CREATE_QUESTION_REQUEST, CREATE_BAN_REQUEST, CREATE_CATALYST_REQUEST } from './actions'
-import { sortVotes } from './utils'
+import { filterVotes } from './utils'
 
 export const getState: (state: RootState) => VoteState = state => state.vote
 
@@ -13,7 +14,11 @@ export const getError: (state: RootState) => VoteState['error'] = state => getSt
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getVotes = createSelector(getData, (data) => Array.from(Object.values(data)).sort(sortVotes))
+export const getVotes = createSelector(
+  getData,
+  getDescription,
+  filterVotes
+)
 
 export const isCreatingPoi = (state: RootState) => isLoadingType(getState(state).loading, CREATE_POI_REQUEST)
 export const isCreatingQuestion = (state: RootState) => isLoadingType(getState(state).loading, CREATE_QUESTION_REQUEST)

@@ -1,9 +1,11 @@
 import { AggregatedVote, Vote, VoteStatus } from './types'
-import { Time } from 'modules/app/types'
+import { COMMUNITY, Delay, INBOX, SAB, Time } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAppDelay } from 'modules/app/utils'
+import { getAppDelay, isApp } from 'modules/app/utils'
 import { CastParams } from 'routing/types'
+import { VoteDescription } from 'modules/description/types'
+import { Network } from 'modules/wallet/types'
 
 export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
   let status: VoteStatus = VoteStatus.Progress
@@ -157,6 +159,58 @@ export function getVoteIdentifier(vote: Vote) {
 export function getVoteUrl(vote: Vote, params?: CastParams) {
   const { appAddress, voteId } = getVoteIdentifier(vote)
   return locations.proposal(appAddress, Number(voteId), params)
+}
+
+export function filterVotes(votes: Record<string, AggregatedVote>, descriptions: Record<string, VoteDescription>): AggregatedVote[] {
+  // return Object.values(votes)
+
+  const voteBuffer = new Set()
+  const voteList: AggregatedVote[] = []
+  const sortedVotes = Object.values(votes)
+    .sort(sortVotes)
+
+  for (const vote of sortedVotes) {
+    const voteApp = vote?.identifier?.appAddress
+    const voteDescription = vote?.metadata || descriptions[vote.id]?.description
+    if (voteApp && voteDescription) {
+      if (isApp(voteApp, INBOX)) {
+        if (
+          !voteBuffer.has([Delay[Network.MAINNET], voteDescription].join('::')) &&
+          !voteBuffer.has([Delay[Network.RINKEBY], voteDescription].join('::')) &&
+          !voteBuffer.has([COMMUNITY[Network.RINKEBY], voteDescription].join('::')) &&
+          !voteBuffer.has([COMMUNITY[Network.RINKEBY], voteDescription].join('::'))
+        ) {
+          voteBuffer.add([voteApp, voteDescription].join('::'))
+          voteList.push(vote)
+        }
+      } else if (isApp(voteApp, SAB)) {
+        if (
+          !voteBuffer.has([Delay[Network.MAINNET], voteDescription].join('::')) &&
+          !voteBuffer.has([Delay[Network.RINKEBY], voteDescription].join('::')) &&
+          !voteBuffer.has([COMMUNITY[Network.RINKEBY], voteDescription].join('::')) &&
+          !voteBuffer.has([COMMUNITY[Network.RINKEBY], voteDescription].join('::'))
+        ) {
+          voteBuffer.add([voteApp, voteDescription].join('::'))
+          voteList.push(vote)
+        }
+
+      } else if (isApp(voteApp, Delay)) {
+        if (
+          !voteBuffer.has([COMMUNITY[Network.RINKEBY], voteDescription].join('::')) &&
+          !voteBuffer.has([COMMUNITY[Network.RINKEBY], voteDescription].join('::'))
+        ) {
+          voteBuffer.add([voteApp, voteDescription].join('::'))
+          voteList.push(vote)
+        }
+
+      } else {
+        voteBuffer.add([voteApp, voteDescription].join('::'))
+        voteList.push(vote)
+      }
+    }
+  }
+
+  return voteList
 }
 
 export function sortVotes(voteA: Vote, voteB: Vote) {
