@@ -74,7 +74,7 @@ function* createCast(action: CreateCastRequestAction) {
       return path.sign((tx) => provider.send('eth_sendTransaction', [tx]))
     })
 
-    yield put(createCastSuccess(vote.id, tx.hash))
+    yield put(createCastSuccess(vote.id, tx[0]))
     const query: CastParams = yield select(getCastParams)
     yield put(push(getVoteUrl(vote, { ...query, completed: true })))
 
