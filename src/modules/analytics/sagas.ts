@@ -3,8 +3,8 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { select, takeEvery } from 'redux-saga/effects'
 import { getData } from 'modules/wallet/selectors'
 
-import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { CREATE_CAST_SUCCESS, LOAD_CASTS_FAILURE } from 'modules/cast/actions'
+import { CONNECT_WALLET_FAILURE, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CREATE_CAST_FAILURE, CREATE_CAST_SUCCESS, LOAD_CASTS_FAILURE } from 'modules/cast/actions'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import {
   ALLOW_ESTATE_FAILURE,
@@ -28,31 +28,33 @@ import { LOAD_VOTES_FAILURE } from 'modules/vote/actions'
 import { LOAD_APPS_FAILURE } from 'modules/app/actions'
 
 export function* segmentSaga() {
-  yield takeEvery(CONNECT_WALLET_SUCCESS, track)
-  yield takeEvery(CREATE_CAST_SUCCESS, track)
-  yield takeEvery(LOCATION_CHANGE, track)
-  yield takeEvery(LOAD_VOTES_FAILURE, track)
-  yield takeEvery(LOAD_CASTS_FAILURE, track)
-  yield takeEvery(LOAD_APPS_FAILURE, track)
-  yield takeEvery(LOAD_BALANCE_SUCCESS, track)
-  yield takeEvery(ALLOW_LAND_REQUEST, track)
-  yield takeEvery(ALLOW_LAND_SUCCESS, track)
-  yield takeEvery(ALLOW_LAND_FAILURE, track)
-  yield takeEvery(ALLOW_ESTATE_REQUEST, track)
-  yield takeEvery(ALLOW_ESTATE_SUCCESS, track)
-  yield takeEvery(ALLOW_ESTATE_FAILURE, track)
-  yield takeEvery(ALLOW_MANA_REQUEST, track)
-  yield takeEvery(ALLOW_MANA_SUCCESS, track)
-  yield takeEvery(ALLOW_MANA_FAILURE, track)
-  yield takeEvery(WRAP_MANA_REQUEST, track)
-  yield takeEvery(WRAP_MANA_SUCCESS, track)
-  yield takeEvery(WRAP_MANA_FAILURE, track)
-  yield takeEvery(UNWRAP_MANA_REQUEST, track)
-  yield takeEvery(UNWRAP_MANA_SUCCESS, track)
-  yield takeEvery(UNWRAP_MANA_FAILURE, track)
+  yield takeEvery(CONNECT_WALLET_SUCCESS, segmentTrack)
+  yield takeEvery(CONNECT_WALLET_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_CAST_FAILURE, segmentTrack)
+  yield takeEvery(CREATE_CAST_SUCCESS, segmentTrack)
+  yield takeEvery(LOCATION_CHANGE, segmentTrack)
+  yield takeEvery(LOAD_VOTES_FAILURE, segmentTrack)
+  yield takeEvery(LOAD_CASTS_FAILURE, segmentTrack)
+  yield takeEvery(LOAD_APPS_FAILURE, segmentTrack)
+  yield takeEvery(LOAD_BALANCE_SUCCESS, segmentTrack)
+  yield takeEvery(ALLOW_LAND_REQUEST, segmentTrack)
+  yield takeEvery(ALLOW_LAND_SUCCESS, segmentTrack)
+  yield takeEvery(ALLOW_LAND_FAILURE, segmentTrack)
+  yield takeEvery(ALLOW_ESTATE_REQUEST, segmentTrack)
+  yield takeEvery(ALLOW_ESTATE_SUCCESS, segmentTrack)
+  yield takeEvery(ALLOW_ESTATE_FAILURE, segmentTrack)
+  yield takeEvery(ALLOW_MANA_REQUEST, segmentTrack)
+  yield takeEvery(ALLOW_MANA_SUCCESS, segmentTrack)
+  yield takeEvery(ALLOW_MANA_FAILURE, segmentTrack)
+  yield takeEvery(WRAP_MANA_REQUEST, segmentTrack)
+  yield takeEvery(WRAP_MANA_SUCCESS, segmentTrack)
+  yield takeEvery(WRAP_MANA_FAILURE, segmentTrack)
+  yield takeEvery(UNWRAP_MANA_REQUEST, segmentTrack)
+  yield takeEvery(UNWRAP_MANA_SUCCESS, segmentTrack)
+  yield takeEvery(UNWRAP_MANA_FAILURE, segmentTrack)
 }
 
-function* track(action: PayloadAction<string, Record<string, any>>) {
+function* segmentTrack(action: PayloadAction<string, Record<string, any>>) {
   const { type, payload } = action
   const name = getName(type)
   if (!name) {
