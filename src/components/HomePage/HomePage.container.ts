@@ -13,8 +13,8 @@ import HomePage from './HomePage'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './HomePage.types'
 import { locations } from 'routing/locations'
 import { NewProposalParams, FilterProposalParams } from 'routing/types'
-import { push } from 'connected-react-router'
 import { getNewProposalParams, getFilterProposalParams } from 'routing/selectors'
+import { push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
