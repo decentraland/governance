@@ -3,7 +3,7 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { select, takeEvery } from 'redux-saga/effects'
 import { getData } from 'modules/wallet/selectors'
 
-import { CONNECT_WALLET_FAILURE, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { ConnectWalletSuccessAction, CONNECT_WALLET_FAILURE, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { CREATE_CAST_FAILURE, CREATE_CAST_REQUEST, CREATE_CAST_SUCCESS, LOAD_CASTS_FAILURE } from 'modules/cast/actions'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import {
@@ -42,7 +42,7 @@ import {
 import { LOAD_APPS_FAILURE } from 'modules/app/actions'
 
 export function* segmentSaga() {
-  yield takeEvery(CONNECT_WALLET_SUCCESS, segmentTrack)
+  yield takeEvery(CONNECT_WALLET_SUCCESS, segmentIdentify)
   yield takeEvery(CONNECT_WALLET_FAILURE, segmentTrack)
   yield takeEvery(CREATE_CAST_REQUEST, segmentTrack)
   yield takeEvery(CREATE_CAST_FAILURE, segmentTrack)
@@ -60,7 +60,6 @@ export function* segmentSaga() {
   yield takeEvery(CREATE_QUESTION_FAILURE, segmentTrack)
   yield takeEvery(CREATE_QUESTION_SUCCESS, segmentTrack)
   yield takeEvery(CREATE_CAST_SUCCESS, segmentTrack)
-  yield takeEvery(LOCATION_CHANGE, segmentTrack)
   yield takeEvery(LOAD_VOTES_FAILURE, segmentTrack)
   yield takeEvery(LOAD_CASTS_FAILURE, segmentTrack)
   yield takeEvery(LOAD_APPS_FAILURE, segmentTrack)
@@ -82,6 +81,10 @@ export function* segmentSaga() {
   yield takeEvery(UNWRAP_MANA_FAILURE, segmentTrack)
 }
 
+function segmentIdentify(action: ConnectWalletSuccessAction) {
+  getAnalytics().identify(action.payload.wallet.address)
+}
+
 function* segmentTrack(action: PayloadAction<string, Record<string, any>>) {
   const { type, payload } = action
   const name = getName(type)
@@ -90,6 +93,7 @@ function* segmentTrack(action: PayloadAction<string, Record<string, any>>) {
   }
 
   const wallet = yield select(getData)
+  console.log(wallet)
   const data = {
     ...payload,
     ...wallet
