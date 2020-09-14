@@ -11,7 +11,7 @@ import { getLoading as getLoadingVotes, isCreating } from 'modules/vote/selector
 import { LOAD_VOTES_REQUEST, createBanRequest, createQuestionRequest, createPoiRequest, createCatalystRequest } from 'modules/vote/actions'
 import NewProposalModal from './NewProposalModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './NewProposalModal.types'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { getFilterProposalParams, getNewProposalParams } from 'routing/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -31,7 +31,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
-  onNavigate: (href: string) => dispatch(push(href)),
+  onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onCreateQuestion: (question: string) => dispatch(createQuestionRequest(question)),
   onCreateBan: (name: string) => dispatch(createBanRequest(name)),
   onCreatePoi: (x: number, y: number) => dispatch(createPoiRequest(x, y)),

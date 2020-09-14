@@ -12,7 +12,7 @@ export type Props = DefaultProps & {
   description: VoteDescription
   descriptionError: string
   isLoading: boolean
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, replace?: boolean) => void
 }
 
 export type MapStateProps = Pick<Props, 'description' | 'descriptionError' | 'isLoading'>

@@ -16,7 +16,7 @@ export type Props = {
   description?: VoteDescription
   casts?: Cast[]
   cast?: Cast
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, replace?: boolean) => void
   onBack: () => void
   onConnect: typeof connectWalletRequest
   onRequireCasts: typeof loadCastsRequest

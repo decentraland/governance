@@ -14,7 +14,7 @@ import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
 import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
-import { push, goBack } from 'connected-react-router'
+import { push, goBack, replace } from 'connected-react-router'
 
 const mapState = (state: RootState, props: any): MapStateProps => {
   const address = (getAddress(state) || '').toLowerCase()
@@ -44,7 +44,7 @@ const mapState = (state: RootState, props: any): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
-  onNavigate: (href: string) => dispatch(push(href)),
+  onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onBack: () => dispatch(goBack()),
   onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes))
 })

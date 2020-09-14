@@ -15,7 +15,7 @@ export type Props = DefaultProps & {
   isCreating: boolean
   params: NewProposalParams & FilterProposalParams
   onConnect: typeof connectWalletRequest
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, replace?: boolean) => void
   onCreateQuestion: typeof createQuestionRequest
   onCreateBan: typeof createBanRequest
   onCreatePoi: typeof createPoiRequest

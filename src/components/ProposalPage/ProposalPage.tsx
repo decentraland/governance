@@ -42,13 +42,13 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
 
   handleApprove = () => {
     if (this.props.vote) {
-      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: true }))
+      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: true }), true)
     }
   }
 
   handleReject = () => {
     if (this.props.vote) {
-      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: false }))
+      this.props.onNavigate(getVoteUrl(this.props.vote, { modal: 'vote', support: false }), true)
     }
   }
 

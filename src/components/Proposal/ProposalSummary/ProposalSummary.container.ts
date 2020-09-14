@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import { RootState } from 'modules/root/types'
@@ -28,7 +28,7 @@ const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: (href: string) => dispatch(push(href))
+  onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href))
 })
 
 export default connect(mapState, mapDispatch)(ProposalSummary)

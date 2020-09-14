@@ -13,7 +13,7 @@ export type Props = DefaultProps & {
   isLoading: boolean
   wallet: Wallet | null | undefined
   onConnect: typeof enableWalletRequest
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, replace?: boolean) => void
 }
 
 export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isEnabling' | 'isLoading' | 'wallet'>

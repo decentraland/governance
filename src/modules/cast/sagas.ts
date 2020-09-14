@@ -1,6 +1,15 @@
 import { put, call, takeEvery, select, fork } from 'redux-saga/effects'
 import { Vote, Cast } from '@aragon/connect-voting'
-import { LOAD_CASTS_REQUEST, LoadCastsRequestAction, loadCastsSuccess, loadCastsFailure, CREATE_CAST_REQUEST, CreateCastRequestAction, createCastFailure, createCastSuccess } from './actions'
+import {
+  LOAD_CASTS_REQUEST,
+  LoadCastsRequestAction,
+  loadCastsSuccess,
+  loadCastsFailure,
+  CREATE_CAST_REQUEST,
+  CreateCastRequestAction,
+  createCastFailure,
+  createCastSuccess
+} from './actions'
 import { getData as getVotes } from 'modules/vote/selectors'
 import { getData as getApps } from 'modules/app/selectors'
 import { getVoteUrl } from 'modules/vote/utils'
@@ -41,6 +50,7 @@ function* loadCasts(vote: Vote) {
 
 function* createCast(action: CreateCastRequestAction) {
   const { voteId, support } = action.payload
+  const actAs: string = yield select(getAddress)
   const votes: Record<string, AggregatedVote> = yield select(getVotes)
   const vote = votes[action.payload.voteId]
   if (!vote) {
@@ -57,7 +67,6 @@ function* createCast(action: CreateCastRequestAction) {
   }
 
   try {
-    const actAs: string = yield select(getAddress)
     const provider: Web3Provider = yield select(getProvider)
 
     const tx = yield call(async () => {

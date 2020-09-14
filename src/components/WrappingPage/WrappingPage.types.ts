@@ -22,7 +22,7 @@ export type Props = DefaultProps & {
   isUnwrappingMana: boolean
   wallet: Wallet | null | undefined
   onConnect: typeof connectWalletRequest
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, replace?: boolean) => void
   onWrapMana: typeof wrapManaRequest
   onUnwrapMana: typeof wrapManaRequest
   onAllowMana: typeof allowManaRequest

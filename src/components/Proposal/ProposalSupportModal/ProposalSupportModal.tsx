@@ -10,6 +10,10 @@ import { getVoteUrl } from 'modules/vote/utils'
 
 export default class ProposalSupportModal extends React.PureComponent<Props, {}> {
 
+  handleConnect = () => {
+    this.props.onConnect()
+  }
+
   handleProceed = () => {
     if (this.props.vote && !this.props.isCreating) {
       const vote = this.props.vote
@@ -19,7 +23,7 @@ export default class ProposalSupportModal extends React.PureComponent<Props, {}>
 
   handleClose = () => {
     if (this.props.vote && !this.props.isCreating) {
-      this.props.onNavigate(getVoteUrl(this.props.vote))
+      this.props.onNavigate(getVoteUrl(this.props.vote), true)
     }
   }
 
@@ -32,17 +36,26 @@ export default class ProposalSupportModal extends React.PureComponent<Props, {}>
   }
 
   render() {
+    const { isConnected } = this.props
     const { completed } = this.props.params
     return <Modal className="ProposalSupportModal" open={this.isOpen()} onClose={this.handleClose}>
       <Icon name="close" onClick={this.handleClose} />
       <Modal.Content>
         <Modal.Header><Header>{t('proposal_support_modal.title')}</Header></Modal.Header>
-        {!completed && <Modal.Description><span>
+        {(!isConnected || !completed) && <Modal.Description><span>
           {t('proposal_support_modal.description', {
             support: <b>{this.isSupporting() ? t('proposal_support_modal.favor') : t('proposal_support_modal.against')}</b>
           })}
         </span></Modal.Description>}
-        {!completed && <Modal.Actions><div>
+        {!isConnected && <Modal.Actions><div>
+          <Button
+            primary
+            disabled={this.props.isConnecting || this.props.isEnabling}
+            loading={this.props.isConnecting || this.props.isEnabling}
+            onClick={this.handleConnect}
+          >{t('general.sign_in')}</Button>
+          </div></Modal.Actions>}
+        {isConnected && !completed && <Modal.Actions><div>
           <Button
             primary
             disabled={this.props.isConnecting || this.props.isCreating}
@@ -51,8 +64,8 @@ export default class ProposalSupportModal extends React.PureComponent<Props, {}>
           >{t('general.proceed')}</Button>
           <Button onClick={this.handleClose}>{t('general.close')}</Button>
           </div></Modal.Actions>}
-        {completed && <Modal.Description>{t('proposal_support_modal.confirm')}</Modal.Description>}
-        {completed && <Modal.Actions>
+        {isConnected && completed && <Modal.Description>{t('proposal_support_modal.confirm')}</Modal.Description>}
+        {isConnected && completed && <Modal.Actions>
           <Button onClick={this.handleClose}>{t('general.close')}</Button>
         </Modal.Actions>}
       </Modal.Content>

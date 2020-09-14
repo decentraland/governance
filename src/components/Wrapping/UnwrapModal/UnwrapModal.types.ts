@@ -16,7 +16,7 @@ export type Props = {
   isUnwrappingMana: boolean
   params: UnwrapParams
   wallet: Wallet | null | undefined
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, replace?: boolean) => void
   onUnwrapToken: typeof unwrapManaRequest
 }
 

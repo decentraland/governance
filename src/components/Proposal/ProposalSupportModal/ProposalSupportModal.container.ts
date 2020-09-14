@@ -1,26 +1,29 @@
 import { connect } from 'react-redux'
-import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isConnected, isConnecting, isEnabling } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/root/types'
 import ProposalSupportModal from './ProposalSupportModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalSupportModal.types'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { getCastParams } from 'routing/selectors'
 import { createCastRequest } from 'modules/cast/actions'
 import { isCreating } from 'modules/cast/selectors'
+import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
+    isEnabling: isEnabling(state),
     isCreating: isCreating(state),
     params: getCastParams(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: (href: string) => dispatch(push(href)),
-  onCreateCast: (voteId: string, support: boolean = true) => dispatch(createCastRequest(voteId, support))
+  onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
+  onCreateCast: (voteId: string, support: boolean = true) => dispatch(createCastRequest(voteId, support)),
+  onConnect: () => dispatch(enableWalletRequest())
 })
 
 export default connect(mapState, mapDispatch)(ProposalSupportModal)

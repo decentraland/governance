@@ -4,7 +4,7 @@ import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/walle
 import { RootState } from 'modules/root/types'
 import UnwrapModal from './UnwrapModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './UnwrapModal.types'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { getUnwrapParams } from 'routing/selectors'
 import { isWrappingMana, isUnwrappingMana, getData } from 'modules/wallet/selectors'
 import { unwrapManaRequest } from 'modules/wallet/actions'
@@ -19,7 +19,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: (href: string) => dispatch(push(href)),
+  onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onUnwrapToken: (amount) => dispatch(unwrapManaRequest(amount))
 })
 
