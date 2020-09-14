@@ -34,7 +34,7 @@ import { Wallet, Network } from './types'
 import { getNetwork } from './selectors'
 import { MANAMiniMeToken } from 'modules/common/contracts'
 import { getUnwrapParams } from 'routing/selectors'
-import { push } from 'connected-react-router'
+import { replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { UnwrapParams } from 'routing/types'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -216,7 +216,7 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
 
     yield put(unwrapManaSuccess(depositTx.hash))
     const query: UnwrapParams = yield select(getUnwrapParams)
-    yield put(push(locations.wrapping({ ...query, completed: true })))
+    yield put(replace(locations.wrapping({ ...query, completed: true })))
   } catch (err) {
     yield put(unwrapManaFailure(err.message))
   }

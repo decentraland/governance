@@ -39,7 +39,6 @@ import { getNewProposalParams } from 'routing/selectors'
 import { AggregatedVote } from './types'
 import { aggregatedVote } from './utils'
 import { NewProposalParams } from 'routing/types'
-import { subscribeVotingRequest } from 'modules/subscription/actions'
 
 export function* voteSaga() {
   yield takeLatest(LOAD_APPS_SUCCESS, reloadVotes)
@@ -66,19 +65,13 @@ function* loadVotes() {
       apps[Delay[network]]
     ]
 
-    const votingList: Voting[] = []
-    const votingRecord: Record<string, Voting> = {}
-    for (const votingApp of votingApps) {
-      const voting: Voting = yield call(() => connectVoting(votingApp).catch((err) => console.error(votingApp, err)))
-      if (voting) {
-        votingList.push(voting)
-        votingRecord[votingApp.address] = voting
-      }
-    }
+    const aragonVoting: (Voting | undefined)[] = yield call(() => Promise.all(votingApps
+      .map(app => connectVoting(app as any).catch((err) => console.error(app, err)))
+    ))
 
     const votes: AggregatedVote[] = yield call(async () => {
       let result: Vote[] = []
-      for (const voting of votingList) {
+      for (const voting of aragonVoting) {
         if (voting) {
           const newVotes = await voting.votes()
           result = result.concat(newVotes)
@@ -88,9 +81,12 @@ function* loadVotes() {
       return Promise.all(result.map(aggregatedVote))
     })
 
-    const record: Record<string, AggregatedVote> = Object.fromEntries(votes.map(vote => [vote.id, vote]))
+    const record = {} as Record<string, AggregatedVote>
+    for (const vote of votes) {
+      record[vote.id] = vote
+    }
+
     yield put(loadVotesSuccess(record))
-    yield put(subscribeVotingRequest(votingRecord))
 
     const pendingVotes = votes
       .filter((vote) => !voteDescriptions[vote.id])
@@ -101,10 +97,6 @@ function* loadVotes() {
   } catch (e) {
     yield put(loadVotesFailure(e.message))
   }
-}
-
-export function* updateVote(vote: AggregatedVote) {
-  yield put(loadVotesSuccess({ [vote.id]: vote }))
 }
 
 function* createQuestion(action: CreateQuestionRequestAction) {
