@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'modules/wallet/types'
-import { allowLandRequest, allowEstateRequest, AllowLandRequestAction, AllowEstateRequestAction, wrapManaRequest, WrapManaRequestAction } from 'modules/wallet/actions'
+import { allowLandRequest, allowEstateRequest, AllowLandRequestAction, AllowEstateRequestAction, wrapManaRequest, WrapManaRequestAction, allowManaRequest, AllowManaRequestAction } from 'modules/wallet/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type State = {
@@ -23,8 +23,9 @@ export type Props = DefaultProps & {
   wallet: Wallet | null | undefined
   onConnect: typeof connectWalletRequest
   onNavigate: (path: string) => void
-  onWrapToken: typeof wrapManaRequest
-  onUnwrapToken: typeof wrapManaRequest
+  onWrapMana: typeof wrapManaRequest
+  onUnwrapMana: typeof wrapManaRequest
+  onAllowMana: typeof allowManaRequest
   onAllowLand: typeof allowLandRequest
   onAllowEstate: typeof allowEstateRequest
 }
@@ -41,5 +42,20 @@ export type MapStateProps = Pick<Props,
   | 'isUnwrappingMana'
   | 'wallet'
 >
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onNavigate' | 'onAllowLand' | 'onAllowEstate' | 'onWrapToken' | 'onUnwrapToken'>
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | CallHistoryMethodAction | AllowEstateRequestAction | AllowLandRequestAction | WrapManaRequestAction>
+export type MapDispatchProps = Pick<Props,
+ | 'onConnect'
+ | 'onNavigate'
+ | 'onAllowLand'
+ | 'onAllowEstate'
+ | 'onAllowMana'
+ | 'onWrapMana'
+ | 'onUnwrapMana'
+>
+export type MapDispatch = Dispatch<
+ | ConnectWalletRequestAction
+ | CallHistoryMethodAction
+ | AllowEstateRequestAction
+ | AllowLandRequestAction
+ | AllowManaRequestAction
+ | WrapManaRequestAction
+>

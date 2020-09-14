@@ -10,6 +10,7 @@ import { appSaga } from 'modules/app/sagas'
 import { voteSaga } from 'modules/vote/sagas'
 import { castSaga } from 'modules/cast/sagas'
 import { voteDescriptionSaga } from 'modules/description/sagas'
+import { subscriptionSaga } from 'modules/subscription/sagas'
 
 const analyticsSaga = createAnalyticsSaga()
 
@@ -23,6 +24,7 @@ export function* rootSaga() {
     voteSaga(),
     voteDescriptionSaga(),
     castSaga(),
-    walletSaga()
+    walletSaga(),
+    subscriptionSaga()
   ])
 }

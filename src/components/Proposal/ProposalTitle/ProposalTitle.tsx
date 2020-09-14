@@ -25,10 +25,11 @@ export default class ProposalTitle extends React.PureComponent<Props> {
 
         if (description.firstDescriptionAnnotated) {
           return <React.Fragment>{description.firstDescriptionAnnotated.map((annotations, i) => {
-            return <Header key={i}>{annotations.map((annotation, j) => {
+            return <Header key={`${vote.id}-annotations:${i}`}>{annotations.map((annotation, j) => {
+              const key = `${vote.id}-annotations:${i}-item:${j}`
               switch (annotation.type) {
                 case 'dcl:name': {
-                  return <b key={j} >"{annotation.value}"</b>
+                  return <b key={key} >"{annotation.value}"</b>
                 }
 
                 case 'dcl:domain': {
@@ -37,11 +38,11 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                     href = 'https://' + href
                   }
 
-                  return <a key={j} target="_blank" rel="noopener noreferrer" href={href}>"{annotation.value}"</a>
+                  return <a key={key} target="_blank" rel="noopener noreferrer" href={href}>"{annotation.value}"</a>
                 }
 
                 case 'dcl:position': {
-                  return <a key={j} target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
+                  return <a key={key} target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
                 }
 
                 case 'address': {
@@ -53,33 +54,33 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                     </a>
                   }
 
-                  return <Blockie key={j} seed={annotation.value}>
+                  return <Blockie key={key} seed={annotation.value}>
                     <Address value={annotation.value} strong />
                   </Blockie>
                 }
 
                 case 'app': {
-                  return <b key={j} title={annotation.value.address}>
+                  return <b key={key} title={annotation.value.address}>
                     {getAppName(annotation.value.address) || annotation.value.name}
                   </b>
                 }
 
                 case 'role':
-                  return <b key={j} >{` ${annotation.value.id} `}</b>
+                  return <b key={key} >{` ${annotation.value.id} `}</b>
 
                 case 'apmPackage':
-                  return <React.Fragment key={j}>{` ${annotation.value.name} `}</React.Fragment>
+                  return <React.Fragment key={key}>{` ${annotation.value.name} `}</React.Fragment>
 
                 case 'kernelNamespace':
-                  return <React.Fragment key={j}>{` ${annotation.value.name} `}</React.Fragment>
+                  return <React.Fragment key={key}>{` ${annotation.value.name} `}</React.Fragment>
 
                 case 'bytes32':
-                  return <i key={j} title={annotation.value}>
+                  return <i key={key} title={annotation.value}>
                     {` ${annotation.value.slice(0,6)}...${annotation.value.slice(-4)} `}
                   </i>
 
                 case 'text':
-                  return <React.Fragment key={j}>{` ${annotation.value} `}</React.Fragment>
+                  return <React.Fragment key={key}>{` ${annotation.value} `}</React.Fragment>
 
                 default:
                   return 'MISSING'

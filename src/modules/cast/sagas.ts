@@ -12,6 +12,7 @@ import { getProvider } from 'modules/wallet/selectors'
 import { Web3Provider } from '@ethersproject/providers'
 import { AggregatedVote } from 'modules/vote/types'
 import { CastParams } from 'routing/types'
+import { subscribeVoteRequest } from 'modules/subscription/actions'
 
 export function* castSaga() {
   yield takeEvery(LOAD_CASTS_REQUEST, loadAllCasts)
@@ -32,6 +33,7 @@ function* loadCasts(vote: Vote) {
   try {
     const casts: Cast[] = yield call(() => vote.casts())
     yield put(loadCastsSuccess({ [vote.id]: casts }))
+    yield put(subscribeVoteRequest({ [vote.id]: vote }))
   } catch (err) {
     yield put(loadCastsFailure({ [vote.id]: err.message }))
   }

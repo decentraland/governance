@@ -12,6 +12,7 @@ import { VoteState } from 'modules/vote/reducer'
 import { WalletState } from 'modules/wallet/reducer'
 import { VoteDescriptionState } from 'modules/description/reducer'
 import { CastState } from 'modules/cast/reducer'
+import { SubscriptionState } from 'modules/subscription/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -32,6 +33,7 @@ export type RootState = {
   description: VoteDescriptionState
   cast: CastState
   router: RouterState
+  subscription: SubscriptionState
 }
 
 export type RootStore = Store<RootState>
