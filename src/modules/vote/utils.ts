@@ -6,6 +6,7 @@ import { getAppDelay, isApp } from 'modules/app/utils'
 import { CastParams } from 'routing/types'
 import { VoteDescription } from 'modules/description/types'
 import { Network } from 'modules/wallet/types'
+import { BigNumber } from 'ethers'
 
 export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
   let status: VoteStatus = VoteStatus.Progress
@@ -16,7 +17,7 @@ export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
   if (isVoteEnacted(vote)) {
     status = VoteStatus.Enacted
   } else if (isVoteExpired(vote)) {
-    if (isVotePassed(vote, balance)) {
+    if (isVotePassed(balance)) {
       status = VoteStatus.Passed
 
     } else {
@@ -37,18 +38,12 @@ export function isVoteExpired(vote: Vote) {
   return Date.now() > getVoteExpiration(vote)
 }
 
-function isVotePassed(vote: Vote, balance: VoteBalance) {
-  const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
-  const yea = Number(vote.yea)
-  const nay = Number(vote.nay)
-
-  const supportRequired = (yea + nay) * supportRequiredPercentage
-
-  if (balance.yea < balance.supportPercentage) {
+function isVotePassed(balance: VoteBalance) {
+  if (balance.yeaPercentage < balance.supportPercentage) {
     return false
   }
 
-  if (yea < supportRequired) {
+  if (balance.yea < balance.approvalRequired) {
     return false
   }
 
@@ -60,11 +55,12 @@ function isVoteEnacted(vote: Vote) {
 }
 
 function getVoteBalance(vote: Vote): VoteBalance {
-  const approvalRequiredRatio = Number(vote.minAcceptQuorum) / 1e18
-  const supportRequiredRatio = Number(vote.supportRequiredPct) / 1e18
-  const totalTokens = Number(vote.votingPower)
-  const yea = Number(vote.yea)
-  const nay = Number(vote.nay)
+  const decimals = BigNumber.from('1' + '0'.repeat(18))
+  const approvalRequiredRatio = Number(vote.minAcceptQuorum) / Number(1e18)
+  const supportRequiredRatio = Number(vote.supportRequiredPct) / Number(1e18)
+  const totalTokens = BigNumber.from(vote.votingPower).div(decimals).toNumber()
+  const yea = BigNumber.from(vote.yea).div(decimals).toNumber()
+  const nay = BigNumber.from(vote.nay).div(decimals).toNumber()
 
   const totalVoting = yea + nay
   const supportRequired = totalTokens * supportRequiredRatio

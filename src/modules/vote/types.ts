@@ -2,7 +2,6 @@ import { Vote } from '@aragon/connect-voting'
 
 export type AggregatedVote = Vote & {
   status: VoteStatus
-  // expiration: number
   identifier: {
     appAddress: string,
     voteId: string

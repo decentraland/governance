@@ -116,21 +116,23 @@
 }
 
 .ProposalApproval .ProposalApprovalItem {
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 15px;
+  line-height: 24px;
   color: var(--text);
   margin-right: 2em;
+  margin-bottom: 1em;
   text-transform: uppercase;
 }
 
 .ProposalApproval .ProposalApprovalItem::before {
   display: inline-block;
   content: " ";
-  width: 13px;
-  height: 13px;
-  border-radius: 13px;
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
   margin-right: .5em;
   background: var(--neutral);
+  vertical-align: text-bottom;
 }
 
 .ProposalApproval .ProposalApprovalItem.yea::before {
@@ -142,6 +144,11 @@
 }
 
 .ProposalApproval .ProposalApprovalItem span {
+  min-width: 2.5em;
+  display: inline-block;
+}
+
+.ProposalApproval .ProposalApprovalItem span.secondary {
   color: var(--secondary-text);
 }
 

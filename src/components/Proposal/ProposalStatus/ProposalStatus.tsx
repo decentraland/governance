@@ -6,6 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppName } from 'modules/app/utils'
 import './ProposalStatus.css'
 import { VoteStatus } from 'modules/vote/types'
+import Token from 'components/Token'
 
 const enactedIcon = require('../../../images/check-enacted.svg')
 const passedIcon = require('../../../images/check-passed.svg')
@@ -36,8 +37,24 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
   static Approval = (props: Props) => {
     const balance = props.vote.balance
     return <div className="ProposalApproval">
-      <span className="ProposalApprovalItem yea">{t('general.yes')} <span>({balance.yeaPercentage}%)</span></span>
-      <span className="ProposalApprovalItem nay">{t('general.no')} <span>({balance.nayPercentage}%)</span></span>
+      <div className="ProposalApprovalItem yea">
+        <span>{t('general.yes')}</span>
+        <span className="secondary">
+          {balance.yeaPercentage}
+          {'% ('}
+          <Token secondary size="small" symbol="VP" value={balance.yea} />
+          {')'}
+        </span>
+      </div>
+      <div className="ProposalApprovalItem nay">
+        <span>{t('general.no')}</span>
+        <span className="secondary">
+          {balance.nayPercentage}
+          {'% ('}
+          <Token secondary size="small" symbol="VP" value={balance.nay} />
+          {')'}
+        </span>
+      </div>
     </div>
   }
 

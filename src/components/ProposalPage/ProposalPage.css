@@ -53,7 +53,7 @@
 }
 
 .dcl.page.ProposalPage .ProposalActions {
-  align-items: center;
+  align-items: flex-start;
 }
 
 .dcl.page.ProposalPage .ProposalActions .ui.header {
