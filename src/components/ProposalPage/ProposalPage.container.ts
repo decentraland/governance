@@ -12,9 +12,11 @@ import { getData as getVotes, getLoading as getLoadingVotes } from 'modules/vote
 import { getData as getVoteDescription } from 'modules/description/selectors'
 import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
 import { getData as getWallet } from 'modules/wallet/selectors'
+import { getData as getBalance } from 'modules/balance/selectors'
 import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
+import { loadBalanceRequest } from 'modules/balance/actions'
 import { push, goBack, replace } from 'connected-react-router'
 
 const mapState = (state: RootState, props: any): MapStateProps => {
@@ -25,11 +27,13 @@ const mapState = (state: RootState, props: any): MapStateProps => {
   const vote = getVotes(state)[voteId]
   const casts = getCasts(state)[voteId]
   const cast = !!address && Array.isArray(casts) ? casts.find((cast) => cast.voter === address) : undefined
+  const balance = getBalance(state)[voteId]
 
   return ({
     vote,
     casts,
     cast,
+    balance,
     wallet: getWallet(state),
     description: getVoteDescription(state)[voteId],
     isConnected: isConnected(state),
@@ -48,7 +52,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onBack: () => dispatch(goBack()),
-  onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes))
+  onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes)),
+  onRequireBalance : (votes: string[]) => dispatch(loadBalanceRequest(votes))
 })
 
 export default connect(mapState, mapDispatch)(ProposalPage)

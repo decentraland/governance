@@ -81,7 +81,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
     let yeaWidth = yeaPercentage
     let nayWidth = nayPercentage
 
-    if (yeaPercentage > 0 && nayPercentage > 0) {
+    if (!props.full && yeaPercentage > 0 && nayPercentage > 0) {
       yeaWidth = Math.min(Math.max(yeaPercentage, 5), 95)
       nayWidth = Math.min(Math.max(nayPercentage, 5), 95)
     }

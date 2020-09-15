@@ -2,17 +2,17 @@ import { buildTransactionPayload } from 'decentraland-dapps/dist//modules/transa
 import { action } from 'typesafe-actions'
 import { Wallet } from './types'
 
-export const LOAD_BALANCE_REQUEST = '[Request] Load balance'
-export const LOAD_BALANCE_SUCCESS = '[Success] Load balance'
-export const LOAD_BALANCE_FAILURE = '[Failure] Load balance'
+export const EXTEND_WALLET_REQUEST = '[Request] Extend wallet'
+export const EXTEND_WALLET_SUCCESS = '[Success] Extend wallet'
+export const EXTEND_WALLET_FAILURE = '[Failure] Extend wallet'
 
-export const loadBalanceRequest = () => action(LOAD_BALANCE_REQUEST, {})
-export const loadBalanceSuccess = (wallet: Wallet | null) => action(LOAD_BALANCE_SUCCESS, wallet)
-export const loadBalanceFailure = (error: string) => action(LOAD_BALANCE_FAILURE, { error })
+export const extendWalletRequest = () => action(EXTEND_WALLET_REQUEST, {})
+export const extendWalletSuccess = (wallet: Wallet | null) => action(EXTEND_WALLET_SUCCESS, wallet)
+export const extendWalletFailure = (error: string) => action(EXTEND_WALLET_FAILURE, { error })
 
-export type LoadBalanceRequestAction = ReturnType<typeof loadBalanceRequest>
-export type LoadBalanceSuccessAction = ReturnType<typeof loadBalanceSuccess>
-export type LoadBalanceFailureAction = ReturnType<typeof loadBalanceFailure>
+export type ExtendWalletRequestAction = ReturnType<typeof extendWalletRequest>
+export type ExtendWalletSuccessAction = ReturnType<typeof extendWalletSuccess>
+export type ExtendWalletFailureAction = ReturnType<typeof extendWalletFailure>
 
 export const ALLOW_MANA_REQUEST = '[Request] Allow mana'
 export const ALLOW_MANA_SUCCESS = '[Success] Allow mana'

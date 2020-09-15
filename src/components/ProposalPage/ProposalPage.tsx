@@ -30,13 +30,18 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
 
   componentDidMount() {
     if (this.props.vote && !Array.isArray(this.props.casts)) {
-      this.props.onRequireCasts([ this.props.vote.id ])
+      this.props.onRequireCasts([this.props.vote.id])
+    }
+
+    if (this.props.vote && !this.props.balance) {
+      this.props.onRequireBalance([this.props.vote.id])
     }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (this.props.vote && this.props.vote !== prevProps.vote) {
-      this.props.onRequireCasts([ this.props.vote.id ])
+      this.props.onRequireCasts([this.props.vote.id])
+      this.props.onRequireBalance([this.props.vote.id])
     }
   }
 
@@ -64,10 +69,10 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   }
 
   render() {
-    const { isLoading, isPending, vote, description, casts, cast, wallet } = this.props
+    const { isLoading, isPending, vote, description, casts, cast, balance } = this.props
     const loadingCast = !casts || (!cast && isPending)
-    const votingPower = wallet?.votingPower || 0
-    const balance = vote?.balance || {} as Partial<AggregatedVote['balance']>
+    const loading = loadingCast || balance === undefined
+    const voteBalance = vote?.balance || {} as Partial<AggregatedVote['balance']>
     const expired = vote?.status !== VoteStatus.Progress
 
     return <>
@@ -75,7 +80,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       <Page className="ProposalPage">
         <ProposalSupportModal vote={vote} />
         <div className="ProposalPageBack">
-            <Back onClick={this.props.onBack} />
+          <Back onClick={this.props.onBack} />
         </div>
         <Grid stackable>
           <Grid.Row>
@@ -104,13 +109,13 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                       </Grid.Column>
                       <Grid.Column mobile="4">
                         <Tooltip content={t('proposal_detail_page.support_detail')} trigger={<Header sub>{t('proposal_detail_page.support')} <Tooltip.Icon /></Header>} />
-                        <Header>{balance.supportPercentage || 0} %</Header>
-                        <span>{t('proposal_detail_page.needed', { needed: balance.supportRequiredPercentage || 0 })}</span>
+                        <Header>{voteBalance.supportPercentage || 0} %</Header>
+                        <span>{t('proposal_detail_page.needed', { needed: voteBalance.supportRequiredPercentage || 0 })}</span>
                       </Grid.Column>
                       <Grid.Column mobile="5">
                         <Tooltip content={t('proposal_detail_page.approval_detail')} trigger={<Header sub>{t('proposal_detail_page.approval')} <Tooltip.Icon /></Header>} />
-                        <Header>{balance.acceptPercentage || 0} %</Header>
-                        <span>{t('proposal_detail_page.needed', { needed: balance.acceptRequiredPercentage || 0 })}</span>
+                        <Header>{voteBalance.approvalPercentage || 0} %</Header>
+                        <span>{t('proposal_detail_page.needed', { needed: voteBalance.approvalRequiredPercentage || 0 })}</span>
                       </Grid.Column>
                     </Grid.Row>
 
@@ -124,25 +129,56 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                       <Grid.Column mobile="7">
                         <ProposalStatus.Approval vote={vote} />
                       </Grid.Column>
-                      {loadingCast && <Grid.Column mobile="9">
+                      {loading && <Grid.Column mobile="9">
                         <Button inverted loading={true} className="pending">loading</Button>
                       </Grid.Column>}
-                      {!loadingCast && votingPower === 0 && <Grid.Column mobile="9">
-                        <Button inverted className="pending" onClick={this.handleWrap}>{t('proposal_detail_page.wrap')}</Button>
-                      </Grid.Column>}
-                      {!loadingCast && votingPower > 0 && !cast && <Grid.Column mobile="9">
+                      {!loading && !cast && <Grid.Column mobile="9">
                         <div className="VotePending">
-                          <Button inverted disabled={expired} className="pending" onClick={this.handleApprove}>Vote YES</Button>
-                          <Button inverted disabled={expired} className="pending" onClick={this.handleReject}>Vote NO</Button>
+                          <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleApprove}>Vote YES</Button>
+                          <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleReject}>Vote NO</Button>
+                        </div>
+                        <div>
+                          <Tooltip
+                            position="bottom center"
+                            content={t('proposal_detail_page.voting_power_detail')}
+                            trigger={<Header sub>
+                              {t('proposal_detail_page.voting_power', { vp: balance })}
+                              <Tooltip.Icon />
+                            </Header>}
+                          />
                         </div>
                       </Grid.Column>}
-                      {!loadingCast && votingPower > 0 && cast && cast.supports && <Grid.Column mobile="9" className="voted">
-                        <Button inverted disabled={expired} className="yea current">Voted YES</Button>
-                        <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>Vote NO</Button>
+                      {!loading && cast && cast.supports && <Grid.Column mobile="9" className="voted">
+                        <div>
+                          <Button inverted disabled={expired} className="yea current">Voted YES</Button>
+                          <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>Vote NO</Button>
+                        </div>
+                        <div>
+                          <Tooltip
+                            position="bottom center"
+                            content={t('proposal_detail_page.voting_power_detail')}
+                            trigger={<Header sub>
+                              {t('proposal_detail_page.voting_power', { vp: balance })}
+                              <Tooltip.Icon />
+                            </Header>}
+                          />
+                        </div>
                       </Grid.Column>}
-                      {!loadingCast && votingPower > 0 && cast && !cast.supports && <Grid.Column mobile="9" className="voted">
-                        <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>Vote YES</Button>
-                        <Button inverted disabled={expired} className="nay current">Voted NO</Button>
+                      {!loading && cast && !cast.supports && <Grid.Column mobile="9" className="voted">
+                        <div>
+                          <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>Vote YES</Button>
+                          <Button inverted disabled={expired} className="nay current">Voted NO</Button>
+                        </div>
+                        <div>
+                          <Tooltip
+                            position="bottom center"
+                            content={t('proposal_detail_page.voting_power_detail')}
+                            trigger={<Header sub>
+                              {t('proposal_detail_page.voting_power', { vp: balance })}
+                              <Tooltip.Icon />
+                            </Header>}
+                          />
+                        </div>
                       </Grid.Column>}
                     </Grid.Row>
                   </Grid>
@@ -153,10 +189,10 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                 {env.isDevelopment() && <Card.Content className="DetailDebug">
                   <Header sub>INFO</Header>
                   <div className="DetailDebugContainer">
-                    <pre>{inspect(vote, null ,2)}</pre>
+                    <pre>{inspect(vote, null, 2)}</pre>
                   </div>
                   <div className="DetailDebugContainer">
-                    <pre>{JSON.stringify(description, null ,2)}</pre>
+                    <pre>{JSON.stringify(description, null, 2)}</pre>
                   </div>
                 </Card.Content>}
               </Card>}

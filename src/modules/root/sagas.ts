@@ -12,6 +12,7 @@ import { castSaga } from 'modules/cast/sagas'
 import { voteDescriptionSaga } from 'modules/description/sagas'
 import { subscriptionSaga } from 'modules/subscription/sagas'
 import { segmentSaga } from 'modules/analytics/sagas'
+import { balanceSaga } from 'modules/balance/sagas'
 
 const analyticsSaga = createAnalyticsSaga()
 
@@ -27,6 +28,7 @@ export function* rootSaga() {
     voteDescriptionSaga(),
     castSaga(),
     walletSaga(),
+    balanceSaga(),
     subscriptionSaga()
   ])
 }

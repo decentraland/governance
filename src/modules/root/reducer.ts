@@ -14,6 +14,7 @@ import { voteReducer as vote } from 'modules/vote/reducer'
 import { voteDescriptionReducer as description } from 'modules/description/reducer'
 import { castsReducer as cast } from 'modules/cast/reducer'
 import { subscriptionReducer as subscription } from 'modules/subscription/reducer'
+import { balanceReducer as balance } from 'modules/balance/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -29,6 +30,7 @@ export function createRootReducer(history: History) {
       cast,
       modal,
       subscription,
+      balance,
       router: connectRouter(history)
     })
   )

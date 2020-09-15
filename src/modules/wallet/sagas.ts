@@ -8,10 +8,10 @@ import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wa
 import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
 import { Contract, BigNumber } from 'ethers'
 import {
-  loadBalanceRequest,
-  LOAD_BALANCE_REQUEST,
-  loadBalanceFailure,
-  loadBalanceSuccess,
+  extendWalletRequest,
+  EXTEND_WALLET_REQUEST,
+  extendWalletFailure,
+  extendWalletSuccess,
   ALLOW_LAND_REQUEST,
   allowLandSuccess,
   allowLandFailure,
@@ -28,7 +28,7 @@ import {
   unwrapManaFailure,
   ALLOW_MANA_REQUEST,
   allowManaSuccess,
-  allowManaFailure, LOAD_BALANCE_SUCCESS
+  allowManaFailure, EXTEND_WALLET_SUCCESS
 } from './actions'
 import { Wallet, Network } from './types'
 import { getNetwork } from './selectors'
@@ -55,7 +55,7 @@ function* projectWalletSaga() {
   yield takeLatest(CHANGE_ACCOUNT, requestBalance)
   yield takeLatest(CHANGE_NETWORK, requestBalance)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, checkBalance)
-  yield takeLatest(LOAD_BALANCE_REQUEST, getBalance)
+  yield takeLatest(EXTEND_WALLET_REQUEST, getBalance)
   yield takeLatest(ALLOW_MANA_REQUEST, allowManaBalance)
   yield takeLatest(ALLOW_LAND_REQUEST, allowLandBalance)
   yield takeLatest(ALLOW_ESTATE_REQUEST, allowEstateBalance)
@@ -69,14 +69,14 @@ function* checkBalance(action: FetchTransactionSuccessAction) {
   console.log(transaction, action?.payload?.transaction)
   if (
     transaction?.status === TransactionStatus.CONFIRMED &&
-    transaction?.actionType !== LOAD_BALANCE_SUCCESS
+    transaction?.actionType !== EXTEND_WALLET_SUCCESS
   ) {
-    yield put(loadBalanceRequest())
+    yield put(extendWalletRequest())
   }
 }
 
 function* requestBalance() {
-  yield put(loadBalanceRequest())
+  yield put(extendWalletRequest())
 }
 
 function* getBalance(): any {
@@ -121,7 +121,7 @@ function* getBalance(): any {
       const estateVotingPower = estate * estateSize * VOTING_POWER_BY_LAND
       const votingPower = manaVotingPower + landVotingPower + estateVotingPower
 
-      yield put(loadBalanceSuccess({
+      yield put(extendWalletSuccess({
         ...wallet,
         manaCommit,
         manaMiniMe,
@@ -137,10 +137,10 @@ function* getBalance(): any {
       }))
 
     } catch (err) {
-      yield put(loadBalanceFailure(err.message))
+      yield put(extendWalletFailure(err.message))
     }
   } else {
-    yield put(loadBalanceSuccess(wallet))
+    yield put(extendWalletSuccess(wallet))
   }
 }
 

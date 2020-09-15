@@ -13,6 +13,7 @@ import { WalletState } from 'modules/wallet/reducer'
 import { VoteDescriptionState } from 'modules/description/reducer'
 import { CastState } from 'modules/cast/reducer'
 import { SubscriptionState } from 'modules/subscription/reducer'
+import { BalanceState } from 'modules/balance/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -26,6 +27,7 @@ export type RootState = {
   translation: TranslationState
   storage: StorageState
   wallet: WalletState
+  balance: BalanceState
   organization: OrganizationState
   modal: ModalState
   app: AppState

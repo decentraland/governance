@@ -71,7 +71,9 @@
     "approval": "minimum approval",
     "approval_detail": "Minimum Approval is the percentage of the total token supply that is required to vote “Yes” on a proposal before it can be approved. For example, if the “Minimum Approval” is set to 20%, then more than 20% of the outstanding token supply must vote “Yes” on a proposal for it to pass.",
     "needed": "(>{needed, number}% needed)",
-    "wrap": "wrap tokens"
+    "wrap": "wrap tokens",
+    "voting_power": "Voting power: {vp, number}",
+    "voting_power_detail": "Your voting power at the time the proposal was created"
   },
   "proposal_support_modal": {
     "title": "Vote Confirmation",

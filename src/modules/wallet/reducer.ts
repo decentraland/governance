@@ -4,12 +4,12 @@ import {
   WalletReducerAction as BaseWalletReducerAction
 } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import {
-  LOAD_BALANCE_FAILURE,
-  LOAD_BALANCE_REQUEST,
-  LOAD_BALANCE_SUCCESS,
-  LoadBalanceFailureAction,
-  LoadBalanceRequestAction,
-  LoadBalanceSuccessAction,
+  EXTEND_WALLET_FAILURE,
+  EXTEND_WALLET_REQUEST,
+  EXTEND_WALLET_SUCCESS,
+  ExtendWalletFailureAction,
+  ExtendWalletRequestAction,
+  ExtendWalletSuccessAction,
   ALLOW_MANA_FAILURE,
   ALLOW_MANA_REQUEST,
   ALLOW_MANA_SUCCESS,
@@ -56,9 +56,9 @@ const INITIAL_STATE: WalletState = {
 }
 
 export type WalletReducerAction =
-  | LoadBalanceFailureAction
-  | LoadBalanceRequestAction
-  | LoadBalanceSuccessAction
+  | ExtendWalletFailureAction
+  | ExtendWalletRequestAction
+  | ExtendWalletSuccessAction
   | AllowLandFailureAction
   | AllowLandRequestAction
   | AllowLandSuccessAction
@@ -83,7 +83,7 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
     case ALLOW_ESTATE_REQUEST:
     case WRAP_MANA_REQUEST:
     case UNWRAP_MANA_REQUEST:
-    case LOAD_BALANCE_REQUEST: {
+    case EXTEND_WALLET_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -103,7 +103,7 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
 
     case WRAP_MANA_FAILURE:
     case UNWRAP_MANA_FAILURE:
-    case LOAD_BALANCE_FAILURE: {
+    case EXTEND_WALLET_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -114,7 +114,7 @@ export const walletReducer = (state = INITIAL_STATE, action: WalletReducerAction
     case ALLOW_MANA_SUCCESS:
     case ALLOW_LAND_SUCCESS:
     case ALLOW_ESTATE_SUCCESS:
-    case LOAD_BALANCE_SUCCESS: {
+    case EXTEND_WALLET_SUCCESS: {
       return {
         data: {
           ...state.data!,

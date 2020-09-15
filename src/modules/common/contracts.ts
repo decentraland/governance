@@ -42,3 +42,8 @@ export const EstateMiniMeToken = {
   [Network.MAINNET]: '0x8568f23f343694650370fe5e254b55bfb704a6c7',
   [Network.RINKEBY]: '0x2b98C125733035cDE09d311F988845808EE270E6'
 }
+
+export const AragonAggregator = {
+  [Network.MAINNET]: '0xcf9b305b4cd210079f5648f17ede69e666c0c8d4',
+  [Network.RINKEBY]: '0xe65835cd7c9311866ae5d260a1eb7b963899ca14'
+}

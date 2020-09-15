@@ -1,4 +1,4 @@
-import { AggregatedVote, Vote, VoteStatus } from './types'
+import { AggregatedVote, Vote, VoteBalance, VoteStatus } from './types'
 import { COMMUNITY, Delay, INBOX, SAB, Time } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -10,19 +10,19 @@ import { Network } from 'modules/wallet/types'
 export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
   let status: VoteStatus = VoteStatus.Progress
 
+  const balance = getVoteBalance(vote)
+  const identifier = getVoteIdentifier(vote)
+
   if (isVoteEnacted(vote)) {
     status = VoteStatus.Enacted
   } else if (isVoteExpired(vote)) {
-    if (isVotePassed(vote)) {
+    if (isVotePassed(vote, balance)) {
       status = VoteStatus.Passed
 
     } else {
       status = VoteStatus.Rejected
     }
   }
-
-  const balance = getVoteBalance(vote)
-  const identifier = getVoteIdentifier(vote)
 
   return Object.assign(vote, { status, balance, identifier })
 }
@@ -37,21 +37,14 @@ export function isVoteExpired(vote: Vote) {
   return Date.now() > getVoteExpiration(vote)
 }
 
-export function isVoteRejected(vote: Vote) {
-  return isVoteExpired(vote) && !isVoteEnacted(vote) && !isVotePassed(vote)
-}
-
-export function isVotePassed(vote: Vote) {
-  const minAcceptQuorumPercentage = Number(vote.minAcceptQuorum) / 1e18
+function isVotePassed(vote: Vote, balance: VoteBalance) {
   const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
-  const votingPower = Number(vote.votingPower)
   const yea = Number(vote.yea)
   const nay = Number(vote.nay)
 
-  const quorumRequired = votingPower * minAcceptQuorumPercentage
   const supportRequired = (yea + nay) * supportRequiredPercentage
 
-  if (yea < quorumRequired) {
+  if (balance.yea < balance.supportPercentage) {
     return false
   }
 
@@ -62,59 +55,44 @@ export function isVotePassed(vote: Vote) {
   return true
 }
 
-export function isVoteEnacted(vote: Vote) {
+function isVoteEnacted(vote: Vote) {
   return !!vote.executed
 }
 
-export function getVoteQuorumRequired(vote: Vote) {
-  const acceptQuorumPercentage = Number(vote.minAcceptQuorum) / 1e18
-  const votingPower = Number(vote.votingPower)
-  return votingPower * acceptQuorumPercentage
-}
-
-export function getVoteSupportRequired(vote: Vote) {
-  const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
-  const yea = Number(vote.yea)
-  const nay = Number(vote.nay)
-  return (yea + nay) * supportRequiredPercentage
-}
-
-export function getVoteBalance(vote: Vote) {
-  const acceptRequiredPercentage = Number(vote.minAcceptQuorum) / 1e18
-  const supportRequiredPercentage = Number(vote.supportRequiredPct) / 1e18
-  const votingPower = Number(vote.votingPower)
+function getVoteBalance(vote: Vote): VoteBalance {
+  const approvalRequiredRatio = Number(vote.minAcceptQuorum) / 1e18
+  const supportRequiredRatio = Number(vote.supportRequiredPct) / 1e18
+  const totalTokens = Number(vote.votingPower)
   const yea = Number(vote.yea)
   const nay = Number(vote.nay)
 
-  const supportRequired = votingPower * supportRequiredPercentage
-  const acceptRequired = votingPower * acceptRequiredPercentage
-  const supportTotal = yea + nay
+  const totalVoting = yea + nay
+  const supportRequired = totalTokens * supportRequiredRatio
+  const approvalRequired = totalTokens * approvalRequiredRatio
   let yeaPercentage = 0
   let nayPercentage = 0
   let supportPercentage = 0
-  let acceptPercentage = 0
+  let approvalPercentage = 0
 
-  if (supportTotal > 0) {
-    supportPercentage = Math.floor((yea / supportTotal) * 100)
-    acceptPercentage = Math.floor((yea / votingPower) * 100)
+  if (totalVoting > 0) {
+    supportPercentage = Math.floor((yea / totalVoting) * 100)
+    approvalPercentage = Math.floor((yea / totalTokens) * 100)
+    yeaPercentage = supportPercentage
 
-    if (supportTotal < supportRequired) {
-      yeaPercentage = Math.floor((yea / supportRequired) * 100)
-      nayPercentage = Math.floor((nay / supportRequired) * 100)
+    if (totalVoting < supportRequired) {
+      nayPercentage = Math.floor((nay / totalVoting) * 100)
     } else {
-      yeaPercentage = yea === 0 ? 0 : nay === 0 ? 100 : Math.ceil((yea / supportTotal) * 100)
-      nayPercentage = nay === 0 ? 0 : 100 - yeaPercentage
+      nayPercentage = 100 - yeaPercentage
     }
   }
 
   return {
-    acceptRequiredPercentage: Math.ceil(acceptRequiredPercentage * 100),
-    supportRequiredPercentage: Math.ceil(supportRequiredPercentage * 100),
-    supportRequired,
-    acceptRequired,
-    acceptPercentage,
+    supportRequiredPercentage: Math.ceil(supportRequiredRatio * 100),
     supportPercentage,
-    votingPower,
+    approvalRequiredPercentage: Math.ceil(approvalRequiredRatio * 100),
+    approvalRequired,
+    approvalPercentage,
+    totalTokens,
     yeaPercentage,
     nayPercentage,
     yea,

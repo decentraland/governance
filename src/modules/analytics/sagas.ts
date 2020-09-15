@@ -15,7 +15,7 @@ import {
   ALLOW_MANA_FAILURE,
   ALLOW_MANA_REQUEST,
   ALLOW_MANA_SUCCESS,
-  LOAD_BALANCE_SUCCESS,
+  EXTEND_WALLET_SUCCESS,
   UNWRAP_MANA_FAILURE,
   UNWRAP_MANA_REQUEST,
   UNWRAP_MANA_SUCCESS,
@@ -62,7 +62,7 @@ export function* segmentSaga() {
   yield takeEvery(LOAD_VOTES_FAILURE, segmentTrack)
   yield takeEvery(LOAD_CASTS_FAILURE, segmentTrack)
   yield takeEvery(LOAD_APPS_FAILURE, segmentTrack)
-  yield takeEvery(LOAD_BALANCE_SUCCESS, segmentTrack)
+  yield takeEvery(EXTEND_WALLET_SUCCESS, segmentTrack)
   yield takeEvery(ALLOW_LAND_REQUEST, segmentTrack)
   yield takeEvery(ALLOW_LAND_SUCCESS, segmentTrack)
   yield takeEvery(ALLOW_LAND_FAILURE, segmentTrack)
@@ -92,7 +92,6 @@ function* segmentTrack(action: PayloadAction<string, Record<string, any>>) {
   }
 
   const wallet = yield select(getData)
-  console.log(wallet)
   const data = {
     ...payload,
     ...wallet

@@ -56,6 +56,12 @@
   align-items: center;
 }
 
+.dcl.page.ProposalPage .ProposalActions .ui.header {
+  margin-top: 6px;
+  text-align: center;
+  cursor: help;
+}
+
 .dcl.page.ProposalPage .ProposalActions .ui.button {
   width: 100%;
 }
