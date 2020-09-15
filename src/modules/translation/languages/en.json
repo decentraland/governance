@@ -73,7 +73,7 @@
     "needed": "(>{needed, number}% needed)",
     "wrap": "wrap tokens",
     "voting_power": "Voting power: {vp, number}",
-    "voting_power_detail": "Your voting power at the time the proposal was created"
+    "voting_power_detail": "This was your balance when the vote started (block {snapshotBlock, number} mined at {startDate, date})"
   },
   "proposal_support_modal": {
     "title": "Vote Confirmation",

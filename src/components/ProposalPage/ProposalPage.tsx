@@ -68,6 +68,22 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     }
   }
 
+  renderVotingPowerTooltip() {
+    const balance = this.props.balance || 0
+    const vote = this.props.vote!
+    const startDate = new Date(Number(vote.startDate + '000'))
+    const snapshotBlock = vote.snapshotBlock
+
+    return <Tooltip
+      position="bottom center"
+      content={t('proposal_detail_page.voting_power_detail', { snapshotBlock, startDate })}
+      trigger={<Header sub>
+        {t('proposal_detail_page.voting_power', { vp: balance })}
+        <Tooltip.Icon />
+      </Header>}
+    />
+  }
+
   render() {
     const { isLoading, isPending, vote, description, casts, cast, balance } = this.props
     const loadingCast = !casts || (!cast && isPending)
@@ -137,48 +153,21 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                           <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleApprove}>Vote YES</Button>
                           <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleReject}>Vote NO</Button>
                         </div>
-                        <div>
-                          <Tooltip
-                            position="bottom center"
-                            content={t('proposal_detail_page.voting_power_detail')}
-                            trigger={<Header sub>
-                              {t('proposal_detail_page.voting_power', { vp: balance })}
-                              <Tooltip.Icon />
-                            </Header>}
-                          />
-                        </div>
+                        <div>{this.renderVotingPowerTooltip()}</div>
                       </Grid.Column>}
                       {!loading && cast && cast.supports && <Grid.Column mobile="9" className="voted">
                         <div>
                           <Button inverted disabled={expired} className="yea current">Voted YES</Button>
                           <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>Vote NO</Button>
                         </div>
-                        <div>
-                          <Tooltip
-                            position="bottom center"
-                            content={t('proposal_detail_page.voting_power_detail')}
-                            trigger={<Header sub>
-                              {t('proposal_detail_page.voting_power', { vp: balance })}
-                              <Tooltip.Icon />
-                            </Header>}
-                          />
-                        </div>
+                        <div>{this.renderVotingPowerTooltip()}</div>
                       </Grid.Column>}
                       {!loading && cast && !cast.supports && <Grid.Column mobile="9" className="voted">
                         <div>
                           <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>Vote YES</Button>
                           <Button inverted disabled={expired} className="nay current">Voted NO</Button>
                         </div>
-                        <div>
-                          <Tooltip
-                            position="bottom center"
-                            content={t('proposal_detail_page.voting_power_detail')}
-                            trigger={<Header sub>
-                              {t('proposal_detail_page.voting_power', { vp: balance })}
-                              <Tooltip.Icon />
-                            </Header>}
-                          />
-                        </div>
+                        <div>{this.renderVotingPowerTooltip()}</div>
                       </Grid.Column>}
                     </Grid.Row>
                   </Grid>
