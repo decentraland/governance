@@ -24,6 +24,7 @@ import inspect from 'util-inspect'
 import { AggregatedVote, VoteStatus } from 'modules/vote/types'
 import './ProposalPage.css'
 import { locations } from 'routing/locations'
+import Tooltip from 'components/Tooltip'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
 
@@ -102,12 +103,12 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                         <Header>{getVoteTimeLeft(vote) || 'None'}</Header>
                       </Grid.Column>
                       <Grid.Column mobile="4">
-                        <Header sub>{t('proposal_detail_page.support')}</Header>
+                        <Tooltip content={t('proposal_detail_page.support_detail')} trigger={<Header sub>{t('proposal_detail_page.support')} <Tooltip.Icon /></Header>} />
                         <Header>{balance.supportPercentage || 0} %</Header>
                         <span>{t('proposal_detail_page.needed', { needed: balance.supportRequiredPercentage || 0 })}</span>
                       </Grid.Column>
                       <Grid.Column mobile="5">
-                        <Header sub>{t('proposal_detail_page.approval')}</Header>
+                        <Tooltip content={t('proposal_detail_page.approval_detail')} trigger={<Header sub>{t('proposal_detail_page.approval')} <Tooltip.Icon /></Header>} />
                         <Header>{balance.acceptPercentage || 0} %</Header>
                         <span>{t('proposal_detail_page.needed', { needed: balance.acceptRequiredPercentage || 0 })}</span>
                       </Grid.Column>
