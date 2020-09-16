@@ -5,7 +5,7 @@
     "yes": "yes",
     "no": "no",
     "close": "close",
-    "edit": "edit",
+    "edit": "manage",
     "created": "created",
     "under_review": "under review",
     "rejected": "rejected",
@@ -34,27 +34,27 @@
   },
   "proposal_modal": {
     "title": "New Proposal",
-    "title_question": "Open Question",
+    "title_question": "Ask an Open Question",
     "title_catalyst": "Add a Catalyst",
     "title_poi": "Add a Point of Interest",
     "title_ban": "Ban a NAME",
-    "description_question": "Ask for a question in Decentraland",
+    "description_question": "Ask an Open Question to the Decentraland Community",
     "description_catalyst": "Add a new Catalyst server to Decentraland",
-    "description_poi": "Add a new Point of Interest in Decentraland",
-    "description_ban": "Add a name you consider offensive to be denied in Decentraland. Once approved, the name will no longer be shown in the client",
+    "description_poi": "Add a new Point of Interest (POI) to the Decentraland Map",
+    "description_ban": "Add a NAME you consider offensive to be denied inside Decentraland. Once approved, the name will no longer be shown inside the client",
     "continue": "Continue",
-    "confirm_question": "You are about to ask {question} in Decentraland. Want to proceed?",
-    "confirm_catalyst": "You are about to propose {url} with owner {owner} to be a {catalyst} in Decentraland. Want to proceed?",
-    "confirm_poi": "You are about to propose {position} to be a {poi} in Decentraland. Want to proceed?",
-    "confirm_ban": "You are about to propose the name {name} to be banned in Decentraland. Want to proceed?",
+    "confirm_question": "You are about to ask {question} to the Decentraland Community. Do you want to proceed?",
+    "confirm_catalyst": "You are about to propose {url} with owner {owner} to be added as a {catalyst}. Do you want to proceed?",
+    "confirm_poi": "You are about to propose {position} to be added as {poi} in the Decentraland Map. Do you want to proceed?",
+    "confirm_ban": "You are about to propose the NAME {name} to be denied inside the Decentraland Client. Want to proceed?",
     "confirm": "Confirm",
-    "confirmed_title": "Awesome!",
-    "confirmed": "Your proposal was committed!"
+    "confirmed_title": "Confirmation",
+    "confirmed": "Your proposal was committed"
   },
   "proposals_page": {
     "wrapping_header": "VOTING POWER",
     "proposals_header": "{proposals, number} {proposals, plural, one {PROPOSAL} other {PROPOSALS}}",
-    "empty": "No proposals planned yet.",
+    "empty": "No proposals have been sent by community members yet.",
     "create_proposal": "NEW PROPOSAL",
     "wrapped": "wrapped"
   },
@@ -90,10 +90,10 @@
     "mana_wrapped": "WRAPPED MANA",
     "mana_available": "AVAILABLE TO WRAP",
     "mana_unwrap": "UNWRAP",
-    "mana_wrap": "WRAP TOKENS",
+    "mana_wrap": "WRAP MANA",
     "mana_rate": "CONVERT TOKENS",
     "mana_commit": "AUTHORIZE MANA",
-    "land_title": "LAND LAND",
+    "land_title": "LAND",
     "land_balance": "BALANCE",
     "land_total": "TOTAL VOTING POWER",
     "land_commit": "COMMIT LANDs",
@@ -104,10 +104,10 @@
     "estate_commit": "COMMIT ESTATEs"
   },
   "unwrapping_modal": {
-    "title": "Unwrap tokens",
-    "description": "Enter the amount of MANA you want to unwrap, this will be reduced from your VP.",
-    "completed": "Your transaction was sent successfully! It only remains to wait for the confirmation",
+    "title": "Unwrap MANA",
+    "description": "Enter the amount of MANA you would like to unwrap, this action will reduce your Voting Power.",
+    "completed": "Your transaction was sent successfully and is pending confirmation.",
     "label": "Wrapped MANA",
-    "action": "unwrap tokens"
+    "action": "Unwrap MANA"
   }
 }
