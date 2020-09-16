@@ -1,14 +1,15 @@
 import connectVoting, { Voting } from '@aragon/connect-voting'
 import connectDelay from '@1hive/connect-delay'
-import { DelayedScript, AggregatedDelayedScript, AggregatedVote, ProposalType, Vote, VoteBalance, ProposalStatus, Delaying, Proposal } from './types'
-import { App, COMMUNITY, Delay, INBOX, SAB, Time } from 'modules/app/types'
+import { DelayedScript, AggregatedDelayedScript, AggregatedVote, ProposalType, Vote, VoteBalance, ProposalStatus, Delaying, Proposal, ProposalCategory } from './types'
+import { Agent, App, BanName, Catalyst, COMMUNITY, Delay, Finance, INBOX, POI, SAB, Time, Tokens } from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppDelay, isApp } from 'modules/app/utils'
-import { CastParams } from 'routing/types'
+import { CastParams, FilterProposalParams } from 'routing/types'
 import { ProposalDescription } from 'modules/description/types'
 import { Network } from 'modules/wallet/types'
 import { BigNumber, Contract } from 'ethers'
+import { getProposalInitialAddress } from 'modules/description/utils'
 
 export async function createVoting(app: App) {
   return connectVoting(app as any)
@@ -229,9 +230,62 @@ export function getProposalUrl(proposal: Proposal, params?: CastParams) {
   }
 }
 
+export function getProposalCategory(proposal?: Proposal, description?: ProposalDescription) {
+  if (!proposal) {
+    return undefined
+  }
+
+  if ((proposal as AggregatedVote).metadata) {
+    return ProposalCategory.Question
+  }
+
+  if (!description) {
+    return undefined
+  }
+
+  const initialAddress = getProposalInitialAddress(description)
+  if (!initialAddress) {
+    return undefined
+  }
+
+  switch (initialAddress) {
+    case Delay[Network.MAINNET]:
+    case Delay[Network.RINKEBY]:
+      return ProposalCategory.Delay
+
+    case Agent[Network.MAINNET]:
+    case Agent[Network.RINKEBY]:
+      return ProposalCategory.Agent
+
+    case BanName[Network.MAINNET]:
+    case BanName[Network.RINKEBY]:
+      return ProposalCategory.BanName
+
+    case Catalyst[Network.MAINNET]:
+    case Catalyst[Network.RINKEBY]:
+      return ProposalCategory.Catalyst
+
+    case POI[Network.MAINNET]:
+    case POI[Network.RINKEBY]:
+      return ProposalCategory.POI
+
+    case Finance[Network.MAINNET]:
+    case Finance[Network.RINKEBY]:
+      return ProposalCategory.Finance
+
+    case Tokens[Network.MAINNET]:
+    case Tokens[Network.RINKEBY]:
+      return ProposalCategory.Tokens
+
+    default:
+      return ProposalCategory.System
+  }
+}
+
 export function filterProposals(
   proposals: Record<string, Proposal>,
   descriptions: Record<string, ProposalDescription>,
+  params: FilterProposalParams,
   network: Network
 ): Proposal[] {
   // return Object.values(votes)
@@ -242,6 +296,10 @@ export function filterProposals(
     .sort(sortProposals)
 
   for (const proposal of sortedProposals) {
+    if (!filterProposalByParams(proposal, descriptions[proposal.id], params)) {
+      continue
+    }
+
     const appAddress = proposal?.identifier?.appAddress
     const proposalDescription = (proposal as AggregatedVote).metadata || descriptions[proposal.id]?.description
     const proposalKey = [appAddress, proposalDescription].join('::')
@@ -280,6 +338,27 @@ export function filterProposals(
   }
 
   return proposalList
+}
+
+export function filterProposalByParams(proposal?: Proposal, description?: ProposalDescription, params: FilterProposalParams = {}) {
+
+  if (!proposal) {
+    return false
+  }
+
+  if (params.status && params.status !== ProposalStatus.All && proposal.status !== params.status) {
+    return false
+  }
+
+  if (params.category && params.category !== ProposalStatus.All) {
+    const proposalCategory = getProposalCategory(proposal, description)
+
+    if (proposalCategory !== params.category) {
+      return false
+    }
+  }
+
+  return true
 }
 
 export function sortProposals(proposalA: Proposal, proposalB: Proposal) {

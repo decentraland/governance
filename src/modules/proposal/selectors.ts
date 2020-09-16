@@ -7,6 +7,7 @@ import { CREATE_POI_REQUEST, CREATE_QUESTION_REQUEST, CREATE_BAN_REQUEST, CREATE
 import { filterProposals } from './utils'
 import { getNetwork } from 'modules/wallet/selectors'
 import { createCompletedTransactionSelector, createPendingTransactionSelector } from 'modules/transaction/selectors'
+import { getFilterProposalParams } from 'routing/selectors'
 
 export const getState: (state: RootState) => ProposalState = state => state.proposal
 
@@ -19,6 +20,7 @@ export const getLoading = (state: RootState) => getState(state).loading
 export const getProposals = createSelector(
   getData,
   getDescription,
+  getFilterProposalParams,
   getNetwork,
   filterProposals
 )
