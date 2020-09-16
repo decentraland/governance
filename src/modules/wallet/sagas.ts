@@ -117,7 +117,7 @@ function* getBalance(): any {
 
       const manaVotingPower = manaMiniMe
       const landVotingPower = landCommit ? land * VOTING_POWER_BY_LAND : 0
-      const estateVotingPower = estate * estateSize * VOTING_POWER_BY_LAND
+      const estateVotingPower = estateSize * VOTING_POWER_BY_LAND
       const votingPower = manaVotingPower + landVotingPower + estateVotingPower
 
       yield put(extendWalletSuccess({
