@@ -21,9 +21,11 @@ import { push, goBack, replace } from 'connected-react-router'
 import { AggregatedVote } from 'modules/proposal/types'
 import { getProposalId } from 'modules/proposal/utils'
 import { Cast } from '@aragon/connect-voting'
+import { locations } from 'routing/locations'
 
 const mapState = (state: RootState, props: any): MapStateProps => {
   const address = (getAddress(state) || '').toLowerCase()
+  const canGoBack = props?.history?.length > 1
 
   const { app, id } = props?.match?.params || {}
   const proposalId = getProposalId(app, id)
@@ -56,6 +58,7 @@ const mapState = (state: RootState, props: any): MapStateProps => {
     isEnabling: isEnabling(state),
     isExecuting: isExecuting(state),
     isPending: getPendingCasts(state).includes(proposalId),
+    canGoBack,
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
@@ -68,6 +71,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onBack: () => dispatch(goBack()),
+  onHome: () => dispatch(push(locations.root())),
   onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes)),
   onRequireBalance : (votes: string[]) => dispatch(loadBalanceRequest(votes)),
   onExecuteScript: (id: string) => dispatch(executeScriptRequest(id))

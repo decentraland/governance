@@ -45,6 +45,14 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     }
   }
 
+  handleBack = () => {
+    if (this.props.canGoBack) {
+      this.props.onBack()
+    } else {
+      this.props.onHome()
+    }
+  }
+
   handleWrap = () => {
     this.props.onNavigate(locations.wrapping())
   }
@@ -246,7 +254,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       <Page className="ProposalPage">
         <ProposalSupportModal proposal={proposal} cast={cast} />
         <div className="ProposalPageBack">
-          <Back onClick={this.props.onBack} />
+          <Back onClick={this.handleBack} />
         </div>
         <Grid stackable>
           {this.renderTitle()}

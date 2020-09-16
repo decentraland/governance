@@ -17,6 +17,7 @@ export type Props = {
   isLoading: boolean
   isPending: boolean
   isExecuting: boolean
+  canGoBack: boolean
   executed: boolean
   proposal?: Proposal
   description?: ProposalDescription
@@ -26,6 +27,7 @@ export type Props = {
   balance?: Balance
   onNavigate: (path: string, replace?: boolean) => void
   onBack: () => void
+  onHome: () => void
   onConnect: typeof connectWalletRequest
   onRequireCasts: typeof loadCastsRequest
   onRequireBalance: typeof loadBalanceRequest
@@ -39,6 +41,7 @@ export type MapStateProps = Pick<Props,
  | 'isLoading'
  | 'isPending'
  | 'isExecuting'
+ | 'canGoBack'
  | 'executed'
  | 'proposal'
  | 'description'
@@ -54,6 +57,7 @@ export type MapDispatchProps = Pick<Props,
  | 'onExecuteScript'
  | 'onNavigate'
  | 'onBack'
+ | 'onHome'
 >
 
 export type MapDispatch = Dispatch<
