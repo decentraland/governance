@@ -14,6 +14,7 @@ import {
 import RegisterABI from './Register.abi.json'
 import MiniMeABI from './MiniMe.abi.json'
 import ERC20ABI from './ERC20.abi.json'
+import { Delay } from 'modules/app/types'
 
 export const getManaContract = createSelector(
   getNetwork,
@@ -50,5 +51,19 @@ export const getAragonAggregatorContract = createSelector(
     }
 
     return new Contract(AragonAggregator[network], app.abi, provider?.getSigner(0))
+  }
+)
+
+export const getDelayContract = createSelector(
+  getNetwork,
+  getProvider,
+  getApps,
+  (network, provider, apps) => {
+    const app = apps[Delay[network]]
+    if (!app) {
+      return undefined
+    }
+
+    return new Contract(app.address, app.abi, provider?.getSigner(0))
   }
 )

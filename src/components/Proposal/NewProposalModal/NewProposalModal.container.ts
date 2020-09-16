@@ -7,8 +7,8 @@ import { RootState } from 'modules/root/types'
 import { getLoading as getLoadingOrganization } from 'modules/organization/selectors'
 import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
-import { getLoading as getLoadingVotes, isCreating } from 'modules/vote/selectors'
-import { LOAD_VOTES_REQUEST, createBanRequest, createQuestionRequest, createPoiRequest, createCatalystRequest } from 'modules/vote/actions'
+import { getLoading as getLoadingVotes, isCreating } from 'modules/proposal/selectors'
+import { LOAD_PROPOSALS_REQUEST, createBanRequest, createQuestionRequest, createPoiRequest, createCatalystRequest } from 'modules/proposal/actions'
 import NewProposalModal from './NewProposalModal'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './NewProposalModal.types'
 import { push, replace } from 'connected-react-router'
@@ -21,7 +21,7 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoading: (
     getLoadingOrganization(state) ||
     isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
-    isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)
+    isLoadingType(getLoadingVotes(state), LOAD_PROPOSALS_REQUEST)
   ),
   params: {
     ...getFilterProposalParams(state),

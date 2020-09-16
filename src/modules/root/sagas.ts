@@ -7,7 +7,7 @@ import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { organizationSaga } from 'modules/organization/sagas'
 import { appSaga } from 'modules/app/sagas'
-import { voteSaga } from 'modules/vote/sagas'
+import { proposalSaga } from 'modules/proposal/sagas'
 import { castSaga } from 'modules/cast/sagas'
 import { voteDescriptionSaga } from 'modules/description/sagas'
 import { subscriptionSaga } from 'modules/subscription/sagas'
@@ -24,7 +24,7 @@ export function* rootSaga() {
     translationSaga(),
     organizationSaga(),
     appSaga(),
-    voteSaga(),
+    proposalSaga(),
     voteDescriptionSaga(),
     castSaga(),
     walletSaga(),

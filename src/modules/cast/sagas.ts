@@ -10,16 +10,16 @@ import {
   createCastFailure,
   createCastSuccess
 } from './actions'
-import { getData as getVotes } from 'modules/vote/selectors'
+import { getData as getVotes } from 'modules/proposal/selectors'
 import { getData as getApps } from 'modules/app/selectors'
-import { getVoteUrl } from 'modules/vote/utils'
+import { getProposalUrl } from 'modules/proposal/utils'
 import { App } from '@aragon/connect'
 import { getCastParams } from 'routing/selectors'
 import { replace } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getProvider } from 'modules/wallet/selectors'
 import { Web3Provider } from '@ethersproject/providers'
-import { AggregatedVote } from 'modules/vote/types'
+import { AggregatedVote } from 'modules/proposal/types'
 import { CastParams } from 'routing/types'
 import { subscribeVoteRequest } from 'modules/subscription/actions'
 
@@ -76,7 +76,7 @@ function* createCast(action: CreateCastRequestAction) {
 
     yield put(createCastSuccess(vote.id, tx[0]))
     const query: CastParams = yield select(getCastParams)
-    yield put(replace(getVoteUrl(vote, { ...query, completed: true })))
+    yield put(replace(getProposalUrl(vote, { ...query, completed: true })))
 
   } catch (err) {
     yield put(createCastFailure({ [vote.id]: err.message }))

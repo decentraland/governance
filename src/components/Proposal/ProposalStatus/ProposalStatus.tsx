@@ -1,12 +1,12 @@
 import React from 'react'
 import { Props } from './ProposalStatus.types'
 
-import { getVoteTimeLeft } from 'modules/vote/utils'
+import { getDelayTimeLeft, getVoteTimeLeft } from 'modules/proposal/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppName } from 'modules/app/utils'
-import './ProposalStatus.css'
-import { VoteStatus } from 'modules/vote/types'
+import { ProposalStatus as Status, ProposalType } from 'modules/proposal/types'
 import Token from 'components/Token'
+import './ProposalStatus.css'
 
 const enactedIcon = require('../../../images/check-enacted.svg')
 const passedIcon = require('../../../images/check-passed.svg')
@@ -35,7 +35,11 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
   }
 
   static Approval = (props: Props) => {
-    const balance = props.vote.balance
+    if (props.proposal.proposalType !== ProposalType.Vote) {
+      return null
+    }
+
+    const balance = props.proposal.balance
     return <div className="ProposalApproval">
       <div className="ProposalApprovalItem yea">
         <span>{t('general.yes')}</span>
@@ -80,7 +84,11 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
   }
 
   static Progress = (props: Props & { full?: boolean }) => {
-    const { yeaPercentage, nayPercentage } = props.vote.balance
+    if (props.proposal.proposalType !== ProposalType.Vote) {
+      return null
+    }
+
+    const { yeaPercentage, nayPercentage } = props.proposal.balance
 
     let className = 'ProposalStatusBar'
     if (yeaPercentage === 0) {
@@ -116,41 +124,71 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
   }
 
   static ReminderTime = (props: Props) => {
-    if (props.vote.executed) {
-      return null
+    if (props.proposal.proposalType === ProposalType.Vote) {
+      if (props.proposal.executed) {
+        return null
+      }
+
+      const timeLeft = getVoteTimeLeft(props.proposal)
+      if (!timeLeft) {
+        return null
+      }
+
+      return <div className="ProposalStatus ProposalStatusTime">
+        <img src={timeLeftIcon} width="20" height="20" alt="time" />
+        <div>{timeLeft}</div>
+      </div>
     }
 
-    const timeLeft = getVoteTimeLeft(props.vote)
-    if (!timeLeft) {
-      return null
+    if (props.proposal.proposalType === ProposalType.DelayScript) {
+      if (props.proposal.pausedAt) {
+        return <ProposalStatus.Badge name="paused" />
+      }
+
+      if ((props.proposal.executionTime * 100) < Date.now()) {
+        return <div className="ProposalStatus ProposalStatusTime">
+          <div>ready to execute</div>
+        </div>
+      }
+
+      const timeLeft = getDelayTimeLeft(props.proposal)
+      if (!timeLeft) {
+        return null
+      }
+
+      return <div className="ProposalStatus ProposalStatusTime">
+        <img src={timeLeftIcon} width="20" height="20" alt="time" />
+        <div>{timeLeft}</div>
+      </div>
     }
 
-    return <div className="ProposalStatus ProposalStatusTime">
-      <img src={timeLeftIcon} width="20" height="20" alt="time" />
-      <div>{timeLeft}</div>
-    </div>
+    return null
   }
 
   static Status = (props: Props) => {
-    switch (props.vote.status) {
-      case VoteStatus.Enacted:
+    if (props.proposal.proposalType !== ProposalType.Vote) {
+      return null
+    }
+
+    switch (props.proposal.status) {
+      case Status.Enacted:
         return <ProposalStatus.Enacted />
-      case VoteStatus.Passed:
+      case Status.Passed:
         return <ProposalStatus.Passed />
-      case VoteStatus.Rejected:
+      case Status.Rejected:
         return <ProposalStatus.Rejected />
       default:
-        return <ProposalStatus.Progress vote={props.vote} />
+        return <ProposalStatus.Progress proposal={props.proposal} />
     }
   }
 
   render() {
-    const { vote } = this.props
-    const identifier = vote.identifier
+    const { proposal } = this.props
+    const identifier = proposal.identifier
     return <div className="ProposalStatusContainer">
-      <ProposalStatus.Status vote={vote} />
+      <ProposalStatus.Status proposal={proposal} />
       <ProposalStatus.AppName address={identifier.appAddress} />
-      <ProposalStatus.ReminderTime vote={vote} />
+      <ProposalStatus.ReminderTime proposal={proposal} />
     </div>
   }
 }

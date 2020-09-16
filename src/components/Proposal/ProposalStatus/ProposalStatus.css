@@ -52,11 +52,11 @@
   border-color: rgba(89, 161, 79, .2);
 }
 
-.ProposalStatus.delay {
+/* .ProposalStatus.delay {
   color: #edc949;
   background-color: rgba(237, 201, 73, .2);
   border-color: rgba(237, 201, 73, .2);
-}
+} */
 
 .ProposalStatus.system {
   color: #af7aa1;
@@ -156,7 +156,7 @@
   display: flex;
   justify-content: flex-start;
   align-content: center;
-  margin: 4px 12px;
+  margin: 4px 12px 4px 0;
   width: 100px;
   height: 14px;
   border-radius: 4px;

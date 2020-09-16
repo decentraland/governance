@@ -66,7 +66,6 @@ function* projectWalletSaga() {
 function* checkBalance(action: FetchTransactionSuccessAction) {
   const transactions: Transaction[] = yield select(getTransactions)
   const transaction = transactions.find(tx => tx.hash === action?.payload?.transaction?.hash)
-  console.log(transaction, action?.payload?.transaction)
   if (
     transaction?.status === TransactionStatus.CONFIRMED &&
     transaction?.actionType !== EXTEND_WALLET_SUCCESS

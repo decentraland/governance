@@ -1,5 +1,5 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects'
-import { getData as getVotes } from 'modules/vote/selectors'
+import { getData as getVotes } from 'modules/proposal/selectors'
 import { getData as getWallet } from 'modules/wallet/selectors'
 import { getData as getBalance } from './selectors'
 import {
@@ -11,7 +11,7 @@ import {
 import { getAragonAggregatorContract } from 'modules/common/selectors'
 import { Wallet } from 'modules/wallet/types'
 import { Balance } from './type'
-import { Vote } from 'modules/vote/types'
+import { Vote } from 'modules/proposal/types'
 import { BigNumber } from 'ethers'
 
 export function* balanceSaga() {

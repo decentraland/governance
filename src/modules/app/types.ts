@@ -6,7 +6,7 @@ export const VOTING_GRAPH = {
   // [Network.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-rinkeby',
   // [Network.MAINNET]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-mainnet',
   [Network.MAINNET]: 'https://api.thegraph.com/subgraphs/name/0xgabi/aragon-mainnet-staging-dcl',
-  [Network.RINKEBY]: 'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-rinkeby'
+  [Network.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-rinkeby'
 }
 
 export const INBOX = {

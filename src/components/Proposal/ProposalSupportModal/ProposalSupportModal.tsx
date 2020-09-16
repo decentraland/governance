@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import './ProposalSupportModal.css'
-import { getVoteUrl } from 'modules/vote/utils'
+import { getProposalUrl } from 'modules/proposal/utils'
 
 export default class ProposalSupportModal extends React.PureComponent<Props, {}> {
 
@@ -15,15 +15,15 @@ export default class ProposalSupportModal extends React.PureComponent<Props, {}>
   }
 
   handleProceed = () => {
-    if (this.props.vote && !this.props.isCreating) {
-      const vote = this.props.vote
+    if (this.props.proposal && !this.props.isCreating) {
+      const vote = this.props.proposal
       this.props.onCreateCast(vote.id, this.isSupporting())
     }
   }
 
   handleClose = () => {
-    if (this.props.vote && !this.props.isCreating) {
-      this.props.onNavigate(getVoteUrl(this.props.vote), true)
+    if (this.props.proposal && !this.props.isCreating) {
+      this.props.onNavigate(getProposalUrl(this.props.proposal), true)
     }
   }
 
@@ -32,7 +32,7 @@ export default class ProposalSupportModal extends React.PureComponent<Props, {}>
   }
 
   isOpen() {
-    return !!this.props.vote && this.props.params.modal === 'vote'
+    return !!this.props.proposal && this.props.params.modal === 'vote'
   }
 
   render() {

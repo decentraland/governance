@@ -1,34 +1,34 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
-  LOAD_VOTE_DESCRIPTION_FAILURE,
-  LOAD_VOTE_DESCRIPTION_REQUEST,
-  LOAD_VOTE_DESCRIPTION_SUCCESS,
-  LoadVoteDescriptionFailureAction,
-  LoadVoteDescriptionRequestAction,
-  LoadVoteDescriptionSuccessAction
+  LOAD_PROPOSAL_DESCRIPTION_FAILURE,
+  LOAD_PROPOSAL_DESCRIPTION_REQUEST,
+  LOAD_PROPOSAL_DESCRIPTION_SUCCESS,
+  LoadProposalDescriptionFailureAction,
+  LoadProposalDescriptionRequestAction,
+  LoadProposalDescriptionSuccessAction
 } from './actions'
-import { VoteDescription } from './types'
+import { ProposalDescription } from './types'
 
-export type VoteDescriptionState = {
-  data: Record<string, VoteDescription>,
+export type ProposalDescriptionState = {
+  data: Record<string, ProposalDescription>,
   loading: LoadingState
   error: Record<string, string>
 }
 
-const INITIAL_STATE: VoteDescriptionState = {
+const INITIAL_STATE: ProposalDescriptionState = {
   data: {},
   loading: [],
   error: {}
 }
 
-export type VoteDescriptionReducerAction =
-  | LoadVoteDescriptionFailureAction
-  | LoadVoteDescriptionRequestAction
-  | LoadVoteDescriptionSuccessAction
+export type ProposalDescriptionReducerAction =
+  | LoadProposalDescriptionFailureAction
+  | LoadProposalDescriptionRequestAction
+  | LoadProposalDescriptionSuccessAction
 
-export const voteDescriptionReducer = (state = INITIAL_STATE, action: VoteDescriptionReducerAction): VoteDescriptionState => {
+export const proposalDescriptionReducer = (state = INITIAL_STATE, action: ProposalDescriptionReducerAction): ProposalDescriptionState => {
   switch (action.type) {
-    case LOAD_VOTE_DESCRIPTION_REQUEST: {
+    case LOAD_PROPOSAL_DESCRIPTION_REQUEST: {
       return {
         ...state,
         loading: [
@@ -37,7 +37,7 @@ export const voteDescriptionReducer = (state = INITIAL_STATE, action: VoteDescri
         ]
       }
     }
-    case LOAD_VOTE_DESCRIPTION_SUCCESS: {
+    case LOAD_PROPOSAL_DESCRIPTION_SUCCESS: {
       const loaded = new Set(Object.keys(action.payload))
       const data = {
         ...state.data,
@@ -54,7 +54,7 @@ export const voteDescriptionReducer = (state = INITIAL_STATE, action: VoteDescri
         data
       }
     }
-    case LOAD_VOTE_DESCRIPTION_FAILURE: {
+    case LOAD_PROPOSAL_DESCRIPTION_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

@@ -15,7 +15,9 @@ import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules
 
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
-import { LOAD_VOTE_DESCRIPTION_SUCCESS } from 'modules/description/actions'
+import { LOAD_PROPOSAL_DESCRIPTION_SUCCESS } from 'modules/description/actions'
+import { ProposalStatus } from 'modules/proposal/types'
+import { LOAD_PROPOSALS_SUCCESS } from 'modules/proposal/actions'
 
 const version = require('../../../package.json').version
 
@@ -43,9 +45,38 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   paths: [
     ['balance', 'data'],
     ['description', 'data'],
+    // ['vote', 'persist'],
     ['transaction']
   ], // array of paths from state to be persisted (optional)
-  actions: [CLEAR_TRANSACTIONS, CONNECT_WALLET_SUCCESS, LOAD_VOTE_DESCRIPTION_SUCCESS] // array of actions types that will trigger a SAVE (optional)
+  actions: [
+    CLEAR_TRANSACTIONS,
+    CONNECT_WALLET_SUCCESS,
+    LOAD_PROPOSALS_SUCCESS,
+    LOAD_PROPOSAL_DESCRIPTION_SUCCESS
+  ], // array of actions types that will trigger a SAVE (optional)
+  transform: (state: any) => {
+    const votePersist = Object.entries<any>(state?.vote?.data || {})
+      .filter(([_key, value]) => {
+        return (
+          value && (
+            value.status === ProposalStatus.Enacted ||
+            value.status === ProposalStatus.Passed ||
+            value.status === ProposalStatus.Rejected
+          )
+        )
+      })
+      .map(([key, value]) => {
+        return [key, { ...value }]
+      })
+
+    return {
+      ...state,
+      vote: {
+        ...state.vote,
+        persist: Object.fromEntries(votePersist)
+      }
+    }
+  }
 })
 
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_KEY'))

@@ -2,7 +2,7 @@ import ForwardingPathDescription from '@aragon/connect-core/dist/cjs/utils/descr
 
 export { ForwardingPathDescription }
 
-export type VoteDescription = {
+export type ProposalDescription = {
   description?: string
   describedSteps?: ForwardingPathDescription['describedSteps']
   firstDescribedSteps?: ForwardingPathDescription['describedSteps']

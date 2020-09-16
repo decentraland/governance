@@ -1,5 +1,5 @@
+import { Delaying, Vote, Voting } from 'modules/proposal/types'
 import { action } from 'typesafe-actions'
-import { Vote, Voting } from '@aragon/connect-voting'
 import { Subscription } from './types'
 
 export const UNSUBSCRIBE_REQUEST = '[Request] Unsubscribe'
@@ -13,6 +13,18 @@ export const unsubscribeFailure = (error: Record<string, string>) => action(UNSU
 export type UnsubscribeRequestAction = ReturnType<typeof unsubscribeRequest>
 export type UnsubscribeSuccessAction = ReturnType<typeof unsubscribeSuccess>
 export type UnsubscribeFailureAction = ReturnType<typeof unsubscribeFailure>
+
+export const SUBSCRIBE_DELAYING_REQUEST = '[Request] Subscribe delaying'
+export const SUBSCRIBE_DELAYING_SUCCESS = '[Success] Subscribe delaying'
+export const SUBSCRIBE_DELAYING_FAILURE = '[Failure] Subscribe delaying'
+
+export const subscribeDelayingRequest = (delaying: Record<string, Delaying>) => action(SUBSCRIBE_DELAYING_REQUEST, delaying)
+export const subscribeDelayingSuccess = (subscriptions: Record<string, Subscription>) => action(SUBSCRIBE_DELAYING_SUCCESS, subscriptions)
+export const subscribeDelayingFailure = (error: Record<string, string>) => action(SUBSCRIBE_DELAYING_FAILURE, error)
+
+export type SubscribeDelayingRequestAction = ReturnType<typeof subscribeDelayingRequest>
+export type SubscribeDelayingSuccessAction = ReturnType<typeof subscribeDelayingSuccess>
+export type SubscribeDelayingFailureAction = ReturnType<typeof subscribeDelayingFailure>
 
 export const SUBSCRIBE_VOTING_REQUEST = '[Request] Subscribe voting'
 export const SUBSCRIBE_VOTING_SUCCESS = '[Success] Subscribe voting'

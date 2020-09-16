@@ -6,10 +6,14 @@ import {
   SUBSCRIBE_VOTE_SUCCESS,
   SUBSCRIBE_VOTING_FAILURE,
   SUBSCRIBE_VOTING_SUCCESS,
+  SUBSCRIBE_DELAYING_FAILURE,
+  SUBSCRIBE_DELAYING_SUCCESS,
   SubscribeVoteFailureAction,
   SubscribeVoteSuccessAction,
   SubscribeVotingFailureAction,
   SubscribeVotingSuccessAction,
+  SubscribeDelayingFailureAction,
+  SubscribeDelayingSuccessAction,
   UnsubscribeFailureAction,
   UnsubscribeSuccessAction
 } from './actions'
@@ -34,6 +38,8 @@ export type SubscribeReducerAction =
   | SubscribeVotingSuccessAction
   | UnsubscribeFailureAction
   | UnsubscribeSuccessAction
+  | SubscribeDelayingFailureAction
+  | SubscribeDelayingSuccessAction
 
 export const subscriptionReducer = (state = INITIAL_STATE, action: SubscribeReducerAction): SubscriptionState => {
   switch (action.type) {
@@ -46,6 +52,7 @@ export const subscriptionReducer = (state = INITIAL_STATE, action: SubscribeRedu
       }
     }
 
+    case SUBSCRIBE_DELAYING_SUCCESS:
     case SUBSCRIBE_VOTING_SUCCESS:
     case SUBSCRIBE_VOTE_SUCCESS: {
       return {
@@ -58,6 +65,7 @@ export const subscriptionReducer = (state = INITIAL_STATE, action: SubscribeRedu
     }
 
     case UNSUBSCRIBE_FAILURE:
+    case SUBSCRIBE_DELAYING_FAILURE:
     case SUBSCRIBE_VOTING_FAILURE:
     case SUBSCRIBE_VOTE_FAILURE: {
       return {

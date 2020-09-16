@@ -1,5 +1,5 @@
-import { AggregatedVote } from 'modules/vote/types'
+import { Proposal } from 'modules/proposal/types'
 
 export type Props = {
-  vote: AggregatedVote
+  proposal: Proposal
 }

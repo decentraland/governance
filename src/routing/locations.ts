@@ -3,7 +3,8 @@ import { NewProposalParams, UnwrapParams, CastParams, FilterProposalParams } fro
 
 export const locations = {
   root: (options?: NewProposalParams | FilterProposalParams) => '/' + params(options),
-  proposal: (app: string = ':app', id: string | number = `:id`, options?: CastParams) => `/proposal/${app}/vote/${id}` + params(options),
+  vote: (app: string = ':app', id: string | number = `:id`, options?: CastParams) => `/proposal/${app}/vote/${id}` + params(options),
+  delay: (app: string = ':app', id: string | number = `:id`, options?: CastParams) => `/proposal/${app}/delay/${id}` + params(options),
   wrapping: (options?: UnwrapParams) => '/wrapping/' + params(options),
   debug: () => '/debug'
 }

@@ -3,7 +3,7 @@ import { getLocation } from 'connected-react-router'
 import { Location } from 'history'
 import { CastParams, NewProposalParams, FilterProposalParams, UnwrapParams } from './types'
 import { formatParams, getBooleanParam, getEnumParam, getNumberParam, getStringParam } from './utils'
-import { VoteStatus } from 'modules/vote/types'
+import { ProposalStatus } from 'modules/proposal/types'
 
 export const getParams = createSelector(
   getLocation as any,
@@ -32,7 +32,7 @@ export const getNewProposalParams = createSelector(
 export const getFilterProposalParams = createSelector(
   getQuery,
   (query) => formatParams({
-    status: getEnumParam(query.status, [ VoteStatus.Enacted, VoteStatus.Passed, VoteStatus.Progress, VoteStatus.Rejected ])
+    status: getEnumParam(query.status, [ ProposalStatus.Enacted, ProposalStatus.Passed, ProposalStatus.Progress, ProposalStatus.Rejected ])
   }) as FilterProposalParams
 )
 

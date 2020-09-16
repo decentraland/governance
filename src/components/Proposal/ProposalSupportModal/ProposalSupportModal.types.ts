@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { CastParams } from 'routing/types'
 import { createCastRequest, CreateCastRequestAction } from 'modules/cast/actions'
-import { AggregatedVote } from 'modules/vote/types'
+import { Proposal } from 'modules/proposal/types'
 import { enableWalletRequest, EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 export type Props = {
@@ -12,7 +12,7 @@ export type Props = {
   isCreating: boolean
   isEnabling: boolean
   params: CastParams
-  vote?: AggregatedVote
+  proposal?: Proposal
   onNavigate: (path: string, replace?: boolean) => void
   onCreateCast: typeof createCastRequest
   onConnect: typeof enableWalletRequest

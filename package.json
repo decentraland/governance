@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@1hive/connect-delay": "0.0.0-beta.1",
     "@aragon/connect": "^0.8.0-alpha.3",
     "@aragon/connect-voting": "^0.8.0-alpha.3",
     "@ethersproject/providers": "^5.0.5",

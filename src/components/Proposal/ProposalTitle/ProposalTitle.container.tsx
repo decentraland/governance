@@ -7,7 +7,7 @@ import { MapDispatchProps, MapStateProps, MapDispatch, DefaultProps } from './Pr
 import { getNetwork } from 'modules/wallet/selectors'
 
 const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
-  const description = props.vote && getVoteDescription(state)[props.vote.id]
+  const description = props.proposal && getVoteDescription(state)[props.proposal.id]
 
   return {
     description,

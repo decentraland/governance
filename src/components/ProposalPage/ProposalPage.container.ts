@@ -8,42 +8,60 @@ import { RootState } from 'modules/root/types'
 import { getLoading as getLoadingOrganization } from 'modules/organization/selectors'
 import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
-import { getData as getVotes, getLoading as getLoadingVotes } from 'modules/vote/selectors'
-import { getData as getVoteDescription } from 'modules/description/selectors'
+import { getData as getProposals, getExecutedTransactions, getLoading as getLoadingVotes, isExecuting } from 'modules/proposal/selectors'
+import { getData as getProposalDescriptions } from 'modules/description/selectors'
 import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
 import { getData as getWallet } from 'modules/wallet/selectors'
 import { getData as getBalance } from 'modules/balance/selectors'
-import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
+import { executeScriptRequest, LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
 import { loadBalanceRequest } from 'modules/balance/actions'
 import { push, goBack, replace } from 'connected-react-router'
+import { AggregatedVote } from 'modules/proposal/types'
+import { getProposalId } from 'modules/proposal/utils'
+import { Cast } from '@aragon/connect-voting'
 
 const mapState = (state: RootState, props: any): MapStateProps => {
   const address = (getAddress(state) || '').toLowerCase()
 
   const { app, id } = props?.match?.params || {}
-  const voteId = `appAddress:${app}-voteId:0x${Number(id).toString(16)}`
-  const vote = getVotes(state)[voteId]
-  const casts = getCasts(state)[voteId]
-  const cast = !!address && Array.isArray(casts) ? casts.find((cast) => cast.voter === address) : undefined
-  const balance = getBalance(state)[voteId]
+  const proposalId = getProposalId(app, id)
+  const proposal = getProposals(state)[proposalId] as AggregatedVote
+  const balance = getBalance(state)[proposalId]
+  const casts = getCasts(state)[proposalId]
+  const executedTransactions = getExecutedTransactions(state)
+  let cast: Cast | undefined = undefined
+
+  if (Boolean(address) && Array.isArray(casts)) {
+    for (const currentCast of casts) {
+      if (currentCast.voter === address) {
+        if (!cast || cast.voteId < currentCast.voteId) {
+          cast = currentCast
+        }
+      }
+    }
+  }
+
+  console.log(proposalId, executedTransactions)
 
   return ({
-    vote,
+    proposal,
     casts,
     cast,
     balance,
     wallet: getWallet(state),
-    description: getVoteDescription(state)[voteId],
+    description: getProposalDescriptions(state)[proposalId],
+    executed: proposal?.script === '0x' || executedTransactions.some(tx => tx.payload.scriptId === proposalId),
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
     isEnabling: isEnabling(state),
-    isPending: getPendingCasts(state).includes(voteId),
+    isExecuting: isExecuting(state),
+    isPending: getPendingCasts(state).includes(proposalId),
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
-      isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)
+      isLoadingType(getLoadingVotes(state), LOAD_PROPOSALS_REQUEST)
     )
   })
 }
@@ -53,7 +71,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onBack: () => dispatch(goBack()),
   onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes)),
-  onRequireBalance : (votes: string[]) => dispatch(loadBalanceRequest(votes))
+  onRequireBalance : (votes: string[]) => dispatch(loadBalanceRequest(votes)),
+  onExecuteScript: (id: string) => dispatch(executeScriptRequest(id))
 })
 
 export default connect(mapState, mapDispatch)(ProposalPage)

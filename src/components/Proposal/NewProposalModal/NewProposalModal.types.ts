@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { FilterProposalParams, NewProposalParams } from 'routing/types'
-import { createQuestionRequest, createBanRequest, createPoiRequest, createCatalystRequest, CreateQuestionRequestAction, CreateBanRequestAction, CreatePoiRequestAction, CreateCatalystRequestAction } from 'modules/vote/actions'
+import { createQuestionRequest, createBanRequest, createPoiRequest, createCatalystRequest, CreateQuestionRequestAction, CreateBanRequestAction, CreatePoiRequestAction, CreateCatalystRequestAction } from 'modules/proposal/actions'
 
 export type DefaultProps = {
 }

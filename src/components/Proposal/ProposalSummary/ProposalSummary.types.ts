@@ -1,15 +1,15 @@
 import { Dispatch } from 'redux'
 
-import { AggregatedVote } from 'modules/vote/types'
+import { Proposal } from 'modules/proposal/types'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import { VoteDescription } from 'modules/description/types'
+import { ProposalDescription } from 'modules/description/types'
 
 export type DefaultProps = {
-  vote: AggregatedVote
+  proposal: Proposal
 }
 
 export type Props = DefaultProps & {
-  description: VoteDescription
+  description: ProposalDescription
   descriptionError: string
   isLoading: boolean
   onNavigate: (path: string, replace?: boolean) => void

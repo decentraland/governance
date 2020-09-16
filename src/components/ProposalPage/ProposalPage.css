@@ -52,6 +52,11 @@
   color: var(--secondary-text);
 }
 
+/* .dcl.page.ProposalPage .ui.grid > .row.ProposalDetail > .column {
+  padding-left: 1rem;
+  padding-right: 0;
+} */
+
 .dcl.page.ProposalPage .ProposalActions {
   align-items: flex-start;
 }
@@ -62,6 +67,7 @@
   cursor: help;
 }
 
+.dcl.page.ProposalPage .ProposalDetail .ui.button,
 .dcl.page.ProposalPage .ProposalActions .ui.button {
   width: 100%;
 }

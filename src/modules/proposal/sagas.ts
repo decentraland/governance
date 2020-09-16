@@ -1,14 +1,25 @@
-import { put, call, takeLatest, select } from 'redux-saga/effects'
+import { put, call, takeLatest, select, all } from 'redux-saga/effects'
 import { App } from '@aragon/connect'
-import connectVoting, { Voting, Vote } from '@aragon/connect-voting'
-import { loadVoteDescriptionRequest } from 'modules/description/actions'
+import { loadProposalDescriptionRequest } from 'modules/description/actions'
 import { getData as getVoteDescription } from 'modules/description/selectors'
 import { getData as getApps } from 'modules/app/selectors'
+import { ProposalDescription } from 'modules/description/types'
+import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
+import { SAB, COMMUNITY, INBOX, BanName, Catalyst, POI /*, Delay */ } from 'modules/app/types'
+import { getNetwork, getProvider } from 'modules/wallet/selectors'
+import { Network } from 'modules/wallet/types'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Web3Provider } from '@ethersproject/providers'
+import { replace } from 'connected-react-router'
+import { locations } from 'routing/locations'
+import { getNewProposalParams } from 'routing/selectors'
+import { NewProposalParams } from 'routing/types'
+import { /* subscribeDelayingRequest, */ subscribeVotingRequest } from 'modules/subscription/actions'
 import {
-  loadVotesFailure,
-  loadVotesSuccess,
-  LOAD_VOTES_REQUEST,
-  loadVotesRequest,
+  loadProposalsFailure,
+  loadProposalsSuccess,
+  LOAD_PROPOSALS_REQUEST,
+  loadProposalsRequest,
   CREATE_BAN_REQUEST,
   CREATE_CATALYST_REQUEST,
   CREATE_POI_REQUEST,
@@ -24,87 +35,94 @@ import {
   createQuestionSuccess,
   createCatalystSuccess,
   createPoiSuccess,
-  createBanSuccess
+  createBanSuccess, EXECUTE_SCRIPT_REQUEST, ExecuteScriptRequestAction, executeScriptFailure, executeScriptSuccess
 } from './actions'
-import { VoteDescription } from 'modules/description/types'
-import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
-import { SAB, COMMUNITY, INBOX, Delay, BanName, Catalyst, POI } from 'modules/app/types'
-import { getNetwork, getProvider } from 'modules/wallet/selectors'
-import { Network } from 'modules/wallet/types'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Web3Provider } from '@ethersproject/providers'
-import { replace } from 'connected-react-router'
-import { locations } from 'routing/locations'
-import { getNewProposalParams } from 'routing/selectors'
-import { AggregatedVote } from './types'
-import { aggregatedVote } from './utils'
-import { NewProposalParams } from 'routing/types'
-import { subscribeVotingRequest } from 'modules/subscription/actions'
+import { AggregatedDelayedScript, AggregatedVote, Proposal, Voting } from './types'
+import { createVoting, getProposalIdentifier, loadDelayScriptsOnChain, loadVotes } from './utils'
+import { flatArray } from 'modules/common/utils'
+import { getDelayContract } from 'modules/common/selectors'
+import { Contract } from 'ethers'
+import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 
-export function* voteSaga() {
-  yield takeLatest(LOAD_APPS_SUCCESS, reloadVotes)
-  yield takeLatest(LOAD_VOTES_REQUEST, loadVotes)
+export function* proposalSaga() {
+  yield takeLatest(LOAD_APPS_SUCCESS, reloadProposals)
+  yield takeLatest(LOAD_PROPOSALS_REQUEST, loadProposals)
   yield takeLatest(CREATE_QUESTION_REQUEST, createQuestion)
   yield takeLatest(CREATE_BAN_REQUEST, createBan)
   yield takeLatest(CREATE_CATALYST_REQUEST, createCatalyst)
   yield takeLatest(CREATE_POI_REQUEST, createPoi)
+  yield takeLatest(EXECUTE_SCRIPT_REQUEST, executeScript)
 }
 
-function* reloadVotes() {
-  yield put(loadVotesRequest())
+function* reloadProposals() {
+  yield put(loadProposalsRequest())
 }
 
-function* loadVotes() {
+function* loadProposals(): any {
   try {
     const network: Network = yield select(getNetwork)
-    const voteDescriptions: Record<string, VoteDescription> = yield select(getVoteDescription)
+    const voteDescriptions: Record<string, ProposalDescription> = yield select(getVoteDescription)
+    const delayContract: Contract = yield select(getDelayContract)
     const apps: Record<string, App> = yield select(getApps)
-    const votingApps: App[] = [
-      apps[SAB[network]],
-      apps[COMMUNITY[network]],
-      apps[INBOX[network]],
-      apps[Delay[network]]
-    ]
+    const sabApp = apps[SAB[network]]
+    const communityApp = apps[COMMUNITY[network]]
+    const inboxApp = apps[INBOX[network]]
+    // const delayApp = apps[Delay[network]]
 
-    const votingList: Voting[] = []
-    const votingRecord: Record<string, Voting> = {}
-    for (const votingApp of votingApps) {
-      const voting: Voting = yield call(() => connectVoting(votingApp).catch((err) => console.error(votingApp, err)))
-      if (voting) {
-        votingList.push(voting)
-        votingRecord[votingApp.address] = voting
-      }
-    }
+    const [
+      sabVoting,
+      communityVoting,
+      inboxVoting // ,
+      // scriptDelaying
+    ]: [ Voting, Voting, Voting /*, Delaying */ ] = yield all([
+      call(createVoting, sabApp),
+      call(createVoting, communityApp),
+      call(createVoting, inboxApp)// ,
+      // call(createDelaying, delayApp)
+    ])
 
-    const votes: AggregatedVote[] = yield call(async () => {
-      let result: Vote[] = []
-      for (const voting of votingList) {
-        if (voting) {
-          const newVotes = await voting.votes()
-          result = result.concat(newVotes)
-        }
-      }
+    const [
+      sabVotes,
+      communityVotes,
+      inboxVotes,
+      delayScripts
+    ]: [ AggregatedVote[], AggregatedVote[], AggregatedVote[], AggregatedDelayedScript[] ] = yield all([
+      call(loadVotes, sabVoting),
+      call(loadVotes, communityVoting),
+      call(loadVotes, inboxVoting),
+      // call(loadDelayScripts, scriptDelaying)
+      call(loadDelayScriptsOnChain, delayContract)
+    ])
 
-      return Promise.all(result.map(aggregatedVote))
-    })
+    const proposals = flatArray<Proposal>([sabVotes, communityVotes, inboxVotes, delayScripts])
+    const record: Record<string, Proposal> = Object.fromEntries(proposals.map(vote => [vote.id, vote]))
+    yield put(loadProposalsSuccess(record))
 
-    const record: Record<string, AggregatedVote> = Object.fromEntries(votes.map(vote => [vote.id, vote]))
-    yield put(loadVotesSuccess(record))
-    yield put(subscribeVotingRequest(votingRecord))
-
-    const pendingVotes = votes
+    const pendingVotes = proposals
       .filter((vote) => !voteDescriptions[vote.id])
-      .sort((voteA, voteB) => Number(voteB.startDate) - Number(voteA.startDate))
       .map(vote => vote.id)
 
-    yield put(loadVoteDescriptionRequest(pendingVotes))
+    yield put(loadProposalDescriptionRequest(pendingVotes))
+    // console.log(delayScripts)
+
+    // Subscription
+    yield put(subscribeVotingRequest({
+      [sabApp.address]: sabVoting,
+      [communityApp.address]: communityVoting,
+      [inboxApp.address]: inboxVoting
+    }))
+
+    // yield put(subscribeDelayingRequest({
+    //   [delayApp.address]: scriptDelaying
+    // }))
+
   } catch (e) {
-    yield put(loadVotesFailure(e.message))
+    yield put(loadProposalsFailure(e.message))
   }
 }
 
-export function* updateVote(vote: AggregatedVote) {
-  yield put(loadVotesSuccess({ [vote.id]: vote }))
+export function* updateProposal(vote: AggregatedVote) {
+  yield put(loadProposalsSuccess({ [vote.id]: vote }))
 }
 
 function* createQuestion(action: CreateQuestionRequestAction) {
@@ -195,5 +213,17 @@ function* createPoi(action: CreatePoiRequestAction) {
     yield put(replace(locations.root({ ...query, completed: true })))
   } catch (err) {
     yield put(createPoiFailure(err.message))
+  }
+}
+
+function* executeScript(action: ExecuteScriptRequestAction) {
+  const { scriptId } = getProposalIdentifier({ id: action.payload.scriptId || '' })
+
+  try {
+    const delayContract: Contract = yield select(getDelayContract)
+    const tx: Transaction = yield call(() => delayContract.execute(scriptId))
+    yield put(executeScriptSuccess(action.payload.scriptId, tx.hash))
+  } catch (err) {
+    yield put(executeScriptFailure(err.message))
   }
 }

@@ -17,7 +17,8 @@ export default class Routes extends React.PureComponent<any, any> {
     return (<>
       <Switch>
         <Route exact path={locations.root()} component={HomePage} />
-        <Route exact path={locations.proposal()} component={ProposalPage} />
+        <Route exact path={locations.vote()} component={ProposalPage} />
+        <Route exact path={locations.delay()} component={ProposalPage} />
         <Route exact path={locations.wrapping()} component={WrappingPage} />
         {env.isDevelopment() && <Route exact path={locations.debug()} component={DebugPage} />}
         <Redirect to={locations.root()} />

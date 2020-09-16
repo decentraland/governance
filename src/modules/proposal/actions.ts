@@ -1,17 +1,18 @@
+import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { action } from 'typesafe-actions'
-import { AggregatedVote } from './types'
+import { Proposal } from './types'
 
-export const LOAD_VOTES_REQUEST = '[Request] Load votes'
-export const LOAD_VOTES_SUCCESS = '[Success] Load votes'
-export const LOAD_VOTES_FAILURE = '[Failure] Load votes'
+export const LOAD_PROPOSALS_REQUEST = '[Request] Load proposals'
+export const LOAD_PROPOSALS_SUCCESS = '[Success] Load proposals'
+export const LOAD_PROPOSALS_FAILURE = '[Failure] Load proposals'
 
-export const loadVotesRequest = () => action(LOAD_VOTES_REQUEST, {})
-export const loadVotesSuccess = (votes: Record<string, AggregatedVote>) => action(LOAD_VOTES_SUCCESS, { votes })
-export const loadVotesFailure = (error: string) => action(LOAD_VOTES_FAILURE, { error })
+export const loadProposalsRequest = () => action(LOAD_PROPOSALS_REQUEST, {})
+export const loadProposalsSuccess = (votes: Record<string, Proposal>) => action(LOAD_PROPOSALS_SUCCESS, { votes })
+export const loadProposalsFailure = (error: string) => action(LOAD_PROPOSALS_FAILURE, { error })
 
-export type LoadVotesRequestAction = ReturnType<typeof loadVotesRequest>
-export type LoadVotesSuccessAction = ReturnType<typeof loadVotesSuccess>
-export type LoadVotesFailureAction = ReturnType<typeof loadVotesFailure>
+export type LoadProposalsRequestAction = ReturnType<typeof loadProposalsRequest>
+export type LoadProposalsSuccessAction = ReturnType<typeof loadProposalsSuccess>
+export type LoadProposalsFailureAction = ReturnType<typeof loadProposalsFailure>
 
 export const CREATE_QUESTION_REQUEST = '[Request] Create question'
 export const CREATE_QUESTION_SUCCESS = '[Success] Create question'
@@ -60,3 +61,15 @@ export const createCatalystFailure = (error: string) => action(CREATE_CATALYST_F
 export type CreateCatalystRequestAction = ReturnType<typeof createCatalystRequest>
 export type CreateCatalystSuccessAction = ReturnType<typeof createCatalystSuccess>
 export type CreateCatalystFailureAction = ReturnType<typeof createCatalystFailure>
+
+export const EXECUTE_SCRIPT_REQUEST = '[Request] Execute script'
+export const EXECUTE_SCRIPT_SUCCESS = '[Success] Execute script'
+export const EXECUTE_SCRIPT_FAILURE = '[Failure] Execute script'
+
+export const executeScriptRequest = (scriptId: string) => action(EXECUTE_SCRIPT_REQUEST, { scriptId })
+export const executeScriptSuccess = (scriptId: string, hash: string) => action(EXECUTE_SCRIPT_SUCCESS, buildTransactionPayload(hash, { scriptId }))
+export const executeScriptFailure = (error: string) => action(EXECUTE_SCRIPT_FAILURE, { error })
+
+export type ExecuteScriptRequestAction = ReturnType<typeof executeScriptRequest>
+export type ExecuteScriptSuccessAction = ReturnType<typeof executeScriptSuccess>
+export type ExecuteScriptFailureAction = ReturnType<typeof executeScriptFailure>

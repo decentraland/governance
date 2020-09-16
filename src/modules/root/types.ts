@@ -8,9 +8,9 @@ import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 import { OrganizationState } from 'modules/organization/reducer'
 import { AppState } from 'modules/app/reducer'
-import { VoteState } from 'modules/vote/reducer'
+import { ProposalState } from 'modules/proposal/reducer'
 import { WalletState } from 'modules/wallet/reducer'
-import { VoteDescriptionState } from 'modules/description/reducer'
+import { ProposalDescriptionState } from 'modules/description/reducer'
 import { CastState } from 'modules/cast/reducer'
 import { SubscriptionState } from 'modules/subscription/reducer'
 import { BalanceState } from 'modules/balance/reducer'
@@ -31,8 +31,8 @@ export type RootState = {
   organization: OrganizationState
   modal: ModalState
   app: AppState
-  vote: VoteState
-  description: VoteDescriptionState
+  proposal: ProposalState
+  description: ProposalDescriptionState
   cast: CastState
   router: RouterState
   subscription: SubscriptionState

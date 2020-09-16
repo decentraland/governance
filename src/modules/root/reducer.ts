@@ -10,8 +10,8 @@ import { RootState } from 'modules/root/types'
 import { appReducer as app } from 'modules/app/reducer'
 import { organizationReducer as organization } from 'modules/organization/reducer'
 import { walletReducer as wallet } from 'modules/wallet/reducer'
-import { voteReducer as vote } from 'modules/vote/reducer'
-import { voteDescriptionReducer as description } from 'modules/description/reducer'
+import { proposalReducer as proposal } from 'modules/proposal/reducer'
+import { proposalDescriptionReducer as description } from 'modules/description/reducer'
 import { castsReducer as cast } from 'modules/cast/reducer'
 import { subscriptionReducer as subscription } from 'modules/subscription/reducer'
 import { balanceReducer as balance } from 'modules/balance/reducer'
@@ -25,7 +25,7 @@ export function createRootReducer(history: History) {
       wallet,
       organization,
       app,
-      vote,
+      proposal,
       description,
       cast,
       modal,

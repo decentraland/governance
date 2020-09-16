@@ -6,15 +6,15 @@ import { RootState } from 'modules/root/types'
 import { getLoading as getLoadingOrganization } from 'modules/organization/selectors'
 import { getLoading as getLoadingApps } from 'modules/app/selectors'
 import { LOAD_APPS_REQUEST } from 'modules/app/actions'
-import { getLoading as getLoadingVotes } from 'modules/vote/selectors'
-import { LOAD_VOTES_REQUEST } from 'modules/vote/actions'
+import { getLoading as getLoadingVotes } from 'modules/proposal/selectors'
+import { LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
 import { getData as getVoteDescription, getError as getVoteDescriptionError } from 'modules/description/selectors'
 import ProposalSummary from './ProposalSummary'
 import { MapDispatchProps, MapStateProps, MapDispatch, DefaultProps } from './ProposalSummary.types'
 
 const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
-  const description = props.vote && getVoteDescription(state)[props.vote.id]
-  const descriptionError = props.vote && getVoteDescriptionError(state)[props.vote.id]
+  const description = props.proposal && getVoteDescription(state)[props.proposal.id]
+  const descriptionError = props.proposal && getVoteDescriptionError(state)[props.proposal.id]
 
   return {
     description,
@@ -22,7 +22,7 @@ const mapState = (state: RootState, props: DefaultProps): MapStateProps => {
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
-      isLoadingType(getLoadingVotes(state), LOAD_VOTES_REQUEST)
+      isLoadingType(getLoadingVotes(state), LOAD_PROPOSALS_REQUEST)
     )
   }
 }

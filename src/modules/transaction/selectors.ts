@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect'
 import { getData as getTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
-import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { hasSucceeded, isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { getAddress, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 
-export function createPendingTransactionSelector(actionType: string) {
+export function createTransactionSelector(filter: (tx: Transaction) => boolean) {
   return createSelector(
     isConnecting,
     getAddress,
@@ -13,9 +14,17 @@ export function createPendingTransactionSelector(actionType: string) {
         return []
       }
 
-      return (transactions || []).filter(tx => tx.from === address && tx.actionType === actionType && isPending(tx.status))
+      return (transactions || []).filter(tx => tx.from === address && filter(tx))
     }
   )
+}
+
+export function createCompletedTransactionSelector(actionType: string) {
+  return createTransactionSelector((tx) => tx.actionType === actionType && hasSucceeded(tx.status))
+}
+
+export function createPendingTransactionSelector(actionType: string) {
+  return createTransactionSelector((tx) => tx.actionType === actionType && isPending(tx.status))
 }
 
 export function createIsPendingTransactionSelector(actionType: string) {

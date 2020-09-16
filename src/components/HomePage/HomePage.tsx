@@ -18,7 +18,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { HeaderMenu } from 'decentraland-ui/dist/components/HeaderMenu/HeaderMenu'
 import { NewProposalModal } from 'components/Proposal/NewProposalModal'
-import { VoteStatus } from 'modules/vote/types'
+import { ProposalStatus } from 'modules/proposal/types'
 import { FilterProposalParams } from 'routing/types'
 import './HomePage.css'
 
@@ -36,7 +36,7 @@ export default class HomePage extends React.PureComponent<Props, any> {
 
   handleChangeFilters = (event: React.SyntheticEvent<any>, props: DropdownProps) => {
     event.preventDefault()
-    const status = this.props.params.status || VoteStatus.All
+    const status = this.props.params.status || ProposalStatus.All
     if (props.value !== status) {
       this.props.onChangeParams({
         status: props.value as any
@@ -45,8 +45,9 @@ export default class HomePage extends React.PureComponent<Props, any> {
   }
 
   render() {
-    const { isLoading, votes, params } = this.props
-    const status = params.status || VoteStatus.All
+    const { isLoading, proposals, params } = this.props
+    const status = params.status || ProposalStatus.All
+
     return <>
       <Navbar />
       <Navigation activeTab={NavigationTab.Proposals} />
@@ -66,7 +67,7 @@ export default class HomePage extends React.PureComponent<Props, any> {
             <Grid.Column mobile="11">
               <HeaderMenu >
                 <HeaderMenu.Left>
-                  <Header sub><b>{t('proposals_page.proposals_header', { proposals: votes?.length || 0 })}</b></Header>
+                  <Header sub><b>{t('proposals_page.proposals_header', { proposals: proposals?.length || 0 })}</b></Header>
                 </HeaderMenu.Left>
                 <HeaderMenu.Right>
                   <Dropdown
@@ -75,11 +76,11 @@ export default class HomePage extends React.PureComponent<Props, any> {
                     text={`${status} status`}
                     onChange={this.handleChangeFilters}
                     options={[
-                      { key: VoteStatus.All, value: VoteStatus.All, text: t(`general.${VoteStatus.All}`) },
-                      { key: VoteStatus.Enacted, value: VoteStatus.Enacted, text: t(`general.${VoteStatus.Enacted}`) },
-                      { key: VoteStatus.Passed, value: VoteStatus.Passed, text: t(`general.${VoteStatus.Passed}`) },
-                      { key: VoteStatus.Rejected, value: VoteStatus.Rejected, text: t(`general.${VoteStatus.Rejected}`) },
-                      { key: VoteStatus.Progress, value: VoteStatus.Progress, text: t(`general.${VoteStatus.Progress}`) }
+                      { key: ProposalStatus.All, value: ProposalStatus.All, text: t(`general.${ProposalStatus.All}`) },
+                      { key: ProposalStatus.Enacted, value: ProposalStatus.Enacted, text: t(`general.${ProposalStatus.Enacted}`) },
+                      { key: ProposalStatus.Passed, value: ProposalStatus.Passed, text: t(`general.${ProposalStatus.Passed}`) },
+                      { key: ProposalStatus.Rejected, value: ProposalStatus.Rejected, text: t(`general.${ProposalStatus.Rejected}`) },
+                      { key: ProposalStatus.Progress, value: ProposalStatus.Progress, text: t(`general.${ProposalStatus.Progress}`) }
                     ]}
                   />
                 </HeaderMenu.Right>
@@ -88,10 +89,10 @@ export default class HomePage extends React.PureComponent<Props, any> {
                 </HeaderMenu.Right>
               </HeaderMenu>
               {isLoading && <Loader size="huge" active/>}
-              {!isLoading && (!votes || votes.length === 0) && <Empty height={100}>{t('proposals_page.empty')}</Empty>}
-              {!isLoading && votes && votes.length > 0 && votes
-                .filter(vote => status === VoteStatus.All || vote.status === status)
-                .map(vote => <ProposalSummary key={vote.id} vote={vote}/>)
+              {!isLoading && (!proposals || proposals.length === 0) && <Empty height={100}>{t('proposals_page.empty')}</Empty>}
+              {!isLoading && proposals && proposals.length > 0 && proposals
+                .filter(proposal => status === ProposalStatus.All || proposal.status === status)
+                .map(proposal => <ProposalSummary key={proposal.id} proposal={proposal}/>)
               }
             </Grid.Column>
           </Grid.Row>

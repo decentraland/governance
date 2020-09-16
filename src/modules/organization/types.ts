@@ -13,7 +13,7 @@ export const ORGANIZATION_CONNECTOR = {
     'thegraph',
     { orgSubgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xgabi/aragon-mainnet-staging-dcl' }
   ] as Connector,
-  [Network.RINKEBY]: [ 'thegraph', undefined ] as Connector
+  [Network.RINKEBY]: ['thegraph', undefined ] as Connector
 }
 
 export const ORGANIZATION_OPTIONS = {

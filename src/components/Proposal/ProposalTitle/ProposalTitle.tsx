@@ -8,25 +8,26 @@ import { getAppName } from 'modules/app/utils'
 import { env } from 'decentraland-commons'
 import { getAddressName } from 'modules/common/utils'
 import { EtherScan } from 'modules/wallet/types'
+import { AggregatedVote } from 'modules/proposal/types'
 
 const DECENTRALAND_URL = env.get('REACT_APP_DECENTRALAND_URL', '')
 
 export default class ProposalTitle extends React.PureComponent<Props> {
   render() {
 
-    const { vote, description, network } = this.props
+    const { proposal, description, network } = this.props
 
-    if (vote) {
-      if (vote.metadata) {
-        return <Header><pre>{vote.metadata}</pre></Header>
+    if (proposal) {
+      if ((proposal as AggregatedVote).metadata) {
+        return <Header><pre>{(proposal as AggregatedVote).metadata}</pre></Header>
       }
 
       if (description) {
 
         if (description.firstDescriptionAnnotated) {
           return <React.Fragment>{description.firstDescriptionAnnotated.map((annotations, i) => {
-            return <Header key={`${vote.id}-annotations:${i}`}>{annotations.map((annotation, j) => {
-              const key = `${vote.id}-annotations:${i}-item:${j}`
+            return <Header key={`${proposal.id}-annotations:${i}`}>{annotations.map((annotation, j) => {
+              const key = `${proposal.id}-annotations:${i}-item:${j}`
               switch (annotation.type) {
                 case 'dcl:name': {
                   return <b key={key} >"{annotation.value}"</b>

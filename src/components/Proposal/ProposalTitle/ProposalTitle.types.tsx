@@ -1,13 +1,13 @@
-import { Vote } from '@aragon/connect-voting'
-import { VoteDescription } from 'modules/description/types'
+import { ProposalDescription } from 'modules/description/types'
+import { Proposal } from 'modules/proposal/types'
 import { Network } from 'modules/wallet/types'
 
 export type DefaultProps = {
-  vote?: Vote
+  proposal?: Proposal
 }
 
 export type Props = DefaultProps & {
-  description?: VoteDescription
+  description?: ProposalDescription
   network: Network
 }
 

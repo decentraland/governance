@@ -1,11 +1,11 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
-  LOAD_VOTES_FAILURE,
-  LOAD_VOTES_REQUEST,
-  LOAD_VOTES_SUCCESS,
-  LoadVotesSuccessAction,
-  LoadVotesFailureAction,
-  LoadVotesRequestAction,
+  LOAD_PROPOSALS_FAILURE,
+  LOAD_PROPOSALS_REQUEST,
+  LOAD_PROPOSALS_SUCCESS,
+  LoadProposalsSuccessAction,
+  LoadProposalsFailureAction,
+  LoadProposalsRequestAction,
   CREATE_BAN_FAILURE,
   CREATE_BAN_REQUEST,
   CREATE_BAN_SUCCESS,
@@ -29,26 +29,32 @@ import {
   CreatePoiSuccessAction,
   CreateQuestionFailureAction,
   CreateQuestionRequestAction,
-  CreateQuestionSuccessAction
+  CreateQuestionSuccessAction,
+  EXECUTE_SCRIPT_FAILURE,
+  EXECUTE_SCRIPT_REQUEST,
+  EXECUTE_SCRIPT_SUCCESS,
+  ExecuteScriptFailureAction,
+  ExecuteScriptRequestAction,
+  ExecuteScriptSuccessAction
 } from './actions'
-import { AggregatedVote } from './types'
+import { Proposal } from './types'
 
-export type VoteState = {
-  data: Record<string, AggregatedVote>,
+export type ProposalState = {
+  data: Record<string, Proposal>,
   loading: LoadingState
   error: Record<string, string>
 }
 
-const INITIAL_STATE: VoteState = {
+const INITIAL_STATE: ProposalState = {
   data: {},
   loading: [],
   error: {}
 }
 
-export type VoteReducerAction =
-  | LoadVotesSuccessAction
-  | LoadVotesFailureAction
-  | LoadVotesRequestAction
+export type ProposalReducerAction =
+  | LoadProposalsSuccessAction
+  | LoadProposalsFailureAction
+  | LoadProposalsRequestAction
   | CreateBanFailureAction
   | CreateBanRequestAction
   | CreateBanSuccessAction
@@ -61,14 +67,18 @@ export type VoteReducerAction =
   | CreateQuestionFailureAction
   | CreateQuestionRequestAction
   | CreateQuestionSuccessAction
+  | ExecuteScriptFailureAction
+  | ExecuteScriptRequestAction
+  | ExecuteScriptSuccessAction
 
-export const voteReducer = (state = INITIAL_STATE, action: VoteReducerAction): VoteState => {
+export const proposalReducer = (state = INITIAL_STATE, action: ProposalReducerAction): ProposalState => {
   switch (action.type) {
     case CREATE_BAN_REQUEST:
+    case EXECUTE_SCRIPT_REQUEST:
     case CREATE_QUESTION_REQUEST:
     case CREATE_CATALYST_REQUEST:
     case CREATE_POI_REQUEST:
-    case LOAD_VOTES_REQUEST: {
+    case LOAD_PROPOSALS_REQUEST: {
       const newErrors = Object.entries(state.error).filter(([key]) => key !== action.type)
       return {
         ...state,
@@ -76,7 +86,7 @@ export const voteReducer = (state = INITIAL_STATE, action: VoteReducerAction): V
         error: Object.fromEntries(newErrors)
       }
     }
-    case LOAD_VOTES_SUCCESS: {
+    case LOAD_PROPOSALS_SUCCESS: {
       const { votes } = action.payload
       return {
         ...state,
@@ -88,6 +98,7 @@ export const voteReducer = (state = INITIAL_STATE, action: VoteReducerAction): V
       }
     }
 
+    case EXECUTE_SCRIPT_SUCCESS:
     case CREATE_BAN_SUCCESS:
     case CREATE_QUESTION_SUCCESS:
     case CREATE_CATALYST_SUCCESS:
@@ -98,17 +109,18 @@ export const voteReducer = (state = INITIAL_STATE, action: VoteReducerAction): V
       }
     }
 
-    case CREATE_BAN_FAILURE:
+    case EXECUTE_SCRIPT_FAILURE:
     case CREATE_QUESTION_FAILURE:
     case CREATE_CATALYST_FAILURE:
     case CREATE_POI_FAILURE:
-    case LOAD_VOTES_FAILURE: {
+    case CREATE_BAN_FAILURE:
+    case LOAD_PROPOSALS_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error: {
           ...state.error,
-          [LOAD_VOTES_REQUEST]: action.payload.error
+          [action.type]: action.payload.error
         }
       }
     }
