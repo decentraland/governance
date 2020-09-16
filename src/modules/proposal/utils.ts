@@ -32,6 +32,10 @@ export async function loadDelayScripts(delaying: Delaying) {
 }
 
 export async function loadDelayScriptsOnChain(contract: Contract) {
+  if (!contract) {
+    return []
+  }
+
   try {
     const index: BigNumber = await contract.delayedScriptsNewIndex()
     const scripts = await Promise.all(Array.from(Array(index.toNumber()), async (_, i) => {
