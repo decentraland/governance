@@ -50,7 +50,7 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                   const name = getAddressName(annotation.value)
                   if (name) {
                     const href = `${EtherScan[network]}/address/${annotation.value}`
-                    return <a key={i} title={annotation.value} target="_blank" rel="noopener noreferrer" href={href}>
+                    return <a key={key} title={annotation.value} target="_blank" rel="noopener noreferrer" href={href}>
                       {name && <b>{name}</b>}
                     </a>
                   }
@@ -84,7 +84,7 @@ export default class ProposalTitle extends React.PureComponent<Props> {
                   return <React.Fragment key={key}>{` ${annotation.value} `}</React.Fragment>
 
                 default:
-                  return 'MISSING'
+                  return <React.Fragment key={key}>'MISSING'</React.Fragment>
               }
             })}</Header>
           })}</React.Fragment>
