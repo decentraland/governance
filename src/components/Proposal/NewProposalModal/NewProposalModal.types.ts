@@ -1,9 +1,10 @@
 import { Dispatch } from 'redux'
 
-import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { enableWalletRequest, EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { FilterProposalParams, NewProposalParams } from 'routing/types'
 import { createQuestionRequest, createBanRequest, createPoiRequest, createCatalystRequest, CreateQuestionRequestAction, CreateBanRequestAction, CreatePoiRequestAction, CreateCatalystRequestAction } from 'modules/proposal/actions'
+import { Wallet } from 'modules/wallet/types'
 
 export type DefaultProps = {
 }
@@ -13,8 +14,10 @@ export type Props = DefaultProps & {
   isConnecting: boolean
   isLoading: boolean
   isCreating: boolean
+  isEnabling: boolean
   params: NewProposalParams & FilterProposalParams
-  onConnect: typeof connectWalletRequest
+  wallet: Wallet | null
+  onConnect: typeof enableWalletRequest
   onNavigate: (path: string, replace?: boolean) => void
   onCreateQuestion: typeof createQuestionRequest
   onCreateBan: typeof createBanRequest
@@ -22,6 +25,6 @@ export type Props = DefaultProps & {
   onCreateCatalyst: typeof createCatalystRequest
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isLoading' | 'isCreating' | 'params'>
+export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting' | 'isLoading' | 'isCreating' | 'isEnabling' | 'params' | 'wallet'>
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onNavigate' | 'onCreateQuestion' | 'onCreateBan' | 'onCreatePoi' | 'onCreateCatalyst'>
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | CallHistoryMethodAction | CreateQuestionRequestAction | CreateBanRequestAction | CreatePoiRequestAction | CreateCatalystRequestAction>
+export type MapDispatch = Dispatch<EnableWalletRequestAction | CallHistoryMethodAction | CreateQuestionRequestAction | CreateBanRequestAction | CreatePoiRequestAction | CreateCatalystRequestAction>

@@ -15,7 +15,9 @@ import { FilterProposalParams, NewProposalParams } from 'routing/types'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { locations } from 'routing/locations'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+const signIn = require('../../../images/sign-in.svg')
 const ban = require('../../../images/ban-name-220.png')
 const catalyst = require('../../../images/catalyst-220.png')
 const poi = require('../../../images/poi-220.png')
@@ -40,6 +42,12 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     event.preventDefault()
     if (event.currentTarget.getAttribute('href')) {
       this.props.onNavigate(event.currentTarget.getAttribute('href'))
+    }
+  }
+
+  handleWrap = () => {
+    if (!this.props.isCreating) {
+      this.props.onNavigate(locations.wrapping({}))
     }
   }
 
@@ -105,6 +113,14 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
   }
 
   getStep() {
+    const { isConnected, isConnecting, wallet } = this.props
+    if (
+      this.props.params.modal &&
+      (!isConnected || isConnecting || !(wallet?.manaMiniMe))
+    ) {
+      return 1
+    }
+
     const position = this.getPosition()
     const catalyst = this.getCatalyst()
     if (
@@ -281,12 +297,40 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     </Modal.Content>
   }
 
+  renderLoading() {
+    return <Modal.Content className="NewProposalModalStep">
+      <Loader active />
+    </Modal.Content>
+  }
+
+  renderConnect() {
+    const { isConnecting, isEnabling } = this.props
+    return <Modal.Content className="NewProposalModalStep Connect">
+        <img src={signIn} alt="sign-in" />
+        <p>{t("general.sign_in_detail")}</p>
+        <Button primary size="small" loading={isConnecting || isEnabling} onClick={this.props.onConnect}>
+          {t("general.sign_in")}
+        </Button>
+    </Modal.Content>
+  }
+
+  renderNoPower() {
+    return <Modal.Content className="NewProposalModalStep">
+      <Modal.Header>
+        <Header>{t('proposal_modal.title_wrap')}</Header>
+      </Modal.Header>
+      <Modal.Description>{t('proposal_modal.description_wrap')}</Modal.Description>
+      <Button primary onClick={this.handleWrap}>{t('proposal_modal.confirm_wrap')}</Button>
+    </Modal.Content>
+  }
+
   renderEmpty() {
     return <Modal.Content className="NewProposalModalStep"></Modal.Content>
   }
 
   render() {
     const step = this.getStep()
+    const { isConnecting, wallet, isConnected } = this.props
     return <Modal className="NewProposalModal" open={step > 0} onClose={this.handleClose}>
       <Icon name="close" onClick={this.handleClose} />
       {step > 1 && <Icon name="chevron left" onClick={this.handleBack} />}
@@ -295,6 +339,9 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
           className="NewProposalModalSteps"
           style={{ transform: `translateX(${(step - 1) * -100}%)` }}
         >
+          {isConnecting && this.renderLoading()}
+          {!isConnecting && !isConnected && this.renderConnect()}
+          {!isConnecting && isConnected && !wallet?.votingPower && this.renderNoPower()}
           {this.renderOptions()}
           {this.renderForm()}
           {this.renderConfirm()}
