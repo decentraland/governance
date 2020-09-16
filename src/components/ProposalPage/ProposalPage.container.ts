@@ -43,8 +43,6 @@ const mapState = (state: RootState, props: any): MapStateProps => {
     }
   }
 
-  console.log(proposalId, executedTransactions)
-
   return ({
     proposal,
     casts,
