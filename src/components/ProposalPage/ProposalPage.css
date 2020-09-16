@@ -89,13 +89,13 @@
   background-color: var(--success);
 }
 
-.dcl.page.ProposalPage .ProposalActions .voted:hover .current {
+/* .dcl.page.ProposalPage .ProposalActions .voted:hover .current {
   display: none
 }
 
 .dcl.page.ProposalPage .ProposalActions .voted:hover .ui.button.switch {
   display: block
-}
+} */
 
 .dcl.page.ProposalPage .DetailDebugContainer {
   width: 100%;

@@ -217,9 +217,9 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
           <Button inverted disabled={expired} className="yea current">
             {t('proposal_detail_page.voted_yes')}
           </Button>
-          <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>
+          {/* <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>
             {t('proposal_detail_page.switch_vote_no')}
-          </Button>
+          </Button> */}
         </div>
         <div>{this.renderVotingPowerTooltip()}</div>
       </Grid.Column>}
@@ -228,9 +228,9 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
           <Button inverted disabled={expired} className="nay current">
             {t('proposal_detail_page.voted_no')}
           </Button>
-          <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>
+          {/* <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>
             {t('proposal_detail_page.switch_vote_yes')}
-          </Button>
+          </Button> */}
         </div>
         <div>{this.renderVotingPowerTooltip()}</div>
       </Grid.Column>}
@@ -238,12 +238,12 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   }
 
   render() {
-    const { isLoading, proposal, description, casts } = this.props
+    const { isLoading, proposal, description, casts, cast } = this.props
 
     return <>
       <Navbar isFullscreen={false} />
       <Page className="ProposalPage">
-        <ProposalSupportModal proposal={proposal} />
+        <ProposalSupportModal proposal={proposal} cast={cast} />
         <div className="ProposalPageBack">
           <Back onClick={this.props.onBack} />
         </div>
