@@ -61,6 +61,7 @@
     "proposals_header": "{proposals, number} {proposals, plural, one {PROPOSAL} other {PROPOSALS}}",
     "empty": "No proposals have been sent by community members yet.",
     "create_proposal": "NEW PROPOSAL",
+    "filter_status": "{status} outcomes",
     "wrapped": "wrapped"
   },
   "proposal_detail_page": {
@@ -82,7 +83,13 @@
     "needed": "(>{needed, number}% needed)",
     "wrap": "wrap tokens",
     "voting_power": "Voting power: {vp, number}",
-    "voting_power_detail": "This was your balance when the vote started (block {snapshotBlock, number} mined at {startDate, date})"
+    "voting_power_detail": "This was your balance when the vote started (block {snapshotBlock, number} mined at {startDate, date})",
+    "vote_yes": "VOTE YES",
+    "voted_yes": "VOTED YES",
+    "switch_vote_yes": "CHANGE TO YES",
+    "vote_no": "VOTE NO",
+    "voted_no": "VOTED NO",
+    "switch_vote_no": "CHANGE TO NO"
   },
   "proposal_support_modal": {
     "title": "Vote Confirmation",

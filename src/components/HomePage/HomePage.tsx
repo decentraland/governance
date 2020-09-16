@@ -73,7 +73,7 @@ export default class HomePage extends React.PureComponent<Props, any> {
                   <Dropdown
                     direction="left"
                     value={status}
-                    text={`${status} status`}
+                    text={t('proposals_page.filter_status', { status: t(`general.${status}`) })}
                     onChange={this.handleChangeFilters}
                     options={[
                       { key: ProposalStatus.All, value: ProposalStatus.All, text: t(`general.${ProposalStatus.All}`) },
