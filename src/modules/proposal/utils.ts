@@ -25,10 +25,10 @@ export async function createDelaying(app: App) {
     .catch(console.error)
 }
 
-export async function loadDelayScripts(_delaying: Delaying) {
-  // const scripts = await delaying.delayedScripts()
-  // console.log(scripts)
-  return [] // Promise.all(scripts.map(aggregateDelayedScript))
+export async function loadDelayScripts(delaying: Delaying) {
+  const scripts = await delaying.delayedScripts()
+  console.log(scripts)
+  return Promise.all(scripts.map(aggregateDelayedScript as any))
 }
 
 export async function loadDelayScriptsOnChain(contract: Contract) {
@@ -174,7 +174,7 @@ export function getDelayTimeLeft(delayedScripts: DelayedScript) {
     return null
   }
 
-  return getTimeLeft(delayedScripts.executionTime)
+  return getTimeLeft(delayedScripts.executionTime * 1000)
 }
 
 export function getTimeLeft(until: number) {

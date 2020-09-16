@@ -11,6 +11,13 @@ import './UnwrapModal.css'
 
 export default class UnwrapModal extends React.PureComponent<Props, State> {
 
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      value: this.props?.params?.amount as number
+    }
+  }
+
   handleChangeWrapValue = (event: React.FormEvent<HTMLInputElement>) => {
     const raw = event.currentTarget.value || 0
     const value = Number.isNaN(Number(raw)) ? undefined : Number(raw)

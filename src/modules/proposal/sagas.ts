@@ -5,7 +5,7 @@ import { getData as getVoteDescription } from 'modules/description/selectors'
 import { getData as getApps } from 'modules/app/selectors'
 import { ProposalDescription } from 'modules/description/types'
 import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
-import { SAB, COMMUNITY, INBOX, BanName, Catalyst, POI /*, Delay */ } from 'modules/app/types'
+import { SAB, COMMUNITY, INBOX, BanName, Catalyst, POI/*, Delay */ } from 'modules/app/types'
 import { getNetwork, getProvider } from 'modules/wallet/selectors'
 import { Network } from 'modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -67,7 +67,11 @@ function* loadProposals(): any {
     const sabApp = apps[SAB[network]]
     const communityApp = apps[COMMUNITY[network]]
     const inboxApp = apps[INBOX[network]]
+
     // const delayApp = apps[Delay[network]]
+    // const scriptDelaying = yield call(createDelaying, delayApp)
+    // const scripts = yield call(loadDelayScripts, scriptDelaying)
+    // console.log(delayApp, scriptDelaying, scripts)
 
     const [
       sabVoting,

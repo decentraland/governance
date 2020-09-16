@@ -6,7 +6,7 @@ import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
-import { Contract, BigNumber } from 'ethers'
+import { Contract, BigNumber, utils } from 'ethers'
 import {
   extendWalletRequest,
   EXTEND_WALLET_REQUEST,
@@ -108,7 +108,7 @@ function* getBalance(): any {
       ]))
 
       const manaCommit = manaAllowance.gte(REQUIRE_ALLOWANCE_AMOUNT)
-      manaMiniMe = (manaMiniMe || 0) / 1e18
+      manaMiniMe = Number(utils.formatEther(manaMiniMe || 0))
       land = BigNumber.from(land || 0).toNumber()
       landCommit = !!landCommit
       estate = BigNumber.from(estate || 0).toNumber()
@@ -194,9 +194,7 @@ function* wrapMana(action: WrapManaRequestAction) {
     const mana: number = yield select(getMana)
     const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
-
-    const value = BigInt(amount) * BigInt(1e18)
-    const depositTx = yield call(() => manaMiniMeContract.functions.deposit(value))
+    const depositTx = yield call(() => manaMiniMeContract.functions.deposit(utils.parseEther(amount.toString())))
     yield put(wrapManaSuccess(depositTx.hash))
 
   } catch (err) {
@@ -209,9 +207,7 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
     const mana: number = yield select(getMana)
     const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
-
-    const value = BigInt(amount) * BigInt(1e18)
-    const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(value))
+    const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(utils.parseEther(amount.toString())))
 
     yield put(unwrapManaSuccess(depositTx.hash))
     const query: UnwrapParams = yield select(getUnwrapParams)
