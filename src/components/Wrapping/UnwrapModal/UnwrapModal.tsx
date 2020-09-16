@@ -14,14 +14,22 @@ export default class UnwrapModal extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      value: this.props?.params?.amount as number
+      value: Number(this.props?.params?.amount) || 0
     }
   }
 
   handleChangeWrapValue = (event: React.FormEvent<HTMLInputElement>) => {
-    const raw = event.currentTarget.value || 0
-    const value = Number.isNaN(Number(raw)) ? undefined : Number(raw)
-    this.setState({ value: value })
+    const raw = String(event.currentTarget.value || '')
+    if (raw === '') {
+      return this.setState({ value: '' })
+    }
+
+    const value = Number(raw.replace(/\D/gi, ''))
+    if (Number.isNaN(value)) {
+      return this.setState({ value: '' })
+    }
+
+    this.setState({ value })
   }
 
   handleWrapMana = () => {
@@ -53,7 +61,8 @@ export default class UnwrapModal extends React.PureComponent<Props, State> {
         <Modal.Header><Header>{t('unwrapping_modal.title')}</Header></Modal.Header>
         {!completed && <Modal.Description>{t('unwrapping_modal.description')}</Modal.Description>}
         {!completed && <Modal.Description>
-          <Field type="number" min={0} max={wallet ? wallet.manaMiniMe || 0 : 0} onChange={this.handleChangeWrapValue} defaultValue={this.props.params.amount}/>
+          <Field
+            type="number" min={0} message={wallet?.manaMiniMe ? t('unwrapping_modal.input_hint', { value: wallet?.manaMiniMe || 0 }) : ''} onChange={this.handleChangeWrapValue} value={this.state.value} />
         </Modal.Description>}
         {!completed && <Modal.Actions>
           <Button

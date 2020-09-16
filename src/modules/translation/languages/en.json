@@ -123,6 +123,7 @@
     "title": "Unwrap MANA",
     "description": "Enter the amount of MANA you would like to unwrap, this action will reduce your Voting Power.",
     "completed": "Your transaction was sent successfully and is pending confirmation.",
+    "input_hint": "Max to unwrap: {value, number}",
     "label": "Wrapped MANA",
     "action": "Unwrap MANA"
   }
