@@ -93,10 +93,10 @@
   },
   "proposal_support_modal": {
     "title": "Vote Confirmation",
-    "description": "Are you sure you want to vote {support} of this proposal? you won’t be able to change the vote afterwards.",
-    "favor":"in favor",
+    "description": "You are voting {support} this proposal",
+    "favor":"in favor of",
     "against":"against",
-    "confirm": "You vote was submitted!"
+    "confirm": "Your vote was submitted!"
   },
   "wrapping_page": {
     "total": "total voting power",
