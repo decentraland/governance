@@ -9,12 +9,18 @@ import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import './UnwrapModal.css'
 
-export default class UnwrapModal extends React.PureComponent<Props, State> {
+export default class UnwrapModal extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
     this.state = {
       value: Number(this.props?.params?.amount) || 0
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.params.amount !== prevProps.params.amount) {
+      this.setState({ value: Number(this.props.params.amount) || 0 })
     }
   }
 
@@ -43,9 +49,7 @@ export default class UnwrapModal extends React.PureComponent<Props, State> {
   }
 
   handleClose = () => {
-    if (!this.props.isUnwrappingMana) {
-      this.props.onNavigate(locations.wrapping({}))
-    }
+    this.props.onNavigate(locations.wrapping({}))
   }
 
   isOpen() {

@@ -117,7 +117,14 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
               <Header sub>{t('wrapping_page.mana_wrapped')}</Header>
             </HeaderMenu.Left>
             {!!wallet.manaMiniMe && <HeaderMenu.Right>
-              <Button as='a' basic size="small" onClick={this.handleUnwrapMana} href={locations.wrapping({ modal: 'unwrap' })}>
+              <Button
+                as='a'
+                basic
+                size="small"
+                onClick={this.handleUnwrapMana}
+                loading={this.props.isConnecting || this.props.isWrappingMana || this.props.isUnwrappingMana}
+                href={locations.wrapping({ modal: 'unwrap' })}
+              >
                 {t('wrapping_page.mana_unwrap')}
               </Button>
             </HeaderMenu.Right>}
