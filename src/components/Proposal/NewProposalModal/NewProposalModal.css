@@ -83,6 +83,10 @@
   cursor: pointer;
 }
 
+.NewProposalModal .NewProposalModalStep > a.full {
+  flex: 0 0 100%;
+}
+
 .NewProposalModal .NewProposalModalStep > .description,
 .NewProposalModal .NewProposalModalStep > .ui.button {
   min-width: 300px;
