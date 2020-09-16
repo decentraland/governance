@@ -12,14 +12,14 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
-import { AppName } from 'modules/app/types'
+import { AppName, BanName, Catalyst, POI } from 'modules/app/types'
 import { getVoteTimeLeft, getProposalUrl, getDelayTimeLeft } from 'modules/proposal/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
 import { ProposalSupportModal } from 'components/Proposal/ProposalSupportModal'
 import { env } from 'decentraland-commons'
 import { getProposalInitialAddress } from 'modules/description/utils'
-import { getAppName } from 'modules/app/utils'
+import { getAppName, isApp } from 'modules/app/utils'
 import inspect from 'util-inspect'
 import { AggregatedVote, DelayedScript, ProposalStatus as Status, ProposalType } from 'modules/proposal/types'
 import './ProposalPage.css'
@@ -239,6 +239,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
 
   render() {
     const { isLoading, proposal, description, casts, cast } = this.props
+    const initialApp = getProposalInitialAddress(description)
 
     return <>
       <Navbar isFullscreen={false} />
@@ -266,9 +267,18 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                     {this.renderDelayDetail()}
                   </Grid>
                 </Card.Content>}
-                {/* <Card.Content className="DetailDescription">
+                {initialApp && isApp(initialApp, POI) && <Card.Content className="DetailDescription">
                   <Header sub>{t('proposal_detail_page.description')}</Header>
-                </Card.Content> */}
+                  <Card.Description>{t('proposal_detail_page.description_poi')}</Card.Description>
+                </Card.Content>}
+                {initialApp && isApp(initialApp, BanName) && <Card.Content className="DetailDescription">
+                  <Header sub>{t('proposal_detail_page.description')}</Header>
+                  <Card.Description>{t('proposal_detail_page.description_ban')}</Card.Description>
+                </Card.Content>}
+                {initialApp && isApp(initialApp, Catalyst) && <Card.Content className="DetailDescription">
+                  <Header sub>{t('proposal_detail_page.description')}</Header>
+                  <Card.Description>{t('proposal_detail_page.description_catalyst')}</Card.Description>
+                </Card.Content>}
                 {env.isDevelopment() && <Card.Content className="DetailDebug">
                   <Header sub>INFO</Header>
                   <div className="DetailDebugContainer">

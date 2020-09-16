@@ -85,6 +85,9 @@
   "proposal_detail_page": {
     "detail": "DETAIL",
     "description": "DESCRIPTION",
+    "description_ban": "This prevents the use of abusive or offensive names for avatars, thus contravening community guidelines.",
+    "description_poi": "This allows users to have their scene featured on the map in a ‘pin drop’ form, enabling other users to find and access their scene.",
+    "description_catalyst": "Servers on the Catalyst network are owned by community members and hold copies of all scenes deployed to Decentraland. They also handle the messaging and interactions between players. Adding a Catalyst server will mean the addition of a server to the decentralized Catalyst network that makes up the backend of Decentraland.",
     "history": "HISTORY",
     "inbox": "INBOX",
     "community": "IMMUNITY",

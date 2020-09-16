@@ -124,3 +124,9 @@
   border-color: var(--rejected);
   color: var(--rejected);
 }
+
+.dcl.page.ProposalPage .DetailDescription .description {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 24px;
+}
