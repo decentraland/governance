@@ -31,7 +31,7 @@ import {
   allowManaFailure, EXTEND_WALLET_SUCCESS
 } from './actions'
 import { Wallet, Network } from './types'
-import { getNetwork } from './selectors'
+import { getData as getWallet, getNetwork } from './selectors'
 import { MANAMiniMeToken } from 'modules/common/contracts'
 import { getUnwrapParams } from 'routing/selectors'
 import { replace } from 'connected-react-router'
@@ -204,8 +204,8 @@ function* wrapMana(action: WrapManaRequestAction) {
 
 function* unwrapMana(action: UnwrapManaRequestAction) {
   try {
-    const mana: number = yield select(getMana)
-    const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
+    const wallet: Wallet = yield select(getWallet)
+    const amount: number = Math.max(Math.min(action.payload.amount || 0, wallet.manaMiniMe || 0), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(utils.parseEther(amount.toString())))
 
