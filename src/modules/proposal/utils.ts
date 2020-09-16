@@ -8,7 +8,7 @@ import { getAppDelay, isApp } from 'modules/app/utils'
 import { CastParams, FilterProposalParams } from 'routing/types'
 import { ProposalDescription } from 'modules/description/types'
 import { Network } from 'modules/wallet/types'
-import { BigNumber, Contract } from 'ethers'
+import { BigNumber, Contract, utils } from 'ethers'
 import { getProposalInitialAddress } from 'modules/description/utils'
 
 export async function createVoting(app: App) {
@@ -41,7 +41,7 @@ export async function loadDelayScriptsOnChain(contract: Contract) {
     const index: BigNumber = await contract.delayedScriptsNewIndex()
     const scripts = await Promise.all(Array.from(Array(index.toNumber()), async (_, i) => {
       const id = getProposalId(contract.address, i)
-      const [ executionTime, pausedAt, evmScript ]: [ BigNumber, BigNumber, string ] = await contract.delayedScripts(i)
+      const [executionTime, pausedAt, evmScript]: [BigNumber, BigNumber, string] = await contract.delayedScripts(i)
 
       let canExecute = false
       if (evmScript !== '0x') {
@@ -127,13 +127,22 @@ function isVoteEnacted(vote: Vote) {
   return !!vote.executed
 }
 
+function formatNumber(value: string | number | bigint | BigNumber, isWei: boolean = false) {
+  const num = BigNumber.from(value)
+  if (isWei) {
+    return Number(utils.formatUnits(num))
+  }
+
+  return num.toNumber()
+}
+
 function getVoteBalance(vote: Vote): VoteBalance {
-  const decimals = BigNumber.from('1' + '0'.repeat(18))
-  const approvalRequiredRatio = Number(vote.minAcceptQuorum) / Number(1e18)
-  const supportRequiredRatio = Number(vote.supportRequiredPct) / Number(1e18)
-  const totalTokens = BigNumber.from(vote.votingPower).div(decimals).toNumber()
-  const yea = BigNumber.from(vote.yea).div(decimals).toNumber()
-  const nay = BigNumber.from(vote.nay).div(decimals).toNumber()
+  const approvalRequiredRatio = formatNumber(vote.minAcceptQuorum, true)
+  const supportRequiredRatio = formatNumber(vote.supportRequiredPct, true)
+  const isWei = vote.votingPower.length >= 18
+  const totalTokens = formatNumber(vote.votingPower, isWei)
+  const yea = formatNumber(vote.yea, isWei)
+  const nay = formatNumber(vote.nay, isWei)
 
   const totalVoting = yea + nay
   const supportRequired = totalTokens * supportRequiredRatio
