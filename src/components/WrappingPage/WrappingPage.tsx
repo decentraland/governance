@@ -28,9 +28,17 @@ const BUY_LAND_URL = env.get('REACT_APP_BUY_LAND_URL', '#')
 export default class WrappingPage extends React.PureComponent<Props, State> {
 
   handleChangeWrapValue = (event: React.FormEvent<HTMLInputElement>) => {
-    const raw = event.currentTarget.value || 0
-    const value = Number.isNaN(Number(raw)) ? undefined : Number(raw)
-    this.setState({ value: value })
+    const raw = String(event.currentTarget.value || '')
+    if (raw === '') {
+      return this.setState({ value: '' })
+    }
+
+    const value = Number(raw.replace(/\D/gi, ''))
+    if (Number.isNaN(value)) {
+      return this.setState({ value: '' })
+    }
+
+    this.setState({ value })
   }
 
   handleWrapMana = () => {
@@ -45,7 +53,8 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
 
   handleUnwrapMana = (event: React.MouseEvent<any>) => {
     event.preventDefault()
-    this.props.onNavigate(locations.wrapping({ modal: 'unwrap' }))
+    const wallet = this.props.wallet
+    this.props.onNavigate(locations.wrapping({ modal: 'unwrap', amount: wallet?.manaVotingPower || 0 }))
   }
 
   handleCommitManaBalance = () => {
@@ -119,7 +128,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header sub>{t('wrapping_page.mana_available')}</Header>
           <Token symbol="MANA" size="medium" value={wallet.mana} />
           {wallet.manaCommit && <Header sub>{t('wrapping_page.mana_rate')}</Header>}
-          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana} onChange={this.handleChangeWrapValue}/>}
+          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana} value={this.state?.value || ''} onChange={this.handleChangeWrapValue}/>}
           {wallet.manaCommit && <Button
             primary
             size="small"

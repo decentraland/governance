@@ -9,6 +9,7 @@
   margin-top: 8px;
   margin-bottom: 14px;
   color: var(--secondary-text);
+  overflow: hidden;
 }
 
 .WrappingInput div.WrappingInputSwap {
@@ -49,4 +50,10 @@
   margin: 6px 0;
   width: 100%;
   color: var(--secondary-text);
+}
+
+.WrappingInput input::-webkit-outer-spin-button,
+.WrappingInput input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

@@ -5,7 +5,7 @@ import { allowLandRequest, allowEstateRequest, AllowLandRequestAction, AllowEsta
 import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type State = {
-  value?: number
+  value?: number | ''
 }
 
 export type DefaultProps = {}

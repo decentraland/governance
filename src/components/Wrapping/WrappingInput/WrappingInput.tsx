@@ -17,7 +17,7 @@ export default class WrappingInput extends React.Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.value !== undefined && this.props.value !== this.state.value) {
-      this.setState({ value: this.state.value })
+      this.setState({ value: this.props.value })
     }
   }
 
@@ -34,7 +34,7 @@ export default class WrappingInput extends React.Component<Props, State> {
     return <label className={'WrappingInput ' + (className || '')}>
       <div className="WrappingInputMana">
         <Token symbol="MANA" />
-        <input type="number" {...props} onChange={this.handleChange} />
+        <input type="text" {...props} onChange={this.handleChange} />
       </div>
       <div className="WrappingInputSwap"><img src={swap} width="24" height="24" alt="swap" /></div>
       <div className="WrappingInputVp">
