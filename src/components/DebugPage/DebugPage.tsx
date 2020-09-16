@@ -12,6 +12,7 @@ import { Card, Header, Icon, Button } from "decentraland-ui"
 import { ORGANIZATION_LOCATION } from "modules/organization/types"
 import connect, { Organization, App } from "@aragon/connect"
 import connectVoting, { Voting, Vote } from "@aragon/connect-voting"
+import connectDelay from "@1hive/connect-delay"
 
 type Step = {
   title: string
@@ -94,6 +95,27 @@ export default class DebugPage extends React.Component<{}, State> {
       votingApps.map((app) => connectVoting(app as any))
     )
     add("voting", votingList)
+
+    /// Delay example
+    
+    const delayApp = await organization.app("delay")
+
+    const connectDelayApp = await connectDelay(delayApp as any)
+
+    const scripts = await connectDelayApp.delayedScripts()
+
+    const { describedSteps } = await organization.describeScript(
+      scripts[0].evmScript
+    )
+
+    const description = describedSteps
+      .map((step) => step.description)
+      .filter(Boolean)
+      .join("\n")
+
+    console.log("Scripts:", description)
+
+    /////
 
     const votesByVoting = await Promise.all(
       votingList.map((voting) => voting.votes())
