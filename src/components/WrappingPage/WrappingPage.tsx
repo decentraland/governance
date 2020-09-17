@@ -95,7 +95,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
         <Grid.Column mobile="8">
           <Header sub><b>{t('wrapping_page.total')}</b></Header>
           {isLoading && <Loader size="medium" active inline />}
-          {!isLoading && <Token size="huge" symbol="VP" value={wallet.votingPower} />}
+          {!isLoading && <Token size="huge" symbol="VP" value={wallet.votingPower || 0} />}
         </Grid.Column>
       </Grid.Row>
     </Grid>
@@ -137,13 +137,13 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
               </Button>
             </HeaderMenu.Right>}
           </HeaderMenu>
-          <Token symbol="VP" size="medium" value={wallet.manaVotingPower} />
+          <Token symbol="VP" size="medium" value={wallet.manaVotingPower || 0} />
         </Card.Content>}
         {!isLoading && <Card.Content style={{ flexGrow: 1 }}>
           <Header sub>{t('wrapping_page.mana_available')}</Header>
-          <Token symbol="MANA" size="medium" value={wallet.mana} />
+          <Token symbol="MANA" size="medium" value={wallet.mana || 0} />
           {wallet.manaCommit && <Header sub>{t('wrapping_page.mana_rate')}</Header>}
-          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana} value={this.state?.value || ''} onChange={this.handleChangeWrapValue}/>}
+          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana || 0} value={this.state?.value || ''} onChange={this.handleChangeWrapValue}/>}
           {wallet.manaCommit && <Button
             primary
             size="small"
@@ -154,7 +154,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
         </Card.Content>}
         {!isLoading && !wallet.manaCommit && <Card.Content>
           {isAllowingMana && <Loader inline active size="small" />}
-          {!isAllowingMana && <Radio toggle label={t('wrapping_page.mana_commit')} checked={wallet.manaCommit} onClick={this.handleCommitManaBalance}/>}
+          {!isAllowingMana && <Radio toggle label={t('wrapping_page.mana_commit')} checked={!!wallet.manaCommit} onClick={this.handleCommitManaBalance}/>}
         </Card.Content>}
       </Card>
     </>
@@ -177,14 +177,14 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header><b>{t('wrapping_page.land_title')}</b></Header>
 
           <Header sub>{t('wrapping_page.land_balance')}</Header>
-          <Header>{t('general.land', { land: wallet.land })}</Header>
+          <Header>{t('general.land', { land: wallet.land || 0})}</Header>
 
           <Header sub>{t('wrapping_page.land_total')}</Header>
-          <Token symbol="VP" size="medium" value={wallet.landVotingPower} />
+          <Token symbol="VP" size="medium" value={wallet.landVotingPower || 0} />
         </Card.Content>}
         {!isLoading && <Card.Content style={{ flexGrow: 0 }}>
           {loading && <Loader active inline size="small" />}
-          {!loading && <Radio toggle label={t('wrapping_page.land_commit')} checked={wallet.landCommit} onClick={this.handleCommitLandBalance} />}
+          {!loading && <Radio toggle label={t('wrapping_page.land_commit')} checked={!!wallet.landCommit} onClick={this.handleCommitLandBalance} />}
         </Card.Content>}
       </Card>
     </>
@@ -217,11 +217,11 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header>{t('general.land', { land: wallet.estateSize || 0 })}</Header>
 
           <Header sub>{t('wrapping_page.estate_total')}</Header>
-          <Token symbol="VP" size="medium" value={wallet.estateVotingPower} />
+          <Token symbol="VP" size="medium" value={wallet.estateVotingPower || 0} />
         </Card.Content>}
         {!isLoading && <Card.Content>
           {loading && <Loader inline active size="small" />}
-          {!loading && <Radio toggle label={t('wrapping_page.estate_commit')} checked={wallet.estateCommit} onClick={this.handleCommitEstateBalance}/>}
+          {!loading && <Radio toggle label={t('wrapping_page.estate_commit')} checked={!!wallet.estateCommit} onClick={this.handleCommitEstateBalance}/>}
         </Card.Content>}
       </Card></>
   }
