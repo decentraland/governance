@@ -28,7 +28,8 @@ import {
   unwrapManaFailure,
   ALLOW_MANA_REQUEST,
   allowManaSuccess,
-  allowManaFailure, EXTEND_WALLET_SUCCESS
+  allowManaFailure,
+  EXTEND_WALLET_SUCCESS, REVOKE_LAND_REQUEST, REVOKE_ESTATE_REQUEST
 } from './actions'
 import { Wallet, Network } from './types'
 import { getData as getWallet, getNetwork } from './selectors'
@@ -59,6 +60,8 @@ function* projectWalletSaga() {
   yield takeLatest(ALLOW_MANA_REQUEST, allowManaBalance)
   yield takeLatest(ALLOW_LAND_REQUEST, allowLandBalance)
   yield takeLatest(ALLOW_ESTATE_REQUEST, allowEstateBalance)
+  yield takeLatest(REVOKE_LAND_REQUEST, revokeLandBalance)
+  yield takeLatest(REVOKE_ESTATE_REQUEST, revokeEstateBalance)
   yield takeLatest(WRAP_MANA_REQUEST, wrapMana)
   yield takeLatest(UNWRAP_MANA_REQUEST, unwrapMana)
 }
@@ -179,10 +182,30 @@ function* allowLandBalance() {
   }
 }
 
+function* revokeLandBalance() {
+  try {
+    const landContract = yield select(getLandContract)
+    const tx = yield call(() => landContract.unregisterBalance())
+    yield put(allowLandSuccess(tx.hash))
+  } catch (err) {
+    yield put(allowLandFailure(err.message))
+  }
+}
+
 function* allowEstateBalance() {
   try {
     const estateContract = yield select(getEstateContract)
     const tx = yield call(() => estateContract.registerBalance())
+    yield put(allowEstateSuccess(tx.hash))
+  } catch (err) {
+    yield put(allowEstateFailure(err.message))
+  }
+}
+
+function* revokeEstateBalance() {
+  try {
+    const estateContract = yield select(getEstateContract)
+    const tx = yield call(() => estateContract.unregisterBalance())
     yield put(allowEstateSuccess(tx.hash))
   } catch (err) {
     yield put(allowEstateFailure(err.message))

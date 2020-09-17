@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { connectWalletRequest, ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'modules/wallet/types'
-import { allowLandRequest, allowEstateRequest, AllowLandRequestAction, AllowEstateRequestAction, wrapManaRequest, WrapManaRequestAction, allowManaRequest, AllowManaRequestAction } from 'modules/wallet/actions'
+import { allowLandRequest, allowEstateRequest, AllowLandRequestAction, AllowEstateRequestAction, wrapManaRequest, WrapManaRequestAction, allowManaRequest, AllowManaRequestAction, RevokeLandRequestAction, RevokeEstateRequestAction, revokeLandRequest, revokeEstateRequest } from 'modules/wallet/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type State = {
@@ -17,7 +17,9 @@ export type Props = DefaultProps & {
   isLoading: boolean
   isAllowingMana: boolean
   isAllowingLand: boolean
+  isRevokingLand: boolean
   isAllowingEstate: boolean
+  isRevokingEstate: boolean
   isWrappingMana: boolean
   isUnwrappingMana: boolean
   wallet: Wallet | null | undefined
@@ -28,6 +30,8 @@ export type Props = DefaultProps & {
   onAllowMana: typeof allowManaRequest
   onAllowLand: typeof allowLandRequest
   onAllowEstate: typeof allowEstateRequest
+  onRevokeLand: typeof revokeLandRequest
+  onRevokeEstate: typeof revokeEstateRequest
 }
 
 export type MapStateProps = Pick<Props,
@@ -38,6 +42,8 @@ export type MapStateProps = Pick<Props,
   | 'isAllowingMana'
   | 'isAllowingLand'
   | 'isAllowingEstate'
+  | 'isRevokingLand'
+  | 'isRevokingEstate'
   | 'isWrappingMana'
   | 'isUnwrappingMana'
   | 'wallet'
@@ -48,6 +54,8 @@ export type MapDispatchProps = Pick<Props,
  | 'onAllowLand'
  | 'onAllowEstate'
  | 'onAllowMana'
+ | 'onRevokeLand'
+ | 'onRevokeEstate'
  | 'onWrapMana'
  | 'onUnwrapMana'
 >
@@ -57,5 +65,7 @@ export type MapDispatch = Dispatch<
  | AllowEstateRequestAction
  | AllowLandRequestAction
  | AllowManaRequestAction
+ | RevokeLandRequestAction
+ | RevokeEstateRequestAction
  | WrapManaRequestAction
 >

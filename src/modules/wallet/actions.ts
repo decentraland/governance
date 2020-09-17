@@ -50,6 +50,30 @@ export type AllowEstateRequestAction = ReturnType<typeof allowEstateRequest>
 export type AllowEstateSuccessAction = ReturnType<typeof allowEstateSuccess>
 export type AllowEstateFailureAction = ReturnType<typeof allowEstateFailure>
 
+export const REVOKE_LAND_REQUEST = '[Request] Revoke land'
+export const REVOKE_LAND_SUCCESS = '[Success] Revoke land'
+export const REVOKE_LAND_FAILURE = '[Failure] Revoke land'
+
+export const revokeLandRequest = () => action(REVOKE_LAND_REQUEST, {})
+export const revokeLandSuccess = (hash: string) => action(REVOKE_LAND_SUCCESS, buildTransactionPayload(hash))
+export const revokeLandFailure = (error: string) => action(REVOKE_LAND_FAILURE, { error })
+
+export type RevokeLandRequestAction = ReturnType<typeof revokeLandRequest>
+export type RevokeLandSuccessAction = ReturnType<typeof revokeLandSuccess>
+export type RevokeLandFailureAction = ReturnType<typeof revokeLandFailure>
+
+export const REVOKE_ESTATE_REQUEST = '[Request] Revoke estate'
+export const REVOKE_ESTATE_SUCCESS = '[Success] Revoke estate'
+export const REVOKE_ESTATE_FAILURE = '[Failure] Revoke estate'
+
+export const revokeEstateRequest = () => action(REVOKE_ESTATE_REQUEST, {})
+export const revokeEstateSuccess = (hash: string) => action(REVOKE_ESTATE_SUCCESS, buildTransactionPayload(hash))
+export const revokeEstateFailure = (error: string) => action(REVOKE_ESTATE_FAILURE, { error })
+
+export type RevokeEstateRequestAction = ReturnType<typeof revokeEstateRequest>
+export type RevokeEstateSuccessAction = ReturnType<typeof revokeEstateSuccess>
+export type RevokeEstateFailureAction = ReturnType<typeof revokeEstateFailure>
+
 export const WRAP_MANA_REQUEST = '[Request] Wrap MANA'
 export const WRAP_MANA_SUCCESS = '[Success] Wrap MANA'
 export const WRAP_MANA_FAILURE = '[Failure] Wrap MANA'

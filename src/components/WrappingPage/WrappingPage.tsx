@@ -65,16 +65,24 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
   }
 
   handleCommitLandBalance = () => {
-    const wallet = this.props.wallet!
-    if (!wallet.landCommit && this.props.onAllowLand) {
-      this.props.onAllowLand()
+    const wallet = this.props.wallet
+    if (wallet) {
+      if (wallet.landCommit) {
+        this.props.onRevokeLand()
+      } else {
+        this.props.onAllowLand()
+      }
     }
   }
 
   handleCommitEstateBalance = () => {
-    const wallet = this.props.wallet!
-    if (!wallet.estateCommit && this.props.onAllowEstate) {
-      this.props.onAllowEstate()
+    const wallet = this.props.wallet
+    if (wallet) {
+      if (wallet.estateCommit) {
+        this.props.onRevokeEstate()
+      } else {
+        this.props.onAllowEstate()
+      }
     }
   }
 
