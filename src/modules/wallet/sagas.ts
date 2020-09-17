@@ -224,7 +224,7 @@ function* wrapMana(action: WrapManaRequestAction) {
     const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.deposit(utils.parseEther(amount.toString())))
-    yield put(wrapManaSuccess(depositTx.hash))
+    yield put(wrapManaSuccess(depositTx.hash, amount))
 
   } catch (err) {
     yield put(wrapManaFailure(err.message))
@@ -238,7 +238,7 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(utils.parseEther(amount.toString())))
 
-    yield put(unwrapManaSuccess(depositTx.hash))
+    yield put(unwrapManaSuccess(depositTx.hash, amount))
     const query: UnwrapParams = yield select(getUnwrapParams)
     yield put(replace(locations.wrapping({ ...query, completed: true })))
   } catch (err) {

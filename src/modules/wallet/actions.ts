@@ -79,7 +79,7 @@ export const WRAP_MANA_SUCCESS = '[Success] Wrap MANA'
 export const WRAP_MANA_FAILURE = '[Failure] Wrap MANA'
 
 export const wrapManaRequest = (amount: number) => action(WRAP_MANA_REQUEST, { amount })
-export const wrapManaSuccess = (hash: string) => action(WRAP_MANA_SUCCESS, buildTransactionPayload(hash))
+export const wrapManaSuccess = (hash: string, amount: number) => action(WRAP_MANA_SUCCESS, buildTransactionPayload(hash, { amount }))
 export const wrapManaFailure = (error: string) => action(WRAP_MANA_FAILURE, { error })
 
 export type WrapManaRequestAction = ReturnType<typeof wrapManaRequest>
@@ -91,7 +91,7 @@ export const UNWRAP_MANA_SUCCESS = '[Success] Unwrap MANA'
 export const UNWRAP_MANA_FAILURE = '[Failure] Unwrap MANA'
 
 export const unwrapManaRequest = (amount: number) => action(UNWRAP_MANA_REQUEST, { amount })
-export const unwrapManaSuccess = (hash: string) => action(UNWRAP_MANA_SUCCESS, buildTransactionPayload(hash))
+export const unwrapManaSuccess = (hash: string, amount: number) => action(UNWRAP_MANA_SUCCESS, buildTransactionPayload(hash, { amount }))
 export const unwrapManaFailure = (error: string) => action(UNWRAP_MANA_FAILURE, { error })
 
 export type UnwrapManaRequestAction = ReturnType<typeof unwrapManaRequest>
