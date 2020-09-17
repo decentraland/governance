@@ -7,7 +7,7 @@ import { getNetwork as getStoreNetwork, getAddress, isConnecting, getError } fro
 import { RootState } from 'modules/root/types'
 import { Network } from './types'
 import { ensureNetwork } from './utils'
-import { EXTEND_WALLET_REQUEST, ALLOW_ESTATE_REQUEST, ALLOW_LAND_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST, ALLOW_LAND_SUCCESS, ALLOW_ESTATE_SUCCESS, WRAP_MANA_SUCCESS, UNWRAP_MANA_SUCCESS, ALLOW_MANA_REQUEST, ALLOW_MANA_SUCCESS, REVOKE_LAND_SUCCESS, REVOKE_LAND_REQUEST, REVOKE_ESTATE_REQUEST } from './actions'
+import { EXTEND_WALLET_REQUEST, ALLOW_ESTATE_REQUEST, ALLOW_LAND_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST, ALLOW_LAND_SUCCESS, ALLOW_ESTATE_SUCCESS, WRAP_MANA_SUCCESS, UNWRAP_MANA_SUCCESS, ALLOW_MANA_REQUEST, ALLOW_MANA_SUCCESS, REVOKE_LAND_SUCCESS, REVOKE_LAND_REQUEST, REVOKE_ESTATE_REQUEST, REVOKE_ESTATE_SUCCESS } from './actions'
 import { createIsPendingTransactionSelector } from 'modules/transaction/selectors'
 
 const DEFAULT_NETWORK: Network = Number(env.get('REACT_APP_DEFAULT_NETWORK', 1))
@@ -21,7 +21,7 @@ export const isAllowingManaPending = createIsPendingTransactionSelector(ALLOW_MA
 export const isAllowingLandPending = createIsPendingTransactionSelector(ALLOW_LAND_SUCCESS)
 export const isRevokingLandPending = createIsPendingTransactionSelector(REVOKE_LAND_SUCCESS)
 export const isAllowingEstatePending = createIsPendingTransactionSelector(ALLOW_ESTATE_SUCCESS)
-export const isRevokingEstatePending = createIsPendingTransactionSelector(REVOKE_LAND_SUCCESS)
+export const isRevokingEstatePending = createIsPendingTransactionSelector(REVOKE_ESTATE_SUCCESS)
 export const isWrapManaPending = createIsPendingTransactionSelector(WRAP_MANA_SUCCESS)
 export const isUnwrapManaPending = createIsPendingTransactionSelector(UNWRAP_MANA_SUCCESS)
 

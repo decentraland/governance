@@ -29,7 +29,13 @@ import {
   ALLOW_MANA_REQUEST,
   allowManaSuccess,
   allowManaFailure,
-  EXTEND_WALLET_SUCCESS, REVOKE_LAND_REQUEST, REVOKE_ESTATE_REQUEST
+  EXTEND_WALLET_SUCCESS,
+  REVOKE_LAND_REQUEST,
+  REVOKE_ESTATE_REQUEST,
+  revokeEstateSuccess,
+  revokeEstateFailure,
+  revokeLandSuccess,
+  revokeLandFailure
 } from './actions'
 import { Wallet, Network } from './types'
 import { getData as getWallet, getNetwork } from './selectors'
@@ -186,9 +192,9 @@ function* revokeLandBalance() {
   try {
     const landContract = yield select(getLandContract)
     const tx = yield call(() => landContract.unregisterBalance())
-    yield put(allowLandSuccess(tx.hash))
+    yield put(revokeLandSuccess(tx.hash))
   } catch (err) {
-    yield put(allowLandFailure(err.message))
+    yield put(revokeLandFailure(err.message))
   }
 }
 
@@ -206,9 +212,9 @@ function* revokeEstateBalance() {
   try {
     const estateContract = yield select(getEstateContract)
     const tx = yield call(() => estateContract.unregisterBalance())
-    yield put(allowEstateSuccess(tx.hash))
+    yield put(revokeEstateSuccess(tx.hash))
   } catch (err) {
-    yield put(allowEstateFailure(err.message))
+    yield put(revokeEstateFailure(err.message))
   }
 }
 

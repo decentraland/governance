@@ -161,7 +161,8 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
   }
 
   renderWrapLand() {
-    const { isLoading, isAllowingLand } = this.props
+    const { isLoading, isAllowingLand, isRevokingLand } = this.props
+    const loading = isAllowingLand || isRevokingLand
     const wallet = this.props.wallet!
 
     return <>
@@ -182,15 +183,16 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Token symbol="VP" size="medium" value={wallet.landVotingPower} />
         </Card.Content>}
         {!isLoading && <Card.Content style={{ flexGrow: 0 }}>
-          {isAllowingLand && <Loader active inline size="small" />}
-          {!isAllowingLand && <Radio toggle label={t('wrapping_page.land_commit')} checked={wallet.landCommit} onClick={this.handleCommitLandBalance} />}
+          {loading && <Loader active inline size="small" />}
+          {!loading && <Radio toggle label={t('wrapping_page.land_commit')} checked={wallet.landCommit} onClick={this.handleCommitLandBalance} />}
         </Card.Content>}
       </Card>
     </>
   }
 
   renderWrapEstate() {
-    const { isLoading, isAllowingEstate } = this.props
+    const { isLoading, isAllowingEstate, isRevokingEstate } = this.props
+    const loading = isAllowingEstate || isRevokingEstate
     const wallet = this.props.wallet!
 
     return <>
@@ -218,8 +220,8 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Token symbol="VP" size="medium" value={wallet.estateVotingPower} />
         </Card.Content>}
         {!isLoading && <Card.Content>
-          {isAllowingEstate && <Loader inline active size="small" />}
-          {!isAllowingEstate && <Radio toggle label={t('wrapping_page.estate_commit')} checked={wallet.estateCommit} onClick={this.handleCommitEstateBalance}/>}
+          {loading && <Loader inline active size="small" />}
+          {!loading && <Radio toggle label={t('wrapping_page.estate_commit')} checked={wallet.estateCommit} onClick={this.handleCommitEstateBalance}/>}
         </Card.Content>}
       </Card></>
   }
