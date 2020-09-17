@@ -219,22 +219,26 @@ function* revokeEstateBalance() {
 }
 
 function* wrapMana(action: WrapManaRequestAction) {
+  let amount = 0
+
   try {
     const mana: number = yield select(getMana)
-    const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
+    amount = Math.max(Math.min(action.payload.amount || 0, mana), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.deposit(utils.parseEther(amount.toString())))
     yield put(wrapManaSuccess(depositTx.hash, amount))
 
   } catch (err) {
-    yield put(wrapManaFailure(err.message))
+    yield put(wrapManaFailure(err.message, amount))
   }
 }
 
 function* unwrapMana(action: UnwrapManaRequestAction) {
+  let amount = 0
+
   try {
     const wallet: Wallet = yield select(getWallet)
-    const amount: number = Math.max(Math.min(action.payload.amount || 0, wallet.manaMiniMe || 0), 0)
+    amount = Math.max(Math.min(action.payload.amount || 0, wallet.manaMiniMe || 0), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(utils.parseEther(amount.toString())))
 
@@ -242,6 +246,6 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
     const query: UnwrapParams = yield select(getUnwrapParams)
     yield put(replace(locations.wrapping({ ...query, completed: true })))
   } catch (err) {
-    yield put(unwrapManaFailure(err.message))
+    yield put(unwrapManaFailure(err.message, amount))
   }
 }
