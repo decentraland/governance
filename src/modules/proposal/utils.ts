@@ -145,8 +145,8 @@ function getVoteBalance(vote: Vote): VoteBalance {
   const nay = formatNumber(vote.nay, isWei)
 
   const totalVoting = yea + nay
-  const supportRequired = totalTokens * supportRequiredRatio
-  const approvalRequired = totalTokens * approvalRequiredRatio
+  const supportRequired = Math.ceil(totalTokens * supportRequiredRatio)
+  const approvalRequired = Math.ceil(totalTokens * approvalRequiredRatio)
   let yeaPercentage = 0
   let nayPercentage = 0
   let supportPercentage = 0

@@ -142,13 +142,18 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       <Grid.Column mobile="4">
         <Tooltip content={t('proposal_detail_page.support_detail')} trigger={<Header sub>{t('proposal_detail_page.support')} <Tooltip.Icon /></Header>} />
         <Header>{vote.balance.supportPercentage || 0} %</Header>
-        <span>{t('proposal_detail_page.needed', { needed: vote.balance.supportRequiredPercentage || 0 })}</span>
+        <span>{t('proposal_detail_page.percentage_needed', { needed: vote.balance.supportRequiredPercentage || 0 })}</span>
       </Grid.Column>
       <Grid.Column mobile="5">
         <Tooltip content={t('proposal_detail_page.approval_detail')} trigger={<Header sub>{t('proposal_detail_page.approval')} <Tooltip.Icon /></Header>} />
         <Header>{vote.balance.approvalPercentage || 0} %</Header>
-        <span>{t('proposal_detail_page.needed', { needed: vote.balance.approvalRequiredPercentage || 0 })}</span>
+        <span>{t('proposal_detail_page.percentage_needed', { needed: vote.balance.approvalRequiredPercentage || 0 })}</span>
       </Grid.Column>
+      {/* <Grid.Column mobile="5">
+        <Tooltip content={t('proposal_detail_page.approval_detail')} trigger={<Header sub>{t('proposal_detail_page.approval')} <Tooltip.Icon /></Header>} />
+        <Header>{t('general.number',{ value: vote.balance.yea || 0 })}</Header>
+        <span>{t('proposal_detail_page.amount_needed', { needed: vote.balance.approvalRequired || 0 })}</span>
+      </Grid.Column> */}
     </Grid.Row>
   }
 
