@@ -313,7 +313,10 @@ export function filterProposals(
     const proposalDescription = (proposal as AggregatedVote).metadata || descriptions[proposal.id]?.description
     const proposalKey = [appAddress, proposalDescription].join('::')
     if (appAddress && proposalDescription) {
-      if (appAddress === INBOX[network]) {
+      if (appAddress === COMMUNITY[network]) {
+        proposalBuffer.add(proposalKey)
+        proposalList.push(proposal)
+      } else if (appAddress === INBOX[network]) {
         if (
           !proposalBuffer.has([Delay[network], proposalDescription].join('::')) &&
           !proposalBuffer.has([COMMUNITY[network], proposalDescription].join('::'))
