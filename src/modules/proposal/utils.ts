@@ -297,12 +297,14 @@ export function filterProposals(
   params: FilterProposalParams,
   network: Network
 ): Proposal[] {
-  // return Object.values(votes)
 
   const proposalBuffer = new Set()
   const proposalList: Proposal[] = []
   const sortedProposals = Object.values(proposals)
     .sort(sortProposals)
+
+  // Show all proposal
+  // return sortedProposals
 
   for (const proposal of sortedProposals) {
     if (!filterProposalByParams(proposal, descriptions[proposal.id], params)) {
@@ -339,7 +341,7 @@ export function filterProposals(
           proposalList.push(proposal)
         }
 
-      } else if (appAddress === INBOX[network]) {
+      } else if (appAddress === COMMUNITY[network]) {
         proposalBuffer.add(proposalKey)
         proposalList.push(proposal)
       }
