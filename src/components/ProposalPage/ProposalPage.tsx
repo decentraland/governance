@@ -101,7 +101,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   renderTitle() {
     return <Grid.Row>
       <Grid.Column mobile="16" className="ProposalTitle">
-        <ProposalTitle proposal={this.props.proposal} />
+        <ProposalTitle proposal={this.props.proposal} primary />
       </Grid.Column>
     </Grid.Row>
   }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Empty } from 'decentraland-ui/dist/components/Empty/Empty'
@@ -116,6 +117,8 @@ export default class HomePage extends React.PureComponent<Props, any> {
     return <>
       <Navbar />
       <Navigation activeTab={NavigationTab.Proposals} />
+      <Helmet title={t('seo.title_extended', { title: t('proposals_page.title') })} />
+      <NewProposalModal />
       <Page className="HomePage">
         <Grid stackable>
           <Grid.Row>
@@ -151,7 +154,6 @@ export default class HomePage extends React.PureComponent<Props, any> {
           </Grid.Row>
         </Grid>
       </Page>
-      <NewProposalModal />
       <Footer />
       </>
   }

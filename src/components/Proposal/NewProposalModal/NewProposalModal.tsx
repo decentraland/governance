@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Props } from './NewProposalModal.types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -145,6 +146,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
 
   renderOptions() {
     return <Modal.Content className="NewProposalModalStep">
+      <Helmet title={t('seo.title_extended', { title: t('proposal_modal.title') })} />
       <Modal.Header><Header>{t('proposal_modal.title')}</Header></Modal.Header>
       {/* <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'question' })} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a> */}
       <a className="full" onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>

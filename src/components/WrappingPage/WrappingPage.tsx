@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
@@ -177,7 +178,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header><b>{t('wrapping_page.land_title')}</b></Header>
 
           <Header sub>{t('wrapping_page.land_balance')}</Header>
-          <Header>{t('general.land', { land: wallet.land || 0})}</Header>
+          <Header>{t('general.land', { land: wallet.land || 0 })}</Header>
 
           <Header sub>{t('wrapping_page.land_total')}</Header>
           <Token symbol="VP" size="medium" value={wallet.landVotingPower || 0} />
@@ -232,6 +233,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
     return <>
       <Navbar />
       <Navigation activeTab={NavigationTab.Wrapping} />
+      <Helmet title={t('seo.title_extended', { title: t('wrapping_page.title') })} />
       {!isLoading && !isConnected && <Page className="WrappingPage"><SignInPage /></Page>}
       {(isLoading || isConnected) && <Page className="WrappingPage">
         <UnwrapModal />
