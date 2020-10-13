@@ -22,7 +22,7 @@ const signIn = require('../../../images/sign-in.svg')
 const ban = require('../../../images/ban-name-220.png')
 const catalyst = require('../../../images/catalyst-220.png')
 const poi = require('../../../images/poi-220.png')
-// const question = require('../../../images/question-220.png')
+const question = require('../../../images/question-220.png')
 
 export default class NewProposalModal extends React.PureComponent<Props, any> {
 
@@ -148,8 +148,8 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     return <Modal.Content className="NewProposalModalStep">
       <Helmet title={t('seo.title_extended', { title: t('proposal_modal.title') })} />
       <Modal.Header><Header>{t('proposal_modal.title')}</Header></Modal.Header>
-      {/* <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'question' })} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a> */}
-      <a className="full" onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'question' })} style={{ backgroundImage: `url(${question})` }}>{t('proposal_modal.title_question')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
       <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'catalyst' })} style={{ backgroundImage: `url(${catalyst})` }}>{t('proposal_modal.title_catalyst')}</a>
       <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'ban' })} style={{ backgroundImage: `url(${ban})` }}>{t('proposal_modal.title_ban')}</a>
     </Modal.Content>

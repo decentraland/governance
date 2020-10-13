@@ -35,7 +35,11 @@ import {
   createQuestionSuccess,
   createCatalystSuccess,
   createPoiSuccess,
-  createBanSuccess, EXECUTE_SCRIPT_REQUEST, ExecuteScriptRequestAction, executeScriptFailure, executeScriptSuccess
+  createBanSuccess,
+  EXECUTE_SCRIPT_REQUEST,
+  ExecuteScriptRequestAction,
+  executeScriptFailure,
+  executeScriptSuccess
 } from './actions'
 import { AggregatedDelayedScript, AggregatedVote, Proposal, Voting } from './types'
 import { createVoting, getProposalIdentifier, loadDelayScriptsOnChain, loadVotes } from './utils'
@@ -139,12 +143,11 @@ function* createQuestion(action: CreateQuestionRequestAction) {
     const app = apps[INBOX[network]]
 
     yield call(async () => {
-      const path = await app.intent('newVote', [script, action.payload.question, false, false], { actAs })
+      const path = await app.intent('newVote', [script, action.payload.question], { actAs })
       return path.sign((tx) => provider.send('eth_sendTransaction', [tx]))
     })
 
     yield put(createQuestionSuccess())
-
     const query: NewProposalParams = yield select(getNewProposalParams)
     yield put(replace(locations.root({ ...query, completed: true })))
   } catch (err) {
@@ -166,7 +169,6 @@ function* createBan(action: CreateBanRequestAction) {
     })
 
     yield put(createBanSuccess())
-
     const query: NewProposalParams = yield select(getNewProposalParams)
     yield put(replace(locations.root({ ...query, completed: true })))
   } catch (err) {

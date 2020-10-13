@@ -1,5 +1,6 @@
 import { Organization, ConnectorTheGraphConfig } from '@aragon/connect'
 import { Network } from 'modules/wallet/types'
+// import { ethers } from 'ethers'
 
 export const ORGANIZATION_LOCATION = {
   [Network.MAINNET]: 'dcl.eth',
@@ -14,8 +15,14 @@ export const ORGANIZATION_CONNECTOR = {
 }
 
 export const ORGANIZATION_OPTIONS = {
-  [Network.MAINNET]: { network: Network.MAINNET },
-  [Network.RINKEBY]: { network: Network.RINKEBY }
+  [Network.MAINNET]: {
+    network: Network.MAINNET // ,
+    // ethereum: ethers.getDefaultProvider(ethers.providers.getNetwork(Network.MAINNET), { infura: '' })
+  },
+  [Network.RINKEBY]: {
+    network: Network.RINKEBY // ,
+    // ethereum: ethers.getDefaultProvider(ethers.providers.getNetwork(Network.RINKEBY), { infura: '' })
+  }
 }
 
 export { Organization }
