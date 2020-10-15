@@ -43,7 +43,7 @@
   },
   "proposal_modal": {
     "title": "New Proposal",
-    "title_question": "Ask an Open Question",
+    "title_question": "Open Question",
     "title_catalyst": "Add a Catalyst",
     "title_poi": "Add a Point of Interest",
     "title_ban": "Ban a NAME",
