@@ -117,7 +117,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     const { isConnected, isConnecting, wallet } = this.props
     if (
       this.props.params.modal &&
-      (!isConnected || isConnecting || !(wallet?.manaMiniMe))
+      (!isConnected || isConnecting || !(wallet?.votingPower))
     ) {
       return 1
     }
