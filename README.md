@@ -4,7 +4,7 @@ Frontend to visualize DAO votes and your voting power.
 
 [Live at governance.decentraland.org](https://governance.decentraland.org)
 
-![readme.screenshot.png](Screenshot of the live website)
+![Screenshot of the live website](./readme.screenshot.png)
 
 ## Building & Developing
 
