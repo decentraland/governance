@@ -1,6 +1,5 @@
 import { put, call, select, fork, takeEvery } from 'redux-saga/effects'
 import { describePath, decodeForwardingPath, App } from '@aragon/connect'
-import { utils } from 'ethers'
 import { loadProposalDescriptionFailure, loadProposalDescriptionSuccess } from './actions'
 import { getOrganization } from 'modules/organization/selectors'
 import { Organization } from 'modules/organization/types'
@@ -11,6 +10,7 @@ import { getApps } from 'modules/app/selectors'
 import { concurrent } from 'modules/common/utils'
 import { Proposal } from 'modules/proposal/types'
 import { createDescription } from './utils'
+// import { utils } from 'ethers'
 
 const EMPTY_SCRIPT = '0x00000001'
 
