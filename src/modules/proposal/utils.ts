@@ -1,7 +1,31 @@
 import connectVoting, { Voting } from '@aragon/connect-voting'
 import connectDelay from '@1hive/connect-delay'
-import { DelayedScript, AggregatedDelayedScript, AggregatedVote, ProposalType, Vote, VoteBalance, ProposalStatus, Delaying, Proposal, ProposalCategory } from './types'
-import { Agent, App, BanName, Catalyst, COMMUNITY, Delay, Finance, INBOX, POI, SAB, Time, Tokens } from 'modules/app/types'
+import {
+  DelayedScript,
+  AggregatedDelayedScript,
+  AggregatedVote,
+  ProposalType,
+  Vote,
+  VoteBalance,
+  ProposalStatus,
+  Delaying,
+  Proposal,
+  ProposalCategory
+} from './types'
+import {
+  Agent,
+  App,
+  BanName,
+  Catalyst,
+  COMMUNITY,
+  Delay,
+  Finance,
+  INBOX,
+  POI,
+  SAB,
+  Time,
+  Tokens
+} from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppDelay, isApp } from 'modules/app/utils'
@@ -73,13 +97,10 @@ export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
 
   if (isVoteEnacted(vote)) {
     status = ProposalStatus.Enacted
+  } else if (isVotePassed(balance)) {
+    status = ProposalStatus.Passed
   } else if (isVoteExpired(vote)) {
-    if (isVotePassed(balance)) {
-      status = ProposalStatus.Passed
-
-    } else {
-      status = ProposalStatus.Rejected
-    }
+    status = ProposalStatus.Rejected
   }
 
   return Object.assign(vote, {
@@ -305,7 +326,7 @@ export function filterProposals(
 
   // Show all proposal
   // return sortedProposals
-
+  console.log(descriptions)
   for (const proposal of sortedProposals) {
     if (!filterProposalByParams(proposal, descriptions[proposal.id], params)) {
       continue
@@ -314,6 +335,9 @@ export function filterProposals(
     const appAddress = proposal?.identifier?.appAddress
     const proposalDescription = (proposal as AggregatedVote).metadata || descriptions[proposal.id]?.description
     const proposalKey = [appAddress, proposalDescription].join('::')
+    if (proposalKey.endsWith('::')) {
+      console.log(proposal, descriptions[proposal.id])
+    }
     if (appAddress && proposalDescription) {
       if (appAddress === INBOX[network]) {
         if (

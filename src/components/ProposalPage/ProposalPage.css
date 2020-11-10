@@ -57,58 +57,13 @@
   padding-right: 0;
 } */
 
-.dcl.page.ProposalPage .ProposalActions {
-  align-items: flex-start;
-}
-
-.dcl.page.ProposalPage .ProposalActions .ui.header {
-  margin-top: 6px;
-  text-align: center;
-  cursor: help;
-}
-
-.dcl.page.ProposalPage .ProposalDetail .ui.button,
-.dcl.page.ProposalPage .ProposalActions .ui.button {
+.dcl.page.ProposalPage .ProposalDetail .ui.button{
   width: 100%;
-}
-
-.dcl.page.ProposalPage .ProposalActions .voted .current {
-  display: block
-}
-
-.dcl.page.ProposalPage .ProposalActions .voted .ui.button.switch {
-  display: none;
-  color: white;
-}
-
-.dcl.page.ProposalPage .ProposalActions .voted .ui.button.switch.nay {
-  background-color: var(--rejected);
-}
-
-.dcl.page.ProposalPage .ProposalActions .voted .ui.button.switch.yea {
-  background-color: var(--success);
-}
-
-.dcl.page.ProposalPage .ProposalActions .voted:hover .current {
-  display: none
-}
-
-.dcl.page.ProposalPage .ProposalActions .voted:hover .ui.button.switch {
-  display: block
 }
 
 .dcl.page.ProposalPage .DetailDebugContainer {
   width: 100%;
   overflow: auto;
-}
-
-.dcl.page.ProposalPage .VotePending {
-  display: flex;
-  justify-content: space-around;
-}
-
-.dcl.page.ProposalPage .VotePending .ui.button {
-  flex: 0 0 48%
 }
 
 .dcl.page.ProposalPage .ui.button.pending {

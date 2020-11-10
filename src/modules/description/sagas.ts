@@ -1,5 +1,6 @@
 import { put, call, select, fork, takeEvery } from 'redux-saga/effects'
 import { describePath, decodeForwardingPath, App } from '@aragon/connect'
+import { utils } from 'ethers'
 import { loadProposalDescriptionFailure, loadProposalDescriptionSuccess } from './actions'
 import { getOrganization } from 'modules/organization/selectors'
 import { Organization } from 'modules/organization/types'
@@ -33,6 +34,10 @@ function* loadProposalDescription(proposal: Proposal) {
     const apps: App[] = yield select(getApps)
 
     const script = proposal.script || ''
+    // let script = proposal.script || EMPTY_SCRIPT
+    // if (!script.startsWith('0x')) {
+    //   script = utils.hexlify(utils.toUtf8Bytes(script))
+    // }
     if (script.length < EMPTY_SCRIPT.length || script === EMPTY_SCRIPT) {
       yield put(loadProposalDescriptionSuccess({ [proposal.id]: {} }))
     } else {

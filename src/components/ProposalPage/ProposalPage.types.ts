@@ -8,7 +8,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 import { Wallet } from 'modules/wallet/types'
 import { loadBalanceRequest, LoadBalanceRequestAction } from 'modules/balance/actions'
 import { Balance } from 'modules/balance/type'
-import { executeScriptRequest, ExecuteScriptRequestAction } from 'modules/proposal/actions'
+import { executeScriptRequest, ExecuteScriptRequestAction, executeVoteRequest, ExecuteVoteRequestAction } from 'modules/proposal/actions'
 
 export type Props = {
   isConnected: boolean
@@ -31,6 +31,7 @@ export type Props = {
   onConnect: typeof connectWalletRequest
   onRequireCasts: typeof loadCastsRequest
   onRequireBalance: typeof loadBalanceRequest
+  onExecuteVote: typeof executeVoteRequest
   onExecuteScript: typeof executeScriptRequest
 }
 
@@ -55,6 +56,7 @@ export type MapDispatchProps = Pick<Props,
  | 'onRequireCasts'
  | 'onRequireBalance'
  | 'onExecuteScript'
+ | 'onExecuteVote'
  | 'onNavigate'
  | 'onBack'
  | 'onHome'
@@ -65,5 +67,6 @@ export type MapDispatch = Dispatch<
  | LoadCastsRequestAction
  | LoadBalanceRequestAction
  | CallHistoryMethodAction
+ | ExecuteVoteRequestAction
  | ExecuteScriptRequestAction
 >

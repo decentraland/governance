@@ -116,15 +116,12 @@ export default class ProposalHistory extends React.PureComponent<Props, any> {
 
   renderINBOX() {
     const { proposal } = this.props
-    const enacted = proposal.status === ProposalStatus.Enacted
-    const passed = enacted || proposal.status === ProposalStatus.Passed
     const rejected = proposal.status === ProposalStatus.Rejected
     return <Card className="ProposalHistory">
       <Card.Content>
         <Header sub>{AppName.INBOX}</Header>
       </Card.Content>
       <ProposalHistory.Created />
-      {passed && <ProposalHistory.Waiting />}
       {rejected && <ProposalHistory.Rejected />}
     </Card>
   }

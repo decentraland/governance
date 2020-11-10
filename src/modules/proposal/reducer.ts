@@ -35,7 +35,13 @@ import {
   EXECUTE_SCRIPT_SUCCESS,
   ExecuteScriptFailureAction,
   ExecuteScriptRequestAction,
-  ExecuteScriptSuccessAction
+  ExecuteScriptSuccessAction,
+  EXECUTE_VOTE_FAILURE,
+  EXECUTE_VOTE_REQUEST,
+  EXECUTE_VOTE_SUCCESS,
+  ExecuteVoteFailureAction,
+  ExecuteVoteRequestAction,
+  ExecuteVoteSuccessAction
 } from './actions'
 import { Proposal } from './types'
 
@@ -70,10 +76,14 @@ export type ProposalReducerAction =
   | ExecuteScriptFailureAction
   | ExecuteScriptRequestAction
   | ExecuteScriptSuccessAction
+  | ExecuteVoteFailureAction
+  | ExecuteVoteRequestAction
+  | ExecuteVoteSuccessAction
 
 export const proposalReducer = (state = INITIAL_STATE, action: ProposalReducerAction): ProposalState => {
   switch (action.type) {
     case CREATE_BAN_REQUEST:
+    case EXECUTE_VOTE_REQUEST:
     case EXECUTE_SCRIPT_REQUEST:
     case CREATE_QUESTION_REQUEST:
     case CREATE_CATALYST_REQUEST:
@@ -98,6 +108,7 @@ export const proposalReducer = (state = INITIAL_STATE, action: ProposalReducerAc
       }
     }
 
+    case EXECUTE_VOTE_SUCCESS:
     case EXECUTE_SCRIPT_SUCCESS:
     case CREATE_BAN_SUCCESS:
     case CREATE_QUESTION_SUCCESS:
@@ -109,6 +120,7 @@ export const proposalReducer = (state = INITIAL_STATE, action: ProposalReducerAc
       }
     }
 
+    case EXECUTE_VOTE_FAILURE:
     case EXECUTE_SCRIPT_FAILURE:
     case CREATE_QUESTION_FAILURE:
     case CREATE_CATALYST_FAILURE:

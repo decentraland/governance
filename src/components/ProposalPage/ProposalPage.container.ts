@@ -13,7 +13,7 @@ import { getData as getProposalDescriptions } from 'modules/description/selector
 import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
 import { getData as getWallet } from 'modules/wallet/selectors'
 import { getData as getBalance } from 'modules/balance/selectors'
-import { executeScriptRequest, LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
+import { executeScriptRequest, executeVoteRequest, LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
 import { loadBalanceRequest } from 'modules/balance/actions'
@@ -74,6 +74,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onHome: () => dispatch(push(locations.root())),
   onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes)),
   onRequireBalance : (votes: string[]) => dispatch(loadBalanceRequest(votes)),
+  onExecuteVote: (id: string) => dispatch(executeVoteRequest(id)),
   onExecuteScript: (id: string) => dispatch(executeScriptRequest(id))
 })
 

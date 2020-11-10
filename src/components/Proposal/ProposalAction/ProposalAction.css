@@ -1,0 +1,48 @@
+.ProposalAction {
+  align-items: flex-start;
+}
+
+.ProposalAction .ui.header {
+  margin-top: 6px;
+  text-align: center;
+  cursor: help;
+}
+
+.ProposalAction .ui.button {
+  width: 100%;
+}
+
+.ProposalAction .voted .current {
+  display: block
+}
+
+.ProposalAction .voted .ui.button.switch {
+  display: none;
+}
+
+.ProposalAction .voted .ui.button.switch.nay {
+  background-color: var(--rejected);
+  color: white;
+}
+
+.ProposalAction .voted .ui.button.switch.yea {
+  background-color: var(--success);
+  color: white;
+}
+
+.ProposalAction .voted.enabled:hover .current {
+  display: none
+}
+
+.ProposalAction .voted.enabled:hover .ui.button.switch {
+  display: block
+}
+
+.ProposalAction .pending {
+  display: flex;
+  justify-content: space-around;
+}
+
+.ProposalAction .pending .ui.button {
+  flex: 0 0 48%
+}

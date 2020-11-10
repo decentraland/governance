@@ -21,10 +21,11 @@ import { env } from 'decentraland-commons'
 import { getProposalInitialAddress } from 'modules/description/utils'
 import { getAppName, isApp } from 'modules/app/utils'
 import inspect from 'util-inspect'
-import { AggregatedVote, DelayedScript, ProposalStatus as Status, ProposalType } from 'modules/proposal/types'
+import { AggregatedVote, DelayedScript, ProposalType } from 'modules/proposal/types'
 import './ProposalPage.css'
 import { locations } from 'routing/locations'
 import Tooltip from 'components/Tooltip'
+import { ProposalAction } from 'components/Proposal/ProposalAction'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
 
@@ -79,6 +80,12 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   handleExecute = () => {
     if (this.props.proposal && this.props.proposal.proposalType === ProposalType.DelayScript) {
       this.props.onExecuteScript(this.props.proposal.id)
+    }
+  }
+
+  handleEnact = () => {
+    if (this.props.proposal && this.props.proposal.proposalType !== ProposalType.DelayScript) {
+      this.props.onExecuteVote(this.props.proposal.id)
     }
   }
 
@@ -202,51 +209,19 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
 
   renderVoteActions() {
     const vote = this.props.proposal as AggregatedVote
-    const { isPending, casts, cast, balance } = this.props
-    const loadingCast = !casts || (!cast && isPending)
-    const loading = loadingCast || balance === undefined
-    const expired = vote?.status !== Status.Progress
 
     return <Grid.Row className="ProposalActions">
       <Grid.Column mobile="7">
         <ProposalStatus.Approval proposal={vote} />
       </Grid.Column>
-      {loading && <Grid.Column mobile="9">
-        <Button inverted loading={true} className="pending">loading</Button>
-      </Grid.Column>}
-      {!loading && !cast && <Grid.Column mobile="9">
-        <div className="VotePending">
-          <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleApprove}>
-            {t('proposal_detail_page.vote_yes')}
-          </Button>
-          <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleReject}>
-            {t('proposal_detail_page.vote_no')}
-          </Button>
-        </div>
-        <div>{this.renderVotingPowerTooltip()}</div>
-      </Grid.Column>}
-      {!loading && cast && cast.supports && <Grid.Column mobile="9" className="voted">
-        <div>
-          <Button inverted disabled={expired} className="yea current">
-            {t('proposal_detail_page.voted_yes')}
-          </Button>
-          <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>
-            {t('proposal_detail_page.switch_vote_no')}
-          </Button>
-        </div>
-        <div>{this.renderVotingPowerTooltip()}</div>
-      </Grid.Column>}
-      {!loading && cast && !cast.supports && <Grid.Column mobile="9" className="voted">
-        <div>
-          <Button inverted disabled={expired} className="nay current">
-            {t('proposal_detail_page.voted_no')}
-          </Button>
-          <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>
-            {t('proposal_detail_page.switch_vote_yes')}
-          </Button>
-        </div>
-        <div>{this.renderVotingPowerTooltip()}</div>
-      </Grid.Column>}
+      <Grid.Column mobile="9">
+        <ProposalAction
+          vote={vote}
+          onClickApprove={this.handleApprove}
+          onClickReject={this.handleReject}
+          onClickEnact={this.handleEnact}
+        />
+      </Grid.Column>
     </Grid.Row>
   }
 

@@ -5,7 +5,7 @@ import { getData as getVoteDescription } from 'modules/description/selectors'
 import { getData as getApps } from 'modules/app/selectors'
 import { ProposalDescription } from 'modules/description/types'
 import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
-import { SAB, COMMUNITY, INBOX, BanName, Catalyst, POI/*, Delay */ } from 'modules/app/types'
+import { SAB, COMMUNITY, INBOX, BanName, Catalyst, POI } from 'modules/app/types'
 import { getNetwork, getProvider } from 'modules/wallet/selectors'
 import { Network } from 'modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -39,13 +39,17 @@ import {
   EXECUTE_SCRIPT_REQUEST,
   ExecuteScriptRequestAction,
   executeScriptFailure,
-  executeScriptSuccess
+  executeScriptSuccess,
+  EXECUTE_VOTE_REQUEST,
+  ExecuteVoteRequestAction,
+  executeVoteSuccess,
+  executeVoteFailure
 } from './actions'
 import { AggregatedDelayedScript, AggregatedVote, Proposal, Voting } from './types'
 import { createVoting, getProposalIdentifier, loadDelayScriptsOnChain, loadVotes } from './utils'
 import { flatArray } from 'modules/common/utils'
 import { getDelayContract } from 'modules/common/selectors'
-import { Contract } from 'ethers'
+import { Contract, ethers } from 'ethers'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 
 export function* proposalSaga() {
@@ -56,6 +60,7 @@ export function* proposalSaga() {
   yield takeLatest(CREATE_CATALYST_REQUEST, createCatalyst)
   yield takeLatest(CREATE_POI_REQUEST, createPoi)
   yield takeLatest(EXECUTE_SCRIPT_REQUEST, executeScript)
+  yield takeLatest(EXECUTE_VOTE_REQUEST, executeVote)
 }
 
 function* reloadProposals() {
@@ -219,6 +224,21 @@ function* createPoi(action: CreatePoiRequestAction) {
     yield put(replace(locations.root({ ...query, completed: true })))
   } catch (err) {
     yield put(createPoiFailure(err.message))
+  }
+}
+
+function* executeVote(action: ExecuteVoteRequestAction) {
+  const { appAddress, voteId } = getProposalIdentifier({ id: action.payload.voteId || '' })
+
+  try {
+    const apps: Record<string, App> = yield select(getApps)
+    const app = apps[appAddress]
+    const provider: ethers.providers.Web3Provider | undefined = yield select(getProvider)
+    const contract = new Contract(app.address, app.abi, provider?.getSigner(0))
+    const tx: Transaction = yield call(() => contract.executeVote(voteId))
+    yield put(executeVoteSuccess(action.payload.voteId, tx.hash))
+  } catch (err) {
+    yield put(executeVoteFailure(err.message))
   }
 }
 

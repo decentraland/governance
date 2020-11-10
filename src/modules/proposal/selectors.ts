@@ -1,9 +1,18 @@
 import { RootState } from 'modules/root/types'
-import { getData as getDescription } from 'modules/description/selectors'
+import { getData as getDescriptions } from 'modules/description/selectors'
 import { createSelector } from 'reselect'
 import { ProposalState } from './reducer'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { CREATE_POI_REQUEST, CREATE_QUESTION_REQUEST, CREATE_BAN_REQUEST, CREATE_CATALYST_REQUEST, EXECUTE_SCRIPT_SUCCESS, EXECUTE_SCRIPT_REQUEST } from './actions'
+import {
+  CREATE_POI_REQUEST,
+  CREATE_QUESTION_REQUEST,
+  CREATE_BAN_REQUEST,
+  CREATE_CATALYST_REQUEST,
+  EXECUTE_SCRIPT_SUCCESS,
+  EXECUTE_SCRIPT_REQUEST,
+  EXECUTE_VOTE_SUCCESS,
+  EXECUTE_VOTE_REQUEST
+} from './actions'
 import { filterProposals } from './utils'
 import { getNetwork } from 'modules/wallet/selectors'
 import { createCompletedTransactionSelector, createPendingTransactionSelector } from 'modules/transaction/selectors'
@@ -19,7 +28,7 @@ export const getLoading = (state: RootState) => getState(state).loading
 
 export const getProposals = createSelector(
   getData,
-  getDescription,
+  getDescriptions,
   getFilterProposalParams,
   getNetwork,
   filterProposals
@@ -32,9 +41,15 @@ export const isCreatingCatalyst = (state: RootState) => isLoadingType(getState(s
 export const isCreating = (state: RootState) => isCreatingPoi(state) || isCreatingQuestion(state) || isCreatingBan(state) || isCreatingCatalyst(state)
 
 export const isExecuting = createSelector(
+  createPendingTransactionSelector(EXECUTE_VOTE_SUCCESS),
   createPendingTransactionSelector(EXECUTE_SCRIPT_SUCCESS),
   getLoading,
-  (isExecutingTransaction, loading) => isExecutingTransaction.length > 0 || isLoadingType(loading, EXECUTE_SCRIPT_REQUEST)
+  (executingVoteTransactions, executingScriptTransactions, loading) => (
+    executingVoteTransactions.length > 0 ||
+    executingScriptTransactions.length > 0 ||
+    isLoadingType(loading, EXECUTE_VOTE_REQUEST) ||
+    isLoadingType(loading, EXECUTE_SCRIPT_REQUEST)
+  )
 )
 
 export const getExecutedTransactions = createCompletedTransactionSelector(EXECUTE_SCRIPT_SUCCESS)
