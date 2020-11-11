@@ -52,7 +52,6 @@ export async function createDelaying(app: App) {
 
 export async function loadDelayScripts(delaying: Delaying) {
   const scripts = await delaying.delayedScripts()
-  console.log(scripts)
   return Promise.all(scripts.map(aggregateDelayedScript as any))
 }
 
@@ -326,7 +325,6 @@ export function filterProposals(
 
   // Show all proposal
   // return sortedProposals
-  console.log(descriptions)
   for (const proposal of sortedProposals) {
     if (!filterProposalByParams(proposal, descriptions[proposal.id], params)) {
       continue
@@ -335,9 +333,6 @@ export function filterProposals(
     const appAddress = proposal?.identifier?.appAddress
     const proposalDescription = (proposal as AggregatedVote).metadata || descriptions[proposal.id]?.description
     const proposalKey = [appAddress, proposalDescription].join('::')
-    if (proposalKey.endsWith('::')) {
-      console.log(proposal, descriptions[proposal.id])
-    }
     if (appAddress && proposalDescription) {
       if (appAddress === INBOX[network]) {
         if (
