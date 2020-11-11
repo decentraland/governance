@@ -3,7 +3,7 @@ import { Props } from './ProposalAction.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { ProposalStatus } from 'modules/proposal/types'
-import { isVoteExpired } from 'modules/proposal/utils'
+import { isProposalExecutable, isVoteExpired } from 'modules/proposal/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Tooltip from 'components/Tooltip'
 import './ProposalAction.css'
@@ -63,6 +63,7 @@ export default class ProposalAction extends React.PureComponent<Props> {
     const passed = vote.status === ProposalStatus.Passed
     const enacted = vote.status === ProposalStatus.Enacted
     const disabled = enacted || expired || balance === 0
+    const executable = isProposalExecutable(vote)
 
     if (loading) {
       return <div className="ProposalAction">
@@ -73,7 +74,7 @@ export default class ProposalAction extends React.PureComponent<Props> {
       </div>
     }
 
-    if (passed) {
+    if (passed && executable) {
       return <div className="ProposalAction">
         <div>
           <Button primary onClick={this.handleEnact}>{t('proposal_detail_page.enact')}</Button>

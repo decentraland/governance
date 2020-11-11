@@ -35,6 +35,8 @@ import { Network } from 'modules/wallet/types'
 import { BigNumber, Contract, utils } from 'ethers'
 import { getProposalInitialAddress } from 'modules/description/utils'
 
+const EMPTY_SCRIPT = '0x00000001'
+
 export async function createVoting(app: App) {
   return connectVoting(app as any)
     .catch(console.error)
@@ -236,6 +238,11 @@ export function getTimeLeft(until: number) {
   }
 
   return t(key, values)
+}
+
+export function isProposalExecutable(proposal: Pick<Proposal, 'script'>) {
+  const script = proposal.script || EMPTY_SCRIPT
+  return !(script.length < EMPTY_SCRIPT.length || script === EMPTY_SCRIPT)
 }
 
 export function getProposalIdentifier(identifier: { id: string }) {

@@ -10,9 +10,7 @@ import { getApps } from 'modules/app/selectors'
 import { concurrent } from 'modules/common/utils'
 import { Proposal } from 'modules/proposal/types'
 import { createDescription } from './utils'
-// import { utils } from 'ethers'
-
-const EMPTY_SCRIPT = '0x00000001'
+import { isProposalExecutable } from 'modules/proposal/utils'
 
 export function* voteDescriptionSaga() {
   yield takeEvery(LOAD_PROPOSALS_SUCCESS, loadProposalDescriptions)
@@ -33,12 +31,7 @@ function* loadProposalDescription(proposal: Proposal) {
     const org: Organization = yield select(getOrganization)
     const apps: App[] = yield select(getApps)
 
-    const script = proposal.script || ''
-    // let script = proposal.script || EMPTY_SCRIPT
-    // if (!script.startsWith('0x')) {
-    //   script = utils.hexlify(utils.toUtf8Bytes(script))
-    // }
-    if (script.length < EMPTY_SCRIPT.length || script === EMPTY_SCRIPT) {
+    if (!isProposalExecutable(proposal)) {
       yield put(loadProposalDescriptionSuccess({ [proposal.id]: {} }))
     } else {
       const describedSteps: ForwardingPathDescription['describedSteps'] = yield call(concurrent(() => {
