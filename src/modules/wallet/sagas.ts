@@ -2,7 +2,7 @@ import { all, takeLatest, call, select, put } from 'redux-saga/effects'
 // import { FETCH_TRANSACTION_SUCCESS, FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 // import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getData as getTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
-import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
+import { walletSaga as baseWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
@@ -51,7 +51,6 @@ const VOTING_POWER_BY_LAND = 2_000
 const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0x' + 'f'.repeat(64))
 const REQUIRE_ALLOWANCE_AMOUNT = BigNumber.from('0x01' + '0'.repeat(62))
 const EMPTY_ALLOWANCE_AMOUNT = BigNumber.from(0)
-const baseWalletSaga = createWalletSaga()
 
 export function* walletSaga() {
   yield all([baseWalletSaga(), projectWalletSaga()])
@@ -99,7 +98,7 @@ function* getBalance(): any {
       const landContract = yield select(getLandContract)
       const estateContract = yield select(getEstateContract)
       let [
-        [ manaAllowance ],
+        [manaAllowance],
         manaMiniMe,
         land,
         landCommit,
@@ -159,7 +158,7 @@ function* allowManaBalance() {
     const wrapAddress = MANAMiniMeToken[network]
     const manaContract: Contract = yield select(getManaContract)
 
-    const [ allowed ]: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
+    const [allowed]: [BigNumber] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
 
     if (!allowed.gte(REQUIRE_ALLOWANCE_AMOUNT) && !allowed.eq(EMPTY_ALLOWANCE_AMOUNT)) {
       const clearTx = yield call(() => manaContract.functions.approve(wrapAddress, EMPTY_ALLOWANCE_AMOUNT))
