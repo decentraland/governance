@@ -1,4 +1,3 @@
-import { Eth } from 'web3x-es/eth'
 import { ethers } from 'ethers'
 import { createSelector } from 'reselect'
 import { env } from 'decentraland-commons'
@@ -38,15 +37,6 @@ export const getNetwork = (state: RootState): Network => {
     ensureNetwork(Number((window as any)?.ethereum?.chainId || 0)) ||
     ensureNetwork(DEFAULT_NETWORK) ||
     Network.MAINNET
-}
-
-let eth: Eth | null = null
-export const getEth = () => {
-  if (!eth) {
-    eth = Eth.fromCurrentProvider() || null
-  }
-
-  return eth
 }
 
 export const getProvider = createSelector(

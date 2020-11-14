@@ -22,7 +22,7 @@
     "connected-react-router": "^6.8.0",
     "dcl-tslint-config-standard": "^2.0.0",
     "decentraland-commons": "^5.2.0",
-    "decentraland-dapps": "^7.13.0",
+    "decentraland-dapps": "^7.13.1",
     "decentraland-eth": "^8.18.2",
     "decentraland-ui": "^2.23.0",
     "devcert": "^1.1.2",
