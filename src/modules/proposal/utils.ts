@@ -1,14 +1,41 @@
 import connectVoting, { Voting } from '@aragon/connect-voting'
 import connectDelay from '@1hive/connect-delay'
-import { DelayedScript, AggregatedDelayedScript, AggregatedVote, ProposalType, Vote, VoteBalance, ProposalStatus, Delaying, Proposal } from './types'
-import { App, COMMUNITY, Delay, INBOX, SAB, Time } from 'modules/app/types'
+import {
+  DelayedScript,
+  AggregatedDelayedScript,
+  AggregatedVote,
+  ProposalType,
+  Vote,
+  VoteBalance,
+  ProposalStatus,
+  Delaying,
+  Proposal,
+  ProposalCategory
+} from './types'
+import {
+  Agent,
+  App,
+  BanName,
+  Catalyst,
+  COMMUNITY,
+  Delay,
+  Finance,
+  INBOX,
+  POI,
+  SAB,
+  Time,
+  Tokens
+} from 'modules/app/types'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppDelay, isApp } from 'modules/app/utils'
-import { CastParams } from 'routing/types'
+import { CastParams, FilterProposalParams } from 'routing/types'
 import { ProposalDescription } from 'modules/description/types'
 import { Network } from 'modules/wallet/types'
-import { BigNumber, Contract } from 'ethers'
+import { BigNumber, Contract, utils } from 'ethers'
+import { getProposalInitialAddress } from 'modules/description/utils'
+
+const EMPTY_SCRIPT = '0x00000001'
 
 export async function createVoting(app: App) {
   return connectVoting(app as any)
@@ -25,18 +52,21 @@ export async function createDelaying(app: App) {
     .catch(console.error)
 }
 
-export async function loadDelayScripts(_delaying: Delaying) {
-  // const scripts = await delaying.delayedScripts()
-  // console.log(scripts)
-  return [] // Promise.all(scripts.map(aggregateDelayedScript))
+export async function loadDelayScripts(delaying: Delaying) {
+  const scripts = await delaying.delayedScripts()
+  return Promise.all(scripts.map(aggregateDelayedScript as any))
 }
 
 export async function loadDelayScriptsOnChain(contract: Contract) {
+  if (!contract) {
+    return []
+  }
+
   try {
     const index: BigNumber = await contract.delayedScriptsNewIndex()
     const scripts = await Promise.all(Array.from(Array(index.toNumber()), async (_, i) => {
       const id = getProposalId(contract.address, i)
-      const [ executionTime, pausedAt, evmScript ]: [ BigNumber, BigNumber, string ] = await contract.delayedScripts(i)
+      const [executionTime, pausedAt, evmScript]: [BigNumber, BigNumber, string] = await contract.delayedScripts(i)
 
       let canExecute = false
       if (evmScript !== '0x') {
@@ -68,13 +98,10 @@ export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
 
   if (isVoteEnacted(vote)) {
     status = ProposalStatus.Enacted
+  } else if (isVotePassed(balance)) {
+    status = ProposalStatus.Passed
   } else if (isVoteExpired(vote)) {
-    if (isVotePassed(balance)) {
-      status = ProposalStatus.Passed
-
-    } else {
-      status = ProposalStatus.Rejected
-    }
+    status = ProposalStatus.Rejected
   }
 
   return Object.assign(vote, {
@@ -122,17 +149,26 @@ function isVoteEnacted(vote: Vote) {
   return !!vote.executed
 }
 
+function formatNumber(value: string | number | bigint | BigNumber, isWei: boolean = false) {
+  const num = BigNumber.from(value)
+  if (isWei) {
+    return Number(utils.formatUnits(num))
+  }
+
+  return num.toNumber()
+}
+
 function getVoteBalance(vote: Vote): VoteBalance {
-  const decimals = BigNumber.from('1' + '0'.repeat(18))
-  const approvalRequiredRatio = Number(vote.minAcceptQuorum) / Number(1e18)
-  const supportRequiredRatio = Number(vote.supportRequiredPct) / Number(1e18)
-  const totalTokens = BigNumber.from(vote.votingPower).div(decimals).toNumber()
-  const yea = BigNumber.from(vote.yea).div(decimals).toNumber()
-  const nay = BigNumber.from(vote.nay).div(decimals).toNumber()
+  const approvalRequiredRatio = formatNumber(vote.minAcceptQuorum, true)
+  const supportRequiredRatio = formatNumber(vote.supportRequiredPct, true)
+  const isWei = vote.votingPower.length >= 18
+  const totalTokens = formatNumber(vote.votingPower, isWei)
+  const yea = formatNumber(vote.yea, isWei)
+  const nay = formatNumber(vote.nay, isWei)
 
   const totalVoting = yea + nay
-  const supportRequired = totalTokens * supportRequiredRatio
-  const approvalRequired = totalTokens * approvalRequiredRatio
+  const supportRequired = Math.ceil(totalTokens * supportRequiredRatio)
+  const approvalRequired = Math.ceil(totalTokens * approvalRequiredRatio)
   let yeaPercentage = 0
   let nayPercentage = 0
   let supportPercentage = 0
@@ -174,7 +210,7 @@ export function getDelayTimeLeft(delayedScripts: DelayedScript) {
     return null
   }
 
-  return getTimeLeft(delayedScripts.executionTime)
+  return getTimeLeft(delayedScripts.executionTime * 1000)
 }
 
 export function getTimeLeft(until: number) {
@@ -204,6 +240,11 @@ export function getTimeLeft(until: number) {
   return t(key, values)
 }
 
+export function isProposalExecutable(proposal: Pick<Proposal, 'script'>) {
+  const script = proposal.script || EMPTY_SCRIPT
+  return !(script.length < EMPTY_SCRIPT.length || script === EMPTY_SCRIPT)
+}
+
 export function getProposalIdentifier(identifier: { id: string }) {
   // eg: appAddress:0x37187b0f2089b028482809308e776f92eeb7334e-voteId:0x0
   const entries = identifier.id.split('-').map(section => section.split(':'))
@@ -225,19 +266,77 @@ export function getProposalUrl(proposal: Proposal, params?: CastParams) {
   }
 }
 
+export function getProposalCategory(proposal?: Proposal, description?: ProposalDescription) {
+  if (!proposal) {
+    return undefined
+  }
+
+  if ((proposal as AggregatedVote).metadata) {
+    return ProposalCategory.Question
+  }
+
+  if (!description) {
+    return undefined
+  }
+
+  const initialAddress = getProposalInitialAddress(description)
+  if (!initialAddress) {
+    return undefined
+  }
+
+  switch (initialAddress) {
+    case Delay[Network.MAINNET]:
+    case Delay[Network.RINKEBY]:
+      return ProposalCategory.Delay
+
+    case Agent[Network.MAINNET]:
+    case Agent[Network.RINKEBY]:
+      return ProposalCategory.Agent
+
+    case BanName[Network.MAINNET]:
+    case BanName[Network.RINKEBY]:
+      return ProposalCategory.BanName
+
+    case Catalyst[Network.MAINNET]:
+    case Catalyst[Network.RINKEBY]:
+      return ProposalCategory.Catalyst
+
+    case POI[Network.MAINNET]:
+    case POI[Network.RINKEBY]:
+      return ProposalCategory.POI
+
+    case Finance[Network.MAINNET]:
+    case Finance[Network.RINKEBY]:
+      return ProposalCategory.Finance
+
+    case Tokens[Network.MAINNET]:
+    case Tokens[Network.RINKEBY]:
+      return ProposalCategory.Tokens
+
+    default:
+      return ProposalCategory.System
+  }
+}
+
 export function filterProposals(
   proposals: Record<string, Proposal>,
   descriptions: Record<string, ProposalDescription>,
+  params: FilterProposalParams,
   network: Network
 ): Proposal[] {
-  // return Object.values(votes)
 
   const proposalBuffer = new Set()
   const proposalList: Proposal[] = []
   const sortedProposals = Object.values(proposals)
     .sort(sortProposals)
 
+  // Show all proposal
+  // return sortedProposals
   for (const proposal of sortedProposals) {
+    if (!filterProposalByParams(proposal, descriptions[proposal.id], params)) {
+      continue
+    }
+
     const appAddress = proposal?.identifier?.appAddress
     const proposalDescription = (proposal as AggregatedVote).metadata || descriptions[proposal.id]?.description
     const proposalKey = [appAddress, proposalDescription].join('::')
@@ -268,7 +367,7 @@ export function filterProposals(
           proposalList.push(proposal)
         }
 
-      } else if (appAddress === INBOX[network]) {
+      } else if (appAddress === COMMUNITY[network]) {
         proposalBuffer.add(proposalKey)
         proposalList.push(proposal)
       }
@@ -276,6 +375,27 @@ export function filterProposals(
   }
 
   return proposalList
+}
+
+export function filterProposalByParams(proposal?: Proposal, description?: ProposalDescription, params: FilterProposalParams = {}) {
+
+  if (!proposal) {
+    return false
+  }
+
+  if (params.status && params.status !== ProposalStatus.All && proposal.status !== params.status) {
+    return false
+  }
+
+  if (params.category && params.category !== ProposalStatus.All) {
+    const proposalCategory = getProposalCategory(proposal, description)
+
+    if (proposalCategory !== params.category) {
+      return false
+    }
+  }
+
+  return true
 }
 
 export function sortProposals(proposalA: Proposal, proposalB: Proposal) {

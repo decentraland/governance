@@ -57,7 +57,7 @@ export function getAppName(address?: string) {
       return AppName.Tokens
 
     default:
-      return null
+      return undefined
   }
 }
 

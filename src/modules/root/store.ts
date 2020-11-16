@@ -12,12 +12,13 @@ import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/tra
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { CLEAR_TRANSACTIONS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-
-import { createRootReducer } from './reducer'
-import { rootSaga } from './sagas'
 import { LOAD_PROPOSAL_DESCRIPTION_SUCCESS } from 'modules/description/actions'
 import { ProposalStatus } from 'modules/proposal/types'
 import { LOAD_PROPOSALS_SUCCESS } from 'modules/proposal/actions'
+
+import { createRootReducer } from './reducer'
+import { migrations } from './migrations'
+import { rootSaga } from './sagas'
 
 const version = require('../../../package.json').version
 
@@ -42,6 +43,7 @@ const loggerMiddleware = createLogger({
 
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: 'governance', // this is the key used to save the state in localStorage (required)
+  migrations,
   paths: [
     ['balance', 'data'],
     ['description', 'data'],

@@ -145,7 +145,7 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
         return <ProposalStatus.Badge name="paused" />
       }
 
-      if ((props.proposal.executionTime * 100) < Date.now()) {
+      if ((props.proposal.executionTime * 1000) < Date.now()) {
         return <div className="ProposalStatus ProposalStatusTime">
           <div>ready to execute</div>
         </div>

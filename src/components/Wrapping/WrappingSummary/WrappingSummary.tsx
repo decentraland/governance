@@ -53,7 +53,7 @@ export default class WrappingSummary extends React.PureComponent<Props, any> {
           <b>{t('general.total')}</b>
           {/* <Tooltip position="top center" /> */}
         </Header>
-        <VotingPower value={wallet.votingPower} size="large" />
+        <VotingPower value={wallet.votingPower || 0} size="large" />
       </Card.Content>
       <Card.Content>
         <HeaderMenu>
@@ -66,14 +66,14 @@ export default class WrappingSummary extends React.PureComponent<Props, any> {
             <Button as="a" basic size="small" href={locations.wrapping()} onClick={this.handleEdit} >{t('general.edit')}</Button>
           </HeaderMenu.Right>
         </HeaderMenu>
-        <WrappingSummarySection icon={landIcon} label={t('general.land', { land: wallet.land })}>
-          <Token symbol="VP" size="small" secondary value={wallet.landVotingPower} />
+        <WrappingSummarySection icon={landIcon} label={t('general.land', { land: wallet.land || 0})}>
+          <Token symbol="VP" size="small" secondary value={wallet.landVotingPower || 0} />
         </WrappingSummarySection>
-        <WrappingSummarySection icon={estateIcon} label={t('general.estate', { estate: wallet.estate })}>
-          <Token symbol="VP" size="small" secondary value={wallet.estateVotingPower} />
+        <WrappingSummarySection icon={estateIcon} label={t('general.estate', { estate: wallet.estate || 0})}>
+          <Token symbol="VP" size="small" secondary value={wallet.estateVotingPower || 0} />
         </WrappingSummarySection>
         <WrappingSummarySection icon={manaIcon} label={t('general.mana')}>
-          <Token symbol="VP" size="small" secondary value={wallet.manaMiniMe} />
+          <Token symbol="VP" size="small" secondary value={wallet.manaMiniMe || 0} />
         </WrappingSummarySection>
       </Card.Content>
     </>

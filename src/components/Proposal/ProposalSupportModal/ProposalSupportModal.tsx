@@ -37,7 +37,7 @@ export default class ProposalSupportModal extends React.PureComponent<Props, {}>
 
   render() {
     const { isConnected } = this.props
-    const { completed } = this.props.params
+    const completed = /* this.props.cast || */ this.props.params?.completed || false
     return <Modal className="ProposalSupportModal" open={this.isOpen()} onClose={this.handleClose}>
       <Icon name="close" onClick={this.handleClose} />
       <Modal.Content>

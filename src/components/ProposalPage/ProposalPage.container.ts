@@ -13,7 +13,7 @@ import { getData as getProposalDescriptions } from 'modules/description/selector
 import { getData as getCasts, getPendingCasts } from 'modules/cast/selectors'
 import { getData as getWallet } from 'modules/wallet/selectors'
 import { getData as getBalance } from 'modules/balance/selectors'
-import { executeScriptRequest, LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
+import { executeScriptRequest, executeVoteRequest, LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './ProposalPage.types'
 import { loadCastsRequest } from 'modules/cast/actions'
 import { loadBalanceRequest } from 'modules/balance/actions'
@@ -21,9 +21,11 @@ import { push, goBack, replace } from 'connected-react-router'
 import { AggregatedVote } from 'modules/proposal/types'
 import { getProposalId } from 'modules/proposal/utils'
 import { Cast } from '@aragon/connect-voting'
+import { locations } from 'routing/locations'
 
 const mapState = (state: RootState, props: any): MapStateProps => {
   const address = (getAddress(state) || '').toLowerCase()
+  const canGoBack = props?.history?.length > 1
 
   const { app, id } = props?.match?.params || {}
   const proposalId = getProposalId(app, id)
@@ -56,6 +58,7 @@ const mapState = (state: RootState, props: any): MapStateProps => {
     isEnabling: isEnabling(state),
     isExecuting: isExecuting(state),
     isPending: getPendingCasts(state).includes(proposalId),
+    canGoBack,
     isLoading: (
       getLoadingOrganization(state) ||
       isLoadingType(getLoadingApps(state), LOAD_APPS_REQUEST) ||
@@ -68,8 +71,10 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onBack: () => dispatch(goBack()),
+  onHome: () => dispatch(push(locations.root())),
   onRequireCasts : (votes: string[]) => dispatch(loadCastsRequest(votes)),
   onRequireBalance : (votes: string[]) => dispatch(loadBalanceRequest(votes)),
+  onExecuteVote: (id: string) => dispatch(executeVoteRequest(id)),
   onExecuteScript: (id: string) => dispatch(executeScriptRequest(id))
 })
 

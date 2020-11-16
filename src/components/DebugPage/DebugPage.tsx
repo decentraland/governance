@@ -6,7 +6,7 @@ import { Navbar } from "components/Navbar"
 import { Footer } from "components/Footer"
 import { Navigation } from "components/Navigation"
 import { ensureNetwork } from "modules/wallet/utils"
-import { getInjectedProvider } from "decentraland-dapps/dist/providers/WalletProvider/utils"
+import { getProvider } from "decentraland-dapps/dist/lib/eth"
 import { Network } from "modules/wallet/types"
 import { Card, Header, Icon, Button } from "decentraland-ui"
 import { ORGANIZATION_LOCATION } from "modules/organization/types"
@@ -21,7 +21,7 @@ type Step = {
 
 type Data = {
   settings: any
-  provider: ReturnType<typeof getInjectedProvider>
+  provider: ReturnType<typeof getProvider>
   organization: Organization
   apps: App[]
   voting_apps: App[]
@@ -41,19 +41,19 @@ const styled = {
   border: "1px solid #eee",
   color: "#444",
   padding: "1em",
-  borderRadius: "8px",
+  borderRadius: "8px"
 }
 
 export default class DebugPage extends React.Component<{}, State> {
   state: State = {
     data: {},
-    steps: [],
+    steps: []
   }
 
   async componentDidMount() {
     const steps: Step[] = []
     const data: Partial<Data> = {}
-    const provider: any = getInjectedProvider()
+    const provider: any = await getProvider()
     const add = (title: keyof Data, value: any) => {
       console.log(title, value)
       steps.push({ title, value })
@@ -80,8 +80,8 @@ export default class DebugPage extends React.Component<{}, State> {
       "thegraph",
       {
         orgSubgraphUrl:
-          "https://api.thegraph.com/subgraphs/name/0xgabi/aragon-mainnet-staging-dcl",
-      },
+          "https://api.thegraph.com/subgraphs/name/0xgabi/aragon-mainnet-staging-dcl"
+      }
     ], { network })
     add("organization", organization)
 
@@ -142,7 +142,7 @@ export default class DebugPage extends React.Component<{}, State> {
               metadata: vote.metadata,
               description,
               describedSteps,
-              vote,
+              vote
             }
           } catch (error) {
             return {
@@ -165,7 +165,7 @@ export default class DebugPage extends React.Component<{}, State> {
     )!
 
     const path = await app.intent("newVote", ["0x00000001", "new dao vote?"], {
-      actAs: provider.selectedAddress,
+      actAs: provider.selectedAddress
     })
 
     console.log(path)
@@ -173,7 +173,7 @@ export default class DebugPage extends React.Component<{}, State> {
     path.sign((tx) => {
       return provider.send({
         method: "eth_sendTransaction",
-        params: [tx],
+        params: [tx]
       })
     })
   }
@@ -189,7 +189,7 @@ export default class DebugPage extends React.Component<{}, State> {
     console.log(voting)
 
     const path = await app.intent("add", ["11,11"], {
-      actAs: provider.selectedAddress,
+      actAs: provider.selectedAddress
     })
 
     console.log(path)
@@ -197,7 +197,7 @@ export default class DebugPage extends React.Component<{}, State> {
     path.sign((tx) =>
       provider.send({
         method: "eth_sendTransaction",
-        params: [tx],
+        params: [tx]
       })
     )
   }
@@ -216,7 +216,7 @@ export default class DebugPage extends React.Component<{}, State> {
       "addCatalyst",
       ["0x326923D43226d9824aab694A3C1C566FeDa50AEb", "peer.dcl.gg"],
       {
-        actAs: provider.selectedAddress,
+        actAs: provider.selectedAddress
       }
     )
 
@@ -225,7 +225,7 @@ export default class DebugPage extends React.Component<{}, State> {
     path.sign((tx) =>
       provider.send({
         method: "eth_sendTransaction",
-        params: [tx],
+        params: [tx]
       })
     )
   }
@@ -241,7 +241,7 @@ export default class DebugPage extends React.Component<{}, State> {
     console.log(voting)
 
     const path = await app.intent("add", ["decentraland"], {
-      actAs: provider.selectedAddress,
+      actAs: provider.selectedAddress
     })
 
     console.log(path)
@@ -249,7 +249,7 @@ export default class DebugPage extends React.Component<{}, State> {
     path.sign((tx) =>
       provider.send({
         method: "eth_sendTransaction",
-        params: [tx],
+        params: [tx]
       })
     )
   }
@@ -265,7 +265,7 @@ export default class DebugPage extends React.Component<{}, State> {
     console.log(voting)
 
     const path = await app.intent("vote", ["0x15", true, true], {
-      actAs: provider.selectedAddress,
+      actAs: provider.selectedAddress
     })
 
     console.log(path)
@@ -273,7 +273,7 @@ export default class DebugPage extends React.Component<{}, State> {
     path.sign((tx) =>
       provider.send({
         method: "eth_sendTransaction",
-        params: [tx],
+        params: [tx]
       })
     )
   }
@@ -352,7 +352,7 @@ export default class DebugPage extends React.Component<{}, State> {
                     <Accordion.Content>
                       {this.renderCode(step.value)}
                     </Accordion.Content>
-                  ),
+                  )
                 }))}
               />
             </Card.Content>

@@ -60,3 +60,9 @@
 .ui.modal.UnwrapModal .ui.button {
   width: 250px;
 }
+
+.ui.modal.UnwrapModal input[type="number"]::-webkit-outer-spin-button,
+.ui.modal.UnwrapModal  input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

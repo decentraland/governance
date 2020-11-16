@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Page } from 'decentraland-ui/dist/components/Page/Page'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
@@ -65,16 +66,24 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
   }
 
   handleCommitLandBalance = () => {
-    const wallet = this.props.wallet!
-    if (!wallet.landCommit && this.props.onAllowLand) {
-      this.props.onAllowLand()
+    const wallet = this.props.wallet
+    if (wallet) {
+      if (wallet.landCommit) {
+        this.props.onRevokeLand()
+      } else {
+        this.props.onAllowLand()
+      }
     }
   }
 
   handleCommitEstateBalance = () => {
-    const wallet = this.props.wallet!
-    if (!wallet.estateCommit && this.props.onAllowEstate) {
-      this.props.onAllowEstate()
+    const wallet = this.props.wallet
+    if (wallet) {
+      if (wallet.estateCommit) {
+        this.props.onRevokeEstate()
+      } else {
+        this.props.onAllowEstate()
+      }
     }
   }
 
@@ -87,7 +96,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
         <Grid.Column mobile="8">
           <Header sub><b>{t('wrapping_page.total')}</b></Header>
           {isLoading && <Loader size="medium" active inline />}
-          {!isLoading && <Token size="huge" symbol="VP" value={wallet.votingPower} />}
+          {!isLoading && <Token size="huge" symbol="VP" value={wallet.votingPower || 0} />}
         </Grid.Column>
       </Grid.Row>
     </Grid>
@@ -117,18 +126,25 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
               <Header sub>{t('wrapping_page.mana_wrapped')}</Header>
             </HeaderMenu.Left>
             {!!wallet.manaMiniMe && <HeaderMenu.Right>
-              <Button as='a' basic size="small" onClick={this.handleUnwrapMana} href={locations.wrapping({ modal: 'unwrap' })}>
+              <Button
+                as='a'
+                basic
+                size="small"
+                onClick={this.handleUnwrapMana}
+                loading={this.props.isConnecting || this.props.isWrappingMana || this.props.isUnwrappingMana}
+                href={locations.wrapping({ modal: 'unwrap' })}
+              >
                 {t('wrapping_page.mana_unwrap')}
               </Button>
             </HeaderMenu.Right>}
           </HeaderMenu>
-          <Token symbol="VP" size="medium" value={wallet.manaVotingPower} />
+          <Token symbol="VP" size="medium" value={wallet.manaVotingPower || 0} />
         </Card.Content>}
         {!isLoading && <Card.Content style={{ flexGrow: 1 }}>
           <Header sub>{t('wrapping_page.mana_available')}</Header>
-          <Token symbol="MANA" size="medium" value={wallet.mana} />
+          <Token symbol="MANA" size="medium" value={wallet.mana || 0} />
           {wallet.manaCommit && <Header sub>{t('wrapping_page.mana_rate')}</Header>}
-          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana} value={this.state?.value || ''} onChange={this.handleChangeWrapValue}/>}
+          {wallet.manaCommit && <WrappingInput min={0} max={wallet.mana || 0} value={this.state?.value || ''} onChange={this.handleChangeWrapValue}/>}
           {wallet.manaCommit && <Button
             primary
             size="small"
@@ -139,14 +155,15 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
         </Card.Content>}
         {!isLoading && !wallet.manaCommit && <Card.Content>
           {isAllowingMana && <Loader inline active size="small" />}
-          {!isAllowingMana && <Radio toggle label={t('wrapping_page.mana_commit')} checked={wallet.manaCommit} onClick={this.handleCommitManaBalance}/>}
+          {!isAllowingMana && <Radio toggle label={t('wrapping_page.mana_commit')} checked={!!wallet.manaCommit} onClick={this.handleCommitManaBalance}/>}
         </Card.Content>}
       </Card>
     </>
   }
 
   renderWrapLand() {
-    const { isLoading, isAllowingLand } = this.props
+    const { isLoading, isAllowingLand, isRevokingLand } = this.props
+    const loading = isAllowingLand || isRevokingLand
     const wallet = this.props.wallet!
 
     return <>
@@ -161,21 +178,22 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header><b>{t('wrapping_page.land_title')}</b></Header>
 
           <Header sub>{t('wrapping_page.land_balance')}</Header>
-          <Header>{t('general.land', { land: wallet.land })}</Header>
+          <Header>{t('general.land', { land: wallet.land || 0 })}</Header>
 
           <Header sub>{t('wrapping_page.land_total')}</Header>
-          <Token symbol="VP" size="medium" value={wallet.landVotingPower} />
+          <Token symbol="VP" size="medium" value={wallet.landVotingPower || 0} />
         </Card.Content>}
         {!isLoading && <Card.Content style={{ flexGrow: 0 }}>
-          {isAllowingLand && <Loader active inline size="small" />}
-          {!isAllowingLand && <Radio toggle label={t('wrapping_page.land_commit')} checked={wallet.landCommit} onClick={this.handleCommitLandBalance} />}
+          {loading && <Loader active inline size="small" />}
+          {!loading && <Radio toggle label={t('wrapping_page.land_commit')} checked={!!wallet.landCommit} onClick={this.handleCommitLandBalance} />}
         </Card.Content>}
       </Card>
     </>
   }
 
   renderWrapEstate() {
-    const { isLoading, isAllowingEstate } = this.props
+    const { isLoading, isAllowingEstate, isRevokingEstate } = this.props
+    const loading = isAllowingEstate || isRevokingEstate
     const wallet = this.props.wallet!
 
     return <>
@@ -200,11 +218,11 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
           <Header>{t('general.land', { land: wallet.estateSize || 0 })}</Header>
 
           <Header sub>{t('wrapping_page.estate_total')}</Header>
-          <Token symbol="VP" size="medium" value={wallet.estateVotingPower} />
+          <Token symbol="VP" size="medium" value={wallet.estateVotingPower || 0} />
         </Card.Content>}
         {!isLoading && <Card.Content>
-          {isAllowingEstate && <Loader inline active size="small" />}
-          {!isAllowingEstate && <Radio toggle label={t('wrapping_page.estate_commit')} checked={wallet.estateCommit} onClick={this.handleCommitEstateBalance}/>}
+          {loading && <Loader inline active size="small" />}
+          {!loading && <Radio toggle label={t('wrapping_page.estate_commit')} checked={!!wallet.estateCommit} onClick={this.handleCommitEstateBalance}/>}
         </Card.Content>}
       </Card></>
   }
@@ -215,6 +233,7 @@ export default class WrappingPage extends React.PureComponent<Props, State> {
     return <>
       <Navbar />
       <Navigation activeTab={NavigationTab.Wrapping} />
+      <Helmet title={t('seo.title_extended', { title: t('wrapping_page.title') })} />
       {!isLoading && !isConnected && <Page className="WrappingPage"><SignInPage /></Page>}
       {(isLoading || isConnected) && <Page className="WrappingPage">
         <UnwrapModal />

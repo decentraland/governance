@@ -6,7 +6,7 @@ import { unwrapManaRequest, UnwrapManaRequestAction } from 'modules/wallet/actio
 import { Wallet } from 'modules/wallet/types'
 
 export type State = {
-  value?: number
+  value?: number | ''
 }
 
 export type Props = {

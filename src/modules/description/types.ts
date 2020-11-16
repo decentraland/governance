@@ -2,10 +2,12 @@ import ForwardingPathDescription from '@aragon/connect-core/dist/cjs/utils/descr
 
 export { ForwardingPathDescription }
 
+export type StepDescribed = ForwardingPathDescription['describedSteps'][0]
+
 export type ProposalDescription = {
   description?: string
-  describedSteps?: ForwardingPathDescription['describedSteps']
-  firstDescribedSteps?: ForwardingPathDescription['describedSteps']
+  describedSteps?: StepDescribed[]
+  firstDescribedSteps?: StepDescribed[]
   firstDescriptionAnnotated?: Annotation[][]
 }
 

@@ -11,6 +11,7 @@ export type NewProposalParams = {
 
 export type FilterProposalParams = {
   status?: string
+  category?: string
 }
 
 export type CastParams = {

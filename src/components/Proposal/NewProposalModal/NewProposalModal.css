@@ -89,8 +89,20 @@
 
 .NewProposalModal .NewProposalModalStep > .description,
 .NewProposalModal .NewProposalModalStep > .ui.button {
-  min-width: 300px;
+  max-width: 300px;
+  width: 100%;
   margin: 0 auto;
+}
+
+.NewProposalModal .NewProposalModalStep.Connect {
+  justify-content: center;
+  align-content: center;
+  padding: 3rem 30%;
+}
+
+.NewProposalModal .NewProposalModalStep.Connect > img,
+.NewProposalModal .NewProposalModalStep.Connect > p {
+  margin-bottom: 30px;
 }
 
 .NewProposalModalState {

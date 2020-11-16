@@ -12,19 +12,20 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
-import { AppName } from 'modules/app/types'
+import { AppName, BanName, Catalyst, POI } from 'modules/app/types'
 import { getVoteTimeLeft, getProposalUrl, getDelayTimeLeft } from 'modules/proposal/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
 import { ProposalSupportModal } from 'components/Proposal/ProposalSupportModal'
 import { env } from 'decentraland-commons'
 import { getProposalInitialAddress } from 'modules/description/utils'
-import { getAppName } from 'modules/app/utils'
+import { getAppName, isApp } from 'modules/app/utils'
 import inspect from 'util-inspect'
-import { AggregatedVote, DelayedScript, ProposalStatus as Status, ProposalType } from 'modules/proposal/types'
+import { AggregatedVote, DelayedScript, ProposalType } from 'modules/proposal/types'
 import './ProposalPage.css'
 import { locations } from 'routing/locations'
 import Tooltip from 'components/Tooltip'
+import { ProposalAction } from 'components/Proposal/ProposalAction'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
 
@@ -42,6 +43,14 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     if (this.props.proposal && this.props.proposal !== prevProps.proposal) {
       this.props.onRequireCasts([this.props.proposal.id])
       this.props.onRequireBalance([this.props.proposal.id])
+    }
+  }
+
+  handleBack = () => {
+    if (this.props.canGoBack) {
+      this.props.onBack()
+    } else {
+      this.props.onHome()
     }
   }
 
@@ -74,6 +83,12 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     }
   }
 
+  handleEnact = () => {
+    if (this.props.proposal && this.props.proposal.proposalType !== ProposalType.DelayScript) {
+      this.props.onExecuteVote(this.props.proposal.id)
+    }
+  }
+
   renderVotingPowerTooltip() {
     const balance = this.props.balance || 0
     const vote = this.props.proposal as AggregatedVote
@@ -93,7 +108,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   renderTitle() {
     return <Grid.Row>
       <Grid.Column mobile="16" className="ProposalTitle">
-        <ProposalTitle proposal={this.props.proposal} />
+        <ProposalTitle proposal={this.props.proposal} primary />
       </Grid.Column>
     </Grid.Row>
   }
@@ -134,13 +149,18 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       <Grid.Column mobile="4">
         <Tooltip content={t('proposal_detail_page.support_detail')} trigger={<Header sub>{t('proposal_detail_page.support')} <Tooltip.Icon /></Header>} />
         <Header>{vote.balance.supportPercentage || 0} %</Header>
-        <span>{t('proposal_detail_page.needed', { needed: vote.balance.supportRequiredPercentage || 0 })}</span>
+        <span>{t('proposal_detail_page.percentage_needed', { needed: vote.balance.supportRequiredPercentage || 0 })}</span>
       </Grid.Column>
       <Grid.Column mobile="5">
         <Tooltip content={t('proposal_detail_page.approval_detail')} trigger={<Header sub>{t('proposal_detail_page.approval')} <Tooltip.Icon /></Header>} />
         <Header>{vote.balance.approvalPercentage || 0} %</Header>
-        <span>{t('proposal_detail_page.needed', { needed: vote.balance.approvalRequiredPercentage || 0 })}</span>
+        <span>{t('proposal_detail_page.percentage_needed', { needed: vote.balance.approvalRequiredPercentage || 0 })}</span>
       </Grid.Column>
+      {/* <Grid.Column mobile="5">
+        <Tooltip content={t('proposal_detail_page.approval_detail')} trigger={<Header sub>{t('proposal_detail_page.approval')} <Tooltip.Icon /></Header>} />
+        <Header>{t('general.number',{ value: vote.balance.yea || 0 })}</Header>
+        <span>{t('proposal_detail_page.amount_needed', { needed: vote.balance.approvalRequired || 0 })}</span>
+      </Grid.Column> */}
     </Grid.Row>
   }
 
@@ -189,63 +209,32 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
 
   renderVoteActions() {
     const vote = this.props.proposal as AggregatedVote
-    const { isPending, casts, cast, balance } = this.props
-    const loadingCast = !casts || (!cast && isPending)
-    const loading = loadingCast || balance === undefined
-    const expired = vote?.status !== Status.Progress
 
     return <Grid.Row className="ProposalActions">
       <Grid.Column mobile="7">
         <ProposalStatus.Approval proposal={vote} />
       </Grid.Column>
-      {loading && <Grid.Column mobile="9">
-        <Button inverted loading={true} className="pending">loading</Button>
-      </Grid.Column>}
-      {!loading && !cast && <Grid.Column mobile="9">
-        <div className="VotePending">
-          <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleApprove}>
-            {t('proposal_detail_page.vote_yes')}
-          </Button>
-          <Button inverted disabled={expired || balance === 0} className="pending" onClick={this.handleReject}>
-            {t('proposal_detail_page.vote_no')}
-          </Button>
-        </div>
-        <div>{this.renderVotingPowerTooltip()}</div>
-      </Grid.Column>}
-      {!loading && cast && cast.supports && <Grid.Column mobile="9" className="voted">
-        <div>
-          <Button inverted disabled={expired} className="yea current">
-            {t('proposal_detail_page.voted_yes')}
-          </Button>
-          <Button inverted disabled={expired} className="nay switch" onClick={this.handleSwitch}>
-            {t('proposal_detail_page.switch_vote_no')}
-          </Button>
-        </div>
-        <div>{this.renderVotingPowerTooltip()}</div>
-      </Grid.Column>}
-      {!loading && cast && !cast.supports && <Grid.Column mobile="9" className="voted">
-        <div>
-          <Button inverted disabled={expired} className="nay current">
-            {t('proposal_detail_page.voted_no')}
-          </Button>
-          <Button inverted disabled={expired} className="yea switch" onClick={this.handleSwitch}>
-            {t('proposal_detail_page.switch_vote_yes')}
-          </Button>
-        </div>
-        <div>{this.renderVotingPowerTooltip()}</div>
-      </Grid.Column>}
+      <Grid.Column mobile="9">
+        <ProposalAction
+          vote={vote}
+          onClickApprove={this.handleApprove}
+          onClickReject={this.handleReject}
+          onClickEnact={this.handleEnact}
+        />
+      </Grid.Column>
     </Grid.Row>
   }
 
   render() {
-    const { isLoading, proposal, description, casts } = this.props
+    const { isLoading, proposal, description, casts, cast } = this.props
+    const initialApp = getProposalInitialAddress(description)
 
     return <>
       <Navbar isFullscreen={false} />
       <Page className="ProposalPage">
-        <ProposalSupportModal proposal={proposal} />
+        <ProposalSupportModal proposal={proposal} cast={cast} />
         <div className="ProposalPageBack">
-          <Back onClick={this.props.onBack} />
+          <Back onClick={this.handleBack} />
         </div>
         <Grid stackable>
           {this.renderTitle()}
@@ -266,9 +255,18 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                     {this.renderDelayDetail()}
                   </Grid>
                 </Card.Content>}
-                {/* <Card.Content className="DetailDescription">
+                {initialApp && isApp(initialApp, POI) && <Card.Content className="DetailDescription">
                   <Header sub>{t('proposal_detail_page.description')}</Header>
-                </Card.Content> */}
+                  <Card.Description>{t('proposal_detail_page.description_poi')}</Card.Description>
+                </Card.Content>}
+                {initialApp && isApp(initialApp, BanName) && <Card.Content className="DetailDescription">
+                  <Header sub>{t('proposal_detail_page.description')}</Header>
+                  <Card.Description>{t('proposal_detail_page.description_ban')}</Card.Description>
+                </Card.Content>}
+                {initialApp && isApp(initialApp, Catalyst) && <Card.Content className="DetailDescription">
+                  <Header sub>{t('proposal_detail_page.description')}</Header>
+                  <Card.Description>{t('proposal_detail_page.description_catalyst')}</Card.Description>
+                </Card.Content>}
                 {env.isDevelopment() && <Card.Content className="DetailDebug">
                   <Header sub>INFO</Header>
                   <div className="DetailDebugContainer">

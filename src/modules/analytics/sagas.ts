@@ -36,7 +36,7 @@ import {
   CREATE_QUESTION_REQUEST,
   CREATE_QUESTION_FAILURE,
   CREATE_QUESTION_SUCCESS,
-  LOAD_PROPOSALS_FAILURE
+  LOAD_PROPOSALS_FAILURE, EXECUTE_SCRIPT_FAILURE, EXECUTE_SCRIPT_SUCCESS
 } from 'modules/proposal/actions'
 import { LOAD_APPS_FAILURE } from 'modules/app/actions'
 
@@ -59,6 +59,8 @@ export function* segmentSaga() {
   yield takeEvery(CREATE_QUESTION_FAILURE, segmentTrack)
   yield takeEvery(CREATE_QUESTION_SUCCESS, segmentTrack)
   yield takeEvery(CREATE_CAST_SUCCESS, segmentTrack)
+  yield takeEvery(EXECUTE_SCRIPT_FAILURE, segmentTrack)
+  yield takeEvery(EXECUTE_SCRIPT_SUCCESS, segmentTrack)
   yield takeEvery(LOAD_PROPOSALS_FAILURE, segmentTrack)
   yield takeEvery(LOAD_CASTS_FAILURE, segmentTrack)
   yield takeEvery(LOAD_APPS_FAILURE, segmentTrack)

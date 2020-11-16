@@ -8,7 +8,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 import { Wallet } from 'modules/wallet/types'
 import { loadBalanceRequest, LoadBalanceRequestAction } from 'modules/balance/actions'
 import { Balance } from 'modules/balance/type'
-import { executeScriptRequest, ExecuteScriptRequestAction } from 'modules/proposal/actions'
+import { executeScriptRequest, ExecuteScriptRequestAction, executeVoteRequest, ExecuteVoteRequestAction } from 'modules/proposal/actions'
 
 export type Props = {
   isConnected: boolean
@@ -17,6 +17,7 @@ export type Props = {
   isLoading: boolean
   isPending: boolean
   isExecuting: boolean
+  canGoBack: boolean
   executed: boolean
   proposal?: Proposal
   description?: ProposalDescription
@@ -26,9 +27,11 @@ export type Props = {
   balance?: Balance
   onNavigate: (path: string, replace?: boolean) => void
   onBack: () => void
+  onHome: () => void
   onConnect: typeof connectWalletRequest
   onRequireCasts: typeof loadCastsRequest
   onRequireBalance: typeof loadBalanceRequest
+  onExecuteVote: typeof executeVoteRequest
   onExecuteScript: typeof executeScriptRequest
 }
 
@@ -39,6 +42,7 @@ export type MapStateProps = Pick<Props,
  | 'isLoading'
  | 'isPending'
  | 'isExecuting'
+ | 'canGoBack'
  | 'executed'
  | 'proposal'
  | 'description'
@@ -52,8 +56,10 @@ export type MapDispatchProps = Pick<Props,
  | 'onRequireCasts'
  | 'onRequireBalance'
  | 'onExecuteScript'
+ | 'onExecuteVote'
  | 'onNavigate'
  | 'onBack'
+ | 'onHome'
 >
 
 export type MapDispatch = Dispatch<
@@ -61,5 +67,6 @@ export type MapDispatch = Dispatch<
  | LoadCastsRequestAction
  | LoadBalanceRequestAction
  | CallHistoryMethodAction
+ | ExecuteVoteRequestAction
  | ExecuteScriptRequestAction
 >

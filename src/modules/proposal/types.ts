@@ -47,6 +47,19 @@ export enum ProposalStatus {
   Hidden = 'hidden'
 }
 
+export const ProposalCategory = {
+  All: 'all',
+  Question: 'question',
+  Tokens: 'tokens',
+  Delay: 'delay',
+  Catalyst: 'catalyst',
+  Finance: 'finance',
+  Agent: 'agent',
+  BanName: 'ban_name',
+  POI: 'poi',
+  System: 'system'
+}
+
 export type VoteBalance = {
   approvalRequiredPercentage: number
   approvalRequired: number

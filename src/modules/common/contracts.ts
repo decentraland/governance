@@ -29,12 +29,12 @@ export const LANDMiniMeToken = {
 }
 
 export const EstateProxy = {
-  [Network.MAINNET]: '0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95',
+  [Network.MAINNET]: '0x959e104e1a4db6317fa58f8295f586e1a978c297',
   [Network.RINKEBY]: null
 }
 
 export const EstateRegistry = {
-  [Network.MAINNET]: '0x959e104e1a4db6317fa58f8295f586e1a978c297',
+  [Network.MAINNET]: '0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95',
   [Network.RINKEBY]: '0x3f0b58ad7a8b27d0e5573cd1ca7d456e2f6d4884'
 }
 

@@ -2,11 +2,11 @@ import { all, takeLatest, call, select, put } from 'redux-saga/effects'
 // import { FETCH_TRANSACTION_SUCCESS, FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 // import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getData as getTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
-import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
+import { walletSaga as baseWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
-import { Contract, BigNumber } from 'ethers'
+import { Contract, BigNumber, utils } from 'ethers'
 import {
   extendWalletRequest,
   EXTEND_WALLET_REQUEST,
@@ -28,10 +28,17 @@ import {
   unwrapManaFailure,
   ALLOW_MANA_REQUEST,
   allowManaSuccess,
-  allowManaFailure, EXTEND_WALLET_SUCCESS
+  allowManaFailure,
+  EXTEND_WALLET_SUCCESS,
+  REVOKE_LAND_REQUEST,
+  REVOKE_ESTATE_REQUEST,
+  revokeEstateSuccess,
+  revokeEstateFailure,
+  revokeLandSuccess,
+  revokeLandFailure
 } from './actions'
 import { Wallet, Network } from './types'
-import { getNetwork } from './selectors'
+import { getData as getWallet, getNetwork } from './selectors'
 import { MANAMiniMeToken } from 'modules/common/contracts'
 import { getUnwrapParams } from 'routing/selectors'
 import { replace } from 'connected-react-router'
@@ -44,7 +51,6 @@ const VOTING_POWER_BY_LAND = 2_000
 const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0x' + 'f'.repeat(64))
 const REQUIRE_ALLOWANCE_AMOUNT = BigNumber.from('0x01' + '0'.repeat(62))
 const EMPTY_ALLOWANCE_AMOUNT = BigNumber.from(0)
-const baseWalletSaga = createWalletSaga()
 
 export function* walletSaga() {
   yield all([baseWalletSaga(), projectWalletSaga()])
@@ -59,6 +65,8 @@ function* projectWalletSaga() {
   yield takeLatest(ALLOW_MANA_REQUEST, allowManaBalance)
   yield takeLatest(ALLOW_LAND_REQUEST, allowLandBalance)
   yield takeLatest(ALLOW_ESTATE_REQUEST, allowEstateBalance)
+  yield takeLatest(REVOKE_LAND_REQUEST, revokeLandBalance)
+  yield takeLatest(REVOKE_ESTATE_REQUEST, revokeEstateBalance)
   yield takeLatest(WRAP_MANA_REQUEST, wrapMana)
   yield takeLatest(UNWRAP_MANA_REQUEST, unwrapMana)
 }
@@ -90,7 +98,7 @@ function* getBalance(): any {
       const landContract = yield select(getLandContract)
       const estateContract = yield select(getEstateContract)
       let [
-        [ manaAllowance ],
+        [manaAllowance],
         manaMiniMe,
         land,
         landCommit,
@@ -108,7 +116,7 @@ function* getBalance(): any {
       ]))
 
       const manaCommit = manaAllowance.gte(REQUIRE_ALLOWANCE_AMOUNT)
-      manaMiniMe = (manaMiniMe || 0) / 1e18
+      manaMiniMe = Number(utils.formatEther(manaMiniMe || 0))
       land = BigNumber.from(land || 0).toNumber()
       landCommit = !!landCommit
       estate = BigNumber.from(estate || 0).toNumber()
@@ -117,7 +125,7 @@ function* getBalance(): any {
 
       const manaVotingPower = manaMiniMe
       const landVotingPower = landCommit ? land * VOTING_POWER_BY_LAND : 0
-      const estateVotingPower = estate * estateSize * VOTING_POWER_BY_LAND
+      const estateVotingPower = estateSize * VOTING_POWER_BY_LAND
       const votingPower = manaVotingPower + landVotingPower + estateVotingPower
 
       yield put(extendWalletSuccess({
@@ -150,7 +158,7 @@ function* allowManaBalance() {
     const wrapAddress = MANAMiniMeToken[network]
     const manaContract: Contract = yield select(getManaContract)
 
-    const [ allowed ]: [ BigNumber ] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
+    const [allowed]: [BigNumber] = yield call(() => manaContract.functions.allowance(address, wrapAddress))
 
     if (!allowed.gte(REQUIRE_ALLOWANCE_AMOUNT) && !allowed.eq(EMPTY_ALLOWANCE_AMOUNT)) {
       const clearTx = yield call(() => manaContract.functions.approve(wrapAddress, EMPTY_ALLOWANCE_AMOUNT))
@@ -179,6 +187,16 @@ function* allowLandBalance() {
   }
 }
 
+function* revokeLandBalance() {
+  try {
+    const landContract = yield select(getLandContract)
+    const tx = yield call(() => landContract.unregisterBalance())
+    yield put(revokeLandSuccess(tx.hash))
+  } catch (err) {
+    yield put(revokeLandFailure(err.message))
+  }
+}
+
 function* allowEstateBalance() {
   try {
     const estateContract = yield select(getEstateContract)
@@ -189,34 +207,44 @@ function* allowEstateBalance() {
   }
 }
 
+function* revokeEstateBalance() {
+  try {
+    const estateContract = yield select(getEstateContract)
+    const tx = yield call(() => estateContract.unregisterBalance())
+    yield put(revokeEstateSuccess(tx.hash))
+  } catch (err) {
+    yield put(revokeEstateFailure(err.message))
+  }
+}
+
 function* wrapMana(action: WrapManaRequestAction) {
+  let amount = 0
+
   try {
     const mana: number = yield select(getMana)
-    const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
+    amount = Math.max(Math.min(action.payload.amount || 0, mana), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
-
-    const value = BigInt(amount) * BigInt(1e18)
-    const depositTx = yield call(() => manaMiniMeContract.functions.deposit(value))
-    yield put(wrapManaSuccess(depositTx.hash))
+    const depositTx = yield call(() => manaMiniMeContract.functions.deposit(utils.parseEther(amount.toString())))
+    yield put(wrapManaSuccess(depositTx.hash, amount))
 
   } catch (err) {
-    yield put(wrapManaFailure(err.message))
+    yield put(wrapManaFailure(err.message, amount))
   }
 }
 
 function* unwrapMana(action: UnwrapManaRequestAction) {
+  let amount = 0
+
   try {
-    const mana: number = yield select(getMana)
-    const amount: number = Math.max(Math.min(action.payload.amount || 0, mana), 0)
+    const wallet: Wallet = yield select(getWallet)
+    amount = Math.max(Math.min(action.payload.amount || 0, wallet.manaMiniMe || 0), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
+    const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(utils.parseEther(amount.toString())))
 
-    const value = BigInt(amount) * BigInt(1e18)
-    const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(value))
-
-    yield put(unwrapManaSuccess(depositTx.hash))
+    yield put(unwrapManaSuccess(depositTx.hash, amount))
     const query: UnwrapParams = yield select(getUnwrapParams)
     yield put(replace(locations.wrapping({ ...query, completed: true })))
   } catch (err) {
-    yield put(unwrapManaFailure(err.message))
+    yield put(unwrapManaFailure(err.message, amount))
   }
 }

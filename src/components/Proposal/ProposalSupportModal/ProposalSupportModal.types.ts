@@ -5,6 +5,7 @@ import { CastParams } from 'routing/types'
 import { createCastRequest, CreateCastRequestAction } from 'modules/cast/actions'
 import { Proposal } from 'modules/proposal/types'
 import { enableWalletRequest, EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { Cast } from '@aragon/connect-voting'
 
 export type Props = {
   isConnected: boolean
@@ -13,6 +14,7 @@ export type Props = {
   isEnabling: boolean
   params: CastParams
   proposal?: Proposal
+  cast?: Cast
   onNavigate: (path: string, replace?: boolean) => void
   onCreateCast: typeof createCastRequest
   onConnect: typeof enableWalletRequest

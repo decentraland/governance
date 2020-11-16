@@ -62,6 +62,18 @@ export type CreateCatalystRequestAction = ReturnType<typeof createCatalystReques
 export type CreateCatalystSuccessAction = ReturnType<typeof createCatalystSuccess>
 export type CreateCatalystFailureAction = ReturnType<typeof createCatalystFailure>
 
+export const EXECUTE_VOTE_REQUEST = '[Request] Execute vote'
+export const EXECUTE_VOTE_SUCCESS = '[Success] Execute vote'
+export const EXECUTE_VOTE_FAILURE = '[Failure] Execute vote'
+
+export const executeVoteRequest = (voteId: string) => action(EXECUTE_VOTE_REQUEST, { voteId })
+export const executeVoteSuccess = (voteId: string, hash: string) => action(EXECUTE_VOTE_SUCCESS, buildTransactionPayload(hash, { voteId }))
+export const executeVoteFailure = (error: string) => action(EXECUTE_VOTE_FAILURE, { error })
+
+export type ExecuteVoteRequestAction = ReturnType<typeof executeVoteRequest>
+export type ExecuteVoteSuccessAction = ReturnType<typeof executeVoteSuccess>
+export type ExecuteVoteFailureAction = ReturnType<typeof executeVoteFailure>
+
 export const EXECUTE_SCRIPT_REQUEST = '[Request] Execute script'
 export const EXECUTE_SCRIPT_SUCCESS = '[Success] Execute script'
 export const EXECUTE_SCRIPT_FAILURE = '[Failure] Execute script'
