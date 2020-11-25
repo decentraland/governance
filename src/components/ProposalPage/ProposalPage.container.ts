@@ -37,8 +37,8 @@ const mapState = (state: RootState, props: any): MapStateProps => {
 
   if (Boolean(address) && Array.isArray(casts)) {
     for (const currentCast of casts) {
-      if (currentCast.voter === address) {
-        if (!cast || cast.voteId < currentCast.voteId) {
+      if (currentCast.voter.address.toLowerCase() === address) {
+        if (!cast || cast.vote < currentCast.vote) {
           cast = currentCast
         }
       }
