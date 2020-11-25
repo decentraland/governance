@@ -14,6 +14,7 @@ import { AggregatedVote } from 'modules/proposal/types'
 import { Annotation } from 'modules/description/types'
 
 const DECENTRALAND_URL = env.get('REACT_APP_DECENTRALAND_URL', '')
+const METADATA_MAX_LENGTH = 168
 
 export default class ProposalTitle extends React.PureComponent<Props> {
 
@@ -109,13 +110,18 @@ export default class ProposalTitle extends React.PureComponent<Props> {
 
   render() {
 
-    const { proposal, description, network, primary } = this.props
+    const { proposal, description, network, primary, short } = this.props
 
     if (proposal) {
       if ((proposal as AggregatedVote).metadata) {
+        let metadata = (proposal as AggregatedVote).metadata.trim()
+        if (short && metadata.length > METADATA_MAX_LENGTH) {
+          metadata = metadata.slice(0, METADATA_MAX_LENGTH - 3) + '...'
+        }
+
         return <>
-          {primary && <Helmet title={t('seo.title_extended', { title: (proposal as AggregatedVote).metadata })} />}
-          <Header><pre>{(proposal as AggregatedVote).metadata}</pre></Header>
+          {primary && <Helmet title={t('seo.title_extended', { title: metadata })} />}
+          <Header><pre>{metadata}</pre></Header>
         </>
       }
 

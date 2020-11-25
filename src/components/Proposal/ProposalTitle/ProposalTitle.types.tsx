@@ -9,6 +9,7 @@ export type DefaultProps = {
 export type Props = DefaultProps & {
   description?: ProposalDescription
   primary?: boolean
+  short?: boolean
   network: Network
 }
 

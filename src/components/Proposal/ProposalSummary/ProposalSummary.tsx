@@ -60,7 +60,7 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
     return <Card as="a" className="ProposalSummary" href={url} onClick={this.handleClick}>
       <Card.Content>
         <Card.Header>
-          <div><ProposalTitle proposal={proposal} /></div>
+          <div><ProposalTitle proposal={proposal} short /></div>
           {this.renderCategory()}
         </Card.Header>
         <div className="ProposalSummaryActions">
