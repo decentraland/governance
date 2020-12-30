@@ -19,7 +19,7 @@ export const getNewProposalParams = createSelector(
   getQuery,
   (query) => formatParams({
     modal: getEnumParam(query.modal, [ 'new' ]),
-    create: getEnumParam(query.create, [ 'poi', 'question', 'catalyst', 'ban' ]),
+    create: getEnumParam(query.create, [ 'poi', 'question', 'catalyst', 'ban', 'grant' ]),
     position: getStringParam(query.position),
     question: getStringParam(query.question),
     catalystOwner: getStringParam(query.catalystOwner),

@@ -11,6 +11,7 @@ import PoiForm from './PoiForm'
 import BanForm from './BanForm/BanForm'
 import QuestionForm from './QuestionForm/QuestionForm'
 import CatalystForm from './CatalystForm/CatalystForm'
+import GrantForm from './GrantForm/GrantForm'
 import { isValidPosition, isValidName } from './utils'
 import { FilterProposalParams, NewProposalParams } from 'routing/types'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
@@ -23,6 +24,7 @@ const ban = require('../../../images/ban-name-220.png')
 const catalyst = require('../../../images/catalyst-220.png')
 const poi = require('../../../images/poi-220.png')
 const question = require('../../../images/question-220.png')
+const grant = require('../../../images/grant-220.png')
 
 export default class NewProposalModal extends React.PureComponent<Props, any> {
 
@@ -113,6 +115,13 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
     return { owner, url }
   }
 
+  getGrant() {
+    const url = this.props.params.grantUrl || undefined
+    const amount = this.props.params.grantAmount || undefined
+    const destionation = this.props.params.grantDestination || undefined
+    return { amount, destionation, url }
+  }
+
   getStep() {
     const { isConnected, isConnecting, wallet } = this.props
     if (
@@ -152,6 +161,7 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
       <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'poi' })} style={{ backgroundImage: `url(${poi})` }}>{t('proposal_modal.title_poi')}</a>
       <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'catalyst' })} style={{ backgroundImage: `url(${catalyst})` }}>{t('proposal_modal.title_catalyst')}</a>
       <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'ban' })} style={{ backgroundImage: `url(${ban})` }}>{t('proposal_modal.title_ban')}</a>
+      <a onClick={this.handleNavigate} href={this.getUrl({ modal: 'new', create: 'grant' })} style={{ backgroundImage: `url(${grant})` }}>{t('proposal_modal.title_grant')}</a>
     </Modal.Content>
   }
 
@@ -165,6 +175,8 @@ export default class NewProposalModal extends React.PureComponent<Props, any> {
         return <PoiForm defaultValue={this.getPosition()} onConfirm={(_, { x, y }) => this.addParams({ position: [x,y].join(',') })} />
       case "ban":
         return <BanForm defaultValue={this.getBan()} onConfirm={(_, banName) => this.addParams({ banName })} />
+      case "grant":
+        return <GrantForm defaultValue={this.getGrant()} onConfirm={(_, { amount, destination, url } ) => this.addParams({ grantAmount: amount, grantDestination: destination, grantUrl: url })} />
       default:
         return this.renderEmpty()
     }

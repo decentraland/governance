@@ -1,12 +1,15 @@
 export type NewProposalParams = {
   modal?: 'new',
-  create?: 'poi' | 'question' | 'catalyst' | 'ban',
+  create?: 'poi' | 'question' | 'catalyst' | 'ban' | 'grant',
   position?: string,
   question?: string,
   catalystOwner?: string,
   catalystUrl?: string,
   banName?: string,
   completed?: boolean
+  grantUrl?: string,
+  grantAmount?: number,
+  grantDestination?: string,
 }
 
 export type FilterProposalParams = {
