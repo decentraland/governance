@@ -33,7 +33,8 @@
   "include": [
     "src",
     "react-app=env.d.ts",
-    "./node_modules/decentraland-builder-scripts/types.d.ts", "src/components/Wrapping/Summary/.tsx"
+    "./node_modules/decentraland-builder-scripts/types.d.ts",
+    "src/components/Wrapping/Summary/.tsx"
   ],
   "exclude": ["src/modules/editor/ecs.js"]
 }

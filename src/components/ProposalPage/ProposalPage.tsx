@@ -1,5 +1,6 @@
 import React from 'react'
 import { Page } from 'decentraland-ui/dist/components/Page/Page'
+import linkify from 'react-linkify/dist/decorators/defaultMatchDecorator'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './ProposalPage.types'
 import { Navbar } from 'components/Navbar'
@@ -225,9 +226,32 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     </Grid.Row>
   }
 
+  renderDescription() {
+    const { description, proposal } = this.props
+    const initialApp = getProposalInitialAddress(description)
+    const isPOI = !!initialApp && isApp(initialApp, POI)
+    const isBanName = !!initialApp && isApp(initialApp, BanName)
+    const isCatalyst = !!initialApp && isApp(initialApp, Catalyst)
+
+    if (isPOI || isBanName || isCatalyst) {
+      return <Card.Content className="DetailDescription">
+        <Header sub>{t('proposal_detail_page.description')}</Header>
+        {isPOI && <Card.Description>{t('proposal_detail_page.description_poi')}</Card.Description>}
+        {isBanName && <Card.Description>{t('proposal_detail_page.description_ban')}</Card.Description>}
+        {isCatalyst && <Card.Description>{t('proposal_detail_page.description_catalyst')}</Card.Description>}
+      </Card.Content>
+    }
+
+    const links = linkify((proposal as AggregatedVote)?.metadata || '')
+    if (links.length > 0) {
+
+    }
+
+    return null
+  }
+
   render() {
     const { isLoading, proposal, description, casts, cast } = this.props
-    const initialApp = getProposalInitialAddress(description)
 
     return <>
       <Navbar isFullscreen={false} />
@@ -255,20 +279,12 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
                     {this.renderDelayDetail()}
                   </Grid>
                 </Card.Content>}
-                {initialApp && isApp(initialApp, POI) && <Card.Content className="DetailDescription">
-                  <Header sub>{t('proposal_detail_page.description')}</Header>
-                  <Card.Description>{t('proposal_detail_page.description_poi')}</Card.Description>
-                </Card.Content>}
-                {initialApp && isApp(initialApp, BanName) && <Card.Content className="DetailDescription">
-                  <Header sub>{t('proposal_detail_page.description')}</Header>
-                  <Card.Description>{t('proposal_detail_page.description_ban')}</Card.Description>
-                </Card.Content>}
-                {initialApp && isApp(initialApp, Catalyst) && <Card.Content className="DetailDescription">
-                  <Header sub>{t('proposal_detail_page.description')}</Header>
-                  <Card.Description>{t('proposal_detail_page.description_catalyst')}</Card.Description>
-                </Card.Content>}
+                {this.renderDescription()}
                 {env.isDevelopment() && <Card.Content className="DetailDebug">
                   <Header sub>INFO</Header>
+                  {<div className="DetailDebugContainer">
+                    <pre>{inspect(linkify((proposal as AggregatedVote)?.metadata || ''), null, 2)}</pre>
+                  </div>}
                   <div className="DetailDebugContainer">
                     <pre>{inspect(proposal, null, 2)}</pre>
                   </div>

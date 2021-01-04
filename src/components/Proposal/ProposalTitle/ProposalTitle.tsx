@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import Linkify from 'react-linkify';
 import { Props } from './ProposalTitle.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -108,6 +109,14 @@ export default class ProposalTitle extends React.PureComponent<Props> {
     }
   }
 
+  static LinkifyDecorator(decoratedHref: string, decoratedText: string, key: number): React.ReactNode {
+    return (
+      <a href={decoratedHref} key={key} target="_blank" rel="noopener noreferrer">
+        {decoratedText}
+      </a>
+    );
+  }
+
   render() {
 
     const { proposal, description, network, primary, short } = this.props
@@ -115,13 +124,19 @@ export default class ProposalTitle extends React.PureComponent<Props> {
     if (proposal) {
       if ((proposal as AggregatedVote).metadata) {
         let metadata = (proposal as AggregatedVote).metadata.trim()
-        if (short && metadata.length > METADATA_MAX_LENGTH) {
+        const shorted = Boolean(short && metadata.length > METADATA_MAX_LENGTH)
+        if (shorted) {
           metadata = metadata.slice(0, METADATA_MAX_LENGTH - 3) + '...'
         }
 
         return <>
           {primary && <Helmet title={t('seo.title_extended', { title: metadata })} />}
-          <Header><pre>{metadata}</pre></Header>
+          <Header>
+            <pre>
+              {shorted && metadata}
+              {!shorted && <Linkify componentDecorator={ProposalTitle.LinkifyDecorator} >{metadata}</Linkify>}
+            </pre>
+          </Header>
         </>
       }
 
