@@ -123,7 +123,8 @@
     "switch_vote_yes": "CHANGE TO YES",
     "vote_no": "VOTE NO",
     "voted_no": "VOTED NO",
-    "switch_vote_no": "CHANGE TO NO"
+    "switch_vote_no": "CHANGE TO NO",
+    "open_at": "see on {target}"
   },
   "proposal_support_modal": {
     "title": "Vote Confirmation",
