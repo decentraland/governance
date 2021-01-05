@@ -5,7 +5,7 @@ export const LOAD_PROPOSAL_DESCRIPTION_REQUEST = '[Request] Load proposal descri
 export const LOAD_PROPOSAL_DESCRIPTION_SUCCESS = '[Success] Load proposal description'
 export const LOAD_PROPOSAL_DESCRIPTION_FAILURE = '[Failure] Load proposal description'
 
-export const loadProposalDescriptionRequest = (proposals: string[]) => action(LOAD_PROPOSAL_DESCRIPTION_REQUEST, { votes: proposals })
+export const loadProposalDescriptionRequest = (proposals: string[]) => action(LOAD_PROPOSAL_DESCRIPTION_REQUEST, { proposals })
 export const loadProposalDescriptionSuccess = (description: Record<string, ProposalDescription>) => action(LOAD_PROPOSAL_DESCRIPTION_SUCCESS, description)
 export const loadProposalDescriptionFailure = (error: Record<string, string>) => action(LOAD_PROPOSAL_DESCRIPTION_FAILURE, error)
 

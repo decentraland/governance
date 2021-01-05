@@ -9,7 +9,8 @@ import { organizationSaga } from 'modules/organization/sagas'
 import { appSaga } from 'modules/app/sagas'
 import { proposalSaga } from 'modules/proposal/sagas'
 import { castSaga } from 'modules/cast/sagas'
-import { voteDescriptionSaga } from 'modules/description/sagas'
+import { proposalDescriptionSaga } from 'modules/description/sagas'
+import { proposalEmbedSaga } from 'modules/embed/sagas'
 import { subscriptionSaga } from 'modules/subscription/sagas'
 import { segmentSaga } from 'modules/analytics/sagas'
 import { balanceSaga } from 'modules/balance/sagas'
@@ -25,7 +26,8 @@ export function* rootSaga() {
     organizationSaga(),
     appSaga(),
     proposalSaga(),
-    voteDescriptionSaga(),
+    proposalDescriptionSaga(),
+    proposalEmbedSaga(),
     castSaga(),
     walletSaga(),
     balanceSaga(),

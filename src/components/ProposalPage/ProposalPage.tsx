@@ -27,6 +27,7 @@ import './ProposalPage.css'
 import { locations } from 'routing/locations'
 import Tooltip from 'components/Tooltip'
 import { ProposalAction } from 'components/Proposal/ProposalAction'
+import ProposalEmbed from 'components/Proposal/ProposalEmbed/ProposalEmbed'
 
 export default class ProposalPage extends React.PureComponent<Props, any> {
 
@@ -38,12 +39,17 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
     if (this.props.proposal && !this.props.balance) {
       this.props.onRequireBalance([this.props.proposal.id])
     }
+
+    if (this.props.proposal && !this.props.embeds) {
+      this.props.onRequireEmbeds([this.props.proposal.id])
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (this.props.proposal && this.props.proposal !== prevProps.proposal) {
       this.props.onRequireCasts([this.props.proposal.id])
       this.props.onRequireBalance([this.props.proposal.id])
+      this.props.onRequireEmbeds([this.props.proposal.id])
     }
   }
 
@@ -227,7 +233,7 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
   }
 
   renderDescription() {
-    const { description, proposal } = this.props
+    const { description, embeds } = this.props
     const initialApp = getProposalInitialAddress(description)
     const isPOI = !!initialApp && isApp(initialApp, POI)
     const isBanName = !!initialApp && isApp(initialApp, BanName)
@@ -242,8 +248,11 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       </Card.Content>
     }
 
-    const links = linkify((proposal as AggregatedVote)?.metadata || '')
-    if (links.length > 0) {
+    if (embeds && embeds.length > 0) {
+      return <Card.Content className="DetailDescription">
+        <Header sub>{t('proposal_detail_page.description')}</Header>
+        {embeds.map(embed => <ProposalEmbed key={embed.url} embed={embed} />)}
+      </Card.Content>
 
     }
 

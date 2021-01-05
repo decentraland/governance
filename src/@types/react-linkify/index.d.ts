@@ -25,5 +25,5 @@ declare module 'react-linkify' {
 
 declare module 'react-linkify/dist/decorators/defaultMatchDecorator' {
   import { Match } from 'linkify-it';
-  export default function (text: string): Array<Math>
+  export default function (text: string): Array<Match>
 }

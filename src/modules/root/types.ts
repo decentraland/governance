@@ -14,6 +14,7 @@ import { ProposalDescriptionState } from 'modules/description/reducer'
 import { CastState } from 'modules/cast/reducer'
 import { SubscriptionState } from 'modules/subscription/reducer'
 import { BalanceState } from 'modules/balance/reducer'
+import { ProposalEmbedState } from 'modules/embed/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -33,6 +34,7 @@ export type RootState = {
   app: AppState
   proposal: ProposalState
   description: ProposalDescriptionState
+  embed: ProposalEmbedState
   cast: CastState
   router: RouterState
   subscription: SubscriptionState

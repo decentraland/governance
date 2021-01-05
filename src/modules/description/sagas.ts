@@ -12,7 +12,7 @@ import { Proposal } from 'modules/proposal/types'
 import { createDescription } from './utils'
 import { isProposalExecutable } from 'modules/proposal/utils'
 
-export function* voteDescriptionSaga() {
+export function* proposalDescriptionSaga() {
   yield takeEvery(LOAD_PROPOSALS_SUCCESS, loadProposalDescriptions)
 }
 

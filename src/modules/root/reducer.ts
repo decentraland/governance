@@ -12,6 +12,7 @@ import { organizationReducer as organization } from 'modules/organization/reduce
 import { walletReducer as wallet } from 'modules/wallet/reducer'
 import { proposalReducer as proposal } from 'modules/proposal/reducer'
 import { proposalDescriptionReducer as description } from 'modules/description/reducer'
+import { proposalEmbedReducer as embed } from 'modules/embed/reducer'
 import { castsReducer as cast } from 'modules/cast/reducer'
 import { subscriptionReducer as subscription } from 'modules/subscription/reducer'
 import { balanceReducer as balance } from 'modules/balance/reducer'
@@ -27,6 +28,7 @@ export function createRootReducer(history: History) {
       app,
       proposal,
       description,
+      embed,
       cast,
       modal,
       subscription,

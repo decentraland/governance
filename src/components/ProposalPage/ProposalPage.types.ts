@@ -9,6 +9,8 @@ import { Wallet } from 'modules/wallet/types'
 import { loadBalanceRequest, LoadBalanceRequestAction } from 'modules/balance/actions'
 import { Balance } from 'modules/balance/type'
 import { executeScriptRequest, ExecuteScriptRequestAction, executeVoteRequest, ExecuteVoteRequestAction } from 'modules/proposal/actions'
+import { Embed } from 'modules/embed/types'
+import { loadEmbedRequest, LoadEmbedRequestAction } from 'modules/embed/actions'
 
 export type Props = {
   isConnected: boolean
@@ -21,6 +23,7 @@ export type Props = {
   executed: boolean
   proposal?: Proposal
   description?: ProposalDescription
+  embeds?: Embed[]
   casts?: Cast[]
   cast?: Cast
   wallet?: Wallet | null
@@ -30,6 +33,7 @@ export type Props = {
   onHome: () => void
   onConnect: typeof connectWalletRequest
   onRequireCasts: typeof loadCastsRequest
+  onRequireEmbeds: typeof loadEmbedRequest
   onRequireBalance: typeof loadBalanceRequest
   onExecuteVote: typeof executeVoteRequest
   onExecuteScript: typeof executeScriptRequest
@@ -46,6 +50,7 @@ export type MapStateProps = Pick<Props,
  | 'executed'
  | 'proposal'
  | 'description'
+ | 'embeds'
  | 'casts'
  | 'cast'
  | 'balance'
@@ -53,6 +58,7 @@ export type MapStateProps = Pick<Props,
 >
 export type MapDispatchProps = Pick<Props,
  | 'onConnect'
+ | 'onRequireEmbeds'
  | 'onRequireCasts'
  | 'onRequireBalance'
  | 'onExecuteScript'
@@ -64,6 +70,7 @@ export type MapDispatchProps = Pick<Props,
 
 export type MapDispatch = Dispatch<
  | ConnectWalletRequestAction
+ | LoadEmbedRequestAction
  | LoadCastsRequestAction
  | LoadBalanceRequestAction
  | CallHistoryMethodAction

@@ -33,7 +33,7 @@ export const proposalDescriptionReducer = (state = INITIAL_STATE, action: Propos
         ...state,
         loading: [
           ...state.loading,
-          ...action.payload.votes.map((vote) => ({ ...action, vote }))
+          ...action.payload.proposals.map((proposal) => ({ ...action, proposal }))
         ]
       }
     }
