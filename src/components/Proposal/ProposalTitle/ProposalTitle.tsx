@@ -110,9 +110,11 @@ export default class ProposalTitle extends React.PureComponent<Props> {
   }
 
   static LinkifyDecorator(decoratedHref: string, decoratedText: string, key: number): React.ReactNode {
+    const target = new URL(decoratedText)
+    target.pathname = target.pathname.length < 12 ? target.pathname : `${target.pathname.slice(0,3)}...${target.pathname.slice(-6)}`
     return (
-      <a href={decoratedHref} key={key} target="_blank" rel="noopener noreferrer">
-        {decoratedText}
+      <a key={key} href={decoratedHref} title={decoratedText} target="_blank" rel="noopener noreferrer">
+        {target.toString()}
       </a>
     );
   }
