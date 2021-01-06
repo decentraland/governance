@@ -403,7 +403,7 @@ export function filterProposalByParams(
     if ( /* not */ !(
       isApp(appAddress, COMMUNITY) ||
       proposalCategory === ProposalCategory.Question ||
-      proposal.script === ProposalStatus.Progress
+      proposal.status === ProposalStatus.Progress
     )) {
       return false
     }
