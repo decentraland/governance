@@ -1,7 +1,7 @@
 import React from 'react'
 import { Props } from './ProposalStatus.types'
 
-import { getDelayTimeLeft, getVoteTimeLeft, isProposalExecutable, isVoteExpired } from 'modules/proposal/utils'
+import { getDelayTimeLeft, getVoteTimeLeft } from 'modules/proposal/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAppName } from 'modules/app/utils'
 import { ProposalStatus as Status, ProposalType } from 'modules/proposal/types'
@@ -170,15 +170,11 @@ export default class ProposalStatus extends React.PureComponent<Props, any> {
       return null
     }
 
-    const expired = isVoteExpired(props.proposal)
-    const executable = isProposalExecutable(props.proposal)
-    if (props.proposal.status === Status.Passed && (executable || expired)) {
-      return <ProposalStatus.Passed />
-    }
-
     switch (props.proposal.status) {
       case Status.Enacted:
         return <ProposalStatus.Enacted />
+      case Status.Passed:
+        return <ProposalStatus.Passed />
       case Status.Rejected:
         return <ProposalStatus.Rejected />
       default:

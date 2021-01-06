@@ -98,7 +98,7 @@ export async function aggregatedVote(vote: Vote): Promise<AggregatedVote> {
 
   if (isVoteEnacted(vote)) {
     status = ProposalStatus.Enacted
-  } else if (isVotePassed(balance)) {
+  } else if (isVotePassed(vote, balance)) {
     status = ProposalStatus.Passed
   } else if (isVoteExpired(vote)) {
     status = ProposalStatus.Rejected
@@ -133,7 +133,7 @@ export function isVoteExpired(vote: Vote) {
   return Date.now() > getVoteExpiration(vote)
 }
 
-function isVotePassed(balance: VoteBalance) {
+function isVotePassed(vote: Vote, balance: VoteBalance) {
   if (balance.yeaPercentage < balance.supportPercentage) {
     return false
   }
@@ -142,7 +142,13 @@ function isVotePassed(balance: VoteBalance) {
     return false
   }
 
-  return true
+  const isExpired = isVoteExpired(vote)
+  const isExecutable = isProposalExecutable(vote)
+  if (isExpired || isExecutable) {
+    return true
+  }
+
+  return false
 }
 
 function isVoteEnacted(vote: Vote) {
