@@ -337,11 +337,11 @@ export function filterProposals(
       continue
     }
 
-    const appAddress = proposal?.identifier?.appAddress
+    const appAddress = proposal.identifier?.appAddress
     const proposalDescription = (proposal as AggregatedVote).metadata || descriptions[proposal.id]?.description
     const proposalKey = [appAddress, proposalDescription].join('::')
     if (appAddress && proposalDescription) {
-      if (appAddress === INBOX[network]) {
+      if (isApp(appAddress, INBOX)) {
         if (
           !proposalBuffer.has([Delay[network], proposalDescription].join('::')) &&
           !proposalBuffer.has([COMMUNITY[network], proposalDescription].join('::'))
@@ -350,7 +350,7 @@ export function filterProposals(
           proposalList.push(proposal)
         }
 
-      } else if (appAddress === SAB[network]) {
+      } else if (isApp(appAddress, SAB)) {
         if (
           !proposalBuffer.has([Delay[network], proposalDescription].join('::')) &&
           !proposalBuffer.has([COMMUNITY[network], proposalDescription].join('::'))
@@ -359,7 +359,7 @@ export function filterProposals(
           proposalList.push(proposal)
         }
 
-      } else if (appAddress === Delay[network]) {
+      } else if (isApp(appAddress, Delay)) {
         if (
           !proposalBuffer.has([COMMUNITY[network], proposalDescription].join('::'))
         ) {
@@ -367,7 +367,7 @@ export function filterProposals(
           proposalList.push(proposal)
         }
 
-      } else if (appAddress === COMMUNITY[network]) {
+      } else if (isApp(appAddress, COMMUNITY)) {
         proposalBuffer.add(proposalKey)
         proposalList.push(proposal)
       }
@@ -377,13 +377,32 @@ export function filterProposals(
   return proposalList
 }
 
-export function filterProposalByParams(proposal?: Proposal, description?: ProposalDescription, params: FilterProposalParams = {}) {
+export function filterProposalByParams(
+  proposal?: Proposal,
+  description?: ProposalDescription,
+  params: FilterProposalParams = {}
+) {
 
   if (!proposal) {
     return false
   }
 
-  if (params.status && params.status !== ProposalStatus.All && proposal.status !== params.status) {
+  if (!params.status || params.status === ProposalStatus.Relevant) {
+    const appAddress = proposal.identifier?.appAddress
+    if (!appAddress || proposal.status === ProposalStatus.Rejected) {
+      return false
+    }
+
+    const proposalCategory = getProposalCategory(proposal, description)
+    if ( /* not */ !(
+      isApp(appAddress, COMMUNITY) ||
+      proposalCategory === ProposalCategory.Question ||
+      proposal.script === ProposalStatus.Progress
+    )) {
+      return false
+    }
+
+  } else if (params.status && params.status !== ProposalStatus.All && proposal.status !== params.status) {
     return false
   }
 

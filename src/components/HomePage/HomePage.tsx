@@ -37,30 +37,35 @@ export default class HomePage extends React.PureComponent<Props, any> {
 
   handleChangeStatusFilter = (event: React.SyntheticEvent<any>, props: DropdownProps) => {
     event.preventDefault()
-    const status = this.props.params.status || ProposalStatus.All
+    const { status: currentStatus, ...params } = this.props.params
+    const status = currentStatus || ProposalStatus.Relevant
     if (props.value !== status) {
-      this.props.onChangeParams({
-        ...this.props.params,
-        status: props.value as any
-      })
+      if (props.value !== ProposalStatus.Relevant) {
+        this.props.onChangeParams({ ...params, status: props.value as any })
+      } else {
+        this.props.onChangeParams(params)
+      }
     }
   }
   handleChangeCategoryFilter = (event: React.SyntheticEvent<any>, props: DropdownProps) => {
     event.preventDefault()
-    const category = this.props.params.category || ProposalCategory.All
+    const { category: currentCategory, ...params } = this.props.params
+    const category = currentCategory || ProposalCategory.All
     if (props.value !== category) {
-      this.props.onChangeParams({
-        ...this.props.params,
-        category: props.value as any
-      })
+      if (props.value !== ProposalCategory.All) {
+        this.props.onChangeParams({ ...params, category: props.value as any })
+      } else {
+        this.props.onChangeParams(params)
+      }
     }
   }
 
   renderStatusOptions() {
     const { params } = this.props
-    const status = params.status || ProposalStatus.All
+    const status = params.status || ProposalStatus.Relevant
     const options = [
       { key: ProposalStatus.All, value: ProposalStatus.All, text: t(`proposals_page.filter_status_all`) },
+      { key: ProposalStatus.Relevant, value: ProposalStatus.Relevant, text: t(`proposals_page.filter_status_relevant`) },
       { key: ProposalStatus.Enacted, value: ProposalStatus.Enacted, text: t(`proposals_page.filter_status_enacted`) },
       { key: ProposalStatus.Passed, value: ProposalStatus.Passed, text: t(`proposals_page.filter_status_passed`) },
       { key: ProposalStatus.Rejected, value: ProposalStatus.Rejected, text: t(`proposals_page.filter_status_rejected`) },

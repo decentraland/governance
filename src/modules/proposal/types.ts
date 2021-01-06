@@ -39,6 +39,7 @@ export type AggregatedDelayedScript = DelayedScript & {
 export type Proposal = AggregatedVote | AggregatedDelayedScript
 
 export enum ProposalStatus {
+  Relevant = 'relevant',
   All = 'all',
   Enacted = 'enacted',
   Passed = 'passed',
