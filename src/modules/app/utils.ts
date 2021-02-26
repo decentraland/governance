@@ -1,4 +1,4 @@
-import { Time, Delay, SAB, COMMUNITY, INBOX, Agent, BanName, Catalyst, POI, Finance, Tokens, AppName } from './types'
+import { Time, Delay, SAB, COMMUNITY, INBOX, Agent, BanName, Catalyst, POI, Finance, Tokens,  AppName } from './types'
 import { Network, NetworkEnum } from 'modules/wallet/types'
 
 export function getAppDelay(address: string) {

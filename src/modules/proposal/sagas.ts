@@ -145,7 +145,7 @@ function* createQuestion(action: CreateQuestionRequestAction) {
     const provider: Web3Provider = yield select(getProvider)
     const network: Network = yield select(getNetwork)
     const apps: Record<string, App> = yield select(getApps)
-    const app = apps[INBOX[network]]
+    const app = apps[COMMUNITY[network]]
 
     yield call(async () => {
       const path = await app.intent('newVote', [script, action.payload.question], { actAs })

@@ -13,7 +13,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ProposalHistory } from 'components/Proposal/ProposalHistory'
 import { ProposalStatus } from 'components/Proposal/ProposalStatus'
-import { AppName, BanName, Catalyst, POI } from 'modules/app/types'
+import { AppName, BanName, Catalyst, COMMUNITY, POI } from 'modules/app/types'
 import { getVoteTimeLeft, getProposalUrl, getDelayTimeLeft } from 'modules/proposal/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalTitle } from 'components/Proposal/ProposalTitle'
@@ -133,9 +133,16 @@ export default class ProposalPage extends React.PureComponent<Props, any> {
       return <Header>{AppName.Question}</Header>
     }
 
-    const category = getAppName(getProposalInitialAddress(description))
-    if (category) {
-      return <Header>{category}</Header>
+    const initialAddress = getProposalInitialAddress(description)
+    if (initialAddress) {
+      if (isApp(initialAddress, COMMUNITY)) {
+        return <Header>{AppName.Question}</Header>
+      }
+
+      const category = getAppName(initialAddress)
+      if (category) {
+        return <Header>{category}</Header>
+      }
     }
 
     return <Header>{AppName.System}</Header>

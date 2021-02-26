@@ -26,6 +26,9 @@ export default class ProposalTitle extends React.PureComponent<Props> {
       case 'dcl:position':
         return `"${annotation.value}"`
 
+      case 'dcl:question':
+        return `${annotation.value}`
+
       case 'address':
         return getAddressName(annotation.value) || annotation.value
 
@@ -67,6 +70,10 @@ export default class ProposalTitle extends React.PureComponent<Props> {
 
       case 'dcl:position': {
         return <a target="_blank" rel="noopener noreferrer" href={`${DECENTRALAND_URL}/?position=${annotation.value.position}`}><b>"{annotation.value.position}"</b></a>
+      }
+
+      case 'dcl:question': {
+        return <Linkify componentDecorator={ProposalTitle.LinkifyDecorator}>{annotation.value}</Linkify>
       }
 
       case 'address': {

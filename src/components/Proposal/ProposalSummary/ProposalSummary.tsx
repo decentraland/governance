@@ -5,10 +5,10 @@ import { ProposalStatus } from '../ProposalStatus'
 import { getProposalUrl } from 'modules/proposal/utils'
 import { ProposalTitle } from '../ProposalTitle'
 import { getProposalInitialAddress } from 'modules/description/utils'
-import { AppName, HiddenApps } from 'modules/app/types'
-import { getAppName } from 'modules/app/utils'
-import './ProposalSummary.css'
+import { AppName, COMMUNITY, HiddenApps } from 'modules/app/types'
+import { getAppName, isApp } from 'modules/app/utils'
 import { AggregatedVote } from 'modules/proposal/types'
+import './ProposalSummary.css'
 
 export default class ProposalSummary extends React.PureComponent<Props, any> {
 
@@ -32,21 +32,25 @@ export default class ProposalSummary extends React.PureComponent<Props, any> {
 
   renderCategory() {
     const { proposal, description } = this.props
-    const initialAddress = getProposalInitialAddress(description)
-    const initialAddressName = getAppName(initialAddress)
-
     if ((proposal as AggregatedVote).metadata) {
       return <ProposalStatus.Badge name={AppName.Question} />
-
-    } else if (initialAddressName) {
-      return <ProposalStatus.Badge name={initialAddressName} />
-
-    } else if (initialAddress) {
-      return <ProposalStatus.Badge name={AppName.System} />
-
-    } else {
-      return null
     }
+
+    const initialAddress = getProposalInitialAddress(description)
+    if (initialAddress) {
+      if (isApp(initialAddress, COMMUNITY)) {
+        return <ProposalStatus.Badge name={AppName.Question} />
+      }
+
+      const initialAddressName = getAppName(initialAddress)
+      if (initialAddressName) {
+        return <ProposalStatus.Badge name={initialAddressName} />
+      }
+
+      return <ProposalStatus.Badge name={AppName.System} />
+    }
+
+    return null
   }
 
   render() {

@@ -12,6 +12,7 @@ export type ProposalDescription = {
 }
 
 export type Annotation =
+  | DclQuestionAnnotation
   | TextAnnotation
   | Byte32Annotation
   | AddressAnnotation
@@ -30,6 +31,11 @@ export type DclPositionAnnotation = {
     y: number,
     position: string
   }
+}
+
+export type DclQuestionAnnotation = {
+  type: 'dcl:question',
+  value: string
 }
 
 export type DclNameAnnotation = {

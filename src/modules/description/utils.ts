@@ -1,7 +1,6 @@
 import contracts from 'modules/common/contracts.json'
-import { Agent, BanName, Catalyst, COMMUNITY, INBOX, POI, SAB } from 'modules/app/types'
+import { Agent, BanName, Catalyst, COMMUNITY, POI } from 'modules/app/types'
 import { isApp } from 'modules/app/utils'
-import { Network } from 'modules/wallet/types'
 import { Annotation, ProposalDescription, StepDescribed } from './types'
 
 export function getProposalInitialAddress(description?: ProposalDescription) {
@@ -9,18 +8,7 @@ export function getProposalInitialAddress(description?: ProposalDescription) {
     return undefined
   }
 
-  switch (description.firstDescribedSteps[0].to) {
-    case SAB[Network.MAINNET]:
-    case SAB[Network.RINKEBY]:
-    case COMMUNITY[Network.MAINNET]:
-    case COMMUNITY[Network.RINKEBY]:
-    case INBOX[Network.MAINNET]:
-    case INBOX[Network.RINKEBY]:
-      return undefined
-
-    default:
-      return description.firstDescribedSteps[0].to
-  }
+  return description.firstDescribedSteps[0].to
 }
 
 export function createDescription(describedSteps: StepDescribed[] = []): ProposalDescription {
@@ -94,6 +82,11 @@ export function aggregateAnnotation(step: StepDescribed): Annotation[] {
           return [
             { type: 'text', value: 'and domain ' },
             { type: 'dcl:domain', value: annotation.value.slice('and domain '.length) }
+          ]
+        }
+        case isApp(step.to, COMMUNITY) && annotation.value.startsWith('Create a new vote about "') && annotation.value.endsWith('"'): {
+          return [
+            { type: 'dcl:question', value: annotation.value.slice('Create a new vote about "'.length, - '"'.length) }
           ]
         }
         default:

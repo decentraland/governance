@@ -39,7 +39,6 @@ export const proposalEmbedReducer = (state = INITIAL_STATE, action: ProposalEmbe
     }
     case LOAD_EMBED_SUCCESS: {
       const ids = new Set(Object.keys(action.payload))
-      console.log(ids, Object.entries(state.loading))
       const loading = Object.fromEntries(Object.entries(state.loading).filter(([key]) => !ids.has(key)))
       const error = Object.fromEntries(Object.entries(state.error).filter(([key]) => !ids.has(key)))
 
