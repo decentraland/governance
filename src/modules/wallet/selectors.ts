@@ -1,15 +1,12 @@
 import { ethers } from 'ethers'
 import { createSelector } from 'reselect'
-import { env } from 'decentraland-commons'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getNetwork as getStoreNetwork, getAddress, isConnecting, getError } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/root/types'
 import { Network } from './types'
-import { ensureNetwork } from './utils'
+import { ensureNetwork, environmentNetwork } from './utils'
 import { EXTEND_WALLET_REQUEST, ALLOW_ESTATE_REQUEST, ALLOW_LAND_REQUEST, WRAP_MANA_REQUEST, UNWRAP_MANA_REQUEST, ALLOW_LAND_SUCCESS, ALLOW_ESTATE_SUCCESS, WRAP_MANA_SUCCESS, UNWRAP_MANA_SUCCESS, ALLOW_MANA_REQUEST, ALLOW_MANA_SUCCESS, REVOKE_LAND_SUCCESS, REVOKE_LAND_REQUEST, REVOKE_ESTATE_REQUEST, REVOKE_ESTATE_SUCCESS } from './actions'
 import { createIsPendingTransactionSelector } from 'modules/transaction/selectors'
-
-const DEFAULT_NETWORK: Network = Number(env.get('REACT_APP_DEFAULT_NETWORK', 1))
 
 export { getError }
 export const getState = (state: RootState) => state.wallet
@@ -33,10 +30,7 @@ export const isWrappingMana = (state: RootState) => isConnecting(state) || isLoa
 export const isUnwrappingMana = (state: RootState) => isConnecting(state) || isLoadingType(getState(state).loading, UNWRAP_MANA_REQUEST) || isUnwrapManaPending(state)
 
 export const getNetwork = (state: RootState): Network => {
-  return ensureNetwork(getStoreNetwork(state)) ||
-    ensureNetwork(Number((window as any)?.ethereum?.chainId || 0)) ||
-    ensureNetwork(DEFAULT_NETWORK) ||
-    Network.MAINNET
+  return ensureNetwork(getStoreNetwork(state)) || environmentNetwork()
 }
 
 export const getProvider = createSelector(

@@ -1,7 +1,7 @@
 import { all, takeLatest, call, select, put } from 'redux-saga/effects'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { getData as getTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
-import { walletSaga as baseWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
+import { walletSaga as baseWalletSaga, createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getData, getMana, getAddress, getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
@@ -45,11 +45,14 @@ import { locations } from 'routing/locations'
 import { UnwrapParams } from 'routing/types'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
+import { environmentChainId } from './utils'
 
 const VOTING_POWER_BY_LAND = 2_000
 const MAX_ALLOWANCE_AMOUNT = BigNumber.from('0x' + 'f'.repeat(64))
 const REQUIRE_ALLOWANCE_AMOUNT = BigNumber.from('0x01' + '0'.repeat(62))
 const EMPTY_ALLOWANCE_AMOUNT = BigNumber.from(0)
+
+createWalletSaga({ CHAIN_ID: environmentChainId() })
 
 export function* walletSaga() {
   yield all([baseWalletSaga(), projectWalletSaga()])
