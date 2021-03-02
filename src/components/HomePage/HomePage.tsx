@@ -6,6 +6,7 @@ import { Empty } from 'decentraland-ui/dist/components/Empty/Empty'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown, DropdownProps } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
+import { HeaderMenu } from 'decentraland-ui/dist/components/HeaderMenu/HeaderMenu'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { Props } from './HomePage.types'
 import { Navbar } from 'components/Navbar'
@@ -17,7 +18,6 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { HeaderMenu } from 'decentraland-ui/dist/components/HeaderMenu/HeaderMenu'
 import { NewProposalModal } from 'components/Proposal/NewProposalModal'
 import { ProposalCategory, ProposalStatus } from 'modules/proposal/types'
 import { FilterProposalParams } from 'routing/types'
@@ -47,6 +47,7 @@ export default class HomePage extends React.PureComponent<Props, any> {
       }
     }
   }
+
   handleChangeCategoryFilter = (event: React.SyntheticEvent<any>, props: DropdownProps) => {
     event.preventDefault()
     const { category: currentCategory, ...params } = this.props.params
@@ -149,7 +150,7 @@ export default class HomePage extends React.PureComponent<Props, any> {
                   {this.renderCategoryOptions()}
                 </HeaderMenu.Right>
                 <HeaderMenu.Right>
-                  <Button as="a" href={locations.root({ modal: 'new' })} onClick={this.handleCreateProposal} primary size="small">{t('proposals_page.create_proposal')}</Button>
+                  <Button as="a" href={locations.proposals({ modal: 'new' })} onClick={this.handleCreateProposal} primary size="small">{t('proposals_page.create_proposal')}</Button>
                 </HeaderMenu.Right>
               </HeaderMenu>
               {isLoading && <Loader size="huge" active/>}

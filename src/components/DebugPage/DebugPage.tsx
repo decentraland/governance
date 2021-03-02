@@ -6,7 +6,7 @@ import { Navbar } from "components/Navbar"
 import { Footer } from "components/Footer"
 import { Navigation } from "components/Navigation"
 import { ensureNetwork } from "modules/wallet/utils"
-import { getProvider } from "decentraland-dapps/dist/lib/eth"
+import { getConnectedProvider } from "decentraland-dapps/dist/lib/eth"
 import { Network } from "modules/wallet/types"
 import { Card, Header, Icon, Button } from "decentraland-ui"
 import { ORGANIZATION_LOCATION } from "modules/organization/types"
@@ -21,7 +21,7 @@ type Step = {
 
 type Data = {
   settings: any
-  provider: ReturnType<typeof getProvider>
+  provider: ReturnType<typeof getConnectedProvider>
   organization: Organization
   apps: App[]
   voting_apps: App[]
@@ -53,7 +53,7 @@ export default class DebugPage extends React.Component<{}, State> {
   async componentDidMount() {
     const steps: Step[] = []
     const data: Partial<Data> = {}
-    const provider: any = await getProvider()
+    const provider: any = await getConnectedProvider()
     const add = (title: keyof Data, value: any) => {
       console.log(title, value)
       steps.push({ title, value })
@@ -97,7 +97,7 @@ export default class DebugPage extends React.Component<{}, State> {
     add("voting", votingList)
 
     /// Delay example
-    
+
     const delayApp = await organization.app("delay")
 
     const connectDelayApp = await connectDelay(delayApp as any)

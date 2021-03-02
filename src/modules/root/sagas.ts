@@ -2,6 +2,7 @@ import { all } from 'redux-saga/effects'
 
 import { createAnalyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
+import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 
 import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
@@ -16,6 +17,7 @@ import { segmentSaga } from 'modules/analytics/sagas'
 import { balanceSaga } from 'modules/balance/sagas'
 
 const analyticsSaga = createAnalyticsSaga()
+const profileSaga = createProfileSaga({ peerUrl: 'https://peer.decentraland.org' })
 
 export function* rootSaga() {
   yield all([
@@ -31,6 +33,7 @@ export function* rootSaga() {
     castSaga(),
     walletSaga(),
     balanceSaga(),
-    subscriptionSaga()
+    subscriptionSaga(),
+    profileSaga()
   ])
 }

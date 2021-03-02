@@ -8,7 +8,7 @@ import { LOAD_APPS_SUCCESS } from 'modules/app/actions'
 import { SAB, COMMUNITY, INBOX, BanName, Catalyst, POI } from 'modules/app/types'
 import { getNetwork, getProvider } from 'modules/wallet/selectors'
 import { Network } from 'modules/wallet/types'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getAddress, getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Web3Provider } from '@ethersproject/providers'
 import { replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
@@ -154,7 +154,7 @@ function* createQuestion(action: CreateQuestionRequestAction) {
 
     yield put(createQuestionSuccess())
     const query: NewProposalParams = yield select(getNewProposalParams)
-    yield put(replace(locations.root({ ...query, completed: true })))
+    yield put(replace(locations.proposals({ ...query, completed: true })))
   } catch (err) {
     yield put(createQuestionFailure(err.message))
   }
@@ -175,7 +175,7 @@ function* createBan(action: CreateBanRequestAction) {
 
     yield put(createBanSuccess())
     const query: NewProposalParams = yield select(getNewProposalParams)
-    yield put(replace(locations.root({ ...query, completed: true })))
+    yield put(replace(locations.proposals({ ...query, completed: true })))
   } catch (err) {
     yield put(createBanFailure(err.message))
   }
@@ -198,7 +198,7 @@ function* createCatalyst(action: CreateCatalystRequestAction) {
     yield put(createCatalystSuccess())
 
     const query: NewProposalParams = yield select(getNewProposalParams)
-    yield put(replace(locations.root({ ...query, completed: true })))
+    yield put(replace(locations.proposals({ ...query, completed: true })))
   } catch (err) {
     yield put(createCatalystFailure(err.message))
   }
@@ -221,7 +221,7 @@ function* createPoi(action: CreatePoiRequestAction) {
     yield put(createPoiSuccess())
 
     const query: NewProposalParams = yield select(getNewProposalParams)
-    yield put(replace(locations.root({ ...query, completed: true })))
+    yield put(replace(locations.proposals({ ...query, completed: true })))
   } catch (err) {
     yield put(createPoiFailure(err.message))
   }
@@ -233,10 +233,11 @@ function* executeVote(action: ExecuteVoteRequestAction) {
   try {
     const apps: Record<string, App> = yield select(getApps)
     const app = apps[appAddress]
+    const chainId = yield select(getChainId)
     const provider: ethers.providers.Web3Provider | undefined = yield select(getProvider)
     const contract = new Contract(app.address, app.abi, provider?.getSigner(0))
     const tx: Transaction = yield call(() => contract.executeVote(voteId))
-    yield put(executeVoteSuccess(action.payload.voteId, tx.hash))
+    yield put(executeVoteSuccess(action.payload.voteId, chainId, tx.hash))
   } catch (err) {
     yield put(executeVoteFailure(err.message))
   }
@@ -246,9 +247,10 @@ function* executeScript(action: ExecuteScriptRequestAction) {
   const { scriptId } = getProposalIdentifier({ id: action.payload.scriptId || '' })
 
   try {
+    const chainId = yield select(getChainId)
     const delayContract: Contract = yield select(getDelayContract)
     const tx: Transaction = yield call(() => delayContract.execute(scriptId))
-    yield put(executeScriptSuccess(action.payload.scriptId, tx.hash))
+    yield put(executeScriptSuccess(action.payload.scriptId, chainId, tx.hash))
   } catch (err) {
     yield put(executeScriptFailure(err.message))
   }

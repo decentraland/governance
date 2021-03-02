@@ -66,7 +66,7 @@ export default class UnwrapModal extends React.Component<Props, State> {
         {!completed && <Modal.Description>{t('unwrapping_modal.description')}</Modal.Description>}
         {!completed && <Modal.Description>
           <Field
-            type="number" min={0} message={wallet?.manaMiniMe ? t('unwrapping_modal.input_hint', { value: wallet?.manaMiniMe || 0 }) : ''} onChange={this.handleChangeWrapValue} value={this.state.value} />
+            type="number" min={0} message={wallet?.dao?.manaMiniMe ? t('unwrapping_modal.input_hint', { value: wallet?.dao?.manaMiniMe || 0 }) : ''} onChange={this.handleChangeWrapValue} value={this.state.value} />
         </Modal.Description>}
         {!completed && <Modal.Actions>
           <Button

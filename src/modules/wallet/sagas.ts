@@ -1,10 +1,9 @@
 import { all, takeLatest, call, select, put } from 'redux-saga/effects'
-// import { FETCH_TRANSACTION_SUCCESS, FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
-// import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
+import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { getData as getTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
 import { walletSaga as baseWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import { CONNECT_WALLET_SUCCESS, CHANGE_ACCOUNT, CHANGE_NETWORK } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getData, getMana, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData, getMana, getAddress, getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getManaMiniMeContract, getLandContract, getEstateContract, getManaContract } from 'modules/common/selectors'
 import { Contract, BigNumber, utils } from 'ethers'
 import {
@@ -41,7 +40,7 @@ import { Wallet, Network } from './types'
 import { getData as getWallet, getNetwork } from './selectors'
 import { MANAMiniMeToken } from 'modules/common/contracts'
 import { getUnwrapParams } from 'routing/selectors'
-import { replace } from 'connected-react-router'
+import { getLocation, push, replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { UnwrapParams } from 'routing/types'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -84,6 +83,10 @@ function* checkBalance(action: FetchTransactionSuccessAction) {
 
 function* requestBalance() {
   yield put(extendWalletRequest())
+  const location: ReturnType<typeof getLocation> = yield select(getLocation)
+  if (location.pathname === locations.signIn()) {
+    yield put(push(locations.proposals()))
+  }
 }
 
 function* getBalance(): any {
@@ -128,19 +131,23 @@ function* getBalance(): any {
       const estateVotingPower = estateCommit ? estateSize * VOTING_POWER_BY_LAND : 0
       const votingPower = manaVotingPower + landVotingPower + estateVotingPower
 
+      yield put(loadProfileRequest(wallet.address))
       yield put(extendWalletSuccess({
         ...wallet,
-        manaCommit,
-        manaMiniMe,
-        land,
-        landCommit,
-        estate,
-        estateSize,
-        estateCommit,
-        manaVotingPower,
-        landVotingPower,
-        estateVotingPower,
-        votingPower
+        dao: {
+          mana: wallet.networks.ETHEREUM.mana,
+          manaCommit,
+          manaMiniMe,
+          land,
+          landCommit,
+          estate,
+          estateSize,
+          estateCommit,
+          manaVotingPower,
+          landVotingPower,
+          estateVotingPower,
+          votingPower
+        }
       }))
 
     } catch (err) {
@@ -179,9 +186,10 @@ function* allowManaBalance() {
 
 function* allowLandBalance() {
   try {
+    const chainId = yield select(getChainId)
     const landContract = yield select(getLandContract)
     const tx = yield call(() => landContract.registerBalance())
-    yield put(allowLandSuccess(tx.hash))
+    yield put(allowLandSuccess(chainId, tx.hash))
   } catch (err) {
     yield put(allowLandFailure(err.message))
   }
@@ -189,9 +197,10 @@ function* allowLandBalance() {
 
 function* revokeLandBalance() {
   try {
+    const chainId = yield select(getChainId)
     const landContract = yield select(getLandContract)
     const tx = yield call(() => landContract.unregisterBalance())
-    yield put(revokeLandSuccess(tx.hash))
+    yield put(revokeLandSuccess(chainId, tx.hash))
   } catch (err) {
     yield put(revokeLandFailure(err.message))
   }
@@ -199,9 +208,10 @@ function* revokeLandBalance() {
 
 function* allowEstateBalance() {
   try {
+    const chainId = yield select(getChainId)
     const estateContract = yield select(getEstateContract)
     const tx = yield call(() => estateContract.registerBalance())
-    yield put(allowEstateSuccess(tx.hash))
+    yield put(allowEstateSuccess(chainId, tx.hash))
   } catch (err) {
     yield put(allowEstateFailure(err.message))
   }
@@ -209,9 +219,10 @@ function* allowEstateBalance() {
 
 function* revokeEstateBalance() {
   try {
+    const chainId = yield select(getChainId)
     const estateContract = yield select(getEstateContract)
     const tx = yield call(() => estateContract.unregisterBalance())
-    yield put(revokeEstateSuccess(tx.hash))
+    yield put(revokeEstateSuccess(chainId, tx.hash))
   } catch (err) {
     yield put(revokeEstateFailure(err.message))
   }
@@ -221,11 +232,12 @@ function* wrapMana(action: WrapManaRequestAction) {
   let amount = 0
 
   try {
+    const chainId = yield select(getChainId)
     const mana: number = yield select(getMana)
     amount = Math.max(Math.min(action.payload.amount || 0, mana), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.deposit(utils.parseEther(amount.toString())))
-    yield put(wrapManaSuccess(depositTx.hash, amount))
+    yield put(wrapManaSuccess(chainId, depositTx.hash, amount))
 
   } catch (err) {
     yield put(wrapManaFailure(err.message, amount))
@@ -236,12 +248,13 @@ function* unwrapMana(action: UnwrapManaRequestAction) {
   let amount = 0
 
   try {
+    const chainId = yield select(getChainId)
     const wallet: Wallet = yield select(getWallet)
-    amount = Math.max(Math.min(action.payload.amount || 0, wallet.manaMiniMe || 0), 0)
+    amount = Math.max(Math.min(action.payload.amount || 0, wallet.dao?.manaMiniMe || 0), 0)
     const manaMiniMeContract: Contract = yield select(getManaMiniMeContract)
     const depositTx = yield call(() => manaMiniMeContract.functions.withdraw(utils.parseEther(amount.toString())))
 
-    yield put(unwrapManaSuccess(depositTx.hash, amount))
+    yield put(unwrapManaSuccess(chainId, depositTx.hash, amount))
     const query: UnwrapParams = yield select(getUnwrapParams)
     yield put(replace(locations.wrapping({ ...query, completed: true })))
   } catch (err) {

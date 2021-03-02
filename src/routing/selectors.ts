@@ -15,6 +15,13 @@ export const getQuery = createSelector(
   (params) => Object.fromEntries(new URLSearchParams(params).entries())
 )
 
+export const getSignInParams = createSelector(
+  getQuery,
+  (query) => formatParams({
+    modal: getEnumParam(query.modal, [ 'signIn' ])
+  })
+)
+
 export const getNewProposalParams = createSelector(
   getQuery,
   (query) => formatParams({

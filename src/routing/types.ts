@@ -1,3 +1,7 @@
+export type SignInParams = {
+  modal?: 'signIn'
+}
+
 export type NewProposalParams = {
   modal?: 'new',
   create?: 'poi' | 'question' | 'catalyst' | 'ban',

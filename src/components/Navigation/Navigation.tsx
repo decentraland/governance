@@ -9,16 +9,16 @@ import { NetworkName, Network } from 'modules/wallet/types'
 import './Navigation.css'
 
 const Navigation = (props: Props) => {
-  const { activeTab, network } = props
+  const { activeTab, network, isConnected } = props
   return (
     <Tabs>
       <Tabs.Left>
-        <Link to={locations.root()}>
+        <Link to={locations.proposals()}>
           <Tabs.Tab active={activeTab === NavigationTab.Proposals}>
             {t('navigation.proposals')}
           </Tabs.Tab>
         </Link>
-        <Link to={locations.wrapping()}>
+        <Link to={isConnected ? locations.wrapping() : locations.signIn()}>
           <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>
             {t('navigation.wrapping')}
           </Tabs.Tab>

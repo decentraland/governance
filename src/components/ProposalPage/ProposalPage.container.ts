@@ -75,7 +75,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onBack: () => dispatch(goBack()),
-  onHome: () => dispatch(push(locations.root())),
+  onHome: () => dispatch(push(locations.proposals())),
   onRequireEmbeds : (proposals: string[]) => dispatch(loadEmbedRequest(proposals)),
   onRequireCasts : (proposals: string[]) => dispatch(loadCastsRequest(proposals)),
   onRequireBalance : (proposals: string[]) => dispatch(loadBalanceRequest(proposals)),

@@ -21,15 +21,18 @@ export const EtherScan = {
 }
 
 export type Wallet = BaseWallet & {
-  land?: number
-  landCommit?: boolean
-  estate?: number
-  estateSize?: number
-  estateCommit?: boolean
-  manaCommit?: boolean
-  manaMiniMe?: number
-  manaVotingPower?: number
-  landVotingPower?: number
-  estateVotingPower?: number
-  votingPower?: number
+  dao?: {
+    mana: number
+    land: number
+    landCommit: boolean
+    estate: number
+    estateSize: number
+    estateCommit: boolean
+    manaCommit: boolean
+    manaMiniMe: number
+    manaVotingPower: number
+    landVotingPower: number
+    estateVotingPower: number
+    votingPower: number
+  }
 }

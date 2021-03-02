@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { isConnected, isConnecting, isEnabling } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { ProviderType } from 'decentraland-connect/dist/types'
 
 import { RootState } from 'modules/root/types'
 import { getLoading as getLoadingOrganization } from 'modules/organization/selectors'
@@ -33,7 +34,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(enableWalletRequest()),
+  onConnect: (providerType: ProviderType) => dispatch(enableWalletRequest(providerType)),
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href)),
   onCreateQuestion: (question: string) => dispatch(createQuestionRequest(question)),
   onCreateBan: (name: string) => dispatch(createBanRequest(name)),

@@ -7,10 +7,11 @@ export enum NavigationTab {
 
 export type Props = {
   activeTab?: NavigationTab
+  isConnected?: boolean
   isFullscreen?: boolean
   network?: Network
 }
 
-export type MapStateProps = Pick<Props, 'network'>
+export type MapStateProps = Pick<Props, 'network' | 'isConnected'>
 export type MapDispatchProps = {}
 export type MapDispatch = {}

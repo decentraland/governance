@@ -1,3 +1,4 @@
+import { ChainId } from '@dcl/schemas';
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { action } from 'typesafe-actions'
 import { Proposal } from './types'
@@ -67,7 +68,7 @@ export const EXECUTE_VOTE_SUCCESS = '[Success] Execute vote'
 export const EXECUTE_VOTE_FAILURE = '[Failure] Execute vote'
 
 export const executeVoteRequest = (voteId: string) => action(EXECUTE_VOTE_REQUEST, { voteId })
-export const executeVoteSuccess = (voteId: string, hash: string) => action(EXECUTE_VOTE_SUCCESS, buildTransactionPayload(hash, { voteId }))
+export const executeVoteSuccess = (voteId: string, chainId: ChainId, hash: string) => action(EXECUTE_VOTE_SUCCESS, buildTransactionPayload(chainId, hash, { voteId }))
 export const executeVoteFailure = (error: string) => action(EXECUTE_VOTE_FAILURE, { error })
 
 export type ExecuteVoteRequestAction = ReturnType<typeof executeVoteRequest>
@@ -79,7 +80,7 @@ export const EXECUTE_SCRIPT_SUCCESS = '[Success] Execute script'
 export const EXECUTE_SCRIPT_FAILURE = '[Failure] Execute script'
 
 export const executeScriptRequest = (scriptId: string) => action(EXECUTE_SCRIPT_REQUEST, { scriptId })
-export const executeScriptSuccess = (scriptId: string, hash: string) => action(EXECUTE_SCRIPT_SUCCESS, buildTransactionPayload(hash, { scriptId }))
+export const executeScriptSuccess = (scriptId: string, chainId: ChainId,hash: string) => action(EXECUTE_SCRIPT_SUCCESS, buildTransactionPayload(chainId, hash, { scriptId }))
 export const executeScriptFailure = (error: string) => action(EXECUTE_SCRIPT_FAILURE, { error })
 
 export type ExecuteScriptRequestAction = ReturnType<typeof executeScriptRequest>

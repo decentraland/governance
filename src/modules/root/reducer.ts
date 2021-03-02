@@ -5,6 +5,7 @@ import { translationReducer as translation } from 'decentraland-dapps/dist/modul
 import { transactionReducer as transaction } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { storageReducer as storage, storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { modalReducer as modal } from 'decentraland-dapps/dist/modules/modal/reducer'
+import { profileReducer as profile } from 'decentraland-dapps/dist/modules/profile/reducer'
 
 import { RootState } from 'modules/root/types'
 import { appReducer as app } from 'modules/app/reducer'
@@ -21,6 +22,7 @@ export function createRootReducer(history: History) {
   return storageReducerWrapper(
     combineReducers<RootState>({
       storage,
+      profile,
       transaction,
       translation,
       wallet,

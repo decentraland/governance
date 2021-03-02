@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
@@ -12,9 +12,10 @@ import { LOAD_PROPOSALS_REQUEST } from 'modules/proposal/actions'
 import HomePage from './HomePage'
 import { MapDispatchProps, MapStateProps, MapDispatch } from './HomePage.types'
 import { locations } from 'routing/locations'
-import { NewProposalParams, FilterProposalParams } from 'routing/types'
+import { NewProposalParams, FilterProposalParams, SignInParams } from 'routing/types'
 import { getNewProposalParams, getFilterProposalParams } from 'routing/selectors'
 import { push } from 'connected-react-router'
+import { ProviderType } from 'decentraland-dapps/dist/modules/wallet/types'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -34,8 +35,8 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(connectWalletRequest()),
-  onChangeParams: (options: NewProposalParams | FilterProposalParams = {}) => dispatch(push(locations.root(options)))
+  onConnect: (providerType: ProviderType) => dispatch(enableWalletRequest(providerType)),
+  onChangeParams: (options: NewProposalParams | FilterProposalParams | SignInParams = {}) => dispatch(push(locations.proposals(options)))
 })
 
 export default connect(mapState, mapDispatch)(HomePage)

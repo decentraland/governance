@@ -11,7 +11,7 @@ import { getProposalUrl } from 'modules/proposal/utils'
 export default class ProposalSupportModal extends React.PureComponent<Props, {}> {
 
   handleConnect = () => {
-    this.props.onConnect()
+    // this.props.onConnect()
   }
 
   handleProceed = () => {

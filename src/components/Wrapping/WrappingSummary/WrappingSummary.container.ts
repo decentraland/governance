@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { isConnected, isConnecting, isEnabling } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/root/types'
@@ -17,7 +16,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(enableWalletRequest()),
   onNavigate: (href: string, r: boolean = false) => dispatch(r ? replace(href) : push(href))
 })
 

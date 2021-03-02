@@ -6,6 +6,7 @@ import { TranslationState } from 'decentraland-dapps/dist/modules/translation/re
 import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
+import { ProfileState } from 'decentraland-dapps/dist/modules/profile/reducer'
 import { OrganizationState } from 'modules/organization/reducer'
 import { AppState } from 'modules/app/reducer'
 import { ProposalState } from 'modules/proposal/reducer'
@@ -33,6 +34,7 @@ export type RootState = {
   modal: ModalState
   app: AppState
   proposal: ProposalState
+  profile: ProfileState
   description: ProposalDescriptionState
   embed: ProposalEmbedState
   cast: CastState

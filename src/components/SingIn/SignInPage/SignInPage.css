@@ -1,0 +1,9 @@
+.dcl.navbar.fullscreen + .dcl.tabs + .dcl.page.dcl.page.fullscreen.SignInPage {
+  min-height: 400px;
+  box-sizing: content-box;
+}
+
+.dcl.page.SignInPage {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}

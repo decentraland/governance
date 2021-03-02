@@ -16,7 +16,7 @@ import { getProposalUrl } from 'modules/proposal/utils'
 import { App } from '@aragon/connect'
 import { getCastParams } from 'routing/selectors'
 import { replace } from 'connected-react-router'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getAddress, getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getProvider } from 'modules/wallet/selectors'
 import { Web3Provider } from '@ethersproject/providers'
 import { AggregatedVote } from 'modules/proposal/types'
@@ -67,6 +67,7 @@ function* createCast(action: CreateCastRequestAction) {
   }
 
   try {
+    const chainId = yield select(getChainId)
     const provider: Web3Provider = yield select(getProvider)
 
     const tx = yield call(async () => {
@@ -74,7 +75,7 @@ function* createCast(action: CreateCastRequestAction) {
       return path.sign((tx) => provider.send('eth_sendTransaction', [tx]))
     })
 
-    yield put(createCastSuccess(vote.id, tx[0]))
+    yield put(createCastSuccess(vote.id, chainId, tx[0]))
     const query: CastParams = yield select(getCastParams)
     yield put(replace(getProposalUrl(vote, { ...query, completed: true })))
 
