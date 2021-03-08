@@ -17,7 +17,7 @@ import { segmentSaga } from 'modules/analytics/sagas'
 import { balanceSaga } from 'modules/balance/sagas'
 
 const analyticsSaga = createAnalyticsSaga()
-const profileSaga = createProfileSaga({ peerUrl: 'https://peer.decentraland.org' })
+const profileSaga = createProfileSaga({ peerUrl: 'https://peer-ec1.decentraland.org' })
 
 export function* rootSaga() {
   yield all([
