@@ -143,8 +143,9 @@ function isVotePassed(vote: Vote, balance: VoteBalance) {
   }
 
   const isExpired = isVoteExpired(vote)
-  const isExecutable = isProposalExecutable(vote)
-  if (isExpired || isExecutable) {
+  // @TOOD: Commented because votes are being displayed as passed and ready to enact when they are not
+  // const isExecutable = isProposalExecutable(vote)
+  if (isExpired) { // || isExecutable) {
     return true
   }
 
