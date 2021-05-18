@@ -51,6 +51,7 @@
     "gatsby-plugin-typescript": "^2.12.1",
     "gatsby-source-filesystem": "^2.11.1",
     "gatsby-transformer-sharp": "^2.12.1",
+    "keccak": "^3.0.1",
     "markdown-escape": "^1.1.0",
     "node-pg-migrate": "^4.8.0",
     "numeral": "^2.0.6",
