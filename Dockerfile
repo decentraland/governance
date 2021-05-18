@@ -2,6 +2,7 @@ FROM node:12-alpine
 
 RUN apk add --no-cache --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make automake autoconf libtool python \
+  git \
   shadow \
   musl-dev \
   nasm \
@@ -16,7 +17,7 @@ WORKDIR /app
 COPY ./package-lock.json /app/package-lock.json
 COPY ./package.json      /app/package.json
 
-RUN npm ci
+RUN NODE_ENV=production npm ci
 
 RUN apk del native-deps && rm -rf /var/cache/apk/*
 
