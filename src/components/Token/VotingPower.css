@@ -1,0 +1,45 @@
+.VotingPower {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text);
+  font-size: 1em;
+}
+
+.VotingPower.VotingPower--secondary {
+  color: var(--secondary-text)
+}
+
+.VotingPower.VotingPower--bold {
+  font-weight: 500;
+}
+
+.VotingPower.VotingPower--huge {
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 600;
+}
+
+.VotingPower.VotingPower--large {
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 42px;
+  letter-spacing: 0.4px;
+}
+
+.VotingPower.VotingPower--medium{
+  font-size: 21px;
+  line-height: 30px;
+  letter-spacing: 0.315px;
+}
+
+.VotingPower.VotingPower--small,
+.VotingPower.VotingPower--tiny {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.VotingPower svg {
+  margin-left: .2em;
+  height: 1em;
+  width: auto;
+}

@@ -1,0 +1,26 @@
+encryptionsalt: v1:5g6OY0hHq10=:v1:2v1dmNBoUC4Ls4eB:jG0ttHuD/beq4tREu887OY++Kvz2iw==
+config:
+  aws:region: us-east-1
+  events:ALCHEMY_API_KEY:
+    secure: v1:PJMog6uSWkPWCM06:82HTfltFoJVfYqWduuyg3x5dzx/FYEOTEugkSZ2JElI4MELJuzUEJRiYGE44D4jV
+  events:COMMITTEE_ADDRESSES: 0x8cff6832174091dae86f0244e3fd92d4ced2fe07,0xaf592460d6a44517aba2fb0bcb02ee8f4103b502
+  events:CONNECTION_STRING:
+    secure: v1:U6qnGAERyOHSF25t:oJf/ZuDn2G4YLpYXs0NIDTiuqEatGvo71wLK7GmHCoLen4aZQMqLoB/VuHe35Jy+8uOAV74I/eMjLBh7VzD1zzza6mvtbkfpRJi60vgjl7kOEdFXtcAWrqp+uxRDbpqlshvT+0M+Uqn3HhkGgjdVvGuoaOaMYLrbWsCwgxbplyJLA3lmpSY=
+  events:DISCOURSE_API_KEY:
+    secure: v1:9d9uh6vfOHiE/Gnf:7qblAdTboPwUZOm0Cf6FP6Ysosry6CfZSAIZjw+gVNALICi1R4YZke0ZkmINMNGDO1LprRVMjKRepcmIiZ6V0e6q6bDWLuyB0hE0LExTiAc=
+  events:ETHERSCAN_API_KEY:
+    secure: v1:1cx3JnLb62MAR5od:BGr8KyJK+dpqgSLVt+frfIvtQXuhUgC7z0BPVPx/bz2WTRacZ1HL1ItahNqY9xDH9Fs=
+  events:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
+  events:GATSBY_BUY_MANA_URL: https://kyberswap.com/swap/eth-mana
+  events:GATSBY_DEFAULT_CHAIN_ID: "1"
+  events:GATSBY_DISCOURSE_API: https://forum.decentraland.org
+  events:GATSBY_DISCOURSE_CATEGORY: "14"
+  events:GATSBY_DISCOURSE_USER: dao
+  events:GATSBY_GOVERNANCE_API: https://governance.decentraland.io/api
+  events:GATSBY_SNAPSHOT_ADDRESS: 0x2Ba0352480bd1Ea073A83e6639b06362131894CE
+  events:GATSBY_SNAPSHOT_API: https://hub.snapshot.page/api
+  events:GATSBY_SNAPSHOT_DURATION: "600"
+  events:GATSBY_SNAPSHOT_SPACE: frami.eth
+  events:GATSBY_SNAPSHOT_URL: https://snapshot.org/
+  events:SNAPSHOT_PRIVATE_KEY:
+    secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=

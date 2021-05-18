@@ -1,0 +1,84 @@
+.SectionCard {
+  background: var(--secondary);
+  padding: 2rem 1rem 1rem 1rem;
+  position: relative;
+}
+
+.SectionCard .SectionCard__Title,
+.SectionCard .SectionCard__Container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  position: relative;
+}
+
+.SectionCard .SectionCard__Title {
+  padding: 24px 0 0 0;
+  justify-content: space-between;
+}
+
+.SectionCard .SectionCard__Title .ui.button {
+  display: flex;
+  align-items: center;
+}
+
+.SectionCard .SectionCard__Title .dg.SubTitle{
+  font-size: 13px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.38;
+  letter-spacing: normal;
+  color: #736e7d;
+  text-transform: uppercase;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.SectionCard .SectionCard__Title .SectionCard__Title__Left,
+.SectionCard .SectionCard__Title .SectionCard__Title__Right {
+  flex:  0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.SectionCard .SectionCard__Container.SectionCard__Container--stacked::before,
+.SectionCard .SectionCard__Container.SectionCard__Container--stacked::after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  height: 16px;
+  box-shadow: var(--shadow-1);
+  border: var(--outline);
+  border-radius: 8px;
+  background-color: var(--card);
+  z-index: 0;
+}
+
+.SectionCard .SectionCard__Container.SectionCard__Container--stacked::before {
+  width: 96%;
+  left: 2%;
+  bottom: -12px;
+}
+
+.SectionCard .SectionCard__Container.SectionCard__Container--stacked::after {
+  width: 98%;
+  left: 1%;
+  bottom: -6px;
+}
+
+.SectionCard .SectionCard__Container .ui.card.SectionCard__Container__Card {
+  width: 100%;
+  min-height: 100px;
+}
+
+.SectionCard .SectionCard__Container .ui.card.SectionCard__Container__Card .EmptyCard {
+  width: 100%;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: .8;
+}

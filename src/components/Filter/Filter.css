@@ -1,0 +1,18 @@
+.Filter {
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: var(--secondary);
+  color: var(--secondary-text);
+  padding: 5px 12px;
+  border-radius: 30px;
+  margin-right: 16px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.Filter.Filter--active {
+  background-color: var(--primary);
+  color: var(--text-on-primary);
+}

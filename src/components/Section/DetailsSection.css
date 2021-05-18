@@ -1,0 +1,48 @@
+.DetailsSection {
+  width: 100%;
+  border: 1px solid rgba(115, 110, 125, .24);
+  border-radius: 8px;
+  display: block;
+  padding: 15px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.DetailsSection.DetailsSection--loading > *,
+.DetailsSection.DetailsSection--disabled > * {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.DetailsSection .DetailsSection__Content {
+  margin-top: 16px;
+  position: relative;
+  min-height: 24px;
+}
+
+.DetailsSection .DetailsSection__Flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.DetailsSection .DetailsSection__Flex > div {
+  flex: 0 0 50%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.DetailsSection .DetailsSection__Flex .DetailsSection__Value {
+  text-align: right;
+  font-weight: 500;
+}
+
+.DetailsSection .ChoiceProgress {
+  margin-top: 16px;
+}
+
+.DetailsSection .ui.button {
+  width: 100%;
+  margin-top: 8px;
+}

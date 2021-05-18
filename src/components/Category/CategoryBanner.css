@@ -1,0 +1,72 @@
+
+.CategoryBanner {
+  display: flex;
+  align-items: center;
+  align-content: stretch;
+  position: relative;
+  padding: 16px 20px;
+  background-color: transparent;
+  margin-bottom: 8px;
+}
+
+.CategoryBanner::before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #444;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  opacity: .08;
+}
+
+.CategoryBanner .CategoryBanner__Icon  {
+  flex: 0 0 68px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.CategoryBanner.CategoryBanner--catalyst:hover::before,
+.CategoryBanner.CategoryBanner--catalyst.CategoryBanner--active::before {
+  background-color: var(--background-catalyst);
+}
+
+.CategoryBanner.CategoryBanner--poi:hover::before,
+.CategoryBanner.CategoryBanner--poi.CategoryBanner--active::before {
+  background-color: var(--background-poi);
+}
+
+.CategoryBanner.CategoryBanner--ban_name:hover::before,
+.CategoryBanner.CategoryBanner--ban_name.CategoryBanner--active::before {
+  background-color: var(--background-ban-name);
+}
+
+.CategoryBanner.CategoryBanner--grant:hover::before,
+.CategoryBanner.CategoryBanner--grant.CategoryBanner--active::before {
+  background-color: var(--background-grant);
+}
+
+.CategoryBanner.CategoryBanner--poll:hover::before,
+.CategoryBanner.CategoryBanner--poll.CategoryBanner--active::before {
+  background-color: var(--background-poll);
+}
+
+.CategoryBanner .CategoryBanner__Icon img {
+  position: relative;
+  height: 100%;
+  width: auto;
+}
+
+.CategoryBanner .dg.Paragraph  {
+  margin-bottom: 0;
+}
+
+.CategoryBanner .dg.Paragraph.Paragraph--tiny  {
+  font-size: 15px;
+}

@@ -1,0 +1,23 @@
+.WelcomeItem {
+  height: 494px;
+  background-color: var(--secondary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-2);
+  padding: 24px;
+  position: relative;
+}
+
+.WelcomeItem .WelcomeItem__Content {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 24px;
+}
+
+.WelcomeItem > .dcl.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 24px;
+}

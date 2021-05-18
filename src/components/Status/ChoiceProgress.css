@@ -1,0 +1,17 @@
+.ChoiceProgress .ChoiceProgress__Description {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text);
+}
+
+.ChoiceProgress .ChoiceProgress__Choice {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.ChoiceProgress .Progress {
+  margin-top: 4px;
+}

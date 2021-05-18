@@ -1,0 +1,22 @@
+.WelcomePage > div {
+  width: 100%;
+  max-width: 800px;
+  min-height: calc(100vh - 64px - 156px);
+  /* min-height: 550px; */
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.WelcomePage > div > .Carousel {
+  flex: 0 0 100%
+}
+
+.WelcomePage .ui.header {
+  margin-bottom: 8px;
+}
+
+.WelcomePage .dg.Paragraph {
+  font-size: 15px;
+}

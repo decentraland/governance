@@ -1,0 +1,27 @@
+.ui.modal.ProposalModal .content {
+  margin: 48px auto;
+  width: 360px;
+}
+
+.ui.modal.ProposalModal .content.ProposalModal__Form {
+  margin: 24px auto;
+  width: 480px;
+}
+
+.ui.modal.ProposalModal .ProposalModal__Title {
+  text-align: center;
+}
+
+.ui.modal.ProposalModal .ProposalModal__Title .ui.header {
+  margin-bottom: .5rem;
+}
+
+.ui.modal.ProposalModal .ui.button {
+  width: 100%;
+}
+
+.ui.modal.ProposalModal .ui.button.cancel {
+  margin-top: 8px;
+  background-color: var(--background);
+  border: 1px solid rgba(115,110,125,.32);
+}

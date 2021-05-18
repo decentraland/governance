@@ -1,0 +1,25 @@
+.ProposalItem {
+  position: relative;
+}
+
+.ProposalItem .ProposalItem__Title {
+  padding-bottom: 24px;
+  padding-right: 40px;
+}
+
+.ProposalItem .ProposalItem__Title .ui.button {
+  position: absolute;
+  padding: 16px 20px;
+  top: 0;
+  right: 0;
+  display: none;
+}
+
+.ProposalItem .ProposalItem__Title .ui.loading.loading.loading.loading.button {
+  position: absolute;
+}
+
+.ProposalItem:hover .ProposalItem__Title .ui.button,
+.ProposalItem.ProposalItem--subscribed .ProposalItem__Title .ui.button {
+  display: block;
+}

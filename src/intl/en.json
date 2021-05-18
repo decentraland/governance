@@ -1,0 +1,287 @@
+{
+  "general": {
+    "number": "{value, number}",
+    "sign_in": "sign in",
+    "cancel": "cancel"
+  },
+  "navigation": {
+    "proposals": "Proposals",
+    "wrapping": "Voting Power",
+    "activity": "Activity",
+    "enacted": "Enacted"
+  },
+  "error": {
+    "poll": {
+      "title_empty": "Title field is too short",
+      "title_too_short": "Title field is too short",
+      "title_too_large": "Title field is too short",
+      "description_empty": "Description field is empty",
+      "description_too_short": "Description field is too short",
+      "description_too_large": "Description field is too large",
+      "options_insufficient": "Insufficient options",
+      "options_empty": "Some option is empty",
+      "options_too_short": "Some option is to short"
+    },
+    "ban_name": {
+      "name_empty": "Name field is empty",
+      "name_too_short": "Name field is too short",
+      "name_too_large": "Name field is too large",
+      "name_already_banned": "Name is already banned",
+      "name_invalid": "Name field is invalid",
+      "description_empty": "Description field is empty",
+      "description_too_short": "Description field is too short",
+      "description_too_large": "Description field is too large",
+      "fetching_names": "Error fetching names"
+    },
+    "poi": {
+      "coordinates_incomplete": "The coordinates are incomplete",
+      "coordinates_not_a_number": "The coordinates are not valid",
+      "coordinates_out_of_map": "The coordinates are out of the map",
+      "description_empty": "Description field is empty",
+      "description_too_short": "Description field is too short",
+      "description_too_large": "Description field is too large",
+      "fetching_pois": "Error fetching pois",
+      "coordinates_already_a_poi": "This coordinates are already a Point of Interest"
+    },
+    "catalyst": {
+      "owner_empty": "Owner field is empty",
+      "owner_invalid": "Owner field is invalid",
+      "domain_empty": "Domain field is empty",
+      "domain_invalid": "Domain field is invalid",
+      "domain_already_a_catalyst": "Domain is already a catalyst",
+      "description_empty": "Description field is empty",
+      "description_too_short": "Description field is too short",
+      "description_too_large": "Description field is too large",
+      "fetching_catalyst": "Error fetching catalysts",
+      "server_invalid_status": "Error fetching catalyst statuses"
+    },
+    "grant": {
+      "abstract_empty": "Abstract is empty",
+      "abstract_too_large": "Abstract is too large",
+      "abstract_too_short": "Abstract is too short",
+      "description_empty": "Description is empty",
+      "description_too_large": "Description is too large",
+      "description_too_short": "Description is too short",
+      "personnel_empty": "Personnel is empty",
+      "personnel_too_large": "Personnel is too large",
+      "personnel_too_short": "Personnel is too short",
+      "roadmap_empty": "Roadmap is empty",
+      "roadmap_too_large": "Roadmap is too large",
+      "roadmap_too_short": "Roadmap is too short",
+      "specification_empty": "Specification is empty",
+      "specification_too_large": "Specification is too large",
+      "specification_too_short": "Specification is too short",
+      "title_empty": "Title is empty",
+      "title_too_large": "Title is too large",
+      "title_too_short": "Title is too short",
+      "category_empty": "Category is empty",
+      "category_invalid": "Category is invalid",
+      "tier_empty": "Tier is empty",
+      "tier_invalid": "Tier is invalid"
+    }
+  },
+  "category": {
+    "poi": "POI",
+    "catalyst" : "Catalyst",
+    "ban_name" : "Ban Name",
+    "grant" : "Grant",
+    "poll" : "Poll",
+    "all_title": "All proposals",
+    "catalyst_title": "Catalyst Node",
+    "catalyst_description": "Add a node to the network of community run servers",
+    "poi_title": "Point of Interest",
+    "poi_description": "Highlight a noteworthy Decentraland location on the map for others to find",
+    "ban_name_title": "Name Ban",
+    "ban_name_description": "Ban an offensive name from Decentraland",
+    "grant_title": "Grant Request",
+    "grant_description": "Request funding from the DAO for a project or contribution",
+    "poll_title": "Poll",
+    "poll_description": "Ask community members for their opinion on an issue or topic"
+  },
+  "status": {
+    "all": "All outcomes",
+    "pending": "Pending outcomes",
+    "active": "Active outcomes",
+    "rejected": "Rejected outcomes",
+    "passed": "Passed outcomes",
+    "enacted": "Enacted outcomes"
+  },
+  "modal": {
+    "new_proposal": {
+      "title": "New Proposal",
+      "description": "Select a proposal category to get started"
+    },
+    "delete_proposal": {
+      "title": "Delete Confirmation",
+      "description": "Are you sure you want to delete this proposal? This action cannot be undone.",
+      "accept": "Delete",
+      "reject": "Cancel"
+    },
+    "enact_proposal": {
+      "title": "Enact Confirmation",
+      "description": "Are you sure you want to enact this proposal? This action cannot be undone.",
+      "enact_description_label": "Enact description",
+      "enact_description_placeholder": "Add any useful details for user about the enacted",
+      "accept": "Enact",
+      "reject": "Cancel"
+    },
+    "vote_registered": {
+      "title": "Vote Registered",
+      "description": "Thank you for voting! Want to add it to your Watchlist to follow the results?",
+      "accept": "Add to Watchlist",
+      "reject": "No thanks"
+    }
+  },
+  "page": {
+    "404": {
+      "title": "Not found",
+      "description": "You just hit a route that doesn't exist..."
+    },
+    "welcome": {
+      "1_panel_title": "Welcome to the new DAO!",
+      "1_panel_description": "The DAO is a voting platform where you can vote on (or create) specific proposals like banning names, highlighting interesting areas of the world on the map, adding community servers, creating polls, or even requesting a grant!",
+      "2_panel_title": "Before you start",
+      "2_panel_description": "Sign in by clicking SIGN IN in the upper right corner. Before you can vote or make proposals on the DAO, you have to wrap MANA or LAND. The more you wrap, the more your vote is weighted. You can pull out any wrapped assets at any time, but this will affect the weight of your vote in any active proposals.\n\nYou will have to pay an ETH transaction fee (gas) when wrapping or unwrapping MANA or LAND, but you will **not** have to pay transaction fees when voting or creating proposals.",
+      "3_panel_title": "How to vote",
+      "3_panel_description": "Browse open proposals by clicking Proposals. Clicking on a proposal opens the details page where you can read the full description and view the current status. Don’t forget to go to the related conversation on the Forum, where you can read other opinions and share your own.",
+      "4_panel_title": "How to create a proposal",
+      "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
+    },
+    "proposal_detail": {
+      "forum_button": "Discuss in the forum",
+      "subscribe_button": "Add to my Watchlist",
+      "subscribed_button": "Remove from my Watchlist",
+      "result_label": "Current result",
+      "vote_change": "Change Vote",
+      "vote_manage": "Manage",
+      "vote_choice": "Vote {choice}",
+      "voted_choice": "Voted {choice}",
+      "voting_with": "Voting with {vp}",
+      "details_label": "Details",
+      "details_user_label": "Created by",
+      "details_start_label": "Started",
+      "details_finish_label": "Ends",
+      "details_snapshot_label": "Snapshot",
+      "enact": "Enact proposal",
+      "delete": "Delete proposal"
+    },
+    "proposal_list": {
+      "new_proposal": "Submit a proposal",
+      "categories": "Categories",
+      "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
+      "no_proposals_yet": "No proposals have been sent by community members yet."
+    },
+    "proposal_activity": {
+      "list_proposals": "my proposals",
+      "list_watchlist": "watchlist",
+      "current_result": "current result",
+      "no_proposals_enacted": "No proposals have been enacted by community members yet.",
+      "no_proposals_subscriptions": "You haven't subscribed to any proposal yet.",
+      "no_proposals_submitted": "You haven't submitted any proposal yet."
+    },
+    "balance": {
+      "total_label": "Total voting power",
+      "mana_label": "MANA",
+      "mana_action": "Get MANA",
+      "mana_title": "MANA",
+      "mana_balance_label": "MANA balance",
+      "mana_total_label": "Total voting power",
+      "wrapped_balance_label": "Wrapped MANA",
+      "unwrap": "Unwrap all",
+      "land_label": "LAND",
+      "land_title": "LAND",
+      "land_action": "",
+      "land_balance_label": "Balance",
+      "land_balance": "{value, number} LANDs",
+      "land_total_label": "Total voting power",
+      "estate_label": "",
+      "estate_action": "Get LAND",
+      "estate_title": "ESTATE",
+      "estate_balance_label": "Balance",
+      "estate_balance": "{value, number} ESTATEs",
+      "estate_land_label": "Total LAND",
+      "estate_land": "{value, number} LANDs",
+      "estate_total_label": "Total voting power"
+    },
+    "submit": {
+      "button_submit": "Submit proposal",
+      "character_counter": "({current} out of {limit} characters)"
+    },
+    "submit_poll": {
+      "title": "Create a community poll",
+      "description": "",
+      "title_label": "Title",
+      "title_detail": "The question you would like to ask the community.",
+      "title_placeholder": "Enter your question here",
+      "description_label": "Description",
+      "description_detail": "A brief description of your question. Feel free to explain your motivation for polling the community, elaborate on the optional responses, or link to any relevant resources that might help inform voters.",
+      "description_placeholder": "A brief description of your question.",
+      "options_label": "Options",
+      "options_n_label": "${i, number}",
+      "options_add": "Add option"
+    },
+    "submit_ban_name": {
+      "title": "Ban a name",
+      "description": "Banning a name prevents the use of abusive or offensive names for avatars and scenes.",
+      "name_label": "The name you want to ban",
+      "description_label": "Description",
+      "description_detail": "Provide a brief explanation of why this name should be banned. For example: why or to whom might it be offensive?"
+    },
+    "submit_poi": {
+      "title": "Add a Point of Interest",
+      "description": "Points of interest (POIs) are scenes that have been highlighted on Decentraland’s map in a ‘pin drop’ form, helping other users to quickly find and access especially interesting areas.",
+      "coordinates_label": "What location do you want to add as a POI?",
+      "coordinates_detail": "Enter the X and Y coordinates of the location.",
+      "x_placeholder": "-150 through 150",
+      "y_placeholder": "-150 through 150",
+      "description_label": "Description",
+      "description_detail": "Why do you think that this location should be a featured point of interest within Decentraland? Please describe the scene located at these coordinates, explaining how it would be interesting or helpful for other Decentraland users.",
+      "description_placeholder": "The scene located at 0,0 is both visually stunning and informative for new users. The interactive tutorial hosted here would provide people with a fun and enjoyable way to learn more about Decentraland."
+    },
+    "submit_catalyst": {
+      "title": "Add a catalyst node",
+      "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
+      "description_2": "To propose the addition of a new node, please provide the following details.",
+      "owner_label": "Ethereum address of the owner of the Catalyst Node",
+      "owner_placeholder": "Example: 0x06012c8cf97bead5deae237070f9587f8e7a266d",
+      "domain_label": "Domain for the Catalyst Node",
+      "domain_placeholder": "Example: catalyst.yourdomainname.com",
+      "domain_comms_checking": "Checking communication server status...",
+      "domain_content_checking": "Checking content server status...",
+      "domain_lambda_checking": "Checking lambda server status...",
+      "domain_comms_ok": "✔ Communication server is ready.",
+      "domain_content_ok": "✔ Content server is ready.",
+      "domain_lambda_ok": "✔ Lambda server is ready.",
+      "domain_comms_failed": "✘ Communication server is not ready.",
+      "domain_content_failed": "✘ Content server is not ready.",
+      "domain_lambda_failed": "✘ Lambda server is not ready.",
+      "description_label": "Description",
+      "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
+    },
+    "submit_grant": {
+      "title": "Request a grant",
+      "description": "Decentraland Grants allow the DAO’s MANA to fund the creation of features or content for the Decentraland platform. Either individuals or teams may apply within one of five categories, and there are six levels of funding for each category. Before submitting your grant proposal, please review the [Grants Framework](https://docs.decentraland.org) here.\n\nAside from the requirements listed in the Grants Framework and Decentraland’s [Content Policy](https://decentraland.org/content), [Terms of Use](https://decentraland.org/terms), and [Code of Ethics](https://decentraland.org/ethics), there are no constraints on the content or features that may be funded.",
+      "category_label": "Category",
+      "category_placeholder": "Select a category",
+      "tier_label": "Grant tier",
+      "tier_placeholder": "Select a tier",
+      "title_placeholder": "Enter a descriptive title for your grant proposal here.",
+      "abstract_label": "Abstract",
+      "abstract_detail": "Please explain the key components of your project. This should include a description of the feature or content you want to create, what needs or goals your work may satisfy, and the skills or experience you have that will contribute to your success. This is your chance to make a good first impression on the community.",
+      "abstract_placeholder": "Enter a quick, non-technical overview of your project here.",
+      "size_label": "Grant size",
+      "size_detail": "Please enter the exact amount of funding you would like to request. This amount must be within the range of your selected tier.",
+      "description_label": "Description",
+      "description_placeholder": "Allows you to elaborate on why your project should receive funding, the problems that your project will solve, or the benefits it will bring to the Decentraland platform.",
+      "specification_label": "Specification",
+      "specification_detail": "Provide an explanation of how you will complete your project, listing the tools and methods you plan to use. Include any technical documentation, drafts, or other preliminary work you’ve already completed.",
+      "specification_placeholder": "The technical specification for your project.",
+      "personnel_label": "Personnel",
+      "personnel_detail": "Please list who will be working on this project, along with an explicit overview of their relevant skill sets and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
+      "personnel_placeholder": "A description of your team and why they are particularly qualified for your project.",
+      "roadmap_label": "Roadmap and milestones",
+      "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
+      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
+    }
+  }
+}

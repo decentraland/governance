@@ -1,0 +1,47 @@
+.StatusLabel,
+.StatusLabel.StatusLabel--active {
+  text-transform: uppercase;
+  padding: 0 11px;
+  height: 24px;
+  display: inline-flex;
+  border: 1px solid #736E7D;
+  color: #736E7D;
+  border-radius: 42px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  margin-right: .5rem;
+  vertical-align: middle;
+  align-content: center;
+}
+
+.StatusLabel.StatusLabel--pending {
+  opacity: .5;
+}
+
+.StatusLabel.StatusLabel--passed {
+  color: #44B600;
+  border-color: #44B600;
+}
+
+.StatusLabel.StatusLabel--enacted {
+  color: #FFF;
+  border-color: #44B600;
+  background-color: #44B600;
+}
+
+.StatusLabel.StatusLabel--rejected {
+  color: #FF0000;
+  border-color: #FF0000;
+}
+
+.StatusLabel img {
+  display: block;
+  padding: 1px .3rem 1px 0;
+}
+
+.StatusLabel span {
+  display: block;
+  line-height: 20px;
+  padding: 1px 0;
+}

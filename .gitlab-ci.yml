@@ -1,15 +1,56 @@
-image: decentraland/ci-node:latest
+stages:
+  - install
+  - build
+  # - test
+  - deploy
 
-build:
+services:
+  - docker:dind
+
+# Cache modules in between jobs
+cache:
+  key: ${CI_PROJECT_NAME}
+  paths:
+    - .npm/
+
+build:code:
+  stage: install
+  image: decentraland/ci-node:latest
+  variables:
+    PULUMI_STACK: "website-dao"
   only:
     - master
     - staging
     - release
   script:
-    - ./setupEnv.sh
-    - npm install && npm run build
+
+    # install dependencies
+    - npm ci --cache .npm --prefer-offline
+
+    # setup dcl environment
+    - export PATH="$PATH:$HOME/.pulumi/bin"
+    - source dcl-env
+
+    # setup project environment
+    - pulumi login -c "s3://$STATE_BUCKET/"
+    - >
+      if pulumi stack select "$PULUMI_STACK-$ENVIRONMENT"; then
+        echo "[stack $stack] Stack exists ✅";
+      else
+        pulumi stack init "$PULUMI_STACK-$ENVIRONMENT"
+        echo "[stack $stack] Stack created ✅";
+      fi
+
+    - source ./node_modules/.bin/setup-environment
+
+    # build source
+    - npm run build
+
+    # push server
     - dcl-lock-sync
-    - cd .ci && npm install && dcl-up website-dao
-    - dcl-sync-release && cd ..
-    - dcl-upload build
-    - cd .ci && dcl-cache-invalidation
+    - dcl-up $PULUMI_STACK
+    - dcl-sync-release
+
+    # push static
+    - ./node_modules/.bin/setup-bucket public
+    - dcl-cache-invalidation

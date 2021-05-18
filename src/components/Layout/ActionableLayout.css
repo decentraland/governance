@@ -1,0 +1,16 @@
+.ActionableLayout .ActionableLayout__Action {
+  min-height: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center
+}
+
+.ActionableLayout .ActionableLayout__Content {
+  padding-top: .5rem;
+  height: calc(100% - 32px);
+}
+
+.ActionableLayout .ActionableLayout__Left .ui.header.sub {
+  margin-bottom: 0;
+}
