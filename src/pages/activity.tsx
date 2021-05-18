@@ -7,7 +7,7 @@ import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import locations, { ProposalList, toProposalList } from "../modules/locations"
+import locations, { ProposalActivityList, toProposalActivityList } from "../modules/locations"
 import { navigate } from "gatsby-plugin-intl"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 import ActionableLayout from "../components/Layout/ActionableLayout"
@@ -20,8 +20,8 @@ import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext
 import ProposalCard from "../components/Proposal/ProposalCard"
 import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
-import './activity.css'
 import Empty from "../components/Proposal/Empty"
+import './activity.css'
 
 export default function WelcomePage() {
   const l = useFormatMessage()
@@ -29,7 +29,7 @@ export default function WelcomePage() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
   const status = toProposalStatus(params.get('status'))
-  const list = toProposalList(params.get('list'))
+  const list = toProposalActivityList(params.get('list'))
   const [ proposals, proposalsState ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals({ user: account! })), [ account ], { callWithTruthyDeps: true })
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const [ results, subscriptionsResultsState ] = useAsyncMemo(() => Governance.get()
@@ -51,20 +51,7 @@ export default function WelcomePage() {
     }
 
     switch (list) {
-      case ProposalList.Enacted:
-        return proposals.filter((proposal) => {
-          if (!proposal) {
-            return false
-          }
-
-          if (proposal.status !== ProposalStatus.Enacted) {
-            return false
-          }
-
-          return true
-        })
-
-      case ProposalList.MyProposals:
+      case ProposalActivityList.MyProposals:
         return proposals.filter((proposal) => {
           if (!proposal) {
             return false
@@ -81,7 +68,7 @@ export default function WelcomePage() {
           return true
         })
 
-      case ProposalList.Watchlist:
+      case ProposalActivityList.Watchlist:
         const map = new Map<string, ProposalAttributes>(proposals.map(proposal => [ proposal.id, proposal ]))
         return subscriptions
           .map(subscription => map.get(subscription.proposal_id))
@@ -108,7 +95,7 @@ export default function WelcomePage() {
     return navigate(locations.activity(newParams))
   }
 
-  function handleListFilter(list: ProposalList) {
+  function handleListFilter(list: ProposalActivityList) {
     const newParams = new URLSearchParams(params)
     newParams.set('list', list)
     return navigate(locations.activity(newParams))
@@ -117,18 +104,12 @@ export default function WelcomePage() {
   useEffect(() => {
     if (!list) {
       const newParams = new URLSearchParams(params)
-      newParams.set('list', ProposalList.MyProposals)
+      newParams.set('list', ProposalActivityList.MyProposals)
       navigate(locations.activity(newParams))
     }
   }, [ list ])
 
-  if (
-    !account &&
-    (
-      list === ProposalList.MyProposals ||
-      list === ProposalList.Watchlist
-    )
-  ) {
+  if (!account) {
     return <>
     <Navigation activeTab={NavigationTab.Activity} />
     <Container className="ActivityPage">
@@ -138,26 +119,24 @@ export default function WelcomePage() {
   }
 
   return <>
-    <Navigation activeTab={list === ProposalList.Enacted ? NavigationTab.Enacted : NavigationTab.Activity} />
+    <Navigation activeTab={NavigationTab.Activity} />
     <Container className="ActivityPage">
       <ActionableLayout
         leftAction={
-          list !== ProposalList.Enacted && <>
-            <Filter active={list === ProposalList.MyProposals} onClick={() => handleListFilter(ProposalList.MyProposals)}>{l('page.proposal_activity.list_proposals')}</Filter>
-            <Filter active={list === ProposalList.Watchlist} onClick={() => handleListFilter(ProposalList.Watchlist)}>{l('page.proposal_activity.list_watchlist')}</Filter>
+          <>
+            <Filter active={list === ProposalActivityList.MyProposals} onClick={() => handleListFilter(ProposalActivityList.MyProposals)}>{l('page.proposal_activity.list_proposals')}</Filter>
+            <Filter active={list === ProposalActivityList.Watchlist} onClick={() => handleListFilter(ProposalActivityList.Watchlist)}>{l('page.proposal_activity.list_watchlist')}</Filter>
           </>
         }
         rightAction={
-          list !== ProposalList.Enacted &&
-            <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
+          <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
         }
       >
         <div  style={{ marginTop: '16px', position: 'relative', minHeight: '200px' }}>
           <Loader active={proposalsState.loading || subscriptionsState.loading} />
           {subscribedProposals.length === 0 && <Empty description={
-              list === ProposalList.Enacted ? l(`page.proposal_activity.no_proposals_enacted`) :
-              list === ProposalList.Watchlist ? l(`page.proposal_activity.no_proposals_subscriptions`) :
-              list === ProposalList.MyProposals ? l(`page.proposal_activity.no_proposals_submitted`) :
+              list === ProposalActivityList.Watchlist ? l(`page.proposal_activity.no_proposals_subscriptions`) :
+              list === ProposalActivityList.MyProposals ? l(`page.proposal_activity.no_proposals_submitted`) :
               null
           } />}
           {subscribedProposals.length > 0 && <Card.Group>

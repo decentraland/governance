@@ -10,12 +10,11 @@ import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { navigate, Link } from "gatsby-plugin-intl"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
-import './index.css'
-import locations, { WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
+import locations, { ProposalListView, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
 import { NewProposalModal } from "../components/Modal/NewProposalModal"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import CategoryOption from "../components/Category/CategoryOption"
-import { ProposalAttributes, ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
+import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import StatusMenu from "../components/Status/StatusMenu"
 import CategoryBanner from "../components/Category/CategoryBanner"
@@ -25,6 +24,7 @@ import { Governance } from "../api/Governance"
 import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
+import './index.css'
 
 export default function IndexPage() {
   const l = useFormatMessage()
@@ -33,6 +33,7 @@ export default function IndexPage() {
   const isNewProposalOpen = params.get('modal') === 'new'
   const type = toProposalType(params.get('type'))
   const status = toProposalStatus(params.get('status'))
+  const view = toProposalListView(params.get('view'))
   const [ proposals ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()))
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
 
@@ -44,11 +45,16 @@ export default function IndexPage() {
   }, [])
 
   const filteredProposals = useMemo(() => proposals && proposals.filter(proposal => {
+
     if (type && proposal.type !== type) {
       return false
     }
 
-    if (status && proposal.status !== status) {
+    if (view && (proposal.status as any) !== ProposalListView.Enacted) {
+      return false
+    }
+
+    if (!view && status && proposal.status !== status) {
       return false
     }
 
@@ -80,7 +86,7 @@ export default function IndexPage() {
   }
 
   return <>
-    <Navigation activeTab={NavigationTab.Proposals} />
+    <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
     <Container>
       <Grid stackable>
         <Grid.Row>
@@ -98,8 +104,8 @@ export default function IndexPage() {
           </Grid.Column>
           <Grid.Column tablet="12">
             <ActionableLayout
-              leftAction={<Header sub>{filteredProposals && filteredProposals.length > 0 ? l(`page.proposal_list.count_proposals`, { count: filteredProposals.length }) : ''}</Header>}
-              rightAction={<>
+              leftAction={<Header sub>{proposals ? l(`page.proposal_list.count_proposals`, { count: filteredProposals?.length || 0 }) : ''}</Header>}
+              rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
                 <Button primary size="small" as={Link} to={openNewProposalModal()}>{l(`page.proposal_list.new_proposal`)}</Button>
               </>}
