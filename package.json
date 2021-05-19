@@ -36,7 +36,7 @@
   "homepage": "https://github.com/decentraland/snapshot#readme",
   "dependencies": {
     "@snapshot-labs/snapshot.js": "github:snapshot-labs/snapshot.js#4e322e97c1b8d8b814d187cad087e64c21dc0e39",
-    "decentraland-gatsby": "^3.21.3",
+    "decentraland-gatsby": "^3.21.4",
     "dotenv": "^8.2.0",
     "eth-crypto": "1.6.0",
     "gatsby": "^2.32.11",
@@ -70,7 +70,7 @@
     "@types/slug": "^0.9.1",
     "@types/validator": "^13.1.3",
     "concurrently": "^6.0.0",
-    "decentraland-gatsby-deploy": "^1.6.2",
+    "decentraland-gatsby-deploy": "^1.6.3",
     "devcert": "1.1.0",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
