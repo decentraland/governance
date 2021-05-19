@@ -27,10 +27,11 @@ import {
   newProposalGrantScheme,
   NewProposalGrant,
   EnactProposalProposal,
-  enactProposalScheme
+  enactProposalScheme,
+  newProposalBanNameScheme
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
-import { DEFAULT_CHOICES, isAlreadyACatalyst, isAlreadyBannedName, isAlreadyPointOfInterest, proposalUrl, snapshotUrl, forumUrl } from './utils';
+import { DEFAULT_CHOICES, isAlreadyACatalyst, isAlreadyBannedName, isAlreadyPointOfInterest, proposalUrl, snapshotUrl, forumUrl, isValidName } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
 import isCommitee from '../Committee/isCommittee';
@@ -109,12 +110,16 @@ export async function createProposalPoll(req: WithAuth) {
   })
 }
 
-const newProposalBanNameValidator = schema.compile(newProposalPollScheme)
+const newProposalBanNameValidator = schema.compile(newProposalBanNameScheme)
 export async function createProposalBanName(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalBanName>(newProposalBanNameValidator, req.body || {})
-  const alreadyBanned = await isAlreadyBannedName(configuration.name)
+  const validName = isValidName(configuration.name)
+  if (!validName) {
+    throw new RequestError(`Name is not valid`)
+  }
 
+  const alreadyBanned = await isAlreadyBannedName(configuration.name)
   if (alreadyBanned) {
     throw new RequestError(`Name is already banned`)
   }
@@ -290,15 +295,15 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     discourse_id: discourseProposal.id,
     discourse_topic_id: discourseProposal.topic_id,
     discourse_topic_slug: discourseProposal.topic_slug,
-    start_at: start.toDate(),
-    finish_at: end.toDate(),
+    start_at: start.toJSON() as any,
+    finish_at: end.toJSON() as any,
     deleted: false,
     deleted_by: null,
     enacted: false,
     enacted_by: null,
     enacted_description: null,
-    created_at: start.toDate(),
-    updated_at: start.toDate()
+    created_at: start.toJSON() as any,
+    updated_at: start.toJSON() as any,
   }
 
   try {

@@ -5,7 +5,7 @@ import { ProposalAttributes, ProposalStatus } from './types'
 export const MIN_NAME_SIZE = 2
 export const MAX_NAME_SIZE = 15
 export const DEFAULT_CHOICES = [ 'yes', 'no' ]
-export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MAX_NAME_SIZE},${MAX_NAME_SIZE}}$`)
+export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
 export function isValidName(name: string) {
   return REGEX_NAME.test(name)
