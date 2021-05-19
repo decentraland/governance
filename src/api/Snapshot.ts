@@ -159,8 +159,6 @@ export class Snapshot extends API {
       }
     }
 
-    console.log(msg)
-
     return JSON.stringify(msg)
   }
 

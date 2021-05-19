@@ -1,9 +1,8 @@
 import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
-import { AlchemyProvider } from '@ethersproject/providers'
+import { AlchemyProvider, Block } from '@ethersproject/providers'
 import routes from "decentraland-gatsby/dist/entities/Route/routes";
 import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware";
-import isAdmin from "decentraland-gatsby/dist/entities/Auth/isAdmin";
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
@@ -170,6 +169,7 @@ export async function createProposalCatalyst(req: WithAuth) {
     user,
     type: ProposalType.Catalyst,
     title: templates.catalyst.title(configuration),
+    // description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', // templates.catalyst.description(configuration),
     description: templates.catalyst.description(configuration),
     configuration: {
       ...configuration,
@@ -204,18 +204,24 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   // Create proposal payload
   //
   let msg: string
+  let block: Block
   let snapshotStatus: SnapshotStatus
   let snapshotSpace: SnapshotSpace
   try {
     snapshotStatus = await Snapshot.get().getStatus()
     snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
   } catch (err) {
-    throw Object.assign(new Error(`Snapshot service is unreachable (1)`), err)
+    throw new RequestError(`Snapshot service is unreachable`, RequestError.InternalServerError, err)
   }
 
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
-    const block = await provider.getBlock('latest')
+    block = await provider.getBlock('latest')
+  } catch (err) {
+    throw new RequestError(`Couldn't get the latest block`, RequestError.InternalServerError, err)
+  }
+
+  try {
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE, snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
       name: data.title,
       body: [
@@ -227,9 +233,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
       end,
       start,
     })
-    console.log(msg)
   } catch (err) {
-    throw Object.assign(new Error(`Snapshot service is unreachable (2)`), err)
+    throw new RequestError(`Error creating the snapshot message`, RequestError.InternalServerError, err)
   }
 
   //
@@ -240,7 +245,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     const sig = SNAPSHOT_ACCOUNT.sign(msg).signature
     snapshotProposal = await Snapshot.get().send(address, msg, sig)
   } catch (err) {
-    throw Object.assign(new Error(`Snapshot service is unreachable (3)`), err)
+    throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err)
   }
 
   const snapshot_url = snapshotUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
@@ -254,7 +259,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     snapshotContent = await IPFS.get().getHash(snapshotProposal.ipfsHash)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw Object.assign(new Error(`IPFS service is unreachable`), err)
+    throw new RequestError(`Couldn't retrieve proposal from the IPFS`, RequestError.InternalServerError, err)
   }
 
   //
@@ -274,7 +279,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     }, DISCOURSE_AUTH)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw Object.assign(new Error(`Forum error: ${err.body.errors.join(', ')}`), err)
+    throw new RequestError(`Forum error: ${err.body.errors.join(', ')}`, RequestError.InternalServerError, err)
   }
 
   const forum_url = forumUrl({ discourse_topic_slug: discourseProposal.topic_slug, discourse_topic_id: discourseProposal.topic_id })
