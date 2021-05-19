@@ -221,7 +221,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
       body: [
         data.description,
        `**[Vote on this proposal on the Decentraland DAO](${proposalUrl({ id })})**`,
-      ].join('\n\n') + '\n',
+      ].join('\n\n') + '\n\n',
       choices: data.configuration.choices,
       snapshot: block.number,
       end,
