@@ -4,6 +4,8 @@ import { navigate } from 'gatsby-plugin-intl'
 import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
+import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalPOIScheme } from '../../entities/Proposal/types'
 import { asNumber } from '../../entities/Proposal/utils'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -17,6 +19,7 @@ import locations from '../../modules/locations'
 import loader from '../../modules/loader'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import './submit.css'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 type POIState = {
   x: string | number,
@@ -68,6 +71,7 @@ const validate = createValidator<POIState>({
 
 export default function SubmitPOI() {
   const l = useFormatMessage()
+  const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
 
   useEffect(() => {
@@ -103,6 +107,12 @@ export default function SubmitPOI() {
         })
     }
   }, [ state.validated ])
+
+  if (!account) {
+    return <Container>
+      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
+    </Container>
+  }
 
   return <ContentLayout small>
     <Helmet title={l('page.submit_poi.title') || ''} />

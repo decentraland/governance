@@ -4,6 +4,8 @@ import { navigate } from 'gatsby-plugin-intl'
 import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
+import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalCatalystScheme } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
@@ -19,6 +21,8 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { isValidDomainName } from '../../entities/Proposal/utils'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import './submit.css'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Navigation, { NavigationTab } from '../../components/Layout/Navigation'
 
 type CatalystState = {
   owner: string,
@@ -70,6 +74,7 @@ const validate = createValidator<CatalystState>({
 export default function SubmitCatalyst() {
   const l = useFormatMessage()
   const [ domain, setDomain ] = useState('')
+  const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
   const [ commsStatus, commsState ] = useAsyncMemo(async () => domain ? Catalyst.from('https://' + domain).getCommsStatus() : null, [ domain ])
   const [ contentStatus, contentState ] = useAsyncMemo(async () => domain ? Catalyst.from('https://' + domain).getContentStatus() : null, [ domain ])
@@ -124,6 +129,12 @@ export default function SubmitCatalyst() {
         })
     }
   }, [ state.validated, commsStatus, contentStatus, lambdaStatus ])
+
+  if (!account) {
+    return <Container>
+      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
+    </Container>
+  }
 
   return <ContentLayout small>
     <Helmet title={l('page.submit_catalyst.title') || ''} />

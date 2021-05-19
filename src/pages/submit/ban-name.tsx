@@ -4,6 +4,8 @@ import { navigate } from "gatsby-plugin-intl"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
+import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -17,6 +19,7 @@ import locations from '../../modules/locations'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import { isValidName } from '../../entities/Proposal/utils'
 import './submit.css'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 type BanNameState = {
   name: string,
@@ -62,6 +65,7 @@ const validate = createValidator<BanNameState>({
 
 export default function SubmitBanName() {
   const l = useFormatMessage()
+  const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
 
   useEffect(() => {
@@ -92,6 +96,12 @@ export default function SubmitBanName() {
         })
     }
   }, [ state.validated ])
+
+  if (!account) {
+    return <Container>
+      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
+    </Container>
+  }
 
   return <ContentLayout small>
     <Helmet title={l('page.submit_ban_name.title') || ''} />

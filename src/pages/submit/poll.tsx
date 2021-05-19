@@ -5,6 +5,8 @@ import { navigate } from 'gatsby-plugin-intl'
 import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
+import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalPollScheme } from '../../entities/Proposal/types'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -17,6 +19,7 @@ import { Governance } from '../../api/Governance'
 import locations from '../../modules/locations'
 import loader from '../../modules/loader'
 import './submit.css'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 type PollState = {
   title: string,
@@ -73,6 +76,7 @@ const validate = createValidator<PollState>({
 
 export default function SubmitPoll() {
   const l = useFormatMessage()
+  const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
 
   function handleAddOption() {
@@ -129,6 +133,12 @@ export default function SubmitPoll() {
         })
     }
   }, [ state.validated ])
+
+  if (!account) {
+    return <Container>
+      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
+    </Container>
+  }
 
   return <ContentLayout small>
     <Helmet title={l('page.submit_poll.title') || ''}  />
