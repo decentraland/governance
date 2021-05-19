@@ -59,9 +59,9 @@ export function url(path: string = '/', query: Record<string, string> | URLSearc
 
 export default {
   proposals: (options: Partial<ProposalListViewFilter & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
-  proposal: (proposal: string) => url(`/proposal`, { id: proposal }),
-  activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity`, options),
-  submit: (type: ProposalType) => url(`/submit/${String(type).replace('_','-')}`, {}),
-  balance: () => url(`/balance`, {}),
-  welcome: () => url(`/welcome`, {}),
+  proposal: (proposal: string) => url(`/proposal/`, { id: proposal }),
+  activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
+  submit: (type: ProposalType) => url(`/submit/${String(type).replace('_','-')}/`, {}),
+  balance: () => url(`/balance/`, {}),
+  welcome: () => url(`/welcome/`, {}),
 }
