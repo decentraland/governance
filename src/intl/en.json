@@ -18,9 +18,9 @@
       "description_empty": "Description field is empty",
       "description_too_short": "Description field is too short",
       "description_too_large": "Description field is too large",
-      "options_insufficient": "Insufficient options",
-      "options_empty": "Some option is empty",
-      "options_too_short": "Some option is to short"
+      "choices_insufficient": "Insufficient options",
+      "choices_empty": "Some option is empty",
+      "choices_too_short": "Some option is to short"
     },
     "ban_name": {
       "name_empty": "Name field is empty",
@@ -216,9 +216,9 @@
       "description_label": "Description",
       "description_detail": "A brief description of your question. Feel free to explain your motivation for polling the community, elaborate on the optional responses, or link to any relevant resources that might help inform voters.",
       "description_placeholder": "A brief description of your question.",
-      "options_label": "Options",
-      "options_n_label": "${i, number}",
-      "options_add": "Add option"
+      "choices_label": "Options",
+      "choices_n_label": "${i, number}",
+      "choices_add": "Add option"
     },
     "submit_ban_name": {
       "title": "Ban a name",

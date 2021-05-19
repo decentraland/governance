@@ -15,7 +15,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time';
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
+route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
   route.get('/proposals/:proposal/vp', withAuth, handleAPI(getMyProposalVotingPower))
   route.get('/votes', handleAPI(getCachedVotes))
 })

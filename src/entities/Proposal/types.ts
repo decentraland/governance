@@ -103,7 +103,7 @@ export const enactProposalScheme = {
 export type NewProposalPoll = {
   title: string,
   description: string,
-  options: string[],
+  choices: string[],
 }
 
 export const newProposalPollScheme = {
@@ -112,7 +112,7 @@ export const newProposalPollScheme = {
   required: [
     'title',
     'description',
-    'options',
+    'choices',
   ],
   properties: {
     title: {
@@ -125,7 +125,7 @@ export const newProposalPollScheme = {
       minLength: 20,
       maxLength: 3500,
     },
-    options: {
+    choices: {
       type: 'array',
       items: {
         type: 'string',

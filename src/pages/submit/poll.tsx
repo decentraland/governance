@@ -24,7 +24,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 type PollState = {
   title: string,
   description: string,
-  options: Record<string, string>
+  choices: Record<string, string>
 }
 
 const schema = newProposalPollScheme.properties
@@ -32,7 +32,7 @@ const schema = newProposalPollScheme.properties
 const initialPollState: PollState = {
   title: '',
   description: '',
-  options: {
+  choices: {
     '0': '',
     '1': ''
   },
@@ -53,7 +53,7 @@ const validate = createValidator<PollState>({
     description: assert(state.description.length <= schema.description.maxLength, 'error.poll.description_too_large')
   }),
   '*': (state) => {
-    const options = Object.values(state.options)
+    const choices = Object.values(state.choices)
     return ({
       title: (
         assert(state.title.length > 0, 'error.poll.title_empty') ||
@@ -65,10 +65,10 @@ const validate = createValidator<PollState>({
         assert(state.description.length >= schema.description.minLength, 'error.poll.description_too_short') ||
         assert(state.description.length <= schema.description.maxLength, 'error.poll.description_too_large')
       ),
-      options: (
-        assert(options.length >= schema.options.minItems, `error.poll.options_insufficient`) ||
-        assert(options.some(option => option !== ''), `error.poll.options_empty`) ||
-        assert(options.some(option => option.length >= schema.options.items.minLength), `error.poll.options_too_short`)
+      choices: (
+        assert(choices.length >= schema.choices.minItems, `error.poll.choices_insufficient`) ||
+        assert(choices.some(option => option !== ''), `error.poll.choices_empty`) ||
+        assert(choices.some(option => option.length >= schema.choices.items.minLength), `error.poll.choices_too_short`)
       ),
     })
   }
@@ -82,30 +82,30 @@ export default function SubmitPoll() {
   function handleAddOption() {
     editor.set({
       ...state.value,
-      options: {
-        ...state.value.options,
+      choices: {
+        ...state.value.choices,
         [Date.now()]: ''
       }
     })
   }
 
   function handleRemoveOption(i: string) {
-    const options = omit(state.value.options, [ i ]) as Record<string, string>
-    if (Object.keys(options).length < 2) {
-      options[Date.now()] = ''
+    const choices = omit(state.value.choices, [ i ]) as Record<string, string>
+    if (Object.keys(choices).length < 2) {
+      choices[Date.now()] = ''
     }
 
     editor.set({
       ...state.value,
-      options,
+      choices,
     })
   }
 
   function handleEditOption(i: string, value: string) {
     editor.set({
       ...state.value,
-      options: {
-        ...state.value.options,
+      choices: {
+        ...state.value.choices,
         [i]: value
       },
     })
@@ -113,15 +113,15 @@ export default function SubmitPoll() {
 
   useEffect(() => {
     if (state.validated) {
-      const options = Object
-        .keys(state.value.options)
+      const choices = Object
+        .keys(state.value.choices)
         .sort()
-        .map(key => state.value.options[key])
+        .map(key => state.value.choices[key])
 
       Governance.get()
         .createProposalPoll({
           ...state.value,
-          options
+          choices
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)
@@ -183,19 +183,19 @@ export default function SubmitPoll() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_poll.options_label')}</Label>
+      <Label>{l('page.submit_poll.choices_label')}</Label>
       <Paragraph tiny secondary className="details">{' '}</Paragraph>
-      <Paragraph small primary>{l.optional(state.error.options)}</Paragraph>
+      <Paragraph small primary>{l.optional(state.error.choices)}</Paragraph>
       <div style={{ width: '90%', maxWidth: '300px', margin: '0 5%' }}>
-        {Object.keys(state.value.options).sort().map((key, i) => <Field
+        {Object.keys(state.value.choices).sort().map((key, i) => <Field
           key={key}
-          placeholder={'option ' + String(i + 1)}
-          value={state.value.options[key]}
+          placeholder={'choice ' + String(i + 1)}
+          value={state.value.choices[key]}
           action={<Icon name="x" />}
           onAction={() => handleRemoveOption(key)}
           onChange={(_, { value }) => handleEditOption(key, value)}
         />)}
-        <Button basic style={{ width: '100%' }} onClick={handleAddOption}>{l('page.submit_poll.options_add')}</Button>
+        <Button basic style={{ width: '100%' }} onClick={handleAddOption}>{l('page.submit_poll.choices_add')}</Button>
       </div>
     </ContentSection>
     <ContentSection>

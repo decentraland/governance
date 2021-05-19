@@ -142,6 +142,7 @@ export class Snapshot extends API {
   async createProposalMessage(
     space: string,
     version: string,
+    network: string,
     strategies: SnapshotStrategy[],
     payload: SnapshotNewProposalPayload
   ) {
@@ -154,9 +155,11 @@ export class Snapshot extends API {
         ...payload,
         start: Number(payload.start.getTime().toString().slice(0, -3)),
         end: Number(payload.end.getTime().toString().slice(0, -3)),
-        metadata: { strategies }
+        metadata: { network, strategies }
       }
     }
+
+    console.log(msg)
 
     return JSON.stringify(msg)
   }

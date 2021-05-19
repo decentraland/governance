@@ -216,7 +216,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
     const block = await provider.getBlock('latest')
-    msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE, snapshotStatus.version, snapshotSpace.strategies, {
+    msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE, snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
       name: data.title,
       body: [
         data.description,
@@ -227,6 +227,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
       end,
       start,
     })
+    console.log(msg)
   } catch (err) {
     throw Object.assign(new Error(`Snapshot service is unreachable (2)`), err)
   }
