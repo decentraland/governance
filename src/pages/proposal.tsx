@@ -30,12 +30,10 @@ import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
 import { VoteRegisteredModal } from "../components/Modal/VoteRegisteredModal"
 import { DeleteProposalModal } from "../components/Modal/DeleteProposalModal"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import ImgFixed from "decentraland-gatsby/dist/components/Image/ImgFixed"
-import Land from "decentraland-gatsby/dist/utils/api/Land"
 import locations from "../modules/locations"
 import loader from "../modules/loader"
 import { EnactProposalModal } from "../components/Modal/EnactProposalModal"
-import { ProposalStatus, ProposalType } from "../entities/Proposal/types"
+import { ProposalStatus } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
 
 type ProposalPageOptions = {
@@ -55,7 +53,7 @@ export default function ProposalPage() {
   const [ committee, committeeState ] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [ votes, votesState ] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
   const [ subscriptions, subscriptionsState ] = useAsyncMemo(() => Governance.get().getSubscriptions(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
-  const [ votingPower, votingPowerState ] = useAsyncMemo(() => Governance.get().getVotingPower(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
+  const [ votingPower, votingPowerState ] = useAsyncMemo(() => proposal!.status === ProposalStatus.Active ? Governance.get().getVotingPower(proposal!.id) : Promise.resolve(0), [ proposal ], { callWithTruthyDeps: true })
   const subscribed = useMemo(() => !!account && !!subscriptions && !!subscriptions.find(sub => sub.user === account), [ account, subscriptions ])
   const [ voting, vote] = useAsyncTask(async (_: string, choiceIndex: number) => {
     if (proposal && account && provider && votes) {
@@ -92,6 +90,7 @@ export default function ProposalPage() {
     if (proposal && account && committee && committee.includes(account)) {
       const updateProposal = await Governance.get().enactProposal(proposal.id, description)
       loader.proposals.set(proposal.id, updateProposal)
+      patchOptions({ confirmEnact: false})
     }
   })
 

@@ -149,8 +149,7 @@ export const newProposalBanNameScheme = {
     name: {
       type: 'string',
       minLength: MIN_NAME_SIZE,
-      maxLength: MAX_NAME_SIZE,
-      pattern: REGEX_NAME,
+      maxLength: MAX_NAME_SIZE
     },
     description: {
       type: 'string',

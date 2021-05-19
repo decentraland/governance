@@ -14,6 +14,7 @@ import { Link } from 'gatsby-plugin-intl'
 import locations from '../../modules/locations'
 import { Vote } from '../../entities/Votes/types'
 import { calculateChoiceColor, calculateResult } from '../../entities/Votes/utils'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null,
@@ -32,11 +33,13 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
   const vote = useMemo(() => account && votes && votes[account] && votes[account] || null, [ account, votes ])
   const results = useMemo(() => calculateResult(choices, votes || {}), [ choices, votes ])
-  const now = useMemo(() => new Date, [])
-  const startAt = useCountdown(proposal?.start_at || now)
-  const finishAt = useCountdown(proposal?.finish_at || now)
-  const started = startAt.time === 0
-  const finished = finishAt.time === 0
+  const now = useMemo(() => Time.utc(), [])
+  const start_at = useMemo(() => Time.utc(proposal?.start_at) || now, [ proposal ])
+  const finish_at = useMemo(() => Time.utc(proposal?.finish_at) || now, [ proposal ])
+  const untilStart = useCountdown(start_at)
+  const untilFinish = useCountdown(finish_at)
+  const started = untilStart.time === 0
+  const finished = untilFinish.time === 0
 
   return <div {...props} className={TokenList.join([
     'DetailsSection',

@@ -48,13 +48,13 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
     <div className="DetailsSection__Content DetailsSection__Flex">
       <div>{l('page.proposal_detail.details_start_label')}</div>
       <div className="DetailsSection__Value">
-        {proposal && Time.utc(proposal.start_at).format('MMM DD HH:mm')}
+        {proposal && Time.from(proposal.start_at).format('MMM DD HH:mm')}
       </div>
     </div>
     <div className="DetailsSection__Content DetailsSection__Flex">
       <div>{l('page.proposal_detail.details_finish_label')}</div>
       <div className="DetailsSection__Value">
-        {proposal && Time.utc(proposal.finish_at).format('MMM DD HH:mm')}
+        {proposal && Time.from(proposal.finish_at).format('MMM DD HH:mm')}
       </div>
     </div>
     <div className="DetailsSection__Content DetailsSection__Flex">

@@ -6,7 +6,7 @@ import { ProposalAttributes, ProposalStatus } from "./types";
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
-  context.log(`Activated ${activatedProposals} proposals...`)
+  context.log(activatedProposals === 0 ? `No activated proposals` : `Activated ${activatedProposals} proposals...`)
 }
 
 function sameOptions(options: string[], expected: string[]) {
