@@ -38,8 +38,7 @@ export function useLandContract() {
   return useMemo(() => createContract(eth, RegisterABI, LAND[chainId!], account), [ eth, account, chainId ])
 }
 
-export function useBalanceOf(contract: Contract | null, unit: keyof typeof unitMap) {
-  const [ account ] = useAuthContext()
+export function useBalanceOf(contract: Contract | null, account: string | null, unit: keyof typeof unitMap = 'wei') {
   return useAsyncMemo<number>(async () => {
       if (!account || !contract) {
         return 0
@@ -59,9 +58,7 @@ export function useEstateContract() {
   return useMemo(() => createContract(eth, RegisterABI, ESTATE[chainId!], account), [ eth, account, chainId ])
 }
 
-export function useEstateBalance() {
-  const [ account ] = useAuthContext()
-  const contract = useEstateContract()
+export function useEstateBalance(contract: Contract | null, account: string | null, unit: keyof typeof unitMap = 'wei') {
   const [ balance, state ] = useAsyncMemo<[number, number]>(async () => {
       if (!account || !contract) {
         return [0, 0]
@@ -73,8 +70,8 @@ export function useEstateBalance() {
       ])
 
       return [
-        Math.floor(Number(fromWei(estates, 'wei'))),
-        Math.floor(Number(fromWei(lands, 'wei'))),
+        Math.floor(Number(fromWei(estates, unit))),
+        Math.floor(Number(fromWei(lands, unit))),
       ]
     },
     [ contract, account ],
