@@ -3,8 +3,8 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import { Eth } from 'web3x/eth'
 import { Address } from 'web3x/address'
 import { Contract, ContractAbi, ContractAbiDefinition } from 'web3x/contract'
-import { fromWei } from 'web3x/utils/units'
-import { ERC20ABI, EstateProxy, EstateRegistry, LANDProxy, LANDRegistry, MANAMiniMeToken, MANAToken, MiniMeABI, RegisterABI } from '../modules/contracts'
+import { fromWei, unitMap } from 'web3x/utils/units'
+import { ERC20ABI, LAND, wMANA, MANA, ESTATE, MiniMeABI, RegisterABI } from '../modules/contracts'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 function createContract(eth: Eth | null, abi: any, address: string | null | undefined, fromAccount: string | null ) {
@@ -23,22 +23,22 @@ export function useEth() {
 export function useManaContract() {
   const eth = useEth()
   const [ account, { chainId } ] = useAuthContext()
-  return useMemo(() => createContract(eth, ERC20ABI, MANAToken[chainId!], account), [ eth, account, chainId ])
+  return useMemo(() => createContract(eth, ERC20ABI, MANA[chainId!], account), [ eth, account, chainId ])
 }
 
 export function useWManaContract() {
   const eth = useEth()
   const [ account, { chainId } ] = useAuthContext()
-  return useMemo(() => createContract(eth, MiniMeABI, MANAMiniMeToken[chainId!], account), [ eth, account, chainId ])
+  return useMemo(() => createContract(eth, MiniMeABI, wMANA[chainId!], account), [ eth, account, chainId ])
 }
 
 export function useLandContract() {
   const eth = useEth()
   const [ account, { chainId } ] = useAuthContext()
-  return useMemo(() => createContract(eth, RegisterABI, LANDProxy[chainId!] || LANDRegistry[chainId!], account), [ eth, account, chainId ])
+  return useMemo(() => createContract(eth, RegisterABI, LAND[chainId!], account), [ eth, account, chainId ])
 }
 
-export function useBalanceOf(contract: Contract | null) {
+export function useBalanceOf(contract: Contract | null, unit: keyof typeof unitMap) {
   const [ account ] = useAuthContext()
   return useAsyncMemo<number>(async () => {
       if (!account || !contract) {
@@ -46,7 +46,7 @@ export function useBalanceOf(contract: Contract | null) {
       }
 
       const balance = await contract.methods.balanceOf(account).call()
-      return Math.floor(Number(fromWei(balance, 'ether')))
+      return Math.floor(Number(fromWei(balance, unit)))
     },
     [ contract, account ],
     { callWithTruthyDeps: true, initialValue: 0 }
@@ -56,9 +56,8 @@ export function useBalanceOf(contract: Contract | null) {
 export function useEstateContract() {
   const eth = useEth()
   const [ account, { chainId } ] = useAuthContext()
-  return useMemo(() => createContract(eth, RegisterABI, EstateProxy[chainId!] || EstateRegistry[chainId!], account), [ eth, account, chainId ])
+  return useMemo(() => createContract(eth, RegisterABI, ESTATE[chainId!], account), [ eth, account, chainId ])
 }
-
 
 export function useEstateBalance() {
   const [ account ] = useAuthContext()
@@ -74,8 +73,8 @@ export function useEstateBalance() {
       ])
 
       return [
-        Math.floor(Number(fromWei(estates, 'ether'))),
-        Math.floor(Number(fromWei(lands, 'ether'))),
+        Math.floor(Number(fromWei(estates, 'wei'))),
+        Math.floor(Number(fromWei(lands, 'wei'))),
       ]
     },
     [ contract, account ],

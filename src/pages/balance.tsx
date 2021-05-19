@@ -21,6 +21,7 @@ import useAsyncTask from "decentraland-gatsby/dist/hooks/useAsyncTask"
 import useTransactionContext from "decentraland-gatsby/dist/context/Auth/useTransactionContext"
 import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
 import './balance.css'
+import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
 
 const LAND_MULTIPLIER = 2000
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
@@ -33,9 +34,9 @@ export default function WrappingPage() {
   const manaContract = useManaContract()
   const wManaContract = useWManaContract()
   const landContract = useLandContract()
-  const [ mana, manaState ] = useBalanceOf(manaContract)
-  const [ wMana, wManaState ] = useBalanceOf(wManaContract)
-  const [ land, landState ] = useBalanceOf(landContract)
+  const [ mana, manaState ] = useBalanceOf(manaContract, 'ether')
+  const [ wMana, wManaState ] = useBalanceOf(wManaContract, 'ether')
+  const [ land, landState ] = useBalanceOf(landContract, 'wei')
   const [ estate, estateLand, estateState ] = useEstateBalance()
   const votingPower = mana! + wMana! + (land! * LAND_MULTIPLIER) + (estateLand! * LAND_MULTIPLIER)
   const [ transactions, transactionsState ] = useTransactionContext()
@@ -66,7 +67,6 @@ export default function WrappingPage() {
     return () => { cancelled }
   }, [ unwrappingTransaction?.status ])
 
-
   if (!account) {
     return <>
     <Navigation activeTab={NavigationTab.Activity} />
@@ -94,7 +94,7 @@ export default function WrappingPage() {
       >
         <Card>
           <Card.Content>
-            <Header>{l(`page.balance.mana_title`)}</Header>
+            <Header><b>{l(`page.balance.mana_title`)}</b></Header>
             <Stats title={l('page.balance.mana_balance_label') || ''}>
               <VotingPower value={mana!} size="medium" />
             </Stats>
