@@ -1,5 +1,6 @@
 
 import React, { useMemo } from "react"
+import { Helmet } from "react-helmet"
 import { useLocation  } from '@reach/router'
 import { Personal } from 'web3x/personal'
 import { Address } from 'web3x/address'
@@ -95,9 +96,10 @@ export default function ProposalPage() {
   })
 
   return <>
+  <Helmet title={proposal ? proposal.title : 'Decentraland DAO'} />
   <ContentLayout className="ProposalDetailPage">
   <ContentSection>
-    <Header size="huge">{proposal ? proposal.title : ' '}</Header>
+    <Header size="huge">{proposal?.title || '' } &nbsp;</Header>
     <Loader active={!proposal}/>
     <div style={{ minHeight: '24px' }}>
       {proposal && <StatusLabel status={proposal.status} />}
