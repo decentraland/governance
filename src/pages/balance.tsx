@@ -91,9 +91,9 @@ export default function WrappingPage() {
       </Stats>
       {account && accountBalance && account !== accountBalance &&<Stats title="Address">
           <Header size="huge">
-        <Blockie seed={accountBalance} scale={8}>
-            <Address value={accountBalance} strong />
-        </Blockie>
+            <Blockie seed={accountBalance} scale={8}>
+              <Address value={accountBalance} strong />
+            </Blockie>
           </Header>
       </Stats>}
     </Container>
