@@ -59,7 +59,7 @@ export default function IndexPage() {
     }
 
     return true
-  }), [ proposals, type, status ])
+  }), [ proposals, type, status, view ])
 
   function openNewProposalModal() {
     const newParams = new URLSearchParams(params)
