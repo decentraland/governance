@@ -51,7 +51,7 @@ export default function ProposalPage() {
   const [ options, patchOptions ] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmEnact: false })
   const [ account, { provider } ] = useAuthContext()
   const [ proposal, proposalState ] = useProposal(params.get('id'))
-  const [ committee, committeeState ] = useAsyncMemo(() => Governance.get().getCommittee(), [])
+  const [ committee ] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [ votes, votesState ] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
   const [ subscriptions, subscriptionsState ] = useAsyncMemo(() => Governance.get().getSubscriptions(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
   const [ votingPower, votingPowerState ] = useAsyncMemo(() => proposal!.status === ProposalStatus.Active ? Governance.get().getVotingPower(proposal!.id) : Promise.resolve(0), [ proposal ], { callWithTruthyDeps: true })
