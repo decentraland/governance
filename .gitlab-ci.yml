@@ -25,7 +25,7 @@ build:code:
   script:
 
     # install dependencies
-    - npm install
+    - npm ci --cache .npm --prefer-offline
     - npm i github:snapshot-labs/snapshot.js#4e322e97c1b8d8b814d187cad087e64c21dc0e39
 
     - ls node_modules/@snapshot-labs/snapshot.js
