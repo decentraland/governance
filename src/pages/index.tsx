@@ -37,12 +37,12 @@ export default function IndexPage() {
   const [ proposals ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()))
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
 
-  useEffect(() => {
-    const welcomeVersion = localStorage.getItem(WELCOME_STORE_KEY)
-    if (welcomeVersion !== WELCOME_STORE_VERSION) {
-      navigate(locations.welcome())
-    }
-  }, [])
+  // useEffect(() => {
+  //   const welcomeVersion = localStorage.getItem(WELCOME_STORE_KEY)
+  //   if (welcomeVersion !== WELCOME_STORE_VERSION) {
+  //     navigate(locations.welcome())
+  //   }
+  // }, [])
 
   const filteredProposals = useMemo(() => proposals && proposals.filter(proposal => {
 
