@@ -101,6 +101,7 @@
   "status": {
     "all": "All outcomes",
     "pending": "Pending outcomes",
+    "finished": "Finished outcomes",
     "active": "Active outcomes",
     "rejected": "Rejected outcomes",
     "passed": "Passed outcomes",
