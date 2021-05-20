@@ -44,22 +44,23 @@ export default function IndexPage() {
   const view = toProposalListView(params.get('view'))
   const [ proposals ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()))
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
-  const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
+  // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
-  useEffect(() => {
-    const welcomeVersion = localStorage.getItem(WELCOME_STORE_KEY)
-    setShowOnboarding(welcomeVersion !== WELCOME_STORE_VERSION ? Onboarding.Yes : Onboarding.No)
-  }, [])
-
-  function handleCloseOnboarding() {
-    localStorage.setItem(WELCOME_STORE_KEY, WELCOME_STORE_VERSION)
-    setShowOnboarding(Onboarding.No)
-    if (view === ProposalListView.Onboarding) {
-      const newParams = new URLSearchParams(params)
-      newParams.delete('view')
-      navigate(locations.proposals(newParams))
-    }
-  }
+  // Onboarding
+  // useEffect(() => {
+  //   const welcomeVersion = localStorage.getItem(WELCOME_STORE_KEY)
+  //   setShowOnboarding(welcomeVersion !== WELCOME_STORE_VERSION ? Onboarding.Yes : Onboarding.No)
+  // }, [])
+  //
+  // function handleCloseOnboarding() {
+  //   localStorage.setItem(WELCOME_STORE_KEY, WELCOME_STORE_VERSION)
+  //   setShowOnboarding(Onboarding.No)
+  //   if (view === ProposalListView.Onboarding) {
+  //     const newParams = new URLSearchParams(params)
+  //     newParams.delete('view')
+  //     navigate(locations.proposals(newParams))
+  //   }
+  // }
 
   const filteredProposals = useMemo(() => proposals && proposals.filter(proposal => {
 
@@ -102,38 +103,38 @@ export default function IndexPage() {
     return navigate(locations.proposals(newParams))
   }
 
-  if (showOnboarding === Onboarding.Loading) {
-    return <Container className="WelcomePage">
-      <div>
-        <Loader size="huge" active/>
-      </div>
-    </Container>
-  }
+  // if (showOnboarding === Onboarding.Loading) {
+  //   return <Container className="WelcomePage">
+  //     <div>
+  //       <Loader size="huge" active/>
+  //     </div>
+  //   </Container>
+  // }
 
-  if (showOnboarding === Onboarding.Yes || view === ProposalListView.Onboarding) {
-    return <Container className="WelcomePage">
-      <div>
-        <Carousel progress>
-          <WelcomeItem onClose={handleCloseOnboarding}>
-            <Header>{l('page.welcome.1_panel_title')}</Header>
-            <Markdown source={l('page.welcome.1_panel_description')!}/>
-          </WelcomeItem>
-          <WelcomeItem onClose={handleCloseOnboarding}>
-            <Header>{l('page.welcome.2_panel_title')}</Header>
-            <Markdown source={l('page.welcome.2_panel_description')!}/>
-          </WelcomeItem>
-          <WelcomeItem onClose={handleCloseOnboarding}>
-            <Header>{l('page.welcome.3_panel_title')}</Header>
-            <Markdown source={l('page.welcome.3_panel_description')!}/>
-          </WelcomeItem>
-          <WelcomeItem onClose={handleCloseOnboarding}>
-            <Header>{l('page.welcome.4_panel_title')}</Header>
-            <Markdown source={l('page.welcome.4_panel_description')!}/>
-          </WelcomeItem>
-        </Carousel>
-      </div>
-    </Container>
-  }
+  // if (showOnboarding === Onboarding.Yes || view === ProposalListView.Onboarding) {
+  //   return <Container className="WelcomePage">
+  //     <div>
+  //       <Carousel progress>
+  //         <WelcomeItem onClose={handleCloseOnboarding}>
+  //           <Header>{l('page.welcome.1_panel_title')}</Header>
+  //           <Markdown source={l('page.welcome.1_panel_description')!}/>
+  //         </WelcomeItem>
+  //         <WelcomeItem onClose={handleCloseOnboarding}>
+  //           <Header>{l('page.welcome.2_panel_title')}</Header>
+  //           <Markdown source={l('page.welcome.2_panel_description')!}/>
+  //         </WelcomeItem>
+  //         <WelcomeItem onClose={handleCloseOnboarding}>
+  //           <Header>{l('page.welcome.3_panel_title')}</Header>
+  //           <Markdown source={l('page.welcome.3_panel_description')!}/>
+  //         </WelcomeItem>
+  //         <WelcomeItem onClose={handleCloseOnboarding}>
+  //           <Header>{l('page.welcome.4_panel_title')}</Header>
+  //           <Markdown source={l('page.welcome.4_panel_description')!}/>
+  //         </WelcomeItem>
+  //       </Carousel>
+  //     </div>
+  //   </Container>
+  // }
 
   return <>
     <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
