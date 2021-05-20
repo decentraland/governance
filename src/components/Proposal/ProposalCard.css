@@ -4,6 +4,7 @@
 
 .ui.card.ProposalCard .content.ProposalCard__Content {
   padding-bottom: 75px;
+  height: 100%;
 }
 
 .ProposalCard .ProposalCard__Title {
