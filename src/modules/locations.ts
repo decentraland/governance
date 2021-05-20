@@ -4,12 +4,14 @@ export const WELCOME_STORE_KEY: string = 'org.decentraland.governance.welcome'
 export const WELCOME_STORE_VERSION: string = '1'
 
 export enum ProposalListView {
-  Enacted = 'enacted'
+  Enacted = 'enacted',
+  Onboarding = 'onboarding',
 }
 
 export function toProposalListView(list: string | null | undefined): ProposalListView | null {
   switch(list) {
     case ProposalListView.Enacted:
+    case ProposalListView.Onboarding:
       return list
     default:
       return null

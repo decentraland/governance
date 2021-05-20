@@ -1,8 +1,7 @@
 
-import React, { useMemo, useEffect } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import { useLocation } from '@reach/router'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
-import { Card } from "decentraland-ui/dist/components/Card/Card"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
@@ -25,6 +24,15 @@ import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
 import './index.css'
+import Carousel from "decentraland-gatsby/dist/components/Carousel/Carousel"
+import WelcomeItem from "../components/Welcome/WelcomeItem"
+import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
+
+enum Onboarding {
+  Loading,
+  Yes,
+  No
+}
 
 export default function IndexPage() {
   const l = useFormatMessage()
@@ -36,13 +44,22 @@ export default function IndexPage() {
   const view = toProposalListView(params.get('view'))
   const [ proposals ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()))
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
+  const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
-  // useEffect(() => {
-  //   const welcomeVersion = localStorage.getItem(WELCOME_STORE_KEY)
-  //   if (welcomeVersion !== WELCOME_STORE_VERSION) {
-  //     navigate(locations.welcome())
-  //   }
-  // }, [])
+  useEffect(() => {
+    const welcomeVersion = localStorage.getItem(WELCOME_STORE_KEY)
+    setShowOnboarding(welcomeVersion !== WELCOME_STORE_VERSION ? Onboarding.Yes : Onboarding.No)
+  }, [])
+
+  function handleCloseOnboarding() {
+    localStorage.setItem(WELCOME_STORE_KEY, WELCOME_STORE_VERSION)
+    setShowOnboarding(Onboarding.No)
+    if (view === ProposalListView.Onboarding) {
+      const newParams = new URLSearchParams(params)
+      newParams.delete('view')
+      navigate(locations.proposals(newParams))
+    }
+  }
 
   const filteredProposals = useMemo(() => proposals && proposals.filter(proposal => {
 
@@ -83,6 +100,39 @@ export default function IndexPage() {
     const newParams = new URLSearchParams(params)
     status ? newParams.set('status', status) : newParams.delete('status')
     return navigate(locations.proposals(newParams))
+  }
+
+  if (showOnboarding === Onboarding.Loading) {
+    return <Container className="WelcomePage">
+      <div>
+        <Loader size="huge" active/>
+      </div>
+    </Container>
+  }
+
+  if (showOnboarding === Onboarding.Yes || view === ProposalListView.Onboarding) {
+    return <Container className="WelcomePage">
+      <div>
+        <Carousel progress>
+          <WelcomeItem onClose={handleCloseOnboarding}>
+            <Header>{l('page.welcome.1_panel_title')}</Header>
+            <Markdown source={l('page.welcome.1_panel_description')!}/>
+          </WelcomeItem>
+          <WelcomeItem onClose={handleCloseOnboarding}>
+            <Header>{l('page.welcome.2_panel_title')}</Header>
+            <Markdown source={l('page.welcome.2_panel_description')!}/>
+          </WelcomeItem>
+          <WelcomeItem onClose={handleCloseOnboarding}>
+            <Header>{l('page.welcome.3_panel_title')}</Header>
+            <Markdown source={l('page.welcome.3_panel_description')!}/>
+          </WelcomeItem>
+          <WelcomeItem onClose={handleCloseOnboarding}>
+            <Header>{l('page.welcome.4_panel_title')}</Header>
+            <Markdown source={l('page.welcome.4_panel_description')!}/>
+          </WelcomeItem>
+        </Carousel>
+      </div>
+    </Container>
   }
 
   return <>
