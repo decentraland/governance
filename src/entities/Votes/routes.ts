@@ -9,7 +9,7 @@ import { Vote, VoteAttributes } from './types';
 import isEthereumAddress from 'validator/lib/isEthereumAddress';
 import { ProposalAttributes } from '../Proposal/types';
 import { createVotes, toProposalIds } from './utils';
-import { getScores as getBlockchainScores } from '@snapshot-labs/snapshot.js/dist/utils'
+import { utils } from '@snapshot-labs/snapshot.js/dist/snapshot.cjs'
 import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
 
@@ -97,7 +97,7 @@ export async function getCachedVotes(req: Request) {
 }
 
 export async function getScores(proposal: ProposalAttributes, provider: any, addresses: string[]) {
-  const blockchainScores: Record<string, number>[] = await getBlockchainScores(
+  const blockchainScores: Record<string, number>[] = await utils.getScores(
     proposal.snapshot_space,
     proposal.snapshot_proposal.metadata.strategies,
     proposal.snapshot_network,
