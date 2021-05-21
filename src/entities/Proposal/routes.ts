@@ -36,6 +36,7 @@ import VotesModel from '../Votes/model'
 import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
+import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
 
 export default routes((route) => {
   const withAuth = auth()
@@ -103,8 +104,6 @@ export async function createProposalPoll(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Poll,
-    title: templates.poll.title(configuration),
-    description: templates.poll.description(configuration),
     configuration,
   })
 }
@@ -126,8 +125,6 @@ export async function createProposalBanName(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.BanName,
-    title: templates.banName.title(configuration),
-    description: templates.banName.description(configuration),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -147,8 +144,6 @@ export async function createProposalPOI(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.POI,
-    title: templates.poi.title(configuration),
-    description: templates.poi.description(configuration),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -168,9 +163,6 @@ export async function createProposalCatalyst(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Catalyst,
-    title: templates.catalyst.title(configuration),
-    // description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', // templates.catalyst.description(configuration),
-    description: templates.catalyst.description(configuration),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -185,8 +177,6 @@ export async function createProposalGrant(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Grant,
-    title: templates.grant.title(configuration),
-    description: templates.grant.description(configuration),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -194,11 +184,21 @@ export async function createProposalGrant(req: WithAuth) {
   })
 }
 
-export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'title'  | 'description' | 'configuration'>) {
+export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration'>) {
   const id = uuid()
   const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)
   const end = Time.utc(start).add(SNAPSHOT_DURATION, 'seconds')
+  const proposal_url = proposalUrl({ id })
+  const title = await templates.title({ type: data.type, configuration: data.configuration })
+  const description = await templates.description({ type: data.type, configuration: data.configuration })
+
+  let profile: Avatar | null
+  try {
+    profile = await Catalyst.get().getProfile(data.user)
+  } catch (err) {
+    throw new RequestError(`Error getting profile "${data.user}"`, RequestError.InternalServerError, err)
+  }
 
   //
   // Create proposal payload
@@ -211,7 +211,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     snapshotStatus = await Snapshot.get().getStatus()
     snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
   } catch (err) {
-    throw new RequestError(`Snapshot service is unreachable`, RequestError.InternalServerError, err)
+    throw new RequestError(`Error getting snapshot space "${SNAPSHOT_SPACE}"`, RequestError.InternalServerError, err)
   }
 
   try {
@@ -223,11 +223,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
 
   try {
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE, snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: data.title,
-      body: [
-        data.description,
-       `**[Vote on this proposal on the Decentraland DAO](${proposalUrl({ id })})**`,
-      ].join('\n\n') + '\n\n',
+      name: await templates.snapshotTitle({ type: data.type, configuration: data.configuration }),
+      body: await templates.snapshotDescription({ user: data.user, type: data.type, configuration: data.configuration, profile, proposal_url }),
       choices: data.configuration.choices,
       snapshot: block.number,
       end,
@@ -267,15 +264,10 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   //
   let discourseProposal: DiscoursePost
   try {
-    const proposalHash = snapshotProposal.ipfsHash.slice(0, 7)
     discourseProposal = await Discourse.get().createPost({
       category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-      title: `[DAO: ${proposalHash}] ${data.title}`,
-      raw: [
-        data.description,
-       `**[Vote on this proposal on the Decentraland DAO](${proposalUrl({ id })})**`,
-       `**[View this proposal on Snapshot](${snapshot_url})**`,
-      ].join('\n\n') + '\n',
+      title: await templates.forumTitle({ type: data.type, configuration: data.configuration, snapshot_id: snapshotProposal.ipfsHash }),
+      raw: await templates.forumDescription({ type: data.type, configuration: data.configuration, user: data.user, profile, proposal_url, snapshot_url }),
     }, DISCOURSE_AUTH)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
@@ -291,6 +283,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   const newProposal: ProposalAttributes = {
     ...data,
     id,
+    title,
+    description,
     configuration: JSON.stringify(data.configuration),
     status: ProposalStatus.Active,
     snapshot_id: snapshotProposal.ipfsHash,

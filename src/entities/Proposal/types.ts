@@ -1,6 +1,6 @@
-import { MAX_NAME_SIZE, MIN_NAME_SIZE, REGEX_NAME } from "./utils"
+import { MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
 
-export type ProposalAttributes = {
+export type ProposalAttributes<C extends {} = any> = {
   id: string
   snapshot_id: string
   snapshot_space: string
@@ -15,7 +15,7 @@ export type ProposalAttributes = {
   description: string,
   type: ProposalType
   status: ProposalStatus
-  configuration: any
+  configuration: C
   start_at: Date
   finish_at: Date
   deleted: boolean

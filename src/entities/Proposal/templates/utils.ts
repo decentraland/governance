@@ -6,7 +6,7 @@ import escapeMarkdown from 'markdown-escape'
 import numeral from 'numeral'
 
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
-  return String.raw(raw, ...subs).trim() + '\n'
+  return String.raw(raw, ...subs).trim()
 }
 
 export function formatBalance(value: number) {
