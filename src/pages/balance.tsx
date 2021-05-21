@@ -114,7 +114,7 @@ export default function WrappingPage() {
             <Header>
               <b>{l(`page.balance.mana_title`)}</b>
             </Header>
-            <Loader size="tiny" className="balance" active={manaState.loading}/>
+            <Loader size="tiny" className="balance" active={manaState.loading || wManaState.loading}/>
             <Stats title={l('page.balance.mana_balance_label') || ''}>
               <VotingPower value={mana!} size="medium" />
             </Stats>
