@@ -22,6 +22,7 @@ import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
 import './activity.css'
+import { SubscriptionAttributes } from "../entities/Subscription/types"
 
 export default function WelcomePage() {
   const l = useFormatMessage()
@@ -34,7 +35,7 @@ export default function WelcomePage() {
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const [ results, subscriptionsResultsState ] = useAsyncMemo(() => Governance.get()
     .getVotes([
-      ...(subscriptions || []).map(subscription => subscription.proposal_id),
+      ...(subscriptions || []).map((subscription: SubscriptionAttributes) => subscription.proposal_id),
       ...(proposals || []).map(proposal => proposal.id)
     ]),
     [ account, proposals, subscriptions ],
