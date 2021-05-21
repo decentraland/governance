@@ -4,6 +4,7 @@ import { useLocation } from "@reach/router"
 import { toWei } from 'web3x/utils/units'
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
+import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Card } from "decentraland-ui/dist/components/Card/Card"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Stats } from "decentraland-ui/dist/components/Stats/Stats"
@@ -25,6 +26,7 @@ import useTransactionContext from "decentraland-gatsby/dist/context/Auth/useTran
 import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
 import './balance.css'
 import isEthereumAddress from "validator/lib/isEthereumAddress"
+import TokenList from "decentraland-gatsby/dist/utils/dom/TokenList"
 
 const LAND_MULTIPLIER = 2000
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
@@ -88,6 +90,7 @@ export default function WrappingPage() {
     <Container className="VotingPowerSummary">
       <Stats title={l(`page.balance.total_label`) || ''}>
         <VotingPower value={votingPower} size="huge" />
+        <Loader size="small" className="balance" active={manaState.loading || wManaState.loading || landState.loading || estateState.loading}/>
       </Stats>
       {account && accountBalance && account !== accountBalance &&<Stats title="Address">
           <Header size="huge">
@@ -108,7 +111,10 @@ export default function WrappingPage() {
       >
         <Card>
           <Card.Content>
-            <Header><b>{l(`page.balance.mana_title`)}</b></Header>
+            <Header>
+              <b>{l(`page.balance.mana_title`)}</b>
+            </Header>
+            <Loader size="tiny" className="balance" active={manaState.loading}/>
             <Stats title={l('page.balance.mana_balance_label') || ''}>
               <VotingPower value={mana!} size="medium" />
             </Stats>
@@ -139,6 +145,7 @@ export default function WrappingPage() {
         <Card>
           <Card.Content>
             <Header><b>{l(`page.balance.land_title`)}</b></Header>
+            <Loader size="tiny" className="balance" active={landState.loading}/>
             <Stats title={l('page.balance.land_balance_label') || ''}>
               {l('page.balance.land_balance', { value: land })}
             </Stats>
@@ -158,6 +165,7 @@ export default function WrappingPage() {
         <Card>
           <Card.Content>
             <Header><b>{l(`page.balance.estate_title`)}</b></Header>
+            <Loader size="tiny" className="balance" active={estateState.loading}/>
             <Stats title={l(`page.balance.estate_balance_label`) || ''}>
               {l('page.balance.estate_balance', { value: estate })}
             </Stats>

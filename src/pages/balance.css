@@ -29,6 +29,21 @@
   font-weight: normal;
 }
 
+.ui.container.VotingPowerDetail .ui.card .ui.loader.balance {
+  top: 0;
+  left: 100%;
+  transform: translate(-36px, 16px);
+}
+
+.ui.container.VotingPowerSummary .dcl.stats {
+  position: relative;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .ui.loader.balance {
+  left: 100%;
+  transform: translate(18px, 0);
+}
+
 @media only screen and (min-width: 992px) {
   .ui.container.VotingPowerDetail .ActionableLayout {
     flex: 0 0 31%;
