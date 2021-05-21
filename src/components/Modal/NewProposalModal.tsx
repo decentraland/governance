@@ -23,7 +23,7 @@ export function NewProposalModal(props: Omit<ModalProps, 'children'>) {
       <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
       <CategoryBanner type={ProposalType.POI} href={locations.submit(ProposalType.POI)} active />
       <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
-      <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
+      {/* <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active /> */}
       <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
     </Modal.Content>
   </Modal>

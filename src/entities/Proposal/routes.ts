@@ -45,7 +45,7 @@ export default routes((route) => {
   route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
   route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
   route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
-  route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
+  // route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(enactProposal))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
