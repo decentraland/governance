@@ -72,7 +72,7 @@ export default function WelcomePage() {
       case ProposalActivityList.Watchlist:
         const map = new Map<string, ProposalAttributes>(proposals.map(proposal => [ proposal.id, proposal ]))
         return subscriptions
-          .map(subscription => map.get(subscription.proposal_id))
+          .map((subscription: SubscriptionAttributes) => map.get(subscription.proposal_id))
           .filter(proposal => {
             if (!proposal) {
               return false
