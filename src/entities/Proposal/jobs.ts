@@ -40,24 +40,20 @@ export async function finishProposal(context: JobContext) {
       const votes: Record<string, Vote> = scores?.votes || {}
       const voters = Object.keys(votes)
 
-      if (voters.length === 0) {
-        finishedProposals.push(proposal)
-      } else {
-        const result: Record<string, number> = {}
-        for (const voter of voters) {
-          const vote = votes[voter]
-          const choice = vote.choice - 1
-          result[choice] = (result[choice] || 0) + vote.vp
-        }
+      const result: Record<string, number> = {}
+      for (const voter of voters) {
+        const vote = votes[voter]
+        const choice = vote.choice - 1
+        result[choice] = (result[choice] || 0) + vote.vp
+      }
 
-        if (
-          isYesNo && result['yes'] > result['no'] ||
-          isAcceptReject && result['accept'] > result['reject']
-        ) {
-          accetedProposals.push(proposal)
-        } else {
-          rejectedProposals.push(proposal)
-        }
+      if (
+        isYesNo && result['yes'] > result['no'] ||
+        isAcceptReject && result['accept'] > result['reject']
+      ) {
+        accetedProposals.push(proposal)
+      } else {
+        rejectedProposals.push(proposal)
       }
     } else {
       finishedProposals.push(proposal)
