@@ -222,9 +222,18 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   }
 
   try {
-    msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE, snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: await templates.snapshotTitle({ type: data.type, configuration: data.configuration }),
-      body: await templates.snapshotDescription({ user: data.user, type: data.type, configuration: data.configuration, profile, proposal_url }),
+    const snapshotTemplateProps: templates.SnapshotTemplateProps = {
+      user: data.user,
+      type: data.type,
+      configuration: data.configuration,
+      profile,
+      proposal_url
+    }
+
+    msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
+      snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
+      name: await templates.snapshotTitle(snapshotTemplateProps),
+      body: await templates.snapshotDescription(snapshotTemplateProps),
       choices: data.configuration.choices,
       snapshot: block.number,
       end,
@@ -264,10 +273,20 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   //
   let discourseProposal: DiscoursePost
   try {
+    const discourseTemplateProps: templates.ForumTemplateProps = {
+      type: data.type,
+      configuration: data.configuration,
+      user: data.user,
+      profile,
+      proposal_url,
+      snapshot_url,
+      snapshot_id: snapshotProposal.ipfsHash
+    }
+
     discourseProposal = await Discourse.get().createPost({
       category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-      title: await templates.forumTitle({ type: data.type, configuration: data.configuration, snapshot_id: snapshotProposal.ipfsHash }),
-      raw: await templates.forumDescription({ type: data.type, configuration: data.configuration, user: data.user, profile, proposal_url, snapshot_url }),
+      title: await templates.forumTitle(discourseTemplateProps),
+      raw: await templates.forumDescription(discourseTemplateProps),
     }, DISCOURSE_AUTH)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)

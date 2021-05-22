@@ -45,9 +45,17 @@ export const description = async ({ type, configuration }: { type: ProposalType,
   }
 }
 
-export const snapshotTitle = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => title({ type, configuration })
+export type SnapshotTemplateProps = {
+  type: ProposalType,
+  configuration: NewConfiguration,
+  user: string,
+  profile: Avatar | null,
+  proposal_url: string
+}
 
-export const snapshotDescription = async ({ type, configuration, user, profile, proposal_url }: { type: ProposalType, configuration: NewConfiguration, user: string, profile: Avatar | null, proposal_url: string }) => template`
+export const snapshotTitle = async ({ type, configuration }: SnapshotTemplateProps) => title({ type, configuration })
+
+export const snapshotDescription = async ({ type, configuration, user, profile, proposal_url }: SnapshotTemplateProps) => template`
 
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
@@ -60,10 +68,20 @@ ${
 
 `
 
-export const forumTitle = async ({ type, configuration, snapshot_id }: { type: ProposalType, configuration: NewConfiguration, snapshot_id: string }) =>
+export type ForumTemplateProps = {
+  type: ProposalType,
+  configuration: NewConfiguration,
+  user: string,
+  profile: Avatar | null,
+  proposal_url: string,
+  snapshot_url: string,
+  snapshot_id: string
+}
+
+export const forumTitle = async ({ type, configuration, snapshot_id }: ForumTemplateProps) =>
   `[DAO: ${snapshot_id.slice(0, 7)}] ` + title({ type, configuration })
 
-export const forumDescription = async ({ type, configuration, user, profile, proposal_url, snapshot_url }: { type: ProposalType, configuration: NewConfiguration, user: string, profile: Avatar | null, snapshot_url: string, proposal_url: string }) => template`
+export const forumDescription = async ({ type, configuration, user, profile, proposal_url, snapshot_url }: ForumTemplateProps) => template`
 
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
