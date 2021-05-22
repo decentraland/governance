@@ -139,6 +139,8 @@
       "description": "You just hit a route that doesn't exist..."
     },
     "welcome": {
+      "title": "Welcome to the Decentraland DAO",
+      "description": "A quick-start guide to participating in the governance of Decentraland’s virtual world",
       "1_panel_title": "Welcome to the new DAO!",
       "1_panel_description": "The DAO is a voting platform where you can vote on (or create) specific proposals like banning names, highlighting interesting areas of the world on the map, adding community servers, creating polls, or even requesting a grant!",
       "2_panel_title": "Before you start",
@@ -148,7 +150,37 @@
       "4_panel_title": "How to create a proposal",
       "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
     },
+    "proposal_list": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "new_proposal": "Submit a proposal",
+      "categories": "Categories",
+      "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
+      "no_proposals_yet": "No proposals have been sent by community members yet."
+    },
+    "proposal_enacted_list": {
+      "title": "Enacted Proposals",
+      "description": "Proposals recently enacted on the DAO by the Committee"
+    },
+    "proposal_catalyst_list": {
+      "title": "Catalyst Node Proposals",
+      "description": "Recent proposals to add new community run servers to Decentraland"
+    },
+    "proposal_poi_list": {
+      "title": "Point of Interest Proposals",
+      "description": "Recent proposals to add new points of interest to Decentraland’s map"
+    },
+    "proposal_ban_name_list": {
+      "title": "Name Ban Proposals",
+      "description": "Recent proposals to ban names from Decentraland"
+    },
+    "proposal_poll_list": {
+      "title": "Polls",
+      "description": "Recent community polls in the Decentraland DAO"
+    },
     "proposal_detail": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
@@ -166,13 +198,9 @@
       "enact": "Enact proposal",
       "delete": "Delete proposal"
     },
-    "proposal_list": {
-      "new_proposal": "Submit a proposal",
-      "categories": "Categories",
-      "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
-      "no_proposals_yet": "No proposals have been sent by community members yet."
-    },
     "proposal_activity": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "list_proposals": "my proposals",
       "list_watchlist": "watchlist",
       "current_result": "current result",
@@ -181,6 +209,8 @@
       "no_proposals_submitted": "You haven't submitted any proposal yet."
     },
     "balance": {
+      "title": "DAO Voting Power",
+      "description": "An overview of your current voting power within the DAO",
       "total_label": "Total voting power",
       "mana_label": "MANA",
       "mana_action": "Get MANA",
@@ -205,6 +235,8 @@
       "estate_total_label": "Total voting power"
     },
     "submit": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)"
     },

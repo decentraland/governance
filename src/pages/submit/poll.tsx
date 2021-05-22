@@ -6,6 +6,7 @@ import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalPollScheme } from '../../entities/Proposal/types'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
@@ -20,6 +21,7 @@ import locations from '../../modules/locations'
 import loader from '../../modules/loader'
 import './submit.css'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
 
 type PollState = {
   title: string,
@@ -134,13 +136,31 @@ export default function SubmitPoll() {
     }
   }, [ state.validated ])
 
+  if (accountState.loading) {
+    return <Container className="WelcomePage">
+      <div>
+        <Loader size="huge" active/>
+      </div>
+    </Container>
+  }
+
   if (!account) {
     return <Container>
+      <Head
+        title={l('page.submit_poll.title') || ''}
+        description={l('page.submit_poll.description') || ''}
+        image="https://decentraland.org/images/decentraland.png"
+      />
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
     </Container>
   }
 
   return <ContentLayout small>
+    <Head
+      title={l('page.submit_poll.title') || ''}
+      description={l('page.submit_poll.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Helmet title={l('page.submit_poll.title') || ''}  />
     <ContentSection>
       <Header size="huge">{l('page.submit_poll.title')}</Header>

@@ -27,6 +27,7 @@ import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
 import './balance.css'
 import isEthereumAddress from "validator/lib/isEthereumAddress"
 import TokenList from "decentraland-gatsby/dist/utils/dom/TokenList"
+import Head from "decentraland-gatsby/dist/components/Head/Head"
 
 const LAND_MULTIPLIER = 2000
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
@@ -86,6 +87,11 @@ export default function WrappingPage() {
   }
 
   return (<>
+    <Head
+      title={l('page.balance.title') || ''}
+      description={l('page.balance.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Navigation activeTab={NavigationTab.Wrapping} />
     <Container className="VotingPowerSummary">
       <Stats title={l(`page.balance.total_label`) || ''}>

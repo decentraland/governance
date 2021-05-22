@@ -23,6 +23,7 @@ import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
 import './activity.css'
 import { SubscriptionAttributes } from "../entities/Subscription/types"
+import Head from "decentraland-gatsby/dist/components/Head/Head"
 
 export default function WelcomePage() {
   const l = useFormatMessage()
@@ -120,6 +121,11 @@ export default function WelcomePage() {
   }
 
   return <>
+    <Head
+      title={l('page.proposal_activity.title') || ''}
+      description={l('page.proposal_activity.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Navigation activeTab={NavigationTab.Activity} />
     <Container className="ActivityPage">
       <ActionableLayout

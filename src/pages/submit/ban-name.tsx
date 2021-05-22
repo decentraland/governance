@@ -5,6 +5,7 @@ import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
@@ -18,8 +19,9 @@ import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import { isValidName } from '../../entities/Proposal/utils'
-import './submit.css'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import './submit.css'
 
 type BanNameState = {
   name: string,
@@ -97,13 +99,31 @@ export default function SubmitBanName() {
     }
   }, [ state.validated ])
 
+  if (accountState.loading) {
+    return <Container className="WelcomePage">
+      <div>
+        <Loader size="huge" active/>
+      </div>
+    </Container>
+  }
+
   if (!account) {
     return <Container>
+      <Head
+        title={l('page.submit_ban_name.title') || ''}
+        description={l('page.submit_ban_name.description') || ''}
+        image="https://decentraland.org/images/decentraland.png"
+      />
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
     </Container>
   }
 
   return <ContentLayout small>
+    <Head
+      title={l('page.submit_ban_name.title') || ''}
+      description={l('page.submit_ban_name.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Helmet title={l('page.submit_ban_name.title') || ''} />
     <ContentSection>
       <Header size="huge">{l('page.submit_ban_name.title')}</Header>

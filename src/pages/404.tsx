@@ -12,7 +12,11 @@ const NotFoundPage = (props: any) => {
   return <>
   <Navigation />
   <Container>
-    <Head title={l('page.404.title') || ''} description={l('page.404.description') || ''} />
+    <Head
+      title={l('page.404.title') || ''}
+      description={l('page.404.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <div style={{ minHeight: '75vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <Title style={{ textTransform: 'uppercase' }}>
         {l('page.404.title')}

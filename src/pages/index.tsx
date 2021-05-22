@@ -1,12 +1,12 @@
 
-import React, { useMemo, useState, useEffect } from "react"
+import React, { useMemo } from "react"
 import { useLocation } from '@reach/router'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
-import { navigate, Link } from "gatsby-plugin-intl"
+import { navigate } from "gatsby-plugin-intl"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
 import locations, { ProposalListView, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
@@ -23,10 +23,13 @@ import { Governance } from "../api/Governance"
 import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
+// import Carousel from "decentraland-gatsby/dist/components/Carousel/Carousel"
+// import WelcomeItem from "../components/Welcome/WelcomeItem"
+// import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
+import Head from "decentraland-gatsby/dist/components/Head/Head"
+import Link from "decentraland-gatsby/dist/components/Text/Link"
+import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 import './index.css'
-import Carousel from "decentraland-gatsby/dist/components/Carousel/Carousel"
-import WelcomeItem from "../components/Welcome/WelcomeItem"
-import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
 
 enum Onboarding {
   Loading,
@@ -137,6 +140,27 @@ export default function IndexPage() {
   // }
 
   return <>
+    <Head
+      title={
+        (view === ProposalListView.Onboarding && l('page.welcome.title')) ||
+        (view === ProposalListView.Enacted && l('page.proposal_enacted_list.title')) ||
+        (type === ProposalType.Catalyst && l('page.proposal_catalyst_list.title')) ||
+        (type === ProposalType.POI && l('page.proposal_poi_list.title')) ||
+        (type === ProposalType.BanName && l('page.proposal_ban_name_list.title')) ||
+        (type === ProposalType.Poll && l('page.proposal_poll_list.title')) ||
+        l('page.proposal_list.title') || ''
+      }
+      description={
+        (view === ProposalListView.Onboarding && l('page.welcome.description')) ||
+        (view === ProposalListView.Enacted && l('page.proposal_enacted_list.description')) ||
+        (type === ProposalType.Catalyst && l('page.proposal_catalyst_list.description')) ||
+        (type === ProposalType.POI && l('page.proposal_poi_list.description')) ||
+        (type === ProposalType.BanName && l('page.proposal_ban_name_list.description')) ||
+        (type === ProposalType.Poll && l('page.proposal_poll_list.description')) ||
+        l('page.proposal_list.description') || ''
+      }
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
     <Container>
       <Grid stackable>
@@ -158,7 +182,9 @@ export default function IndexPage() {
               leftAction={<Header sub>{proposals ? l(`page.proposal_list.count_proposals`, { count: filteredProposals?.length || 0 }) : ''}</Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
-                <Button primary size="small" as={Link} to={openNewProposalModal()}>{l(`page.proposal_list.new_proposal`)}</Button>
+                <Button primary size="small" as={Link} href={openNewProposalModal()} onClick={prevent(() => navigate(openNewProposalModal()))}>
+                  {l(`page.proposal_list.new_proposal`)}
+                </Button>
               </>}
             >
               {!proposals && <Loader active />}

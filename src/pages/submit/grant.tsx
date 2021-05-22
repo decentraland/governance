@@ -5,6 +5,7 @@ import { Button } from "decentraland-ui/dist/components/Button/Button"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
+import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { SelectField } from "decentraland-ui/dist/components/SelectField/SelectField"
 import { isProposalGrantCategory, isProposalGrantTier, newProposalGrantScheme, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
@@ -20,6 +21,7 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import './submit.css'
 import { asNumber } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
 
 type GrantState = {
   title: string,
@@ -179,13 +181,31 @@ export default function SubmitBanName() {
     }
   }, [ state.validated ])
 
+  if (accountState.loading) {
+    return <Container className="WelcomePage">
+      <div>
+        <Loader size="huge" active/>
+      </div>
+    </Container>
+  }
+
   if (!account) {
     return <Container>
+      <Head
+        title={l('page.submit_grant.title') || ''}
+        description={l('page.submit_grant.description') || ''}
+        image="https://decentraland.org/images/decentraland.png"
+      />
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
     </Container>
   }
 
   return <ContentLayout small>
+    <Head
+      title={l('page.submit_grant.title') || ''}
+      description={l('page.submit_grant.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Helmet title={l('page.submit_grant.title') || ''} />
     <ContentSection>
       <Header size="huge">{l('page.submit_grant.title')}</Header>

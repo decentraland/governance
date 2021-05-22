@@ -1,6 +1,5 @@
 
 import React, { useMemo } from "react"
-import { Helmet } from "react-helmet"
 import { useLocation  } from '@reach/router'
 import { Personal } from 'web3x/personal'
 import { Address } from 'web3x/address'
@@ -36,6 +35,8 @@ import loader from "../modules/loader"
 import { EnactProposalModal } from "../components/Modal/EnactProposalModal"
 import { ProposalStatus } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
+import Head from "decentraland-gatsby/dist/components/Head/Head"
+import { formatDescription } from "decentraland-gatsby/dist/components/Head/utils"
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -96,7 +97,11 @@ export default function ProposalPage() {
   })
 
   return <>
-  <Helmet title={proposal ? proposal.title : 'Decentraland DAO'} />
+  <Head
+    title={proposal?.title || l('page.proposal_detail.title') || ''}
+    description={(proposal?.description && formatDescription(proposal?.description)) || l('page.proposal_detail.description') || ''}
+    image="https://decentraland.org/images/decentraland.png"
+  />
   <ContentLayout className="ProposalDetailPage">
   <ContentSection>
     <Header size="huge">{proposal?.title || '' } &nbsp;</Header>
