@@ -41,10 +41,14 @@ export async function finishProposal(context: JobContext) {
       const voters = Object.keys(votes)
 
       const result: Record<string, number> = {}
+      for (const choice of choices)  {
+        result[choice] = 0
+      }
+
       for (const voter of voters) {
         const vote = votes[voter]
         const choice = vote.choice - 1
-        result[choice] = (result[choice] || 0) + vote.vp
+        result[choices[choice]] = result[choices[choice]] + vote.vp
       }
 
       if (
