@@ -24,6 +24,37 @@ body {
   vertical-align: text-top;
 }
 
+.dcl.field.field {
+  padding-top: 4px;
+}
+
+.dg.Textarea .ui.input textarea,
+.dcl.field.field .ui.input input {
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 6px;
+  padding: 8px 8px 8px;
+}
+
+.dcl.field.field.address .dcl.blockie {
+  right: 10px;
+  top: 14px;
+}
+
+.ui.icon.input>i.icon {
+  right: 5px;
+  top: 9px;
+}
+
+.dg.Textarea.error .ui.input textarea,
+.dcl.field.error .ui.input input {
+  border-color: var(--error);
+  border-bottom-width: 2px;
+}
+
+.dcl.field.field .ui.input input:focus, .dcl.field .ui.input input:active, .ui.form .dcl.field .ui.input input:focus, .ui.form .dcl.field .ui.input input:active {
+  border-color: var(--text);
+}
+
 :root {
   --background-catalyst: #4888EE;
   --background-poi: #44B600;
