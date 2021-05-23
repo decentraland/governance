@@ -34,6 +34,7 @@ export enum ProposalStatus {
   Rejected = 'rejected',
   Passed = 'passed',
   Enacted = 'enacted',
+  Deleted = 'deleted'
 }
 
 export function isProposalStatus(value:  string | null | undefined): boolean {

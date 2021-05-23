@@ -395,7 +395,16 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
     throw new RequestError(`Forbidden`, RequestError.Forbidden)
   }
 
-  await ProposalModel.update<ProposalAttributes>({ deleted: true, deleted_by: user, updated_at }, { id })
+  await ProposalModel.update<ProposalAttributes>(
+    {
+      deleted: true,
+      deleted_by: user,
+      updated_at,
+      status: ProposalStatus.Deleted
+    }, {
+      id
+    }
+  )
   dropDiscourseTopic(proposal.discourse_topic_id)
   dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
   return true
