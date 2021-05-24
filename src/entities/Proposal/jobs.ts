@@ -32,10 +32,11 @@ export async function finishProposal(context: JobContext) {
   const rejectedProposals: ProposalAttributes[] = []
 
   for (const proposal of pendingProposals) {
-    const choices = proposal.configuration.choices
+    const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
     const isYesNo = sameOptions(choices, ['yes', 'no'])
     const isAcceptReject = sameOptions(choices, ['accept', 'reject'])
-    if (isYesNo || isAcceptReject) {
+    const isForAgainst = sameOptions(choices, ['for', 'against'])
+    if (isYesNo || isAcceptReject || isForAgainst) {
       const scores = await VotesModel.getVotes(proposal.id)
       const votes: Record<string, Vote> = scores?.votes || {}
       const voters = Object.keys(votes)
@@ -53,7 +54,8 @@ export async function finishProposal(context: JobContext) {
 
       if (
         isYesNo && result['yes'] > result['no'] ||
-        isAcceptReject && result['accept'] > result['reject']
+        isAcceptReject && result['accept'] > result['reject'] ||
+        isForAgainst && result['for'] > result['against']
       ) {
         accetedProposals.push(proposal)
       } else {

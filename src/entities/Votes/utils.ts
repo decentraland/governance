@@ -106,10 +106,12 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
 export function calculateChoiceColor(value: string, index: number): ChoiceColor {
   switch (value.toLowerCase()) {
     case 'yes':
+    case 'for':
     case 'approve':
       return 'approve';
 
     case 'no':
+    case 'against':
     case 'reject':
       return 'reject';
 
