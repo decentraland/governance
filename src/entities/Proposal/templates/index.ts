@@ -61,7 +61,8 @@ export const snapshotDescription = async ({ type, configuration, user, profile, 
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
-  await description({type, configuration})
+  await description({type, configuration}) +
+  (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }
 
 **[Vote on this proposal on the Decentraland DAO](${proposal_url})**
@@ -87,7 +88,8 @@ export const forumDescription = async ({ type, configuration, user, profile, pro
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
-  await description({type, configuration})
+  await description({type, configuration}) +
+  (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }
 
 **[Vote on this proposal on the Decentraland DAO](${proposal_url})**
