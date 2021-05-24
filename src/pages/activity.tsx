@@ -35,7 +35,7 @@ export default function WelcomePage() {
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
   const status = toProposalStatus(params.get('status'))
   const list = toProposalActivityList(params.get('list'))
-  const [ proposals, proposalsState ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals({ user: account! })), [ account ], { callWithTruthyDeps: true })
+  const [ proposals, proposalsState ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()), [ account ], { callWithTruthyDeps: true })
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const [ results, subscriptionsResultsState ] = useAsyncMemo(() => Governance.get()
     .getVotes([
