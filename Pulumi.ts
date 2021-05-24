@@ -8,6 +8,10 @@ export = async function main() {
     usePublicTLD: process.env['USE_PUBLIC_TLD'] === 'true',
     serviceSource: '.',
     servicePaths: [
+      '/',
+      '/en/',
+      '/proposal/',
+      '/en/proposal/',
       '/api/*',
       '/metrics'
     ]

@@ -11,6 +11,7 @@ import proposal from './entities/Proposal/routes'
 import score from './entities/Votes/routes'
 import subscription from './entities/Subscription/routes'
 import committee from './entities/Committee/routes'
+import social from './entities/Social/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 
 const jobs = manager()
@@ -35,6 +36,7 @@ app.use('/api', [
 ])
 
 app.use(metrics)
+app.use('/', social)
 app.use(filesystem('public', '404.html'))
 
 Promise.resolve()
