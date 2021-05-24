@@ -74,7 +74,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
       }
     }
 
-    let progress = Math.floor(votes / total)
+    let progress = Math.floor((votes / total) * 100)
     if (progress === 0) {
       progress = 1
     }

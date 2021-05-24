@@ -1,9 +1,8 @@
 import React from 'react'
 import Progress from './Progress'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
-import './ChoiceProgress.css'
 import { ChoiceColor } from '../../entities/Votes/types'
+import './ChoiceProgress.css'
 
 export type ChoiceProgressProps = {
   choice: string,

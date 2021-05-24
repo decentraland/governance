@@ -14,8 +14,6 @@ import { navigate } from "gatsby-plugin-intl"
 import { Governance } from "../api/Governance"
 import useProposal from "../hooks/useProposal"
 
-import './index.css'
-import './proposal.css'
 import ContentLayout, { ContentSection } from "../components/Layout/ContentLayout"
 import CategoryLabel from "../components/Category/CategoryLabel"
 import StatusLabel from "../components/Status/StatusLabel"
@@ -37,6 +35,9 @@ import { ProposalStatus } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import { formatDescription } from "decentraland-gatsby/dist/components/Head/utils"
+
+import './index.css'
+import './proposal.css'
 
 type ProposalPageOptions = {
   changing: boolean,
