@@ -3,7 +3,7 @@ config:
   aws:region: us-east-1
   website-dao:ALCHEMY_API_KEY:
     secure: v1:uimb7D29xvMwX7o7:MI7gQiCko1ZOEVIhKDtRtun4uP7Si2XJxKwV+Uaqr89P9lXcSlsMGOt4sqmX7zSx
-  website-dao:COMMITTEE_ADDRESSES: ""
+  website-dao:COMMITTEE_ADDRESSES: 0x3323b7264f7d5e8f98e6afccec73b6ba1116ae19,0xfe91c0c482e09600f2d1dbca10fd705bc6de60bc,0xbef99f5f55cf7cdb3a70998c57061b7e1386a9b0
   website-dao:CONNECTION_STRING:
     secure: v1:vf59XIaDAanfS1KO:Xt34A19JycHm8C3tLExrF272dLnpsaPJBvuoP80ADKTjYHAPJxV63zwnyq5CwL8r94l3+8rnvWIIUWt2NeQI2ijqweXDs+mcGA5zM//WTWmECMK58Ep0U0nTC57+IgWsTCLJKiNaerIU0DYUz/BOp8Pdn2ktpm1TCJuA682OK28g3+2jC0E=
   website-dao:DISCOURSE_API_KEY:
