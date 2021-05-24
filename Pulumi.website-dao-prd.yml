@@ -24,3 +24,4 @@ config:
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:NCALHJc3wgvqdspj:vZ5nu/emrqARzgCo/nkJ6XsGvHdEHaYzBwSj3UpJu+ZdNuy4M4W0ruHyJ12U0KOXTAvi5+vWXJYGeW5tvzLVubYAT7hEXuhVtHYb6QKyyPg=
+  website-dao:USE_PUBLIC_TLD: "true"
