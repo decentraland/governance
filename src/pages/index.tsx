@@ -10,7 +10,6 @@ import { navigate } from "gatsby-plugin-intl"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
 import locations, { ProposalListView, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
-import { NewProposalModal } from "../components/Modal/NewProposalModal"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import CategoryOption from "../components/Category/CategoryOption"
 import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
@@ -41,7 +40,6 @@ export default function IndexPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
-  const isNewProposalOpen = params.get('modal') === 'new'
   const type = toProposalType(params.get('type'))
   const status = toProposalStatus(params.get('status'))
   const view = toProposalListView(params.get('view'))
@@ -81,18 +79,6 @@ export default function IndexPage() {
 
     return true
   }), [ proposals, type, status, view ])
-
-  function openNewProposalModal() {
-    const newParams = new URLSearchParams(params)
-    newParams.set('modal', 'new')
-    return locations.proposals(newParams)
-  }
-
-  function closeNewProposalModal() {
-    const newParams = new URLSearchParams(params)
-    newParams.delete('modal')
-    return locations.proposals(newParams)
-  }
 
   function handleTypeFilter(type: ProposalType | null) {
     const newParams = new URLSearchParams(params)
@@ -182,7 +168,7 @@ export default function IndexPage() {
               leftAction={<Header sub>{proposals ? l(`page.proposal_list.count_proposals`, { count: filteredProposals?.length || 0 }) : ''}</Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
-                <Button primary size="small" as={Link} href={openNewProposalModal()} onClick={prevent(() => navigate(openNewProposalModal()))}>
+                <Button primary size="small" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
                   {l(`page.proposal_list.new_proposal`)}
                 </Button>
               </>}
@@ -204,6 +190,5 @@ export default function IndexPage() {
         </Grid.Row>
       </Grid>
     </Container>
-    <NewProposalModal open={isNewProposalOpen} onClose={() => navigate(closeNewProposalModal())} />
   </>
 }

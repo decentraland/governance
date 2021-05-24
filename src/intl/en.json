@@ -204,9 +204,10 @@
       "list_proposals": "my proposals",
       "list_watchlist": "watchlist",
       "current_result": "current result",
-      "no_proposals_enacted": "No proposals have been enacted by community members yet.",
       "no_proposals_subscriptions": "You haven't subscribed to any proposal yet.",
-      "no_proposals_submitted": "You haven't submitted any proposal yet."
+      "no_proposals_subscriptions_action": "Browse proposals",
+      "no_proposals_submitted": "You haven't submitted any proposal yet.",
+      "no_proposals_submitted_action": "Create a proposal"
     },
     "balance": {
       "title": "DAO Voting Power",
@@ -235,8 +236,8 @@
       "estate_total_label": "Total voting power"
     },
     "submit": {
-      "title": "Decentraland DAO",
-      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "title": "Submit Proposal",
+      "description": "Select a proposal category to get started",
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)"
     },

@@ -24,6 +24,9 @@ import Empty from "../components/Proposal/Empty"
 import './activity.css'
 import { SubscriptionAttributes } from "../entities/Subscription/types"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
+import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
+import Link from "decentraland-gatsby/dist/components/Text/Link"
+import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 
 export default function WelcomePage() {
   const l = useFormatMessage()
@@ -142,9 +145,15 @@ export default function WelcomePage() {
         <div  style={{ marginTop: '16px', position: 'relative', minHeight: '200px' }}>
           <Loader active={proposalsState.loading || subscriptionsState.loading} />
           {subscribedProposals.length === 0 && <Empty description={
-              list === ProposalActivityList.Watchlist ? l(`page.proposal_activity.no_proposals_subscriptions`) :
-              list === ProposalActivityList.MyProposals ? l(`page.proposal_activity.no_proposals_submitted`) :
-              null
+              <Paragraph small secondary>
+                {list === ProposalActivityList.Watchlist ? l(`page.proposal_activity.no_proposals_subscriptions`) :
+                list === ProposalActivityList.MyProposals ? l(`page.proposal_activity.no_proposals_submitted`) :
+                null}
+                {' '}
+                {list === ProposalActivityList.Watchlist ? <Link href={locations.proposals()} onClick={prevent(() => navigate(locations.proposals()))}>{l(`page.proposal_activity.no_proposals_subscriptions_action`)}</Link> :
+                list === ProposalActivityList.MyProposals ? <Link href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>{l(`page.proposal_activity.no_proposals_submitted_action`)}</Link> :
+                null}
+              </Paragraph>
           } />}
           {subscribedProposals.length > 0 && <Card.Group>
             {subscribedProposals.map(proposal => <ProposalCard
