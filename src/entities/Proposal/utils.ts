@@ -83,7 +83,7 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   const params = new URLSearchParams({ id: proposal.id })
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
   // /en/proposal?id=e3d51e50-b3f0-11eb-87d1-2b8a70271dd7
-  target.pathname = `/en/proposal`
+  target.pathname = `/en/proposal/`
   target.search = '?' + params.toString()
   return target.toString()
 }
