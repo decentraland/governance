@@ -16,16 +16,19 @@ export type ProposalHeaderPoi = {
 
 export default React.memo(function ProposalHeaderPoi({ proposal }: ProposalHeaderPoi) {
   const [ tile, tileState ] = useAsyncMemo(async () => {
+    if (proposal?.type !== ProposalType.POI) {
+      return null
+    }
+
     const configuration: NewProposalPOI = proposal!.configuration
     return Land.get().getTile([ configuration.x, configuration.y ])
   }, [ proposal ], { callWithTruthyDeps: true })
 
-  if (!proposal || proposal.type !== ProposalType.POI) {
+  if (proposal?.type !== ProposalType.POI) {
     return null
   }
 
   const configuration: NewProposalPOI = proposal.configuration
-
   return <div className="ProposalHeaderPoi">
     <ImgFixed dimension="wide" src={Land.get().getParcelImage([configuration.x, configuration.y])} />
     <Header size="medium">
