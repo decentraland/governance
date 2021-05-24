@@ -1,6 +1,6 @@
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
-import loader from "../modules/loader"
+import { Governance } from "../api/Governance"
 
 export default function useProposal(proposalId?: string | null) {
-  return useAsyncMemo(() => loader.proposals.load(proposalId!), [proposalId], { callWithTruthyDeps: true })
+  return useAsyncMemo(() => Governance.get().getProposal(proposalId!), [proposalId], { callWithTruthyDeps: true })
 }

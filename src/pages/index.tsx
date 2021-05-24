@@ -17,9 +17,6 @@ import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import StatusMenu from "../components/Status/StatusMenu"
 import CategoryBanner from "../components/Category/CategoryBanner"
 import ProposalItem from "../components/Proposal/ProposalItem"
-import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
-import { Governance } from "../api/Governance"
-import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
 // import Carousel from "decentraland-gatsby/dist/components/Carousel/Carousel"
@@ -29,6 +26,7 @@ import Head from "decentraland-gatsby/dist/components/Head/Head"
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 import './index.css'
+import useProposals from "../hooks/useProposals"
 
 enum Onboarding {
   Loading,
@@ -43,7 +41,7 @@ export default function IndexPage() {
   const type = toProposalType(params.get('type'))
   const status = toProposalStatus(params.get('status'))
   const view = toProposalListView(params.get('view'))
-  const [ proposals ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()))
+  const [ proposals ] = useProposals()
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 

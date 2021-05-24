@@ -18,7 +18,6 @@ import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
 import { Governance } from "../api/Governance"
 import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
 import ProposalCard from "../components/Proposal/ProposalCard"
-import { cacheProposals } from "../modules/loader"
 import useSubscriptions from "../hooks/useSubscriptions"
 import Empty from "../components/Proposal/Empty"
 import './activity.css'
@@ -27,6 +26,7 @@ import Head from "decentraland-gatsby/dist/components/Head/Head"
 import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import prevent from "decentraland-gatsby/dist/utils/react/prevent"
+import useProposals from "../hooks/useProposals"
 
 export default function WelcomePage() {
   const l = useFormatMessage()
@@ -35,7 +35,7 @@ export default function WelcomePage() {
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
   const status = toProposalStatus(params.get('status'))
   const list = toProposalActivityList(params.get('list'))
-  const [ proposals, proposalsState ] = useAsyncMemo(() => cacheProposals(Governance.get().getProposals()), [ account ], { callWithTruthyDeps: true })
+  const [ proposals, proposalsState ] = useProposals()
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const [ results, subscriptionsResultsState ] = useAsyncMemo(() => Governance.get()
     .getVotes([
