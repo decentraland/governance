@@ -1,0 +1,11 @@
+.LayoutMainContainer > .dcl.tabs {
+  background: var(--background);
+}
+
+.LayoutMainContainer > .dcl.tabs a {
+  color: var(--text)
+}
+
+.LayoutMainContainer > .dcl.tabs .ui.container {
+  display: flex;
+}

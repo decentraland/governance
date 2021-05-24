@@ -1,0 +1,86 @@
+
+.CategoryLabel {
+  text-transform: uppercase;
+  padding: 1px 11px;
+  height: 24px;
+  display: inline-flex;
+  color: #736E7D;
+  border-radius: 42px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  margin-right: .5rem;
+  vertical-align: middle;
+  align-content: center;
+  position: relative;
+}
+
+.CategoryLabel::before {
+  display: block;
+  content: "";
+  border: 1px solid transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .08;
+  border-radius: 42px;
+}
+
+/* --background-catalyst
+--background-poi
+--background-ban-name
+--background-grant
+--background-poll */
+
+.CategoryLabel.CategoryLabel--poi::before {
+  background-color: var(--background-poi);
+  border-color: var(--background-poi);
+}
+
+.CategoryLabel.CategoryLabel--poi span {
+  color: var(--background-poi);
+}
+
+.CategoryLabel.CategoryLabel--poll::before {
+  background-color: var(--background-poll);
+  border-color: var(--background-poll);
+}
+
+.CategoryLabel.CategoryLabel--poll span {
+  color: var(--background-poll);
+}
+
+.CategoryLabel.CategoryLabel--catalyst::before {
+  background-color: var(--background-catalyst);
+  border-color: var(--background-catalyst);
+}
+
+.CategoryLabel.CategoryLabel--catalyst span {
+  color: var(--background-catalyst);
+}
+
+.CategoryLabel.CategoryLabel--ban_name::before {
+  background-color: var(--background-ban_name);
+  border-color: var(--background-ban_name);
+}
+
+.CategoryLabel.CategoryLabel--ban_name span {
+  color: var(--background-ban_name);
+}
+
+.CategoryLabel.CategoryLabel--grant::before {
+  background-color: var(--background-grant);
+  border-color: var(--background-grant);
+}
+
+.CategoryLabel.CategoryLabel--grant span {
+  color: var(--background-grant);
+}
+
+.CategoryLabel span {
+  display: block;
+  line-height: 20px;
+  padding: 1px 0;
+}

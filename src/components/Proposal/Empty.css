@@ -1,0 +1,10 @@
+.Empty {
+  padding: 100px 0;
+  text-align: center;
+  border: 1px solid rgba(115, 110, 125, .24);
+  border-radius: 8px;
+}
+
+.Empty svg {
+  margin-bottom: 24px;
+}

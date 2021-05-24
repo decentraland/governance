@@ -1,0 +1,34 @@
+.ProposalHeaderPoi {
+  padding-bottom: 38px;
+}
+
+.ProposalHeaderPoi .dg.ImgFixed{
+  border-radius: 8px;
+}
+
+.ProposalHeaderPoi svg {
+  vertical-align: middle;
+}
+
+.ProposalHeaderPoi .ui.header {
+  margin-bottom: 4px;
+}
+
+.ProposalHeaderPoi .ui.header .dg.Link {
+  color: var(--text);
+}
+
+.ProposalHeaderPoi .PoiLocation {
+  display: inline-block;
+  color: #736E7D;
+  background-color: var(--secondary);
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  padding: 4px 8px 4px 4px;
+}
+
+.ProposalHeaderPoi .PoiLocation svg {
+  vertical-align: text-bottom;
+}

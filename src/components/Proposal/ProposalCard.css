@@ -1,0 +1,44 @@
+.ui.card.ProposalCard {
+  position: relative;
+}
+
+.ui.card.ProposalCard .content.ProposalCard__Content {
+  padding-bottom: 75px;
+  height: 100%;
+}
+
+.ProposalCard .ProposalCard__Title {
+  padding-right: 40px;
+}
+
+.ProposalCard .ProposalCard__Title .ui.button {
+  position: absolute;
+  padding: 16px 20px;
+  top: 0;
+  right: 0;
+  display: none;
+}
+
+.ProposalCard .ProposalCard__Title .ui.loading.loading.loading.loading.button {
+  position: absolute;
+}
+
+.ProposalCard:hover .ProposalCard__Title .ui.button,
+.ProposalCard.ProposalCard--subscribed .ProposalCard__Title .ui.button {
+  display: block;
+}
+
+.ProposalCard .ProposalCard__Progress {
+  position: absolute;
+  width: 100%;
+  padding: 0 20px 24px;
+  left: 0;
+  bottom: 57px;
+}
+
+.ProposalCard .ProposalCard__StatusLabel {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}

@@ -1,0 +1,31 @@
+.SectionButton {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: normal;
+  margin: 4px 0;
+  padding: 9px 11px;
+}
+
+.SectionButton:hover {
+  color: var(--text);
+}
+
+.SectionButton.SectionButton--disabled span,
+.SectionButton.SectionButton--disabled img,
+.SectionButton.SectionButton--loading span,
+.SectionButton.SectionButton--loading img {
+  opacity: .5;
+}
+
+.SectionButton.SectionButton--disabled span,
+.SectionButton.SectionButton--disabled img {
+  pointer-events: none;
+}
+
+.SectionButton span {
+  flex: 1;
+  line-height: 20px;
+  margin: 0 11px ;
+}

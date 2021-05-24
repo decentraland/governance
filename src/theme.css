@@ -1,57 +1,80 @@
-:root {
-  --success: #44B600;
-  --text-on-success: #ffffff;
-  --rejected: #FF2D55;
-  --text-on-rejected: #ffffff;
-  --neutral: #736E7D;
-  --text-on-neutral: #ffffff;
-  --neutral-background: rgba(115, 110, 125, 0.32);
+body {
+  background: var(--background)
 }
 
-.ui.header b {
-  font-weight: 600;
+.dcl.user-menu .menu {
+  pointer-events: none;
 }
 
-.ui.card>.content>.header.sub,
-.ui.cards>.card>.content>.header.sub {
-  color: var(--secondary-text);
-}
-
-.dcl.header-menu {
+.dcl.navbar.LayoutNavbarContainer {
   margin-bottom: 0;
+  border-bottom: 0;
 }
 
-.dcl.header-menu .ui.sub.header {
-  line-height: 32px;
+.dcl.navbar.LayoutNavbarContainer.initial {
+  background-color: var(--background);
 }
 
-.dcl.blockie-wrapper {
-  white-space: nowrap;
+.ui.container > .SignIn {
+  position: relative;
 }
 
-.dcl.address,
-.ui.header pre {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
+.dg.Link i.icon {
+  font-size: 1em;
+  vertical-align: text-top;
 }
 
-.ui.header pre {
-  font-weight: inherit;
-  margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+.dcl.field.field {
+  padding-top: 4px;
 }
 
-.ui.header .dcl.blockie {
-  width: 1em;
-  border-radius: .1em;
+.dg.Textarea .ui.input textarea,
+.dcl.field.field .ui.input input {
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 6px;
+  padding: 8px 8px 8px;
 }
 
-.ui.header .dcl.blockie-wrapper .dcl.blockie-children {
-  margin-left: .2em;
+.dcl.field.field.address .dcl.blockie {
+  right: 10px;
+  top: 14px;
 }
 
-b.primary {
-  color: var(--primary)
+.ui.icon.input>i.icon {
+  right: 5px;
+  top: 9px;
+}
+
+.dg.Textarea.error .ui.input textarea,
+.dcl.field.error .ui.input input {
+  border-color: var(--error);
+  border-bottom-width: 2px;
+}
+
+.dcl.field.field .ui.input input:focus, .dcl.field .ui.input input:active, .ui.form .dcl.field .ui.input input:focus, .ui.form .dcl.field .ui.input input:active {
+  border-color: var(--text);
+}
+
+:root {
+  --background-catalyst: #4888EE;
+  --background-poi: #44B600;
+  --background-ban-name: #FF5AFE;
+  --background-grant: #3C24B3;
+  --background-poll: #FF7439;
+}
+
+
+@media only screen and (min-width: 992px) {
+  .tabletOnly.tabletOnly.tabletOnly { visibility: hidden; }
+  .mobileOnly.mobileOnly.mobileOnly { visibility: hidden; }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .screenOnly.screenOnly.screenOnly { visibility: hidden; }
+  .mobileOnly.mobileOnly.mobileOnly { visibility: hidden; }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  .screenOnly.screenOnly.screenOnly { visibility: hidden; }
+  .tabletOnly.tabletOnly.tabletOnly { visibility: hidden; }
 }

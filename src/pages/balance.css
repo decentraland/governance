@@ -1,0 +1,66 @@
+.ui.container.VotingPowerSummary{
+  padding-top: 2rem;
+  position: relative;
+}
+
+.ui.container.VotingPowerDetail {
+  display: flex;
+  justify-content: space-between;
+  align-content: stretch;
+  flex-wrap: wrap;
+}
+
+.ui.container.VotingPowerDetail .ActionableLayout {
+  position: relative;
+  margin-top: 40px;
+}
+
+.ui.container.VotingPowerDetail .ui.card {
+  width: 100%;
+  height: 100%;
+}
+
+.ui.container.VotingPowerDetail .ui.card >.ui.header,
+.ui.container.VotingPowerDetail .ui.card .dcl.stats {
+  margin: 8px 0 16px;
+}
+
+.ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header {
+  font-weight: normal;
+}
+
+.ui.container.VotingPowerDetail .ui.card .ui.loader.balance {
+  top: 0;
+  left: 100%;
+  transform: translate(-36px, 16px);
+}
+
+.ui.container.VotingPowerSummary .dcl.stats {
+  position: relative;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .ui.loader.balance {
+  left: 100%;
+  transform: translate(18px, 0);
+}
+
+@media only screen and (min-width: 992px) {
+  .ui.container.VotingPowerDetail .ActionableLayout {
+    flex: 0 0 31%;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .ui.container.VotingPowerDetail .ActionableLayout {
+    flex: 0 0 50%;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  .ui.container.VotingPowerDetail .ActionableLayout {
+    flex: 0 0 100%;
+  }
+  .ui.container.VotingPowerDetail .ActionableLayout.EstateBalance {
+    margin-top: 0px;
+  }
+}

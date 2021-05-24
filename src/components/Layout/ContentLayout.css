@@ -1,0 +1,44 @@
+.ui.container.ContentLayout {
+  display: flex;
+  padding: 32px 0;
+  flex-wrap: wrap;
+}
+
+.ui.container.ContentLayout .ContentLayout__Back {
+  padding-top: 8px;
+  flex: 0 0 58px
+}
+
+.ui.container.ContentLayout .ContentLayout__Container {
+  flex: 1;
+  max-width: calc(100% - 48px);
+}
+
+.ui.container.ContentLayout .ContentLayout__Container.ContentLayout__Container--small {
+  flex: 0 1 800px;
+}
+
+.ui.container.ContentLayout .ContentLayout__Section {
+  position: relative;
+  padding-bottom: 32px;
+}
+
+.ui.container.ContentLayout .ContentLayout__Section .dg.Paragraph.Paragraph--tiny {
+  font-size: 15px;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  .ui.container.ContentLayout {
+    padding-top: 0px;
+  }
+
+  .ui.container.ContentLayout .ContentLayout__Back {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    flex: 0 0 100%
+  }
+
+  .ui.container.ContentLayout .ContentLayout__Container {
+    flex: 0 0 100%;
+  }
+}

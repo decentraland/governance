@@ -1,0 +1,33 @@
+.ProposalDetailPage .ui.grid>.row>.column.ProposalDetailDescription {
+  width: 72% !important;
+}
+
+.ProposalDetailPage .ui.grid>.row>.column.ProposalDetailActions {
+  width: 28% !important;
+}
+
+.ProposalDetailPage .ProposalDetailDescription .dg.Title {
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: #736E7D;
+}
+
+.ProposalDetailPage .ProposalDetailDescription .dg.SubTitle {
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph {
+  font-size: 15px;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  .ProposalDetailPage .ui.grid>.row>.column.ProposalDetailDescription {
+    width: 100% !important;
+  }
+
+  .ProposalDetailPage .ui.grid>.row>.column.ProposalDetailActions {
+    width: 100% !important;
+  }
+}

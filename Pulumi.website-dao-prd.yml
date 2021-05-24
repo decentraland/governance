@@ -1,0 +1,28 @@
+encryptionsalt: v1:9oCf235QAQ8=:v1:uRW+FkAVO8o424II:P+oGJS3OY1Krmv/3faRNcy6mGYpZNw==
+config:
+  aws:region: us-east-1
+  website-dao:ALCHEMY_API_KEY:
+    secure: v1:uimb7D29xvMwX7o7:MI7gQiCko1ZOEVIhKDtRtun4uP7Si2XJxKwV+Uaqr89P9lXcSlsMGOt4sqmX7zSx
+  website-dao:COMMITTEE_ADDRESSES: ""
+  website-dao:CONNECTION_STRING:
+    secure: v1:vf59XIaDAanfS1KO:Xt34A19JycHm8C3tLExrF272dLnpsaPJBvuoP80ADKTjYHAPJxV63zwnyq5CwL8r94l3+8rnvWIIUWt2NeQI2ijqweXDs+mcGA5zM//WTWmECMK58Ep0U0nTC57+IgWsTCLJKiNaerIU0DYUz/BOp8Pdn2ktpm1TCJuA682OK28g3+2jC0E=
+  website-dao:DISCOURSE_API_KEY:
+    secure: v1:Ez9U6H2KG+iMcU7O:XlHkPo9Rz5rthfkZJeRWLjnd+7V413Qhwc/mTLBWjhNshruwaQwkDXyMDj+iF28loflLDkdBS4k6TGUouleJJjIPZe/TJaDUzeQDNEAaG1A=
+  website-dao:ETHERSCAN_API_KEY:
+    secure: v1:Al4siypcWtjmhngE:6YE5B1xF+N6So1POyM0SVKuKi861ultp6a7+nTklorWeU+Kh1RYPFIz8jrwTPMuGpNU=
+  website-dao:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
+  website-dao:GATSBY_BUY_MANA_URL: https://kyberswap.com/swap/eth-mana
+  website-dao:GATSBY_DEFAULT_CHAIN_ID: "1"
+  website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.org
+  website-dao:GATSBY_DISCOURSE_CATEGORY: "13"
+  website-dao:GATSBY_DISCOURSE_USER: dao
+  website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.org/api
+  website-dao:GATSBY_SEGMENT_KEY: vNzuKtwiBQvYxLAVzWQARB1i507VkSHq
+  website-dao:GATSBY_SNAPSHOT_ADDRESS: 0x5E23D08324f017d5425e59A2782C9ae27aCE0958
+  website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.page/api
+  website-dao:GATSBY_SNAPSHOT_DURATION: "604800"
+  website-dao:GATSBY_SNAPSHOT_SPACE: snapshot.dcl.eth
+  website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
+  website-dao:SNAPSHOT_PRIVATE_KEY:
+    secure: v1:NCALHJc3wgvqdspj:vZ5nu/emrqARzgCo/nkJ6XsGvHdEHaYzBwSj3UpJu+ZdNuy4M4W0ruHyJ12U0KOXTAvi5+vWXJYGeW5tvzLVubYAT7hEXuhVtHYb6QKyyPg=
+  website-dao:USE_PUBLIC_TLD: "true"

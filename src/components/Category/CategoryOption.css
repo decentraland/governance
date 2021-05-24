@@ -1,0 +1,68 @@
+.CategoryOption {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.CategoryOption span {
+  display: flex;
+}
+
+.CategoryOption img {
+  margin-right: 8px;
+}
+
+.CategoryOption::before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 6px;
+  padding: 10px 16px;
+  width: 100%;
+  height: 100%;
+  opacity: .08;
+  transition: background-color ease .3s
+}
+
+.CategoryOption:hover::before,
+.CategoryOption.CategoryOption--active::before {
+  background-color: #444;
+}
+
+.CategoryOption.CategoryOption--catalyst:hover::before,
+.CategoryOption.CategoryOption--catalyst.CategoryOption--active::before {
+  background-color: var(--background-catalyst);
+}
+
+.CategoryOption.CategoryOption--poi:hover::before,
+.CategoryOption.CategoryOption--poi.CategoryOption--active::before {
+  background-color: var(--background-poi);
+}
+
+.CategoryOption.CategoryOption--ban_name:hover::before,
+.CategoryOption.CategoryOption--ban_name.CategoryOption--active::before {
+  background-color: var(--background-ban-name);
+}
+
+.CategoryOption.CategoryOption--grant:hover::before,
+.CategoryOption.CategoryOption--grant.CategoryOption--active::before {
+  background-color: var(--background-grant);
+}
+
+.CategoryOption.CategoryOption--poll:hover::before,
+.CategoryOption.CategoryOption--poll.CategoryOption--active::before {
+  background-color: var(--background-poll);
+}
+
+.CategoryOption .dg.Paragraph  {
+  margin-bottom: 0;
+}
+
+.CategoryOption .dg.Paragraph.Paragraph--tiny  {
+  font-size: 15px;
+}

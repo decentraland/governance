@@ -1,0 +1,57 @@
+.dcl.field,
+.dcl.select-field,
+.dcl.select-field .ui.selection.dropdown {
+  min-width: auto;
+}
+
+.dcl.field .ui.sub.header,
+.dcl.select-field .ui.sub.header {
+  text-transform: none;
+  font-size: 15px;
+}
+
+.dcl.field .message {
+  text-align: right;
+}
+
+.MarkdownSection--tiny .dg.Paragraph {
+  font-size: 15px;
+}
+
+.CoordinatesField .dcl.field {
+  max-width: 200px;
+  margin-right: 1rem;
+  text-align: center;
+}
+
+.CoordinatesField .dcl.field,
+.CoordinatesField .dcl.field .ui.input,
+.CoordinatesField .dcl.field .ui.input input {
+  text-align: center;
+  width: 100%;
+}
+
+.ContentLayout .ContentLayout__Section .dg.Paragraph.details {
+  margin-bottom: 2px;
+}
+
+.ContentLayout .ContentLayout__Section .ui.radio.checkbox label {
+  font-size: 17px;
+}
+
+.ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
+  border-color: rgba(115, 110, 125, .32);
+}
+
+.ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:hover:before {
+  border: 2px solid var(--secondary-text);
+}
+
+.ContentLayout .ContentLayout__Section.GrantSize .dcl.field {
+  width: 100%;
+  max-width: 300px;
+}
+
+.ContentLayout .ContentLayout__Section.GrantSize .dcl.field .ui.input input {
+  padding-right: 70px;
+}

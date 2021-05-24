@@ -1,0 +1,24 @@
+.LayoutContent > .SectionTitle:first-child {
+  padding-top: 10rem;
+}
+
+.SectionTitle {
+  background: var(--secondary);
+  padding: 2rem 1rem 1rem 1rem;
+  position: relative;
+}
+
+.SectionTitle .SectionTitle__Container {
+  z-index: 1;
+  width: 100%;
+  max-width: 800px;
+  min-height: 100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.SectionTitle .dcl.back {
+  position: absolute;
+  top: 1.2em;
+  left: -4em
+}

@@ -1,0 +1,60 @@
+
+.Progress {
+  display: block;
+  background-color: #F3F2F5;
+  border-radius: 6px;
+  min-height: 6px;
+  width: 100%;
+  position: relative;
+}
+
+.Progress .Progress--bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 6px;
+  min-height: 6px;
+  width: 0;
+  display: block;
+  content: "";
+}
+
+.Progress.Progress--approve .Progress--bar {
+  background-color: #44B600;
+}
+
+.Progress.Progress--reject .Progress--bar {
+  background-color: #FF4545;
+}
+
+.Progress.Progress--status-0 .Progress--bar {
+  background-color: #4e79a7;
+}
+
+.Progress.Progress--status-1 .Progress--bar {
+  background-color: #f28e2c;
+}
+
+.Progress.Progress--status-2 .Progress--bar {
+  background-color: #e15759;
+}
+
+.Progress.Progress--status-3 .Progress--bar {
+  background-color: #76b7b2;
+}
+
+.Progress.Progress--status-3 .Progress--bar {
+  background-color: #59a14f;
+}
+
+.Progress.Progress--status-5 .Progress--bar {
+  background-color: #edc949;
+}
+
+.Progress.Progress--status-6 .Progress--bar {
+  background-color: #af7aa1;
+}
+
+.Progress.Progress--status-7 .Progress--bar {
+  background-color: #ff9da7;
+}
