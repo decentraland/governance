@@ -17,6 +17,7 @@ config:
   website-dao:GATSBY_DISCOURSE_CATEGORY: "14"
   website-dao:GATSBY_DISCOURSE_USER: dao
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.io/api
+  website-dao:GATSBY_SEGMENT_KEY: CXcLRdj0SnrRBlwYTcyWVBuE9kYaIP47
   website-dao:GATSBY_SNAPSHOT_ADDRESS: 0x2Ba0352480bd1Ea073A83e6639b06362131894CE
   website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.page/api
   website-dao:GATSBY_SNAPSHOT_DURATION: "600"

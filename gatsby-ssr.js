@@ -37,7 +37,7 @@ export function onPreRenderHTML({
 
   if (process.env.GATSBY_SEGMENT_KEY) {
     postBodyComponents.push(
-      <Segment analyticsKey={process.env.GATSBY_SEGMENT_KEY} trackPage={false} />
+      <Segment key="segment" analyticsKey={process.env.GATSBY_SEGMENT_KEY} trackPage={false} />
     )
   }
 

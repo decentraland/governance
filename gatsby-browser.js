@@ -16,6 +16,7 @@ import './src/theme.css'
 import AuthProvider from "decentraland-gatsby/dist/context/Auth/AuthProvider"
 import Layout from "decentraland-gatsby/dist/components/Layout/Layout"
 import UserMenu from "decentraland-gatsby/dist/components/User/UserMenu"
+import segment from "decentraland-gatsby/dist/utils/segment/segment"
 
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>{element}</AuthProvider>
@@ -28,4 +29,12 @@ export const wrapPageElement = ({ element, props }) => {
   >
     {element}
   </Layout>
+}
+
+export const onClientEntry = () => {
+  segment((analytics) => analytics.page())
+}
+
+export const onRouteUpdate = () => {
+  segment((analytics) => analytics.page())
 }
