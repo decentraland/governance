@@ -35,6 +35,7 @@ export async function createProposalSubscriptions(req: WithAuth<Request<{ propos
     proposal_id: proposal.id,
     user
   })
+
   if (alreadySubscribed) {
     return alreadySubscribed
   }
