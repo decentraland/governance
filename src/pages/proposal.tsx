@@ -56,7 +56,7 @@ export default function ProposalPage() {
   const [ committee ] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [ votes, votesState ] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
   const [ subscriptions, subscriptionsState ] = useAsyncMemo(() => Governance.get().getSubscriptions(proposal!.id), [ proposal ], { callWithTruthyDeps: true })
-  const [ votingPower, votingPowerState ] = useAsyncMemo(() => proposal!.status === ProposalStatus.Active ? Governance.get().getVotingPower(proposal!.id) : Promise.resolve(0), [ proposal ], { callWithTruthyDeps: true })
+  const [ votingPower, votingPowerState ] = useAsyncMemo(() => account && proposal!.status === ProposalStatus.Active ? Governance.get().getVotingPower(proposal!.id) : Promise.resolve(0), [ account, proposal ], { callWithTruthyDeps: true })
   const subscribed = useMemo(() => !!account && !!subscriptions && !!subscriptions.find(sub => sub.user === account), [ account, subscriptions ])
   const [ voting, vote] = useAsyncTask(async (_: string, choiceIndex: number) => {
     if (proposal && account && provider && votes) {
