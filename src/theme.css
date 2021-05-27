@@ -2,10 +2,6 @@ body {
   background: var(--background)
 }
 
-.dcl.user-menu .menu {
-  pointer-events: none;
-}
-
 .dcl.navbar.LayoutNavbarContainer {
   margin-bottom: 0;
   border-bottom: 0;

@@ -3,7 +3,7 @@ import { v1 as uuid } from 'uuid'
 import { AlchemyProvider, Block } from '@ethersproject/providers'
 import routes from "decentraland-gatsby/dist/entities/Route/routes";
 import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware";
-import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle';
+import handleAPI, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION } from '../Snapshot/utils';
@@ -30,7 +30,7 @@ import {
   newProposalBanNameScheme
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
-import { DEFAULT_CHOICES, isAlreadyACatalyst, isAlreadyBannedName, isAlreadyPointOfInterest, proposalUrl, snapshotUrl, forumUrl, isValidName } from './utils';
+import { DEFAULT_CHOICES, isAlreadyACatalyst, isAlreadyBannedName, isAlreadyPointOfInterest, proposalUrl, snapshotUrl, forumUrl, isValidName, MAX_PROPOSAL_LIMIT, MIN_PROPOSAL_OFFSET } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
 import isCommitee from '../Committee/isCommittee';
@@ -40,7 +40,8 @@ import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/proposals', handleAPI(getProposals))
+  const withOptionalAuth = auth({ optional: true })
+  route.get('/proposals', withOptionalAuth, handleRaw(getProposals))
   route.post(`/proposals/poll`, withAuth, handleAPI(createProposalPoll))
   route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
   route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
@@ -90,11 +91,28 @@ function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
   })
 }
 
-export async function getProposals(req: Request) {
+export async function getProposals(req: WithAuth<Request>) {
   const type = req.query.type && String(req.query.type)
   const status = req.query.status && String(req.query.status)
   const user = req.query.user && String(req.query.user)
-  return ProposalModel.getProposalList({ type, status, user })
+
+  let subscribed: string | undefined = undefined
+  if (req.query.subscribed) {
+    subscribed = req.auth || ''
+  }
+
+  let offset = req.query.offset && Number.isFinite(Number(req.query.offset)) ?
+    Number(req.query.offset) : MIN_PROPOSAL_OFFSET
+
+  let limit = req.query.limit && Number.isFinite(Number(req.query.limit)) ?
+    Number(req.query.limit) : MAX_PROPOSAL_LIMIT
+
+  const [ total, data ] = await Promise.all([
+    ProposalModel.getProposalTotal({ type, status, user, subscribed }),
+    ProposalModel.getProposalList({ type, status, user, subscribed, offset, limit })
+  ])
+
+  return { ok: true, total, data }
 }
 
 const newProposalPollValidator = schema.compile(newProposalPollScheme)

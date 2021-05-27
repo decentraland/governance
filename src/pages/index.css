@@ -20,3 +20,8 @@
 .WelcomePage .dg.Paragraph {
   font-size: 15px;
 }
+
+.ui.pagination.menu {
+  justify-content: flex-end;
+  width: 100%;
+}

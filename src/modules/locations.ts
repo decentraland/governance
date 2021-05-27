@@ -3,6 +3,17 @@ import { ProposalStatus, ProposalType } from "../entities/Proposal/types";
 export const WELCOME_STORE_KEY: string = 'org.decentraland.governance.welcome'
 export const WELCOME_STORE_VERSION: string = '1'
 
+export function toProposalListPage(value: string | number | null | undefined): number {
+  if (typeof value === 'number') {
+    return Math.max(1, value)
+  } else if (typeof value === 'string') {
+    const page = Number(value)
+    return Number.isFinite(page) ? Math.max(1, page) : 1
+  } else {
+    return 1
+  }
+}
+
 export enum ProposalListView {
   Enacted = 'enacted',
   Onboarding = 'onboarding',
@@ -16,6 +27,10 @@ export function toProposalListView(list: string | null | undefined): ProposalLis
     default:
       return null
   }
+}
+
+export type ProposalListPage = {
+  page: string
 }
 
 export type ProposalListViewFilter = {
@@ -60,7 +75,7 @@ export function url(path: string = '/', query: Record<string, string> | URLSearc
 }
 
 export default {
-  proposals: (options: Partial<ProposalListViewFilter & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
+  proposals: (options: Partial<ProposalListPage & ProposalListViewFilter & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
   proposal: (proposal: string) => url(`/proposal/`, { id: proposal }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
   submit: (type?: ProposalType) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', {}),

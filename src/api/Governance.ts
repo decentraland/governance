@@ -17,7 +17,10 @@ type NewProposalMap = {
 export type GetProposalsFilter = {
   user: string,
   type: ProposalType,
-  status: ProposalStatus
+  status: ProposalStatus,
+  subscribed: boolean | string,
+  limit: number,
+  offset: number
 }
 
 export class Governance extends API {
@@ -60,14 +63,22 @@ export class Governance extends API {
   }
 
   async getProposals(filters: Partial<GetProposalsFilter> = {}) {
-    const params = new URLSearchParams(filters)
+    const params = new URLSearchParams(filters as any)
     let query = params.toString()
     if (query) {
       query = '?' + query
     }
 
-    const proposals = await this.fetch<ApiResponse<ProposalAttributes[]>>(`/proposals${query}`)
-    return proposals.data.map(proposal => Governance.parseProposal(proposal))
+    let options = this.options().method('GET')
+    if (filters.subscribed) {
+      options = options.authorization()
+    }
+
+    const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(`/proposals${query}`, options)
+    return {
+      ...proposals,
+      data: proposals.data.map(proposal => Governance.parseProposal(proposal))
+    }
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {

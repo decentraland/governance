@@ -1,5 +1,6 @@
 
 import React,  { useEffect, useMemo } from "react"
+import { ChainId } from '@dcl/schemas'
 import { useLocation } from "@reach/router"
 import { toWei } from 'web3x/utils/units'
 import { Header } from "decentraland-ui/dist/components/Header/Header"
@@ -20,13 +21,13 @@ import Link from "decentraland-gatsby/dist/components/Text/Link"
 import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import delay from "decentraland-gatsby/dist/utils/promise/delay"
-import { useBalanceOf, useEstateBalance, useEstateContract, useLandContract, useManaContract, useWManaContract } from "../hooks/useContract"
+import { useBalanceOf, useEstateBalance, useEstateContract, useLandContract, useWManaContract } from "../hooks/useContract"
 import useAsyncTask from "decentraland-gatsby/dist/hooks/useAsyncTask"
+import useManaBalance from "decentraland-gatsby/dist/hooks/useManaBalance"
 import useTransactionContext from "decentraland-gatsby/dist/context/Auth/useTransactionContext"
 import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
 import './balance.css'
 import isEthereumAddress from "validator/lib/isEthereumAddress"
-import TokenList from "decentraland-gatsby/dist/utils/dom/TokenList"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 
 const LAND_MULTIPLIER = 2000
@@ -40,11 +41,11 @@ export default function WrappingPage() {
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
   const [ account, accountState ] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const manaContract = useManaContract()
   const wManaContract = useWManaContract()
   const landContract = useLandContract()
   const estateContract = useEstateContract()
-  const [ mana, manaState ] = useBalanceOf(manaContract, accountBalance, 'ether')
+  const [ mana, manaState ] = useManaBalance(account, ChainId.ETHEREUM_MAINNET)
+  const [ maticMana, maticManaState ] = useManaBalance(account, ChainId.MATIC_MAINNET)
   const [ wMana, wManaState ] = useBalanceOf(wManaContract, accountBalance, 'ether')
   const [ land, landState ] = useBalanceOf(landContract, accountBalance)
   const [ estate, estateLand, estateState ] = useEstateBalance(estateContract, accountBalance)
@@ -120,9 +121,12 @@ export default function WrappingPage() {
             <Header>
               <b>{l(`page.balance.mana_title`)}</b>
             </Header>
-            <Loader size="tiny" className="balance" active={manaState.loading || wManaState.loading}/>
+            <Loader size="tiny" className="balance" active={manaState.loading || maticManaState.loading || wManaState.loading}/>
             <Stats title={l('page.balance.mana_balance_label') || ''}>
               <VotingPower value={mana!} size="medium" />
+            </Stats>
+            <Stats title={l('page.balance.mana_balance_label') || ''}>
+              <VotingPower value={maticMana!} size="medium" />
             </Stats>
           </Card.Content>
           {wMana! > 0 && <Card.Content style={{ flex: 0, position: 'relative' }}>

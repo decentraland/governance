@@ -1,8 +1,21 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { conditional, SQL, table, limit, offset, join } from 'decentraland-gatsby/dist/entities/Database/utils'
-import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus } from './types'
+import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
+import SubscriptionModel from '../Subscription/model'
+
+export type FilterProposalList = {
+  type: string,
+  user: string,
+  status: string,
+  subscribed: string,
+}
+
+export type FilterPaginatation = {
+  limit: number,
+  offset: number
+}
 
 export default class ProposalModel extends Model<ProposalAttributes> {
   static tableName = 'proposals'
@@ -68,10 +81,43 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
-  static async enactProposal() {}
-
-  static async getProposalList(filter: { type?: string, user?: string, status?: string, limit?: number, offset?: number } = {}) {
+  static async getProposalTotal(filter: Partial<FilterProposalList> = {}) {
     if (filter.user && !isEthereumAddress(filter.user)) {
+      return 0
+    }
+
+    if (filter.subscribed && !isEthereumAddress(filter.subscribed)) {
+      return 0
+    }
+
+    if (filter.type && !isProposalType(filter.type)) {
+      return 0
+    }
+
+    if (filter.status && !isProposalStatus(filter.status)) {
+      return 0
+    }
+
+    const result = await this.query(SQL`
+      SELECT COUNT(*) as "total"
+      FROM ${table(ProposalModel)} p
+      ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
+      WHERE "deleted" = FALSE
+      ${conditional(!!filter.user, SQL`AND p."user" = ${filter.user}`)}
+      ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)}
+      ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)}
+      ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)}
+    `)
+
+    return result && result[0] && Number(result[0].total) || 0
+  }
+
+  static async getProposalList(filter: Partial<FilterProposalList & FilterPaginatation> = {}) {
+    if (filter.user && !isEthereumAddress(filter.user)) {
+      return []
+    }
+
+    if (filter.subscribed && !isEthereumAddress(filter.subscribed)) {
       return []
     }
 
@@ -84,12 +130,14 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     const proposals = await this.query(SQL`
-      SELECT *
-      FROM ${table(ProposalModel)}
+      SELECT p.*
+      FROM ${table(ProposalModel)} p
+      ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
       WHERE "deleted" = FALSE
       ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)}
       ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)}
       ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)}
+      ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)}
       ORDER BY "created_at" DESC
       ${limit(filter.limit, { min: 0, max: 100, defaultValue: 100 })}
       ${offset(filter.offset)}

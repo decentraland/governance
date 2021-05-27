@@ -1,15 +1,15 @@
-
-import React, { useMemo } from "react"
+import React, { useMemo, useEffect } from "react"
 import { useLocation } from '@reach/router'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
+import { Pagination } from "decentraland-ui/dist/components/Pagination/Pagination"
 import { navigate } from "gatsby-plugin-intl"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
-import locations, { ProposalListView, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
+import locations, { ProposalListView, toProposalListPage, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import CategoryOption from "../components/Category/CategoryOption"
 import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
@@ -25,8 +25,10 @@ import Empty from "../components/Proposal/Empty"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import prevent from "decentraland-gatsby/dist/utils/react/prevent"
-import './index.css'
 import useProposals from "../hooks/useProposals"
+import './index.css'
+
+const ITEMS_PER_PAGE = 25
 
 enum Onboarding {
   Loading,
@@ -38,11 +40,22 @@ export default function IndexPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
-  const type = toProposalType(params.get('type'))
-  const status = toProposalStatus(params.get('status'))
-  const view = toProposalListView(params.get('view'))
-  const [ proposals ] = useProposals()
+  const type = toProposalType(params.get('type')) ?? undefined
+  const view = toProposalListView(params.get('view')) ?? undefined
+  const status = view ? ProposalStatus.Enacted : toProposalStatus(params.get('status')) ?? undefined
+  const page = toProposalListPage(params.get('page')) ?? undefined
+  const [ proposals, proposalsState ] = useProposals({ type, status, page, itemsPerPage: ITEMS_PER_PAGE })
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
+
+  useEffect(() => {
+    if (typeof proposals?.total === 'number') {
+      const maxPage = Math.ceil(proposals.total / ITEMS_PER_PAGE)
+      if (page > maxPage) {
+        handlePageFilter(maxPage)
+      }
+    }
+  }, [ page, proposals ])
+
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
   // Onboarding
@@ -61,32 +74,23 @@ export default function IndexPage() {
   //   }
   // }
 
-  const filteredProposals = useMemo(() => proposals && proposals.filter(proposal => {
-
-    if (type && proposal.type !== type) {
-      return false
-    }
-
-    if (view && (proposal.status as any) !== ProposalListView.Enacted) {
-      return false
-    }
-
-    if (!view && status && proposal.status !== status) {
-      return false
-    }
-
-    return true
-  }), [ proposals, type, status, view ])
+  function handlePageFilter(page: number) {
+    const newParams = new URLSearchParams(params)
+    page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
+    return navigate(locations.proposals(newParams))
+  }
 
   function handleTypeFilter(type: ProposalType | null) {
     const newParams = new URLSearchParams(params)
     type ? newParams.set('type', type) : newParams.delete('type')
+    newParams.delete('page')
     return locations.proposals(newParams)
   }
 
   function handleStatusFilter(status: ProposalStatus | null) {
     const newParams = new URLSearchParams(params)
     status ? newParams.set('status', status) : newParams.delete('status')
+    newParams.delete('page')
     return navigate(locations.proposals(newParams))
   }
 
@@ -163,7 +167,10 @@ export default function IndexPage() {
           </Grid.Column>
           <Grid.Column tablet="12">
             <ActionableLayout
-              leftAction={<Header sub>{proposals ? l(`page.proposal_list.count_proposals`, { count: filteredProposals?.length || 0 }) : ''}</Header>}
+              leftAction={<Header sub>
+                {!proposals && ''}
+                {proposals && l(`page.proposal_list.count_proposals`, { count: proposals.total || 0 })}
+              </Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
                 <Button primary size="small" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
@@ -171,10 +178,10 @@ export default function IndexPage() {
                 </Button>
               </>}
             >
-              {!proposals && <Loader active />}
+              <Loader active={!proposals || proposalsState.loading} />
               {type && <CategoryBanner type={type} active />}
-              {filteredProposals && filteredProposals.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
-              {filteredProposals && filteredProposals.map(proposal => {
+              {proposals && proposals.data.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
+              {proposals && proposals.data.map(proposal => {
                 return <ProposalItem
                   key={proposal.id}
                   proposal={proposal}
@@ -183,6 +190,13 @@ export default function IndexPage() {
                   onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
                 />
               })}
+              {proposals && proposals.total > ITEMS_PER_PAGE && <Pagination
+                onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
+                totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
+                activePage={page}
+                firstItem={null}
+                lastItem={null}
+              />}
             </ActionableLayout>
           </Grid.Column>
         </Grid.Row>
