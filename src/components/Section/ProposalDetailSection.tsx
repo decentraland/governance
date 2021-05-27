@@ -1,5 +1,7 @@
 import React from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -42,7 +44,9 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       <div className="DetailsSection__Value">
         {profile && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
         {profile && profile.name}
-        {!profile && !!proposal?.user &&  `${proposal.user.slice(0, 5)}...${proposal.user.slice(-3)}`}
+        {(!profile || !profile.name) && !!proposal?.user &&  <Blockie scale={3} seed={proposal?.user || ''}>
+          <Address value={proposal?.user || ''} />
+        </Blockie>}
       </div>
     </div>
     <div className="DetailsSection__Content DetailsSection__Flex">
