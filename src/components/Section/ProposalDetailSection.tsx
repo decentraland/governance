@@ -42,7 +42,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
     <div className="DetailsSection__Content DetailsSection__Flex">
       <div>{l('page.proposal_detail.details_user_label')}</div>
       <div className="DetailsSection__Value">
-        {profile && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
+        {profile && profile.name && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
         {profile && profile.name}
         {(!profile || !profile.name) && !!proposal?.user &&  <Blockie scale={3} seed={proposal?.user || ''}>
           <Address value={proposal?.user || ''} />
