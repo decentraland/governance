@@ -28,6 +28,7 @@ import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
 import { VoteRegisteredModal } from "../components/Modal/VoteRegisteredModal"
 import { DeleteProposalModal } from "../components/Modal/DeleteProposalModal"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
+import retry from "decentraland-gatsby/dist/utils/promise/retry"
 import locations from "../modules/locations"
 import loader from "../modules/loader"
 import { EnactProposalModal } from "../components/Modal/EnactProposalModal"
@@ -62,7 +63,7 @@ export default function ProposalPage() {
     if (proposal && account && provider && votes) {
       const message = await Snapshot.get().createVoteMessage(proposal.snapshot_space, proposal.snapshot_id, choiceIndex)
       const signature = await new Personal(provider).sign(message, Address.fromString(account), '')
-      await Snapshot.get().send(account, message, signature)
+      await retry(3, () => Snapshot.get().send(account, message, signature))
       patchOptions({ changing: false, confirmSubscription: !votes[account] })
       votesState.reload()
     }
