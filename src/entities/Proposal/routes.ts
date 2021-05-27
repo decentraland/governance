@@ -6,6 +6,7 @@ import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import unleash from 'decentraland-gatsby/dist/utils/api/unleash'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
 import { Discourse, DiscoursePost } from '../../api/Discourse';
@@ -30,13 +31,29 @@ import {
   newProposalBanNameScheme
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
-import { DEFAULT_CHOICES, isAlreadyACatalyst, isAlreadyBannedName, isAlreadyPointOfInterest, proposalUrl, snapshotUrl, forumUrl, isValidName, MAX_PROPOSAL_LIMIT, MIN_PROPOSAL_OFFSET } from './utils';
+import {
+  DEFAULT_CHOICES,
+  isAlreadyACatalyst,
+  isAlreadyBannedName,
+  isAlreadyPointOfInterest,
+  proposalUrl,
+  snapshotUrl,
+  forumUrl,
+  isValidName,
+  MAX_PROPOSAL_LIMIT,
+  MIN_PROPOSAL_OFFSET,
+  governanceUrl
+} from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
 import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
+import env from 'decentraland-gatsby/dist/utils/env';
+import { FeatureFlags } from '../../modules/features';
+
+const FEATURE_FLAGS_API = env('FEATURE_FLAGS_API', '')
 
 export default routes((route) => {
   const withAuth = auth()
@@ -46,7 +63,7 @@ export default routes((route) => {
   route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
   route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
   route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
-  // route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
+  route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(enactProposal))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -192,6 +209,19 @@ const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
+
+  const ff = await unleash(
+    FEATURE_FLAGS_API,
+    {
+      address: user,
+      referer: governanceUrl()
+    }
+  )
+
+  if (!ff.flags[FeatureFlags.Grant]) {
+    throw new RequestError('Not Implemented', RequestError.NotImplemented)
+  }
+
   return createProposal({
     user,
     type: ProposalType.Grant,

@@ -27,6 +27,8 @@ import Link from "decentraland-gatsby/dist/components/Text/Link"
 import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 import useProposals from "../hooks/useProposals"
 import './index.css'
+import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
+import { FeatureFlags } from "../modules/features"
 
 const ITEMS_PER_PAGE = 25
 
@@ -46,6 +48,7 @@ export default function IndexPage() {
   const page = toProposalListPage(params.get('page')) ?? undefined
   const [ proposals, proposalsState ] = useProposals({ type, status, page, itemsPerPage: ITEMS_PER_PAGE })
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
+  const [ ff ] = useFeatureFlagContext()
 
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
@@ -161,7 +164,7 @@ export default function IndexPage() {
               <CategoryOption type={ProposalType.Catalyst} href={handleTypeFilter(ProposalType.Catalyst)} active={type === ProposalType.Catalyst} />
               <CategoryOption type={ProposalType.POI} href={handleTypeFilter(ProposalType.POI)} active={type === ProposalType.POI} />
               <CategoryOption type={ProposalType.BanName} href={handleTypeFilter(ProposalType.BanName)} active={type === ProposalType.BanName} />
-              {/* <CategoryOption type={ProposalType.Grant} href={handleTypeFilter(ProposalType.Grant)} active={type === ProposalType.Grant} /> */}
+              {ff.flags[FeatureFlags.Grant] && <CategoryOption type={ProposalType.Grant} href={handleTypeFilter(ProposalType.Grant)} active={type === ProposalType.Grant} />}
               <CategoryOption type={ProposalType.Poll} href={handleTypeFilter(ProposalType.Poll)} active={type === ProposalType.Poll} />
             </ActionableLayout>
           </Grid.Column>

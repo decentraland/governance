@@ -1,17 +1,20 @@
 import React from "react"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 
-import ContentLayout, { ContentSection } from "../../components/Layout/ContentLayout"
+import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
+import ContentLayout, { ContentSection } from "../../components/Layout/ContentLayout"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
 import CategoryBanner from "../../components/Category/CategoryBanner"
 import { ProposalType } from "../../entities/Proposal/types"
 import locations from "../../modules/locations"
 import './submit.css'
+import { FeatureFlags } from "../../modules/features"
 
 export default function NewProposalPage() {
   const l = useFormatMessage()
+  const [ ff ] = useFeatureFlagContext()
 
   return <>
   <Head
@@ -28,7 +31,7 @@ export default function NewProposalPage() {
       <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
       <CategoryBanner type={ProposalType.POI} href={locations.submit(ProposalType.POI)} active />
       <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
-      {/* <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active /> */}
+      {ff.flags[FeatureFlags.Grant] && <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />}
       <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
     </ContentSection>
   </ContentLayout>

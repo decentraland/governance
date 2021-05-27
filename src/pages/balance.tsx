@@ -19,6 +19,7 @@ import VotingPower from "../components/Token/VotingPower"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
+import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import delay from "decentraland-gatsby/dist/utils/promise/delay"
 import { useBalanceOf, useEstateBalance, useEstateContract, useLandContract, useWManaContract } from "../hooks/useContract"
@@ -29,6 +30,7 @@ import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
 import './balance.css'
 import isEthereumAddress from "validator/lib/isEthereumAddress"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
+import { FeatureFlags } from "../modules/features"
 
 const LAND_MULTIPLIER = 2000
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
@@ -40,6 +42,7 @@ export default function WrappingPage() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
   const [ account, accountState ] = useAuthContext()
+  const [ ff ] = useFeatureFlagContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const wManaContract = useWManaContract()
   const landContract = useLandContract()
@@ -49,7 +52,7 @@ export default function WrappingPage() {
   const [ wMana, wManaState ] = useBalanceOf(wManaContract, accountBalance, 'ether')
   const [ land, landState ] = useBalanceOf(landContract, accountBalance)
   const [ estate, estateLand, estateState ] = useEstateBalance(estateContract, accountBalance)
-  const votingPower = mana! + wMana! + (land! * LAND_MULTIPLIER) + (estateLand! * LAND_MULTIPLIER)
+  const votingPower = mana! + wMana! + (ff.flags[FeatureFlags.Polygon] ? maticMana! : 0) + (land! * LAND_MULTIPLIER) + (estateLand! * LAND_MULTIPLIER)
   const [ transactions, transactionsState ] = useTransactionContext()
   const unwrappingTransaction = useMemo(() => (transactions || []).find(tx => tx.payload.id === UNWRAPPING_TRANSACTION_ID), [ transactions ])
   const [ unwrapping, unwrap ] = useAsyncTask(async () => {
@@ -97,7 +100,7 @@ export default function WrappingPage() {
     <Container className="VotingPowerSummary">
       <Stats title={l(`page.balance.total_label`) || ''}>
         <VotingPower value={votingPower} size="huge" />
-        <Loader size="small" className="balance" active={manaState.loading || wManaState.loading || landState.loading || estateState.loading}/>
+        <Loader size="small" className="balance" active={manaState.loading || wManaState.loading || maticManaState.loading || landState.loading || estateState.loading}/>
       </Stats>
       {account && accountBalance && account !== accountBalance &&<Stats title="Address">
           <Header size="huge">
@@ -125,9 +128,9 @@ export default function WrappingPage() {
             <Stats title={l('page.balance.mana_balance_label') || ''}>
               <VotingPower value={mana!} size="medium" />
             </Stats>
-            <Stats title={l('page.balance.mana_balance_label') || ''}>
+            {ff.flags[FeatureFlags.Polygon] && <Stats title={l('page.balance.matic_mana_balance_label') || ''}>
               <VotingPower value={maticMana!} size="medium" />
-            </Stats>
+            </Stats>}
           </Card.Content>
           {wMana! > 0 && <Card.Content style={{ flex: 0, position: 'relative' }}>
             <Stats title={l('page.balance.wrapped_balance_label') || ''}>

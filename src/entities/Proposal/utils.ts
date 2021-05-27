@@ -34,11 +34,6 @@ export async function isAlreadyACatalyst(domain: string) {
   return !!servers.find(server => server.address === 'https://' + domain)
 }
 
-export function isBooleanProposal(proposal: ProposalAttributes): boolean {
-  const choices = proposal.snapshot_proposal.payload.choice
-  return false
-}
-
 export function calcualteProposalState(proposal: ProposalAttributes): ProposalStatus {
   const now = Date.now()
   if (
@@ -80,6 +75,14 @@ export function snapshotUrl(proposal: Pick<ProposalAttributes, 'snapshot_id' | '
 export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id' | 'discourse_topic_slug'>) {
   const target = new URL(process.env.GATSBY_DISCOURSE_API || '')
   target.pathname = `/t/${proposal.discourse_topic_slug}/${proposal.discourse_topic_id}`
+  return target.toString()
+}
+
+export function governanceUrl() {
+  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  target.pathname = ''
+  target.search = ''
+  target.hash = ''
   return target.toString()
 }
 

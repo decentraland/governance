@@ -14,12 +14,17 @@ import './src/theme.css'
 
 // import Helmet from "react-helmet"
 import AuthProvider from "decentraland-gatsby/dist/context/Auth/AuthProvider"
+import FeatureFlagProvider from "decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider"
 import Layout from "decentraland-gatsby/dist/components/Layout/Layout"
 import UserMenu from "decentraland-gatsby/dist/components/User/UserMenu"
 import segment from "decentraland-gatsby/dist/utils/segment/segment"
 
 export const wrapRootElement = ({ element }) => (
-  <AuthProvider>{element}</AuthProvider>
+  <AuthProvider>
+    <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">
+      {element}
+    </FeatureFlagProvider>
+  </AuthProvider>
 )
 
 export const wrapPageElement = ({ element, props }) => {
