@@ -22,9 +22,11 @@ import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import delay from "decentraland-gatsby/dist/utils/promise/delay"
-import { useBalanceOf, useEstateBalance, useEstateContract, useLandContract, useWManaContract } from "../hooks/useContract"
+import { useBalanceOf, useWManaContract } from "../hooks/useContract"
 import useAsyncTask from "decentraland-gatsby/dist/hooks/useAsyncTask"
 import useManaBalance from "decentraland-gatsby/dist/hooks/useManaBalance"
+import useLandBalance from "decentraland-gatsby/dist/hooks/useLandBalance"
+import useEstateBalance from "decentraland-gatsby/dist/hooks/useEstateBalance"
 import useTransactionContext from "decentraland-gatsby/dist/context/Auth/useTransactionContext"
 import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
 import './balance.css'
@@ -45,14 +47,12 @@ export default function WrappingPage() {
   const [ ff ] = useFeatureFlagContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const wManaContract = useWManaContract()
-  const landContract = useLandContract()
-  const estateContract = useEstateContract()
-  const [ mana, manaState ] = useManaBalance(account, ChainId.ETHEREUM_MAINNET)
-  const [ maticMana, maticManaState ] = useManaBalance(account, ChainId.MATIC_MAINNET)
   const [ wMana, wManaState ] = useBalanceOf(wManaContract, accountBalance, 'ether')
-  const [ land, landState ] = useBalanceOf(landContract, accountBalance)
-  const [ estate, estateLand, estateState ] = useEstateBalance(estateContract, accountBalance)
-  const votingPower = mana! + wMana! + (ff.flags[FeatureFlags.Polygon] ? maticMana! : 0) + (land! * LAND_MULTIPLIER) + (estateLand! * LAND_MULTIPLIER)
+  const [ mana, manaState ] = useManaBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
+  const [ maticMana, maticManaState ] = useManaBalance(accountBalance, ChainId.MATIC_MAINNET)
+  const [ land, landState ] = useLandBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
+  const [ estate, estateLand, estateState ] = useEstateBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
+  const votingPower = Math.floor(mana) + Math.floor(wMana!) + Math.floor(ff.flags[FeatureFlags.Polygon] ? maticMana! : 0) + (land! * LAND_MULTIPLIER) + (estateLand! * LAND_MULTIPLIER)
   const [ transactions, transactionsState ] = useTransactionContext()
   const unwrappingTransaction = useMemo(() => (transactions || []).find(tx => tx.payload.id === UNWRAPPING_TRANSACTION_ID), [ transactions ])
   const [ unwrapping, unwrap ] = useAsyncTask(async () => {
@@ -98,10 +98,6 @@ export default function WrappingPage() {
     />
     <Navigation activeTab={NavigationTab.Wrapping} />
     <Container className="VotingPowerSummary">
-      <Stats title={l(`page.balance.total_label`) || ''}>
-        <VotingPower value={votingPower} size="huge" />
-        <Loader size="small" className="balance" active={manaState.loading || wManaState.loading || maticManaState.loading || landState.loading || estateState.loading}/>
-      </Stats>
       {account && accountBalance && account !== accountBalance &&<Stats title="Address">
           <Header size="huge">
             <Blockie seed={accountBalance} scale={8}>
@@ -109,6 +105,10 @@ export default function WrappingPage() {
             </Blockie>
           </Header>
       </Stats>}
+      <Stats title={l(`page.balance.total_label`) || ''}>
+        <VotingPower value={votingPower} size="huge" />
+        <Loader size="small" className="balance" active={manaState.loading || wManaState.loading || maticManaState.loading || landState.loading || estateState.loading}/>
+      </Stats>
     </Container>
     <Container className="VotingPowerDetail">
       <ActionableLayout
@@ -126,10 +126,10 @@ export default function WrappingPage() {
             </Header>
             <Loader size="tiny" className="balance" active={manaState.loading || maticManaState.loading || wManaState.loading}/>
             <Stats title={l('page.balance.mana_balance_label') || ''}>
-              <VotingPower value={mana!} size="medium" />
+              <VotingPower value={Math.floor(mana!)} size="medium" />
             </Stats>
             {ff.flags[FeatureFlags.Polygon] && <Stats title={l('page.balance.matic_mana_balance_label') || ''}>
-              <VotingPower value={maticMana!} size="medium" />
+              <VotingPower value={Math.floor(maticMana!)} size="medium" />
             </Stats>}
           </Card.Content>
           {wMana! > 0 && <Card.Content style={{ flex: 0, position: 'relative' }}>
