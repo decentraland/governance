@@ -29,8 +29,10 @@ export function createVotes(votes: Record<string, SnapshotVote>, balances: Recor
 export function calculateResult(choices: string[], votes: Record<string, Vote>) {
   let total = 0
   const balance: Record<string, number> = {}
+  const choiceCount: Record<string, number> = {}
   for (const choice of choices) {
     balance[choice] = 0
+    choiceCount[choice] = 0
   }
 
   const voters = Object.keys(votes || {})
@@ -39,6 +41,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
     if (vote) {
       total += vote.vp
       balance[choices[vote.choice - 1]] += vote.vp
+      choiceCount[choices[vote.choice - 1]] += 1
     }
   }
 
@@ -46,35 +49,40 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
   let maxProgress = 0
   const result = choices.map((choice, i) => {
     const color = calculateChoiceColor(choice, i)
+    const power = balance[choice] || 0
+    const votes = choiceCount[choice] || 0
+
     if (total === 0) {
       return {
         choice,
         color,
-        votes: 0,
-        progress: 0
-      }
-    }
-
-    const votes = balance[choice] || 0
-    if (votes === 0) {
-      return {
-        choice,
-        color,
-        votes: 0,
-        progress: 0
-      }
-    }
-
-    if (votes === total) {
-      return {
-        choice,
         votes,
+        power: 0,
+        progress: 0
+      }
+    }
+
+    if (power === 0) {
+      return {
+        choice,
         color,
+        votes,
+        power: 0,
+        progress: 0
+      }
+    }
+
+    if (power === total) {
+      return {
+        choice,
+        color,
+        votes,
+        power,
         progress: 100
       }
     }
 
-    let progress = Math.floor((votes / total) * 100)
+    let progress = Math.floor((power / total) * 100)
     if (progress === 0) {
       progress = 1
     }
@@ -87,6 +95,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
 
     return {
       choice,
+      power,
       votes,
       color,
       progress

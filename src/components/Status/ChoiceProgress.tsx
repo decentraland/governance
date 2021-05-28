@@ -7,6 +7,7 @@ import './ChoiceProgress.css'
 export type ChoiceProgressProps = {
   choice: string,
   votes: number,
+  power: number,
   progress: number
   color: ChoiceColor
 }
@@ -19,7 +20,7 @@ export default function ChoiceProgress(props: ChoiceProgressProps) {
         {props.choice}
       </div>
       <div className="ChoiceProgress__Stats">
-        {props.progress}% ({l('general.number', { value: props.votes })} VP)
+        {props.progress}% ({l('general.number', { value: props.power })} VP)
       </div>
     </div>
     <Progress color={props.color} progress={props.progress} />

@@ -53,7 +53,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       <Header sub>{l('page.proposal_detail.result_label')}</Header>
     </div>
     {results.map((result) => {
-      return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} progress={result.progress} />
+      return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} power={result.power} progress={result.progress} />
     })}
     {!finished && <div className="DetailsSection__Content">
       <Loader active={!loading && accountState.loading } />
