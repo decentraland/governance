@@ -27,7 +27,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
     latestVotes = await VotesModel.createEmpty(proposal.id)
   }
 
-  if (Time.date(proposal.finish_at).getTime() < (Date.now() + Time.Minute)) {
+  if (Time.utc(proposal.finish_at).isAfter(Time.utc().add(Time.Day))) {
     return latestVotes.votes
   }
 
