@@ -1,6 +1,6 @@
 
 import React,  { useEffect, useMemo } from "react"
-import { ChainId } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { useLocation } from "@reach/router"
 import { toWei } from 'web3x/utils/units'
 import { Header } from "decentraland-ui/dist/components/Header/Header"
@@ -12,6 +12,7 @@ import { Stats } from "decentraland-ui/dist/components/Stats/Stats"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { Blockie } from "decentraland-ui/dist/components/Blockie/Blockie"
 import { Address } from "decentraland-ui/dist/components/Address/Address"
+import { Mana } from "decentraland-ui/dist/components/Mana/Mana"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
@@ -29,10 +30,10 @@ import useLandBalance from "decentraland-gatsby/dist/hooks/useLandBalance"
 import useEstateBalance from "decentraland-gatsby/dist/hooks/useEstateBalance"
 import useTransactionContext from "decentraland-gatsby/dist/context/Auth/useTransactionContext"
 import { isPending } from "decentraland-dapps/dist/modules/transaction/utils"
-import './balance.css'
 import isEthereumAddress from "validator/lib/isEthereumAddress"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import { FeatureFlags } from "../modules/features"
+import './balance.css'
 
 const LAND_MULTIPLIER = 2000
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
@@ -125,10 +126,14 @@ export default function WrappingPage() {
               <b>{l(`page.balance.mana_title`)}</b>
             </Header>
             <Loader size="tiny" className="balance" active={manaState.loading || maticManaState.loading || wManaState.loading}/>
-            <Stats title={l('page.balance.mana_balance_label') || ''}>
+            <Stats title={
+              <Mana inline network={Network.ETHEREUM}> MANA</Mana> as any
+            }>
               <VotingPower value={Math.floor(mana!)} size="medium" />
             </Stats>
-            {ff.flags[FeatureFlags.Polygon] && <Stats title={l('page.balance.matic_mana_balance_label') || ''}>
+            {ff.flags[FeatureFlags.Polygon] && <Stats title={
+              <Mana inline network={Network.MATIC}> MANA</Mana> as any
+            }>
               <VotingPower value={Math.floor(maticMana!)} size="medium" />
             </Stats>}
           </Card.Content>

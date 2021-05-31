@@ -29,6 +29,16 @@
   font-weight: normal;
 }
 
+/* .ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i {
+  line-height: 1em;
+  vertical-align: text-top;
+}
+
+.ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i.matic {
+  font-size: .9em;
+  background-repeat: no-repeat;
+} */
+
 .ui.container.VotingPowerDetail .ui.card .ui.loader.balance {
   top: 0;
   left: 100%;
