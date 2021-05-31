@@ -6,6 +6,7 @@ import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import isAdmin from 'decentraland-gatsby/dist/entities/Auth/isAdmin'
 import unleash from 'decentraland-gatsby/dist/utils/api/unleash'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
@@ -67,6 +68,7 @@ export default routes((route) => {
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(enactProposal))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
+  route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
   // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
 })
 
@@ -456,4 +458,21 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   dropDiscourseTopic(proposal.discourse_topic_id)
   dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
   return true
+}
+
+
+
+export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {
+  const user = req.auth!
+  if (!isAdmin(user)) {
+    throw new RequestError(`Only admin menbers can reactivate a proposal`, RequestError.Forbidden)
+  }
+
+  const proposal = await getProposal(req)
+  await ProposalModel.update<ProposalAttributes>({ status: ProposalStatus.Active }, { id: proposal.id })
+
+  return {
+    ...proposal,
+    status: ProposalStatus.Active
+  }
 }
