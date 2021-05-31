@@ -31,6 +31,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async activateProposals() {
+    const now = new Date(Date.now())
     const query = SQL`
       UPDATE ${table(ProposalModel)}
       SET
@@ -39,7 +40,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       WHERE
         "deleted" = FALSE
         AND "status" = ${ProposalStatus.Pending}
-        AND "start_at" <= now()
+        AND "start_at" >= now()
     `
 
     return this.rowCount(query)
@@ -52,7 +53,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       WHERE
         "deleted" = FALSE
         AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
-        AND "finish_at" <= now()
+        AND "finish_at" <= (now() + interval '1 minute')
     `
 
     const result = await this.query(query)
