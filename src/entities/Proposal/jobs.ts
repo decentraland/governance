@@ -1,5 +1,4 @@
 import JobContext from "decentraland-gatsby/dist/entities/Job/context";
-import VotesModel from "../Votes/model";
 import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
 import { Vote } from "../Votes/types";
 import ProposalModel from "./model";
