@@ -33,7 +33,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 
   let snapshotVotes: Record<string, SnapshotVote>
   try {
-    snapshotVotes = await Snapshot.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
+    snapshotVotes = await getSnapshotProposalVotes(proposal)
   } catch (err) {
     return latestVotes?.votes || {}
   }
@@ -43,7 +43,16 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
     return latestVotes.votes
   }
 
+  return updateSnapshotProposalVotes(proposal, snapshotVotes)
+}
+
+export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
+  return Snapshot.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
+}
+
+export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: Record<string, SnapshotVote>) {
   const now = new Date
+  const hash = VotesModel.hashVotes(snapshotVotes)
   const provider = new AlchemyProvider(Number(proposal.snapshot_network), process.env.ALCHEMY_API_KEY)
   const balance = await getScores(proposal, provider, Object.keys(snapshotVotes))
   const votes = createVotes(snapshotVotes, balance)

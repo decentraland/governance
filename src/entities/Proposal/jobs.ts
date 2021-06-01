@@ -1,5 +1,6 @@
 import JobContext from "decentraland-gatsby/dist/entities/Job/context";
 import VotesModel from "../Votes/model";
+import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
 import { Vote } from "../Votes/types";
 import ProposalModel from "./model";
 import { ProposalAttributes, ProposalStatus } from "./types";
@@ -37,8 +38,8 @@ export async function finishProposal(context: JobContext) {
     const isAcceptReject = sameOptions(choices, ['accept', 'reject'])
     const isForAgainst = sameOptions(choices, ['for', 'against'])
     if (isYesNo || isAcceptReject || isForAgainst) {
-      const scores = await VotesModel.getVotes(proposal.id)
-      const votes: Record<string, Vote> = scores?.votes || {}
+      const snapshotVotes = await getSnapshotProposalVotes(proposal)
+      const votes: Record<string, Vote> = await updateSnapshotProposalVotes(proposal, snapshotVotes)
       const voters = Object.keys(votes)
 
       const result: Record<string, number> = {}
