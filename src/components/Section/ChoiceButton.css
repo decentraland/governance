@@ -1,9 +1,6 @@
 .ui.button.ChoiceButton {
   background: var(--background);
   border: 1px solid rgba(115,110,125,.32);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .ui.button.ChoiceButton.ChoiceButton--voted {

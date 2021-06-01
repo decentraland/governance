@@ -1,3 +1,17 @@
 .ActivityPage .SignIn {
   position: relative;
 }
+
+.ActivityPage .ChoiceProgress .ChoiceProgress__Description {
+  flex-wrap: nowrap;
+}
+
+.ActivityPage .ChoiceProgress .ChoiceProgress__Choice {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ActivityPage .ChoiceProgress  .ChoiceProgress__Stats {
+  font-weight: normal;
+}

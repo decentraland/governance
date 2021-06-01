@@ -2,14 +2,18 @@
   display: flex;
   justify-content: space-between;
   color: var(--text);
+  flex-wrap: wrap;
 }
 
 .ChoiceProgress .ChoiceProgress__Choice {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
   font-weight: 500;
   font-size: 15px;
+}
+
+.ChoiceProgress .ChoiceProgress__Stats {
+  flex: 1 0 auto;
+  text-align: right;
+  padding-left: 1em;
 }
 
 .ChoiceProgress .Progress {
