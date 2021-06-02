@@ -7,6 +7,7 @@ export type VoteAttributes = {
 }
 
 export type Vote = {
+  timestamp: number,
   choice: number,
   vp: number
 }

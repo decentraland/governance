@@ -18,7 +18,8 @@ export function createVotes(votes: Record<string, SnapshotVote>, balances: Recor
     (result, current) => {
       result[current.toLowerCase()] = {
         choice: votes[current].msg.payload.choice,
-        vp: balance.get(current.toLowerCase()) || 0
+        vp: balance.get(current.toLowerCase()) || 0,
+        timestamp: Number(votes[current].msg.timestamp),
       }
       return result
     },
