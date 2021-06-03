@@ -12,7 +12,7 @@ config:
   website-dao:ETHERSCAN_API_KEY:
     secure: v1:1cx3JnLb62MAR5od:BGr8KyJK+dpqgSLVt+frfIvtQXuhUgC7z0BPVPx/bz2WTRacZ1HL1ItahNqY9xDH9Fs=
   website-dao:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
-  website-dao:GATSBY_BUY_MANA_URL: https://kyberswap.com/swap/eth-mana
+  website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.io/
   website-dao:GATSBY_DEFAULT_CHAIN_ID: "1"
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.org
   website-dao:GATSBY_DISCOURSE_CATEGORY: "14"
