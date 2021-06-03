@@ -134,7 +134,7 @@ export function calculateResultWinner(choices: string[], votes: Record<string, V
   const result = calculateResult(choices, votes)
 
   return result.reduce((winner, current) => {
-    if (winner.votes < current.votes) {
+    if (winner.power < current.power) {
       return current
     }
 
