@@ -8,7 +8,6 @@
     "build": "gatsby build && tsc -p .",
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "theme": "setup-statics node_modules/semantic-ui-css/semantic.min.css node_modules/balloon-css/balloon.min.css node_modules/decentraland-ui/dist/themes/base-theme.css node_modules/decentraland-ui/dist/themes/alternative/dark-theme.css node_modules/decentraland-ui/dist/themes/alternative/light-theme.css",
     "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
     "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/server.ts -e ts,json --exec 'ts-node -r dotenv/config.js' src/server",
     "clean": "gatsby clean",
