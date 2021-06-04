@@ -9,8 +9,6 @@ config:
     secure: v1:vf59XIaDAanfS1KO:Xt34A19JycHm8C3tLExrF272dLnpsaPJBvuoP80ADKTjYHAPJxV63zwnyq5CwL8r94l3+8rnvWIIUWt2NeQI2ijqweXDs+mcGA5zM//WTWmECMK58Ep0U0nTC57+IgWsTCLJKiNaerIU0DYUz/BOp8Pdn2ktpm1TCJuA682OK28g3+2jC0E=
   website-dao:DISCOURSE_API_KEY:
     secure: v1:Ez9U6H2KG+iMcU7O:XlHkPo9Rz5rthfkZJeRWLjnd+7V413Qhwc/mTLBWjhNshruwaQwkDXyMDj+iF28loflLDkdBS4k6TGUouleJJjIPZe/TJaDUzeQDNEAaG1A=
-  website-dao:ETHERSCAN_API_KEY:
-    secure: v1:Al4siypcWtjmhngE:6YE5B1xF+N6So1POyM0SVKuKi861ultp6a7+nTklorWeU+Kh1RYPFIz8jrwTPMuGpNU=
   website-dao:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
   website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.org/
   website-dao:GATSBY_DEFAULT_CHAIN_ID: "1"
