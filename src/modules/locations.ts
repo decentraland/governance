@@ -1,5 +1,7 @@
 import { ProposalStatus, ProposalType } from "../entities/Proposal/types";
+import API from 'decentraland-gatsby/dist/utils/api/API'
 
+const GATSBY_BASE_URL = process.env.GATSBY_BASE_URL || '/'
 export const WELCOME_STORE_KEY: string = 'org.decentraland.governance.welcome'
 export const WELCOME_STORE_VERSION: string = '1'
 
@@ -69,9 +71,7 @@ export type ProposalsModal = {
 }
 
 export function url(path: string = '/', query: Record<string, string> | URLSearchParams = {}) {
-  const params = new URLSearchParams(query).toString()
-
-  return path + (params ? '?' : '') + params
+  return API.url(GATSBY_BASE_URL, path, query)
 }
 
 export default {
