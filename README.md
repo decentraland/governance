@@ -1,4 +1,11 @@
-# Decentraland Governance
+<p align="center">
+  <a href="https://governance.decentraland.org">
+    <img alt="Decentraland" src="https://decentraland.org/images/logo.png" width="60" />
+  </a>
+</p>
+<h1 align="center">
+  # Decentralized Autonomous Organization
+</h1>
 
 The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.
 
@@ -45,9 +52,11 @@ once you setup this project you can start it using the following command
 
 > Note 2: you can disabled `https` removing the `--https` flag in the `develop` script of your `package.json`
 
-## Project structure
+## Project's structure
 
-### back and front end
+You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
+
+### back and front ends
 
 this project runs gatsby as front-end and a nodejs server as back-end both connected through a proxy
 
