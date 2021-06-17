@@ -15,6 +15,27 @@ body {
   position: relative;
 }
 
+.ui.ui.popup,
+.ui.ui.popup.inverted {
+  height: auto;
+}
+
+
+.ui.ui.popup.inverted {
+  height: auto;
+  background-color: var(--background);
+}
+
+.ui.ui.popup.bottom.inverted::before,
+.ui.ui.popup.top.inverted::before {
+  background: var(--background);
+  box-shadow: 0;
+}
+
+.ui.ui.popup.inverted .content {
+  color: var(--text);
+}
+
 .dg.Link i.icon {
   font-size: 1em;
   vertical-align: text-top;
