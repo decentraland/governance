@@ -18,10 +18,11 @@ import { Governance } from '../../api/Governance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import './submit.css'
 import { asNumber } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import './submit.css'
 
 type GrantState = {
   title: string,
@@ -50,7 +51,6 @@ const initialPollState: GrantState = {
 const categories = [
   { key: ProposalGrantCategory.Community, text: ProposalGrantCategory.Community, value: ProposalGrantCategory.Community },
   { key: ProposalGrantCategory.ContentCreator, text: ProposalGrantCategory.ContentCreator, value: ProposalGrantCategory.ContentCreator },
-  { key: ProposalGrantCategory.Exceptional, text: ProposalGrantCategory.Exceptional, value: ProposalGrantCategory.Exceptional },
   { key: ProposalGrantCategory.Gaming, text: ProposalGrantCategory.Gaming, value: ProposalGrantCategory.Gaming },
   { key: ProposalGrantCategory.PlatformContributor, text: ProposalGrantCategory.PlatformContributor, value: ProposalGrantCategory.PlatformContributor },
 ]
@@ -253,7 +253,10 @@ export default function SubmitBanName() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_grant.abstract_label')}</Label>
+      <Label>
+        {l('page.submit_grant.abstract_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_grant.abstract_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -279,13 +282,16 @@ export default function SubmitBanName() {
         value={state.value.size}
         onChange={(_, { value }) => editor.set({ size: value })}
         error={!!state.error.size}
-        action={<Paragraph tiny secondary>MANA</Paragraph>}
+        action={<Paragraph tiny secondary>USD</Paragraph>}
         onAction={() => null}
         message={l.optional(state.error.size)}
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_grant.description_label')}</Label>
+      <Label>
+        {l('page.submit_grant.description_label')}
+        <MarkdownNotice />
+      </Label>
       <MarkdownTextarea
         minHeight={175}
         value={state.value.description}
@@ -303,7 +309,10 @@ export default function SubmitBanName() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_grant.specification_label')}</Label>
+      <Label>
+        {l('page.submit_grant.specification_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_grant.specification_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -322,7 +331,10 @@ export default function SubmitBanName() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_grant.personnel_label')}</Label>
+      <Label>
+        {l('page.submit_grant.personnel_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_grant.personnel_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -341,7 +353,10 @@ export default function SubmitBanName() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_grant.roadmap_label')}</Label>
+      <Label>
+        {l('page.submit_grant.roadmap_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_grant.roadmap_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}

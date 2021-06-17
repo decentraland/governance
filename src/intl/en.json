@@ -240,7 +240,9 @@
       "title": "Submit Proposal",
       "description": "Select a proposal category to get started",
       "button_submit": "Submit proposal",
-      "character_counter": "({current} out of {limit} characters)"
+      "character_counter": "({current} out of {limit} characters)",
+      "markdown_tooltip": " (markdown)",
+      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed."
     },
     "submit_poll": {
       "title": "Create a community poll",

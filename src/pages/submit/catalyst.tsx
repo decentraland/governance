@@ -21,10 +21,10 @@ import Catalyst, { Servers } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { isValidDomainName } from '../../entities/Proposal/utils'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import './submit.css'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Navigation, { NavigationTab } from '../../components/Layout/Navigation'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import './submit.css'
 
 type CatalystState = {
   owner: string,
@@ -205,7 +205,10 @@ export default function SubmitCatalyst() {
         </div>}
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_catalyst.description_label')}</Label>
+      <Label>
+        {l('page.submit_catalyst.description_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_catalyst.description_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}

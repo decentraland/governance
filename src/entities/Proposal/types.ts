@@ -242,8 +242,7 @@ export enum ProposalGrantCategory {
   Community = 'Community',
   ContentCreator = 'Content Creator',
   PlatformContributor = 'Platform Contributor',
-  Gaming = 'Gaming',
-  Exceptional = 'Exceptional',
+  Gaming = 'Gaming'
 }
 
 export function isProposalGrantCategory(value:  string | null | undefined): boolean {
@@ -252,7 +251,6 @@ export function isProposalGrantCategory(value:  string | null | undefined): bool
     case ProposalGrantCategory.ContentCreator:
     case ProposalGrantCategory.PlatformContributor:
     case ProposalGrantCategory.Gaming:
-    case ProposalGrantCategory.Exceptional:
       return true
     default:
       return false
@@ -260,9 +258,9 @@ export function isProposalGrantCategory(value:  string | null | undefined): bool
 }
 
 export enum ProposalGrantTier {
-  Tier1 = 'Tier 1: $250-$500 USD',
-  Tier2 = 'Tier 2: $500-$1000 USD',
-  Tier3 = 'Tier 3: $1000-$2000 USD',
+  Tier1 = 'Tier 1: a one-time payment of $500 - $1500 USD in MANA',
+  Tier2 = 'Tier 2: a one-time payment of $1500 - $3000 USD in MANA',
+  Tier3 = 'Tier 3: up to a 3 month vesting contract of $3000 - $5000 USD in MANA, with a one month cliff',
   // Tier4 = 'Tier 4: $2000-$3000 USD',
   // Tier5 = 'Tier 5: $3000-$5000 USD',
   // TierX = 'Tier X: $5000+ USD',
@@ -325,7 +323,6 @@ export const newProposalGrantScheme = {
         ProposalGrantCategory.ContentCreator,
         ProposalGrantCategory.PlatformContributor,
         ProposalGrantCategory.Gaming,
-        ProposalGrantCategory.Exceptional,
       ]
     },
     tier: {

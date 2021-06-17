@@ -21,6 +21,7 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import { isValidName } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import './submit.css'
 
 type BanNameState = {
@@ -148,7 +149,10 @@ export default function SubmitBanName() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_ban_name.description_label')}</Label>
+      <Label>
+        {l('page.submit_ban_name.description_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_ban_name.description_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}

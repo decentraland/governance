@@ -19,9 +19,10 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import { Governance } from '../../api/Governance'
 import locations from '../../modules/locations'
 import loader from '../../modules/loader'
-import './submit.css'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import './submit.css'
 
 type PollState = {
   title: string,
@@ -184,7 +185,10 @@ export default function SubmitPoll() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_poll.description_label')}</Label>
+      <Label>
+        {l('page.submit_poll.description_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_poll.description_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}

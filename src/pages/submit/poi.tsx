@@ -19,9 +19,10 @@ import { Governance } from '../../api/Governance'
 import locations from '../../modules/locations'
 import loader from '../../modules/loader'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import './submit.css'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import './submit.css'
 
 type POIState = {
   x: string | number,
@@ -171,7 +172,10 @@ export default function SubmitPOI() {
       </div>
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_poi.description_label')}</Label>
+      <Label>
+        {l('page.submit_poi.description_label')}
+        <MarkdownNotice />
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_poi.description_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
