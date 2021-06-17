@@ -22,6 +22,7 @@ export type ProposalAttributes<C extends {} = any> = {
   deleted_by: string | null,
   enacted: boolean
   enacted_description: string | null
+  required_to_pass: number | null,
   enacted_by: string | null
   created_at: Date
   updated_at: Date
@@ -82,6 +83,27 @@ export function toProposalType(value: string | null | undefined): ProposalType |
   return isProposalType(value)?
     value as ProposalType :
     null
+}
+
+function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
+  if (value === undefined || value === null) {
+    return defaultValue
+  }
+
+  const vp = Number(value.replace(/_/gi, ''))
+  if (Number.isFinite(vp) && vp >= 0) {
+    return vp
+  }
+
+  return defaultValue
+}
+
+export const ProposalRequiredVP = {
+  [ProposalType.Grant]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT, 0),
+  [ProposalType.Catalyst]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_CATALYST, 0),
+  [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
+  [ProposalType.POI]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POI, 0),
+  [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
 }
 
 export type EnactProposalProposal = {

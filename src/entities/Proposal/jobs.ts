@@ -36,22 +36,37 @@ export async function finishProposal(context: JobContext) {
     const isYesNo = sameOptions(choices, ['yes', 'no'])
     const isAcceptReject = sameOptions(choices, ['accept', 'reject'])
     const isForAgainst = sameOptions(choices, ['for', 'against'])
-    if (isYesNo || isAcceptReject || isForAgainst) {
-      const snapshotVotes = await getSnapshotProposalVotes(proposal)
-      const votes: Record<string, Vote> = await updateSnapshotProposalVotes(proposal, snapshotVotes)
-      const voters = Object.keys(votes)
+    const snapshotVotes = await getSnapshotProposalVotes(proposal)
+    const votes: Record<string, Vote> = await updateSnapshotProposalVotes(proposal, snapshotVotes)
+    const voters = Object.keys(votes)
 
-      const result: Record<string, number> = {}
-      for (const choice of choices)  {
-        result[choice] = 0
+    const result: Record<string, number> = {}
+    for (const choice of choices)  {
+      result[choice] = 0
+    }
+
+
+    for (const voter of voters) {
+      const vote = votes[voter]
+      const choice = vote.choice - 1
+      result[choices[choice]] = result[choices[choice]] + vote.vp
+    }
+
+    const winnerVoringPower = Object.keys(result).reduce((winner, choice) => {
+      if (!winner || winner < result[choice]) {
+        return result[choice]
       }
 
-      for (const voter of voters) {
-        const vote = votes[voter]
-        const choice = vote.choice - 1
-        result[choices[choice]] = result[choices[choice]] + vote.vp
-      }
+      return winner
+    }, 0)
 
+    // reject empty proposals or proposals without the minimum vp required
+    const minimumVotingPowerRequired = proposal.required_to_pass || 0
+    if (winnerVoringPower === 0 || winnerVoringPower < minimumVotingPowerRequired) {
+      rejectedProposals.push(proposal)
+
+    // reject/pass boolean proposals
+    } else if (isYesNo || isAcceptReject || isForAgainst) {
       if (
         isYesNo && result['yes'] > result['no'] ||
         isAcceptReject && result['accept'] > result['reject'] ||
@@ -61,6 +76,8 @@ export async function finishProposal(context: JobContext) {
       } else {
         rejectedProposals.push(proposal)
       }
+
+    // Finish otherwise
     } else {
       finishedProposals.push(proposal)
     }

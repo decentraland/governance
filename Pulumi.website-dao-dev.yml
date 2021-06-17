@@ -23,6 +23,11 @@ config:
   website-dao:GATSBY_SNAPSHOT_DURATION: "600"
   website-dao:GATSBY_SNAPSHOT_SPACE: frami.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_BAN_NAME: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_CATALYST: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "0"
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=
   website-dao:USE_PUBLIC_TLD: "false"

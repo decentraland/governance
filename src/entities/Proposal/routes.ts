@@ -3,10 +3,9 @@ import { v1 as uuid } from 'uuid'
 import { AlchemyProvider, Block } from '@ethersproject/providers'
 import routes from "decentraland-gatsby/dist/entities/Route/routes";
 import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware";
-import handleAPI, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle';
+import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import isAdmin from 'decentraland-gatsby/dist/entities/Auth/isAdmin'
 import unleash from 'decentraland-gatsby/dist/utils/api/unleash'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
@@ -29,7 +28,8 @@ import {
   NewProposalGrant,
   EnactProposalProposal,
   enactProposalScheme,
-  newProposalBanNameScheme
+  newProposalBanNameScheme,
+  ProposalRequiredVP
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
 import {
@@ -59,7 +59,7 @@ const FEATURE_FLAGS_API = env('FEATURE_FLAGS_API', '')
 export default routes((route) => {
   const withAuth = auth()
   const withOptionalAuth = auth({ optional: true })
-  route.get('/proposals', withOptionalAuth, handleRaw(getProposals))
+  route.get('/proposals', withOptionalAuth, handleJSON(getProposals))
   route.post(`/proposals/poll`, withAuth, handleAPI(createProposalPoll))
   route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
   route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
@@ -141,6 +141,7 @@ export async function createProposalPoll(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Poll,
+    required_to_pass: ProposalRequiredVP[ProposalType.Poll],
     configuration,
   })
 }
@@ -162,6 +163,7 @@ export async function createProposalBanName(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.BanName,
+    required_to_pass: ProposalRequiredVP[ProposalType.BanName],
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -181,6 +183,7 @@ export async function createProposalPOI(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.POI,
+    required_to_pass: ProposalRequiredVP[ProposalType.POI],
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -200,6 +203,7 @@ export async function createProposalCatalyst(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Catalyst,
+    required_to_pass: ProposalRequiredVP[ProposalType.Catalyst],
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -227,6 +231,7 @@ export async function createProposalGrant(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Grant,
+    required_to_pass: ProposalRequiredVP[ProposalType.Grant],
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -234,7 +239,7 @@ export async function createProposalGrant(req: WithAuth) {
   })
 }
 
-export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration'>) {
+export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass'>) {
   const id = uuid()
   const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)

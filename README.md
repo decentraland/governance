@@ -32,6 +32,18 @@ if you are running this project locally you only need to check the following env
 * `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
 * `ALCHEMY_API_KEY`: an alchemy api key to check the voting power
 
+### setup the required voting power to pass
+
+The minimum amount of voting power require to pass a proposal of each type it's defined in these variables, if they are not defined or are not numbers `0` will be used instead
+
+```bash
+  GATSBY_VOTING_POWER_TO_PASS_GRANT=0
+  GATSBY_VOTING_POWER_TO_PASS_CATALYST=0
+  GATSBY_VOTING_POWER_TO_PASS_BAN_NAME=0
+  GATSBY_VOTING_POWER_TO_PASS_POI=0
+  GATSBY_VOTING_POWER_TO_PASS_POLL=0
+```
+
 ### database setup
 
 once you have a `CONNECTION_STRING` you can setup you database tables using the following command
