@@ -27,8 +27,8 @@ export function createVotes(votes: Record<string, SnapshotVote>, balances: Recor
   )
 }
 
-export function calculateResult(choices: string[], votes: Record<string, Vote>) {
-  let total = 0
+export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
+  let totalPower = 0
   const balance: Record<string, number> = {}
   const choiceCount: Record<string, number> = {}
   for (const choice of choices) {
@@ -40,7 +40,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
   for (const voter of voters) {
     const vote = votes![voter]!
     if (vote) {
-      total += vote.vp
+      totalPower += vote.vp
       balance[choices[vote.choice - 1]] += vote.vp
       choiceCount[choices[vote.choice - 1]] += 1
     }
@@ -48,12 +48,13 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
 
   let rest = 100
   let maxProgress = 0
+  let totalPowerProgress = Math.max(totalPower, requiredVotingPower)
   const result = choices.map((choice, i) => {
     const color = calculateChoiceColor(choice, i)
     const power = balance[choice] || 0
     const votes = choiceCount[choice] || 0
 
-    if (total === 0) {
+    if (totalPower === 0) {
       return {
         choice,
         color,
@@ -73,7 +74,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
       }
     }
 
-    if (power === total) {
+    if (power === totalPowerProgress) {
       return {
         choice,
         color,
@@ -83,7 +84,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
       }
     }
 
-    let progress = Math.floor((power / total) * 100)
+    let progress = Math.floor((power / totalPowerProgress) * 100)
     if (progress === 0) {
       progress = 1
     }
@@ -103,7 +104,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>) 
     }
   })
 
-  if (rest !== 0 && rest !== 100) {
+  if (rest !== 0 && rest !== 100 && totalPower >= requiredVotingPower) {
     const maxChoiceResults = result.filter(choiceResult => choiceResult.progress === maxProgress)
     for (const choiceResult of maxChoiceResults) {
       choiceResult.progress += rest / maxChoiceResults.length
@@ -130,8 +131,8 @@ export function calculateChoiceColor(value: string, index: number): ChoiceColor 
   }
 }
 
-export function calculateResultWinner(choices: string[], votes: Record<string, Vote>) {
-  const result = calculateResult(choices, votes)
+export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
+  const result = calculateResult(choices, votes, requiredVotingPower)
 
   return result.reduce((winner, current) => {
     if (winner.power < current.power) {

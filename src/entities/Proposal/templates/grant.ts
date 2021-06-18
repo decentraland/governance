@@ -14,6 +14,10 @@ ${formatMarkdown(proposal.abstract)}
 
 ${formatBalance(proposal.size)} MANA
 
+## Beneficiary address
+
+${proposal.beneficiary}
+
 ## Description
 
 ${formatMarkdown(proposal.description)}

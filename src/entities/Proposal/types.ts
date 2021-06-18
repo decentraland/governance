@@ -286,6 +286,7 @@ export type NewProposalGrant = {
   category: ProposalGrantCategory,
   tier: ProposalGrantTier,
   size: number,
+  beneficiary: string,
   description: string,
   specification: string,
   personnel: string,
@@ -300,6 +301,7 @@ export const newProposalGrantScheme = {
     'abstract',
     'category',
     'tier',
+    'beneficiary',
     'description',
     'specification',
     'personnel',
@@ -339,6 +341,10 @@ export const newProposalGrantScheme = {
     size: {
       type: 'integer',
       min: 0
+    },
+    beneficiary: {
+      type: 'string',
+      format: 'address'
     },
     description: {
       type: 'string',

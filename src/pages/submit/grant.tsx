@@ -23,6 +23,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import './submit.css'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 type GrantState = {
   title: string,
@@ -30,6 +31,7 @@ type GrantState = {
   category: string | null,
   tier: string | null,
   size: string | number,
+  beneficiary: string,
   description: string,
   specification: string,
   personnel: string,
@@ -42,6 +44,7 @@ const initialPollState: GrantState = {
   category: null,
   tier: null,
   size: '',
+  beneficiary: '',
   description: '',
   specification: '',
   personnel: '',
@@ -89,6 +92,9 @@ const validate = createValidator<GrantState>({
     abstract: assert(state.abstract.length <= schema.abstract.maxLength, 'error.grant.abstract_too_large') ||
     undefined
   }),
+  beneficiary: (state) => ({
+    beneficiary: assert(!state.beneficiary || isEthereumAddress(state.beneficiary), 'error.grant.beneficiary_invalid')
+  }),
   description: (state) => ({
     description: assert(state.description.length <= schema.description.maxLength, 'error.grant.description_too_large') ||
     undefined
@@ -127,6 +133,10 @@ const validate = createValidator<GrantState>({
       assert(state.abstract.length > 0, 'error.grant.abstract_empty') ||
       assert(state.abstract.length >= schema.abstract.minLength, 'error.grant.abstract_too_short') ||
       assert(state.abstract.length <= schema.abstract.maxLength, 'error.grant.abstract_too_large')
+    ),
+    beneficiary: (
+      assert(state.beneficiary !== '', 'error.grant.beneficiary_empty') ||
+      assert(isEthereumAddress(state.beneficiary), 'error.grant.beneficiary_invalid')
     ),
     description: (
       assert(state.description.length > 0, 'error.grant.description_empty') ||
@@ -285,6 +295,18 @@ export default function SubmitBanName() {
         action={<Paragraph tiny secondary>USD</Paragraph>}
         onAction={() => null}
         message={l.optional(state.error.size)}
+      />
+    </ContentSection>
+    <ContentSection>
+      <Label>{l('page.submit_grant.beneficiary_label')}</Label>
+      <Paragraph tiny secondary className="details">{l('page.submit_grant.beneficiary_detail')}</Paragraph>
+      <Field
+        type="address"
+        value={state.value.beneficiary}
+        onChange={(_, { value }) => editor.set({ beneficiary: value }, { validate: false })}
+        onBlur={() => editor.set({ beneficiary: state.value.beneficiary.trim() })}
+        message={l.optional(state.error.beneficiary)}
+        error={!!state.error.beneficiary}
       />
     </ContentSection>
     <ContentSection>
