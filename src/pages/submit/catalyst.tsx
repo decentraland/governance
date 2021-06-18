@@ -50,6 +50,9 @@ const edit = (state: CatalystState, props: Partial<CatalystState>) => {
 }
 
 const validate = createValidator<CatalystState>({
+  owner: (state) => ({
+    domain: assert(!state.owner || isEthereumAddress(state.owner), 'error.catalyst.owner_invalid')
+  }),
   domain: (state) => ({
     domain: assert(!state.domain || isValidDomainName(state.domain), 'error.catalyst.domain_invalid')
   }),
