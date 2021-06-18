@@ -32,7 +32,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   const [ account, accountState ] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
   const vote = useMemo(() => account && votes && votes[account] && votes[account] || null, [ account, votes ])
-  const results = useMemo(() => calculateResult(choices, votes || {}, proposal?.required_to_pass || 0), [ proposal, choices, votes ])
+  const results = useMemo(() => calculateResult(choices, votes || {} /*, proposal?.required_to_pass || 0*/), [ proposal, choices, votes ])
   const now = useMemo(() => Time.utc(), [])
   const start_at = useMemo(() => Time.utc(proposal?.start_at) || now, [ proposal ])
   const finish_at = useMemo(() => Time.utc(proposal?.finish_at) || now, [ proposal ])
