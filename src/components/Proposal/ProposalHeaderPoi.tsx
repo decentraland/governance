@@ -30,12 +30,16 @@ export default React.memo(function ProposalHeaderPoi({ proposal }: ProposalHeade
 
   const configuration: NewProposalPOI = proposal.configuration
   return <div className="ProposalHeaderPoi">
-    <ImgFixed dimension="wide" src={Land.get().getParcelImage([configuration.x, configuration.y])} />
+    <Link href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}>
+      <ImgFixed dimension="wide" src={Land.get().getParcelImage([configuration.x, configuration.y])} />
+    </Link>
     <Header size="medium">
       <Link href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}>
         {tile?.name || `Parcel ${configuration.x},${configuration.y}`}&nbsp;<JumpIn />
       </Link>
     </Header>
-    <Link className="PoiLocation" href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}><Pin /> {`${configuration.x},${configuration.y}`}</Link>
+    <Link className="PoiLocation" href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}>
+      <Pin /> {`${configuration.x},${configuration.y}`}
+    </Link>
   </div>
 })
