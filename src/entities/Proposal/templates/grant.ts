@@ -12,7 +12,7 @@ ${formatMarkdown(proposal.abstract)}
 
 ## Grant size
 
-${formatBalance(proposal.size)} MANA
+${formatBalance(proposal.size)} USD
 
 ## Beneficiary address
 
