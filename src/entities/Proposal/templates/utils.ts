@@ -6,7 +6,17 @@ import escapeMarkdown from 'markdown-escape'
 import numeral from 'numeral'
 
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
-  return String.raw(raw, ...subs).trim()
+  return String.raw(raw, ...subs)
+    .trim()
+    .replace(/(“|”|‘|’)/gi, function (char) {
+      switch (char) {
+        case '“': return `&ldquo;`
+        case '”': return `&rdquo;`
+        case '‘': return `&lsquo;`
+        case '’': return `&rsquo;`
+        default: return char
+      }
+    })
 }
 
 export function formatBalance(value: number) {
