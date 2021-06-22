@@ -53,6 +53,7 @@ import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
 import env from 'decentraland-gatsby/dist/utils/env';
 import { FeatureFlags } from '../../modules/features';
+import { escapeEntities } from './templates/utils';
 
 const FEATURE_FLAGS_API = env('FEATURE_FLAGS_API', '')
 
@@ -287,8 +288,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
 
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
       snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: await templates.snapshotTitle(snapshotTemplateProps),
-      body: await templates.snapshotDescription(snapshotTemplateProps),
+      name: escapeEntities(await templates.snapshotTitle(snapshotTemplateProps)),
+      body: escapeEntities(await templates.snapshotDescription(snapshotTemplateProps)),
       choices: data.configuration.choices,
       snapshot: block.number,
       end,
