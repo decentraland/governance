@@ -26,12 +26,7 @@ const DEFAUTL_INFO: Partial<MetadataOptions> = {
 }
 
 export default routes((route) => {
-  // route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
-  // route.get('/proposals/:proposal/vp', withAuth, handleAPI(getMyProposalVotingPower))
-  route.get('/', handleRaw(injectHomeMetadata))
-  route.get('/en/', handleRaw(injectHomeMetadata))
   route.get('/proposal/', handleRaw(injectProposalMetadata))
-  route.get('/en/proposal/', handleRaw(injectProposalMetadata))
 })
 
 async function readFile(req: Request) {

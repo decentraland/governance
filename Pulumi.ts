@@ -6,12 +6,13 @@ export = async function main() {
     name: 'governance',
     // contentSource: resolve(__dirname, '../public'),
     usePublicTLD: process.env['USE_PUBLIC_TLD'] === 'true',
+    contentRoutingRules: {
+      '/en/*': '/$1'
+    },
     serviceSource: '.',
     servicePaths: [
       '/',
-      '/en/',
       '/proposal/',
-      '/en/proposal/',
       '/api/*',
       '/metrics'
     ]
