@@ -20,6 +20,13 @@ module.exports = {
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {
+      resolve: 'gatsby-plugin-sri',
+      options: {
+        hash: 'sha512', // 'sha256', 'sha384' or 'sha512' ('sha512' = default)
+        crossorigin: false // Optional
+      }
+    },
+    {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: `Decentraland`,

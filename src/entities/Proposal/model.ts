@@ -4,6 +4,7 @@ import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus, P
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 import SubscriptionModel from '../Subscription/model'
+import { SITEMAP_ITEMS_PER_PAGE } from './utils'
 
 export type FilterProposalList = {
   type: string,
@@ -30,8 +31,23 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
   }
 
+  static async countAll() {
+    return this.count<ProposalAttributes>({ deleted: false })
+  }
+
+  static async getSitemapProposals(page: number): Promise<{ id: string }[]> {
+    const query = SQL`
+      SELECT id FROM ${table(ProposalModel)}
+      WHERE "deleted" = FALSE
+      ORDER BY created_at ASC
+      OFFSET ${page * SITEMAP_ITEMS_PER_PAGE}
+      LIMIT ${SITEMAP_ITEMS_PER_PAGE}
+    `
+
+    return this.query(query)
+  }
+
   static async activateProposals() {
-    const now = new Date(Date.now())
     const query = SQL`
       UPDATE ${table(ProposalModel)}
       SET

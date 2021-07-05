@@ -14,7 +14,11 @@ export = async function main() {
       '/',
       '/proposal/',
       '/api/*',
-      '/metrics'
+      '/metrics',
+      '/metrics/*',
+      '/sitemap.xml',
+      '/sitemap.static.xml',
+      '/sitemap.proposals.xml',
     ]
   })
 }

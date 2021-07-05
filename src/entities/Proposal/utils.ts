@@ -5,6 +5,7 @@ import { ProposalAttributes, ProposalStatus } from './types'
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
 export const MAX_PROPOSAL_LIMIT = 100
+export const SITEMAP_ITEMS_PER_PAGE = 100
 
 export const MIN_NAME_SIZE = 2
 export const MAX_NAME_SIZE = 15
@@ -78,9 +79,9 @@ export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id'
   return target.toString()
 }
 
-export function governanceUrl() {
+export function governanceUrl(pathname: string = '') {
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
-  target.pathname = ''
+  target.pathname = pathname
   target.search = ''
   target.hash = ''
   return target.toString()
@@ -89,8 +90,7 @@ export function governanceUrl() {
 export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   const params = new URLSearchParams({ id: proposal.id })
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
-  // /en/proposal?id=e3d51e50-b3f0-11eb-87d1-2b8a70271dd7
-  target.pathname = `/en/proposal/`
+  target.pathname = `/proposal/`
   target.search = '?' + params.toString()
   return target.toString()
 }
