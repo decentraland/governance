@@ -24,18 +24,19 @@ export type SnapshotStrategy = {
 }
 
 export type SnapshotSpace = {
-  strategies: SnapshotStrategy[],
-  filters: {
-    onlyMembers: boolean,
-    invalids: string[],
-    minScore: number
-  },
-  skin: string,
-  members: string[], // address
+  id: string,
   network: string,
-  symbol: string,
-  name: string,
-  private: boolean
+  strategies: SnapshotStrategy[],
+  // filters: {
+  //   onlyMembers: boolean,
+  //   invalids: string[],
+  //   minScore: number
+  // },
+  // skin: string,
+  // members: string[], // address
+  // symbol: string,
+  // name: string,
+  // private: boolean
 }
 
 export type SnapshotMessage<T extends string, P extends {}> = {
@@ -128,17 +129,31 @@ export class Snapshot extends API {
     return this.fetch<SnapshotStatus>('/api/')
   }
 
-  async getSpaces() {
-    return this.fetch<Record<string, SnapshotSpace>>('/api/spaces')
-  }
-
   async getSpace(space: string) {
-    return this.fetch<SnapshotSpace>(`/api/spaces/${space}`)
+    const query = `
+      query Space($space: String!) {
+        space(id: $space) {
+          id
+          network
+          strategies {
+            name
+            params
+          }
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotQueryResponse<{ space: SnapshotSpace }>>(`/graphql`, this.options()
+      .method('POST')
+      .json({ query, variables: { space } })
+    )
+
+    return result?.data?.space || null
   }
 
-  async getProposals(space: string) {
-    return this.fetch<Record<string, SnapshotProposal>>(`/api/${space}/proposals`)
-  }
+  // async getProposals(space: string) {
+  //   return this.fetch<Record<string, SnapshotProposal>>(`/api/${space}/proposals`)
+  // }
 
   async createProposalMessage(
     space: string,
