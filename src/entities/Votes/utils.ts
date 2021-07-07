@@ -12,14 +12,15 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
   return list.filter(id => isUUID(String(id)))
 }
 
-export function createVotes(votes: Record<string, SnapshotVote>, balances: Record<string, number>) {
+export function createVotes(votes: SnapshotVote[], balances: Record<string, number>) {
   const balance = new Map(Object.keys(balances).map(address => [ address.toLowerCase(), balances[address] || 0] as const))
-  return Object.keys(votes).reduce(
-    (result, current) => {
-      result[current.toLowerCase()] = {
-        choice: votes[current].msg.payload.choice,
-        vp: balance.get(current.toLowerCase()) || 0,
-        timestamp: Number(votes[current].msg.timestamp),
+  return votes.reduce(
+    (result, vote) => {
+      const address = vote.voter.toLowerCase()
+      result[address] = {
+        choice: vote.choice,
+        vp: balance.get(address) || 0,
+        timestamp: Number(vote.created),
       }
       return result
     },

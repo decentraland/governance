@@ -2,6 +2,8 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
+export type SnapshotQueryResponse<T> = { data: T }
+
 export type SnapshotResult = { ipfsHash: string }
 
 export type SnapshotStatus = {
@@ -82,12 +84,11 @@ export type SnapshotVotePayload = {
 }
 
 export type SnapshotVoteMessage = SnapshotMessage<"vote", SnapshotVotePayload>
+export type SnapshotVoteResponse = SnapshotQueryResponse<{ votes: SnapshotVote[] }>
 export type SnapshotVote = {
-  address: string, // address
-  msg: SnapshotVoteMessage,
-  sig: string,
-  authorIpfsHash: string,
-  relayerIpfsHash: string
+  voter: string,
+  created: number,
+  choice: number
 }
 
 export class Snapshot extends API {
@@ -177,7 +178,24 @@ export class Snapshot extends API {
   }
 
   async getProposalVotes(space: string, proposal: string) {
-    return this.fetch<Record<string, SnapshotVote>>(`/${space}/proposal/${proposal}`)
+    const query = `
+      query ProposalVotes($space: String!, $proposal: String!) {
+        votes (
+          where: { space: $space, proposal: $proposal }
+        ) {
+          voter
+          created
+          choice
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotVoteResponse>(`/graphql`, this.options()
+      .method('POST')
+      .json({ query, variables: { space, proposal } })
+    )
+
+    return result?.data?.votes || []
   }
 
   async createVoteMessage(space: string, proposal: string, choice: number) {

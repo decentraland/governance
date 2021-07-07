@@ -31,7 +31,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
     return latestVotes.votes
   }
 
-  let snapshotVotes: Record<string, SnapshotVote>
+  let snapshotVotes: SnapshotVote[]
   try {
     snapshotVotes = await getSnapshotProposalVotes(proposal)
   } catch (err) {
@@ -50,7 +50,7 @@ export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
   return Snapshot.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
 }
 
-export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: Record<string, SnapshotVote>) {
+export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
   const now = new Date
   const hash = VotesModel.hashVotes(snapshotVotes)
   const provider = new AlchemyProvider(Number(proposal.snapshot_network), process.env.ALCHEMY_API_KEY)
