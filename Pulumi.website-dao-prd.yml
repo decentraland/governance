@@ -20,7 +20,7 @@ config:
   website-dao:GATSBY_ROLLBAR_TOKEN: 81d278538c65450e93604cf1493a69ab
   website-dao:GATSBY_SEGMENT_KEY: vNzuKtwiBQvYxLAVzWQARB1i507VkSHq
   website-dao:GATSBY_SNAPSHOT_ADDRESS: 0x5E23D08324f017d5425e59A2782C9ae27aCE0958
-  website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.page/api
+  website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.page/
   website-dao:GATSBY_SNAPSHOT_DURATION: "604800"
   website-dao:GATSBY_SNAPSHOT_SPACE: snapshot.dcl.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/

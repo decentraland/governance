@@ -98,7 +98,7 @@ export class Snapshot extends API {
     process.env.REACT_APP_SNAPSHOT_API ||
     process.env.STORYBOOK_SNAPSHOT_API ||
     process.env.SNAPSHOT_API ||
-    'https://hub.snapshot.page/api'
+    'https://hub.snapshot.page/'
   )
 
   static Cache = new Map<string, Snapshot>()
@@ -117,7 +117,7 @@ export class Snapshot extends API {
 
   async send(address: string, msg: string, sig: string) {
     return this.fetch<SnapshotResult>(
-      '/message',
+      '/api/message',
       this.options()
         .method('POST')
         .json({ address, msg, sig })
@@ -125,19 +125,19 @@ export class Snapshot extends API {
   }
 
   async getStatus() {
-    return this.fetch<SnapshotStatus>('/')
+    return this.fetch<SnapshotStatus>('/api/')
   }
 
   async getSpaces() {
-    return this.fetch<Record<string, SnapshotSpace>>('/spaces')
+    return this.fetch<Record<string, SnapshotSpace>>('/api/spaces')
   }
 
   async getSpace(space: string) {
-    return this.fetch<SnapshotSpace>(`/spaces/${space}`)
+    return this.fetch<SnapshotSpace>(`/api/spaces/${space}`)
   }
 
   async getProposals(space: string) {
-    return this.fetch<Record<string, SnapshotProposal>>(`/${space}/proposals`)
+    return this.fetch<Record<string, SnapshotProposal>>(`/api/${space}/proposals`)
   }
 
   async createProposalMessage(

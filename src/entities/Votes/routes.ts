@@ -54,7 +54,7 @@ export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, 
   const now = new Date
   const hash = VotesModel.hashVotes(snapshotVotes)
   const provider = new AlchemyProvider(Number(proposal.snapshot_network), process.env.ALCHEMY_API_KEY)
-  const balance = await getScores(proposal, provider, Object.keys(snapshotVotes))
+  const balance = await getScores(proposal, provider, snapshotVotes.map(vote => vote.voter))
   const votes = createVotes(snapshotVotes, balance)
   await VotesModel.update<VoteAttributes>(
     {
