@@ -193,10 +193,14 @@ export class Snapshot extends API {
   }
 
   async getProposalVotes(space: string, proposal: string) {
+    let hasNext = true
+    let skip = 0
+    const first = 500
     const query = `
-      query ProposalVotes($space: String!, $proposal: String!) {
+      query ProposalVotes($space: String!, $proposal: String!, $first: Int!, $skip: Int!) {
         votes (
           where: { space: $space, proposal: $proposal }
+          first: $first, skip: $skip
         ) {
           voter
           created
@@ -205,12 +209,27 @@ export class Snapshot extends API {
       }
     `
 
-    const result = await this.fetch<SnapshotVoteResponse>(`/graphql`, this.options()
-      .method('POST')
-      .json({ query, variables: { space, proposal } })
-    )
+    let votes: SnapshotVote[] = []
+    while (hasNext) {
+      const result = await this.fetch<SnapshotVoteResponse>(`/graphql`, this.options()
+        .method('POST')
+        .json({ query, variables: { space, proposal, skip, first } })
+      )
 
-    return result?.data?.votes || []
+      const currentVotes = result?.data?.votes || []
+      votes = [
+        ...votes,
+        ...currentVotes,
+      ]
+
+      if (currentVotes.length < first) {
+        hasNext = false
+      } else {
+        skip = currentVotes.length
+      }
+    }
+
+    return votes
   }
 
   async createVoteMessage(space: string, proposal: string, choice: number) {
