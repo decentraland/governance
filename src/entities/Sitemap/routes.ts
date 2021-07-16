@@ -2,7 +2,6 @@ import { handleRaw } from "decentraland-gatsby/dist/entities/Route/handle"
 import routes from "decentraland-gatsby/dist/entities/Route/routes"
 import { Request } from 'express'
 import ProposalModel from "../Proposal/model"
-import { ProposalType } from "../Proposal/types"
 import { governanceUrl, proposalUrl, SITEMAP_ITEMS_PER_PAGE } from "../Proposal/utils"
 
 export default routes((router) => {
@@ -45,11 +44,11 @@ export async function getStaticSitemap() {
     `<url><loc>${governanceUrl('/balance/')}</loc></url>`,
     `<url><loc>${governanceUrl('/activity/')}</loc></url>`,
     `<url><loc>${governanceUrl('/submit/')}</loc></url>`,
-    `<url><loc>${governanceUrl(`/submit/${ProposalType.BanName}/`)}</loc></url>`,
-    `<url><loc>${governanceUrl(`/submit/${ProposalType.Catalyst}/`)}</loc></url>`,
-    `<url><loc>${governanceUrl(`/submit/${ProposalType.Grant}/`)}</loc></url>`,
-    `<url><loc>${governanceUrl(`/submit/${ProposalType.POI}/`)}</loc></url>`,
-    `<url><loc>${governanceUrl(`/submit/${ProposalType.Poll}/`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/ban-name/`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/catalyst/`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/grant/`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/poi/`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/poll/`)}</loc></url>`,
     '</urlset>',
   ].join('')
 }

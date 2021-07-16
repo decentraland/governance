@@ -69,9 +69,9 @@ export default function ProposalPage() {
     }
   })
 
-  const [ subscribing, subscribe ] = useAsyncTask(async () => {
+  const [ subscribing, subscribe ] = useAsyncTask(async (subscribe: boolean = true) => {
     if (proposal) {
-      if (subscribed) {
+      if (subscribe) {
         await Governance.get().unsubscribe(proposal.id)
         subscriptionsState.set((current) => (current || []).filter(subscription => subscription.proposal_id !== proposal.id))
       } else {
@@ -128,7 +128,7 @@ export default function ProposalPage() {
           loading={proposalState.loading || subscriptionsState.loading || subscribing}
           disabled={!proposal}
           subscribed={subscribed}
-          onClick={() => subscribe()}
+          onClick={() => subscribe(!subscribed)}
         />
         <ProposalResultSection
           disabled={!proposal || !votes}
