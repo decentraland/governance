@@ -66,11 +66,15 @@ export function asNumber(value: string | number): number {
   }
 }
 
-export function snapshotUrl(proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>) {
+export function snapshotUrl(hash: string) {
   const target = new URL(process.env.GATSBY_SNAPSHOT_URL || '')
   target.pathname = ''
-  target.hash = `#/${proposal.snapshot_space}/proposal/${proposal.snapshot_id}`
+  target.hash = hash
   return target.toString()
+}
+
+export function snapshotProposalUrl(proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>) {
+  return snapshotUrl(`#/${proposal.snapshot_space}/proposal/${proposal.snapshot_id}`)
 }
 
 export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id' | 'discourse_topic_slug'>) {

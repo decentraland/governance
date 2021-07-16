@@ -10,7 +10,7 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { snapshotUrl } from '../../entities/Proposal/utils'
+import { snapshotProposalUrl } from '../../entities/Proposal/utils'
 
 const openIcon = require('../../images/icons/open.svg')
 
@@ -64,7 +64,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
     <div className="DetailsSection__Content DetailsSection__Flex">
       <div>{l('page.proposal_detail.details_snapshot_label')}</div>
       <div className="DetailsSection__Value">
-        {proposal && <Link href={snapshotUrl(proposal)}>
+        {proposal && <Link href={snapshotProposalUrl(proposal)}>
           {'#' + proposal.snapshot_id.slice(0, 7)}
           <img src={openIcon}  width="12" height="12" style={{ marginLeft: '.5rem' }} />
         </Link>}
