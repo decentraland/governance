@@ -79,6 +79,6 @@ export default {
   proposal: (proposal: string) => url(`/proposal/`, { id: proposal }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
   submit: (type?: ProposalType) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', {}),
-  balance: (options: Partial<{ address: string }>) => url(`/balance/`, options),
+  balance: (options: Partial<{ address: string }> = {}) => url(`/balance/`, options),
   welcome: () => url(`/welcome/`, {}),
 }
