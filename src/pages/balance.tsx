@@ -48,7 +48,7 @@ const SNAPSHOT_SPACE =process.env.GATSBY_SNAPSHOT_SPACE || ''
 const BUY_MANA_URL =process.env.GATSBY_BUY_MANA_URL || '#'
 const BUY_NAME_URL =process.env.GATSBY_BUY_NAME_URL || '#'
 const BUY_LAND_URL =process.env.GATSBY_BUY_LAND_URL || '#'
-const EDIT_DELEGATION = snapshotUrl('#/delegate/${SNAPSHOT_SPACE}')
+const EDIT_DELEGATION = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
 export default function WrappingPage() {
   const l = useFormatMessage()
