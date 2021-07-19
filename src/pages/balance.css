@@ -49,20 +49,43 @@
   position: relative;
 }
 
+.ui.container.VotingPowerSummary .dcl.stats.UserStats {
+  position: relative;
+  min-width: 375px;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .VotingPowerProfile {
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 600;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .VotingPowerProfile .dg.dcl-avatar {
+  margin: 0 12px 0 0;
+  vertical-align: bottom;
+  width: 56px;
+}
+
 .ui.container.VotingPowerSummary .dcl.stats .ui.loader.balance {
   left: 100%;
   transform: translate(18px, 0);
 }
 
+.ui.container.VotingPowerDetail .ui.card .dcl.stats.UserStats {
+  width: 100%;
+  cursor: pointer;
+  margin-top: 0;
+}
+
 @media only screen and (min-width: 992px) {
   .ui.container.VotingPowerDetail .ActionableLayout {
-    flex: 0 0 31%;
+    flex: 0 0 32%;
   }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .ui.container.VotingPowerDetail .ActionableLayout {
-    flex: 0 0 50%;
+    flex: 0 0 49%;
   }
 }
 

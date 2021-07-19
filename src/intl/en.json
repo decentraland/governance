@@ -236,7 +236,22 @@
       "estate_balance": "{value, number} ESTATEs",
       "estate_land_label": "Total LAND",
       "estate_land": "{value, number} LANDs",
-      "estate_total_label": "Total voting power"
+      "estate_total_label": "Total voting power",
+      "name_label": "NAME",
+      "name_title": "NAME",
+      "name_action": "Get NAME",
+      "name_balance_label": "Balance",
+      "name_balance": "{value, number} NAMEs",
+      "name_total_label": "Total voting power",
+      "delegated_to_label": "DELEGATIONS",
+      "delegated_to_action": "EDIT DELEGATIONS",
+      "delegated_to_title": "Delegated to you",
+      "delegated_to_empty": "No user has delegated their voting power",
+      "delegated_to_more": "and more",
+      "delegations_from_label": "DELEGATIONS",
+      "delegations_from_action": "EDIT DELEGATIONS",
+      "delegations_from_title": "Your delegation(s)",
+      "delegations_from_empty": "Voting Power has not been delegated"
     },
     "submit": {
       "title": "Submit Proposal",

@@ -6,7 +6,6 @@ import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import unleash from 'decentraland-gatsby/dist/utils/api/unleash'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
 import { Discourse, DiscoursePost } from '../../api/Discourse';
@@ -38,7 +37,7 @@ import {
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
   proposalUrl,
-  snapshotUrl,
+  snapshotProposalUrl,
   forumUrl,
   isValidName,
   MAX_PROPOSAL_LIMIT,
@@ -217,18 +216,6 @@ export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
 
-  const ff = await unleash(
-    FEATURE_FLAGS_API,
-    {
-      address: user,
-      referer: governanceUrl()
-    }
-  )
-
-  if (!ff.flags[FeatureFlags.Grant]) {
-    throw new RequestError('Not Implemented', RequestError.NotImplemented)
-  }
-
   return createProposal({
     user,
     type: ProposalType.Grant,
@@ -310,7 +297,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err)
   }
 
-  const snapshot_url = snapshotUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
+  const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
   console.log(`Snapshot proposal created:`, snapshot_url, JSON.stringify(snapshotProposal))
 
   //

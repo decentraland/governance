@@ -5,6 +5,20 @@
   border-radius: 8px;
 }
 
+.Empty.full {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.Empty.without-border {
+  border: 0;
+}
+
 .Empty svg {
   margin-bottom: 24px;
 }
