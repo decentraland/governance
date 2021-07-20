@@ -1,6 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+import snapshot from '@snapshot-labs/snapshot.js'
 
 export type SnapshotQueryResponse<T> = { data: T }
 
@@ -244,5 +245,22 @@ export class Snapshot extends API {
     }
 
     return JSON.stringify(msg)
+  }
+
+  async getScores(space: string, strategies: SnapshotSpace['strategies'], network: SnapshotSpace['network'],  addresses: string[], block?: string | number) {
+    const result: Record<string, number> = {}
+    const scores: Record<string, number>[] =  await snapshot.utils.getScores(space, strategies, network, null as any, addresses, block)
+
+    for (const score of scores) {
+      for (const address of Object.keys(score)) {
+        result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(score[address] || 0)
+      }
+    }
+    return result
+  }
+
+  async getLatestScores(space: string  | SnapshotSpace, addresses: string[]) {
+    const info = typeof space === 'string' ? await this.getSpace(space) : space
+    return this.getScores(info.id, info.strategies, info.network, addresses)
   }
 }

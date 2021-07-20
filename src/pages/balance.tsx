@@ -38,8 +38,10 @@ import UserStats from "../components/User/UserStats"
 import locations from "../modules/locations"
 import Empty from "../components/Proposal/Empty"
 import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
-import './balance.css'
 import { snapshotUrl } from "../entities/Proposal/utils"
+import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
+import { Snapshot } from "../api/Snapshot"
+import './balance.css'
 
 const NAME_MULTIPLIER = 100
 const LAND_MULTIPLIER = 2000
@@ -58,6 +60,7 @@ export default function WrappingPage() {
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const wManaContract = useWManaContract()
   const [ ff ] = useFeatureFlagContext()
+  const [ space ] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [ SNAPSHOT_SPACE ])
   const [ wMana, wManaState ] = useBalanceOf(wManaContract, accountBalance, 'ether')
   const [ mana, manaState ] = useManaBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
   const [ maticMana, maticManaState ] = useManaBalance(accountBalance, ChainId.MATIC_MAINNET)
@@ -67,6 +70,8 @@ export default function WrappingPage() {
   const [ delegation, delegationState ] = useDelegation(accountBalance, SNAPSHOT_SPACE)
   const [ votingPower, votingPowerState ] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
   const [ transactions, transactionsState ] = useTransactionContext()
+  const [ scores, scoresState ] = useAsyncMemo(() => Snapshot.get().getLatestScores(space!, delegation.delegatedFrom.map(delegation => delegation.delegator)), [ space, delegation.delegatedFrom ], { callWithTruthyDeps: true })
+  const delegatedVotingPower = useMemo(() => Object.values(scores || {}).reduce((total, current) => total + current, 0), [ scores ])
   const unwrappingTransaction = useMemo(() => (transactions || []).find(tx => tx.payload.id === UNWRAPPING_TRANSACTION_ID), [ transactions ])
   const [ unwrapping, unwrap ] = useAsyncTask(async () => {
     if (!wManaContract || !wMana) {
@@ -111,22 +116,7 @@ export default function WrappingPage() {
     />
     <Navigation activeTab={NavigationTab.Wrapping} />
     <Container className="VotingPowerSummary">
-      {account && accountBalance && account !== accountBalance && <UserStats size="huge" className="VotingPowerProfile" address={accountBalance}/>}
-
-      {/* {account && accountBalance && account !== accountBalance && (!profile || profile.isDefaultProfile) && <Stats title="Address">
-        <Loader size="small" className="balance" active={profileState.loading}/>
-        <Header size="huge">
-          <Blockie seed={accountBalance} scale={8}>
-            <Address value={accountBalance} strong />
-          </Blockie>
-        </Header>
-      </Stats>}
-      {account && accountBalance && account !== accountBalance && !!profile && !profile.isDefaultProfile && <Stats title={profile.ethAddress}>
-        <Header size="huge" className="VotingPowerProfile">
-          <Avatar address={profile.ethAddress} size="medium" />
-          {profile.name}
-        </Header>}
-  </Stats>} */}
+      <UserStats size="huge" className="VotingPowerProfile" address={accountBalance || account}/>
       <Stats title={l(`page.balance.total_label`) || ''}>
         <VotingPower value={votingPower} size="huge" />
         <Loader size="small" className="balance" active={votingPowerState.loading || manaState.loading || wManaState.loading || maticManaState.loading || landState.loading || estateState.loading}/>
@@ -249,17 +239,21 @@ export default function WrappingPage() {
         <Card>
           <Card.Content>
             <Header><b>{l(`page.balance.delegated_to_title`)}</b></Header>
-            <div style={{ height: '256px', overflow: 'auto', display: 'flex', flexDirection:'column' }}>
-              {delegation.delegatedFrom.length === 0 && <Empty border={false} full description={
-                  <Paragraph small secondary semiBold>{l(`page.balance.delegated_to_empty`)}</Paragraph>
-              }/>}
+            <Loader size="tiny" className="balance" active={delegationState.loading || scoresState.loading}/>
+            <div style={{ maxHeight: '256px', overflow: 'auto', display: 'flex', flexDirection:'column' }}>
               {delegation.delegatedFrom.length > 0 && delegation.delegatedFrom.map(delegation => {
-                return <UserStats sub={false} key={[delegation.delegate, delegation.delegator].join('::')} address={delegation.delegator} size="medium" to={locations.balance({ address: delegation.delegator })} />
+                return <div style={{ display: 'flex' }}>
+                  <UserStats sub={false} key={[delegation.delegate, delegation.delegator].join('::')} address={delegation.delegator} size="medium" to={locations.balance({ address: delegation.delegator })} />
+                  {scores && typeof scores[delegation.delegator.toLowerCase()] === 'number' && <VotingPower value={scores[delegation.delegator.toLowerCase()]} size="medium" />}
+                </div>
               })}
               {delegation.hasMoreDelegatedFrom && <Button disabled basic style={{ marginBottom: '2em'}}>
                 {l(`page.balance.delegated_to_more`)}
               </Button>}
             </div>
+            <Stats title={l('page.balance.name_total_label') || ''}>
+              <VotingPower value={delegatedVotingPower} size="medium" />
+            </Stats>
           </Card.Content>
         </Card>
       </ActionableLayout>}
@@ -275,9 +269,9 @@ export default function WrappingPage() {
             <Header><b>{l(`page.balance.delegations_from_title`)}</b></Header>
             <div style={{ height: '256px', overflow: 'auto', display: 'flex', flexDirection:'column' }}>
               {delegation.delegatedTo.length === 0 && <Empty border={false} full description={
-                    <Paragraph small secondary semiBold>
-                      {l(`page.balance.delegations_from_empty`)}
-                    </Paragraph>
+                  <Paragraph small secondary semiBold>
+                    {l(account === accountBalance ? `page.balance.delegations_from_you_empty` : `page.balance.delegations_from_address_empty`)}
+                  </Paragraph>
                 }/>}
               {delegation.delegatedTo.length > 0 && delegation.delegatedTo.map(delegation => {
                 return <UserStats key={[delegation.delegate, delegation.delegator].join('::')} address={delegation.delegate} size="medium" to={locations.balance({ address: delegation.delegate })} />

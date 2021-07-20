@@ -8,7 +8,6 @@ import { Vote, VoteAttributes } from './types';
 import isEthereumAddress from 'validator/lib/isEthereumAddress';
 import { ProposalAttributes } from '../Proposal/types';
 import { createVotes, toProposalIds } from './utils';
-import snapshot from '@snapshot-labs/snapshot.js'
 import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import chunk from 'decentraland-gatsby/dist/utils/array/chunk';
@@ -106,22 +105,19 @@ export async function getCachedVotes(req: Request) {
 export async function getScores(proposal: ProposalAttributes, addresses: string[]) {
   const result = {} as Record<string, number>
   for (const addressesChuck of chunk(addresses, 500)) {
-    const blockchainScores: Record<string, number>[] = await snapshot.utils.getScores(
+    const blockchainScores: Record<string, number> = await Snapshot.get().getScores(
       proposal.snapshot_space,
       proposal.snapshot_proposal.metadata.strategies,
       proposal.snapshot_network,
-      null as any,
       addressesChuck,
       proposal.snapshot_proposal.snapshot
     )
 
-    for (const currentBlockchainScores of blockchainScores) {
-      for (const address of Object.keys(currentBlockchainScores)) {
-        result[address.toLowerCase()] = (
-          Math.floor(currentBlockchainScores[address] | 0) +
-          (result[address.toLowerCase()] || 0)
-        )
-      }
+    for (const address of Object.keys(blockchainScores)) {
+      result[address.toLowerCase()] = (
+        (result[address.toLowerCase()] || 0) +
+        Math.floor(blockchainScores[address] || 0)
+      )
     }
   }
 
