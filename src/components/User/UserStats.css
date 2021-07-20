@@ -17,6 +17,13 @@
   transform: translate(0,0);
 }
 
+.dcl.stats.UserStats .ui.header.UserStatsHeader {
+  text-overflow: ellipsis;
+  /* white-space: nowrap; */
+  word-break: break-all;
+  overflow: hidden;
+}
+
 .dcl.stats.UserStats .ui.header.UserStatsHeader,
 .dcl.stats.UserStats .ui.header .dcl.address {
   margin-bottom: 0;

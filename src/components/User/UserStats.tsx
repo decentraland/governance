@@ -40,15 +40,16 @@ export default React.memo(function UserStats(props: UserStatsProps) {
     return null
   }
 
-  return <Stats
-    title={props.sub === false ? '' : isProfile ? 'PROFILE' : 'ADDRESS'}
+  return <span
     className={TokenList.join([
+      'dcl stats',
       'UserStats',
       props.disabled && 'disabled',
       props.sub === false ? 'without-sub' : 'with-sub',
       props.className
     ])}
   >
+    {props.sub !== false && <Header sub>{isProfile ? 'PROFILE' : 'ADDRESS'}</Header>}
     <Header size={props.size} className="UserStatsHeader" as={props.to ? Link : undefined} to={props.to}>
       {!isProfile && <Blockie seed={props.address!} scale={sizeToScale(props.size)}>
         <Address value={props.address!} strong />
@@ -58,5 +59,5 @@ export default React.memo(function UserStats(props: UserStatsProps) {
       {isProfile && profile!.name}
     </Header>
     <Loader size="small" active={profileState.loading} />
-  </Stats>
+  </span>
 })
