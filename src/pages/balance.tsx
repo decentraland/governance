@@ -240,9 +240,9 @@ export default function WrappingPage() {
           <Card.Content>
             <Header><b>{l(`page.balance.delegated_to_title`)}</b></Header>
             <Loader size="tiny" className="balance" active={delegationState.loading || scoresState.loading}/>
-            <div style={{ maxHeight: '256px', overflow: 'auto', display: 'flex', flexDirection:'column' }}>
+            <div className="ProfileListContainer">
               {delegation.delegatedFrom.length > 0 && delegation.delegatedFrom.map(delegation => {
-                return <div style={{ display: 'flex' }}>
+                return <div className="ProfileContainer">
                   <UserStats sub={false} key={[delegation.delegate, delegation.delegator].join('::')} address={delegation.delegator} size="medium" to={locations.balance({ address: delegation.delegator })} />
                   {scores && typeof scores[delegation.delegator.toLowerCase()] === 'number' && <VotingPower value={scores[delegation.delegator.toLowerCase()]} size="medium" />}
                 </div>
@@ -267,7 +267,7 @@ export default function WrappingPage() {
         <Card>
           <Card.Content>
             <Header><b>{l(`page.balance.delegations_from_title`)}</b></Header>
-            <div style={{ height: '256px', overflow: 'auto', display: 'flex', flexDirection:'column' }}>
+            <div className="ProfileListContainer">
               {delegation.delegatedTo.length === 0 && <Empty border={false} full description={
                   <Paragraph small secondary semiBold>
                     {l(account === accountBalance ? `page.balance.delegations_from_you_empty` : `page.balance.delegations_from_address_empty`)}

@@ -29,6 +29,23 @@
   font-weight: normal;
 }
 
+.ui.container.VotingPowerDetail .ui.card .dcl.stats a.ui.header {
+  color: var(--primary);
+}
+
+.ui.container.VotingPowerDetail .ui.card .ProfileListContainer {
+  max-height: 256px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.ui.container.VotingPowerDetail .ui.card .ProfileContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 /* .ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i {
   line-height: 1em;
   vertical-align: text-top;
@@ -73,7 +90,7 @@
 .ui.container.VotingPowerDetail .ui.card .dcl.stats.UserStats {
   width: 100%;
   cursor: pointer;
-  margin-top: 0;
+  margin: 0;
 }
 
 @media only screen and (min-width: 992px) {
