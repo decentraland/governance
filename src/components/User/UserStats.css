@@ -32,6 +32,7 @@
 .dcl.stats.UserStats .ui.header.medium.UserStatsHeader,
 .dcl.stats.UserStats .ui.header.medium .dcl.address {
   font-size: 21px;
+  line-height: 30px;
   font-weight: normal;
 }
 
