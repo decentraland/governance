@@ -72,11 +72,11 @@ export default function ProposalPage() {
   const [ subscribing, subscribe ] = useAsyncTask(async (subscribe: boolean = true) => {
     if (proposal) {
       if (subscribe) {
-        await Governance.get().unsubscribe(proposal.id)
-        subscriptionsState.set((current) => (current || []).filter(subscription => subscription.proposal_id !== proposal.id))
-      } else {
         const newSubscription = await Governance.get().subscribe(proposal.id)
         subscriptionsState.set((current) => [ ...(current || []), newSubscription ])
+      } else {
+        await Governance.get().unsubscribe(proposal.id)
+        subscriptionsState.set((current) => (current || []).filter(subscription => subscription.proposal_id !== proposal.id))
       }
 
       patchOptions({ confirmSubscription: false})
