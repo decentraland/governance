@@ -41,7 +41,9 @@
       "description_too_short": "Description field is too short",
       "description_too_large": "Description field is too large",
       "fetching_pois": "Error fetching pois",
-      "coordinates_already_a_poi": "This coordinates are already a Point of Interest"
+      "coordinates_already_a_poi": "These coordinates are already a Point of Interest",
+      "fetching_tiles": "Error fetching tiles",
+      "coordinates_invalid_poi": "These coordinates are not valid as Point of Interest"
     },
     "catalyst": {
       "owner_empty": "Owner field is empty",

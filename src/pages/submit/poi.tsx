@@ -8,7 +8,7 @@ import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalPOIScheme } from '../../entities/Proposal/types'
-import { asNumber } from '../../entities/Proposal/utils'
+import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../entities/Proposal/utils'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -81,24 +81,31 @@ export default function SubmitPOI() {
     if (state.validated) {
       Promise.resolve()
         .then(async () => {
-          let pois: [ number, number ][]
+          const x = asNumber(state.value.x)
+          const y = asNumber(state.value.y)
+
           try {
-            pois = await Catalyst.get().getPOIs()
+            const alreadyPointOfInterest = await isAlreadyPointOfInterest(x, y)
+            if (alreadyPointOfInterest) {
+              throw new Error(`error.poi.coordinates_already_a_poi`)
+            }
           } catch (err) {
             console.log(err)
             throw new Error(`error.poi.fetching_pois`)
           }
 
-          if (pois.find(position => position[0] === state.value.x && position[1] === state.value.y)) {
-            throw new Error(`error.poi.coordinates_already_a_poi`)
+          try {
+            const validPointOfInterest = await isValidPointOfInterest(x, y)
+            if (!validPointOfInterest) {
+              throw new Error(`error.poi.coordinates_invalid_poi`)
+            }
+          } catch (err) {
+            console.log(err)
+            throw new Error(`error.poi.fetching_tiles`)
           }
 
           return Governance.get()
-            .createProposalPOI({
-              x: asNumber(state.value.x),
-              y: asNumber(state.value.y),
-              description: state.value.description
-            })
+            .createProposalPOI({ x, y, description: state.value.description })
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)
