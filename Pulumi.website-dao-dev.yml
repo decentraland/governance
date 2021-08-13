@@ -21,7 +21,7 @@ config:
   website-dao:GATSBY_ROLLBAR_TOKEN: 81d278538c65450e93604cf1493a69ab
   website-dao:GATSBY_SEGMENT_KEY: CXcLRdj0SnrRBlwYTcyWVBuE9kYaIP47
   website-dao:GATSBY_SNAPSHOT_ADDRESS: 0x2Ba0352480bd1Ea073A83e6639b06362131894CE
-  website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.page/
+  website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.org/
   website-dao:GATSBY_SNAPSHOT_DURATION: "600"
   website-dao:GATSBY_SNAPSHOT_SPACE: frami.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
