@@ -146,7 +146,7 @@ export const newProposalPollScheme = {
     description: {
       type: 'string',
       minLength: 20,
-      maxLength: 3500,
+      maxLength: 7000,
     },
     choices: {
       type: 'array',
