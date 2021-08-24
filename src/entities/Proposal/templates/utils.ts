@@ -5,56 +5,9 @@ import { Node } from 'unist'
 import escapeMarkdown from 'markdown-escape'
 import numeral from 'numeral'
 
-const escape_map: Record<string, string> = {
-  '¢': '&cent;',
-  '£': '&pound;',
-  '€': '&euro;',
-  '¥': '&yen;',
-  '§': '&sect;',
-  '©': '&copy;',
-  '®': '&reg;',
-  '«': '&laquo;',
-  '»': '&raquo;',
-  '°': '&deg;',
-  '±': '&plusmn;',
-  '¶': '&para;',
-  '·': '&middot;',
-  '½': '&frac12;',
-  '–': '-',
-  '—': '-',
-  '“': '"',
-  '”': '"',
-  '‘': '\'',
-  '’': '\'',
-  '‚': ',',
-  '„': '&bdquo;',
-  '†': '&dagger;',
-  '‡': '&Dagger;',
-  '•': '&bull;',
-  '…': '&hellip;',
-  '′': '\'',
-  '″': '\"',
-  '™': '&trade;',
-  '≈': '&asymp;',
-  '≠': '&ne;',
-  '≤': '&le;',
-  '≥': '&ge;',
-  // '&': '&amp;',
-}
-
-const escape_regexp = new RegExp(`(${Object.keys(escape_map).join('|')})`, 'gi')
-
-const escape_function = function (char: string) {
-  return escape_map[char] || char
-}
-
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
   return String.raw(raw, ...subs)
     .trim()
-}
-
-export function escapeEntities(value: string): string {
-  return value.replace(escape_regexp, escape_function)
 }
 
 export function formatBalance(value: number) {

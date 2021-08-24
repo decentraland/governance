@@ -6,7 +6,7 @@ import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION } from '../Snapshot/utils';
+import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, signMessage } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
 import { Discourse, DiscoursePost } from '../../api/Discourse';
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../Discourse/utils';
@@ -42,7 +42,6 @@ import {
   isValidName,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
-  governanceUrl
 } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
@@ -50,11 +49,9 @@ import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
-import env from 'decentraland-gatsby/dist/utils/env';
-import { FeatureFlags } from '../../modules/features';
-import { escapeEntities } from './templates/utils';
 
-const FEATURE_FLAGS_API = env('FEATURE_FLAGS_API', '')
+// Feature flags
+// const FEATURE_FLAGS_API = env('FEATURE_FLAGS_API', '')
 
 export default routes((route) => {
   const withAuth = auth()
@@ -99,7 +96,7 @@ function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
     console.log(`Dropping snapshot proposal: ${proposal_space}/${proposal_id}`)
     const address = SNAPSHOT_ADDRESS
     const msg = await Snapshot.get().removeProposalMessage(proposal_space, proposal_id)
-    const sig = SNAPSHOT_ACCOUNT.sign(msg).signature
+    const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
     const result = await Snapshot.get().send(address, msg, sig)
     return {
       msg: JSON.parse(msg),
@@ -275,8 +272,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
 
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
       snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: escapeEntities(await templates.snapshotTitle(snapshotTemplateProps)),
-      body: escapeEntities(await templates.snapshotDescription(snapshotTemplateProps)),
+      name: await templates.snapshotTitle(snapshotTemplateProps),
+      body: await templates.snapshotDescription(snapshotTemplateProps),
       choices: data.configuration.choices,
       snapshot: block.number,
       end,
@@ -291,7 +288,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   //
   let snapshotProposal: SnapshotResult
   try {
-    const sig = SNAPSHOT_ACCOUNT.sign(msg).signature
+    const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
+    console.log(sig, msg)
     snapshotProposal = await Snapshot.get().send(address, msg, sig)
   } catch (err) {
     throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err)
