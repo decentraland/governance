@@ -10,11 +10,11 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import './ProposalModal.css'
 
 export type DeleteProposalModalProps = Omit<ModalProps, 'children'> & {
-  deleting?: boolean
+  loading?: boolean
   onClickAccept?: (e: React.MouseEvent<any>) => void
 }
 
-export function DeleteProposalModal({ onClickAccept, subscribing, ...props }: DeleteProposalModalProps) {
+export function DeleteProposalModal({ onClickAccept, loading, ...props }: DeleteProposalModalProps) {
   const l = useFormatMessage()
 
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', props.className])} closeIcon={<Close />}>
@@ -23,7 +23,7 @@ export function DeleteProposalModal({ onClickAccept, subscribing, ...props }: De
       <Paragraph small>{l('modal.delete_proposal.description')}</Paragraph>
     </Modal.Content>
     <Modal.Content className="ProposalModal__Actions">
-      <Button primary onClick={onClickAccept} loading={subscribing}>{l('modal.delete_proposal.accept')}</Button>
+      <Button primary onClick={onClickAccept} loading={loading}>{l('modal.delete_proposal.accept')}</Button>
       <Button className="cancel" onClick={props.onClose}>{l('modal.delete_proposal.reject')}</Button>
     </Modal.Content>
   </Modal>

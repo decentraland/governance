@@ -122,12 +122,12 @@
       "accept": "Delete",
       "reject": "Cancel"
     },
-    "enact_proposal": {
-      "title": "Enact Confirmation",
-      "description": "Are you sure you want to enact this proposal? This action cannot be undone.",
-      "enact_description_label": "Enact description",
-      "enact_description_placeholder": "Add any useful details for user about the enacted",
-      "accept": "Enact",
+    "update_status_proposal": {
+      "title": "Confirmation",
+      "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
+      "update_status_description_label": "Description",
+      "update_status_description_placeholder": "Add any useful details for user",
+      "accept": "Save",
       "reject": "Cancel"
     },
     "vote_registered": {
@@ -200,6 +200,8 @@
       "details_finish_label": "Ends",
       "details_snapshot_label": "Snapshot",
       "enact": "Enact proposal",
+      "pass": "Pass proposal",
+      "reject": "Reject proposal",
       "delete": "Delete proposal"
     },
     "proposal_activity": {

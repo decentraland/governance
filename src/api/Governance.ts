@@ -122,13 +122,13 @@ export class Governance extends API {
     return result.data
   }
 
-  async enactProposal(proposal_id: string, enacted_description: string | null = null) {
+  async updateProposalStatus(proposal_id: string, status: ProposalStatus, description: string | null = null) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
       this.options()
         .method('PATCH')
         .authorization()
-        .json({ enacted_description })
+        .json({ status, description })
     )
 
     return result.data

@@ -21,9 +21,13 @@ export type ProposalAttributes<C extends {} = any> = {
   deleted: boolean
   deleted_by: string | null,
   enacted: boolean
-  enacted_description: string | null
-  required_to_pass: number | null,
   enacted_by: string | null
+  enacted_description: string | null
+  passed_by: string | null
+  passed_description: string | null
+  rejected_by: string | null
+  rejected_description: string | null
+  required_to_pass: number | null
   created_at: Date
   updated_at: Date
 }
@@ -106,18 +110,31 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
 }
 
-export type EnactProposalProposal = {
-  enacted_description: string
+export type UpdateProposalStatusProposal = {
+  status:
+    | ProposalStatus.Rejected
+    | ProposalStatus.Passed
+    | ProposalStatus.Enacted
+  description: string
 }
 
-export const enactProposalScheme = {
+export const updateProposalStatusScheme = {
   type: 'object',
   additionalProperties: false,
   required: [
-    'enacted_description',
+    'status',
+    'description',
   ],
   properties: {
-    enacted_description: {
+    status: {
+      type: 'string',
+      enum: [
+        ProposalStatus.Rejected,
+        ProposalStatus.Passed,
+        ProposalStatus.Enacted
+      ]
+    },
+    description: {
       type: ['string', 'null']
     }
   }

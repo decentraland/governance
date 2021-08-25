@@ -51,7 +51,22 @@ export async function isAlreadyACatalyst(domain: string) {
   return !!servers.find(server => server.address === 'https://' + domain)
 }
 
-export function calcualteProposalState(proposal: ProposalAttributes): ProposalStatus {
+export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
+  switch (current) {
+    case ProposalStatus.Finished:
+      return (
+        next === ProposalStatus.Rejected ||
+        next === ProposalStatus.Passed ||
+        next === ProposalStatus.Enacted
+      )
+    case ProposalStatus.Passed:
+      return next === ProposalStatus.Enacted
+    default:
+      return false
+  }
+}
+
+export function calcualteProposalStatus(proposal: ProposalAttributes): ProposalStatus {
   const now = Date.now()
   if (
     (

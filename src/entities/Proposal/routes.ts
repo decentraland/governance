@@ -25,8 +25,8 @@ import {
   NewProposalCatalyst,
   newProposalGrantScheme,
   NewProposalGrant,
-  EnactProposalProposal,
-  enactProposalScheme,
+  UpdateProposalStatusProposal,
+  updateProposalStatusScheme,
   newProposalBanNameScheme,
   ProposalRequiredVP
 } from './types';
@@ -42,7 +42,8 @@ import {
   isValidName,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
-  isValidPointOfInterest
+  isValidPointOfInterest,
+  isValidUpdateProposalStatus
 } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
@@ -61,7 +62,7 @@ export default routes((route) => {
   route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
   route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
   route.get('/proposals/:proposal', handleAPI(getProposal))
-  route.patch('/proposals/:proposal', withAuth, handleAPI(enactProposal))
+  route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   // route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
   // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
@@ -365,6 +366,10 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     enacted: false,
     enacted_by: null,
     enacted_description: null,
+    passed_by: null,
+    passed_description: null,
+    rejected_by: null,
+    rejected_description: null,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
   }
@@ -395,8 +400,8 @@ export async function getProposal(req: Request<{ proposal: string }>) {
   return ProposalModel.parse(proposal)
 }
 
-const enactProposalValidator = schema.compile(enactProposalScheme)
-export async function enactProposal(req: WithAuth<Request<{ proposal: string }>>) {
+const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
+export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
   if (!isCommitee(user)) {
@@ -404,20 +409,26 @@ export async function enactProposal(req: WithAuth<Request<{ proposal: string }>>
   }
 
   const proposal = await getProposal(req)
-  const configuration = validate<EnactProposalProposal>(enactProposalValidator, req.body || {})
-  if (
-    proposal.status !== ProposalStatus.Finished &&
-    proposal.status !== ProposalStatus.Passed
-  ) {
-    throw new RequestError(`Only "${ProposalStatus.Finished}" or "${ProposalStatus.Passed}" proposal can be enacted`)
+  const configuration = validate<UpdateProposalStatusProposal>(updateProposalStatusValidator, req.body || {})
+  if (!isValidUpdateProposalStatus(proposal.status, configuration.status)) {
+    throw new RequestError(`${proposal.status} can't be updated to ${configuration.status}`, RequestError.BadRequest, configuration)
   }
 
   const update: Partial<ProposalAttributes> = {
-    status: ProposalStatus.Enacted,
-    enacted: true,
-    enacted_by: user,
-    enacted_description: configuration.enacted_description || null,
+    status: configuration.status,
     updated_at: new Date(),
+  }
+
+  if (update.status === ProposalStatus.Enacted) {
+    update.enacted = true;
+    update.enacted_by = user;
+    update.enacted_description = configuration.description || null;
+  } else if (configuration.status === ProposalStatus.Passed) {
+    update.passed_by = user;
+    update.passed_description = configuration.description || null;
+  } else if (update.status === ProposalStatus.Rejected) {
+    update.rejected_by = user
+    update.rejected_description = configuration.description || null;
   }
 
   await ProposalModel.update<ProposalAttributes>(update, { id })

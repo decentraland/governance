@@ -10,11 +10,11 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import './ProposalModal.css'
 
 export type VoteRegisteredModalProps = Omit<ModalProps, 'children'> & {
-  subscribing?: boolean
+  loading?: boolean
   onClickAccept?: (e: React.MouseEvent<any>) => void
 }
 
-export function VoteRegisteredModal({ onClickAccept, subscribing, ...props }: VoteRegisteredModalProps) {
+export function VoteRegisteredModal({ onClickAccept, loading, ...props }: VoteRegisteredModalProps) {
   const l = useFormatMessage()
 
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', props.className])} closeIcon={<Close />}>
@@ -23,7 +23,7 @@ export function VoteRegisteredModal({ onClickAccept, subscribing, ...props }: Vo
       <Paragraph small>{l('modal.vote_registered.description')}</Paragraph>
     </Modal.Content>
     <Modal.Content className="ProposalModal__Actions">
-      <Button primary onClick={onClickAccept} loading={subscribing}>{l('modal.vote_registered.accept')}</Button>
+      <Button primary onClick={onClickAccept} loading={loading}>{l('modal.vote_registered.accept')}</Button>
       <Button className="cancel" onClick={props.onClose}>{l('modal.vote_registered.reject')}</Button>
     </Modal.Content>
   </Modal>
