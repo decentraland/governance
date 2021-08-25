@@ -1,4 +1,5 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { ProposalAttributes, ProposalStatus } from './types'
 
@@ -28,6 +29,21 @@ export async function isAlreadyBannedName(name: string) {
 export async function isAlreadyPointOfInterest(x: number, y: number) {
   const pois = await Catalyst.get().getPOIs()
   return !!pois.find((position) => position[0] === x && position[1] === y)
+}
+
+export async function isValidPointOfInterest(x: number, y: number) {
+  const tile = await Land.get().getTile([x, y])
+  if (!tile) {
+    return false
+  }
+
+  switch (tile?.type) {
+    case 'road':
+    case 'plaza':
+      return false
+    default:
+      return true
+  }
 }
 
 export async function isAlreadyACatalyst(domain: string) {

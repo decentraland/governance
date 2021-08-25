@@ -8,7 +8,7 @@ import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalPOIScheme } from '../../entities/Proposal/types'
-import { asNumber } from '../../entities/Proposal/utils'
+import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../entities/Proposal/utils'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -18,7 +18,6 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import { Governance } from '../../api/Governance'
 import locations from '../../modules/locations'
 import loader from '../../modules/loader'
-import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -72,6 +71,34 @@ const validate = createValidator<POIState>({
   })
 })
 
+async function validateAlreadyPointOfInterest(x: number, y: number) {
+  let alreadyPointOfInterest: boolean
+  try {
+    alreadyPointOfInterest = await isAlreadyPointOfInterest(x, y)
+  } catch (err) {
+    console.log(err)
+    throw new Error(`error.poi.fetching_pois`)
+  }
+
+  if (alreadyPointOfInterest) {
+    throw new Error(`error.poi.coordinates_already_a_poi`)
+  }
+}
+
+async function validateTilePointOfInterest(x: number, y: number) {
+  let validPointOfInterest: boolean
+  try {
+    validPointOfInterest = await isValidPointOfInterest(x, y)
+  } catch (err) {
+    console.log(err)
+    throw new Error(`error.poi.fetching_tiles`)
+  }
+
+  if (!validPointOfInterest) {
+    throw new Error(`error.poi.coordinates_invalid_poi`)
+  }
+}
+
 export default function SubmitPOI() {
   const l = useFormatMessage()
   const [ account, accountState ] = useAuthContext()
@@ -81,24 +108,14 @@ export default function SubmitPOI() {
     if (state.validated) {
       Promise.resolve()
         .then(async () => {
-          let pois: [ number, number ][]
-          try {
-            pois = await Catalyst.get().getPOIs()
-          } catch (err) {
-            console.log(err)
-            throw new Error(`error.poi.fetching_pois`)
-          }
+          const x = asNumber(state.value.x)
+          const y = asNumber(state.value.y)
 
-          if (pois.find(position => position[0] === state.value.x && position[1] === state.value.y)) {
-            throw new Error(`error.poi.coordinates_already_a_poi`)
-          }
+          await validateAlreadyPointOfInterest(x, y)
+          await validateTilePointOfInterest(x, y)
 
           return Governance.get()
-            .createProposalPOI({
-              x: asNumber(state.value.x),
-              y: asNumber(state.value.y),
-              description: state.value.description
-            })
+            .createProposalPOI({ x, y, description: state.value.description })
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)

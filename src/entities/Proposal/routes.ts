@@ -42,6 +42,7 @@ import {
   isValidName,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
+  isValidPointOfInterest
 } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
@@ -49,9 +50,6 @@ import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
-
-// Feature flags
-// const FEATURE_FLAGS_API = env('FEATURE_FLAGS_API', '')
 
 export default routes((route) => {
   const withAuth = auth()
@@ -174,7 +172,12 @@ export async function createProposalPOI(req: WithAuth) {
   const configuration = validate<NewProposalPOI>(newProposalPOIValidator, req.body || {})
   const alreadyPointOfInterest = await isAlreadyPointOfInterest(configuration.x, configuration.y)
   if (alreadyPointOfInterest) {
-    throw new RequestError(`Coordiante is already a point of interest`)
+    throw new RequestError(`Coordinate "${configuration.x},${configuration.y}" is already a point of interest`, RequestError.BadRequest)
+  }
+
+  const validPointOfInterest = await isValidPointOfInterest(configuration.x, configuration.y)
+  if (!validPointOfInterest) {
+    throw new RequestError(`Coodinate "${configuration.x},${configuration.y}" is not valid as point of interest`, RequestError.BadRequest)
   }
 
   return createProposal({
