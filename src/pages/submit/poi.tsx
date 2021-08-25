@@ -18,7 +18,6 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import { Governance } from '../../api/Governance'
 import locations from '../../modules/locations'
 import loader from '../../modules/loader'
-import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -72,6 +71,34 @@ const validate = createValidator<POIState>({
   })
 })
 
+async function validateAlreadyPointOfInterest(x: number, y: number) {
+  let alreadyPointOfInterest: boolean
+  try {
+    alreadyPointOfInterest = await isAlreadyPointOfInterest(x, y)
+  } catch (err) {
+    console.log(err)
+    throw new Error(`error.poi.fetching_pois`)
+  }
+
+  if (alreadyPointOfInterest) {
+    throw new Error(`error.poi.coordinates_already_a_poi`)
+  }
+}
+
+async function validateTilePointOfInterest(x: number, y: number) {
+  let validPointOfInterest: boolean
+  try {
+    validPointOfInterest = await isValidPointOfInterest(x, y)
+  } catch (err) {
+    console.log(err)
+    throw new Error(`error.poi.fetching_tiles`)
+  }
+
+  if (!validPointOfInterest) {
+    throw new Error(`error.poi.coordinates_invalid_poi`)
+  }
+}
+
 export default function SubmitPOI() {
   const l = useFormatMessage()
   const [ account, accountState ] = useAuthContext()
@@ -84,25 +111,8 @@ export default function SubmitPOI() {
           const x = asNumber(state.value.x)
           const y = asNumber(state.value.y)
 
-          try {
-            const alreadyPointOfInterest = await isAlreadyPointOfInterest(x, y)
-            if (alreadyPointOfInterest) {
-              throw new Error(`error.poi.coordinates_already_a_poi`)
-            }
-          } catch (err) {
-            console.log(err)
-            throw new Error(`error.poi.fetching_pois`)
-          }
-
-          try {
-            const validPointOfInterest = await isValidPointOfInterest(x, y)
-            if (!validPointOfInterest) {
-              throw new Error(`error.poi.coordinates_invalid_poi`)
-            }
-          } catch (err) {
-            console.log(err)
-            throw new Error(`error.poi.fetching_tiles`)
-          }
+          await validateAlreadyPointOfInterest(x, y)
+          await validateTilePointOfInterest(x, y)
 
           return Governance.get()
             .createProposalPOI({ x, y, description: state.value.description })
