@@ -200,6 +200,7 @@
       "details_start_label": "Started",
       "details_finish_label": "Ends",
       "details_snapshot_label": "Snapshot",
+      "required_vp": "Acceptance Threshold",
       "enact": "Enact proposal",
       "pass": "Pass proposal",
       "reject": "Reject proposal",

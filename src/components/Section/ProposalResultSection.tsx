@@ -15,6 +15,7 @@ import locations from '../../modules/locations'
 import { Vote } from '../../entities/Votes/types'
 import { calculateChoiceColor, calculateResult } from '../../entities/Votes/utils'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import './DetailsSection.css'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null,
@@ -29,13 +30,13 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalResultSection({ proposal, loading, disabled, votes, changingVote, votingPower, onChangeVote, onVote, ...props }: ProposalResultSectionProps) {
   const l = useFormatMessage()
-  const [ account, accountState ] = useAuthContext()
-  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
-  const vote = useMemo(() => account && votes && votes[account] && votes[account] || null, [ account, votes ])
-  const results = useMemo(() => calculateResult(choices, votes || {} /*, proposal?.required_to_pass || 0*/), [ proposal, choices, votes ])
+  const [account, accountState] = useAuthContext()
+  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
+  const vote = useMemo(() => account && votes && votes[account] && votes[account] || null, [account, votes])
+  const results = useMemo(() => calculateResult(choices, votes || {} /*, proposal?.required_to_pass || 0*/), [proposal, choices, votes])
   const now = useMemo(() => Time.utc(), [])
-  const start_at = useMemo(() => Time.utc(proposal?.start_at) || now, [ proposal ])
-  const finish_at = useMemo(() => Time.utc(proposal?.finish_at) || now, [ proposal ])
+  const start_at = useMemo(() => Time.utc(proposal?.start_at) || now, [proposal])
+  const finish_at = useMemo(() => Time.utc(proposal?.finish_at) || now, [proposal])
   const untilStart = useCountdown(start_at)
   const untilFinish = useCountdown(finish_at)
   const started = untilStart.time === 0
@@ -44,19 +45,31 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   return <div {...props} className={TokenList.join([
     'DetailsSection',
     disabled && 'DetailsSection--disabled',
-    loading &&'DetailsSection--loading',
+    loading && 'DetailsSection--loading',
     'ResultSection',
     props.className
   ])}>
-    <Loader active={loading} />
-    <div>
-      <Header sub>{l('page.proposal_detail.result_label')}</Header>
+    <div className="DetailsSection__Content">
+      <Loader active={loading} />
+      <div>
+        <Header sub>{l('page.proposal_detail.result_label')}</Header>
+      </div>
+      {results.map((result) => {
+        return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} power={result.power} progress={result.progress} />
+      })}
+      {proposal && !!proposal.required_to_pass &&
+        <div className="DetailsSection__Secondary">
+          <div className="DetailsSection__Secondary__Subtitle">
+            {l('page.proposal_detail.required_vp')}
+          </div>
+          <div className="DetailsSection__Secondary__Title">
+            {l('general.number', { value: proposal.required_to_pass  })} VP
+          </div>
+        </div>
+      }
     </div>
-    {results.map((result) => {
-      return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} power={result.power} progress={result.progress} />
-    })}
     {!finished && <div className="DetailsSection__Content">
-      <Loader active={!loading && accountState.loading } />
+      <Loader active={!loading && accountState.loading} />
 
       {!account && <Button basic loading={accountState.loading} disabled={accountState.loading} onClick={() => accountState.select()}>
         {l('general.sign_in')}
@@ -72,7 +85,6 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
           onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
         />
       })}
-
       {started && !finished && account && (!vote || changingVote) && <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
         <div>
           {l('page.proposal_detail.voting_with', {
@@ -84,7 +96,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
         </div>
       </div>}
 
-      {account && vote && !changingVote && <ChoiceButton disabled={!started || finished} choice={choices[vote.choice -1]} color={calculateChoiceColor(choices[vote.choice -1], vote.choice -1)} voted={true} />}
+      {account && vote && !changingVote && <ChoiceButton disabled={!started || finished} choice={choices[vote.choice - 1]} color={calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1)} voted={true} />}
     </div>}
     {started && !finished && account && vote && !changingVote && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>{l('page.proposal_detail.vote_change')}</Button>}
     {started && !finished && account && vote && changingVote && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, false)}>{l('general.cancel')}</Button>}

@@ -39,36 +39,38 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
     'ResultSection',
     props.className
   ])}>
-    <Header sub>{l('page.proposal_detail.details_label')}</Header>
-    <div className="DetailsSection__Content DetailsSection__Flex">
-      <div>{l('page.proposal_detail.details_user_label')}</div>
-      <Link className="DetailsSection__Value" to={locations.balance({ address: proposal?.user || '' })}>
-        {profile && profile.name && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
-        {profile && profile.name}
-        {(!profile || !profile.name) && !!proposal?.user &&  <Blockie scale={3} seed={proposal?.user || ''}>
-          <Address value={proposal?.user || ''} />
-        </Blockie>}
-      </Link>
-    </div>
-    <div className="DetailsSection__Content DetailsSection__Flex">
-      <div>{l('page.proposal_detail.details_start_label')}</div>
-      <div className="DetailsSection__Value">
-        {proposal && Time.from(proposal.start_at).format('MMM DD HH:mm')}
+    <div className="DetailsSection__Content">
+      <Header sub>{l('page.proposal_detail.details_label')}</Header>
+      <div className="DetailsSection__Flex">
+        <div>{l('page.proposal_detail.details_user_label')}</div>
+        <Link className="DetailsSection__Value" to={locations.balance({ address: proposal?.user || '' })}>
+          {profile && profile.name && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
+          {profile && profile.name}
+          {(!profile || !profile.name) && !!proposal?.user &&  <Blockie scale={3} seed={proposal?.user || ''}>
+            <Address value={proposal?.user || ''} />
+          </Blockie>}
+        </Link>
       </div>
-    </div>
-    <div className="DetailsSection__Content DetailsSection__Flex">
-      <div>{l('page.proposal_detail.details_finish_label')}</div>
-      <div className="DetailsSection__Value">
-        {proposal && Time.from(proposal.finish_at).format('MMM DD HH:mm')}
+      <div className="DetailsSection__Flex">
+        <div>{l('page.proposal_detail.details_start_label')}</div>
+        <div className="DetailsSection__Value">
+          {proposal && Time.from(proposal.start_at).format('MMM DD HH:mm')}
+        </div>
       </div>
-    </div>
-    <div className="DetailsSection__Content DetailsSection__Flex">
-      <div>{l('page.proposal_detail.details_snapshot_label')}</div>
-      <div className="DetailsSection__Value">
-        {proposal && <Link to={snapshotProposalUrl(proposal)}>
-          {'#' + proposal.snapshot_id.slice(0, 7)}
-          <img src={openIcon}  width="12" height="12" style={{ marginLeft: '.5rem' }} />
-        </Link>}
+      <div className="DetailsSection__Flex">
+        <div>{l('page.proposal_detail.details_finish_label')}</div>
+        <div className="DetailsSection__Value">
+          {proposal && Time.from(proposal.finish_at).format('MMM DD HH:mm')}
+        </div>
+      </div>
+      <div className="DetailsSection__Flex">
+        <div>{l('page.proposal_detail.details_snapshot_label')}</div>
+        <div className="DetailsSection__Value">
+          {proposal && <Link to={snapshotProposalUrl(proposal)}>
+            {'#' + proposal.snapshot_id.slice(0, 7)}
+            <img src={openIcon}  width="12" height="12" style={{ marginLeft: '.5rem' }} />
+          </Link>}
+        </div>
       </div>
     </div>
   </div>
