@@ -12,10 +12,21 @@
 
 .ChoiceProgress .ChoiceProgress__Stats {
   flex: 1 0 auto;
+  font-size: 15px;
   text-align: right;
   padding-left: 1em;
 }
 
 .ChoiceProgress .Progress {
   margin-top: 4px;
+}
+
+.ChoiceProgress .ChoiceProgress__Votes {
+  font-size: 13px;
+  margin-top: 8px;
+  font-weight: normal;
+}
+
+.ChoiceProgress .ChoiceProgress__Votes strong {
+  font-weight: 500
 }

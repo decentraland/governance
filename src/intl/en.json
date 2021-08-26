@@ -1,6 +1,8 @@
 {
   "general": {
     "number": "{value, number}",
+    "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
+    "count_votes": "{count} {count, plural, one {vote} other {votes}}",
     "sign_in": "sign in",
     "cancel": "cancel"
   },
@@ -159,7 +161,6 @@
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "new_proposal": "Submit a proposal",
       "categories": "Categories",
-      "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
       "no_proposals_yet": "No proposals have been sent by community members yet."
     },
     "proposal_enacted_list": {

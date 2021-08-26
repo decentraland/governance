@@ -20,9 +20,13 @@ export default function ChoiceProgress(props: ChoiceProgressProps) {
         {props.choice}
       </div>
       <div className="ChoiceProgress__Stats">
-        {props.progress}% ({l('general.number', { value: props.power })} VP)
+        {props.progress}%
       </div>
     </div>
     <Progress color={props.color} progress={props.progress} />
+    <div className="ChoiceProgress__Votes">
+      <strong>{l('general.number', { value: props.power })}{' VP '}</strong>
+      <span>({l('general.count_votes', { count: props.votes  })})</span>
+    </div>
   </div>
 }

@@ -1,9 +1,10 @@
 .ui.card.ProposalCard {
   position: relative;
+  color: var(--text);
 }
 
 .ui.card.ProposalCard .content.ProposalCard__Content {
-  padding-bottom: 75px;
+  padding-bottom: 94px;
   height: 100%;
 }
 
@@ -33,7 +34,7 @@
   width: 100%;
   padding: 0 20px 24px;
   left: 0;
-  bottom: 57px;
+  bottom: 48px;
 }
 
 .ProposalCard .ProposalCard__StatusLabel {
