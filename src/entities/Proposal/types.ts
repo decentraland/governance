@@ -146,6 +146,8 @@ export type NewProposalPoll = {
   choices: string[],
 }
 
+export const INVALID_PROPOSAL_POLL_OPTIONS ='Invalid question/options'
+
 export const newProposalPollScheme = {
   type: 'object',
   additionalProperties: false,

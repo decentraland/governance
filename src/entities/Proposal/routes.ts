@@ -28,7 +28,8 @@ import {
   UpdateProposalStatusProposal,
   updateProposalStatusScheme,
   newProposalBanNameScheme,
-  ProposalRequiredVP
+  ProposalRequiredVP,
+  INVALID_PROPOSAL_POLL_OPTIONS
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
 import {
@@ -134,6 +135,13 @@ const newProposalPollValidator = schema.compile(newProposalPollScheme)
 export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
+
+  // add default options
+  configuration.choices = [
+    ...configuration.choices,
+    INVALID_PROPOSAL_POLL_OPTIONS
+  ]
+
   return createProposal({
     user,
     type: ProposalType.Poll,

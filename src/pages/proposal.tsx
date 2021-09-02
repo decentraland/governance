@@ -63,11 +63,15 @@ export default function ProposalPage() {
   const [voting, vote] = useAsyncTask(async (_: string, choiceIndex: number) => {
     if (proposal && account && provider && votes) {
       const message = await Snapshot.get().createVoteMessage(proposal.snapshot_space, proposal.snapshot_id, choiceIndex)
+      debugger;
       const signature = await new Personal(provider).sign(message, Address.fromString(account), '')
+      debugger;
       await retry(3, () => Snapshot.get().send(account, message, signature))
+      debugger;
       patchOptions({ changing: false, confirmSubscription: !votes[account] })
       votesState.reload()
     }
+    debugger;
   })
 
   const [subscribing, subscribe] = useAsyncTask(async (subscribe: boolean = true) => {

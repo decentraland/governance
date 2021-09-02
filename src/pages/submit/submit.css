@@ -4,6 +4,18 @@
   min-width: auto;
 }
 
+.ui.input.input--disabled input {
+  pointer-events: none;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 6px;
+  padding: 8px 8px 8px;
+  opacity: 0.45;
+}
+
+.ui.input.input--disabled + .overlay .ui.button {
+  opacity: 0.45;
+}
+
 .dcl.field .ui.sub.header,
 .dcl.select-field .ui.sub.header {
   text-transform: none;

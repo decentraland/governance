@@ -8,7 +8,8 @@ import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
-import { newProposalPollScheme } from '../../entities/Proposal/types'
+import { Popup } from "decentraland-ui/dist/components/Popup/Popup"
+import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
@@ -219,6 +220,20 @@ export default function SubmitPoll() {
           onAction={() => handleRemoveOption(key)}
           onChange={(_, { value }) => handleEditOption(key, value)}
         />)}
+        <Field
+          readOnly
+          value={INVALID_PROPOSAL_POLL_OPTIONS}
+          className="input--disabled"
+          action={
+            <Popup
+              content={l('page.submit_poll.mandatory_option')}
+              position="top center"
+              trigger={
+                <Icon name="x" />}
+              on="hover"
+            />}
+          onAction={() => {}}
+        />
         <Button basic style={{ width: '100%' }} onClick={handleAddOption}>{l('page.submit_poll.choices_add')}</Button>
       </div>
     </ContentSection>

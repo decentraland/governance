@@ -280,7 +280,8 @@
       "description_placeholder": "A brief description of your question.",
       "choices_label": "Options",
       "choices_n_label": "${i, number}",
-      "choices_add": "Add option"
+      "choices_add": "Add option",
+      "mandatory_option": "This option is mandatory, can't be removed"
     },
     "submit_ban_name": {
       "title": "Ban a name",
