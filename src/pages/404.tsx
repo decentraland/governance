@@ -1,30 +1,15 @@
 import React from "react"
-import { Container } from "decentraland-ui/dist/components/Container/Container"
-import Head from "decentraland-gatsby/dist/components/Head/Head"
-import Title from "decentraland-gatsby/dist/components/Text/Title"
-import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
+import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import Navigation from "../components/Layout/Navigation"
 
-const NotFoundPage = (props: any) => {
+export default React.memo(function NotFoundPage() {
   const l = useFormatMessage()
+  const title = l('page.404.title')!
+  const description = l('page.404.description')!
 
   return <>
-  <Navigation />
-  <Container>
-    <Head
-      title={l('page.404.title') || ''}
-      description={l('page.404.description') || ''}
-      image="https://decentraland.org/images/decentraland.png"
-    />
-    <div style={{ minHeight: '75vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <Title style={{ textTransform: 'uppercase' }}>
-        {l('page.404.title')}
-      </Title>
-      <Paragraph>{l('page.404.description')}</Paragraph>
-    </div>
-  </Container>
+    <Navigation />
+    <NotFound title={title} description={description} />
   </>
-}
-
-export default NotFoundPage
+})

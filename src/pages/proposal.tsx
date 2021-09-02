@@ -39,6 +39,7 @@ import { formatDescription } from "decentraland-gatsby/dist/components/Head/util
 
 import './index.css'
 import './proposal.css'
+import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -100,6 +101,14 @@ export default function ProposalPage() {
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [ proposal, account ])
   const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [ proposal, account, committee ])
+
+  if (proposalState.error) {
+    return <>
+      <ContentLayout className="ProposalDetailPage">
+        <NotFound />
+      </ContentLayout>
+    </>
+  }
 
   return <>
     <Head
