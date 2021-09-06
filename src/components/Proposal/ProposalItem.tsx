@@ -11,6 +11,7 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import './ProposalItem.css'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import FinishLabel from '../Status/FinishLabel'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes,
@@ -43,7 +44,8 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
         </div>
         <div>
           <StatusLabel status={proposal.status} />
-          <CategoryLabel  type={proposal.type} />
+          <CategoryLabel type={proposal.type} />
+          <FinishLabel date={proposal.finish_at} />
         </div>
       </Card.Content>
     </Card>

@@ -1,0 +1,16 @@
+.FinishLabel {
+  padding: 0;
+  height: 24px;
+  display: inline-flex;
+  color: #736E7D;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 22px;
+  margin-right: .5rem;
+  vertical-align: middle;
+  align-content: center;
+}
+
+.FinishLabel img {
+  margin-right: .2rem;
+}
