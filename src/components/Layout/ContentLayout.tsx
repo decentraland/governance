@@ -4,8 +4,8 @@ import { Back } from "decentraland-ui/dist/components/Back/Back"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import './ContentLayout.css'
 import locations from '../../modules/locations'
+import './ContentLayout.css'
 
 export type ContentLayoutProps = {
   className?: string
@@ -15,10 +15,7 @@ export type ContentLayoutProps = {
 
 export default function ContentLayout(props: ContentLayoutProps) {
   function handleBack() {
-    const current = new URL(window.location.href)
-    current.pathname = ''
-    current.search = ''
-    if(document.referrer.startsWith(current.toString())) {
+    if((window as any).routeUpdate) {
       window.history.back()
     } else {
       navigate(locations.proposals())

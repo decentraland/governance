@@ -22,7 +22,7 @@ import segment from "decentraland-gatsby/dist/utils/segment/segment"
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>
     <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">
-      {element}
+        {element}
     </FeatureFlagProvider>
   </AuthProvider>
 )
@@ -41,5 +41,6 @@ export const onClientEntry = () => {
 }
 
 export const onRouteUpdate = () => {
+  window.routeUpdate = window.routeUpdate === undefined ? 0 : window.routeUpdate + 1
   segment((analytics) => analytics.page())
 }
