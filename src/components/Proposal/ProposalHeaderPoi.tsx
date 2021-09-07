@@ -21,7 +21,7 @@ export default React.memo(function ProposalHeaderPoi({ proposal }: ProposalHeade
 
   const configuration: NewProposalPOI = proposal.configuration
   return <div className="ProposalHeaderPoi">
-    <ImgPOI x={configuration.y} y={configuration.y} />
+    <ImgPOI x={configuration.x} y={configuration.y} />
   </div>
 })
 
