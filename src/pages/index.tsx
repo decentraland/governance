@@ -172,7 +172,7 @@ export default function IndexPage() {
             <ActionableLayout
               leftAction={<Header sub>
                 {!proposals && ''}
-                {proposals && l(`page.general.count_proposals`, { count: proposals.total || 0 })}
+                {proposals && l(`general.count_proposals`, { count: proposals.total || 0 })}
               </Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
