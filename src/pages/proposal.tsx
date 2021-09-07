@@ -40,6 +40,7 @@ import { formatDescription } from "decentraland-gatsby/dist/components/Head/util
 import './index.css'
 import './proposal.css'
 import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
+import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -136,6 +137,7 @@ export default function ProposalPage() {
             <Loader active={proposalState.loading} />
             <ProposalHeaderPoi proposal={proposal} />
             <Markdown source={proposal?.description || ''} />
+            <ProposalFooterPoi proposal={proposal} />
           </Grid.Column>
 
           <Grid.Column tablet="4" className="ProposalDetailActions">

@@ -4,6 +4,7 @@
     "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
     "count_votes": "{count} {count, plural, one {vote} other {votes}}",
     "sign_in": "sign in",
+    "jump_in": "jump in",
     "cancel": "cancel"
   },
   "navigation": {

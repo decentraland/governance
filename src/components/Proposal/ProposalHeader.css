@@ -2,33 +2,46 @@
   padding-bottom: 38px;
 }
 
-.ProposalHeaderPoi .dg.ImgFixed{
+.ProposalHeaderPoi .dg.Link {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ProposalHeaderPoi .dg.Link > div.PoiImageContainer {
+  position: relative;
+  flex: 0 0 100%;
+}
+
+.ProposalHeaderPoi .dg.Link.Link--with-scene > div.PoiImageContainer {
+  flex: 0 0 49%;
+  flex: 0 0 calc(50% - 6px);
+}
+
+.ProposalHeaderPoi .dg.ImgFixed {
   border-radius: 8px;
 }
 
-.ProposalHeaderPoi svg {
-  vertical-align: middle;
+.ProposalHeaderPoi .PoiImageContainer .ui.header {
+  position: absolute;
+  color: white;
+  left: 16px;
+  bottom: 52px;
+  margin: 0;
 }
 
-.ProposalHeaderPoi .ui.header {
-  margin-bottom: 4px;
-}
-
-.ProposalHeaderPoi .ui.header .dg.Link {
-  color: var(--text);
-}
-
-.ProposalHeaderPoi .PoiLocation {
-  display: inline-block;
+.ProposalHeaderPoi .PoiImageContainer .PoiPosition {
+  position: absolute;
   color: #736E7D;
-  background-color: var(--secondary);
+  background-color: white;
+  height: 24px;
   border-radius: 4px;
   font-size: 13px;
-  font-weight: 500;
   line-height: 18px;
-  padding: 4px 8px 4px 4px;
+  padding: 2px 5px;
+  left: 16px;
+  bottom: 16px;
 }
 
-.ProposalHeaderPoi .PoiLocation svg {
+.ProposalHeaderPoi .PoiImageContainer .PoiPosition svg {
   vertical-align: text-bottom;
 }

@@ -15,11 +15,14 @@ body {
   position: relative;
 }
 
+.ui.button svg {
+  vertical-align: text-bottom;
+}
+
 .ui.ui.popup,
 .ui.ui.popup.inverted {
   height: auto;
 }
-
 
 .ui.ui.popup.inverted {
   height: auto;
