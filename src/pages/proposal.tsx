@@ -163,7 +163,7 @@ export default function ProposalPage() {
                 basic
                 loading={deleting}
                 style={{ width: '100%' }}
-                disabled={proposal?.status === ProposalStatus.Pending || proposal?.status === ProposalStatus.Active}
+                disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
                 onClick={() => patchOptions({ confirmDeletion: true })}
               >{l('page.proposal_detail.delete')}</Button>
             }
