@@ -13,6 +13,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
     user: {
       type: 'TEXT',
+      primaryKey: true,
       notNull: true
     },
     created_at: {
