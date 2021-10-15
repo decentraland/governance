@@ -277,12 +277,12 @@ export function isProposalGrantCategory(value:  string | null | undefined): bool
 }
 
 export enum ProposalGrantTier {
-  Tier1 = 'Tier 1: a one-time payment of $500 - $1500 USD in MANA',
-  Tier2 = 'Tier 2: a one-time payment of $1500 - $3000 USD in MANA',
-  Tier3 = 'Tier 3: up to a 3 month vesting contract of $3000 - $5000 USD in MANA, with a one month cliff',
-  // Tier4 = 'Tier 4: $2000-$3000 USD',
-  // Tier5 = 'Tier 5: $3000-$5000 USD',
-  // TierX = 'Tier X: $5000+ USD',
+  Tier1 = 'Tier 1: up to $1,500 USD in MANA, one-time payment',
+  Tier2 = 'Tier 2: up to $3,000 USD in MANA, one-time payment',
+  Tier3 = 'Tier 3: up to $5,000 USD in MANA, 3 months vesting (1 month cliff)',
+  Tier4 = 'Tier 4: up to $60,000 USD, 6 months vesting (1 month cliff)',
+  Tier5 = 'Tier 5: up to $120,000 USD, 6 months vesting (1 month cliff)',
+  Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
 }
 
 export function isProposalGrantTier(value:  string | null | undefined): boolean {
@@ -290,9 +290,9 @@ export function isProposalGrantTier(value:  string | null | undefined): boolean 
     case ProposalGrantTier.Tier1:
     case ProposalGrantTier.Tier2:
     case ProposalGrantTier.Tier3:
-    // case ProposalGrantTier.Tier4:
-    // case ProposalGrantTier.Tier5:
-    // case ProposalGrantTier.TierX:
+    case ProposalGrantTier.Tier4:
+    case ProposalGrantTier.Tier5:
+    case ProposalGrantTier.Tier6:
       return true
     default:
       return false
@@ -352,9 +352,9 @@ export const newProposalGrantScheme = {
         ProposalGrantTier.Tier1,
         ProposalGrantTier.Tier2,
         ProposalGrantTier.Tier3,
-        // ProposalGrantTier.Tier4,
-        // ProposalGrantTier.Tier5,
-        // ProposalGrantTier.TierX,
+        ProposalGrantTier.Tier4,
+        ProposalGrantTier.Tier5,
+        ProposalGrantTier.Tier6,
       ]
     },
     size: {
