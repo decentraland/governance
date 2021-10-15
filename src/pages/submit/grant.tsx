@@ -62,6 +62,9 @@ const tiers = [
   { key: ProposalGrantTier.Tier1, text: ProposalGrantTier.Tier1, value: ProposalGrantTier.Tier1 },
   { key: ProposalGrantTier.Tier2, text: ProposalGrantTier.Tier2, value: ProposalGrantTier.Tier2 },
   { key: ProposalGrantTier.Tier3, text: ProposalGrantTier.Tier3, value: ProposalGrantTier.Tier3 },
+  { key: ProposalGrantTier.Tier4, text: ProposalGrantTier.Tier4, value: ProposalGrantTier.Tier4 },
+  { key: ProposalGrantTier.Tier5, text: ProposalGrantTier.Tier5, value: ProposalGrantTier.Tier5 },
+  { key: ProposalGrantTier.Tier6, text: ProposalGrantTier.Tier6, value: ProposalGrantTier.Tier6 },
 ]
 
 const schema = newProposalGrantScheme.properties
