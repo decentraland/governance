@@ -1,0 +1,128 @@
+.ui.container.VotingPowerSummary{
+  padding-top: 2rem;
+  position: relative;
+}
+
+.ui.container.VotingPowerDetail {
+  display: flex;
+  justify-content: space-between;
+  align-content: stretch;
+  flex-wrap: wrap;
+}
+
+.ui.container.VotingPowerDetail .ActionableLayout {
+  position: relative;
+  margin-top: 40px;
+}
+
+.ui.container.VotingPowerDetail .ui.card {
+  width: 100%;
+  height: 100%;
+}
+
+.ui.container.VotingPowerDetail .ui.card >.ui.header,
+.ui.container.VotingPowerDetail .ui.card .dcl.stats {
+  margin: 8px 0 16px;
+}
+
+.ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header {
+  font-weight: normal;
+}
+
+.ui.container.VotingPowerDetail .ui.card .dcl.stats a.ui.header {
+  color: var(--primary);
+}
+
+.ui.container.VotingPowerDetail .ui.card .ProfileListContainer {
+  max-height: 256px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.ui.container.VotingPowerDetail .ui.card .ProfileContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* .ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i {
+  line-height: 1em;
+  vertical-align: text-top;
+}
+
+.ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i.matic {
+  font-size: .9em;
+  background-repeat: no-repeat;
+} */
+
+.ui.container.VotingPowerDetail .ui.card .ui.loader.balance {
+  top: 0;
+  left: 100%;
+  transform: translate(-36px, 16px);
+}
+
+.ui.container.VotingPowerSummary .dcl.stats {
+  position: relative;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats + .dcl.stats{
+  margin-left: 2em;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .VotingPowerProfile {
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 600;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .VotingPowerProfile .dg.dcl-avatar {
+  margin: 0 12px 0 0;
+  vertical-align: bottom;
+  width: 56px;
+}
+
+.ui.container.VotingPowerSummary .dcl.stats .ui.loader.balance {
+  left: 100%;
+  transform: translate(18px, 0);
+}
+
+.ui.container.VotingPowerDetail .ui.card .dcl.stats.UserStats {
+  width: 100%;
+  cursor: pointer;
+  margin: 0;
+}
+
+@media only screen and (min-width: 992px) {
+  .ui.container.VotingPowerSummary .dcl.stats.UserStats {
+    min-width: 32%;
+  }
+
+  .ui.container.VotingPowerDetail .ActionableLayout {
+    flex: 0 0 32%;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .ui.container.VotingPowerSummary .dcl.stats.UserStats {
+    min-width: 49%;
+  }
+
+  .ui.container.VotingPowerDetail .ActionableLayout {
+    flex: 0 0 49%;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  .ui.container.VotingPowerSummary .dcl.stats.UserStats {
+    min-width: 100%;
+  }
+
+  .ui.container.VotingPowerDetail .ActionableLayout {
+    flex: 0 0 100%;
+  }
+
+  .ui.container.VotingPowerDetail .ActionableLayout.EstateBalance {
+    margin-top: 0px;
+  }
+}

@@ -80,5 +80,6 @@ export default {
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
   submit: (type?: ProposalType) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', {}),
   balance: (options: Partial<{ address: string }> = {}) => url(`/balance/`, options),
+  treasury: (options: Partial<{ address: string }> = {}) => url(`/treasury/`),
   welcome: () => url(`/welcome/`, {}),
 }

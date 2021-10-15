@@ -44,6 +44,7 @@ export async function getStaticSitemap() {
     `<url><loc>${governanceUrl('/balance/')}</loc></url>`,
     `<url><loc>${governanceUrl('/activity/')}</loc></url>`,
     `<url><loc>${governanceUrl('/submit/')}</loc></url>`,
+    `<url><loc>${governanceUrl('/treasury/')}</loc></url>`,
     `<url><loc>${governanceUrl(`/submit/ban-name/`)}</loc></url>`,
     `<url><loc>${governanceUrl(`/submit/catalyst/`)}</loc></url>`,
     `<url><loc>${governanceUrl(`/submit/grant/`)}</loc></url>`,

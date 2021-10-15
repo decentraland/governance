@@ -11,7 +11,8 @@
     "proposals": "Proposals",
     "wrapping": "Voting Power",
     "activity": "Activity",
-    "enacted": "Enacted"
+    "enacted": "Enacted",
+    "treasury": "Treasury"
   },
   "error": {
     "poll": {
@@ -261,6 +262,13 @@
       "delegations_from_title": "Your delegation",
       "delegations_from_you_empty": "You have not delegated your voting power",
       "delegations_from_address_empty": "This address has not delegated its voting power"
+    },
+    "treasury": {
+      "title": "DAO Treasury",
+      "description": "An overview of current balance within the DAO",
+      "aragon": "Decentraland DAO",
+      "multisig_eth": "DAO Committee (Ethereum)",
+      "multisig_matic": "DAO Committee (Polygon)"
     },
     "submit": {
       "title": "Submit Proposal",

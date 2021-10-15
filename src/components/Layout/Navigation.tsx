@@ -11,6 +11,7 @@ export enum NavigationTab {
   Wrapping = 'wrapping',
   Enacted = 'enacted',
   Activity = 'activity',
+  Treasury = 'treasury',
 }
 
 type NavigationProps = {
@@ -43,6 +44,11 @@ const Navigation = (props: NavigationProps) => {
             {l('navigation.activity')}
           </Tabs.Tab>
         </Link>}
+        <Link to={locations.treasury()}>
+          <Tabs.Tab active={props.activeTab === NavigationTab.Treasury}>
+            {l('navigation.treasury')}
+          </Tabs.Tab>
+        </Link>
       </Tabs.Left>
     </Tabs>
   )
