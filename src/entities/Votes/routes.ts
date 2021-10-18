@@ -6,7 +6,7 @@ import { Snapshot, SnapshotVote } from '../../api/Snapshot'
 import VotesModel from './model';
 import { Vote, VoteAttributes } from './types';
 import isEthereumAddress from 'validator/lib/isEthereumAddress';
-import { ProposalAttributes } from '../Proposal/types';
+import { ProposalAttributes, ProposalStatus } from '../Proposal/types';
 import { createVotes, toProposalIds } from './utils';
 import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
@@ -14,13 +14,15 @@ import chunk from 'decentraland-gatsby/dist/utils/array/chunk';
 
 export default routes((route) => {
   const withAuth = auth()
-route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
+  route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
   route.get('/proposals/:proposal/vp', withAuth, handleAPI(getMyProposalVotingPower))
   route.get('/votes', handleAPI(getCachedVotes))
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
+  if (proposal.status == ProposalStatus.Creating) return {}
+
   let latestVotes = await VotesModel.getVotes(proposal.id)
   if (!latestVotes) {
     latestVotes = await VotesModel.createEmpty(proposal.id)

@@ -132,7 +132,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       SELECT COUNT(*) as "total"
       FROM ${table(ProposalModel)} p
       ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      WHERE "deleted" = FALSE
+      WHERE "deleted" = FALSE AND "status" != ${ ProposalStatus.Creating}
       ${conditional(!!filter.user, SQL`AND p."user" = ${filter.user}`)}
       ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)}
       ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)}
@@ -163,7 +163,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       SELECT p.*
       FROM ${table(ProposalModel)} p
       ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      WHERE "deleted" = FALSE
+      WHERE "deleted" = FALSE AND "status" != ${ ProposalStatus.Creating}
       ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)}
       ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)}
       ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)}
