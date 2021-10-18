@@ -33,23 +33,27 @@ export type ProposalAttributes<C extends {} = any> = {
 }
 
 export enum ProposalStatus {
+  Creating = 'creating',
   Pending = 'pending',
   Active = 'active',
   Finished = 'finished',
   Rejected = 'rejected',
   Passed = 'passed',
   Enacted = 'enacted',
-  Deleted = 'deleted'
+  Deleted = 'deleted',
+  Error = 'error'
 }
 
 export function isProposalStatus(value:  string | null | undefined): boolean {
   switch (value) {
+    case ProposalStatus.Creating:
     case ProposalStatus.Pending:
     case ProposalStatus.Finished:
     case ProposalStatus.Active:
     case ProposalStatus.Rejected:
     case ProposalStatus.Passed:
     case ProposalStatus.Enacted:
+    case ProposalStatus.Error:
       return true
     default:
       return false

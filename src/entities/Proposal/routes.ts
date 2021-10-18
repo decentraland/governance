@@ -1,15 +1,14 @@
 import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
-import { AlchemyProvider, Block } from '@ethersproject/providers'
 import routes from "decentraland-gatsby/dist/entities/Route/routes";
 import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware";
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, signMessage } from '../Snapshot/utils';
-import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
-import { Discourse, DiscoursePost } from '../../api/Discourse';
-import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../Discourse/utils';
+import { Snapshot } from '../../api/Snapshot';
+import { Discourse } from '../../api/Discourse';
+import { DISCOURSE_AUTH } from '../Discourse/utils';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import ProposalModel from './model';
 import {
@@ -37,21 +36,16 @@ import {
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  proposalUrl,
-  snapshotProposalUrl,
-  forumUrl,
   isValidName,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
   isValidPointOfInterest,
   isValidUpdateProposalStatus
 } from './utils';
-import { IPFS, HashContent } from '../../api/IPFS';
-import VotesModel from '../Votes/model'
+import VotesModel from '../Votes/model';
 import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
-import * as templates from './templates'
-import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
+import * as templates from './templates';
 
 export default routes((route) => {
   const withAuth = auth()
@@ -84,14 +78,14 @@ function inBackground(fun: () => Promise<any>) {
     .catch((err) => console.log('Error running background task: ', formatError(err)))
 }
 
-function dropDiscourseTopic(topic_id: number) {
+export function dropDiscourseTopic(topic_id: number) {
   inBackground(() => {
     console.log(`Dropping discourse topic:`, topic_id)
     return Discourse.get().removeTopic(topic_id, DISCOURSE_AUTH)
   })
 }
 
-function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
+export function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
   inBackground(async () => {
     console.log(`Dropping snapshot proposal: ${proposal_space}/${proposal_id}`)
     const address = SNAPSHOT_ADDRESS
@@ -238,116 +232,10 @@ export async function createProposalGrant(req: WithAuth) {
 
 export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass'>) {
   const id = uuid()
-  const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)
   const end = Time.utc(start).add(SNAPSHOT_DURATION, 'seconds')
-  const proposal_url = proposalUrl({ id })
   const title = await templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
-
-  let profile: Avatar | null
-  try {
-    profile = await Catalyst.get().getProfile(data.user)
-  } catch (err) {
-    throw new RequestError(`Error getting profile "${data.user}"`, RequestError.InternalServerError, err)
-  }
-
-  //
-  // Create proposal payload
-  //
-  let msg: string
-  let block: Block
-  let snapshotStatus: SnapshotStatus
-  let snapshotSpace: SnapshotSpace
-  try {
-    snapshotStatus = await Snapshot.get().getStatus()
-    snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
-  } catch (err) {
-    throw new RequestError(`Error getting snapshot space "${SNAPSHOT_SPACE}"`, RequestError.InternalServerError, err)
-  }
-
-  try {
-    const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
-    block = await provider.getBlock('latest')
-  } catch (err) {
-    throw new RequestError(`Couldn't get the latest block`, RequestError.InternalServerError, err)
-  }
-
-  try {
-    const snapshotTemplateProps: templates.SnapshotTemplateProps = {
-      user: data.user,
-      type: data.type,
-      configuration: data.configuration,
-      profile,
-      proposal_url
-    }
-
-    msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
-      snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: await templates.snapshotTitle(snapshotTemplateProps),
-      body: await templates.snapshotDescription(snapshotTemplateProps),
-      choices: data.configuration.choices,
-      snapshot: block.number,
-      end,
-      start,
-    })
-  } catch (err) {
-    throw new RequestError(`Error creating the snapshot message`, RequestError.InternalServerError, err)
-  }
-
-  //
-  // Create proposal in Snapshot
-  //
-  let snapshotProposal: SnapshotResult
-  try {
-    const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
-    console.log(sig, msg)
-    snapshotProposal = await Snapshot.get().send(address, msg, sig)
-  } catch (err) {
-    throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err)
-  }
-
-  const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
-  console.log(`Snapshot proposal created:`, snapshot_url, JSON.stringify(snapshotProposal))
-
-  //
-  // Get snapshot content
-  //
-  let snapshotContent: HashContent
-  try {
-    snapshotContent = await IPFS.get().getHash(snapshotProposal.ipfsHash)
-  } catch (err) {
-    dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError(`Couldn't retrieve proposal from the IPFS`, RequestError.InternalServerError, err)
-  }
-
-  //
-  // Create proposal in Discourse
-  //
-  let discourseProposal: DiscoursePost
-  try {
-    const discourseTemplateProps: templates.ForumTemplateProps = {
-      type: data.type,
-      configuration: data.configuration,
-      user: data.user,
-      profile,
-      proposal_url,
-      snapshot_url,
-      snapshot_id: snapshotProposal.ipfsHash
-    }
-
-    discourseProposal = await Discourse.get().createPost({
-      category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-      title: await templates.forumTitle(discourseTemplateProps),
-      raw: await templates.forumDescription(discourseTemplateProps),
-    }, DISCOURSE_AUTH)
-  } catch (err) {
-    dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError(`Forum error: ${err.body.errors.join(', ')}`, RequestError.InternalServerError, err)
-  }
-
-  const forum_url = forumUrl({ discourse_topic_slug: discourseProposal.topic_slug, discourse_topic_id: discourseProposal.topic_id })
-  console.log(`Discourse proposal created:`, forum_url, JSON.stringify(discourseProposal))
 
   //
   // Create proposal in DB
@@ -358,15 +246,15 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     title,
     description,
     configuration: JSON.stringify(data.configuration),
-    status: ProposalStatus.Active,
-    snapshot_id: snapshotProposal.ipfsHash,
+    status: ProposalStatus.Creating,
+    snapshot_id: "",
     snapshot_space: SNAPSHOT_SPACE,
-    snapshot_proposal: JSON.stringify(JSON.parse(snapshotContent.msg).payload),
-    snapshot_signature: snapshotContent.sig,
-    snapshot_network: snapshotSpace.network,
-    discourse_id: discourseProposal.id,
-    discourse_topic_id: discourseProposal.topic_id,
-    discourse_topic_slug: discourseProposal.topic_slug,
+    snapshot_proposal: JSON.stringify(data),
+    snapshot_signature: "",
+    snapshot_network: "",
+    discourse_id: 0,
+    discourse_topic_id: 0,
+    discourse_topic_slug: "",
     start_at: start.toJSON() as any,
     finish_at: end.toJSON() as any,
     deleted: false,
@@ -382,15 +270,8 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     updated_at: start.toJSON() as any,
   }
 
-  try {
-    await ProposalModel.create(newProposal)
-    await VotesModel.createEmpty(id)
-  } catch (err) {
-    dropDiscourseTopic(discourseProposal.topic_id)
-    dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw err
-  }
-
+  await ProposalModel.create(newProposal)
+  await VotesModel.createEmpty(id)
   return ProposalModel.parse(newProposal)
 }
 

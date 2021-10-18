@@ -16,9 +16,10 @@ import subscription from './entities/Subscription/routes'
 import committee from './entities/Committee/routes'
 import social from './entities/Social/routes'
 import sitemap from './entities/Sitemap/routes'
-import { activateProposals, finishProposal } from './entities/Proposal/jobs'
+import { createProposals, activateProposals, finishProposal } from './entities/Proposal/jobs'
 
 const jobs = manager()
+jobs.cron('@eachMinute', createProposals)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
 

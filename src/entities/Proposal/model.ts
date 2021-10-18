@@ -56,10 +56,23 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       WHERE
         "deleted" = FALSE
         AND "status" = ${ProposalStatus.Pending}
-        AND "start_at" >= now()
+        AND "start_at" <= now()
     `
 
     return this.rowCount(query)
+  }
+
+  static async getCreatingProposal() {
+    const query = SQL`
+      SELECT *
+      FROM ${table(ProposalModel)}
+      WHERE
+        "deleted" = FALSE
+        AND "status" = ${ProposalStatus.Creating}
+    `
+
+    const result = await this.query(query)
+    return result.map(ProposalModel.parse)
   }
 
   static async getFinishedProposal() {
