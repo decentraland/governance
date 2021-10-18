@@ -40,8 +40,7 @@ export enum ProposalStatus {
   Rejected = 'rejected',
   Passed = 'passed',
   Enacted = 'enacted',
-  Deleted = 'deleted',
-  Error = 'error'
+  Deleted = 'deleted'
 }
 
 export function isProposalStatus(value:  string | null | undefined): boolean {
@@ -53,7 +52,6 @@ export function isProposalStatus(value:  string | null | undefined): boolean {
     case ProposalStatus.Rejected:
     case ProposalStatus.Passed:
     case ProposalStatus.Enacted:
-    case ProposalStatus.Error:
       return true
     default:
       return false
