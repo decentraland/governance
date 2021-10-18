@@ -187,6 +187,8 @@
     "proposal_detail": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "creating_title": "Please wait a minute",
+      "creating_description": "Your proposal is being created, it may take up to a minute. Please refresh this page.",
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",

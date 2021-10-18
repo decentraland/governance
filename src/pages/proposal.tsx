@@ -10,6 +10,7 @@ import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
+import { Message } from "decentraland-ui/dist/components/Message/Message"
 import { navigate } from "gatsby-plugin-intl"
 import { Governance } from "../api/Governance"
 import useProposal from "../hooks/useProposal"
@@ -134,12 +135,16 @@ export default function ProposalPage() {
         <Grid.Row>
 
           <Grid.Column tablet="12" className="ProposalDetailDescription">
+            { proposal?.status == ProposalStatus.Creating &&
+              <Message warning visible content={l('page.proposal_detail.creating_description')} header={l('page.proposal_detail.creating_title')} />
+            }
             <Loader active={proposalState.loading} />
             <ProposalHeaderPoi proposal={proposal} />
             <Markdown source={proposal?.description || ''} />
             <ProposalFooterPoi proposal={proposal} />
           </Grid.Column>
 
+          { proposal?.status != ProposalStatus.Creating &&
           <Grid.Column tablet="4" className="ProposalDetailActions">
             <ForumButton loading={proposalState.loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''} />
             <SubscribeButton
@@ -198,6 +203,7 @@ export default function ProposalPage() {
               >{l('page.proposal_detail.reject')}</Button>
             }
           </Grid.Column>
+          }
         </Grid.Row>
       </Grid>
     </ContentLayout>
