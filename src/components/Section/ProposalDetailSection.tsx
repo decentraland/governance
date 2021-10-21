@@ -61,6 +61,7 @@ export default React.memo(function ProposalDetailSection({ proposal, loading, di
           {proposal && Time.from(proposal.finish_at).format('MMM DD HH:mm')}
         </div>
       </div>
+      { proposal?.snapshot_id &&
       <div className="DetailsSection__Flex">
         <div>{l('page.proposal_detail.details_snapshot_label')}</div>
         <div className="DetailsSection__Value">
@@ -69,7 +70,7 @@ export default React.memo(function ProposalDetailSection({ proposal, loading, di
             <img src={openIcon}  width="12" height="12" style={{ marginLeft: '.5rem' }} />
           </Anchor>}
         </div>
-      </div>
+      </div>}
     </div>
   </div>
 })

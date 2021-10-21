@@ -19,7 +19,8 @@ export type ProposalAttributes<C extends {} = any> = {
   start_at: Date
   finish_at: Date
   deleted: boolean
-  deleted_by: string | null,
+  deleted_by: string | null
+  deleted_description: string | null
   enacted: boolean
   enacted_by: string | null
   enacted_description: string | null
@@ -40,7 +41,8 @@ export enum ProposalStatus {
   Rejected = 'rejected',
   Passed = 'passed',
   Enacted = 'enacted',
-  Deleted = 'deleted'
+  Deleted = 'deleted',
+  Error = 'error'
 }
 
 export function isProposalStatus(value:  string | null | undefined): boolean {
@@ -52,6 +54,7 @@ export function isProposalStatus(value:  string | null | undefined): boolean {
     case ProposalStatus.Rejected:
     case ProposalStatus.Passed:
     case ProposalStatus.Enacted:
+    case ProposalStatus.Error:
       return true
     default:
       return false

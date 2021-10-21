@@ -21,7 +21,7 @@ export default routes((route) => {
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
-  if (proposal.status == ProposalStatus.Creating) return {}
+  if (proposal.status == ProposalStatus.Creating || proposal.status == ProposalStatus.Error) return {}
 
   let latestVotes = await VotesModel.getVotes(proposal.id)
   if (!latestVotes) {

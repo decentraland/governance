@@ -138,21 +138,32 @@ export default function ProposalPage() {
             { proposal?.status == ProposalStatus.Creating &&
               <Message warning visible content={l('page.proposal_detail.creating_description')} header={l('page.proposal_detail.creating_title')} />
             }
+
+            { proposal?.status == ProposalStatus.Error &&
+              <Message error visible content={proposal?.deleted_description} header={l('page.proposal_detail.error_title')} />
+            }
+
+            { proposal?.deleted && proposal?.status != ProposalStatus.Error &&
+              <Message warning visible content={proposal.deleted_by} header={l('page.proposal_detail.deleted_title')} />
+            }
             <Loader active={proposalState.loading} />
             <ProposalHeaderPoi proposal={proposal} />
             <Markdown source={proposal?.description || ''} />
             <ProposalFooterPoi proposal={proposal} />
           </Grid.Column>
 
-          { proposal?.status != ProposalStatus.Creating &&
           <Grid.Column tablet="4" className="ProposalDetailActions">
+            { !proposal?.deleted && proposal?.status != ProposalStatus.Creating &&
             <ForumButton loading={proposalState.loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''} />
+            }
+
+            { !proposal?.deleted && proposal?.status != ProposalStatus.Creating &&
             <SubscribeButton
               loading={proposalState.loading || subscriptionsState.loading || subscribing}
               disabled={!proposal}
               subscribed={subscribed}
               onClick={() => subscribe(!subscribed)}
-            />
+            />}
             <ProposalResultSection
               disabled={!proposal || !votes}
               loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
@@ -203,7 +214,6 @@ export default function ProposalPage() {
               >{l('page.proposal_detail.reject')}</Button>
             }
           </Grid.Column>
-          }
         </Grid.Row>
       </Grid>
     </ContentLayout>

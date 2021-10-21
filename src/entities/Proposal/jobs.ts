@@ -28,6 +28,17 @@ const pendingProposals = await ProposalModel.getCreatingProposal()
   pendingProposals.forEach(proposal => createProposal(proposal))
 }
 
+async function updateError(proposal: ProposalAttributes, error: Error, description: string) {
+  const update: Partial<ProposalAttributes> = {
+    status: ProposalStatus.Error,
+    deleted: true,
+    deleted_by: SNAPSHOT_ADDRESS,
+    deleted_description: `${description}: "${error.message}"` ,
+    updated_at: new Date(),
+  }
+  await ProposalModel.update(update, { id: proposal.id })
+}
+
 async function createProposal(proposal: ProposalAttributes) {
   let profile: Avatar | null
   const proposal_url = proposalUrl(proposal)
@@ -37,7 +48,7 @@ async function createProposal(proposal: ProposalAttributes) {
   try {
     profile = await Catalyst.get().getProfile(proposal.user)
   } catch (err) {
-    throw new Error(`Error getting profile "${proposal.user}"`)
+    return updateError(proposal, err, `Error getting profile "${proposal.user}"`)
   }
 
   //
@@ -51,14 +62,14 @@ async function createProposal(proposal: ProposalAttributes) {
     snapshotStatus = await Snapshot.get().getStatus()
     snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
   } catch (err) {
-    throw new Error(`Error getting snapshot space "${SNAPSHOT_SPACE}"`)
+    return updateError(proposal, err, `Error getting snapshot space "${SNAPSHOT_SPACE}"`)
   }
 
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
     block = await provider.getBlock('latest')
   } catch (err) {
-    throw new Error(`Couldn't get the latest block`)
+    return updateError(proposal, err, `Couldn't get the latest block`)
   }
 
   try {
@@ -80,7 +91,7 @@ async function createProposal(proposal: ProposalAttributes) {
       start,
     })
   } catch (err) {
-    throw new Error(`Error creating the snapshot message`)
+    return updateError(proposal, err, `Error creating the snapshot message`)
   }
 
   //
@@ -92,7 +103,7 @@ async function createProposal(proposal: ProposalAttributes) {
     console.log(sig, msg)
     snapshotProposal = await Snapshot.get().send(SNAPSHOT_ADDRESS, msg, sig)
   } catch (err) {
-    throw new Error(`Couldn't create proposal in snapshot`)
+    return updateError(proposal, err, `Couldn't create proposal in snapshot`)
   }
 
   const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
@@ -106,7 +117,7 @@ async function createProposal(proposal: ProposalAttributes) {
     snapshotContent = await IPFS.get().getHash(snapshotProposal.ipfsHash)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new Error(`Couldn't retrieve proposal from the IPFS`)
+    return updateError(proposal, err, `Couldn't retrieve proposal from the IPFS`)
   }
 
   //
@@ -131,7 +142,7 @@ async function createProposal(proposal: ProposalAttributes) {
     }, DISCOURSE_AUTH)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new Error(`Forum error: ${err.body.errors.join(', ')}`)
+    return updateError(proposal, err, `Forum error: ${err.body.errors.join(', ')}`)
   }
 
   const forum_url = forumUrl({ discourse_topic_slug: discourseProposal.topic_slug, discourse_topic_id: discourseProposal.topic_id })

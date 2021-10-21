@@ -249,7 +249,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     status: ProposalStatus.Creating,
     snapshot_id: "",
     snapshot_space: SNAPSHOT_SPACE,
-    snapshot_proposal: JSON.stringify(data),
+    snapshot_proposal: JSON.stringify({choices: data.configuration.choices}),
     snapshot_signature: "",
     snapshot_network: "",
     discourse_id: 0,
@@ -259,6 +259,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     finish_at: end.toJSON() as any,
     deleted: false,
     deleted_by: null,
+    deleted_description: null,
     enacted: false,
     enacted_by: null,
     enacted_description: null,
@@ -281,7 +282,7 @@ export async function getProposal(req: Request<{ proposal: string }>) {
     throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
   }
 
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id })
   if (!proposal) {
     throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
   }
