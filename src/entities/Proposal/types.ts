@@ -1,4 +1,5 @@
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
+export const MIN_NAME_SIZE = 2;
+export const MAX_NAME_SIZE = 15;
 
 export type ProposalAttributes<C extends {} = any> = {
   id: string

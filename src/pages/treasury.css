@@ -1,3 +1,35 @@
+.WalletBalance {
+  margin-top: 0 !important;
+}
+
+.WalletBalance .ActionableLayout__Action {
+  display: none !important;
+}
+
+.WalletBalance .ui.header {
+  margin-bottom: 0.5rem;
+}
+
+.WalletBalance .ui.header.sub {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+}
+
+.WalletBalance .Token {
+  align-items: center;
+  display: flex;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.WalletBalance .Token:last-of-type {
+  margin-bottom: 0;
+}
+
+.WalletBalance .Token span {
+  margin-left: 1rem;
+}
+
 .ui.container.VotingPowerSummary{
   padding-top: 2rem;
   position: relative;
@@ -15,9 +47,11 @@
   margin-top: 40px;
 }
 
+/* Used! */
 .ui.container.VotingPowerDetail .ui.card {
   width: 100%;
-  height: 100%;
+  height: auto;
+  margin-bottom: 1rem;
 }
 
 .ui.container.VotingPowerDetail .ui.card >.ui.header,

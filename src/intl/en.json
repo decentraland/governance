@@ -266,9 +266,11 @@
     "treasury": {
       "title": "DAO Treasury",
       "description": "An overview of current balance within the DAO",
-      "aragon": "Decentraland DAO",
-      "multisig_eth": "DAO Committee (Ethereum)",
-      "multisig_matic": "DAO Committee (Polygon)"
+      "aragon": "Aragon Agent",
+      "multisig_eth": "Gnosis Safe",
+      "multisig_matic": "Gnosis Safe",
+      "eth_network": "Ethereum Network",
+      "matic_network": "Polygon Network"
     },
     "submit": {
       "title": "Submit Proposal",
