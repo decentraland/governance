@@ -453,7 +453,7 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   const id = req.params.proposal
   const proposal = await getProposal(req)
 
-  const allowToRemove = proposal.user === user
+  const allowToRemove = proposal.user === user || isCommitee(user)
   if (!allowToRemove) {
     throw new RequestError(`Forbidden`, RequestError.Forbidden)
   }
