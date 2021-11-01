@@ -89,6 +89,12 @@ export type DiscoursePost = {
   reviewable_score_pending_count: number
 }
 
+export type DiscourseComment = {
+  topic_id: number,
+  raw: string,
+  created_at: string,
+}
+
 export class Discourse extends API {
 
   static Url = (
@@ -138,9 +144,24 @@ export class Discourse extends API {
   }
 
   async createPost(post: DiscourseNewPost, auth: DiscourseAuth) {
+    Discourse.checkCredentials(auth)
+
+    return this.fetch<DiscoursePost>(`/posts.json`, this.options()
+      .method('POST')
+      .header('Api-Key', auth.apiKey)
+      .header('Api-Username', auth.apiUsername)
+      .json(post)
+    )
+  }
+
+  private static checkCredentials(auth: DiscourseAuth) {
     if (!auth.apiKey || !auth.apiUsername) {
       throw new Error(`Invalid auth param: ${JSON.stringify(auth)}`)
     }
+  }
+
+  async commentOnPost(post:DiscourseComment, auth: DiscourseAuth){
+    Discourse.checkCredentials(auth)
 
     return this.fetch<DiscoursePost>(`/posts.json`, this.options()
       .method('POST')
