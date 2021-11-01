@@ -1,57 +1,58 @@
-import { Request } from 'express'
-import { v1 as uuid } from 'uuid'
-import { AlchemyProvider, Block } from '@ethersproject/providers'
-import routes from "decentraland-gatsby/dist/entities/Route/routes";
-import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware";
-import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
-import validate from 'decentraland-gatsby/dist/entities/Route/validate';
-import schema from 'decentraland-gatsby/dist/entities/Schema'
-import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, signMessage } from '../Snapshot/utils';
-import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
-import { Discourse, DiscoursePost } from '../../api/Discourse';
-import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../Discourse/utils';
-import Time from 'decentraland-gatsby/dist/utils/date/Time';
-import ProposalModel from './model';
+import { Request } from "express"
+import { v1 as uuid } from "uuid"
+import { AlchemyProvider, Block } from "@ethersproject/providers"
+import routes from "decentraland-gatsby/dist/entities/Route/routes"
+import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware"
+import handleAPI, { handleJSON } from "decentraland-gatsby/dist/entities/Route/handle"
+import validate from "decentraland-gatsby/dist/entities/Route/validate"
+import schema from "decentraland-gatsby/dist/entities/Schema"
+import { signMessage, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from "../Snapshot/utils"
+import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from "../../api/Snapshot"
+import { Discourse, DiscourseComment, DiscoursePost } from "../../api/Discourse"
+import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from "../Discourse/utils"
+import Time from "decentraland-gatsby/dist/utils/date/Time"
+import ProposalModel from "./model"
 import {
-  ProposalAttributes,
+  INVALID_PROPOSAL_POLL_OPTIONS,
+  NewProposalBanName,
+  newProposalBanNameScheme,
+  NewProposalCatalyst,
+  newProposalCatalystScheme,
+  NewProposalGrant,
+  newProposalGrantScheme,
+  NewProposalPOI,
+  newProposalPOIScheme,
   NewProposalPoll,
   newProposalPollScheme,
-  ProposalType,
+  ProposalAttributes,
+  ProposalRequiredVP,
   ProposalStatus,
-  NewProposalBanName,
-  newProposalPOIScheme,
-  NewProposalPOI,
-  newProposalCatalystScheme,
-  NewProposalCatalyst,
-  newProposalGrantScheme,
-  NewProposalGrant,
+  ProposalType,
   UpdateProposalStatusProposal,
   updateProposalStatusScheme,
-  newProposalBanNameScheme,
-  ProposalRequiredVP,
-  INVALID_PROPOSAL_POLL_OPTIONS
-} from './types';
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
+} from "./types"
+import RequestError from "decentraland-gatsby/dist/entities/Route/error"
 import {
   DEFAULT_CHOICES,
+  forumUrl,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  proposalUrl,
-  snapshotProposalUrl,
-  forumUrl,
   isValidName,
+  isValidPointOfInterest,
+  isValidUpdateProposalStatus,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
-  isValidPointOfInterest,
-  isValidUpdateProposalStatus
-} from './utils';
-import { IPFS, HashContent } from '../../api/IPFS';
-import VotesModel from '../Votes/model'
-import isCommitee from '../Committee/isCommittee';
-import isUUID from 'validator/lib/isUUID';
-import * as templates from './templates'
-import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
+  proposalUrl,
+  snapshotProposalUrl,
+} from "./utils"
+import { HashContent, IPFS } from "../../api/IPFS"
+import VotesModel from "../Votes/model"
+import isCommittee from "../Committee/isCommittee"
+import isUUID from "validator/lib/isUUID"
+import * as templates from "./templates"
+import Catalyst, { Avatar } from "decentraland-gatsby/dist/utils/api/Catalyst"
+import { DiscourseProposalUpdateMessageBuilder } from "./discourse-proposal-update-message-builder"
 
 export default routes((route) => {
   const withAuth = auth()
@@ -186,7 +187,7 @@ export async function createProposalPOI(req: WithAuth) {
 
   const validPointOfInterest = await isValidPointOfInterest(configuration.x, configuration.y)
   if (!validPointOfInterest) {
-    throw new RequestError(`Coodinate "${configuration.x},${configuration.y}" is not valid as point of interest`, RequestError.BadRequest)
+    throw new RequestError(`Coordinate "${configuration.x},${configuration.y}" is not valid as point of interest`, RequestError.BadRequest)
   }
 
   return createProposal({
@@ -409,11 +410,44 @@ export async function getProposal(req: Request<{ proposal: string }>) {
 }
 
 const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
+
+export async function commentProposalUpdateInDiscourse(id: string, caller: string) {
+  const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
+
+  if (!!updatedProposal) {
+    let message: string
+    try {
+      try {
+        let votes = await VotesModel.safelyGetVotesFor(updatedProposal)
+        let messageBuilder = new DiscourseProposalUpdateMessageBuilder(updatedProposal, votes)
+        message = messageBuilder.getUpdateMessage()
+        console.log(`\n ${caller} - Discourse update message built successfully: `, message)
+      } catch (e) {
+        console.log(`${caller} -Error building discourse update message: `, e)
+        message = `This proposal is now in status ` + updatedProposal.status.toUpperCase()
+      }
+      let discourseComment: DiscourseComment = {
+        topic_id: updatedProposal.discourse_topic_id,
+        raw: message,
+        created_at: updatedProposal.created_at.toJSON(),
+      }
+      let discourseCommentResult: DiscoursePost = await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+      console.log(`\n ${caller} -Discourse update result: `, discourseCommentResult)
+    } catch (err) {
+      // TODO: save for retrying later?
+      console.log(`\n ${caller} -Discourse update error: `, err)
+      // throw new RequestError(`Forum error: ${err.body.errors.join(", ")}`, RequestError.ServiceUnavailable, err)
+    }
+  } else {
+    console.log(`\n ${caller} -Invalid proposal id for discourse update`, id)
+  }
+}
+
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
-  if (!isCommitee(user)) {
-    throw new RequestError(`Only committed menbers can enact a proposal`, RequestError.Forbidden)
+  if (!isCommittee(user)) {
+    throw new RequestError(`Only committed members can enact a proposal`, RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)
@@ -431,7 +465,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted = true;
     update.enacted_by = user;
     update.enacted_description = configuration.description || null;
-  } else if (configuration.status === ProposalStatus.Passed) {
+  } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user;
     update.passed_description = configuration.description || null;
   } else if (update.status === ProposalStatus.Rejected) {
@@ -440,6 +474,8 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   }
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
+
+  await commentProposalUpdateInDiscourse(id, "UPDATE ENDPOINT")
 
   return {
     ...proposal,
@@ -472,18 +508,3 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
   return true
 }
-
-// export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {
-//   const user = req.auth!
-//   if (!isAdmin(user)) {
-//     throw new RequestError(`Only admin menbers can reactivate a proposal`, RequestError.Forbidden)
-//   }
-
-//   const proposal = await getProposal(req)
-//   await ProposalModel.update<ProposalAttributes>({ status: ProposalStatus.Active }, { id: proposal.id })
-
-//   return {
-//     ...proposal,
-//     status: ProposalStatus.Active
-//   }
-// }
