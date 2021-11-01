@@ -1,7 +1,8 @@
-import { createHash } from 'crypto'
-import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, table, join } from 'decentraland-gatsby/dist/entities/Database/utils'
-import { VoteAttributes } from './types'
+import { createHash } from "crypto"
+import { Model } from "decentraland-gatsby/dist/entities/Database/model"
+import { join, SQL, table } from "decentraland-gatsby/dist/entities/Database/utils"
+import { VoteAttributes } from "./types"
+import { ProposalAttributes } from "../Proposal/types"
 
 export default class VotesModel extends Model<VoteAttributes> {
   static tableName = 'scores'
@@ -27,9 +28,19 @@ export default class VotesModel extends Model<VoteAttributes> {
   }
 
   static async createEmpty(proposal_id: string) {
+    const newScore = this.newScoreFor(proposal_id)
+    await this.create(newScore)
+    return newScore
+  }
+
+  static async safelyGetVotesFor(proposal: ProposalAttributes<any>) {
+    let proposalVotes: VoteAttributes | null = await VotesModel.getVotes(proposal.id)
+    return !proposalVotes ? await VotesModel.createEmpty(proposal.id) : proposalVotes.votes
+  }
+
+  static newScoreFor(proposal_id: string) {
     const votes = {}
     const hash = this.hashVotes(votes)
-
     const newScore: VoteAttributes = {
       proposal_id,
       hash,
@@ -37,8 +48,6 @@ export default class VotesModel extends Model<VoteAttributes> {
       created_at: new Date,
       updated_at: new Date,
     }
-
-    this.create(newScore)
     return newScore
   }
 
