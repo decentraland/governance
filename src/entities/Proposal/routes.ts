@@ -48,7 +48,7 @@ import {
 } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
-import isCommittee from '../Committee/isCommittee';
+import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
@@ -187,7 +187,7 @@ export async function createProposalPOI(req: WithAuth) {
 
   const validPointOfInterest = await isValidPointOfInterest(configuration.x, configuration.y)
   if (!validPointOfInterest) {
-    throw new RequestError(`Coordinate "${configuration.x},${configuration.y}" is not valid as point of interest`, RequestError.BadRequest)
+    throw new RequestError(`Coodinate "${configuration.x},${configuration.y}" is not valid as point of interest`, RequestError.BadRequest)
   }
 
   return createProposal({
@@ -434,8 +434,8 @@ export async function commentProposalUpdateInDiscourse(id: string) {
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
-  if (!isCommittee(user)) {
-    throw new RequestError(`Only committed members can enact a proposal`, RequestError.Forbidden)
+  if (!isCommitee(user)) {
+    throw new RequestError(`Only committed menbers can enact a proposal`, RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)
@@ -453,7 +453,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted = true;
     update.enacted_by = user;
     update.enacted_description = configuration.description || null;
-  } else if (update.status === ProposalStatus.Passed) {
+  } else if (configuration.status === ProposalStatus.Passed) {
     update.passed_by = user;
     update.passed_description = configuration.description || null;
   } else if (update.status === ProposalStatus.Rejected) {
