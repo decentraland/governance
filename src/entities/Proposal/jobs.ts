@@ -1,9 +1,9 @@
-import JobContext from "decentraland-gatsby/dist/entities/Job/context"
-import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes"
-import { Vote } from "../Votes/types"
-import ProposalModel from "./model"
-import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus } from "./types"
-import { commentProposalUpdateInDiscourse } from "./routes"
+import JobContext from "decentraland-gatsby/dist/entities/Job/context";
+import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
+import { Vote } from "../Votes/types";
+import ProposalModel from "./model";
+import { ProposalAttributes, ProposalStatus, INVALID_PROPOSAL_POLL_OPTIONS } from './types'
+import { commentProposalUpdateInDiscourse } from './routes'
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -35,9 +35,9 @@ export async function finishProposal(context: JobContext) {
   for (const proposal of pendingProposals) {
     const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
     const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
-    const isYesNo = sameOptions(choices, ["yes", "no"])
-    const isAcceptReject = sameOptions(choices, ["accept", "reject", invalidOption])
-    const isForAgainst = sameOptions(choices, ["for", "against", invalidOption])
+    const isYesNo = sameOptions(choices, ['yes', 'no'])
+    const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
+    const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
     const snapshotVotes = await getSnapshotProposalVotes(proposal)
     const votes: Record<string, Vote> = await updateSnapshotProposalVotes(proposal, snapshotVotes)
     const voters = Object.keys(votes)
@@ -81,9 +81,9 @@ export async function finishProposal(context: JobContext) {
       // reject/pass boolean proposals
     } else if (isYesNo || isAcceptReject || isForAgainst) {
       if (
-        isYesNo && result["yes"] > result["no"] ||
-        isAcceptReject && result["accept"] > result["reject"] ||
-        isForAgainst && result["for"] > result["against"]
+        isYesNo && result['yes'] > result['no'] ||
+        isAcceptReject && result['accept'] > result['reject'] ||
+        isForAgainst && result['for'] > result['against']
       ) {
         acceptedProposals.push(proposal)
       } else {
@@ -116,8 +116,7 @@ export async function finishProposal(context: JobContext) {
   //
   let proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
-
   for (const proposal of proposals) {
-    await commentProposalUpdateInDiscourse(proposal.id, "JOB")
+    await commentProposalUpdateInDiscourse(proposal.id)
   }
 }
