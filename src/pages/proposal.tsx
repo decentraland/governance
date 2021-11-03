@@ -90,7 +90,7 @@ export default function ProposalPage() {
   })
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
-    if (proposal && account && proposal.user === account) {
+    if (proposal && account && (proposal.user === account || isCommittee)) {
       await Governance.get().deleteProposal(proposal.id)
       navigate(locations.proposals())
     }
@@ -159,7 +159,7 @@ export default function ProposalPage() {
               onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
             />
             <ProposalDetailSection proposal={proposal} />
-            {isOwner && <Button
+            {(isOwner || isCommittee) && <Button
                 basic
                 loading={deleting}
                 style={{ width: '100%' }}
