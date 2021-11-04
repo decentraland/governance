@@ -463,6 +463,19 @@ describe("getUpdateMessage", () => {
           "This proposal has been ENACTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n" +
           "enacted description")
       })
+
+      describe('when the enacting description is null', () => {
+        beforeAll(() => {
+          enactedDescription = null
+        })
+
+        it('should not append anything to the original message', () => {
+          expect(getUpdateMessage(proposal, votes)).not.toContain("null")
+          expect(getUpdateMessage(proposal, votes)).toBe(
+            "Test Proposal\n\n" +
+            "This proposal has been ENACTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n")
+        })
+      })
     })
 
     describe("when the updated status is passed", () => {
@@ -482,6 +495,19 @@ describe("getUpdateMessage", () => {
           "This proposal has been PASSED by a DAO Committee Member (0xCommiteeUserAddress)\n\n" +
           "passed description")
       })
+
+      describe('when the passed description is null', () => {
+        beforeAll(() => {
+          passedDescription = null
+        })
+
+        it('should not append anything to the original message', () => {
+          expect(getUpdateMessage(proposal, votes)).not.toContain("null")
+          expect(getUpdateMessage(proposal, votes)).toBe(
+            "Test Proposal\n\n" +
+            "This proposal has been PASSED by a DAO Committee Member (0xCommiteeUserAddress)\n\n")
+        })
+      })
     })
 
     describe("when the updated status is rejected", () => {
@@ -498,6 +524,19 @@ describe("getUpdateMessage", () => {
           "Test Proposal\n\n" +
           "This proposal has been REJECTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n" +
           "rejected description")
+      })
+
+      describe('when the passed description is null', () => {
+        beforeAll(() => {
+          rejectedDescription = null
+        })
+
+        it('should not append anything to the original message', () => {
+          expect(getUpdateMessage(proposal, votes)).not.toContain("null")
+          expect(getUpdateMessage(proposal, votes)).toBe(
+            "Test Proposal\n\n" +
+            "This proposal has been REJECTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n")
+        })
       })
     })
   })

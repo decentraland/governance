@@ -45,6 +45,7 @@ function getProposalChoices(proposal: ProposalAttributes<any>) {
 }
 
 function getUserTriggeredUpdateMessage(statusDisplayName: string, updatingUser: string, updatingDescription: string | null, proposal: ProposalAttributes<any>) {
+  updatingDescription = updatingDescription || ""
   return `${proposal.title}\n\n` +
     `This proposal has been ${statusDisplayName} by a DAO Committee Member (${updatingUser})\n\n` +
     `${updatingDescription}`
