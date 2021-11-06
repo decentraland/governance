@@ -42,7 +42,7 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
           {account && <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
             <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20"/>
           </Button>}
-          <LeadingOption status={proposal.status} leadingOption={proposal.status} />
+          <LeadingOption status={proposal.status} leadingOption={proposal.leading_option} />
         </div>
         <div>
           <StatusLabel status={proposal.status} />

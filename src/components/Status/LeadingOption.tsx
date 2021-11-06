@@ -5,7 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { ProposalStatus } from '../../entities/Proposal/types'
 
 export type LeadingOptionProps = React.HTMLAttributes<HTMLDivElement> & {
-  leadingOption: string
+  leadingOption: string | null
   status: ProposalStatus
 }
 
