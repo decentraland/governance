@@ -12,6 +12,7 @@ import './ProposalItem.css'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import FinishLabel from '../Status/FinishLabel'
+import LeadingOption from '../Status/LeadingOption'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes,
@@ -41,6 +42,7 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
           {account && <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
             <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20"/>
           </Button>}
+          <LeadingOption status={proposal.status} leadingOption={proposal.status} />
         </div>
         <div>
           <StatusLabel status={proposal.status} />

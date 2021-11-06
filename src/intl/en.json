@@ -190,6 +190,8 @@
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
+      "leading_option_label": "Leading option",
+      "finished_result_label": "Result",
       "result_label": "Current result",
       "vote_change": "Change Vote",
       "vote_manage": "Manage",
