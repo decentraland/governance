@@ -28,7 +28,6 @@ export type ProposalAttributes<C extends {} = any> = {
   rejected_by: string | null
   rejected_description: string | null
   required_to_pass: number | null
-  leading_option: string | null
   created_at: Date
   updated_at: Date
 }
