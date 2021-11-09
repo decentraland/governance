@@ -15,7 +15,7 @@ import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Governance } from '../../api/Governance'
-import { calculateResultWinner, hasVotes } from '../../entities/Votes/utils'
+import { calculateResultWinner } from '../../entities/Votes/utils'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes,
@@ -32,7 +32,6 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
   const [votes] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], { callWithTruthyDeps: true })
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [ choices, votes ])
-  const isVoted = useMemo(() => hasVotes(votes), [votes])
   function handleSubscription(e: React.MouseEvent<any>) {
     e.stopPropagation()
     e.preventDefault()
@@ -49,7 +48,7 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
           {account && <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
             <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20"/>
           </Button>}
-          {isVoted && <LeadingOption status={proposal.status} leadingOption={winner.choice} />}
+          {winner.votes > 0 && <LeadingOption status={proposal.status} leadingOption={winner.choice} metVP={winner.power >= (proposal.required_to_pass || 0)} />}
         </div>
         <div>
           <StatusLabel status={proposal.status} />
