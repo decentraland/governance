@@ -16,8 +16,8 @@ export default React.memo(function LeadingOption({ status, leadingOption}: Leadi
     <Paragraph small secondary>
       {status === ProposalStatus.Active && (l('page.proposal_detail.leading_option_label'))}
       {[ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(status) && (l('page.proposal_detail.finished_result_label'))}
-      :
-      <strong> {leadingOption}</strong>
+      {': '}
+      <strong>{leadingOption}</strong>
     </Paragraph>
     }
   </div>
