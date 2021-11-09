@@ -54,7 +54,6 @@ export function initProposalAttributes(proposalStatus: ProposalStatus,
     passed_description: passedDescription,
     rejected_by: updatingUser,
     rejected_description: rejectedDescription,
-    leading_option: null,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
   }
