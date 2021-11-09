@@ -143,3 +143,8 @@ export function calculateResultWinner(choices: string[], votes: Record<string, V
     return winner
   }, result[0])
 }
+
+export function hasVotes(votes: Record<string, Vote> | null) {
+  const voters = Object.keys(votes || {})
+  return votes !== null && voters.length > 0
+}

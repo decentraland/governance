@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Card } from "decentraland-ui/dist/components/Card/Card"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
@@ -13,6 +13,9 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { Governance } from '../../api/Governance'
+import { calculateResultWinner, hasVotes } from '../../entities/Votes/utils'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes,
@@ -26,6 +29,10 @@ const subscribedIcon = require('../../images/icons/subscribed.svg')
 
 export default function ProposalItem({ proposal, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
   const [ account ] = useAuthContext()
+  const [votes] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], { callWithTruthyDeps: true })
+  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
+  const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [ choices, votes ])
+  const isVoted = useMemo(() => hasVotes(votes), [votes])
   function handleSubscription(e: React.MouseEvent<any>) {
     e.stopPropagation()
     e.preventDefault()
@@ -42,7 +49,7 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
           {account && <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
             <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20"/>
           </Button>}
-          <LeadingOption status={proposal.status} leadingOption={proposal.leading_option} />
+          {isVoted && <LeadingOption status={proposal.status} leadingOption={winner.choice} />}
         </div>
         <div>
           <StatusLabel status={proposal.status} />

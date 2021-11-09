@@ -9,14 +9,15 @@ export type LeadingOptionProps = React.HTMLAttributes<HTMLDivElement> & {
   status: ProposalStatus
 }
 
-export default React.memo(function LeadingOption({ status, leadingOption, ...props }: LeadingOptionProps) {
+export default React.memo(function LeadingOption({ status, leadingOption}: LeadingOptionProps) {
   const l = useFormatMessage()
-  return <div {...props} className="LeadingOption">
+  return <div className="LeadingOption">
     {status !== ProposalStatus.Pending &&
     <Paragraph small secondary>
-      {status === ProposalStatus.Active && (l('page.proposal_detail.leading_option_label') || 'Leading option: ')}
-      {[ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(status) && (l('page.proposal_detail.finished_result_label') || 'Result: ')}
-      <strong>{leadingOption}</strong>
+      {status === ProposalStatus.Active && (l('page.proposal_detail.leading_option_label'))}
+      {[ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(status) && (l('page.proposal_detail.finished_result_label'))}
+      :
+      <strong> {leadingOption}</strong>
     </Paragraph>
     }
   </div>
