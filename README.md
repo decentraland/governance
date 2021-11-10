@@ -117,6 +117,13 @@ once you setup this project you can start it using the following command
 
 the app should be running at https://localhost:8000/
 
+## Clear 
+To clear cache and update localization and internationalization renders, run
+
+```bash
+rm -r .cache
+```
+
 ## Project's structure
 
 You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
