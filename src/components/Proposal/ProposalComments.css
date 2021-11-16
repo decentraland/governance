@@ -1,0 +1,56 @@
+.ProposalComments {
+  width: 100%;
+  border: 1px solid rgba(115, 110, 125, .24);
+  border-radius: 8px;
+  display: block;
+  /* padding: 15px; */
+  margin: 16px 0;
+  position: relative;
+}
+
+.ProposalComments.ProposalComments--loading > * {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.ProposalComments .ProposalComments__Content {
+  padding: 15px;
+  position: relative;
+  min-height: 24px;
+}
+
+.ProposalComments .ProposalComments__NoComments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: space-around;
+  justify-content: space-around;
+}
+
+.ProposalComments .ProposalComments__Content + .ProposalComments__Content {
+  border-top: 1px solid rgba(115, 110, 125, .24);
+}
+
+.ProposalComments .ProposalComments__Flex {
+  display: flex;
+  margin-top: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ProposalComments .ProposalComments__Flex > div {
+  flex: 0 0 50%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ProposalComments .ProposalComments__Flex .ProposalComments__Value {
+  text-align: right;
+  font-weight: 500;
+}
+
+.ProposalComments .ui.button {
+  width: 100%;
+  margin-top: 8px;
+}
