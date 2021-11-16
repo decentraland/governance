@@ -8,7 +8,7 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, signMessage } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
-import { Discourse, DiscoursePost } from '../../api/Discourse';
+import { Discourse, DiscoursePost, DiscourseComment } from '../../api/Discourse'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../Discourse/utils';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import ProposalModel from './model';
@@ -52,6 +52,7 @@ import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
+import { getUpdateMessage } from './templates/messages'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -409,6 +410,25 @@ export async function getProposal(req: Request<{ proposal: string }>) {
 }
 
 const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
+
+export function commentProposalUpdateInDiscourse(id: string) {
+  inBackground(async () => {
+    const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
+    if (!updatedProposal) {
+      console.log(`Invalid proposal id for discourse update`, id)
+      return
+    }
+    let votes = await VotesModel.safelyGetVotesFor(updatedProposal)
+    let updateMessage = getUpdateMessage(updatedProposal, votes)
+    let discourseComment: DiscourseComment = {
+      topic_id: updatedProposal.discourse_topic_id,
+      raw: updateMessage,
+      created_at: updatedProposal.created_at.toJSON()
+    }
+      await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+  })
+}
+
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
@@ -440,6 +460,8 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   }
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
+
+  commentProposalUpdateInDiscourse(id)
 
   return {
     ...proposal,

@@ -2,7 +2,8 @@ import JobContext from "decentraland-gatsby/dist/entities/Job/context";
 import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
 import { Vote } from "../Votes/types";
 import ProposalModel from "./model";
-import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus } from "./types";
+import { ProposalAttributes, ProposalStatus, INVALID_PROPOSAL_POLL_OPTIONS } from './types'
+import { commentProposalUpdateInDiscourse } from './routes'
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -28,7 +29,7 @@ export async function finishProposal(context: JobContext) {
 
   context.log(`Updating ${pendingProposals.length} proposals...`)
   const finishedProposals: ProposalAttributes[] = []
-  const accetedProposals: ProposalAttributes[] = []
+  const acceptedProposals: ProposalAttributes[] = []
   const rejectedProposals: ProposalAttributes[] = []
 
   for (const proposal of pendingProposals) {
@@ -42,7 +43,7 @@ export async function finishProposal(context: JobContext) {
     const voters = Object.keys(votes)
 
     const result: Record<string, number> = {}
-    for (const choice of choices)  {
+    for (const choice of choices) {
       result[choice] = 0
     }
 
@@ -77,19 +78,19 @@ export async function finishProposal(context: JobContext) {
     } else if (winnerChoice === invalidOption) {
       rejectedProposals.push(proposal)
 
-    // reject/pass boolean proposals
+      // reject/pass boolean proposals
     } else if (isYesNo || isAcceptReject || isForAgainst) {
       if (
         isYesNo && result['yes'] > result['no'] ||
         isAcceptReject && result['accept'] > result['reject'] ||
         isForAgainst && result['for'] > result['against']
       ) {
-        accetedProposals.push(proposal)
+        acceptedProposals.push(proposal)
       } else {
         rejectedProposals.push(proposal)
       }
 
-    // Finish otherwise
+      // Finish otherwise
     } else {
       finishedProposals.push(proposal)
     }
@@ -100,13 +101,22 @@ export async function finishProposal(context: JobContext) {
     await ProposalModel.finishProposal(finishedProposals.map(proposal => proposal.id), ProposalStatus.Finished)
   }
 
-  if (accetedProposals.length > 0) {
-    context.log(`Accepting ${accetedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(accetedProposals.map(proposal => proposal.id), ProposalStatus.Passed)
+  if (acceptedProposals.length > 0) {
+    context.log(`Accepting ${acceptedProposals.length} proposals...`)
+    await ProposalModel.finishProposal(acceptedProposals.map(proposal => proposal.id), ProposalStatus.Passed)
   }
 
   if (rejectedProposals.length > 0) {
     context.log(`Rejecting ${rejectedProposals.length} proposals...`)
     await ProposalModel.finishProposal(rejectedProposals.map(proposal => proposal.id), ProposalStatus.Rejected)
+  }
+
+  //
+  // Update proposal in Discourse
+  //
+  let proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
+  context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
+  for (const proposal of proposals) {
+    commentProposalUpdateInDiscourse(proposal.id)
   }
 }

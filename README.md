@@ -13,6 +13,10 @@ The governance hub for Decentraland. Create and vote on proposals that help shap
 
 ## Setup
 
+### Node version
+
+use node 12.22.7
+
 ### environment setup
 
 create a copy of `.env.example` and name it as `.env.development`
@@ -46,11 +50,58 @@ The minimum amount of voting power require to pass a proposal of each type it's 
 
 ### database setup
 
+check if you have postgres installed
+
+```bash
+brew list
+```
+
+if you don't, install it (don't forget to `brew update`)
+
+```bash
+brew install postgres
+```
+
+start postgresql
+
+```bash
+brew services start postgresql
+```
+
+you can run this to check if everything is ok 
+```bash
+createdb `whoami` 
+``` 
+
+inside psql run `create database snapshot`
+
+user your `user:pwd` for the connection string, it should look like this:
+
+```bash
+postgres://usr:pwd@localhost:5432/snapshot
+````
+
 once you have a `CONNECTION_STRING` you can setup you database tables using the following command
 
 ```bash
 npm run migrate up
 ```
+
+if migrations are not running, or get stuck, please check that you are using node v12
+
+## Run Tests
+
+to run the tests you can do
+```bash
+npm test
+``` 
+
+or create a run configuration in your IDE with `jest --no-cache --no-watchman --runInBand` 
+
+Also, you can try adding the `--verbose` option.
+
+The `--runInBand` parameter runs the tests in a single thread, which is usually faster, but you can try without it 
+and see what works best for you.
 
 ## Run
 
@@ -63,6 +114,8 @@ once you setup this project you can start it using the following command
 > Note 1: this project run over `https`, if it is your first time you might need to run it with `sudo`
 
 > Note 2: you can disabled `https` removing the `--https` flag in the `develop` script of your `package.json`
+
+the app should be running at https://localhost:8000/
 
 ## Project's structure
 
@@ -81,7 +134,12 @@ this project runs gatsby as front-end and a nodejs server as back-end both conne
 
 **back-end** routes are defined using `express` you can find each route in `src/entities/{Entity}/routes.ts` and those are imported ar `src/server.ts`
 
-
+## About proposals statuses
+- Proposals are created in pending, and automatically passed to active
+- After a voting period of 1 week, they are automatically marked as finished, passed, or rejected, depending on the kind of proposal and of the voting results.
+- If proposal is in finished status, a committee user can pass/reject it, with a comment.
+- Once passed, a proposal can be enacted by a committee user, with a comment.
+  
 ## Copyright & License
 
 This repository is protected with a standard Apache 2 license. See the terms and conditions in the [LICENSE](LICENSE) file.
