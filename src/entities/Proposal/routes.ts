@@ -411,13 +411,13 @@ export async function getProposal(req: Request<{ proposal: string }>) {
 
 const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
 
-export async function commentProposalUpdateInDiscourse(id: string) {
-  const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
-  if (!updatedProposal) {
-    console.log(`Invalid proposal id for discourse update`, id)
-    return
-  }
+export function commentProposalUpdateInDiscourse(id: string) {
   inBackground(async () => {
+    const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
+    if (!updatedProposal) {
+      console.log(`Invalid proposal id for discourse update`, id)
+      return
+    }
     let votes = await VotesModel.safelyGetVotesFor(updatedProposal)
     let updateMessage = getUpdateMessage(updatedProposal, votes)
     let discourseComment: DiscourseComment = {
@@ -461,7 +461,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
 
-  await commentProposalUpdateInDiscourse(id)
+  commentProposalUpdateInDiscourse(id)
 
   return {
     ...proposal,

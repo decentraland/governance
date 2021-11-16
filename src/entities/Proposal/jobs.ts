@@ -117,6 +117,6 @@ export async function finishProposal(context: JobContext) {
   let proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
   for (const proposal of proposals) {
-    await commentProposalUpdateInDiscourse(proposal.id)
+    commentProposalUpdateInDiscourse(proposal.id)
   }
 }
