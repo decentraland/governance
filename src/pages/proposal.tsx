@@ -30,7 +30,6 @@ import { DeleteProposalModal } from "../components/Modal/DeleteProposalModal"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import retry from "decentraland-gatsby/dist/utils/promise/retry"
 import locations from "../modules/locations"
-import loader from "../modules/loader"
 import { UpdateProposalStatusModal } from "../components/Modal/UpdateProposalStatusModal"
 import { ProposalStatus } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
@@ -41,6 +40,7 @@ import './index.css'
 import './proposal.css'
 import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
+import ProposalComments from '../components/Proposal/ProposalComments'
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -138,6 +138,7 @@ export default function ProposalPage() {
             <ProposalHeaderPoi proposal={proposal} />
             <Markdown source={proposal?.description || ''} />
             <ProposalFooterPoi proposal={proposal} />
+            <ProposalComments proposal={proposal} loading={proposalState.loading} />
           </Grid.Column>
 
           <Grid.Column tablet="4" className="ProposalDetailActions">
