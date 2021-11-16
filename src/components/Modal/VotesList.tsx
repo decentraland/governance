@@ -9,26 +9,11 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { abbreviateNumber } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
 
 import './ProposalModal.css'
 import './VotesList.css'
-
-const SI_SYMBOL = ["", "k", "M", "G", "T", "P", "E"]
-
-function abbreviateNumber(number: number) {
-
-  const tier = Math.log10(Math.abs(number)) / 3 | 0
-  
-  if (tier == 0) return number
-
-  const suffix = SI_SYMBOL[tier];
-  const scale = Math.pow(10, tier * 3)
-
-  const scaled = number / scale
-
-  return scaled.toFixed(1) + suffix
-}
 
 export type VotesListModalProps = Omit<ModalProps, 'children'> & {
   onClickAccept?: (e: React.MouseEvent<any>) => void
@@ -75,9 +60,6 @@ export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps
               </p>
             </Grid.Column>
             <Grid.Column>
-              {/* I added this abbreviateNumber function because when the modal is in mobile screens if the number is high 
-                 will break the text to another line even if the font is smaller in snapshot they do the same if you look at the screenshot
-               */}
               <p style={{ marginLeft: '0.5rem' }}>{`${abbreviateNumber(value.vp)} ${l('modal.votes_list.vp')}`}</p>
             </Grid.Column>
           </Grid.Row>
