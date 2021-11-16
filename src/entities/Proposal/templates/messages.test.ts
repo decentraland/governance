@@ -1,5 +1,5 @@
 import 'jest'
-import ProposalModel from './model'
+import ProposalModel from '../model'
 import {
   INVALID_PROPOSAL_POLL_OPTIONS,
   ProposalAttributes,
@@ -8,10 +8,10 @@ import {
   ProposalStatus,
   ProposalType,
   ProposalRequiredVP
-} from './types'
-import { Vote } from '../Votes/types'
-import { DEFAULT_CHOICES } from './utils'
-import VotesModel from '../Votes/model'
+} from '../types'
+import { Vote } from '../../Votes/types'
+import { DEFAULT_CHOICES } from '../utils'
+import VotesModel from '../../Votes/model'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { getUpdateMessage } from './messages'
 

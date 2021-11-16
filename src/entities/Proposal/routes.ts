@@ -52,7 +52,7 @@ import isCommitee from '../Committee/isCommittee';
 import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
-import { getUpdateMessage } from './messages'
+import { getUpdateMessage } from './templates/messages'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -417,18 +417,16 @@ export async function commentProposalUpdateInDiscourse(id: string) {
     console.log(`Invalid proposal id for discourse update`, id)
     return
   }
-  try {
+  inBackground(async () => {
     let votes = await VotesModel.safelyGetVotesFor(updatedProposal)
     let updateMessage = getUpdateMessage(updatedProposal, votes)
     let discourseComment: DiscourseComment = {
       topic_id: updatedProposal.discourse_topic_id,
       raw: updateMessage,
-      created_at: updatedProposal.created_at.toJSON(),
+      created_at: updatedProposal.created_at.toJSON()
     }
-    await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
-  } catch (err) {
-    console.log(`Discourse comment update error: `, err)
-  }
+      await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+  })
 }
 
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {

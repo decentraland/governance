@@ -1,8 +1,8 @@
-import { ProposalAttributes, ProposalStatus } from './types'
-import { Vote } from '../Votes/types'
-import { calculateResult } from '../Votes/utils'
+import { ProposalAttributes, ProposalStatus } from '../types'
+import { Vote } from '../../Votes/types'
+import { calculateResult } from '../../Votes/utils'
 
-export function getUpdateMessage(proposal: ProposalAttributes<any>, votes: Record<string, Vote>) {
+export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<string, Vote>) {
   let updatingUser: string | null
 
   let statusDisplayName = proposal.status.toUpperCase()
@@ -25,26 +25,26 @@ export function getUpdateMessage(proposal: ProposalAttributes<any>, votes: Recor
   }
 }
 
-function getJobTriggeredUpdateMessage(statusDisplayName: string, proposal: ProposalAttributes<any>, votes: Record<string, Vote>) {
+function getJobTriggeredUpdateMessage(statusDisplayName: string, proposal: ProposalAttributes, votes: Record<string, Vote>) {
   let resultsByChoices = calculateResult(getProposalChoices(proposal), votes, proposal.required_to_pass || 0)
   let votingResults = getVotingResultsMessage(resultsByChoices)
   return `${proposal.title}\n\n` + `This proposal is now in status: ${statusDisplayName}.\n\n` + votingResults
 }
 
-function getParsedConfig(proposal: ProposalAttributes<any>) {
+function getParsedConfig(proposal: ProposalAttributes) {
   try {
     return JSON.parse(proposal.configuration)
   } catch (e) {
     return proposal.configuration
   }
 }
-function getProposalChoices(proposal: ProposalAttributes<any>) {
+function getProposalChoices(proposal: ProposalAttributes) {
   let parsedConfig = getParsedConfig(proposal)
   let choices = parsedConfig.choices
   return (choices || []).map((choice: string) => choice.toLowerCase())
 }
 
-function getUserTriggeredUpdateMessage(statusDisplayName: string, updatingUser: string, updatingDescription: string | null, proposal: ProposalAttributes<any>) {
+function getUserTriggeredUpdateMessage(statusDisplayName: string, updatingUser: string, updatingDescription: string | null, proposal: ProposalAttributes) {
   updatingDescription = updatingDescription || ""
   return `${proposal.title}\n\n` +
     `This proposal has been ${statusDisplayName} by a DAO Committee Member (${updatingUser})\n\n` +
