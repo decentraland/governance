@@ -140,6 +140,8 @@
       "reject": "No thanks"
     },
     "votes_list": {
+      "vote": "Vote",
+      "votes": "Votes",
       "voter": "Voter",
       "voted": "Voted",
       "vp": "VP",

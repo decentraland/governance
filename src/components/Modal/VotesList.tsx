@@ -25,7 +25,7 @@ export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps
 
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', 'VotesList' ,props.className])} closeIcon={<Close />}>
   <Modal.Content className="ProposalModal__Title">
-    <Header>{Object.entries(votes || {}).length} {Object.entries(votes || {}).length === 1 ? 'Vote' : 'Votes'}</Header>
+    <Header>{Object.entries(votes || {}).length} {Object.entries(votes || {}).length === 1 ? l('modal.votes_list.vote') : l('modal.votes_list.votes')}</Header>
   </Modal.Content>
   <div className="VotesList_Container_Header">
     <Grid columns='equal'>
