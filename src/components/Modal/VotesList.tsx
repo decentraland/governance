@@ -1,4 +1,5 @@
 import React from 'react'
+import { navigate } from 'gatsby-plugin-intl'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
@@ -8,6 +9,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import locations from '../../modules/locations'
 
 import './ProposalModal.css'
 import './VotesList.css'
@@ -60,7 +62,7 @@ export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps
       {Object.entries(votes || {}).sort((a, b) => b[1].vp - a[1].vp).map(vote => {
         const [key, value] = vote
         return (
-          <Grid.Row key={key} className="VotesList_Divider_Line">
+          <Grid.Row onClick={() => navigate(locations.balance({ address: key }))} key={key} className="VoteList_Item VotesList_Divider_Line">
             <Grid.Column width={8}>
               <div>
                 <Avatar size="small" address={key} style={{ marginRight: '.5rem' }} />

@@ -14,6 +14,10 @@
   overflow-x: hidden;
 }
 
+.VotesList .VotesList_Container_Items .VoteList_Item:hover {
+  cursor: pointer;
+}
+
 .VotesList .VotesList_Container_Header .VotesList_Header {
   color: #a4a2a8;
 }
