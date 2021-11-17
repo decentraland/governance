@@ -140,8 +140,7 @@
       "reject": "No thanks"
     },
     "votes_list": {
-      "vote": "Vote",
-      "votes": "Votes",
+      "title": "{votes} {votes, plural, one {Vote} other {Votes}}",
       "voter": "Voter",
       "voted": "Voted",
       "vp": "VP",
