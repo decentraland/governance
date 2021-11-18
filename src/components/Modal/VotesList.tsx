@@ -1,16 +1,12 @@
-import React from 'react'
-import { navigate } from 'gatsby-plugin-intl'
+import React, { useMemo } from 'react'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { VoteListItem } from './VoteListItem';
 import { Vote } from '../../entities/Votes/types'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { abbreviateNumber } from '../../entities/Votes/utils'
-import locations from '../../modules/locations'
 
 import './ProposalModal.css'
 import './VotesList.css'
@@ -22,7 +18,9 @@ export type VotesListModalProps = Omit<ModalProps, 'children'> & {
 
 export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps) {
   const l = useFormatMessage()
-
+  
+  const votesList = useMemo(() => Object.entries(votes || {}).sort((a, b) => b[1].vp - a[1].vp), [votes])
+  
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', 'VotesList' ,props.className])} closeIcon={<Close />}>
   <Modal.Content className="ProposalModal__Title">
     <Header>{l('modal.votes_list.title', { votes: Object.keys(votes || {}).length })}</Header>
@@ -44,26 +42,9 @@ export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps
   </div>
   <div className="VotesList_Container_Items">
     <Grid columns='equal' className="VotesList_Divider">
-      {Object.entries(votes || {}).sort((a, b) => b[1].vp - a[1].vp).map(vote => {
+      {votesList.map(vote => {
         const [key, value] = vote
-        return (
-          <Grid.Row onClick={() => navigate(locations.balance({ address: key }))} key={key} className="VoteList_Item VotesList_Divider_Line">
-            <Grid.Column width={8}>
-              <div>
-                <Avatar size="small" address={key} style={{ marginRight: '.5rem' }} />
-                <Address value={key} />
-              </div>
-            </Grid.Column>
-            <Grid.Column>
-              <p style={{ marginLeft: '0.5rem' }}>
-                {value.choice === 1 ? l('modal.votes_list.voted_yes') : l('modal.votes_list.voted_no')}
-              </p>
-            </Grid.Column>
-            <Grid.Column>
-              <p style={{ marginLeft: '0.5rem' }}>{`${abbreviateNumber(value.vp)} ${l('modal.votes_list.vp')}`}</p>
-            </Grid.Column>
-          </Grid.Row>
-        )
+        return <VoteListItem key={key} address={key} value={value} />
       })}
     </Grid>
   </div>
