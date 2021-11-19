@@ -8,9 +8,9 @@
   margin: 0 auto;
   width: 90%;
   margin-bottom: 40px;
-  max-height: calc(70vh);
-  padding: 20px 5px;
-  overflow-y: scroll;
+  height: 50vh;
+  padding: 20px 0px;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -32,8 +32,7 @@
   content: "";
   position: absolute;
   top: 0;
-  width: 94%;
-  left: 3%;
+  width: 95%;
   border-bottom: 1px solid #e7e6e9;
 }
 
@@ -41,8 +40,7 @@
   content: "";
   position: absolute;
   bottom: 0;
-  width: 94%;
-  left: 3%;
+  width: 95%;
   border-bottom: 1px solid #e7e6e9;
 }
 
@@ -53,11 +51,10 @@
 
   .VotesList .VotesList_Container_Items {
     width: 97%;
-    padding: 20px 1px;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .VotesList .VotesList_Container_Header .VotesList_Header {
-    font-size: 14px;
+    font-size: 13px;
   }
 }

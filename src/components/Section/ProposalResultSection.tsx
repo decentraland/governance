@@ -39,6 +39,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   const now = useMemo(() => Time.utc(), [])
   const start_at = useMemo(() => Time.utc(proposal?.start_at) || now, [proposal])
   const finish_at = useMemo(() => Time.utc(proposal?.finish_at) || now, [proposal])
+  const isVotes = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
   const untilStart = useCountdown(start_at)
   const untilFinish = useCountdown(finish_at)
   const started = untilStart.time === 0
@@ -55,7 +56,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       <Loader active={loading} />
       <div className="DetailsSection__Flex_Header_Labels">
         <Header sub>{l('page.proposal_detail.result_label')}</Header>
-        {Object.keys(votes || {}).length > 0 && <Anchor style={{ marginBottom: '5px', textTransform: 'uppercase' }} onClick={onOpenVotesList} >
+        {isVotes && <Anchor onClick={onOpenVotesList}>
           {l('page.proposal_detail.see_votes_button')}
         </Anchor>}
       </div>

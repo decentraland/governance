@@ -37,6 +37,12 @@
   align-items: center;
 }
 
+.DetailsSection__Flex_Header_Labels > a {
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-size: 13px !important;
+}
+
 .DetailsSection .DetailsSection__Flex > div {
   flex: 0 0 50%;
   text-overflow: ellipsis;
