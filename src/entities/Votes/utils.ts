@@ -143,3 +143,19 @@ export function calculateResultWinner(choices: string[], votes: Record<string, V
     return winner
   }, result[0])
 }
+
+const SI_SYMBOL = ["", "k", "M", "G", "T", "P", "E"]
+
+export function abbreviateNumber(vp: number) {
+
+  const tier = Math.log10(Math.abs(vp)) / 3 | 0
+  
+  if (tier == 0) return vp
+
+  const suffix = SI_SYMBOL[tier];
+  const scale = Math.pow(10, tier * 3)
+
+  const scaled = vp / scale
+
+  return scaled.toFixed(1) + suffix
+}
