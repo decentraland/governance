@@ -8,12 +8,11 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import locations from '../../modules/locations'
 import './ProposalComments.css'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import Watermelon from '../Icon/Watermelon'
+import ProposalComment from './ProposalComment'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { Governance } from '../../api/Governance'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null,
@@ -21,23 +20,14 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 }
 
 export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
-  const comments = true
-  const [ profile ] = useAsyncMemo(
-    async () => proposal?.user ? profiles.load(proposal.user) : null,
-    [ proposal?.user ],
-    { callWithTruthyDeps: true }
-  )
-  const isProfile = !!profile && !profile.isDefaultProfile
-
-  if (!profile) {
-    return null
-  }
+  const l = useFormatMessage()
+  const [comments] = useAsyncMemo(async () => Governance.get().getProposalComments(proposal!.id), [proposal])
 
   return <div className="ProposalComments">
     <hr />
     <div className="ProposalComments__Header">
       <Header>Comments</Header> {comments &&
-    <Button basic as={Link} href={locations.balance()}>Join the discussion</Button>}
+    <Button basic as={Link} href={locations.balance()}>{l('page.proposal_comments.join_discussion_label')}</Button>}
     </div>
     <div {...props} className={TokenList.join([
       'ProposalComments',
@@ -48,23 +38,18 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
         <Loader active={loading} />
         {!comments && <div className="ProposalComments__NoComments">
           <Watermelon />
-          <Paragraph small secondary>No comments yet, you have the chance to be the first one!</Paragraph>
-          <Link to={locations.balance()}>Join the discussion</Link>
+          <Paragraph small secondary>{l('page.proposal_comments.no_comments_text')}</Paragraph>
+          <Link to={locations.balance()}>{l('page.proposal_comments.join_discussion_label')}</Link>
         </div>}
-        {comments && <div className="ProposalComments__Comment">
-          <div className="ProposalComments__ProfileImage">
-            {isProfile && <Avatar size="medium" address={profile!.ethAddress} />}
-            {!isProfile &&  <Blockie scale={5} seed={proposal?.user || ''} />}
-          </div>
-          <div>
-            <div className="ProposalComments__Author">
-              {isProfile && profile!.name || <Address value={profile!.ethAddress || ''} strong />}
-              {!isProfile &&  <Address value={proposal?.user || ''} strong />}
-              <span><Paragraph secondary >3 days ago</Paragraph></span>
-            </div>
-            <Paragraph small>This is a pretty nice comment nice comment nice comment nice comment</Paragraph>
-          </div>
-        </div>}
+        {comments && comments.length > 0 &&
+          comments.map(comment => <ProposalComment
+            key={comment.created_at}
+            // avatar={comment.avatar_template}
+            user={comment!.username}
+            created_at={comment.created_at}
+            cooked={comment.cooked}
+          />)
+        }
       </div>
     </div>
   </div>

@@ -387,3 +387,10 @@ export const newProposalGrantScheme = {
     }
   }
 }
+
+export type ProposalComment = {
+  username: string,
+  avatar_template: string,
+  created_at: string,
+  cooked: string,
+}

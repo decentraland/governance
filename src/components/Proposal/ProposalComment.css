@@ -1,0 +1,24 @@
+.ProposalComment {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-height: 24px;
+  margin-bottom: 16px;
+}
+
+.ProposalComment .ProposalComment__ProfileImage {
+  margin-right: 16px;
+}
+
+.ProposalComment .ProposalComment__Author {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+}
+
+.ProposalComment span {
+  flex: 1 1;
+  line-height: 20px;
+  margin: 0 7px;
+}
