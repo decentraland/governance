@@ -27,6 +27,7 @@
   left: 16px;
   bottom: 52px;
   margin: 0;
+  text-shadow: 0 0 1rem #000, 0 0 0.5rem #000;
 }
 
 .ProposalHeaderPoi .PoiImageContainer .PoiPosition {

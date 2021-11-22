@@ -1,0 +1,60 @@
+.VotesList .VotesList_Container_Header {
+  margin: 0 auto;
+  width: 90%;
+  margin-bottom: 20px;
+}
+
+.VotesList .VotesList_Container_Items {
+  margin: 0 auto;
+  width: 90%;
+  margin-bottom: 40px;
+  height: 50vh;
+  padding: 20px 0px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.VotesList .VotesList_Container_Items .VoteList_Item:hover {
+  cursor: pointer;
+}
+
+.VotesList .VotesList_Container_Header .VotesList_Header {
+  color: #a4a2a8;
+}
+
+.VotesList_Divider {
+  position: relative;
+}
+
+.VotesList_Container_Items
+  .VotesList_Divider
+  .VotesList_Divider_Line:first-child:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 95%;
+  border-bottom: 1px solid #e7e6e9;
+}
+
+.VotesList_Divider .VotesList_Divider_Line:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 95%;
+  border-bottom: 1px solid #e7e6e9;
+}
+
+@media (max-width: 768px) {
+  .VotesList .VotesList_Container_Header {
+    width: 97%;
+  }
+
+  .VotesList .VotesList_Container_Items {
+    width: 97%;
+    font-size: 13px;
+  }
+
+  .VotesList .VotesList_Container_Header .VotesList_Header {
+    font-size: 13px;
+  }
+}
