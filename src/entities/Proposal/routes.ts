@@ -500,7 +500,6 @@ export async function proposalComments(req: Request<{ proposal: string }>){
   const proposal = await getProposal(req)
   try{
     const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
-    console.log("Commmmments", comments)
     return filterComments(comments);
   } catch (e) {
     console.log(`Could not get proposal comments, `, e)

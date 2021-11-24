@@ -12,14 +12,26 @@ export const DISCOURSE_AUTH: DiscourseAuth = {
   apiUsername: DISCOURSE_USER
 }
 
+export const BASE_AVATAR_URL = requiredEnv('DISCOURSE_BASE_AVATAR_URL')
+
+function setAvatarSize(avatar_url: string) {
+  return avatar_url.replace('{size}', '45')
+}
+
+function setAvatarUrl(post: DiscoursePostInTopic) {
+  let correctSizeUrl = setAvatarSize(post.avatar_template)
+  return correctSizeUrl.includes('letter') ? correctSizeUrl : BASE_AVATAR_URL + correctSizeUrl
+}
+
 export function filterComments(comments: DiscourseTopic) {
   const posts = comments.post_stream.posts
-  const userPosts: DiscoursePostInTopic[] = posts.filter((post) => ![DISCOURSE_USER.toLowerCase(), "system"].includes(post.username.toLowerCase()))
-
+  const userPosts: DiscoursePostInTopic[] = posts.filter((post) =>
+    ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase()))
+    .slice(-3)
   const discourseComments: ProposalComment[] = userPosts.map(post => {
     return {
       username: post.username,
-      avatar_template: post.avatar_template,
+      avatar_url: setAvatarUrl(post),
       created_at: post.created_at,
       cooked: post.cooked
     }
