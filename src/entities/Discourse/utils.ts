@@ -11,11 +11,11 @@ export const DISCOURSE_AUTH: DiscourseAuth = {
   apiKey: DISCOURSE_API_KEY,
   apiUsername: DISCOURSE_USER
 }
-
 export const BASE_AVATAR_URL = requiredEnv('DISCOURSE_BASE_AVATAR_URL')
+const DEFAULT_AVATAR_SIZE = '45'
 
 function setAvatarSize(avatar_url: string) {
-  return avatar_url.replace('{size}', '45')
+  return avatar_url.replace('{size}', DEFAULT_AVATAR_SIZE)
 }
 
 function setAvatarUrl(post: DiscoursePostInTopic) {

@@ -20,7 +20,9 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
   const l = useFormatMessage()
-  const [comments] = useAsyncMemo(async () => proposal ? Governance.get().getProposalComments(proposal!.id) : null, [proposal])
+  const [comments] = useAsyncMemo(async () =>
+    proposal ? Governance.get().getProposalComments(proposal!.id) : null, [proposal]
+  )
   let renderComments = comments && comments.length > 0
 
   return <div className="ProposalComments">
@@ -28,7 +30,9 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
     <div className="ProposalComments__Header">
       <Header>Comments</Header>
       {renderComments &&
-        <Button basic loading={loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''}>{l('page.proposal_comments.join_discussion_label')}</Button>
+      <Button basic loading={loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''}>
+        {l('page.proposal_comments.join_discussion_label')}
+      </Button>
       }
     </div>
     <div {...props} className={TokenList.join([
@@ -41,16 +45,18 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
         {!renderComments && <div className="ProposalComments__NoComments">
           <Watermelon />
           <Paragraph small secondary>{l('page.proposal_comments.no_comments_text')}</Paragraph>
-          <Button basic loading={loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''}>{l('page.proposal_comments.join_discussion_label')}</Button>
+          <Button basic loading={loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''}>
+            {l('page.proposal_comments.join_discussion_label')}
+          </Button>
         </div>}
         {renderComments &&
-          comments!.map((comment, index) => <ProposalComment
-            key={'comment_' + index}
-            avatar_url={comment.avatar_url}
-            user={comment.username}
-            created_at={comment.created_at}
-            cooked={comment.cooked}
-          />)
+        comments!.map((comment, index) => <ProposalComment
+          key={'comment_' + index}
+          avatar_url={comment.avatar_url}
+          user={comment.username}
+          created_at={comment.created_at}
+          cooked={comment.cooked}
+        />)
         }
       </div>
     </div>

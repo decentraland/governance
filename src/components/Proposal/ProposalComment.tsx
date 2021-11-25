@@ -14,7 +14,7 @@ export type ProposalCommentProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'c
 
 export default function ProposalComment({ user, avatar_url, created_at, cooked}: ProposalCommentProps) {
   const createMarkup = (html:any) => {
-    return  {__html: DOMPurify.sanitize(html, {USE_PROFILES: {html: true}, FORBID_TAGS: ['style'], FORBID_ATTR: ['style']})}
+    return  {__html: DOMPurify.sanitize(html, {USE_PROFILES: {html: true}})}
   }
 
   return <div className="ProposalComment">
