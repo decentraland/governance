@@ -3,6 +3,7 @@ import { Link } from 'gatsby-plugin-intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
@@ -25,10 +26,11 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
   disabled?: boolean,
   changingVote?: boolean,
   onChangeVote?: (e: React.MouseEvent<any>, changing: boolean) => void,
+  onOpenVotesList?: () => void,
   onVote?: (e: React.MouseEvent<any>, choice: string, choiceIndex: number) => void
 }
 
-export default React.memo(function ProposalResultSection({ proposal, loading, disabled, votes, changingVote, votingPower, onChangeVote, onVote, ...props }: ProposalResultSectionProps) {
+export default React.memo(function ProposalResultSection({ proposal, loading, disabled, votes, changingVote, votingPower, onChangeVote, onVote, onOpenVotesList, ...props }: ProposalResultSectionProps) {
   const l = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
@@ -37,6 +39,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   const now = useMemo(() => Time.utc(), [])
   const start_at = useMemo(() => Time.utc(proposal?.start_at) || now, [proposal])
   const finish_at = useMemo(() => Time.utc(proposal?.finish_at) || now, [proposal])
+  const isVotes = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
   const untilStart = useCountdown(start_at)
   const untilFinish = useCountdown(finish_at)
   const started = untilStart.time === 0
@@ -51,8 +54,11 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   ])}>
     <div className="DetailsSection__Content">
       <Loader active={loading} />
-      <div>
+      <div className="DetailsSection__Flex_Header_Labels">
         <Header sub>{l('page.proposal_detail.result_label')}</Header>
+        {isVotes && <Anchor onClick={onOpenVotesList}>
+          {l('page.proposal_detail.see_votes_button')}
+        </Anchor>}
       </div>
       {results.map((result) => {
         return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} power={result.power} progress={result.progress} />

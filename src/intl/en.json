@@ -89,10 +89,10 @@
   },
   "category": {
     "poi": "POI",
-    "catalyst" : "Catalyst",
-    "ban_name" : "Ban Name",
-    "grant" : "Grant",
-    "poll" : "Poll",
+    "catalyst": "Catalyst",
+    "ban_name": "Ban Name",
+    "grant": "Grant",
+    "poll": "Poll",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community run servers",
@@ -138,6 +138,14 @@
       "description": "Thank you for voting! Want to add it to your Watchlist to follow the results?",
       "accept": "Add to Watchlist",
       "reject": "No thanks"
+    },
+    "votes_list": {
+      "title": "{votes} {votes, plural, one {Vote} other {Votes}}",
+      "voter": "Voter",
+      "voted": "Voted",
+      "vp": "VP",
+      "voted_yes": "Yes",
+      "voted_no": "No"
     }
   },
   "page": {
@@ -190,6 +198,7 @@
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
+      "see_votes_button": "See Votes",
       "result_label": "Current result",
       "vote_change": "Change Vote",
       "vote_manage": "Manage",

@@ -1,6 +1,6 @@
 .DetailsSection {
   width: 100%;
-  border: 1px solid rgba(115, 110, 125, .24);
+  border: 1px solid rgba(115, 110, 125, 0.24);
   border-radius: 8px;
   display: block;
   /* padding: 15px; */
@@ -10,7 +10,7 @@
 
 .DetailsSection.DetailsSection--loading > *,
 .DetailsSection.DetailsSection--disabled > * {
-  opacity: .5;
+  opacity: 0.5;
   pointer-events: none;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .DetailsSection .DetailsSection__Content + .DetailsSection__Content {
-  border-top: 1px solid rgba(115, 110, 125, .24);
+  border-top: 1px solid rgba(115, 110, 125, 0.24);
 }
 
 .DetailsSection .DetailsSection__Flex {
@@ -29,6 +29,18 @@
   margin-top: 16px;
   justify-content: space-between;
   align-items: center;
+}
+
+.DetailsSection .DetailsSection__Flex_Header_Labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.DetailsSection__Flex_Header_Labels > a {
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-size: 13px !important;
 }
 
 .DetailsSection .DetailsSection__Flex > div {
@@ -44,16 +56,18 @@
 }
 
 .DetailsSection .DetailsSection__Secondary {
-  background:  var(--secondary);
+  background: var(--secondary);
   border-radius: 6px;
   margin-top: 24px;
   padding: 8px 11px;
 }
 
-.DetailsSection .DetailsSection__Secondary .DetailsSection__Secondary__Subtitle {
+.DetailsSection
+  .DetailsSection__Secondary
+  .DetailsSection__Secondary__Subtitle {
   font-size: 13px;
   color: var(--text);
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .DetailsSection .DetailsSection__Secondary .DetailsSection__Secondary__Title {
@@ -70,4 +84,16 @@
 .DetailsSection .ui.button {
   width: 100%;
   margin-top: 8px;
+}
+
+@media (min-width: 768px) {
+  .DetailsSection .DetailsSection__Flex_Header_Labels {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .DetailsSection .DetailsSection__Flex_Header_Labels {
+    display: flex;
+  }
 }

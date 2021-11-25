@@ -70,7 +70,7 @@ const ImgPOI = React.memo(function ({ x, y }: { x: number, y: number }) {
         <Pin />
         <span>{x},{y}</span>
       </div>
-      <ImgFixed dimension="standard" size="initial" src={sceneImg!} />
+      <ImgFixed dimension="standard" size="cover" src={sceneImg!} />
     </div>
     <div className="PoiImageContainer">
       <ImgFixed dimension="standard" size="initial" src={Land.get().getParcelImage([x, y])} />
