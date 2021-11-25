@@ -27,6 +27,7 @@ import { Snapshot } from "../api/Snapshot"
 import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
 import { VoteRegisteredModal } from "../components/Modal/VoteRegisteredModal"
 import { DeleteProposalModal } from "../components/Modal/DeleteProposalModal"
+import { VotesList } from "../components/Modal/VotesList"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import retry from "decentraland-gatsby/dist/utils/promise/retry"
 import locations from "../modules/locations"
@@ -47,13 +48,14 @@ type ProposalPageOptions = {
   confirmSubscription: boolean
   confirmDeletion: boolean
   confirmStatusUpdate: ProposalStatus | false
+  showVotesList: boolean
 }
 
 export default function ProposalPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false })
+  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
@@ -155,7 +157,8 @@ export default function ProposalPage() {
               votes={votes}
               votingPower={votingPower || 0}
               changingVote={options.changing}
-              onChangeVote={(_, changing) => patchOptions({ changing })}
+              onChangeVote={ (_, changing) => patchOptions({ changing }) }
+              onOpenVotesList={() => patchOptions({ showVotesList: true })}
               onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
             />
             <ProposalDetailSection proposal={proposal} />
@@ -201,6 +204,11 @@ export default function ProposalPage() {
         </Grid.Row>
       </Grid>
     </ContentLayout>
+    <VotesList
+      open={options.showVotesList}
+      votes={votes}
+      onClose={() => patchOptions({ showVotesList: false })}
+    />
     <VoteRegisteredModal
       loading={subscribing}
       open={options.confirmSubscription}
