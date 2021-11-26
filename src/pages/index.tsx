@@ -12,9 +12,10 @@ import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 import locations, { ProposalListView, toProposalListPage, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import CategoryOption from "../components/Category/CategoryOption"
-import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
+import { ProposalStatus, ProposalType, toProposalStatus, toProposalType, ProposalSorting, toProposalSorting } from "../entities/Proposal/types"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import StatusMenu from "../components/Status/StatusMenu"
+import SortingMenu from "../components/SortingMenu/SortingMenu"
 import CategoryBanner from "../components/Category/CategoryBanner"
 import ProposalItem from "../components/Proposal/ProposalItem"
 import useSubscriptions from "../hooks/useSubscriptions"
@@ -45,6 +46,7 @@ export default function IndexPage() {
   const type = toProposalType(params.get('type')) ?? undefined
   const view = toProposalListView(params.get('view')) ?? undefined
   const status = view ? ProposalStatus.Enacted : toProposalStatus(params.get('status')) ?? undefined
+  const sort = toProposalSorting(params.get('sort')) ?? undefined
   const page = toProposalListPage(params.get('page')) ?? undefined
   const [ proposals, proposalsState ] = useProposals({ type, status, page, itemsPerPage: ITEMS_PER_PAGE })
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
@@ -77,6 +79,9 @@ export default function IndexPage() {
   //   }
   // }
 
+  // console.log('params', params);
+  
+
   function handlePageFilter(page: number) {
     const newParams = new URLSearchParams(params)
     page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
@@ -96,6 +101,15 @@ export default function IndexPage() {
     newParams.delete('page')
     return navigate(locations.proposals(newParams))
   }
+
+  function handleSortingFilter(sort: ProposalSorting | null) {
+    const newParams = new URLSearchParams(params)
+    sort ? newParams.set('sort', sort) : newParams.delete('sort')
+    newParams.delete('page')
+    return navigate(locations.proposals(newParams))
+  }
+  
+  
 
   // if (showOnboarding === Onboarding.Loading) {
   //   return <Container className="WelcomePage">
@@ -176,6 +190,7 @@ export default function IndexPage() {
               </Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
+                <SortingMenu style={{ marginRight: '1rem' }} value={sort} onChange={(_, { value }) => handleSortingFilter(value)}  />
                 <Button primary size="small" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
                   {l(`page.proposal_list.new_proposal`)}
                 </Button>

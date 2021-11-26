@@ -62,6 +62,28 @@ export function toProposalStatus(value: string | null | undefined): ProposalStat
     null
 }
 
+export enum ProposalSorting {
+  Date = 'date',
+  TotalVp = 'total_vp',
+}
+
+export function isProposalSorting(value:  string | null | undefined): boolean {
+  switch (value) {
+    case ProposalSorting.Date:
+    case ProposalSorting.TotalVp:
+      return true
+    default:
+      return false
+  }
+}
+
+export function toProposalSorting(value: string | null | undefined): ProposalSorting | null {
+  return isProposalSorting(value)?
+    value as ProposalSorting :
+    null
+}
+
+
 export enum ProposalType {
   POI = 'poi',
   Catalyst = 'catalyst',
