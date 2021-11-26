@@ -1,0 +1,59 @@
+.SubscriptionBanner  {
+  display: flex;
+  align-items: center;
+  align-content: stretch;
+  position: relative;
+  padding: 16px 20px;
+  background-color: transparent;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  outline: 1px solid #0000000a;
+}
+
+.SubscriptionBanner::before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #4888EE;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  opacity: .08;
+}
+
+.SubscriptionBanner .SubscriptionBanner__Icon  {
+  flex: 0 0 68px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.SubscriptionBanner .SubscriptionBanner__Icon img {
+  position: relative;
+  height: 100%;
+  width: auto;
+}
+
+.SubscriptionBanner .SubscriptionBanner__Description {
+  flex-grow: 50;
+}
+
+.SubscriptionBanner .SubscriptionBanner__Button {
+  position: relative;
+  width: auto;
+  background-color: #4888EE !important;
+  flex-grow: 20;
+}
+
+.SubscriptionBanner .dg.Paragraph  {
+  margin-bottom: 0;
+}
+
+.SubscriptionBanner .dg.Paragraph.Paragraph--tiny  {
+  font-size: 15px;
+}

@@ -358,6 +358,11 @@
       "roadmap_label": "Roadmap and milestones",
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
       "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
+    },
+    "subscription_banner":{
+      "title": "Stay in the loop",
+      "description": "The DAO Weekly Newsletter includes updates regarding proposals",
+      "subscribe_button_label": "Subscribe"
     }
   }
 }
