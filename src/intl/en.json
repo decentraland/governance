@@ -151,7 +151,10 @@
       "title": "Subscribe to the DAO Weekly Newsletter",
       "description": "Please enter your email to stay on the loop.",
       "description_sub": "No spam - we promise!",
-      "accept": "Subscribe"
+      "accept": "Subscribe",
+      "email_label": "Email address",
+      "email_placeholder": "john.doe@domain.com",
+      "email_error_message": "Please enter a valid email"
     }
   },
   "page": {

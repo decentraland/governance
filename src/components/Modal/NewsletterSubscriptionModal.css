@@ -16,3 +16,16 @@
 .ui.modal.NewsletterSubscriptionModal .error {
   color: red;
 }
+
+.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__Description {
+  margin-bottom: 0;
+}
+
+.ui.modal.NewsletterSubscriptionModal .content {
+  margin: 24px auto;
+  width: 365px;
+}
+
+.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__Title {
+  margin-bottom: 0;
+}
