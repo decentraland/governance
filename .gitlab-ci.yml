@@ -25,6 +25,7 @@ build:code:
   script:
 
     # install dependencies
+    - npm i -g npm@6
     - npm ci --cache .npm --prefer-offline
 
     # setup dcl environment
