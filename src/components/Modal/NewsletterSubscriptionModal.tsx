@@ -11,13 +11,15 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import './ProposalModal.css'
 import './NewsletterSubscriptionModal.css'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import { Governance } from '../../api/Governance'
+import { NewsletterSubscriptionResult } from '../../entities/NewsletterSubscription/types'
+import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 
 export type NewsletterSubscriptionModalProps = Omit<ModalProps, 'children'> & {
-  loading?: boolean
-  onClickAccept?: (e: React.MouseEvent<any>) => void
+  onSubscriptionSuccess?: () => void
 }
 
-export function NewsletterSubscriptionModal({ onClickAccept, loading, ...props }: NewsletterSubscriptionModalProps) {
+export function NewsletterSubscriptionModal({ onSubscriptionSuccess , ...props }: NewsletterSubscriptionModalProps) {
   const l = useFormatMessage()
   const [isValid, setIsValid] = useState(true);
   const [message, setMessage] = useState('');
@@ -38,6 +40,18 @@ export function NewsletterSubscriptionModal({ onClickAccept, loading, ...props }
     }
   };
 
+  const [subscribing, handleAccept] = useAsyncTask(async () => {
+    if (email && emailRegex.test(email) && onSubscriptionSuccess) {
+      const subscriptionResult: NewsletterSubscriptionResult = await Governance.get().subscribeToNewsletter(email)
+      if (subscriptionResult.error) {
+        setIsValid(false);
+        setMessage(subscriptionResult.details || '');
+      } else {
+        onSubscriptionSuccess()
+      }
+    }
+  })
+
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', "NewsletterSubscriptionModal"])} closeIcon={<Close />}>
     <Modal.Content className="ProposalModal__Title NewsletterSubscriptionModal__Title">
       <Header>{l('modal.newsletter_subscription.title')}</Header>
@@ -56,7 +70,7 @@ export function NewsletterSubscriptionModal({ onClickAccept, loading, ...props }
       />
     </Modal.Content>
     <Modal.Content className="ProposalModal__Actions">
-      <Button primary onClick={onClickAccept} loading={loading}>{l('modal.newsletter_subscription.accept')}</Button>
+      <Button primary onClick={handleAccept} loading={subscribing}>{l('modal.newsletter_subscription.accept')}</Button>
     </Modal.Content>
   </Modal>
 }

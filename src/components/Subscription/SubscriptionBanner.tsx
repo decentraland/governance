@@ -5,7 +5,6 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal'
 
 const icon = require('../../images/icons/email-outline.svg')
@@ -25,24 +24,19 @@ export default function SubscriptionBanner() {
 
   useEffect(() => {
     const subscription = localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY)
-    console.log('subs ', subscription)
-    console.log('acc ', account)
     setShowSubscriptionBanner(subscription !== account ? ShowSubscriptionBanner.YES : ShowSubscriptionBanner.NO)
   }, [account])
 
-  const [subscribing, acceptSubscription] = useAsyncTask(async () => {
+  function finishSubscription(){
     localStorage.setItem(NEWSLETTER_SUBSCRIPTION_KEY, account || '')
-    // await Governance.get().deleteProposal(proposal.id)
-    // error handling
-    console.log('subscription accepted')
     setShowSubscriptionBanner(ShowSubscriptionBanner.NO)
     setConfirmSubscription(false)
-  })
+  }
 
   if (showSubscriptionBanner === ShowSubscriptionBanner.Loading) {
     console.log('subscription banner loading', showSubscriptionBanner)
     return <div className="SubscriptionBanner">
-        <Loader size="huge" active />
+      <Loader size="huge" active />
     </div>
   }
 
@@ -60,9 +54,8 @@ export default function SubscriptionBanner() {
       </Button>
     </a>}
     <NewsletterSubscriptionModal
-      loading={subscribing}
       open={confirmSubscription}
-      onClickAccept={() => acceptSubscription()}
+      onSubscriptionSuccess={finishSubscription}
       onClose={() => setConfirmSubscription(false)}
     />
   </div>

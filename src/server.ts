@@ -14,6 +14,7 @@ import proposal from './entities/Proposal/routes'
 import score from './entities/Votes/routes'
 import subscription from './entities/Subscription/routes'
 import committee from './entities/Committee/routes'
+import newsletterSubscription from './entities/NewsletterSubscription/routes'
 import social from './entities/Social/routes'
 import sitemap from './entities/Sitemap/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
@@ -34,6 +35,7 @@ app.use('/api', [
   proposal,
   score,
   subscription,
+  newsletterSubscription,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   })

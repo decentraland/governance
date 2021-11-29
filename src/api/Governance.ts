@@ -5,6 +5,7 @@ import env from "decentraland-gatsby/dist/utils/env";
 import { NewProposalBanName, NewProposalCatalyst, NewProposalPOI, NewProposalPoll, NewProposalGrant, ProposalAttributes, ProposalType, ProposalStatus } from "../entities/Proposal/types";
 import { SubscriptionAttributes } from "../entities/Subscription/types";
 import { Vote } from "../entities/Votes/types";
+import { NewsletterSubscriptionResult } from '../entities/NewsletterSubscription/types'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
@@ -193,6 +194,16 @@ export class Governance extends API {
 
   async getCommittee() {
     const result = await this.fetch<ApiResponse<string[]>>(`/committee`)
+    return result.data
+  }
+
+  async subscribeToNewsletter(email: string) {
+    const result = await this.fetch<ApiResponse<NewsletterSubscriptionResult>>(
+      `/newsletter/${email}`,
+      this.options()
+        .method('POST')
+        .authorization()
+    )
     return result.data
   }
 }
