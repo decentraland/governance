@@ -53,5 +53,15 @@ build:code:
     - dcl-sync-release
 
     # push static
-    - ./node_modules/.bin/setup-bucket public
+    - >
+      ./node_modules/.bin/setup-bucket public \
+        --exclude '*' \
+        --include 'static/*' \
+        --cache-control 'public,max-age=31536000,immutable'
+
+    - >
+      ./node_modules/.bin/setup-bucket public \
+        --exclude 'static/*' \
+        --cache-control 'max-age=0,must-revalidate'
+
     - dcl-cache-invalidation
