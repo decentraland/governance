@@ -22,10 +22,5 @@
 }
 
 .ui.modal.NewsletterSubscriptionModal .content {
-  margin: 24px auto;
   width: 365px;
-}
-
-.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__Title {
-  margin-bottom: 0;
 }

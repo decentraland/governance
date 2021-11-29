@@ -154,7 +154,10 @@
       "accept": "Subscribe",
       "email_label": "Email address",
       "email_placeholder": "john.doe@domain.com",
-      "email_error_message": "Please enter a valid email"
+      "email_error_message": "Please enter a valid email",
+      "subscribed": "You're subscribed",
+      "thanks": "Thanks for your interest",
+      "heads_up": "You'll hear from us soon and frequently enough!"
     }
   },
   "page": {

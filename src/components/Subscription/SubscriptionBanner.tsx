@@ -5,10 +5,9 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal'
+import { NewsletterSubscriptionModal, NEWSLETTER_SUBSCRIPTION_KEY } from '../Modal/NewsletterSubscriptionModal'
 
 const icon = require('../../images/icons/email-outline.svg')
-const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
 
 enum ShowSubscriptionBanner {
   Loading,
@@ -28,13 +27,10 @@ export default function SubscriptionBanner() {
   }, [account])
 
   function finishSubscription(){
-    localStorage.setItem(NEWSLETTER_SUBSCRIPTION_KEY, account || '')
     setShowSubscriptionBanner(ShowSubscriptionBanner.NO)
-    setConfirmSubscription(false)
   }
 
   if (showSubscriptionBanner === ShowSubscriptionBanner.Loading) {
-    console.log('subscription banner loading', showSubscriptionBanner)
     return <div className="SubscriptionBanner">
       <Loader size="huge" active />
     </div>
