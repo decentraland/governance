@@ -23,7 +23,7 @@ export default function SubscriptionBanner() {
 
   useEffect(() => {
     const subscription = localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY)
-    setShowSubscriptionBanner(subscription !== account ? ShowSubscriptionBanner.YES : ShowSubscriptionBanner.NO)
+    setShowSubscriptionBanner((!!account && subscription !== account) ? ShowSubscriptionBanner.YES : ShowSubscriptionBanner.NO)
   }, [account])
 
   function finishSubscription(){
