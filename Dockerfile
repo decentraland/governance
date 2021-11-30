@@ -3,6 +3,7 @@ FROM node:12-alpine
 RUN apk add --no-cache --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make automake autoconf libtool python3 \
   git \
+  openssh \
   shadow \
   musl-dev \
   nasm \
