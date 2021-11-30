@@ -21,6 +21,8 @@ WORKDIR /app
 COPY ./package-lock.json /app/package-lock.json
 COPY ./package.json      /app/package.json
 
+RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
 RUN NODE_ENV=production npm ci
 
 RUN apk del native-deps && rm -rf /var/cache/apk/*
