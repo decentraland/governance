@@ -15,7 +15,7 @@ import { Governance } from '../../api/Governance'
 import { NewsletterSubscriptionResult } from '../../entities/NewsletterSubscription/types'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-const check = require('../../images/icons/check.svg')
+const check = require('../../images/icons/check-cloud.svg')
 
 export const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
 
@@ -88,7 +88,7 @@ export function NewsletterSubscriptionModal({ onSubscriptionSuccess, ...props }:
     </div>}
     {subscribed && <div>
       <Modal.Content className="ProposalModal__Title NewsletterSubscriptionModal__Title">
-        <img src={check} width="92" height="92" alt="check icon"/>
+        <img src={check} alt="check icon"/>
         <Header>{l('modal.newsletter_subscription.subscribed')}</Header>
         <Paragraph small className="NewsletterSubscriptionModal__Description">
           {l('modal.newsletter_subscription.thanks')}
