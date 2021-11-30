@@ -1,5 +1,8 @@
 FROM node:12-alpine
 
+RUN apk add --no-cache openssh-client \
+ && mkdir ~/.ssh && ssh-keyscan github.com > ~/.ssh/known_hosts
+
 RUN apk add --no-cache --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make automake autoconf libtool python3 \
   git \
