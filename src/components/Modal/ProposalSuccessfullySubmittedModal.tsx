@@ -8,44 +8,50 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import './ProposalModal.css'
 import './ProposalSuccessfullySubmittedModal.css'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 export function ProposalSuccessfullySubmittedModal() {
+  const l = useFormatMessage()
+
   return <Modal open={true} size="tiny" className={TokenList.join(['ProposalModal', 'ProposalSuccessfullySubmittedModal'])} closeIcon={<Close />}>
     <Modal.Content className="ProposalModal__Title">
-      <Header>Proposal successfully submitted</Header>
+      <Header>{l('modal.successfully_submitted.title')}</Header>
       <Paragraph small className="ProposalSuccessfullySubmittedModal__Description">
-        Thanks for taking part in the DAO
+        {l('modal.successfully_submitted.description')}
       </Paragraph>
-      <Paragraph small>Here's what you could do next</Paragraph>
+      <Paragraph small>{l('modal.successfully_submitted.sub')}</Paragraph>
     </Modal.Content>
     <Modal.Content className="ProposalSuccessfullySubmittedModal__Form">
       <a className={TokenList.join(['ProposalSuccessfullySubmittedModal__Banner', 'JoinTheDiscussion'])}>
         <div className="Description">
-          <Paragraph small semiBold>Join the discussion</Paragraph>
-          <Paragraph tiny>Comment, ideate, expand.</Paragraph>
+          <Paragraph small semiBold>{l('modal.successfully_submitted.view_on_forum_title')}</Paragraph>
+          <Paragraph tiny>{l('modal.successfully_submitted.view_on_forum_description')}</Paragraph>
         </div>
         <Button className={TokenList.join(['Button', 'JoinTheDiscussion'])}  primary size="small" >
-          View on forum
+          {l('modal.successfully_submitted.view_on_forum_label')}
         </Button>
       </a>
       <a className={TokenList.join(['ProposalSuccessfullySubmittedModal__Banner', 'Discord'])}>
         <div className="Description">
-          <Paragraph small semiBold>Visualize on Discord</Paragraph>
-          <Paragraph tiny>Our #dao channel is just for that</Paragraph>
+          <Paragraph small semiBold>{l('modal.successfully_submitted.join_discord_title')}</Paragraph>
+          <Paragraph tiny>{l('modal.successfully_submitted.join_discord_description')}</Paragraph>
         </div>
         <Button className={TokenList.join(['Button', 'Discord'])} primary size="small" >
-          Join Discord
+          {l('modal.successfully_submitted.join_discord_label')}
         </Button>
       </a>
       <a className={TokenList.join(['ProposalSuccessfullySubmittedModal__Banner', 'CopyLink'])}>
         <div className="Description">
-          <Paragraph small semiBold>Keep this at hand</Paragraph>
-          <Paragraph tiny>Come back later to check progress</Paragraph>
+          <Paragraph small semiBold>{l('modal.successfully_submitted.copy_link_title')}</Paragraph>
+          <Paragraph tiny>{l('modal.successfully_submitted.copy_link_description')}</Paragraph>
         </div>
         <Button className={TokenList.join(['Button', 'CopyLink'])}  primary size="small" >
-          Copy Link
+          {l('modal.successfully_submitted.copy_link_label')}
         </Button>
       </a>
+    </Modal.Content>
+    <Modal.Content className="ProposalModal__Actions">
+      <Button className="ProposalSuccessfullySubmittedModal__DismissButton" secondary onClick={() => 0}>{l('modal.successfully_submitted.dismiss_button_label')}</Button>
     </Modal.Content>
   </Modal>
 }
