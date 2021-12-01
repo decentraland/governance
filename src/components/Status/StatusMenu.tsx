@@ -17,6 +17,8 @@ export default function StatusMenu(props: StatusMenu) {
     }
   }
 
+  
+
   return <Dropdown text={l(`status.${props.value || 'all'}`) || ''} style={props.style}>
     <Dropdown.Menu>
       <Dropdown.Item text={l(`status.all`)} onClick={(e) => handleChange(e, null)} />

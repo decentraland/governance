@@ -63,14 +63,12 @@ export function toProposalStatus(value: string | null | undefined): ProposalStat
 }
 
 export enum ProposalSorting {
-  Date = 'date',
-  TotalVp = 'total_vp',
+  Participation = 'participation',
 }
 
 export function isProposalSorting(value:  string | null | undefined): boolean {
   switch (value) {
-    case ProposalSorting.Date:
-    case ProposalSorting.TotalVp:
+    case ProposalSorting.Participation:
       return true
     default:
       return false

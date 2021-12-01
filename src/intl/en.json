@@ -114,6 +114,10 @@
     "passed": "Passed outcomes",
     "enacted": "Enacted outcomes"
   },
+  "sort": {
+    "latest": "Latest",
+    "participation": "Participation"
+  },
   "modal": {
     "new_proposal": {
       "title": "New Proposal",

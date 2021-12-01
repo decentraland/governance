@@ -10,17 +10,17 @@ export type SortingMenu = {
 }
 
 export default function StatusMenu(props: SortingMenu) {
-  // const l = useFormatMessage()
+  const l = useFormatMessage()
   function handleChange(e: React.MouseEvent<any>, value: ProposalSorting | null) {
     if (props.onChange) {
       props.onChange(e, { value })
     }
   }
 
-  return <Dropdown text="latest" style={props.style}>
+  return <Dropdown text={l(`sort.${props.value || 'latest'}`) || ''} style={props.style}>
     <Dropdown.Menu>
-      <Dropdown.Item text="Latest" onClick={(e) => handleChange(e, null)} />
-      <Dropdown.Item text="PARTICIPATION" onClick={(e) => handleChange(e, ProposalSorting.TotalVp)} />
+      <Dropdown.Item text={l(`sort.latest`)} onClick={(e) => handleChange(e, null)} />
+      <Dropdown.Item text={l(`sort.participation`)} onClick={(e) => handleChange(e, ProposalSorting.Participation)} />
     </Dropdown.Menu>
   </Dropdown>
 }
