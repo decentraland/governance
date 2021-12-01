@@ -17,7 +17,7 @@ export type SubscribeButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorEle
 
 export default React.memo(function SubscribeButton({ loading, disabled, subscribed, ...props }: SubscribeButtonProps) {
   const l = useFormatMessage()
-  return <a {...props} target="_black"  className={TokenList.join([
+  return <a {...props} target="_blank"  className={TokenList.join([
     'DetailsSection',
     'SectionButton',
     'SubscribeButton',

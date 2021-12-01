@@ -16,7 +16,7 @@ export type ForumButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement
 
 export default React.memo(function ForumButton({ loading, disabled, ...props }: ForumButtonProps) {
   const l = useFormatMessage()
-  return <a {...props} target="_black"  className={TokenList.join([
+  return <a {...props} target="_blank"  className={TokenList.join([
     'DetailsSection',
     'SectionButton',
     'ForumButton',
