@@ -147,7 +147,7 @@
       "voted_yes": "Yes",
       "voted_no": "No"
     },
-    "proposal_successfully_submitted": {
+    "follow_up": {
       "title": "Proposal successfully submitted",
       "description": "Thanks for taking part in the DAO",
       "sub": "Here's what you could do next",

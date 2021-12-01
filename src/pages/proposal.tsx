@@ -41,21 +41,22 @@ import './index.css'
 import './proposal.css'
 import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
-import { ProposalSuccessfullySubmittedModal } from '../components/Modal/ProposalSuccessfullySubmittedModal'
+import { FollowUpModal } from '../components/Modal/FollowUpModal'
 
 type ProposalPageOptions = {
   changing: boolean,
   confirmSubscription: boolean
   confirmDeletion: boolean
   confirmStatusUpdate: ProposalStatus | false
-  showVotesList: boolean
+  showVotesList: boolean,
+  showFollowUpModal: boolean
 }
 
 export default function ProposalPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false })
+  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false, showFollowUpModal: params.get('newProposal') === "true" })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
@@ -228,7 +229,8 @@ export default function ProposalPage() {
       onClickAccept={(_, status, description) => updateProposalStatus(status, description)}
       onClose={() => patchOptions({ confirmStatusUpdate: false })}
     />
-    <ProposalSuccessfullySubmittedModal
+    <FollowUpModal
+      open={options.showFollowUpModal}
     />
   </>
 }
