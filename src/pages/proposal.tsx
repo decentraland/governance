@@ -231,6 +231,9 @@ export default function ProposalPage() {
     />
     <FollowUpModal
       open={options.showFollowUpModal}
+      onDismiss={() => patchOptions({ showFollowUpModal: false })}
+      onClose={() => patchOptions({ showFollowUpModal: false })}
+      forumUrl={proposal && forumUrl(proposal)}
     />
   </>
 }

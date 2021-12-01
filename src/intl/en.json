@@ -160,6 +160,7 @@
       "copy_link_title": "Keep this at hand",
       "copy_link_description": "Come back later to check progress",
       "copy_link_label": "Copy Link",
+      "link_copied_label": "Link Copied!",
       "dismiss_button_label": "Dismiss"
     }
   },
