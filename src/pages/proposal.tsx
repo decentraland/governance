@@ -31,7 +31,6 @@ import { VotesList } from "../components/Modal/VotesList"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import retry from "decentraland-gatsby/dist/utils/promise/retry"
 import locations from "../modules/locations"
-import loader from "../modules/loader"
 import { UpdateProposalStatusModal } from "../components/Modal/UpdateProposalStatusModal"
 import { ProposalStatus } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
@@ -42,6 +41,7 @@ import './index.css'
 import './proposal.css'
 import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
+import { ProposalSuccessfullySubmittedModal } from '../components/Modal/ProposalSuccessfullySubmittedModal'
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -227,6 +227,8 @@ export default function ProposalPage() {
       loading={updatingStatus}
       onClickAccept={(_, status, description) => updateProposalStatus(status, description)}
       onClose={() => patchOptions({ confirmStatusUpdate: false })}
+    />
+    <ProposalSuccessfullySubmittedModal
     />
   </>
 }
