@@ -35,17 +35,17 @@
   flex-grow: 50;
 }
 
-a.FollowUpModal__Banner.JoinTheDiscussion::before {
+div.FollowUpModal__Banner.JoinTheDiscussion::before {
   background-color: #FF2D55;
   opacity: .20;
 }
 
-a.FollowUpModal__Banner.Discord::before {
+div.FollowUpModal__Banner.Discord::before {
   background-color: #5865F2;
   opacity: .30;
 }
 
-a.FollowUpModal__Banner.CopyLink {
+div.FollowUpModal__Banner.CopyLink {
   background-color: #CDF1B8;
 }
 

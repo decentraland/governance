@@ -53,7 +53,7 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
       <Paragraph small>{l('modal.follow_up.sub')}</Paragraph>
     </Modal.Content>
     <Modal.Content className="FollowUpModal__Form">
-      <a className={TokenList.join(['FollowUpModal__Banner', 'JoinTheDiscussion'])}>
+      <div className={TokenList.join(['FollowUpModal__Banner', 'JoinTheDiscussion'])}>
         <div className="Description">
           <Paragraph small semiBold>{l('modal.follow_up.view_on_forum_title')}</Paragraph>
           <Paragraph tiny>{l('modal.follow_up.view_on_forum_description')}</Paragraph>
@@ -64,8 +64,8 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
                 target="_blank">
           {l('modal.follow_up.view_on_forum_label')}
         </Button>
-      </a>
-      <a className={TokenList.join(['FollowUpModal__Banner', 'Discord'])}>
+      </div>
+      <div className={TokenList.join(['FollowUpModal__Banner', 'Discord'])}>
         <div className="Description">
           <Paragraph small semiBold>{l('modal.follow_up.join_discord_title')}</Paragraph>
           <Paragraph tiny>{l('modal.follow_up.join_discord_description')}</Paragraph>
@@ -76,8 +76,8 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
                 target="_blank">
           {l('modal.follow_up.join_discord_label')}
         </Button>
-      </a>
-      <a className={TokenList.join(['FollowUpModal__Banner', 'CopyLink'])}>
+      </div>
+      <div className={TokenList.join(['FollowUpModal__Banner', 'CopyLink'])}>
         <div className="Description">
           <Paragraph small semiBold>{l('modal.follow_up.copy_link_title')}</Paragraph>
           <Paragraph tiny>{l('modal.follow_up.copy_link_description')}</Paragraph>
@@ -87,7 +87,7 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
                 primary size="small">
           {isCopied ? l('modal.follow_up.link_copied_label') : l('modal.follow_up.copy_link_label')}
         </Button>
-      </a>
+      </div>
     </Modal.Content>
     <Modal.Content className="ProposalModal__Actions">
       <Button className="FollowUpModal__DismissButton" secondary
