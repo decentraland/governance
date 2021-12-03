@@ -1,0 +1,27 @@
+name: Assign Reviewers
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
+
+jobs:
+
+  release:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: octokit/request-action@v2.x
+        id: add_pr_comment
+        with:
+          route: POST /repos/:repository/pulls/:pull_number/requested_reviewers
+          repository: ${{ github.repository }}
+          pull_number: ${{ github.event.pull_request.number }}
+          body: '{ "reviewers": [ "2fd"] }'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
