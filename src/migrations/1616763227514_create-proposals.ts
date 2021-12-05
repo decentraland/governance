@@ -75,6 +75,11 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     enacted_description: {
       type: 'TEXT',
     },
+    total_vp: {
+      type: 'INT',
+      notNull: true,
+      default: 0
+    },
     deleted: {
       type: 'BOOLEAN',
       notNull: true,

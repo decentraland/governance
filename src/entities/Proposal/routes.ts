@@ -379,6 +379,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     passed_description: null,
     rejected_by: null,
     rejected_description: null,
+    total_vp: 0,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
   }

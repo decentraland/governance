@@ -1,6 +1,7 @@
 import JobContext from "decentraland-gatsby/dist/entities/Job/context";
 import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
 import { Vote } from "../Votes/types";
+import VotesModel from "../Votes/model"
 import ProposalModel from "./model";
 import { ProposalAttributes, ProposalStatus, INVALID_PROPOSAL_POLL_OPTIONS } from './types'
 import { commentProposalUpdateInDiscourse } from './routes'
@@ -8,6 +9,24 @@ import { commentProposalUpdateInDiscourse } from './routes'
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
   context.log(activatedProposals === 0 ? `No activated proposals` : `Activated ${activatedProposals} proposals...`)
+}
+
+export async function updateTotalVpVotesProposals(context: JobContext) {
+  const activateProposals = await ProposalModel.getActiveProposal()
+  if (activateProposals.length > 0) {
+    const ids = activateProposals?.map((activateProposal) => activateProposal?.id)
+    const scores = await VotesModel.findAny(ids)
+    
+    ids.map((id) => {
+      scores.map((score) => {
+        if (score.proposal_id === id) {
+          const total_vp = Object.values(score.votes).reduce((acc, vote: any) => acc + vote.vp, 0)
+          ProposalModel.updateVpProposal(score.proposal_id, Number(total_vp))
+        }
+      })
+    }) 
+    context.log('Updating total vp votes of active proposals')
+  }
 }
 
 function sameOptions(options: string[], expected: string[]) {

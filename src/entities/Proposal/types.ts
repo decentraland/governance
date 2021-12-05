@@ -30,6 +30,7 @@ export type ProposalAttributes<C extends {} = any> = {
   required_to_pass: number | null
   created_at: Date
   updated_at: Date
+  total_vp: number
 }
 
 export enum ProposalStatus {

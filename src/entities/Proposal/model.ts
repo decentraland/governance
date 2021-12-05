@@ -62,6 +62,31 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
+  static async getActiveProposal() {
+    const query = SQL`
+      SELECT * FROM ${table(ProposalModel)}
+      WHERE "status" = ${ProposalStatus.Active}
+    `
+
+    const result = await this.query(query)
+    return result.map(ProposalModel.parse)
+  }
+
+
+  static async updateVpProposal(proposalId: string, totalVp: number) {
+    const query = SQL`
+      UPDATE ${table(ProposalModel)}
+      SET
+        "total_vp" = ${totalVp},
+        "updated_at" = now()
+      WHERE
+        "id" = ${proposalId}
+        AND "status" = ${ProposalStatus.Active}
+    `
+
+    return this.rowCount(query)
+  }
+
   static async getFinishedProposal() {
     const query = SQL`
       SELECT *

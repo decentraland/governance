@@ -109,8 +109,6 @@ export default function IndexPage() {
     return navigate(locations.proposals(newParams))
   }
   
-  
-
   // if (showOnboarding === Onboarding.Loading) {
   //   return <Container className="WelcomePage">
   //     <div>
@@ -199,7 +197,12 @@ export default function IndexPage() {
               <Loader active={!proposals || proposalsState.loading} />
               {type && <CategoryBanner type={type} active />}
               {proposals && proposals.data.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
-              {proposals && proposals.data.map(proposal => {
+              {proposals && proposals.data.sort((a, b) => {
+                if (sort) {
+                  return b.total_vp - a.total_vp
+                }
+                return b.created_at.getTime() - a.created_at.getTime()
+              }).map(proposal => {
                 return <ProposalItem
                   key={proposal.id}
                   proposal={proposal}
