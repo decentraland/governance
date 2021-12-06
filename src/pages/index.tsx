@@ -78,10 +78,7 @@ export default function IndexPage() {
   //     navigate(locations.proposals(newParams))
   //   }
   // }
-
-  // console.log('params', params);
   
-
   function handlePageFilter(page: number) {
     const newParams = new URLSearchParams(params)
     page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
