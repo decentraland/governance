@@ -19,7 +19,7 @@ jobs:
       - uses: octokit/request-action@v2.x
         id: add_pr_comment
         with:
-          route: POST /repos/:repository/pulls/:pull_number/requested_reviewers
+          route: POST /repos/{repository}/pulls/{pull_number}/requested_reviewers
           repository: ${{ github.repository }}
           pull_number: ${{ github.event.pull_request.number }}
           body: '{ "reviewers": [ "2fd"] }'
