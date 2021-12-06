@@ -14,13 +14,13 @@ export const DISCOURSE_AUTH: DiscourseAuth = {
 export const BASE_AVATAR_URL = requiredEnv('DISCOURSE_BASE_AVATAR_URL')
 const DEFAULT_AVATAR_SIZE = '45'
 
-function setAvatarSize(avatar_url: string) {
+function getDefaultAvatarSizeUrl(avatar_url: string) {
   return avatar_url.replace('{size}', DEFAULT_AVATAR_SIZE)
 }
 
 function setAvatarUrl(post: DiscoursePostInTopic) {
-  let correctSizeUrl = setAvatarSize(post.avatar_template)
-  return correctSizeUrl.includes('letter') ? correctSizeUrl : BASE_AVATAR_URL + correctSizeUrl
+  let defaultSizeUrl = getDefaultAvatarSizeUrl(post.avatar_template)
+  return defaultSizeUrl.includes('letter') ? defaultSizeUrl : BASE_AVATAR_URL + defaultSizeUrl
 }
 
 export function filterComments(comments: DiscourseTopic) {
