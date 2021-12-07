@@ -102,10 +102,6 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
   return defaultValue
 }
 
-function duration(value: string | undefined | null) {
-  return value ? Number(value) : Number(process.env.GATSBY_SNAPSHOT_DURATION);
-}
-
 export type UpdateProposalStatusProposal = {
   status:
     | ProposalStatus.Rejected
@@ -312,13 +308,16 @@ export const GrantRequiredVP = {
   [ProposalGrantTier.Tier6]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6, ProposalRequiredVP[ProposalType.Grant]),
 }
 
+function grantDuration(value: string | undefined | null) {
+  return Number(value || process.env.GATSBY_SNAPSHOT_DURATION);
+}
 export const GrantDuration = {
-  [ProposalGrantTier.Tier1]: duration(process.env.GATSBY_DURATION_GRANT_TIER1),
-  [ProposalGrantTier.Tier2]: duration(process.env.GATSBY_DURATION_GRANT_TIER2),
-  [ProposalGrantTier.Tier3]: duration(process.env.GATSBY_DURATION_GRANT_TIER3),
-  [ProposalGrantTier.Tier4]: duration(process.env.GATSBY_DURATION_GRANT_TIER4),
-  [ProposalGrantTier.Tier5]: duration(process.env.GATSBY_DURATION_GRANT_TIER5),
-  [ProposalGrantTier.Tier6]: duration(process.env.GATSBY_DURATION_GRANT_TIER6),
+  [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),
+  [ProposalGrantTier.Tier2]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER2),
+  [ProposalGrantTier.Tier3]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER3),
+  [ProposalGrantTier.Tier4]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER4),
+  [ProposalGrantTier.Tier5]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER5),
+  [ProposalGrantTier.Tier6]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER6),
 }
 
 export type NewProposalGrant = {
