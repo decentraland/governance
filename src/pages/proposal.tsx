@@ -111,7 +111,7 @@ export default function ProposalPage() {
   const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [ proposal, account, committee ])
 
   useEffect(() => {
-    patchOptions({ showFollowUpModal: params.get('newProposal') === "true" })
+    patchOptions({ showFollowUpModal: params.get('new') === "true" })
   }, [])
 
   if (proposalState.error) {
@@ -124,7 +124,7 @@ export default function ProposalPage() {
 
   function closeFollowUpModal() {
     patchOptions({ showFollowUpModal: false })
-    navigate(locations.proposal(proposal!.id))
+    navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
   return <>

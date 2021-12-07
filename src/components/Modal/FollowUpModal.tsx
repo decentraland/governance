@@ -18,7 +18,7 @@ export type FollowUpModalProps = Omit<ModalProps, 'children'> & {
 
 export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpModalProps) {
   const l = useFormatMessage()
-  const linkToProposal = window.location.href.split('&newProposal')[0]
+  const linkToProposal = window.location.href.split('&new')[0]
   const [copied, state] = useClipboardCopy(Time.Second)
   const handleCopy = useCallback(() => {
     state.copy(linkToProposal)
