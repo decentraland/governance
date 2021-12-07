@@ -1,5 +1,5 @@
 
-import React, { useMemo } from "react"
+import React, { useMemo, useEffect } from 'react'
 import { useLocation } from '@reach/router'
 import { Personal } from 'web3x/personal'
 import { Address } from 'web3x/address'
@@ -56,7 +56,7 @@ export default function ProposalPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false, showFollowUpModal: params.get('newProposal') === "true" })
+  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false, showFollowUpModal: false})
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
@@ -110,12 +110,21 @@ export default function ProposalPage() {
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [ proposal, account ])
   const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [ proposal, account, committee ])
 
+  useEffect(() => {
+    patchOptions({ showFollowUpModal: params.get('newProposal') === "true" })
+  }, [])
+
   if (proposalState.error) {
     return <>
       <ContentLayout className="ProposalDetailPage">
         <NotFound />
       </ContentLayout>
     </>
+  }
+
+  function closeFollowUpModal() {
+    patchOptions({ showFollowUpModal: false })
+    navigate(locations.proposal(proposal!.id))
   }
 
   return <>
@@ -231,8 +240,8 @@ export default function ProposalPage() {
     />
     <FollowUpModal
       open={options.showFollowUpModal}
-      onDismiss={() => patchOptions({ showFollowUpModal: false })}
-      onClose={() => patchOptions({ showFollowUpModal: false })}
+      onDismiss={closeFollowUpModal}
+      onClose={closeFollowUpModal}
       forumUrl={proposal && forumUrl(proposal)}
     />
   </>
