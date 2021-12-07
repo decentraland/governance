@@ -42,7 +42,8 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
         <Button className={TokenList.join(['Button', 'JoinTheDiscussion'])}
                 primary size="small"
                 href={forumUrl}
-                target="_blank">
+                target="_blank"
+                rel="noopener noreferrer">
           {l('modal.follow_up.view_on_forum_label')}
         </Button>
       </div>
@@ -54,7 +55,8 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
         <Button className={TokenList.join(['Button', 'Discord'])}
                 primary size="small"
                 href={'https://dcl.gg/discord'}
-                target="_blank">
+                target="_blank"
+                rel="noopener noreferrer">
           {l('modal.follow_up.join_discord_label')}
         </Button>
       </div>
