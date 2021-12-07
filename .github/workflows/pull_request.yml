@@ -23,6 +23,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: 'npm'
 
+      - name: set up git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
       - name: installing
         run: npm ci
 
