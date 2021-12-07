@@ -134,6 +134,10 @@ export async function getProposals(req: WithAuth<Request>) {
   return { ok: true, total, data }
 }
 
+function proposalDuration(duration: number){
+  return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
+}
+
 const newProposalPollValidator = schema.compile(newProposalPollScheme)
 export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
@@ -149,7 +153,7 @@ export async function createProposalPoll(req: WithAuth) {
     user,
     type: ProposalType.Poll,
     required_to_pass: ProposalRequiredVP[ProposalType.Poll],
-    finish_at: Time.utc().set('seconds', 0).add(SNAPSHOT_DURATION, 'seconds').toDate(),
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration,
   })
 }
@@ -172,7 +176,7 @@ export async function createProposalBanName(req: WithAuth) {
     user,
     type: ProposalType.BanName,
     required_to_pass: ProposalRequiredVP[ProposalType.BanName],
-    finish_at: Time.utc().set('seconds', 0).add(SNAPSHOT_DURATION, 'seconds').toDate(),
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -198,7 +202,7 @@ export async function createProposalPOI(req: WithAuth) {
     user,
     type: ProposalType.POI,
     required_to_pass: ProposalRequiredVP[ProposalType.POI],
-    finish_at: Time.utc().set('seconds', 0).add(SNAPSHOT_DURATION, 'seconds').toDate(),
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -219,7 +223,7 @@ export async function createProposalCatalyst(req: WithAuth) {
     user,
     type: ProposalType.Catalyst,
     required_to_pass: ProposalRequiredVP[ProposalType.Catalyst],
-    finish_at: Time.utc().set('seconds', 0).add(SNAPSHOT_DURATION, 'seconds').toDate(),
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -236,7 +240,7 @@ export async function createProposalGrant(req: WithAuth) {
     user,
     type: ProposalType.Grant,
     required_to_pass: GrantRequiredVP[configuration.tier],
-    finish_at: Time.utc().set('seconds', 0).add(GrantDuration[configuration.tier], 'seconds').toDate(),
+    finish_at: proposalDuration(GrantDuration[configuration.tier]),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
