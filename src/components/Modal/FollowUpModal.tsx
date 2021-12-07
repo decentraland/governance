@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -11,15 +11,21 @@ import './FollowUpModal.css'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import { proposalUrl, forumUrl, JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
+
 export type FollowUpModalProps = Omit<ModalProps, 'children'> & {
   onDismiss: (e: React.MouseEvent<any>) => void,
-  forumUrl: string | null
+  proposal?: ProposalAttributes | null,
+  loading?: boolean,
 }
 
-export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpModalProps) {
+export function FollowUpModal({ open, onDismiss, proposal, loading, ...props }: FollowUpModalProps) {
   const l = useFormatMessage()
-  const linkToProposal = window.location.href.split('&new')[0]
+  const linkToProposal = useMemo(() => proposal && proposalUrl(proposal) || '', [proposal])
+  const linkToForum = useMemo(() => proposal && forumUrl(proposal) || '', [proposal])
   const [copied, state] = useClipboardCopy(Time.Second)
+
   const handleCopy = useCallback(() => {
     state.copy(linkToProposal)
   }, [state.copy])
@@ -41,9 +47,11 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
         </div>
         <Button className={TokenList.join(['Button', 'JoinTheDiscussion'])}
                 primary size="small"
-                href={forumUrl}
+                href={linkToForum}
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+                loading={loading}
+        >
           {l('modal.follow_up.view_on_forum_label')}
         </Button>
       </div>
@@ -54,7 +62,7 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
         </div>
         <Button className={TokenList.join(['Button', 'Discord'])}
                 primary size="small"
-                href={'https://dcl.gg/discord'}
+                href={JOIN_DISCORD_URL}
                 target="_blank"
                 rel="noopener noreferrer">
           {l('modal.follow_up.join_discord_label')}
@@ -67,6 +75,7 @@ export function FollowUpModal({ open, onDismiss, forumUrl, ...props }: FollowUpM
         </div>
         <Button className={TokenList.join(['Button', 'CopyLink'])}
                 onClick={handleCopy}
+                loading={loading}
                 primary size="small">
           {copied ? l('modal.follow_up.link_copied_label') : l('modal.follow_up.copy_link_label')}
         </Button>

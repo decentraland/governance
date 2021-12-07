@@ -242,7 +242,8 @@ export default function ProposalPage() {
       open={options.showFollowUpModal}
       onDismiss={closeFollowUpModal}
       onClose={closeFollowUpModal}
-      forumUrl={proposal && forumUrl(proposal)}
+      proposal={proposal}
+      loading={proposalState.loading}
     />
   </>
 }
