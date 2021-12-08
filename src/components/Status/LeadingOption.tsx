@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import './LeadingOption.css'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -13,9 +13,9 @@ export type LeadingOptionProps = React.HTMLAttributes<HTMLDivElement> & {
 export default React.memo(function LeadingOption({ status, leadingOption, metVP }: LeadingOptionProps) {
   const l = useFormatMessage()
 
-  function proposalFinished() {
+  const proposalFinished = useMemo(() => {
     return [ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(status)
-  }
+  }, [status])
 
   return <div className="LeadingOption">
     {status !== ProposalStatus.Pending &&
@@ -24,7 +24,7 @@ export default React.memo(function LeadingOption({ status, leadingOption, metVP 
       <span>
         {l('page.proposal_detail.leading_option_label') + ': '}<strong>{leadingOption}</strong>
       </span>}
-      {proposalFinished() &&
+      {proposalFinished &&
       <span>{l('page.proposal_detail.finished_result_label') + ': '}
         {!metVP ? l('page.proposal_detail.threshold_not_met_label') : <strong>{leadingOption}</strong>}
       </span>}
