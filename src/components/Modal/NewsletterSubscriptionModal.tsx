@@ -18,18 +18,19 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 const check = require('../../images/icons/check-cloud.svg')
 
 export const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
+export const ANONYMOUS_USR_SUBSCRIPTION: string = 'anonymous_subscription'
 
 export type NewsletterSubscriptionModalProps = Omit<ModalProps, 'children'> & {
   onSubscriptionSuccess?: () => void
+  subscribed: boolean
 }
 
-export function NewsletterSubscriptionModal({ onSubscriptionSuccess, ...props }: NewsletterSubscriptionModalProps) {
+export function NewsletterSubscriptionModal({ onSubscriptionSuccess, subscribed, ...props }: NewsletterSubscriptionModalProps) {
   const [account] = useAuthContext()
   const l = useFormatMessage()
   const [isValid, setIsValid] = useState(true);
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
 
   const emailRegex = /\S+@\S+\.\S+/;
 
@@ -46,6 +47,18 @@ export function NewsletterSubscriptionModal({ onSubscriptionSuccess, ...props }:
     }
   };
 
+  function saveSubscription() {
+    const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]');
+    subscriptions.push(account || ANONYMOUS_USR_SUBSCRIPTION)
+    localStorage.setItem(NEWSLETTER_SUBSCRIPTION_KEY, JSON.stringify(subscriptions))
+  }
+
+  function resetModal() {
+    setEmail('')
+    setMessage('');
+    setIsValid(true);
+  }
+
   const [subscribing, handleAccept] = useAsyncTask(async () => {
     if (email && emailRegex.test(email) && onSubscriptionSuccess) {
       const subscriptionResult: NewsletterSubscriptionResult = await Governance.get().subscribeToNewsletter(email)
@@ -53,9 +66,9 @@ export function NewsletterSubscriptionModal({ onSubscriptionSuccess, ...props }:
         setIsValid(false);
         setMessage(subscriptionResult.details || '');
       } else {
-        localStorage.setItem(NEWSLETTER_SUBSCRIPTION_KEY, account || '')
+        saveSubscription()
+        resetModal()
         onSubscriptionSuccess()
-        setSubscribed(true)
       }
     }
   })

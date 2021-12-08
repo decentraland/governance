@@ -183,7 +183,7 @@ export default function IndexPage() {
               </>}
             >
               <Loader active={!proposals || proposalsState.loading} />
-              <SubscriptionBanner />
+              <SubscriptionBanner active={!type} />
               {type && <CategoryBanner type={type} active />}
               {proposals && proposals.data.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
               {proposals && proposals.data.map(proposal => {
