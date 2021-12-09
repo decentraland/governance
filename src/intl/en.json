@@ -146,6 +146,22 @@
       "vp": "VP",
       "voted_yes": "Yes",
       "voted_no": "No"
+    },
+    "follow_up": {
+      "title": "Proposal successfully submitted",
+      "description": "Thanks for taking part in the DAO",
+      "sub": "Here's what you could do next",
+      "view_on_forum_title": "Join the discussion",
+      "view_on_forum_description": "Comment, ideate, expand.",
+      "view_on_forum_label": "View on forum",
+      "join_discord_title": "Visualize on Discord",
+      "join_discord_description": "Our #dao channel is just for that",
+      "join_discord_label": "Join Discord",
+      "copy_link_title": "Keep this at hand",
+      "copy_link_description": "Come back later to check progress",
+      "copy_link_label": "Copy Link",
+      "link_copied_label": "Link Copied!",
+      "dismiss_button_label": "Dismiss"
     }
   },
   "page": {

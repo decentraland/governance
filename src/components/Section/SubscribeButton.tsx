@@ -17,14 +17,17 @@ export type SubscribeButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorEle
 
 export default React.memo(function SubscribeButton({ loading, disabled, subscribed, ...props }: SubscribeButtonProps) {
   const l = useFormatMessage()
-  return <a {...props} target="_black"  className={TokenList.join([
-    'DetailsSection',
-    'SectionButton',
-    'SubscribeButton',
-    loading && 'SectionButton--loading',
-    disabled && 'SectionButton--disabled',
-    props.className
-  ])}>
+  return <a {...props}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={TokenList.join([
+              'DetailsSection',
+              'SectionButton',
+              'SubscribeButton',
+              loading && 'SectionButton--loading',
+              disabled && 'SectionButton--disabled',
+              props.className
+            ])}>
     <Loader active={loading} size="small" />
     <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20"/>
     <span>{l(subscribed ? 'page.proposal_detail.subscribed_button': 'page.proposal_detail.subscribe_button')}</span>
