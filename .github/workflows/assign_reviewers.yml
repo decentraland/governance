@@ -8,6 +8,9 @@ on:
       - opened
       - synchronize
 
+permissions:
+  pull-requests: write
+
 jobs:
 
   assign:
