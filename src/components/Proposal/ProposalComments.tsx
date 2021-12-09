@@ -30,7 +30,11 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
     <div className="ProposalComments__Header">
       <Header>Comments</Header>
       {renderComments &&
-      <Button basic loading={loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''}>
+      <Button basic loading={loading}
+              disabled={!proposal}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={proposal && forumUrl(proposal) || ''}>
         {l('page.proposal_comments.join_discussion_label')}
       </Button>
       }
@@ -45,7 +49,11 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
         {!renderComments && <div className="ProposalComments__NoComments">
           <Watermelon />
           <Paragraph small secondary>{l('page.proposal_comments.no_comments_text')}</Paragraph>
-          <Button basic loading={loading} disabled={!proposal} href={proposal && forumUrl(proposal) || ''}>
+          <Button basic loading={loading}
+                  disabled={!proposal}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={proposal && forumUrl(proposal) || ''}>
             {l('page.proposal_comments.join_discussion_label')}
           </Button>
         </div>}
