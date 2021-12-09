@@ -117,6 +117,13 @@ once you setup this project you can start it using the following command
 
 the app should be running at https://localhost:8000/
 
+## Clear 
+To clear cache and update localization and internationalization renders, run
+
+```bash
+rm -r .cache
+```
+
 ## Project's structure
 
 You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
@@ -134,12 +141,23 @@ this project runs gatsby as front-end and a nodejs server as back-end both conne
 
 **back-end** routes are defined using `express` you can find each route in `src/entities/{Entity}/routes.ts` and those are imported ar `src/server.ts`
 
+### Types and Utils
+
+Types and Utils contain functions and types that will be accessible to both the backend and the frontend.
+
+Be careful with what goes in here, because when webpack tries to compile everything for the frontend it won't have all the backend dependencies, which could result in an error (e.g. `ERROR #98123 WEBPACK`)
+
 ## About proposals statuses
 - Proposals are created in pending, and automatically passed to active
 - After a voting period of 1 week, they are automatically marked as finished, passed, or rejected, depending on the kind of proposal and of the voting results.
 - If proposal is in finished status, a committee user can pass/reject it, with a comment.
 - Once passed, a proposal can be enacted by a committee user, with a comment.
-  
+
+## About voting results
+- Voting results are calculated in two different ways, for different purposes:
+  - `Votes/utils.ts` calculates the results in a user-friendly way, so they can be displayed in the frontend. These results are rounded up for clarity. 
+  - `Proposal/jobs.ts` has a more exact calculation, and is used to evaluate the real result of the voting
+
 ## Copyright & License
 
 This repository is protected with a standard Apache 2 license. See the terms and conditions in the [LICENSE](LICENSE) file.
