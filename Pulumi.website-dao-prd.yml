@@ -25,6 +25,7 @@ config:
   website-dao:GATSBY_SNAPSHOT_DURATION: "604800"
   website-dao:GATSBY_SNAPSHOT_SPACE: snapshot.dcl.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
+  website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
   website-dao:GATSBY_VOTING_POWER_TO_PASS_BAN_NAME: "500000"
   website-dao:GATSBY_VOTING_POWER_TO_PASS_CATALYST: "500000"
   website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT: "1000000"
