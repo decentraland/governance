@@ -119,7 +119,7 @@ export default function SubmitPOI() {
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)
-          navigate(locations.proposal(proposal.id), { replace: true })
+          navigate(locations.proposal(proposal.id, {new: 'true'}), { replace: true })
         })
         .catch((err) => {
           console.error(err, { ...err })

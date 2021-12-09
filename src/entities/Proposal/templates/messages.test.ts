@@ -332,7 +332,7 @@ describe("getUpdateMessage", () => {
 
         describe("if there is no voting information available", () => {
           beforeAll(() => {
-            votes = VotesModel.newScoreFor(proposal.id).votes
+            votes = VotesModel.newScore(proposal.id).votes
           })
 
           it("should return a message with the passed status, with 0 votes", () => {

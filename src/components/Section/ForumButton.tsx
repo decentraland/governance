@@ -16,14 +16,16 @@ export type ForumButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement
 
 export default React.memo(function ForumButton({ loading, disabled, ...props }: ForumButtonProps) {
   const l = useFormatMessage()
-  return <a {...props} target="_black"  className={TokenList.join([
-    'DetailsSection',
-    'SectionButton',
-    'ForumButton',
-    loading && 'SectionButton--loading',
-    disabled && 'SectionButton--disabled',
-    props.className
-  ])}>
+  return <a {...props} target="_blank"
+            rel="noopener noreferrer"
+            className={TokenList.join([
+              'DetailsSection',
+              'SectionButton',
+              'ForumButton',
+              loading && 'SectionButton--loading',
+              disabled && 'SectionButton--disabled',
+              props.className
+            ])}>
     <Loader active={loading} size="small" />
     <img src={forumIcon} width="20" height="20"/>
     <span>{l('page.proposal_detail.forum_button')}</span>
