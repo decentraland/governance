@@ -29,6 +29,9 @@ jobs:
       - name: installing
         run: npm ci
 
+      - name: setup environment
+        run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
+
       # TODO: enabled linters
       # - name: linters
       #   uses: wearerequired/lint-action@v1
