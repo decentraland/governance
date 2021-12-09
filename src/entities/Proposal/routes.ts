@@ -29,6 +29,8 @@ import {
   updateProposalStatusScheme,
   newProposalBanNameScheme,
   ProposalRequiredVP,
+  GrantRequiredVP,
+  GrantDuration,
   INVALID_PROPOSAL_POLL_OPTIONS
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
@@ -134,6 +136,10 @@ export async function getProposals(req: WithAuth<Request>) {
   return { ok: true, total, data }
 }
 
+function proposalDuration(duration: number){
+  return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
+}
+
 const newProposalPollValidator = schema.compile(newProposalPollScheme)
 export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
@@ -149,6 +155,7 @@ export async function createProposalPoll(req: WithAuth) {
     user,
     type: ProposalType.Poll,
     required_to_pass: ProposalRequiredVP[ProposalType.Poll],
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration,
   })
 }
@@ -171,6 +178,7 @@ export async function createProposalBanName(req: WithAuth) {
     user,
     type: ProposalType.BanName,
     required_to_pass: ProposalRequiredVP[ProposalType.BanName],
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -196,6 +204,7 @@ export async function createProposalPOI(req: WithAuth) {
     user,
     type: ProposalType.POI,
     required_to_pass: ProposalRequiredVP[ProposalType.POI],
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -216,6 +225,7 @@ export async function createProposalCatalyst(req: WithAuth) {
     user,
     type: ProposalType.Catalyst,
     required_to_pass: ProposalRequiredVP[ProposalType.Catalyst],
+    finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -231,7 +241,8 @@ export async function createProposalGrant(req: WithAuth) {
   return createProposal({
     user,
     type: ProposalType.Grant,
-    required_to_pass: ProposalRequiredVP[ProposalType.Grant],
+    required_to_pass: GrantRequiredVP[configuration.tier],
+    finish_at: proposalDuration(GrantDuration[configuration.tier]),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -239,11 +250,11 @@ export async function createProposalGrant(req: WithAuth) {
   })
 }
 
-export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass'>) {
+export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>) {
   const id = uuid()
   const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)
-  const end = Time.utc(start).add(SNAPSHOT_DURATION, 'seconds')
+  const end = data.finish_at
   const proposal_url = proposalUrl({ id })
   const title = await templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
