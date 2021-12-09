@@ -9,6 +9,7 @@ config:
     secure: v1:U6qnGAERyOHSF25t:oJf/ZuDn2G4YLpYXs0NIDTiuqEatGvo71wLK7GmHCoLen4aZQMqLoB/VuHe35Jy+8uOAV74I/eMjLBh7VzD1zzza6mvtbkfpRJi60vgjl7kOEdFXtcAWrqp+uxRDbpqlshvT+0M+Uqn3HhkGgjdVvGuoaOaMYLrbWsCwgxbplyJLA3lmpSY=
   website-dao:DISCOURSE_API_KEY:
     secure: v1:9d9uh6vfOHiE/Gnf:7qblAdTboPwUZOm0Cf6FP6Ysosry6CfZSAIZjw+gVNALICi1R4YZke0ZkmINMNGDO1LprRVMjKRepcmIiZ6V0e6q6bDWLuyB0hE0LExTiAc=
+  website-dao:DISCOURSE_BASE_AVATAR_URL: https://sjc6.discourse-cdn.com/standard10
   website-dao:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
   website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.io/
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names

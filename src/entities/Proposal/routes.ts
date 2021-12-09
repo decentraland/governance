@@ -1,15 +1,15 @@
 import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
 import { AlchemyProvider, Block } from '@ethersproject/providers'
-import routes from "decentraland-gatsby/dist/entities/Route/routes";
-import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware";
+import routes from 'decentraland-gatsby/dist/entities/Route/routes';
+import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, signMessage } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
 import { Discourse, DiscoursePost, DiscourseComment } from '../../api/Discourse'
-import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../Discourse/utils';
+import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import ProposalModel from './model';
 import {
@@ -67,6 +67,7 @@ export default routes((route) => {
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
+  route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
   // route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
   // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
 })
@@ -494,6 +495,17 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   dropDiscourseTopic(proposal.discourse_topic_id)
   dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
   return true
+}
+
+export async function proposalComments(req: Request<{ proposal: string }>){
+  const proposal = await getProposal(req)
+  try{
+    const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
+    return filterComments(comments);
+  } catch (e) {
+    console.log(`Could not get proposal comments, `, e)
+    return []
+  }
 }
 
 // export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {

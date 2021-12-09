@@ -4,7 +4,7 @@
   "description": "",
   "main": "Pulumi.ts",
   "scripts": {
-    "test": "jest --no-cache --no-watchman --runInBand",
+    "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --no-watchman --runInBand --setupFiles dotenv/config.js",
     "build": "concurrently -c blue,green -n TYPESCRIPT,GATSBY 'tsc -p .' 'gatsby build'",
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
@@ -37,6 +37,7 @@
   "dependencies": {
     "@snapshot-labs/snapshot.js": "^0.1.11",
     "decentraland-gatsby": "^3.49.0",
+    "dompurify": "^2.3.3",
     "dotenv": "^8.2.0",
     "eth-crypto": "1.6.0",
     "gatsby": "^2.32.11",
@@ -62,6 +63,7 @@
     "slug": "^4.0.4"
   },
   "devDependencies": {
+    "@types/dompurify": "^2.3.1",
     "@types/express": "^4.17.11",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^26.0.24",

@@ -246,6 +246,10 @@
       "no_proposals_submitted": "You haven't submitted any proposal yet.",
       "no_proposals_submitted_action": "Create a proposal"
     },
+    "proposal_comments": {
+      "join_discussion_label": "Join the discussion",
+      "no_comments_text": "No comments yet, you have the chance to be the first one!"
+    },
     "balance": {
       "title": "DAO Voting Power",
       "description": "An overview of your current voting power within the DAO",
