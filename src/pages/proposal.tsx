@@ -41,6 +41,7 @@ import './index.css'
 import './proposal.css'
 import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
+import ProposalComments from '../components/Proposal/ProposalComments'
 import { FollowUpModal } from '../components/Modal/FollowUpModal'
 
 type ProposalPageOptions = {
@@ -150,6 +151,7 @@ export default function ProposalPage() {
             <ProposalHeaderPoi proposal={proposal} />
             <Markdown source={proposal?.description || ''} />
             <ProposalFooterPoi proposal={proposal} />
+            <ProposalComments proposal={proposal} loading={proposalState.loading} />
           </Grid.Column>
 
           <Grid.Column tablet="4" className="ProposalDetailActions">

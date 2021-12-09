@@ -102,14 +102,6 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
   return defaultValue
 }
 
-export const ProposalRequiredVP = {
-  [ProposalType.Grant]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT, 0),
-  [ProposalType.Catalyst]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_CATALYST, 0),
-  [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
-  [ProposalType.POI]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POI, 0),
-  [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
-}
-
 export type UpdateProposalStatusProposal = {
   status:
     | ProposalStatus.Rejected
@@ -299,6 +291,35 @@ export function isProposalGrantTier(value:  string | null | undefined): boolean 
   }
 }
 
+export const ProposalRequiredVP = {
+  [ProposalType.Grant]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT, 0),
+  [ProposalType.Catalyst]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_CATALYST, 0),
+  [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
+  [ProposalType.POI]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POI, 0),
+  [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
+}
+
+export const GrantRequiredVP = {
+  [ProposalGrantTier.Tier1]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER1, ProposalRequiredVP[ProposalType.Grant]),
+  [ProposalGrantTier.Tier2]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER2, ProposalRequiredVP[ProposalType.Grant]),
+  [ProposalGrantTier.Tier3]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER3, ProposalRequiredVP[ProposalType.Grant]),
+  [ProposalGrantTier.Tier4]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4, ProposalRequiredVP[ProposalType.Grant]),
+  [ProposalGrantTier.Tier5]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5, ProposalRequiredVP[ProposalType.Grant]),
+  [ProposalGrantTier.Tier6]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6, ProposalRequiredVP[ProposalType.Grant]),
+}
+
+function grantDuration(value: string | undefined | null) {
+  return Number(value || process.env.GATSBY_SNAPSHOT_DURATION);
+}
+export const GrantDuration = {
+  [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),
+  [ProposalGrantTier.Tier2]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER2),
+  [ProposalGrantTier.Tier3]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER3),
+  [ProposalGrantTier.Tier4]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER4),
+  [ProposalGrantTier.Tier5]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER5),
+  [ProposalGrantTier.Tier6]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER6),
+}
+
 export type NewProposalGrant = {
   title: string,
   abstract: string,
@@ -386,4 +407,11 @@ export const newProposalGrantScheme = {
       maxLength: 1500,
     }
   }
+}
+
+export type ProposalComment = {
+  username: string,
+  avatar_url: string,
+  created_at: string,
+  cooked: string,
 }
