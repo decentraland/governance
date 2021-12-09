@@ -159,3 +159,4 @@ export function abbreviateNumber(vp: number) {
 
   return scaled.toFixed(1) + suffix
 }
+

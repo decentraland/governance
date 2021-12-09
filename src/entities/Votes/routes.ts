@@ -123,3 +123,8 @@ export async function getScores(proposal: ProposalAttributes, addresses: string[
 
   return result
 }
+
+export async function getVotes(proposal_id: string) {
+  let proposalVotes: VoteAttributes | null = await VotesModel.getVotes(proposal_id)
+  return proposalVotes?.votes ? proposalVotes.votes : await VotesModel.createEmpty(proposal_id)
+}

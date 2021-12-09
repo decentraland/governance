@@ -53,6 +53,7 @@ import isUUID from 'validator/lib/isUUID';
 import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
 import { getUpdateMessage } from './templates/messages'
+import { getVotes } from '../Votes/routes'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -285,13 +286,13 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
 
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
       snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: await templates.snapshotTitle(snapshotTemplateProps),
-      body: await templates.snapshotDescription(snapshotTemplateProps),
-      choices: data.configuration.choices,
-      snapshot: block.number,
-      end,
-      start,
-    })
+        name: await templates.snapshotTitle(snapshotTemplateProps),
+        body: await templates.snapshotDescription(snapshotTemplateProps),
+        choices: data.configuration.choices,
+        snapshot: block.number,
+        end,
+        start,
+      })
   } catch (err) {
     throw new RequestError(`Error creating the snapshot message`, RequestError.InternalServerError, err)
   }
@@ -418,14 +419,14 @@ export function commentProposalUpdateInDiscourse(id: string) {
       console.log(`Invalid proposal id for discourse update`, id)
       return
     }
-    let votes = await VotesModel.safelyGetVotesFor(updatedProposal)
+    let votes = await getVotes(updatedProposal.id)
     let updateMessage = getUpdateMessage(updatedProposal, votes)
     let discourseComment: DiscourseComment = {
       topic_id: updatedProposal.discourse_topic_id,
       raw: updateMessage,
       created_at: updatedProposal.created_at.toJSON()
     }
-      await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+    await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
   })
 }
 

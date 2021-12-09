@@ -13,6 +13,8 @@ export const MAX_NAME_SIZE = 15
 export const DEFAULT_CHOICES = [ 'yes', 'no' ]
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
+export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
+
 export function isValidName(name: string) {
   return REGEX_NAME.test(name)
 }
