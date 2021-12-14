@@ -5,18 +5,20 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './DetailsSection.css'
 import './SectionButton.css'
+import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 
-const forumIcon = require('../../images/icons/forum.svg')
+const discordIcon = require('../../images/icons/discord.svg')
 const openIcon = require('../../images/icons/open.svg')
 
-export type ForumButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+export type JoinDiscordButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   loading?: boolean,
   disabled?: boolean,
 }
 
-export default React.memo(function ForumButton({ loading, disabled, ...props }: ForumButtonProps) {
+export default React.memo(function JoinDiscordButton({ loading, disabled, ...props }: JoinDiscordButtonProps) {
   const l = useFormatMessage()
-  return <a {...props} target="_blank"
+  return <a href={JOIN_DISCORD_URL}
+            target="_blank"
             rel="noopener noreferrer"
             className={TokenList.join([
               'DetailsSection',
@@ -26,8 +28,8 @@ export default React.memo(function ForumButton({ loading, disabled, ...props }: 
               props.className
             ])}>
     <Loader active={loading} size="small" />
-    <img src={forumIcon} width="20" height="20"/>
-    <span>{l('page.proposal_detail.forum_button')}</span>
+    <img src={discordIcon} width="20" height="20"/>
+    <span>{l('page.treasury.join_discord_button')}</span>
     <img src={openIcon} width="12" height="12"/>
   </a>
 })
