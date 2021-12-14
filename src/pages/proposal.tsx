@@ -1,5 +1,5 @@
 
-import React, { useMemo } from "react"
+import React, { useMemo, useEffect } from 'react'
 import { useLocation } from '@reach/router'
 import { Personal } from 'web3x/personal'
 import { Address } from 'web3x/address'
@@ -31,7 +31,6 @@ import { VotesList } from "../components/Modal/VotesList"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import retry from "decentraland-gatsby/dist/utils/promise/retry"
 import locations from "../modules/locations"
-import loader from "../modules/loader"
 import { UpdateProposalStatusModal } from "../components/Modal/UpdateProposalStatusModal"
 import { ProposalStatus } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
@@ -42,20 +41,23 @@ import './index.css'
 import './proposal.css'
 import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
+import ProposalComments from '../components/Proposal/ProposalComments'
+import { FollowUpModal } from '../components/Modal/FollowUpModal'
 
 type ProposalPageOptions = {
   changing: boolean,
   confirmSubscription: boolean
   confirmDeletion: boolean
   confirmStatusUpdate: ProposalStatus | false
-  showVotesList: boolean
+  showVotesList: boolean,
+  showFollowUpModal: boolean
 }
 
 export default function ProposalPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false })
+  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false, showFollowUpModal: false})
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
@@ -109,12 +111,21 @@ export default function ProposalPage() {
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [ proposal, account ])
   const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [ proposal, account, committee ])
 
+  useEffect(() => {
+    patchOptions({ showFollowUpModal: params.get('new') === "true" })
+  }, [])
+
   if (proposalState.error) {
     return <>
       <ContentLayout className="ProposalDetailPage">
         <NotFound />
       </ContentLayout>
     </>
+  }
+
+  function closeFollowUpModal() {
+    patchOptions({ showFollowUpModal: false })
+    navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
   return <>
@@ -140,6 +151,7 @@ export default function ProposalPage() {
             <ProposalHeaderPoi proposal={proposal} />
             <Markdown source={proposal?.description || ''} />
             <ProposalFooterPoi proposal={proposal} />
+            <ProposalComments proposal={proposal} loading={proposalState.loading} />
           </Grid.Column>
 
           <Grid.Column tablet="4" className="ProposalDetailActions">
@@ -227,6 +239,13 @@ export default function ProposalPage() {
       loading={updatingStatus}
       onClickAccept={(_, status, description) => updateProposalStatus(status, description)}
       onClose={() => patchOptions({ confirmStatusUpdate: false })}
+    />
+    <FollowUpModal
+      open={options.showFollowUpModal}
+      onDismiss={closeFollowUpModal}
+      onClose={closeFollowUpModal}
+      proposal={proposal}
+      loading={proposalState.loading}
     />
   </>
 }

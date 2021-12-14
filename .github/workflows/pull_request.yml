@@ -1,6 +1,13 @@
 name: Test build
 
 on:
+<<<<<<< HEAD
+=======
+  push:
+    branches:
+      - master
+      - release
+>>>>>>> master
   pull_request:
     branches:
       - master
@@ -23,8 +30,14 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: 'npm'
 
+      - name: set up git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
       - name: installing
         run: npm ci
+
+      - name: setup environment
+        run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
 
       # TODO: enabled linters
       # - name: linters

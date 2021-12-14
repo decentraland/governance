@@ -76,7 +76,7 @@ export function url(path: string = '/', query: Record<string, string> | URLSearc
 
 export default {
   proposals: (options: Partial<ProposalListPage & ProposalListViewFilter & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
-  proposal: (proposal: string) => url(`/proposal/`, { id: proposal }),
+  proposal: (proposal: string, options: { new?: "true" } = {} ) => url(`/proposal/`, { id: proposal, ...options }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
   submit: (type?: ProposalType) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', {}),
   balance: (options: Partial<{ address: string }> = {}) => url(`/balance/`, options),
