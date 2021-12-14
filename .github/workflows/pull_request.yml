@@ -1,13 +1,10 @@
 name: Test build
 
 on:
-<<<<<<< HEAD
-=======
   push:
     branches:
       - master
       - release
->>>>>>> master
   pull_request:
     branches:
       - master
