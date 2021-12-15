@@ -27,6 +27,10 @@ export default function WrappingPage() {
   const [multisigETHBalance, multisigETHBalanceState] = useWalletBalance('0x89214c8Ca9A49E60a3bfa8e00544F384C93719b1', ChainId.ETHEREUM_MAINNET)
   const [multisigMATICBalance, multisigMATICBalanceState] = useWalletBalance('0xB08E3e7cc815213304d884C88cA476ebC50EaAB2', ChainId.MATIC_MAINNET)
 
+  console.log(aragonBalance)
+  console.log(multisigETHBalance)
+  console.log(multisigMATICBalance)
+
   return (<>
     <Head
       title={l('page.treasury.title') || ''}

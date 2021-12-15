@@ -38,6 +38,10 @@
 	justify-content: center;
 }
 
+.TokensPerWalletPopup .TokensPerWalletPopup__RightBlock {
+	align-items: flex-end;
+}
+
 .TokensPerWalletPopup .ui.header {
 	margin-bottom: 0.5rem;
 	font-size: 16px;
@@ -60,7 +64,6 @@ a.TokensPerWalletPopup__Link {
 	color: #89baff;
 	font-size: 10px;
 	line-height: 10px;
-	font-weight: bold;
 	text-transform: uppercase;
 	opacity: 0;
 }
