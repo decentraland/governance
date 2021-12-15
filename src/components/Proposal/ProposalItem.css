@@ -3,8 +3,16 @@
 }
 
 .ProposalItem .ProposalItem__Title {
-  padding-bottom: 20px;
+  padding-bottom: 0;
   padding-right: 40px;
+}
+
+.ProposalItem .ProposalItem__Status {
+  padding-top: 8px;
+}
+
+.ProposalItem .ProposalItem__Title .ui.header:first-child{
+  margin-bottom: 0;
 }
 
 .ProposalItem .ProposalItem__Title .ui.button {
