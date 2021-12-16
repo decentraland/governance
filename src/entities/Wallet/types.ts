@@ -1,4 +1,4 @@
-import { ChainId } from 'decentraland-gatsby/dist/utils/loader/manaBalance'
+import { ChainId } from '@dcl/schemas'
 
 export type WalletAttributes = {
   id: string,
