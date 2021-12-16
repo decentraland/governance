@@ -28,7 +28,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true
     }
   })
-
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
