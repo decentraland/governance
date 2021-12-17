@@ -29,11 +29,17 @@ jobs:
       - name: set up git
         run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
+      - name: get env
+        run: cat $GITHUB_ENV
+
       - name: installing
         run: npm ci
 
       - name: setup environment
         run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
+
+      - name: get env
+        run: cat $GITHUB_ENV
 
       # TODO: enabled linters
       # - name: linters

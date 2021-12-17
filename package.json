@@ -4,7 +4,7 @@
   "description": "",
   "main": "Pulumi.ts",
   "scripts": {
-    "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --no-watchman --runInBand --setupFiles dotenv/config.js",
+    "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --runInBand",
     "build": "concurrently -c blue,green -n TYPESCRIPT,GATSBY 'tsc -p .' 'gatsby build'",
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
@@ -17,6 +17,10 @@
   },
   "jest": {
     "preset": "ts-jest",
+    "watchman": false,
+    "setupFiles": [
+      "dotenv/config.js"
+    ],
     "roots": [
       "<rootDir>/src/"
     ],
