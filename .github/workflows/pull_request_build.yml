@@ -49,7 +49,7 @@ jobs:
         run: npm run build
 
       - uses: octokit/request-action@v2.x
-        if: ${{ github.actor !== '2fd' }}
+        if: ${{ github.actor != '2fd' }}
         id: assign_pr
         with:
           route: POST /repos/:repository/pulls/:pull_number/requested_reviewers
