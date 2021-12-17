@@ -46,6 +46,8 @@ jobs:
 
       - name: testing
         run: npm test
+        env:
+          DISCOURSE_API_KEY: ${{ secrets.DISCOURSE_API_KEY }}
 
       - name: building
         run: npm run build
