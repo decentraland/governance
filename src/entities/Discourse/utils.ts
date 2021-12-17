@@ -25,6 +25,7 @@ function setAvatarUrl(post: DiscoursePostInTopic) {
 
 export function filterComments(comments: DiscourseTopic) {
   const posts = comments.post_stream.posts
+  console.log([DISCOURSE_USER.toLowerCase(), 'system'])
   const userPosts: DiscoursePostInTopic[] = posts.filter((post) =>
     ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase()))
     .slice(-3)
