@@ -50,7 +50,7 @@ export default function ProposalItem({ proposal, subscribing, subscribed, onSubs
           </Button>}
           {winner.votes > 0 && <LeadingOption status={proposal.status} leadingOption={winner.choice} metVP={winner.power >= (proposal.required_to_pass || 0)} />}
         </div>
-        <div>
+        <div className="ProposalItem__Status">
           <StatusLabel status={proposal.status} />
           <CategoryLabel type={proposal.type} />
           <FinishLabel date={proposal.finish_at} />

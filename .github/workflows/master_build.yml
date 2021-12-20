@@ -1,16 +1,9 @@
-name: Test build
+name: Master build
 
 on:
   push:
     branches:
       - master
-      - release
-  pull_request:
-    branches:
-      - master
-    types:
-      - opened
-      - synchronize
 
 jobs:
 
@@ -46,6 +39,8 @@ jobs:
 
       - name: testing
         run: npm test
+        env:
+          DISCOURSE_API_KEY: ${{ secrets.DISCOURSE_API_KEY }}
 
       - name: building
         run: npm run build
