@@ -56,6 +56,7 @@ import * as templates from './templates'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
 import { getUpdateMessage } from './templates/messages'
 import { getVotes } from '../Votes/routes'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -85,20 +86,20 @@ function formatError(err: Error) {
 function inBackground(fun: () => Promise<any>) {
   Promise.resolve()
     .then(fun)
-    .then((result) => console.log('Completed background task: ', JSON.stringify(result)))
-    .catch((err) => console.log('Error running background task: ', formatError(err)))
+    .then((result) => logger.log('Completed background task', {result: JSON.stringify(result)}))
+    .catch((err) => logger.error('Error running background task', formatError(err)))
 }
 
 function dropDiscourseTopic(topic_id: number) {
   inBackground(() => {
-    console.log(`Dropping discourse topic:`, topic_id)
+    logger.log(`Dropping discourse topic`, {topic_id: topic_id})
     return Discourse.get().removeTopic(topic_id, DISCOURSE_AUTH)
   })
 }
 
 function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
   inBackground(async () => {
-    console.log(`Dropping snapshot proposal: ${proposal_space}/${proposal_id}`)
+    logger.log(`Dropping snapshot proposal: ${proposal_space}/${proposal_id}`)
     const address = SNAPSHOT_ADDRESS
     const msg = await Snapshot.get().removeProposalMessage(proposal_space, proposal_id)
     const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
@@ -315,14 +316,14 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   let snapshotProposal: SnapshotResult
   try {
     const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
-    console.log(sig, msg)
+    logger.log('Creating proposal in snapshot', {signed: sig, message: msg})
     snapshotProposal = await Snapshot.get().send(address, msg, sig)
   } catch (err) {
     throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err)
   }
 
   const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
-  console.log(`Snapshot proposal created:`, snapshot_url, JSON.stringify(snapshotProposal))
+  logger.log(`Snapshot proposal created`, {snapshot_url: snapshot_url, snapshot_proposal: JSON.stringify(snapshotProposal)})
 
   //
   // Get snapshot content
@@ -361,7 +362,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   }
 
   const forum_url = forumUrl({ discourse_topic_slug: discourseProposal.topic_slug, discourse_topic_id: discourseProposal.topic_id })
-  console.log(`Discourse proposal created:`, forum_url, JSON.stringify(discourseProposal))
+  logger.log(`Discourse proposal created`, {forum_url: forum_url, discourse_proposal: JSON.stringify(discourseProposal)})
 
   //
   // Create proposal in DB
@@ -428,7 +429,7 @@ export function commentProposalUpdateInDiscourse(id: string) {
   inBackground(async () => {
     const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
     if (!updatedProposal) {
-      console.log(`Invalid proposal id for discourse update`, id)
+      logger.error(`Invalid proposal id for discourse update`, {id: id})
       return
     }
     let votes = await getVotes(updatedProposal.id)
@@ -514,7 +515,7 @@ export async function proposalComments(req: Request<{ proposal: string }>){
     const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
     return filterComments(comments);
   } catch (e) {
-    console.log(`Could not get proposal comments, `, e)
+    logger.error('Could not get proposal comments', e)
     return []
   }
 }
