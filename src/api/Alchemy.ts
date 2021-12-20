@@ -59,6 +59,7 @@ export class Alchemy extends API {
   }
 
   async getNativeBalances<P extends keyof BalanceResponse>(address: string) {
+    // blockNumber = getBlockNumber - 256
     return await this.fetch<BalanceResponse>(
       '/v2/HcW-dJIcedLgGAB8htL7M1L8ir2Sihfe',
       this.options()
@@ -67,7 +68,7 @@ export class Alchemy extends API {
           "jsonrpc": "2.0",
           "method": "eth_getBalance",
           "id": "1",
-          "params": [address, "latest"]
+          "params": [address, blockNumber] // blocknumber "0x100" == 256
         })
     )
   }
