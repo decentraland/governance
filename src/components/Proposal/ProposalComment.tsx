@@ -14,7 +14,14 @@ export type ProposalCommentProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'c
 
 export default function ProposalComment({ user, avatar_url, created_at, cooked}: ProposalCommentProps) {
   const createMarkup = (html:any) => {
-    return  {__html: DOMPurify.sanitize(html, {USE_PROFILES: {html: true}})}
+    DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+      if (node.nodeName && node.nodeName === 'IMG') {
+        node.className="ProposalComment__Cooked__Img"
+      }
+    });
+
+    let clean = DOMPurify.sanitize(html, {USE_PROFILES: {html: true}})
+    return  {__html: clean}
   }
 
   return <div className="ProposalComment">
@@ -26,7 +33,7 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked}:
               <Paragraph bold>{user}</Paragraph>
               <span><Paragraph secondary >{Time.from(created_at).fromNow()}</Paragraph></span>
             </div>
-            <div dangerouslySetInnerHTML={createMarkup(cooked)} />
+            <div className="ProposalComment__Cooked" dangerouslySetInnerHTML={createMarkup(cooked)} />
           </div>
         </div>
 }
