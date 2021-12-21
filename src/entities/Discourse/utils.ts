@@ -28,6 +28,7 @@ export function filterComments(comments: DiscourseTopic) {
   const userPosts: DiscoursePostInTopic[] = posts.filter((post) =>
     ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase()))
     .slice(-3)
+
   const discourseComments: ProposalComment[] = userPosts.map(post => {
     return {
       username: post.username,
