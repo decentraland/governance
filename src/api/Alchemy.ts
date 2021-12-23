@@ -3,13 +3,13 @@ import API from 'decentraland-gatsby/dist/utils/api/API';
 
 export type TokenBalance = {
   contractAddress: string,
-  tokenBalance: string,
-  error: string,
+  tokenBalance: string | null,
+  error: string | null,
 }
 
 export type TokenBalanceResponse = {
   id: number,
-  jsonpc: string,
+  jsonrpc: string,
   result:{
     address: string,
     tokenBalances: TokenBalance[],
@@ -18,7 +18,13 @@ export type TokenBalanceResponse = {
 
 export type BalanceResponse = {
   id: number,
-  jsonpc: string,
+  jsonrpc: string,
+  result: string,
+}
+
+export type BlockNumberResponse = {
+  id: number,
+  jsonrpc: string,
   result: string,
 }
 
@@ -58,8 +64,21 @@ export class Alchemy extends API {
     )
   }
 
-  async getNativeBalances<P extends keyof BalanceResponse>(address: string) {
-    // blockNumber = getBlockNumber - 256
+  async getBlockNumber<P extends keyof BlockNumberResponse>() {
+    return await this.fetch<BlockNumberResponse>(
+      '/v2/HcW-dJIcedLgGAB8htL7M1L8ir2Sihfe',
+      this.options()
+        .method('POST')
+        .json({
+          "jsonrpc": "2.0",
+          "method": "eth_blockNumber",
+          "id": "0",
+          "params": []
+        })
+    )
+  }
+
+  async getNativeBalances<P extends keyof BalanceResponse>(address: string, blockNumber: string = 'latest') {
     return await this.fetch<BalanceResponse>(
       '/v2/HcW-dJIcedLgGAB8htL7M1L8ir2Sihfe',
       this.options()
@@ -68,7 +87,7 @@ export class Alchemy extends API {
           "jsonrpc": "2.0",
           "method": "eth_getBalance",
           "id": "1",
-          "params": [address, blockNumber] // blocknumber "0x100" == 256
+          "params": [address, blockNumber]
         })
     )
   }
