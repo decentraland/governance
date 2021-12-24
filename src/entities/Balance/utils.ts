@@ -97,3 +97,21 @@ async function findMatchingToken(wallet: WalletAttributes, balance: TokenBalance
   return token
 }
 
+export function calculateTotalsByToken(balancesByWallet: { walletName: string; tokenBalances: ({ decimals: number; tokenName: string; tokenBalance: string })[]; network: number }) {
+  return {}
+}
+
+export async function getAggregatedBalances(){
+
+  const balancesByWallet = {walletName: "Aragon Agent", network: 1, tokenBalances: [
+    {tokenName: "mana", tokenBalance: "0x00000000000000000000000000000000000000000019e6973c9090d9ed916663", decimals: 18},
+    {tokenName: "ether", tokenBalance: "0x0000000000000000000000000000000000000000000000000000000000000000", decimals: 18},
+    {tokenName: "dai", tokenBalance: "0x0000000000000000000000000000000000000000000153d102070746599ee535", decimals: 18},
+    {tokenName: "tether", tokenBalance: "0x0000000000000000000000000000000000000000000000000000015141731305", decimals: 6},
+    {tokenName: "usdc", tokenBalance: "0x0000000000000000000000000000000000000000000000000000010e39baf2d7", decimals: 6},
+    {tokenName: "ether", tokenBalance: "0x27007b89f926e00", decimals: 18}
+    ]}
+  const aggregatedBalances =  calculateTotalsByToken(balancesByWallet)
+  return aggregatedBalances
+}
+
