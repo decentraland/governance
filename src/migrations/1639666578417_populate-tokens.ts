@@ -57,6 +57,18 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       INTO public.tokens (id, contract, network, name, symbol, decimals, created_at)
       VALUES (10, '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', 137, 'usdc', 'USDC', 6, CURRENT_TIMESTAMP)
   `)
+
+  // Native Tokens
+  pgm.sql(`
+      INSERT
+      INTO public.tokens (id, contract, network, name, symbol, decimals, created_at)
+      VALUES (11, 'ether', 1, 'ether', 'ETH', 18, CURRENT_TIMESTAMP)
+  `)
+  pgm.sql(`
+      INSERT
+      INTO public.tokens (id, contract, network, name, symbol, decimals, created_at)
+      VALUES (12, 'matic', 137, 'matic', 'MATIC', 18, CURRENT_TIMESTAMP)
+  `)
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
