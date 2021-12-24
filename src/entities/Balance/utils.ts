@@ -25,9 +25,7 @@ export async function getNativeBalance(wallet: WalletAttributes) {
 
 export async function getWalletBalance(wallet: WalletAttributes) {
   const chainId = wallet.network
-  const tokens: TokenAttributes[] = await TokenModel.find<TokenAttributes>({ network: chainId })
-  const contracts = tokens.map(t => t.contract)
-
+  const contracts: string[] = await TokenModel.getNonNativeContracts(chainId)
   const balances: TokenBalanceResponse = await Alchemy.get(chainId).getTokenBalances(wallet.address, contracts)
   const tokenBalances = balances.result.tokenBalances
 
@@ -59,9 +57,10 @@ export async function latestConsistentBlockNumber(chainId: ChainId) {
 }
 
 export async function getBalances() {
-  const wallets: WalletAttributes[] = await WalletModel.find({})
-
+  const createdBalances=[]
   const errors = []
+
+  const wallets: WalletAttributes[] = await WalletModel.find()
 
   for (const wallet of wallets) {
     const balances = await getWalletBalance(wallet)
@@ -76,21 +75,24 @@ export async function getBalances() {
           created_at: Time.utc().toJSON() as any
         }
         await BalanceModel.create(newBalance)
-      } catch (error) {
-        errors.push({ wallet: wallet, balance: balance, error: error })
+        createdBalances.push(newBalance)
+      } catch (err) {
+        errors.push({ wallet: wallet, balance: balance, error: err.message })
       }
     }
   }
 
-  if (errors) {
+  if (errors.length > 0) {
     logger.error('Errors while creating balances: ', { errors: errors })
   }
+
+  return createdBalances
 }
 
 async function findMatchingToken(wallet: WalletAttributes, balance: TokenBalance) {
   let token = await TokenModel.findOne<TokenAttributes>({ network: wallet.network, contract: balance.contractAddress })
   if (!token) {
-    throw new Error(`Could not find matching token for contract "${balance.contractAddress}" in network "${wallet.network}"`)
+    throw new Error(`Could not find matching token for contract ${balance.contractAddress} in network ${wallet.network}`)
   }
   return token
 }

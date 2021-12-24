@@ -58,7 +58,6 @@ describe('balances', () => {
   describe('getWalletBalance', () => {
     it('should return a list with the balance of each token in the wallet and the native balance', async () => {
       let tokenBalances = await getWalletBalance(ethereumWallet)
-      let nativeBalance = await getNativeBalance(ethereumWallet)
       expect(tokenBalances).toEqual([
         {
           'contractAddress': token1.contract,
@@ -68,8 +67,11 @@ describe('balances', () => {
           'contractAddress': token2.contract,
           'error': null,
           'tokenBalance': '0x0000000000000000000000000000000000000000000153d102070746599ee535'
-        },
-        nativeBalance
+        }, {
+          'contractAddress': 'ether',
+          'error': null,
+          'tokenBalance': '0x27007b89f926e00'
+        }
       ])
     });
 
@@ -79,14 +81,16 @@ describe('balances', () => {
       })
       it('only returns the token balances successfully obtained ', async () => {
         let tokenBalances = await getWalletBalance(ethereumWallet)
-        let nativeBalance = await getNativeBalance(ethereumWallet)
         expect(tokenBalances).toEqual([
           {
             'contractAddress': token2.contract,
             'error': null,
             'tokenBalance': '0x0000000000000000000000000000000000000000000153d102070746599ee535'
-          },
-          nativeBalance
+          }, {
+            'contractAddress': 'ether',
+            'error': null,
+            'tokenBalance': '0x27007b89f926e00'
+          }
         ])
       });
     });
