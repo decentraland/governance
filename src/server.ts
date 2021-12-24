@@ -17,10 +17,12 @@ import committee from './entities/Committee/routes'
 import social from './entities/Social/routes'
 import sitemap from './entities/Sitemap/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
+import { fetchBalances } from './entities/Balance/jobs'
 
 const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
+jobs.cron('@eachDay', fetchBalances)
 
 const app = express()
 app.set('x-powered-by', false)
