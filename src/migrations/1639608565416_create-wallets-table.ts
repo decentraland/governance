@@ -20,7 +20,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true
     },
     network: {
-      type: 'TEXT',
+      type: 'INT',
       notNull: true
     },
     created_at: {

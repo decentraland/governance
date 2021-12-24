@@ -9,7 +9,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       INTO public.wallets (id, address, name, network, created_at)
       VALUES (1, '0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce', 'Aragon Agent', 1, CURRENT_TIMESTAMP);
   `)
-  pgm.sql(`public
+  pgm.sql(`
       INSERT
       INTO public.wallets (id, address, name, network, created_at)
       VALUES (2, '0x89214c8Ca9A49E60a3bfa8e00544F384C93719b1', 'Gnosis Safe', 1, CURRENT_TIMESTAMP);
