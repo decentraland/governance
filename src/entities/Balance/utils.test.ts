@@ -2,7 +2,7 @@ import { ChainId } from '@dcl/schemas'
 import {
   getBlockNumber,
   latestConsistentBlockNumber,
-  getWalletBalance,
+  getTokenBalancesFor,
   getNativeBalance,
   getAggregatedBalances
 } from './utils'
@@ -61,9 +61,9 @@ describe('balances', () => {
     });
   });
 
-  describe('getWalletBalance', () => {
+  describe('getTokenBalancesFor', () => {
     it('should return a list with the balance of each token in the wallet and the native balance', async () => {
-      let tokenBalances = await getWalletBalance(ethereumWallet)
+      let tokenBalances = await getTokenBalancesFor(ethereumWallet)
       expect(tokenBalances).toEqual([
         {
           'contractAddress': token1.contract,
@@ -86,7 +86,7 @@ describe('balances', () => {
         jest.spyOn(AlchemyMock.prototype, 'getTokenBalances').mockResolvedValue(someTokensWithError);
       })
       it('only returns the token balances successfully obtained ', async () => {
-        let tokenBalances = await getWalletBalance(ethereumWallet)
+        let tokenBalances = await getTokenBalancesFor(ethereumWallet)
         expect(tokenBalances).toEqual([
           {
             'contractAddress': token2.contract,
@@ -106,7 +106,7 @@ describe('balances', () => {
         jest.spyOn(AlchemyMock.prototype, 'getTokenBalances').mockResolvedValue(allTokensWithError);
       })
       it('should only return the native token balance', async () => {
-        let tokenBalances = await getWalletBalance(ethereumWallet)
+        let tokenBalances = await getTokenBalancesFor(ethereumWallet)
         let nativeBalance = await getNativeBalance(ethereumWallet)
         expect(tokenBalances).toEqual([nativeBalance])
       });

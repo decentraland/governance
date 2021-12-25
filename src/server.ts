@@ -22,7 +22,7 @@ import { fetchBalances } from './entities/Balance/jobs'
 const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
-jobs.cron('@eachDay', fetchBalances)
+jobs.cron('@each30Minute', fetchBalances)
 
 const app = express()
 app.set('x-powered-by', false)

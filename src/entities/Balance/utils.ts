@@ -23,7 +23,7 @@ export async function getNativeBalance(wallet: WalletAttributes) {
   return nativeBalanceResult
 }
 
-export async function getWalletBalance(wallet: WalletAttributes) {
+export async function getTokenBalancesFor(wallet: WalletAttributes):Promise<TokenBalance[]> {
   const chainId = wallet.network
   const contracts: string[] = await TokenModel.getNonNativeContracts(chainId)
   const balances: TokenBalanceResponse = await Alchemy.get(chainId).getTokenBalances(wallet.address, contracts)
@@ -57,27 +57,32 @@ export async function latestConsistentBlockNumber(chainId: ChainId) {
 }
 
 export async function getBalances() {
-  const createdBalances=[]
+  const createdBalances = []
   const errors = []
 
   const wallets: WalletAttributes[] = await WalletModel.find()
 
   for (const wallet of wallets) {
-    const balances = await getWalletBalance(wallet)
-    for (const balance of balances) {
+    const tokenBalances:TokenBalance[] = await getTokenBalancesFor(wallet)
+    for (const tokenBalance of tokenBalances) {
       try {
-        const token = await findMatchingToken(wallet, balance)
-        const newBalance: BalanceAttributes = {
-          id: uuid(),
-          wallet_id: wallet.id,
-          token_id: token.id,
-          amount: balance.tokenBalance!,
-          created_at: Time.utc().toJSON() as any
+        const token = await findMatchingToken(wallet.network, tokenBalance.contractAddress)
+        const previousBalance = await BalanceModel.findLatest(wallet.id, token.id)
+        if (previousBalance && previousBalance.amount === tokenBalance.tokenBalance) {
+          return
+        } else {
+          const newBalance: BalanceAttributes = {
+            id: uuid(),
+            wallet_id: wallet.id,
+            token_id: token.id,
+            amount: tokenBalance.tokenBalance!,
+            created_at: Time.utc().toJSON() as any
+          }
+          await BalanceModel.create(newBalance)
+          createdBalances.push(newBalance)
         }
-        await BalanceModel.create(newBalance)
-        createdBalances.push(newBalance)
       } catch (err) {
-        errors.push({ wallet: wallet, balance: balance, error: err.message })
+        errors.push({ wallet: wallet, balance: tokenBalance, error: err.message })
       }
     }
   }
@@ -89,10 +94,10 @@ export async function getBalances() {
   return createdBalances
 }
 
-async function findMatchingToken(wallet: WalletAttributes, balance: TokenBalance) {
-  let token = await TokenModel.findOne<TokenAttributes>({ network: wallet.network, contract: balance.contractAddress })
+async function findMatchingToken(network: ChainId, contractAddress: string) {
+  let token = await TokenModel.findOne<TokenAttributes>({ network: network, contract: contractAddress })
   if (!token) {
-    throw new Error(`Could not find matching token for contract ${balance.contractAddress} in network ${wallet.network}`)
+    throw new Error(`Could not find matching token for contract ${contractAddress} in network ${network}`)
   }
   return token
 }
@@ -101,17 +106,39 @@ export function calculateTotalsByToken(balancesByWallet: { walletName: string; t
   return {}
 }
 
-export async function getAggregatedBalances(){
+export async function getAggregatedBalances() {
 
-  const balancesByWallet = {walletName: "Aragon Agent", network: 1, tokenBalances: [
-    {tokenName: "mana", tokenBalance: "0x00000000000000000000000000000000000000000019e6973c9090d9ed916663", decimals: 18},
-    {tokenName: "ether", tokenBalance: "0x0000000000000000000000000000000000000000000000000000000000000000", decimals: 18},
-    {tokenName: "dai", tokenBalance: "0x0000000000000000000000000000000000000000000153d102070746599ee535", decimals: 18},
-    {tokenName: "tether", tokenBalance: "0x0000000000000000000000000000000000000000000000000000015141731305", decimals: 6},
-    {tokenName: "usdc", tokenBalance: "0x0000000000000000000000000000000000000000000000000000010e39baf2d7", decimals: 6},
-    {tokenName: "ether", tokenBalance: "0x27007b89f926e00", decimals: 18}
-    ]}
-  const aggregatedBalances =  calculateTotalsByToken(balancesByWallet)
+  const balancesByWallet = {
+    walletName: 'Aragon Agent', network: 1, tokenBalances: [
+      {
+        tokenName: 'mana',
+        tokenBalance: '0x00000000000000000000000000000000000000000019e6973c9090d9ed916663',
+        decimals: 18
+      },
+      {
+        tokenName: 'ether',
+        tokenBalance: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        decimals: 18
+      },
+      {
+        tokenName: 'dai',
+        tokenBalance: '0x0000000000000000000000000000000000000000000153d102070746599ee535',
+        decimals: 18
+      },
+      {
+        tokenName: 'tether',
+        tokenBalance: '0x0000000000000000000000000000000000000000000000000000015141731305',
+        decimals: 6
+      },
+      {
+        tokenName: 'usdc',
+        tokenBalance: '0x0000000000000000000000000000000000000000000000000000010e39baf2d7',
+        decimals: 6
+      },
+      { tokenName: 'ether', tokenBalance: '0x27007b89f926e00', decimals: 18 }
+    ]
+  }
+  const aggregatedBalances = calculateTotalsByToken(balancesByWallet)
   return aggregatedBalances
 }
 
