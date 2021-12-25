@@ -32,7 +32,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true
     },
     created_at: {
-      type: 'TIMESTAMP',
+      type: 'TIMESTAMPTZ',
       notNull: true
     }
   })
