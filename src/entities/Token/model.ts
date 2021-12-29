@@ -14,7 +14,8 @@ export default class TokenModel extends Model<TokenAttributes> {
       FROM ${table(TokenModel)}
       WHERE
         "network" = ${chainId}
-        AND "contract" NOT IN (${"NATIVE"})
+        AND "contract" != (${'NATIVE'})
+      ORDER BY name
     `
 
     let contracts = await this.query(query)
@@ -31,13 +32,14 @@ export default class TokenModel extends Model<TokenAttributes> {
 
   static async getTokenList(): Promise<Partial<TokenAttributes>[]>{
     const query = SQL`
-      SELECT DISTINCT name, decimals
+      SELECT DISTINCT name, decimals, symbol
       FROM ${table(TokenModel)} as t
-      GROUP BY name, decimals
+      GROUP BY name, decimals, symbol
+      ORDER BY name
     `
 
     let tokens = await this.query(query)
-    return tokens.map(t => {return {name: t.name, decimals: t.decimals}})
+    return tokens.map(t => {return {name: t.name, decimals: t.decimals, symbol: t.symbol}})
   }
 
   static async findToken(id: string) {
