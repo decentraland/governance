@@ -21,6 +21,7 @@ export default React.memo(function ForumButton({ loading, disabled, ...props }: 
             className={TokenList.join([
               'DetailsSection',
               'SectionButton',
+              'ForumButton',
               loading && 'SectionButton--loading',
               disabled && 'SectionButton--disabled',
               props.className
