@@ -1,5 +1,4 @@
 import React from 'react'
-import { ChainId } from '@dcl/schemas'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
@@ -10,26 +9,21 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import JoinDiscordButton from '../components/Section/JoinDiscordButton'
 
-import { useWalletBalance} from '../hooks/useWalletBalance'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { snapshotUrl} from '../entities/Proposal/utils'
 import './transparency.css'
 import TokenBalance from '../components/Token/TokenBalance'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { Governance } from '../api/Governance'
 require('../images/icons/info.svg')
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
 export default function WrappingPage() {
   const l = useFormatMessage()
+  const [balances] = useAsyncMemo(async () => Governance.get().getBalances())
 
-  // useTokenBalance
-  const [aragonBalance, aragonBalanceState] = useWalletBalance('0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce', ChainId.ETHEREUM_MAINNET)
-  const [multisigETHBalance, multisigETHBalanceState] = useWalletBalance('0x89214c8Ca9A49E60a3bfa8e00544F384C93719b1', ChainId.ETHEREUM_MAINNET)
-  const [multisigMATICBalance, multisigMATICBalanceState] = useWalletBalance('0xB08E3e7cc815213304d884C88cA476ebC50EaAB2', ChainId.MATIC_MAINNET)
-
-  console.log(aragonBalance)
-  console.log(multisigETHBalance)
-  console.log(multisigMATICBalance)
+  console.log(balances)
 
   return (<>
     <Head
@@ -56,10 +50,9 @@ export default function WrappingPage() {
                   <Header>Current Balance</Header>
                   <Loader size="tiny" className="balance" active={false} />
                   <div className="TokenContainer">
-                    <TokenBalance title="MANA Tokens" value={11666000} iconName={'mana'} />
-                    <TokenBalance title="DAI Tokens" value={627246} iconName={'dai'} />
-                    <TokenBalance title="USDC Tokens" value={1124536} iconName={'usdc'} />
-                    <TokenBalance title="USDT Tokens" value={607246} iconName={'usdt'} />
+                    {balances && balances.map(tokenBalance => {
+                      return <TokenBalance aggregatedTokenBalance={tokenBalance}/>
+                    })}
                   </div>
                 </Card.Content>
               </Card>

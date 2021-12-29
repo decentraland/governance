@@ -4,30 +4,25 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import './TokenBalance.css'
 import Icon from 'react-crypto-icons'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import TokensPerWalletPopup from './TokensPerWalletPopup'
+import { AggregatedTokenBalance} from '../../entities/Balance/types'
+import { formattedTokenBalance } from '../../entities/Balance/utils'
 
 export type TokenBalanceProps = React.HTMLAttributes<HTMLDivElement> & {
-  title: string
-  iconName: string
-  value: number | bigint
+  aggregatedTokenBalance: AggregatedTokenBalance
 }
 
-export default function TokenBalance({title, iconName, value, ...props }: TokenBalanceProps) {
+export default function TokenBalance({aggregatedTokenBalance} : TokenBalanceProps) {
   const l = useFormatMessage()
 
-  return (<div {...props}
-               className={TokenList.join([
-                 'TokenBalance',
-                 props.className
-               ])}>
-    <Icon name={iconName} size={45} />
+  return (<div className='TokenBalance'>
+    <Icon name={aggregatedTokenBalance.tokenTotal.name} size={45} />
     <div className="TokenBalance_description">
       <div className="TokenBalance_header">
-        <Header sub>{title}</Header>
-        <TokensPerWalletPopup/>
+        <Header sub>{aggregatedTokenBalance.tokenTotal.name.toUpperCase() + ' Tokens'}</Header>
+        <TokensPerWalletPopup tokensPerWallet={aggregatedTokenBalance.tokenInWallets} />
       </div>
-      <span>{l('general.number', { value: value })}</span>
+      <span>{l('general.number', { value: formattedTokenBalance(aggregatedTokenBalance.tokenTotal) })}</span>
     </div>
   </div>)
 }
