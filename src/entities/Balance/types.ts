@@ -10,6 +10,7 @@ export type BalanceAttributes = {
 
 export type TokenBalance = {
   name: string,
+  symbol: string,
   decimals: number,
   amount: string,
 }

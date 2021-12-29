@@ -5,17 +5,13 @@ import { WalletAttributes } from '../Wallet/types'
 import { TokenAttributes } from '../Token/types'
 import TokenModel from '../Token/model'
 import { asNumber } from '../Proposal/utils'
-import { BalanceAttributes, AggregatedTokenBalance, TokenBalance } from './types'
+import { BalanceAttributes, AggregatedTokenBalance } from './types'
 import BalanceModel from './model'
 import { v1 as uuid } from 'uuid'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 export const NATIVE_CONTRACT = 'NATIVE'
-
-export function formattedTokenBalance(tokenBalance: TokenBalance) {
-  return (BigInt(tokenBalance.amount) / BigInt(10 ** tokenBalance.decimals)).toString(16)
-}
 
 export async function getNativeBalance(wallet: WalletAttributes) {
   const chainId = wallet.network
@@ -99,6 +95,10 @@ export async function getBalances() {
   return createdBalances
 }
 
+function alphabeticalSort(a:string, b:string) {
+  return ('' + a).localeCompare(b)
+}
+
 export async function aggregateBalances(latestBalances: BalanceAttributes[]):Promise<AggregatedTokenBalance[]> {
   const transparencyTokens:Partial<TokenAttributes>[] = await TokenModel.getTokenList()
   const tokenBalances:AggregatedTokenBalance[] = []
@@ -107,6 +107,7 @@ export async function aggregateBalances(latestBalances: BalanceAttributes[]):Pro
     tokenBalances.push({
       tokenTotal: {
         name: token.name!,
+        symbol: token.symbol!,
         amount: toPaddedHexString(0),
         decimals: token.decimals!
       },
@@ -126,14 +127,17 @@ export async function aggregateBalances(latestBalances: BalanceAttributes[]):Pro
           wallet: wallet,
           tokenBalance: {
             name: token.name,
+            symbol: token.symbol,
             decimals: token.decimals,
             amount: balance.amount
           }
         })
       }
+    tokenBalance.tokenInWallets.sort((a, b) => alphabeticalSort(a.wallet.name, b.wallet.name))
     }
   }
 
+  tokenBalances.sort((a, b) => alphabeticalSort(a.tokenTotal.name, b.tokenTotal.name))
   return tokenBalances
 }
 

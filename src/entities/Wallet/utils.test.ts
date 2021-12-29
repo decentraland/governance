@@ -1,10 +1,10 @@
-import { WalletAttributes, NetworkScanLink } from './types'
-import { gnosisSafeEth, gnosisSafeMatic } from '../Balance/__mock__/mockedBalances.test'
-import { networkScanLink } from './utils'
+import { WalletAttributes, BlockExplorerLink } from './types'
+import { gnosisSafeEth, gnosisSafeMatic } from '../Balance/__mock__/mockedBalances'
+import { blockExplorerLink } from './utils'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 
-describe('networkScanLink', () => {
+describe('blockExplorerLink', () => {
   let wallet:WalletAttributes
   logger.error = jest.fn()
 
@@ -14,9 +14,9 @@ describe('networkScanLink', () => {
     })
 
     it('returns the correct etherscan name and link address', async () => {
-      let scanLink:NetworkScanLink = networkScanLink(wallet)
-      expect(scanLink.link).toEqual('https://etherscan.io/address/' + wallet.address)
-      expect(scanLink.name).toEqual('Etherscan')
+      let explorerLink:BlockExplorerLink = blockExplorerLink(wallet)
+      expect(explorerLink.link).toEqual('https://etherscan.io/address/' + wallet.address)
+      expect(explorerLink.name).toEqual('Etherscan')
     });
   });
 
@@ -26,9 +26,9 @@ describe('networkScanLink', () => {
     })
 
     it('returns the correct polygonscan name and link address', async () => {
-      let scanLink:NetworkScanLink = networkScanLink(wallet)
-      expect(scanLink.link).toEqual('https://polygonscan.com/address/' + wallet.address)
-      expect(scanLink.name).toEqual('Polygonscan')
+      let explorerLink:BlockExplorerLink = blockExplorerLink(wallet)
+      expect(explorerLink.link).toEqual('https://polygonscan.com/address/' + wallet.address)
+      expect(explorerLink.name).toEqual('Polygonscan')
     });
   });
 
@@ -39,9 +39,9 @@ describe('networkScanLink', () => {
     })
 
     it('logs the error and returns and empty name and address', async () => {
-      let scanLink:NetworkScanLink = networkScanLink(wallet)
-      expect(scanLink.link).toEqual('/')
-      expect(scanLink.name).toEqual('')
+      let explorerLink:BlockExplorerLink = blockExplorerLink(wallet)
+      expect(explorerLink.link).toEqual('/')
+      expect(explorerLink.name).toEqual('')
       expect(logger.error).toHaveBeenCalled()
     });
   });

@@ -18,7 +18,7 @@ import {
   ethereumWallet,
   maticWallet,
   mockedLatestBalances, mockedWallets, gnosisSafeEth, gnosisSafeMatic, aragonAgent
-} from './__mock__/mockedBalances.test'
+} from './__mock__/mockedBalances'
 import { TokenAttributes } from '../Token/types'
 import WalletModel from '../Wallet/model'
 import { WalletAttributes } from '../Wallet/types'
@@ -51,7 +51,7 @@ function mockTokenList() {
     let tokenArray: Partial<TokenAttributes>[] = []
     for (const token of mockedTokens) {
       if (!tokenArray.find(t => t.name == token.name)) {
-        tokenArray.push({ name: token.name, decimals: token.decimals })
+        tokenArray.push({ name: token.name, decimals: token.decimals, symbol: token.symbol })
       }
     }
     return new Promise<Partial<TokenAttributes>[]>((resolve) => {
@@ -163,75 +163,10 @@ describe('balances', () => {
           tokenInWallets: [
             {
               tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000db4af39d52eb511800',
-                decimals: 18,
-                name: 'mana'
-              },
-              wallet: gnosisSafeEth
-            },
-            {
-              tokenBalance: {
-                amount: '0x000000000000000000000000000000000000000000008b66a9d1cbabb8b48000',
-                decimals: 18,
-                name: 'mana'
-              },
-              wallet: gnosisSafeMatic
-            },
-            {
-              tokenBalance: {
-                amount: '0x00000000000000000000000000000000000000000019e96b1308538a0a1e6663',
-                decimals: 18,
-                name: 'mana'
-              },
-              wallet: aragonAgent
-            }
-          ],
-          tokenTotal: {
-            amount: '0x0000000000000000000000000000000000000000001a75ad07cdbc88ae23fe63',
-            decimals: 18,
-            name: 'mana'
-          }
-        },
-        {
-          tokenInWallets: [
-            {
-              tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000000000000055555555',
-                decimals: 18,
-                name: 'matic'
-              },
-              wallet: aragonAgent
-            },
-            {
-              tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                decimals: 18,
-                name: 'matic'
-              },
-              wallet: gnosisSafeEth
-            },
-            {
-              tokenBalance: {
-                amount: '0x4563918244f40000',
-                decimals: 18,
-                name: 'matic'
-              },
-              wallet: gnosisSafeMatic
-            }
-          ],
-          tokenTotal: {
-            amount: '0x000000000000000000000000000000000000000000000000456391829a495555',
-            decimals: 18,
-            name: 'matic'
-          }
-        },
-        {
-          tokenInWallets: [
-            {
-              tokenBalance: {
                 amount: '0x0000000000000000000000000000000000000000000153d102070746599ee535',
                 decimals: 18,
-                name: 'dai'
+                name: 'dai',
+                symbol: 'DAI'
               },
               wallet: aragonAgent
             },
@@ -239,7 +174,8 @@ describe('balances', () => {
               tokenBalance: {
                 amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
                 decimals: 18,
-                name: 'dai'
+                name: 'dai',
+                symbol: 'DAI'
               },
               wallet: gnosisSafeEth
             },
@@ -247,7 +183,8 @@ describe('balances', () => {
               tokenBalance: {
                 amount: '0x0000000000000000000000000000000000000000000000024fd25cee47ba2000',
                 decimals: 18,
-                name: 'dai'
+                name: 'dai',
+                symbol: 'DAI'
               },
               wallet: gnosisSafeMatic
             }
@@ -255,73 +192,8 @@ describe('balances', () => {
           tokenTotal: {
             amount: '0x0000000000000000000000000000000000000000000153d351d96434a1590535',
             decimals: 18,
-            name: 'dai'
-          }
-        },
-        {
-          tokenInWallets: [
-            {
-              tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000000000015141731305',
-                decimals: 6,
-                name: 'tether'
-              },
-              wallet: aragonAgent
-            },
-            {
-              tokenBalance: {
-                amount: '0x000000000000000000000000000000000000000000000000000000746a528800',
-                decimals: 6,
-                name: 'tether'
-              },
-              wallet: gnosisSafeEth
-            },
-            {
-              tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                decimals: 6,
-                name: 'tether'
-              },
-              wallet: gnosisSafeMatic
-            }
-          ],
-          tokenTotal: {
-            amount: '0x000000000000000000000000000000000000000000000000000001c5abc59b05',
-            decimals: 6,
-            name: 'tether'
-          }
-        },
-        {
-          tokenInWallets: [
-            {
-              tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000000000010e39baf2d7',
-                decimals: 6,
-                name: 'usdc'
-              },
-              wallet: aragonAgent
-            },
-            {
-              tokenBalance: {
-                amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                decimals: 6,
-                name: 'usdc'
-              },
-              wallet: gnosisSafeEth
-            },
-            {
-              tokenBalance: {
-                amount: '0x000000000000000000000000000000000000000000000000000000000146eb68',
-                decimals: 6,
-                name: 'usdc'
-              },
-              wallet: gnosisSafeMatic
-            }
-          ],
-          tokenTotal: {
-            amount: '0x0000000000000000000000000000000000000000000000000000010e3b01de3f',
-            decimals: 6,
-            name: 'usdc'
+            name: 'dai',
+            symbol: 'DAI'
           }
         },
         {
@@ -330,7 +202,8 @@ describe('balances', () => {
               tokenBalance: {
                 amount: '0x27007b89f926e00',
                 decimals: 18,
-                name: 'ether'
+                name: 'ether',
+                symbol: 'ETH'
               },
               wallet: aragonAgent
             },
@@ -338,7 +211,8 @@ describe('balances', () => {
               tokenBalance: {
                 amount: '0x45132605275f1563',
                 decimals: 18,
-                name: 'ether'
+                name: 'ether',
+                symbol: 'ETH'
               },
               wallet: gnosisSafeEth
             }
@@ -346,7 +220,156 @@ describe('balances', () => {
           tokenTotal: {
             amount: '0x00000000000000000000000000000000000000000000000047832dbdc6f18363',
             decimals: 18,
-            name: 'ether'
+            name: 'ether',
+            symbol: 'ETH'
+          }
+        },
+        {
+          tokenInWallets: [
+            {
+              tokenBalance: {
+                amount: '0x00000000000000000000000000000000000000000019e96b1308538a0a1e6663',
+                decimals: 18,
+                name: 'mana',
+                symbol: 'MANA'
+              },
+              wallet: aragonAgent
+            },
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000db4af39d52eb511800',
+                decimals: 18,
+                name: 'mana',
+                symbol: 'MANA'
+              },
+              wallet: gnosisSafeEth
+            },
+            {
+              tokenBalance: {
+                amount: '0x000000000000000000000000000000000000000000008b66a9d1cbabb8b48000',
+                decimals: 18,
+                name: 'mana',
+                symbol: 'MANA'
+              },
+              wallet: gnosisSafeMatic
+            }
+          ],
+          tokenTotal: {
+            amount: '0x0000000000000000000000000000000000000000001a75ad07cdbc88ae23fe63',
+            decimals: 18,
+            name: 'mana',
+            symbol: 'MANA'
+          }
+        },
+        {
+          tokenInWallets: [
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000000000000055555555',
+                decimals: 18,
+                name: 'matic',
+                symbol: 'MATIC'
+              },
+              wallet: aragonAgent
+            },
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                decimals: 18,
+                name: 'matic',
+                symbol: 'MATIC'
+              },
+              wallet: gnosisSafeEth
+            },
+            {
+              tokenBalance: {
+                amount: '0x4563918244f40000',
+                decimals: 18,
+                name: 'matic',
+                symbol: 'MATIC'
+              },
+              wallet: gnosisSafeMatic
+            }
+          ],
+          tokenTotal: {
+            amount: '0x000000000000000000000000000000000000000000000000456391829a495555',
+            decimals: 18,
+            name: 'matic',
+            symbol: 'MATIC'
+          }
+        },
+        {
+          tokenInWallets: [
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000000000015141731305',
+                decimals: 6,
+                name: 'tether',
+                symbol: 'USDT'
+              },
+              wallet: aragonAgent
+            },
+            {
+              tokenBalance: {
+                amount: '0x000000000000000000000000000000000000000000000000000000746a528800',
+                decimals: 6,
+                name: 'tether',
+                symbol: 'USDT'
+              },
+              wallet: gnosisSafeEth
+            },
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                decimals: 6,
+                name: 'tether',
+                symbol: 'USDT'
+              },
+              wallet: gnosisSafeMatic
+            }
+          ],
+          tokenTotal: {
+            amount: '0x000000000000000000000000000000000000000000000000000001c5abc59b05',
+            decimals: 6,
+            name: 'tether',
+            symbol: 'USDT'
+          }
+        },
+        {
+          tokenInWallets: [
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000000000010e39baf2d7',
+                decimals: 6,
+                name: 'usdc',
+                symbol: 'USDC'
+              },
+              wallet: aragonAgent
+            },
+            {
+              tokenBalance: {
+                amount: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                decimals: 6,
+                name: 'usdc',
+                symbol: 'USDC'
+              },
+              wallet: gnosisSafeEth
+            },
+            {
+              tokenBalance: {
+                amount: '0x000000000000000000000000000000000000000000000000000000000146eb68',
+                decimals: 6,
+                name: 'usdc',
+                symbol: 'USDC'
+              },
+              wallet: gnosisSafeMatic
+            }
+          ],
+          tokenTotal: {
+            amount: '0x0000000000000000000000000000000000000000000000000000010e3b01de3f',
+            decimals: 6,
+            name: 'usdc',
+            symbol: 'USDC'
           }
         }
       ])

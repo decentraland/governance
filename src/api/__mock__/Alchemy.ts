@@ -1,7 +1,7 @@
 import { ChainId } from '@dcl/schemas'
 import API from 'decentraland-gatsby/dist/utils/api/API';
 import { BlockNumberResponse, BalanceResponse, TokenBalancesResponse } from '../Alchemy'
-import { token1, token2, ethereumWallet } from '../../entities/Balance/__mock__/mockedBalances.test'
+import { token1, token2, ethereumWallet } from '../../entities/Balance/__mock__/mockedBalances'
 
 
 export const someTokensWithError:TokenBalancesResponse = {

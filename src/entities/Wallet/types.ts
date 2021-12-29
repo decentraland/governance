@@ -8,7 +8,7 @@ export type WalletAttributes = {
   created_at: Date
 }
 
-export type NetworkScanLink = {
+export type BlockExplorerLink = {
   link: string,
   name: string,
 }
