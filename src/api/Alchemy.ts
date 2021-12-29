@@ -1,18 +1,18 @@
 import { ChainId } from '@dcl/schemas'
 import API from 'decentraland-gatsby/dist/utils/api/API';
 
-export type TokenBalance = {
+export type TokenBalanceResponse = {
   contractAddress: string,
   tokenBalance: string | null,
   error: string | null,
 }
 
-export type TokenBalanceResponse = {
+export type TokenBalancesResponse = {
   id: number,
   jsonrpc: string,
   result:{
     address: string,
-    tokenBalances: TokenBalance[],
+    tokenBalances: TokenBalanceResponse[],
   },
 }
 
@@ -50,8 +50,8 @@ export class Alchemy extends API {
     throw new Error('Unsuported chain id')
   }
 
-  async getTokenBalances<P extends keyof TokenBalanceResponse>(address: string, tokens: string[]) {
-    return await this.fetch<TokenBalanceResponse>(
+  async getTokenBalances<P extends keyof TokenBalancesResponse>(address: string, tokens: string[]) {
+    return await this.fetch<TokenBalancesResponse>(
       '/v2/HcW-dJIcedLgGAB8htL7M1L8ir2Sihfe',
       this.options()
         .method('POST')
