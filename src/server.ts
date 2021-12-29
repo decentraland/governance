@@ -16,6 +16,7 @@ import subscription from './entities/Subscription/routes'
 import committee from './entities/Committee/routes'
 import social from './entities/Social/routes'
 import sitemap from './entities/Sitemap/routes'
+import balance from './entities/Balance/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import { fetchBalances } from './entities/Balance/jobs'
 
@@ -36,6 +37,7 @@ app.use('/api', [
   proposal,
   score,
   subscription,
+  balance,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   })
