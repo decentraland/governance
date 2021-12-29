@@ -1,17 +1,17 @@
 
-.TokenBalance {
+.TokenBalanceCard {
   align-items: center;
   display: flex;
   font-size: 1.5rem;
-  padding-right: 128px;
+  width: 50%;
 }
 
-.TokenBalance .TokenBalance_header {
+.TokenBalanceCard .TokenBalanceCard_header {
   display: flex;
   align-items: baseline;
 }
 
-.TokenBalance .TokenBalance_description {
+.TokenBalanceCard .TokenBalanceCard_description {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -20,12 +20,12 @@
   min-width: 128px;
 }
 
-.TokenBalance .ui.header.sub {
+.TokenBalanceCard .ui.header.sub {
   margin-top: 0;
   margin-right: 1rem;
   margin-left: 1rem;
 }
 
-.TokenBalance span {
+.TokenBalanceCard span {
   margin-left: 1rem;
 }
