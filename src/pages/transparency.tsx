@@ -13,7 +13,7 @@ import JoinDiscordButton from '../components/Section/JoinDiscordButton'
 import { useWalletBalance} from '../hooks/useWalletBalance'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { snapshotUrl} from '../entities/Proposal/utils'
-import './treasury.css'
+import './transparency.css'
 import TokenBalance from '../components/Token/TokenBalance'
 require('../images/icons/info.svg')
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
@@ -33,16 +33,16 @@ export default function WrappingPage() {
 
   return (<>
     <Head
-      title={l('page.treasury.title') || ''}
-      description={l('page.treasury.description') || ''}
+      title={l('page.transparency.title') || ''}
+      description={l('page.transparency.description') || ''}
       image="https://decentraland.org/images/decentraland.png"
     />
-    <Navigation activeTab={NavigationTab.Treasury} />
+    <Navigation activeTab={NavigationTab.Transparency} />
     <Container className="VotingPowerDetail">
       <Grid stackable>
         <Grid.Row>
           <Grid.Column tablet="4">
-            <div className="TreasurySectionDescription">
+            <div className="TransparencySectionDescription">
               <Header>Our Mission</Header>
               <p>Be as concise as posible on this instance, shouldn't be that long.
                 More like a statement to get what we are showing to make sense.</p>

@@ -11,7 +11,7 @@ export enum NavigationTab {
   Wrapping = 'wrapping',
   Enacted = 'enacted',
   Activity = 'activity',
-  Treasury = 'treasury',
+  Transparency = 'transparency',
 }
 
 type NavigationProps = {
@@ -39,11 +39,11 @@ const Navigation = (props: NavigationProps) => {
             {l('navigation.wrapping')}
           </Tabs.Tab>
         </Link>}
-        {user && <Link to={locations.treasury()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Treasury}>
-            {l('navigation.treasury')}
+        <Link to={locations.transparency()}>
+          <Tabs.Tab active={props.activeTab === NavigationTab.Transparency}>
+            {l('navigation.transparency')}
           </Tabs.Tab>
-        </Link>}
+        </Link>
         {user && <Link to={locations.activity({ list: ProposalActivityList.MyProposals })}>
           <Tabs.Tab active={props.activeTab === NavigationTab.Activity}>
             {l('navigation.activity')}

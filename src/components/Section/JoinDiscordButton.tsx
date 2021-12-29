@@ -29,7 +29,7 @@ export default React.memo(function JoinDiscordButton({ loading, disabled, ...pro
             ])}>
     <Loader active={loading} size="small" />
     <img src={discordIcon} width="20" height="20"/>
-    <span>{l('page.treasury.join_discord_button')}</span>
+    <span>{l('page.transparency.join_discord_button')}</span>
     <img src={openIcon} width="12" height="12"/>
   </a>
 })

@@ -12,7 +12,7 @@
     "wrapping": "Voting Power",
     "activity": "Activity",
     "enacted": "Enacted",
-    "treasury": "Treasury"
+    "transparency": "Transparency"
   },
   "error": {
     "poll": {
@@ -295,7 +295,7 @@
       "delegations_from_you_empty": "You have not delegated your voting power",
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
-    "treasury": {
+    "transparency": {
       "title": "DAO Treasury",
       "description": "An overview of current balance within the DAO",
       "aragon": "Aragon Agent",
