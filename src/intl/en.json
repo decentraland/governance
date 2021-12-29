@@ -297,13 +297,13 @@
     },
     "transparency": {
       "title": "DAO Treasury",
-      "description": "An overview of current balance within the DAO",
-      "aragon": "Aragon Agent",
-      "multisig_eth": "Gnosis Safe",
-      "multisig_matic": "Gnosis Safe",
-      "eth_network": "Ethereum Network",
-      "matic_network": "Polygon Network",
-      "join_discord_button": "Join our Discord"
+      "join_discord_button": "Join our Discord",
+      "mission": {
+        "title": "Our Mission",
+        "description": "To support and facilitate the continual growth of the Decentraland platform.",
+        "balance_title": "Current Balance",
+        "audit": "Audit on {service_name}"
+      }
     },
     "submit": {
       "title": "Submit Proposal",
