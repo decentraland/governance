@@ -7,3 +7,8 @@ export type WalletAttributes = {
   network: ChainId,
   created_at: Date
 }
+
+export type NetworkScanLink = {
+  link: string,
+  name: string,
+}

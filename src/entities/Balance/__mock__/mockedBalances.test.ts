@@ -265,26 +265,32 @@ export let mockedLatestBalances: BalanceAttributes[] = [
   }
 ]
 
+export const gnosisSafeEth = {
+  "id": "2",
+  "address": "0x89214c8Ca9A49E60a3bfa8e00544F384C93719b1",
+  "name": "Gnosis Safe",
+  "network": 1,
+  'created_at': Time.date('2021-12-27 01:32:06.533142 +00:00')
+}
+
+export const gnosisSafeMatic = {
+  "id": "3",
+  "address": "0xB08E3e7cc815213304d884C88cA476ebC50EaAB2",
+  "name": "Gnosis Safe",
+  "network": 137,
+  'created_at': Time.date('2021-12-27 01:32:06.533142 +00:00')
+}
+
+export const aragonAgent = {
+  "id": "1",
+  "address": "0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce",
+  "name": "Aragon Agent",
+  "network": 1,
+  'created_at': Time.date('2021-12-27 01:32:06.533142 +00:00')
+}
+
 export const mockedWallets = [
-  {
-    "id": "1",
-    "address": "0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce",
-    "name": "Aragon Agent",
-    "network": 1,
-    'created_at': Time.date('2021-12-27 01:32:06.533142 +00:00')
-  },
-  {
-    "id": "2",
-    "address": "0x89214c8Ca9A49E60a3bfa8e00544F384C93719b1",
-    "name": "Gnosis Safe",
-    "network": 1,
-    'created_at': Time.date('2021-12-27 01:32:06.533142 +00:00')
-  },
-  {
-    "id": "3",
-    "address": "0xB08E3e7cc815213304d884C88cA476ebC50EaAB2",
-    "name": "Gnosis Safe",
-    "network": 137,
-    'created_at': Time.date('2021-12-27 01:32:06.533142 +00:00')
-  }
+  aragonAgent,
+  gnosisSafeEth,
+  gnosisSafeMatic
 ]

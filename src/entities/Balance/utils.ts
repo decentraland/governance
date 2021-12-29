@@ -5,7 +5,7 @@ import { WalletAttributes } from '../Wallet/types'
 import { TokenAttributes } from '../Token/types'
 import TokenModel from '../Token/model'
 import { asNumber } from '../Proposal/utils'
-import { BalanceAttributes } from './types'
+import { BalanceAttributes, AggregatedTokenBalance, TokenBalance } from './types'
 import BalanceModel from './model'
 import { v1 as uuid } from 'uuid'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
@@ -13,15 +13,8 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 export const NATIVE_CONTRACT = 'NATIVE'
 
-export type TokenBalance = {
-  name: string,
-  decimals: number,
-  amount: string,
-}
-
-export type WalletBalance = {
-  wallet: WalletAttributes,
-  tokenBalances: TokenBalance[]
+export function formattedTokenBalance(tokenBalance: TokenBalance) {
+  return (BigInt(tokenBalance.amount) / BigInt(10 ** tokenBalance.decimals)).toString(16)
 }
 
 export async function getNativeBalance(wallet: WalletAttributes) {
@@ -106,119 +99,46 @@ export async function getBalances() {
   return createdBalances
 }
 
-export async function calculateTotalsByToken(latestBalances: BalanceAttributes[]) {
-  let manaTotal:bigint = BigInt(0)
-  let usdcTotal:bigint = BigInt(0)
-  let daiTotal:bigint = BigInt(0)
-  let usdtTotal:bigint = BigInt(0)
-  let ethereumTotal:bigint = BigInt(0)
-  let maticTotal:bigint = BigInt(0)
+export async function aggregateBalances(latestBalances: BalanceAttributes[]):Promise<AggregatedTokenBalance[]> {
+  const transparencyTokens:Partial<TokenAttributes>[] = await TokenModel.getTokenList()
+  const tokenBalances:AggregatedTokenBalance[] = []
+
+  for (const token of transparencyTokens) {
+    tokenBalances.push({
+      tokenTotal: {
+        name: token.name!,
+        amount: toPaddedHexString(0),
+        decimals: token.decimals!
+      },
+      tokenInWallets: []
+    })
+  }
 
   for (const balance of latestBalances) {
     const token: TokenAttributes = await TokenModel.findToken(balance.token_id)
+    const wallet = await WalletModel.findWallet(balance.wallet_id)
     const parsedAmount = BigInt(balance.amount)
-    switch (token.symbol) {
-      case 'MANA':
-        manaTotal += parsedAmount
-        break
-      case 'USDC':
-        usdcTotal += parsedAmount
-        break
-      case 'DAI':
-        daiTotal += parsedAmount
-        break
-      case 'USDT':
-        usdtTotal += parsedAmount
-        break
-      case 'ETH':
-        ethereumTotal += parsedAmount
-        break
-      case 'MATIC':
-        maticTotal += parsedAmount
-        break
-      default:
-        break
+
+    for (const tokenBalance of tokenBalances) {
+      if (token.name == tokenBalance.tokenTotal.name) {
+        tokenBalance.tokenTotal.amount = toPaddedHexString(BigInt(tokenBalance.tokenTotal.amount) + parsedAmount)
+        tokenBalance.tokenInWallets.push({
+          wallet: wallet,
+          tokenBalance: {
+            name: token.name,
+            decimals: token.decimals,
+            amount: balance.amount
+          }
+        })
+      }
     }
   }
 
-  return [
-    {
-      token: 'mana',
-      symbol: 'MANA',
-      totalAmount: toPaddedHexString(manaTotal),
-      decimals: 18
-    },
-    {
-      token: 'usdc',
-      symbol: 'USDC',
-      totalAmount: toPaddedHexString(usdcTotal),
-      decimals: 6
-    },
-    {
-      token: 'dai',
-      symbol: 'DAI',
-      totalAmount: toPaddedHexString(daiTotal),
-      decimals: 18
-    },
-    {
-      token: 'tether',
-      symbol: 'USDT',
-      totalAmount: toPaddedHexString(usdtTotal),
-      decimals: 6
-    },
-    {
-      token: 'ether',
-      symbol: 'ETH',
-      totalAmount: toPaddedHexString(ethereumTotal),
-      decimals: 18
-    },
-    {
-      token: 'matic',
-      symbol: 'MATIC',
-      totalAmount: toPaddedHexString(maticTotal),
-      decimals: 18
-    }]
+  return tokenBalances
 }
 
-function toPaddedHexString(num:bigint) {
+function toPaddedHexString(num:bigint|number) {
   const str:string = num.toString(16);
   return '0x' + "0".repeat(64 - str.length) + str;
-}
-
-export async function getBalancesByWallet(latestBalances: BalanceAttributes[]) {
-  const walletBalances: WalletBalance[] = []
-  for (const balance of latestBalances) {
-    const wallet = await WalletModel.findWallet(balance.wallet_id)
-    const token: TokenAttributes = await TokenModel.findToken(balance.token_id)
-
-    const walletBalance: WalletBalance | undefined = walletBalances.find(w => w?.wallet.id == wallet.id)
-    if (!walletBalance) {
-      walletBalances.push({
-        wallet: wallet,
-        tokenBalances: [{
-          name: token.name,
-          decimals: token.decimals,
-          amount: balance.amount
-        }]
-      })
-    } else {
-      walletBalance.tokenBalances.push({
-        name: token.name,
-        decimals: token.decimals,
-        amount: balance.amount
-      })
-    }
-  }
-
-  return walletBalances
-}
-
-export async function getAggregatedBalances() {
-  const latestBalances: BalanceAttributes[] = await BalanceModel.findLatestBalances()
-
-  return {
-    totalsByToken: await calculateTotalsByToken(latestBalances),
-    walletBalances: await getBalancesByWallet(latestBalances)
-  }
 }
 

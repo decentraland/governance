@@ -29,6 +29,17 @@ export default class TokenModel extends Model<TokenAttributes> {
     return token
   }
 
+  static async getTokenList(): Promise<Partial<TokenAttributes>[]>{
+    const query = SQL`
+      SELECT DISTINCT name, decimals
+      FROM ${table(TokenModel)} as t
+      GROUP BY name, decimals
+    `
+
+    let tokens = await this.query(query)
+    return tokens.map(t => {return {name: t.name, decimals: t.decimals}})
+  }
+
   static async findToken(id: string) {
     let token = await TokenModel.findOne<TokenAttributes>({ id: id })
     if (!token) {
