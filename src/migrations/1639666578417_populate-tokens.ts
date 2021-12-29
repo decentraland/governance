@@ -73,12 +73,3 @@ export async function down(pgm: MigrationBuilder): Promise<void> {
       WHERE 1=1;;
   `)
 }
-
-
-
-
-
-
-
-
-

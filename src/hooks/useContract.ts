@@ -4,9 +4,8 @@ import { Eth } from 'web3x/eth'
 import { Address } from 'web3x/address'
 import { Contract, ContractAbi, ContractAbiDefinition } from 'web3x/contract'
 import { fromWei, unitMap } from 'web3x/utils/units'
-import { ERC20ABI, LAND, wMANA, MANA, USDC, ESTATE, MiniMeABI, RegisterABI } from '../modules/contracts'
+import { ERC20ABI, LAND, wMANA, MANA, ESTATE, MiniMeABI, RegisterABI } from '../modules/contracts'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 function createContract(eth: Eth | null, abi: any, address: string | null | undefined, fromAccount: string | null ) {
   if (!eth || !address || !fromAccount) {
@@ -39,18 +38,12 @@ export function useLandContract() {
   return useMemo(() => createContract(eth, RegisterABI, LAND[chainId!], account), [ eth, account, chainId ])
 }
 
-export function useUsdcContract() {
-  const eth = useEth()
-  const [ account, { chainId } ] = useAuthContext()
-  return useMemo(() => createContract(eth, ERC20ABI, USDC[chainId!], '0x9a6ebe7e2a7722f8200d0ffb63a1f6406a0d7dce'), [ eth, account, chainId ])
-}
-
 export function useBalanceOf(contract: Contract | null, account: string | null, unit: keyof typeof unitMap = 'wei') {
   return useAsyncMemo<number>(async () => {
       if (!account || !contract) {
         return 0
       }
-      logger.log("Asking Balance", {contract_address: contract.address, account: account});
+
       const balance = await contract.methods.balanceOf(account).call()
       return Math.floor(Number(fromWei(balance, unit)))
     },
