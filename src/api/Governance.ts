@@ -15,6 +15,7 @@ import {
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
 import { Vote } from '../entities/Votes/types';
+import { AggregatedTokenBalance } from '../entities/Balance/types'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
@@ -208,6 +209,11 @@ export class Governance extends API {
 
   async getProposalComments(proposal_id: string) {
     const result = await this.fetch<ApiResponse<ProposalComment[]>>(`/proposals/${proposal_id}/comments`)
+    return result.data
+  }
+
+  async getBalances() {
+    const result = await this.fetch<ApiResponse<AggregatedTokenBalance[]>>(`/balances`, this.options().method('GET').authorization())
     return result.data
   }
 }
