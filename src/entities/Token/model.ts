@@ -8,16 +8,33 @@ export default class TokenModel extends Model<TokenAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async getNonNativeContracts(chainId:ChainId) {
+  static async getContracts(chainId:ChainId) {
     const query = SQL`
       SELECT "contract"
       FROM ${table(TokenModel)}
       WHERE
         "network" = ${chainId}
-        AND "contract" NOT IN (${"ether"}, ${"matic"})
+        AND "contract" NOT IN (${"NATIVE"})
     `
 
     let contracts = await this.query(query)
     return contracts.map(c => c.contract)
   }
+
+  static async findMatchingToken(network: ChainId, contractAddress: string) {
+    let token = await TokenModel.findOne<TokenAttributes>({ network: network, contract: contractAddress })
+    if (!token) {
+      throw new Error(`Could not find matching token for contract ${contractAddress} in network ${network}`)
+    }
+    return token
+  }
+
+  static async findToken(id: string) {
+    let token = await TokenModel.findOne<TokenAttributes>({ id: id })
+    if (!token) {
+      throw new Error(`Could not find token with id ${id}`)
+    }
+    return token
+  }
+
 }
