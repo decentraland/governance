@@ -6,5 +6,6 @@ export type TokenAttributes = {
   network: ChainId,
   name: string,
   symbol: string,
+  decimals: number,
   created_at: Date
 }

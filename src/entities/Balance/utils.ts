@@ -1,5 +1,5 @@
 import { ChainId } from '@dcl/schemas'
-import { TokenBalanceResponse, Alchemy, TokenBalance } from '../../api/Alchemy'
+import { TokenBalancesResponse, Alchemy, TokenBalanceResponse } from '../../api/Alchemy'
 import WalletModel from '../Wallet/model'
 import { WalletAttributes } from '../Wallet/types'
 import { TokenAttributes } from '../Token/types'
@@ -11,22 +11,34 @@ import { v1 as uuid } from 'uuid'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+export const NATIVE_CONTRACT = 'NATIVE'
+
+export type TokenBalance = {
+  name: string,
+  decimals: number,
+  amount: string,
+}
+
+export type WalletBalance = {
+  wallet: WalletAttributes,
+  tokenBalances: TokenBalance[]
+}
+
 export async function getNativeBalance(wallet: WalletAttributes) {
   const chainId = wallet.network
   const nativeBalance = await Alchemy.get(chainId).getNativeBalances(wallet.address)
-  const nativeName = chainId == ChainId.ETHEREUM_MAINNET ? 'ether' : 'matic'
-  let nativeBalanceResult: TokenBalance = {
-    'contractAddress': nativeName,
+  let nativeBalanceResult: TokenBalanceResponse = {
+    'contractAddress': NATIVE_CONTRACT,
     'tokenBalance': nativeBalance.result,
     'error': null
   }
   return nativeBalanceResult
 }
 
-export async function getTokenBalancesFor(wallet: WalletAttributes):Promise<TokenBalance[]> {
+export async function getTokenBalancesFor(wallet: WalletAttributes): Promise<TokenBalanceResponse[]> {
   const chainId = wallet.network
-  const contracts: string[] = await TokenModel.getNonNativeContracts(chainId)
-  const balances: TokenBalanceResponse = await Alchemy.get(chainId).getTokenBalances(wallet.address, contracts)
+  const contracts: string[] = await TokenModel.getContracts(chainId)
+  const balances: TokenBalancesResponse = await Alchemy.get(chainId).getTokenBalances(wallet.address, contracts)
   const tokenBalances = balances.result.tokenBalances
 
   const nativeBalanceResult = await getNativeBalance(wallet)
@@ -63,10 +75,10 @@ export async function getBalances() {
   const wallets: WalletAttributes[] = await WalletModel.find()
 
   for (const wallet of wallets) {
-    const tokenBalances:TokenBalance[] = await getTokenBalancesFor(wallet)
+    const tokenBalances: TokenBalanceResponse[] = await getTokenBalancesFor(wallet)
     for (const tokenBalance of tokenBalances) {
       try {
-        const token = await findMatchingToken(wallet.network, tokenBalance.contractAddress)
+        const token = await TokenModel.findMatchingToken(wallet.network, tokenBalance.contractAddress)
         const previousBalance = await BalanceModel.findLatest(wallet.id, token.id)
         if (previousBalance && previousBalance.amount === tokenBalance.tokenBalance) {
           return
@@ -94,51 +106,119 @@ export async function getBalances() {
   return createdBalances
 }
 
-async function findMatchingToken(network: ChainId, contractAddress: string) {
-  let token = await TokenModel.findOne<TokenAttributes>({ network: network, contract: contractAddress })
-  if (!token) {
-    throw new Error(`Could not find matching token for contract ${contractAddress} in network ${network}`)
+export async function calculateTotalsByToken(latestBalances: BalanceAttributes[]) {
+  let manaTotal:bigint = BigInt(0)
+  let usdcTotal:bigint = BigInt(0)
+  let daiTotal:bigint = BigInt(0)
+  let usdtTotal:bigint = BigInt(0)
+  let ethereumTotal:bigint = BigInt(0)
+  let maticTotal:bigint = BigInt(0)
+
+  for (const balance of latestBalances) {
+    const token: TokenAttributes = await TokenModel.findToken(balance.token_id)
+    const parsedAmount = BigInt(balance.amount)
+    switch (token.symbol) {
+      case 'MANA':
+        manaTotal += parsedAmount
+        break
+      case 'USDC':
+        usdcTotal += parsedAmount
+        break
+      case 'DAI':
+        daiTotal += parsedAmount
+        break
+      case 'USDT':
+        usdtTotal += parsedAmount
+        break
+      case 'ETH':
+        ethereumTotal += parsedAmount
+        break
+      case 'MATIC':
+        maticTotal += parsedAmount
+        break
+      default:
+        break
+    }
   }
-  return token
+
+  return [
+    {
+      token: 'mana',
+      symbol: 'MANA',
+      totalAmount: toPaddedHexString(manaTotal),
+      decimals: 18
+    },
+    {
+      token: 'usdc',
+      symbol: 'USDC',
+      totalAmount: toPaddedHexString(usdcTotal),
+      decimals: 6
+    },
+    {
+      token: 'dai',
+      symbol: 'DAI',
+      totalAmount: toPaddedHexString(daiTotal),
+      decimals: 18
+    },
+    {
+      token: 'tether',
+      symbol: 'USDT',
+      totalAmount: toPaddedHexString(usdtTotal),
+      decimals: 6
+    },
+    {
+      token: 'ether',
+      symbol: 'ETH',
+      totalAmount: toPaddedHexString(ethereumTotal),
+      decimals: 18
+    },
+    {
+      token: 'matic',
+      symbol: 'MATIC',
+      totalAmount: toPaddedHexString(maticTotal),
+      decimals: 18
+    }]
 }
 
-export function calculateTotalsByToken(balancesByWallet: { walletName: string; tokenBalances: ({ decimals: number; tokenName: string; tokenBalance: string })[]; network: number }) {
-  return {}
+function toPaddedHexString(num:bigint) {
+  const str:string = num.toString(16);
+  return '0x' + "0".repeat(64 - str.length) + str;
+}
+
+export async function getBalancesByWallet(latestBalances: BalanceAttributes[]) {
+  const walletBalances: WalletBalance[] = []
+  for (const balance of latestBalances) {
+    const wallet = await WalletModel.findWallet(balance.wallet_id)
+    const token: TokenAttributes = await TokenModel.findToken(balance.token_id)
+
+    const walletBalance: WalletBalance | undefined = walletBalances.find(w => w?.wallet.id == wallet.id)
+    if (!walletBalance) {
+      walletBalances.push({
+        wallet: wallet,
+        tokenBalances: [{
+          name: token.name,
+          decimals: token.decimals,
+          amount: balance.amount
+        }]
+      })
+    } else {
+      walletBalance.tokenBalances.push({
+        name: token.name,
+        decimals: token.decimals,
+        amount: balance.amount
+      })
+    }
+  }
+
+  return walletBalances
 }
 
 export async function getAggregatedBalances() {
+  const latestBalances: BalanceAttributes[] = await BalanceModel.findLatestBalances()
 
-  const balancesByWallet = {
-    walletName: 'Aragon Agent', network: 1, tokenBalances: [
-      {
-        tokenName: 'mana',
-        tokenBalance: '0x00000000000000000000000000000000000000000019e6973c9090d9ed916663',
-        decimals: 18
-      },
-      {
-        tokenName: 'ether',
-        tokenBalance: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        decimals: 18
-      },
-      {
-        tokenName: 'dai',
-        tokenBalance: '0x0000000000000000000000000000000000000000000153d102070746599ee535',
-        decimals: 18
-      },
-      {
-        tokenName: 'tether',
-        tokenBalance: '0x0000000000000000000000000000000000000000000000000000015141731305',
-        decimals: 6
-      },
-      {
-        tokenName: 'usdc',
-        tokenBalance: '0x0000000000000000000000000000000000000000000000000000010e39baf2d7',
-        decimals: 6
-      },
-      { tokenName: 'ether', tokenBalance: '0x27007b89f926e00', decimals: 18 }
-    ]
+  return {
+    totalsByToken: await calculateTotalsByToken(latestBalances),
+    walletBalances: await getBalancesByWallet(latestBalances)
   }
-  const aggregatedBalances = calculateTotalsByToken(balancesByWallet)
-  return aggregatedBalances
 }
 
