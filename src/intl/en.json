@@ -93,6 +93,8 @@
     "ban_name": "Ban Name",
     "grant": "Grant",
     "poll": "Poll",
+    "draft": "Draft",
+    "governance": "Governance",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community run servers",
@@ -102,8 +104,12 @@
     "ban_name_description": "Ban an offensive name from Decentraland",
     "grant_title": "Grant Request",
     "grant_description": "Request funding from the DAO for a project or contribution",
-    "poll_title": "Poll",
-    "poll_description": "Ask community members for their opinion on an issue or topic"
+    "poll_title": "Pre-Proposal Poll",
+    "poll_description": "Ask community members for their opinion on an issue or topic",
+    "draft_title": "Draft Proposal",
+    "draft_description": "Present a potential policy to the community in a structured format and to formalize discussion",
+    "governance_title": "Governance Proposal",
+    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome"
   },
   "status": {
     "all": "All outcomes",

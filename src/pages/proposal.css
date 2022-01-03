@@ -6,6 +6,9 @@
   width: 28% !important;
 }
 
+.ProposalDetailPage .ui.header {
+  margin-bottom: 1rem;
+}
 .ProposalDetailPage .ProposalDetailDescription .dg.Title {
   font-size: 13px;
   text-transform: uppercase;
