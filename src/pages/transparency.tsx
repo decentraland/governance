@@ -16,6 +16,7 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Governance } from '../api/Governance'
 import { JOIN_DISCORD_URL } from '../entities/Proposal/utils'
 
+const DOCS_URL='https://docs.decentraland.org/decentraland/what-is-the-dao/'
 const docsIcon = require('../images/icons/docs.svg')
 const discordIcon = require('../images/icons/discord.svg')
 
@@ -43,7 +44,7 @@ export default function WrappingPage() {
                   <ExternalLinkWithIcon href={JOIN_DISCORD_URL}
                                         imageSrc={discordIcon}
                                         text={l('page.transparency.join_discord_button')} />
-                  <ExternalLinkWithIcon href={JOIN_DISCORD_URL}
+                  <ExternalLinkWithIcon href={DOCS_URL}
                                         imageSrc={docsIcon}
                                         text={l('page.transparency.docs_button')} />
                 </div>
