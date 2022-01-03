@@ -4,6 +4,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ProposalType } from '../../entities/Proposal/types'
 import React from 'react'
 
+import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
 import { navigate } from 'gatsby-plugin-intl'
 
@@ -14,11 +15,7 @@ export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
 
 const icons = {
   all: require('../../images/icons/all.svg'),
-  [ProposalType.Catalyst]: require('../../images/icons/catalyst.svg'),
-  [ProposalType.POI]: require('../../images/icons/poi.svg'),
-  [ProposalType.BanName]: require('../../images/icons/ban-name.svg'),
-  [ProposalType.Grant]: require('../../images/icons/grant.svg'),
-  [ProposalType.Poll]: require('../../images/icons/poll.svg'),
+  ...categoryIcons
 }
 
 export default React.memo(function CategoryOption({ active, type, className, ...props }: CategoryOptionProps) {

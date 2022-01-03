@@ -20,10 +20,16 @@ export function NewProposalModal(props: Omit<ModalProps, 'children'>) {
       <Paragraph small>{l('modal.new_proposal.description')}</Paragraph>
     </Modal.Content>
     <Modal.Content>
+      <Header sub>Common Actions</Header>
       <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
       <CategoryBanner type={ProposalType.POI} href={locations.submit(ProposalType.POI)} active />
       <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
       {/* <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active /> */}
+    </Modal.Content>
+    <Modal.Content>
+      <Header sub>Governance Process</Header>
+      <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
+      <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
       <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
     </Modal.Content>
   </Modal>
