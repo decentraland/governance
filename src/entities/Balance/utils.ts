@@ -5,11 +5,12 @@ import { WalletAttributes } from '../Wallet/types'
 import { TokenAttributes } from '../Token/types'
 import TokenModel from '../Token/model'
 import { asNumber } from '../Proposal/utils'
-import { BalanceAttributes, AggregatedTokenBalance } from './types'
+import { BalanceAttributes, AggregatedTokenBalance, TokenBalance } from './types'
 import BalanceModel from './model'
 import { v1 as uuid } from 'uuid'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { formattedTokenBalance } from '../Wallet/utils'
 
 export const NATIVE_CONTRACT = 'NATIVE'
 
@@ -99,6 +100,18 @@ function alphabeticalSort(a:string, b:string) {
   return ('' + a).localeCompare(b)
 }
 
+function balanceSort(a:TokenBalance, b:TokenBalance) {
+    const amountA = formattedTokenBalance(a)
+    const amountB = formattedTokenBalance(b)
+  if (amountA > amountB) {
+      return -1;
+  }
+  if (amountA < amountB) {
+    return 1;
+  }
+  return 0;
+}
+
 export async function aggregateBalances(latestBalances: BalanceAttributes[]):Promise<AggregatedTokenBalance[]> {
   const transparencyTokens:Partial<TokenAttributes>[] = await TokenModel.getTokenList()
   const tokenBalances:AggregatedTokenBalance[] = []
@@ -137,7 +150,7 @@ export async function aggregateBalances(latestBalances: BalanceAttributes[]):Pro
     }
   }
 
-  tokenBalances.sort((a, b) => alphabeticalSort(a.tokenTotal.name, b.tokenTotal.name))
+  tokenBalances.sort((a, b) => balanceSort(a.tokenTotal, b.tokenTotal))
   return tokenBalances
 }
 
