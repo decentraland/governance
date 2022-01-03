@@ -38,6 +38,16 @@
 	justify-content: center;
 }
 
+.TokensPerWalletPopup .TokensPerWalletPopup__Balance{
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-end;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__Balance .ui.header{
+	margin-right: 8px;
+}
+
 .TokensPerWalletPopup .TokensPerWalletPopup__RightBlock {
 	align-items: flex-end;
 }
