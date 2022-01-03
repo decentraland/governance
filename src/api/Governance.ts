@@ -11,6 +11,8 @@ import {
   ProposalAttributes,
   ProposalType,
   ProposalStatus,
+  NewProposalDraft,
+  NewProposalGovernance,
   ProposalCommentsInDiscourse
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
@@ -18,6 +20,8 @@ import { Vote } from '../entities/Votes/types';
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
+  [`/proposals/draft`]: NewProposalDraft,
+  [`/proposals/governance`]: NewProposalGovernance,
   [`/proposals/ban-name`]: NewProposalBanName,
   [`/proposals/poi`]: NewProposalPOI,
   [`/proposals/catalyst`]: NewProposalCatalyst,
@@ -105,6 +109,14 @@ export class Governance extends API {
 
   async createProposalPoll(proposal: NewProposalPoll) {
     return this.createProposal(`/proposals/poll`, proposal)
+  }
+
+  async createProposalDraft(proposal: NewProposalDraft) {
+    return this.createProposal(`/proposals/draft`, proposal)
+  }
+
+  async createProposalGovernance(proposal: NewProposalGovernance) {
+    return this.createProposal(`/proposals/governance`, proposal)
   }
 
   async createProposalBanName(proposal: NewProposalBanName) {

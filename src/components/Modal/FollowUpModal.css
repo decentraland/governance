@@ -72,7 +72,7 @@ div.FollowUpModal__Banner.CopyLink {
 }
 
 .ui.modal.FollowUpModal .FollowUpModal__Banner .Button.CopyLink {
-  background-color: #44B600 !important;
+  background-color: var(--background-happy-green) !important;
 }
 
 .FollowUpModal__DismissButton {

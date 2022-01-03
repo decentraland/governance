@@ -53,7 +53,11 @@
 }
 
 .CategoryBanner.CategoryBanner--poll:hover::before,
-.CategoryBanner.CategoryBanner--poll.CategoryBanner--active::before {
+.CategoryBanner.CategoryBanner--poll.CategoryBanner--active::before,
+.CategoryBanner.CategoryBanner--draft:hover::before,
+.CategoryBanner.CategoryBanner--draft.CategoryBanner--active::before,
+.CategoryBanner.CategoryBanner--governance:hover::before,
+.CategoryBanner.CategoryBanner--governance.CategoryBanner--active::before {
   background-color: var(--background-poll);
 }
 

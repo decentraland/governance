@@ -1,11 +1,22 @@
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import { NewProposalBanName, NewProposalCatalyst, NewProposalGrant, NewProposalPOI, NewProposalPoll, ProposalType } from '../types'
+import {
+  NewProposalBanName,
+  NewProposalCatalyst,
+  NewProposalGrant,
+  NewProposalPOI,
+  NewProposalPoll,
+  ProposalType,
+  NewProposalDraft,
+  NewProposalGovernance
+} from '../types'
 
 import * as banName from './banName'
 import * as catalyst from './catalyst'
 import * as grant from './grant'
 import * as poi from './poi'
 import * as poll from './poll'
+import * as draft from './draft'
+import * as governance from './governance'
 import { template } from './utils'
 
 type NewConfiguration =
@@ -14,6 +25,8 @@ type NewConfiguration =
   | NewProposalGrant
   | NewProposalPOI
   | NewProposalPoll
+  | NewProposalDraft
+  | NewProposalGovernance
 
 export const title = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => {
   switch (type) {
@@ -27,6 +40,10 @@ export const title = async ({ type, configuration }: { type: ProposalType, confi
       return grant.title(configuration as any)
     case ProposalType.Poll:
       return poll.title(configuration as any)
+    case ProposalType.Draft:
+      return draft.title(configuration as any)
+    case ProposalType.Governance:
+      return governance.title(configuration as any)
   }
 }
 
@@ -42,6 +59,10 @@ export const description = async ({ type, configuration }: { type: ProposalType,
       return grant.description(configuration as any)
     case ProposalType.Poll:
       return poll.description(configuration as any)
+    case ProposalType.Draft:
+      return await draft.description(configuration as any)
+    case ProposalType.Governance:
+      return await governance.description(configuration as any)
   }
 }
 

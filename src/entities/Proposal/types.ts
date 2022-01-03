@@ -68,6 +68,8 @@ export enum ProposalType {
   BanName = 'ban_name',
   Grant = 'grant',
   Poll = 'poll',
+  Draft = 'draft',
+  Governance = 'governance',
 }
 
 export function isProposalType(value:  string | null | undefined): boolean {
@@ -77,6 +79,8 @@ export function isProposalType(value:  string | null | undefined): boolean {
     case ProposalType.BanName:
     case ProposalType.Grant:
     case ProposalType.Poll:
+    case ProposalType.Draft:
+    case ProposalType.Governance:
       return true
     default:
       return false
@@ -166,6 +170,142 @@ export const newProposalPollScheme = {
         minLength: 1,
       },
       minItems: 2
+    }
+  }
+}
+
+export type NewProposalDraft = {
+  linked_proposal_id: string,
+  title: string,
+  summary: string,
+  abstract: string,
+  motivation: string,
+  specification: string,
+  conclusion: string,
+}
+
+export const newProposalDraftScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'linked_proposal_id',
+    'title',
+    'summary',
+    'abstract',
+    'motivation',
+    'specification',
+    'conclusion'
+  ],
+  properties: {
+    linked_proposal_id:{
+      type: 'string',
+      minLength: 36,
+      maxLength: 255,
+    },
+    title: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    summary: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 250,
+    },
+    abstract: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    motivation: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    specification: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    conclusion: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    }
+  }
+}
+
+export type NewProposalGovernance = {
+  linked_proposal_id: string,
+  title: string,
+  summary: string,
+  abstract: string,
+  motivation: string,
+  specification: string,
+  impacts: string,
+  implementation_pathways: string,
+  conclusion: string,
+}
+
+export const newProposalGovernanceScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'linked_proposal_id',
+    'title',
+    'summary',
+    'abstract',
+    'motivation',
+    'specification',
+    'impacts',
+    'implementation_pathways',
+    'conclusion'
+  ],
+  properties: {
+    linked_proposal_id:{
+      type: 'string',
+      minLength: 36,
+      maxLength: 255,
+    },
+    title: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    summary: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 250,
+    },
+    abstract: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 3500,
+    },
+    motivation: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    specification: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    impacts: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    implementation_pathways: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    conclusion: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
     }
   }
 }
@@ -297,6 +437,8 @@ export const ProposalRequiredVP = {
   [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
   [ProposalType.POI]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POI, 0),
   [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
+  [ProposalType.Draft]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_DRAFT, 0),
+  [ProposalType.Governance]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE, 0),
 }
 
 export const GrantRequiredVP = {
