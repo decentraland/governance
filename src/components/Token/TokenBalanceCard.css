@@ -3,12 +3,18 @@
   align-items: center;
   display: flex;
   font-size: 1.5rem;
-  width: 50%;
+  width: 100%;
   border-radius: 10px;
   margin-bottom: 1rem;
   padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+@media (min-width: 768px) {
+  .TokenBalanceCard {
+    width: 50%;
+  }
 }
 
 .TokenBalanceCard .TokenBalanceCard_header {

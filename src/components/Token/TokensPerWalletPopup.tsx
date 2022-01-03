@@ -33,22 +33,24 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHan
 
             const explorerLink = blockExplorerLink(tokenInWallet.wallet)
             return (
-              <div className="TokensPerWalletPopup__Row" key={[tokenInWallet.wallet.name, '_popup', index].join('::')}>
+              <a className="TokensPerWalletPopup__Row"
+                 key={[tokenInWallet.wallet.name, '_popup', index].join('::')}
+                 href={explorerLink.link} target="_blank"
+                 rel="noopener noreferrer">
                 <div className="TokensPerWalletPopup__Block">
                   <Header>{tokenInWallet.wallet.name}</Header>
                   <Header sub>{networkName(tokenInWallet.wallet.network)} Network</Header>
                 </div>
                 <div className="TokensPerWalletPopup__Block TokensPerWalletPopup__RightBlock">
-                  <div className={"TokensPerWalletPopup__Balance"} >
-                    <Header >{l('general.number', { value: formattedTokenBalance(tokenInWallet.tokenBalance)})}</Header>
+                  <div className={'TokensPerWalletPopup__Balance'}>
+                    <Header>{l('general.number', { value: formattedTokenBalance(tokenInWallet.tokenBalance) })}</Header>
                     <Paragraph tiny>{tokenInWallet.tokenBalance.symbol}</Paragraph>
                   </div>
-                  <a className="TokensPerWalletPopup__Link" href={explorerLink.link} target="_blank"
-                     rel="noopener noreferrer">
+                  <Header sub className="TokensPerWalletPopup__Link">
                     {l('page.transparency.mission.audit', { service_name: explorerLink.name })}
-                  </a>
+                  </Header>
                 </div>
-              </div>)
+              </a>)
           })
         }
       </Card.Content>
@@ -56,13 +58,13 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHan
 
   return <Popup
     className="TokensPerWalletPopup"
-    offset={[0, 26]}
     content={content}
-    position="right center"
+    position="bottom center"
     trigger={<img src={infoIcon} width="14" height="14" alt="info" />}
     eventsEnabled={true}
     onClose={onCloseHandler}
     open={open}
     on="click"
+    pinned={true}
   />
 }
