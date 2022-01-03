@@ -298,6 +298,7 @@
     "transparency": {
       "title": "DAO Treasury",
       "join_discord_button": "Join our Discord",
+      "docs_button": "Check our docs",
       "mission": {
         "title": "Our Mission",
         "description": "To support and facilitate the continual growth of the Decentraland platform.",
