@@ -1,6 +1,11 @@
 import { ChainId } from '@dcl/schemas'
 import { BlockExplorerLink, WalletAttributes } from './types'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { TokenBalance } from '../Balance/types'
+
+export function formattedTokenBalance(tokenBalance: TokenBalance) {
+  return parseInt(tokenBalance.amount) / 10 ** tokenBalance.decimals
+}
 
 export function blockExplorerLink(wallet:WalletAttributes):BlockExplorerLink {
   const addressUrl = 'address/' + wallet.address
