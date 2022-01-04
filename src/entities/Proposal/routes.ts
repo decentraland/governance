@@ -6,7 +6,14 @@ import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
 import validate from 'decentraland-gatsby/dist/entities/Route/validate';
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import { SNAPSHOT_SPACE, SNAPSHOT_ACCOUNT, SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, signMessage } from '../Snapshot/utils';
+import {
+  SNAPSHOT_SPACE,
+  SNAPSHOT_ACCOUNT,
+  SNAPSHOT_ADDRESS,
+  SNAPSHOT_DURATION,
+  signMessage,
+  hasRequiredVP
+} from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
 import { Discourse, DiscoursePost, DiscourseComment } from '../../api/Discourse'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils';
@@ -31,7 +38,9 @@ import {
   ProposalRequiredVP,
   GrantRequiredVP,
   GrantDuration,
-  INVALID_PROPOSAL_POLL_OPTIONS
+  INVALID_PROPOSAL_POLL_OPTIONS,
+  newProposalDraftScheme,
+  NewProposalDraft, newProposalGovernanceScheme, NewProposalGovernance
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
 import {
@@ -57,6 +66,7 @@ import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
 import { getUpdateMessage } from './templates/messages'
 import { getVotes } from '../Votes/routes'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -146,6 +156,8 @@ export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
 
+  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_POLL)
+
   // add default options
   configuration.choices = [
     ...configuration.choices,
@@ -158,6 +170,46 @@ export async function createProposalPoll(req: WithAuth) {
     required_to_pass: ProposalRequiredVP[ProposalType.Poll],
     finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration,
+  })
+}
+
+const newProposalDraftValidator = schema.compile(newProposalDraftScheme)
+export async function createProposalDraft(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalDraft>(newProposalDraftValidator, req.body || {})
+
+  await validateLinkedProposal(configuration.linked_pre_proposal_id, ProposalType.Poll)
+  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT)
+
+  return createProposal({
+    user,
+    type: ProposalType.Draft,
+    required_to_pass: ProposalRequiredVP[ProposalType.Draft],
+    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_DRAFT_PROPOSAL)),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES
+    },
+  })
+}
+
+const newProposalGovernanceValidator = schema.compile(newProposalGovernanceScheme)
+export async function createProposalGovernance(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalGovernance>(newProposalGovernanceValidator, req.body || {})
+
+  await validateLinkedProposal(configuration.linked_draft_proposal_id, ProposalType.Draft)
+  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE)
+
+  return createProposal({
+    user,
+    type: ProposalType.Governance,
+    required_to_pass: ProposalRequiredVP[ProposalType.Governance],
+    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_GOVERNANCE_PROPOSAL)),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES
+    },
   })
 }
 
@@ -517,6 +569,24 @@ export async function proposalComments(req: Request<{ proposal: string }>){
   } catch (e) {
     logger.error('Could not get proposal comments', e)
     return []
+  }
+}
+
+async function validateLinkedProposal(linkedProposalId: string, expectedProposalType: ProposalType) {
+  const linkedProposal = await ProposalModel.findOne<ProposalAttributes>({
+    id: linkedProposalId,
+    deleted: false
+  })
+  if (!linkedProposal || linkedProposal.type != expectedProposalType) {
+    throw new RequestError(`Could not find a matching ${expectedProposalType} proposal for "${linkedProposalId}"`, RequestError.NotFound)
+  }
+}
+
+async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
+  const requiredVp = Number(submissionThreshold || requiredEnv('SUBMISSION_THRESHOLD_POLL'))
+  const hasRequiredVp = await hasRequiredVP(user, requiredVp)
+  if (!hasRequiredVp) {
+    throw new RequestError(`User does not meet the required "${requiredVp}" VP`)
   }
 }
 

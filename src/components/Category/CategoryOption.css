@@ -55,7 +55,11 @@
 }
 
 .CategoryOption.CategoryOption--poll:hover::before,
-.CategoryOption.CategoryOption--poll.CategoryOption--active::before {
+.CategoryOption.CategoryOption--poll.CategoryOption--active::before,
+.CategoryOption.CategoryOption--draft:hover::before,
+.CategoryOption.CategoryOption--draft.CategoryOption--active::before,
+.CategoryOption.CategoryOption--governance:hover::before,
+.CategoryOption.CategoryOption--governance.CategoryOption--active::before {
   background-color: var(--background-poll);
 }
 
