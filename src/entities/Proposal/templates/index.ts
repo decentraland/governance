@@ -6,7 +6,8 @@ import {
   NewProposalPOI,
   NewProposalPoll,
   ProposalType,
-  NewProposalDraft, NewProposalGovernance
+  NewProposalDraft,
+  NewProposalGovernance
 } from '../types'
 
 import * as banName from './banName'
