@@ -73,6 +73,8 @@ export default routes((route) => {
   const withOptionalAuth = auth({ optional: true })
   route.get('/proposals', withOptionalAuth, handleJSON(getProposals))
   route.post(`/proposals/poll`, withAuth, handleAPI(createProposalPoll))
+  route.post(`/proposals/draft`, withAuth, handleAPI(createProposalDraft))
+  route.post(`/proposals/governance`, withAuth, handleAPI(createProposalGovernance))
   route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
   route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
   route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
@@ -81,6 +83,7 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
+  route.get('/proposals/passed/:proposal_type', handleAPI(getPassedProposals))
   // route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
   // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
 })
@@ -572,12 +575,25 @@ export async function proposalComments(req: Request<{ proposal: string }>){
   }
 }
 
+async function getPassedProposals(req:Request<{proposal_type: ProposalType}>){
+  const proposalType = req.params.proposal_type
+  let passedProposals = await ProposalModel.getPassedProposals(proposalType)
+  return passedProposals.map(proposal => {
+    return {
+      key: proposal.id,
+      text: proposal.title,
+      value: proposal.id
+    }
+  })
+}
+
 async function validateLinkedProposal(linkedProposalId: string, expectedProposalType: ProposalType) {
   const linkedProposal = await ProposalModel.findOne<ProposalAttributes>({
     id: linkedProposalId,
+    type: expectedProposalType,
     deleted: false
   })
-  if (!linkedProposal || linkedProposal.type != expectedProposalType) {
+  if (!linkedProposal) {
     throw new RequestError(`Could not find a matching ${expectedProposalType} proposal for "${linkedProposalId}"`, RequestError.NotFound)
   }
 }
@@ -586,7 +602,7 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   const requiredVp = Number(submissionThreshold || requiredEnv('SUBMISSION_THRESHOLD_POLL'))
   const hasRequiredVp = await hasRequiredVP(user, requiredVp)
   if (!hasRequiredVp) {
-    throw new RequestError(`User does not meet the required "${requiredVp}" VP`)
+    throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }
 

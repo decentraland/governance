@@ -214,7 +214,7 @@ export const newProposalDraftScheme = {
     },
     abstract: {
       type: 'string',
-      minLength: 1,
+      minLength: 20,
       maxLength: 3500,
     },
     motivation: {
