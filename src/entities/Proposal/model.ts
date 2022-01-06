@@ -162,4 +162,16 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     return proposals.map(this.parse)
   }
+
+  static async getPassedProposals(proposal_type: ProposalType) {
+    const query = SQL`
+      SELECT id, title
+      FROM ${table(ProposalModel)}
+      WHERE
+        "deleted" = FALSE
+        AND "status" = ${ProposalStatus.Passed}
+        AND "type" = ${proposal_type}
+    `
+    return await this.query(query)
+  }
 }
