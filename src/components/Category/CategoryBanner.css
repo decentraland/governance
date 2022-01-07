@@ -42,6 +42,16 @@
   background-color: var(--background-poi);
 }
 
+.CategoryBanner.CategoryBanner--add_poi:hover::before,
+.CategoryBanner.CategoryBanner--add_poi.CategoryBanner--active::before {
+  background-color: var(--background-poi);
+}
+
+.CategoryBanner.CategoryBanner--remove_poi:hover::before,
+.CategoryBanner.CategoryBanner--remove_poi.CategoryBanner--active::before {
+  background-color: var(--background-remove-poi);
+}
+
 .CategoryBanner.CategoryBanner--ban_name:hover::before,
 .CategoryBanner.CategoryBanner--ban_name.CategoryBanner--active::before {
   background-color: var(--background-ban-name);

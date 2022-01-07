@@ -64,6 +64,8 @@ export function toProposalStatus(value: string | null | undefined): ProposalStat
 
 export enum ProposalType {
   POI = 'poi',
+  AddPOI = 'add_poi',
+  RemovePOI = 'remove_poi',
   Catalyst = 'catalyst',
   BanName = 'ban_name',
   Grant = 'grant',
@@ -73,6 +75,8 @@ export enum ProposalType {
 export function isProposalType(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
+    case ProposalType.AddPOI:
+    case ProposalType.RemovePOI:
     case ProposalType.Catalyst:
     case ProposalType.BanName:
     case ProposalType.Grant:

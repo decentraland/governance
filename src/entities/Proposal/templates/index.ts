@@ -4,7 +4,8 @@ import { NewProposalBanName, NewProposalCatalyst, NewProposalGrant, NewProposalP
 import * as banName from './banName'
 import * as catalyst from './catalyst'
 import * as grant from './grant'
-import * as poi from './poi'
+import * as addPoi from './addPoi'
+import * as removePoi from './removePoi'
 import * as poll from './poll'
 import { template } from './utils'
 
@@ -18,7 +19,11 @@ type NewConfiguration =
 export const title = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => {
   switch (type) {
     case ProposalType.POI:
-      return poi.title(configuration as any)
+      return "" // no title
+    case ProposalType.RemovePOI:
+      return removePoi.title(configuration as any)
+    case ProposalType.AddPOI:
+      return addPoi.title(configuration as any)
     case ProposalType.BanName:
       return banName.title(configuration as any)
     case ProposalType.Catalyst:
@@ -33,7 +38,11 @@ export const title = async ({ type, configuration }: { type: ProposalType, confi
 export const description = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => {
   switch (type) {
     case ProposalType.POI:
-      return poi.description(configuration as any)
+      return "" // no description
+    case ProposalType.RemovePOI:
+      return removePoi.description(configuration as any)
+    case ProposalType.AddPOI:
+      return addPoi.description(configuration as any)
     case ProposalType.BanName:
       return banName.description(configuration as any)
     case ProposalType.Catalyst:
@@ -60,7 +69,8 @@ export const snapshotDescription = async ({ type, configuration, user, profile, 
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
 ${
-  (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
+  (type === ProposalType.AddPOI ? await addPoi.pre_description(configuration as any) : '') +
+  (type === ProposalType.RemovePOI ? await removePoi.pre_description(configuration as any) : '') +
   await description({type, configuration}) +
   (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }
@@ -87,7 +97,8 @@ export const forumDescription = async ({ type, configuration, user, profile, pro
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
 ${
-  (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
+  (type === ProposalType.AddPOI ? await addPoi.pre_description(configuration as any) : '') +
+  (type === ProposalType.RemovePOI ? await removePoi.pre_description(configuration as any) : '') +
   await description({type, configuration}) +
   (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }

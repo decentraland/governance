@@ -1,6 +1,9 @@
+import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage";
 import Land from "decentraland-gatsby/dist/utils/api/Land";
 import { NewProposalPOI } from "../types";
 import { formatMarkdown, template } from "./utils";
+
+// const l = useFormatMessage();
 
 export const title = (proposal: NewProposalPOI) =>
   `Add the location ${proposal.x},${proposal.y} to the Points of Interest`
@@ -14,11 +17,11 @@ ${formatMarkdown(proposal.description)}
 
 `
 export const pre_description = async (proposal: NewProposalPOI) => {
-  const tile = await Land.get().getTile([ proposal.x, proposal.y ])
+  const tile = await Land.get().getTile([proposal.x, proposal.y])
   const name = tile?.name || `Parcel ${proposal.x},${proposal.y}`
 
   return [
     `## ${name}`,
-    `![${name}](${Land.get().getParcelImage([ proposal.x, proposal.y ])})`,
+    `![${name}](${Land.get().getParcelImage([proposal.x, proposal.y])})`,
   ].join('\n\n') + '\n\n'
 }

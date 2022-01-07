@@ -19,7 +19,8 @@ import { Vote } from '../entities/Votes/types';
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
   [`/proposals/ban-name`]: NewProposalBanName,
-  [`/proposals/poi`]: NewProposalPOI,
+  [`/proposals/poi/add`]: NewProposalPOI,
+  [`/proposals/poi/remove`]: NewProposalPOI,
   [`/proposals/catalyst`]: NewProposalCatalyst,
   [`/proposals/grant`]: NewProposalGrant,
 }
@@ -111,8 +112,12 @@ export class Governance extends API {
     return this.createProposal(`/proposals/ban-name`, proposal)
   }
 
-  async createProposalPOI(proposal: NewProposalPOI) {
-    return this.createProposal(`/proposals/poi`, proposal)
+  async createAddProposalPOI(proposal: NewProposalPOI) {
+    return this.createProposal(`/proposals/poi/add`, proposal)
+  }
+
+  async createRemoveProposalPOI(proposal: NewProposalPOI) {
+    return this.createProposal(`/proposals/poi/remove`, proposal)
   }
 
   async createProposalCatalyst(proposal: NewProposalCatalyst) {
