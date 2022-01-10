@@ -174,4 +174,15 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     `
     return await this.query(query)
   }
+
+  static async getTitle(proposal_id: string) {
+    const query = SQL`
+      SELECT title
+      FROM ${table(ProposalModel)}
+      WHERE
+        id = ${proposal_id}
+    `
+    const proposalTitle = await this.query<{title:string}>(query)
+    return proposalTitle[0]
+  }
 }

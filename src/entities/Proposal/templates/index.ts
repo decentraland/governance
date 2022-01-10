@@ -60,9 +60,9 @@ export const description = async ({ type, configuration }: { type: ProposalType,
     case ProposalType.Poll:
       return poll.description(configuration as any)
     case ProposalType.Draft:
-      return draft.description(configuration as any)
+      return await draft.description(configuration as any)
     case ProposalType.Governance:
-      return governance.description(configuration as any)
+      return await governance.description(configuration as any)
   }
 }
 

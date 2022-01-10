@@ -11,8 +11,7 @@ import {
   SNAPSHOT_ACCOUNT,
   SNAPSHOT_ADDRESS,
   SNAPSHOT_DURATION,
-  signMessage,
-  hasRequiredVP
+  signMessage
 } from '../Snapshot/utils';
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
 import { Discourse, DiscoursePost, DiscourseComment } from '../../api/Discourse'
@@ -181,7 +180,7 @@ export async function createProposalDraft(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalDraft>(newProposalDraftValidator, req.body || {})
 
-  await validateLinkedProposal(configuration.linked_pre_proposal_id, ProposalType.Poll)
+  await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Poll)
   await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT)
 
   return createProposal({
@@ -201,7 +200,7 @@ export async function createProposalGovernance(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGovernance>(newProposalGovernanceValidator, req.body || {})
 
-  await validateLinkedProposal(configuration.linked_draft_proposal_id, ProposalType.Draft)
+  await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Draft)
   await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE)
 
   return createProposal({
@@ -600,8 +599,8 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || requiredEnv('SUBMISSION_THRESHOLD_POLL'))
-  const hasRequiredVp = await hasRequiredVP(user, requiredVp)
-  if (!hasRequiredVp) {
+  const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
+  if (userVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

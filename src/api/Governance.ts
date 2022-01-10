@@ -12,7 +12,8 @@ import {
   ProposalAttributes,
   ProposalType,
   ProposalStatus,
-  NewProposalDraft, NewProposalGovernance
+  NewProposalDraft,
+  NewProposalGovernance,
   ProposalCommentsInDiscourse
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
