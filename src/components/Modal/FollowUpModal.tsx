@@ -83,7 +83,10 @@ export function FollowUpModal({ open, onDismiss, proposal, loading, ...props }: 
     </Modal.Content>
     <Modal.Content className="ProposalModal__Actions">
       <Button className="FollowUpModal__DismissButton" secondary
-              onClick={onDismiss}>{l('modal.follow_up.dismiss_button_label')}</Button>
+              onClick={onDismiss}
+              loading={loading}>
+        {l('modal.follow_up.dismiss_button_label')}
+      </Button>
     </Modal.Content>
   </Modal>
 }

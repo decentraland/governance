@@ -175,7 +175,7 @@ export const newProposalPollScheme = {
 }
 
 export type NewProposalDraft = {
-  linked_pre_proposal_id: string,
+  linked_proposal_id: string,
   title: string,
   summary: string,
   abstract: string,
@@ -188,7 +188,7 @@ export const newProposalDraftScheme = {
   type: 'object',
   additionalProperties: false,
   required: [
-    'linked_pre_proposal_id',
+    'linked_proposal_id',
     'title',
     'summary',
     'abstract',
@@ -197,7 +197,7 @@ export const newProposalDraftScheme = {
     'conclusion'
   ],
   properties: {
-    linked_pre_proposal_id:{
+    linked_proposal_id:{
       type: 'string',
       minLength: 36,
       maxLength: 255,
@@ -236,7 +236,7 @@ export const newProposalDraftScheme = {
 }
 
 export type NewProposalGovernance = {
-  linked_draft_proposal_id: string,
+  linked_proposal_id: string,
   title: string,
   summary: string,
   abstract: string,
@@ -251,7 +251,7 @@ export const newProposalGovernanceScheme = {
   type: 'object',
   additionalProperties: false,
   required: [
-    'linked_draft_proposal_id',
+    'linked_proposal_id',
     'title',
     'summary',
     'abstract',
@@ -262,7 +262,7 @@ export const newProposalGovernanceScheme = {
     'conclusion'
   ],
   properties: {
-    linked_pre_proposal_id:{
+    linked_proposal_id:{
       type: 'string',
       minLength: 36,
       maxLength: 255,

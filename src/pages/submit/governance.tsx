@@ -8,7 +8,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import { newProposalDraftScheme, ProposalType } from '../../entities/Proposal/types'
+import { newProposalGovernanceScheme, ProposalType } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -29,109 +29,132 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
-type DraftState = {
+type GovernanceState = {
   linked_proposal_id: string | null,
   title: string,
   summary: string,
   abstract: string,
   motivation: string,
   specification: string,
+  impacts: string,
+  implementation_pathways: string,
   conclusion: string,
 }
-const initialState: DraftState = {
+
+const initialState: GovernanceState = {
   linked_proposal_id: null,
   title: '',
   summary: '',
   abstract: '',
   motivation: '',
   specification: '',
+  impacts: '',
+  implementation_pathways: '',
   conclusion: ''
 }
-const schema = newProposalDraftScheme.properties
-const edit = (state: DraftState, props: Partial<DraftState>) => {
+const schema = newProposalGovernanceScheme.properties
+const edit = (state: GovernanceState, props: Partial<GovernanceState>) => {
   return {
     ...state,
     ...props
   }
 }
-const validate = createValidator<DraftState>({
+const validate = createValidator<GovernanceState>({
   title: (state) => ({
-    title: assert(state.title.length <= schema.title.maxLength, 'error.draft.title_too_large') ||
+    title: assert(state.title.length <= schema.title.maxLength, 'error.governance.title_too_large') ||
       undefined
   }),
   summary: (state) => ({
-    summary: assert(state.summary.length <= schema.summary.maxLength, 'error.draft.summary_too_large') ||
+    summary: assert(state.summary.length <= schema.summary.maxLength, 'error.governance.summary_too_large') ||
       undefined
   }),
   abstract: (state) => ({
-    abstract: assert(state.abstract.length <= schema.abstract.maxLength, 'error.draft.abstract_too_large') ||
+    abstract: assert(state.abstract.length <= schema.abstract.maxLength, 'error.governance.abstract_too_large') ||
       undefined
   }),
   motivation: (state) => ({
-    motivation: assert(state.motivation.length <= schema.motivation.maxLength, 'error.draft.motivation_too_large') ||
+    motivation: assert(state.motivation.length <= schema.motivation.maxLength, 'error.governance.motivation_too_large') ||
+      undefined
+  }),
+  impacts: (state) => ({
+    impacts: assert(state.impacts.length <= schema.impacts.maxLength, 'error.governance.impacts_too_large') ||
+      undefined
+  }),
+  implementation_pathways: (state) => ({
+    implementation_pathways: assert(state.implementation_pathways.length <= schema.implementation_pathways.maxLength, 'error.governance.implementation_pathways_too_large') ||
       undefined
   }),
   specification: (state) => ({
-    specification: assert(state.specification.length <= schema.specification.maxLength, 'error.draft.specification_too_large') ||
+    specification: assert(state.specification.length <= schema.specification.maxLength, 'error.governance.specification_too_large') ||
       undefined
   }),
   conclusion: (state) => ({
-    conclusion: assert(state.conclusion.length <= schema.conclusion.maxLength, 'error.draft.conclusion_too_large') ||
+    conclusion: assert(state.conclusion.length <= schema.conclusion.maxLength, 'error.governance.conclusion_too_large') ||
       undefined
   }),
   '*': (state) => ({
     linked_proposal_id: (
-      assert(!!state.linked_proposal_id, 'error.draft.linked_proposal_empty')
+      assert(!!state.linked_proposal_id, 'error.governance.linked_proposal_empty')
     ),
     title: (
-      assert(state.title.length > 0, 'error.draft.title_empty') ||
-      assert(state.title.length >= schema.title.minLength, 'error.draft.title_too_short') ||
-      assert(state.title.length <= schema.title.maxLength, 'error.draft.title_too_large')
+      assert(state.title.length > 0, 'error.governance.title_empty') ||
+      assert(state.title.length >= schema.title.minLength, 'error.governance.title_too_short') ||
+      assert(state.title.length <= schema.title.maxLength, 'error.governance.title_too_large')
     ),
     summary: (
-      assert(state.summary.length > 0, 'error.draft.summary_empty') ||
-      assert(state.summary.length >= schema.summary.minLength, 'error.draft.summary_too_short') ||
-      assert(state.summary.length <= schema.summary.maxLength, 'error.draft.summary_too_large')
+      assert(state.summary.length > 0, 'error.governance.summary_empty') ||
+      assert(state.summary.length >= schema.summary.minLength, 'error.governance.summary_too_short') ||
+      assert(state.summary.length <= schema.summary.maxLength, 'error.governance.summary_too_large')
     ),
     abstract: (
-      assert(state.abstract.length > 0, 'error.draft.abstract_empty') ||
-      assert(state.abstract.length >= schema.abstract.minLength, 'error.draft.abstract_too_short') ||
-      assert(state.abstract.length <= schema.abstract.maxLength, 'error.draft.abstract_too_large')
+      assert(state.abstract.length > 0, 'error.governance.abstract_empty') ||
+      assert(state.abstract.length >= schema.abstract.minLength, 'error.governance.abstract_too_short') ||
+      assert(state.abstract.length <= schema.abstract.maxLength, 'error.governance.abstract_too_large')
     ),
     motivation: (
-      assert(state.motivation.length > 0, 'error.draft.motivation_empty') ||
-      assert(state.motivation.length >= schema.motivation.minLength, 'error.draft.motivation_too_short') ||
-      assert(state.motivation.length <= schema.motivation.maxLength, 'error.draft.motivation_too_large')
+      assert(state.motivation.length > 0, 'error.governance.motivation_empty') ||
+      assert(state.motivation.length >= schema.motivation.minLength, 'error.governance.motivation_too_short') ||
+      assert(state.motivation.length <= schema.motivation.maxLength, 'error.governance.motivation_too_large')
+    ),
+    impacts: (
+      assert(state.impacts.length > 0, 'error.governance.impacts_empty') ||
+      assert(state.impacts.length >= schema.impacts.minLength, 'error.governance.impacts_too_short') ||
+      assert(state.impacts.length <= schema.impacts.maxLength, 'error.governance.impacts_too_large')
+    ),
+    implementation_pathways: (
+      assert(state.implementation_pathways.length > 0, 'error.governance.implementation_pathways_empty') ||
+      assert(state.implementation_pathways.length >= schema.implementation_pathways.minLength, 'error.governance.implementation_pathways_too_short') ||
+      assert(state.implementation_pathways.length <= schema.implementation_pathways.maxLength, 'error.governance.implementation_pathways_too_large')
     ),
     specification: (
-      assert(state.specification.length > 0, 'error.draft.specification_empty') ||
-      assert(state.specification.length >= schema.specification.minLength, 'error.draft.specification_too_short') ||
-      assert(state.specification.length <= schema.specification.maxLength, 'error.draft.specification_too_large')
+      assert(state.specification.length > 0, 'error.governance.specification_empty') ||
+      assert(state.specification.length >= schema.specification.minLength, 'error.governance.specification_too_short') ||
+      assert(state.specification.length <= schema.specification.maxLength, 'error.governance.specification_too_large')
     ),
     conclusion: (
-      assert(state.conclusion.length > 0, 'error.draft.conclusion_empty') ||
-      assert(state.conclusion.length >= schema.conclusion.minLength, 'error.draft.conclusion_too_short') ||
-      assert(state.conclusion.length <= schema.conclusion.maxLength, 'error.draft.conclusion_too_large')
+      assert(state.conclusion.length > 0, 'error.governance.conclusion_empty') ||
+      assert(state.conclusion.length >= schema.conclusion.minLength, 'error.governance.conclusion_too_short') ||
+      assert(state.conclusion.length <= schema.conclusion.maxLength, 'error.governance.conclusion_too_large')
     )
   })
 })
 
-export default function SubmitDraftProposal() {
+export default function SubmitGovernanceProposal() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const [votingPower] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
-  const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT), [votingPower])
+  const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE), [votingPower])
   const [state, editor] = useEditor(edit, validate, initialState)
-  const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Poll), [], {initialValue: []})
+  const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Draft), [], { initialValue: [] })
 
   useEffect(() => {
     if (state.validated) {
       Promise.resolve()
         .then(async () => {
-          return Governance.get().createProposalDraft({
+          return Governance.get().createProposalGovernance({
             ...state.value,
             linked_proposal_id: state.value.linked_proposal_id!
           })
@@ -158,8 +181,8 @@ export default function SubmitDraftProposal() {
   if (!account) {
     return <Container>
       <Head
-        title={l('page.submit_draft.title') || ''}
-        description={l('page.submit_draft.description') || ''}
+        title={l('page.submit_governance.title') || ''}
+        description={l('page.submit_governance.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
@@ -168,24 +191,24 @@ export default function SubmitDraftProposal() {
 
   return <ContentLayout small>
     <Head
-      title={l('page.submit_draft.title') || ''}
-      description={l('page.submit_draft.description') || ''}
+      title={l('page.submit_governance.title') || ''}
+      description={l('page.submit_governance.description') || ''}
       image="https://decentraland.org/images/decentraland.png"
     />
-    <Helmet title={l('page.submit_draft.title') || ''} />
+    <Helmet title={l('page.submit_governance.title') || ''} />
 
     <ContentSection>
-      <Header size="huge">{l('page.submit_draft.title')}</Header>
+      <Header size="huge">{l('page.submit_governance.title')}</Header>
     </ContentSection>
     <ContentSection className="MarkdownSection--tiny">
-      {l.markdown('page.submit_draft.description')}
+      {l.markdown('page.submit_governance.description')}
     </ContentSection>
 
     <ContentSection>
-      <Label>{l('page.submit_draft.linked_proposal_label')}</Label>
+      <Label>{l('page.submit_governance.linked_proposal_label')}</Label>
       <SelectField
         value={state.value.linked_proposal_id || undefined}
-        placeholder={l('page.submit_draft.linked_proposal_placeholder') || undefined}
+        placeholder={l('page.submit_governance.linked_proposal_placeholder') || undefined}
         onChange={(_, { value }) => editor.set({ linked_proposal_id: String(value) })}
         options={passedProposals}
         error={!!state.error.linked_proposal_id}
@@ -194,10 +217,10 @@ export default function SubmitDraftProposal() {
     </ContentSection>
 
     <ContentSection>
-      <Label>{l('page.submit_draft.title_label')}</Label>
+      <Label>{l('page.submit_governance.title_label')}</Label>
       <Field
         value={state.value.title}
-        placeholder={l('page.submit_draft.title_placeholder')}
+        placeholder={l('page.submit_governance.title_placeholder')}
         onChange={(_, { value }) => editor.set({ title: value })}
         onBlur={() => editor.set({ title: state.value.title.trim() })}
         error={!!state.error.title}
@@ -214,14 +237,14 @@ export default function SubmitDraftProposal() {
 
     <ContentSection>
       <Label>
-        {l('page.submit_draft.summary_label')}
+        {l('page.submit_governance.summary_label')}
         <MarkdownNotice />
       </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_draft.summary_detail')}</Paragraph>
+      <Paragraph tiny secondary className="details">{l('page.submit_governance.summary_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
         value={state.value.summary}
-        placeholder={l('page.submit_draft.summary_placeholder')}
+        placeholder={l('page.submit_governance.summary_placeholder')}
         onChange={(_: any, { value }: any) => editor.set({ summary: value })}
         onBlur={() => editor.set({ summary: state.value.summary.trim() })}
         error={!!state.error.summary}
@@ -238,14 +261,14 @@ export default function SubmitDraftProposal() {
 
     <ContentSection>
       <Label>
-        {l('page.submit_draft.abstract_label')}
+        {l('page.submit_governance.abstract_label')}
         <MarkdownNotice />
       </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_draft.abstract_detail')}</Paragraph>
+      <Paragraph tiny secondary className="details">{l('page.submit_governance.abstract_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
         value={state.value.abstract}
-        placeholder={l('page.submit_draft.abstract_placeholder')}
+        placeholder={l('page.submit_governance.abstract_placeholder')}
         onChange={(_: any, { value }: any) => editor.set({ abstract: value })}
         onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
         error={!!state.error.abstract}
@@ -262,14 +285,14 @@ export default function SubmitDraftProposal() {
 
     <ContentSection>
       <Label>
-        {l('page.submit_draft.motivation_label')}
+        {l('page.submit_governance.motivation_label')}
         <MarkdownNotice />
       </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_draft.motivation_detail')}</Paragraph>
+      <Paragraph tiny secondary className="details">{l('page.submit_governance.motivation_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
         value={state.value.motivation}
-        placeholder={l('page.submit_draft.motivation_placeholder')}
+        placeholder={l('page.submit_governance.motivation_placeholder')}
         onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
         onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
         error={!!state.error.motivation}
@@ -286,14 +309,14 @@ export default function SubmitDraftProposal() {
 
     <ContentSection>
       <Label>
-        {l('page.submit_draft.specification_label')}
+        {l('page.submit_governance.specification_label')}
         <MarkdownNotice />
       </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_draft.specification_detail')}</Paragraph>
+      <Paragraph tiny secondary className="details">{l('page.submit_governance.specification_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
         value={state.value.specification}
-        placeholder={l('page.submit_draft.specification_placeholder')}
+        placeholder={l('page.submit_governance.specification_placeholder')}
         onChange={(_: any, { value }: any) => editor.set({ specification: value })}
         onBlur={() => editor.set({ specification: state.value.specification.trim() })}
         error={!!state.error.specification}
@@ -308,16 +331,66 @@ export default function SubmitDraftProposal() {
       />
     </ContentSection>
 
+
     <ContentSection>
       <Label>
-        {l('page.submit_draft.conclusion_label')}
+        {l('page.submit_governance.impacts_label')}
         <MarkdownNotice />
       </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_draft.conclusion_detail')}</Paragraph>
+      <Paragraph tiny secondary className="details">{l('page.submit_governance.impacts_detail')}</Paragraph>
+      <MarkdownTextarea
+        minHeight={175}
+        value={state.value.impacts}
+        placeholder={l('page.submit_governance.impacts_placeholder')}
+        onChange={(_: any, { value }: any) => editor.set({ impacts: value })}
+        onBlur={() => editor.set({ impacts: state.value.impacts.trim() })}
+        error={!!state.error.impacts}
+        message={
+          l.optional(state.error.impacts) + ' ' +
+          l('page.submit.character_counter', {
+            current: state.value.impacts.length,
+            limit: schema.impacts.maxLength
+          })
+        }
+        disabled={submissionVpNotMet}
+      />
+    </ContentSection>
+
+    <ContentSection>
+      <Label>
+        {l('page.submit_governance.implementation_pathways_label')}
+        <MarkdownNotice />
+      </Label>
+      <Paragraph tiny secondary
+                 className="details">{l('page.submit_governance.implementation_pathways_detail')}</Paragraph>
+      <MarkdownTextarea
+        minHeight={175}
+        value={state.value.implementation_pathways}
+        placeholder={l('page.submit_governance.implementation_pathways_placeholder')}
+        onChange={(_: any, { value }: any) => editor.set({ implementation_pathways: value })}
+        onBlur={() => editor.set({ implementation_pathways: state.value.implementation_pathways.trim() })}
+        error={!!state.error.implementation_pathways}
+        message={
+          l.optional(state.error.implementation_pathways) + ' ' +
+          l('page.submit.character_counter', {
+            current: state.value.implementation_pathways.length,
+            limit: schema.implementation_pathways.maxLength
+          })
+        }
+        disabled={submissionVpNotMet}
+      />
+    </ContentSection>
+
+    <ContentSection>
+      <Label>
+        {l('page.submit_governance.conclusion_label')}
+        <MarkdownNotice />
+      </Label>
+      <Paragraph tiny secondary className="details">{l('page.submit_governance.conclusion_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
         value={state.value.conclusion}
-        placeholder={l('page.submit_draft.conclusion_placeholder')}
+        placeholder={l('page.submit_governance.conclusion_placeholder')}
         onChange={(_: any, { value }: any) => editor.set({ conclusion: value })}
         onBlur={() => editor.set({ conclusion: state.value.conclusion.trim() })}
         error={!!state.error.conclusion}
@@ -334,8 +407,7 @@ export default function SubmitDraftProposal() {
 
 
     <ContentSection>
-      <Button primary disabled={state.validated || submissionVpNotMet}
-              loading={state.validated}
+      <Button primary disabled={state.validated || submissionVpNotMet} loading={state.validated}
               onClick={() => editor.validate()}>
         {l('page.submit.button_submit')}
       </Button>
@@ -344,7 +416,7 @@ export default function SubmitDraftProposal() {
       <Paragraph small primary>{l(state.error['*']) || state.error['*']}</Paragraph>
     </ContentSection>}
     {submissionVpNotMet && <ContentSection>
-      <Paragraph small primary>{l('error.draft.submission_vp_not_met')}</Paragraph>
+      <Paragraph small primary>{l('error.governance.submission_vp_not_met')}</Paragraph>
     </ContentSection>}
   </ContentLayout>
 }

@@ -12,7 +12,9 @@ import {
   ProposalAttributes,
   ProposalType,
   ProposalStatus,
-  ProposalComment, NewProposalDraft, NewProposalGovernance
+  ProposalComment,
+  NewProposalDraft,
+  NewProposalGovernance
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
 import { Vote } from '../entities/Votes/types';
