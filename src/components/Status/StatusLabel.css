@@ -20,14 +20,14 @@
 }
 
 .StatusLabel.StatusLabel--passed {
-  color: #44B600;
-  border-color: #44B600;
+  color: var(--background-happy-green);
+  border-color: var(--background-happy-green);
 }
 
 .StatusLabel.StatusLabel--enacted {
   color: #FFF;
-  border-color: #44B600;
-  background-color: #44B600;
+  border-color: var(--background-happy-green);
+  background-color: var(--background-happy-green);
 }
 
 .StatusLabel.StatusLabel--rejected {
