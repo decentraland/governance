@@ -23,7 +23,8 @@ export function ProposalPromotionSection({ proposal, loading }: ProposalPromotio
     [proposal])
 
   function promoteProposal(proposalType?: ProposalType) {
-    navigate(locations.submit(proposalType, { linked_proposal_id: proposal!.id }))
+    const promotedProposalType = proposalType == ProposalType.Poll ? ProposalType.Draft : ProposalType.Governance
+    navigate(locations.submit(promotedProposalType, { linked_proposal_id: proposal!.id }), { replace: true })
   }
 
   return <>
