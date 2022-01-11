@@ -20,7 +20,7 @@
 }
 
 .Progress.Progress--approve .Progress--bar {
-  background-color: #44B600;
+  background-color: var(--background-happy-green);
 }
 
 .Progress.Progress--reject .Progress--bar {
