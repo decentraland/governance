@@ -126,6 +126,13 @@ export default function SubmitDraftProposal() {
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT), [votingPower])
   const [state, editor] = useEditor(edit, validate, initialState)
   const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Poll), [], {initialValue: []})
+  const preselectedLinkedProposal = useMemo(() => {
+    const preselectedLinkedProposal = params.get('linked_proposal_id')
+    if (!!preselectedLinkedProposal) {
+      editor.set({ linked_proposal_id: preselectedLinkedProposal})
+    }
+    return preselectedLinkedProposal
+  }, [params])
 
   useEffect(() => {
     if (state.validated) {
@@ -190,6 +197,7 @@ export default function SubmitDraftProposal() {
         options={passedProposals}
         error={!!state.error.linked_proposal_id}
         message={l.optional(state.error.linked_proposal_id)}
+        disabled={!!preselectedLinkedProposal}
       />
     </ContentSection>
 

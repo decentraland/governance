@@ -289,7 +289,11 @@
       "enact": "Enact proposal",
       "pass": "Pass proposal",
       "reject": "Reject proposal",
-      "delete": "Delete proposal"
+      "delete": "Delete proposal",
+      "opportunity_label": "opportunity",
+      "opportunity_text": "**Given this initiative has passed,** it is eligible for being drafted.",
+      "opportunity_info": "Why does this matter? [More info](https://account.decentraland.org/)",
+      "promote_to_draft_label": "Promote to Draft"
     },
     "proposal_activity": {
       "title": "Decentraland DAO",

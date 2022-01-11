@@ -97,3 +97,22 @@
     display: flex;
   }
 }
+
+.Opportunity {
+  border-top: 1px solid rgba(34,36,38,.1);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.Opportunity .Paragraph {
+  padding-top: 8px;
+  margin-bottom: 0;
+}
+
+.Opportunity .smallMarkdown p.dg.Paragraph {
+  font-size: 13px;
+}
+
+.Opportunity .tinyMarkdown p.dg.Paragraph {
+  font-size: 11px;
+}
