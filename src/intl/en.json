@@ -290,10 +290,14 @@
       "pass": "Pass proposal",
       "reject": "Reject proposal",
       "delete": "Delete proposal",
-      "opportunity_label": "opportunity",
-      "opportunity_text": "**Given this initiative has passed,** it is eligible for being drafted.",
-      "opportunity_info": "Why does this matter? [More info](https://account.decentraland.org/)",
-      "promote_to_draft_label": "Promote to Draft"
+      "promotion": {
+        "opportunity_label": "opportunity",
+        "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
+        "governance_text": "**Given this draft has passed,** it is elegible for being turned into\na Binding Governance Proposal.",
+        "info_text": "Why does this matter? [More info](https://account.decentraland.org/)",
+        "promote_to_draft_label": "Promote to Draft",
+        "promote_to_governance_label": "Escalate Proposal"
+      }
     },
     "proposal_activity": {
       "title": "Decentraland DAO",

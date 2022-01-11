@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Link, navigate } from 'gatsby-plugin-intl'
+import { Link } from 'gatsby-plugin-intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -8,7 +8,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import ChoiceProgress from '../Status/ChoiceProgress'
 import ChoiceButton from './ChoiceButton'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -17,8 +17,7 @@ import { Vote } from '../../entities/Votes/types'
 import { calculateChoiceColor, calculateResult } from '../../entities/Votes/utils'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import './DetailsSection.css'
-import TextLabel from '../Layout/TextLabel'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import { ProposalPromotionSection } from './ProposalPromotionSection'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null,
@@ -47,11 +46,6 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   const started = untilStart.time === 0
   const finished = untilFinish.time === 0
 
-
-  function promoteToDraftProposal() {
-    navigate(locations.submit(ProposalType.Draft, { linked_proposal_id: proposal!.id }))
-  }
-
   return <div {...props} className={TokenList.join([
     'DetailsSection',
     disabled && 'DetailsSection--disabled',
@@ -70,19 +64,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       {results.map((result) => {
         return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} power={result.power} progress={result.progress} />
       })}
-      {proposal && proposal.status === ProposalStatus.Passed &&
-        <div className="Opportunity">
-          <TextLabel text={l('page.proposal_detail.opportunity_label')}/>
-          <Markdown className="smallMarkdown" source={l('page.proposal_detail.opportunity_text') || ''}/>
-          <Button primary size="small"
-                  loading={loading}
-                  onClick={promoteToDraftProposal}
-          >
-            {l('page.proposal_detail.promote_to_draft_label')}
-          </Button>
-          <Markdown className="tinyMarkdown" source={l('page.proposal_detail.opportunity_info') || ''} />
-        </div>
-      }
+      <ProposalPromotionSection proposal={proposal} loading={loading}/>
       {proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed) &&
         <div className="DetailsSection__Secondary">
           <div className="DetailsSection__Secondary__Subtitle">
