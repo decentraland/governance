@@ -8,7 +8,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import { newProposalGovernanceScheme, ProposalType } from '../../entities/Proposal/types'
+import { newProposalGovernanceScheme, ProposalType, NewProposalDraft } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -149,6 +149,23 @@ export default function SubmitGovernanceProposal() {
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE), [votingPower])
   const [state, editor] = useEditor(edit, validate, initialState)
   const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Draft), [], { initialValue: [] })
+  const preselectedLinkedProposalId = params.get('linked_proposal_id')
+
+  useAsyncMemo(async () => {
+    if (!!preselectedLinkedProposalId) {
+      const linkedProposal = await Governance.get().getProposal(preselectedLinkedProposalId)
+      if(linkedProposal){
+        let configuration = linkedProposal.configuration as NewProposalDraft
+        state.value.linked_proposal_id = linkedProposal.id
+        state.value.summary= configuration.summary
+        state.value.abstract= configuration.abstract
+        state.value.motivation= configuration.motivation
+        state.value.specification= configuration.specification
+        state.value.conclusion= configuration.conclusion
+        }
+    }
+  }, [params])
+
 
   useEffect(() => {
     if (state.validated) {
@@ -213,6 +230,7 @@ export default function SubmitGovernanceProposal() {
         options={passedProposals}
         error={!!state.error.linked_proposal_id}
         message={l.optional(state.error.linked_proposal_id)}
+        disabled={!!preselectedLinkedProposalId}
       />
     </ContentSection>
 
