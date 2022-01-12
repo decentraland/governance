@@ -120,19 +120,19 @@ export default function SubmitDraftProposal() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const [votingPower] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT), [votingPower])
-  const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Poll), [], {initialValue: []})
-  const preselectedLinkedProposalId = useMemo(() => {
-    const preselectedLinkedProposalId = params.get('linked_proposal_id')
-    if (!!preselectedLinkedProposalId) {
-      state.value.linked_proposal_id = preselectedLinkedProposalId
-    }
-    return preselectedLinkedProposalId
-  }, [params])
+  const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Poll), [], { initialValue: [] })
   const [state, editor] = useEditor(edit, validate, initialState)
+
+  useEffect(() => {
+    if (!!preselectedLinkedProposalId) {
+      editor.set({ linked_proposal_id: preselectedLinkedProposalId })
+    }
+  }, [preselectedLinkedProposalId])
 
   useEffect(() => {
     if (state.validated) {
@@ -197,7 +197,7 @@ export default function SubmitDraftProposal() {
         options={passedProposals}
         error={!!state.error.linked_proposal_id}
         message={l.optional(state.error.linked_proposal_id)}
-        disabled={!preselectedLinkedProposalId}
+        disabled={!!preselectedLinkedProposalId}
       />
     </ContentSection>
 
