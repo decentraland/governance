@@ -197,7 +197,7 @@ export default function SubmitDraftProposal() {
         options={passedProposals}
         error={!!state.error.linked_proposal_id}
         message={l.optional(state.error.linked_proposal_id)}
-        disabled={!!preselectedLinkedProposalId}
+        disabled={!!preselectedLinkedProposalId || submissionVpNotMet}
         loading={votingPowerState.loading}
       />
     </ContentSection>
