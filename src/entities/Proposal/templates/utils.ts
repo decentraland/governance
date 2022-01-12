@@ -19,7 +19,7 @@ export function formatBalance(value: number) {
 export async function formatLinkedProposal(linked_proposal_id: string) {
   const url = proposalUrl({id: linked_proposal_id})
   const proposalTitle = await ProposalModel.getTitle(linked_proposal_id)
-  return `(${proposalTitle?.title})[${url}]` || ''
+  return `[${proposalTitle?.title}](${url})` || ''
 }
 
 const parser = unified()
