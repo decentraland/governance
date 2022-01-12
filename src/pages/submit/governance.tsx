@@ -143,29 +143,36 @@ export default function SubmitGovernanceProposal() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const [votingPower] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE), [votingPower])
   const [state, editor] = useEditor(edit, validate, initialState)
   const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Draft), [], { initialValue: [] })
-  const preselectedLinkedProposalId = params.get('linked_proposal_id')
 
-  useAsyncMemo(async () => {
+  useEffect(() => {
     if (!!preselectedLinkedProposalId) {
-      const linkedProposal = await Governance.get().getProposal(preselectedLinkedProposalId)
-      if(linkedProposal){
-        let configuration = linkedProposal.configuration as NewProposalDraft
-        state.value.linked_proposal_id = linkedProposal.id
-        state.value.summary= configuration.summary
-        state.value.abstract= configuration.abstract
-        state.value.motivation= configuration.motivation
-        state.value.specification= configuration.specification
-        state.value.conclusion= configuration.conclusion
+      Promise.resolve()
+        .then(async () => {
+          return await Governance.get().getProposal(preselectedLinkedProposalId)
+        }).then((linkedProposal) => {
+        if (linkedProposal) {
+          let configuration = linkedProposal.configuration as NewProposalDraft
+          editor.set({
+            linked_proposal_id: linkedProposal.id,
+            summary: configuration.summary,
+            abstract: configuration.abstract,
+            motivation: configuration.motivation,
+            specification: configuration.specification,
+            conclusion: configuration.conclusion })
         }
+      }).catch((err) => {
+        console.error(err, { ...err })
+        editor.error({ '*': err.body?.error || err.message })
+      })
     }
-  }, [params])
-
+  }, [preselectedLinkedProposalId])
 
   useEffect(() => {
     if (state.validated) {
