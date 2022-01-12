@@ -26,7 +26,8 @@ import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { useLocation } from '@reach/router'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { SNAPSHOT_SPACE } from '../../entities/Snapshot/utils'
+
+const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
 type DraftState = {
   linked_proposal_id: string | null,
