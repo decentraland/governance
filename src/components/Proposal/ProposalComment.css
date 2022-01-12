@@ -17,6 +17,18 @@
   justify-content: flex-start;
 }
 
+.ProposalComment .ProposalComment__Cooked {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+
+.ProposalComment__Cooked__Img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+
 .ProposalComment span {
   flex: 1 1;
   line-height: 20px;

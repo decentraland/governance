@@ -1,6 +1,5 @@
 import React from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -25,48 +24,49 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
   )
   let renderComments = comments && comments.length > 0
 
-  return <div className="ProposalComments">
-    <hr />
-    <div className="ProposalComments__Header">
-      <Header>Comments</Header>
-      {renderComments &&
-      <Button basic loading={loading}
-              disabled={!proposal}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={proposal && forumUrl(proposal) || ''}>
-        {l('page.proposal_comments.join_discussion_label')}
-      </Button>
-      }
-    </div>
-    <div {...props} className={TokenList.join([
-      'ProposalComments',
-      loading && 'ProposalComments--loading',
-      props.className
-    ])}>
-      <div className="ProposalComments__Content">
-        <Loader active={loading} />
-        {!renderComments && <div className="ProposalComments__NoComments">
-          <Watermelon />
-          <Paragraph small secondary>{l('page.proposal_comments.no_comments_text')}</Paragraph>
-          <Button basic loading={loading}
-                  disabled={!proposal}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={proposal && forumUrl(proposal) || ''}>
-            {l('page.proposal_comments.join_discussion_label')}
-          </Button>
-        </div>}
+  return <div>
+    {!loading && <div className="ProposalComments">
+      <hr />
+      <div className="ProposalComments__Header">
+        <Header>Comments</Header>
         {renderComments &&
-        comments!.map((comment, index) => <ProposalComment
-          key={'comment_' + index}
-          avatar_url={comment.avatar_url}
-          user={comment.username}
-          created_at={comment.created_at}
-          cooked={comment.cooked}
-        />)
+        <Button basic
+                disabled={!proposal}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={proposal && forumUrl(proposal) || ''}>
+          {l('page.proposal_comments.join_discussion_label')}
+        </Button>
         }
       </div>
-    </div>
+      <div {...props} className={TokenList.join([
+        'ProposalComments',
+        loading && 'ProposalComments--loading',
+        props.className
+      ])}>
+        <div className="ProposalComments__Content">
+          {!renderComments && <div className="ProposalComments__NoComments">
+            <Watermelon />
+            <Paragraph small secondary>{l('page.proposal_comments.no_comments_text')}</Paragraph>
+            <Button basic
+                    disabled={!proposal}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={proposal && forumUrl(proposal) || ''}>
+              {l('page.proposal_comments.join_discussion_label')}
+            </Button>
+          </div>}
+          {renderComments &&
+          comments!.map((comment, index) => <ProposalComment
+            key={'comment_' + index}
+            avatar_url={comment.avatar_url}
+            user={comment.username}
+            created_at={comment.created_at}
+            cooked={comment.cooked}
+          />)
+          }
+        </div>
+      </div>
+    </div>}
   </div>
 })
