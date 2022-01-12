@@ -23,7 +23,8 @@
       "description_too_large": "Description field is too large",
       "choices_insufficient": "Insufficient options",
       "choices_empty": "Some option is empty",
-      "choices_too_short": "Some option is to short"
+      "choices_too_short": "Some option is to short",
+      "submission_vp_not_met": "This action requires at least 100 VP."
     },
     "draft": {
       "linked_proposal_empty": "Linked Pre-proposal Poll field is empty",

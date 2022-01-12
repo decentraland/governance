@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Helmet from 'react-helmet'
 import omit from 'lodash.omit'
 import { navigate } from 'gatsby-plugin-intl'
@@ -24,6 +24,9 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import './submit.css'
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+
+const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
 type PollState = {
   title: string,
@@ -82,6 +85,8 @@ export default function SubmitPoll() {
   const l = useFormatMessage()
   const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
+  const [votingPower, votingPowerState] = useVotingPowerBalance(account, SNAPSHOT_SPACE)
+  const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL), [votingPower])
 
   function handleAddOption() {
     editor.set({
@@ -183,6 +188,7 @@ export default function SubmitPoll() {
             limit: schema.title.maxLength
           })
         }
+        loading={votingPowerState.loading}
       />
     </ContentSection>
     <ContentSection>
@@ -238,12 +244,18 @@ export default function SubmitPoll() {
       </div>
     </ContentSection>
     <ContentSection>
-      <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
+      <Button primary
+              disabled={state.validated || submissionVpNotMet}
+              loading={state.validated || votingPowerState.loading}
+              onClick={() => editor.validate()}>
         {l('page.submit.button_submit')}
       </Button>
     </ContentSection>
     {state.error['*'] && <ContentSection>
       <Paragraph small primary>{l(state.error['*']) || state.error['*']}</Paragraph>
+    </ContentSection>}
+    {submissionVpNotMet && <ContentSection>
+      <Paragraph small primary>{l('error.poll.submission_vp_not_met')}</Paragraph>
     </ContentSection>}
   </ContentLayout>
 }
