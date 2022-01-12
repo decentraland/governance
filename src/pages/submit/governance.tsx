@@ -146,7 +146,7 @@ export default function SubmitGovernanceProposal() {
   const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const [votingPower] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
+  const [votingPower, votingPowerState] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE), [votingPower])
   const [state, editor] = useEditor(edit, validate, initialState)
   const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Draft), [], { initialValue: [] })
@@ -238,6 +238,7 @@ export default function SubmitGovernanceProposal() {
         error={!!state.error.linked_proposal_id}
         message={l.optional(state.error.linked_proposal_id)}
         disabled={!!preselectedLinkedProposalId}
+        loading={votingPowerState.loading}
       />
     </ContentSection>
 
@@ -257,6 +258,7 @@ export default function SubmitGovernanceProposal() {
           })
         }
         disabled={submissionVpNotMet}
+        loading={votingPowerState.loading}
       />
     </ContentSection>
 
@@ -432,7 +434,9 @@ export default function SubmitGovernanceProposal() {
 
 
     <ContentSection>
-      <Button primary disabled={state.validated || submissionVpNotMet} loading={state.validated}
+      <Button primary
+              disabled={state.validated || submissionVpNotMet}
+              loading={state.validated || votingPowerState.loading}
               onClick={() => editor.validate()}>
         {l('page.submit.button_submit')}
       </Button>
