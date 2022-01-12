@@ -1,16 +1,3 @@
-
-@media (min-width: 768px) {
-  .DetailsSection .DetailsSection__Flex_Header_Labels {
-    display: block;
-  }
-}
-
-@media (min-width: 1024px) {
-  .DetailsSection .DetailsSection__Flex_Header_Labels {
-    display: flex;
-  }
-}
-
 .ProposalPromotionSection {
   border-top: 1px solid rgba(34,36,38,.1);
   padding-top: 16px;
