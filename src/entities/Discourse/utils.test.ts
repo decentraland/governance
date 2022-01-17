@@ -1,9 +1,11 @@
 import { DiscourseTopic, DiscoursePostInTopic } from '../../api/Discourse'
 import { ProposalComment } from '../Proposal/types'
-import { filterComments, DISCOURSE_USER, BASE_AVATAR_URL } from './utils'
+import { filterComments, DISCOURSE_USER, BASE_AVATAR_URL, DISCOURSE_API_KEY } from './utils'
 import { createWithPosts, ONE_USER_POST, SEVERAL_USERS_POST } from './__data__/discourse_samples'
 
-describe('filterUserComments', () => {
+const describeIf = (condition: boolean) => condition ? describe : describe.skip
+
+describeIf(DISCOURSE_API_KEY !== 'DISCOURSE_API_KEY')('filterUserComments', () => {
   let discourseTopic: DiscourseTopic
   let posts:DiscoursePostInTopic[]
   let filteredComments: ProposalComment[]
