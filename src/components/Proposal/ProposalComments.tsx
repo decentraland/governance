@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -20,15 +20,19 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
   const l = useFormatMessage()
   const [comments] = useAsyncMemo(async () =>
-    proposal ? Governance.get().getProposalComments(proposal!.id) : null, [proposal]
-  )
-  let renderComments = comments && comments.length > 0
+      proposal ? Governance.get().getProposalComments(proposal!.id) : null,
+    [proposal])
+  let renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
+  const commentsCount = useMemo(() =>
+      renderComments ? comments!.totalComments : '',
+    [renderComments])
+
 
   return <div>
     {!loading && <div className="ProposalComments">
       <hr />
       <div className="ProposalComments__Header">
-        <Header>Comments</Header>
+        <Header>{l('page.proposal_comments.title', { count: commentsCount })}</Header>
         {renderComments &&
         <Button basic
                 disabled={!proposal}
@@ -57,7 +61,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
             </Button>
           </div>}
           {renderComments &&
-          comments!.map((comment, index) => <ProposalComment
+          comments!.firstComments.map((comment, index) => <ProposalComment
             key={'comment_' + index}
             avatar_url={comment.avatar_url}
             user={comment.username}
@@ -66,6 +70,16 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
           />)
           }
         </div>
+        {renderComments &&
+        <Button
+          basic
+          className="ProposalComments__ReadMore"
+          disabled={!proposal}
+          target="_blank"
+          rel="noopener noreferrer"
+          href={proposal && forumUrl(proposal) || ''}>
+          {l('page.proposal_comments.read_more_label')}
+        </Button>}
       </div>
     </div>}
   </div>

@@ -17,6 +17,7 @@ config:
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.org
   website-dao:GATSBY_DISCOURSE_CATEGORY: "13"
   website-dao:GATSBY_DISCOURSE_USER: dao
+  website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
   website-dao:GATSBY_FEATURE_FLAGS_API: https://feature-flags.decentraland.org/dao.json
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.org/api
   website-dao:GATSBY_ROLLBAR_TOKEN: 81d278538c65450e93604cf1493a69ab

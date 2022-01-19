@@ -11,7 +11,7 @@ import {
   ProposalAttributes,
   ProposalType,
   ProposalStatus,
-  ProposalComment
+  ProposalCommentsInDiscourse
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
 import { Vote } from '../entities/Votes/types';
@@ -207,7 +207,7 @@ export class Governance extends API {
   }
 
   async getProposalComments(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<ProposalComment[]>>(`/proposals/${proposal_id}/comments`)
+    const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${proposal_id}/comments`)
     return result.data
   }
 }
