@@ -4,8 +4,14 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import env from 'decentraland-gatsby/dist/utils/env';
 import {
   NewProposalBanName,
-  NewProposalCatalyst, NewProposalGrant, NewProposalPOI,
-  NewProposalPoll, ProposalAttributes, ProposalComment, ProposalStatus, ProposalType
+  NewProposalCatalyst,
+  NewProposalPOI,
+  NewProposalPoll,
+  NewProposalGrant,
+  ProposalAttributes,
+  ProposalType,
+  ProposalStatus,
+  ProposalCommentsInDiscourse
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
 import { Vote } from '../entities/Votes/types';
@@ -201,7 +207,7 @@ export class Governance extends API {
   }
 
   async getProposalComments(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<ProposalComment[]>>(`/proposals/${proposal_id}/comments`)
+    const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${proposal_id}/comments`)
     return result.data
   }
 }

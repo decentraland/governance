@@ -17,6 +17,19 @@
   justify-content: flex-start;
 }
 
+.ProposalComment .ProposalComment__Cooked {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+
+.ProposalComment__Cooked__Img {
+  width: fit-content;
+  height: fit-content;
+  max-width: 100%;
+  margin-right: 1rem;
+}
+
 .ProposalComment span {
   flex: 1 1;
   line-height: 20px;
@@ -26,6 +39,7 @@
 .ProposalComment div.title {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .ProposalComments img.emoji {
@@ -38,9 +52,14 @@
 
 .ProposalComments aside.quote {
   display: flex;
+  flex-direction: column;
   border-left: 5px solid var(--primary-low);
   padding: 12px 12px 12px 12px;
   background-color: #f3f2f5;
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+.ProposalComment .ProposalComment__Content {
+  width: 100%;
 }

@@ -9,7 +9,7 @@ import { Pagination } from "decentraland-ui/dist/components/Pagination/Paginatio
 import { navigate } from "gatsby-plugin-intl"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
-import locations, { ProposalListView, toProposalListPage, toProposalListView, WELCOME_STORE_KEY, WELCOME_STORE_VERSION } from "../modules/locations"
+import locations, { ProposalListView, toProposalListPage, toProposalListView } from "../modules/locations"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import CategoryOption from "../components/Category/CategoryOption"
 import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
@@ -29,6 +29,7 @@ import useProposals from "../hooks/useProposals"
 // import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
 // import { FeatureFlags } from "../modules/features"
 import './index.css'
+import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
 
 const ITEMS_PER_PAGE = 25
 
@@ -182,6 +183,7 @@ export default function IndexPage() {
               </>}
             >
               <Loader active={!proposals || proposalsState.loading} />
+              <SubscriptionBanner active={!type} />
               {type && <CategoryBanner type={type} active />}
               {proposals && proposals.data.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
               {proposals && proposals.data.map(proposal => {

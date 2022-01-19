@@ -17,6 +17,7 @@ config:
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
   website-dao:GATSBY_DISCOURSE_CATEGORY: "5"
   website-dao:GATSBY_DISCOURSE_USER: dao
+  website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
   website-dao:GATSBY_DURATION_GRANT_TIER4: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER5: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER6: "1200"

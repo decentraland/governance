@@ -1,6 +1,6 @@
 import env, { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { DiscourseAuth, DiscourseTopic, DiscoursePostInTopic } from '../../api/Discourse'
-import { ProposalComment } from '../Proposal/types'
+import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
 export const DISCOURSE_API = requiredEnv('DISCOURSE_API')
 export const DISCOURSE_URL = env('DISCOURSE_URL', DISCOURSE_API)
@@ -23,13 +23,14 @@ function setAvatarUrl(post: DiscoursePostInTopic) {
   return defaultSizeUrl.includes('letter') ? defaultSizeUrl : BASE_AVATAR_URL + defaultSizeUrl
 }
 
-export function filterComments(comments: DiscourseTopic) {
+export function filterComments(comments: DiscourseTopic):ProposalCommentsInDiscourse {
   const posts = comments.post_stream.posts
-  const userPosts: DiscoursePostInTopic[] = posts.filter((post) =>
+  let filteredComments = posts.filter((post) =>
     ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase()))
-    .slice(-3)
 
-  const discourseComments: ProposalComment[] = userPosts.map(post => {
+  const userPosts: DiscoursePostInTopic[] = filteredComments.slice(0, 3)
+
+  const proposalComments: ProposalComment[] = userPosts.map(post => {
     return {
       username: post.username,
       avatar_url: setAvatarUrl(post),
@@ -37,5 +38,9 @@ export function filterComments(comments: DiscourseTopic) {
       cooked: post.cooked
     }
   })
-  return discourseComments
+
+  return {
+    totalComments: filteredComments.length,
+    firstComments: proposalComments
+  }
 }
