@@ -1,0 +1,26 @@
+
+.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__email-input {
+  width: 300px;
+  padding: 5px 10px;
+}
+
+.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__message {
+  margin-top: 20px;
+  font-size: 17px;
+}
+
+.ui.modal.NewsletterSubscriptionModal .success {
+  color: blue;
+}
+
+.ui.modal.NewsletterSubscriptionModal .error {
+  color: red;
+}
+
+.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__Description {
+  margin-bottom: 0;
+}
+
+.ui.modal.NewsletterSubscriptionModal .content {
+  width: 365px;
+}

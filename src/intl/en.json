@@ -147,6 +147,18 @@
       "voted_yes": "Yes",
       "voted_no": "No"
     },
+    "newsletter_subscription": {
+      "title": "Subscribe to the DAO Weekly Newsletter",
+      "description": "Please enter your email to stay on the loop.",
+      "description_sub": "No spam - we promise!",
+      "accept": "Subscribe",
+      "email_label": "Email address",
+      "email_placeholder": "john.doe@domain.com",
+      "email_error_message": "Please enter a valid email",
+      "subscribed": "You're subscribed",
+      "thanks": "Thanks for your interest",
+      "heads_up": "You'll hear from us soon and frequently enough!"
+    },
     "follow_up": {
       "title": "Proposal successfully submitted",
       "description": "Thanks for taking part in the DAO",
@@ -381,6 +393,11 @@
       "roadmap_label": "Roadmap and milestones",
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
       "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
+    },
+    "subscription_banner":{
+      "title": "Stay in the loop",
+      "description": "The DAO Weekly Newsletter includes updates regarding proposals",
+      "subscribe_button_label": "Subscribe"
     }
   }
 }
