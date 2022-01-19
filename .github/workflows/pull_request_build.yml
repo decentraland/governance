@@ -37,7 +37,7 @@ jobs:
       #   uses: wearerequired/lint-action@v1
       #   with:
       #     prettier: true
-      #     prettier_extensions: ts,tsx,js,jsx,,json,md
+      #     prettier_extensions: ts,tsx,js,jsx,json,md
       #     continue_on_error: false
 
       - name: testing
@@ -47,14 +47,3 @@ jobs:
 
       - name: building
         run: npm run build
-
-      - uses: octokit/request-action@v2.x
-        if: ${{ github.actor != '2fd' }}
-        id: assign_pr
-        with:
-          route: POST /repos/:repository/pulls/:pull_number/requested_reviewers
-          repository: ${{ github.repository }}
-          pull_number: ${{ github.event.pull_request.number }}
-          reviewers: '[ "2fd" ]'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
