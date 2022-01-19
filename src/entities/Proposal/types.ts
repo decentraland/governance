@@ -415,3 +415,8 @@ export type ProposalComment = {
   created_at: string,
   cooked: string,
 }
+
+export type ProposalCommentsInDiscourse = {
+  totalComments: number,
+  firstComments: ProposalComment[]
+}

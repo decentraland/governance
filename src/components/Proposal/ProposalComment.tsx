@@ -28,7 +28,7 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked}:
           <div className="ProposalComment__ProfileImage">
             <Avatar size="medium" src={avatar_url} />
           </div>
-          <div>
+          <div className="ProposalComment__Content">
             <div className="ProposalComment__Author">
               <Paragraph bold>{user}</Paragraph>
               <span><Paragraph secondary >{Time.from(created_at).fromNow()}</Paragraph></span>
