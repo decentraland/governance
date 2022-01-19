@@ -17,6 +17,7 @@ import {
   NewProposalPoll,
   newProposalPollScheme,
   ProposalType,
+  PoiType,
   ProposalStatus,
   NewProposalBanName,
   newProposalPOIScheme,
@@ -31,8 +32,7 @@ import {
   ProposalRequiredVP,
   GrantRequiredVP,
   GrantDuration,
-  INVALID_PROPOSAL_POLL_OPTIONS,
-  PoiType
+  INVALID_PROPOSAL_POLL_OPTIONS
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
 import {

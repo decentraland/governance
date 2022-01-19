@@ -22,11 +22,7 @@ export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
   type: ProposalType | PoiType
 }
 
-export default React.memo(function CategoryBanner({
-  active,
-  type,
-  ...props
-}: CategoryBannerProps) {
+export default React.memo(function CategoryBanner({ active, type, ...props }: CategoryBannerProps) {
   const l = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
@@ -56,9 +52,7 @@ export default React.memo(function CategoryBanner({
         <img src={icons[type]} width="48" height="48" />
       </div>
       <div className="CategoryBanner__Description">
-        <Paragraph small semiBold>
-          {l(`category.${type}_title`)}
-        </Paragraph>
+        <Paragraph small semiBold>{l(`category.${type}_title`)}</Paragraph>
         <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
       </div>
     </a>

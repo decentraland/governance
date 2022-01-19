@@ -4,7 +4,7 @@ import { NewProposalBanName, NewProposalCatalyst, NewProposalGrant, NewProposalP
 import * as banName from './banName'
 import * as catalyst from './catalyst'
 import * as grant from './grant'
-import * as poi from './Poi'
+import * as poi from './poi'
 import * as poll from './poll'
 import { template } from './utils'
 
