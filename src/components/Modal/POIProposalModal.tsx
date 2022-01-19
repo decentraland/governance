@@ -7,7 +7,7 @@ import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 
 import "./ProposalModal.css"
-import { ProposalType } from "../../entities/Proposal/types"
+import { PoiType } from "../../entities/Proposal/types"
 import CategoryBanner from "../Category/CategoryBanner"
 import locations from "../../modules/locations"
 
@@ -30,13 +30,13 @@ export function POIProposalModal({ ...props }) {
         style={{ width: "90%" }}
       >
         <CategoryBanner
-          type={ProposalType.AddPOI}
-          href={locations.submit(ProposalType.AddPOI)}
+          type={PoiType.AddPOI}
+          href={locations.submit(PoiType.AddPOI)}
           active
         />
         <CategoryBanner
-          type={ProposalType.RemovePOI}
-          href={locations.submit(ProposalType.RemovePOI)}
+          type={PoiType.RemovePOI}
+          href={locations.submit(PoiType.RemovePOI)}
           active
         />
       </Modal.Content>

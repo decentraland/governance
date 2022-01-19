@@ -47,7 +47,8 @@
       "coordinates_already_a_poi": "These coordinates are already a Point of Interest",
       "coordinates_are_not_a_poi": "These coordinates are not a Point of Interest",
       "fetching_tiles": "Error fetching tiles",
-      "coordinates_invalid_poi": "These coordinates are not valid as Point of Interest"
+      "coordinates_invalid_poi": "These coordinates are not valid as Point of Interest",
+      "invalid_poi_type": "Invalid POI type"
     },
     "catalyst": {
       "owner_empty": "Owner field is empty",

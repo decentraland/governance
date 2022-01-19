@@ -31,7 +31,8 @@ import {
   ProposalRequiredVP,
   GrantRequiredVP,
   GrantDuration,
-  INVALID_PROPOSAL_POLL_OPTIONS
+  INVALID_PROPOSAL_POLL_OPTIONS,
+  PoiType
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
 import {
@@ -64,8 +65,7 @@ export default routes((route) => {
   route.get('/proposals', withOptionalAuth, handleJSON(getProposals))
   route.post(`/proposals/poll`, withAuth, handleAPI(createProposalPoll))
   route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
-  route.post(`/proposals/poi/add`, withAuth, handleAPI(createAddProposalPOI))
-  route.post(`/proposals/poi/remove`, withAuth, handleAPI(createRemoveProposalPOI))
+  route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
   route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
   route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
   route.get('/proposals/:proposal', handleAPI(getProposal))
@@ -190,14 +190,44 @@ export async function createProposalBanName(req: WithAuth) {
 
 const newProposalPOIValidator = schema.compile(newProposalPOIScheme)
 type VerifyFunction = (config: NewProposalPOI) => Promise<void>;
-async function createProposalPOI(req: WithAuth, propType: ProposalType, verify: VerifyFunction) {
+
+const addPoiVerify: VerifyFunction = async (config: NewProposalPOI) => {
+  const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
+  if (alreadyPointOfInterest) {
+    throw new RequestError(`Coordinate "${config.x},${config.y}" is already a point of interest`, RequestError.BadRequest)
+  }
+
+  const validPointOfInterest = await isValidPointOfInterest(config.x, config.y)
+  if (!validPointOfInterest) {
+    throw new RequestError(`Coodinate "${config.x},${config.y}" is not valid as point of interest`, RequestError.BadRequest)
+  }
+}
+
+const removePoiVerify: VerifyFunction = async (config: NewProposalPOI) => {
+  const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
+  if (!alreadyPointOfInterest) {
+    throw new RequestError(`Coordinate "${config.x},${config.y}" is not a point of interest`, RequestError.BadRequest)
+  }
+}
+
+export async function createProposalPOI(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPOI>(newProposalPOIValidator, req.body || {})
-  await verify(configuration)
+
+  switch (configuration.type) {
+    case PoiType.AddPOI:
+      await addPoiVerify(configuration)
+      break
+    case PoiType.RemovePOI:
+      await removePoiVerify(configuration)
+      break
+    default:
+      throw new RequestError(`"${configuration.type}" is an invalid type`, RequestError.BadRequest)
+  }
 
   return createProposal({
     user,
-    type: propType,
+    type: ProposalType.POI,
     required_to_pass: ProposalRequiredVP[ProposalType.POI],
     finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
@@ -205,35 +235,6 @@ async function createProposalPOI(req: WithAuth, propType: ProposalType, verify: 
       choices: DEFAULT_CHOICES
     },
   })
-}
-
-export async function createAddProposalPOI(req: WithAuth) {
-
-  const verify = async (config: NewProposalPOI) => {
-    const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
-    if (alreadyPointOfInterest) {
-      throw new RequestError(`Coordinate "${config.x},${config.y}" is already a point of interest`, RequestError.BadRequest)
-    }
-
-    const validPointOfInterest = await isValidPointOfInterest(config.x, config.y)
-    if (!validPointOfInterest) {
-      throw new RequestError(`Coodinate "${config.x},${config.y}" is not valid as point of interest`, RequestError.BadRequest)
-    }
-  }
-
-  return createProposalPOI(req, ProposalType.AddPOI, verify)
-}
-
-export async function createRemoveProposalPOI(req: WithAuth) {
-
-  const verify = async (config: NewProposalPOI) => {
-    const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
-    if (!alreadyPointOfInterest) {
-      throw new RequestError(`Coordinate "${config.x},${config.y}" is not a point of interest`, RequestError.BadRequest)
-    }
-  }
-
-  return createProposalPOI(req, ProposalType.RemovePOI, verify)
 }
 
 const newProposalCatalystValidator = schema.compile(newProposalCatalystScheme)
@@ -390,12 +391,6 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   //
   // Create proposal in DB
   //
-  switch (data.type) {
-    case ProposalType.AddPOI as string:
-    case ProposalType.RemovePOI as string:
-      data.type = ProposalType.POI
-      break
-  }
 
   const newProposal: ProposalAttributes = {
     ...data,

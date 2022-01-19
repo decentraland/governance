@@ -4,14 +4,8 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import env from 'decentraland-gatsby/dist/utils/env';
 import {
   NewProposalBanName,
-  NewProposalCatalyst,
-  NewProposalPOI,
-  NewProposalPoll,
-  NewProposalGrant,
-  ProposalAttributes,
-  ProposalType,
-  ProposalStatus,
-  ProposalComment
+  NewProposalCatalyst, NewProposalGrant, NewProposalPOI,
+  NewProposalPoll, ProposalAttributes, ProposalComment, ProposalStatus, ProposalType
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
 import { Vote } from '../entities/Votes/types';
@@ -19,8 +13,7 @@ import { Vote } from '../entities/Votes/types';
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
   [`/proposals/ban-name`]: NewProposalBanName,
-  [`/proposals/poi/add`]: NewProposalPOI,
-  [`/proposals/poi/remove`]: NewProposalPOI,
+  [`/proposals/poi`]: NewProposalPOI,
   [`/proposals/catalyst`]: NewProposalCatalyst,
   [`/proposals/grant`]: NewProposalGrant,
 }
@@ -112,12 +105,8 @@ export class Governance extends API {
     return this.createProposal(`/proposals/ban-name`, proposal)
   }
 
-  async createAddProposalPOI(proposal: NewProposalPOI) {
-    return this.createProposal(`/proposals/poi/add`, proposal)
-  }
-
-  async createRemoveProposalPOI(proposal: NewProposalPOI) {
-    return this.createProposal(`/proposals/poi/remove`, proposal)
+  async createProposalPOI(proposal: NewProposalPOI) {
+    return this.createProposal(`/proposals/poi`, proposal)
   }
 
   async createProposalCatalyst(proposal: NewProposalCatalyst) {

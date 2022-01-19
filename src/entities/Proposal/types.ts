@@ -64,23 +64,34 @@ export function toProposalStatus(value: string | null | undefined): ProposalStat
 
 export enum ProposalType {
   POI = 'poi',
-  AddPOI = 'add_poi',
-  RemovePOI = 'remove_poi',
   Catalyst = 'catalyst',
   BanName = 'ban_name',
   Grant = 'grant',
   Poll = 'poll',
 }
 
+export enum PoiType {
+  AddPOI = 'add_poi',
+  RemovePOI = 'remove_poi',
+}
+
 export function isProposalType(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
-    case ProposalType.AddPOI:
-    case ProposalType.RemovePOI:
     case ProposalType.Catalyst:
     case ProposalType.BanName:
     case ProposalType.Grant:
     case ProposalType.Poll:
+      return true
+    default:
+      return false
+  }
+}
+
+export function isPoiType(value:  string | null | undefined): boolean {
+  switch (value) {
+    case PoiType.AddPOI:
+    case PoiType.RemovePOI:
       return true
     default:
       return false
@@ -200,13 +211,14 @@ export const newProposalBanNameScheme = {
 export type NewProposalPOI = {
   x: number,
   y: number,
+  type: PoiType,
   description: string,
 }
 
 export const newProposalPOIScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['x', 'y', 'description'],
+  required: ['x', 'y', 'type', 'description'],
   properties: {
     x: {
       type: 'integer',
@@ -217,6 +229,10 @@ export const newProposalPOIScheme = {
       type: 'integer',
       minimum: -150,
       maximum: 150,
+    },
+    type: {
+      type: 'string',
+      enum: Object.values(PoiType)
     },
     description: {
       type: 'string',
