@@ -104,6 +104,12 @@ export function toProposalType(value: string | null | undefined): ProposalType |
     null
 }
 
+export function toPoiType(value: string | null | undefined): PoiType | null {
+  return isPoiType(value)?
+    value as PoiType :
+    null
+}
+
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
   if (value === undefined || value === null) {
     return defaultValue

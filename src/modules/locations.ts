@@ -78,7 +78,12 @@ export default {
   proposals: (options: Partial<ProposalListPage & ProposalListViewFilter & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
   proposal: (proposal: string, options: { new?: "true" } = {} ) => url(`/proposal/`, { id: proposal, ...options }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
-  submit: (type?: ProposalType | PoiType) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', {}),
+  submit: (type?: ProposalType, poiType?: PoiType) => {
+    return url(
+      type ? `/submit/${String(type).replace('_','-')}` : '/submit/', 
+      type === ProposalType.POI && poiType ? {'request': poiType} : {}
+    )
+  },
   balance: (options: Partial<{ address: string }> = {}) => url(`/balance/`, options),
   welcome: () => url(`/welcome/`, {}),
 }
