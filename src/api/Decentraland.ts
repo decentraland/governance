@@ -26,7 +26,7 @@ export class Decentraland extends API {
       '/subscribe',
       this.options()
         .method('POST')
-        .json({ email, interest: "dao"})
+        .json({ email, list: "governance"})
     )
   }
 }

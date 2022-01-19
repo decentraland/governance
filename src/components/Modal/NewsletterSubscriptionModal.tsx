@@ -32,6 +32,24 @@ export type NewsletterSubscriptionModalProps = Omit<ModalProps, 'children'> & {
   subscribed: boolean
 }
 
+
+async function subscribe(email: string) {
+  try {
+    await Decentraland.get().subscribe(email!)
+    return {
+      email: email,
+      error: false,
+      details: null
+    }
+  } catch (e) {
+    return {
+      email: email,
+      error: true,
+      details: e.body.detail
+    }
+  }
+}
+
 export function NewsletterSubscriptionModal({
                                               onSubscriptionSuccess,
                                               subscribed,
@@ -45,7 +63,7 @@ export function NewsletterSubscriptionModal({
     email: ''
   })
 
-  const validateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const validateEmail = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;
     if (isEmail(email)) {
       setState({
@@ -60,7 +78,7 @@ export function NewsletterSubscriptionModal({
         email: email
       });
     }
-  };
+  }, []);
 
   const saveSubscription = useCallback(() => {
     const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]');
@@ -71,25 +89,6 @@ export function NewsletterSubscriptionModal({
   const resetModal = useCallback(() => {
     setState({ isValid: true, message: '', email: '' })
   }, [state])
-
-  async function subscribe(email: string) {
-    try {
-      await Decentraland.get().subscribe(email!)
-      console.log("subscribed with", email)
-      return {
-        email: email,
-        error: false,
-        details: null
-      }
-    } catch (e) {
-      console.log("error with", email)
-      return {
-        email: email,
-        error: true,
-        details: e.body.detail
-      }
-    }
-  }
 
   const [subscribing, handleAccept] = useAsyncTask(async () => {
     if (state.email && isEmail(state.email) && onSubscriptionSuccess) {
