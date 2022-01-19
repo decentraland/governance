@@ -191,22 +191,27 @@ export async function createProposalBanName(req: WithAuth) {
 const newProposalPOIValidator = schema.compile(newProposalPOIScheme)
 type VerifyFunction = (config: NewProposalPOI) => Promise<void>;
 
-const addPoiVerify: VerifyFunction = async (config: NewProposalPOI) => {
-  const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
-  if (alreadyPointOfInterest) {
-    throw new RequestError(`Coordinate "${config.x},${config.y}" is already a point of interest`, RequestError.BadRequest)
-  }
+const verify: VerifyFunction = async (config: NewProposalPOI) => {
 
-  const validPointOfInterest = await isValidPointOfInterest(config.x, config.y)
-  if (!validPointOfInterest) {
-    throw new RequestError(`Coodinate "${config.x},${config.y}" is not valid as point of interest`, RequestError.BadRequest)
-  }
-}
-
-const removePoiVerify: VerifyFunction = async (config: NewProposalPOI) => {
   const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
-  if (!alreadyPointOfInterest) {
-    throw new RequestError(`Coordinate "${config.x},${config.y}" is not a point of interest`, RequestError.BadRequest)
+
+  if(config.type === PoiType.AddPOI) {
+    if (alreadyPointOfInterest) {
+      throw new RequestError(`Coordinate "${config.x},${config.y}" is already a point of interest`, RequestError.BadRequest)
+    }
+
+    const validPointOfInterest = await isValidPointOfInterest(config.x, config.y)
+    if (!validPointOfInterest) {
+      throw new RequestError(`Coodinate "${config.x},${config.y}" is not valid as point of interest`, RequestError.BadRequest)
+    }
+  }
+  else if(config.type === PoiType.RemovePOI) {
+    if (!alreadyPointOfInterest) {
+      throw new RequestError(`Coordinate "${config.x},${config.y}" is not a point of interest`, RequestError.BadRequest)
+    }
+  }
+  else {
+    throw new RequestError(`"${config.type}" is an invalid type`, RequestError.BadRequest)
   }
 }
 
@@ -214,16 +219,7 @@ export async function createProposalPOI(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPOI>(newProposalPOIValidator, req.body || {})
 
-  switch (configuration.type) {
-    case PoiType.AddPOI:
-      await addPoiVerify(configuration)
-      break
-    case PoiType.RemovePOI:
-      await removePoiVerify(configuration)
-      break
-    default:
-      throw new RequestError(`"${configuration.type}" is an invalid type`, RequestError.BadRequest)
-  }
+  await verify(configuration)
 
   return createProposal({
     user,
