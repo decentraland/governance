@@ -29,3 +29,9 @@
 .ProposalComments .ui.button {
   font-size: 15px;
 }
+
+.ProposalComments .ui.button.ProposalComments__ReadMore {
+  background-color: var(--background);
+  border: 1px solid rgba(115,110,125,.32);
+  width: 100%;
+}
