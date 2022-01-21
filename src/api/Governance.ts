@@ -2,7 +2,6 @@ import API from 'decentraland-gatsby/dist/utils/api/API';
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types';
 import Time from 'decentraland-gatsby/dist/utils/date/Time';
 import env from 'decentraland-gatsby/dist/utils/env';
-import { DropdownItemProps } from 'semantic-ui-react'
 import {
   NewProposalBanName,
   NewProposalCatalyst,
@@ -221,11 +220,6 @@ export class Governance extends API {
 
   async getProposalComments(proposal_id: string) {
     const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${proposal_id}/comments`)
-    return result.data
-  }
-
-  async getPassedProposals(proposal_type: ProposalType):Promise<DropdownItemProps[]> {
-    const result = await this.fetch<ApiResponse<DropdownItemProps[]>>(`/proposals/passed/${proposal_type}`)
     return result.data
   }
 }

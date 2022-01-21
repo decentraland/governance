@@ -1,6 +1,6 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { conditional, SQL, table, limit, offset, join } from 'decentraland-gatsby/dist/entities/Database/utils'
-import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus } from './types'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 import SubscriptionModel from '../Subscription/model'
@@ -161,18 +161,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     `)
 
     return proposals.map(this.parse)
-  }
-
-  static async getPassedProposals(proposal_type: ProposalType) {
-    const query = SQL`
-      SELECT id, title
-      FROM ${table(ProposalModel)}
-      WHERE
-        "deleted" = FALSE
-        AND "status" = ${ProposalStatus.Passed}
-        AND "type" = ${proposal_type}
-    `
-    return await this.query(query)
   }
 
   static async getTitle(proposal_id: string) {

@@ -67,6 +67,8 @@ import { getVotes } from '../Votes/routes'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
+const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
+
 export default routes((route) => {
   const withAuth = auth()
   const withOptionalAuth = auth({ optional: true })
@@ -82,7 +84,6 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
-  route.get('/proposals/passed/:proposal_type', handleAPI(getPassedProposals))
   // route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
   // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
 })
@@ -158,7 +159,7 @@ export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
 
-  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_POLL)
+  await validateSubmissionThreshold(user, POLL_SUBMISSION_THRESHOLD)
 
   // add default options
   configuration.choices = [
@@ -574,18 +575,6 @@ export async function proposalComments(req: Request<{ proposal: string }>){
   }
 }
 
-async function getPassedProposals(req:Request<{proposal_type: ProposalType}>){
-  const proposalType = req.params.proposal_type
-  let passedProposals = await ProposalModel.getPassedProposals(proposalType)
-  return passedProposals.map(proposal => {
-    return {
-      key: proposal.id,
-      text: proposal.title,
-      value: proposal.id
-    }
-  })
-}
-
 async function validateLinkedProposal(linkedProposalId: string, expectedProposalType: ProposalType) {
   const linkedProposal = await ProposalModel.findOne<ProposalAttributes>({
     id: linkedProposalId,
@@ -595,10 +584,13 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
   if (!linkedProposal) {
     throw new RequestError(`Could not find a matching ${expectedProposalType} proposal for "${linkedProposalId}"`, RequestError.NotFound)
   }
+  if (linkedProposal.status != ProposalStatus.Passed){
+    throw new RequestError(`Cannot link selected proposal since it's not in a PASSED status`, RequestError.Forbidden)
+  }
 }
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
-  const requiredVp = Number(submissionThreshold || requiredEnv('SUBMISSION_THRESHOLD_POLL'))
+  const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
   const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
   if (userVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
