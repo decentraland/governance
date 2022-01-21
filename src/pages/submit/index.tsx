@@ -37,8 +37,8 @@ export default function NewProposalPage() {
     <ContentSection>
       <Header sub className="ProposalDetailPage_SubHeader">Governance Process</Header>
       <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
-      <CategoryBanner type={ProposalType.Draft} href={locations.submit(ProposalType.Draft)} active />
-      <CategoryBanner type={ProposalType.Governance} href={locations.submit(ProposalType.Governance)} active />
+      {/*<CategoryBanner type={ProposalType.Draft} href={locations.submit(ProposalType.Draft)} active />*/}
+      {/*<CategoryBanner type={ProposalType.Governance} href={locations.submit(ProposalType.Governance)} active />*/}
     </ContentSection>
   </ContentLayout>
   </>

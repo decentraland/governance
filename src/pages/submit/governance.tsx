@@ -8,7 +8,10 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import { newProposalGovernanceScheme, ProposalType, NewProposalDraft } from '../../entities/Proposal/types'
+import {
+  newProposalGovernanceScheme,
+  NewProposalDraft,
+} from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -149,7 +152,16 @@ export default function SubmitGovernanceProposal() {
   const [votingPower, votingPowerState] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE), [votingPower])
   const [state, editor] = useEditor(edit, validate, initialState)
-  const [passedProposals] = useAsyncMemo(async () => Governance.get().getPassedProposals(ProposalType.Draft), [], { initialValue: [] })
+  const [preselectedProposal] = useAsyncMemo(async () => {
+    if(!preselectedLinkedProposalId) return undefined
+    const proposal = await Governance.get().getProposal(preselectedLinkedProposalId)
+    if(!proposal) return undefined
+    return [{
+      key: proposal.id,
+      text: proposal.title,
+      value: proposal.id
+    }]
+  }, [] , { initialValue: undefined })
 
   useEffect(() => {
     if (!!preselectedLinkedProposalId) {
@@ -234,10 +246,10 @@ export default function SubmitGovernanceProposal() {
         value={state.value.linked_proposal_id || undefined}
         placeholder={l('page.submit_governance.linked_proposal_placeholder') || undefined}
         onChange={(_, { value }) => editor.set({ linked_proposal_id: String(value) })}
-        options={passedProposals}
+        options={preselectedProposal}
         error={!!state.error.linked_proposal_id}
         message={l.optional(state.error.linked_proposal_id)}
-        disabled={!!preselectedLinkedProposalId || submissionVpNotMet}
+        disabled={true}
         loading={votingPowerState.loading}
       />
     </ContentSection>

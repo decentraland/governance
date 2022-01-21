@@ -268,7 +268,7 @@ export class Snapshot extends API {
     if (!address || !space) {
       return 0
     }
-    const info = await Snapshot.get().getSpace(space)
+    const info = await this.getSpace(space)
     const vp: Record<string, number>[] = await snapshot.utils.getScores(space, info.strategies, info.network, null as any,[ address ])
     return vp.reduce((total, current) => {
       return total + Object.values(current).reduce((total, current) => total + (current | 0), 0)
