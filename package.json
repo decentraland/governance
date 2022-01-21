@@ -40,7 +40,7 @@
   "homepage": "https://github.com/decentraland/snapshot#readme",
   "dependencies": {
     "@snapshot-labs/snapshot.js": "^0.1.11",
-    "decentraland-gatsby": "^3.65.9",
+    "decentraland-gatsby": "^3.65.10",
     "dompurify": "^2.3.3",
     "dotenv": "^8.2.0",
     "eth-crypto": "1.6.0",
