@@ -7,7 +7,6 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './CategoryBanner.css'
 
-
 export const categoryIcons = {
   [ProposalType.Catalyst]: require('../../images/icons/catalyst.svg'),
   [ProposalType.POI]: require('../../images/icons/poi.svg'),
