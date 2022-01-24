@@ -40,7 +40,7 @@ config:
   website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: "10000"
   website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "0"
   website-dao:INFURA_KEYS:
-    secure: v1:JxlSPZ2jNNITy+iz:nPoGGmDGGxcecyuK+43Qbj1pGghZCQM7e2atIagYy7A1mgB6SPuB7cvWymMyCKnE
+    secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=
   website-dao:USE_PUBLIC_TLD: "false"
