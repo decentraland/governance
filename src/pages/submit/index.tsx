@@ -28,11 +28,17 @@ export default function NewProposalPage() {
       <Paragraph>{l('page.submit.description') || ''}</Paragraph>
     </ContentSection>
     <ContentSection>
+      <Header sub className="ProposalDetailPage_SubHeader">Common Actions</Header>
       <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
       <CategoryBanner type={ProposalType.POI} href={locations.submit(ProposalType.POI)} active />
       <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
       <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
+    </ContentSection>
+    <ContentSection>
+      <Header sub className="ProposalDetailPage_SubHeader">Governance Process</Header>
       <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
+      {/*<CategoryBanner type={ProposalType.Draft} href={locations.submit(ProposalType.Draft)} active />*/}
+      {/*<CategoryBanner type={ProposalType.Governance} href={locations.submit(ProposalType.Governance)} active />*/}
     </ContentSection>
   </ContentLayout>
   </>

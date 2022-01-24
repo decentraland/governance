@@ -9,7 +9,7 @@
 
 .ui.button.ChoiceButton.ChoiceButton--approve:hover,
 .ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--approve {
-  color: #44B600;
+  color: var(--background-happy-green);
 }
 
 .ui.button.ChoiceButton.ChoiceButton--reject:hover,

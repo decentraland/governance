@@ -1,0 +1,24 @@
+
+.TextLabel {
+  padding: 0 11px;
+  height: 24px;
+  display: inline-flex;
+  border-radius: 42px;
+  border-color: var(--background-happy-green);
+  background-color: var(--background-happy-green);
+}
+
+.TextLabel span {
+  text-transform: uppercase;
+  display: inline-flex;
+  line-height: 20px;
+  margin-right: .5rem;
+  margin-left: .5rem;
+  vertical-align: middle;
+  align-content: center;
+  font-weight: 500;
+  font-size: 12px;
+  padding: 1px 0;
+  color: #FFF;
+}
+
