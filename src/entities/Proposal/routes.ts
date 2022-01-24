@@ -171,7 +171,7 @@ export async function createProposalPoll(req: WithAuth) {
     user,
     type: ProposalType.Poll,
     required_to_pass: ProposalRequiredVP[ProposalType.Poll],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_POLL)),
     configuration,
   })
 }
@@ -188,7 +188,7 @@ export async function createProposalDraft(req: WithAuth) {
     user,
     type: ProposalType.Draft,
     required_to_pass: ProposalRequiredVP[ProposalType.Draft],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_DRAFT_PROPOSAL)),
+    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_DRAFT)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES
@@ -208,7 +208,7 @@ export async function createProposalGovernance(req: WithAuth) {
     user,
     type: ProposalType.Governance,
     required_to_pass: ProposalRequiredVP[ProposalType.Governance],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_GOVERNANCE_PROPOSAL)),
+    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_GOVERNANCE)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES

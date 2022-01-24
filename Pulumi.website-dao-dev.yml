@@ -21,9 +21,9 @@ config:
   website-dao:GATSBY_DURATION_GRANT_TIER4: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER5: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER6: "1200"
-  website-dao:GATSBY_DURATION_PRE_PROPOSAL_POLL: "1200"
-  website-dao:GATSBY_DURATION_DRAFT_PROPOSAL: "1200"
-  website-dao:GATSBY_DURATION_GOVERNANCE_PROPOSAL: "1200"
+  website-dao:GATSBY_DURATION_POLL: "1200"
+  website-dao:GATSBY_DURATION_DRAFT: "1200"
+  website-dao:GATSBY_DURATION_GOVERNANCE: "1200"
   website-dao:GATSBY_FEATURE_FLAGS_API: https://feature-flags.decentraland.org/dao.json
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.io/api
   website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
