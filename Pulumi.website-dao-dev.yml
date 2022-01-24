@@ -21,6 +21,9 @@ config:
   website-dao:GATSBY_DURATION_GRANT_TIER4: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER5: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER6: "1200"
+  website-dao:GATSBY_DURATION_POLL: "1200"
+  website-dao:GATSBY_DURATION_DRAFT: "1200"
+  website-dao:GATSBY_DURATION_GOVERNANCE: "1200"
   website-dao:GATSBY_FEATURE_FLAGS_API: https://feature-flags.decentraland.org/dao.json
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.io/api
   website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
@@ -38,7 +41,12 @@ config:
   website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5: "700"
   website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6: "800"
   website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: "10000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "0"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "500"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_DRAFT: "500"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE: "500"
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: "100"
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: "1000"
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: "2500"
   website-dao:INFURA_KEYS:
     secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
   website-dao:SNAPSHOT_PRIVATE_KEY:
