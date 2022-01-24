@@ -263,4 +263,15 @@ export class Snapshot extends API {
     const info = typeof space === 'string' ? await this.getSpace(space) : space
     return this.getScores(info.id, info.strategies, info.network, addresses)
   }
+
+  async getVotingPower(address?: string | null, space?: string | null){
+    if (!address || !space) {
+      return 0
+    }
+    const info = await this.getSpace(space)
+    const vp: Record<string, number>[] = await snapshot.utils.getScores(space, info.strategies, info.network, null as any,[ address ])
+    return vp.reduce((total, current) => {
+      return total + Object.values(current).reduce((total, current) => total + (current | 0), 0)
+    }, 0)
+  }
 }

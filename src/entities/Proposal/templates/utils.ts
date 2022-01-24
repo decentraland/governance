@@ -4,6 +4,9 @@ import stringify from 'remark-stringify'
 import { Node } from 'unist'
 import escapeMarkdown from 'markdown-escape'
 import numeral from 'numeral'
+import ProposalModel from '../model'
+import { proposalUrl } from '../utils'
+import { ProposalAttributes } from '../types'
 
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
   return String.raw(raw, ...subs)
@@ -12,6 +15,12 @@ export function template(raw: TemplateStringsArray, ...subs: any[]) {
 
 export function formatBalance(value: number) {
   return numeral(value).format('0,0')
+}
+
+export async function formatLinkedProposal(linked_proposal_id: string) {
+  const url = proposalUrl({id: linked_proposal_id})
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({id: linked_proposal_id, deleted: false})
+  return `[${proposal?.title}](${url})` || ''
 }
 
 const parser = unified()

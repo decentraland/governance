@@ -83,7 +83,7 @@ export default function WrappingPage() {
     const hash = await tx.getTxHash()
     await delay(1000)
     transactionsState.add(hash, { id: UNWRAPPING_TRANSACTION_ID, amount } )
-  })
+  }, [wManaContract, wMana, transactionsState])
 
   useEffect(() => {
     let cancelled = false

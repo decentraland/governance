@@ -16,7 +16,7 @@ export default function useSubscriptions() {
         subscriptionsState.set((current) => [ ...(current || []), newSubscription ])
       }
     }
-  })
+  }, [subscriptions, subscriptionsState])
 
   return [
     subscriptions || [],

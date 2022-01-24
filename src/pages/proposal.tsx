@@ -68,16 +68,12 @@ export default function ProposalPage() {
   const [voting, vote] = useAsyncTask(async (_: string, choiceIndex: number) => {
     if (proposal && account && provider && votes) {
       const message = await Snapshot.get().createVoteMessage(proposal.snapshot_space, proposal.snapshot_id, choiceIndex)
-      debugger;
       const signature = await new Personal(provider).sign(message, Address.fromString(account), '')
-      debugger;
       await retry(3, () => Snapshot.get().send(account, message, signature))
-      debugger;
       patchOptions({ changing: false, confirmSubscription: !votes[account] })
       votesState.reload()
     }
-    debugger;
-  })
+  }, [ proposal, account, provider, votes ])
 
   const [subscribing, subscribe] = useAsyncTask(async (subscribe: boolean = true) => {
     if (proposal) {
@@ -91,14 +87,7 @@ export default function ProposalPage() {
 
       patchOptions({ confirmSubscription: false })
     }
-  })
-
-  const [deleting, deleteProposal] = useAsyncTask(async () => {
-    if (proposal && account && (proposal.user === account || isCommittee)) {
-      await Governance.get().deleteProposal(proposal.id)
-      navigate(locations.proposals())
-    }
-  })
+  }, [ proposal, subscriptionsState ])
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(async (status: ProposalStatus, description: string) => {
     if (proposal && account && committee && committee.includes(account)) {
@@ -106,10 +95,17 @@ export default function ProposalPage() {
       proposalState.set(updateProposal)
       patchOptions({ confirmStatusUpdate: false })
     }
-  })
+  }, [ proposal, account, committee, proposalState, patchOptions ])
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [ proposal, account ])
   const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [ proposal, account, committee ])
+
+  const [deleting, deleteProposal] = useAsyncTask(async () => {
+    if (proposal && account && (proposal.user === account || isCommittee)) {
+      await Governance.get().deleteProposal(proposal.id)
+      navigate(locations.proposals())
+    }
+  }, [ proposal, account, isCommittee ])
 
   useEffect(() => {
     patchOptions({ showFollowUpModal: params.get('new') === "true" })

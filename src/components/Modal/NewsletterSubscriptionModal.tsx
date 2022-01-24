@@ -41,20 +41,20 @@ async function subscribe(email: string) {
       error: false,
       details: null
     }
-  } catch (e) {
+  } catch (err) {
     return {
       email: email,
       error: true,
-      details: e.body.detail
+      details: (err as any).body.detail
     }
   }
 }
 
 export function NewsletterSubscriptionModal({
-                                              onSubscriptionSuccess,
-                                              subscribed,
-                                              ...props
-                                            }: NewsletterSubscriptionModalProps) {
+  onSubscriptionSuccess,
+  subscribed,
+  ...props
+}: NewsletterSubscriptionModalProps) {
   const [account] = useAuthContext()
   const l = useFormatMessage()
   const [state, setState] = useState<{ isValid: boolean, message: string, email: string }>({
@@ -105,10 +105,10 @@ export function NewsletterSubscriptionModal({
         onSubscriptionSuccess()
       }
     }
-  })
+  }, [state, setState, saveSubscription, resetModal, onSubscriptionSuccess ])
 
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', 'NewsletterSubscriptionModal'])}
-                closeIcon={<Close />}>
+    closeIcon={<Close />}>
     {!subscribed && <div>
       <Modal.Content className="ProposalModal__Title NewsletterSubscriptionModal__Title">
         <Header>{l('modal.newsletter_subscription.title')}</Header>
@@ -130,7 +130,7 @@ export function NewsletterSubscriptionModal({
       </Modal.Content>
       <Modal.Content className="ProposalModal__Actions">
         <Button primary onClick={handleAccept}
-                loading={subscribing}>{l('modal.newsletter_subscription.accept')}</Button>
+          loading={subscribing}>{l('modal.newsletter_subscription.accept')}</Button>
       </Modal.Content>
     </div>}
     {subscribed && <div>

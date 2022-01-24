@@ -1,10 +1,9 @@
 import React from 'react'
-import { Stats } from "decentraland-ui/dist/components/Stats/Stats"
 import { Blockie } from "decentraland-ui/dist/components/Blockie/Blockie"
 import { Address } from "decentraland-ui/dist/components/Address/Address"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Header, HeaderProps } from "decentraland-ui/dist/components/Header/Header"
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
+import profiles, { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
 
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -33,7 +32,7 @@ function sizeToScale (size?: HeaderProps['size']) {
 }
 
 export default React.memo(function UserStats(props: UserStatsProps) {
-  const [profile, profileState] = useAsyncMemo(() => profiles.load(props.address || ''), [props.address])
+  const [profile, profileState] = useAsyncMemo<Profile>(() => profiles.load(props.address || ''), [props.address])
   const isProfile = !!profile && !profile.isDefaultProfile
 
   if (!props.address) {

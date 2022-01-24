@@ -31,12 +31,12 @@ export function POIProposalModal({ ...props }) {
       >
         <CategoryBanner
           type={PoiType.AddPOI}
-          href={locations.submit(ProposalType.POI, PoiType.AddPOI)}
+          href={locations.submit(ProposalType.POI, {request: PoiType.AddPOI})}
           active
         />
         <CategoryBanner
           type={PoiType.RemovePOI}
-          href={locations.submit(ProposalType.POI, PoiType.RemovePOI)}
+          href={locations.submit(ProposalType.POI, {request: PoiType.RemovePOI})}
           active
         />
       </Modal.Content>
