@@ -6,6 +6,7 @@ import escapeMarkdown from 'markdown-escape'
 import numeral from 'numeral'
 import ProposalModel from '../model'
 import { proposalUrl } from '../utils'
+import { ProposalAttributes } from '../types'
 
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
   return String.raw(raw, ...subs)
@@ -18,8 +19,8 @@ export function formatBalance(value: number) {
 
 export async function formatLinkedProposal(linked_proposal_id: string) {
   const url = proposalUrl({id: linked_proposal_id})
-  const proposalTitle = await ProposalModel.getTitle(linked_proposal_id)
-  return `[${proposalTitle?.title}](${url})` || ''
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({id: linked_proposal_id, deleted: false})
+  return `[${proposal?.title}](${url})` || ''
 }
 
 const parser = unified()
