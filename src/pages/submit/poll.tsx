@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
 import omit from 'lodash.omit'
 import { navigate } from 'gatsby-plugin-intl'
@@ -87,6 +87,7 @@ export default function SubmitPoll() {
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
   const [votingPower, votingPowerState] = useVotingPowerBalance(account, SNAPSHOT_SPACE)
   const submissionVpNotMet = useMemo(() => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL), [votingPower])
+  const [formDisabled, setFormDisabled] = useState(false);
 
   function handleAddOption() {
     editor.set({
@@ -126,7 +127,7 @@ export default function SubmitPoll() {
         .keys(state.value.choices)
         .sort()
         .map(key => state.value.choices[key])
-
+      setFormDisabled(true);
       Governance.get()
         .createProposalPoll({
           ...state.value,
@@ -139,6 +140,7 @@ export default function SubmitPoll() {
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false);
         })
     }
   }, [ state.validated ])
@@ -189,6 +191,7 @@ export default function SubmitPoll() {
           })
         }
         loading={votingPowerState.loading}
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -211,6 +214,7 @@ export default function SubmitPoll() {
             limit: schema.description.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -225,6 +229,7 @@ export default function SubmitPoll() {
           action={<Icon name="x" />}
           onAction={() => handleRemoveOption(key)}
           onChange={(_, { value }) => handleEditOption(key, value)}
+          disabled={formDisabled}
         />)}
         <Field
           readOnly
