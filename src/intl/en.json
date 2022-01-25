@@ -96,8 +96,10 @@
       "description_too_large": "Description field is too large",
       "fetching_pois": "Error fetching pois",
       "coordinates_already_a_poi": "These coordinates are already a Point of Interest",
+      "coordinates_are_not_a_poi": "These coordinates are not a Point of Interest",
       "fetching_tiles": "Error fetching tiles",
-      "coordinates_invalid_poi": "These coordinates are not valid as Point of Interest"
+      "coordinates_invalid_poi": "These coordinates are not valid as Point of Interest",
+      "invalid_poi_type": "Invalid POI type"
     },
     "catalyst": {
       "owner_empty": "Owner field is empty",
@@ -150,7 +152,11 @@
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community run servers",
     "poi_title": "Point of Interest",
+    "add_poi_title": "Add POI",
+    "remove_poi_title": "Remove POI",
     "poi_description": "Highlight a noteworthy Decentraland location on the map for others to find",
+    "add_poi_description": "Highlight a noteworthy Decentraland location on the map for others to find",
+    "remove_poi_description": "Maybe a given location wasn’t noteworthy enough. We dare you try to put it down.",
     "ban_name_title": "Name Ban",
     "ban_name_description": "Ban an offensive name from Decentraland",
     "grant_title": "Grant Request",
@@ -189,6 +195,9 @@
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",
       "reject": "Cancel"
+    },
+    "poi_proposal": {
+      "description": "What would you like to do?"
     },
     "vote_registered": {
       "title": "Vote Registered",
@@ -453,15 +462,23 @@
       "description_detail": "Provide a brief explanation of why this name should be banned. For example: why or to whom might it be offensive?"
     },
     "submit_poi": {
-      "title": "Add a Point of Interest",
+      "add": {
+        "title": "Add a Point of Interest",
+        "coordinates_label": "What location do you want to add as a POI?",
+        "description_detail": "Why do you think that this location should be a featured point of interest within Decentraland? Please describe the scene located at these coordinates, explaining how it would be interesting or helpful for other Decentraland users.",
+        "description_placeholder": "The scene located at 0,0 is both visually stunning and informative for new users. The interactive tutorial hosted here would provide people with a fun and enjoyable way to learn more about Decentraland."
+      },
+      "remove": {
+        "title": "Remove a Point of Interest",
+        "coordinates_label": "What location do you want to remove as a POI?",
+        "description_detail": "Why do you think that this location should be removed as a featured point of interest within Decentraland? Please describe the scene located at these coordinates, explaining why it is no longer an interesting or helpful place for other Decentraland users.",
+        "description_placeholder": "The scene located at 0,0 is no longer visually stunning for users. The location has been abandoned for a long time."
+      },
       "description": "Points of interest (POIs) are scenes that have been highlighted on Decentraland’s map in a ‘pin drop’ form, helping other users to quickly find and access especially interesting areas.",
-      "coordinates_label": "What location do you want to add as a POI?",
       "coordinates_detail": "Enter the X and Y coordinates of the location.",
       "x_placeholder": "-150 through 150",
       "y_placeholder": "-150 through 150",
-      "description_label": "Description",
-      "description_detail": "Why do you think that this location should be a featured point of interest within Decentraland? Please describe the scene located at these coordinates, explaining how it would be interesting or helpful for other Decentraland users.",
-      "description_placeholder": "The scene located at 0,0 is both visually stunning and informative for new users. The interactive tutorial hosted here would provide people with a fun and enjoyable way to learn more about Decentraland."
+      "description_label": "Description"
     },
     "submit_catalyst": {
       "title": "Add a catalyst node",

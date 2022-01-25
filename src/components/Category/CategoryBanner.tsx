@@ -2,7 +2,7 @@ import React from 'react'
 import { navigate } from 'gatsby-plugin-intl'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { ProposalType } from '../../entities/Proposal/types'
+import { PoiType, ProposalType } from '../../entities/Proposal/types'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './CategoryBanner.css'
@@ -10,6 +10,8 @@ import './CategoryBanner.css'
 export const categoryIcons = {
   [ProposalType.Catalyst]: require('../../images/icons/catalyst.svg'),
   [ProposalType.POI]: require('../../images/icons/poi.svg'),
+  [PoiType.AddPOI]: require("../../images/icons/add-poi.svg"),
+  [PoiType.RemovePOI]: require("../../images/icons/remove-poi.svg"),
   [ProposalType.BanName]: require('../../images/icons/ban-name.svg'),
   [ProposalType.Grant]: require('../../images/icons/grant.svg'),
   [ProposalType.Poll]: require('../../images/icons/poll.svg'),
@@ -17,9 +19,9 @@ export const categoryIcons = {
   [ProposalType.Governance]: require('../../images/icons/governance.svg'),
 }
 
-export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "children"> & {
   active?: boolean
-  type: ProposalType
+  type: ProposalType | PoiType
 }
 
 export default React.memo(function CategoryBanner({ active, type, ...props }: CategoryBannerProps) {
@@ -29,7 +31,7 @@ export default React.memo(function CategoryBanner({ active, type, ...props }: Ca
       props.onClick(e)
     }
 
-    if(!e.defaultPrevented) {
+    if (!e.defaultPrevented) {
       e.preventDefault()
 
       if (props.href) {

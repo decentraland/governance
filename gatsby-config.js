@@ -1,4 +1,12 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 module.exports = {
+  flags: {
+    DEV_SSR: false,
+    PARALLEL_SOURCING: true,
+  },
   siteMetadata: {
     title: `Decentraland`,
     description: `Decentraland`,

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Header } from "decentraland-ui/dist/components/Header/Header"
 
 // import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
@@ -11,9 +11,11 @@ import { ProposalType } from "../../entities/Proposal/types"
 import locations from "../../modules/locations"
 // import { FeatureFlags } from "../../modules/features"
 import './submit.css'
+import { POIProposalModal } from "../../components/Modal/POIProposalModal"
 
 export default function NewProposalPage() {
   const l = useFormatMessage()
+  const [show, setShow] = useState(false);
   // const [ ff ] = useFeatureFlagContext()
 
   return <>
@@ -30,7 +32,7 @@ export default function NewProposalPage() {
     <ContentSection>
       <Header sub className="ProposalDetailPage_SubHeader">Common Actions</Header>
       <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
-      <CategoryBanner type={ProposalType.POI} href={locations.submit(ProposalType.POI)} active />
+      <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} style={{cursor:'pointer'}} active  />
       <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
       <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
     </ContentSection>
@@ -41,5 +43,7 @@ export default function NewProposalPage() {
       {/*<CategoryBanner type={ProposalType.Governance} href={locations.submit(ProposalType.Governance)} active />*/}
     </ContentSection>
   </ContentLayout>
+
+  <POIProposalModal open={show} onClose={() => setShow(false)}/>
   </>
 }
