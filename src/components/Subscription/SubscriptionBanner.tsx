@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import './SubscriptionBanner.css'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import {
   NewsletterSubscriptionModal,
   NEWSLETTER_SUBSCRIPTION_KEY,
   ANONYMOUS_USR_SUBSCRIPTION
 } from '../Modal/NewsletterSubscriptionModal'
+import './SubscriptionBanner.css'
 
 const icon = require('../../images/icons/email-outline.svg')
+const HIDE_NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription.hide'
 
 enum ShowSubscriptionBanner {
   YES,
@@ -30,7 +32,10 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
 
   useEffect(() => {
     const subscriptions:string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]');
-    const showSubsBanner = !account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION) || account && !subscriptions.includes(account)
+    const showSubsBanner =
+      localStorage.getItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY) != 'true' &&
+      (!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION) ||
+      account && !subscriptions.includes(account))
     setShowSubscriptionBanner(showSubsBanner ? ShowSubscriptionBanner.YES : ShowSubscriptionBanner.NO)
   }, [account])
 
@@ -44,6 +49,13 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
     setSubscribed(false)
   }
 
+  function handleClose(e: React.MouseEvent<any>) {
+    e.preventDefault()
+    e.stopPropagation()
+    localStorage.setItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY, 'true')
+    setShowSubscriptionBanner(ShowSubscriptionBanner.NO)
+  }
+
   return <div>
     {showSubscriptionBanner == ShowSubscriptionBanner.YES && active && <a className="SubscriptionBanner">
       <div className="SubscriptionBanner__Icon">
@@ -53,9 +65,12 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
         <Paragraph small semiBold>{l(`page.subscription_banner.title`)}</Paragraph>
         <Paragraph tiny>{l(`page.subscription_banner.description`)}</Paragraph>
       </div>
-      <Button className="SubscriptionBanner__Button" primary size="small" onClick={() => setConfirmSubscription(true)}>
-        {l(`page.subscription_banner.subscribe_button_label`)}
-      </Button>
+      <div className="SubscriptionBanner__ButtonContainer">
+        <Button className="SubscriptionBanner__Button" primary size="small" onClick={() => setConfirmSubscription(true)}>
+          {l(`page.subscription_banner.subscribe_button_label`)}
+        </Button>
+      </div>
+      <Close small onClick={handleClose} />
     </a>}
     <NewsletterSubscriptionModal
       open={confirmSubscription}

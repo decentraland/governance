@@ -43,6 +43,10 @@
   flex-grow: 50;
 }
 
+.SubscriptionBanner .SubscriptionBanner__ButtonContainer {
+  flex-grow: 50;
+}
+
 .SubscriptionBanner .SubscriptionBanner__Button {
   position: relative;
   width: auto;
@@ -56,4 +60,12 @@
 
 .SubscriptionBanner .dg.Paragraph.Paragraph--tiny  {
   font-size: 15px;
+}
+
+.SubscriptionBanner > .dcl.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 8px;
+  background-color: #f1f6fe;
 }
