@@ -61,14 +61,16 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
       <div className="SubscriptionBanner__Icon">
         <img src={icon} width="48" height="48" alt="email-outline" />
       </div>
-      <div className="SubscriptionBanner__Description">
-        <Paragraph small semiBold>{l(`page.subscription_banner.title`)}</Paragraph>
-        <Paragraph tiny>{l(`page.subscription_banner.description`)}</Paragraph>
-      </div>
-      <div className="SubscriptionBanner__ButtonContainer">
-        <Button className="SubscriptionBanner__Button" primary size="small" onClick={() => setConfirmSubscription(true)}>
-          {l(`page.subscription_banner.subscribe_button_label`)}
-        </Button>
+      <div className="SubscriptionBanner__Content">
+        <div className="SubscriptionBanner__Description">
+          <Paragraph small semiBold>{l(`page.subscription_banner.title`)}</Paragraph>
+          <Paragraph tiny>{l(`page.subscription_banner.description`)}</Paragraph>
+        </div>
+        <div className="SubscriptionBanner__ButtonContainer">
+          <Button className="SubscriptionBanner__Button" primary size="small" onClick={() => setConfirmSubscription(true)}>
+            {l(`page.subscription_banner.subscribe_button_label`)}
+          </Button>
+        </div>
       </div>
       <Close small onClick={handleClose} />
     </a>}
