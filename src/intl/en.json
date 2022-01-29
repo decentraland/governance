@@ -11,7 +11,11 @@
     "proposals": "Proposals",
     "wrapping": "Voting Power",
     "activity": "Activity",
-    "enacted": "Enacted"
+    "enacted": "Enacted",
+    "proposal_nav": {
+      "prev": "Previous initiative",
+      "next": "Next initiative"
+    }
   },
   "error": {
     "poll": {

@@ -43,6 +43,7 @@ import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
 import ProposalComments from '../components/Proposal/ProposalComments'
 import { FollowUpModal } from '../components/Modal/FollowUpModal'
+import ProposalNavigation from '../components/Proposal/ProposalNavigation'
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -211,6 +212,7 @@ export default function ProposalPage() {
           </Grid.Column>
         </Grid.Row>
       </Grid>
+      <ProposalNavigation />
     </ContentLayout>
     <VotesList
       open={options.showVotesList}

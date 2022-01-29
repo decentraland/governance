@@ -1,0 +1,13 @@
+.NoMargin {
+  margin: 0 !important;
+}
+
+.NoPadding {
+  padding: 0 !important;
+}
+
+.Header__Title {
+  font-size: medium !important;
+  line-height: normal !important;
+  text-transform: none !important;
+}
