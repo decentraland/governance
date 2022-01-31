@@ -18,6 +18,7 @@ import FeatureFlagProvider from "decentraland-gatsby/dist/context/FeatureFlag/Fe
 import Layout from "decentraland-gatsby/dist/components/Layout/Layout"
 import UserMenu from "decentraland-gatsby/dist/components/User/UserMenu"
 import segment from "decentraland-gatsby/dist/utils/segment/segment"
+import UrlParamsContextProvider from "./src/components/Context/UrlParamsContext" 
 
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>
@@ -28,12 +29,14 @@ export const wrapRootElement = ({ element }) => (
 )
 
 export const wrapPageElement = ({ element, props }) => {
-  return <Layout
-    {...props}
-    rightMenu={<UserMenu />}
-  >
-    {element}
-  </Layout>
+  return <UrlParamsContextProvider>
+    <Layout
+      {...props}
+      rightMenu={<UserMenu />}
+    >
+      {element}
+    </Layout>
+  </UrlParamsContextProvider>
 }
 
 export const onClientEntry = () => {

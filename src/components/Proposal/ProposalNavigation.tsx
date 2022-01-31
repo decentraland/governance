@@ -1,10 +1,32 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Back } from "decentraland-ui/dist/components/Back/Back"
 import ProposalNavigationItem from './ProposalNavigationItem';
 import './ProposalNavigation.css'
+import { UrlParamsContext } from '../Context/UrlParamsContext';
+import useProposals from '../../hooks/useProposals';
 
 function ProposalNavigation() {
+
+
+  const context = useContext(UrlParamsContext)
+  // console.log(JSON.parse('{"' + decodeURI(context?.params ? context?.params.params : '').replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}'))
+  if(context?.params) {
+    const p = new URLSearchParams(context.params.params)
+    let params: any = {}
+
+    // iterate over all keys
+    for (const key of p.keys()) {
+      params[key] = p.get(key)
+    }
+
+    params = {...params, itemsPerPage: context.params.itemsPerPage}
+    console.log(params)
+    const [ proposals, proposalsState ] = useProposals(params)
+    console.log(proposals)
+  }
+
+
   return <div className='ProposalNavigation'>
     <Grid id='nav' verticalAlign='middle'>
       <Grid.Row columns={4}>

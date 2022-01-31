@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react"
+import React, { useMemo, useEffect, useContext } from "react"
 import { useLocation } from '@reach/router'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
@@ -30,6 +30,7 @@ import useProposals from "../hooks/useProposals"
 // import { FeatureFlags } from "../modules/features"
 import './index.css'
 import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
+import { UrlParams, UrlParamsContext } from "../components/Context/UrlParamsContext"
 
 const ITEMS_PER_PAGE = 25
 
@@ -51,12 +52,22 @@ export default function IndexPage() {
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   // const [ ff ] = useFeatureFlagContext()
 
+  const paramContext = useContext(UrlParamsContext)
+
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
       const maxPage = Math.ceil(proposals.total / ITEMS_PER_PAGE)
       if (page > maxPage) {
         handlePageFilter(maxPage)
       }
+    }
+
+    if(paramContext) {
+      const context: UrlParams = {
+        params: params.toString(),
+        itemsPerPage: ITEMS_PER_PAGE
+      }
+      paramContext.setParams(context)
     }
   }, [ page, proposals ])
 
