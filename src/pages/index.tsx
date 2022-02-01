@@ -61,15 +61,17 @@ export default function IndexPage() {
         handlePageFilter(maxPage)
       }
     }
+  }, [ page, proposals ])
 
+  useEffect(() => {
     if(paramContext) {
       const context: UrlParams = {
         params: params.toString(),
         itemsPerPage: ITEMS_PER_PAGE
       }
-      paramContext.setParams(context)
+      paramContext.setUrlParams(context)
     }
-  }, [ page, proposals ])
+  }, [params])
 
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 

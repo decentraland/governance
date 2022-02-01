@@ -1,48 +1,76 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
-import { Back } from "decentraland-ui/dist/components/Back/Back"
-import ProposalNavigationItem from './ProposalNavigationItem';
-import './ProposalNavigation.css'
+import ProposalNavigationItem, {NavigationType} from './ProposalNavigationItem';
 import { UrlParamsContext } from '../Context/UrlParamsContext';
 import useProposals from '../../hooks/useProposals';
+import './ProposalNavigation.css';
 
-function ProposalNavigation() {
+export type ProposalNavigationProps = {
+  id: string
+}
 
+function ProposalNavigation({id}: ProposalNavigationProps) {
 
   const context = useContext(UrlParamsContext)
-  // console.log(JSON.parse('{"' + decodeURI(context?.params ? context?.params.params : '').replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}'))
-  if(context?.params) {
-    const p = new URLSearchParams(context.params.params)
-    let params: any = {}
+  const [prevPage, setPrevPage] = useState({} as NavigationType);
+  const [nextPage, setNextPage] = useState({} as NavigationType);
+  let params: any = {}
+  
+  if(context?.urlParams) {
+    const p = new URLSearchParams(context.urlParams.params)
 
-    // iterate over all keys
     for (const key of p.keys()) {
       params[key] = p.get(key)
     }
 
-    params = {...params, itemsPerPage: context.params.itemsPerPage}
-    console.log(params)
-    const [ proposals, proposalsState ] = useProposals(params)
-    console.log(proposals)
+    params = {...params, itemsPerPage: context.urlParams.itemsPerPage}
   }
 
+  console.log(params)
+
+  const [proposals, proposalsState ] = useProposals(params)
+
+  const idx = proposals?.data.map(p => p['id']).indexOf(id)
+
+  console.log(idx)
+
+  useEffect(() => {
+    if(Number.isInteger(idx)) {
+
+      if(idx > 0) {
+        const prev: NavigationType = {
+          id: proposals!.data[idx-1].id,
+          title: proposals!.data[idx-1].title
+        }
+  
+        setPrevPage(prev)
+      }
+      else {
+        setPrevPage({})
+      }
+  
+      if(idx >= 0 && idx < proposals!.data.length-1) {
+        const next: NavigationType = {
+          id: proposals!.data[idx+1].id,
+          title: proposals!.data[idx+1].title
+        }
+  
+        setNextPage(next)
+      }
+      else {
+        setNextPage({})
+      }
+    }
+  }, [idx]);
 
   return <div className='ProposalNavigation'>
     <Grid id='nav' verticalAlign='middle'>
       <Grid.Row columns={4}>
-        <Grid.Column className='NavArrow'>
-          <Back onClick={() => ''} />
-        </Grid.Column>
-        <ProposalNavigationItem type='prev' side='left' titleLimit={96} title='Add the location 23,23 to the Points of Interest'/>
-        <ProposalNavigationItem type='next' side='right' titleLimit={96} title='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc suscipit, lorem at scelerisque iaculis, libero odio pretium sem, at euismod mi ante sit amet justo. Morbi est risus, venenatis vitae amet.'/>
-        <Grid.Column textAlign='right' className='NavArrow'>
-          <div style={{transform: "rotate(180deg)"}}>
-            <Back onClick={() => ''}/>
-          </div>
-        </Grid.Column>
+        <ProposalNavigationItem type='prev' side='left' titleLimit={96} data={prevPage}/>
+        <ProposalNavigationItem type='next' side='right' titleLimit={96} data={nextPage}/>
       </Grid.Row>
     </Grid>
-    </div>;
+    </div>
 }
 
 export default React.memo(ProposalNavigation);

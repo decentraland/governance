@@ -5,8 +5,8 @@ type UrlParamsContextProviderProps = {
 }
 
 type UrlParamsContextType = {
-  params: UrlParams | null
-  setParams: React.Dispatch<React.SetStateAction<UrlParams | null>>
+  urlParams: UrlParams | null
+  setUrlParams: React.Dispatch<React.SetStateAction<UrlParams | null>>
 }
 
 export type UrlParams = {
@@ -17,8 +17,8 @@ export type UrlParams = {
 export const UrlParamsContext = createContext<UrlParamsContextType | null>(null)
 
 const UrlParamsContextProvider = ({children}: UrlParamsContextProviderProps) => {
-  const [params, setParams] = useState<UrlParams | null>(null);
-	return <UrlParamsContext.Provider value={{params, setParams}}>{children}</UrlParamsContext.Provider>
+  const [urlParams, setUrlParams] = useState<UrlParams | null>(null);
+	return <UrlParamsContext.Provider value={{urlParams, setUrlParams}}>{children}</UrlParamsContext.Provider>
 }
 
 export default UrlParamsContextProvider
