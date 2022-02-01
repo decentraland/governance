@@ -28,8 +28,10 @@ import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 import useProposals from "../hooks/useProposals"
 // import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
 // import { FeatureFlags } from "../modules/features"
-import './index.css'
 import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
+import { Governance } from "../api/Governance"
+import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
+import './index.css'
 
 const ITEMS_PER_PAGE = 25
 
@@ -48,6 +50,11 @@ export default function IndexPage() {
   const status = view ? ProposalStatus.Enacted : toProposalStatus(params.get('status')) ?? undefined
   const page = toProposalListPage(params.get('page')) ?? undefined
   const [ proposals, proposalsState ] = useProposals({ type, status, page, itemsPerPage: ITEMS_PER_PAGE })
+  const [ votes ] = useAsyncMemo(() => Governance.get()
+    .getVotes((proposals?.data || []).map(proposal => proposal.id)),
+    [ proposals ],
+    { callWithTruthyDeps: true }
+  )
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   // const [ ff ] = useFeatureFlagContext()
 
@@ -192,6 +199,7 @@ export default function IndexPage() {
                 return <ProposalItem
                   key={proposal.id}
                   proposal={proposal}
+                  votes={votes ? votes[proposal.id] : undefined}
                   subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                   subscribed={!!subscriptions.find(subscription => subscription.proposal_id === proposal.id)}
                   onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
