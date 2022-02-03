@@ -176,31 +176,4 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     return proposals.map(this.parse)
   }
-
-  static async getPrevAndNextProposal(filter: Partial<FilterProposalList & ProposalAttributes> = {}) {
-    if (filter.user && !isEthereumAddress(filter.user)) {
-      return []
-    }
-
-    if (filter.subscribed && !isEthereumAddress(filter.subscribed)) {
-      return []
-    }
-
-    if (filter.type && !isProposalType(filter.type)) {
-      return []
-    }
-
-    if (filter.status && !isProposalStatus(filter.status)) {
-      return []
-    }
-
-    const proposals = await this.query(SQL`
-      SELECT p.*
-      FROM (
-        SELECT *,
-          lag(${filter.id}) over (order by is_notice desc, thread_id desc, id asc) as prev,
-          lead(id) over (order by is_notice desc, thread_id desc, id asc) as next,
-      ) p
-    `)
-  }
 }
