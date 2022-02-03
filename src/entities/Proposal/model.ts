@@ -7,6 +7,7 @@ import SubscriptionModel from '../Subscription/model'
 import { SITEMAP_ITEMS_PER_PAGE } from './utils'
 
 export type FilterProposalList = {
+  id?: string,
   type: string,
   user: string,
   status: string,
@@ -146,20 +147,60 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
-    const proposals = await this.query(SQL`
-      SELECT p.*
-      FROM ${table(ProposalModel)} p
-      ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      WHERE "deleted" = FALSE
+    const filters = SQL`
+      "deleted" = FALSE
       ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)}
       ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)}
       ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)}
+    `
+
+    const proposals = await this.query(SQL`
+      SELECT p.*
+      FROM 
+      ${conditional(!filter.id, SQL`${table(ProposalModel)}`)}
+      ${conditional(!filter.id && !!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
+      ${conditional(!!filter.id, SQL`(
+        SELECT *,
+               lag(id) OVER (PARTITION BY ${filters} ORDER BY "created_at" DESC) as prev,
+               lead(id) OVER (PARTITION BY ${filters} ORDER BY "created_at" DESC) as next
+          FROM ${table(ProposalModel)}
+            )`)} p
+      WHERE 
+      ${filters}
       ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)}
+      ${conditional(!!filter.id, SQL`AND ${filter.id} in (id, prev, next)`)}
       ORDER BY "created_at" DESC
       ${limit(filter.limit, { min: 0, max: 100, defaultValue: 100 })}
       ${offset(filter.offset)}
     `)
 
     return proposals.map(this.parse)
+  }
+
+  static async getPrevAndNextProposal(filter: Partial<FilterProposalList & ProposalAttributes> = {}) {
+    if (filter.user && !isEthereumAddress(filter.user)) {
+      return []
+    }
+
+    if (filter.subscribed && !isEthereumAddress(filter.subscribed)) {
+      return []
+    }
+
+    if (filter.type && !isProposalType(filter.type)) {
+      return []
+    }
+
+    if (filter.status && !isProposalStatus(filter.status)) {
+      return []
+    }
+
+    const proposals = await this.query(SQL`
+      SELECT p.*
+      FROM (
+        SELECT *,
+          lag(${filter.id}) over (order by is_notice desc, thread_id desc, id asc) as prev,
+          lead(id) over (order by is_notice desc, thread_id desc, id asc) as next,
+      ) p
+    `)
   }
 }

@@ -131,6 +131,7 @@ export async function getProposals(req: WithAuth<Request>) {
   const type = req.query.type && String(req.query.type)
   const status = req.query.status && String(req.query.status)
   const user = req.query.user && String(req.query.user)
+  const id = req.query.id && String(req.query.id)
 
   let subscribed: string | undefined = undefined
   if (req.query.subscribed) {
@@ -145,7 +146,7 @@ export async function getProposals(req: WithAuth<Request>) {
 
   const [ total, data ] = await Promise.all([
     ProposalModel.getProposalTotal({ type, status, user, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, offset, limit })
+    ProposalModel.getProposalList({ id, type, status, user, subscribed, offset, limit })
   ])
 
   return { ok: true, total, data }

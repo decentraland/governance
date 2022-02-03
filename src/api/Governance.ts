@@ -29,6 +29,7 @@ type NewProposalMap = {
 }
 
 export type GetProposalsFilter = {
+  id?: string,
   user: string,
   type: ProposalType,
   status: ProposalStatus,

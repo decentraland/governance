@@ -3,6 +3,7 @@ import { GetProposalsFilter, Governance } from "../api/Governance"
 import { MAX_PROPOSAL_LIMIT } from "../entities/Proposal/utils"
 
 export type UseProposalsFilter = Omit<GetProposalsFilter, 'subscribed' | 'limit' | 'offset'> & {
+  id?: string,
   subscribed: string | boolean,
   page: number
   itemsPerPage: number
@@ -26,6 +27,7 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
       if(filter.type) { params.type = filter.type }
       if(filter.user) { params.user = filter.user }
       if(filter.subscribed) { params.subscribed = !!filter.subscribed }
+      if(filter.id) { params.id = filter.id }
       return Governance.get().getProposals({ ...params, limit, offset })
     },
     [

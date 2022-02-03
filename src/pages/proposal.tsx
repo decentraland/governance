@@ -212,7 +212,7 @@ export default function ProposalPage() {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-      <ProposalNavigation id={params.get('id')!} />
+      <ProposalNavigation/>
     </ContentLayout>
     <VotesList
       open={options.showVotesList}

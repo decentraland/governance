@@ -1,46 +1,47 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useMemo} from 'react';
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import ProposalNavigationItem, {NavigationType} from './ProposalNavigationItem';
 import { UrlParamsContext } from '../Context/UrlParamsContext';
 import useProposals from '../../hooks/useProposals';
+import { useLocation } from '@reach/router'
 import './ProposalNavigation.css';
 
-export type ProposalNavigationProps = {
-  id: string
-}
+function ProposalNavigation() {
 
-function ProposalNavigation({id}: ProposalNavigationProps) {
+  const location = useLocation()
+  const p = useMemo(() => new URLSearchParams(location.search), [ location.search ])
+  const id = p.get('id')
 
   const context = useContext(UrlParamsContext)
-  const [prevPage, setPrevPage] = useState({} as NavigationType);
-  const [nextPage, setNextPage] = useState({} as NavigationType);
-  let params: any = {}
-  
+  const [prevPage, setPrevPage] = useState({} as NavigationType)
+  const [nextPage, setNextPage] = useState({} as NavigationType)
+  const [params, setParams] = useState({} as any);
+
+  let filters: any = {}
+
   if(context?.urlParams) {
-    const p = new URLSearchParams(context.urlParams.params)
+    const p = new URLSearchParams(context.urlParams)
 
     for (const key of p.keys()) {
-      params[key] = p.get(key)
+      filters[key] = p.get(key)
     }
-
-    params = {...params, itemsPerPage: context.urlParams.itemsPerPage}
+    delete filters['page']
   }
-
-  console.log(params)
-
+  
   const [proposals, proposalsState ] = useProposals(params)
 
-  const idx = proposals?.data.map(p => p['id']).indexOf(id)
-
-  console.log(idx)
+  useEffect(() => {
+    setParams({id: id!, ...filters})
+    proposalsState.reload()
+  }, [id]);
 
   useEffect(() => {
-    if(Number.isInteger(idx)) {
-
+    if(proposals?.ok) {
+      const idx = proposals.data.map(p => p['id']).indexOf(id!)
       if(idx > 0) {
         const prev: NavigationType = {
-          id: proposals!.data[idx-1].id,
-          title: proposals!.data[idx-1].title
+          id: proposals.data[idx-1].id,
+          title: proposals.data[idx-1].title
         }
   
         setPrevPage(prev)
@@ -49,10 +50,10 @@ function ProposalNavigation({id}: ProposalNavigationProps) {
         setPrevPage({})
       }
   
-      if(idx >= 0 && idx < proposals!.data.length-1) {
+      if(idx >= 0 && idx < proposals.data.length-1) {
         const next: NavigationType = {
-          id: proposals!.data[idx+1].id,
-          title: proposals!.data[idx+1].title
+          id: proposals.data[idx+1].id,
+          title: proposals.data[idx+1].title
         }
   
         setNextPage(next)
@@ -61,7 +62,7 @@ function ProposalNavigation({id}: ProposalNavigationProps) {
         setNextPage({})
       }
     }
-  }, [idx]);
+  }, [proposals]);
 
   return <div className='ProposalNavigation'>
     <Grid id='nav' verticalAlign='middle'>

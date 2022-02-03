@@ -30,7 +30,7 @@ import useProposals from "../hooks/useProposals"
 // import { FeatureFlags } from "../modules/features"
 import './index.css'
 import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
-import { UrlParams, UrlParamsContext } from "../components/Context/UrlParamsContext"
+import { UrlParamsContext } from "../components/Context/UrlParamsContext"
 
 const ITEMS_PER_PAGE = 25
 
@@ -65,11 +65,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     if(paramContext) {
-      const context: UrlParams = {
-        params: params.toString(),
-        itemsPerPage: ITEMS_PER_PAGE
-      }
-      paramContext.setUrlParams(context)
+      paramContext.setUrlParams(params.toString())
     }
   }, [params])
 
