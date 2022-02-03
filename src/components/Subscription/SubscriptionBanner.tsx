@@ -4,7 +4,6 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import {
   NewsletterSubscriptionModal,
   NEWSLETTER_SUBSCRIPTION_KEY,
@@ -47,9 +46,7 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
   }
 
   if (showSubscriptionBanner === ShowSubscriptionBanner.Loading) {
-    return <div className="SubscriptionBanner">
-      <Loader size="huge" active />
-    </div>
+    return null
   }
 
   return <div>

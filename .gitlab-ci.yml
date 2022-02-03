@@ -54,15 +54,12 @@ build:code:
     - dcl-sync-release
 
     # push static
+    - export BUCKET_WEBSITE_NAME="$(pulumi stack output bucketName)"
     - >
-      ./node_modules/.bin/setup-bucket public \
-        --exclude '*' \
-        --include 'static/*' \
-        --cache-control 'public,max-age=31536000,immutable'
-
-    - >
-      ./node_modules/.bin/setup-bucket public \
-        --exclude 'static/*' \
-        --cache-control 'max-age=0,must-revalidate'
+      npx @dcl/cdn-uploader@next \
+            --bucket $BUCKET_WEBSITE_NAME \
+            --local-folder public \
+            --bucket-folder "" \
+            --config "cdn.yml"
 
     - dcl-cache-invalidation

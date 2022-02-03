@@ -16,9 +16,11 @@ import LeadingOption from '../Status/LeadingOption'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Governance } from '../../api/Governance'
 import { calculateResultWinner } from '../../entities/Votes/utils'
+import { Vote } from '../../entities/Votes/types'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes,
+  votes?: Record<string, Vote>,
   subscribed?: boolean,
   subscribing?: boolean,
   onSubscribe?: (e: React.MouseEvent<any>, proposal: ProposalAttributes) => void
@@ -27,9 +29,9 @@ export type ProposalItemProps = {
 const subscribeIcon = require('../../images/icons/subscribe.svg')
 const subscribedIcon = require('../../images/icons/subscribed.svg')
 
-export default function ProposalItem({ proposal, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
+export default function ProposalItem({ proposal, votes, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
   const [ account ] = useAuthContext()
-  const [votes] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], { callWithTruthyDeps: true })
+  // const [votes] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], { callWithTruthyDeps: true })
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [ choices, votes ])
   function handleSubscription(e: React.MouseEvent<any>) {
