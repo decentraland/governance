@@ -1,5 +1,5 @@
 .SubscriptionBanner  {
-  display: flex;
+  display: none; /*flex*/
   align-items: center;
   align-content: stretch;
   position: relative;
@@ -11,7 +11,7 @@
 }
 
 .SubscriptionBanner::before {
-  display: block;
+  display: block; /*block*/
   content: "";
   position: absolute;
   top: 0;
@@ -27,7 +27,7 @@
 .SubscriptionBanner .SubscriptionBanner__Icon  {
   flex: 0 0 68px;
   height: 48px;
-  display: flex;
+  display: none; /*flex*/
   justify-content: center;
   align-items: center;
   padding-right: 20px;
@@ -56,4 +56,26 @@
 
 .SubscriptionBanner .dg.Paragraph.Paragraph--tiny  {
   font-size: 15px;
+}
+
+@media only screen and (max-width: 767px) {
+  .OnlyMobile .SubscriptionBanner {
+    display: flex;
+  }
+
+  .OnlyMobile .SubscriptionBanner .SubscriptionBanner__Button {
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 87px;
+  }
+}
+
+@media only screen and (min-width: 767px) {
+  .OnlyDesktop .SubscriptionBanner {
+    display: flex;
+  }
+
+  .OnlyDesktop .SubscriptionBanner .SubscriptionBanner__Icon {
+    display: flex;
+  }
 }

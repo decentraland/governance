@@ -25,3 +25,10 @@
   justify-content: flex-end;
   width: 100%;
 }
+
+@media only screen and (max-width: 767px) {
+  .SubmitButton {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}

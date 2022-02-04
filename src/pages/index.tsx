@@ -139,6 +139,9 @@ export default function IndexPage() {
   // }
 
   return <>
+    <div className="OnlyMobile">
+      <SubscriptionBanner active={!type} />
+    </div>
     <Head
       title={
         (view === ProposalListView.Onboarding && l('page.welcome.title')) ||
@@ -186,13 +189,15 @@ export default function IndexPage() {
               </Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
-                <Button primary size="small" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
+                <Button primary size="small" className="SubmitButton" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
                   {l(`page.proposal_list.new_proposal`)}
                 </Button>
               </>}
             >
               <Loader active={!proposals || proposalsState.loading} />
-              <SubscriptionBanner active={!type} />
+              <div className="OnlyDesktop">
+                <SubscriptionBanner active={!type} />
+              </div>
               {type && <CategoryBanner type={type} active />}
               {proposals && proposals.data.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
               {proposals && proposals.data.map(proposal => {
