@@ -11,7 +11,7 @@ function balanceSort(a:bigint, b:bigint) {
   return 0;
 }
 
-export async function aggregateBalances(latestBalances: TokenInWallet[]):Promise<AggregatedTokenBalance[]> {
+export function aggregateBalances(latestBalances: TokenInWallet[]):AggregatedTokenBalance[] {
   const tokenBalances:AggregatedTokenBalance[] = []
   latestBalances.map(balance => {
     let tokenBalance = tokenBalances.find(tokenBalance => tokenBalance.tokenTotal.symbol == balance.symbol)
@@ -37,7 +37,6 @@ export async function aggregateBalances(latestBalances: TokenInWallet[]):Promise
   tokenBalances.sort((a, b) => balanceSort(a.tokenTotal.amount, b.tokenTotal.amount))
   return tokenBalances
 }
-
 
 const ETHERSCAN_BASE_URL='https://etherscan.io/'
 const POLYGON_BASE_URL='https://polygonscan.com/'

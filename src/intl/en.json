@@ -384,14 +384,33 @@
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
     "transparency": {
-      "title": "DAO Treasury",
-      "join_discord_button": "Join our Discord",
-      "docs_button": "Check our docs",
       "mission": {
-        "title": "Our Mission",
-        "description": "To support and facilitate the continual growth of the Decentraland platform.",
-        "balance_title": "Current Balance",
-        "audit": "Audit on {service_name}"
+          "title": "Our Mission",
+          "description": "To support and facilitate the continual growth of the Decentraland platform.",
+          "join_discord_button": "Join our Discord",
+          "docs_button": "Check our docs",
+          "balance_title": "Current Balance",
+          "data_source_button": "DCL Data Source",
+          "audit": "Audit on {service_name}",
+          "monthly_income": "Monthly Income",
+          "monthly_expenses": "Monthly Expenses",
+          "diff_label": "vs previous month"
+      },
+      "funding": {
+        "title": "Currently funding initiatives",
+        "description": "Our community is powered by individual contributors all pushing in the same direction.",
+        "view_all_button": "View all proposals",
+        "total_title": "Funding provided so far",
+        "budget_label": "Monthly Budget ${amount} USD",
+        "proposals_funded_label": "Proposals funded",
+        "active_grants_label": "Active grants requests",
+        "view_more": "View {count} more..."
+      },
+      "members": {
+        "title": "We do have brain-power",
+        "description": "This set of individuals was chosen by the community to represent them.",
+        "review_contract_button": "Review Contract",
+        "organizational_chart_button": "DAO Organizational Chart"
       }
     },
     "submit": {

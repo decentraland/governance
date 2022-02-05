@@ -24,3 +24,9 @@ export type BlockExplorerLink = {
   link: string,
   name: string,
 }
+
+export type Team = {
+  name: string
+  description: string,
+  members: { name:string, address:string }[]
+}

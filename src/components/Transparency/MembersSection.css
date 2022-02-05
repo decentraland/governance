@@ -1,0 +1,26 @@
+
+.ui.header.MembersHeader {
+  display: flex !important;
+  justify-content: flex-start;
+}
+
+img.MembersPopup__Icon {
+  width: 14px !important;
+  height: 14px !important;
+  margin-left: 4px;
+}
+
+.ui.right.center.popup.transition.visible.MembersPopup {
+  padding: 0 0;
+  background-color: white;
+  min-width: 360px;
+}
+
+p.dg.Paragraph.MembersPopup__Content {
+  padding: 1em;
+}
+
+.TransparencySection .MembersContainer {
+  display: flex;
+  flex-wrap: wrap;
+}

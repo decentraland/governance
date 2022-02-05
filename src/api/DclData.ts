@@ -1,5 +1,33 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
-import { aggregateBalances } from '../entities/Balance/utils'
+import { TokenInWallet } from '../entities/Transparency/types'
+
+export type Detail = {
+  name: string,
+  value: bigint
+}
+
+export type MonthlyTotal = {
+  total: bigint,
+  previous: bigint,
+  details: Detail[]
+}
+
+export type Member = {
+  address: string,
+  name: string,
+  team: string
+}
+
+export type DlcData = {
+  balances: TokenInWallet[],
+  income: MonthlyTotal,
+  expenses: MonthlyTotal,
+  funding: {
+    total: bigint,
+    budget: bigint
+  },
+  members: Member[]
+}
 
 export class DclData extends API {
 
@@ -23,12 +51,10 @@ export class DclData extends API {
   }
 
   async getData(){
-    let data = await this.fetch(
+    return this.fetch<DlcData>(
       '/api.json',
       this.options()
         .method('GET')
     )
-    data.balances = aggregateBalances(data.balances)
-    return data
   }
 }

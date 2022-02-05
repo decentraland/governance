@@ -1,13 +1,12 @@
 import React from 'react'
-import { ChainId } from '@dcl/schemas'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import './TokensPerWalletPopup.css'
-import { TokenInWallet } from '../../entities/Balance/types'
-import { blockExplorerLink, formattedTokenBalance } from '../../entities/Wallet/utils'
+import { TokenInWallet } from '../../entities/Transparency/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import { blockExplorerLink } from '../../entities/Transparency/utils'
 
 const infoIcon = require('../../images/icons/info.svg')
 
@@ -15,10 +14,6 @@ export type TokensPerWalletPopupProps = React.HTMLAttributes<HTMLDivElement> & {
   tokensPerWallet: TokenInWallet[],
   open: boolean
   onCloseHandler: (e: React.MouseEvent<any>) => void
-}
-
-function networkName(network: ChainId) {
-  return network == ChainId.ETHEREUM_MAINNET ? 'Ethereum' : 'Polygon'
 }
 
 export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHandler }: TokensPerWalletPopupProps) {
@@ -29,22 +24,22 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHan
       <Card.Content className="TokensPerWalletPopup__Content">
         {
           tokensPerWallet.map((tokenInWallet, index) => {
-            if (parseInt(tokenInWallet.tokenBalance.amount) == 0) return;
+            if (tokenInWallet.amount == BigInt(0)) return;
 
-            const explorerLink = blockExplorerLink(tokenInWallet.wallet)
+            const explorerLink = blockExplorerLink(tokenInWallet)
             return (
               <a className="TokensPerWalletPopup__Row"
-                 key={[tokenInWallet.wallet.name, '_popup', index].join('::')}
+                 key={[tokenInWallet.name, '_popup', index].join('::')}
                  href={explorerLink.link} target="_blank"
                  rel="noopener noreferrer">
                 <div className="TokensPerWalletPopup__Block">
-                  <Header>{tokenInWallet.wallet.name}</Header>
-                  <Header sub>{networkName(tokenInWallet.wallet.network)} Network</Header>
+                  <Header>{tokenInWallet.name}</Header>
+                  <Header sub>{tokenInWallet.network} Network</Header>
                 </div>
                 <div className="TokensPerWalletPopup__Block TokensPerWalletPopup__RightBlock">
                   <div className={'TokensPerWalletPopup__Balance'}>
-                    <Header>{l('general.number', { value: formattedTokenBalance(tokenInWallet.tokenBalance) })}</Header>
-                    <Paragraph tiny>{tokenInWallet.tokenBalance.symbol}</Paragraph>
+                    <Header>{l('general.number', { value: tokenInWallet.amount })}</Header>
+                    <Paragraph tiny>{tokenInWallet.symbol}</Paragraph>
                   </div>
                   <Header sub className="TokensPerWalletPopup__Link">
                     {l('page.transparency.mission.audit', { service_name: explorerLink.name })}

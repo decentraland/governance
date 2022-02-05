@@ -4,8 +4,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import './TokenBalanceCard.css'
 import Icon from 'react-crypto-icons'
 import TokensPerWalletPopup from './TokensPerWalletPopup'
-import { AggregatedTokenBalance } from '../../entities/Balance/types'
-import { formattedTokenBalance } from '../../entities/Wallet/utils'
+import { AggregatedTokenBalance } from '../../entities/Transparency/types'
 
 export type TokenBalanceCardProps = React.HTMLAttributes<HTMLDivElement> & {
   aggregatedTokenBalance: AggregatedTokenBalance
@@ -29,13 +28,13 @@ export default function TokenBalanceCard({ aggregatedTokenBalance }: TokenBalanc
       <Icon name={aggregatedTokenBalance.tokenTotal.symbol.toLowerCase()} size={45} />
       <div className="TokenBalanceCard_description">
         <div className="TokenBalanceCard_header">
-          <Header sub>{aggregatedTokenBalance.tokenTotal.name.toUpperCase() + ' Tokens'}</Header>
-          <TokensPerWalletPopup tokensPerWallet={aggregatedTokenBalance.tokenInWallets}
+          <Header sub>{aggregatedTokenBalance.tokenTotal.symbol + ' Tokens'}</Header>
+          {aggregatedTokenBalance.tokenTotal.amount > 0 && <TokensPerWalletPopup tokensPerWallet={aggregatedTokenBalance.tokenInWallets}
                                 open={openPopup}
                                 onCloseHandler={onCloseHandler}
-          />
+          />}
         </div>
-        <span>{l('general.number', { value: formattedTokenBalance(aggregatedTokenBalance.tokenTotal) })}</span>
+        <span>{l('general.number', { value: aggregatedTokenBalance.tokenTotal.amount })}</span>
       </div>
     </div>
   )

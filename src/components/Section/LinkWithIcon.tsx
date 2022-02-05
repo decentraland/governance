@@ -8,7 +8,7 @@ import './LinkWithIcon.css'
 
 const openIcon = require('../../images/icons/open.svg')
 
-export type ExternalLinkWithIconProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+export type LinkWithIconProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   loading?: boolean,
   disabled?: boolean,
   href: string,
@@ -16,10 +16,8 @@ export type ExternalLinkWithIconProps = Omit<React.AnchorHTMLAttributes<HTMLAnch
   text: string | null
 }
 
-export default React.memo(function ExternalLinkWithIcon({ loading, disabled, href, imageSrc, text, ...props }: ExternalLinkWithIconProps) {
+export default React.memo(function LinkWithIcon({ loading, disabled, href, imageSrc, text, ...props }: LinkWithIconProps) {
   return <a href={href}
-            target="_blank"
-            rel="noopener noreferrer"
             className={TokenList.join([
               'DetailsSection',
               'SectionButton',

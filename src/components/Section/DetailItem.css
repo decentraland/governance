@@ -1,0 +1,11 @@
+.DetailItem {
+  display: flex;
+  margin-top: 0.25em;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.DetailItem .DetailItem__Value {
+  text-align: right;
+  font-weight: 500;
+}

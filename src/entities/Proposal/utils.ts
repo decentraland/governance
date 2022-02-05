@@ -2,6 +2,7 @@ import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { ProposalAttributes, ProposalStatus } from './types'
+import numeral from 'numeral'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
@@ -14,6 +15,10 @@ export const DEFAULT_CHOICES = [ 'yes', 'no' ]
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
 export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
+
+export function formatBalance(value: number | bigint) {
+  return numeral(value).format('0,0')
+}
 
 export function isValidName(name: string) {
   return REGEX_NAME.test(name)
