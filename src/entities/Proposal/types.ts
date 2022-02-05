@@ -133,6 +133,7 @@ export type UpdateProposalStatusProposal = {
     | ProposalStatus.Rejected
     | ProposalStatus.Passed
     | ProposalStatus.Enacted
+  vesting_address: string | null
   description: string
 }
 
@@ -151,6 +152,10 @@ export const updateProposalStatusScheme = {
         ProposalStatus.Passed,
         ProposalStatus.Enacted
       ]
+    },
+    vesting_address: {
+      type: ['string', 'null'],
+      format: 'address'
     },
     description: {
       type: ['string', 'null']

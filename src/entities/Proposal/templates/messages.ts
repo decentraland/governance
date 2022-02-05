@@ -11,7 +11,18 @@ export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<str
     if (!updatingUser) {
       throw Error('Proposal can\'t be enacted without an enacting user')
     }
-    return getUserTriggeredUpdateMessage('ENACTED', updatingUser, proposal.enacted_description, proposal)
+    let description: string | null = "";
+    if (proposal.vesting_address) { // It's optional
+      description += "Vesting Contract Address: " + proposal.vesting_address;
+    }
+    if (proposal.enacted_description) {
+      description += description === "" ? "" : "\n"
+      description += proposal.enacted_description;
+    }
+    if (description === "") {
+      description = null;
+    }
+    return getUserTriggeredUpdateMessage('ENACTED', updatingUser, description, proposal)
   } else if (proposal.status === ProposalStatus.Passed) {
     updatingUser = proposal.passed_by
     return updatingUser ? getUserTriggeredUpdateMessage(statusDisplayName, updatingUser, proposal.passed_description, proposal) : getJobTriggeredUpdateMessage(statusDisplayName, proposal, votes)
