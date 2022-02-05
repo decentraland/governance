@@ -23,6 +23,7 @@ export type ProposalAttributes<C extends {} = any> = {
   enacted: boolean
   enacted_by: string | null
   enacted_description: string | null
+  vesting_address: string | null
   passed_by: string | null
   passed_description: string | null
   rejected_by: string | null
