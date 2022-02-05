@@ -30,7 +30,7 @@ export default React.memo(function MonthlyTotal({title, monthlyTotal }: MonthlyT
               'Number',
               monthlyTotal.previous < 0 && `Number--Red`,
               monthlyTotal.previous >= 0 && `Number--Green`])}>
-              {monthlyTotal.previous}%
+              {formatBalance(monthlyTotal.previous) + "% "}
             </strong>
             {l('page.transparency.mission.diff_label')}
           </Header>

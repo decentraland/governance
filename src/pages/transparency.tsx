@@ -128,7 +128,7 @@ export default function WrappingPage() {
                   />
                   <GrantList
                     status={ProposalStatus.Active}
-                    title={l('page.transparency.funding.proposals_active_grants_label') || ''}
+                    title={l('page.transparency.funding.active_grants_label') || ''}
                   />
                 </Card>
               </div>
