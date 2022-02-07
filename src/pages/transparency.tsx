@@ -18,20 +18,31 @@ import locations from '../modules/locations'
 import LinkWithIcon from '../components/Section/LinkWithIcon'
 import Progress from '../components/Status/Progress'
 import { ProposalStatus } from '../entities/Proposal/types';
-import './transparency.css'
 import GrantList from '../components/Transparency/GrantList'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
 import MembersSection from '../components/Transparency/MembersSection'
+import './transparency.css'
+
+const discordIcon = require('../images/icons/discord.svg')
 
 const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
-const DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo/edit'
-const ORGANIZATIONAL_CHART_URL = 'https://docs.google.com/drawings/d/1Ks2lyplFqwlMS8-D0L1YeNJT6LIB_qVJgkbn298cS4o/edit'
 const docsIcon = require('../images/icons/docs.svg')
-const discordIcon = require('../images/icons/discord.svg')
-const openFolder = require('../images/icons/open-folder.svg')
+
+const DASHBOARD_URL = 'https://datastudio.google.com/u/3/reporting/fca13118-c18d-4e68-9582-ad46d2dd5ce9/page/p_n06szvxkrc'
+const dashboardIcon = require('../images/icons/chart-bar.svg')
+
+const DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo/edit'
+const dataSheetIcon = require('../images/icons/database.svg')
+
+const ABOUT_DAO_URL = 'https://docs.decentraland.org/decentraland/how-does-the-dao-work/'
+const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curation-committee-member-nominations/2047'
+const ABOUT_DELEGATES = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
+const ORGANIZATIONAL_CHART_URL = 'https://docs.google.com/drawings/d/1Ks2lyplFqwlMS8-D0L1YeNJT6LIB_qVJgkbn298cS4o/edit'
+
+const viewAllProposalsIcon = require('../images/icons/open-folder.svg')
+
 const documentOutline = require('../images/icons/document-outline.svg')
 const organizationalChart = require('../images/icons/organizational-chart.svg')
-const database = require('../images/icons/database.svg')
 
 
 export default function WrappingPage() {
@@ -62,8 +73,11 @@ export default function WrappingPage() {
                 <ExternalLinkWithIcon href={DOCS_URL}
                                       imageSrc={docsIcon}
                                       text={l('page.transparency.mission.docs_button')} />
+                <ExternalLinkWithIcon href={DASHBOARD_URL}
+                                      imageSrc={dashboardIcon}
+                                      text={l('page.transparency.mission.dashboard_button')} />
                 <ExternalLinkWithIcon href={DATA_SHEET_URL}
-                                      imageSrc={database}
+                                      imageSrc={dataSheetIcon}
                                       text={l('page.transparency.mission.data_source_button')} />
               </div>
             </Grid.Column>
@@ -99,7 +113,7 @@ export default function WrappingPage() {
                 <Header>{l('page.transparency.funding.title')}</Header>
                 <p>{l('page.transparency.funding.description')}</p>
                 <LinkWithIcon href={locations.proposals()}
-                              imageSrc={openFolder}
+                              imageSrc={viewAllProposalsIcon}
                               text={l('page.transparency.funding.view_all_button')} />
               </div>
             </Grid.Column>
@@ -144,9 +158,16 @@ export default function WrappingPage() {
               <div>
                 <Header>{l('page.transparency.members.title')}</Header>
                 <p>{l('page.transparency.members.description')}</p>
-                <LinkWithIcon href={locations.proposals()}
+
+                <ExternalLinkWithIcon href={ABOUT_DAO_URL}
                               imageSrc={documentOutline}
-                              text={l('page.transparency.members.review_contract_button')} />
+                              text={l('page.transparency.members.about_dao_button')} />
+                <ExternalLinkWithIcon href={WEARABLE_CURATORS_URL}
+                              imageSrc={documentOutline}
+                              text={l('page.transparency.members.about_wearable_curators_button')} />
+                <ExternalLinkWithIcon href={ABOUT_DELEGATES}
+                              imageSrc={documentOutline}
+                              text={l('page.transparency.members.about_delegates_button')} />
                 <ExternalLinkWithIcon href={ORGANIZATIONAL_CHART_URL}
                                       imageSrc={organizationalChart}
                                       text={l('page.transparency.members.organizational_chart_button')} />
@@ -156,11 +177,14 @@ export default function WrappingPage() {
             <Grid.Column tablet="12">
               <div className="TransparencySection">
                 <Card className="TransparencyCard">
-                    <MembersSection
-                      title={'DAO Committee'}
-                      description={'Their principal responsibility is to enact binding proposals on-chain like listing Point of Interests, sending Grants, and any other operations involving the DAO\'s smart contracts.'}
-                      members={data.members.filter(member => member.team == "DAO Committee")}
+                  {data && data.teams.map((team, index) => {
+                    return <MembersSection
+                      key={[team.name.trim(), index].join('::')}
+                      title={team.name}
+                      description={team.description}
+                      members={team.members}
                     />
+                  })}
                 </Card>
               </div>
             </Grid.Column>

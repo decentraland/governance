@@ -51,6 +51,12 @@
 	.ui.container.TransparencyContainer .ActionableLayout {
 		flex: 0 0 32%;
 	}
+
+	.MonthlyTotals {
+		display: flex;
+		flex-direction: row !important;
+		justify-content: space-evenly;
+	}
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -67,8 +73,8 @@
 
 .MonthlyTotals {
 	display: flex;
-	flex-direction: row;
-	justify-content: space-evenly;
+	flex-direction: column;
+	align-items: flex-end;
 }
 
 .ui.card.TransparencyCard {

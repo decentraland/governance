@@ -390,6 +390,7 @@
           "join_discord_button": "Join our Discord",
           "docs_button": "Check our docs",
           "balance_title": "Current Balance",
+          "dashboard_button": "Transparency Dashboard",
           "data_source_button": "DCL Data Source",
           "audit": "Audit on {service_name}",
           "monthly_income": "Monthly Income",
@@ -409,7 +410,9 @@
       "members": {
         "title": "We do have brain-power",
         "description": "This set of individuals was chosen by the community to represent them.",
-        "review_contract_button": "Review Contract",
+        "about_dao_button": "How the DAO Works",
+        "about_wearable_curators_button": "About Wearable Curators",
+        "about_delegates_button": "About Delegates",
         "organizational_chart_button": "DAO Organizational Chart"
       }
     },

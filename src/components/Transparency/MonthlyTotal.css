@@ -13,8 +13,11 @@
   margin-top: 0;
 }
 
-.MonthlyTotal:last-of-type {
-  margin-left: 2em;
+
+@media only screen and (min-width: 768px) {
+  .MonthlyTotal:last-of-type {
+    margin-left: 2em;
+  }
 }
 
 .content.MonthlyTotal__Detail {

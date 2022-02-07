@@ -5,17 +5,14 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MemberCard from './MemberCard'
 import './MembersSection.css'
+import { Member } from '../../api/DclData'
 
 const infoIcon = require('../../images/icons/info.svg')
 
 export type MembersSectionProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string,
   description: string,
-  members: {
-    address: string,
-    name: string,
-    team: string,
-  }[]
+  members: Member[]
 }
 
 export default function MembersSection({ title, description, members }: MembersSectionProps) {
@@ -41,7 +38,7 @@ export default function MembersSection({ title, description, members }: MembersS
         {
           members.map((member, index) => {
             return <MemberCard
-              key={[member.team.trim(), member.name.trim(), index].join('::')}
+              key={[title.trim(), member.name.trim(), index].join('::')}
               member={{ address: member.address, name: member.name }}
             />
           })

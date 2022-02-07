@@ -14,11 +14,16 @@ export type MonthlyTotal = {
 
 export type Member = {
   address: string,
-  name: string,
-  team: string
+  name: string
 }
 
-export type DlcData = {
+export type Team = {
+  name: string,
+  description: string,
+  members: Member[]
+}
+
+export type TransparencyData = {
   balances: TokenInWallet[],
   income: MonthlyTotal,
   expenses: MonthlyTotal,
@@ -26,7 +31,7 @@ export type DlcData = {
     total: bigint,
     budget: bigint
   },
-  members: Member[]
+  teams: Team[]
 }
 
 export class DclData extends API {
@@ -50,8 +55,8 @@ export class DclData extends API {
     return this.from(this.Url)
   }
 
-  async getData(){
-    return this.fetch<DlcData>(
+  async getData() {
+    return this.fetch<TransparencyData>(
       '/api.json',
       this.options()
         .method('GET')
