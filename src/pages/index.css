@@ -26,9 +26,13 @@
   width: 100%;
 }
 
-@media only screen and (max-width: 767px) {
+.SubmitButton {
+  display: none !important;
+}
+
+/* Desktop Only */
+@media only screen and (min-width: 768px) {
   .SubmitButton {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+    display: inline !important
   }
 }

@@ -11,7 +11,6 @@ import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
 import locations, { ProposalListView, toProposalListPage, toProposalListView } from "../modules/locations"
 import ActionableLayout from "../components/Layout/ActionableLayout"
-import CategoryOption from "../components/Category/CategoryOption"
 import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import StatusMenu from "../components/Status/StatusMenu"
@@ -31,6 +30,10 @@ import useProposals from "../hooks/useProposals"
 import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
 import { Governance } from "../api/Governance"
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import CategoryList from "../components/Category/CategoryList"
+import BurgerMenuContent from "../components/Layout/BurgerMenuContent"
 import './index.css'
 
 const ITEMS_PER_PAGE = 25
@@ -56,6 +59,9 @@ export default function IndexPage() {
     { callWithTruthyDeps: true }
   )
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+
   // const [ ff ] = useFeatureFlagContext()
 
   useEffect(() => {
@@ -89,13 +95,6 @@ export default function IndexPage() {
     const newParams = new URLSearchParams(params)
     page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
     return navigate(locations.proposals(newParams))
-  }
-
-  function handleTypeFilter(type: ProposalType | null) {
-    const newParams = new URLSearchParams(params)
-    type ? newParams.set('type', type) : newParams.delete('type')
-    newParams.delete('page')
-    return locations.proposals(newParams)
   }
 
   function handleStatusFilter(status: ProposalStatus | null) {
@@ -163,23 +162,16 @@ export default function IndexPage() {
       }
       image="https://decentraland.org/images/decentraland.png"
     />
-    <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
+    <div className="OnlyDesktop">
+      <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
+    </div>
     <Container>
       <Grid stackable>
         <Grid.Row>
           <Grid.Column tablet="4">
-            <ActionableLayout
-              leftAction={<Header sub>{l(`page.proposal_list.categories`)}</Header>}
-            >
-              <CategoryOption type={'all'} href={handleTypeFilter(null)} active={type === null} />
-              <CategoryOption type={ProposalType.Catalyst} href={handleTypeFilter(ProposalType.Catalyst)} active={type === ProposalType.Catalyst} />
-              <CategoryOption type={ProposalType.POI} href={handleTypeFilter(ProposalType.POI)} active={type === ProposalType.POI} />
-              <CategoryOption type={ProposalType.BanName} href={handleTypeFilter(ProposalType.BanName)} active={type === ProposalType.BanName} />
-              <CategoryOption type={ProposalType.Grant} href={handleTypeFilter(ProposalType.Grant)} active={type === ProposalType.Grant} />
-              <CategoryOption type={ProposalType.Poll} href={handleTypeFilter(ProposalType.Poll)} active={type === ProposalType.Poll} />
-              <CategoryOption type={ProposalType.Draft} href={handleTypeFilter(ProposalType.Draft)} active={type === ProposalType.Draft} />
-              <CategoryOption type={ProposalType.Governance} href={handleTypeFilter(ProposalType.Governance)} active={type === ProposalType.Governance} />
-            </ActionableLayout>
+            {
+              isMobile ? <BurgerMenuContent /> : <CategoryList />
+            }
           </Grid.Column>
           <Grid.Column tablet="12">
             <ActionableLayout
