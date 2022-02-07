@@ -171,9 +171,14 @@ export default function SubmitPoll() {
       image="https://decentraland.org/images/decentraland.png"
     />
     <Helmet title={l('page.submit_poll.title') || ''}  />
+
     <ContentSection>
       <Header size="huge">{l('page.submit_poll.title')}</Header>
     </ContentSection>
+    <ContentSection className="MarkdownSection--tiny">
+      {l.markdown('page.submit_poll.description')}
+    </ContentSection>
+
     <ContentSection>
       <Label>{l('page.submit_poll.title_label')}</Label>
       <Paragraph tiny secondary className="details">{l('page.submit_poll.title_detail')}</Paragraph>
@@ -191,7 +196,7 @@ export default function SubmitPoll() {
           })
         }
         loading={votingPowerState.loading}
-        disabled={formDisabled}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -214,7 +219,7 @@ export default function SubmitPoll() {
             limit: schema.description.maxLength
           })
         }
-        disabled={formDisabled}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -229,7 +234,7 @@ export default function SubmitPoll() {
           action={<Icon name="x" />}
           onAction={() => handleRemoveOption(key)}
           onChange={(_, { value }) => handleEditOption(key, value)}
-          disabled={formDisabled}
+          disabled={submissionVpNotMet || formDisabled}
         />)}
         <Field
           readOnly
