@@ -5,6 +5,11 @@
   margin-bottom: 0;
 }
 
+.ui.header.GrantList__Total {
+  font-size: x-large;
+  font-weight: 500;
+}
+
 .content.GrantList__Content {
   border-top: 0 !important;
 }
@@ -14,6 +19,7 @@
   display: block;
   margin-top: 0;
   margin-bottom: 0;
+  padding-top: 16px;
   position: relative;
 }
 

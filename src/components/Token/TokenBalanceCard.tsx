@@ -27,8 +27,8 @@ export default function TokenBalanceCard({ aggregatedTokenBalance }: TokenBalanc
     <div className="TokenBalanceCard" onClick={handleClick}>
       <Icon name={aggregatedTokenBalance.tokenTotal.symbol.toLowerCase()} size={45} />
       <div className="TokenBalanceCard_description">
-        <div className="TokenBalanceCard_header">
-          <Header sub>{aggregatedTokenBalance.tokenTotal.symbol + ' Tokens'}</Header>
+        <div className="TokenBalanceCard__Header">
+          <Header sub className="TokenBalanceCard__Symbol">{aggregatedTokenBalance.tokenTotal.symbol + ' Tokens'}</Header>
           {aggregatedTokenBalance.tokenTotal.amount > 0 && <TokensPerWalletPopup tokensPerWallet={aggregatedTokenBalance.tokenInWallets}
                                 open={openPopup}
                                 onCloseHandler={onCloseHandler}

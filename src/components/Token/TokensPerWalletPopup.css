@@ -96,3 +96,8 @@
 		opacity: 1;
 	}
 }
+
+img.PopupIcon {
+	position: relative;
+	top: 2px;
+}

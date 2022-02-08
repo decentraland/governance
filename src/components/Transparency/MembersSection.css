@@ -2,12 +2,15 @@
 .ui.header.MembersHeader {
   display: flex !important;
   justify-content: flex-start;
+  align-items: baseline;
 }
 
 img.MembersPopup__Icon {
   width: 14px !important;
   height: 14px !important;
   margin-left: 4px;
+  position: relative;
+  top: 1px;
 }
 
 .ui.right.center.popup.transition.visible.MembersPopup {

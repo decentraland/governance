@@ -29,7 +29,7 @@ export default React.memo(function GrantList({status, title }: GrantListProps) {
 
   return <>
     {grantsList && <Card.Content className="GrantList__Content">
-      <Header size="medium">{grantsList.total}</Header>
+      <Header size="medium" className="GrantList__Total">{grantsList.total}</Header>
       <Header sub className="GrantList__Sub">{title}</Header>
       <div className="ItemsList">
         {grantsList.data && grantsList.data.map((grant, index) => {

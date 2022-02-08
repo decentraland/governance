@@ -30,7 +30,7 @@ export default function MembersSection({ title, description, members }: MembersS
             className={'MembersPopup__Icon'}
             src={infoIcon} width="14" height="14" alt="info" />}
           eventsEnabled={true}
-          on="click"
+          on="hover"
           pinned={true}
         />
       </Header>

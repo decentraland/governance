@@ -2,11 +2,16 @@
   width: 100%;
 }
 
+.ui.header.huge.MonthlyTotal__Header {
+  margin-bottom: 8px;
+}
+
 .ui.header.MonthlyTotal__Header,
 .ui.header.huge.MonthlyTotal__Header {
   margin: 0;
   display: flex;
   align-items: baseline;
+  font-weight: 400;
 }
 
 .ui.sub.header.MonthlyTotal__Sub {

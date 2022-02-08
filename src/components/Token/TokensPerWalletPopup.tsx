@@ -55,7 +55,7 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHan
     className="TokensPerWalletPopup"
     content={content}
     position="bottom center"
-    trigger={<img src={infoIcon} width="14" height="14" alt="info" />}
+    trigger={<img className="PopupIcon" src={infoIcon} width="14" height="14" alt="info" />}
     eventsEnabled={true}
     onClose={onCloseHandler}
     open={open}

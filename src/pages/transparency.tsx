@@ -122,7 +122,7 @@ export default function WrappingPage() {
               <div className="TransparencySection">
                 <Card className="TransparencyCard">
                   <Card.Content>
-                    <Header>{l('page.transparency.funding.total_title')}</Header>
+                    <Header className="FundingHeader">{l('page.transparency.funding.total_title')}</Header>
                     <div className="FundingProgress">
                       <div className="FundingProgress__Description">
                         <Header size="huge" className="FundingProgress__Total">
