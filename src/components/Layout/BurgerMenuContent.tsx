@@ -1,40 +1,43 @@
-import React, {useState, useEffect} from 'react'
-import CategoryList from '../Category/CategoryList'
-import { Header } from "decentraland-ui/dist/components/Header/Header"
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
-import { Button } from "decentraland-ui/dist/components/Button/Button"
+import { useLocation } from '@reach/router'
 import Link from "decentraland-gatsby/dist/components/Text/Link"
-import './BurgerMenuContent.css'
-import locations, { ProposalListView } from '../../modules/locations'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
+import { Button } from "decentraland-ui/dist/components/Button/Button"
+import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { navigate } from 'gatsby-plugin-intl'
+import React, { useEffect, useMemo, useState } from 'react'
+import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
+import locations, { ProposalListView, toProposalListView } from '../../modules/locations'
+import CategoryList from '../Category/CategoryList'
+import './BurgerMenuContent.css'
 
 function BurgerMenuContent() {
   const l = useFormatMessage()
+  const location = useLocation()
+  const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
+  const view = toProposalListView(params.get('view')) ?? undefined
 
-  const primaryButton: any = {
+  const selectedButton: any = {
     inverted: true, 
     primary: true
   }
-  const secondaryButton: any = {
+  const unselectedButton: any = {
     secondary: true
   }
 
-  const [proposals, setProposals] = useState(true);
-  const [proposalsButtonProps, setProposalsButtonProps] = useState(primaryButton)
-  const [enactedButtonProps, setEnactedButtonProps] = useState(secondaryButton)
+  const [proposalsButtonProps, setProposalsButtonProps] = useState(selectedButton)
+  const [enactedButtonProps, setEnactedButtonProps] = useState(unselectedButton)
 
   useEffect(() => {
-    if(proposals) {
-      setProposalsButtonProps(primaryButton)
-      setEnactedButtonProps(secondaryButton)
+    if(view === ProposalListView.Enacted) {
+      setProposalsButtonProps(unselectedButton)
+      setEnactedButtonProps(selectedButton)
     }
     else {
-      setProposalsButtonProps(secondaryButton)
-      setEnactedButtonProps(primaryButton)
+      setProposalsButtonProps(selectedButton)
+      setEnactedButtonProps(unselectedButton)
     }
-  }, [proposals])
+  }, [view]);
   
   return <div>
     <Header sub>{l(`page.proposal_list.browse`)}</Header>
@@ -48,7 +51,6 @@ function BurgerMenuContent() {
             as={Link}
             href={locations.proposals()}
             onClick={prevent(() => {
-              setProposals(true)
               navigate(locations.proposals())
             })}
           >
@@ -63,7 +65,6 @@ function BurgerMenuContent() {
             as={Link}
             href={locations.proposals({ view: ProposalListView.Enacted })}
             onClick={prevent(() => {
-              setProposals(false)
               navigate(locations.proposals({ view: ProposalListView.Enacted }))
             })}
           >
