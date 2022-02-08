@@ -37,7 +37,7 @@ function BurgerMenuContent() {
       setProposalsButtonProps(selectedButton)
       setEnactedButtonProps(unselectedButton)
     }
-  }, [view]);
+  }, [view])
   
   return <div>
     <Header sub>{l(`page.proposal_list.browse`)}</Header>

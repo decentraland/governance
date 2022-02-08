@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react"
+import React, { useMemo, useEffect, useContext } from "react"
 import { useLocation } from '@reach/router'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
@@ -34,6 +34,7 @@ import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import CategoryList from "../components/Category/CategoryList"
 import BurgerMenuContent from "../components/Layout/BurgerMenuContent"
+import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
 import './index.css'
 
 const ITEMS_PER_PAGE = 25
@@ -61,6 +62,7 @@ export default function IndexPage() {
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const burgerMenu = useContext(BurgerMenuStatusContext)
 
   // const [ ff ] = useFeatureFlagContext()
 
@@ -138,7 +140,7 @@ export default function IndexPage() {
   // }
 
   return <>
-    <div className="OnlyMobile">
+    <div className="OnlyMobile" style={burgerMenu?.status ? {display: 'none'} : {}}>
       <SubscriptionBanner active={!type} />
     </div>
     <Head
@@ -168,7 +170,9 @@ export default function IndexPage() {
     <Container>
       <Grid stackable>
         <Grid.Row>
-          <Grid.Column tablet="4">
+          <Grid.Column tablet="4" 
+            style={isMobile ? (burgerMenu?.status ? {} : {display: 'none'}) : {}}
+          >
             {
               isMobile ? <BurgerMenuContent /> : <CategoryList />
             }
