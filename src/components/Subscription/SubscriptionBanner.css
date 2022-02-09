@@ -56,6 +56,7 @@
   right: 0;
   margin: 8px;
   background-color: #f1f6fe;
+  z-index: 10;
 }
 
 .SubscriptionBanner .SubscriptionBanner__Button {
