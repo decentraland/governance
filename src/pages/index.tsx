@@ -36,6 +36,7 @@ import CategoryList from "../components/Category/CategoryList"
 import BurgerMenuContent from "../components/Layout/BurgerMenuContent"
 import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
 import './index.css'
+import { BurgerMenuShowContext } from "../components/Context/BurgerMenuShowContext"
 
 const ITEMS_PER_PAGE = 25
 
@@ -63,6 +64,7 @@ export default function IndexPage() {
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const burgerMenu = useContext(BurgerMenuStatusContext)
+  const burgerShow = useContext(BurgerMenuShowContext)
 
   // const [ ff ] = useFeatureFlagContext()
 
@@ -74,6 +76,15 @@ export default function IndexPage() {
       }
     }
   }, [ page, proposals ])
+
+  useEffect(() => {
+    burgerShow?.setShow(true)
+  
+    return () => {
+      burgerShow?.setShow(false)
+    };
+  }, []);
+  
 
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
