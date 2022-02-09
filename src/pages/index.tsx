@@ -151,7 +151,13 @@ export default function IndexPage() {
   // }
 
   return <>
-    <div className="OnlyMobile" style={burgerMenu?.status ? {display: 'none'} : {}}>
+    <div className="OnlyMobile Animated"
+        style={(isMobile && {
+          zIndex: -1000,
+          transform: burgerMenu?.status ? 'translatex(-200%)' : '',
+          height: burgerMenu?.status ? '0' : ''
+        }) || {}}
+    > 
       <SubscriptionBanner active={!type} />
     </div>
     <Head
@@ -182,13 +188,22 @@ export default function IndexPage() {
       <Grid stackable>
         <Grid.Row>
           <Grid.Column tablet="4" 
-            style={isMobile ? (burgerMenu?.status ? {} : {display: 'none'}) : {}}
+            className="Animated"
+            style={(isMobile && {
+              position: 'absolute',
+              transform: `${burgerMenu?.status ? '' : 'translateY(-200%)'}`,
+            }) || {}}
           >
             {
               isMobile ? <BurgerMenuContent /> : <CategoryList />
             }
           </Grid.Column>
-          <Grid.Column tablet="12">
+          <Grid.Column tablet="12"
+            className="Animated"
+            style={
+              isMobile ? (burgerMenu?.status ? {transform: 'translate3d(0px, 550px, 0px)'}: {}) : {}
+            }
+          >
             <ActionableLayout
               leftAction={<Header sub>
                 {!proposals && ''}
