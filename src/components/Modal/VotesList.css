@@ -1,15 +1,13 @@
 .VotesList .VotesList_Container_Header {
-  margin: 0 auto;
   width: 90%;
-  margin-bottom: 20px;
+  margin: 0 auto 20px;
 }
 
 .VotesList .VotesList_Container_Items {
-  margin: 0 auto;
   width: 90%;
-  margin-bottom: 40px;
+  margin: 0 auto 40px;
   height: 50vh;
-  padding: 20px 0px;
+  padding: 20px 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -44,7 +42,16 @@
   border-bottom: 1px solid #e7e6e9;
 }
 
-@media (max-width: 768px) {
+.VotesList .dg.dcl-avatar {
+  margin: 0 .25em 0 0;
+}
+
+.row.VoteList_Item.VotesList_Divider_Line {
+  display: flex;
+  align-items: baseline;
+}
+
+@media (max-width: 991px) {
   .VotesList .VotesList_Container_Header {
     width: 97%;
   }
@@ -56,5 +63,10 @@
 
   .VotesList .VotesList_Container_Header .VotesList_Header {
     font-size: 13px;
+  }
+
+  .VotesList .dg.dcl-avatar {
+    margin: 0 .25em 0 0;
+    width: 20px;
   }
 }
