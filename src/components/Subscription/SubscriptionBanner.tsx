@@ -13,7 +13,6 @@ import {
 const icon = require('../../images/icons/email-outline.svg')
 
 enum ShowSubscriptionBanner {
-  Loading,
   YES,
   NO
 }
@@ -24,7 +23,7 @@ export type SubscriptionBannerProps = {
 
 export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
   const [account] = useAuthContext()
-  const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(ShowSubscriptionBanner.Loading)
+  const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(ShowSubscriptionBanner.NO)
   const [confirmSubscription, setConfirmSubscription] = useState(false)
   const [subscribed, setSubscribed] = useState(false);
   const l = useFormatMessage()
@@ -43,10 +42,6 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
   function closeSubscriptionBanner(){
     setConfirmSubscription(false)
     setSubscribed(false)
-  }
-
-  if (showSubscriptionBanner === ShowSubscriptionBanner.Loading) {
-    return null
   }
 
   return <div>
