@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from 'react'
 import Helmet from "react-helmet"
 import { navigate } from "gatsby-plugin-intl"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
@@ -144,10 +144,12 @@ export default React.memo(function ProposalSubmitPoiPage({
   const l = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPoiState)
+  const [formDisabled, setFormDisabled] = useState(false);
   const prefix = poiType.split('_')[0] // add | remove
 
   useEffect(() => {
     if (state.validated) {
+      setFormDisabled(true);
       Promise.resolve()
         .then(async () => {
           const x = asNumber(state.value.x)
@@ -181,6 +183,7 @@ export default React.memo(function ProposalSubmitPoiPage({
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ "*": err.body?.error || err.message })
+          setFormDisabled(false);
         })
     }
   }, [state.validated])
@@ -239,6 +242,7 @@ export default React.memo(function ProposalSubmitPoiPage({
             placeholder={l("page.submit_poi.x_placeholder")}
             onChange={(_, { value }) => editor.set({ x: value })}
             error={!!state.error.x}
+            disabled={formDisabled}
           />
           <Field
             value={state.value.y}
@@ -248,6 +252,7 @@ export default React.memo(function ProposalSubmitPoiPage({
             placeholder={l("page.submit_poi.y_placeholder")}
             onChange={(_, { value }) => editor.set({ y: value })}
             error={!!state.error.y}
+            disabled={formDisabled}
           />
 
           <div style={{ position: "absolute", bottom: 0, left: 0 }}>
@@ -284,6 +289,7 @@ export default React.memo(function ProposalSubmitPoiPage({
               limit: schema.description.maxLength,
             })
           }
+          disabled={formDisabled}
         />
       </ContentSection>
       <ContentSection>

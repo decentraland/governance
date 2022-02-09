@@ -392,7 +392,7 @@
     },
     "submit_poll": {
       "title": "Create a community poll",
-      "description": "",
+      "description": "The purpose of the Pre-Proposal Poll is to introduce a governance issue to the community, gauge community sentiment, and determine if there is enough support to move forward with the drafting of an initial proposal. Pre-Proposal Polls can only pass to the Draft Proposal stage if they have accumulated a threshold of at least 500K VP\n\nThis action requires at least 100 VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://governance.decentraland.org/proposal/?id=d43c1e50-daa9-11eb-9110-69b867ba991b).",
       "title_label": "Title",
       "title_detail": "The question you would like to ask the community.",
       "title_placeholder": "Enter your question here",
