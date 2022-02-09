@@ -174,6 +174,7 @@ export default function SubmitGovernanceProposal() {
           let configuration = linkedProposal.configuration as NewProposalDraft
           editor.set({
             linked_proposal_id: linkedProposal.id,
+            title: configuration.title,
             summary: configuration.summary,
             abstract: configuration.abstract,
             motivation: configuration.motivation,
