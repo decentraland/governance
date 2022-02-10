@@ -60,7 +60,7 @@ function getVotingResultsMessage(resultsByChoices: ({ color: 'approve' | 'reject
   return votingResults
 }
 
-function formatChoice(choice: string) {
+export function formatChoice(choice: string) {
   return choice.charAt(0).toUpperCase() + choice.slice(1)
 }
 

@@ -214,6 +214,7 @@ export default function ProposalPage() {
     </ContentLayout>
     <VotesList
       open={options.showVotesList}
+      proposal={proposal}
       votes={votes}
       onClose={() => patchOptions({ showVotesList: false })}
     />
