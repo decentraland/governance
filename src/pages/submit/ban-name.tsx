@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { navigate } from "gatsby-plugin-intl"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
@@ -70,9 +70,11 @@ export default function SubmitBanName() {
   const l = useFormatMessage()
   const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
+  const [formDisabled, setFormDisabled] = useState(false);
 
   useEffect(() => {
     if (state.validated) {
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           let names: string[]
@@ -96,6 +98,7 @@ export default function SubmitBanName() {
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
         })
     }
   }, [ state.validated ])
@@ -146,6 +149,7 @@ export default function SubmitBanName() {
             limit: schema.name.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -167,6 +171,7 @@ export default function SubmitBanName() {
             limit: schema.description.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>

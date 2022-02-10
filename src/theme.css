@@ -96,6 +96,16 @@ body {
   border-color: var(--text);
 }
 
+::placeholder {
+  color: #CACACA;
+  opacity: 1;
+}
+
+.dcl.select-field .divider.default.text {
+  color: #CACACA !important;
+  opacity: 1 !important;
+}
+
 :root {
   --background-catalyst: #4888EE;
   --background-poi: #44B600;

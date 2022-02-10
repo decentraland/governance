@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { navigate } from "gatsby-plugin-intl"
 import { Button } from "decentraland-ui/dist/components/Button/Button"
@@ -168,9 +168,11 @@ export default function SubmitBanName() {
   const l = useFormatMessage()
   const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
+  const [formDisabled, setFormDisabled] = useState(false);
 
   useEffect(() => {
     if (state.validated) {
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           const size = asNumber(state.value.size)
@@ -190,6 +192,7 @@ export default function SubmitBanName() {
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
         })
     }
   }, [ state.validated ])
@@ -235,6 +238,7 @@ export default function SubmitBanName() {
         options={categories}
         error={!!state.error.category}
         message={l.optional(state.error.category)}
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -246,6 +250,7 @@ export default function SubmitBanName() {
         options={tiers}
         error={!!state.error.tier}
         message={l.optional(state.error.tier)}
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -263,6 +268,7 @@ export default function SubmitBanName() {
             limit: schema.title.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -285,6 +291,7 @@ export default function SubmitBanName() {
             limit: schema.abstract.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection className="GrantSize">
@@ -298,6 +305,7 @@ export default function SubmitBanName() {
         action={<Paragraph tiny secondary>USD</Paragraph>}
         onAction={() => null}
         message={l.optional(state.error.size)}
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -310,6 +318,7 @@ export default function SubmitBanName() {
         onBlur={() => editor.set({ beneficiary: state.value.beneficiary.trim() })}
         message={l.optional(state.error.beneficiary)}
         error={!!state.error.beneficiary}
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -331,6 +340,7 @@ export default function SubmitBanName() {
             limit: schema.description.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -353,6 +363,7 @@ export default function SubmitBanName() {
             limit: schema.specification.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -375,6 +386,7 @@ export default function SubmitBanName() {
             limit: schema.personnel.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
@@ -397,6 +409,7 @@ export default function SubmitBanName() {
             limit: schema.roadmap.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>
