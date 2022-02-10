@@ -77,16 +77,18 @@ export default function IndexPage() {
     }
   }, [ page, proposals ])
 
+  const footer = document.querySelectorAll(".dcl.footer")[0]
+
   useEffect(() => {
     burgerShow?.setShow(true)
   
     return () => {
       burgerShow?.setShow(false)
+      if(isMobile && footer) {
+        footer.setAttribute("style", "")
+      }
     };
   }, []);
-  
-  // footer animation
-  const footer = document.querySelectorAll(".dcl.footer")[0]
 
   useEffect(() => {
     if(isMobile && footer) {
