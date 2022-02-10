@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { navigate } from 'gatsby-plugin-intl'
 import { Back } from "decentraland-ui/dist/components/Back/Back"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
@@ -6,6 +6,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import locations from '../../modules/locations'
 import './ContentLayout.css'
+import { UrlParamsContext } from '../Context/UrlParamsContext'
 
 export type ContentLayoutProps = {
   className?: string
@@ -14,12 +15,18 @@ export type ContentLayoutProps = {
 }
 
 export default function ContentLayout(props: ContentLayoutProps) {
+
+  const paramsContext = useContext(UrlParamsContext)
+
   function handleBack() {
-    if((window as any).routeUpdate) {
-      window.history.back()
-    } else {
-      navigate(locations.proposals())
+
+    let filters: any = {}
+
+    if(paramsContext?.params) {
+      filters = {...paramsContext.params}
     }
+
+    navigate(locations.proposals(filters))
   }
 
   return <Container className={TokenList.join(['ContentLayout', props.className])}>

@@ -9,8 +9,8 @@ import './ProposalNavigation.css';
 function ProposalNavigation() {
 
   const location = useLocation()
-  const p = useMemo(() => new URLSearchParams(location.search), [ location.search ])
-  const id = p.get('id')
+  const urlParams = useMemo(() => new URLSearchParams(location.search), [ location.search ])
+  const id = urlParams.get('id')
 
   const context = useContext(UrlParamsContext)
   const [prevPage, setPrevPage] = useState({} as NavigationType)
@@ -19,16 +19,12 @@ function ProposalNavigation() {
 
   let filters: any = {}
 
-  if(context?.urlParams) {
-    const p = new URLSearchParams(context.urlParams)
-
-    for (const key of p.keys()) {
-      filters[key] = p.get(key)
-    }
+  if(context?.params) {
+    filters = {...context.params}
     delete filters['page']
   }
   
-  const [proposals, proposalsState ] = useProposals(params)
+  const [proposals, proposalsState] = useProposals(params)
 
   useEffect(() => {
     setParams({id: id!, ...filters})
