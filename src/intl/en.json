@@ -138,6 +138,9 @@
       "category_invalid": "Category is invalid",
       "tier_empty": "Tier is empty",
       "tier_invalid": "Tier is invalid"
+    },
+    "update_status_proposal": {
+      "grant_vesting_address_invalid": "Vesting contract address is invalid"
     }
   },
   "category": {
@@ -191,6 +194,8 @@
     "update_status_proposal": {
       "title": "Confirmation",
       "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
+      "grant_vesting_address": "Vesting Contract Address",
+      "comments": "Comments",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",

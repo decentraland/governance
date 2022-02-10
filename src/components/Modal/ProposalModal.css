@@ -3,6 +3,11 @@
   width: 360px;
 }
 
+.ui.modal.ProposalModal .content.ProposalModal__GrantVestingAddress {
+  margin: 24px auto;
+  width: 480px;
+}
+
 .ui.modal.ProposalModal .content.ProposalModal__Form {
   margin: 24px auto;
   width: 480px;
