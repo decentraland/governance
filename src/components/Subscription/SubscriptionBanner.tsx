@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -49,12 +49,12 @@ export default function SubscriptionBanner({active}: SubscriptionBannerProps) {
     setSubscribed(false)
   }
 
-  function handleClose(e: React.MouseEvent<any>) {
+  const handleClose = useCallback((e: React.MouseEvent<any>) => {
     e.preventDefault()
     e.stopPropagation()
     localStorage.setItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY, 'true')
     setShowSubscriptionBanner(ShowSubscriptionBanner.NO)
-  }
+  }, [])
 
   return <div>
     {showSubscriptionBanner == ShowSubscriptionBanner.YES && active && <a className="SubscriptionBanner">
