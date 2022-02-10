@@ -17,3 +17,15 @@
 .Animated {
   transition: all 0.5s ease 0s;
 }
+
+.ui.pagination.menu {
+  justify-content: center !important;
+}
+
+/* Only Mobile */
+@media only screen and (max-width: 767px) {
+  .ui.pagination.menu .item[type="nextItem"],
+  .ui.pagination.menu .item[type="prevItem"] {
+    display: none !important;
+  }
+}
