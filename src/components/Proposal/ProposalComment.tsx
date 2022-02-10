@@ -15,7 +15,7 @@ export type ProposalCommentProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'c
 export default function ProposalComment({ user, avatar_url, created_at, cooked}: ProposalCommentProps) {
   const createMarkup = (html:any) => {
     DOMPurify.addHook('afterSanitizeAttributes', function (node) {
-      if (node.nodeName && node.nodeName === 'IMG') {
+      if (node.nodeName && node.nodeName === 'IMG' && node.getAttribute('alt') === 'image') {
         node.className="ProposalComment__Cooked__Img"
       }
     });
