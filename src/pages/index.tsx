@@ -85,6 +85,20 @@ export default function IndexPage() {
     };
   }, []);
   
+  // footer animation
+  const footer = document.querySelectorAll(".dcl.footer")[0]
+
+  useEffect(() => {
+    if(isMobile && footer) {
+      footer.classList.add('Animated')
+      if(burgerMenu?.status) {
+        footer.setAttribute("style", "transform: translateY(550px);")
+      }
+      else {
+        footer.setAttribute("style", "")
+      }
+    }
+  }, [isMobile, footer, burgerMenu?.status])
 
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
