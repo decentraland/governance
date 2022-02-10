@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
 import { navigate } from 'gatsby-plugin-intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -136,6 +136,7 @@ export default function SubmitDraftProposal() {
     }]
   }, [] , { initialValue: undefined })
   const [state, editor] = useEditor(edit, validate, initialState)
+  const [formDisabled, setFormDisabled] = useState(false);
 
   useEffect(() => {
     if (!!preselectedLinkedProposalId) {
@@ -145,6 +146,7 @@ export default function SubmitDraftProposal() {
 
   useEffect(() => {
     if (state.validated) {
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           return Governance.get().createProposalDraft({
@@ -159,6 +161,7 @@ export default function SubmitDraftProposal() {
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
         })
     }
   }, [state.validated])
@@ -226,7 +229,7 @@ export default function SubmitDraftProposal() {
             limit: schema.title.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
         loading={votingPowerState.loading}
       />
     </ContentSection>
@@ -251,7 +254,7 @@ export default function SubmitDraftProposal() {
             limit: schema.summary.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -275,7 +278,7 @@ export default function SubmitDraftProposal() {
             limit: schema.abstract.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -299,7 +302,7 @@ export default function SubmitDraftProposal() {
             limit: schema.motivation.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -323,7 +326,7 @@ export default function SubmitDraftProposal() {
             limit: schema.specification.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -347,7 +350,7 @@ export default function SubmitDraftProposal() {
             limit: schema.specification.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
