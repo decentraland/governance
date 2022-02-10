@@ -1,5 +1,5 @@
 .SubscriptionBanner  {
-  display: none; /*flex*/
+  display: none;
   align-items: center;
   align-content: stretch;
   position: relative;
@@ -11,7 +11,7 @@
 }
 
 .SubscriptionBanner::before {
-  display: block; /*block*/
+  display: block;
   content: "";
   position: absolute;
   top: 0;
@@ -27,7 +27,7 @@
 .SubscriptionBanner .SubscriptionBanner__Icon  {
   flex: 0 0 68px;
   height: 48px;
-  display: none; /*flex*/
+  display: none;
   justify-content: center;
   align-items: center;
   padding-right: 20px;

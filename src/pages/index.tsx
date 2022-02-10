@@ -35,8 +35,8 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import CategoryList from "../components/Category/CategoryList"
 import BurgerMenuContent from "../components/Layout/BurgerMenuContent"
 import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
-import './index.css'
 import { BurgerMenuShowContext } from "../components/Context/BurgerMenuShowContext"
+import './index.css'
 
 const ITEMS_PER_PAGE = 25
 
@@ -153,8 +153,7 @@ export default function IndexPage() {
   return <>
     <div className="OnlyMobile Animated"
         style={(isMobile && {
-          zIndex: -1000,
-          transform: burgerMenu?.status ? 'translatex(-200%)' : '',
+          transform: burgerMenu?.status ? 'translateX(-200%)' : '',
           height: burgerMenu?.status ? '0' : ''
         }) || {}}
     > 
@@ -201,7 +200,7 @@ export default function IndexPage() {
           <Grid.Column tablet="12"
             className="Animated"
             style={
-              isMobile ? (burgerMenu?.status ? {transform: 'translate3d(0px, 550px, 0px)'}: {}) : {}
+              isMobile ? (burgerMenu?.status ? {transform: 'translateY(550px)'}: {}) : {}
             }
           >
             <ActionableLayout
