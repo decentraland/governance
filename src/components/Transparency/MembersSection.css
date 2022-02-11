@@ -13,10 +13,13 @@ img.MembersPopup__Icon {
   top: 1px;
 }
 
-.ui.right.center.popup.transition.visible.MembersPopup {
+.ui.popup.transition.visible.MembersPopup {
   padding: 0 0;
   background-color: white;
-  min-width: 360px;
+}
+
+.ui.popup:before {
+  background: #fff !important;
 }
 
 p.dg.Paragraph.MembersPopup__Content {

@@ -60,6 +60,6 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHan
     onClose={onCloseHandler}
     open={open}
     on="click"
-    pinned={true}
+    pinned={false}
   />
 }

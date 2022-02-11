@@ -16,7 +16,6 @@ import { DclData } from '../api/DclData'
 import { aggregateBalances } from '../entities/Transparency/utils'
 import locations from '../modules/locations'
 import LinkWithIcon from '../components/Section/LinkWithIcon'
-import Progress from '../components/Status/Progress'
 import { ProposalStatus } from '../entities/Proposal/types';
 import GrantList from '../components/Transparency/GrantList'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
@@ -37,19 +36,17 @@ const dataSheetIcon = require('../images/icons/database.svg')
 const ABOUT_DAO_URL = 'https://docs.decentraland.org/decentraland/how-does-the-dao-work/'
 const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curation-committee-member-nominations/2047'
 const ABOUT_DELEGATES = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
-const ORGANIZATIONAL_CHART_URL = 'https://docs.google.com/drawings/d/1Ks2lyplFqwlMS8-D0L1YeNJT6LIB_qVJgkbn298cS4o/edit'
 
 const viewAllProposalsIcon = require('../images/icons/open-folder.svg')
 
 const documentOutline = require('../images/icons/document-outline.svg')
-const organizationalChart = require('../images/icons/organizational-chart.svg')
+const personIcon = require('../images/icons/person-icon.svg')
 
 
 export default function WrappingPage() {
   const l = useFormatMessage()
   const [data] = useAsyncMemo(async () => DclData.get().getData())
   const balances = useMemo(() => data && aggregateBalances(data.balances) || [], [data])
-  const fundingProgress = useMemo(() => data && Number(BigInt(data.funding.total) * BigInt(100) / BigInt(data.funding.budget)) || 0, [data])
 
   return (<>
     {!data && <Loader active />}
@@ -129,11 +126,7 @@ export default function WrappingPage() {
                           {'$' + formatBalance(data.funding.total)}
                           <Header size="small">USD</Header>
                         </Header>
-                        <Header sub className="FundingProgress__Budget">
-                          {l('page.transparency.funding.budget_label', {amount: formatBalance(data.funding.budget)})}
-                        </Header>
                       </div>
-                      <Progress color={'approve'} progress={fundingProgress} />
                     </div>
                   </Card.Content>
                   <GrantList
@@ -163,14 +156,11 @@ export default function WrappingPage() {
                               imageSrc={documentOutline}
                               text={l('page.transparency.members.about_dao_button')} />
                 <ExternalLinkWithIcon href={WEARABLE_CURATORS_URL}
-                              imageSrc={documentOutline}
-                              text={l('page.transparency.members.about_wearable_curators_button')} />
+                              imageSrc={personIcon}
+                              text={l('page.transparency.members.wearables_curator_button')} />
                 <ExternalLinkWithIcon href={ABOUT_DELEGATES}
-                              imageSrc={documentOutline}
-                              text={l('page.transparency.members.about_delegates_button')} />
-                <ExternalLinkWithIcon href={ORGANIZATIONAL_CHART_URL}
-                                      imageSrc={organizationalChart}
-                                      text={l('page.transparency.members.organizational_chart_button')} />
+                              imageSrc={personIcon}
+                              text={l('page.transparency.members.delegate_button')} />
               </div>
             </Grid.Column>
 

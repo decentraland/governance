@@ -25,13 +25,13 @@ export default function MembersSection({ title, description, members }: MembersS
             <Paragraph small secondary className={'MembersPopup__Content'}>
               {description}
             </Paragraph>}
-          position="right center"
+          position="bottom center"
           trigger={<img
             className={'MembersPopup__Icon'}
             src={infoIcon} width="14" height="14" alt="info" />}
-          eventsEnabled={true}
-          on="hover"
-          pinned={true}
+          eventsEnabled={false}
+          on="click"
+          pinned={false}
         />
       </Header>
       <div className="MembersContainer">

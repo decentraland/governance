@@ -393,9 +393,9 @@
           "dashboard_button": "Transparency Dashboard",
           "data_source_button": "DCL Data Source",
           "audit": "Audit on {service_name}",
-          "monthly_income": "Monthly Income",
-          "monthly_expenses": "Monthly Expenses",
-          "diff_label": "vs previous month"
+          "monthly_income": "Last 30 Days Income",
+          "monthly_expenses": "Last 30 Days Expenses",
+          "diff_label": "vs previous 30 days"
       },
       "funding": {
         "title": "Currently funding initiatives",
@@ -411,9 +411,8 @@
         "title": "We do have brain-power",
         "description": "This set of individuals was chosen by the community to represent them.",
         "about_dao_button": "How the DAO Works",
-        "about_wearable_curators_button": "About Wearable Curators",
-        "about_delegates_button": "About Delegates",
-        "organizational_chart_button": "DAO Organizational Chart"
+        "wearables_curator_button": "Apply as Wearables Curator",
+        "delegate_button": "Apply as DAO Delegate"
       }
     },
     "submit": {

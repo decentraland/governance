@@ -1,7 +1,6 @@
 .ui.popup.transition.visible.TokensPerWalletPopup {
 	padding: 0 0;
 	background-color: white;
-	min-width: 358px;
 }
 
 .TokensPerWalletPopup__Card {
@@ -16,7 +15,7 @@
 	flex-direction: row;
 }
 
-.ui.bottom.popup.TokensPerWalletPopup::before {
+.ui.popup.TokensPerWalletPopup::before {
 	background: #fff !important;
 }
 
@@ -54,6 +53,7 @@
 
 .TokensPerWalletPopup .TokensPerWalletPopup__RightBlock {
 	align-items: flex-end;
+	text-align: right;
 }
 
 .TokensPerWalletPopup .ui.header {
@@ -94,6 +94,15 @@
 	.TokensPerWalletPopup__Row:hover .ui.sub.header.TokensPerWalletPopup__Link {
 		background: #e9f1fb;
 		opacity: 1;
+	}
+	.ui.popup.transition.visible.TokensPerWalletPopup {
+		min-width: 358px;
+	}
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+	.content.TokensPerWalletPopup__Content {
+		padding: 8px 8px !important;
 	}
 }
 
