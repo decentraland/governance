@@ -3,7 +3,7 @@
   align-items: center;
   align-content: stretch;
   position: relative;
-  padding: 16px 20px;
+  padding: 16px 16px 16px 20px;
   background-color: transparent;
   margin-bottom: 8px;
   border-radius: 12px;
@@ -30,7 +30,6 @@
   display: none;
   justify-content: center;
   align-items: center;
-  padding-right: 20px;
 }
 
 .SubscriptionBanner .SubscriptionBanner__Icon img {
@@ -40,14 +39,7 @@
 }
 
 .SubscriptionBanner .SubscriptionBanner__Description {
-  flex-grow: 50;
-}
-
-.SubscriptionBanner .SubscriptionBanner__Button {
-  position: relative;
-  width: auto;
-  background-color: #4888EE !important;
-  flex-grow: 20;
+  flex-grow: 1;
 }
 
 .SubscriptionBanner .dg.Paragraph  {
@@ -58,9 +50,38 @@
   font-size: 15px;
 }
 
-@media only screen and (max-width: 767px) {
+.SubscriptionBanner > .dcl.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 8px;
+  background-color: #f1f6fe;
+  z-index: 10;
+}
+
+.SubscriptionBanner .SubscriptionBanner__Button {
+  background-color: #4888EE !important;
+}
+
+@media (max-width: 767px) {
   .OnlyMobile .SubscriptionBanner {
     display: flex;
+  }
+
+  .SubscriptionBanner .SubscriptionBanner__Content {
+    display: contents;
+    flex-direction: column;
+    width: 100%;
+    text-align: initial;
+  }
+
+  .SubscriptionBanner .SubscriptionBanner__ButtonContainer {
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 8px;
+    z-index: 1;
   }
 
   .OnlyMobile .SubscriptionBanner .SubscriptionBanner__Button {
@@ -70,12 +91,33 @@
   }
 }
 
-@media only screen and (min-width: 767px) {
+@media (min-width: 767px) {
+  
   .OnlyDesktop .SubscriptionBanner {
     display: flex;
   }
-
-  .OnlyDesktop .SubscriptionBanner .SubscriptionBanner__Icon {
+  
+  .SubscriptionBanner .SubscriptionBanner__Icon {
     display: flex;
+    padding-right: 20px;
+  }
+
+  .SubscriptionBanner .SubscriptionBanner__Content{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .SubscriptionBanner .SubscriptionBanner__ButtonContainer {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .SubscriptionBanner .SubscriptionBanner__Button {
+    position: relative;
+    width: 80% !important;
+    background-color: #4888EE !important;
   }
 }

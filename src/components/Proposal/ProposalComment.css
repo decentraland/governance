@@ -43,7 +43,7 @@
 }
 
 .ProposalComments img.emoji {
-  width: 1em;
+  vertical-align: middle;
 }
 
 .ProposalComments img.avatar {

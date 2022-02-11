@@ -89,9 +89,9 @@ export default function ProposalPage() {
     }
   }, [ proposal, subscriptionsState ])
 
-  const [updatingStatus, updateProposalStatus] = useAsyncTask(async (status: ProposalStatus, description: string) => {
+  const [updatingStatus, updateProposalStatus] = useAsyncTask(async (status: ProposalStatus, vesting_address: string | null, description: string) => {
     if (proposal && account && committee && committee.includes(account)) {
-      const updateProposal = await Governance.get().updateProposalStatus(proposal.id, status, description)
+      const updateProposal = await Governance.get().updateProposalStatus(proposal.id, status, vesting_address, description)
       proposalState.set(updateProposal)
       patchOptions({ confirmStatusUpdate: false })
     }
@@ -232,9 +232,10 @@ export default function ProposalPage() {
     />
     <UpdateProposalStatusModal
       open={!!options.confirmStatusUpdate}
+      proposal={proposal}
       status={options.confirmStatusUpdate || null}
       loading={updatingStatus}
-      onClickAccept={(_, status, description) => updateProposalStatus(status, description)}
+      onClickAccept={(_, status, vesting_contract, description) => updateProposalStatus(status, vesting_contract, description)}
       onClose={() => patchOptions({ confirmStatusUpdate: false })}
     />
     <FollowUpModal
