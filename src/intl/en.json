@@ -11,7 +11,8 @@
     "proposals": "Proposals",
     "wrapping": "Voting Power",
     "activity": "Activity",
-    "enacted": "Enacted"
+    "enacted": "Enacted",
+    "transparency": "Transparency"
   },
   "error": {
     "poll": {
@@ -386,6 +387,38 @@
       "delegations_from_title": "Your delegation",
       "delegations_from_you_empty": "You have not delegated your voting power",
       "delegations_from_address_empty": "This address has not delegated its voting power"
+    },
+    "transparency": {
+      "mission": {
+          "title": "Our Mission",
+          "description": "To support and facilitate the continual growth of the Decentraland platform.",
+          "join_discord_button": "Join our Discord",
+          "docs_button": "Check our docs",
+          "balance_title": "Current Balance",
+          "dashboard_button": "Transparency Dashboard",
+          "data_source_button": "DCL Data Source",
+          "audit": "Audit on {service_name}",
+          "monthly_income": "Last 30 Days Income",
+          "monthly_expenses": "Last 30 Days Expenses",
+          "diff_label": "vs previous 30 days"
+      },
+      "funding": {
+        "title": "Currently funding initiatives",
+        "description": "Our community is powered by individual contributors all pushing in the same direction.",
+        "view_all_button": "View all proposals",
+        "total_title": "Funding provided so far",
+        "budget_label": "Monthly Budget ${amount} USD",
+        "proposals_funded_label": "Proposals funded",
+        "active_grants_label": "Active grants requests",
+        "view_more": "View {count} more..."
+      },
+      "members": {
+        "title": "We do have brain-power",
+        "description": "This set of individuals was chosen by the community to represent them.",
+        "about_dao_button": "How the DAO Works",
+        "wearables_curator_button": "Apply as Wearables Curator",
+        "delegate_button": "Apply as DAO Delegate"
+      }
     },
     "submit": {
       "title": "Submit Proposal",

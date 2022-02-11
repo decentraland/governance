@@ -1,0 +1,50 @@
+
+.TokenBalanceCard {
+  display: flex;
+  font-size: 1.5rem;
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  padding-left: 10px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  align-content: stretch;
+}
+
+@media (min-width: 768px) {
+  .TokenBalanceCard {
+    width: 50%;
+  }
+}
+
+.TokenBalanceCard .TokenBalanceCard__Header {
+  display: flex;
+  align-items: baseline;
+}
+
+.ui.sub.header.TokenBalanceCard__Symbol {
+  margin-right: 4px !important;
+  margin-bottom: 2px;
+}
+
+.TokenBalanceCard .TokenBalanceCard_description {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 128px;
+}
+
+.TokenBalanceCard .ui.header.sub {
+  margin-top: 0;
+  margin-right: 4px;
+  margin-left: 1rem;
+}
+
+.TokenBalanceCard span {
+  margin-left: 1rem;
+}
+
+.TokenBalanceCard:hover {
+  background: #e9f1fb;
+  cursor: pointer;
+}

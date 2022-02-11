@@ -1,0 +1,112 @@
+.ui.popup.transition.visible.TokensPerWalletPopup {
+	padding: 0 0;
+	background-color: white;
+}
+
+.TokensPerWalletPopup__Card {
+	width: 100% !important;
+}
+
+.TokensPerWalletPopup .ui.card.content.TokensPerWalletPopup__Content {
+	width: 100%;
+	height: auto;
+	margin-bottom: 1rem;
+	display: flex;
+	flex-direction: row;
+}
+
+.ui.popup.TokensPerWalletPopup::before {
+	background: #fff !important;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__Row {
+	display: flex;
+	flex-grow: 1;
+	align-content: space-between;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+	padding: 5px;
+	border-radius: 10px;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__Row:last-of-type {
+	margin-bottom: 0;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__Block {
+	display: flex;
+	align-items: baseline;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__Balance{
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-end;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__Balance .ui.header{
+	margin-right: 8px;
+}
+
+.TokensPerWalletPopup .TokensPerWalletPopup__RightBlock {
+	align-items: flex-end;
+	text-align: right;
+}
+
+.TokensPerWalletPopup .ui.header {
+	margin-bottom: 0.5rem;
+	font-size: 16px;
+	font-weight: normal;
+}
+
+.TokensPerWalletPopup .ui.header.sub {
+	margin-top: 0;
+	margin-bottom: 0;
+	color: var(--secondary-text);
+	font-size: 10px;
+	line-height: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+}
+
+.ui.sub.header.TokensPerWalletPopup__Link {
+	margin-top: 0;
+	margin-bottom: 0;
+	color: #89baff;
+	font-size: 10px;
+	line-height: 10px;
+	text-transform: uppercase;
+	font-weight: 500;
+	opacity: 1;
+}
+
+.TokensPerWalletPopup__Row:hover {
+	background: #e9f1fb;
+}
+
+@media (min-width: 768px) {
+	.ui.sub.header.TokensPerWalletPopup__Link {
+		opacity: 0;
+	}
+	.TokensPerWalletPopup__Row:hover .ui.sub.header.TokensPerWalletPopup__Link {
+		background: #e9f1fb;
+		opacity: 1;
+	}
+	.ui.popup.transition.visible.TokensPerWalletPopup {
+		min-width: 358px;
+	}
+}
+
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+	.content.TokensPerWalletPopup__Content {
+		padding: 8px 8px !important;
+	}
+}
+
+img.PopupIcon {
+	position: relative;
+	top: 2px;
+}

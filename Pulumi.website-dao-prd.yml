@@ -14,13 +14,11 @@ config:
   website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.org/
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names
   website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
+  website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
   website-dao:GATSBY_DEFAULT_CHAIN_ID: "1"
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.org
   website-dao:GATSBY_DISCOURSE_CATEGORY: "13"
   website-dao:GATSBY_DISCOURSE_USER: dao
-  website-dao:GATSBY_DURATION_GRANT_TIER4: "1209600"
-  website-dao:GATSBY_DURATION_GRANT_TIER5: "1209600"
-  website-dao:GATSBY_DURATION_GRANT_TIER6: "1209600"
   website-dao:GATSBY_FEATURE_FLAGS_API: https://feature-flags.decentraland.org/dao.json
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.org/api
   website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
