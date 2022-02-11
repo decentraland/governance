@@ -4,6 +4,7 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { PoiType, ProposalType } from '../../entities/Proposal/types'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 
 import './CategoryBanner.css'
 
@@ -17,14 +18,16 @@ export const categoryIcons = {
   [ProposalType.Poll]: require('../../images/icons/poll.svg'),
   [ProposalType.Draft]: require('../../images/icons/draft.svg'),
   [ProposalType.Governance]: require('../../images/icons/governance.svg'),
+  [ProposalType.LinkedWearables]: require('../../images/icons/linked-wearables.svg'),
 }
 
 export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "children"> & {
   active?: boolean
+  isNew?: boolean
   type: ProposalType | PoiType
 }
 
-export default React.memo(function CategoryBanner({ active, type, ...props }: CategoryBannerProps) {
+export default React.memo(function CategoryBanner({ active, isNew, type, ...props }: CategoryBannerProps) {
   const l = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
@@ -53,8 +56,20 @@ export default React.memo(function CategoryBanner({ active, type, ...props }: Ca
       <img src={categoryIcons[type]} width="48" height="48" />
     </div>
     <div className="CategoryBanner__Description">
-      <Paragraph small semiBold>{l(`category.${type}_title`)}</Paragraph>
+      <Grid verticalAlign='middle'>
+        <Grid.Row columns={2}>
+          <Grid.Column>
+            <Paragraph small semiBold>{l(`category.${type}_title`)}</Paragraph>
+          </Grid.Column>
+          <Grid.Column style ={{paddingLeft: 0}}>
+            <div className='New' style={(isNew && {display: 'block'}) || {display: 'none'}}>
+              {l("category.new")}
+            </div>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
       <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
+      
     </div>
   </a>
 })

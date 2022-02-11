@@ -71,6 +71,7 @@ export enum ProposalType {
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
+  LinkedWearables = 'linked_wearables',
 }
 
 export enum PoiType {
@@ -87,6 +88,7 @@ export function isProposalType(value:  string | null | undefined): boolean {
     case ProposalType.Poll:
     case ProposalType.Draft:
     case ProposalType.Governance:
+    case ProposalType.LinkedWearables:
       return true
     default:
       return false

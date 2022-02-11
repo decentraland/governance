@@ -44,6 +44,8 @@ export const title = async ({ type, configuration }: { type: ProposalType, confi
       return draft.title(configuration as any)
     case ProposalType.Governance:
       return governance.title(configuration as any)
+    case ProposalType.LinkedWearables:
+      return ''
   }
 }
 
@@ -63,6 +65,8 @@ export const description = async ({ type, configuration }: { type: ProposalType,
       return await draft.description(configuration as any)
     case ProposalType.Governance:
       return await governance.description(configuration as any)
+    case ProposalType.LinkedWearables:
+      return ''
   }
 }
 

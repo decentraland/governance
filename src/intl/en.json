@@ -144,6 +144,7 @@
     }
   },
   "category": {
+    "new": "New",
     "poi": "POI",
     "catalyst": "Catalyst",
     "ban_name": "Ban Name",
@@ -151,6 +152,7 @@
     "poll": "Poll",
     "draft": "Draft",
     "governance": "Governance",
+    "linked_wearables": "Linked Wearables",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community run servers",
@@ -169,7 +171,9 @@
     "draft_title": "Draft Proposal",
     "draft_description": "Present a potential policy to the community in a structured format and to formalize discussion",
     "governance_title": "Governance Proposal",
-    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome"
+    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
+    "linked_wearables_title": "Linked Wearables Registry",
+    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
   },
   "status": {
     "all": "All outcomes",
