@@ -7,9 +7,10 @@ import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { Pagination } from "decentraland-ui/dist/components/Pagination/Pagination"
 
-import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from "../modules/locations"
 import { navigate } from "gatsby-plugin-intl"
+import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
+import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
+import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from "../modules/locations"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import StatusMenu from "../components/Status/StatusMenu"
@@ -27,6 +28,7 @@ import Link from "decentraland-gatsby/dist/components/Text/Link"
 import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 import useProposals from "../hooks/useProposals"
 import './activity.css'
+import { isUnderMaintenance } from "../modules/maintenance"
 
 const ITEMS_PER_PAGE = 12
 
@@ -88,8 +90,25 @@ export default function WelcomePage() {
     }
   }, [ list ])
 
+  if (isUnderMaintenance()) {
+    return <>
+      <Head
+        title={l('page.proposal_activity.title') || ''}
+        description={l('page.proposal_activity.description') || ''}
+        image="https://decentraland.org/images/decentraland.png"
+      />
+      <Navigation activeTab={NavigationTab.Activity} />
+      <MaintenancePage />
+    </>
+  }
+
   if (!account) {
     return <>
+    <Head
+      title={l('page.proposal_activity.title') || ''}
+      description={l('page.proposal_activity.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
     <Navigation activeTab={NavigationTab.Activity} />
     <Container className="ActivityPage">
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
