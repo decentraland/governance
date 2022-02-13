@@ -75,7 +75,7 @@ export default React.memo(function CategoryBanner({
                 `CategoryBanner__NewBadge--${type}`,
               ])}
             >
-              NEW
+              {l(`category.new`)}
             </span>
           )}
         </div>

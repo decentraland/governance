@@ -182,7 +182,8 @@
     "governance_title": "Governance Proposal",
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "feature_title": "Feature Request",
-    "feature_description": "Every 3 months, ideas with the most VP will slip into the Decentraland Product Roadmap"
+    "feature_description": "Every 3 months, ideas with the most VP will slip into the Decentraland Product Roadmap",
+    "new": "NEW"
   },
   "status": {
     "all": "All outcomes",
