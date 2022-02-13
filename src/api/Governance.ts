@@ -13,7 +13,8 @@ import {
   ProposalStatus,
   NewProposalDraft,
   NewProposalGovernance,
-  ProposalCommentsInDiscourse
+  ProposalCommentsInDiscourse,
+  NewProposalFeature
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
 import { Vote } from '../entities/Votes/types';
@@ -26,6 +27,7 @@ type NewProposalMap = {
   [`/proposals/poi`]: NewProposalPOI,
   [`/proposals/catalyst`]: NewProposalCatalyst,
   [`/proposals/grant`]: NewProposalGrant,
+  [`/proposals/feature`]: NewProposalFeature,
 }
 
 export type GetProposalsFilter = {
@@ -133,6 +135,10 @@ export class Governance extends API {
 
   async createProposalGrant(proposal: NewProposalGrant) {
     return this.createProposal(`/proposals/grant`, proposal)
+  }
+
+  async createProposalFeature(proposal: NewProposalFeature) {
+    return this.createProposal(`/proposals/feature`, proposal)
   }
 
   async deleteProposal(proposal_id: string) {

@@ -7,7 +7,8 @@ import {
   NewProposalPoll,
   ProposalType,
   NewProposalDraft,
-  NewProposalGovernance
+  NewProposalGovernance,
+  NewProposalFeature
 } from '../types'
 
 import * as banName from './banName'
@@ -17,6 +18,7 @@ import * as poi from './poi'
 import * as poll from './poll'
 import * as draft from './draft'
 import * as governance from './governance'
+import * as feature from './feature'
 import { template } from './utils'
 
 type NewConfiguration =
@@ -27,6 +29,7 @@ type NewConfiguration =
   | NewProposalPoll
   | NewProposalDraft
   | NewProposalGovernance
+  | NewProposalFeature
 
 export const title = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => {
   switch (type) {
@@ -44,6 +47,8 @@ export const title = async ({ type, configuration }: { type: ProposalType, confi
       return draft.title(configuration as any)
     case ProposalType.Governance:
       return governance.title(configuration as any)
+    case ProposalType.Feature:
+      return feature.title(configuration as any)
   }
 }
 
@@ -63,6 +68,8 @@ export const description = async ({ type, configuration }: { type: ProposalType,
       return await draft.description(configuration as any)
     case ProposalType.Governance:
       return await governance.description(configuration as any)
+    case ProposalType.Feature:
+      return feature.description(configuration as any)
   }
 }
 

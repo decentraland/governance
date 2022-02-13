@@ -40,7 +40,7 @@ import {
   GrantDuration,
   INVALID_PROPOSAL_POLL_OPTIONS,
   newProposalDraftScheme,
-  NewProposalDraft, newProposalGovernanceScheme, NewProposalGovernance
+  NewProposalDraft, newProposalGovernanceScheme, NewProposalGovernance, newProposalFeatureScheme, NewProposalFeature
 } from './types';
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
 import {
@@ -81,6 +81,7 @@ export default routes((route) => {
   route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
   route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
   route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
+  route.post(`/proposals/feature`, withAuth, handleAPI(createProposalFeature))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -319,6 +320,23 @@ export async function createProposalGrant(req: WithAuth) {
     type: ProposalType.Grant,
     required_to_pass: GrantRequiredVP[configuration.tier],
     finish_at: proposalDuration(GrantDuration[configuration.tier]),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES
+    },
+  })
+}
+
+const newProposalFeatureValidator = schema.compile(newProposalFeatureScheme)
+export async function createProposalFeature(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalFeature>(newProposalFeatureValidator, req.body || {})
+
+  return createProposal({
+    user,
+    type: ProposalType.Feature,
+    required_to_pass: ProposalRequiredVP[ProposalType.Feature],
+    finish_at: proposalDuration(SNAPSHOT_DURATION), // TODO: Change proposal duration to finish at end of quarter
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES

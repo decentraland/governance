@@ -71,6 +71,7 @@ export enum ProposalType {
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
+  Feature = 'feature',
 }
 
 export enum PoiType {
@@ -87,6 +88,7 @@ export function isProposalType(value:  string | null | undefined): boolean {
     case ProposalType.Poll:
     case ProposalType.Draft:
     case ProposalType.Governance:
+    case ProposalType.Feature:
       return true
     default:
       return false
@@ -471,6 +473,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Feature]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_FEATURE, 0),
 }
 
 export const GrantRequiredVP = {
@@ -593,4 +596,51 @@ export type ProposalComment = {
 export type ProposalCommentsInDiscourse = {
   totalComments: number,
   firstComments: ProposalComment[]
+}
+
+export enum ProposalFeatureProduct {
+  Marketplace = 'Marketplace',
+}
+
+export function isProposalFeatureProduct(value: string | null | undefined): boolean {
+  switch (value) {
+    case ProposalFeatureProduct.Marketplace:
+      return true
+    default:
+      return false
+  }
+}
+
+export type NewProposalFeature = {
+  title: string,
+  explanation: string,
+  product: ProposalFeatureProduct,
+}
+
+export const newProposalFeatureScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'title',
+    'explanation',
+    'product'
+  ],
+  properties: {
+    title: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    explanation: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 250,
+    },
+    product: {
+      type: 'string',
+      enum: [
+        ProposalFeatureProduct.Marketplace,
+      ]
+    },
+  }
 }

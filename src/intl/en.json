@@ -142,6 +142,16 @@
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
+    },
+    "feature": {
+      "title_empty": "Title is empty",
+      "title_too_large": "Title is too large",
+      "title_too_short": "Title is too short",
+      "product_empty": "Product is empty",
+      "product_invalid": "Product is invalid",
+      "explanation_empty": "Explanation is empty",
+      "explanation_too_large": "Explanation is too large",
+      "explanation_too_short": "Explanation is too short"
     }
   },
   "category": {
@@ -170,7 +180,9 @@
     "draft_title": "Draft Proposal",
     "draft_description": "Present a potential policy to the community in a structured format and to formalize discussion",
     "governance_title": "Governance Proposal",
-    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome"
+    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
+    "feature_title": "Feature Request",
+    "feature_description": "Every 3 months, ideas with the most VP will slip into the Decentraland Product Roadmap"
   },
   "status": {
     "all": "All outcomes",
@@ -390,17 +402,17 @@
     },
     "transparency": {
       "mission": {
-          "title": "Our Mission",
-          "description": "To support and facilitate the continual growth of the Decentraland platform.",
-          "join_discord_button": "Join our Discord",
-          "docs_button": "Check our docs",
-          "balance_title": "Current Balance",
-          "dashboard_button": "Transparency Dashboard",
-          "data_source_button": "DCL Data Source",
-          "audit": "Audit on {service_name}",
-          "monthly_income": "Last 30 Days Income",
-          "monthly_expenses": "Last 30 Days Expenses",
-          "diff_label": "vs previous 30 days"
+        "title": "Our Mission",
+        "description": "To support and facilitate the continual growth of the Decentraland platform.",
+        "join_discord_button": "Join our Discord",
+        "docs_button": "Check our docs",
+        "balance_title": "Current Balance",
+        "dashboard_button": "Transparency Dashboard",
+        "data_source_button": "DCL Data Source",
+        "audit": "Audit on {service_name}",
+        "monthly_income": "Last 30 Days Income",
+        "monthly_expenses": "Last 30 Days Expenses",
+        "diff_label": "vs previous 30 days"
       },
       "funding": {
         "title": "Currently funding initiatives",
@@ -566,7 +578,18 @@
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
       "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
     },
-    "subscription_banner":{
+    "submit_feature": {
+      "title": "Feature Request",
+      "description": "Let the community know about that *thing* you’d like to be able to do in this ecosystem but still can’t. Requests created before december 24 will be considered for implementation on the following quarter. Initiatives with lots of VP will not necessarily be implemented; product teams will be the ones to decide.",
+      "title_label": "What would be the easiest, shortest way to introduce this idea to the rest of us?",
+      "title_detail": "User story format encouraged and appreciated",
+      "title_placeholder": "Enter a descriptive title for your feature here.",
+      "product_label": "Which Decentraland product is this related to?",
+      "product_placeholder": "Select one...",
+      "explanation_label": "Further explanation",
+      "explanation_detail": "Clarification, either technical or theoretical, is helpful for community and fellow developers alike to better understand what it is that you’d like to see done."
+    },
+    "subscription_banner": {
       "title": "Stay in the loop",
       "description": "The DAO Weekly Newsletter includes updates regarding proposals",
       "subscribe_button_label": "Subscribe"
