@@ -67,6 +67,10 @@ import { getUpdateMessage } from './templates/messages'
 import { getVotes } from '../Votes/routes'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+import dayjs from "dayjs"
+import quarterOfYear from "dayjs/plugin/quarterOfYear"
+
+dayjs.extend(quarterOfYear)
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
@@ -336,7 +340,8 @@ export async function createProposalFeature(req: WithAuth) {
     user,
     type: ProposalType.Feature,
     required_to_pass: ProposalRequiredVP[ProposalType.Feature],
-    finish_at: proposalDuration(SNAPSHOT_DURATION), // TODO: Change proposal duration to finish at end of quarter
+    // TODO: Use from Time when decentraland-gatsby adds quarterOfYear plugin
+    finish_at: dayjs().endOf('quarter').utc().toDate(),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES

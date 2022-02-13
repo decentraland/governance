@@ -64,7 +64,6 @@ export default function IndexPage() {
     ? ProposalStatus.Enacted
     : toProposalStatus(params.get("status")) ?? undefined
   const page = toProposalListPage(params.get("page")) ?? undefined
-  console.log("tt", type)
   const [proposals, proposalsState] = useProposals({
     type,
     status,
