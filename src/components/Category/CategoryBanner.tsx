@@ -26,11 +26,13 @@ export type CategoryBannerProps = Omit<
 > & {
   active?: boolean
   type: ProposalType | PoiType
+  isNew?: boolean
 }
 
 export default React.memo(function CategoryBanner({
   active,
   type,
+  isNew,
   ...props
 }: CategoryBannerProps) {
   const l = useFormatMessage()
@@ -61,10 +63,22 @@ export default React.memo(function CategoryBanner({
       <div className="CategoryBanner__Icon">
         <img src={categoryIcons[type]} width="48" height="48" />
       </div>
-      <div className="CategoryBanner__Description">
-        <Paragraph small semiBold>
-          {l(`category.${type}_title`)}
-        </Paragraph>
+      <div>
+        <div className="CategoryBanner__TitleContainer">
+          <Paragraph small semiBold>
+            {l(`category.${type}_title`)}
+          </Paragraph>
+          {isNew && (
+            <span
+              className={TokenList.join([
+                "CategoryBanner__NewBadge",
+                `CategoryBanner__NewBadge--${type}`,
+              ])}
+            >
+              NEW
+            </span>
+          )}
+        </div>
         <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
       </div>
     </a>

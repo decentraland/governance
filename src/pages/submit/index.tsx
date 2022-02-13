@@ -58,6 +58,7 @@ export default function NewProposalPage() {
             active
           />
           <CategoryBanner
+            isNew
             type={ProposalType.Feature}
             href={locations.submit(ProposalType.Feature)}
             active

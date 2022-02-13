@@ -89,3 +89,28 @@
 .CategoryBanner .dg.Paragraph.Paragraph--tiny {
   font-size: 15px;
 }
+
+.CategoryBanner__TitleContainer {
+  display: flex;
+  align-items: center;
+}
+
+.CategoryBanner__NewBadge {
+  margin-left: 8px;
+  border-radius: 4px;
+  z-index: 1;
+  padding: 4px 5px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 5px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  background-color: var(--background);
+  color: #000;
+}
+
+.CategoryBanner__NewBadge--feature {
+  background-color: #d80027;
+  color: #ffffff;
+}
