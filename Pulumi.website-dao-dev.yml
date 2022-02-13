@@ -14,6 +14,7 @@ config:
   website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.io/
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names
   website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
+  website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
   website-dao:GATSBY_DEFAULT_CHAIN_ID: "1"
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
   website-dao:GATSBY_DISCOURSE_CATEGORY: "5"

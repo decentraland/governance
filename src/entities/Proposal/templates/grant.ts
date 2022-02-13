@@ -1,5 +1,6 @@
 import { NewProposalGrant } from "../types";
-import { formatBalance, formatMarkdown, template } from "./utils";
+import { formatMarkdown, template } from "./utils";
+import { formatBalance } from '../utils'
 
 export const title = (proposal: NewProposalGrant) => proposal.title.split('\n')[0]
 

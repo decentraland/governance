@@ -23,6 +23,7 @@ export type ProposalAttributes<C extends {} = any> = {
   enacted: boolean
   enacted_by: string | null
   enacted_description: string | null
+  vesting_address: string | null
   passed_by: string | null
   passed_description: string | null
   rejected_by: string | null
@@ -132,6 +133,7 @@ export type UpdateProposalStatusProposal = {
     | ProposalStatus.Rejected
     | ProposalStatus.Passed
     | ProposalStatus.Enacted
+  vesting_address: string | null
   description: string
 }
 
@@ -150,6 +152,10 @@ export const updateProposalStatusScheme = {
         ProposalStatus.Passed,
         ProposalStatus.Enacted
       ]
+    },
+    vesting_address: {
+      type: ['string', 'null'],
+      format: 'address'
     },
     description: {
       type: ['string', 'null']

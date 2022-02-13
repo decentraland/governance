@@ -11,7 +11,8 @@
     "proposals": "Proposals",
     "wrapping": "Voting Power",
     "activity": "Activity",
-    "enacted": "Enacted"
+    "enacted": "Enacted",
+    "transparency": "Transparency"
   },
   "error": {
     "poll": {
@@ -138,6 +139,9 @@
       "category_invalid": "Category is invalid",
       "tier_empty": "Tier is empty",
       "tier_invalid": "Tier is invalid"
+    },
+    "update_status_proposal": {
+      "grant_vesting_address_invalid": "Vesting contract address is invalid"
     }
   },
   "category": {
@@ -191,6 +195,8 @@
     "update_status_proposal": {
       "title": "Confirmation",
       "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
+      "grant_vesting_address": "Vesting Contract Address",
+      "comments": "Comments",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",
@@ -382,6 +388,38 @@
       "delegations_from_you_empty": "You have not delegated your voting power",
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
+    "transparency": {
+      "mission": {
+          "title": "Our Mission",
+          "description": "To support and facilitate the continual growth of the Decentraland platform.",
+          "join_discord_button": "Join our Discord",
+          "docs_button": "Check our docs",
+          "balance_title": "Current Balance",
+          "dashboard_button": "Transparency Dashboard",
+          "data_source_button": "DCL Data Source",
+          "audit": "Audit on {service_name}",
+          "monthly_income": "Last 30 Days Income",
+          "monthly_expenses": "Last 30 Days Expenses",
+          "diff_label": "vs previous 30 days"
+      },
+      "funding": {
+        "title": "Currently funding initiatives",
+        "description": "Our community is powered by individual contributors all pushing in the same direction.",
+        "view_all_button": "View all proposals",
+        "total_title": "Funding provided so far",
+        "budget_label": "Monthly Budget ${amount} USD",
+        "proposals_funded_label": "Proposals funded",
+        "active_grants_label": "Active grants requests",
+        "view_more": "View {count} more..."
+      },
+      "members": {
+        "title": "We do have brain-power",
+        "description": "This set of individuals was chosen by the community to represent them.",
+        "about_dao_button": "How the DAO Works",
+        "wearables_curator_button": "Apply as Wearables Curator",
+        "delegate_button": "Apply as DAO Delegate"
+      }
+    },
     "submit": {
       "title": "Submit Proposal",
       "description": "Select a proposal category to get started",
@@ -392,7 +430,7 @@
     },
     "submit_poll": {
       "title": "Create a community poll",
-      "description": "",
+      "description": "The purpose of the Pre-Proposal Poll is to introduce a governance issue to the community, gauge community sentiment, and determine if there is enough support to move forward with the drafting of an initial proposal. Pre-Proposal Polls can only pass to the Draft Proposal stage if they have accumulated a threshold of at least 500K VP\n\nThis action requires at least 100 VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://governance.decentraland.org/proposal/?id=d43c1e50-daa9-11eb-9110-69b867ba991b).",
       "title_label": "Title",
       "title_detail": "The question you would like to ask the community.",
       "title_placeholder": "Enter your question here",

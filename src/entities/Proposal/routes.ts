@@ -465,6 +465,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     enacted: false,
     enacted_by: null,
     enacted_description: null,
+    vesting_address: null,
     passed_by: null,
     passed_description: null,
     rejected_by: null,
@@ -541,6 +542,9 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted = true;
     update.enacted_by = user;
     update.enacted_description = configuration.description || null;
+    if (proposal.type == ProposalType.Grant) {
+      update.vesting_address = configuration.vesting_address;
+    }
   } else if (configuration.status === ProposalStatus.Passed) {
     update.passed_by = user;
     update.passed_description = configuration.description || null;

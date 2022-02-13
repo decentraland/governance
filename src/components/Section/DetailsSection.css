@@ -34,7 +34,7 @@
 .DetailsSection .DetailsSection__Flex_Header_Labels {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .DetailsSection__Flex_Header_Labels > a {
