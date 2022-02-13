@@ -191,7 +191,8 @@
     "active": "Active outcomes",
     "rejected": "Rejected outcomes",
     "passed": "Passed outcomes",
-    "enacted": "Enacted outcomes"
+    "enacted": "Enacted outcomes",
+    "prioritized": "Prioritized outcomes"
   },
   "modal": {
     "new_proposal": {
@@ -327,6 +328,7 @@
       "details_snapshot_label": "Snapshot",
       "required_vp": "Acceptance Threshold",
       "enact": "Enact proposal",
+      "prioritize": "Prioritize proposal",
       "pass": "Pass proposal",
       "reject": "Reject proposal",
       "delete": "Delete proposal",

@@ -1,4 +1,3 @@
-
 import React, { useMemo, useEffect } from 'react'
 import { useLocation } from '@reach/router'
 import { Personal } from 'web3x/personal'
@@ -22,7 +21,7 @@ import SubscribeButton from "../components/Section/SubscribeButton"
 import ProposalResultSection from "../components/Section/ProposalResultSection"
 import ProposalDetailSection from "../components/Section/ProposalDetailSection"
 import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
-import { forumUrl, getProposalSecondaryType } from "../entities/Proposal/utils"
+import { forumUrl } from "../entities/Proposal/utils"
 import { Snapshot } from "../api/Snapshot"
 import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
 import { VoteRegisteredModal } from "../components/Modal/VoteRegisteredModal"
@@ -32,7 +31,7 @@ import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import retry from "decentraland-gatsby/dist/utils/promise/retry"
 import locations from "../modules/locations"
 import { UpdateProposalStatusModal } from "../components/Modal/UpdateProposalStatusModal"
-import { ProposalStatus } from "../entities/Proposal/types"
+import { ProposalStatus, ProposalType } from "../entities/Proposal/types"
 import ProposalHeaderPoi from "../components/Proposal/ProposalHeaderPoi"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import { formatDescription } from "decentraland-gatsby/dist/components/Head/utils"
@@ -151,16 +150,11 @@ export default function ProposalPage() {
         <Loader active={!proposal} />
         <div style={{ minHeight: '24px' }}>
           {proposal && <StatusLabel status={proposal.status} />}
-            {proposal && (
-              <CategoryLabel
-                type={proposal.type}
-                secondaryType={getProposalSecondaryType(proposal)}
-              />
-            )}
-          </div>
-        </ContentSection>
-        <Grid stackable>
-          <Grid.Row>
+          {proposal && <CategoryLabel type={proposal.type} />}
+        </div>
+      </ContentSection>
+      <Grid stackable>
+        <Grid.Row>
 
           <Grid.Column tablet="12" className="ProposalDetailDescription">
             <Loader active={proposalState.loading} />
@@ -218,6 +212,23 @@ export default function ProposalPage() {
                 onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
               >{l('page.proposal_detail.pass')}</Button>
             }
+            {
+              isCommittee &&
+              proposal?.status === ProposalStatus.Passed &&
+              proposal?.type === ProposalType.Feature && (
+                <Button
+                  basic
+                  loading={updatingStatus}
+                  style={{ width: "100%" }}
+                  onClick={() =>
+                    patchOptions({
+                      confirmStatusUpdate: ProposalStatus.Prioritized,
+                    })
+                  }
+                >
+                  {l("page.proposal_detail.prioritize")}
+                </Button>
+              )}
             {
               isCommittee &&
               proposal?.status === ProposalStatus.Finished &&

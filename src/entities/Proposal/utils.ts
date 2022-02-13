@@ -64,10 +64,11 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
       return (
         next === ProposalStatus.Rejected ||
         next === ProposalStatus.Passed ||
-        next === ProposalStatus.Enacted
+        next === ProposalStatus.Enacted ||
+        next === ProposalStatus.Prioritized
       )
     case ProposalStatus.Passed:
-      return next === ProposalStatus.Enacted
+      return next === ProposalStatus.Enacted || next === ProposalStatus.Prioritized
     default:
       return false
   }

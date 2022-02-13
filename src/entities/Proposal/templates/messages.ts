@@ -23,6 +23,9 @@ export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<str
       description = null;
     }
     return getUserTriggeredUpdateMessage('ENACTED', updatingUser, description, proposal)
+  } else if (proposal.status === ProposalStatus.Prioritized) {
+    updatingUser = proposal.prioritized_by
+    return updatingUser ? getUserTriggeredUpdateMessage(statusDisplayName, updatingUser, proposal.prioritized_description, proposal) : getJobTriggeredUpdateMessage(statusDisplayName, proposal, votes)
   } else if (proposal.status === ProposalStatus.Passed) {
     updatingUser = proposal.passed_by
     return updatingUser ? getUserTriggeredUpdateMessage(statusDisplayName, updatingUser, proposal.passed_description, proposal) : getJobTriggeredUpdateMessage(statusDisplayName, proposal, votes)
