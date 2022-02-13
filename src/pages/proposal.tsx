@@ -22,7 +22,7 @@ import SubscribeButton from "../components/Section/SubscribeButton"
 import ProposalResultSection from "../components/Section/ProposalResultSection"
 import ProposalDetailSection from "../components/Section/ProposalDetailSection"
 import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
-import { forumUrl } from "../entities/Proposal/utils"
+import { forumUrl, getProposalSecondaryType } from "../entities/Proposal/utils"
 import { Snapshot } from "../api/Snapshot"
 import Markdown from "decentraland-gatsby/dist/components/Text/Markdown"
 import { VoteRegisteredModal } from "../components/Modal/VoteRegisteredModal"
@@ -151,11 +151,16 @@ export default function ProposalPage() {
         <Loader active={!proposal} />
         <div style={{ minHeight: '24px' }}>
           {proposal && <StatusLabel status={proposal.status} />}
-          {proposal && <CategoryLabel type={proposal.type} />}
-        </div>
-      </ContentSection>
-      <Grid stackable>
-        <Grid.Row>
+            {proposal && (
+              <CategoryLabel
+                type={proposal.type}
+                secondaryType={getProposalSecondaryType(proposal)}
+              />
+            )}
+          </div>
+        </ContentSection>
+        <Grid stackable>
+          <Grid.Row>
 
           <Grid.Column tablet="12" className="ProposalDetailDescription">
             <Loader active={proposalState.loading} />
