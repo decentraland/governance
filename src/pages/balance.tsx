@@ -42,6 +42,8 @@ import { snapshotUrl } from "../entities/Proposal/utils"
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
 import { Snapshot } from "../api/Snapshot"
 import './balance.css'
+import { isUnderMaintenance } from "../modules/maintenance"
+import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
 
 const NAME_MULTIPLIER = 100
 const LAND_MULTIPLIER = 2000
@@ -99,9 +101,26 @@ export default function WrappingPage() {
     return () => { cancelled }
   }, [ unwrappingTransaction?.status ])
 
+  if (isUnderMaintenance()) {
+    return <>
+    <Head
+      title={l('page.balance.title') || ''}
+      description={l('page.balance.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
+      <Navigation activeTab={NavigationTab.Wrapping} />
+      <MaintenancePage />
+    </>
+  }
+
   if (!account) {
     return <>
-    <Navigation activeTab={NavigationTab.Activity} />
+    <Head
+      title={l('page.balance.title') || ''}
+      description={l('page.balance.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
+    <Navigation activeTab={NavigationTab.Wrapping} />
     <Container>
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
     </Container>

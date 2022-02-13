@@ -84,6 +84,7 @@ export default function SubmitCatalyst() {
   const [ commsStatus, commsState ] = useAsyncMemo(async () => domain ? Catalyst.from('https://' + domain).getCommsStatus() : null, [ domain ])
   const [ contentStatus, contentState ] = useAsyncMemo(async () => domain ? Catalyst.from('https://' + domain).getContentStatus() : null, [ domain ])
   const [ lambdaStatus, lambdaState ] = useAsyncMemo(async () => domain ? Catalyst.from('https://' + domain).getLambdasStatus() : null, [ domain ])
+  const [formDisabled, setFormDisabled] = useState(false);
 
   useEffect(() => {
     if (!state.error.domain && (commsState.error || contentState.error || lambdaState.error)) {
@@ -107,6 +108,7 @@ export default function SubmitCatalyst() {
     }
 
     if (state.validated) {
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           let servers: Servers[]
@@ -131,6 +133,7 @@ export default function SubmitCatalyst() {
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
         })
     }
   }, [ state.validated, commsStatus, contentStatus, lambdaStatus ])
@@ -178,6 +181,7 @@ export default function SubmitCatalyst() {
           onBlur={() => editor.set({ owner: state.value.owner.trim() })}
           message={l.optional(state.error.owner)}
           error={!!state.error.owner}
+          disabled={formDisabled}
         />
     </ContentSection>
     <ContentSection>
@@ -192,6 +196,7 @@ export default function SubmitCatalyst() {
           }}
           error={!!state.error.domain || !!(domain && !isValidDomainName(domain))}
           message={l.optional(state.error.domain)}
+          disabled={formDisabled}
         />
         {!!domain && <div>
           <Paragraph tiny>
@@ -227,6 +232,7 @@ export default function SubmitCatalyst() {
             limit: schema.description.maxLength
           })
         }
+        disabled={formDisabled}
       />
     </ContentSection>
     <ContentSection>

@@ -3,7 +3,6 @@ import markdown from 'remark-parse'
 import stringify from 'remark-stringify'
 import { Node } from 'unist'
 import escapeMarkdown from 'markdown-escape'
-import numeral from 'numeral'
 import ProposalModel from '../model'
 import { proposalUrl } from '../utils'
 import { ProposalAttributes } from '../types'
@@ -11,10 +10,6 @@ import { ProposalAttributes } from '../types'
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
   return String.raw(raw, ...subs)
     .trim()
-}
-
-export function formatBalance(value: number) {
-  return numeral(value).format('0,0')
 }
 
 export async function formatLinkedProposal(linked_proposal_id: string) {
