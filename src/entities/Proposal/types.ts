@@ -139,6 +139,7 @@ export type UpdateProposalStatusProposal = {
   | ProposalStatus.Rejected
   | ProposalStatus.Passed
   | ProposalStatus.Enacted
+  | ProposalStatus.Prioritized
   vesting_address: string | null
   description: string
 }
@@ -156,7 +157,8 @@ export const updateProposalStatusScheme = {
       enum: [
         ProposalStatus.Rejected,
         ProposalStatus.Passed,
-        ProposalStatus.Enacted
+        ProposalStatus.Enacted,
+        ProposalStatus.Prioritized,
       ]
     },
     vesting_address: {
