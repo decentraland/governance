@@ -17,6 +17,7 @@ export const categoryIcons = {
   [ProposalType.Poll]: require('../../images/icons/poll.svg'),
   [ProposalType.Draft]: require('../../images/icons/draft.svg'),
   [ProposalType.Governance]: require('../../images/icons/governance.svg'),
+  [ProposalType.Feature]: require('../../images/icons/feature.svg'),
 }
 
 export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "children"> & {
@@ -25,7 +26,7 @@ export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
   isNew?: boolean
 }
 
-export default React.memo(function CategoryBanner({ active, type, ...props }: CategoryBannerProps) {
+export default React.memo(function CategoryBanner({ active, type, isNew, ...props }: CategoryBannerProps) {
   const l = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
