@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useContext, useEffect } from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
@@ -21,6 +21,12 @@ import GrantList from '../components/Transparency/GrantList'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
 import MembersSection from '../components/Transparency/MembersSection'
 import './transparency.css'
+import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import MobileNavigation from '../components/Layout/MobileNavigation'
+import { BurgerMenuShowContext } from '../components/Context/BurgerMenuShowContext'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
 
 const discordIcon = require('../images/icons/discord.svg')
 
@@ -47,6 +53,20 @@ export default function WrappingPage() {
   const l = useFormatMessage()
   const [data] = useAsyncMemo(async () => DclData.get().getData())
   const balances = useMemo(() => data && aggregateBalances(data.balances) || [], [data])
+  const burgerShow = useContext(BurgerMenuShowContext)
+  const burgerMenu = useContext(BurgerMenuStatusContext)
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const translate = '100px'
+
+  useEffect(() => {
+    burgerShow?.setShow(true)
+  
+    return () => {
+      burgerShow?.setShow(false)
+    };
+  }, []);
+
 
   return (<>
     {!data && <Loader active />}
@@ -57,6 +77,21 @@ export default function WrappingPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Transparency} />
+      {
+        isMobile ? 
+        <div className='Transparency'>
+          <BurgerMenuContent footerTranslate={translate}>
+            <MobileNavigation />
+          </BurgerMenuContent>
+        </div>
+        :
+        <></>
+      }
+      <div className='Animated'
+        style={
+          isMobile ? (burgerMenu?.status ? {transform: `translateY(${translate})`}: {}) : {}
+        }
+      >
       <Container className="TransparencyContainer">
         <Grid stackable>
           <Grid.Row columns={2}>
@@ -181,6 +216,7 @@ export default function WrappingPage() {
           </Grid.Row>
         </Grid>
       </Container>
+      </div>
     </>}
   </>)
 }

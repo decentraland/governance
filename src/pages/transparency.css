@@ -120,3 +120,7 @@
 .TransparencySection .ui.card>.content>.header, .ui.cards>.card>.content>.header {
 	font-family: inherit;
 }
+
+.Transparency .BurgerMenuContent {
+  padding: 0px 16px;
+}

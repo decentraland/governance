@@ -39,6 +39,7 @@ import { BurgerMenuShowContext } from "../components/Context/BurgerMenuShowConte
 import './index.css'
 import { isUnderMaintenance } from "../modules/maintenance"
 import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
+import MobileNavigation from "../components/Layout/MobileNavigation"
 
 const ITEMS_PER_PAGE = 25
 
@@ -67,6 +68,7 @@ export default function IndexPage() {
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const burgerMenu = useContext(BurgerMenuStatusContext)
   const burgerShow = useContext(BurgerMenuShowContext)
+  const translate = '550px'
 
   // const [ ff ] = useFeatureFlagContext()
 
@@ -79,30 +81,13 @@ export default function IndexPage() {
     }
   }, [ page, proposals ])
 
-  const footer = document.querySelectorAll(".dcl.footer")[0]
-
   useEffect(() => {
     burgerShow?.setShow(true)
   
     return () => {
       burgerShow?.setShow(false)
-      if(isMobile && footer) {
-        footer.setAttribute("style", "")
-      }
     };
   }, []);
-
-  useEffect(() => {
-    if(isMobile && footer) {
-      footer.classList.add('Animated')
-      if(burgerMenu?.status) {
-        footer.setAttribute("style", "transform: translateY(550px);")
-      }
-      else {
-        footer.setAttribute("style", "")
-      }
-    }
-  }, [isMobile, footer, burgerMenu?.status])
 
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
@@ -232,21 +217,19 @@ export default function IndexPage() {
     <Container>
       <Grid stackable>
         <Grid.Row>
-          <Grid.Column tablet="4" 
-            className="Animated"
-            style={(isMobile && {
-              position: 'absolute',
-              transform: `${burgerMenu?.status ? '' : 'translateY(-200%)'}`,
-            }) || {}}
-          >
+          <Grid.Column tablet="4">
             {
-              isMobile ? <BurgerMenuContent /> : <CategoryList />
+              isMobile ? 
+              <BurgerMenuContent footerTranslate={translate}>
+                <MobileNavigation />
+                <CategoryList />
+              </BurgerMenuContent> : <CategoryList />
             }
           </Grid.Column>
           <Grid.Column tablet="12"
             className="Animated"
             style={
-              isMobile ? (burgerMenu?.status ? {transform: 'translateY(550px)'}: {}) : {}
+              isMobile ? (burgerMenu?.status ? {transform: `translateY(${translate})`}: {}) : {}
             }
           >
             <ActionableLayout

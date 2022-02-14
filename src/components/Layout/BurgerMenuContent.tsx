@@ -1,80 +1,46 @@
-import { useLocation } from '@reach/router'
-import Link from "decentraland-gatsby/dist/components/Text/Link"
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
-import { Button } from "decentraland-ui/dist/components/Button/Button"
-import { Header } from "decentraland-ui/dist/components/Header/Header"
-import { navigate } from 'gatsby-plugin-intl'
-import React, { useEffect, useMemo, useState } from 'react'
-import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
-import locations, { ProposalListView, toProposalListView } from '../../modules/locations'
-import CategoryList from '../Category/CategoryList'
-import './BurgerMenuContent.css'
+import React, {useContext, useEffect} from 'react'
+import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
 
-function BurgerMenuContent() {
-  const l = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
-  const view = toProposalListView(params.get('view')) ?? undefined
+type BurgerMenuContentProps = {
+  footerTranslate: string,
+  children: React.ReactNode
+}
 
-  const selectedButton: any = {
-    inverted: true, 
-    primary: true
-  }
-  const unselectedButton: any = {
-    secondary: true
-  }
-
-  const [proposalsButtonProps, setProposalsButtonProps] = useState(selectedButton)
-  const [enactedButtonProps, setEnactedButtonProps] = useState(unselectedButton)
+function BurgerMenuContent({footerTranslate, children} : BurgerMenuContentProps) {
+  const footer = document.querySelectorAll(".dcl.footer")[0]
+  const burgerMenu = useContext(BurgerMenuStatusContext)
 
   useEffect(() => {
-    if(view === ProposalListView.Enacted) {
-      setProposalsButtonProps(unselectedButton)
-      setEnactedButtonProps(selectedButton)
+    return () => {
+      if(footer) {
+        footer.setAttribute("style", "")
+      }
     }
-    else {
-      setProposalsButtonProps(selectedButton)
-      setEnactedButtonProps(unselectedButton)
+  }, [])
+
+  useEffect(() => {
+    if(footer) {
+      footer.classList.add('Animated')
+      if(burgerMenu?.status) {
+        footer.setAttribute("style", `transform: translateY(${footerTranslate})`)
+      }
+      else {
+        footer.setAttribute("style", "")
+      }
     }
-  }, [view])
-  
-  return <div>
-    <Header sub>{l(`page.proposal_list.browse`)}</Header>
-    <Grid textAlign='center' className='Browse'>
-      <Grid.Row columns={2}>
-        <Grid.Column>
-          <Button
-            className='Browse__Button' 
-            size="small" 
-            {...proposalsButtonProps}
-            as={Link}
-            href={locations.proposals()}
-            onClick={prevent(() => {
-              navigate(locations.proposals())
-            })}
-          >
-            {l('navigation.proposals')}
-          </Button>
-        </Grid.Column>
-        <Grid.Column>
-          <Button
-            className='Browse__Button' 
-            size="small" 
-            {...enactedButtonProps}
-            as={Link}
-            href={locations.proposals({ view: ProposalListView.Enacted })}
-            onClick={prevent(() => {
-              navigate(locations.proposals({ view: ProposalListView.Enacted }))
-            })}
-          >
-            {l('navigation.enacted')}
-          </Button>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
-    <CategoryList />
-  </div>
+  }, [footer, burgerMenu?.status])
+
+  return (
+    <div className='BurgerMenuContent Animated'
+      style={{
+        position: 'absolute',
+        width: "100%",
+        transform: `${burgerMenu?.status ? '' : 'translateY(-200%)'}`,
+      }}
+    >
+      {children}
+    </div>
+  )
 }
 
 export default React.memo(BurgerMenuContent)
