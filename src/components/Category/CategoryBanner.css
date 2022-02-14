@@ -1,3 +1,4 @@
+
 .CategoryBanner {
   display: flex;
   align-items: center;
@@ -22,7 +23,7 @@
   opacity: .08;
 }
 
-.CategoryBanner .CategoryBanner__Icon {
+.CategoryBanner .CategoryBanner__Icon  {
   flex: 0 0 68px;
   height: 48px;
   display: flex;
@@ -82,11 +83,11 @@
   width: auto;
 }
 
-.CategoryBanner .dg.Paragraph {
+.CategoryBanner .dg.Paragraph  {
   margin-bottom: 0;
 }
 
-.CategoryBanner .dg.Paragraph.Paragraph--tiny {
+.CategoryBanner .dg.Paragraph.Paragraph--tiny  {
   font-size: 15px;
 }
 

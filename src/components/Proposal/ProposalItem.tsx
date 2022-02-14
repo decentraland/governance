@@ -30,14 +30,8 @@ export type ProposalItemProps = {
 const subscribeIcon = require('../../images/icons/subscribe.svg')
 const subscribedIcon = require('../../images/icons/subscribed.svg')
 
-export default function ProposalItem({
-  proposal,
-  votes,
-  subscribing,
-  subscribed,
-  onSubscribe,
-}: ProposalItemProps) {
-  const [account] = useAuthContext()
+export default function ProposalItem({ proposal, votes, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
+  const [ account ] = useAuthContext()
   // const [votes] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], { callWithTruthyDeps: true })
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [ choices, votes ])
@@ -47,16 +41,11 @@ export default function ProposalItem({
     onSubscribe && onSubscribe(e, proposal)
   }
 
-  return (
-    <Card
-      as={Link}
-      to={locations.proposal(proposal.id)}
-      style={{ width: "100%" }}
-      className={TokenList.join([
-        "ProposalItem",
-        subscribed && "ProposalItem--subscribed",
-      ])}
-    >
+  return <Card as={Link} to={locations.proposal(proposal.id)} style={{ width: '100%' }} className={TokenList.join([
+      "ProposalItem",
+      subscribed && "ProposalItem--subscribed",
+    ])
+  }>
       <Card.Content>
         <div className="ProposalItem__Title">
           <Header>{proposal.title}</Header>
@@ -67,13 +56,9 @@ export default function ProposalItem({
         </div>
         <div className="ProposalItem__Status">
           <StatusLabel status={proposal.status} />
-          <CategoryLabel
-            type={proposal.type}
-            secondaryType={getProposalSecondaryType(proposal)}
-          />
+          <CategoryLabel type={proposal.type} secondaryType={getProposalSecondaryType(proposal)} />
           <FinishLabel date={proposal.finish_at} />
         </div>
       </Card.Content>
     </Card>
-  )
 }

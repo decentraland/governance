@@ -76,7 +76,7 @@ export function UpdateProposalStatusModal({ onClickAccept, proposal, status, loa
       default:
         return 'modal.update_status_proposal.accept'
     }
-  }, [status])
+  }, [ status ])
 
   return <Modal {...props} open={open && !!status} size="small" className={TokenList.join(['ProposalModal', 'UpdateProposalStatusModal', props.className])} closeIcon={<Close />}>
     <Modal.Content className="ProposalModal__Title">

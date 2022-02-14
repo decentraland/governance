@@ -17,15 +17,15 @@ export default function StatusMenu(props: StatusMenu) {
     }
   }
 
-  return <Dropdown text={l(`status.${props.value || "all"}`) || ""} style={props.style}>
-      <Dropdown.Menu>
-        <Dropdown.Item text={l(`status.all`)} onClick={(e) => handleChange(e, null)} />
-        <Dropdown.Item text={l(`status.${ProposalStatus.Active}`)} onClick={(e) => handleChange(e, ProposalStatus.Active)} />
-        <Dropdown.Item text={l(`status.${ProposalStatus.Finished}`)} onClick={(e) => handleChange(e, ProposalStatus.Finished)} />
-        <Dropdown.Item text={l(`status.${ProposalStatus.Passed}`)} onClick={(e) => handleChange(e, ProposalStatus.Passed)} />
-        <Dropdown.Item text={l(`status.${ProposalStatus.Rejected}`)} onClick={(e) => handleChange(e, ProposalStatus.Rejected)} />
-        <Dropdown.Item text={l(`status.${ProposalStatus.Enacted}`)} onClick={(e) => handleChange(e, ProposalStatus.Enacted)} />
-        <Dropdown.Item text={l(`status.${ProposalStatus.Prioritized}`)} onClick={(e) => handleChange(e, ProposalStatus.Prioritized)} />
-      </Dropdown.Menu>
-    </Dropdown>
+  return <Dropdown text={l(`status.${props.value || 'all'}`) || ''} style={props.style}>
+    <Dropdown.Menu>
+      <Dropdown.Item text={l(`status.all`)} onClick={(e) => handleChange(e, null)} />
+      <Dropdown.Item text={l(`status.${ProposalStatus.Active}`)} onClick={(e) => handleChange(e, ProposalStatus.Active)} />
+      <Dropdown.Item text={l(`status.${ProposalStatus.Finished}`)} onClick={(e) => handleChange(e, ProposalStatus.Finished)} />
+      <Dropdown.Item text={l(`status.${ProposalStatus.Passed}`)} onClick={(e) => handleChange(e, ProposalStatus.Passed)} />
+      <Dropdown.Item text={l(`status.${ProposalStatus.Rejected}`)} onClick={(e) => handleChange(e, ProposalStatus.Rejected)} />
+      <Dropdown.Item text={l(`status.${ProposalStatus.Enacted}`)} onClick={(e) => handleChange(e, ProposalStatus.Enacted)} />
+      <Dropdown.Item text={l(`status.${ProposalStatus.Prioritized}`)} onClick={(e) => handleChange(e, ProposalStatus.Prioritized)} />
+    </Dropdown.Menu>
+  </Dropdown>
 }

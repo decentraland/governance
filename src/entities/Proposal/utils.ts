@@ -1,8 +1,8 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import numeral from 'numeral'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import numeral from 'numeral'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
