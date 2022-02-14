@@ -1,0 +1,10 @@
+.LinkWithIcon {
+	display: flex !important;
+	margin-bottom: 8px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	a.DetailsSection.SectionButton.LinkWithIcon {
+		padding: 9px 5px !important;
+	}
+}

@@ -1,0 +1,49 @@
+.MonthlyTotal {
+  width: 100%;
+}
+
+.ui.header.huge.MonthlyTotal__Header {
+  margin-bottom: 8px;
+}
+
+.ui.header.MonthlyTotal__Header,
+.ui.header.huge.MonthlyTotal__Header {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  font-weight: 400;
+}
+
+.ui.sub.header.MonthlyTotal__Sub {
+  margin-top: 0;
+}
+
+
+@media only screen and (min-width: 768px) {
+  .MonthlyTotal:last-of-type {
+    margin-left: 2em;
+  }
+}
+
+.content.MonthlyTotal__Detail {
+  margin-top: 0;
+  padding-top: 0 !important;
+}
+
+.MonthlyTotal .DetailsSection__Flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.MonthlyTotal .DetailsSection__Flex .DetailsSection__Value {
+  text-align: right;
+  font-weight: 500;
+}
+
+strong.Number.Number--Green {
+  color: var(--background-happy-green);
+}
+
+strong.Number.Number--Red {
+  color: #FF4545;
+}

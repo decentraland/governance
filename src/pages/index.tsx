@@ -32,6 +32,8 @@ import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
 import { Governance } from "../api/Governance"
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
 import './index.css'
+import { isUnderMaintenance } from "../modules/maintenance"
+import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
 
 const ITEMS_PER_PAGE = 25
 
@@ -137,6 +139,34 @@ export default function IndexPage() {
   //     </div>
   //   </Container>
   // }
+
+  if (isUnderMaintenance()) {
+    return <>
+    <Head
+      title={
+        (view === ProposalListView.Onboarding && l('page.welcome.title')) ||
+        (view === ProposalListView.Enacted && l('page.proposal_enacted_list.title')) ||
+        (type === ProposalType.Catalyst && l('page.proposal_catalyst_list.title')) ||
+        (type === ProposalType.POI && l('page.proposal_poi_list.title')) ||
+        (type === ProposalType.BanName && l('page.proposal_ban_name_list.title')) ||
+        (type === ProposalType.Poll && l('page.proposal_poll_list.title')) ||
+        l('page.proposal_list.title') || ''
+      }
+      description={
+        (view === ProposalListView.Onboarding && l('page.welcome.description')) ||
+        (view === ProposalListView.Enacted && l('page.proposal_enacted_list.description')) ||
+        (type === ProposalType.Catalyst && l('page.proposal_catalyst_list.description')) ||
+        (type === ProposalType.POI && l('page.proposal_poi_list.description')) ||
+        (type === ProposalType.BanName && l('page.proposal_ban_name_list.description')) ||
+        (type === ProposalType.Poll && l('page.proposal_poll_list.description')) ||
+        l('page.proposal_list.description') || ''
+      }
+      image="https://decentraland.org/images/decentraland.png"
+    />
+      <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
+      <MaintenancePage />
+    </>
+  }
 
   return <>
     <Head
