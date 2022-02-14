@@ -50,6 +50,21 @@ const products = [
     text: ProposalFeatureProduct.Marketplace,
     value: ProposalFeatureProduct.Marketplace,
   },
+  {
+    key: ProposalFeatureProduct.Builder,
+    text: ProposalFeatureProduct.Builder,
+    value: ProposalFeatureProduct.Builder,
+  },
+  {
+    key: ProposalFeatureProduct.Explorer,
+    text: ProposalFeatureProduct.Explorer,
+    value: ProposalFeatureProduct.Explorer,
+  },
+  {
+    key: ProposalFeatureProduct.SDK,
+    text: ProposalFeatureProduct.SDK,
+    value: ProposalFeatureProduct.SDK,
+  },
 ]
 
 const schema = newProposalFeatureScheme.properties

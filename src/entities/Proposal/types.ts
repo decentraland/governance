@@ -606,11 +606,17 @@ export type ProposalCommentsInDiscourse = {
 
 export enum ProposalFeatureProduct {
   Marketplace = 'Marketplace',
+  Builder = 'Builder',
+  Explorer = 'Explorer',
+  SDK = 'SDK',
 }
 
 export function isProposalFeatureProduct(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalFeatureProduct.Marketplace:
+    case ProposalFeatureProduct.Builder:
+    case ProposalFeatureProduct.Explorer:
+    case ProposalFeatureProduct.SDK:
       return true
     default:
       return false
@@ -646,6 +652,9 @@ export const newProposalFeatureScheme = {
       type: 'string',
       enum: [
         ProposalFeatureProduct.Marketplace,
+        ProposalFeatureProduct.Explorer,
+        ProposalFeatureProduct.Builder,
+        ProposalFeatureProduct.SDK,
       ]
     },
   }
