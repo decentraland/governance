@@ -4,6 +4,6 @@ export function isUnderMaintenance() {
     case '1':
       return true
     default:
-      return true
+      return false
   }
 }
