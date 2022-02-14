@@ -64,17 +64,17 @@ export function UpdateProposalStatusModal({ onClickAccept, proposal, status, loa
   }
 
   const cta = useMemo(() => {
-    switch (status) {
+    switch(status) {
       case ProposalStatus.Enacted:
-        return "page.proposal_detail.enact"
+        return 'page.proposal_detail.enact'
       case ProposalStatus.Prioritized:
-        return "page.proposal_detail.prioritize"
+        return 'page.proposal_detail.prioritize'
       case ProposalStatus.Passed:
-        return "page.proposal_detail.pass"
+        return 'page.proposal_detail.pass'
       case ProposalStatus.Rejected:
-        return "page.proposal_detail.reject"
+        return 'page.proposal_detail.reject'
       default:
-        return "modal.update_status_proposal.accept"
+        return 'modal.update_status_proposal.accept'
     }
   }, [status])
 

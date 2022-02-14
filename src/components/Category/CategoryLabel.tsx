@@ -1,22 +1,15 @@
-import React from "react"
-import { ProposalType } from "../../entities/Proposal/types"
-import TokenList from "decentraland-gatsby/dist/utils/dom/TokenList"
+import React from 'react'
+import { ProposalType } from '../../entities/Proposal/types'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import "./CategoryLabel.css"
+import './CategoryLabel.css'
 
-export type CategoryLabelProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "children"
-> & {
+export type CategoryLabelProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   type: ProposalType
   secondaryType?: string
 }
 
-export default React.memo(function CategoryLabel({
-  type,
-  secondaryType,
-  ...props
-}: CategoryLabelProps) {
+export default React.memo(function CategoryLabel({ type, secondaryType, ...props }: CategoryLabelProps) {
   return (
     <>
       <div

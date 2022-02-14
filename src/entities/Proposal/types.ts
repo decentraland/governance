@@ -46,7 +46,7 @@ export enum ProposalStatus {
   Deleted = 'deleted'
 }
 
-export function isProposalStatus(value: string | null | undefined): boolean {
+export function isProposalStatus(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalStatus.Pending:
     case ProposalStatus.Finished:
@@ -62,7 +62,7 @@ export function isProposalStatus(value: string | null | undefined): boolean {
 }
 
 export function toProposalStatus(value: string | null | undefined): ProposalStatus | null {
-  return isProposalStatus(value) ?
+  return isProposalStatus(value)?
     value as ProposalStatus :
     null
 }
@@ -83,7 +83,7 @@ export enum PoiType {
   RemovePOI = 'remove_poi',
 }
 
-export function isProposalType(value: string | null | undefined): boolean {
+export function isProposalType(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
     case ProposalType.Catalyst:
@@ -99,7 +99,7 @@ export function isProposalType(value: string | null | undefined): boolean {
   }
 }
 
-export function isPoiType(value: string | null | undefined): boolean {
+export function isPoiType(value:  string | null | undefined): boolean {
   switch (value) {
     case PoiType.AddPOI:
     case PoiType.RemovePOI:
@@ -110,13 +110,13 @@ export function isPoiType(value: string | null | undefined): boolean {
 }
 
 export function toProposalType(value: string | null | undefined): ProposalType | null {
-  return isProposalType(value) ?
+  return isProposalType(value)?
     value as ProposalType :
     null
 }
 
 export function toPoiType(value: string | null | undefined): PoiType | null {
-  return isPoiType(value) ?
+  return isPoiType(value)?
     value as PoiType :
     null
 }
@@ -177,7 +177,7 @@ export type NewProposalPoll = {
   choices: string[],
 }
 
-export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
+export const INVALID_PROPOSAL_POLL_OPTIONS ='Invalid question/options'
 
 export const newProposalPollScheme = {
   type: 'object',
@@ -232,7 +232,7 @@ export const newProposalDraftScheme = {
     'conclusion'
   ],
   properties: {
-    linked_proposal_id: {
+    linked_proposal_id:{
       type: 'string',
       minLength: 36,
       maxLength: 255,
@@ -297,7 +297,7 @@ export const newProposalGovernanceScheme = {
     'conclusion'
   ],
   properties: {
-    linked_proposal_id: {
+    linked_proposal_id:{
       type: 'string',
       minLength: 36,
       maxLength: 255,
@@ -436,7 +436,7 @@ export enum ProposalGrantCategory {
   Gaming = 'Gaming'
 }
 
-export function isProposalGrantCategory(value: string | null | undefined): boolean {
+export function isProposalGrantCategory(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantCategory.Community:
     case ProposalGrantCategory.ContentCreator:
@@ -457,7 +457,7 @@ export enum ProposalGrantTier {
   Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
 }
 
-export function isProposalGrantTier(value: string | null | undefined): boolean {
+export function isProposalGrantTier(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantTier.Tier1:
     case ProposalGrantTier.Tier2:

@@ -4,19 +4,19 @@
   padding: 0 11px;
   height: 24px;
   display: inline-flex;
-  border: 1px solid #736e7d;
-  color: #736e7d;
+  border: 1px solid #736E7D;
+  color: #736E7D;
   border-radius: 42px;
   font-weight: 500;
   font-size: 12px;
   line-height: 20px;
-  margin-right: 0.5rem;
+  margin-right: .5rem;
   vertical-align: middle;
   align-content: center;
 }
 
 .StatusLabel.StatusLabel--pending {
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .StatusLabel.StatusLabel--passed {
@@ -26,19 +26,19 @@
 
 .StatusLabel.StatusLabel--enacted,
 .StatusLabel.StatusLabel--prioritized {
-  color: #fff;
+  color: #FFF;
   border-color: var(--background-happy-green);
   background-color: var(--background-happy-green);
 }
 
 .StatusLabel.StatusLabel--rejected {
-  color: #ff0000;
-  border-color: #ff0000;
+  color: #FF0000;
+  border-color: #FF0000;
 }
 
 .StatusLabel img {
   display: block;
-  padding: 1px 0.3rem 1px 0;
+  padding: 1px .3rem 1px 0;
 }
 
 .StatusLabel span {

@@ -3,21 +3,19 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 
 // import useFeatureFlagContext from "decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import ContentLayout, {
-  ContentSection,
-} from "../../components/Layout/ContentLayout"
+import ContentLayout, { ContentSection } from "../../components/Layout/ContentLayout"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
 import CategoryBanner from "../../components/Category/CategoryBanner"
 import { ProposalType } from "../../entities/Proposal/types"
 import locations from "../../modules/locations"
 // import { FeatureFlags } from "../../modules/features"
-import "./submit.css"
+import './submit.css'
 import { POIProposalModal } from "../../components/Modal/POIProposalModal"
 
 export default function NewProposalPage() {
   const l = useFormatMessage()
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
   // const [ ff ] = useFeatureFlagContext()
 
   return (
@@ -33,46 +31,16 @@ export default function NewProposalPage() {
           <Paragraph>{l("page.submit.description") || ""}</Paragraph>
         </ContentSection>
         <ContentSection>
-          <Header sub className="ProposalDetailPage_SubHeader">
-            Common Actions
-          </Header>
-          <CategoryBanner
-            type={ProposalType.Catalyst}
-            href={locations.submit(ProposalType.Catalyst)}
-            active
-          />
-          <CategoryBanner
-            type={ProposalType.POI}
-            onClick={() => setShow(true)}
-            style={{ cursor: "pointer" }}
-            active
-          />
-          <CategoryBanner
-            type={ProposalType.BanName}
-            href={locations.submit(ProposalType.BanName)}
-            active
-          />
-          <CategoryBanner
-            type={ProposalType.Grant}
-            href={locations.submit(ProposalType.Grant)}
-            active
-          />
-          <CategoryBanner
-            isNew
-            type={ProposalType.Feature}
-            href={locations.submit(ProposalType.Feature)}
-            active
-          />
+          <Header sub className="ProposalDetailPage_SubHeader">Common Actions</Header>
+          <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
+          <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} style={{ cursor: "pointer" }} active />
+          <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
+          <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
+          <CategoryBanner isNew type={ProposalType.Feature} href={locations.submit(ProposalType.Feature)} active />
         </ContentSection>
         <ContentSection>
-          <Header sub className="ProposalDetailPage_SubHeader">
-            Governance Process
-          </Header>
-          <CategoryBanner
-            type={ProposalType.Poll}
-            href={locations.submit(ProposalType.Poll)}
-            active
-          />
+          <Header sub className="ProposalDetailPage_SubHeader">Governance Process</Header>
+          <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
           {/*<CategoryBanner type={ProposalType.Draft} href={locations.submit(ProposalType.Draft)} active />*/}
           {/*<CategoryBanner type={ProposalType.Governance} href={locations.submit(ProposalType.Governance)} active />*/}
         </ContentSection>
