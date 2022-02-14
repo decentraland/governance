@@ -212,9 +212,7 @@ export default function IndexPage() {
       }
       image="https://decentraland.org/images/decentraland.png"
     />
-    <div className="OnlyDesktop">
-      <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
-    </div>
+    <Navigation activeTab={view !== ProposalListView.Enacted ? NavigationTab.Proposals : NavigationTab.Enacted} />
     <Container>
       <Grid stackable>
         <Grid.Row>

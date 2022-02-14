@@ -70,6 +70,7 @@ export default function WrappingPage() {
 
 
   return (<>
+    <Navigation activeTab={NavigationTab.Transparency} />
     {!data && <Loader active />}
     {data && <>
       <Head
@@ -77,9 +78,6 @@ export default function WrappingPage() {
         description={l('page.transparency.mission.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <div className='OnlyDesktop'>
-        <Navigation activeTab={NavigationTab.Transparency} />
-      </div>
       {
         isMobile ? 
         <div className='Transparency'>
