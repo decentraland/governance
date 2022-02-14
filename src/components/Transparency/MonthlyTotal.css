@@ -1,5 +1,10 @@
 .MonthlyTotal {
   width: 100%;
+  display: flex;
+}
+
+.content.MonthlyTotal_Headers {
+  flex-grow: 0 !important;
 }
 
 .ui.header.huge.MonthlyTotal__Header {
@@ -19,7 +24,7 @@
 }
 
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 992px) {
   .MonthlyTotal:last-of-type {
     margin-left: 2em;
   }
