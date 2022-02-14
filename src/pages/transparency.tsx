@@ -64,6 +64,7 @@ export default function WrappingPage() {
   
     return () => {
       burgerShow?.setShow(false)
+      burgerMenu?.setStatus(false)
     };
   }, []);
 
@@ -76,7 +77,9 @@ export default function WrappingPage() {
         description={l('page.transparency.mission.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Navigation activeTab={NavigationTab.Transparency} />
+      <div className='OnlyDesktop'>
+        <Navigation activeTab={NavigationTab.Transparency} />
+      </div>
       {
         isMobile ? 
         <div className='Transparency'>

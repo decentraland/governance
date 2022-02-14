@@ -86,6 +86,7 @@ export default function IndexPage() {
   
     return () => {
       burgerShow?.setShow(false)
+      burgerMenu?.setStatus(false)
     };
   }, []);
 
