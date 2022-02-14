@@ -203,6 +203,7 @@ export default function IndexPage() {
               <CategoryOption type={ProposalType.POI} href={handleTypeFilter(ProposalType.POI)} active={type === ProposalType.POI} />
               <CategoryOption type={ProposalType.BanName} href={handleTypeFilter(ProposalType.BanName)} active={type === ProposalType.BanName} />
               <CategoryOption type={ProposalType.Grant} href={handleTypeFilter(ProposalType.Grant)} active={type === ProposalType.Grant} />
+              <CategoryOption type={ProposalType.LinkedWearables} href={handleTypeFilter(ProposalType.LinkedWearables)} active={type === ProposalType.LinkedWearables} />
               <CategoryOption type={ProposalType.Poll} href={handleTypeFilter(ProposalType.Poll)} active={type === ProposalType.Poll} />
               <CategoryOption type={ProposalType.Draft} href={handleTypeFilter(ProposalType.Draft)} active={type === ProposalType.Draft} />
               <CategoryOption type={ProposalType.Governance} href={handleTypeFilter(ProposalType.Governance)} active={type === ProposalType.Governance} />

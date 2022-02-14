@@ -585,6 +585,43 @@ export const newProposalGrantScheme = {
   }
 }
 
+export const newLinkedWearablesScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'name',
+    'introduction',
+    'nft_collections',
+    'smart_contract',
+    'governance',
+    'motivation',
+    'managers',
+    'programmatically_generated',
+  ],
+  properties: {
+    name: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    introduction: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 750,
+    },
+    nft_collections: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 750,
+    },
+    nft_collections: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 750,
+    },
+  }
+}
+
 export type ProposalComment = {
   username: string,
   avatar_url: string,
