@@ -4,7 +4,6 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { PoiType, ProposalType } from '../../entities/Proposal/types'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 
 import './CategoryBanner.css'
 
@@ -55,21 +54,18 @@ export default React.memo(function CategoryBanner({ active, isNew, type, ...prop
     <div className="CategoryBanner__Icon">
       <img src={categoryIcons[type]} width="48" height="48" />
     </div>
-    <div className="CategoryBanner__Description">
-      <Grid verticalAlign='middle'>
-        <Grid.Row columns={2}>
-          <Grid.Column>
-            <Paragraph small semiBold>{l(`category.${type}_title`)}</Paragraph>
-          </Grid.Column>
-          <Grid.Column style ={{paddingLeft: 0}}>
-            <div className='New' style={(isNew && {display: 'block'}) || {display: 'none'}}>
-              {l("category.new")}
-            </div>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-      <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
-      
-    </div>
+    <div>
+        <div className="CategoryBanner__TitleContainer">
+          <Paragraph small semiBold>
+            {l(`category.${type}_title`)}
+          </Paragraph>
+          {isNew && (
+            <span className="NewBadge">
+              {l(`category.new`)}
+            </span>
+          )}
+        </div>
+        <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
+      </div>
   </a>
 })
