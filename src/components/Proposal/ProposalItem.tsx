@@ -6,7 +6,7 @@ import { Link } from "gatsby-plugin-intl"
 import locations from '../../modules/locations'
 import StatusLabel from '../Status/StatusLabel'
 import CategoryLabel from '../Category/CategoryLabel'
-import { ProposalAttributes } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../../entities/Proposal/types'
 
 import './ProposalItem.css'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -41,6 +41,8 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
     onSubscribe && onSubscribe(e, proposal)
   }
 
+  const showLeadingOption = winner.votes > 0 && proposal?.type !== ProposalType.Feature
+
   return <Card as={Link} to={locations.proposal(proposal.id)} style={{ width: '100%' }} className={TokenList.join([
       "ProposalItem",
       subscribed && "ProposalItem--subscribed",
@@ -52,7 +54,7 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
           {account && <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
             <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20"/>
           </Button>}
-          {winner.votes > 0 && <LeadingOption status={proposal.status} leadingOption={winner.choice} metVP={winner.power >= (proposal.required_to_pass || 0)} />}
+          {showLeadingOption && <LeadingOption status={proposal.status} leadingOption={winner.choice} metVP={winner.power >= (proposal.required_to_pass || 0)} />}
         </div>
         <div className="ProposalItem__Status">
           <StatusLabel status={proposal.status} />
