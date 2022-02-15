@@ -45,6 +45,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
   const untilFinish = useCountdown(finish_at)
   const started = untilStart.time === 0
   const finished = untilFinish.time === 0
+  const isCreator = proposal?.user === account
 
   return <div {...props} className={TokenList.join([
     'DetailsSection',
@@ -87,13 +88,22 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       </Button>}
 
       {account && (!vote || changingVote) && choices.map((currentChoice, currentChoiceIndex) => {
+        const handleVoteClick = (e: React.MouseEvent<any>) => {
+          if (isCreator || !onVote) {
+            return
+          }
+      
+          onVote(e, currentChoice, currentChoiceIndex + 1)
+        }
+
         return <ChoiceButton
           key={currentChoice}
           choice={currentChoice}
           voted={vote?.choice === (currentChoiceIndex + 1)}
-          disabled={vote?.choice === (currentChoiceIndex + 1) || !started || finished}
+          disabled={vote?.choice === (currentChoiceIndex + 1) || !started || finished || isCreator}
           color={calculateChoiceColor(currentChoice, currentChoiceIndex)}
-          onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
+          onClick={handleVoteClick}
+          proposalType={proposal?.type}
         />
       })}
       {started && !finished && account && (!vote || changingVote) && <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
@@ -107,7 +117,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
         </div>
       </div>}
 
-      {account && vote && !changingVote && <ChoiceButton disabled={!started || finished} choice={choices[vote.choice - 1]} color={calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1)} voted={true} />}
+      {account && vote && !changingVote && <ChoiceButton disabled={!started || finished || isCreator} choice={choices[vote.choice - 1]} color={calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1)} voted={true} proposalType={proposal?.type} />}
     </div>}
     {started && !finished && account && vote && !changingVote && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>{l('page.proposal_detail.vote_change')}</Button>}
     {started && !finished && account && vote && changingVote && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, false)}>{l('general.cancel')}</Button>}

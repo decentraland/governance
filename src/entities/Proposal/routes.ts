@@ -344,7 +344,7 @@ export async function createProposalFeature(req: WithAuth) {
     finish_at: dayjs().endOf('quarter').utc().toDate(),
     configuration: {
       ...configuration,
-      choices: ['yes']
+      choices: ['upvote']
     },
   })
 }
