@@ -341,7 +341,8 @@
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal"
       },
-      "prioritized": "The **Marketplace Team** has picked this initiative to be implemented over the course of the next quarter.\n\n[Read More...](https://trello.com/b/YZnGNh5z/decentraland-roadmap-2022-and-beyond)"
+      "prioritized": "The **Marketplace Team** has picked this initiative to be implemented over the course of the next quarter.\n\n[Read More...](https://trello.com/b/YZnGNh5z/decentraland-roadmap-2022-and-beyond)",
+      "upvote_not_allowed": "Upvoting your own request is not allowed"
     },
     "proposal_activity": {
       "title": "Decentraland DAO",

@@ -106,7 +106,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
           proposalType={proposal?.type}
         />
       })}
-      {started && !finished && account && (!vote || changingVote) && <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
+      {started && !finished && account && !isCreator && (!vote || changingVote) && <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
         <div>
           {l('page.proposal_detail.voting_with', {
             vp: <Bold>{l(`general.number`, { value: votingPower || 0 })} VP</Bold>,
@@ -118,8 +118,10 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       </div>}
 
       {account && vote && !changingVote && <ChoiceButton disabled={!started || finished || isCreator} choice={choices[vote.choice - 1]} color={calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1)} voted={true} proposalType={proposal?.type} />}
+     
+      {isCreator && proposal?.type === ProposalType.Feature && <p className="DetailsSection__UpvoteDisabledText">{l('page.proposal_detail.upvote_not_allowed')}</p>}
     </div>}
-    {started && !finished && account && vote && !changingVote && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>{l('page.proposal_detail.vote_change')}</Button>}
+    {started && !finished && account && vote && !changingVote && proposal?.type !== ProposalType.Feature && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>{l('page.proposal_detail.vote_change')}</Button>}
     {started && !finished && account && vote && changingVote && <Button basic onClick={(e) => onChangeVote && onChangeVote(e, false)}>{l('general.cancel')}</Button>}
   </div>
 })

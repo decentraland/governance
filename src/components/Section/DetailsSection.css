@@ -32,6 +32,14 @@
   margin-bottom: 5px;
 }
 
+.DetailsSection .DetailsSection__UpvoteDisabledText {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: #37333D;
+}
+
 .DetailsSection .DetailsSection__Content {
   padding: 15px;
   position: relative;
