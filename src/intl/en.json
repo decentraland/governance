@@ -16,9 +16,9 @@
   },
   "error": {
     "poll": {
-      "title_empty": "Title field is too short",
+      "title_empty": "Title field is empty",
       "title_too_short": "Title field is too short",
-      "title_too_large": "Title field is too short",
+      "title_too_large": "Title field is too large",
       "description_empty": "Description field is empty",
       "description_too_short": "Description field is too short",
       "description_too_large": "Description field is too large",
@@ -139,6 +139,26 @@
       "category_invalid": "Category is invalid",
       "tier_empty": "Tier is empty",
       "tier_invalid": "Tier is invalid"
+    },
+    "linked_wearables": {
+      "name_empty": "Name is empty",
+      "name_too_short": "Name is too short",
+      "name_too_large": "Name is too large",
+      "introduction_empty": "Introduction is empty",
+      "introduction_too_short": "Introduction is too short",
+      "introduction_too_large": "Introduction is too large",
+      "nft_collections_empty": "Description is empty",
+      "nft_collections_too_short": "Description is too short",
+      "nft_collections_too_large": "Description is too large",
+      "governance_empty": "Proof is empty",
+      "governance_too_short": "Proof is too short",
+      "governance_too_large": "Proof is too large",
+      "motivation_empty": "Motivation is empty",
+      "motivation_too_short": "Motivation is too short",
+      "motivation_too_large": "Motivation is too large",
+      "smart_contract_empty": "Insert at least one smart contract address",
+      "managers_empty": "Insert at least one manager address",
+      "address_invalid": "Some address is invalid"
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
@@ -570,7 +590,33 @@
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
       "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
     },
-    "subscription_banner":{
+    "submit_linked_wearables": {
+      "title": "Linked Wearables Registry",
+      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Partners need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](http://builder.decentraland.org/). By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland. Note that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
+      "name_label": "Name",
+      "name_detail": "Please enter the name that represents your Project, Company or Community as a whole",
+      "name_placeholder": "Enter the name here",
+      "introduction_label": "Introduction",
+      "introduction_detail": "Please describe who you are and what are you known for",
+      "introduction_placeholder": "Introduce yourself here",
+      "nft_collections_label": "NFT Collections",
+      "nft_collections_detail": "Describe the NFT Collections you created. If it’s only one, just describe that one",
+      "nft_collections_placeholder": "Describe the NFT Collections you created here",
+      "smart_contract_label": "Smart Contract",
+      "smart_contract_detail": "Share the Addresses of the smart contracts of your NFT collections",
+      "governance_label": "Governance",
+      "governance_detail": "Provide proof that you are the rightful owner or representative of the Project, Company or Community",
+      "governance_placeholder": "Provide proof here",
+      "motivation_label": "Motivation",
+      "motivation_detail": "Why do you want to have your NFTs represented in Decentraland",
+      "motivation_placeholder": "A brief motivation",
+      "managers_label": "Managers",
+      "managers_detail": "Addresses of the representatives that will Manage the tool. Note: Managers are the only ones allowed to add item representations and manage the tool",
+      "programmatically_generated_label": "At least one collection was programmatically generated (e.g. CryptoPunks and BAYC were generated this way)",
+      "address_placeholder": "Ethereum address {counter}",
+      "address_add": "Add address"
+    },
+    "subscription_banner": {
       "title": "Stay in the loop",
       "description": "The DAO Weekly Newsletter includes updates regarding proposals",
       "subscribe_button_label": "Subscribe"

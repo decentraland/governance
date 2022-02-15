@@ -606,19 +606,43 @@ export const newLinkedWearablesScheme = {
     },
     introduction: {
       type: 'string',
-      minLength: 1,
+      minLength: 20,
       maxLength: 750,
     },
     nft_collections: {
       type: 'string',
-      minLength: 1,
+      minLength: 20,
       maxLength: 750,
     },
-    nft_collections: {
+    smart_contract: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: "address",
+      },
+      minItems: 1
+    },
+    governance: {
       type: 'string',
-      minLength: 1,
+      minLength: 20,
       maxLength: 750,
     },
+    motivation: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 750,
+    },
+    managers: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: "address",
+      },
+      minItems: 1
+    },
+    programmatically_generated: {
+      type: 'boolean',
+    }
   }
 }
 
