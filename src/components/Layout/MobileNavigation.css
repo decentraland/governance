@@ -3,6 +3,10 @@
   margin-bottom: 2px !important;
 }
 
+.ui.sub.header.Browse__header {
+  margin-top: 16px;
+}
+
 .Browse__Button {
   display: block !important;
 }

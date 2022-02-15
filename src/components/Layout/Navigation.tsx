@@ -3,7 +3,8 @@ import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Link } from 'gatsby-plugin-intl'
-import locations, { ProposalActivityList, ProposalListView } from '../../modules/locations'
+import locations, { ProposalActivityList } from '../../modules/locations'
+import SearchInput from "../Search/SearchInput"
 import './Navigation.css'
 
 export enum NavigationTab {
@@ -16,6 +17,7 @@ export enum NavigationTab {
 
 type NavigationProps = {
   activeTab?: NavigationTab
+  search?: boolean
 }
 
 const Navigation = (props: NavigationProps) => {
@@ -27,11 +29,6 @@ const Navigation = (props: NavigationProps) => {
         <Link to={locations.proposals()}>
           <Tabs.Tab active={props.activeTab === NavigationTab.Proposals}>
             {l('navigation.proposals')}
-          </Tabs.Tab>
-        </Link>
-        <Link to={locations.proposals({ view: ProposalListView.Enacted })}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Enacted}>
-            {l('navigation.enacted')}
           </Tabs.Tab>
         </Link>
         {user && <Link to={locations.balance()}>
@@ -49,7 +46,11 @@ const Navigation = (props: NavigationProps) => {
             {l('navigation.activity')}
           </Tabs.Tab>
         </Link>}
+
       </Tabs.Left>
+      <Tabs.Right>
+        <SearchInput />
+      </Tabs.Right>
     </Tabs>
   )
 }

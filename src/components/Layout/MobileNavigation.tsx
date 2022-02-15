@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
@@ -19,7 +19,7 @@ function MobileNavigation() {
 
 
   const selectedButton: any = {
-    inverted: true, 
+    inverted: true,
     primary: true
   }
   const unselectedButton: any = {
@@ -41,13 +41,13 @@ function MobileNavigation() {
   }, [page])
 
   return <>
-    <Header sub>{l(`page.proposal_list.browse`)}</Header>
+    <Header sub className='Browse__header'>{l(`page.proposal_list.browse`)}</Header>
     <Grid textAlign='center' className='Browse'>
       <Grid.Row columns={2}>
         <Grid.Column>
           <Button
-            className='Browse__Button' 
-            size="small" 
+            className='Browse__Button'
+            size="small"
             {...proposalsButtonProps}
             as={Link}
             href={locations.proposals()}
@@ -60,8 +60,8 @@ function MobileNavigation() {
         </Grid.Column>
         <Grid.Column>
           <Button
-            className='Browse__Button' 
-            size="small" 
+            className='Browse__Button'
+            size="small"
             {...transparencyButtonProps}
             as={Link}
             href={locations.transparency()}

@@ -12,7 +12,29 @@
     "wrapping": "Voting Power",
     "activity": "Activity",
     "enacted": "Enacted",
-    "transparency": "Transparency"
+    "transparency": "Transparency",
+    "search": {
+      "mobile": {
+        "placeholder": "Search on the DAO...",
+        "focus_placeholder": "Start typing"
+      },
+      "placeholder": "Search...",
+      "search_results": "Search results for {title}... ",
+      "no_matches": "No proposals match the search criteria",
+      "sorting": {
+        "DESC": "Latest",
+        "ASC": "Oldest"
+      },
+      "category_filter_title": "Filter by Category",
+      "status_filter_title": "Filter by Status",
+      "timeframe_filter": {
+        "title": "Filter by TimeFrame",
+        "all": "All",
+        "week": "Last Week",
+        "month": "Last Month",
+        "3months": "Last 90 Days"
+      }
+    }
   },
   "mobile_login": {
     "exclamation": "Oh oh...",

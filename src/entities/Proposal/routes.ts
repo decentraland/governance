@@ -128,24 +128,32 @@ function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
 }
 
 export async function getProposals(req: WithAuth<Request>) {
-  const type = req.query.type && String(req.query.type)
-  const status = req.query.status && String(req.query.status)
-  const user = req.query.user && String(req.query.user)
+  const query = req.query
+  const type = query.type && String(query.type)
+  const status = query.status && String(query.status)
+  const user = query.user && String(query.user)
+  const search = query.search && String(query.search)
+  const timeFrame = query.timeFrame && String(query.timeFrame)
+  const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
 
   let subscribed: string | undefined = undefined
-  if (req.query.subscribed) {
+  if (query.subscribed) {
     subscribed = req.auth || ''
   }
 
-  let offset = req.query.offset && Number.isFinite(Number(req.query.offset)) ?
-    Number(req.query.offset) : MIN_PROPOSAL_OFFSET
+  let offset = query.offset && Number.isFinite(Number(query.offset)) ?
+    Number(query.offset) : MIN_PROPOSAL_OFFSET
 
-  let limit = req.query.limit && Number.isFinite(Number(req.query.limit)) ?
-    Number(req.query.limit) : MAX_PROPOSAL_LIMIT
+  let limit = query.limit && Number.isFinite(Number(query.limit)) ?
+    Number(query.limit) : MAX_PROPOSAL_LIMIT
+
+  if (search && !/\w{3}/.test(search)) {
+      return []
+  }
 
   const [ total, data ] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, offset, limit })
+    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed }),
+    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit})
   ])
 
   return { ok: true, total, data }
@@ -472,7 +480,10 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     rejected_description: null,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
+    textsearch: null
   }
+
+  newProposal.textsearch = ProposalModel.textsearch(newProposal)
 
   try {
     await ProposalModel.create(newProposal)
@@ -552,6 +563,11 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.rejected_by = user
     update.rejected_description = configuration.description || null;
   }
+
+  update.textsearch = ProposalModel.textsearch({
+    ...proposal,
+    ...update,
+  })
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
 
