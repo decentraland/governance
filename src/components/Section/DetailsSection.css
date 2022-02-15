@@ -14,6 +14,24 @@
   pointer-events: none;
 }
 
+.DetailsSection .DetailsSection__PrioritizeInfo {
+  margin-top: 24px;
+  border-radius: 6px;
+  background: #F3F2F5;
+  padding: 10px 15px;
+}
+
+.DetailsSection .DetailsSection__PrioritizeInfo .dg.Paragraph {
+  padding: 0;
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.DetailsSection .DetailsSection__PrioritizeInfo .dg.Paragraph:first-child {
+  margin-bottom: 5px;
+}
+
 .DetailsSection .DetailsSection__Content {
   padding: 15px;
   position: relative;

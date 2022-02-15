@@ -8,7 +8,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import ChoiceProgress from '../Status/ChoiceProgress'
 import ChoiceButton from './ChoiceButton'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -64,6 +64,9 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
       {results.map((result) => {
         return <ChoiceProgress key={result.choice} color={result.color} choice={result.choice} votes={result.votes} power={result.power} progress={result.progress} />
       })}
+      {proposal?.type === ProposalType.Feature && proposal?.status === ProposalStatus.Prioritized && (
+        <div className="DetailsSection__PrioritizeInfo">{l.markdown('page.proposal_detail.prioritized')}</div>
+      )}
       <ProposalPromotionSection proposal={proposal} loading={loading}/>
       {proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed) &&
         <div className="DetailsSection__Secondary">

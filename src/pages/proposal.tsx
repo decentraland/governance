@@ -195,12 +195,30 @@ export default function ProposalPage() {
             {
               isCommittee &&
               proposal?.status === ProposalStatus.Passed &&
+              proposal?.type !== ProposalType.Feature &&
               <Button
                 basic
                 loading={updatingStatus}
                 style={{ width: '100%' }}
                 onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Enacted })}
               >{l('page.proposal_detail.enact')}</Button>
+            }
+            {
+              isCommittee &&
+              proposal?.status === ProposalStatus.Passed &&
+              proposal?.type === ProposalType.Feature &&
+              <Button
+                basic
+                loading={updatingStatus}
+                style={{ width: "100%" }}
+                onClick={() =>
+                  patchOptions({
+                    confirmStatusUpdate: ProposalStatus.Prioritized,
+                  })
+                }
+              >
+                {l("page.proposal_detail.prioritize")}
+              </Button>
             }
             {
               isCommittee &&
@@ -212,23 +230,6 @@ export default function ProposalPage() {
                 onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
               >{l('page.proposal_detail.pass')}</Button>
             }
-            {
-              isCommittee &&
-              proposal?.status === ProposalStatus.Passed &&
-              proposal?.type === ProposalType.Feature && (
-                <Button
-                  basic
-                  loading={updatingStatus}
-                  style={{ width: "100%" }}
-                  onClick={() =>
-                    patchOptions({
-                      confirmStatusUpdate: ProposalStatus.Prioritized,
-                    })
-                  }
-                >
-                  {l("page.proposal_detail.prioritize")}
-                </Button>
-              )}
             {
               isCommittee &&
               proposal?.status === ProposalStatus.Finished &&
