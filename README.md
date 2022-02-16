@@ -81,6 +81,12 @@ user your `user:pwd` for the connection string, it should look like this:
 postgres://usr:pwd@localhost:5432/snapshot
 ````
 
+If you installed postgres using brew, you might need to create a role for npm to run the migrations
+To do so, run this in psql 
+```sql
+CREATE USER postgres SUPERUSER;
+```
+
 once you have a `CONNECTION_STRING` you can setup you database tables using the following command
 
 ```bash
