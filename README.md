@@ -13,6 +13,13 @@ The governance hub for Decentraland. Create and vote on proposals that help shap
 
 ## Setup
 
+---
+**NOTE**
+
+If you are using WSL (Windows Subsystem for Linux) as your development environment, clone the repository into the WSL filesystem. If you clone it inside the Windows filesystem, the project will not work.
+
+---
+
 ### Node version
 
 use node 12.22.7
@@ -41,6 +48,7 @@ if you are running this project locally you only need to check the following env
 The minimum amount of voting power require to pass a proposal of each type it's defined in these variables, if they are not defined or are not numbers `0` will be used instead
 
 ```bash
+  GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES=0
   GATSBY_VOTING_POWER_TO_PASS_GRANT=0
   GATSBY_VOTING_POWER_TO_PASS_CATALYST=0
   GATSBY_VOTING_POWER_TO_PASS_BAN_NAME=0

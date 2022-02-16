@@ -8,8 +8,7 @@ import { Radio } from "decentraland-ui/dist/components/Radio/Radio"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
-import { SelectField } from "decentraland-ui/dist/components/SelectField/SelectField"
-import { isProposalGrantCategory, isProposalGrantTier, newLinkedWearablesScheme, newProposalGrantScheme, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
+import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -19,15 +18,14 @@ import { Governance } from '../../api/Governance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import { asNumber } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
+import omit from 'lodash.omit'
 
 import './submit.css'
-import omit from 'lodash.omit'
 
 type LinkedWearablesState = {
   name: string,
@@ -55,7 +53,7 @@ const initialPollState: LinkedWearablesState = {
   programmatically_generated: false,
 }
 
-const schema = newLinkedWearablesScheme.properties
+const schema = newProposalLinkedWearablesScheme.properties
 const edit = (state: LinkedWearablesState, props: Partial<LinkedWearablesState>) => {
   return {
     ...state,
@@ -162,28 +160,25 @@ export default function SubmitLinkedWearables() {
 
   useEffect(() => {
     if (state.validated) {
+      console.log(state.value)
       setFormDisabled(true) // REVISAR
-      // Promise.resolve()
-      //   .then(async () => {
-      //     const size = asNumber(state.value.size)
-      //     const category = state.value.category as ProposalGrantCategory
-      //     const tier = state.value.tier as ProposalGrantTier
-      //     return Governance.get().createProposalGrant({
-      //       ...state.value,
-      //       category,
-      //       tier,
-      //       size
-      //     })
-      //   })
-      //   .then((proposal) => {
-      //       loader.proposals.set(proposal.id, proposal)
-      //       navigate(locations.proposal(proposal.id, {new: 'true'}), { replace: true })
-      //   })
-      //   .catch((err) => {
-      //     console.error(err, { ...err })
-      //     editor.error({ '*': err.body?.error || err.message })
-      //     setFormDisabled(false)
-      //   })
+      Promise.resolve()
+        .then(async () => {
+          return Governance.get().createProposalLinkedWearables({
+            ...state.value,
+            smart_contract: Object.values(state.value.smart_contract),
+            managers: Object.values(state.value.managers),
+          })
+        })
+        .then((proposal) => {
+            loader.proposals.set(proposal.id, proposal)
+            navigate(locations.proposal(proposal.id, {new: 'true'}), { replace: true })
+        })
+        .catch((err) => {
+          console.error(err, { ...err })
+          editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
+        })
     }
   }, [ state.validated ])
 
@@ -205,6 +200,8 @@ export default function SubmitLinkedWearables() {
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
     </Container>
   }
+
+  const addressesStyle: any = { width: '80%', margin: 'auto', textAlign: 'center'}
 
   return <ContentLayout small>
     <Head
@@ -239,7 +236,10 @@ export default function SubmitLinkedWearables() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_linked_wearables.introduction_label')}</Label>
+      <Label>
+        {l('page.submit_linked_wearables.introduction_label')}
+        <MarkdownNotice />
+        </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.introduction_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -259,7 +259,10 @@ export default function SubmitLinkedWearables() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_linked_wearables.nft_collections_label')}</Label>
+      <Label>
+        {l('page.submit_linked_wearables.nft_collections_label')}
+        <MarkdownNotice />
+        </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.nft_collections_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -282,7 +285,7 @@ export default function SubmitLinkedWearables() {
       <Label>{l('page.submit_linked_wearables.smart_contract_label')}</Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.smart_contract_detail')}</Paragraph>
       <Paragraph small primary>{l.optional(state.error.smart_contract)}</Paragraph>
-      <div style={{ width: '80%', margin: '0 5%' }}>
+      <div style={{...addressesStyle}}>
         {Object.keys(state.value.smart_contract).sort().map((key, i) => <Field
           key={key}
           placeholder={l('page.submit_linked_wearables.address_placeholder', {'counter': String(i + 1)})}
@@ -292,11 +295,14 @@ export default function SubmitLinkedWearables() {
           onChange={(_, { value }) => handleEditOption('smart_contract', key, value)}
           disabled={formDisabled}
         />)}
-        <Button basic style={{ width: '100%' }} onClick={() => handleAddOption('smart_contract')}>{l('page.submit_linked_wearables.address_add')}</Button>
+        <Button basic onClick={() => handleAddOption('smart_contract')}>{l('page.submit_linked_wearables.address_add')}</Button>
       </div>
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_linked_wearables.governance_label')}</Label>
+      <Label>
+        {l('page.submit_linked_wearables.governance_label')}
+        <MarkdownNotice />
+        </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.governance_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -316,7 +322,10 @@ export default function SubmitLinkedWearables() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>{l('page.submit_linked_wearables.motivation_label')}</Label>
+      <Label>
+        {l('page.submit_linked_wearables.motivation_label')}
+        <MarkdownNotice />
+        </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.motivation_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -339,7 +348,7 @@ export default function SubmitLinkedWearables() {
       <Label>{l('page.submit_linked_wearables.managers_label')}</Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.managers_detail')}</Paragraph>
       <Paragraph small primary>{l.optional(state.error.managers)}</Paragraph>
-      <div style={{ width: '80%', margin: '0 5%' }}>
+      <div style={{...addressesStyle}}>
         {Object.keys(state.value.managers).sort().map((key, i) => <Field
           key={key}
           placeholder={l('page.submit_linked_wearables.address_placeholder', {'counter': String(i + 1)})}
@@ -349,7 +358,7 @@ export default function SubmitLinkedWearables() {
           onChange={(_, { value }) => handleEditOption('managers', key, value)}
           disabled={formDisabled}
         />)}
-        <Button basic style={{ width: '100%' }} onClick={() => handleAddOption('managers')}>{l('page.submit_linked_wearables.address_add')}</Button>
+        <Button basic onClick={() => handleAddOption('managers')}>{l('page.submit_linked_wearables.address_add')}</Button>
       </div>
     </ContentSection>
     <ContentSection>

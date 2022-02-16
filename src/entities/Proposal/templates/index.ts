@@ -1,5 +1,6 @@
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import {
+  NewProposalLinkedWearables,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalGrant,
@@ -17,9 +18,11 @@ import * as poi from './poi'
 import * as poll from './poll'
 import * as draft from './draft'
 import * as governance from './governance'
+import * as linkedWearables from './LinkedWearables'
 import { template } from './utils'
 
 type NewConfiguration =
+  | NewProposalLinkedWearables
   | NewProposalBanName
   | NewProposalCatalyst
   | NewProposalGrant
@@ -45,7 +48,7 @@ export const title = async ({ type, configuration }: { type: ProposalType, confi
     case ProposalType.Governance:
       return governance.title(configuration as any)
     case ProposalType.LinkedWearables:
-      return ''
+      return linkedWearables.title(configuration as any)
   }
 }
 
@@ -66,7 +69,7 @@ export const description = async ({ type, configuration }: { type: ProposalType,
     case ProposalType.Governance:
       return await governance.description(configuration as any)
     case ProposalType.LinkedWearables:
-      return ''
+      return linkedWearables.description(configuration as any)
   }
 }
 

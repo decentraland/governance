@@ -466,6 +466,7 @@ export function isProposalGrantTier(value:  string | null | undefined): boolean 
 }
 
 export const ProposalRequiredVP = {
+  [ProposalType.LinkedWearables]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
   [ProposalType.Grant]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT, 0),
   [ProposalType.Catalyst]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_CATALYST, 0),
   [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
@@ -585,7 +586,18 @@ export const newProposalGrantScheme = {
   }
 }
 
-export const newLinkedWearablesScheme = {
+export type NewProposalLinkedWearables = {
+  name: string,
+  introduction: string,
+  nft_collections: string,
+  smart_contract: string[],
+  governance: string,
+  motivation: string,
+  managers: string[],
+  programmatically_generated: boolean,
+}
+
+export const newProposalLinkedWearablesScheme = {
   type: 'object',
   additionalProperties: false,
   required: [
