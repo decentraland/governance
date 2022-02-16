@@ -160,8 +160,7 @@ export default function SubmitLinkedWearables() {
 
   useEffect(() => {
     if (state.validated) {
-      console.log(state.value)
-      setFormDisabled(true) // REVISAR
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           return Governance.get().createProposalLinkedWearables({
