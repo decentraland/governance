@@ -1,3 +1,9 @@
+@media (max-width: 767px) {
+  .DetailsSection__Content.OnlyDesktop {
+    display: none;
+  }
+}
+
 .ProposalPromotionSection {
   border-top: 1px solid rgba(34,36,38,.1);
   padding-top: 16px;

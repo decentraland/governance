@@ -76,7 +76,7 @@ export default React.memo(function ProposalResultSection({ proposal, loading, di
         </div>
       }
     </div>
-    {!finished && <div className="DetailsSection__Content">
+    {!finished && <div className="DetailsSection__Content OnlyDesktop">
       <Loader active={!loading && accountState.loading} />
 
       {!account && <Button basic loading={accountState.loading} disabled={accountState.loading} onClick={() => accountState.select()}>
