@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import './TokenBalanceCard.css'
-import Icon from 'react-crypto-icons'
+import Icon from '@jparnaudo/react-crypto-icons'
 import TokensPerWalletPopup from './TokensPerWalletPopup'
 import { AggregatedTokenBalance } from '../../entities/Transparency/types'
 
