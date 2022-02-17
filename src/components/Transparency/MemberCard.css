@@ -17,11 +17,6 @@
   }
 }
 
-.MemberCard .MemberCard_header {
-  display: flex;
-  align-items: baseline;
-}
-
 .MemberCard .MemberCard_description {
   display: flex;
   flex-direction: column;
