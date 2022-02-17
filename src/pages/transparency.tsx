@@ -52,7 +52,7 @@ export default function WrappingPage() {
     {!data && <Loader active />}
     {data && <>
       <Head
-        title={l('page.transparency.mission.title') || ''}
+        title={l('page.transparency.title') || ''}
         description={l('page.transparency.mission.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />

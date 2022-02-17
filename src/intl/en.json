@@ -389,8 +389,9 @@
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
     "transparency": {
+      "title": "Transparency",
       "mission": {
-          "title": "Transparency",
+          "title": "Our Mission",
           "description": "To support and facilitate the continual growth of the Decentraland platform.",
           "join_discord_button": "Join our Discord",
           "docs_button": "Check our docs",
