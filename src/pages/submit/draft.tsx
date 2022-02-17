@@ -6,7 +6,6 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 import { newProposalDraftScheme} from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -21,11 +20,12 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import './submit.css'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { useLocation } from '@reach/router'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import LogIn from '../../components/User/LogIn'
+import './submit.css'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
@@ -175,14 +175,10 @@ export default function SubmitDraftProposal() {
   }
 
   if (!account) {
-    return <Container>
-      <Head
-        title={l('page.submit_draft.title') || ''}
-        description={l('page.submit_draft.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
+    return <LogIn
+      title={l('page.submit_draft.title') || ''}
+      description={l('page.submit_draft.description') || ''}
+    />
   }
 
   return <ContentLayout small>

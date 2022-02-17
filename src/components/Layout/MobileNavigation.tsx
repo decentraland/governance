@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useLocation } from '@reach/router'
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
