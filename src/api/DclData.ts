@@ -13,7 +13,7 @@ export type MonthlyTotal = {
 }
 
 export type Member = {
-  address: string,
+  avatar: string,
   name: string
 }
 
