@@ -6,6 +6,7 @@
   "scripts": {
     "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --runInBand",
     "build": "concurrently -c blue,green -n TYPESCRIPT,GATSBY 'tsc -p .' 'gatsby build'",
+    "build:staging": "STAGING=true gatsby build",
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
