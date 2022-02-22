@@ -25,17 +25,11 @@ COPY ./package-lock.json /app/package-lock.json
 COPY ./package.json      /app/package.json
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
-
 RUN NODE_ENV=staging npm ci
-
 RUN apk del native-deps && rm -rf /var/cache/apk/*
 
-COPY ./lib               /app/lib
-COPY ./public            /app/public
-COPY ./static            /app/static
-COPY ./entrypoint.sh     /app/entrypoint.sh
-COPY ./gatsby-browser.js /app/gatsby-browser.js
-COPY ./gatsby-config.js  /app/gatsby-config.js
-COPY ./gatsby-node.js    /app/gatsby-node.js
-COPY ./gatsby-ssr.js     /app/gatsby-ssr.js
-COPY ./.env.*            /app/
+COPY ./lib                                  /app/lib
+COPY ./.env.*                               /app/
+COPY ./docker/staging/entrypoint.sh         /app/entrypoint.sh
+
+ENTRYPOINT [ "./entrypoint.sh" ]

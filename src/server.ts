@@ -1,3 +1,9 @@
+if(process.env.STAGING) {
+  require("dotenv").config({
+    path: '.env.staging',
+  })
+}
+
 import express from 'express'
 import manager from 'decentraland-gatsby/dist/entities/Job/index'
 import { jobInitializer } from 'decentraland-gatsby/dist/entities/Job/utils'
