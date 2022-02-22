@@ -1,0 +1,33 @@
+
+.ui.sub.header.GrantList__Sub {
+  border-bottom: 1px solid rgba(34,36,38,.1);
+  padding-bottom: 1em;
+  margin-bottom: 0;
+}
+
+.ui.header.GrantList__Total {
+  font-size: x-large;
+  font-weight: 500;
+}
+
+.content.GrantList__Content {
+  border-top: 0 !important;
+}
+
+.ItemsList {
+  width: 100%;
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 16px;
+  position: relative;
+}
+
+a.GrantList__Link {
+  color: #6299f0;
+  font-weight: 500;
+  font-size: 17px;
+  display: flex;
+  margin-top: 0.25em;
+  align-items: center;
+}

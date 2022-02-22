@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
 import { navigate } from 'gatsby-plugin-intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -162,6 +162,7 @@ export default function SubmitGovernanceProposal() {
       value: proposal.id
     }]
   }, [] , { initialValue: undefined })
+  const [formDisabled, setFormDisabled] = useState(false);
 
   useEffect(() => {
     if (!!preselectedLinkedProposalId) {
@@ -173,6 +174,7 @@ export default function SubmitGovernanceProposal() {
           let configuration = linkedProposal.configuration as NewProposalDraft
           editor.set({
             linked_proposal_id: linkedProposal.id,
+            title: configuration.title,
             summary: configuration.summary,
             abstract: configuration.abstract,
             motivation: configuration.motivation,
@@ -188,6 +190,7 @@ export default function SubmitGovernanceProposal() {
 
   useEffect(() => {
     if (state.validated) {
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           return Governance.get().createProposalGovernance({
@@ -202,6 +205,7 @@ export default function SubmitGovernanceProposal() {
         .catch((err) => {
           console.error(err, { ...err })
           editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
         })
     }
   }, [state.validated])
@@ -269,7 +273,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.title.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
         loading={votingPowerState.loading}
       />
     </ContentSection>
@@ -294,7 +298,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.summary.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -318,7 +322,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.abstract.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -342,7 +346,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.motivation.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -366,7 +370,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.specification.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -391,7 +395,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.impacts.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -416,7 +420,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.implementation_pathways.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 
@@ -440,7 +444,7 @@ export default function SubmitGovernanceProposal() {
             limit: schema.specification.maxLength
           })
         }
-        disabled={submissionVpNotMet}
+        disabled={submissionVpNotMet || formDisabled}
       />
     </ContentSection>
 

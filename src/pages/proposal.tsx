@@ -43,6 +43,8 @@ import NotFound from "decentraland-gatsby/dist/components/Layout/NotFound"
 import ProposalFooterPoi from "../components/Proposal/ProposalFooterPoi"
 import ProposalComments from '../components/Proposal/ProposalComments'
 import { FollowUpModal } from '../components/Modal/FollowUpModal'
+import { isUnderMaintenance } from '../modules/maintenance'
+import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 
 type ProposalPageOptions = {
   changing: boolean,
@@ -57,7 +59,7 @@ export default function ProposalPage() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false, showFollowUpModal: false})
+  const [options, patchOptions] = usePatchState<ProposalPageOptions>({ changing: false, confirmSubscription: false, confirmDeletion: false, confirmStatusUpdate: false, showVotesList: false, showFollowUpModal: false })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
@@ -73,7 +75,7 @@ export default function ProposalPage() {
       patchOptions({ changing: false, confirmSubscription: !votes[account] })
       votesState.reload()
     }
-  }, [ proposal, account, provider, votes ])
+  }, [proposal, account, provider, votes])
 
   const [subscribing, subscribe] = useAsyncTask(async (subscribe: boolean = true) => {
     if (proposal) {
@@ -87,29 +89,34 @@ export default function ProposalPage() {
 
       patchOptions({ confirmSubscription: false })
     }
-  }, [ proposal, subscriptionsState ])
+  }, [proposal, subscriptionsState])
 
-  const [updatingStatus, updateProposalStatus] = useAsyncTask(async (status: ProposalStatus, description: string) => {
+  const [updatingStatus, updateProposalStatus] = useAsyncTask(async (status: ProposalStatus, vesting_address: string | null, description: string) => {
     if (proposal && account && committee && committee.includes(account)) {
-      const updateProposal = await Governance.get().updateProposalStatus(proposal.id, status, description)
+      const updateProposal = await Governance.get().updateProposalStatus(proposal.id, status, vesting_address, description)
       proposalState.set(updateProposal)
       patchOptions({ confirmStatusUpdate: false })
     }
-  }, [ proposal, account, committee, proposalState, patchOptions ])
+  }, [proposal, account, committee, proposalState, patchOptions])
 
-  const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [ proposal, account ])
-  const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [ proposal, account, committee ])
+  const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
+  const isCommittee = useMemo(() => !!(proposal && account && committee && committee.includes(account)), [proposal, account, committee])
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
     if (proposal && account && (proposal.user === account || isCommittee)) {
       await Governance.get().deleteProposal(proposal.id)
       navigate(locations.proposals())
     }
-  }, [ proposal, account, isCommittee ])
+  }, [proposal, account, isCommittee])
 
   useEffect(() => {
     patchOptions({ showFollowUpModal: params.get('new') === "true" })
   }, [])
+
+  function closeFollowUpModal() {
+    patchOptions({ showFollowUpModal: false })
+    navigate(locations.proposal(proposal!.id), { replace: true })
+  }
 
   if (proposalState.error) {
     return <>
@@ -119,9 +126,17 @@ export default function ProposalPage() {
     </>
   }
 
-  function closeFollowUpModal() {
-    patchOptions({ showFollowUpModal: false })
-    navigate(locations.proposal(proposal!.id), { replace: true })
+  if (isUnderMaintenance()) {
+    return <>
+      <Head
+        title={l('page.proposal_detail.title') || ''}
+        description={l('page.proposal_detail.description') || ''}
+        image="https://decentraland.org/images/decentraland.png"
+      />
+      <ContentLayout className="ProposalDetailPage">
+        <MaintenancePage />
+      </ContentLayout>
+    </>
   }
 
   return <>
@@ -165,18 +180,18 @@ export default function ProposalPage() {
               votes={votes}
               votingPower={votingPower || 0}
               changingVote={options.changing}
-              onChangeVote={ (_, changing) => patchOptions({ changing }) }
+              onChangeVote={(_, changing) => patchOptions({ changing })}
               onOpenVotesList={() => patchOptions({ showVotesList: true })}
               onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
             />
             <ProposalDetailSection proposal={proposal} />
             {(isOwner || isCommittee) && <Button
-                basic
-                loading={deleting}
-                style={{ width: '100%' }}
-                disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
-                onClick={() => patchOptions({ confirmDeletion: true })}
-              >{l('page.proposal_detail.delete')}</Button>
+              basic
+              loading={deleting}
+              style={{ width: '100%' }}
+              disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
+              onClick={() => patchOptions({ confirmDeletion: true })}
+            >{l('page.proposal_detail.delete')}</Button>
             }
             {
               isCommittee &&
@@ -214,6 +229,7 @@ export default function ProposalPage() {
     </ContentLayout>
     <VotesList
       open={options.showVotesList}
+      proposal={proposal}
       votes={votes}
       onClose={() => patchOptions({ showVotesList: false })}
     />
@@ -231,9 +247,10 @@ export default function ProposalPage() {
     />
     <UpdateProposalStatusModal
       open={!!options.confirmStatusUpdate}
+      proposal={proposal}
       status={options.confirmStatusUpdate || null}
       loading={updatingStatus}
-      onClickAccept={(_, status, description) => updateProposalStatus(status, description)}
+      onClickAccept={(_, status, vesting_contract, description) => updateProposalStatus(status, vesting_contract, description)}
       onClose={() => patchOptions({ confirmStatusUpdate: false })}
     />
     <FollowUpModal

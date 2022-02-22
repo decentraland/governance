@@ -7,20 +7,21 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 
 import './ProposalModal.css'
 import './VotesList.css'
 
 export type VotesListModalProps = Omit<ModalProps, 'children'> & {
-  onClickAccept?: (e: React.MouseEvent<any>) => void
+  proposal?: ProposalAttributes | null,
   votes?: Record<string, Vote> | null,
 }
 
-export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps) {
+export function VotesList({proposal, votes, ...props }: VotesListModalProps) {
   const l = useFormatMessage()
-  
+  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const votesList = useMemo(() => Object.entries(votes || {}).sort((a, b) => b[1].vp - a[1].vp), [votes])
-  
+
   return <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', 'VotesList' ,props.className])} closeIcon={<Close />}>
   <Modal.Content className="ProposalModal__Title">
     <Header>{l('modal.votes_list.title', { votes: Object.keys(votes || {}).length })}</Header>
@@ -28,10 +29,10 @@ export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps
   <div className="VotesList_Container_Header">
     <Grid columns='equal'>
       <Grid.Row className="VotesList_Divider_Line">
-        <Grid.Column width={8}>
+        <Grid.Column width={6}>
           <div className="VotesList_Header">{l('modal.votes_list.voter')}</div>
         </Grid.Column>
-        <Grid.Column >
+        <Grid.Column width={6}>
           <div className="VotesList_Header">{l('modal.votes_list.voted')}</div>
         </Grid.Column>
         <Grid.Column>
@@ -44,7 +45,7 @@ export function VotesList({onClickAccept, votes, ...props }: VotesListModalProps
     <Grid columns='equal' className="VotesList_Divider">
       {votesList.map(vote => {
         const [key, value] = vote
-        return <VoteListItem key={key} address={key} value={value} />
+        return <VoteListItem key={key} address={key} vote={value} choices={choices} />
       })}
     </Grid>
   </div>
