@@ -32,11 +32,12 @@ COPY ./.env.*            /app/
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 RUN NODE_ENV=staging npm ci
-RUN npm run build:staging
+RUN npm run build:gatsby:staging
 
 FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
+
 RUN rm -rf ./*
 COPY --from=builder /app/public .
 
