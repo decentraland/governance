@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: db
+    container_name: governance_db
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=snapshot
+    ports:
+      - 5432:5432
