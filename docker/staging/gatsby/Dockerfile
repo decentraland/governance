@@ -34,7 +34,7 @@ RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.co
 RUN NODE_ENV=staging npm ci
 RUN npm run build:gatsby:staging
 
-FROM nginx:alpine
+FROM nginx:alpine as gatsby
 
 WORKDIR /usr/share/nginx/html
 

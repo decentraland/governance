@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  postgres:
+  database:
     image: db
     container_name: governance_db
     build:
@@ -18,3 +18,24 @@ services:
       - POSTGRES_DB=snapshot
     ports:
       - 5432:5432
+
+  api:
+    depends_on:
+      database:
+        condition: service_healthy
+    image: api
+    container_name: governance_api
+    build:
+      context: ../../
+      dockerfile: docker/staging/api/Dockerfile
+    ports:
+      - 4000:4000
+
+  gatsby: 
+    image: gatsby
+    container_name: governance_gatsby
+    build:
+      context: ../../
+      dockerfile: docker/staging/gatsby/Dockerfile
+    ports:
+      - 8000:80
