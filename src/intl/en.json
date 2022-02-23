@@ -173,13 +173,13 @@
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome"
   },
   "status": {
-    "all": "All outcomes",
-    "pending": "Pending outcomes",
-    "finished": "Finished outcomes",
-    "active": "Active outcomes",
-    "rejected": "Rejected outcomes",
-    "passed": "Passed outcomes",
-    "enacted": "Enacted outcomes"
+    "all": "All proposals",
+    "pending": "Pending",
+    "finished": "Closed polls",
+    "active": "Voting open",
+    "rejected": "Rejected",
+    "passed": "Passed",
+    "enacted": "Enacted"
   },
   "modal": {
     "new_proposal": {
