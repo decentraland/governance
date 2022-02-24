@@ -2,35 +2,105 @@ on:
   repository_dispatch:
     types: [deploy-beta-command]
 
+env:
+  ENVIRONMENT: beta
+
 jobs:
-  deploy:
-    name: Deploy
+  api:
+    name: Deploy Governance Repository [BETA]
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Get PR reference
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          issue_id: ${{ github.event.client_payload.pull_request.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      - name: Create GitHub deployment
+        id: create_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.client_payload.pull_request.head.ref }}
+          environment: ${{ env.ENVIRONMENT }}
+          auto_merge: false
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      - name: Init GitHub deployment
+        id: start_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments/:deployment/statuses
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
+          environment: ${{ env.ENVIRONMENT }}
+          log_url: https://github.com/${{ github.event.client_payload.pull_request.head.repo.full_name }}/actions/runs/${{ github.run_id }}
+          state: in_progress
+          mediaType: '{"previews": ["flash", "ant-man"]}'
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Build, tag, and push the image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME_STAGING }}
-        IMAGE_TAG: 1.0
-      run: |
-        # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Checkout branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.client_payload.pull_request.head.ref }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push the image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.REPO_NAME_STAGING }}
+          IMAGE_TAG: 1.0
+        run: |
+          # Build a docker container and push it to ECR 
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./docker/staging/api/Dockerfile
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        
+      - name: Deployment success
+        id: successful_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments/:deployment/statuses
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
+          environment: ${{ env.ENVIRONMENT }}
+          log_url: https://github.com/${{ github.event.client_payload.pull_request.head.repo.full_name }}/actions/runs/${{ github.run_id }}
+          mediaType: '{"previews": ["ant-man"]}'
+          state: success
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Deployment failed
+        id: failed_deployment
+        uses: octokit/request-action@v2.x
+        if: failure()
+        with:
+          route: POST /repos/:repository/deployments/:deployment/statuses
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
+          environment: ${{ env.ENVIRONMENT }}
+          log_url: https://github.com/${{ github.event.client_payload.pull_request.head.repo.full_name }}/actions/runs/${{ github.run_id }}
+          mediaType: '{"previews": ["ant-man"]}'
+          state: failure
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
