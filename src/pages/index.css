@@ -48,6 +48,10 @@
   .ui.container > .ui.stackable.grid > .row > .column {
     padding-bottom: 0 !important;
   }
+
+  .ActionableLayout {
+    min-height: 300px;
+  }
 }
 
 /* Desktop Only */
