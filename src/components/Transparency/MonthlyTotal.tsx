@@ -18,7 +18,7 @@ export default React.memo(function MonthlyTotal({title, monthlyTotal }: MonthlyT
 
   return <div className="MonthlyTotal">
     <Card>
-      <Card.Content>
+      <Card.Content className="MonthlyTotal_Headers">
         <div>
           <Header className="MonthlyTotal__Header">{title}</Header>
           <Header size="huge" className="MonthlyTotal__Header">

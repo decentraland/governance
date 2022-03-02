@@ -94,7 +94,7 @@ export default function WrappingPage() {
         }
       >
       <Container className="TransparencyContainer">
-        <Grid stackable>
+        <Grid className="TransparencyGrid" stackable>
           <Grid.Row columns={2}>
             <Grid.Column tablet="4">
               <div>
@@ -138,8 +138,8 @@ export default function WrappingPage() {
         </Grid>
       </Container>
 
-      <Container>
-        <Grid stackable>
+      <Container className="TransparencyContainer">
+        <Grid className="TransparencyGrid" stackable>
           <Grid.Row columns={2}>
             <Grid.Column tablet="4">
               <div>
@@ -180,8 +180,8 @@ export default function WrappingPage() {
         </Grid>
       </Container>
 
-      <Container>
-        <Grid stackable>
+      <Container className="TransparencyContainer">
+        <Grid className="TransparencyGrid" stackable>
           <Grid.Row columns={2}>
             <Grid.Column tablet="4">
               <div>

@@ -66,7 +66,7 @@
     "node-pg-migrate": "^4.8.0",
     "numeral": "^2.0.6",
     "pg": "^7.18.2",
-    "react-crypto-icons": "^1.0.5",
+    "@jparnaudo/react-crypto-icons": "^1.0.5",
     "remark-parse": "^9.0.0",
     "remark-stringify": "^9.0.1",
     "sharp": "^0.29.3",
