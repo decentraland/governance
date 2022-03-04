@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
 
 type BurgerMenuContentProps = {
@@ -7,10 +7,11 @@ type BurgerMenuContentProps = {
 }
 
 function BurgerMenuContent({footerTranslate, children} : BurgerMenuContentProps) {
-  const footer = document.querySelectorAll(".dcl.footer")[0]
+  const [footer, setFooter] = useState<Element | null>(null)
   const burgerMenu = useContext(BurgerMenuStatusContext)
 
   useEffect(() => {
+    setFooter(document.querySelectorAll(".dcl.footer")[0])
     return () => {
       if(footer) {
         footer.setAttribute("style", "")
