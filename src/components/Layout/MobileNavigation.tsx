@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from "decentraland-gatsby/dist/components/Text/Link"
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
@@ -7,18 +7,19 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { navigate } from 'gatsby-plugin-intl'
 import locations from '../../modules/locations'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { useLocation } from '@reach/router'
 import { NavigationTab } from './Navigation'
 
 import './MobileNavigation.css'
 
 function MobileNavigation() {
-
   const l = useFormatMessage()
+  const location = useLocation()
   const page = location.pathname.replaceAll('/', '')
 
 
   const selectedButton: any = {
-    inverted: true, 
+    inverted: true,
     primary: true
   }
   const unselectedButton: any = {
@@ -45,8 +46,8 @@ function MobileNavigation() {
       <Grid.Row columns={2}>
         <Grid.Column>
           <Button
-            className='Browse__Button' 
-            size="small" 
+            className='Browse__Button'
+            size="small"
             {...proposalsButtonProps}
             as={Link}
             href={locations.proposals()}
@@ -59,8 +60,8 @@ function MobileNavigation() {
         </Grid.Column>
         <Grid.Column>
           <Button
-            className='Browse__Button' 
-            size="small" 
+            className='Browse__Button'
+            size="small"
             {...transparencyButtonProps}
             as={Link}
             href={locations.transparency()}
