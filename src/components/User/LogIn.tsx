@@ -14,7 +14,6 @@ import locations from '../../modules/locations'
 type LogInProps = {
   title: string
   description: string
-  imageUrl: string
 }
 
 function handleBack() {

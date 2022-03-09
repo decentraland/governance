@@ -7,13 +7,14 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { navigate } from 'gatsby-plugin-intl'
 import locations from '../../modules/locations'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { useLocation } from '@reach/router'
 import { NavigationTab } from './Navigation'
 
 import './MobileNavigation.css'
 
 function MobileNavigation() {
-
   const l = useFormatMessage()
+  const location = useLocation()
   const page = location.pathname.replaceAll('/', '')
 
 
