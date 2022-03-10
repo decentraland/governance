@@ -40,6 +40,7 @@ import './index.css'
 import { isUnderMaintenance } from "../modules/maintenance"
 import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
 import MobileNavigation from "../components/Layout/MobileNavigation"
+import { useBurgerMenu } from "../hooks/useBurgerMenu"
 
 const ITEMS_PER_PAGE = 25
 
@@ -66,8 +67,7 @@ export default function IndexPage() {
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  const burgerMenu = useContext(BurgerMenuStatusContext)
-  const burgerShow = useContext(BurgerMenuShowContext)
+  const burgerMenu = useBurgerMenu();
   const translate = '550px'
 
   // const [ ff ] = useFeatureFlagContext()
@@ -80,15 +80,6 @@ export default function IndexPage() {
       }
     }
   }, [ page, proposals ])
-
-  useEffect(() => {
-    burgerShow?.setShow(true)
-  
-    return () => {
-      burgerShow?.setShow(false)
-      burgerMenu?.setStatus(false)
-    };
-  }, []);
 
   // const [ showOnboarding, setShowOnboarding ] = useState(Onboarding.Loading)
 
@@ -184,10 +175,7 @@ export default function IndexPage() {
 
   return <>
     <div className="OnlyMobile Animated"
-        style={(isMobile && {
-          transform: burgerMenu?.status ? 'translateX(-200%)' : '',
-          height: burgerMenu?.status ? '0' : ''
-        }) || {}}
+        style={(isMobile && burgerMenu?.status && {transform: 'translateX(-200%)', height: 0}) || {}}
     > 
       <SubscriptionBanner active={!type} />
     </div>
@@ -227,9 +215,7 @@ export default function IndexPage() {
           </Grid.Column>
           <Grid.Column tablet="12"
             className="Animated"
-            style={
-              isMobile ? (burgerMenu?.status ? {transform: `translateY(${translate})`}: {}) : {}
-            }
+            style={(isMobile && burgerMenu?.status && {transform: `translateY(${translate})`}) || {}}
           >
             <ActionableLayout
               leftAction={<Header sub>

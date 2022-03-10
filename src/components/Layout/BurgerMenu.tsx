@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { BurgerMenuShowContext } from '../Context/BurgerMenuShowContext'
 import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import './BurgerMenu.css'
 
 function BurgerMenu() {
@@ -11,7 +12,7 @@ function BurgerMenu() {
     statusContext?.setStatus(prev => !prev)
   }
 
-  return <div onClick={toggleMenuHandler} style={showContext?.show ? {} : {display: 'none'}}>
+  return <div onClick={toggleMenuHandler} className={TokenList.join([!showContext?.show && 'BurgerMenu--hidden'])}>
     <div className='BurgerMenu'>
       <div className='Bar' style={{transform: `${statusContext?.status ? 'rotate(45deg)' : 'rotate(0)'}`}}/>
       <div className='Bar' style={{transform: `${statusContext?.status ? 'translateX(100%)' : 'translateX(0)'}`, opacity: `${statusContext?.status ? 0 : 1}`}}/>
@@ -20,4 +21,4 @@ function BurgerMenu() {
   </div>
 }
 
-export default React.memo(BurgerMenu)
+export default BurgerMenu

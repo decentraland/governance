@@ -23,10 +23,9 @@ import MembersSection from '../components/Transparency/MembersSection'
 import './transparency.css'
 import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
 import MobileNavigation from '../components/Layout/MobileNavigation'
-import { BurgerMenuShowContext } from '../components/Context/BurgerMenuShowContext'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
-import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
+import { useBurgerMenu } from '../hooks/useBurgerMenu'
 
 const discordIcon = require('../images/icons/discord.svg')
 
@@ -53,21 +52,10 @@ export default function WrappingPage() {
   const l = useFormatMessage()
   const [data] = useAsyncMemo(async () => DclData.get().getData())
   const balances = useMemo(() => data && aggregateBalances(data.balances) || [], [data])
-  const burgerShow = useContext(BurgerMenuShowContext)
-  const burgerMenu = useContext(BurgerMenuStatusContext)
+  const burgerMenu = useBurgerMenu()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const translate = '100px'
-
-  useEffect(() => {
-    burgerShow?.setShow(true)
-  
-    return () => {
-      burgerShow?.setShow(false)
-      burgerMenu?.setStatus(false)
-    };
-  }, []);
-
 
   return (<>
     <Navigation activeTab={NavigationTab.Transparency} />
@@ -80,19 +68,15 @@ export default function WrappingPage() {
       {!data && <div style={{position: 'relative', paddingTop: '200px'}}><Loader active /></div>}
       {data && <>
         {
-          isMobile ? 
+          isMobile &&
           <div className='Transparency'>
             <BurgerMenuContent footerTranslate={translate}>
               <MobileNavigation />
             </BurgerMenuContent>
           </div>
-          :
-          <></>
         }
         <div className='Animated'
-          style={
-            isMobile ? (burgerMenu?.status ? {transform: `translateY(${translate})`}: {}) : {}
-          }
+          style={(isMobile && burgerMenu?.status && {transform: `translateY(${translate})`}) || {}}
         >
         <Container className="TransparencyContainer">
           <Grid className="TransparencyGrid" stackable>

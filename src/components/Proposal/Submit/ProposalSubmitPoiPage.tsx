@@ -6,7 +6,7 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { newProposalPOIScheme, PoiType } from "../../../entities/Proposal/types"
+import { getPoiTypeAction, newProposalPOIScheme, PoiType } from "../../../entities/Proposal/types"
 import {
   asNumber,
   isAlreadyPointOfInterest,
@@ -138,14 +138,12 @@ export type ProposalPoiPageProps = {
   poiType: PoiType,
 }
 
-export default React.memo(function ProposalSubmitPoiPage({
-  poiType
-}: ProposalPoiPageProps) {
+export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPoiPageProps) {
   const l = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPoiState)
-  const [formDisabled, setFormDisabled] = useState(false);
-  const action = poiType.split('_')[0] // add | remove
+  const [formDisabled, setFormDisabled] = useState(false)
+  const action = getPoiTypeAction(poiType)
 
   useEffect(() => {
     if (state.validated) {

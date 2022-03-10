@@ -1,5 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react'
 import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
+import './BurgerMenuContent.css'
 
 type BurgerMenuContentProps = {
   footerTranslate: string,
@@ -33,11 +34,7 @@ function BurgerMenuContent({footerTranslate, children} : BurgerMenuContentProps)
 
   return (
     <div className='BurgerMenuContent Animated'
-      style={{
-        position: 'absolute',
-        width: "100%",
-        transform: `${burgerMenu?.status ? '' : 'translateY(-200%)'}`,
-      }}
+      style={(!burgerMenu?.status && {transform: 'translateY(-200%)'}) || {}}
     >
       {children}
     </div>
