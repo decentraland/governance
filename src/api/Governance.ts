@@ -14,10 +14,11 @@ import {
   ProposalStatus,
   NewProposalDraft,
   NewProposalGovernance,
-  ProposalCommentsInDiscourse
-} from '../entities/Proposal/types';
-import { SubscriptionAttributes } from '../entities/Subscription/types';
-import { Vote } from '../entities/Votes/types';
+  ProposalCommentsInDiscourse,
+} from "../entities/Proposal/types"
+import { SubscriptionAttributes } from "../entities/Subscription/types"
+import { UpdateAttributes } from "../entities/Updates/types"
+import { Vote } from "../entities/Votes/types"
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
@@ -162,6 +163,20 @@ export class Governance extends API {
         .json({ status, vesting_address, description })
     )
 
+    return result.data
+  }
+
+  async getProposalUpdates(proposal_id: string) {
+    const result = await this.fetch<ApiResponse<UpdateAttributes[]>>(`/proposals/${proposal_id}/updates`)
+    return result.data
+  }
+
+  async updateProposalUpdate(update: { id: string, proposal_id: string; title: string; description: string }) {
+    console.log('api', update)
+    const result = await this.fetch<ApiResponse<UpdateAttributes>>(
+      `/proposals/${update.proposal_id}/updates`,
+      this.options().method("PATCH").authorization().json(update)
+    )
     return result.data
   }
 
