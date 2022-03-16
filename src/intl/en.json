@@ -198,6 +198,10 @@
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
+    },
+    "proposal_update": {
+      "title_empty": "Title is empty",
+      "description_empty": "Description is empty"
     }
   },
   "category": {
@@ -395,6 +399,15 @@
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal"
+      },
+      "grant": {
+        "update_title": "Project updates",
+        "update_date": "{date} update:",
+        "update_missed_owner": "You missed this month’s update.",
+        "update_missed": "Beneficiary missed this month's update.",
+        "update_description": "**Don’t forget to share some news** to keep the community in the loop.",
+        "update_button": "Post Update",
+        "update_due_date": "Update due in **{date}**"
       }
     },
     "proposal_activity": {
@@ -684,6 +697,15 @@
       "title": "Call for Delegates Open",
       "description": "The Decentraland DAO is looking to get commited individuals on the spotlight to help them get more VP",
       "button_label": "Read more"
+    },
+    "proposal_update": {
+      "title": "Publish update",
+      "description": "Please tell us what your team has been up to.",
+      "title_label": "Heading",
+      "title_placeholder": "Start typing...",
+      "description_label": "Description",
+      "description_placeholder": "Start typing...",
+      "publish_update": "Publish update"
     }
   }
 }

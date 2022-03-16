@@ -1,0 +1,65 @@
+.ProposalUpdate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  border: 1px solid #dddce0;
+  border-radius: 8px;
+  padding: 0 16px;
+  height: 44px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.ProposalUpdate--pending {
+  cursor: default;
+}
+
+.ProposalUpdate--done-expanded {
+  border: 1px solid #44b600;
+}
+
+.ProposalUpdate--late-expanded {
+  border: 1px solid #ffbc5b;
+}
+
+.ProposalUpdate:last-child {
+  margin-bottom: 36px;
+}
+
+.ProposalUpdate__Left {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ProposalUpdate__Icon {
+  height: 15px;
+  margin-right: 12.75px;
+}
+
+.ProposalUpdate__Number {
+  font-size: 13px;
+  font-weight: 500;
+  color: #736e7d;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+.ProposalUpdate__Description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #736e7d;
+  max-width: 570px;
+  padding-right: 10px;
+}
+
+.ProposalUpdate__Date {
+  font-size: 12px;
+  color: #736e7d;
+  opacity: 0.5;
+  text-transform: uppercase;
+}

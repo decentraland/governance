@@ -23,13 +23,17 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
   return UpdateModel.find<UpdateAttributes>({ proposal_id })
 }
 
-
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  // TODO: Get proposal and check if user is same as proposal creator.
   const update = await UpdateModel.findOne(req.body.id)
-  const now = new Date()
-  const status = Time(now).isBefore(update.due_date) ? UpdateStatus.Done : UpdateStatus.Late
 
+  if (!!update.completion_date) {
+    throw new RequestError(`Update already completed: "${update.id}"`, RequestError.BadRequest)
+  }
+
+  // TODO: Get proposal and check if user is same as proposal creator.
+
+  const now = new Date()
+  const status = !update.due_date || Time(now).isBefore(update.due_date) ? UpdateStatus.Done : UpdateStatus.Late
 
   await UpdateModel.update<UpdateAttributes>(
     { title: req.body.title, description: req.body.description, status, completion_date: now },

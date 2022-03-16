@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect } from 'react'
-import { useLocation } from '@gatsbyjs/reach-router'
+import { useLocation } from '@reach/router'
 import { Personal } from 'web3x/personal'
 import { Address } from 'web3x/address'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
@@ -31,7 +31,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import retry from 'decentraland-gatsby/dist/utils/promise/retry'
 import locations from '../modules/locations'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal'
-import { ProposalStatus } from '../entities/Proposal/types'
+import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
@@ -44,6 +44,11 @@ import ProposalComments from '../components/Proposal/ProposalComments'
 import { FollowUpModal } from '../components/Modal/FollowUpModal'
 import { isUnderMaintenance } from '../modules/maintenance'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
+import ProposalUpdates from '../components/Proposal/ProposalUpdates'
+import useProposalUpdates from '../hooks/useProposalUpdates'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { UpdateAttributes } from '../entities/Updates/types'
 
 type ProposalPageOptions = {
   changing: boolean
@@ -52,7 +57,10 @@ type ProposalPageOptions = {
   confirmStatusUpdate: ProposalStatus | false
   showVotesList: boolean
   showFollowUpModal: boolean
+  showProposalUpdateModal: boolean
 }
+
+const NOW_DATE = new Date()
 
 export default function ProposalPage() {
   const t = useFormatMessage()
@@ -65,6 +73,7 @@ export default function ProposalPage() {
     confirmStatusUpdate: false,
     showVotesList: false,
     showFollowUpModal: false,
+    showProposalUpdateModal: false,
   })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
@@ -85,6 +94,29 @@ export default function ProposalPage() {
     [account, proposal],
     { callWithTruthyDeps: true }
   )
+  const [updates] = useProposalUpdates(proposal?.id)
+
+  console.log('u', updates)
+
+  const remainingUpdates = useMemo(
+    () => updates?.filter((item) => (item.due_date ? Time(item.due_date).isAfter(NOW_DATE) : item)),
+    [updates]
+  )
+
+  console.log('r', remainingUpdates)
+
+  const nextUpdate = useMemo(
+    () =>
+      remainingUpdates && remainingUpdates.length > 0
+        ? remainingUpdates?.reduce((prev, current) =>
+            prev.due_date && current.due_date && prev.due_date < current.due_date ? prev : current
+          )
+        : [],
+    [remainingUpdates]
+  ) as UpdateAttributes
+
+  console.log('n', nextUpdate)
+
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
@@ -188,6 +220,10 @@ export default function ProposalPage() {
     )
   }
 
+  const showVestingStatus =
+    proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
+  const showProposalUpdates = proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+
   return (
     <>
       <Head
@@ -213,8 +249,9 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
-              <Markdown children={proposal?.description || ''} />
+              <Markdown>{proposal?.description || ''}</Markdown>
               <ProposalFooterPoi proposal={proposal} />
+              {showProposalUpdates && <ProposalUpdates proposalId={proposal.id} />}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 
@@ -230,17 +267,26 @@ export default function ProposalPage() {
                 subscribed={subscribed}
                 onClick={() => subscribe(!subscribed)}
               />
-              <ProposalResultSection
-                disabled={!proposal || !votes}
-                loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
-                proposal={proposal}
-                votes={votes}
-                votingPower={votingPower || 0}
-                changingVote={options.changing}
-                onChangeVote={(_, changing) => patchOptions({ changing })}
-                onOpenVotesList={() => patchOptions({ showVotesList: true })}
-                onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
-              />
+              {!showVestingStatus && (
+                <ProposalResultSection
+                  disabled={!proposal || !votes}
+                  loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
+                  proposal={proposal}
+                  votes={votes}
+                  votingPower={votingPower || 0}
+                  changingVote={options.changing}
+                  onChangeVote={(_, changing) => patchOptions({ changing })}
+                  onOpenVotesList={() => patchOptions({ showVotesList: true })}
+                  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
+                />
+              )}
+              {showVestingStatus && (
+                <ProposalVestingStatus
+                  proposal={proposal}
+                  nextUpdate={nextUpdate}
+                  onPostUpdateClick={() => navigate(`/update?id=${nextUpdate?.id}&proposalId=${proposal?.id}`)}
+                />
+              )}
               <ProposalDetailSection proposal={proposal} />
               {(isOwner || isCommittee) && (
                 <Button
@@ -258,30 +304,38 @@ export default function ProposalPage() {
                   basic
                   loading={updatingStatus}
                   style={{ width: '100%' }}
-                  onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Enacted })}
+                  onClick={() =>
+                    patchOptions({
+                      confirmStatusUpdate: ProposalStatus.Enacted,
+                    })
+                  }
                 >
                   {t('page.proposal_detail.enact')}
                 </Button>
               )}
               {isCommittee && proposal?.status === ProposalStatus.Finished && (
-                <Button
-                  basic
-                  loading={updatingStatus}
-                  style={{ width: '100%' }}
-                  onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
-                >
-                  {t('page.proposal_detail.pass')}
-                </Button>
-              )}
-              {isCommittee && proposal?.status === ProposalStatus.Finished && (
-                <Button
-                  basic
-                  loading={updatingStatus}
-                  style={{ width: '100%' }}
-                  onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Rejected })}
-                >
-                  {t('page.proposal_detail.reject')}
-                </Button>
+                <>
+                  <Button
+                    basic
+                    loading={updatingStatus}
+                    style={{ width: '100%' }}
+                    onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
+                  >
+                    {t('page.proposal_detail.pass')}
+                  </Button>
+                  <Button
+                    basic
+                    loading={updatingStatus}
+                    style={{ width: '100%' }}
+                    onClick={() =>
+                      patchOptions({
+                        confirmStatusUpdate: ProposalStatus.Rejected,
+                      })
+                    }
+                  >
+                    {t('page.proposal_detail.reject')}
+                  </Button>
+                </>
               )}
             </Grid.Column>
           </Grid.Row>
