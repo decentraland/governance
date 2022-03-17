@@ -40,6 +40,10 @@
 
 /* Only Mobile */
 @media only screen and (max-width: 767px) {
+  .ui.pagination.menu .item + .item {
+    margin-left: 5px;
+  }
+
   .ui.pagination.menu .item[type="nextItem"],
   .ui.pagination.menu .item[type="prevItem"] {
     display: none !important;

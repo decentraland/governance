@@ -4,7 +4,7 @@ type BurgerMenuStatusContextProps = {
 	children: React.ReactNode
 }
 
-type BurgerMenuStatusContextType = {
+export type BurgerMenuStatusContextType = {
   status: boolean
   setStatus: React.Dispatch<React.SetStateAction<boolean>>
 }
