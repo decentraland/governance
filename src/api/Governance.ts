@@ -171,8 +171,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async updateProposalUpdate(update: { id: string, proposal_id: string; title: string; description: string }) {
-    console.log('api', update)
+  async updateProposalUpdate(update: { id: string; proposal_id: string; title: string; description: string }) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/updates`,
       this.options().method("PATCH").authorization().json(update)
