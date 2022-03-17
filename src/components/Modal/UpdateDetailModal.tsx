@@ -43,7 +43,7 @@ export function UpdateDetailModal({
       closeIcon={<Close />}
     >
       <Modal.Content className="ProposalModal__Title">
-        <Header>{l('modal.update_detail.date', { date })}</Header>
+        <Header>{l('modal.update_detail.title', { date })}</Header>
       </Modal.Content>
       <Modal.Content className="UpdateDetailModal__Content">
         <Header as="h2">{update?.title}</Header>
