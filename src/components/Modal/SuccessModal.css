@@ -1,7 +1,16 @@
+.SuccessModal {
+  padding-bottom: 24px;
+}
+
 .ui.modal.SuccessModal .content {
-  margin-top: 36px;
+  width: 100%;
   margin-bottom: 24px;
-  width: 80% !important;
+  padding-left: 52px;
+  padding-right: 52px;
+}
+
+.SuccessModal .ProposalModal__Actions {
+  margin-top: 0 !important;
 }
 
 .ui.modal.SuccessModal .SuccessModal__Description {
@@ -14,7 +23,7 @@
   align-content: stretch;
   position: relative;
   padding: 16px 20px;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
   border-radius: 12px;
   outline: 1px solid #0000000a;
 }
@@ -59,8 +68,9 @@ div.SuccessModal__Banner.CopyLink {
 
 .SuccessModal__Banner .Button {
   position: relative;
-  flex-grow: 20;
   width: auto !important;
+  min-width: auto !important;
+  padding: 7px 8px !important;
 }
 
 .ui.modal.SuccessModal .SuccessModal__Banner .Button.JoinTheDiscussion {
