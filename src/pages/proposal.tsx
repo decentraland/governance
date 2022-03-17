@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useCallback, useMemo, useEffect } from 'react'
 import { useLocation } from '@reach/router'
 import { Personal } from 'web3x/personal'
 import { Address } from 'web3x/address'
@@ -50,6 +50,7 @@ import ProposalUpdates from '../components/Proposal/ProposalUpdates'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { UpdateAttributes } from '../entities/Updates/types'
+import { UpdateDetailModal } from '../components/Modal/UpdateDetailModal'
 
 type ProposalPageOptions = {
   changing: boolean
@@ -59,6 +60,7 @@ type ProposalPageOptions = {
   showVotesList: boolean
   showProposalSuccessModal: boolean
   showUpdateSuccessModal: boolean
+  selectedUpdate: UpdateAttributes | null
 }
 
 const NOW_DATE = new Date()
@@ -75,6 +77,7 @@ export default function ProposalPage() {
     showVotesList: false,
     showProposalSuccessModal: false,
     showUpdateSuccessModal: false,
+    selectedUpdate: null,
   })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
@@ -190,15 +193,26 @@ export default function ProposalPage() {
     patchOptions({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
   }, [])
 
-  function closeProposalSuccessModal() {
+  const closeProposalSuccessModal = () => {
     patchOptions({ showProposalSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  function closeUpdateSuccessModal() {
+  const closeUpdateSuccessModal = () => {
     patchOptions({ showUpdateSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
+
+  const handleCloseUpdateDetailModal = () => {
+    patchOptions({ selectedUpdate: null })
+  }
+
+  const handlePostUpdateClick = useCallback(
+    () => navigate(`/update?id=${nextUpdate?.id}&proposalId=${proposal?.id}`),
+    [nextUpdate?.id, proposal?.id]
+  )
+
+  const handleUpdateClick = (update: UpdateAttributes) => patchOptions({ selectedUpdate: update })
 
   if (proposalState.error) {
     return (
@@ -256,7 +270,9 @@ export default function ProposalPage() {
               <ProposalHeaderPoi proposal={proposal} />
               <Markdown>{proposal?.description || ''}</Markdown>
               <ProposalFooterPoi proposal={proposal} />
-              {showProposalUpdates && <ProposalUpdates proposalId={proposal.id} updates={updates} />}
+              {showProposalUpdates && (
+                <ProposalUpdates proposalId={proposal.id} updates={updates} onUpdateClick={handleUpdateClick} />
+              )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 
@@ -289,7 +305,7 @@ export default function ProposalPage() {
                 <ProposalVestingStatus
                   proposal={proposal}
                   nextUpdate={nextUpdate}
-                  onPostUpdateClick={() => navigate(`/update?id=${nextUpdate?.id}&proposalId=${proposal?.id}`)}
+                  onPostUpdateClick={handlePostUpdateClick}
                 />
               )}
               <ProposalDetailSection proposal={proposal} />
@@ -386,6 +402,13 @@ export default function ProposalPage() {
         onDismiss={closeUpdateSuccessModal}
         onClose={closeUpdateSuccessModal}
         proposal={proposal}
+        loading={proposalState.loading}
+      />
+      <UpdateDetailModal
+        open={!!options.selectedUpdate}
+        onDismiss={handleCloseUpdateDetailModal}
+        onClose={handleCloseUpdateDetailModal}
+        update={options.selectedUpdate}
         loading={proposalState.loading}
       />
     </>

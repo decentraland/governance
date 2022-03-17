@@ -11,9 +11,11 @@ import './ProposalUpdates.css'
 export default function ProposalUpdates({
   proposalId,
   updates,
+  onUpdateClick,
 }: {
   proposalId: string
   updates?: UpdateAttributes[] | null
+  onUpdateClick: (update: UpdateAttributes) => void
 }) {
   const l = useFormatMessage()
   const now = Date.now()
@@ -44,7 +46,13 @@ export default function ProposalUpdates({
       <div>
         {publicUpdates &&
           publicUpdates.map((item, index) => (
-            <ProposalUpdate key={item.id} proposalId={proposalId} update={item} expanded={index === 0} />
+            <ProposalUpdate
+              key={item.id}
+              proposalId={proposalId}
+              update={item}
+              expanded={index === 0}
+              onClick={onUpdateClick}
+            />
           ))}
       </div>
     </div>

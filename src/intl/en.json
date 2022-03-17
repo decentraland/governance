@@ -316,6 +316,10 @@
     "update_success": {
       "title": "Update Successfully Submitted",
       "description": "Thanks for sharing your project’s progress."
+    },
+    "update_detail": {
+      "title": "{date} update",
+      "date": "Posted {date} by"
     }
   },
   "page": {
