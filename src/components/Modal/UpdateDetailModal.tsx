@@ -42,7 +42,7 @@ export function UpdateDetailModal({
       className={TokenList.join(['ProposalModal', 'UpdateDetailModal'])}
       closeIcon={<Close />}
     >
-      <Modal.Content className="ProposalModal__Title">
+      <Modal.Content className={TokenList.join(['ProposalModal__Title', 'UpdateDetailModal__Title'])}>
         <Header>{l('modal.update_detail.title', { date })}</Header>
       </Modal.Content>
       <Modal.Content className="UpdateDetailModal__Content">

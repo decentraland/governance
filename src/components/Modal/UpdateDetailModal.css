@@ -1,6 +1,11 @@
+.UpdateDetailModal__Title.content {
+  margin-bottom: 36px !important;
+}
+
 .UpdateDetailModal__Content.content {
   width: 100% !important;
   padding: 0 52px !important;
+  margin-top: 0 !important;
 }
 
 .UpdateDetailModal__Content .ui.header {

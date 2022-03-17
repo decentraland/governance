@@ -4,6 +4,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { navigate } from 'gatsby-plugin-intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import './ProposalUpdate.css'
 
@@ -25,8 +26,7 @@ export default function ProposalUpdate({ proposalId, update, expanded, onClick }
   const missedUpdateText = isOwner
     ? l('page.proposal_detail.grant.update_missed_owner')
     : l('page.proposal_detail.grant.update_missed')
-  const isLateUpdate = !!due_date && !!completion_date && due_date < completion_date
-  const icon = completion_date && !isLateUpdate ? updateIcon : cancelIcon
+  const icon = completion_date ? updateIcon : cancelIcon
   const date = !!due_date ? Time(due_date).format('MMMM') : Time(completion_date).format('MMMM')
 
   const handleClick = useCallback(() => {
@@ -62,7 +62,12 @@ export default function ProposalUpdate({ proposalId, update, expanded, onClick }
           <span>{completion_date ? `${title}. ${description}` : missedUpdateText}</span>
         </div>
       </div>
-      {completion_date && <div className="ProposalUpdate__Date">{Time.from(completion_date).fromNow()}</div>}
+      {completion_date && (
+        <div className="ProposalUpdate__Date">
+          {Time.from(completion_date).fromNow()}
+          <Icon name="chevron right" />
+        </div>
+      )}
       {!completion_date && isOwner && (
         <Button basic onClick={handlePostUpdateClick}>
           {l('page.proposal_detail.grant.update_button')}

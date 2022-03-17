@@ -63,3 +63,7 @@
   opacity: 0.5;
   text-transform: uppercase;
 }
+
+.ProposalUpdate__Date i {
+  margin-left: 8px;
+}
