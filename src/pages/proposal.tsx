@@ -275,7 +275,7 @@ export default function ProposalPage() {
               <Markdown>{proposal?.description || ''}</Markdown>
               <ProposalFooterPoi proposal={proposal} />
               {showProposalUpdates && (
-                <ProposalUpdates proposalId={proposal.id} updates={updates} onUpdateClick={handleUpdateClick} />
+                <ProposalUpdates proposal={proposal} updates={updates} onUpdateClick={handleUpdateClick} />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>

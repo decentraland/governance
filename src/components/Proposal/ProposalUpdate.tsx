@@ -7,22 +7,25 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import './ProposalUpdate.css'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 
 const updateIcon = require('../../images/icons/update.svg')
 const cancelIcon = require('../../images/icons/cancel.svg')
 
 interface Props {
-  proposalId: string
+  proposal: ProposalAttributes
   update: UpdateAttributes
   expanded: boolean
   onClick: (update: UpdateAttributes) => void
 }
 
-export default function ProposalUpdate({ proposalId, update, expanded, onClick }: Props) {
+export default function ProposalUpdate({ proposal, update, expanded, onClick }: Props) {
   const l = useFormatMessage()
+  const [account] = useAuthContext()
   const { title, description, status, completion_date, due_date } = update
 
-  const isOwner = true // TODO: Get if user is owner
+  const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
     ? l('page.proposal_detail.grant.update_missed_owner')
     : l('page.proposal_detail.grant.update_missed')
@@ -40,9 +43,9 @@ export default function ProposalUpdate({ proposalId, update, expanded, onClick }
   const handlePostUpdateClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      navigate(`/update?id=${update.id}&proposalId=${proposalId}`)
+      navigate(`/update?id=${update.id}&proposalId=${proposal.id}`)
     },
-    [update.id, proposalId]
+    [update.id, proposal.id]
   )
 
   return (

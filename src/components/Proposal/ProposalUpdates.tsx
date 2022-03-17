@@ -7,13 +7,14 @@ import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import Divider from '../Section/Divider'
 import ProposalUpdate from './ProposalUpdate'
 import './ProposalUpdates.css'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 
 export default function ProposalUpdates({
-  proposalId,
+  proposal,
   updates,
   onUpdateClick,
 }: {
-  proposalId: string
+  proposal: ProposalAttributes
   updates?: UpdateAttributes[] | null
   onUpdateClick: (update: UpdateAttributes) => void
 }) {
@@ -48,7 +49,7 @@ export default function ProposalUpdates({
           publicUpdates.map((item, index) => (
             <ProposalUpdate
               key={item.id}
-              proposalId={proposalId}
+              proposal={proposal}
               update={item}
               expanded={index === 0}
               onClick={onUpdateClick}
