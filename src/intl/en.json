@@ -412,7 +412,7 @@
       },
       "grant": {
         "update_title": "Project updates",
-        "update_date": "{date} update:",
+        "update_date": "{date} update",
         "update_missed_owner": "You missed this month’s update.",
         "update_missed": "Beneficiary missed this month's update.",
         "update_description": "**Don’t forget to share some news** to keep the community in the loop.",

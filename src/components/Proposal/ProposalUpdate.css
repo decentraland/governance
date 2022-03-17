@@ -6,9 +6,16 @@
   border: 1px solid #dddce0;
   border-radius: 8px;
   padding: 0 16px;
-  height: 44px;
+  min-height: 44px;
   margin-bottom: 8px;
   cursor: pointer;
+}
+
+.ProposalUpdate--expanded {
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 16px;
 }
 
 .ProposalUpdate--pending {
@@ -27,6 +34,15 @@
   margin-bottom: 36px;
 }
 
+.ProposalUpdate__Heading {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
 .ProposalUpdate__Left {
   flex: 1;
   display: flex;
@@ -40,12 +56,19 @@
   margin-right: 12.75px;
 }
 
-.ProposalUpdate__Number {
-  font-size: 13px;
-  font-weight: 500;
-  color: #736e7d;
-  text-transform: uppercase;
-  margin-right: 8px;
+.ProposalUpdate__Icon--done {
+  filter: invert(61%) sepia(71%) saturate(3551%) hue-rotate(61deg) brightness(96%) contrast(101%);
+}
+
+.ProposalUpdate__Icon--late {
+  filter: invert(89%) sepia(63%) saturate(4395%) hue-rotate(311deg) brightness(98%) contrast(105%);
+}
+
+.ProposalUpdate__Title {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 24px;
+  margin-bottom: 2px;
 }
 
 .ProposalUpdate__Description {
@@ -57,13 +80,68 @@
   padding-right: 10px;
 }
 
+.ProposalUpdate__Description--expanded {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  color: #16141a;
+  font-size: 15px;
+  line-height: 24px;
+  padding-right: 0;
+  margin-bottom: 8px;
+}
+
+.ProposalUpdate__Month {
+  font-size: 13px;
+  line-height: 13px;
+  font-weight: 500;
+  color: #736e7d;
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+
+.ProposalUpdate__Month--expanded {
+  font-size: 13px;
+  text-transform: uppercase;
+  margin-right: 0;
+  opacity: 1;
+}
+
+.ProposalUpdate__Month--done,
+.ProposalUpdate__KeepReading--done {
+  color: #44b600;
+}
+
+.ProposalUpdate__Month--late,
+.ProposalUpdate__KeepReading--late {
+  color: #ffbc5b;
+}
+
 .ProposalUpdate__Date {
   font-size: 12px;
+  line-height: 24px;
   color: #736e7d;
-  opacity: 0.5;
+  opacity: 0.6;
   text-transform: uppercase;
 }
 
 .ProposalUpdate__Date i {
-  margin-left: 8px;
+  margin-left: 4px;
+  margin-right: -2px;
+}
+
+.ProposalUpdate__KeepReading {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ProposalUpdate__KeepReading i {
+  margin-left: 3px;
+}
+
+.ProposalUpdate .ui.basic.button {
+  padding-right: 0;
 }

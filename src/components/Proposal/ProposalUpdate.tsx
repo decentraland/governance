@@ -5,7 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { navigate } from 'gatsby-plugin-intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import { UpdateAttributes } from '../../entities/Updates/types'
+import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import './ProposalUpdate.css'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -48,20 +48,67 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick }: 
     [update.id, proposal.id]
   )
 
+  if (expanded && completion_date) {
+    return (
+      <div
+        role="button"
+        onClick={handleClick}
+        className={TokenList.join([
+          'ProposalUpdate',
+          'ProposalUpdate--expanded',
+          `ProposalUpdate--${status}`,
+          expanded && `ProposalUpdate--${status}-expanded`,
+        ])}
+      >
+        <div className="ProposalUpdate__Heading">
+          <div className="ProposalUpdate__Left">
+            <img
+              src={icon}
+              className={TokenList.join(['ProposalUpdate__Icon', `ProposalUpdate__Icon--${status}`])}
+              aria-hidden="true"
+            />
+            <span
+              className={TokenList.join([
+                'ProposalUpdate__Month',
+                expanded && `ProposalUpdate__Month--expanded`,
+                `ProposalUpdate__Month--${status}`,
+              ])}
+            >
+              {l('page.proposal_detail.grant.update_date', { date })}
+            </span>
+          </div>
+          <div className="ProposalUpdate__Date">{Time.from(completion_date).fromNow()}</div>
+        </div>
+        <div className="ProposalUpdate__Title">
+          <span>{title}</span>
+        </div>
+        <div className="ProposalUpdate__Description--expanded">
+          <span>{description}</span>
+        </div>
+        <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${status}`])}>
+          Keep reading
+          <Icon name="chevron right" />
+        </div>
+        {!completion_date && isOwner && (
+          <Button basic onClick={handlePostUpdateClick}>
+            {l('page.proposal_detail.grant.update_button')}
+            <Icon name="chevron right" />
+          </Button>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div
       role="button"
       onClick={handleClick}
-      className={TokenList.join([
-        'ProposalUpdate',
-        `ProposalUpdate--${status}`,
-        expanded && `ProposalUpdate--${status}-expanded`,
-      ])}
+      className={TokenList.join(['ProposalUpdate', status === UpdateStatus.Pending && 'ProposalUpdate--pending'])}
     >
       <div className="ProposalUpdate__Left">
         <img className="ProposalUpdate__Icon" src={icon} aria-hidden="true" />
         <div className="ProposalUpdate__Description">
-          <span className="ProposalUpdate__Number">{l('page.proposal_detail.grant.update_date', { date })}</span>
+          <span className="ProposalUpdate__Month">{l('page.proposal_detail.grant.update_date', { date })}:</span>
           <span>{completion_date ? `${title}. ${description}` : missedUpdateText}</span>
         </div>
       </div>
