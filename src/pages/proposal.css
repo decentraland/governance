@@ -1,3 +1,9 @@
+@media (max-width: 767px) {
+  .SignIn.center .ui.primary.button {
+    display: none;
+  }
+}
+
 .ProposalDetailPage .ui.grid>.row>.column.ProposalDetailDescription {
   width: 72% !important;
 }

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useContext, useEffect } from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
@@ -21,6 +21,11 @@ import GrantList from '../components/Transparency/GrantList'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
 import MembersSection from '../components/Transparency/MembersSection'
 import './transparency.css'
+import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import MobileNavigation from '../components/Layout/MobileNavigation'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { useBurgerMenu } from '../hooks/useBurgerMenu'
 
 const discordIcon = require('../images/icons/discord.svg')
 
@@ -47,140 +52,158 @@ export default function WrappingPage() {
   const l = useFormatMessage()
   const [data] = useAsyncMemo(async () => DclData.get().getData())
   const balances = useMemo(() => data && aggregateBalances(data.balances) || [], [data])
+  const burgerMenu = useBurgerMenu()
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const translate = '100px'
 
   return (<>
-    {!data && <Loader active />}
-    {data && <>
-      <Head
-        title={l('page.transparency.title') || ''}
-        description={l('page.transparency.mission.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <Navigation activeTab={NavigationTab.Transparency} />
-      <Container className="TransparencyContainer">
-        <Grid className="TransparencyGrid" stackable>
-          <Grid.Row columns={2}>
-            <Grid.Column tablet="4">
-              <div>
-                <Header>{l('page.transparency.mission.title')}</Header>
-                <p>{l('page.transparency.mission.description')}</p>
-                <ExternalLinkWithIcon href={JOIN_DISCORD_URL}
-                                      imageSrc={discordIcon}
-                                      text={l('page.transparency.mission.join_discord_button')} />
-                <ExternalLinkWithIcon href={DOCS_URL}
-                                      imageSrc={docsIcon}
-                                      text={l('page.transparency.mission.docs_button')} />
-                <ExternalLinkWithIcon href={DASHBOARD_URL}
-                                      imageSrc={dashboardIcon}
-                                      text={l('page.transparency.mission.dashboard_button')} />
-                <ExternalLinkWithIcon href={DATA_SHEET_URL}
-                                      imageSrc={dataSheetIcon}
-                                      text={l('page.transparency.mission.data_source_button')} />
-              </div>
-            </Grid.Column>
+    <Navigation activeTab={NavigationTab.Transparency} />
+    <Head
+      title={l('page.transparency.title') || ''}
+      description={l('page.transparency.mission.description') || ''}
+      image="https://decentraland.org/images/decentraland.png"
+    />
+    <div className='TransparencyMobile'>
+      {!data && <div style={{position: 'relative', paddingTop: '200px'}}><Loader active /></div>}
+      {data && <>
+        {
+          isMobile &&
+          <div className='Transparency'>
+            <BurgerMenuContent footerTranslate={translate}>
+              <MobileNavigation />
+            </BurgerMenuContent>
+          </div>
+        }
+        <div className='Animated'
+          style={(isMobile && burgerMenu?.status && {transform: `translateY(${translate})`}) || {}}
+        >
+        <Container className="TransparencyContainer">
+          <Grid className="TransparencyGrid" stackable>
+            <Grid.Row columns={2}>
+              <Grid.Column tablet="4">
+                <div>
+                  <Header>{l('page.transparency.mission.title')}</Header>
+                  <p>{l('page.transparency.mission.description')}</p>
+                  <ExternalLinkWithIcon href={JOIN_DISCORD_URL}
+                                        imageSrc={discordIcon}
+                                        text={l('page.transparency.mission.join_discord_button')} />
+                  <ExternalLinkWithIcon href={DOCS_URL}
+                                        imageSrc={docsIcon}
+                                        text={l('page.transparency.mission.docs_button')} />
+                  <ExternalLinkWithIcon href={DASHBOARD_URL}
+                                        imageSrc={dashboardIcon}
+                                        text={l('page.transparency.mission.dashboard_button')} />
+                  <ExternalLinkWithIcon href={DATA_SHEET_URL}
+                                        imageSrc={dataSheetIcon}
+                                        text={l('page.transparency.mission.data_source_button')} />
+                </div>
+              </Grid.Column>
 
-            <Grid.Column tablet="12">
-              <div className="TransparencySection">
-                <Card className="TransparencyCard">
-                  <Card.Content>
-                    <Header>{l('page.transparency.mission.balance_title')}</Header>
-                    <div className="TokenContainer">
-                      {balances && balances.map((tokenBalance, index) => {
-                        return <TokenBalanceCard aggregatedTokenBalance={tokenBalance}
-                                                 key={['tokenBalance', index].join('::')} />
-                      })}
-                    </div>
-                  </Card.Content>
-                </Card>
-              </div>
-              <Grid.Row columns={2} divided={true} className="MonthlyTotals">
-                <MonthlyTotal title={l('page.transparency.mission.monthly_income') || ''} monthlyTotal={data.income} />
-                <MonthlyTotal title={l('page.transparency.mission.monthly_expenses') || ''} monthlyTotal={data.expenses} />
-              </Grid.Row>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
-
-      <Container className="TransparencyContainer">
-        <Grid className="TransparencyGrid" stackable>
-          <Grid.Row columns={2}>
-            <Grid.Column tablet="4">
-              <div>
-                <Header>{l('page.transparency.funding.title')}</Header>
-                <p>{l('page.transparency.funding.description')}</p>
-                <LinkWithIcon href={locations.proposals()}
-                              imageSrc={viewAllProposalsIcon}
-                              text={l('page.transparency.funding.view_all_button')} />
-              </div>
-            </Grid.Column>
-
-            <Grid.Column tablet="12">
-              <div className="TransparencySection">
-                <Card className="TransparencyCard">
-                  <Card.Content>
-                    <Header className="FundingHeader">{l('page.transparency.funding.total_title')}</Header>
-                    <div className="FundingProgress">
-                      <div className="FundingProgress__Description">
-                        <Header size="huge" className="FundingProgress__Total">
-                          {'$' + formatBalance(data.funding.total)}
-                          <Header size="small">USD</Header>
-                        </Header>
+              <Grid.Column tablet="12">
+                <div className="TransparencySection">
+                  <Card className="TransparencyCard">
+                    <Card.Content>
+                      <Header>{l('page.transparency.mission.balance_title')}</Header>
+                      <div className="TokenContainer">
+                        {balances && balances.map((tokenBalance, index) => {
+                          return <TokenBalanceCard aggregatedTokenBalance={tokenBalance}
+                                                  key={['tokenBalance', index].join('::')} />
+                        })}
                       </div>
-                    </div>
-                  </Card.Content>
-                  <GrantList
-                    status={ProposalStatus.Enacted}
-                    title={l('page.transparency.funding.proposals_funded_label') || ''}
-                  />
-                  <GrantList
-                    status={ProposalStatus.Active}
-                    title={l('page.transparency.funding.active_grants_label') || ''}
-                  />
-                </Card>
-              </div>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
+                    </Card.Content>
+                  </Card>
+                </div>
+                <Grid.Row columns={2} divided={true} className="MonthlyTotals">
+                  <MonthlyTotal title={l('page.transparency.mission.monthly_income') || ''} monthlyTotal={data.income} />
+                  <MonthlyTotal title={l('page.transparency.mission.monthly_expenses') || ''} monthlyTotal={data.expenses} />
+                </Grid.Row>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Container>
 
-      <Container className="TransparencyContainer">
-        <Grid className="TransparencyGrid" stackable>
-          <Grid.Row columns={2}>
-            <Grid.Column tablet="4">
-              <div>
-                <Header>{l('page.transparency.members.title')}</Header>
-                <p>{l('page.transparency.members.description')}</p>
+        <Container className="TransparencyContainer">
+          <Grid className="TransparencyGrid Funding" stackable>
+            <Grid.Row columns={2}>
+              <Grid.Column tablet="4">
+                <div>
+                  <Header>{l('page.transparency.funding.title')}</Header>
+                  <p>{l('page.transparency.funding.description')}</p>
+                  <LinkWithIcon href={locations.proposals()}
+                                imageSrc={viewAllProposalsIcon}
+                                text={l('page.transparency.funding.view_all_button')} />
+                </div>
+              </Grid.Column>
 
-                <ExternalLinkWithIcon href={ABOUT_DAO_URL}
-                              imageSrc={documentOutline}
-                              text={l('page.transparency.members.about_dao_button')} />
-                <ExternalLinkWithIcon href={WEARABLE_CURATORS_URL}
-                              imageSrc={personIcon}
-                              text={l('page.transparency.members.wearables_curator_button')} />
-                <ExternalLinkWithIcon href={ABOUT_DELEGATES}
-                              imageSrc={personIcon}
-                              text={l('page.transparency.members.delegate_button')} />
-              </div>
-            </Grid.Column>
-
-            <Grid.Column tablet="12">
-              <div className="TransparencySection">
-                <Card className="TransparencyCard">
-                  {data && data.teams.map((team, index) => {
-                    return <MembersSection
-                      key={[team.name.trim(), index].join('::')}
-                      title={team.name}
-                      description={team.description}
-                      members={team.members}
+              <Grid.Column tablet="12">
+                <div className="TransparencySection">
+                  <Card className="TransparencyCard">
+                    <Card.Content>
+                      <Header className="FundingHeader">{l('page.transparency.funding.total_title')}</Header>
+                      <div className="FundingProgress">
+                        <div className="FundingProgress__Description">
+                          <Header size="huge" className="FundingProgress__Total">
+                            {'$' + formatBalance(data.funding.total)}
+                            <Header size="small">USD</Header>
+                          </Header>
+                        </div>
+                      </div>
+                    </Card.Content>
+                    <GrantList
+                      status={ProposalStatus.Enacted}
+                      title={l('page.transparency.funding.proposals_funded_label') || ''}
                     />
-                  })}
-                </Card>
-              </div>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
-    </>}
+                    <GrantList
+                      status={ProposalStatus.Active}
+                      title={l('page.transparency.funding.active_grants_label') || ''}
+                    />
+                  </Card>
+                </div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Container>
+
+        <Container className="TransparencyContainer">
+          <Grid className="TransparencyGrid" stackable>
+            <Grid.Row columns={2}>
+              <Grid.Column tablet="4">
+                <div>
+                  <Header>{l('page.transparency.members.title')}</Header>
+                  <p>{l('page.transparency.members.description')}</p>
+
+                  <ExternalLinkWithIcon href={ABOUT_DAO_URL}
+                                imageSrc={documentOutline}
+                                text={l('page.transparency.members.about_dao_button')} />
+                  <ExternalLinkWithIcon href={WEARABLE_CURATORS_URL}
+                                imageSrc={personIcon}
+                                text={l('page.transparency.members.wearables_curator_button')} />
+                  <ExternalLinkWithIcon href={ABOUT_DELEGATES}
+                                imageSrc={personIcon}
+                                text={l('page.transparency.members.delegate_button')} />
+                </div>
+              </Grid.Column>
+
+              <Grid.Column tablet="12">
+                <div className="TransparencySection">
+                  <Card className="TransparencyCard">
+                    {data && data.teams.map((team, index) => {
+                      return <MembersSection
+                        key={[team.name.trim(), index].join('::')}
+                        title={team.name}
+                        description={team.description}
+                        members={team.members}
+                      />
+                    })}
+                  </Card>
+                </div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Container>
+        </div>
+      </>}
+    </div>
   </>)
 }

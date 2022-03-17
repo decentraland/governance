@@ -4,7 +4,6 @@ import { useLocation } from '@reach/router'
 import { Card } from "decentraland-ui/dist/components/Card/Card"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { Pagination } from "decentraland-ui/dist/components/Pagination/Pagination"
 
 import { navigate } from "gatsby-plugin-intl"
@@ -14,7 +13,7 @@ import locations, { ProposalActivityList, toProposalActivityList, toProposalList
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 import ActionableLayout from "../components/Layout/ActionableLayout"
 import StatusMenu from "../components/Status/StatusMenu"
-import { ProposalAttributes, ProposalStatus, toProposalStatus } from "../entities/Proposal/types"
+import { ProposalStatus, toProposalStatus } from "../entities/Proposal/types"
 import Filter from "../components/Filter/Filter"
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
 import { Governance } from "../api/Governance"
@@ -29,6 +28,7 @@ import prevent from "decentraland-gatsby/dist/utils/react/prevent"
 import useProposals from "../hooks/useProposals"
 import './activity.css'
 import { isUnderMaintenance } from "../modules/maintenance"
+import LogIn from "../components/User/LogIn"
 
 const ITEMS_PER_PAGE = 12
 
@@ -102,18 +102,11 @@ export default function WelcomePage() {
     </>
   }
 
-  if (!account) {
-    return <>
-    <Head
+  if (!account) {  
+    return <LogIn 
       title={l('page.proposal_activity.title') || ''}
       description={l('page.proposal_activity.description') || ''}
-      image="https://decentraland.org/images/decentraland.png"
     />
-    <Navigation activeTab={NavigationTab.Activity} />
-    <Container className="ActivityPage">
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
-    </>
   }
 
   return <>

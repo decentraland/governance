@@ -115,6 +115,10 @@ export function toPoiType(value: string | null | undefined): PoiType | null {
     null
 }
 
+export function getPoiTypeAction(poiType: PoiType) {
+  return poiType.split('_')[0] // "add" | "remove"
+}
+
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
   if (value === undefined || value === null) {
     return defaultValue

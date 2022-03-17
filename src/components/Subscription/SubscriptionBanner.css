@@ -1,5 +1,5 @@
 .SubscriptionBanner  {
-  display: flex;
+  display: none;
   align-items: center;
   align-content: stretch;
   position: relative;
@@ -27,7 +27,7 @@
 .SubscriptionBanner .SubscriptionBanner__Icon  {
   flex: 0 0 68px;
   height: 48px;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 }
@@ -64,28 +64,41 @@
 }
 
 @media (max-width: 767px) {
-  .SubscriptionBanner .SubscriptionBanner__Content{
+  .OnlyMobile .SubscriptionBanner {
     display: flex;
+  }
+
+  .SubscriptionBanner .SubscriptionBanner__Content {
+    display: contents;
     flex-direction: column;
     width: 100%;
-    text-align: center;
+    text-align: initial;
   }
 
   .SubscriptionBanner .SubscriptionBanner__ButtonContainer {
-    width: 100%;
+    width: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 8px
+    padding-top: 8px;
+    z-index: 1;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__Button {
-    width: 40% !important;
+  .OnlyMobile .SubscriptionBanner .SubscriptionBanner__Button {
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 87px;
   }
 }
 
-@media (min-width: 768px) {
-  .SubscriptionBanner .SubscriptionBanner__Icon{
+@media (min-width: 767px) {
+  
+  .OnlyDesktop .SubscriptionBanner {
+    display: flex;
+  }
+  
+  .SubscriptionBanner .SubscriptionBanner__Icon {
+    display: flex;
     padding-right: 20px;
   }
 
