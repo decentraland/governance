@@ -60,7 +60,7 @@ export default function WrappingPage() {
   return (<>
     <Navigation activeTab={NavigationTab.Transparency} />
     <Head
-      title={l('page.transparency.mission.title') || ''}
+      title={l('page.transparency.title') || ''}
       description={l('page.transparency.mission.description') || ''}
       image="https://decentraland.org/images/decentraland.png"
     />

@@ -159,7 +159,7 @@
     "governance": "Governance",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
-    "catalyst_description": "Add a node to the network of community run servers",
+    "catalyst_description": "Add a node to the network of community-run servers",
     "poi_title": "Point of Interest",
     "add_poi_title": "Add POI",
     "remove_poi_title": "Remove POI",
@@ -284,7 +284,7 @@
     },
     "proposal_catalyst_list": {
       "title": "Catalyst Node Proposals",
-      "description": "Recent proposals to add new community run servers to Decentraland"
+      "description": "Recent proposals to add new community-run servers to Decentraland"
     },
     "proposal_poi_list": {
       "title": "Point of Interest Proposals",
@@ -395,8 +395,9 @@
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
     "transparency": {
+      "title": "Transparency",
       "mission": {
-          "title": "Transparency",
+          "title": "Our Mission",
           "description": "To support and facilitate the continual growth of the Decentraland platform.",
           "join_discord_button": "Join our Discord",
           "docs_button": "Check our docs",
