@@ -1,18 +1,21 @@
-import React, { useMemo } from "react"
-import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import Time from "decentraland-gatsby/dist/utils/date/Time"
-import { Header } from "decentraland-ui/dist/components/Header/Header"
-import { isEmpty } from "lodash"
-import { UpdateStatus } from "../../entities/Updates/types"
-import useProposalUpdates from "../../hooks/useProposalUpdates"
+import React, { useMemo } from 'react'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 
-import Divider from "../Section/Divider"
-import ProposalUpdate from "./ProposalUpdate"
-import "./ProposalUpdates.css"
+import Divider from '../Section/Divider'
+import ProposalUpdate from './ProposalUpdate'
+import './ProposalUpdates.css'
 
-export default function ProposalUpdates({ proposalId }: { proposalId: string }) {
+export default function ProposalUpdates({
+  proposalId,
+  updates,
+}: {
+  proposalId: string
+  updates?: UpdateAttributes[] | null
+}) {
   const l = useFormatMessage()
-  const [updates] = useProposalUpdates(proposalId)
   const now = Date.now()
 
   const publicUpdates = useMemo(
@@ -28,7 +31,7 @@ export default function ProposalUpdates({ proposalId }: { proposalId: string }) 
     [updates]
   )
 
-  if (isEmpty(publicUpdates)) {
+  if (!publicUpdates || (publicUpdates && publicUpdates.length === 0)) {
     return null // TODO: Add empty state
   }
 
@@ -36,7 +39,7 @@ export default function ProposalUpdates({ proposalId }: { proposalId: string }) 
     <div className="ProposalUpdates">
       <Divider />
       <div className="ProposalUpdates__Header">
-        <Header>{l("page.proposal_detail.grant.update_title")}</Header>
+        <Header>{l('page.proposal_detail.grant.update_title')}</Header>
       </div>
       <div>
         {publicUpdates &&

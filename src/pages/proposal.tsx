@@ -95,6 +95,7 @@ export default function ProposalPage() {
     [account, proposal],
     { callWithTruthyDeps: true }
   )
+
   const [updates] = useProposalUpdates(proposal?.id)
 
   const remainingUpdates = useMemo(
@@ -255,7 +256,7 @@ export default function ProposalPage() {
               <ProposalHeaderPoi proposal={proposal} />
               <Markdown>{proposal?.description || ''}</Markdown>
               <ProposalFooterPoi proposal={proposal} />
-              {showProposalUpdates && <ProposalUpdates proposalId={proposal.id} />}
+              {showProposalUpdates && <ProposalUpdates proposalId={proposal.id} updates={updates} />}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 
