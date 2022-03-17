@@ -41,7 +41,8 @@ import './proposal.css'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalComments from '../components/Proposal/ProposalComments'
-import { FollowUpModal } from '../components/Modal/FollowUpModal'
+import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
+import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { isUnderMaintenance } from '../modules/maintenance'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
@@ -56,8 +57,8 @@ type ProposalPageOptions = {
   confirmDeletion: boolean
   confirmStatusUpdate: ProposalStatus | false
   showVotesList: boolean
-  showFollowUpModal: boolean
-  showProposalUpdateModal: boolean
+  showProposalSuccessModal: boolean
+  showUpdateSuccessModal: boolean
 }
 
 const NOW_DATE = new Date()
@@ -72,8 +73,8 @@ export default function ProposalPage() {
     confirmDeletion: false,
     confirmStatusUpdate: false,
     showVotesList: false,
-    showFollowUpModal: false,
-    showProposalUpdateModal: false,
+    showProposalSuccessModal: false,
+    showUpdateSuccessModal: false,
   })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
@@ -96,14 +97,10 @@ export default function ProposalPage() {
   )
   const [updates] = useProposalUpdates(proposal?.id)
 
-  console.log('u', updates)
-
   const remainingUpdates = useMemo(
     () => updates?.filter((item) => (item.due_date ? Time(item.due_date).isAfter(NOW_DATE) : item)),
     [updates]
   )
-
-  console.log('r', remainingUpdates)
 
   const nextUpdate = useMemo(
     () =>
@@ -114,8 +111,6 @@ export default function ProposalPage() {
         : [],
     [remainingUpdates]
   ) as UpdateAttributes
-
-  console.log('n', nextUpdate)
 
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
@@ -187,11 +182,20 @@ export default function ProposalPage() {
   }, [proposal, account, isCommittee])
 
   useEffect(() => {
-    patchOptions({ showFollowUpModal: params.get('new') === 'true' })
+    patchOptions({ showProposalSuccessModal: params.get('new') === 'true' })
   }, [])
 
-  function closeFollowUpModal() {
-    patchOptions({ showFollowUpModal: false })
+  useEffect(() => {
+    patchOptions({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
+  }, [])
+
+  function closeProposalSuccessModal() {
+    patchOptions({ showProposalSuccessModal: false })
+    navigate(locations.proposal(proposal!.id), { replace: true })
+  }
+
+  function closeUpdateSuccessModal() {
+    patchOptions({ showUpdateSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
@@ -369,10 +373,17 @@ export default function ProposalPage() {
         }
         onClose={() => patchOptions({ confirmStatusUpdate: false })}
       />
-      <FollowUpModal
-        open={options.showFollowUpModal}
-        onDismiss={closeFollowUpModal}
-        onClose={closeFollowUpModal}
+      <ProposalSuccessModal
+        open={options.showProposalSuccessModal}
+        onDismiss={closeProposalSuccessModal}
+        onClose={closeProposalSuccessModal}
+        proposal={proposal}
+        loading={proposalState.loading}
+      />
+      <UpdateSuccessModal
+        open={options.showUpdateSuccessModal}
+        onDismiss={closeUpdateSuccessModal}
+        onClose={closeUpdateSuccessModal}
         proposal={proposal}
         loading={proposalState.loading}
       />

@@ -295,9 +295,7 @@
       "thanks": "Thanks for your interest",
       "heads_up": "You'll hear from us soon and frequently enough!"
     },
-    "follow_up": {
-      "title": "Proposal successfully submitted",
-      "description": "Thanks for taking part in the DAO",
+    "success": {
       "sub": "Here's what you could do next",
       "view_on_forum_title": "Join the discussion",
       "view_on_forum_description": "Comment, ideate, expand.",
@@ -310,6 +308,14 @@
       "copy_link_label": "Copy Link",
       "link_copied_label": "Link Copied!",
       "dismiss_button_label": "Dismiss"
+    },
+    "proposal_success": {
+      "title": "Proposal successfully submitted",
+      "description": "Thanks for taking part in the DAO"
+    },
+    "update_success": {
+      "title": "Update Successfully Submitted",
+      "description": "Thanks for sharing your project’s progress."
     }
   },
   "page": {

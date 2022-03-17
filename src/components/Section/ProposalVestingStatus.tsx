@@ -1,14 +1,14 @@
-import React from "react"
-import { Button } from "decentraland-ui/dist/components/Button/Button"
-import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import TokenList from "decentraland-gatsby/dist/utils/dom/TokenList"
-import { ProposalAttributes } from "../../entities/Proposal/types"
-import "./DetailsSection.css"
-import "./ProposalVestingStatus.css"
-import { UpdateAttributes } from "../../entities/Updates/types"
-import Time from "decentraland-gatsby/dist/utils/date/Time"
+import React from 'react'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import './DetailsSection.css'
+import './ProposalVestingStatus.css'
+import { UpdateAttributes } from '../../entities/Updates/types'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
-export type ProposalVestingStatusProps = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+export type ProposalVestingStatusProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   loading?: boolean
   disabled?: boolean
@@ -31,15 +31,15 @@ export default function ProposalVestingStatus({
     <div
       {...props}
       className={TokenList.join([
-        "DetailsSection",
-        disabled && "DetailsSection--disabled",
-        loading && "DetailsSection--loading",
+        'DetailsSection',
+        disabled && 'DetailsSection--disabled',
+        loading && 'DetailsSection--loading',
         props.className,
       ])}
     >
       <div className="DetailsSection__Content">
         <span className="ProposalVestingStatus__UpdateDescription">
-          {l.markdown("page.proposal_detail.grant.update_description")}
+          {l.markdown('page.proposal_detail.grant.update_description')}
         </span>
         <Button
           disabled={hasSubmittedUpdate}
@@ -47,11 +47,11 @@ export default function ProposalVestingStatus({
           className="ProposalVestingStatus__UpdateButton"
           primary
         >
-          {l("page.proposal_detail.grant.update_button")}
+          {l('page.proposal_detail.grant.update_button')}
         </Button>
         {!hasSubmittedUpdate && nextUpdate?.due_date && (
           <span className="ProposalVestingStatus__UpdateDueDate">
-            {l.markdown("page.proposal_detail.grant.update_due_date", {
+            {l.markdown('page.proposal_detail.grant.update_due_date', {
               date: Time(nextUpdate?.due_date).fromNow(true),
             })}
           </span>

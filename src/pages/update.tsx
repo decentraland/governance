@@ -1,25 +1,25 @@
-import React, { useEffect, useMemo, useState } from "react"
-import Helmet from "react-helmet"
-import { useLocation } from "@reach/router"
-import { Button } from "decentraland-ui/dist/components/Button/Button"
-import { Header } from "decentraland-ui/dist/components/Header/Header"
-import { Field } from "decentraland-ui/dist/components/Field/Field"
-import { Container } from "decentraland-ui/dist/components/Container/Container"
-import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
-import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
-import MarkdownTextarea from "decentraland-gatsby/dist/components/Form/MarkdownTextarea"
-import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import useEditor, { assert, createValidator } from "decentraland-gatsby/dist/hooks/useEditor"
-import Label from "decentraland-gatsby/dist/components/Form/Label"
-import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
-import Head from "decentraland-gatsby/dist/components/Head/Head"
-import { navigate } from "gatsby-plugin-intl"
-import ContentLayout, { ContentSection } from "../components/Layout/ContentLayout"
-import MarkdownNotice from "../components/Form/MarkdownNotice"
-import { Governance } from "../api/Governance"
-import locations from "../modules/locations"
-import "./submit/submit.css"
+import React, { useEffect, useMemo, useState } from 'react'
+import Helmet from 'react-helmet'
+import { useLocation } from '@reach/router'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import { navigate } from 'gatsby-plugin-intl'
+import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
+import MarkdownNotice from '../components/Form/MarkdownNotice'
+import { Governance } from '../api/Governance'
+import locations from '../modules/locations'
+import './submit/submit.css'
 
 type updateFormState = {
   title: string
@@ -27,22 +27,22 @@ type updateFormState = {
 }
 
 const initialState: updateFormState = {
-  title: "",
-  description: "",
+  title: '',
+  description: '',
 }
 
 const updateSchema = {
-  type: "object",
+  type: 'object',
   additionalProperties: false,
-  required: ["title", "description"],
+  required: ['title', 'description'],
   properties: {
     title: {
-      type: "string",
+      type: 'string',
       minLength: 10,
       maxLength: 100,
     },
     description: {
-      type: "string",
+      type: 'string',
       minLength: 20,
       maxLength: 250,
     },
@@ -60,10 +60,10 @@ const edit = (state: updateFormState, props: Partial<updateFormState>) => {
 
 const validate = createValidator<updateFormState>({
   title: (state) => ({
-    title: assert(state.title.length > 0, "error.proposal_update.description_empty"),
+    title: assert(state.title.length > 0, 'error.proposal_update.description_empty'),
   }),
   description: (state) => ({
-    description: assert(state.description.length > 0, "error.proposal_update.description_empty"),
+    description: assert(state.description.length > 0, 'error.proposal_update.description_empty'),
   }),
 })
 
@@ -74,8 +74,8 @@ export default function Update() {
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const proposalId = params.get("proposalId") || ""
-  const updateId = params.get("id") || ""
+  const proposalId = params.get('proposalId') || ''
+  const updateId = params.get('id') || ''
 
   useEffect(() => {
     const submitUpdate = async () => {
@@ -94,10 +94,10 @@ export default function Update() {
 
       try {
         await Governance.get().updateProposalUpdate(newUpdate)
-        navigate(locations.proposal(proposalId, { new: "true" }), { replace: true }) // TODO: This should be newUpdate: "true"
+        navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
       } catch (err) {
         if (err instanceof Error) {
-          editor.error({ "*": err.message })
+          editor.error({ '*': err.message })
           setFormDisabled(false)
         }
       }
@@ -122,8 +122,8 @@ export default function Update() {
     return (
       <Container>
         <Head
-          title={l("page.proposal_update.title") || ""}
-          description={l("page.proposal_update.description") || ""}
+          title={l('page.proposal_update.title') || ''}
+          description={l('page.proposal_update.description') || ''}
           image="https://decentraland.org/images/decentraland.png"
         />
         <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
@@ -134,29 +134,29 @@ export default function Update() {
   return (
     <ContentLayout small>
       <Head
-        title={l("page.proposal_update.title") || ""}
-        description={l("page.proposal_update.description") || ""}
+        title={l('page.proposal_update.title') || ''}
+        description={l('page.proposal_update.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
       <Helmet title="Publish Update" />
       <ContentSection>
-        <Header size="huge">{l("page.proposal_update.title")}</Header>
+        <Header size="huge">{l('page.proposal_update.title')}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{l("page.proposal_update.description")}</Paragraph>
+        <Paragraph small>{l('page.proposal_update.description')}</Paragraph>
       </ContentSection>
       <ContentSection>
-        <Label>{l("page.proposal_update.title_label")}</Label>
+        <Label>{l('page.proposal_update.title_label')}</Label>
         <Field
-          placeholder={l("page.proposal_update.title_placeholder")}
+          placeholder={l('page.proposal_update.title_placeholder')}
           value={state.value.title}
           onChange={(_, { value }) => editor.set({ title: value })}
           onBlur={() => editor.set({ title: state.value.title.trim() })}
           error={!!state.error.title}
           message={
             l.optional(state.error.title) +
-            " " +
-            l("page.submit.character_counter", {
+            ' ' +
+            l('page.submit.character_counter', {
               current: state.value.title.length,
               limit: schema.title.maxLength,
             })
@@ -166,11 +166,11 @@ export default function Update() {
       </ContentSection>
       <ContentSection>
         <Label>
-          {l("page.proposal_update.description_label")}
+          {l('page.proposal_update.description_label')}
           <MarkdownNotice />
         </Label>
         <MarkdownTextarea
-          placeholder={l("page.proposal_update.description_placeholder")}
+          placeholder={l('page.proposal_update.description_placeholder')}
           minHeight={175}
           value={state.value.description}
           onChange={(_: any, { value }: any) => editor.set({ description: value })}
@@ -178,8 +178,8 @@ export default function Update() {
           error={!!state.error.description}
           message={
             l.optional(state.error.description) +
-            " " +
-            l("page.submit.character_counter", {
+            ' ' +
+            l('page.submit.character_counter', {
               current: state.value.description.length,
               limit: schema.description.maxLength,
             })
@@ -189,13 +189,13 @@ export default function Update() {
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
-          {l("page.proposal_update.publish_update")}
+          {l('page.proposal_update.publish_update')}
         </Button>
       </ContentSection>
-      {state.error["*"] && (
+      {state.error['*'] && (
         <ContentSection>
           <Paragraph small primary>
-            {l(state.error["*"]) || state.error["*"]}
+            {l(state.error['*']) || state.error['*']}
           </Paragraph>
         </ContentSection>
       )}
