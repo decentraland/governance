@@ -35,6 +35,7 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
+import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 
 import './index.css'
 import './proposal.css'
@@ -81,6 +82,9 @@ export default function ProposalPage() {
   })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
+  const [profile] = useAsyncMemo(async () => (proposal?.user ? profiles.load(proposal.user) : null), [proposal?.user], {
+    callWithTruthyDeps: true,
+  })
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [votes, votesState] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], {
     callWithTruthyDeps: true,
@@ -308,7 +312,7 @@ export default function ProposalPage() {
                   onPostUpdateClick={handlePostUpdateClick}
                 />
               )}
-              <ProposalDetailSection proposal={proposal} />
+              <ProposalDetailSection proposal={proposal} profile={profile} />
               {(isOwner || isCommittee) && (
                 <Button
                   basic
@@ -409,6 +413,8 @@ export default function ProposalPage() {
         onDismiss={handleCloseUpdateDetailModal}
         onClose={handleCloseUpdateDetailModal}
         update={options.selectedUpdate}
+        profile={profile}
+        proposalUser={proposal?.user}
         loading={proposalState.loading}
       />
     </>

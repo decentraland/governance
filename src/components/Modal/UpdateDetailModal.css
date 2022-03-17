@@ -14,4 +14,14 @@
 
 .dg.Paragraph.UpdateDetailModal__Timestamp {
   color: #736e7d;
+  margin-right: 5px;
+}
+
+.UpdateDetailModal__Date {
+  display: flex;
+  flex-direction: row;
+}
+
+.UpdateDetailModal__Date .dcl.address {
+  font-size: 15px;
 }
