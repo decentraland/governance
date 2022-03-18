@@ -21,20 +21,7 @@ export default function ProposalUpdates({
   const l = useFormatMessage()
   const now = Date.now()
 
-  const publicUpdates = useMemo(
-    () =>
-      updates
-        ?.filter(
-          (item) =>
-            item.status === UpdateStatus.Done ||
-            item.status === UpdateStatus.Late ||
-            Time.utc(item.due_date).isBefore(now)
-        )
-        .sort((a, b) => (Time(a.due_date).isAfter(b.due_date) ? -1 : 0)),
-    [updates]
-  )
-
-  if (!publicUpdates || (publicUpdates && publicUpdates.length === 0)) {
+  if (!updates || (updates && updates.length === 0)) {
     return null // TODO: Add empty state
   }
 
@@ -45,8 +32,8 @@ export default function ProposalUpdates({
         <Header>{l('page.proposal_detail.grant.update_title')}</Header>
       </div>
       <div>
-        {publicUpdates &&
-          publicUpdates.map((item, index) => (
+        {updates &&
+          updates.map((item, index) => (
             <ProposalUpdate
               key={item.id}
               proposal={proposal}

@@ -1,16 +1,17 @@
-import { Request } from "express"
-import routes from "decentraland-gatsby/dist/entities/Route/routes"
-import handleAPI from "decentraland-gatsby/dist/entities/Route/handle"
-import { auth, WithAuth } from "decentraland-gatsby/dist/entities/Auth/middleware"
-import UpdateModel from "./model"
-import { UpdateAttributes, UpdateStatus } from "./types"
-import RequestError from "decentraland-gatsby/dist/entities/Route/error"
-import Time from "decentraland-gatsby/dist/utils/date/Time"
+import { Request } from 'express'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
+import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import UpdateModel from './model'
+import { UpdateAttributes, UpdateStatus } from './types'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { getNextUpdate, getPublicUpdates } from './utils'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get("/proposals/:proposal/updates", handleAPI(getProposalUpdates))
-  route.patch("/proposals/:proposal/updates", withAuth, handleAPI(updateProposalUpdate))
+  route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
+  route.patch('/proposals/:proposal/updates', withAuth, handleAPI(updateProposalUpdate))
 })
 
 async function getProposalUpdates(req: Request<{ proposal: string }>) {
@@ -20,7 +21,14 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
     throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
   }
 
-  return UpdateModel.find<UpdateAttributes>({ proposal_id })
+  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id })
+  const publicUpdates = getPublicUpdates(updates)
+  const nextUpdate = getNextUpdate(updates)
+
+  return {
+    publicUpdates,
+    nextUpdate,
+  }
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {

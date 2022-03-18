@@ -15,6 +15,7 @@
 .UpdateDetailModal__Content .dg.Paragraph {
   font-size: 15px;
   line-height: 24px;
+  overflow-wrap: break-word;
 }
 
 .dg.Paragraph.UpdateDetailModal__Timestamp {

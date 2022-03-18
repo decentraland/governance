@@ -49,7 +49,6 @@ import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/Maintena
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
 import ProposalUpdates from '../components/Proposal/ProposalUpdates'
 import useProposalUpdates from '../hooks/useProposalUpdates'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { UpdateDetailModal } from '../components/Modal/UpdateDetailModal'
 
@@ -103,22 +102,7 @@ export default function ProposalPage() {
     { callWithTruthyDeps: true }
   )
 
-  const [updates] = useProposalUpdates(proposal?.id)
-
-  const remainingUpdates = useMemo(
-    () => updates?.filter((item) => (item.due_date ? Time(item.due_date).isAfter(NOW_DATE) : item)),
-    [updates]
-  )
-
-  const nextUpdate = useMemo(
-    () =>
-      remainingUpdates && remainingUpdates.length > 0
-        ? remainingUpdates?.reduce((prev, current) =>
-            prev.due_date && current.due_date && prev.due_date < current.due_date ? prev : current
-          )
-        : [],
-    [remainingUpdates]
-  ) as UpdateAttributes
+  const { publicUpdates, nextUpdate } = useProposalUpdates(proposal?.id)
 
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
@@ -245,7 +229,8 @@ export default function ProposalPage() {
 
   const showVestingStatus =
     proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
-  const showProposalUpdates = proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+  const showProposalUpdates =
+    publicUpdates && proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
 
   return (
     <>
@@ -275,7 +260,7 @@ export default function ProposalPage() {
               <Markdown>{proposal?.description || ''}</Markdown>
               <ProposalFooterPoi proposal={proposal} />
               {showProposalUpdates && (
-                <ProposalUpdates proposal={proposal} updates={updates} onUpdateClick={handleUpdateClick} />
+                <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateClick={handleUpdateClick} />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
