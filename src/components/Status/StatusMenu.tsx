@@ -2,6 +2,8 @@ import React from 'react'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { ProposalStatus } from '../../entities/Proposal/types'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 export type StatusMenu = {
   style?: React.CSSProperties,
@@ -17,7 +19,10 @@ export default function StatusMenu(props: StatusMenu) {
     }
   }
 
-  return <Dropdown text={l(`status.${props.value || 'all'}`) || ''} style={props.style}>
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+
+  return <Dropdown text={l(`status.${props.value || 'all'}`) || ''} direction={isMobile ? "left" : "right"} style={props.style}>
     <Dropdown.Menu>
       <Dropdown.Item text={l(`status.all`)} onClick={(e) => handleChange(e, null)} />
       <Dropdown.Item text={l(`status.${ProposalStatus.Active}`)} onClick={(e) => handleChange(e, ProposalStatus.Active)} />

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react"
+import React, { useMemo, useEffect, useContext } from "react"
 import { useLocation } from '@reach/router'
 import Grid from "semantic-ui-react/dist/commonjs/collections/Grid/Grid"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
@@ -11,7 +11,6 @@ import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 
 import locations, { ProposalListView, toProposalListPage, toProposalListView } from "../modules/locations"
 import ActionableLayout from "../components/Layout/ActionableLayout"
-import CategoryOption from "../components/Category/CategoryOption"
 import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from "../entities/Proposal/types"
 import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
 import StatusMenu from "../components/Status/StatusMenu"
@@ -31,9 +30,17 @@ import useProposals from "../hooks/useProposals"
 import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
 import { Governance } from "../api/Governance"
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import CategoryList from "../components/Category/CategoryList"
+import BurgerMenuContent from "../components/Layout/BurgerMenuContent"
+import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
+import { BurgerMenuShowContext } from "../components/Context/BurgerMenuShowContext"
 import './index.css'
 import { isUnderMaintenance } from "../modules/maintenance"
 import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
+import MobileNavigation from "../components/Layout/MobileNavigation"
+import { useBurgerMenu } from "../hooks/useBurgerMenu"
 
 const ITEMS_PER_PAGE = 25
 
@@ -58,6 +65,11 @@ export default function IndexPage() {
     { callWithTruthyDeps: true }
   )
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const burgerMenu = useBurgerMenu();
+  const translate = '550px'
+
   // const [ ff ] = useFeatureFlagContext()
 
   useEffect(() => {
@@ -91,13 +103,6 @@ export default function IndexPage() {
     const newParams = new URLSearchParams(params)
     page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
     return navigate(locations.proposals(newParams))
-  }
-
-  function handleTypeFilter(type: ProposalType | null) {
-    const newParams = new URLSearchParams(params)
-    type ? newParams.set('type', type) : newParams.delete('type')
-    newParams.delete('page')
-    return locations.proposals(newParams)
   }
 
   function handleStatusFilter(status: ProposalStatus | null) {
@@ -169,6 +174,11 @@ export default function IndexPage() {
   }
 
   return <>
+    <div className="OnlyMobile Animated"
+        style={(isMobile && burgerMenu?.status && {transform: 'translateX(-200%)', height: 0}) || {}}
+    > 
+      <SubscriptionBanner active={!type} />
+    </div>
     <Head
       title={
         (view === ProposalListView.Onboarding && l('page.welcome.title')) ||
@@ -195,20 +205,18 @@ export default function IndexPage() {
       <Grid stackable>
         <Grid.Row>
           <Grid.Column tablet="4">
-            <ActionableLayout
-              leftAction={<Header sub>{l(`page.proposal_list.categories`)}</Header>}
-            >
-              <CategoryOption type={'all'} href={handleTypeFilter(null)} active={type === null} />
-              <CategoryOption type={ProposalType.Catalyst} href={handleTypeFilter(ProposalType.Catalyst)} active={type === ProposalType.Catalyst} />
-              <CategoryOption type={ProposalType.POI} href={handleTypeFilter(ProposalType.POI)} active={type === ProposalType.POI} />
-              <CategoryOption type={ProposalType.BanName} href={handleTypeFilter(ProposalType.BanName)} active={type === ProposalType.BanName} />
-              <CategoryOption type={ProposalType.Grant} href={handleTypeFilter(ProposalType.Grant)} active={type === ProposalType.Grant} />
-              <CategoryOption type={ProposalType.Poll} href={handleTypeFilter(ProposalType.Poll)} active={type === ProposalType.Poll} />
-              <CategoryOption type={ProposalType.Draft} href={handleTypeFilter(ProposalType.Draft)} active={type === ProposalType.Draft} />
-              <CategoryOption type={ProposalType.Governance} href={handleTypeFilter(ProposalType.Governance)} active={type === ProposalType.Governance} />
-            </ActionableLayout>
+            {
+              isMobile ? 
+              <BurgerMenuContent footerTranslate={translate}>
+                <MobileNavigation />
+                <CategoryList />
+              </BurgerMenuContent> : <CategoryList />
+            }
           </Grid.Column>
-          <Grid.Column tablet="12">
+          <Grid.Column tablet="12"
+            className="Animated"
+            style={(isMobile && burgerMenu?.status && {transform: `translateY(${translate})`}) || {}}
+          >
             <ActionableLayout
               leftAction={<Header sub>
                 {!proposals && ''}
@@ -216,13 +224,15 @@ export default function IndexPage() {
               </Header>}
               rightAction={view !== ProposalListView.Enacted && <>
                 <StatusMenu style={{ marginRight: '1rem' }} value={status} onChange={(_, { value }) => handleStatusFilter(value)} />
-                <Button primary size="small" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
+                <Button primary size="small" className="SubmitButton" as={Link} href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
                   {l(`page.proposal_list.new_proposal`)}
                 </Button>
               </>}
             >
               <Loader active={!proposals || proposalsState.loading} />
-              <SubscriptionBanner active={!type} />
+              <div className="OnlyDesktop">
+                <SubscriptionBanner active={!type} />
+              </div>
               {type && <CategoryBanner type={type} active />}
               {proposals && proposals.data.length === 0 && <Empty description={l(`page.proposal_list.no_proposals_yet`)} />}
               {proposals && proposals.data.map(proposal => {

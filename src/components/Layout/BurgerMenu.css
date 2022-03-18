@@ -1,0 +1,21 @@
+.BurgerMenu {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: column nowrap;
+  z-index: 10;
+}
+
+.BurgerMenu .Bar {
+  width: 2rem;
+  height: 0.25rem;
+  border-radius: 10px;
+  background-color: black;
+  transform-origin: 1px;
+  transition: all 0.3s linear;
+}
+
+.BurgerMenu--hidden {
+  display: none;
+}

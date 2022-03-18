@@ -14,6 +14,11 @@
     "enacted": "Enacted",
     "transparency": "Transparency"
   },
+  "mobile_login": {
+    "exclamation": "Oh oh...",
+    "message": "It looks like you're on a mobile device, please use a computer to log in to the Governance DApp",
+    "button": "Go Back"
+  },
   "error": {
     "poll": {
       "title_empty": "Title field is too short",
@@ -154,7 +159,7 @@
     "governance": "Governance",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
-    "catalyst_description": "Add a node to the network of community run servers",
+    "catalyst_description": "Add a node to the network of community-run servers",
     "poi_title": "Point of Interest",
     "add_poi_title": "Add POI",
     "remove_poi_title": "Remove POI",
@@ -270,6 +275,7 @@
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "new_proposal": "Submit a proposal",
       "categories": "Categories",
+      "browse": "Browse",
       "no_proposals_yet": "No proposals have been sent by community members yet."
     },
     "proposal_enacted_list": {
@@ -278,7 +284,7 @@
     },
     "proposal_catalyst_list": {
       "title": "Catalyst Node Proposals",
-      "description": "Recent proposals to add new community run servers to Decentraland"
+      "description": "Recent proposals to add new community-run servers to Decentraland"
     },
     "proposal_poi_list": {
       "title": "Point of Interest Proposals",
@@ -389,8 +395,9 @@
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
     "transparency": {
+      "title": "Transparency",
       "mission": {
-          "title": "Transparency",
+          "title": "Our Mission",
           "description": "To support and facilitate the continual growth of the Decentraland platform.",
           "join_discord_button": "Join our Discord",
           "docs_button": "Check our docs",

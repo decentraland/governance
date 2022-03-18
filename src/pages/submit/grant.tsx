@@ -6,7 +6,6 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { SelectField } from "decentraland-ui/dist/components/SelectField/SelectField"
 import { isProposalGrantCategory, isProposalGrantTier, newProposalGrantScheme, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -22,8 +21,9 @@ import { asNumber } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import './submit.css'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+import LogIn from '../../components/User/LogIn'
+import './submit.css'
 
 type GrantState = {
   title: string,
@@ -206,14 +206,10 @@ export default function SubmitBanName() {
   }
 
   if (!account) {
-    return <Container>
-      <Head
-        title={l('page.submit_grant.title') || ''}
-        description={l('page.submit_grant.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
+    return <LogIn
+      title={l('page.submit_grant.title') || ''}
+      description={l('page.submit_grant.description') || ''}
+    />
   }
 
   return <ContentLayout small>

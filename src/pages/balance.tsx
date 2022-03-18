@@ -9,7 +9,6 @@ import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { Card } from "decentraland-ui/dist/components/Card/Card"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Stats } from "decentraland-ui/dist/components/Stats/Stats"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { Mana } from "decentraland-ui/dist/components/Mana/Mana"
 import Navigation, { NavigationTab } from "../components/Layout/Navigation"
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
@@ -44,6 +43,7 @@ import { Snapshot } from "../api/Snapshot"
 import './balance.css'
 import { isUnderMaintenance } from "../modules/maintenance"
 import MaintenancePage from "decentraland-gatsby/dist/components/Layout/MaintenancePage"
+import LogIn from "../components/User/LogIn"
 
 const NAME_MULTIPLIER = 100
 const LAND_MULTIPLIER = 2000
@@ -114,17 +114,10 @@ export default function WrappingPage() {
   }
 
   if (!account) {
-    return <>
-    <Head
+    return <LogIn
       title={l('page.balance.title') || ''}
       description={l('page.balance.description') || ''}
-      image="https://decentraland.org/images/decentraland.png"
     />
-    <Navigation activeTab={NavigationTab.Wrapping} />
-    <Container>
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
-    </>
   }
 
   return (<>

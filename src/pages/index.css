@@ -25,3 +25,42 @@
   justify-content: flex-end;
   width: 100%;
 }
+
+.SubmitButton {
+  display: none !important;
+}
+
+.Animated {
+  transition: all 0.5s ease 0s;
+}
+
+.ui.pagination.menu {
+  justify-content: center !important;
+}
+
+/* Only Mobile */
+@media only screen and (max-width: 767px) {
+  .ui.pagination.menu .item + .item {
+    margin-left: 5px;
+  }
+
+  .ui.pagination.menu .item[type="nextItem"],
+  .ui.pagination.menu .item[type="prevItem"] {
+    display: none !important;
+  }
+
+  .ui.container > .ui.stackable.grid > .row > .column {
+    padding-bottom: 0 !important;
+  }
+
+  .ActionableLayout {
+    min-height: 300px;
+  }
+}
+
+/* Desktop Only */
+@media only screen and (min-width: 768px) {
+  .SubmitButton {
+    display: inline !important
+  }
+}
