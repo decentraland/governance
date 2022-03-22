@@ -4,7 +4,7 @@
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-import sharp from 'sharp'
+const sharp = require('sharp')
 sharp.cache(false)
 sharp.simd(false)
 
