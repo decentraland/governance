@@ -9,16 +9,11 @@ export type CategoryLabelProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'chi
 }
 
 export default React.memo(function CategoryLabel({ type, ...props }: CategoryLabelProps) {
-
   const label = type.replaceAll('_', ' ')
 
-  return <div
-    {...props}
-    className={TokenList.join([
-      `CategoryLabel`,
-      `CategoryLabel--${type}`
-    ])}
-  >
-    <span>{label}</span>
-  </div>
+  return (
+    <div {...props} className={TokenList.join([`CategoryLabel`, `CategoryLabel--${type}`])}>
+      <span>{label}</span>
+    </div>
+  )
 })

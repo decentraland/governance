@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import ActionableLayout from '../Layout/ActionableLayout'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import CategoryOption from './CategoryOption'
@@ -9,7 +9,7 @@ import locations from '../../modules/locations'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 
 function CategoryList() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const type = toProposalType(params.get('type')) ?? undefined
@@ -27,7 +27,7 @@ function CategoryList() {
   }
 
   return (
-    <ActionableLayout leftAction={<Header sub>{l(`page.proposal_list.categories`)}</Header>}>
+    <ActionableLayout leftAction={<Header sub>{t(`page.proposal_list.categories`)}</Header>}>
       <CategoryOption type={'all'} href={handleTypeFilter(null)} active={type === null} onClick={handleClick} />
       {(Object.keys(ProposalType) as Array<keyof typeof ProposalType>).map((key, index) => {
         return (
