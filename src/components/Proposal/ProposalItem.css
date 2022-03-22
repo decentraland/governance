@@ -8,8 +8,18 @@
 }
 
 .ProposalItem .ProposalItem__Status {
-  padding-top: 8px;
+	padding-top: 8px;
+	display: flex;
+	flex-flow: row wrap;
 }
+
+@media only screen and (max-width: 425px) {
+	.ProposalItem .ProposalItem__Status {
+		gap: 8px;
+		flex-direction: column;
+	}
+}
+
 
 .ProposalItem .ProposalItem__Title .ui.header:first-child{
   margin-bottom: 0;
