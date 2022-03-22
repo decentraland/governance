@@ -102,13 +102,13 @@ function formatError(err: Error) {
 function inBackground(fun: () => Promise<any>) {
   Promise.resolve()
     .then(fun)
-    .then((result) => logger.log('Completed background task', {result: JSON.stringify(result)}))
+    .then((result) => logger.log('Completed background task', { result: JSON.stringify(result) }))
     .catch((err) => logger.error('Error running background task', formatError(err)))
 }
 
 function dropDiscourseTopic(topic_id: number) {
   inBackground(() => {
-    logger.log(`Dropping discourse topic`, {topic_id: topic_id})
+    logger.log(`Dropping discourse topic`, { topic_id: topic_id })
     return Discourse.get().removeTopic(topic_id, DISCOURSE_AUTH)
   })
 }
@@ -150,18 +150,18 @@ export async function getProposals(req: WithAuth<Request>) {
     Number(query.limit) : MAX_PROPOSAL_LIMIT
 
   if (search && !/\w{3}/.test(search)) {
-      return []
+    return []
   }
 
-  const [ total, data ] = await Promise.all([
+  const [total, data] = await Promise.all([
     ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit})
+    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit })
   ])
 
   return { ok: true, total, data }
 }
 
-function proposalDuration(duration: number){
+function proposalDuration(duration: number) {
   return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
 
@@ -260,7 +260,7 @@ const verify: VerifyFunction = async (config: NewProposalPOI) => {
 
   const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
 
-  if(config.type === PoiType.AddPOI) {
+  if (config.type === PoiType.AddPOI) {
     if (alreadyPointOfInterest) {
       throw new RequestError(`Coordinate "${config.x},${config.y}" is already a point of interest`, RequestError.BadRequest)
     }
@@ -270,7 +270,7 @@ const verify: VerifyFunction = async (config: NewProposalPOI) => {
       throw new RequestError(`Coodinate "${config.x},${config.y}" is not valid as point of interest`, RequestError.BadRequest)
     }
   }
-  else if(config.type === PoiType.RemovePOI) {
+  else if (config.type === PoiType.RemovePOI) {
     if (!alreadyPointOfInterest) {
       throw new RequestError(`Coordinate "${config.x},${config.y}" is not a point of interest`, RequestError.BadRequest)
     }
@@ -370,7 +370,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   try {
     profile = await Catalyst.get().getProfile(data.user)
   } catch (err) {
-    throw new RequestError(`Error getting profile "${data.user}"`, RequestError.InternalServerError, err)
+    throw new RequestError(`Error getting profile "${data.user}"`, RequestError.InternalServerError, err as Error)
   }
 
   //
@@ -384,14 +384,14 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     snapshotStatus = await Snapshot.get().getStatus()
     snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
   } catch (err) {
-    throw new RequestError(`Error getting snapshot space "${SNAPSHOT_SPACE}"`, RequestError.InternalServerError, err)
+    throw new RequestError(`Error getting snapshot space "${SNAPSHOT_SPACE}"`, RequestError.InternalServerError, err as Error)
   }
 
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
     block = await provider.getBlock('latest')
   } catch (err) {
-    throw new RequestError(`Couldn't get the latest block`, RequestError.InternalServerError, err)
+    throw new RequestError(`Couldn't get the latest block`, RequestError.InternalServerError, err as Error)
   }
 
   try {
@@ -405,15 +405,15 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
 
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
       snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-        name: await templates.snapshotTitle(snapshotTemplateProps),
-        body: await templates.snapshotDescription(snapshotTemplateProps),
-        choices: data.configuration.choices,
-        snapshot: block.number,
-        end,
-        start,
-      })
+      name: await templates.snapshotTitle(snapshotTemplateProps),
+      body: await templates.snapshotDescription(snapshotTemplateProps),
+      choices: data.configuration.choices,
+      snapshot: block.number,
+      end,
+      start,
+    })
   } catch (err) {
-    throw new RequestError(`Error creating the snapshot message`, RequestError.InternalServerError, err)
+    throw new RequestError(`Error creating the snapshot message`, RequestError.InternalServerError, err as Error)
   }
 
   //
@@ -422,14 +422,14 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
   let snapshotProposal: SnapshotResult
   try {
     const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
-    logger.log('Creating proposal in snapshot', {signed: sig, message: msg})
+    logger.log('Creating proposal in snapshot', { signed: sig, message: msg })
     snapshotProposal = await Snapshot.get().send(address, msg, sig)
   } catch (err) {
-    throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err)
+    throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err as Error)
   }
 
   const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
-  logger.log(`Snapshot proposal created`, {snapshot_url: snapshot_url, snapshot_proposal: JSON.stringify(snapshotProposal)})
+  logger.log(`Snapshot proposal created`, { snapshot_url: snapshot_url, snapshot_proposal: JSON.stringify(snapshotProposal) })
 
   //
   // Get snapshot content
@@ -439,7 +439,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     snapshotContent = await IPFS.get().getHash(snapshotProposal.ipfsHash)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError(`Couldn't retrieve proposal from the IPFS`, RequestError.InternalServerError, err)
+    throw new RequestError(`Couldn't retrieve proposal from the IPFS`, RequestError.InternalServerError, err as Error)
   }
 
   //
@@ -464,11 +464,12 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     }, DISCOURSE_AUTH)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError(`Forum error: ${err.body.errors.join(', ')}`, RequestError.InternalServerError, err)
+    const error = err as any // Fixes typescript issue
+    throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
   }
 
   const forum_url = forumUrl({ discourse_topic_slug: discourseProposal.topic_slug, discourse_topic_id: discourseProposal.topic_id })
-  logger.log(`Discourse proposal created`, {forum_url: forum_url, discourse_proposal: JSON.stringify(discourseProposal)})
+  logger.log(`Discourse proposal created`, { forum_url: forum_url, discourse_proposal: JSON.stringify(discourseProposal) })
 
   //
   // Create proposal in DB
@@ -522,7 +523,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
 
 export async function getProposal(req: Request<{ proposal: string }>) {
   const id = req.params.proposal
-  if (!isUUID(id || ''))  {
+  if (!isUUID(id || '')) {
     throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
   }
 
@@ -540,7 +541,7 @@ export function commentProposalUpdateInDiscourse(id: string) {
   inBackground(async () => {
     const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
     if (!updatedProposal) {
-      logger.error(`Invalid proposal id for discourse update`, {id: id})
+      logger.error(`Invalid proposal id for discourse update`, { id: id })
       return
     }
     let votes = await getVotes(updatedProposal.id)
@@ -620,21 +621,21 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
       updated_at,
       status: ProposalStatus.Deleted
     }, {
-      id
-    }
+    id
+  }
   )
   dropDiscourseTopic(proposal.discourse_topic_id)
   dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
   return true
 }
 
-export async function proposalComments(req: Request<{ proposal: string }>){
+export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
-  try{
+  try {
     const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
     return filterComments(comments);
   } catch (e) {
-    logger.error('Could not get proposal comments', e)
+    logger.error('Could not get proposal comments', e as Error)
     return []
   }
 }
@@ -648,7 +649,7 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
   if (!linkedProposal) {
     throw new RequestError(`Could not find a matching ${expectedProposalType} proposal for "${linkedProposalId}"`, RequestError.NotFound)
   }
-  if (linkedProposal.status != ProposalStatus.Passed){
+  if (linkedProposal.status != ProposalStatus.Passed) {
     throw new RequestError(`Cannot link selected proposal since it's not in a PASSED status`, RequestError.Forbidden)
   }
 }

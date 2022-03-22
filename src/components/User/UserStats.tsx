@@ -50,7 +50,7 @@ export default React.memo(function UserStats(props: UserStatsProps) {
       ])}
     >
       {props.sub !== false && <Header sub>{isProfile ? 'PROFILE' : 'ADDRESS'}</Header>}
-      <Header size={props.size} className="UserStatsHeader" as={props.to ? Link : undefined} to={props.to}>
+      <Header size={props.size} className="UserStatsHeader" as={props.to ? Link : undefined} href={props.to}>
         {!isProfile && (
           <Blockie seed={props.address!} scale={sizeToScale(props.size)}>
             <Address value={props.address!} strong />

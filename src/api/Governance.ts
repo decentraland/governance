@@ -90,7 +90,7 @@ export class Governance extends API {
 
     let options = this.options().method('GET')
     if (filters.subscribed) {
-      options = options.authorization()
+      options = options.authorization({ sign: true })
     }
 
     const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(`/proposals${query}`, options)
@@ -105,7 +105,7 @@ export class Governance extends API {
       path,
       this.options()
         .method('POST')
-        .authorization()
+        .authorization({ sign: true })
         .json(proposal)
     )
 
@@ -147,7 +147,7 @@ export class Governance extends API {
   async deleteProposal(proposal_id: string) {
     const result = await this.fetch<ApiResponse<boolean>>(
       `/proposals/${proposal_id}`,
-      this.options().method('DELETE').authorization()
+      this.options().method('DELETE').authorization({ sign: true })
     )
 
     return result.data
@@ -158,7 +158,7 @@ export class Governance extends API {
       `/proposals/${proposal_id}`,
       this.options()
         .method('PATCH')
-        .authorization()
+        .authorization({ sign: true })
         .json({ status, vesting_address, description })
     )
 
@@ -187,7 +187,7 @@ export class Governance extends API {
   async getUserSubscriptions() {
     const result = await this.fetch<ApiResponse<SubscriptionAttributes[]>>(
       `/subscriptions`,
-      this.options().method('GET').authorization()
+      this.options().method('GET').authorization({ sign: true })
     )
     return result.data
   }
@@ -202,7 +202,7 @@ export class Governance extends API {
       `/proposals/${proposal_id}/subscriptions`,
       this.options()
         .method('POST')
-        .authorization()
+        .authorization({ sign: true })
     )
     return result.data
   }
@@ -212,13 +212,13 @@ export class Governance extends API {
       `/proposals/${proposal_id}/subscriptions`,
       this.options()
         .method('DELETE')
-        .authorization()
+        .authorization({ sign: true })
     )
     return result.data
   }
 
   async getVotingPower(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<number>>(`/proposals/${proposal_id}/vp`, this.options().method('GET').authorization())
+    const result = await this.fetch<ApiResponse<number>>(`/proposals/${proposal_id}/vp`, this.options().method('GET').authorization({ sign: true }))
     return result.data
   }
 

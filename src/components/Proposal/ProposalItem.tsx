@@ -39,7 +39,7 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
   return (
     <Card
       as={Link}
-      to={locations.proposal(proposal.id)}
+      href={locations.proposal(proposal.id)}
       style={{ width: '100%' }}
       className={TokenList.join(['ProposalItem', subscribed && 'ProposalItem--subscribed'])}
     >

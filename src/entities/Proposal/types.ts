@@ -419,7 +419,7 @@ export const newProposalCatalystScheme = {
     },
     domain: {
       type: 'string',
-      format: 'domain'
+      format: 'hostname'
     },
     description: {
       type: 'string',

@@ -11,7 +11,7 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 
 export const MIN_NAME_SIZE = 2
 export const MAX_NAME_SIZE = 15
-export const DEFAULT_CHOICES = [ 'yes', 'no' ]
+export const DEFAULT_CHOICES = ['yes', 'no']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
 export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
@@ -55,7 +55,7 @@ export async function isValidPointOfInterest(x: number, y: number) {
 
 export async function isAlreadyACatalyst(domain: string) {
   const servers = await Catalyst.get().getServers()
-  return !!servers.find(server => server.address === 'https://' + domain)
+  return !!servers.find(server => server.baseUrl === 'https://' + domain)
 }
 
 export function isGrantSizeValid(tier: string | null, size: string | number): boolean {
@@ -88,6 +88,7 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
   }
 }
 
+// TODO: Remove, function not used.
 export function calcualteProposalStatus(proposal: ProposalAttributes): ProposalStatus {
   const now = Date.now()
   if (
@@ -109,7 +110,7 @@ export function calcualteProposalStatus(proposal: ProposalAttributes): ProposalS
 }
 
 export function asNumber(value: string | number): number {
-  switch(typeof value) {
+  switch (typeof value) {
     case 'number':
       return value
     case 'string':

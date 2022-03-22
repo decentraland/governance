@@ -13,8 +13,8 @@ export function template(raw: TemplateStringsArray, ...subs: any[]) {
 }
 
 export async function formatLinkedProposal(linked_proposal_id: string) {
-  const url = proposalUrl({id: linked_proposal_id})
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({id: linked_proposal_id, deleted: false})
+  const url = proposalUrl({ id: linked_proposal_id })
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: linked_proposal_id, deleted: false })
   return `[${proposal?.title}](${url})` || ''
 }
 
@@ -33,13 +33,17 @@ export function formatMarkdownAST(node: Node): Node {
     case 'heading':
       return {
         ...node,
-        depth: (node.depth as number) < 3 ? 3 : (node.depth as number),
-        children: node.children && (node.children as Node[]).map(node => formatMarkdownAST(node))
+        data: {
+          depth: (node.data?.depth as number) < 3 ? 3 : (node.data?.depth as number),
+          children: node.data?.children && (node.data?.children as Node[]).map(node => formatMarkdownAST(node))
+        }
       }
     default:
       return {
         ...node,
-        children: node.children && (node.children as Node[]).map(node => formatMarkdownAST(node))
+        data: {
+          children: node.data?.children && (node.data?.children as Node[]).map(node => formatMarkdownAST(node))
+        }
       }
   }
 }

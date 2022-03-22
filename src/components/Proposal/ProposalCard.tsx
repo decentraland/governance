@@ -44,7 +44,7 @@ export default function ProposalCard({ proposal, subscribing, subscribed, votes,
   return (
     <Card
       as={Link}
-      to={locations.proposal(proposal.id)}
+      href={locations.proposal(proposal.id)}
       className={TokenList.join(['ProposalCard', subscribed && 'ProposalCard--subscribed'])}
     >
       <Card.Content className="ProposalCard__Content">
