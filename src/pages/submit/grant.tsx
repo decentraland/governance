@@ -7,7 +7,7 @@ import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SelectField } from "decentraland-ui/dist/components/SelectField/SelectField"
-import { isProposalGrantCategory, isProposalGrantTier, newProposalGrantScheme, ProposalGrantCategory, ProposalGrantTier, ProposalGrantTierValues, toProposalGrantTier } from '../../entities/Proposal/types'
+import { isProposalGrantCategory, isProposalGrantTier, newProposalGrantScheme, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
