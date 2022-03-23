@@ -576,7 +576,7 @@ export const newProposalGrantScheme = {
     },
     size: {
       type: 'integer',
-      min: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0)
+      minimum: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0),
     },
     beneficiary: {
       type: 'string',

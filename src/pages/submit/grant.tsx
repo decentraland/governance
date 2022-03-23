@@ -145,7 +145,7 @@ const validate = createValidator<GrantState>({
     size:
       assert(state.size !== '', 'error.grant.size_empty') ||
       assert(Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
-      assert(asNumber(state.size) > schema.size.min, 'error.grant.size_too_low') ||
+      assert(asNumber(state.size) >= schema.size.minimum, 'error.grant.size_too_low') ||
       assert(isGrantSizeValid(state.tier, state.size), 'error.grant.size_tier_invalid'),
     abstract:
       assert(state.abstract.length > 0, 'error.grant.abstract_empty') ||
@@ -178,6 +178,8 @@ export default function SubmitBanName() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+
+  console.log('s', state)
 
   useEffect(() => {
     if (state.validated) {
