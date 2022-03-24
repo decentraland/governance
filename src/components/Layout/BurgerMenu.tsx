@@ -1,30 +1,33 @@
 import React, { useMemo } from 'react'
 import './BurgerMenu.css'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import { useLocation } from '@reach/router'
 
 const FILTER_SHAPE_TRANSFORMS = [
   'rotate(0)',
   'scale(.75, 0.8) translateX(0) translateX(15%)',
-  'scale(0.15, 0.8) rotate(0) translateX(5rem)',
+  'scale(0.15, 0.8) rotate(0) translateX(5rem)'
 ]
 const CROSS_SHAPE_TRANSFORMS = ['rotate(45deg)', 'translateX(0) translateX(200%)', 'rotate(-45deg)']
 const BURGER_SHAPE_TRANSFORMS = ['rotate(0)', 'translateX(0)', 'rotate(0)']
 
 function BurgerMenu() {
+  const location = useLocation()
   const { status, setStatus } = useBurgerMenu()
   const { open, searching, filtering } = status
+  const showBurgerMenu = location.pathname === '/' || location.pathname === '/transparency/'
 
   const handleClick = () => {
     if (!searching) {
       setStatus((prevState) => ({
         ...prevState,
         open: !prevState.open,
-        filtering: false,
+        filtering: false
       }))
     } else {
       setStatus((prevState) => ({
         ...prevState,
-        filtering: !prevState.filtering,
+        filtering: !prevState.filtering
       }))
     }
   }
@@ -35,7 +38,11 @@ function BurgerMenu() {
     else return BURGER_SHAPE_TRANSFORMS
   }, [open, searching, filtering])
 
-  return (
+  if (!showBurgerMenu) {
+    return null
+  }
+
+  return  (
     <div onClick={handleClick} className="BurgerMenu">
       <div className="Bar" style={{ transform: bar1 }} />
       <div className="Bar" style={{ transform: bar2, opacity: `${(!searching && open) || filtering ? 0 : 1}` }} />
