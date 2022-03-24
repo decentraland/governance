@@ -25,6 +25,8 @@
   transition: all 0.3s linear;
 }
 
-.BurgerMenu--hidden {
-  display: none;
+@media (min-width: 768px) {
+  .BurgerMenu {
+    display: none;
+  }
 }

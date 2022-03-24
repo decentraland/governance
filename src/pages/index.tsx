@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from '@reach/router'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
@@ -52,8 +52,8 @@ export default function IndexPage() {
   const [ subscriptions, subscriptionsState ] = useSubscriptions()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  const burgerMenu = useBurgerMenu();
-  const [burgerOpen, burgerTranslate] = useMemo(() => [burgerMenu?.status.open, burgerMenu?.status.translate], [burgerMenu?.status])
+  const { status: burgerStatus } = useBurgerMenu()
+  const {open, translate} = burgerStatus
 
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
@@ -96,7 +96,7 @@ export default function IndexPage() {
 
   return <>
     <div className="OnlyMobile Animated"
-         style={(isMobile && burgerOpen && {transform: 'translateX(-200%)', height: 0}) || {}}
+         style={(isMobile && open && {transform: 'translateX(-200%)', height: 0}) || {}}
     >
       <SubscriptionBanner active={!type} />
     </div>
@@ -135,7 +135,7 @@ export default function IndexPage() {
           <Grid.Column tablet="12"
             className="Animated ProposalsTable"
             style={
-              isMobile ? (!!burgerTranslate ? {transform: `translateY(${burgerTranslate})`}: {}) : {}
+              isMobile ? (!!translate ? {transform: `translateY(${translate})`}: {}) : {}
             }
           >
             {isMobile && proposals && <SearchTitle /> }

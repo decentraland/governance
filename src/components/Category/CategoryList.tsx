@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react'
+import React, { useMemo } from 'react'
 import { useLocation } from '@reach/router'
 import ActionableLayout from '../Layout/ActionableLayout'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -6,14 +6,14 @@ import CategoryOption from './CategoryOption'
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import locations from '../../modules/locations'
-import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
+import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 
 function CategoryList() {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const type = toProposalType(params.get('type')) ?? undefined
-  const burgerMenu = useContext(BurgerMenuStatusContext)
+  const { setStatus } = useBurgerMenu()
 
   const handleTypeFilter = (type: ProposalType | null) => {
     const newParams = new URLSearchParams(params)
@@ -22,8 +22,8 @@ function CategoryList() {
     return locations.proposals(newParams)
   }
 
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    burgerMenu?.setStatus((prevState) => ({ ...prevState, open: false }))
+  function handleClick() {
+    setStatus((prevState) => ({ ...prevState, open: false }))
   }
 
   return (

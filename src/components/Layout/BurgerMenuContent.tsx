@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
+import React, { useState, useEffect } from 'react'
 import SearchInputMobile from '../Search/SearchInputMobile'
 import CategoryList from '../Category/CategoryList'
 import StatusFilter from '../Search/StatusFilter'
@@ -7,6 +6,7 @@ import TimeFrameFilter from '../Search/TimeFrameFilter'
 import MobileNavigation from './MobileNavigation'
 import CategoryFilter from '../Search/CategoryFilter'
 import './BurgerMenuContent.css'
+import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 
 export type FilterStatus = {
   categoryOpen: boolean
@@ -30,14 +30,9 @@ const MOBILE_NAVIGATION_HEIGHT = 104
 
 function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
   const [footer, setFooter] = useState<Element | null>(null)
-  const burgerMenu = useContext(BurgerMenuStatusContext)
   const [filterStatus, setFilterStatus] = useState(filtersInitialStatus)
-  const [burgerOpen, burgerSearching, burgerFiltering, burgerTranslate] = [
-    burgerMenu?.status.open,
-    burgerMenu?.status.searching,
-    burgerMenu?.status.filtering,
-    burgerMenu?.status.translate,
-  ]
+  const {status, setStatus} = useBurgerMenu()
+  const {open, searching, filtering, translate} = status
 
   useEffect(() => {
     setFooter(document.querySelectorAll('.dcl.footer')[0])
@@ -51,23 +46,23 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
   useEffect(() => {
     if (footer) {
       footer.classList.add('Animated')
-      if (!!burgerTranslate) {
-        footer.setAttribute('style', `transform: translateY(${burgerTranslate})`)
+      if (!!translate) {
+        footer.setAttribute('style', `transform: translateY(${translate})`)
       } else {
         footer.setAttribute('style', '')
       }
     }
-  }, [footer, burgerTranslate])
+  }, [footer, translate])
 
   function handleFilterStatusChange(status: FilterStatus) {
     setFilterStatus(status)
   }
 
   useEffect(() => {
-    if (!burgerOpen || !burgerFiltering || !burgerSearching) {
+    if (!open || !filtering || !searching) {
       setFilterStatus(filtersInitialStatus)
     }
-  }, [burgerOpen, burgerFiltering, burgerSearching])
+  }, [open, filtering, searching])
 
   useEffect(() => {
     let filtersHeight =
@@ -75,24 +70,24 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
       (filterStatus.statusOpen ? STATUS_FILTER_HEIGHT : CLOSED_FILTER_HEIGHT) +
       (filterStatus.timeFrameOpen ? TIMEFRAME_FILTER_HEIGHT : CLOSED_FILTER_HEIGHT)
 
-    let translate
+    let newTranslate:string | undefined
     if (!!navigationOnly) {
-      translate = MOBILE_NAVIGATION_HEIGHT + SEARCH_TITLE_HEIGHT + 'px'
+      newTranslate = MOBILE_NAVIGATION_HEIGHT + SEARCH_TITLE_HEIGHT + 'px'
     } else {
-      if (!burgerOpen) {
-        translate = undefined
+      if (!open) {
+        newTranslate = undefined
       } else {
-        translate =
-          (burgerSearching ? (burgerFiltering ? filtersHeight : SEARCH_TITLE_HEIGHT) : OPEN_BURGER_HEIGHT) + 'px'
+        newTranslate =
+          (searching ? (filtering ? filtersHeight : SEARCH_TITLE_HEIGHT) : OPEN_BURGER_HEIGHT) + 'px'
       }
     }
-    burgerMenu?.setStatus({ ...burgerMenu?.status, translate: translate })
-  }, [burgerOpen, burgerSearching, burgerFiltering, filterStatus, navigationOnly])
+    setStatus((prev) => ({...prev, translate: newTranslate }))
+  }, [open, searching, filtering, filterStatus, navigationOnly])
 
   return (
     <div
       className="BurgerMenuContent Animated"
-      style={(!burgerMenu?.status.open && { transform: 'translateY(-200%)' }) || {}}
+      style={(!open && { transform: 'translateY(-200%)' }) || {}}
     >
       {!!navigationOnly ? (
         <>
@@ -102,7 +97,7 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
       ) : (
         <>
           <SearchInputMobile />
-          {burgerSearching && burgerFiltering && (
+          {searching && filtering && (
             <>
               <CategoryFilter onChange={(open) => handleFilterStatusChange({ ...filterStatus, categoryOpen: open })} />
               <StatusFilter onChange={(open) => handleFilterStatusChange({ ...filterStatus, statusOpen: open })} />
@@ -111,7 +106,7 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
               />
             </>
           )}
-          {!burgerSearching && (
+          {!searching && (
             <>
               <MobileNavigation />
               <CategoryList />

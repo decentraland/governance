@@ -1,27 +1,11 @@
-import { useContext, useEffect} from 'react'
-import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
-import { useSearchParams } from './useSearchParams'
+import { useContext } from 'react'
+import { BurgerMenuStatusContext, BurgerMenuStatusContextType } from '../components/Context/BurgerMenuStatusContext'
 
 export function useBurgerMenu() {
-  const burgerMenu = useContext(BurgerMenuStatusContext)
-  const {type, status, searching, timeFrame} = useSearchParams()
+  const context = useContext<BurgerMenuStatusContextType>(BurgerMenuStatusContext)
+  if (context === undefined) {
+    throw new Error(`useBurgerMenu must be used within BurgerMenuStatusContextProvider`)
+  }
 
-  useEffect(() => {
-      const filtering =  !!(type || status || timeFrame && timeFrame.length > 0)
-      burgerMenu?.setStatus((prevState) => ({
-        ...prevState,
-        show: true,
-        open: searching || filtering,
-        searching: searching,
-        filtering: filtering
-      }))
-
-      return () => {
-        burgerMenu?.setStatus({...burgerMenu.status, open: false, show: false})
-      };
-    },
-    []);
-
-
-  return burgerMenu
+  return context
 }

@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
 import { useSearchParams } from '../../hooks/useSearchParams'
 import { useLocation } from '@reach/router'
 import { handleSearch } from './SearchInput'
 import './SearchInputMobile.css'
+import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 
 export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivElement>) {
   const l = useFormatMessage()
@@ -15,9 +15,9 @@ export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivEle
   const searchInput = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false)
   const [searchText, setSearchText] = useState(() => search || '');
-  const burgerMenu = useContext(BurgerMenuStatusContext)
   const [placeholder, setPlaceholder] = useState(l('navigation.search.mobile.placeholder') || '')
-  useEffect(() => { burgerMenu?.setStatus({...burgerMenu.status, searching: searching})}, [searching]);
+  const burgerMenu = useBurgerMenu()
+  useEffect(() => { burgerMenu?.setStatus((prev) => ({...prev, searching: searching}))}, [searching]);
 
   function focusSearch() {
     searchInput.current?.focus();
