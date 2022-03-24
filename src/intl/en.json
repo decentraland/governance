@@ -276,7 +276,11 @@
       "new_proposal": "Submit a proposal",
       "categories": "Categories",
       "browse": "Browse",
-      "no_proposals_yet": "No proposals have been sent by community members yet."
+      "no_proposals_yet": "No proposals have been sent by community members yet.",
+      "finish_label": {
+        "ends": "Ends",
+        "ended":"Ended"
+      }
     },
     "proposal_enacted_list": {
       "title": "Enacted Proposals",
