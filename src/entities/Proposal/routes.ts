@@ -55,7 +55,8 @@ import {
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
   isValidPointOfInterest,
-  isValidUpdateProposalStatus
+  isValidUpdateProposalStatus,
+  isGrantSizeValid
 } from './utils';
 import { IPFS, HashContent } from '../../api/IPFS';
 import VotesModel from '../Votes/model'
@@ -321,6 +322,10 @@ const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
+
+  if(!isGrantSizeValid(configuration.tier, configuration.size)) {
+    throw new RequestError("Grant size is not valid for the selected tier");
+  }
 
   return createProposal({
     user,

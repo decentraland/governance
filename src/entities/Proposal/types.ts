@@ -1,4 +1,4 @@
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
+import { asNumber, MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
 import { SQLStatement } from "decentraland-gatsby/dist/entities/Database/utils"
 
 export type ProposalAttributes<C extends {} = any> = {
@@ -455,6 +455,15 @@ export enum ProposalGrantTier {
   Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
 }
 
+export const ProposalGrantTierValues = {
+  [ProposalGrantTier.Tier1]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER1 || 0),
+  [ProposalGrantTier.Tier2]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER2 || 0),
+  [ProposalGrantTier.Tier3]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER3 || 0),
+  [ProposalGrantTier.Tier4]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER4 || 0),
+  [ProposalGrantTier.Tier5]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER5 || 0),
+  [ProposalGrantTier.Tier6]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER6 || 0),
+}
+
 export function isProposalGrantTier(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantTier.Tier1:
@@ -467,6 +476,10 @@ export function isProposalGrantTier(value:  string | null | undefined): boolean 
     default:
       return false
   }
+}
+
+export function toProposalGrantTier(value:  string | null | undefined): ProposalGrantTier | null {
+  return isProposalGrantTier(value) ? value as ProposalGrantTier : null
 }
 
 export const ProposalRequiredVP = {
@@ -560,7 +573,7 @@ export const newProposalGrantScheme = {
     },
     size: {
       type: 'integer',
-      min: 0
+      min: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0)
     },
     beneficiary: {
       type: 'string',
