@@ -2,12 +2,10 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ProposalType } from '../../entities/Proposal/types'
-import React, {useContext} from 'react'
-
 import { categoryIcons } from './CategoryBanner'
-import './CategoryOption.css'
 import { navigate } from 'gatsby-plugin-intl'
-import { BurgerMenuStatusContext } from '../Context/BurgerMenuStatusContext'
+import React from 'react'
+import './CategoryOption.css'
 
 export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean
@@ -21,8 +19,6 @@ const icons = {
 
 export default React.memo(function CategoryOption({ active, type, className, ...props }: CategoryOptionProps) {
   const l = useFormatMessage()
-  const burgerMenu = useContext(BurgerMenuStatusContext)
-
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
       props.onClick(e)
@@ -33,7 +29,6 @@ export default React.memo(function CategoryOption({ active, type, className, ...
 
       if (props.href) {
         navigate(props.href)
-        burgerMenu?.setStatus(false)
       }
     }
   }

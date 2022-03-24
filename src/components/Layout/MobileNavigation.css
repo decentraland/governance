@@ -3,9 +3,22 @@
   margin-bottom: 2px !important;
 }
 
-.Browse__Button {
-  display: block !important;
+.ui.sub.header.Browse__header {
+  margin-top: 16px;
 }
+
+.Browse__Buttons {
+  display: flex !important;
+  justify-content: space-between;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.Browse__Button {
+  display: flex !important;
+  justify-content: center;
+  width: 45%;
+}
+
 .Browse__Button.inverted.primary:active,
 .Browse__Button.inverted.primary:focus {
   background-color: var(--primary) !important;

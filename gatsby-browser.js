@@ -19,7 +19,6 @@ import Layout from "decentraland-gatsby/dist/components/Layout/Layout"
 import segment from "decentraland-gatsby/dist/utils/segment/segment"
 import Navbar from "./src/components/Layout/Navbar"
 import BurgerMenuStatusContextProvider from "./src/components/Context/BurgerMenuStatusContext"
-import BurgerMenuShowContextProvider from "./src/components/Context/BurgerMenuShowContext"
 
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>
@@ -32,14 +31,9 @@ export const wrapRootElement = ({ element }) => (
 export const wrapPageElement = ({ element, props }) => {
 
   return <BurgerMenuStatusContextProvider>
-    <BurgerMenuShowContextProvider>
-      <Layout
-        {...props}
-        rightMenu={<Navbar />}
-      >
-        {element}
-      </Layout>
-    </BurgerMenuShowContextProvider>
+    <Layout {...props} rightMenu={<Navbar />} >
+      {element}
+    </Layout>
   </BurgerMenuStatusContextProvider>
 }
 

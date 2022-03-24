@@ -1,0 +1,56 @@
+.SearchContainerMobile {
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
+.SearchContainerMobile > .dcl.close {
+  position: absolute;
+  top: 0;
+  right: 16px;
+  margin: 8px;
+  background-color: #f1f6fe;
+  z-index: 10;
+}
+
+.SearchInputMobile {
+  border: 0;
+  padding: 8px 32px;
+  width: 100%;
+  border-radius: 24px;
+  background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 25% center;
+  float:right;
+  outline-width: 0;
+  transition: all 0.1s ease-in-out;
+}
+
+@media (min-width: 320px) and (max-width: 374px) {
+  .SearchInputMobile {
+    background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 20% center;
+  }
+}
+
+
+.SearchInputMobile:focus {
+  box-shadow: var(--shadow-2);
+}
+
+input.SearchInputMobile::placeholder {
+  text-align: center;
+  color: var(--secondary-text);
+  transition: all 0.2s ease-in-out 0.15s;
+}
+
+.SearchInputMobile--open {
+  background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 8px center;
+  transition: all 0.15s ease-in-out 0s;
+}
+
+.SearchInputMobile.SearchInputMobile--open:focus {
+   outline: none;
+}
+
+input.SearchInputMobile--open::placeholder {
+  text-align: left;
+  transition: all 0.2s ease-in-out 0.15s;
+}

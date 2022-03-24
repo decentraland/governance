@@ -22,7 +22,6 @@ import MonthlyTotal from '../components/Transparency/MonthlyTotal'
 import MembersSection from '../components/Transparency/MembersSection'
 import './transparency.css'
 import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
-import MobileNavigation from '../components/Layout/MobileNavigation'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
@@ -55,7 +54,6 @@ export default function WrappingPage() {
   const burgerMenu = useBurgerMenu()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  const translate = '100px'
 
   return (<>
     <Navigation activeTab={NavigationTab.Transparency} />
@@ -70,13 +68,13 @@ export default function WrappingPage() {
         {
           isMobile &&
           <div className='Transparency'>
-            <BurgerMenuContent footerTranslate={translate}>
-              <MobileNavigation />
-            </BurgerMenuContent>
+            <BurgerMenuContent navigationOnly={true} />
           </div>
         }
         <div className='Animated'
-          style={(isMobile && burgerMenu?.status && {transform: `translateY(${translate})`}) || {}}
+          style={
+            isMobile ? (burgerMenu?.status.open ? {transform: `translateY(${burgerMenu.status.translate})`}: {}) : {}
+          }
         >
         <Container className="TransparencyContainer">
           <Grid className="TransparencyGrid" stackable>

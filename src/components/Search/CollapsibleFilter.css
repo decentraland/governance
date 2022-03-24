@@ -1,0 +1,77 @@
+.CollapsibleFilter {
+	position: relative;
+	min-height: 32px;
+	margin-bottom: 8px;
+	margin-top: 16px;
+}
+
+.CollapsibleFilter:first-child {
+	margin-top: 8px;
+}
+
+.FilterHeader {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	cursor: pointer;
+}
+
+@media (max-width: 767px) {
+	.FilterHeader {
+		justify-content: unset;
+	}
+
+	.PlusMinusContainer {
+		border-radius: 50%;
+		background-color: #e1e0e3;
+		margin-left: 8px;
+	}
+
+	.PlusMinus {
+		left: 18% !important;
+		top: 43% !important;
+	}
+
+	.ui.sub.header.FilterHeader__Title {
+		margin-bottom: 0;
+	}
+}
+
+.FilterHeader:first-child {
+	margin-top: 0;
+}
+
+.FilterContent {
+	padding-top: .5rem;
+	opacity: 0;
+	height: 0;
+	overflow: hidden;
+	transition: opacity 1s ease-out;
+}
+
+.FilterContent--open {
+	height: auto;
+	opacity: 1;
+}
+
+.PlusMinusContainer {
+  width: 1rem;
+  height: 1rem;
+  border: 0;
+  position: relative;
+  display: flex;
+}
+
+.PlusMinus {
+  position: absolute;
+  width: 10px;
+  border-radius: 10px;
+  background-color: var(--secondary-text);
+  transition: all 0.3s linear;
+  bottom: 25%;
+  left: 50%;
+  height: 10%;
+  top: 45%;
+}
+
