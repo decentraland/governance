@@ -1,0 +1,11 @@
+.SortingMenu {
+	margin-right: 1em;
+}
+
+.ui.dropdown.SortingMenu.Upwards>.dropdown.icon:before {
+	content: '\F0D8';
+}
+
+.ui.dropdown.SortingMenu.Downwards>.dropdown.icon:before {
+	content: '\F0D7';
+}

@@ -16,6 +16,17 @@
   transition: all 0.3s linear;
 }
 
-.BurgerMenu--hidden {
-  display: none;
+.BurgerMenu .FilterBar {
+  width: 2rem;
+  height: 0.25rem;
+  border-radius: 10px;
+  background-color: black;
+  transform-origin: 1px;
+  transition: all 0.3s linear;
+}
+
+@media (min-width: 768px) {
+  .BurgerMenu {
+    display: none;
+  }
 }

@@ -1,19 +1,11 @@
-import { useContext, useEffect } from 'react'
-import { BurgerMenuShowContext } from '../components/Context/BurgerMenuShowContext'
-import { BurgerMenuStatusContext } from '../components/Context/BurgerMenuStatusContext'
+import { useContext } from 'react'
+import { BurgerMenuStatusContext, BurgerMenuStatusContextType } from '../components/Context/BurgerMenuStatusContext'
 
 export function useBurgerMenu() {
-  const burgerShow = useContext(BurgerMenuShowContext)
-  const burgerMenu = useContext(BurgerMenuStatusContext)
+  const context = useContext<BurgerMenuStatusContextType>(BurgerMenuStatusContext)
+  if (context === undefined) {
+    throw new Error(`useBurgerMenu must be used within BurgerMenuStatusContextProvider`)
+  }
 
-  useEffect(() => {
-    burgerShow?.setShow(true)
-  
-    return () => {
-      burgerShow?.setShow(false)
-      burgerMenu?.setStatus(false)
-    };
-  }, []);
-
-  return burgerMenu
+  return context
 }

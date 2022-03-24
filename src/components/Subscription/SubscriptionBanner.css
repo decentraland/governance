@@ -91,12 +91,12 @@
   }
 }
 
-@media (min-width: 767px) {
-  
+@media (min-width: 768px) {
+
   .OnlyDesktop .SubscriptionBanner {
     display: flex;
   }
-  
+
   .SubscriptionBanner .SubscriptionBanner__Icon {
     display: flex;
     padding-right: 20px;

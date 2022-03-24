@@ -1,4 +1,5 @@
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
+import { SQLStatement } from "decentraland-gatsby/dist/entities/Database/utils"
 
 export type ProposalAttributes<C extends {} = any> = {
   id: string
@@ -31,6 +32,7 @@ export type ProposalAttributes<C extends {} = any> = {
   required_to_pass: number | null
   created_at: Date
   updated_at: Date
+  textsearch: SQLStatement | string | null | undefined
 }
 
 export enum ProposalStatus {
