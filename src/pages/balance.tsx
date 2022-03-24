@@ -59,7 +59,11 @@ export default function WrappingPage() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [ location.search ])
   const [ account, accountState ] = useAuthContext()
-  const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
+  const paramAddress = params.get('address') || ''
+  const accountBalance = isEthereumAddress(paramAddress) ? paramAddress.toLowerCase() : account
+  const getAuthText = (authText: String | null, defaultText: String | null): String | null => {
+    return accountBalance === account ? authText : defaultText
+  }
   const wManaContract = useWManaContract()
   const [ ff ] = useFeatureFlagContext()
   const [ space ] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [ SNAPSHOT_SPACE ])
@@ -250,7 +254,7 @@ export default function WrappingPage() {
       >
         <Card>
           <Card.Content>
-            <Header><b>{l(`page.balance.delegated_to_title`)}</b></Header>
+            <Header><b>{ getAuthText(l(`page.balance.delegated_to_title`), l(`page.balance.received_delegations`))}</b></Header>
             <Loader size="tiny" className="balance" active={delegationState.loading || scoresState.loading}/>
             <div className="ProfileListContainer">
               {delegation.delegatedFrom.length > 0 && delegation.delegatedFrom.map(delegation => {
@@ -278,7 +282,7 @@ export default function WrappingPage() {
       >
         <Card>
           <Card.Content>
-            <Header><b>{l(`page.balance.delegations_from_title`)}</b></Header>
+            <Header><b>{getAuthText(l(`page.balance.delegations_from_you`), l(`page.balance.delegations_from_title`))}</b></Header>
             <div className="ProfileListContainer">
               {delegation.delegatedTo.length === 0 && <Empty border={false} full description={
                   <Paragraph small secondary semiBold>
