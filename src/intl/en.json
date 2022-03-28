@@ -323,10 +323,6 @@
     "update_success": {
       "title": "Update Successfully Submitted",
       "description": "Thanks for sharing your project’s progress."
-    },
-    "update_detail": {
-      "title": "{date} update",
-      "date": "Posted {date} by"
     }
   },
   "page": {
@@ -523,6 +519,17 @@
         "wearables_curator_button": "Apply as Wearables Curator",
         "delegate_button": "Apply as DAO Delegate"
       }
+    },
+    "update_detail": {
+      "project_title": "Project update for {title}",
+      "title": "{date} update",
+      "introduction": "Introduction",
+      "highlights": "Highlights",
+      "blockers": "Blockers",
+      "next_steps": "Next steps",
+      "additional_notes": "Additional notes and links",
+      "completion_date": "Posted {date} by",
+      "due_date": "Update shared **{date} late**, after it was due."
     },
     "submit": {
       "title": "Submit Proposal",

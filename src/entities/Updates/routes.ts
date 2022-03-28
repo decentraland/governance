@@ -11,8 +11,25 @@ import { getNextUpdate, getPublicUpdates } from './utils'
 export default routes((route) => {
   const withAuth = auth()
   route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
+  route.get('/proposals/:update/update', handleAPI(getProposalUpdate))
   route.patch('/proposals/:proposal/updates', withAuth, handleAPI(updateProposalUpdate))
 })
+
+async function getProposalUpdate(req: Request<{ update: string }>) {
+  const id = req.params.update
+
+  if (!id) {
+    throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
+  }
+
+  const update = await UpdateModel.findOne<UpdateAttributes>({ id })
+
+  if (!update) {
+    throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
+  }
+
+  return update
+}
 
 async function getProposalUpdates(req: Request<{ proposal: string }>) {
   const proposal_id = req.params.proposal
