@@ -117,7 +117,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
                 rel="noopener noreferrer"
                 href={(proposal && forumUrl(proposal)) || ''}
               >
-                {t('page.proposal_comments.join_discussion_label')}
+                {t('page.proposal_comments.comment_on_this_proposal_label')}
               </Button>
             )}
           </div>
