@@ -4,13 +4,13 @@ import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo";
 const ENDPOINT = `https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot`
 const QUERY = `
 query ($space: String!, $address: String!) {
-  delegatedTo: delegations(where: { space: $space, delegator: $address }, first: 1, orderBy: timestamp, orderDirection: desc) {
+  delegatedTo: delegations(where: { space_in: ["", $space], delegator: $address }, first: 1, orderBy: timestamp, orderDirection: desc) {
     delegator
     delegate
     timestamp
   },
 
-  delegatedFrom: delegations(where: { space: $space, delegate: $address }, first: 100, orderBy: timestamp, orderDirection: desc) {
+  delegatedFrom: delegations(where: { space_in: ["", $space], delegate: $address }, first: 100, orderBy: timestamp, orderDirection: desc) {
     delegator
     delegate
     timestamp
