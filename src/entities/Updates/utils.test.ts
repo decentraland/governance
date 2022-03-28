@@ -1,17 +1,21 @@
-import { UpdateAttributes, UpdateStatus } from './types'
+import { ProjectHealth, UpdateAttributes, UpdateStatus } from './types'
 import { getNextUpdate, getPublicUpdates } from './utils'
 import { v1 as uuid } from 'uuid'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 type GenerateUpdate = Pick<
   UpdateAttributes,
-  'title' | 'description' | 'status' | 'created_at' | 'updated_at' | 'due_date' | 'completion_date'
+  'health' | 'introduction' | 'highlights' | 'blockers' | 'next_steps' | 'additional_notes' | 'status' | 'created_at' | 'updated_at' | 'due_date' | 'completion_date'
 >
 const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
   id: uuid(),
   proposal_id: uuid(),
-  title: update.title,
-  description: update.description,
+  health: update.health,
+  introduction: update.introduction,
+  highlights: update.highlights,
+  blockers: update.blockers,
+  next_steps: update.next_steps,
+  additional_notes: update.additional_notes,
   status: update.status,
   due_date: update.due_date,
   completion_date: update.completion_date,
@@ -23,8 +27,12 @@ const now = new Date('2022-03-18')
 jest.useFakeTimers('modern').setSystemTime(now)
 
 const DONE_UPDATE = generateUpdate({
-  title: 'Title',
-  description: 'Description',
+  health: ProjectHealth.OnTrack,
+  introduction: 'Introduction',
+  highlights: 'Highlights',
+  blockers: 'Blockers',
+  next_steps: 'Next steps',
+  additional_notes: 'Additional notes',
   status: UpdateStatus.Done,
   created_at: Time(now).subtract(1, 'day').toDate(),
   updated_at: Time(now).subtract(1, 'day').toDate(),
@@ -33,8 +41,12 @@ const DONE_UPDATE = generateUpdate({
 })
 
 const PENDING_UPDATE = generateUpdate({
-  title: undefined,
-  description: undefined,
+  health: undefined,
+  introduction: undefined,
+  highlights: undefined,
+  blockers: undefined,
+  next_steps: undefined,
+  additional_notes: undefined,
   status: UpdateStatus.Pending,
   created_at: Time(now).subtract(1, 'day').toDate(),
   updated_at: Time(now).subtract(1, 'day').toDate(),
@@ -43,8 +55,12 @@ const PENDING_UPDATE = generateUpdate({
 })
 
 const FUTURE_PENDING_UPDATE = generateUpdate({
-  title: undefined,
-  description: undefined,
+  health: undefined,
+  introduction: undefined,
+  highlights: undefined,
+  blockers: undefined,
+  next_steps: undefined,
+  additional_notes: undefined,
   status: UpdateStatus.Pending,
   created_at: Time(now).subtract(1, 'day').toDate(),
   updated_at: Time(now).subtract(1, 'day').toDate(),
@@ -53,8 +69,12 @@ const FUTURE_PENDING_UPDATE = generateUpdate({
 })
 
 const MISSED_UPDATE = generateUpdate({
-  title: undefined,
-  description: undefined,
+  health: undefined,
+  introduction: undefined,
+  highlights: undefined,
+  blockers: undefined,
+  next_steps: undefined,
+  additional_notes: undefined,
   status: UpdateStatus.Pending,
   created_at: Time(now).subtract(2, 'day').toDate(),
   updated_at: Time(now).subtract(2, 'day').toDate(),
@@ -63,8 +83,12 @@ const MISSED_UPDATE = generateUpdate({
 })
 
 const LATE_UPDATE = generateUpdate({
-  title: 'Title',
-  description: 'Description',
+  health: ProjectHealth.OnTrack,
+  introduction: 'Introduction',
+  highlights: 'Highlights',
+  blockers: 'Blockers',
+  next_steps: 'Next steps',
+  additional_notes: 'Additional notes',
   status: UpdateStatus.Late,
   created_at: Time(now).subtract(1, 'day').toDate(),
   updated_at: Time(now).subtract(1, 'day').toDate(),
