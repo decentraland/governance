@@ -8,6 +8,10 @@
 	align-items: center;
 }
 
+.SearchTitle .SearchTitle_TextContainer {
+	display: contents;
+}
+
 .SearchTitle .dcl.back {
 	background-position-x: 9px;
 	background-position-y: 8px;
@@ -27,6 +31,13 @@
 	display: block;
 	margin: 0;
 	padding-left: 8px;
+}
+
+.ui.header.SearchTitle__Text.SearchTitle__ClosingDoubleQuote {
+	padding-left: 0;
+}
+
+.ui.header.SearchTitle__Ellipsis{
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
