@@ -12,7 +12,29 @@
     "wrapping": "Voting Power",
     "activity": "Activity",
     "enacted": "Enacted",
-    "transparency": "Transparency"
+    "transparency": "Transparency",
+    "search": {
+      "mobile": {
+        "placeholder": "Search on the DAO...",
+        "focus_placeholder": "Start typing"
+      },
+      "placeholder": "Search...",
+      "search_results": "Search results for {title}... ",
+      "no_matches": "No proposals match the search criteria",
+      "sorting": {
+        "DESC": "Latest",
+        "ASC": "Oldest"
+      },
+      "category_filter_title": "Filter by Category",
+      "status_filter_title": "Filter by Status",
+      "timeframe_filter": {
+        "title": "Filter by TimeFrame",
+        "all": "All",
+        "week": "Last Week",
+        "month": "Last Month",
+        "3months": "Last 90 Days"
+      }
+    }
   },
   "mobile_login": {
     "exclamation": "Oh oh...",
@@ -143,7 +165,11 @@
       "category_empty": "Category is empty",
       "category_invalid": "Category is invalid",
       "tier_empty": "Tier is empty",
-      "tier_invalid": "Tier is invalid"
+      "tier_invalid": "Tier is invalid",
+      "size_empty": "Grant size is empty",
+      "size_invalid": "Grant size is not a valid number",
+      "size_too_low": "Grant size is too low",
+      "size_tier_invalid": "Grant size is not valid for the selected tier"
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
@@ -276,7 +302,11 @@
       "new_proposal": "Submit a proposal",
       "categories": "Categories",
       "browse": "Browse",
-      "no_proposals_yet": "No proposals have been sent by community members yet."
+      "no_proposals_yet": "No proposals have been sent by community members yet.",
+      "finish_label": {
+        "ends": "Ends",
+        "ended":"Ended"
+      }
     },
     "proposal_enacted_list": {
       "title": "Enacted Proposals",

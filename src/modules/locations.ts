@@ -21,22 +21,8 @@ export enum ProposalListView {
   Onboarding = 'onboarding',
 }
 
-export function toProposalListView(list: string | null | undefined): ProposalListView | null {
-  switch(list) {
-    case ProposalListView.Enacted:
-    case ProposalListView.Onboarding:
-      return list
-    default:
-      return null
-  }
-}
-
 export type ProposalListPage = {
   page: string
-}
-
-export type ProposalListViewFilter = {
-  view: ProposalListView
 }
 
 export type ProposalsStatusFilter = {
@@ -75,7 +61,7 @@ export function url(path: string = '/', query: Record<string, string> | URLSearc
 }
 
 export default {
-  proposals: (options: Partial<ProposalListPage & ProposalListViewFilter & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
+  proposals: (options: Partial<ProposalListPage & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
   proposal: (proposal: string, options: { new?: "true" } = {} ) => url(`/proposal/`, { id: proposal, ...options }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
   submit: (type?: ProposalType, options: { linked_proposal_id?: string, request?: PoiType} = {}) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', options),

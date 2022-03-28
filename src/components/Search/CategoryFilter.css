@@ -1,0 +1,9 @@
+.CategoryFilter__CategoryOption {
+  display: flex;
+  align-items: center;
+  padding: 6px 4px !important;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 0;
+}
+

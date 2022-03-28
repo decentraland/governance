@@ -17,7 +17,7 @@ import { Governance } from '../../api/Governance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import { asNumber } from '../../entities/Proposal/utils'
+import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -130,7 +130,8 @@ const validate = createValidator<GrantState>({
     size: (
       assert(state.size !== '', 'error.grant.size_empty') ||
       assert(Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
-      assert(asNumber(state.size) >= schema.size.min, 'error.grant.size_too_low')
+      assert(asNumber(state.size) > schema.size.min, 'error.grant.size_too_low') ||
+      assert(isGrantSizeValid(state.tier, state.size), 'error.grant.size_tier_invalid')
     ),
     abstract: (
       assert(state.abstract.length > 0, 'error.grant.abstract_empty') ||

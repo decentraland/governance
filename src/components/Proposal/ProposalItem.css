@@ -8,8 +8,49 @@
 }
 
 .ProposalItem .ProposalItem__Status {
-  padding-top: 8px;
+	padding-top: 8px;
+	display: flex;
+	flex-flow: row wrap;
 }
+
+@media only screen and (max-width: 425px) {
+	.ProposalItem .ProposalItem__Status {
+		flex-direction: row;
+	}
+  .ProposalItem .ProposalItem__Status .StatusLabel, 
+  .ProposalItem .ProposalItem__Status .CategoryLabel{
+    font-size: 10px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 8px;
+  }
+  .ProposalItem .ProposalItem__Status .StatusLabel span {
+    line-height: 16px;
+  }
+  .ProposalItem .ProposalItem__Status .CategoryLabel span {
+    line-height: 18px;
+  }
+  .ProposalItem .ProposalItem__Title {
+    padding-right: 0;
+  }
+  .ProposalItem .ProposalItem__Title .ui.header {
+    font-size: 17px;
+  }
+  .ProposalItem .ProposalItem__Status .FinishLabel {
+    font-size: 12px;
+  }
+  .ProposalItem .ProposalItem__Status .FinishLabel img {
+    width: 16px;
+  }
+  .ActionableLayout .ActionableLayout__Content .ui.card > .content {
+    padding: 12px;
+  }
+  .dg.Paragraph.Paragraph--small {
+    font-size: 14px;
+  }
+
+}
+
 
 .ProposalItem .ProposalItem__Title .ui.header:first-child{
   margin-bottom: 0;

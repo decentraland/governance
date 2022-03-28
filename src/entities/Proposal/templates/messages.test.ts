@@ -57,6 +57,7 @@ export function initProposalAttributes(proposalStatus: ProposalStatus,
     rejected_description: rejectedDescription,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
+    textsearch: null
   }
 }
 
