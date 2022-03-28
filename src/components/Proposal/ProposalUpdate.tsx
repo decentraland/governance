@@ -23,7 +23,7 @@ interface Props {
 export default function ProposalUpdate({ proposal, update, expanded, onClick }: Props) {
   const l = useFormatMessage()
   const [account] = useAuthContext()
-  const { title, description, status, completion_date, due_date } = update
+  const { introduction, highlights, status, completion_date, due_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
@@ -80,10 +80,10 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick }: 
           <div className="ProposalUpdate__Date">{Time.from(completion_date).fromNow()}</div>
         </div>
         <div className="ProposalUpdate__Title">
-          <span>{title}</span>
+          <span>{introduction}</span>
         </div>
         <div className="ProposalUpdate__Description--expanded">
-          <span>{description}</span>
+          <span>{highlights}</span>
         </div>
         <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${status}`])}>
           Keep reading
@@ -109,7 +109,7 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick }: 
         <img className="ProposalUpdate__Icon" src={icon} aria-hidden="true" />
         <div className="ProposalUpdate__Description">
           <span className="ProposalUpdate__Month">{l('page.proposal_detail.grant.update_date', { date })}:</span>
-          <span>{completion_date ? `${title}. ${description}` : missedUpdateText}</span>
+          <span>{completion_date ? introduction : missedUpdateText}</span>
         </div>
       </div>
       {completion_date && (

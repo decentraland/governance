@@ -1,8 +1,12 @@
 export type UpdateAttributes = {
   id: string
   proposal_id: string
-  title?: string
-  description?: string,
+  health?: ProjectHealth
+  introduction?: string
+  highlights?: string,
+  blockers?: string,
+  next_steps?: string,
+  additional_notes?: string,
   status: UpdateStatus
   due_date?: Date
   completion_date?: Date
@@ -16,3 +20,8 @@ export enum UpdateStatus {
   Done = 'done',
 }
 
+export enum ProjectHealth {
+  OnTrack = 'onTrack',
+  AtRisk = 'atRisk',
+  OffTrack = 'offTrack',
+}

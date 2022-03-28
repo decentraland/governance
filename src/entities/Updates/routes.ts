@@ -32,7 +32,8 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const update = await UpdateModel.findOne(req.body.id)
+  const { id, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+  const update = await UpdateModel.findOne(id)
 
   if (!!update.completion_date) {
     throw new RequestError(`Update already completed: "${update.id}"`, RequestError.BadRequest)
@@ -44,8 +45,8 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const status = !update.due_date || Time(now).isBefore(update.due_date) ? UpdateStatus.Done : UpdateStatus.Late
 
   await UpdateModel.update<UpdateAttributes>(
-    { title: req.body.title, description: req.body.description, status, completion_date: now },
-    { id: req.body.id }
+    { health, introduction, highlights, blockers, next_steps, additional_notes, status, completion_date: now },
+    { id }
   )
 
   return true

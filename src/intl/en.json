@@ -200,8 +200,15 @@
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
     },
     "proposal_update": {
-      "title_empty": "Title is empty",
-      "description_empty": "Description is empty"
+      "introduction_empty": "Introduction field is empty",
+      "introduction_too_large": "Introduction field is too large",
+      "highlights_empty": "Highlights field is empty",
+      "highlights_too_large": "Highlights field is too large",
+      "blockers_empty": "Blockers field is empty",
+      "blockers_too_large": "Blockers field is too large",
+      "next_steps_empty": "Next steps field is empty",
+      "next_steps_too_large": "Next steps field is too large",
+      "additional_notes_too_large": "Additional notes and links field is too large"
     }
   },
   "category": {
@@ -709,12 +716,18 @@
       "button_label": "Read more"
     },
     "proposal_update": {
-      "title": "Publish update",
-      "description": "Please tell us what your team has been up to.",
-      "title_label": "Heading",
-      "title_placeholder": "Start typing...",
-      "description_label": "Description",
-      "description_placeholder": "Start typing...",
+      "title": "Publish New Grant Update ",
+      "description": "Share your grant updates with the Decentraland Community. Use this space to talk about the progress but also to raise issues or blockers you might have with your project. Feel free to add any relevant information or links to demo what you’ve been up to.",
+      "health_label": "Project Health",
+      "introduction_label": "Introduction",
+      "highlights_label": "Highlights",
+      "highlights_placeholder": "What have you shipped? Where you’ve made progress? What are you proud of?",
+      "blockers_label": "Blockers",
+      "blockers_placeholder": "What is being difficult? Why is the project delayed? When sharing a blocker, share the mitigation strategy you’re planning to remove that blocker.",
+      "next_steps_label": "Next Steps",
+      "next_steps_placeholder": "What are your upcoming tasks? Where is your focus going to be next?",
+      "additional_notes_label": "Additional notes and links",
+      "additional_notes_placeholder": "Feel free to share any additional information or resources to showcase your project.",
       "publish_update": "Publish update"
     }
   }

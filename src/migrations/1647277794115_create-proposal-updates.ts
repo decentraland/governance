@@ -15,10 +15,22 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true
     },
-    title: {
+    health: {
       type: 'TEXT',
     },
-    description: {
+    introduction: {
+      type: 'TEXT',
+    },
+    highlights: {
+      type: 'TEXT',
+    },
+    blockers: {
+      type: 'TEXT',
+    },
+    next_steps: {
+      type: 'TEXT',
+    },
+    additional_notes: {
       type: 'TEXT',
     },
     status: {
