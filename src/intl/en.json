@@ -415,6 +415,7 @@
       },
       "grant": {
         "update_title": "Project updates",
+        "update_empty": "This team has not posted any updates yet.",
         "update_date": "{date} update",
         "update_missed_owner": "You missed this month’s update.",
         "update_missed": "Beneficiary missed this month's update.",

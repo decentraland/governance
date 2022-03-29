@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
-
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import { UpdateAttributes } from '../../entities/Updates/types'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import Divider from '../Section/Divider'
 import ProposalUpdate from './ProposalUpdate'
+import Megaphone from '../Icon/Megaphone'
 import './ProposalUpdates.css'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 
 export default function ProposalUpdates({
   proposal,
@@ -19,10 +19,9 @@ export default function ProposalUpdates({
   onUpdateClick: (update: UpdateAttributes) => void
 }) {
   const l = useFormatMessage()
-  const now = Date.now()
 
-  if (!updates || (updates && updates.length === 0)) {
-    return null // TODO: Add empty state
+  if (!updates) {
+    return null
   }
 
   return (
@@ -32,7 +31,16 @@ export default function ProposalUpdates({
         <Header>{l('page.proposal_detail.grant.update_title')}</Header>
       </div>
       <div>
+        {updates && updates.length === 0 && (
+          <div className="ProposalUpdates__EmptyContainer">
+            <Megaphone className="ProposalUpdates__EmptyIcon" />
+            <Paragraph secondary className="ProposalUpdates__EmptyText">
+              {l('page.proposal_detail.grant.update_empty')}
+            </Paragraph>
+          </div>
+        )}
         {updates &&
+          updates.length > 0 &&
           updates.map((item, index) => (
             <ProposalUpdate
               key={item.id}

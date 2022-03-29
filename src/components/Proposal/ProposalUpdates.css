@@ -2,6 +2,19 @@
   margin-top: 16px;
 }
 
-.ProposalUpdates .ProposalUpdates__Header {
+.ProposalUpdates__Header {
   margin-top: 16px;
+}
+
+.ProposalUpdates__EmptyContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 27px;
+  margin-bottom: 53px;
+}
+
+.ProposalUpdates__EmptyIcon {
+  margin-bottom: 16px;
 }

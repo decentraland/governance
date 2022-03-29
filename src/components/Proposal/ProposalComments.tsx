@@ -69,7 +69,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
             <div className="ProposalComments__Content">
               {!renderComments && (
                 <div className="ProposalComments__NoComments">
-                  <Watermelon />
+                  <Watermelon className="ProposalComments__EmptyIcon" />
                   <Paragraph small secondary>
                     {t('page.proposal_comments.no_comments_text')}
                   </Paragraph>
