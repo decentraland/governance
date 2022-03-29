@@ -13,6 +13,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Divider from '../components/Section/Divider'
 import { UpdateStatus } from '../entities/Updates/types'
 import Username from '../components/User/Username'
+import ProjectHealthStatus from '../components/Updates/ProjectHealthStatus'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposal from '../hooks/useProposal'
@@ -63,6 +64,7 @@ export default function UpdateDetail() {
         <Header size="huge">{l('page.update_detail.title', { date })}</Header>
       </ContentSection>
       <ContentSection className="UpdateDetail__Content">
+        {update?.health && <ProjectHealthStatus health={update.health} />}
         <Header as="h2">{l('page.update_detail.introduction')}</Header>
         <Markdown source={update?.introduction} />
         <Header as="h2">{l('page.update_detail.highlights')}</Header>

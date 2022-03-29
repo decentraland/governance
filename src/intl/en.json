@@ -523,6 +523,12 @@
     "update_detail": {
       "project_title": "Project update for {title}",
       "title": "{date} update",
+      "on_track_title": "Project Health: On Track",
+      "on_track_description": "This team has indicated that the project is overall going according to plan.",
+      "at_risk_title": "Project Health: At Risk",
+      "at_risk_description": "This team has indicated that the project plan is at risk or delayed.",
+      "off_track_title": "Project Health: Off Track",
+      "off_track_description": "This team has indicated that the project is not going according to plan.",
       "introduction": "Introduction",
       "highlights": "Highlights",
       "blockers": "Blockers",
