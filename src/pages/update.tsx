@@ -8,6 +8,8 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Divider from '../components/Section/Divider'
 import { UpdateStatus } from '../entities/Updates/types'
 import Username from '../components/User/Username'
@@ -23,16 +25,26 @@ export default function UpdateDetail() {
   const updateId = params.get('id')
   const proposalId = params.get('proposalId')
   const [proposal] = useProposal(proposalId)
-  const [profile] = useAsyncMemo(async () => (proposal?.user ? profiles.load(proposal.user) : null), [proposal?.user], {
-    callWithTruthyDeps: true,
-  })
+  const [profile, profileState] = useAsyncMemo(
+    async () => (proposal?.user ? profiles.load(proposal.user) : null),
+    [proposal?.user],
+    {
+      callWithTruthyDeps: true,
+    }
+  )
   const { update, state: updateState } = useProposalUpdate(updateId)
 
   const date = !!update?.due_date ? Time(update.due_date).format('MMMM') : Time(update?.completion_date).format('MMMM')
   const formattedCompletionDate = Time(update?.completion_date).fromNow()
   const formattedDueDate = Time(update?.completion_date).from(Time(update?.due_date), true)
 
-  // TODO: Show loader if update, proposal and profile are loading.
+  if (updateState.loading || profileState.loading) {
+    return (
+      <Container>
+        <Loader size="huge" active />
+      </Container>
+    )
+  }
 
   if (updateState.error) {
     return (

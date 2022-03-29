@@ -321,8 +321,8 @@
       "description": "Thanks for taking part in the DAO"
     },
     "update_success": {
-      "title": "Update Successfully Submitted",
-      "description": "Thanks for sharing your project’s progress."
+      "title": "Update Successfully Published",
+      "description": "Thanks for sharing your Grant Update. Now go make some noise and let the community know about your progress."
     }
   },
   "page": {
@@ -723,9 +723,12 @@
       "button_label": "Read more"
     },
     "proposal_update": {
-      "title": "Publish New Grant Update ",
+      "title": "Publish New Grant Update",
       "description": "Share your grant updates with the Decentraland Community. Use this space to talk about the progress but also to raise issues or blockers you might have with your project. Feel free to add any relevant information or links to demo what you’ve been up to.",
       "health_label": "Project Health",
+      "on_track_label": "On Track",
+      "at_risk_label": "At Risk",
+      "off_track_label": "Off Track",
       "introduction_label": "Introduction",
       "highlights_label": "Highlights",
       "highlights_placeholder": "What have you shipped? Where you’ve made progress? What are you proud of?",

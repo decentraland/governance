@@ -1,0 +1,13 @@
+.ProjectHealthContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+@media (min-width: 768px) {
+  .ProjectHealthContainer {
+    flex-direction: row;
+  }
+}

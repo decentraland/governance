@@ -12,12 +12,17 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { navigate } from 'gatsby-plugin-intl'
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import { Governance } from '../../api/Governance'
 import locations from '../../modules/locations'
 import MarkdownField from '../../components/Form/MarkdownField'
-import { ProjectHealth } from '../../entities/Updates/types'
+import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
+import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
 import './submit.css'
+import './update.css'
+import useProposalUpdate from '../../hooks/useProposalUpdate'
 
 type updateFormState = {
   health: ProjectHealth
@@ -84,7 +89,6 @@ const edit = (state: updateFormState, props: Partial<updateFormState>) => {
   }
 }
 
-// TODO: Check max length
 const validate = createValidator<updateFormState>({
   health: (state) => ({
     health: assert(!!state.health, 'error.proposal_update.description_empty'),
@@ -129,6 +133,8 @@ export default function Update() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const proposalId = params.get('proposalId') || ''
   const updateId = params.get('id') || ''
+  const [projectHealth, setProjectHealth] = useState(ProjectHealth.OnTrack)
+  const { update, state: updateState } = useProposalUpdate(updateId)
 
   const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
     value: state.value[fieldName],
@@ -155,7 +161,7 @@ export default function Update() {
       const newUpdate = {
         proposal_id: proposalId,
         id: updateId,
-        health: state.value.health,
+        health: projectHealth,
         introduction: state.value.introduction,
         highlights: state.value.highlights,
         blockers: state.value.blockers,
@@ -180,13 +186,21 @@ export default function Update() {
     }
   }, [state.validated])
 
-  if (accountState.loading) {
+  if (accountState.loading || updateState.loading) {
     return (
       <Container className="WelcomePage">
         <div>
           <Loader size="huge" active />
         </div>
       </Container>
+    )
+  }
+
+  if (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done) {
+    return (
+      <ContentLayout>
+        <NotFound />
+      </ContentLayout>
     )
   }
 
@@ -216,6 +230,35 @@ export default function Update() {
       </ContentSection>
       <ContentSection>
         <Paragraph small>{l('page.proposal_update.description')}</Paragraph>
+      </ContentSection>
+      <ContentSection>
+        <Label>{l('page.proposal_update.health_label')}</Label>
+        <div className="ProjectHealthContainer">
+          <ProjectHealthButton
+            type={ProjectHealth.OnTrack}
+            selectedValue={projectHealth}
+            onClick={setProjectHealth}
+            disabled={formDisabled}
+          >
+            {l('page.proposal_update.on_track_label') || ''}
+          </ProjectHealthButton>
+          <ProjectHealthButton
+            type={ProjectHealth.AtRisk}
+            selectedValue={projectHealth}
+            onClick={setProjectHealth}
+            disabled={formDisabled}
+          >
+            {l('page.proposal_update.at_risk_label') || ''}
+          </ProjectHealthButton>
+          <ProjectHealthButton
+            type={ProjectHealth.OffTrack}
+            selectedValue={projectHealth}
+            onClick={setProjectHealth}
+            disabled={formDisabled}
+          >
+            {l('page.proposal_update.off_track_label') || ''}
+          </ProjectHealthButton>
+        </div>
       </ContentSection>
       <MarkdownField
         label={l('page.proposal_update.introduction_label')}
