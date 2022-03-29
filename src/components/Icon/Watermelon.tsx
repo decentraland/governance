@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Watermelon({ className }: { className?: string }) {
   return (
-    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" className={className}>
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true" className={className}>
       <path
         fill="#37333D"
         opacity="0.32"

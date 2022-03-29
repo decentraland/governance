@@ -19,7 +19,7 @@ export default function Username({ className, profile, proposalUser }: Props) {
 
   return (
     <Link className={TokenList.join([className])} to={locations.balance({ address: proposalUser || '' })}>
-      {hasProfileName && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
+      {hasProfileName && <Avatar size="mini" address={profile?.ethAddress} style={{ marginRight: '.5rem' }} />}
       {hasProfileName}
       {!hasProfileName && !!proposalUser && (
         <Blockie scale={3} seed={proposalUser || ''}>

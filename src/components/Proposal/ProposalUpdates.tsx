@@ -14,7 +14,7 @@ export default function ProposalUpdates({
   updates,
   onUpdateClick,
 }: {
-  proposal: ProposalAttributes
+  proposal: ProposalAttributes | null
   updates?: UpdateAttributes[] | null
   onUpdateClick: (update: UpdateAttributes) => void
 }) {
@@ -39,7 +39,8 @@ export default function ProposalUpdates({
             </Paragraph>
           </div>
         )}
-        {updates &&
+        {proposal &&
+          updates &&
           updates.length > 0 &&
           updates.map((item, index) => (
             <ProposalUpdate

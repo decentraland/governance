@@ -8,6 +8,7 @@ function Warning({ className }: { className?: string }) {
       height="32"
       fill="none"
       viewBox="0 0 32 32"
+      aria-hidden="true"
       className={className}
     >
       <circle cx="16" cy="16" r="16" fill="#FFBC5B"></circle>
