@@ -30,16 +30,17 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>)
   const [open, setOpen] = useState(false)
   const [searchText, setSearchText] = useState(() => search || '');
 
-  useEffect(() => {
-    if(location.pathname === '/')  focusSearch()
-  }, [])
-
   function focusSearch() {
     searchInput.current?.focus();
   }
 
   useEffect(() => {
-    if (!search) setSearchText('')
+    if (!search) {
+      setSearchText('')
+      setOpen(false)
+    } else {
+      focusSearch()
+    }
   }, [search])
 
   function handleChange(e: React.ChangeEvent<any>) {

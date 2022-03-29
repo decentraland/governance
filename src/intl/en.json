@@ -19,7 +19,7 @@
         "focus_placeholder": "Start typing"
       },
       "placeholder": "Search...",
-      "search_results": "Search results for {title}... ",
+      "search_results": "Search results for \"{title}",
       "no_matches": "No proposals match the search criteria",
       "sorting": {
         "DESC": "Latest",
