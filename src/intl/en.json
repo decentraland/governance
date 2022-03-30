@@ -745,6 +745,7 @@
       "next_steps_placeholder": "What are your upcoming tasks? Where is your focus going to be next?",
       "additional_notes_label": "Additional notes and links",
       "additional_notes_placeholder": "Feel free to share any additional information or resources to showcase your project.",
+      "last_update_label": "Mark project as done. This would actually be its **last update**.",
       "publish_update": "Publish update"
     }
   }

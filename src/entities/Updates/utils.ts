@@ -1,5 +1,5 @@
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { UpdateAttributes } from './types'
+import { UpdateAttributes, UpdateStatus } from './types'
 
 export const getPublicUpdates = (updates: UpdateAttributes[]): UpdateAttributes[] => {
   const now = new Date()
@@ -13,7 +13,7 @@ export const getNextUpdate = (updates: UpdateAttributes[]): UpdateAttributes | n
   const now = new Date()
 
   const remainingUpdates = updates.filter(
-    (item) => item.due_date ? Time(item.due_date).isAfter(now) : item
+    (item) => item.status === UpdateStatus.Pending && item.due_date ? Time(item.due_date).isAfter(now) : item
   )
 
   if (!(remainingUpdates && remainingUpdates.length > 0)) {

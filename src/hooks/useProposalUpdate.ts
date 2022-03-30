@@ -6,8 +6,6 @@ export default function useProposalUpdate(updateId?: string | null) {
     callWithTruthyDeps: true,
   })
 
-  console.log(update)
-
   return {
     update,
     state

@@ -1,4 +1,4 @@
-.ProjectHealthContainer {
+.UpdateSubmit__ProjectHealthContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -7,7 +7,26 @@
 }
 
 @media (min-width: 768px) {
-  .ProjectHealthContainer {
+  .UpdateSubmit__ProjectHealthContainer {
     flex-direction: row;
   }
+}
+
+.UpdateSubmit__Checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 32px;
+  cursor: pointer;
+}
+
+.UpdateSubmit__Checkbox input {
+  margin-right: 14px;
+  cursor: pointer;
+}
+
+.UpdateSubmit__Checkbox .Paragraph {
+  font-size: 15px;
+  line-height: 18px;
+  cursor: pointer;
 }

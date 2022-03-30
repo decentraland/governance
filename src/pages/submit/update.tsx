@@ -11,6 +11,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { navigate } from 'gatsby-plugin-intl'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
@@ -20,9 +21,9 @@ import locations from '../../modules/locations'
 import MarkdownField from '../../components/Form/MarkdownField'
 import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
 import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
+import useProposalUpdate from '../../hooks/useProposalUpdate'
 import './submit.css'
 import './update.css'
-import useProposalUpdate from '../../hooks/useProposalUpdate'
 
 type updateFormState = {
   health: ProjectHealth
@@ -133,7 +134,8 @@ export default function Update() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const proposalId = params.get('proposalId') || ''
   const updateId = params.get('id') || ''
-  const [projectHealth, setProjectHealth] = useState(ProjectHealth.OnTrack)
+  const [projectHealth, setProjectHealth] = useState(initialState.health)
+  const [lastUpdate, setLastUpdate] = useState(initialState.lastUpdate)
   const { update, state: updateState } = useProposalUpdate(updateId)
 
   const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
@@ -167,7 +169,7 @@ export default function Update() {
         blockers: state.value.blockers,
         next_steps: state.value.nextSteps,
         additional_notes: state.value.additionalNotes,
-        last_update: state.value.lastUpdate,
+        last_update: lastUpdate,
       }
 
       try {
@@ -233,7 +235,7 @@ export default function Update() {
       </ContentSection>
       <ContentSection>
         <Label>{l('page.proposal_update.health_label')}</Label>
-        <div className="ProjectHealthContainer">
+        <div className="UpdateSubmit__ProjectHealthContainer">
           <ProjectHealthButton
             type={ProjectHealth.OnTrack}
             selectedValue={projectHealth}
@@ -290,6 +292,18 @@ export default function Update() {
         disabled={formDisabled}
         {...getFieldProps('additionalNotes')}
       />
+      <div className="UpdateSubmit__Checkbox">
+        <input
+          id="LastUpdate"
+          name="LastUpdate"
+          type="checkbox"
+          checked={lastUpdate}
+          onChange={() => setLastUpdate((prev) => !prev)}
+        />
+        <label htmlFor="LastUpdate">
+          <Markdown source={l('page.proposal_update.last_update_label') || ''} />
+        </label>
+      </div>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
           {l('page.proposal_update.publish_update')}

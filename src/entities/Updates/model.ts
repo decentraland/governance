@@ -1,7 +1,8 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
+import { v1 as uuid } from 'uuid'
+import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 import { ProposalGrantTier } from '../Proposal/types'
 import { UpdateAttributes, UpdateStatus } from './types'
-import { v1 as uuid } from "uuid"
 
 const UpdateCount: { [key: string]: number } = {
   [ProposalGrantTier.Tier1]: 1,
@@ -35,5 +36,19 @@ export default class UpdateModel extends Model<UpdateAttributes> {
 
       await this.create(update)
     })
+  }
+
+  static async skipRemainingUpdates(proposalId: string) {
+    const query = SQL`
+      UPDATE ${table(UpdateModel)}
+      SET
+        "status" = ${UpdateStatus.Skipped},
+        "updated_at" = ${new Date}
+      WHERE
+        "status" = ${UpdateStatus.Pending}
+        AND "proposal_id" = ${proposalId}
+    `
+
+    return this.rowCount(query)
   }
 }
