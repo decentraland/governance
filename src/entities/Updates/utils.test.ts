@@ -1,5 +1,5 @@
 import { ProjectHealth, UpdateAttributes, UpdateStatus } from './types'
-import { getNextUpdate, getPublicUpdates } from './utils'
+import { getNextUpdate, getPublicUpdates, getRemainingUpdates } from './utils'
 import { v1 as uuid } from 'uuid'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
@@ -38,6 +38,20 @@ const DONE_UPDATE = generateUpdate({
   updated_at: Time(now).subtract(1, 'day').toDate(),
   due_date: Time(now).add(1, 'month').toDate(),
   completion_date: Time(now).add(20, 'day').toDate(),
+})
+
+const DONE_UPDATE_OUT_OF_SCHEDULE = generateUpdate({
+  health: ProjectHealth.OnTrack,
+  introduction: 'Introduction',
+  highlights: 'Highlights',
+  blockers: 'Blockers',
+  next_steps: 'Next steps',
+  additional_notes: 'Additional notes',
+  status: UpdateStatus.Done,
+  created_at: Time(now).subtract(1, 'day').toDate(),
+  updated_at: Time(now).subtract(1, 'day').toDate(),
+  due_date: undefined,
+  completion_date: Time(now).add(21, 'day').toDate(),
 })
 
 const PENDING_UPDATE = generateUpdate({
@@ -79,6 +93,20 @@ const MISSED_UPDATE = generateUpdate({
   created_at: Time(now).subtract(2, 'day').toDate(),
   updated_at: Time(now).subtract(2, 'day').toDate(),
   due_date: Time(now).subtract(1, 'day').toDate(),
+  completion_date: undefined,
+})
+
+const SKIPPED_UPDATE = generateUpdate({
+  health: undefined,
+  introduction: undefined,
+  highlights: undefined,
+  blockers: undefined,
+  next_steps: undefined,
+  additional_notes: undefined,
+  status: UpdateStatus.Skipped,
+  created_at: Time(now).subtract(1, 'day').toDate(),
+  updated_at: Time(now).subtract(1, 'day').toDate(),
+  due_date: Time(now).add(2, 'month').toDate(),
   completion_date: undefined,
 })
 
@@ -134,6 +162,40 @@ describe('Public updates', () => {
 
     it('should return done, late and missed updates', () => {
       expect(getPublicUpdates(updates)).toEqual([DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE])
+    })
+  })
+
+  describe('when there is one pending, one done, one missed, one late and one out of schedule', () => {
+    let updates: UpdateAttributes[] = [PENDING_UPDATE, DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE, DONE_UPDATE_OUT_OF_SCHEDULE]
+
+    it('should return out of schedule first and then done,late and missed updates', () => {
+      expect(getPublicUpdates(updates)).toEqual([DONE_UPDATE_OUT_OF_SCHEDULE, DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE])
+    })
+  })
+})
+
+describe('Remaining updates', () => {
+  describe('when there are no updates for a proposal', () => {
+    let updates: UpdateAttributes[] = []
+
+    it('should return no updates', () => {
+      expect(getRemainingUpdates(updates)).toEqual([])
+    })
+  })
+
+  describe('when there is non-pending updates for a proposal', () => {
+    let updates: UpdateAttributes[] = [DONE_UPDATE, SKIPPED_UPDATE]
+
+    it('should return no updates', () => {
+      expect(getRemainingUpdates(updates)).toEqual([])
+    })
+  })
+
+  describe('when there is one done and one pending update for a proposal', () => {
+    let updates: UpdateAttributes[] = [DONE_UPDATE, PENDING_UPDATE]
+
+    it('should return the pending update', () => {
+      expect(getRemainingUpdates(updates)).toEqual([PENDING_UPDATE])
     })
   })
 })

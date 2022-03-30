@@ -97,7 +97,7 @@ export default function ProposalPage() {
     { callWithTruthyDeps: true }
   )
 
-  const { publicUpdates, nextUpdate } = useProposalUpdates(proposal?.id)
+  const { publicUpdates, remainingUpdates, nextUpdate } = useProposalUpdates(proposal?.id)
 
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
@@ -186,10 +186,10 @@ export default function ProposalPage() {
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  const handlePostUpdateClick = useCallback(
-    () => navigate(`/submit/update?id=${nextUpdate?.id}&proposalId=${proposal?.id}`),
-    [nextUpdate?.id, proposal?.id]
-  )
+  const handlePostUpdateClick = useCallback(() => {
+    const updateIdParam = remainingUpdates && remainingUpdates.length > 0 ? `id=${nextUpdate?.id}` : ''
+    navigate(`/submit/update?${updateIdParam}&proposalId=${proposal?.id}`)
+  }, [nextUpdate?.id, proposal?.id])
 
   const handleUpdateClick = (update: UpdateAttributes) => navigate(`/update?id=${update.id}&proposalId=${proposal?.id}`)
 
@@ -285,6 +285,7 @@ export default function ProposalPage() {
                 <ProposalVestingStatus
                   proposal={proposal}
                   nextUpdate={nextUpdate}
+                  remainingUpdates={remainingUpdates}
                   onPostUpdateClick={handlePostUpdateClick}
                 />
               )}

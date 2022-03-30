@@ -38,12 +38,28 @@ export default class UpdateModel extends Model<UpdateAttributes> {
     })
   }
 
+  static async createUpdate(
+    update: Omit<UpdateAttributes, 'id' | 'status' | 'due_date' | 'completion_date' | 'created_at' | 'updated_at'>
+  ) {
+    const now = new Date()
+
+    await this.create({
+      id: uuid(),
+      status: UpdateStatus.Done,
+      due_date: undefined,
+      completion_date: now,
+      created_at: now,
+      updated_at: now,
+      ...update,
+    })
+  }
+
   static async skipRemainingUpdates(proposalId: string) {
     const query = SQL`
       UPDATE ${table(UpdateModel)}
       SET
         "status" = ${UpdateStatus.Skipped},
-        "updated_at" = ${new Date}
+        "updated_at" = ${new Date()}
       WHERE
         "status" = ${UpdateStatus.Pending}
         AND "proposal_id" = ${proposalId}

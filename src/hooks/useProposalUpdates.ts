@@ -8,6 +8,7 @@ export default function useProposalUpdates(proposalId?: string | null) {
 
   return {
     publicUpdates: updates?.publicUpdates,
+    remainingUpdates: updates?.remainingUpdates,
     nextUpdate: updates?.nextUpdate
   }
 }

@@ -13,6 +13,7 @@ export type ProposalVestingStatusProps = Omit<React.HTMLAttributes<HTMLDivElemen
   loading?: boolean
   disabled?: boolean
   nextUpdate?: UpdateAttributes | null
+  remainingUpdates?: UpdateAttributes[] | null
   onPostUpdateClick: () => void
 }
 
@@ -22,10 +23,11 @@ export default function ProposalVestingStatus({
   disabled,
   onPostUpdateClick,
   nextUpdate,
+  remainingUpdates,
   ...props
 }: ProposalVestingStatusProps) {
   const l = useFormatMessage()
-  const hasSubmittedUpdate = !nextUpdate
+  const hasSubmittedUpdate = !nextUpdate && !!remainingUpdates && remainingUpdates.length > 0
 
   return (
     <div

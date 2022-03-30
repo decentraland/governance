@@ -6,7 +6,7 @@ import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { getNextUpdate, getPublicUpdates } from './utils'
+import { getNextUpdate, getPublicUpdates, getRemainingUpdates } from './utils'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
 
@@ -14,7 +14,8 @@ export default routes((route) => {
   const withAuth = auth()
   route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
   route.get('/proposals/:update/update', handleAPI(getProposalUpdate))
-  route.patch('/proposals/:proposal/updates', withAuth, handleAPI(updateProposalUpdate))
+  route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
+  route.patch('/proposals/:proposal/update', withAuth, handleAPI(updateProposalUpdate))
 })
 
 async function getProposalUpdate(req: Request<{ update: string }>) {
@@ -43,11 +44,34 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id })
   const publicUpdates = getPublicUpdates(updates)
   const nextUpdate = getNextUpdate(updates)
+  const remainingUpdates = getRemainingUpdates(updates)
 
   return {
     publicUpdates,
+    remainingUpdates,
     nextUpdate,
   }
+}
+
+async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+
+  const user = req.auth!
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
+
+  if (proposal?.user !== user) {
+    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
+  }
+
+  return await UpdateModel.createUpdate({
+    proposal_id: proposal?.id!,
+    health,
+    introduction,
+    highlights,
+    blockers,
+    next_steps,
+    additional_notes,
+  })
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {

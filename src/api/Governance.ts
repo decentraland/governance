@@ -181,8 +181,24 @@ export class Governance extends API {
 
   async getProposalUpdates(proposal_id: string) {
     const result = await this.fetch<
-      ApiResponse<{ publicUpdates: UpdateAttributes[]; nextUpdate: UpdateAttributes | null }>
+      ApiResponse<{ publicUpdates: UpdateAttributes[]; remainingUpdates: UpdateAttributes[]; nextUpdate: UpdateAttributes | null }>
     >(`/proposals/${proposal_id}/updates`)
+    return result.data
+  }
+
+  async createProposalUpdate(update: {
+    proposal_id: string
+    health: ProjectHealth
+    introduction: string
+    highlights: string
+    blockers: string
+    next_steps: string
+    additional_notes: string
+  }) {
+    const result = await this.fetch<ApiResponse<UpdateAttributes>>(
+      `/proposals/${update.proposal_id}/update`,
+      this.options().method('POST').authorization().json(update)
+    )
     return result.data
   }
 
@@ -198,7 +214,7 @@ export class Governance extends API {
     last_update: boolean
   }) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
-      `/proposals/${update.proposal_id}/updates`,
+      `/proposals/${update.proposal_id}/update`,
       this.options().method('PATCH').authorization().json(update)
     )
     return result.data

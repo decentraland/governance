@@ -154,7 +154,7 @@ export default function Update() {
 
   useEffect(() => {
     const submitUpdate = async () => {
-      if (!proposalId || !updateId) {
+      if (!proposalId) {
         return
       }
 
@@ -173,7 +173,11 @@ export default function Update() {
       }
 
       try {
-        await Governance.get().updateProposalUpdate(newUpdate)
+        if (updateId) {
+          await Governance.get().updateProposalUpdate(newUpdate)
+        } else {
+          await Governance.get().createProposalUpdate(newUpdate)
+        }
         navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
       } catch (err) {
         if (err instanceof Error) {
@@ -198,7 +202,7 @@ export default function Update() {
     )
   }
 
-  if (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done) {
+  if (updateId && (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)) {
     return (
       <ContentLayout>
         <NotFound />
@@ -292,18 +296,20 @@ export default function Update() {
         disabled={formDisabled}
         {...getFieldProps('additionalNotes')}
       />
-      <div className="UpdateSubmit__Checkbox">
-        <input
-          id="LastUpdate"
-          name="LastUpdate"
-          type="checkbox"
-          checked={lastUpdate}
-          onChange={() => setLastUpdate((prev) => !prev)}
-        />
-        <label htmlFor="LastUpdate">
-          <Markdown source={l('page.proposal_update.last_update_label') || ''} />
-        </label>
-      </div>
+      {updateId && (
+        <div className="UpdateSubmit__Checkbox">
+          <input
+            id="LastUpdate"
+            name="LastUpdate"
+            type="checkbox"
+            checked={lastUpdate}
+            onChange={() => setLastUpdate((prev) => !prev)}
+          />
+          <label htmlFor="LastUpdate">
+            <Markdown source={l('page.proposal_update.last_update_label') || ''} />
+          </label>
+        </div>
+      )}
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
           {l('page.proposal_update.publish_update')}
