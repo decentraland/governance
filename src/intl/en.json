@@ -416,7 +416,7 @@
       "grant": {
         "update_title": "Project updates",
         "update_empty": "This team has not posted any updates yet.",
-        "update_date": "{date} update",
+        "update_index": "Update #{index}",
         "update_missed_owner": "You missed this month’s update.",
         "update_missed": "Beneficiary missed this month's update.",
         "update_description": "**Don’t forget to share some news** to keep the community in the loop.",
@@ -524,7 +524,7 @@
     },
     "update_detail": {
       "project_title": "Project update for {title}",
-      "title": "{date} update",
+      "title": "Update #{index}",
       "on_track_title": "Project Health: On Track",
       "on_track_description": "This team has indicated that the project is overall going according to plan.",
       "at_risk_title": "Project Health: At Risk",

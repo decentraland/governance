@@ -45,7 +45,7 @@ export default function ProposalVestingStatus({
         <span className="ProposalVestingStatus__UpdateDescription">
           {l.markdown('page.proposal_detail.grant.update_description')}
         </span>
-        {hasSubmittedUpdate && !!currentUpdate.due_date && (
+        {hasSubmittedUpdate && !!currentUpdate?.due_date && (
           <span className="ProposalVestingStatus__NextUpdateDueDate">
             {l.markdown('page.proposal_detail.grant.next_update_due_date', {
               date: Time(nextUpdate?.due_date).fromNow(true),

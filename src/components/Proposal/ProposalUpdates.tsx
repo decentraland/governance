@@ -45,6 +45,7 @@ export default function ProposalUpdates({
           updates.map((item, index) => (
             <ProposalUpdate
               key={item.id}
+              index={updates.length - index}
               proposal={proposal}
               update={item}
               expanded={index === 0}

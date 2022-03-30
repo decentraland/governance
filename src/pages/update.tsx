@@ -17,6 +17,7 @@ import ProjectHealthStatus from '../components/Updates/ProjectHealthStatus'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposal from '../hooks/useProposal'
+import useProposalUpdates from '../hooks/useProposalUpdates'
 import './update.css'
 
 export default function UpdateDetail() {
@@ -34,12 +35,9 @@ export default function UpdateDetail() {
     }
   )
   const { update, state: updateState } = useProposalUpdate(updateId)
+  const { publicUpdates, state: updatesState } = useProposalUpdates(proposalId)
 
-  const date = !!update?.due_date ? Time(update.due_date).format('MMMM') : Time(update?.completion_date).format('MMMM')
-  const formattedCompletionDate = Time(update?.completion_date).fromNow()
-  const formattedDueDate = Time(update?.completion_date).from(Time(update?.due_date), true)
-
-  if (updateState.loading || profileState.loading) {
+  if (updateState.loading || profileState.loading || updatesState.loading) {
     return (
       <Container>
         <Loader size="huge" active />
@@ -55,13 +53,17 @@ export default function UpdateDetail() {
     )
   }
 
+  const formattedCompletionDate = Time(update?.completion_date).fromNow()
+  const formattedDueDate = Time(update?.completion_date).from(Time(update?.due_date), true)
+  const index = publicUpdates && publicUpdates.length - Number(publicUpdates?.findIndex((item) => item.id === updateId))
+
   return (
     <ContentLayout small>
       <ContentSection className="UpdateDetail__Header">
         <span className="UpdateDetail__ProjectTitle">
           {l('page.update_detail.project_title', { title: proposal?.title })}
         </span>
-        <Header size="huge">{l('page.update_detail.title', { date })}</Header>
+        <Header size="huge">{l('page.update_detail.title', { index })}</Header>
       </ContentSection>
       <ContentSection className="UpdateDetail__Content">
         {update?.health && <ProjectHealthStatus health={update.health} />}

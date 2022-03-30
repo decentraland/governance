@@ -18,19 +18,19 @@ interface Props {
   update: UpdateAttributes
   expanded: boolean
   onClick: (update: UpdateAttributes) => void
+  index: number
 }
 
-export default function ProposalUpdate({ proposal, update, expanded, onClick }: Props) {
+export default function ProposalUpdate({ proposal, update, expanded, onClick, index }: Props) {
   const l = useFormatMessage()
   const [account] = useAuthContext()
-  const { introduction, highlights, status, completion_date, due_date } = update
+  const { introduction, highlights, status, completion_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
     ? l('page.proposal_detail.grant.update_missed_owner')
     : l('page.proposal_detail.grant.update_missed')
   const icon = completion_date ? updateIcon : cancelIcon
-  const date = !!due_date ? Time(due_date).format('MMMM') : Time(completion_date).format('MMMM')
 
   const handleClick = useCallback(() => {
     if (!completion_date) {
@@ -74,7 +74,7 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick }: 
                 `ProposalUpdate__Month--${status}`,
               ])}
             >
-              {l('page.proposal_detail.grant.update_date', { date })}
+              {l('page.proposal_detail.grant.update_index', { index })}
             </span>
           </div>
           <div className="ProposalUpdate__Date">{Time.from(completion_date).fromNow()}</div>
@@ -108,7 +108,7 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick }: 
       <div className="ProposalUpdate__Left">
         <img className="ProposalUpdate__Icon" src={icon} aria-hidden="true" />
         <div className="ProposalUpdate__Description">
-          <span className="ProposalUpdate__Month">{l('page.proposal_detail.grant.update_date', { date })}:</span>
+          <span className="ProposalUpdate__Month">{l('page.proposal_detail.grant.update_index', { index })}:</span>
           <span>{completion_date ? introduction : missedUpdateText}</span>
         </div>
       </div>
