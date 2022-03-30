@@ -29,6 +29,7 @@ import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { useLocation } from '@reach/router'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import LogIn from '../../components/User/LogIn'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
@@ -219,14 +220,10 @@ export default function SubmitGovernanceProposal() {
   }
 
   if (!account) {
-    return <Container>
-      <Head
+    return <LogIn
         title={l('page.submit_governance.title') || ''}
         description={l('page.submit_governance.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
       />
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
   }
 
   return <ContentLayout small>

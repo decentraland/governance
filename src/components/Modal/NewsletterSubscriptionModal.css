@@ -1,12 +1,16 @@
 
-.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__email-input {
-  width: 300px;
+.ui.modal.NewsletterSubscriptionModal .ProposalModal__Form {
+  width: auto !important;
   padding: 5px 10px;
 }
 
 .ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__message {
   margin-top: 20px;
   font-size: 17px;
+}
+
+.ui.modal.NewsletterSubscriptionModal .ProposalModal__Actions {
+  padding: 0 10px;
 }
 
 .ui.modal.NewsletterSubscriptionModal .success {
@@ -22,5 +26,5 @@
 }
 
 .ui.modal.NewsletterSubscriptionModal .content {
-  width: 365px;
+  width: auto;
 }

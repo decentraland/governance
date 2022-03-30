@@ -13,8 +13,6 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { Governance } from '../../api/Governance'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import { Vote } from '../../entities/Votes/types'
 
@@ -31,7 +29,6 @@ const subscribedIcon = require('../../images/icons/subscribed.svg')
 
 export default function ProposalItem({ proposal, votes, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
   const [ account ] = useAuthContext()
-  // const [votes] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], { callWithTruthyDeps: true })
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [ proposal ])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [ choices, votes ])
   function handleSubscription(e: React.MouseEvent<any>) {
@@ -53,8 +50,10 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
           {winner.votes > 0 && <LeadingOption status={proposal.status} leadingOption={winner.choice} metVP={winner.power >= (proposal.required_to_pass || 0)} />}
         </div>
         <div className="ProposalItem__Status">
-          <StatusLabel status={proposal.status} />
-          <CategoryLabel type={proposal.type} />
+          <div>
+            <StatusLabel status={proposal.status} />
+            <CategoryLabel type={proposal.type} />
+          </div>
           <FinishLabel date={proposal.finish_at} />
         </div>
       </Card.Content>

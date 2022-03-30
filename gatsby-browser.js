@@ -16,8 +16,9 @@ import './src/theme.css'
 import AuthProvider from "decentraland-gatsby/dist/context/Auth/AuthProvider"
 import FeatureFlagProvider from "decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider"
 import Layout from "decentraland-gatsby/dist/components/Layout/Layout"
-import UserMenu from "decentraland-gatsby/dist/components/User/UserMenu"
 import segment from "decentraland-gatsby/dist/utils/segment/segment"
+import Navbar from "./src/components/Layout/Navbar"
+import BurgerMenuStatusContextProvider from "./src/components/Context/BurgerMenuStatusContext"
 
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>
@@ -28,12 +29,12 @@ export const wrapRootElement = ({ element }) => (
 )
 
 export const wrapPageElement = ({ element, props }) => {
-  return <Layout
-    {...props}
-    rightMenu={<UserMenu />}
-  >
-    {element}
-  </Layout>
+
+  return <BurgerMenuStatusContextProvider>
+    <Layout {...props} rightMenu={<Navbar />} >
+      {element}
+    </Layout>
+  </BurgerMenuStatusContextProvider>
 }
 
 export const onClientEntry = () => {

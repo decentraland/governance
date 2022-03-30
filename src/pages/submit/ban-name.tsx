@@ -6,7 +6,6 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -22,6 +21,7 @@ import { isValidName } from '../../entities/Proposal/utils'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import LogIn from '../../components/User/LogIn'
 import './submit.css'
 
 type BanNameState = {
@@ -112,14 +112,10 @@ export default function SubmitBanName() {
   }
 
   if (!account) {
-    return <Container>
-      <Head
-        title={l('page.submit_ban_name.title') || ''}
-        description={l('page.submit_ban_name.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
+    return <LogIn
+      title={l('page.submit_ban_name.title') || ''}
+      description={l('page.submit_ban_name.description') || ''}
+    />
   }
 
   return <ContentLayout small>

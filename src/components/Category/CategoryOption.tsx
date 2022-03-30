@@ -2,11 +2,10 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ProposalType } from '../../entities/Proposal/types'
-import React from 'react'
-
 import { categoryIcons } from './CategoryBanner'
-import './CategoryOption.css'
 import { navigate } from 'gatsby-plugin-intl'
+import React from 'react'
+import './CategoryOption.css'
 
 export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean

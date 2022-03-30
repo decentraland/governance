@@ -26,6 +26,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
       if(filter.type) { params.type = filter.type }
       if(filter.user) { params.user = filter.user }
       if(filter.subscribed) { params.subscribed = !!filter.subscribed }
+      if(filter.search) { params.search = filter.search }
+      if(filter.timeFrame) { params.timeFrame = filter.timeFrame }
+      if(filter.order) { params.order = filter.order }
       return Governance.get().getProposals({ ...params, limit, offset })
     },
     [
@@ -33,6 +36,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
       filter.type,
       filter.user,
       filter.subscribed,
+      filter.search,
+      filter.timeFrame,
+      filter.order,
       filter.page,
       filter.itemsPerPage,
       filter.load,

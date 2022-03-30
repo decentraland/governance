@@ -12,7 +12,34 @@
     "wrapping": "Voting Power",
     "activity": "Activity",
     "enacted": "Enacted",
-    "transparency": "Transparency"
+    "transparency": "Transparency",
+    "search": {
+      "mobile": {
+        "placeholder": "Search on the DAO...",
+        "focus_placeholder": "Start typing"
+      },
+      "placeholder": "Search...",
+      "search_results": "Search results for \"{title}",
+      "no_matches": "No proposals match the search criteria",
+      "sorting": {
+        "DESC": "Latest",
+        "ASC": "Oldest"
+      },
+      "category_filter_title": "Filter by Category",
+      "status_filter_title": "Filter by Status",
+      "timeframe_filter": {
+        "title": "Filter by TimeFrame",
+        "all": "All",
+        "week": "Last Week",
+        "month": "Last Month",
+        "3months": "Last 90 Days"
+      }
+    }
+  },
+  "mobile_login": {
+    "exclamation": "Oh oh...",
+    "message": "It looks like you're on a mobile device, please use a computer to log in to the Governance DApp",
+    "button": "Go Back"
   },
   "error": {
     "poll": {
@@ -138,7 +165,11 @@
       "category_empty": "Category is empty",
       "category_invalid": "Category is invalid",
       "tier_empty": "Tier is empty",
-      "tier_invalid": "Tier is invalid"
+      "tier_invalid": "Tier is invalid",
+      "size_empty": "Grant size is empty",
+      "size_invalid": "Grant size is not a valid number",
+      "size_too_low": "Grant size is too low",
+      "size_tier_invalid": "Grant size is not valid for the selected tier"
     },
     "linked_wearables": {
       "name_empty": "Name is empty",
@@ -176,7 +207,7 @@
     "linked_wearables": "Linked Wearables",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
-    "catalyst_description": "Add a node to the network of community run servers",
+    "catalyst_description": "Add a node to the network of community-run servers",
     "poi_title": "Point of Interest",
     "add_poi_title": "Add POI",
     "remove_poi_title": "Remove POI",
@@ -294,7 +325,12 @@
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "new_proposal": "Submit a proposal",
       "categories": "Categories",
-      "no_proposals_yet": "No proposals have been sent by community members yet."
+      "browse": "Browse",
+      "no_proposals_yet": "No proposals have been sent by community members yet.",
+      "finish_label": {
+        "ends": "Ends",
+        "ended":"Ended"
+      }
     },
     "proposal_enacted_list": {
       "title": "Enacted Proposals",
@@ -302,7 +338,7 @@
     },
     "proposal_catalyst_list": {
       "title": "Catalyst Node Proposals",
-      "description": "Recent proposals to add new community run servers to Decentraland"
+      "description": "Recent proposals to add new community-run servers to Decentraland"
     },
     "proposal_poi_list": {
       "title": "Point of Interest Proposals",
@@ -413,6 +449,7 @@
       "delegations_from_address_empty": "This address has not delegated its voting power"
     },
     "transparency": {
+      "title": "Transparency",
       "mission": {
           "title": "Our Mission",
           "description": "To support and facilitate the continual growth of the Decentraland platform.",

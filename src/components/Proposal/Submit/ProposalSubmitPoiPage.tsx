@@ -6,8 +6,7 @@ import { Header } from "decentraland-ui/dist/components/Header/Header"
 import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
-import { newProposalPOIScheme, PoiType } from "../../../entities/Proposal/types"
+import { getPoiTypeAction, newProposalPOIScheme, PoiType } from "../../../entities/Proposal/types"
 import {
   asNumber,
   isAlreadyPointOfInterest,
@@ -30,6 +29,7 @@ import loader from "../../../modules/loader"
 import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
 import Head from "decentraland-gatsby/dist/components/Head/Head"
 import MarkdownNotice from "../../Form/MarkdownNotice"
+import LogIn from '../../User/LogIn'
 
 type POIState = {
   x: string | number
@@ -138,14 +138,12 @@ export type ProposalPoiPageProps = {
   poiType: PoiType,
 }
 
-export default React.memo(function ProposalSubmitPoiPage({
-  poiType
-}: ProposalPoiPageProps) {
+export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPoiPageProps) {
   const l = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPoiState)
-  const [formDisabled, setFormDisabled] = useState(false);
-  const prefix = poiType.split('_')[0] // add | remove
+  const [formDisabled, setFormDisabled] = useState(false)
+  const action = getPoiTypeAction(poiType)
 
   useEffect(() => {
     if (state.validated) {
@@ -199,37 +197,28 @@ export default React.memo(function ProposalSubmitPoiPage({
   }
 
   if (!account) {
-    return (
-      <Container>
-        <Head
-          title={l(`page.submit_poi.${prefix}.title`) || ""}
-          description={l("page.submit_poi.description") || ""}
-          image="https://decentraland.org/images/decentraland.png"
-        />
-        <SignIn
-          isConnecting={accountState.selecting || accountState.loading}
-          onConnect={() => accountState.select()}
-        />
-      </Container>
-    )
+    return <LogIn
+      title={l(`page.submit_poi.${action}.title`) || ""}
+      description={l("page.submit_poi.description") || ""}
+    />
   }
 
   return (
     <ContentLayout small>
       <Head
-        title={l(`page.submit_poi.${prefix}.title`) || ""}
+        title={l(`page.submit_poi.${action}.title`) || ""}
         description={l("page.submit_poi.description") || ""}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Helmet title={l(`page.submit_poi.${prefix}.title`) || ""} />
+      <Helmet title={l(`page.submit_poi.${action}.title`) || ""} />
       <ContentSection>
-        <Header size="huge">{l(`page.submit_poi.${prefix}.title`)}</Header>
+        <Header size="huge">{l(`page.submit_poi.${action}.title`)}</Header>
       </ContentSection>
       <ContentSection>
         <Paragraph small>{l("page.submit_poi.description")}</Paragraph>
       </ContentSection>
       <ContentSection className="CoordinatesField">
-        <Label>{l(`page.submit_poi.${prefix}.coordinates_label`)}</Label>
+        <Label>{l(`page.submit_poi.${action}.coordinates_label`)}</Label>
         <Paragraph tiny secondary className="details">
           {l("page.submit_poi.coordinates_detail")}
         </Paragraph>
@@ -268,12 +257,12 @@ export default React.memo(function ProposalSubmitPoiPage({
           <MarkdownNotice />
         </Label>
         <Paragraph tiny secondary className="details">
-          {l(`page.submit_poi.${prefix}.description_detail`)}
+          {l(`page.submit_poi.${action}.description_detail`)}
         </Paragraph>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
-          placeholder={l(`page.submit_poi.${prefix}.description_placeholder`)}
+          placeholder={l(`page.submit_poi.${action}.description_placeholder`)}
           onChange={(_: any, { value }: any) =>
             editor.set({ description: value })
           }

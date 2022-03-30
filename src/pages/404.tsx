@@ -9,7 +9,7 @@ export default React.memo(function NotFoundPage() {
   const description = l('page.404.description')!
 
   return <>
-    <Navigation />
+    <Navigation/>
     <NotFound title={title} description={description} />
   </>
 })

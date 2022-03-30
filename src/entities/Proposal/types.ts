@@ -1,4 +1,5 @@
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
+import { asNumber, MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
+import { SQLStatement } from "decentraland-gatsby/dist/entities/Database/utils"
 
 export type ProposalAttributes<C extends {} = any> = {
   id: string
@@ -31,6 +32,7 @@ export type ProposalAttributes<C extends {} = any> = {
   required_to_pass: number | null
   created_at: Date
   updated_at: Date
+  textsearch: SQLStatement | string | null | undefined
 }
 
 export enum ProposalStatus {
@@ -68,10 +70,10 @@ export enum ProposalType {
   Catalyst = 'catalyst',
   BanName = 'ban_name',
   Grant = 'grant',
+  LinkedWearables = 'linked_wearables',
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
-  LinkedWearables = 'linked_wearables',
 }
 
 export enum PoiType {
@@ -115,6 +117,10 @@ export function toPoiType(value: string | null | undefined): PoiType | null {
   return isPoiType(value)?
     value as PoiType :
     null
+}
+
+export function getPoiTypeAction(poiType: PoiType) {
+  return poiType.split('_')[0] // "add" | "remove"
 }
 
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
@@ -451,6 +457,15 @@ export enum ProposalGrantTier {
   Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
 }
 
+export const ProposalGrantTierValues = {
+  [ProposalGrantTier.Tier1]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER1 || 0),
+  [ProposalGrantTier.Tier2]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER2 || 0),
+  [ProposalGrantTier.Tier3]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER3 || 0),
+  [ProposalGrantTier.Tier4]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER4 || 0),
+  [ProposalGrantTier.Tier5]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER5 || 0),
+  [ProposalGrantTier.Tier6]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER6 || 0),
+}
+
 export function isProposalGrantTier(value:  string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantTier.Tier1:
@@ -463,6 +478,10 @@ export function isProposalGrantTier(value:  string | null | undefined): boolean 
     default:
       return false
   }
+}
+
+export function toProposalGrantTier(value:  string | null | undefined): ProposalGrantTier | null {
+  return isProposalGrantTier(value) ? value as ProposalGrantTier : null
 }
 
 export const ProposalRequiredVP = {
@@ -557,7 +576,7 @@ export const newProposalGrantScheme = {
     },
     size: {
       type: 'integer',
-      min: 0
+      min: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0)
     },
     beneficiary: {
       type: 'string',
