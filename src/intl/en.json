@@ -747,7 +747,9 @@
       "additional_notes_label": "Additional notes and links",
       "additional_notes_placeholder": "Feel free to share any additional information or resources to showcase your project.",
       "last_update_label": "Mark project as done. This would actually be its **last update**.",
-      "publish_update": "Publish update"
+      "publish_update": "Publish update",
+      "preview_update": "Preview update",
+      "edit_update": "Edit update"
     }
   }
 }

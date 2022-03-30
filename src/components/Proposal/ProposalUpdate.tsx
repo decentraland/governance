@@ -43,7 +43,7 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick, in
   const handlePostUpdateClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      navigate(`/update?id=${update.id}&proposalId=${proposal.id}`)
+      navigate(`/submit/update?id=${update.id}&proposalId=${proposal.id}`)
     },
     [update.id, proposal.id]
   )

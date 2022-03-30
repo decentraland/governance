@@ -30,3 +30,8 @@
   line-height: 18px;
   cursor: pointer;
 }
+
+.UpdateSubmit__Actions {
+  display: flex;
+  justify-content: space-between;
+}

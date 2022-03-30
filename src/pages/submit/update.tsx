@@ -24,6 +24,7 @@ import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
 import './submit.css'
 import './update.css'
+import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 
 type updateFormState = {
   health: ProjectHealth
@@ -134,6 +135,7 @@ export default function Update() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const proposalId = params.get('proposalId') || ''
   const updateId = params.get('id') || ''
+  const [isPreviewMode, setPreviewMode] = useState(false)
   const [projectHealth, setProjectHealth] = useState(initialState.health)
   const [lastUpdate, setLastUpdate] = useState(initialState.lastUpdate)
   const { update, state: updateState } = useProposalUpdate(updateId)
@@ -152,6 +154,19 @@ export default function Update() {
       }),
   })
 
+  const previewUpdate = useMemo(
+    () => ({
+      health: projectHealth,
+      introduction: state.value.introduction,
+      highlights: state.value.highlights,
+      blockers: state.value.blockers,
+      next_steps: state.value.nextSteps,
+      additional_notes: state.value.additionalNotes,
+      status: UpdateStatus.Pending,
+    }),
+    [state]
+  )
+
   useEffect(() => {
     const submitUpdate = async () => {
       if (!proposalId) {
@@ -169,6 +184,7 @@ export default function Update() {
         blockers: state.value.blockers,
         next_steps: state.value.nextSteps,
         additional_notes: state.value.additionalNotes,
+        status: UpdateStatus.Pending,
         last_update: lastUpdate,
       }
 
@@ -237,82 +253,90 @@ export default function Update() {
       <ContentSection>
         <Paragraph small>{l('page.proposal_update.description')}</Paragraph>
       </ContentSection>
-      <ContentSection>
-        <Label>{l('page.proposal_update.health_label')}</Label>
-        <div className="UpdateSubmit__ProjectHealthContainer">
-          <ProjectHealthButton
-            type={ProjectHealth.OnTrack}
-            selectedValue={projectHealth}
-            onClick={setProjectHealth}
+      {!isPreviewMode && (
+        <>
+          <ContentSection>
+            <Label>{l('page.proposal_update.health_label')}</Label>
+            <div className="UpdateSubmit__ProjectHealthContainer">
+              <ProjectHealthButton
+                type={ProjectHealth.OnTrack}
+                selectedValue={projectHealth}
+                onClick={setProjectHealth}
+                disabled={formDisabled}
+              >
+                {l('page.proposal_update.on_track_label') || ''}
+              </ProjectHealthButton>
+              <ProjectHealthButton
+                type={ProjectHealth.AtRisk}
+                selectedValue={projectHealth}
+                onClick={setProjectHealth}
+                disabled={formDisabled}
+              >
+                {l('page.proposal_update.at_risk_label') || ''}
+              </ProjectHealthButton>
+              <ProjectHealthButton
+                type={ProjectHealth.OffTrack}
+                selectedValue={projectHealth}
+                onClick={setProjectHealth}
+                disabled={formDisabled}
+              >
+                {l('page.proposal_update.off_track_label') || ''}
+              </ProjectHealthButton>
+            </div>
+          </ContentSection>
+          <MarkdownField
+            label={l('page.proposal_update.introduction_label')}
             disabled={formDisabled}
-          >
-            {l('page.proposal_update.on_track_label') || ''}
-          </ProjectHealthButton>
-          <ProjectHealthButton
-            type={ProjectHealth.AtRisk}
-            selectedValue={projectHealth}
-            onClick={setProjectHealth}
-            disabled={formDisabled}
-          >
-            {l('page.proposal_update.at_risk_label') || ''}
-          </ProjectHealthButton>
-          <ProjectHealthButton
-            type={ProjectHealth.OffTrack}
-            selectedValue={projectHealth}
-            onClick={setProjectHealth}
-            disabled={formDisabled}
-          >
-            {l('page.proposal_update.off_track_label') || ''}
-          </ProjectHealthButton>
-        </div>
-      </ContentSection>
-      <MarkdownField
-        label={l('page.proposal_update.introduction_label')}
-        disabled={formDisabled}
-        minHeight={77}
-        {...getFieldProps('introduction')}
-      />
-      <MarkdownField
-        label={l('page.proposal_update.highlights_label')}
-        placeholder={l('page.proposal_update.highlights_placeholder')}
-        disabled={formDisabled}
-        {...getFieldProps('highlights')}
-      />
-      <MarkdownField
-        label={l('page.proposal_update.blockers_label')}
-        placeholder={l('page.proposal_update.blockers_placeholder')}
-        disabled={formDisabled}
-        {...getFieldProps('blockers')}
-      />
-      <MarkdownField
-        label={l('page.proposal_update.next_steps_label')}
-        placeholder={l('page.proposal_update.next_steps_placeholder')}
-        disabled={formDisabled}
-        {...getFieldProps('nextSteps')}
-      />
-      <MarkdownField
-        label={l('page.proposal_update.additional_notes_label')}
-        placeholder={l('page.proposal_update.additional_notes_placeholder')}
-        disabled={formDisabled}
-        {...getFieldProps('additionalNotes')}
-      />
-      {updateId && (
-        <div className="UpdateSubmit__Checkbox">
-          <input
-            id="LastUpdate"
-            name="LastUpdate"
-            type="checkbox"
-            checked={lastUpdate}
-            onChange={() => setLastUpdate((prev) => !prev)}
+            minHeight={77}
+            {...getFieldProps('introduction')}
           />
-          <label htmlFor="LastUpdate">
-            <Markdown source={l('page.proposal_update.last_update_label') || ''} />
-          </label>
-        </div>
+          <MarkdownField
+            label={l('page.proposal_update.highlights_label')}
+            placeholder={l('page.proposal_update.highlights_placeholder')}
+            disabled={formDisabled}
+            {...getFieldProps('highlights')}
+          />
+          <MarkdownField
+            label={l('page.proposal_update.blockers_label')}
+            placeholder={l('page.proposal_update.blockers_placeholder')}
+            disabled={formDisabled}
+            {...getFieldProps('blockers')}
+          />
+          <MarkdownField
+            label={l('page.proposal_update.next_steps_label')}
+            placeholder={l('page.proposal_update.next_steps_placeholder')}
+            disabled={formDisabled}
+            {...getFieldProps('nextSteps')}
+          />
+          <MarkdownField
+            label={l('page.proposal_update.additional_notes_label')}
+            placeholder={l('page.proposal_update.additional_notes_placeholder')}
+            disabled={formDisabled}
+            {...getFieldProps('additionalNotes')}
+          />
+          {updateId && (
+            <div className="UpdateSubmit__Checkbox">
+              <input
+                id="LastUpdate"
+                name="LastUpdate"
+                type="checkbox"
+                checked={lastUpdate}
+                onChange={() => setLastUpdate((prev) => !prev)}
+              />
+              <label htmlFor="LastUpdate">
+                <Markdown source={l('page.proposal_update.last_update_label') || ''} />
+              </label>
+            </div>
+          )}
+        </>
       )}
-      <ContentSection>
+      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
+      <ContentSection className="UpdateSubmit__Actions">
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
           {l('page.proposal_update.publish_update')}
+        </Button>
+        <Button basic disabled={state.validated} onClick={() => setPreviewMode((prev) => !prev)}>
+          {isPreviewMode ? l('page.proposal_update.edit_update') : l('page.proposal_update.preview_update')}
         </Button>
       </ContentSection>
       {state.error['*'] && (
