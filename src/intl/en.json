@@ -421,7 +421,8 @@
         "update_missed": "Beneficiary missed this month's update.",
         "update_description": "**Don’t forget to share some news** to keep the community in the loop.",
         "update_button": "Post Update",
-        "update_due_date": "Update due in **{date}**"
+        "current_update_due_date": "Update due in **{date}**",
+        "next_update_due_date": "Next one due in **{date}**"
       }
     },
     "proposal_activity": {

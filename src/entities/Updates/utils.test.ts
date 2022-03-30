@@ -1,5 +1,5 @@
 import { ProjectHealth, UpdateAttributes, UpdateStatus } from './types'
-import { getNextUpdate, getPublicUpdates, getRemainingUpdates } from './utils'
+import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate } from './utils'
 import { v1 as uuid } from 'uuid'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
@@ -179,7 +179,7 @@ describe('Remaining updates', () => {
     let updates: UpdateAttributes[] = []
 
     it('should return no updates', () => {
-      expect(getRemainingUpdates(updates)).toEqual([])
+      expect(getPendingUpdates(updates)).toEqual([])
     })
   })
 
@@ -187,7 +187,7 @@ describe('Remaining updates', () => {
     let updates: UpdateAttributes[] = [DONE_UPDATE, SKIPPED_UPDATE]
 
     it('should return no updates', () => {
-      expect(getRemainingUpdates(updates)).toEqual([])
+      expect(getPendingUpdates(updates)).toEqual([])
     })
   })
 
@@ -195,7 +195,65 @@ describe('Remaining updates', () => {
     let updates: UpdateAttributes[] = [DONE_UPDATE, PENDING_UPDATE]
 
     it('should return the pending update', () => {
-      expect(getRemainingUpdates(updates)).toEqual([PENDING_UPDATE])
+      expect(getPendingUpdates(updates)).toEqual([PENDING_UPDATE])
+    })
+  })
+})
+
+describe('Current update', () => {
+  describe('when there are no updates for a proposal', () => {
+    let updates: UpdateAttributes[] = []
+
+    it('should return no update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(null)
+    })
+  })
+
+  describe('when there is one done update for a proposal', () => {
+    let updates: UpdateAttributes[] = [DONE_UPDATE]
+
+    it('should return closest done update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(DONE_UPDATE)
+    })
+  })
+
+  describe('when there is one late update and one pending for a proposal', () => {
+    let updates: UpdateAttributes[] = [LATE_UPDATE, PENDING_UPDATE]
+
+    it('should return the pending update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(PENDING_UPDATE)
+    })
+  })
+
+  describe('when there are two pending updates for a proposal', () => {
+    let updates: UpdateAttributes[] = [PENDING_UPDATE, FUTURE_PENDING_UPDATE]
+
+    it('should return the closest update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(PENDING_UPDATE)
+    })
+  })
+
+  describe('when there is a done update and a future pending update for a proposal', () => {
+    let updates: UpdateAttributes[] = [DONE_UPDATE, FUTURE_PENDING_UPDATE]
+
+    it('should return done update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(DONE_UPDATE)
+    })
+  })
+
+  describe('when there is one pending and one missed update for a proposal', () => {
+    let updates: UpdateAttributes[] = [PENDING_UPDATE, MISSED_UPDATE]
+
+    it('should return the closest future update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(PENDING_UPDATE)
+    })
+  })
+
+  describe('when there is one done and one missed update for a proposal', () => {
+    let updates: UpdateAttributes[] = [DONE_UPDATE, MISSED_UPDATE]
+
+    it('should return done update', () => {
+      expect(getCurrentUpdate(updates)).toEqual(DONE_UPDATE)
     })
   })
 })
@@ -236,8 +294,8 @@ describe('Next update', () => {
   describe('when there is a done update and a future pending update for a proposal', () => {
     let updates: UpdateAttributes[] = [DONE_UPDATE, FUTURE_PENDING_UPDATE]
 
-    it('should return no update', () => {
-      expect(getNextUpdate(updates)).toEqual(null)
+    it('should return future update', () => {
+      expect(getNextUpdate(updates)).toEqual(FUTURE_PENDING_UPDATE)
     })
   })
 

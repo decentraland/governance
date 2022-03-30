@@ -6,7 +6,7 @@ import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { getNextUpdate, getPublicUpdates, getRemainingUpdates } from './utils'
+import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate } from './utils'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
 
@@ -44,12 +44,14 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id })
   const publicUpdates = getPublicUpdates(updates)
   const nextUpdate = getNextUpdate(updates)
-  const remainingUpdates = getRemainingUpdates(updates)
+  const currentUpdate = getCurrentUpdate(updates)
+  const pendingUpdates = getPendingUpdates(updates)
 
   return {
     publicUpdates,
-    remainingUpdates,
+    pendingUpdates,
     nextUpdate,
+    currentUpdate
   }
 }
 

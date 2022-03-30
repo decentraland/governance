@@ -181,7 +181,7 @@ export class Governance extends API {
 
   async getProposalUpdates(proposal_id: string) {
     const result = await this.fetch<
-      ApiResponse<{ publicUpdates: UpdateAttributes[]; remainingUpdates: UpdateAttributes[]; nextUpdate: UpdateAttributes | null }>
+      ApiResponse<{ publicUpdates: UpdateAttributes[]; pendingUpdates: UpdateAttributes[]; nextUpdate: UpdateAttributes; currentUpdate: UpdateAttributes | null }>
     >(`/proposals/${proposal_id}/updates`)
     return result.data
   }

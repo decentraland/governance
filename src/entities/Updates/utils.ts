@@ -15,28 +15,41 @@ export const getPublicUpdates = (updates: UpdateAttributes[]): UpdateAttributes[
   return [...outOfScheduleUpdates, ...scheduledUpdates]
 }
 
-export const getNextUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
+
+export const getCurrentUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
   const now = new Date()
 
-  const remainingUpdates = updates.filter((item) => (item.due_date ? Time(item.due_date).isAfter(now) : item))
+  const upcomingUpdates = updates.filter((item) => Time(item.due_date).isAfter(now))
 
-  if (!(remainingUpdates && remainingUpdates.length > 0)) {
+  if (!(upcomingUpdates && upcomingUpdates.length > 0)) {
     return null
   }
 
-  const nextUpdate = remainingUpdates.reduce((prev, current) =>
+  const nextUpdate = upcomingUpdates.reduce((prev, current) =>
     prev.due_date && current.due_date && prev.due_date < current.due_date ? prev : current
   )
-
-  if (nextUpdate.completion_date) {
-    return null
-  }
 
   return nextUpdate
 }
 
-export const getRemainingUpdates = (updates: UpdateAttributes[]): UpdateAttributes[] => {
-  const remainingUpdates = updates.filter((item) => item.status === UpdateStatus.Pending)
+export const getNextUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
+  const now = new Date()
 
-  return remainingUpdates
+  const upcomingPendingUpdates = updates.filter((item) => item.status === UpdateStatus.Pending && Time(item.due_date).isAfter(now))
+
+  if (!(upcomingPendingUpdates && upcomingPendingUpdates.length > 0)) {
+    return null
+  }
+
+  const nextUpdate = upcomingPendingUpdates.reduce((prev, current) =>
+    prev.due_date && current.due_date && prev.due_date < current.due_date ? prev : current
+  )
+
+  return nextUpdate
+}
+
+export const getPendingUpdates = (updates: UpdateAttributes[]): UpdateAttributes[] => {
+  const pendingUpdates = updates.filter((item) => item.status === UpdateStatus.Pending)
+
+  return pendingUpdates
 }

@@ -7,7 +7,7 @@ import { UpdateAttributes, UpdateStatus } from './types'
 const UpdateCount: { [key: string]: number } = {
   [ProposalGrantTier.Tier1]: 1,
   [ProposalGrantTier.Tier2]: 1,
-  [ProposalGrantTier.Tier3]: 1,
+  [ProposalGrantTier.Tier3]: 3,
   [ProposalGrantTier.Tier4]: 6,
   [ProposalGrantTier.Tier5]: 6,
   [ProposalGrantTier.Tier6]: 6,
@@ -22,14 +22,16 @@ export default class UpdateModel extends Model<UpdateAttributes> {
     const updatesQuantity = UpdateCount[tier]
     const now = new Date()
 
-    return Array.from(Array(updatesQuantity), async (_, index) => {
-      const due_date = updatesQuantity === 1 ? undefined : new Date(new Date().setMonth(now.getMonth() + index + 1))
+    if (updatesQuantity === 1) {
+      return null
+    }
 
+    return Array.from(Array(updatesQuantity), async (_, index) => {
       const update: UpdateAttributes = {
         id: uuid(),
         proposal_id: proposalId,
         status: UpdateStatus.Pending,
-        due_date,
+        due_date: new Date(new Date().setMonth(now.getMonth() + index + 1)),
         created_at: now,
         updated_at: now,
       }
