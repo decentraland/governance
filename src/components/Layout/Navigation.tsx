@@ -30,15 +30,15 @@ const Navigation = (props: NavigationProps) => {
           <Tabs.Tab active={props.activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
         </Link>
         {user && (
-          <Link to={locations.balance()}>
+          <Link href={locations.balance()}>
             <Tabs.Tab active={props.activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
           </Link>
         )}
-        <Link to={locations.transparency()}>
+        <Link href={locations.transparency()}>
           <Tabs.Tab active={props.activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
         </Link>
         {user && (
-          <Link to={locations.activity({ list: ProposalActivityList.MyProposals })}>
+          <Link href={locations.activity({ list: ProposalActivityList.MyProposals })}>
             <Tabs.Tab active={props.activeTab === NavigationTab.Activity}>{t('navigation.activity')}</Tabs.Tab>
           </Link>
         )}
