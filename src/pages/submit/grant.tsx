@@ -179,8 +179,6 @@ export default function SubmitBanName() {
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
 
-  console.log('s', state)
-
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
