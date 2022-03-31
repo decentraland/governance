@@ -20,7 +20,7 @@
 .ui.modal.SuccessModal .SuccessModal__Banner {
   display: flex;
   align-items: center;
-  align-content: stretch;
+  justify-content: space-between;
   position: relative;
   padding: 16px 20px;
   margin-bottom: 22px;
@@ -41,7 +41,7 @@
 }
 
 .SuccessModal__Banner .Description {
-  flex-grow: 50;
+  max-width: 270px;
 }
 
 div.SuccessModal__Banner.JoinTheDiscussion::before {
@@ -71,6 +71,7 @@ div.SuccessModal__Banner.CopyLink {
   width: auto !important;
   min-width: auto !important;
   padding: 7px 8px !important;
+  margin-left: 10px;
 }
 
 .ui.modal.SuccessModal .SuccessModal__Banner .Button.JoinTheDiscussion {

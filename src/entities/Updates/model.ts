@@ -55,18 +55,4 @@ export default class UpdateModel extends Model<UpdateAttributes> {
       ...update,
     })
   }
-
-  static async skipRemainingUpdates(proposalId: string) {
-    const query = SQL`
-      UPDATE ${table(UpdateModel)}
-      SET
-        "status" = ${UpdateStatus.Skipped},
-        "updated_at" = ${new Date()}
-      WHERE
-        "status" = ${UpdateStatus.Pending}
-        AND "proposal_id" = ${proposalId}
-    `
-
-    return this.rowCount(query)
-  }
 }

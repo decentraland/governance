@@ -33,7 +33,6 @@ type updateFormState = {
   blockers: string
   nextSteps: string
   additionalNotes: string
-  lastUpdate: boolean
 }
 
 const initialState: updateFormState = {
@@ -43,7 +42,6 @@ const initialState: updateFormState = {
   blockers: '',
   nextSteps: '',
   additionalNotes: '',
-  lastUpdate: false,
 }
 
 const updateSchema = {
@@ -137,7 +135,6 @@ export default function Update() {
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
   const [projectHealth, setProjectHealth] = useState(initialState.health)
-  const [lastUpdate, setLastUpdate] = useState(initialState.lastUpdate)
   const { update, state: updateState } = useProposalUpdate(updateId)
 
   const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
@@ -185,7 +182,6 @@ export default function Update() {
         next_steps: state.value.nextSteps,
         additional_notes: state.value.additionalNotes,
         status: UpdateStatus.Pending,
-        last_update: lastUpdate,
       }
 
       try {
@@ -314,20 +310,6 @@ export default function Update() {
             disabled={formDisabled}
             {...getFieldProps('additionalNotes')}
           />
-          {updateId && (
-            <div className="UpdateSubmit__Checkbox">
-              <input
-                id="LastUpdate"
-                name="LastUpdate"
-                type="checkbox"
-                checked={lastUpdate}
-                onChange={() => setLastUpdate((prev) => !prev)}
-              />
-              <label htmlFor="LastUpdate">
-                <Markdown source={l('page.proposal_update.last_update_label') || ''} />
-              </label>
-            </div>
-          )}
         </>
       )}
       {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}

@@ -18,7 +18,6 @@ export enum UpdateStatus {
   Pending = 'pending',
   Late = 'late',
   Done = 'done',
-  Skipped = 'skipped'
 }
 
 export enum ProjectHealth {

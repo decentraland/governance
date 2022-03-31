@@ -8,7 +8,6 @@ import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 import './ProposalModal.css'
 import './SuccessModal.css'
@@ -53,7 +52,7 @@ export function SuccessModal({
         </Paragraph>
         <Paragraph small>{l('modal.success.sub')}</Paragraph>
       </Modal.Content>
-      <Modal.Content className="SuccessModal__Form">
+      <Modal.Content>
         {!!linkToForum && (
           <div className={TokenList.join(['SuccessModal__Banner', 'JoinTheDiscussion'])}>
             <div className="Description">

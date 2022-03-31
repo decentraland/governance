@@ -96,20 +96,6 @@ const MISSED_UPDATE = generateUpdate({
   completion_date: undefined,
 })
 
-const SKIPPED_UPDATE = generateUpdate({
-  health: undefined,
-  introduction: undefined,
-  highlights: undefined,
-  blockers: undefined,
-  next_steps: undefined,
-  additional_notes: undefined,
-  status: UpdateStatus.Skipped,
-  created_at: Time(now).subtract(1, 'day').toDate(),
-  updated_at: Time(now).subtract(1, 'day').toDate(),
-  due_date: Time(now).add(2, 'month').toDate(),
-  completion_date: undefined,
-})
-
 const LATE_UPDATE = generateUpdate({
   health: ProjectHealth.OnTrack,
   introduction: 'Introduction',
@@ -184,7 +170,7 @@ describe('Remaining updates', () => {
   })
 
   describe('when there is non-pending updates for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, SKIPPED_UPDATE]
+    let updates: UpdateAttributes[] = [DONE_UPDATE]
 
     it('should return no updates', () => {
       expect(getPendingUpdates(updates)).toEqual([])

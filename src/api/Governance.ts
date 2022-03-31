@@ -211,7 +211,6 @@ export class Governance extends API {
     blockers: string
     next_steps: string
     additional_notes: string
-    last_update: boolean
   }) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/update`,
