@@ -3,7 +3,7 @@
   padding-bottom: 8px;
 }
 .VotingStatusSummary__CarouselCell {
-  width: 94%;
+  width: 100%;
   border-radius: 5px;
 }
 .VotingStatusSummary__CarouselCell:first-child  {
