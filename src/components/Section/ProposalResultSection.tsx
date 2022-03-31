@@ -48,7 +48,7 @@ export default React.memo(function ProposalResultSection({
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const vote = useMemo(() => (account && votes && votes[account] && votes[account]) || null, [account, votes])
   const results = useMemo(
-    () => calculateResult(choices, votes || {} /*, proposal?.required_to_pass || 0*/),
+    () => calculateResult(choices, votes || {}),
     [proposal, choices, votes]
   )
   const now = useMemo(() => Time.utc(), [])

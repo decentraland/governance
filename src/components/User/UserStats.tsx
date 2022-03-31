@@ -56,7 +56,6 @@ export default React.memo(function UserStats(props: UserStatsProps) {
             <Address value={props.address!} strong />
           </Blockie>
         )}
-        {}
         {isProfile && <Avatar address={profile!.ethAddress} size="medium" />}
         {isProfile && profile!.name}
       </Header>

@@ -32,7 +32,7 @@ export default function ProposalCard({ proposal, subscribing, subscribed, votes,
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(
-    () => calculateResultWinner(choices, votes || {} /*, proposal?.required_to_pass || 0*/),
+    () => calculateResultWinner(choices, votes || {}),
     [proposal, account, choices, votes]
   )
   function handleSubscription(e: React.MouseEvent<any>) {

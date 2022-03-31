@@ -1,6 +1,5 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { ProposalAttributes, ProposalGrantTier, ProposalGrantTierValues, ProposalStatus, toProposalGrantTier } from './types'
 import numeral from 'numeral'
 
@@ -62,13 +61,13 @@ export function isGrantSizeValid(tier: string | null, size: string | number): bo
   const tierIndex = Object.values(ProposalGrantTier).indexOf(toProposalGrantTier(tier)!)
   const values = Object.values(ProposalGrantTierValues)
 
-  if(tierIndex < 0 || tierIndex >= values.length) {
+  if (tierIndex < 0 || tierIndex >= values.length) {
     return false
   }
 
   const sizeNumber = asNumber(size)
   const upperTierLimit = values[tierIndex]
-  const lowerTierLimit = tierIndex === 0 ? asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0) : values[tierIndex-1]
+  const lowerTierLimit = tierIndex === 0 ? asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
 
   return sizeNumber > lowerTierLimit && sizeNumber <= upperTierLimit
 }
@@ -85,27 +84,6 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
       return next === ProposalStatus.Enacted
     default:
       return false
-  }
-}
-
-// TODO: Remove, function not used.
-export function calcualteProposalStatus(proposal: ProposalAttributes): ProposalStatus {
-  const now = Date.now()
-  if (
-    (
-      proposal.status === ProposalStatus.Passed ||
-      proposal.status === ProposalStatus.Active
-    ) &&
-    Time.utc(proposal.finish_at).isBefore(now)
-  ) {
-    return ProposalStatus.Finished
-  } else if (
-    proposal.status === ProposalStatus.Pending &&
-    Time.utc(proposal.start_at).isBefore(now)
-  ) {
-    return ProposalStatus.Active
-  } else {
-    return proposal.status
   }
 }
 
