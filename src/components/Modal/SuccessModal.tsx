@@ -9,15 +9,15 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import { proposalUrl, forumUrl, JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
+import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 import './ProposalModal.css'
 import './SuccessModal.css'
 
 export type SuccessModalProps = Omit<ModalProps, 'children'> & {
   onDismiss: (e: React.MouseEvent<any>) => void
-  proposal?: ProposalAttributes | null
   loading?: boolean
-  showCopyLinkButton?: boolean
+  linkToCopy?: string
+  linkToForum?: string
 }
 
 export function SuccessModal({
@@ -25,19 +25,18 @@ export function SuccessModal({
   description,
   open,
   onDismiss,
-  proposal,
+  linkToForum,
+  linkToCopy,
   loading,
-  showCopyLinkButton = true,
   ...props
 }: SuccessModalProps) {
   const l = useFormatMessage()
-  const linkToProposal = useMemo(() => (proposal && proposalUrl(proposal)) || '', [proposal])
-  const linkToForum = useMemo(() => (proposal && forumUrl(proposal)) || '', [proposal])
   const [copied, state] = useClipboardCopy(Time.Second)
-
   const handleCopy = useCallback(() => {
-    state.copy(linkToProposal)
-  }, [state.copy])
+    if (linkToCopy) {
+      state.copy(linkToCopy)
+    }
+  }, [state.copy, linkToCopy])
 
   return (
     <Modal
@@ -55,25 +54,27 @@ export function SuccessModal({
         <Paragraph small>{l('modal.success.sub')}</Paragraph>
       </Modal.Content>
       <Modal.Content className="SuccessModal__Form">
-        <div className={TokenList.join(['SuccessModal__Banner', 'JoinTheDiscussion'])}>
-          <div className="Description">
-            <Paragraph small semiBold>
-              {l('modal.success.view_on_forum_title')}
-            </Paragraph>
-            <Paragraph tiny>{l('modal.success.view_on_forum_description')}</Paragraph>
+        {!!linkToForum && (
+          <div className={TokenList.join(['SuccessModal__Banner', 'JoinTheDiscussion'])}>
+            <div className="Description">
+              <Paragraph small semiBold>
+                {l('modal.success.view_on_forum_title')}
+              </Paragraph>
+              <Paragraph tiny>{l('modal.success.view_on_forum_description')}</Paragraph>
+            </div>
+            <Button
+              className={TokenList.join(['Button', 'JoinTheDiscussion'])}
+              primary
+              size="small"
+              href={linkToForum}
+              target="_blank"
+              rel="noopener noreferrer"
+              loading={loading}
+            >
+              {l('modal.success.view_on_forum_label')}
+            </Button>
           </div>
-          <Button
-            className={TokenList.join(['Button', 'JoinTheDiscussion'])}
-            primary
-            size="small"
-            href={linkToForum}
-            target="_blank"
-            rel="noopener noreferrer"
-            loading={loading}
-          >
-            {l('modal.success.view_on_forum_label')}
-          </Button>
-        </div>
+        )}
         <div className={TokenList.join(['SuccessModal__Banner', 'Discord'])}>
           <div className="Description">
             <Paragraph small semiBold>
@@ -92,7 +93,7 @@ export function SuccessModal({
             {l('modal.success.join_discord_label')}
           </Button>
         </div>
-        {showCopyLinkButton && (
+        {!!linkToCopy && (
           <div className={TokenList.join(['SuccessModal__Banner', 'CopyLink'])}>
             <div className="Description">
               <Paragraph small semiBold>

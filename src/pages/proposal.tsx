@@ -383,7 +383,8 @@ export default function ProposalPage() {
         open={options.showUpdateSuccessModal}
         onDismiss={closeUpdateSuccessModal}
         onClose={closeUpdateSuccessModal}
-        proposal={proposal}
+        proposalId={proposal?.id}
+        updateId={publicUpdates?.[0]?.id}
         loading={proposalState.loading}
       />
     </>
