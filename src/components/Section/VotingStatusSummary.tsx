@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef} from 'react'
 import Flickity from 'react-flickity-component'
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
@@ -38,16 +38,27 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
   const endDate = Time.from(proposal?.finish_at)
   const timeout = useCountdown(endDate)
   const abbreviatedThreshold = useAbbreviatedNumber(threshold)
+  const flickity = useRef<Flickity>()
 
   return (
     <>
       {timeout.time > 0 && !thresholdReached && (
-        <Flickity className={'VotingStatusSummary__Carousel'} options={flickityOptions}>
-          <div className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container">
+        <Flickity
+          className={'VotingStatusSummary__Carousel'}
+          options={flickityOptions}
+          flickityRef={(ref) => (flickity.current = ref)}
+        >
+          <div
+            className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
+            onClick={() => flickity.current?.next()}
+          >
             <div className="VotingStatusSummary__Subtitle">{l('page.proposal_detail.required_vp')}</div>
             <div className="VotingStatusSummary__Title">{l('general.number', { value: threshold })} VP</div>
           </div>
-          <div className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container">
+          <div
+            className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
+            onClick={() => flickity.current?.previous()}
+          >
             <div className="VotingStatusSummary__Subtitle">{l('page.proposal_detail.needed_for_acceptance')}</div>
             <div className="VotingStatusSummary__Title">{l('general.number', { value: neededForAcceptance })} VP</div>
           </div>
@@ -72,9 +83,7 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
           </div>
           <div className="VotingStatusSummary__Title">
             <Bold>
-              {thresholdReached
-                ? l('page.proposal_detail.proposal_passed')
-                : l('page.proposal_detail.proposal_rejected')}
+              {l('page.proposal_detail.proposal_status', {status: proposal?.status})}
             </Bold>
           </div>
         </div>
