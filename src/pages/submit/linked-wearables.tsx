@@ -236,6 +236,29 @@ export default function SubmitLinkedWearables() {
     </ContentSection>
     <ContentSection>
       <Label>
+        {l('page.submit_linked_wearables.motivation_label')}
+        <MarkdownNotice />
+        </Label>
+      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.motivation_detail')}</Paragraph>
+      <MarkdownTextarea
+        minHeight={175}
+        value={state.value.motivation}
+        placeholder={l('page.submit_linked_wearables.motivation_placeholder')}
+        onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
+        onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
+        error={!!state.error.motivation}
+        message={
+          l.optional(state.error.motivation) + ' ' +
+          l('page.submit.character_counter', {
+            current: state.value.motivation.length,
+            limit: schema.motivation.maxLength
+          })
+        }
+        disabled={formDisabled}
+      />
+    </ContentSection>
+    <ContentSection>
+      <Label>
         {l('page.submit_linked_wearables.introduction_label')}
         <MarkdownNotice />
         </Label>
@@ -315,29 +338,6 @@ export default function SubmitLinkedWearables() {
           l('page.submit.character_counter', {
             current: state.value.governance.length,
             limit: schema.governance.maxLength
-          })
-        }
-        disabled={formDisabled}
-      />
-    </ContentSection>
-    <ContentSection>
-      <Label>
-        {l('page.submit_linked_wearables.motivation_label')}
-        <MarkdownNotice />
-        </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.motivation_detail')}</Paragraph>
-      <MarkdownTextarea
-        minHeight={175}
-        value={state.value.motivation}
-        placeholder={l('page.submit_linked_wearables.motivation_placeholder')}
-        onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
-        onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
-        error={!!state.error.motivation}
-        message={
-          l.optional(state.error.motivation) + ' ' +
-          l('page.submit.character_counter', {
-            current: state.value.motivation.length,
-            limit: schema.motivation.maxLength
           })
         }
         disabled={formDisabled}
