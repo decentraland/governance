@@ -629,7 +629,7 @@
     },
     "submit_linked_wearables": {
       "title": "Linked Wearables Registry",
-      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Partners need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](http://builder.decentraland.org/). By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland. Note that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
+      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Third parties need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](http://builder.decentraland.org/) and get slots to submit the 3D models. By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland.\n\nNote that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
       "name_label": "Name",
       "name_detail": "Please enter the name that represents your Project, Company or Community as a whole",
       "name_placeholder": "Enter the name here",
@@ -645,11 +645,11 @@
       "governance_detail": "Provide proof that you are the rightful owner or representative of the Project, Company or Community",
       "governance_placeholder": "Provide proof here",
       "motivation_label": "Motivation",
-      "motivation_detail": "Why do you want to have your NFTs represented in Decentraland",
+      "motivation_detail": "Why do you want to have your NFTs represented in Decentraland?",
       "motivation_placeholder": "A brief motivation",
-      "managers_label": "Managers",
+      "managers_label": "Intellectual Property",
       "managers_detail": "Addresses of the representatives that will Manage the tool. Note: Managers are the only ones allowed to add item representations and manage the tool",
-      "programmatically_generated_label": "At least one collection was programmatically generated (e.g. CryptoPunks and BAYC were generated this way)",
+      "programmatically_generated_label": "The collection you will upload to Decentraland as Linked Wearables is programmatically generated. This means the 3D models you will submit to Decentraland were made this way.\n\nIn general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below. ",
       "address_placeholder": "Ethereum address {counter}",
       "address_add": "Add address"
     },
