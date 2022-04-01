@@ -12,6 +12,7 @@ import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import { Governance } from '../../api/Governance'
@@ -361,9 +362,9 @@ export default function SubmitLinkedWearables() {
       </div>
     </ContentSection>
     <ContentSection>
-      <Radio 
+      <Radio
         checked={state.value.programmatically_generated}
-        label={l('page.submit_linked_wearables.programmatically_generated_label')}
+        label={<label><Markdown source={l('page.submit_linked_wearables.programmatically_generated_label') || ''} /></label>}
         onClick={handleProgrammaticallyGeneratedOption}
       />
     </ContentSection>

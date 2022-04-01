@@ -649,7 +649,7 @@
       "motivation_placeholder": "A brief motivation",
       "managers_label": "Intellectual Property",
       "managers_detail": "Addresses of the representatives that will Manage the tool. Note: Managers are the only ones allowed to add item representations and manage the tool",
-      "programmatically_generated_label": "The collection you will upload to Decentraland as Linked Wearables is programmatically generated. This means the 3D models you will submit to Decentraland were made this way.\n\nIn general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below. ",
+      "programmatically_generated_label": "The collection you will upload to Decentraland as Linked Wearables is programmatically generated. This means the 3D models you will submit to Decentraland were made this way.\n\n_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
       "address_placeholder": "Ethereum address {counter}",
       "address_add": "Add address"
     },
