@@ -30,7 +30,12 @@ ${proposal.smart_contract.map(addr => `- ${addr}\n`).join('')}
 
 ${proposal.managers.map(addr => `- ${addr}\n`).join('')}
 
-## Was at least one collection generated programmatically?
-- **${proposal.programmatically_generated ? 'YES' : 'NO'}**
+## Is this collection generated programmatically?
+- **${proposal.programmatically_generated ? 'Yes' : 'No'}**
 
+${proposal.method.length > 0 ? `
+## Method
+
+${formatMarkdown(proposal.method)}
+` : ''}
 `

@@ -189,7 +189,10 @@
       "motivation_too_large": "Motivation is too large",
       "smart_contract_empty": "Insert at least one smart contract address",
       "managers_empty": "Insert at least one manager address",
-      "address_invalid": "Some address is invalid"
+      "address_invalid": "Some address is invalid",
+      "method_empty": "Method is empty",
+      "method_too_short": "Method is too short",
+      "method_too_large": "Method is too large"
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
@@ -641,17 +644,20 @@
       "nft_collections_placeholder": "Describe the NFT Collections you created here",
       "smart_contract_label": "Smart Contracts",
       "smart_contract_detail": "Share the Addresses of the smart contracts of your NFT collections",
-      "governance_label": "Governance",
-      "governance_detail": "Provide proof that you are the rightful owner or representative of the Project, Company or Community",
+      "governance_label": "Intellectual Property",
+      "governance_detail": "Provide proof that you are the rightful owner or representative of the Project, Company or Community. Please share any links with relevant information. ",
       "governance_placeholder": "Provide proof here",
       "motivation_label": "Motivation",
       "motivation_detail": "Why do you want to have your NFTs represented in Decentraland?",
       "motivation_placeholder": "A brief motivation",
-      "managers_label": "Intellectual Property",
+      "managers_label": "Managers",
       "managers_detail": "Addresses of the representatives that will Manage the tool. Note: Managers are the only ones allowed to add item representations and manage the tool",
-      "programmatically_generated_label": "The collection you will upload to Decentraland as Linked Wearables is programmatically generated. This means the 3D models you will submit to Decentraland were made this way.\n\n_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
       "address_placeholder": "Ethereum address {counter}",
-      "address_add": "Add address"
+      "address_add": "Add address",
+      "programmatically_generated_label": "The collection you will upload to Decentraland as Linked Wearables is programmatically generated. This means the 3D models you will submit to Decentraland were made this way.\n\n_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
+      "method_label": "Method",
+      "method_detail": "Describe the method used to create the programmatic collection. If possible, share proof and links to the repository.",
+      "method_placeholder": "Describe the method"
     },
     "subscription_banner": {
       "title": "Stay in the loop",
