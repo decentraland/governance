@@ -329,7 +329,7 @@
       "no_proposals_yet": "No proposals have been sent by community members yet.",
       "finish_label": {
         "ends": "Ends",
-        "ended":"Ended"
+        "ended": "Ended"
       }
     },
     "proposal_enacted_list": {
@@ -451,17 +451,17 @@
     "transparency": {
       "title": "Transparency",
       "mission": {
-          "title": "Our Mission",
-          "description": "To support and facilitate the continual growth of the Decentraland platform.",
-          "join_discord_button": "Join our Discord",
-          "docs_button": "Check our docs",
-          "balance_title": "Current Balance",
-          "dashboard_button": "Transparency Dashboard",
-          "data_source_button": "DCL Data Source",
-          "audit": "Audit on {service_name}",
-          "monthly_income": "Last 30 Days Income",
-          "monthly_expenses": "Last 30 Days Expenses",
-          "diff_label": "vs previous 30 days"
+        "title": "Our Mission",
+        "description": "To support and facilitate the continual growth of the Decentraland platform.",
+        "join_discord_button": "Join our Discord",
+        "docs_button": "Check our docs",
+        "balance_title": "Current Balance",
+        "dashboard_button": "Transparency Dashboard",
+        "data_source_button": "DCL Data Source",
+        "audit": "Audit on {service_name}",
+        "monthly_income": "Last 30 Days Income",
+        "monthly_expenses": "Last 30 Days Expenses",
+        "diff_label": "vs previous 30 days"
       },
       "funding": {
         "title": "Currently funding initiatives",
@@ -639,7 +639,7 @@
       "nft_collections_label": "NFT Collections",
       "nft_collections_detail": "Describe the NFT Collections you created. If it’s only one, just describe that one",
       "nft_collections_placeholder": "Describe the NFT Collections you created here",
-      "smart_contract_label": "Smart Contract",
+      "smart_contract_label": "Smart Contracts",
       "smart_contract_detail": "Share the Addresses of the smart contracts of your NFT collections",
       "governance_label": "Governance",
       "governance_detail": "Provide proof that you are the rightful owner or representative of the Project, Company or Community",
