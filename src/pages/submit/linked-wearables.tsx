@@ -140,7 +140,7 @@ export default function SubmitLinkedWearables() {
   const l = useFormatMessage()
   const [ account, accountState ] = useAuthContext()
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
-  const [formDisabled, setFormDisabled] = useState(false);
+  const [formDisabled, setFormDisabled] = useState(false)
 
   const handleRemoveOption = (field: 'smart_contract' | 'managers' | 'links', i: string) => {
     const addresses = omit(state.value[field], [ i ]) as Record<string, string>
@@ -189,7 +189,7 @@ export default function SubmitLinkedWearables() {
       <div className='SectionList'>
         {Object.keys(state.value[params.section]).sort().map((key, i) => <Field
           key={key}
-          placeholder={l(`page.submit_linked_wearables.${params.add_button}_placeholder`, {'counter': String(i + 1)})}
+          placeholder={l(`page.submit_linked_wearables.${params.add_button}_placeholder`)}
           value={state.value[params.section][key]}
           action={<Icon name="x" />}
           onAction={() => handleRemoveOption(params.section, key)}
@@ -351,7 +351,7 @@ export default function SubmitLinkedWearables() {
       <Label>
         {l('page.submit_linked_wearables.governance_label')}
         <MarkdownNotice />
-        </Label>
+      </Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.governance_detail')}</Paragraph>
       <MarkdownTextarea
         minHeight={175}
@@ -370,34 +370,40 @@ export default function SubmitLinkedWearables() {
         disabled={formDisabled}
       />
     </ContentSection>
-    {
-      getListSection({section: 'managers', add_button: 'address'})
-    }
+    {getListSection({section: 'managers', add_button: 'address'})}
     <ContentSection>
-    <Paragraph tiny secondary className='ProgrammaticallyGeneratedLabel'>
-      <Markdown className="tinyMarkdown" source={l('page.submit_linked_wearables.programmatically_generated_label') || ''} />
-    </Paragraph>
-    <span>
-      <Radio
-        checked={state.value.programmatically_generated}
-        label={<label><Markdown source={l('modal.votes_list.voted_yes') || ''} /></label>}
-        onChange={() => handleProgrammaticallyGeneratedOption()}
-      />
-    </span>
-    <span style={{marginLeft: '10px'}}>
-      <Radio
-        checked={!state.value.programmatically_generated}
-        label={<label><Markdown source={l('modal.votes_list.voted_no') || ''} /></label>}
-        onChange={() => handleProgrammaticallyGeneratedOption()}
-      />
-    </span>
+      <Label>
+        {l('page.submit_linked_wearables.programmatically_generated_label')}
+      </Label>
+      <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
+        {l('page.submit_linked_wearables.programmatically_generated_description')}
+      </Paragraph>
+      <div className="ProgrammaticallyGeneratedRadioButtons">
+      <span>
+        <Radio
+          checked={state.value.programmatically_generated}
+          label={<label><Markdown source={l('modal.votes_list.voted_yes') || ''} /></label>}
+          onChange={handleProgrammaticallyGeneratedOption}
+        />
+      </span>
+      <span style={{marginLeft: '10px'}}>
+        <Radio
+          checked={!state.value.programmatically_generated}
+          label={<label><Markdown source={l('modal.votes_list.voted_no') || ''} /></label>}
+          onChange={handleProgrammaticallyGeneratedOption}
+        />
+      </span>
+      </div>
+      <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
+        <Markdown className="tinyMarkdown" source={l('page.submit_linked_wearables.programmatically_generated_note') || ''} />
+      </Paragraph>
     </ContentSection>
     {state.value.programmatically_generated && (
       <ContentSection>
         <Label>
           {l('page.submit_linked_wearables.method_label')}
           <MarkdownNotice />
-          </Label>
+        </Label>
         <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.method_detail')}</Paragraph>
         <MarkdownTextarea
           minHeight={175}
