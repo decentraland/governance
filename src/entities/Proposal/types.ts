@@ -642,7 +642,6 @@ export const newProposalLinkedWearablesScheme = {
       type: 'array',
       items: {
         type: 'string',
-        format: "uri",
       },
       minItems: 1
     },
@@ -687,7 +686,7 @@ export const newProposalLinkedWearablesScheme = {
     },
     method: {
       type: 'string',
-      minLength: 20,
+      minLength: 0,
       maxLength: 750,
     },
   }
