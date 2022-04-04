@@ -1,11 +1,11 @@
 import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { SuccessModal, SuccessModalProps } from './SuccessModal'
-import { updateUrl } from '../../entities/Proposal/utils'
+import { getUpdateUrl } from '../../entities/Proposal/utils'
 
 export default function UpdateSuccessModal({ updateId, proposalId, ...props }: SuccessModalProps) {
   const l = useFormatMessage()
-  const linkToCopy = updateUrl(updateId, proposalId)
+  const linkToCopy = getUpdateUrl(updateId, proposalId)
 
   return (
     <SuccessModal

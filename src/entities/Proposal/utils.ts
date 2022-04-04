@@ -131,7 +131,7 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   return target.toString()
 }
 
-export function updateUrl(updateId: string, proposalId: string) {
+export function getUpdateUrl(updateId: string, proposalId: string) {
   const params = new URLSearchParams({ id: updateId, proposalId })
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
   target.pathname = `/update/`

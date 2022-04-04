@@ -187,8 +187,17 @@ export default function ProposalPage() {
   }
 
   const handlePostUpdateClick = useCallback(() => {
-    const updateIdParam = pendingUpdates && pendingUpdates.length > 0 ? `id=${currentUpdate?.id}` : ''
-    navigate(`/submit/update?${updateIdParam}&proposalId=${proposal?.id}`)
+    if (proposal === null) {
+      return
+    }
+
+    const hasPendingUpdates = pendingUpdates && pendingUpdates.length > 0
+    navigate(
+      locations.submitUpdate({
+        ...(hasPendingUpdates && { id: currentUpdate?.id }),
+        proposalId: proposal.id,
+      })
+    )
   }, [nextUpdate?.id, proposal?.id])
 
   const handleUpdateClick = (update: UpdateAttributes) => navigate(`/update?id=${update.id}&proposalId=${proposal?.id}`)
