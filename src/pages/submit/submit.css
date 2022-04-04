@@ -51,6 +51,12 @@
   font-size: 17px;
 }
 
+.ContentLayout .ContentLayout__Section .ui.radio.checkbox label .dg.Paragraph {
+  font-size: 15px;
+  line-height: 18px;
+  color: #736E7D;
+}
+
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
   border-color: rgba(115, 110, 125, .32);
 }

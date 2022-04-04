@@ -614,6 +614,7 @@ export type NewProposalLinkedWearables = {
   motivation: string,
   managers: string[],
   programmatically_generated: boolean,
+  method: string,
 }
 
 export const newProposalLinkedWearablesScheme = {
@@ -673,7 +674,12 @@ export const newProposalLinkedWearablesScheme = {
     },
     programmatically_generated: {
       type: 'boolean',
-    }
+    },
+    method: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 750,
+    },
   }
 }
 

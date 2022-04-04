@@ -12,6 +12,7 @@ import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import { Governance } from '../../api/Governance'
@@ -36,6 +37,7 @@ type LinkedWearablesState = {
   motivation: string,
   managers: Record<string, string>,
   programmatically_generated: boolean,
+  method: string,
 }
 
 const initialPollState: LinkedWearablesState = {
@@ -51,6 +53,7 @@ const initialPollState: LinkedWearablesState = {
     '0': ''
   },
   programmatically_generated: false,
+  method: '',
 }
 
 const schema = newProposalLinkedWearablesScheme.properties
@@ -76,6 +79,9 @@ const validate = createValidator<LinkedWearablesState>({
   }),
   motivation: (state) => ({
     motivation: assert(state.motivation.length <= schema.motivation.maxLength, 'error.linked_wearables.motivation_too_large')
+  }),
+  method: (state) => ({
+    method: assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large')
   }),
   '*': (state) => {
     const smart_contract = Object.values(state.smart_contract)
@@ -104,6 +110,8 @@ const validate = createValidator<LinkedWearablesState>({
       motivation: (assert(state.motivation.length > 0, 'error.linked_wearables.motivation_empty') ||
       assert(state.motivation.length >= schema.motivation.minLength, 'error.linked_wearables.motivation_too_short') ||
       assert(state.motivation.length <= schema.motivation.maxLength, 'error.linked_wearables.motivation_too_large')
+      ),
+      method: (assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large')
       ),
       managers: (
         assert(managers.some(option => option !== ''), `error.linked_wearables.managers_empty`) ||
@@ -236,6 +244,29 @@ export default function SubmitLinkedWearables() {
     </ContentSection>
     <ContentSection>
       <Label>
+        {l('page.submit_linked_wearables.motivation_label')}
+        <MarkdownNotice />
+        </Label>
+      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.motivation_detail')}</Paragraph>
+      <MarkdownTextarea
+        minHeight={175}
+        value={state.value.motivation}
+        placeholder={l('page.submit_linked_wearables.motivation_placeholder')}
+        onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
+        onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
+        error={!!state.error.motivation}
+        message={
+          l.optional(state.error.motivation) + ' ' +
+          l('page.submit.character_counter', {
+            current: state.value.motivation.length,
+            limit: schema.motivation.maxLength
+          })
+        }
+        disabled={formDisabled}
+      />
+    </ContentSection>
+    <ContentSection>
+      <Label>
         {l('page.submit_linked_wearables.introduction_label')}
         <MarkdownNotice />
         </Label>
@@ -321,29 +352,6 @@ export default function SubmitLinkedWearables() {
       />
     </ContentSection>
     <ContentSection>
-      <Label>
-        {l('page.submit_linked_wearables.motivation_label')}
-        <MarkdownNotice />
-        </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.motivation_detail')}</Paragraph>
-      <MarkdownTextarea
-        minHeight={175}
-        value={state.value.motivation}
-        placeholder={l('page.submit_linked_wearables.motivation_placeholder')}
-        onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
-        onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
-        error={!!state.error.motivation}
-        message={
-          l.optional(state.error.motivation) + ' ' +
-          l('page.submit.character_counter', {
-            current: state.value.motivation.length,
-            limit: schema.motivation.maxLength
-          })
-        }
-        disabled={formDisabled}
-      />
-    </ContentSection>
-    <ContentSection>
       <Label>{l('page.submit_linked_wearables.managers_label')}</Label>
       <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.managers_detail')}</Paragraph>
       <Paragraph small primary>{l.optional(state.error.managers)}</Paragraph>
@@ -361,12 +369,37 @@ export default function SubmitLinkedWearables() {
       </div>
     </ContentSection>
     <ContentSection>
-      <Radio 
+      <Radio
         checked={state.value.programmatically_generated}
-        label={l('page.submit_linked_wearables.programmatically_generated_label')}
+        label={<label><Markdown source={l('page.submit_linked_wearables.programmatically_generated_label') || ''} /></label>}
         onClick={handleProgrammaticallyGeneratedOption}
       />
     </ContentSection>
+    {state.value.programmatically_generated && (
+      <ContentSection>
+        <Label>
+          {l('page.submit_linked_wearables.method_label')}
+          <MarkdownNotice />
+          </Label>
+        <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.method_detail')}</Paragraph>
+        <MarkdownTextarea
+          minHeight={175}
+          value={state.value.method}
+          placeholder={l('page.submit_linked_wearables.method_placeholder')}
+          onChange={(_: any, { value }: any) => editor.set({ method: value })}
+          onBlur={() => editor.set({ method: state.value.method.trim() })}
+          error={!!state.error.method}
+          message={
+            l.optional(state.error.method) + ' ' +
+            l('page.submit.character_counter', {
+              current: state.value.method.length,
+              limit: schema.method.maxLength
+            })
+          }
+          disabled={formDisabled}
+        />
+      </ContentSection>
+    )}
     <ContentSection>
       <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
         {l('page.submit.button_submit')}
