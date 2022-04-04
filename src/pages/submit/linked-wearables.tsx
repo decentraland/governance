@@ -7,8 +7,6 @@ import { Field } from "decentraland-ui/dist/components/Field/Field"
 import { Radio } from "decentraland-ui/dist/components/Radio/Radio"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
-import { SelectField } from "decentraland-ui/dist/components/SelectField/SelectField"
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
@@ -27,6 +25,7 @@ import isURL from 'validator/lib/isURL'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import omit from 'lodash.omit'
+import LogIn from '../../components/User/LogIn'
 
 import './submit.css'
 
@@ -235,14 +234,10 @@ export default function SubmitLinkedWearables() {
   }
 
   if (!account) {
-    return <Container>
-      <Head
-        title={l('page.submit_linked_wearables.title') || ''}
-        description={l('page.submit_linked_wearables.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
-    </Container>
+    return <LogIn
+      title={l('page.submit_linked_wearables.title') || ''}
+      description={l('page.submit_linked_wearables.description') || ''}
+    />
   }
 
   return <ContentLayout small>
