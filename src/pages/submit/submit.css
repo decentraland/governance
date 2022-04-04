@@ -79,3 +79,7 @@
   margin: auto;
   text-align: center;
 }
+
+.ProgrammaticallyGeneratedLabel .dg.Paragraph {
+  font-size: 15px;
+}

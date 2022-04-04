@@ -8,6 +8,7 @@ import { Radio } from "decentraland-ui/dist/components/Radio/Radio"
 import { Container } from "decentraland-ui/dist/components/Container/Container"
 import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
 import { SignIn } from "decentraland-ui/dist/components/SignIn/SignIn"
+import { SelectField } from "decentraland-ui/dist/components/SelectField/SelectField"
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
@@ -378,11 +379,23 @@ export default function SubmitLinkedWearables() {
       getListSection({section: 'managers', add_button: 'address'})
     }
     <ContentSection>
+    <Paragraph tiny secondary className='ProgrammaticallyGeneratedLabel'>
+      <Markdown className="tinyMarkdown" source={l('page.submit_linked_wearables.programmatically_generated_label') || ''} />
+    </Paragraph>
+    <span>
       <Radio
         checked={state.value.programmatically_generated}
-        label={<label><Markdown source={l('page.submit_linked_wearables.programmatically_generated_label') || ''} /></label>}
+        label={<label><Markdown source={l('modal.votes_list.voted_yes') || ''} /></label>}
         onClick={handleProgrammaticallyGeneratedOption}
       />
+    </span>
+    <span style={{marginLeft: '10px'}}>
+      <Radio
+        checked={!state.value.programmatically_generated}
+        label={<label><Markdown source={l('modal.votes_list.voted_no') || ''} /></label>}
+        onClick={handleProgrammaticallyGeneratedOption}
+      />
+    </span>
     </ContentSection>
     {state.value.programmatically_generated && (
       <ContentSection>
