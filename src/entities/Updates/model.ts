@@ -18,7 +18,7 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createUpdates(proposalId: string, tier: ProposalGrantTier) {
+  static async createPendingUpdates(proposalId: string, tier: ProposalGrantTier) {
     const updatesQuantity = UpdateCount[tier]
     const now = new Date()
 

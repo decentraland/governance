@@ -12,12 +12,11 @@ interface Props {
 }
 
 const ProjectHealthButton = ({ children, type, selectedValue, onClick, disabled }: Props) => {
-  const handleClick = useCallback(() => onClick(type), [type])
   const isSelected = selectedValue === type
 
   return (
     <button
-      onClick={handleClick}
+      onClick={() => onClick(type)}
       disabled={disabled}
       className={TokenList.join(['ProjectHealthButton', isSelected && type && `ProjectHealthButton--${type}`])}
     >

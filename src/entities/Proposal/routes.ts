@@ -580,7 +580,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_description = configuration.description || null;
     if (proposal.type == ProposalType.Grant) {
       update.vesting_address = configuration.vesting_address;
-      await UpdateModel.createUpdates(proposal.id, proposal.configuration.tier)
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
   } else if (configuration.status === ProposalStatus.Passed) {
     update.passed_by = user;
