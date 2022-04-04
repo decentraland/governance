@@ -73,3 +73,9 @@
 .ContentLayout .ContentLayout__Section.GrantSize .dcl.field .ui.input input {
   padding-right: 70px;
 }
+
+.SectionList {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}

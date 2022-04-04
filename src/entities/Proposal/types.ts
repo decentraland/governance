@@ -607,6 +607,7 @@ export const newProposalGrantScheme = {
 
 export type NewProposalLinkedWearables = {
   name: string,
+  links: string[],
   introduction: string,
   nft_collections: string,
   smart_contract: string[],
@@ -622,6 +623,7 @@ export const newProposalLinkedWearablesScheme = {
   additionalProperties: false,
   required: [
     'name',
+    'links',
     'introduction',
     'nft_collections',
     'smart_contract',
@@ -635,6 +637,14 @@ export const newProposalLinkedWearablesScheme = {
       type: 'string',
       minLength: 1,
       maxLength: 80,
+    },
+    links: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: "uri",
+      },
+      minItems: 1
     },
     introduction: {
       type: 'string',

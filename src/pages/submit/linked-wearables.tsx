@@ -22,6 +22,7 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import isURL from 'validator/lib/isURL'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import omit from 'lodash.omit'
@@ -30,6 +31,7 @@ import './submit.css'
 
 type LinkedWearablesState = {
   name: string,
+  links: Record<string, string>,
   introduction: string,
   nft_collections: string,
   smart_contract: Record<string, string>,
@@ -40,8 +42,16 @@ type LinkedWearablesState = {
   method: string,
 }
 
+type ListSectionType = {
+  section: 'smart_contract' | 'managers' | 'links'
+  add_button: 'address' | 'url'
+}
+
 const initialPollState: LinkedWearablesState = {
   name: '',
+  links: {
+    '0': ''
+  },
   introduction: '',
   nft_collections: '',
   smart_contract: {
@@ -84,12 +94,17 @@ const validate = createValidator<LinkedWearablesState>({
     method: assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large')
   }),
   '*': (state) => {
+    const links = Object.values(state.links)
     const smart_contract = Object.values(state.smart_contract)
     const managers = Object.values(state.managers)
     return({
       name: (assert(state.name.length > 0, 'error.linked_wearables.name_empty') ||
       assert(state.name.length >= schema.name.minLength, 'error.linked_wearables.name_too_short') ||
       assert(state.name.length <= schema.name.maxLength, 'error.linked_wearables.name_too_large')
+      ),
+      links: (
+        assert(links.some(option => option !== ''), `error.linked_wearables.smart_contract_empty`) ||
+        assert(links.every(option => isURL(option, {protocols: ['https']})), `error.linked_wearables.url_invalid`)
       ),
       introduction: (assert(state.introduction.length > 0, 'error.linked_wearables.introduction_empty') ||
       assert(state.introduction.length >= schema.introduction.minLength, 'error.linked_wearables.introduction_too_short') ||
@@ -127,7 +142,7 @@ export default function SubmitLinkedWearables() {
   const [ state, editor ] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false);
 
-  function handleRemoveOption(field: 'smart_contract' | 'managers', i: string) {
+  const handleRemoveOption = (field: 'smart_contract' | 'managers' | 'links', i: string) => {
     const addresses = omit(state.value[field], [ i ]) as Record<string, string>
     if (Object.keys(addresses).length < 1) {
       addresses[Date.now()] = ''
@@ -139,7 +154,7 @@ export default function SubmitLinkedWearables() {
     })
   }
 
-  function handleEditOption(field: 'smart_contract' | 'managers', i: string, value: string) {
+  const handleEditOption = (field: 'smart_contract' | 'managers' | 'links', i: string, value: string) => {
     editor.set({
       ...state.value,
       [field]: {
@@ -149,7 +164,7 @@ export default function SubmitLinkedWearables() {
     })
   }
 
-  function handleAddOption(field: 'smart_contract' | 'managers') {
+  const handleAddOption = (field: 'smart_contract' | 'managers' | 'links') => {
     editor.set({
       ...state.value,
       [field]: {
@@ -159,11 +174,31 @@ export default function SubmitLinkedWearables() {
     })
   }
 
-  function handleProgrammaticallyGeneratedOption() {
+  const handleProgrammaticallyGeneratedOption = () => {
     editor.set({
       ...state.value,
       programmatically_generated: !state.value.programmatically_generated
     })
+  }
+
+  const getListSection = (params: ListSectionType) => {
+    return <ContentSection>
+      <Label>{l(`page.submit_linked_wearables.${params.section}_label`)}</Label>
+      <Paragraph tiny secondary className="details">{l(`page.submit_linked_wearables.${params.section}_detail`)}</Paragraph>
+      <Paragraph small primary>{l.optional(state.error[params.section])}</Paragraph>
+      <div className='SectionList'>
+        {Object.keys(state.value[params.section]).sort().map((key, i) => <Field
+          key={key}
+          placeholder={l(`page.submit_linked_wearables.${params.add_button}_placeholder`, {'counter': String(i + 1)})}
+          value={state.value[params.section][key]}
+          action={<Icon name="x" />}
+          onAction={() => handleRemoveOption(params.section, key)}
+          onChange={(_, { value }) => handleEditOption(params.section, key, value)}
+          disabled={formDisabled}
+        />)}
+        <Button basic onClick={() => handleAddOption(params.section)}>{l(`page.submit_linked_wearables.${params.add_button}_add`)}</Button>
+      </div>
+    </ContentSection>
   }
 
   useEffect(() => {
@@ -173,6 +208,7 @@ export default function SubmitLinkedWearables() {
         .then(async () => {
           return Governance.get().createProposalLinkedWearables({
             ...state.value,
+            links: Object.values(state.value.links),
             smart_contract: Object.values(state.value.smart_contract),
             managers: Object.values(state.value.managers),
           })
@@ -208,8 +244,6 @@ export default function SubmitLinkedWearables() {
     </Container>
   }
 
-  const addressesStyle: any = { width: '80%', margin: 'auto', textAlign: 'center'}
-
   return <ContentLayout small>
     <Head
       title={l('page.submit_linked_wearables.title') || ''}
@@ -242,6 +276,9 @@ export default function SubmitLinkedWearables() {
         disabled={formDisabled}
       />
     </ContentSection>
+    {
+      getListSection({section: 'links', add_button: 'url'})
+    }
     <ContentSection>
       <Label>
         {l('page.submit_linked_wearables.motivation_label')}
@@ -311,23 +348,9 @@ export default function SubmitLinkedWearables() {
         disabled={formDisabled}
       />
     </ContentSection>
-    <ContentSection>
-      <Label>{l('page.submit_linked_wearables.smart_contract_label')}</Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.smart_contract_detail')}</Paragraph>
-      <Paragraph small primary>{l.optional(state.error.smart_contract)}</Paragraph>
-      <div style={{...addressesStyle}}>
-        {Object.keys(state.value.smart_contract).sort().map((key, i) => <Field
-          key={key}
-          placeholder={l('page.submit_linked_wearables.address_placeholder', {'counter': String(i + 1)})}
-          value={state.value.smart_contract[key]}
-          action={<Icon name="x" />}
-          onAction={() => handleRemoveOption('smart_contract', key)}
-          onChange={(_, { value }) => handleEditOption('smart_contract', key, value)}
-          disabled={formDisabled}
-        />)}
-        <Button basic onClick={() => handleAddOption('smart_contract')}>{l('page.submit_linked_wearables.address_add')}</Button>
-      </div>
-    </ContentSection>
+    {
+      getListSection({section: 'smart_contract', add_button: 'address'})
+    }
     <ContentSection>
       <Label>
         {l('page.submit_linked_wearables.governance_label')}
@@ -351,23 +374,9 @@ export default function SubmitLinkedWearables() {
         disabled={formDisabled}
       />
     </ContentSection>
-    <ContentSection>
-      <Label>{l('page.submit_linked_wearables.managers_label')}</Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.managers_detail')}</Paragraph>
-      <Paragraph small primary>{l.optional(state.error.managers)}</Paragraph>
-      <div style={{...addressesStyle}}>
-        {Object.keys(state.value.managers).sort().map((key, i) => <Field
-          key={key}
-          placeholder={l('page.submit_linked_wearables.address_placeholder', {'counter': String(i + 1)})}
-          value={state.value.managers[key]}
-          action={<Icon name="x" />}
-          onAction={() => handleRemoveOption('managers', key)}
-          onChange={(_, { value }) => handleEditOption('managers', key, value)}
-          disabled={formDisabled}
-        />)}
-        <Button basic onClick={() => handleAddOption('managers')}>{l('page.submit_linked_wearables.address_add')}</Button>
-      </div>
-    </ContentSection>
+    {
+      getListSection({section: 'managers', add_button: 'address'})
+    }
     <ContentSection>
       <Radio
         checked={state.value.programmatically_generated}
