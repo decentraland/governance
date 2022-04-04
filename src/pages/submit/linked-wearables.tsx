@@ -386,14 +386,14 @@ export default function SubmitLinkedWearables() {
       <Radio
         checked={state.value.programmatically_generated}
         label={<label><Markdown source={l('modal.votes_list.voted_yes') || ''} /></label>}
-        onClick={handleProgrammaticallyGeneratedOption}
+        onChange={() => handleProgrammaticallyGeneratedOption()}
       />
     </span>
     <span style={{marginLeft: '10px'}}>
       <Radio
         checked={!state.value.programmatically_generated}
         label={<label><Markdown source={l('modal.votes_list.voted_no') || ''} /></label>}
-        onClick={handleProgrammaticallyGeneratedOption}
+        onChange={() => handleProgrammaticallyGeneratedOption()}
       />
     </span>
     </ContentSection>
