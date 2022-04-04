@@ -20,9 +20,11 @@ export default function ProposalUpdates({
 }) {
   const l = useFormatMessage()
 
-  if (!updates) {
+  if (!updates || !proposal) {
     return null
   }
+
+  const hasUpdates = updates.length > 0
 
   return (
     <div className="ProposalUpdates">
@@ -31,7 +33,7 @@ export default function ProposalUpdates({
         <Header>{l('page.proposal_detail.grant.update_title')}</Header>
       </div>
       <div>
-        {updates && updates.length === 0 && (
+        {!hasUpdates && (
           <div className="ProposalUpdates__EmptyContainer">
             <Megaphone className="ProposalUpdates__EmptyIcon" />
             <Paragraph secondary className="ProposalUpdates__EmptyText">
@@ -39,9 +41,7 @@ export default function ProposalUpdates({
             </Paragraph>
           </div>
         )}
-        {proposal &&
-          updates &&
-          updates.length > 0 &&
+        {hasUpdates &&
           updates.map((item, index) => (
             <ProposalUpdate
               key={item.id}
