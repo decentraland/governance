@@ -345,14 +345,6 @@ export async function createProposalLinkedWearables(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalLinkedWearables>(newProposalLinkedWearablesValidator, req.body || {})
 
-  req.body.links = req.body.links.map((link: string) => {
-    if(link.startsWith('http')) {
-      return link
-    }
-    
-    return 'https://' + link
-  })
-
   return createProposal({
     user,
     type: ProposalType.LinkedWearables,

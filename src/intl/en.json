@@ -190,7 +190,7 @@
       "links_empty": "Insert at least one URL",
       "smart_contract_empty": "Insert at least one smart contract address",
       "managers_empty": "Insert at least one manager address",
-      "url_invalid": "Some url is invalid",
+      "url_invalid": "Some url is invalid, they must start with 'https://'",
       "address_invalid": "Some address is invalid",
       "method_empty": "Method is empty",
       "method_too_short": "Method is too short",
