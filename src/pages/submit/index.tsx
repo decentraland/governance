@@ -35,6 +35,7 @@ export default function NewProposalPage() {
       <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} style={{cursor:'pointer'}} active  />
       <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
       <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
+      <CategoryBanner type={ProposalType.LinkedWearables} href={locations.submit(ProposalType.LinkedWearables)} active isNew />
     </ContentSection>
     <ContentSection>
       <Header sub className="ProposalDetailPage_SubHeader">Governance Process</Header>

@@ -1,7 +1,4 @@
 import React from 'react'
-import { navigate } from 'gatsby-plugin-intl'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { ProposalType } from '../../entities/Proposal/types'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 

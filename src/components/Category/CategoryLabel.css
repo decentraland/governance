@@ -66,12 +66,12 @@
 }
 
 .CategoryLabel.CategoryLabel--ban_name::before {
-  background-color: var(--background-ban_name);
-  border-color: var(--background-ban_name);
+  background-color: var(--background-ban-name);
+  border-color: var(--background-ban-name);
 }
 
 .CategoryLabel.CategoryLabel--ban_name span {
-  color: var(--background-ban_name);
+  color: var(--background-ban-name);
 }
 
 .CategoryLabel.CategoryLabel--grant::before {
@@ -81,6 +81,15 @@
 
 .CategoryLabel.CategoryLabel--grant span {
   color: var(--background-grant);
+}
+
+.CategoryLabel.CategoryLabel--linked_wearables::before {
+  background-color: var(--background-linked-wearables);
+  border-color: var(--background-linked-wearables);
+}
+
+.CategoryLabel.CategoryLabel--linked_wearables span {
+  color: var(--background-linked-wearables);
 }
 
 .CategoryLabel span {

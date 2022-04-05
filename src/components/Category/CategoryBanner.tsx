@@ -17,14 +17,16 @@ export const categoryIcons = {
   [ProposalType.Poll]: require('../../images/icons/poll.svg'),
   [ProposalType.Draft]: require('../../images/icons/draft.svg'),
   [ProposalType.Governance]: require('../../images/icons/governance.svg'),
+  [ProposalType.LinkedWearables]: require('../../images/icons/linked-wearables.svg'),
 }
 
 export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "children"> & {
   active?: boolean
+  isNew?: boolean
   type: ProposalType | PoiType
 }
 
-export default React.memo(function CategoryBanner({ active, type, ...props }: CategoryBannerProps) {
+export default React.memo(function CategoryBanner({ active, isNew, type, ...props }: CategoryBannerProps) {
   const l = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
@@ -52,9 +54,18 @@ export default React.memo(function CategoryBanner({ active, type, ...props }: Ca
     <div className="CategoryBanner__Icon">
       <img src={categoryIcons[type]} width="48" height="48" />
     </div>
-    <div className="CategoryBanner__Description">
-      <Paragraph small semiBold>{l(`category.${type}_title`)}</Paragraph>
-      <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
-    </div>
+    <div>
+        <div className="CategoryBanner__TitleContainer">
+          <Paragraph small semiBold>
+            {l(`category.${type}_title`)}
+          </Paragraph>
+          {isNew && (
+            <span className="NewBadge">
+              {l(`category.new`)}
+            </span>
+          )}
+        </div>
+        <Paragraph tiny>{l(`category.${type}_description`)}</Paragraph>
+      </div>
   </a>
 })
