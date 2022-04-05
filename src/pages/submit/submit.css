@@ -80,6 +80,11 @@
   text-align: center;
 }
 
+.ProgrammaticallyGeneratedRadioButtons {
+  margin-bottom: 10px;
+}
+
 .ProgrammaticallyGeneratedLabel .dg.Paragraph {
   font-size: 15px;
+  color: var(--secondary-text);
 }
