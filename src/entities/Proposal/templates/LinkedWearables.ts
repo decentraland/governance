@@ -12,10 +12,6 @@ Should ${proposal.name} be added to the Linked Wearables Registry?
 
 ${getList(proposal.links)}
 
-## Introduction
-
-${formatMarkdown(proposal.introduction)}
-
 ## NFT Collection(s) description
 
 ${formatMarkdown(proposal.nft_collections)}

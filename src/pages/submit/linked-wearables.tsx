@@ -32,7 +32,6 @@ import './submit.css'
 type LinkedWearablesState = {
   name: string,
   links: Record<string, string>,
-  introduction: string,
   nft_collections: string,
   smart_contract: Record<string, string>,
   governance: string,
@@ -52,7 +51,6 @@ const initialPollState: LinkedWearablesState = {
   links: {
     '0': ''
   },
-  introduction: '',
   nft_collections: '',
   smart_contract: {
     '0': ''
@@ -78,9 +76,6 @@ const validate = createValidator<LinkedWearablesState>({
   name: (state) => ({
     name: assert(state.name.length <= schema.name.maxLength, 'error.linked_wearables.name_too_large')
   }),
-  introduction: (state) => ({
-    introduction: assert(state.introduction.length <= schema.introduction.maxLength, 'error.linked_wearables.introduction_too_large')
-  }),
   nft_collections: (state) => ({
     nft_collections: assert(state.nft_collections.length <= schema.nft_collections.maxLength, 'error.linked_wearables.nft_collections_too_large')
   }),
@@ -105,10 +100,6 @@ const validate = createValidator<LinkedWearablesState>({
       links: (
         assert(links.some(option => option !== ''), `error.linked_wearables.smart_contract_empty`) ||
         assert(links.every(option => isURL(option, {protocols: ['https'], require_protocol: true})), `error.linked_wearables.url_invalid`)
-      ),
-      introduction: (assert(state.introduction.length > 0, 'error.linked_wearables.introduction_empty') ||
-      assert(state.introduction.length >= schema.introduction.minLength, 'error.linked_wearables.introduction_too_short') ||
-      assert(state.introduction.length <= schema.introduction.maxLength, 'error.linked_wearables.introduction_too_large')
       ),
       nft_collections: (assert(state.nft_collections.length > 0, 'error.linked_wearables.nft_collections_empty') ||
       assert(state.nft_collections.length >= schema.nft_collections.minLength, 'error.linked_wearables.nft_collections_too_short') ||
@@ -293,29 +284,6 @@ export default function SubmitLinkedWearables() {
           l('page.submit.character_counter', {
             current: state.value.motivation.length,
             limit: schema.motivation.maxLength
-          })
-        }
-        disabled={formDisabled}
-      />
-    </ContentSection>
-    <ContentSection>
-      <Label>
-        {l('page.submit_linked_wearables.introduction_label')}
-        <MarkdownNotice />
-        </Label>
-      <Paragraph tiny secondary className="details">{l('page.submit_linked_wearables.introduction_detail')}</Paragraph>
-      <MarkdownTextarea
-        minHeight={175}
-        value={state.value.introduction}
-        placeholder={l('page.submit_linked_wearables.introduction_placeholder')}
-        onChange={(_: any, { value }: any) => editor.set({ introduction: value })}
-        onBlur={() => editor.set({ introduction: state.value.introduction.trim() })}
-        error={!!state.error.introduction}
-        message={
-          l.optional(state.error.introduction) + ' ' +
-          l('page.submit.character_counter', {
-            current: state.value.introduction.length,
-            limit: schema.introduction.maxLength
           })
         }
         disabled={formDisabled}
