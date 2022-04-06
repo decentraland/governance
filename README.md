@@ -83,7 +83,7 @@ createdb `whoami`
 
 inside psql run `create database snapshot`
 
-user your `user:pwd` for the connection string, it should look like this:
+use your `user:pwd` for the connection string, it should look like this:
 
 ```bash
 postgres://usr:pwd@localhost:5432/snapshot
