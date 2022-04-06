@@ -13,16 +13,20 @@ The governance hub for Decentraland. Create and vote on proposals that help shap
 
 ## Setup
 
----
+Before you start make sure you have installed:
+
+- [NodeJS](https://www.npmjs.com/) that includes `npm`
+- [Homebrew](mehttps://brew.sh/)
+
 **NOTE**
 
 If you are using WSL (Windows Subsystem for Linux) as your development environment, clone the repository into the WSL filesystem. If you clone it inside the Windows filesystem, the project will not work.
 
----
-
 ### Node version
 
-use node 12.22.7
+use node `12.22.7`
+
+You can use [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) to manage your node versions.
 
 ### environment setup
 
