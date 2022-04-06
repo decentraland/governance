@@ -4,9 +4,7 @@ import { ChainId, Network } from '@dcl/schemas'
 import { useLocation } from '@gatsbyjs/reach-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTransactionContext from 'decentraland-gatsby/dist/context/Auth/useTransactionContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
@@ -32,16 +30,15 @@ import { toWei } from 'web3x/utils/units'
 import { Snapshot } from '../api/Snapshot'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import Empty from '../components/Proposal/Empty'
 import VotingPower from '../components/Token/VotingPower'
-import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
-import { snapshotUrl } from '../entities/Proposal/utils'
 import { useBalanceOf, useWManaContract } from '../hooks/useContract'
 import useDelegation from '../hooks/useDelegation'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
-import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
+import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import LogIn from '../components/User/LogIn'
+import DelegatedCard from '../components/Balance/DelegatedCard'
 
 const NAME_MULTIPLIER = 100
 const LAND_MULTIPLIER = 2000
@@ -50,7 +47,6 @@ const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || '#'
 const BUY_NAME_URL = process.env.GATSBY_BUY_NAME_URL || '#'
 const BUY_LAND_URL = process.env.GATSBY_BUY_LAND_URL || '#'
-const EDIT_DELEGATION = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
 export default function WrappingPage() {
   const t = useFormatMessage()
@@ -58,9 +54,6 @@ export default function WrappingPage() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [account] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const getAuthText = (authText: String, defaultText: String): String => {
-    return accountBalance === account ? authText : defaultText
-  }
   const wManaContract = useWManaContract()
   const [space] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [SNAPSHOT_SPACE])
   const [wMana, wManaState] = useBalanceOf(wManaContract, accountBalance, 'ether')
@@ -69,10 +62,10 @@ export default function WrappingPage() {
   const [ens, ensState] = useEnsBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
   const [land, landState] = useLandBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
   const [estate, estateLand, estateState] = useEstateBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
-  const [delegation, delegationState] = useDelegation(accountBalance, SNAPSHOT_SPACE)
+  const [delegation] = useDelegation(accountBalance, SNAPSHOT_SPACE)
   const [votingPower, votingPowerState] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
   const [transactions, transactionsState] = useTransactionContext()
-  const [scores, scoresState] = useAsyncMemo(
+  const [scores] = useAsyncMemo(
     () =>
       Snapshot.get().getLatestScores(
         space!,
@@ -302,96 +295,7 @@ export default function WrappingPage() {
           </Card>
         </ActionableLayout>
 
-        <ActionableLayout
-          leftAction={<Header sub>{t(`page.balance.delegated_to_label`)}</Header>}
-          rightAction={
-            <Button basic as={Link} href={EDIT_DELEGATION} className="mobileOnly">
-              {t(`page.balance.delegated_to_action`)}
-              <Icon name="chevron right" />
-            </Button>
-          }
-        >
-          <Card>
-            <Card.Content>
-              <Header>
-                <b>{getAuthText(t(`page.balance.delegated_to_title`), t(`page.balance.received_delegations`))}</b>
-              </Header>
-              <Loader size="tiny" className="balance" active={delegationState.loading || scoresState.loading} />
-              <div className="ProfileListContainer">
-                {delegation.delegatedFrom.length > 0 &&
-                  delegation.delegatedFrom.map((delegation) => {
-                    return (
-                      <div className="ProfileContainer">
-                        <UserStats
-                          sub={false}
-                          key={[delegation.delegate, delegation.delegator].join('::')}
-                          address={delegation.delegator}
-                          size="medium"
-                          to={locations.balance({ address: delegation.delegator })}
-                        />
-                        {scores && typeof scores[delegation.delegator.toLowerCase()] === 'number' && (
-                          <VotingPower value={scores[delegation.delegator.toLowerCase()]} size="medium" />
-                        )}
-                      </div>
-                    )
-                  })}
-                {delegation.hasMoreDelegatedFrom && (
-                  <Button disabled basic style={{ marginBottom: '2em' }}>
-                    {t(`page.balance.delegated_to_more`)}
-                  </Button>
-                )}
-              </div>
-              <Stats title={t('page.balance.name_total_label') || ''}>
-                <VotingPower value={delegatedVotingPower} size="medium" />
-              </Stats>
-            </Card.Content>
-          </Card>
-        </ActionableLayout>
-
-        <ActionableLayout
-          rightAction={
-            <Button basic as={Link} href={EDIT_DELEGATION} className="screenOnly">
-              {t(`page.balance.delegations_from_action`)}
-              <Icon name="chevron right" />
-            </Button>
-          }
-        >
-          <Card>
-            <Card.Content>
-              <Header>
-                <b>{getAuthText(t(`page.balance.delegations_from_you`), t(`page.balance.delegations_from_title`))}</b>
-              </Header>
-              <div className="ProfileListContainer">
-                {delegation.delegatedTo.length === 0 && (
-                  <Empty
-                    border={false}
-                    full
-                    description={
-                      <Paragraph small secondary semiBold>
-                        {t(
-                          account === accountBalance
-                            ? `page.balance.delegations_from_you_empty`
-                            : `page.balance.delegations_from_address_empty`
-                        )}
-                      </Paragraph>
-                    }
-                  />
-                )}
-                {delegation.delegatedTo.length > 0 &&
-                  delegation.delegatedTo.map((delegation) => {
-                    return (
-                      <UserStats
-                        key={[delegation.delegate, delegation.delegator].join('::')}
-                        address={delegation.delegate}
-                        size="medium"
-                        to={locations.balance({ address: delegation.delegate })}
-                      />
-                    )
-                  })}
-              </div>
-            </Card.Content>
-          </Card>
-        </ActionableLayout>
+        <DelegatedCard account={account} accountBalance={accountBalance} delegation={delegation} />
       </Container>
     </>
   )
