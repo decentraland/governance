@@ -1,0 +1,18 @@
+
+.DelegatedCardProfile__ProfileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.DelegatedCardProfile__ProfileAvatar {
+  margin-bottom: 10px !important;
+}
+
+.DelegatedCardProfile__ProfileName {
+  font-size: 21px;
+  line-height: 28px;
+  letter-spacing: 0.315px;
+  color: #16141a;
+}

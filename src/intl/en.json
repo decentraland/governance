@@ -459,7 +459,11 @@
       "delegations_from_you": "Your delegation",
       "delegations_from_title": "Delegation",
       "delegations_from_you_empty": "You have not delegated your voting power",
-      "delegations_from_address_empty": "This address has not delegated its voting power"
+      "delegations_from_empty_title": "VP not delegated",
+      "delegations_from_you_empty_description": "Join forces with a\n\nsound candidate",
+      "delegations_from_address_empty": "This address has not delegated its voting power",
+      "delegations_from_delegate_vp": "DELEGATE VP",
+      "delegations_from_view_profile": "VIEW PROFILE"
     },
     "transparency": {
       "title": "Transparency",
