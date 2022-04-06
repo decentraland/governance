@@ -43,6 +43,7 @@ import './balance.css'
 import { isUnderMaintenance } from '../modules/maintenance'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import LogIn from '../components/User/LogIn'
+import DelegatedCard from '../components/Balance/DelegatedCard'
 
 const NAME_MULTIPLIER = 100
 const LAND_MULTIPLIER = 2000
@@ -57,7 +58,7 @@ export default function WrappingPage() {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [account, accountState] = useAuthContext()
+  const [account] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const getAuthText = (authText: String, defaultText: String): String => {
     return accountBalance === account ? authText : defaultText
@@ -355,50 +356,7 @@ export default function WrappingPage() {
         )}
 
         {ff.flags[FeatureFlags.Delegation] && (
-          <ActionableLayout
-            rightAction={
-              <Button basic as={Link} href={EDIT_DELEGATION} className="screenOnly">
-                {t(`page.balance.delegations_from_action`)}
-                <Icon name="chevron right" />
-              </Button>
-            }
-          >
-            <Card>
-              <Card.Content>
-                <Header>
-                  <b>{getAuthText(t(`page.balance.delegations_from_you`), t(`page.balance.delegations_from_title`))}</b>
-                </Header>
-                <div className="ProfileListContainer">
-                  {delegation.delegatedTo.length === 0 && (
-                    <Empty
-                      border={false}
-                      full
-                      description={
-                        <Paragraph small secondary semiBold>
-                          {t(
-                            account === accountBalance
-                              ? `page.balance.delegations_from_you_empty`
-                              : `page.balance.delegations_from_address_empty`
-                          )}
-                        </Paragraph>
-                      }
-                    />
-                  )}
-                  {delegation.delegatedTo.length > 0 &&
-                    delegation.delegatedTo.map((delegation) => {
-                      return (
-                        <UserStats
-                          key={[delegation.delegate, delegation.delegator].join('::')}
-                          address={delegation.delegate}
-                          size="medium"
-                          to={locations.balance({ address: delegation.delegate })}
-                        />
-                      )
-                    })}
-                </div>
-              </Card.Content>
-            </Card>
-          </ActionableLayout>
+          <DelegatedCard account={account} accountBalance={accountBalance} delegation={delegation} />
         )}
       </Container>
     </>
