@@ -1,0 +1,28 @@
+.ActionableLayout.DelegatedToUser {
+	flex: 0 0 64% !important;
+}
+
+.DelegatedToUser__Title {
+	display: inline-flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.DelegatedToUser__Title__Header {
+	margin-bottom: 0 !important;
+}
+
+button.ui.button.DelegatedToUser__ViewMore {
+	background-color: #edf3fd;
+	color: var(--background-catalyst);
+	margin-bottom: 8px;
+	border-radius: 12px;
+	outline: 1px solid #0000000a;
+}
+
+.ui.container.VotingPowerDetail .ui.card .ProfileListContainer {
+	max-height: 256px;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+}

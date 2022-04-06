@@ -1,0 +1,41 @@
+.VotingPowerList__Content {
+	width: 90%;
+	margin-left: 24px;
+	margin-top: 8px;
+}
+
+.VotingPowerList__Header {
+	width: 100%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.VotingPowerList__Header .dcl.close {
+	position: inherit !important;
+	background-color: transparent;
+	width: 16px;
+}
+
+.VotingPowerList_Description p.dg.Paragraph  {
+	font-size: 15px;
+	line-height: 24px;
+}
+
+p.dg.Paragraph a.dg.Link.Link--pointer .VotingPowerList_Description {
+	color: #6299f0;
+}
+
+.VotingPowerList_Items {
+	margin: 0 auto 40px;
+	height: 50vh;
+	padding: 20px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.VotingPowerList_ItemWithDivider {
+	border-bottom: 1px solid #eaeaea;
+}
