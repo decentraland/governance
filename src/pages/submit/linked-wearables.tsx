@@ -98,7 +98,7 @@ const validate = createValidator<LinkedWearablesState>({
       assert(state.name.length <= schema.name.maxLength, 'error.linked_wearables.name_too_large')
       ),
       links: (
-        assert(links.some(option => option !== ''), `error.linked_wearables.smart_contract_empty`) ||
+        assert(links.some(option => option !== ''), `error.linked_wearables.links_empty`) ||
         assert(links.every(option => isURL(option, {protocols: ['https'], require_protocol: true})), `error.linked_wearables.url_invalid`)
       ),
       nft_collections: (assert(state.nft_collections.length > 0, 'error.linked_wearables.nft_collections_empty') ||
