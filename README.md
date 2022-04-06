@@ -16,7 +16,7 @@ The governance hub for Decentraland. Create and vote on proposals that help shap
 Before you start make sure you have installed:
 
 - [NodeJS](https://www.npmjs.com/) that includes `npm`
-- [Homebrew](mehttps://brew.sh/)
+- [Homebrew](https://brew.sh/)
 
 **NOTE**
 
