@@ -48,7 +48,8 @@ export async function getStaticSitemap() {
     `<url><loc>${governanceUrl(`/submit/ban-name/`)}</loc></url>`,
     `<url><loc>${governanceUrl(`/submit/catalyst/`)}</loc></url>`,
     `<url><loc>${governanceUrl(`/submit/grant/`)}</loc></url>`,
-    `<url><loc>${governanceUrl(`/submit/poi/`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/poi/?request=add_poi`)}</loc></url>`,
+    `<url><loc>${governanceUrl(`/submit/poi/?request=remove_poi`)}</loc></url>`,
     `<url><loc>${governanceUrl(`/submit/poll/`)}</loc></url>`,
     '</urlset>',
   ].join('')

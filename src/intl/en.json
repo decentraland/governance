@@ -43,9 +43,9 @@
   },
   "error": {
     "poll": {
-      "title_empty": "Title field is too short",
+      "title_empty": "Title field is empty",
       "title_too_short": "Title field is too short",
-      "title_too_large": "Title field is too short",
+      "title_too_large": "Title field is too large",
       "description_empty": "Description field is empty",
       "description_too_short": "Description field is too short",
       "description_too_large": "Description field is too large",
@@ -171,11 +171,34 @@
       "size_too_low": "Grant size is too low",
       "size_tier_invalid": "Grant size is not valid for the selected tier"
     },
+    "linked_wearables": {
+      "name_empty": "Name is empty",
+      "name_too_short": "Name is too short",
+      "name_too_large": "Name is too large",
+      "nft_collections_empty": "Description is empty",
+      "nft_collections_too_short": "Description is too short",
+      "nft_collections_too_large": "Description is too large",
+      "governance_empty": "Proof is empty",
+      "governance_too_short": "Proof is too short",
+      "governance_too_large": "Proof is too large",
+      "motivation_empty": "Motivation is empty",
+      "motivation_too_short": "Motivation is too short",
+      "motivation_too_large": "Motivation is too large",
+      "links_empty": "Insert at least one URL",
+      "smart_contract_empty": "Insert at least one smart contract address",
+      "managers_empty": "Insert at least one manager address",
+      "url_invalid": "Some url is invalid, they must start with 'https://'",
+      "address_invalid": "Some address is invalid",
+      "method_empty": "Method is empty",
+      "method_too_short": "Method is too short",
+      "method_too_large": "Method is too large"
+    },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
     }
   },
   "category": {
+    "new": "New",
     "poi": "POI",
     "catalyst": "Catalyst",
     "ban_name": "Ban Name",
@@ -183,6 +206,7 @@
     "poll": "Poll",
     "draft": "Draft",
     "governance": "Governance",
+    "linked_wearables": "Linked Wearables",
     "all_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community-run servers",
@@ -201,7 +225,9 @@
     "draft_title": "Draft Proposal",
     "draft_description": "Present a potential policy to the community in a structured format and to formalize discussion",
     "governance_title": "Governance Proposal",
-    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome"
+    "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
+    "linked_wearables_title": "Linked Wearables Registry",
+    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
   },
   "status": {
     "all": "All outcomes",
@@ -305,7 +331,7 @@
       "no_proposals_yet": "No proposals have been sent by community members yet.",
       "finish_label": {
         "ends": "Ends",
-        "ended":"Ended"
+        "ended": "Ended"
       }
     },
     "proposal_enacted_list": {
@@ -427,17 +453,17 @@
     "transparency": {
       "title": "Transparency",
       "mission": {
-          "title": "Our Mission",
-          "description": "To support and facilitate the continual growth of the Decentraland platform.",
-          "join_discord_button": "Join our Discord",
-          "docs_button": "Check our docs",
-          "balance_title": "Current Balance",
-          "dashboard_button": "Transparency Dashboard",
-          "data_source_button": "DCL Data Source",
-          "audit": "Audit on {service_name}",
-          "monthly_income": "Last 30 Days Income",
-          "monthly_expenses": "Last 30 Days Expenses",
-          "diff_label": "vs previous 30 days"
+        "title": "Our Mission",
+        "description": "To support and facilitate the continual growth of the Decentraland platform.",
+        "join_discord_button": "Join our Discord",
+        "docs_button": "Check our docs",
+        "balance_title": "Current Balance",
+        "dashboard_button": "Transparency Dashboard",
+        "data_source_button": "DCL Data Source",
+        "audit": "Audit on {service_name}",
+        "monthly_income": "Last 30 Days Income",
+        "monthly_expenses": "Last 30 Days Expenses",
+        "diff_label": "vs previous 30 days"
       },
       "funding": {
         "title": "Currently funding initiatives",
@@ -603,7 +629,39 @@
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
       "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
     },
-    "subscription_banner":{
+    "submit_linked_wearables": {
+      "title": "Linked Wearables Registry",
+      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Third parties need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](http://builder.decentraland.org/) and get slots to submit the 3D models. By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland.\n\nNote that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
+      "name_label": "Name",
+      "name_detail": "Please enter the name that represents your Project, Company or Community as a whole",
+      "name_placeholder": "Enter the name here",
+      "links_label": "Links",
+      "links_detail": "Links for your project website, Discord server, social media or any other relevant space for your Project",
+      "nft_collections_label": "NFT Collections",
+      "nft_collections_detail": "Describe the NFT Collections you created. If it’s only one, just describe that one",
+      "nft_collections_placeholder": "Describe the NFT Collections you created here",
+      "smart_contract_label": "Smart Contracts",
+      "smart_contract_detail": "Share the Addresses of the smart contracts of your NFT collections",
+      "governance_label": "Intellectual Property",
+      "governance_detail": "Provide proof that you are the rightful owner or representative of the Project, Company or Community. Please share any links with relevant information. ",
+      "governance_placeholder": "Provide proof here",
+      "motivation_label": "Motivation",
+      "motivation_detail": "Why do you want to have your NFTs represented in Decentraland?",
+      "motivation_placeholder": "A brief motivation",
+      "managers_label": "Managers",
+      "managers_detail": "Addresses of the representatives that will Manage the tool. Note: Managers are the only ones allowed to add item representations and manage the tool",
+      "address_placeholder": "Add Ethereum address",
+      "address_add": "Add another address",
+      "url_placeholder": "Add a link here",
+      "url_add": "Add another link",
+      "programmatically_generated_label": "Is this collection programmatically generated?",
+      "programmatically_generated_description": "The collection you will upload to Decentraland as Linked Wearables is programmatically generated. This means the 3D models you will submit to Decentraland were made this way.",
+      "programmatically_generated_note": "_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
+      "method_label": "Method",
+      "method_detail": "Describe the method used to create the programmatic collection. If possible, share proof and links to the repository.",
+      "method_placeholder": "Describe the method"
+    },
+    "subscription_banner": {
       "title": "Stay in the loop",
       "description": "The DAO Weekly Newsletter includes updates regarding proposals",
       "subscribe_button_label": "Subscribe"
