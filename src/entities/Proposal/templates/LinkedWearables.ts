@@ -8,15 +8,19 @@ export const title = (proposal: NewProposalLinkedWearables) => template`Add ${pr
 export const description = (proposal: NewProposalLinkedWearables) => template`
 Should ${proposal.name} be added to the Linked Wearables Registry?
 
-## Relevant links
+## Relevant Links
 
 ${getList(proposal.links)}
 
-## NFT Collection(s) description
+## NFT Collections Description
 
 ${formatMarkdown(proposal.nft_collections)}
 
-## Governance
+## Items to be Uploaded
+
+${proposal.items}
+
+## Intellectual Property
 
 ${formatMarkdown(proposal.governance)}
 
@@ -24,16 +28,16 @@ ${formatMarkdown(proposal.governance)}
 
 ${formatMarkdown(proposal.motivation)}
 
-## Smart Contract Address${proposal.smart_contract.length > 1 ? 'es': ''}
+## Smart Contract Address${proposal.smart_contract.length > 1 ? 'es' : ''}
 
 ${getList(proposal.smart_contract)}
 
-## Manager Address${proposal.managers.length > 1 ? 'es': ''}
+## Manager Address${proposal.managers.length > 1 ? 'es' : ''}
 
 ${getList(proposal.managers)}
 
 ## Is this collection generated programmatically?
-- **${proposal.programmatically_generated ? 'Yes' : 'No'}**
+- ${proposal.programmatically_generated ? 'Yes' : 'No'}
 
 ${proposal.method.length > 0 ? `
 ## Method
