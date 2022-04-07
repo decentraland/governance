@@ -18,6 +18,7 @@ import { VotingPowerList } from './VotingPowerList'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 const EDIT_DELEGATION = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
+const DISPLAYED_DELEGATIONS = 5
 
 interface DelegatedToUserCardProps {
   address: string | null
@@ -65,7 +66,7 @@ export default function DelegatedToUserCard({ address }: DelegatedToUserCardProp
             <Stats className={'DelegatedToUser__Subtitle'} title={delegators.length + ' individuals' || ''} />
             <div className="ProfileListContainer">
               {delegators.length > 0 &&
-                delegators.map((delegation) => {
+                delegators.slice(0, DISPLAYED_DELEGATIONS).map((delegation) => {
                   const key = [delegation.delegate, delegation.delegator].join('::')
                   return (
                     <VotingPowerListItem
@@ -76,14 +77,16 @@ export default function DelegatedToUserCard({ address }: DelegatedToUserCardProp
                   )
                 })}
             </div>
-            <Button
-              className={'DelegatedToUser__ViewMore'}
-              onClick={() => {
-                setShowDelegatorsList(true)
-              }}
-            >
-              {'View All'}
-            </Button>
+            {delegators.length > DISPLAYED_DELEGATIONS && (
+              <Button
+                className={'DelegatedToUser__ViewMore'}
+                onClick={() => {
+                  setShowDelegatorsList(true)
+                }}
+              >
+                {'View All'}
+              </Button>
+            )}
           </Card.Content>
         </Card>
       </ActionableLayout>
