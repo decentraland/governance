@@ -1,0 +1,46 @@
+name: Master build
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+
+  release:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+
+      - name: set up git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      - name: installing
+        run: npm ci
+
+      - name: setup environment
+        run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
+
+      # TODO: enabled linters
+      # - name: linters
+      #   uses: wearerequired/lint-action@v1
+      #   with:
+      #     prettier: true
+      #     prettier_extensions: ts,tsx,js,jsx,,json,md
+      #     continue_on_error: false
+
+      - name: testing
+        run: npm test
+        env:
+          DISCOURSE_API_KEY: ${{ secrets.DISCOURSE_API_KEY }}
+
+      - name: building
+        run: npm run build

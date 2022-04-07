@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import locations from '../../modules/locations'
 import { useLocation } from '@reach/router'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'

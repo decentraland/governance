@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'gatsby-plugin-intl'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
@@ -14,62 +14,74 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 
-const openIcon = require('../../images/icons/open.svg')
+const openIcon = require('../../images/icons/open.svg').default
 
 export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  proposal?: ProposalAttributes | null,
-  loading?: boolean,
-  disabled?: boolean,
+  proposal?: ProposalAttributes | null
+  loading?: boolean
+  disabled?: boolean
 }
 
-export default React.memo(function ProposalDetailSection({ proposal, loading, disabled, ...props }: ProposalDetailSectionProps) {
-  const l = useFormatMessage()
-  const [ profile ] = useAsyncMemo(
-    async () => proposal?.user ? profiles.load(proposal.user) : null,
-    [ proposal?.user ],
-    { callWithTruthyDeps: true }
-  )
+export default React.memo(function ProposalDetailSection({
+  proposal,
+  loading,
+  disabled,
+  ...props
+}: ProposalDetailSectionProps) {
+  const t = useFormatMessage()
+  const [profile] = useAsyncMemo(async () => (proposal?.user ? profiles.load(proposal.user) : null), [proposal?.user], {
+    callWithTruthyDeps: true,
+  })
 
-  return <div {...props} className={TokenList.join([
-    'DetailsSection',
-    disabled && 'DetailsSection--disabled',
-    loading &&'DetailsSection--loading',
-    'ResultSection',
-    props.className
-  ])}>
-    <div className="DetailsSection__Content">
-      <Header sub>{l('page.proposal_detail.details_label')}</Header>
-      <div className="DetailsSection__Flex">
-        <div>{l('page.proposal_detail.details_user_label')}</div>
-        <Link className="DetailsSection__Value" to={locations.balance({ address: proposal?.user || '' })}>
-          {profile && profile.name && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
-          {profile && profile.name}
-          {(!profile || !profile.name) && !!proposal?.user &&  <Blockie scale={3} seed={proposal?.user || ''}>
-            <Address value={proposal?.user || ''} />
-          </Blockie>}
-        </Link>
-      </div>
-      <div className="DetailsSection__Flex">
-        <div>{l('page.proposal_detail.details_start_label')}</div>
-        <div className="DetailsSection__Value">
-          {proposal && Time.from(proposal.start_at).format('MMM DD HH:mm')}
+  return (
+    <div
+      {...props}
+      className={TokenList.join([
+        'DetailsSection',
+        disabled && 'DetailsSection--disabled',
+        loading && 'DetailsSection--loading',
+        'ResultSection',
+        props.className,
+      ])}
+    >
+      <div className="DetailsSection__Content">
+        <Header sub>{t('page.proposal_detail.details_label')}</Header>
+        <div className="DetailsSection__Flex">
+          <div>{t('page.proposal_detail.details_user_label')}</div>
+          <Link className="DetailsSection__Value" href={locations.balance({ address: proposal?.user || '' })}>
+            {profile && profile.name && (
+              <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />
+            )}
+            {profile && profile.name}
+            {(!profile || !profile.name) && !!proposal?.user && (
+              <Blockie scale={3} seed={proposal?.user || ''}>
+                <Address value={proposal?.user || ''} />
+              </Blockie>
+            )}
+          </Link>
         </div>
-      </div>
-      <div className="DetailsSection__Flex">
-        <div>{l('page.proposal_detail.details_finish_label')}</div>
-        <div className="DetailsSection__Value">
-          {proposal && Time.from(proposal.finish_at).format('MMM DD HH:mm')}
+        <div className="DetailsSection__Flex">
+          <div>{t('page.proposal_detail.details_start_label')}</div>
+          <div className="DetailsSection__Value">{proposal && Time.from(proposal.start_at).format('MMM DD HH:mm')}</div>
         </div>
-      </div>
-      <div className="DetailsSection__Flex">
-        <div>{l('page.proposal_detail.details_snapshot_label')}</div>
-        <div className="DetailsSection__Value">
-          {proposal && <Anchor href={snapshotProposalUrl(proposal)}>
-            {'#' + proposal.snapshot_id.slice(0, 7)}
-            <img src={openIcon}  width="12" height="12" style={{ marginLeft: '.5rem' }} />
-          </Anchor>}
+        <div className="DetailsSection__Flex">
+          <div>{t('page.proposal_detail.details_finish_label')}</div>
+          <div className="DetailsSection__Value">
+            {proposal && Time.from(proposal.finish_at).format('MMM DD HH:mm')}
+          </div>
+        </div>
+        <div className="DetailsSection__Flex">
+          <div>{t('page.proposal_detail.details_snapshot_label')}</div>
+          <div className="DetailsSection__Value">
+            {proposal && (
+              <Anchor href={snapshotProposalUrl(proposal)}>
+                {'#' + proposal.snapshot_id.slice(0, 7)}
+                <img src={openIcon} width="12" height="12" style={{ marginLeft: '.5rem' }} />
+              </Anchor>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  )
 })

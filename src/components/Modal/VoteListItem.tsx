@@ -1,5 +1,5 @@
 import React from 'react'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
@@ -18,14 +18,16 @@ export type VoteListItemModalProps = {
 }
 
 export function VoteListItem({ address, vote, choices }: VoteListItemModalProps) {
-  const l = useFormatMessage()
-  const [ profile ] = useAsyncMemo(
-    async () => address ? profiles.load(address) : null,
-    [ address ],
-    { callWithTruthyDeps: true }
-  )
+  const t = useFormatMessage()
+  const [profile] = useAsyncMemo(async () => (address ? profiles.load(address) : null), [address], {
+    callWithTruthyDeps: true,
+  })
   return (
-    <Grid.Row onClick={() => navigate(locations.balance({ address }))} key={address} className="VoteList_Item VotesList_Divider_Line">
+    <Grid.Row
+      onClick={() => navigate(locations.balance({ address }))}
+      key={address}
+      className="VoteList_Item VotesList_Divider_Line"
+    >
       <Grid.Column width={6}>
         <div>
           <Avatar size="small" address={address} />
@@ -34,10 +36,10 @@ export function VoteListItem({ address, vote, choices }: VoteListItemModalProps)
         </div>
       </Grid.Column>
       <Grid.Column width={6}>
-        <p>{formatChoice(choices[vote.choice-1])}</p>
+        <p>{formatChoice(choices[vote.choice - 1])}</p>
       </Grid.Column>
       <Grid.Column>
-        <p>{`${abbreviateNumber(vote.vp)} ${l('modal.votes_list.vp')}`}</p>
+        <p>{`${abbreviateNumber(vote.vp)} ${t('modal.votes_list.vp')}`}</p>
       </Grid.Column>
     </Grid.Row>
   )

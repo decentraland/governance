@@ -3,16 +3,16 @@ import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import locations from '../../modules/locations'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import { NavigationTab } from './Navigation'
 
 import './MobileNavigation.css'
 
 function MobileNavigation() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const page = location.pathname.replaceAll('/', '')
 
@@ -40,7 +40,7 @@ function MobileNavigation() {
   return (
     <>
       <Header sub className="Browse__header">
-        {l(`page.proposal_list.browse`)}
+        {t(`page.proposal_list.browse`)}
       </Header>
       <div className={'Browse__Buttons'}>
         <Button
@@ -53,7 +53,7 @@ function MobileNavigation() {
             navigate(locations.proposals())
           })}
         >
-          {l('navigation.proposals')}
+          {t('navigation.proposals')}
         </Button>
         <Button
           className="Browse__Button"
@@ -65,7 +65,7 @@ function MobileNavigation() {
             navigate(locations.transparency())
           })}
         >
-          {l('navigation.transparency')}
+          {t('navigation.transparency')}
         </Button>
       </div>
     </>
