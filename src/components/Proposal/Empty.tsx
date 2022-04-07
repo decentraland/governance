@@ -1,24 +1,32 @@
 import React from 'react'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Watermelon from '../Icon/Watermelon'
 import './Empty.css'
 
-export type EmptyProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  description?: React.ReactNode
-  full?: boolean
-  border?: boolean
+interface Props {
+  title?: string | null
+  description?: string | null
+  linkText?: string | null
+  linkHref?: string
+  className?: string
+  onLinkClick?: () => void
+  icon?: React.ReactNode
 }
 
-export default React.memo(function Empty({ description, border, full, ...props}: EmptyProps) {
-  return <div {...props} className={TokenList.join([
-    'Empty',
-    full && 'full',
-    border === false ? 'without-border' : 'with-border',
-    props.className
-  ])}>
-    <Watermelon />
-    {typeof description === 'string' && <Paragraph small secondary>{description}</Paragraph>}
-    {typeof description !== 'string' && description}
-  </div>
-})
+export default function Empty({ icon, title, description, className, linkText, linkHref, onLinkClick }: Props) {
+  return (
+    <div className={TokenList.join(['Empty', className])}>
+      {!!icon ? icon : <Watermelon />}
+      {!!title && <Header>{title}</Header>}
+      {!!description && <Markdown className="Empty__Description" children={description} />}
+      {!!linkText && (onLinkClick || linkHref) && (
+        <Link href={linkHref} onClick={onLinkClick}>
+          {linkText}
+        </Link>
+      )}
+    </div>
+  )
+}

@@ -4,7 +4,6 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
@@ -21,9 +20,6 @@ import ProposalCard from '../components/Proposal/ProposalCard'
 import useSubscriptions from '../hooks/useSubscriptions'
 import Empty from '../components/Proposal/Empty'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import useProposals from '../hooks/useProposals'
 import './activity.css'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -31,9 +27,9 @@ import LogIn from '../components/User/LogIn'
 
 const ITEMS_PER_PAGE = 12
 
-export default function WelcomePage() {
+export default function ActivityPage() {
   const t = useFormatMessage()
-  const [account, accountState] = useAuthContext()
+  const [account] = useAuthContext()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const status = toProposalStatus(params.get('status')) ?? undefined
@@ -155,22 +151,19 @@ export default function WelcomePage() {
             {proposals && proposals.data.length === 0 && (
               <Empty
                 description={
-                  <Paragraph small secondary>
-                    {list === ProposalActivityList.Watchlist
-                      ? t(`page.proposal_activity.no_proposals_subscriptions`)
-                      : list === ProposalActivityList.MyProposals
-                      ? t(`page.proposal_activity.no_proposals_submitted`)
-                      : null}{' '}
-                    {list === ProposalActivityList.Watchlist ? (
-                      <Link href={locations.proposals()} onClick={prevent(() => navigate(locations.proposals()))}>
-                        {t(`page.proposal_activity.no_proposals_subscriptions_action`)}
-                      </Link>
-                    ) : list === ProposalActivityList.MyProposals ? (
-                      <Link href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
-                        {t(`page.proposal_activity.no_proposals_submitted_action`)}
-                      </Link>
-                    ) : null}
-                  </Paragraph>
+                  list === ProposalActivityList.Watchlist
+                    ? t(`page.proposal_activity.no_proposals_subscriptions`)
+                    : t(`page.proposal_activity.no_proposals_submitted`)
+                }
+                linkText={
+                  list === ProposalActivityList.Watchlist
+                    ? t(`page.proposal_activity.no_proposals_subscriptions_action`)
+                    : t(`page.proposal_activity.no_proposals_submitted_action`)
+                }
+                onLinkClick={
+                  list === ProposalActivityList.Watchlist
+                    ? () => navigate(locations.proposals())
+                    : () => navigate(locations.submit())
                 }
               />
             )}
