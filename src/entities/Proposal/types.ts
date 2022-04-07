@@ -653,7 +653,7 @@ export const newProposalLinkedWearablesScheme = {
     items: {
       type: 'integer',
       minLength: 1,
-      maxLength: 9999,
+      maxLength: 99999,
     },
     smart_contract: {
       type: 'array',
