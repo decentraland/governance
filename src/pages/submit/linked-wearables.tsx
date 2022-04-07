@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
@@ -164,7 +164,7 @@ const validate = createValidator<LinkedWearablesState>({
 })
 
 export default function SubmitLinkedWearables() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
@@ -211,12 +211,12 @@ export default function SubmitLinkedWearables() {
   const getListSection = (params: ListSectionType) => {
     return (
       <ContentSection>
-        <Label>{l(`page.submit_linked_wearables.${params.section}_label`)}</Label>
+        <Label>{t(`page.submit_linked_wearables.${params.section}_label`)}</Label>
         <Paragraph tiny secondary className="details">
-          {l(`page.submit_linked_wearables.${params.section}_detail`)}
+          {t(`page.submit_linked_wearables.${params.section}_detail`)}
         </Paragraph>
         <Paragraph small primary>
-          {l.optional(state.error[params.section])}
+          {t(state.error[params.section])}
         </Paragraph>
         <div className="SectionList">
           {Object.keys(state.value[params.section])
@@ -224,7 +224,7 @@ export default function SubmitLinkedWearables() {
             .map((key) => (
               <Field
                 key={key}
-                placeholder={l(`page.submit_linked_wearables.${params.type}_placeholder`)}
+                placeholder={t(`page.submit_linked_wearables.${params.type}_placeholder`)}
                 value={state.value[params.section][key]}
                 action={<Icon name="x" />}
                 onAction={() => handleRemoveOption(params.section, key)}
@@ -233,7 +233,7 @@ export default function SubmitLinkedWearables() {
               />
             ))}
           <Button basic onClick={() => handleAddOption(params.section)}>
-            {l(`page.submit_linked_wearables.${params.type}_add`)}
+            {t(`page.submit_linked_wearables.${params.type}_add`)}
           </Button>
         </div>
       </ContentSection>
@@ -277,8 +277,8 @@ export default function SubmitLinkedWearables() {
   if (!account) {
     return (
       <LogIn
-        title={l('page.submit_linked_wearables.title') || ''}
-        description={l('page.submit_linked_wearables.description') || ''}
+        title={t('page.submit_linked_wearables.title') || ''}
+        description={t('page.submit_linked_wearables.description') || ''}
       />
     )
   }
@@ -286,32 +286,32 @@ export default function SubmitLinkedWearables() {
   return (
     <ContentLayout small>
       <Head
-        title={l('page.submit_linked_wearables.title') || ''}
-        description={l('page.submit_linked_wearables.description') || ''}
+        title={t('page.submit_linked_wearables.title') || ''}
+        description={t('page.submit_linked_wearables.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Helmet title={l('page.submit_linked_wearables.title') || ''} />
+      <Helmet title={t('page.submit_linked_wearables.title') || ''} />
       <ContentSection>
-        <Header size="huge">{l('page.submit_linked_wearables.title')}</Header>
+        <Header size="huge">{t('page.submit_linked_wearables.title')}</Header>
       </ContentSection>
       <ContentSection className="MarkdownSection--tiny">
-        {l.markdown('page.submit_linked_wearables.description')}
+        <Markdown>{t('page.submit_linked_wearables.description')}</Markdown>
       </ContentSection>
       <ContentSection>
-        <Label>{l('page.submit_linked_wearables.name_label')}</Label>
+        <Label>{t('page.submit_linked_wearables.name_label')}</Label>
         <Paragraph tiny secondary className="details">
-          {l('page.submit_linked_wearables.name_detail')}
+          {t('page.submit_linked_wearables.name_detail')}
         </Paragraph>
         <Field
           value={state.value.name}
-          placeholder={l('page.submit_linked_wearables.name_placeholder')}
+          placeholder={t('page.submit_linked_wearables.name_placeholder')}
           onChange={(_, { value }) => editor.set({ name: value })}
           onBlur={() => editor.set({ name: state.value.name.trim() })}
           error={!!state.error.name}
           message={
-            l.optional(state.error.name) +
+            t(state.error.name) +
             ' ' +
-            l('page.submit.character_counter', {
+            t('page.submit.character_counter', {
               current: state.value.name.length,
               limit: schema.name.maxLength,
             })
@@ -322,23 +322,23 @@ export default function SubmitLinkedWearables() {
       {getListSection({ section: 'links', type: 'url' })}
       <ContentSection>
         <Label>
-          {l('page.submit_linked_wearables.motivation_label')}
+          {t('page.submit_linked_wearables.motivation_label')}
           <MarkdownNotice />
         </Label>
         <Paragraph tiny secondary className="details">
-          {l('page.submit_linked_wearables.motivation_detail')}
+          {t('page.submit_linked_wearables.motivation_detail')}
         </Paragraph>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.motivation}
-          placeholder={l('page.submit_linked_wearables.motivation_placeholder')}
+          placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
           onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
           onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
           error={!!state.error.motivation}
           message={
-            l.optional(state.error.motivation) +
+            t(state.error.motivation) +
             ' ' +
-            l('page.submit.character_counter', {
+            t('page.submit.character_counter', {
               current: state.value.motivation.length,
               limit: schema.motivation.maxLength,
             })
@@ -348,23 +348,23 @@ export default function SubmitLinkedWearables() {
       </ContentSection>
       <ContentSection>
         <Label>
-          {l('page.submit_linked_wearables.nft_collections_label')}
+          {t('page.submit_linked_wearables.nft_collections_label')}
           <MarkdownNotice />
         </Label>
         <Paragraph tiny secondary className="details">
-          {l('page.submit_linked_wearables.nft_collections_detail')}
+          {t('page.submit_linked_wearables.nft_collections_detail')}
         </Paragraph>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.nft_collections}
-          placeholder={l('page.submit_linked_wearables.nft_collections_placeholder')}
+          placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
           onChange={(_: any, { value }: any) => editor.set({ nft_collections: value })}
           onBlur={() => editor.set({ nft_collections: state.value.nft_collections.trim() })}
           error={!!state.error.nft_collections}
           message={
-            l.optional(state.error.nft_collections) +
+            t(state.error.nft_collections) +
             ' ' +
-            l('page.submit.character_counter', {
+            t('page.submit.character_counter', {
               current: state.value.nft_collections.length,
               limit: schema.nft_collections.maxLength,
             })
@@ -373,9 +373,9 @@ export default function SubmitLinkedWearables() {
         />
       </ContentSection>
       <ContentSection>
-        <Label>{l('page.submit_linked_wearables.items_label')}</Label>
+        <Label>{t('page.submit_linked_wearables.items_label')}</Label>
         <Paragraph tiny secondary className="details">
-          {l('page.submit_linked_wearables.items_detail')}
+          {t('page.submit_linked_wearables.items_detail')}
         </Paragraph>
         <Field
           type="number"
@@ -383,30 +383,30 @@ export default function SubmitLinkedWearables() {
           onChange={(_, { value }) => editor.set({ items: value ? Number(value) : undefined })}
           error={!!state.error.items}
           onAction={() => null}
-          message={l.optional(state.error.items)}
+          message={t(state.error.items)}
           disabled={formDisabled}
         />
       </ContentSection>
       {getListSection({ section: 'smart_contract', type: 'address' })}
       <ContentSection>
         <Label>
-          {l('page.submit_linked_wearables.governance_label')}
+          {t('page.submit_linked_wearables.governance_label')}
           <MarkdownNotice />
         </Label>
         <Paragraph tiny secondary className="details">
-          {l('page.submit_linked_wearables.governance_detail')}
+          {t('page.submit_linked_wearables.governance_detail')}
         </Paragraph>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.governance}
-          placeholder={l('page.submit_linked_wearables.governance_placeholder')}
+          placeholder={t('page.submit_linked_wearables.governance_placeholder')}
           onChange={(_: any, { value }: any) => editor.set({ governance: value })}
           onBlur={() => editor.set({ governance: state.value.governance.trim() })}
           error={!!state.error.governance}
           message={
-            l.optional(state.error.governance) +
+            t(state.error.governance) +
             ' ' +
-            l('page.submit.character_counter', {
+            t('page.submit.character_counter', {
               current: state.value.governance.length,
               limit: schema.governance.maxLength,
             })
@@ -416,9 +416,9 @@ export default function SubmitLinkedWearables() {
       </ContentSection>
       {getListSection({ section: 'managers', type: 'address' })}
       <ContentSection>
-        <Label>{l('page.submit_linked_wearables.programmatically_generated_label')}</Label>
+        <Label>{t('page.submit_linked_wearables.programmatically_generated_label')}</Label>
         <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
-          {l('page.submit_linked_wearables.programmatically_generated_description')}
+          {t('page.submit_linked_wearables.programmatically_generated_description')}
         </Paragraph>
         <div className="ProgrammaticallyGeneratedRadioButtons">
           <span>
@@ -426,7 +426,7 @@ export default function SubmitLinkedWearables() {
               checked={state.value.programmatically_generated}
               label={
                 <label>
-                  <Markdown source={l('modal.votes_list.voted_yes') || ''} />
+                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}
@@ -437,7 +437,7 @@ export default function SubmitLinkedWearables() {
               checked={!state.value.programmatically_generated}
               label={
                 <label>
-                  <Markdown source={l('modal.votes_list.voted_no') || ''} />
+                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}
@@ -445,32 +445,31 @@ export default function SubmitLinkedWearables() {
           </span>
         </div>
         <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
-          <Markdown
-            className="tinyMarkdown"
-            source={l('page.submit_linked_wearables.programmatically_generated_note') || ''}
-          />
+          <Markdown className="tinyMarkdown">
+            {t('page.submit_linked_wearables.programmatically_generated_note') || ''}
+          </Markdown>
         </Paragraph>
       </ContentSection>
       {state.value.programmatically_generated && (
         <ContentSection>
           <Label>
-            {l('page.submit_linked_wearables.method_label')}
+            {t('page.submit_linked_wearables.method_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {l('page.submit_linked_wearables.method_detail')}
+            {t('page.submit_linked_wearables.method_detail')}
           </Paragraph>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.method}
-            placeholder={l('page.submit_linked_wearables.method_placeholder')}
+            placeholder={t('page.submit_linked_wearables.method_placeholder')}
             onChange={(_: any, { value }: any) => editor.set({ method: value })}
             onBlur={() => editor.set({ method: state.value.method.trim() })}
             error={!!state.error.method}
             message={
-              l.optional(state.error.method) +
+              t(state.error.method) +
               ' ' +
-              l('page.submit.character_counter', {
+              t('page.submit.character_counter', {
                 current: state.value.method.length,
                 limit: schema.method.maxLength,
               })
@@ -481,13 +480,13 @@ export default function SubmitLinkedWearables() {
       )}
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
-          {l('page.submit.button_submit')}
+          {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
           <Paragraph small primary>
-            {l(state.error['*']) || state.error['*']}
+            {t(state.error['*']) || state.error['*']}
           </Paragraph>
         </ContentSection>
       )}

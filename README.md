@@ -22,7 +22,7 @@ If you are using WSL (Windows Subsystem for Linux) as your development environme
 
 ### Node version
 
-use node 12.22.7
+use node >= 16
 
 ### environment setup
 

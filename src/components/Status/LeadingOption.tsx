@@ -11,24 +11,32 @@ export type LeadingOptionProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 export default React.memo(function LeadingOption({ status, leadingOption, metVP }: LeadingOptionProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
 
   const proposalFinished = useMemo(() => {
-    return [ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(status)
+    return [ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(
+      status
+    )
   }, [status])
 
-  return <div className="LeadingOption">
-    {status !== ProposalStatus.Pending &&
-    <Paragraph small secondary>
-      {status === ProposalStatus.Active &&
-      <span>
-        {l('page.proposal_detail.leading_option_label') + ': '}<strong>{leadingOption}</strong>
-      </span>}
-      {proposalFinished &&
-      <span>{l('page.proposal_detail.finished_result_label') + ': '}
-        {!metVP ? l('page.proposal_detail.threshold_not_met_label') : <strong>{leadingOption}</strong>}
-      </span>}
-    </Paragraph>
-    }
-  </div>
+  return (
+    <div className="LeadingOption">
+      {status !== ProposalStatus.Pending && (
+        <Paragraph small secondary>
+          {status === ProposalStatus.Active && (
+            <span>
+              {t('page.proposal_detail.leading_option_label') + ': '}
+              <strong>{leadingOption}</strong>
+            </span>
+          )}
+          {proposalFinished && (
+            <span>
+              {t('page.proposal_detail.finished_result_label') + ': '}
+              {!metVP ? t('page.proposal_detail.threshold_not_met_label') : <strong>{leadingOption}</strong>}
+            </span>
+          )}
+        </Paragraph>
+      )}
+    </div>
+  )
 })

@@ -8,11 +8,10 @@ import { AggregatedTokenBalance } from '../../entities/Transparency/types'
 
 export type TokenBalanceCardProps = React.HTMLAttributes<HTMLDivElement> & {
   aggregatedTokenBalance: AggregatedTokenBalance
-
 }
 
 export default function TokenBalanceCard({ aggregatedTokenBalance }: TokenBalanceCardProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const [openPopup, setOpenPopup] = useState(false)
 
   function handleClick() {
@@ -28,13 +27,18 @@ export default function TokenBalanceCard({ aggregatedTokenBalance }: TokenBalanc
       <Icon name={aggregatedTokenBalance.tokenTotal.symbol.toLowerCase()} size={45} />
       <div className="TokenBalanceCard_description">
         <div className="TokenBalanceCard__Header">
-          <Header sub className="TokenBalanceCard__Symbol">{aggregatedTokenBalance.tokenTotal.symbol + ' Tokens'}</Header>
-          {aggregatedTokenBalance.tokenTotal.amount > 0 && <TokensPerWalletPopup tokensPerWallet={aggregatedTokenBalance.tokenInWallets}
-                                open={openPopup}
-                                onCloseHandler={onCloseHandler}
-          />}
+          <Header sub className="TokenBalanceCard__Symbol">
+            {aggregatedTokenBalance.tokenTotal.symbol + ' Tokens'}
+          </Header>
+          {aggregatedTokenBalance.tokenTotal.amount > 0 && (
+            <TokensPerWalletPopup
+              tokensPerWallet={aggregatedTokenBalance.tokenInWallets}
+              open={openPopup}
+              onCloseHandler={onCloseHandler}
+            />
+          )}
         </div>
-        <span>{l('general.number', { value: aggregatedTokenBalance.tokenTotal.amount })}</span>
+        <span>{t('general.number', { value: aggregatedTokenBalance.tokenTotal.amount })}</span>
       </div>
     </div>
   )
