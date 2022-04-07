@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
@@ -10,7 +10,6 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
@@ -49,10 +48,7 @@ export default React.memo(function ProposalDetailSection({
         <Header sub>{t('page.proposal_detail.details_label')}</Header>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_user_label')}</div>
-          <Link
-            className="DetailsSection__Value"
-            onClick={() => navigate(locations.balance({ address: proposal?.user }))}
-          >
+          <Link className="DetailsSection__Value" href={locations.balance({ address: proposal?.user })}>
             {profile && profile.name && (
               <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />
             )}
