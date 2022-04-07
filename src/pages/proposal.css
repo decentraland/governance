@@ -4,11 +4,11 @@
   }
 }
 
-.ProposalDetailPage .ui.grid>.row>.column.ProposalDetailDescription {
+.ProposalDetailPage .ui.grid > .row > .column.ProposalDetailDescription {
   width: 72% !important;
 }
 
-.ProposalDetailPage .ui.grid>.row>.column.ProposalDetailActions {
+.ProposalDetailPage .ui.grid > .row > .column.ProposalDetailActions {
   width: 28% !important;
 }
 
@@ -19,7 +19,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: normal;
-  color: #736E7D;
+  color: #736e7d;
 }
 
 .ProposalDetailPage .ProposalDetailDescription .dg.SubTitle {
@@ -27,17 +27,18 @@
   font-weight: 500;
 }
 
-.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph {
+.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph,
+.ProposalDetailPage .ProposalDetailDescription .dg.ListItem {
   font-size: 15px;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 767px) {
-  .ProposalDetailPage .ui.grid>.row>.column.ProposalDetailDescription {
+  .ProposalDetailPage .ui.grid > .row > .column.ProposalDetailDescription {
     width: 100% !important;
     padding: 1rem 0 !important;
   }
 
-  .ProposalDetailPage .ui.grid>.row>.column.ProposalDetailActions {
+  .ProposalDetailPage .ui.grid > .row > .column.ProposalDetailActions {
     width: 100% !important;
     padding: 1rem 0 !important;
   }
