@@ -5,12 +5,12 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import ActionableLayout from '../Layout/ActionableLayout'
 import Scale from '../Icon/Scale'
 import { snapshotUrl } from '../../entities/Proposal/utils'
 import { DelegationResult } from '../../hooks/useDelegation'
 import DelegatedCardProfile from './DelegatedCardProfile'
+import Empty from '../Proposal/Empty'
 import './DelegatedCard.css'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || '' // TODO: Move to snapshot utils file
@@ -40,23 +40,19 @@ const DelegatedCard = ({ delegation, account, accountBalance }: Props) => {
       <Card>
         <Card.Content className="DelegatedCard">
           {delegation.delegatedTo.length === 0 && (
-            <div className="DelegatedCard__Empty">
-              <Scale />
-              <Header>
-                {getAuthText(t(`page.balance.delegations_from_you`), t(`page.balance.delegations_from_title`))}
-              </Header>
-              <Markdown
-                className="DelegatedCard__EmptyDescription"
-                children={
-                  t(
-                    account === accountBalance
-                      ? `page.balance.delegations_from_you_empty_description`
-                      : `page.balance.delegations_from_address_empty`
-                  ) || ''
-                }
-              />
-              <Button basic>{t('page.balance.delegations_from_delegate_vp')}</Button>
-            </div>
+            <Empty
+              icon={<Scale />}
+              title={t('page.balance.delegations_from_empty_title')}
+              description={
+                t(
+                  account === accountBalance
+                    ? `page.balance.delegations_from_you_empty_description`
+                    : `page.balance.delegations_from_address_empty`
+                ) || ''
+              }
+              linkText={t('page.balance.delegations_from_delegate_vp')}
+              onLinkClick={() => alert('TODO: Opens voting power delegation modal')}
+            />
           )}
           {delegation.delegatedTo.length > 0 && (
             <>

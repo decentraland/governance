@@ -36,7 +36,7 @@ export default function DelegatedCardProfile({ address }: DelegatedCardProfilePr
         <div className="DelegatedCardProfile__ProfileContainer">
           <Avatar className="DelegatedCardProfile__ProfileAvatar" address={profile!.ethAddress} size="big" />
           <span className="DelegatedCardProfile__ProfileName">{profile!.name}</span>
-          <Link to={href}>{l('page.balance.delegations_from_view_profile')}</Link>
+          <Link href={href}>{l('page.balance.delegations_from_view_profile')}</Link>
         </div>
       )}
       <Loader size="small" active={profileState.loading} />
