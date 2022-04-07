@@ -1,24 +1,31 @@
 .Empty {
-  padding: 100px 0;
-  text-align: center;
-  border: 1px solid rgba(115, 110, 125, .24);
-  border-radius: 8px;
-}
-
-.Empty.full {
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 0;
+  justify-content: center;
+  text-align: center;
 }
 
-.Empty.without-border {
-  border: 0;
+.Empty .ui.header {
+  margin-top: 0;
+  margin-bottom: 7px;
+}
+
+.Empty .dg.Paragraph {
+  margin-bottom: 0 !important;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--secondary-text);
 }
 
 .Empty svg {
   margin-bottom: 24px;
+}
+
+.Empty__Description {
+  margin-bottom: 15px;
+}
+
+.Empty .dg.Link {
+  text-transform: uppercase;
 }
