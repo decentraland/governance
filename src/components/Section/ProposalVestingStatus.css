@@ -15,12 +15,7 @@
   padding: 0 !important;
 }
 
-.ProposalVestingStatus__NextUpdateDueDate .dg.Paragraph {
-  font-size: 13px;
-  line-height: 18px;
-}
-
-.ProposalVestingStatus__CurrentUpdateDueDate .dg.Paragraph {
+.ProposalVestingStatus__DueDate .dg.Paragraph {
   margin-top: 10px;
   font-size: 13px;
   line-height: 18px;

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
@@ -24,7 +24,7 @@ interface Props {
 export default function ProposalUpdate({ proposal, update, expanded, onClick, index }: Props) {
   const l = useFormatMessage()
   const [account] = useAuthContext()
-  const { introduction, highlights, status, completion_date } = update
+  const { introduction, status, completion_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
@@ -78,11 +78,8 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick, in
           </div>
           <div className="ProposalUpdate__Date">{Time.from(completion_date).fromNow()}</div>
         </div>
-        <div className="ProposalUpdate__Title">
-          <span>{introduction}</span>
-        </div>
         <div className="ProposalUpdate__Description--expanded">
-          <span>{highlights}</span>
+          <span>{introduction}</span>
         </div>
         <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${status}`])}>
           Keep reading

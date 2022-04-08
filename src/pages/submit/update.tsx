@@ -11,8 +11,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -125,7 +124,7 @@ const validate = createValidator<updateFormState>({
 })
 
 export default function Update() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
@@ -143,26 +142,23 @@ export default function Update() {
     onBlur: () => editor.set({ [fieldName]: state.value[fieldName].trim() }),
     error: !!state.error[fieldName],
     message:
-      l.optional(state.error[fieldName]) +
+      t(state.error[fieldName]) +
       ' ' +
-      l('page.submit.character_counter', {
+      t('page.submit.character_counter', {
         current: state.value[fieldName].length,
         limit: schema[fieldName].maxLength,
       }),
   })
 
-  const previewUpdate = useMemo(
-    () => ({
-      health: projectHealth,
-      introduction: state.value.introduction,
-      highlights: state.value.highlights,
-      blockers: state.value.blockers,
-      next_steps: state.value.nextSteps,
-      additional_notes: state.value.additionalNotes,
-      status: UpdateStatus.Pending,
-    }),
-    [state]
-  )
+  const previewUpdate = {
+    health: projectHealth,
+    introduction: state.value.introduction,
+    highlights: state.value.highlights,
+    blockers: state.value.blockers,
+    next_steps: state.value.nextSteps,
+    additional_notes: state.value.additionalNotes,
+    status: UpdateStatus.Pending,
+  }
 
   useEffect(() => {
     const submitUpdate = async () => {
@@ -226,8 +222,8 @@ export default function Update() {
     return (
       <Container>
         <Head
-          title={l('page.proposal_update.title') || ''}
-          description={l('page.proposal_update.description') || ''}
+          title={t('page.proposal_update.title') || ''}
+          description={t('page.proposal_update.description') || ''}
           image="https://decentraland.org/images/decentraland.png"
         />
         <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
@@ -238,21 +234,21 @@ export default function Update() {
   return (
     <ContentLayout small>
       <Head
-        title={l('page.proposal_update.title') || ''}
-        description={l('page.proposal_update.description') || ''}
+        title={t('page.proposal_update.title') || ''}
+        description={t('page.proposal_update.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
       <Helmet title="Publish Update" />
       <ContentSection>
-        <Header size="huge">{l('page.proposal_update.title')}</Header>
+        <Header size="huge">{t('page.proposal_update.title')}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{l('page.proposal_update.description')}</Paragraph>
+        <Paragraph small>{t('page.proposal_update.description')}</Paragraph>
       </ContentSection>
       {!isPreviewMode && (
         <>
           <ContentSection>
-            <Label>{l('page.proposal_update.health_label')}</Label>
+            <Label>{t('page.proposal_update.health_label')}</Label>
             <div className="UpdateSubmit__ProjectHealthContainer">
               <ProjectHealthButton
                 type={ProjectHealth.OnTrack}
@@ -260,7 +256,7 @@ export default function Update() {
                 onClick={setProjectHealth}
                 disabled={formDisabled}
               >
-                {l('page.proposal_update.on_track_label') || ''}
+                {t('page.proposal_update.on_track_label') || ''}
               </ProjectHealthButton>
               <ProjectHealthButton
                 type={ProjectHealth.AtRisk}
@@ -268,7 +264,7 @@ export default function Update() {
                 onClick={setProjectHealth}
                 disabled={formDisabled}
               >
-                {l('page.proposal_update.at_risk_label') || ''}
+                {t('page.proposal_update.at_risk_label') || ''}
               </ProjectHealthButton>
               <ProjectHealthButton
                 type={ProjectHealth.OffTrack}
@@ -276,37 +272,37 @@ export default function Update() {
                 onClick={setProjectHealth}
                 disabled={formDisabled}
               >
-                {l('page.proposal_update.off_track_label') || ''}
+                {t('page.proposal_update.off_track_label') || ''}
               </ProjectHealthButton>
             </div>
           </ContentSection>
           <MarkdownField
-            label={l('page.proposal_update.introduction_label')}
+            label={t('page.proposal_update.introduction_label')}
             disabled={formDisabled}
             minHeight={77}
             {...getFieldProps('introduction')}
           />
           <MarkdownField
-            label={l('page.proposal_update.highlights_label')}
-            placeholder={l('page.proposal_update.highlights_placeholder')}
+            label={t('page.proposal_update.highlights_label')}
+            placeholder={t('page.proposal_update.highlights_placeholder')}
             disabled={formDisabled}
             {...getFieldProps('highlights')}
           />
           <MarkdownField
-            label={l('page.proposal_update.blockers_label')}
-            placeholder={l('page.proposal_update.blockers_placeholder')}
+            label={t('page.proposal_update.blockers_label')}
+            placeholder={t('page.proposal_update.blockers_placeholder')}
             disabled={formDisabled}
             {...getFieldProps('blockers')}
           />
           <MarkdownField
-            label={l('page.proposal_update.next_steps_label')}
-            placeholder={l('page.proposal_update.next_steps_placeholder')}
+            label={t('page.proposal_update.next_steps_label')}
+            placeholder={t('page.proposal_update.next_steps_placeholder')}
             disabled={formDisabled}
             {...getFieldProps('nextSteps')}
           />
           <MarkdownField
-            label={l('page.proposal_update.additional_notes_label')}
-            placeholder={l('page.proposal_update.additional_notes_placeholder')}
+            label={t('page.proposal_update.additional_notes_label')}
+            placeholder={t('page.proposal_update.additional_notes_placeholder')}
             disabled={formDisabled}
             {...getFieldProps('additionalNotes')}
           />
@@ -315,16 +311,16 @@ export default function Update() {
       {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
       <ContentSection className="UpdateSubmit__Actions">
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
-          {l('page.proposal_update.publish_update')}
+          {t('page.proposal_update.publish_update')}
         </Button>
         <Button basic disabled={state.validated} onClick={() => setPreviewMode((prev) => !prev)}>
-          {isPreviewMode ? l('page.proposal_update.edit_update') : l('page.proposal_update.preview_update')}
+          {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}
         </Button>
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
           <Paragraph small primary>
-            {l(state.error['*']) || state.error['*']}
+            {t(state.error['*']) || state.error['*']}
           </Paragraph>
         </ContentSection>
       )}

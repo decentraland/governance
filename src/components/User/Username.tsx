@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'gatsby-plugin-intl'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
@@ -10,7 +10,7 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 
 interface Props {
   className?: string
-  profile?: Profile
+  profile?: Profile | null
   proposalUser?: ProposalAttributes['user']
 }
 
@@ -18,7 +18,7 @@ export default function Username({ className, profile, proposalUser }: Props) {
   const hasProfileName = profile && profile.name
 
   return (
-    <Link className={TokenList.join([className])} to={locations.balance({ address: proposalUser || '' })}>
+    <Link className={TokenList.join([className])} href={locations.balance({ address: proposalUser || '' })}>
       {hasProfileName && <Avatar size="mini" address={profile?.ethAddress} style={{ marginRight: '.5rem' }} />}
       {hasProfileName}
       {!hasProfileName && !!proposalUser && (

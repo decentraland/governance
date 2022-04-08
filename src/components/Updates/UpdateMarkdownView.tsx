@@ -14,7 +14,7 @@ import { ContentSection } from '../Layout/ContentLayout'
 
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id' | 'created_at' | 'updated_at'>
-  profile?: Profile
+  profile?: Profile | null
   proposalUser?: string
 }
 
@@ -27,17 +27,17 @@ const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
     <ContentSection className="UpdateDetail__Content">
       {update?.health && <ProjectHealthStatus health={update.health} />}
       <Header as="h2">{l('page.update_detail.introduction')}</Header>
-      <Markdown source={update?.introduction} />
+      <Markdown>{update?.introduction || ''}</Markdown>
       <Header as="h2">{l('page.update_detail.highlights')}</Header>
-      <Markdown source={update?.highlights} />
+      <Markdown>{update?.highlights || ''}</Markdown>
       <Header as="h2">{l('page.update_detail.blockers')}</Header>
-      <Markdown source={update?.blockers} />
+      <Markdown>{update?.blockers || ''}</Markdown>
       <Header as="h2">{l('page.update_detail.next_steps')}</Header>
-      <Markdown source={update?.next_steps} />
+      <Markdown>{update?.next_steps || ''}</Markdown>
       {update?.additional_notes && (
         <>
           <Header as="h2">{l('page.update_detail.additional_notes')}</Header>
-          <Markdown source={update?.additional_notes} />
+          <Markdown>{update?.additional_notes}</Markdown>
         </>
       )}
       {(profile || proposalUser) && (
@@ -49,7 +49,7 @@ const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
               <Username profile={profile} proposalUser={proposalUser} />
             </div>
             {update?.status === UpdateStatus.Late && (
-              <Markdown source={l('page.update_detail.due_date', { date: formattedDueDate }) || ''} />
+              <Markdown>{l('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown>
             )}
           </div>
         </>

@@ -197,7 +197,7 @@ export class Governance extends API {
   }) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/update`,
-      this.options().method('POST').authorization().json(update)
+      this.options().method('POST').authorization({ sign: true }).json(update)
     )
     return result.data
   }
@@ -214,7 +214,7 @@ export class Governance extends API {
   }) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/update`,
-      this.options().method('PATCH').authorization().json(update)
+      this.options().method('PATCH').authorization({ sign: true }).json(update)
     )
     return result.data
   }

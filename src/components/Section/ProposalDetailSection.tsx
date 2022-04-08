@@ -13,7 +13,7 @@ const openIcon = require('../../images/icons/open.svg').default
 
 export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
-  profile: Profile
+  profile?: Profile | null
   loading?: boolean
   disabled?: boolean
 }

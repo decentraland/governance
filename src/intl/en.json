@@ -321,8 +321,8 @@
       "description": "Thanks for taking part in the DAO"
     },
     "update_success": {
-      "title": "Update Successfully Published",
-      "description": "Thanks for sharing your Grant Update. Now go make some noise and let the community know about your progress."
+      "title": "Thanks for sharing your Grant Update",
+      "description": "Now go make some noise and let the\n\ncommunity know about your progress."
     }
   },
   "page": {
