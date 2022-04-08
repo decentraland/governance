@@ -7,9 +7,10 @@ import './ProposalComments.css'
 import ProposalComment from './ProposalComment'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+
 import { Governance } from '../../api/Governance'
 import { forumUrl } from '../../entities/Proposal/utils'
-import Empty from './Empty'
+import Empty from '../Common/Empty'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 

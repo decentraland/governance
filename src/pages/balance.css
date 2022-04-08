@@ -116,3 +116,7 @@
     margin-top: 0;
   }
 }
+
+.BalancePage .ActionableLayout__Action {
+  min-height: 35.99px !important;
+}

@@ -1,19 +1,18 @@
-import React from 'react'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Delegation } from '../../hooks/useDelegation'
-import VotingPowerListItem from './VotingPowerListItem'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import React from 'react'
 
+import VotingPowerListItem from './VotingPowerListItem'
 import './VotingPowerList.css'
 
 export type VotingPowerListProps = Omit<ModalProps, 'children'> & {
-  delegators: Delegation[]
-  scores: Record<string, number> | null
+  delegations: { delegator: string; vp: number }[]
   open: boolean
 }
 
-export function VotingPowerList({ delegators, scores, ...props }: VotingPowerListProps) {
+export function VotingPowerList({ delegations, scores, ...props }: VotingPowerListProps) {
   const t = useFormatMessage()
 
   return (
@@ -25,18 +24,17 @@ export function VotingPowerList({ delegators, scores, ...props }: VotingPowerLis
           />
         </div>
         <div className="VotingPowerList_Description">
-          {t.markdown('page.balance.delegated_voting_power_list_description')}
+          <Markdown>{t('page.balance.delegated_voting_power_list_description')}</Markdown>
         </div>
         <div className="VotingPowerList_Items">
-          {delegators.length > 0 &&
-            delegators.map((delegation) => {
-              const key = [delegation.delegate, delegation.delegator].join('::')
+          {delegations.length > 0 &&
+          delegations.map((delegation) => {
               return (
                 <VotingPowerListItem
                   className={'VotingPowerList_ItemWithDivider'}
-                  key={key}
+                  key={delegation.delegator}
                   address={delegation.delegator}
-                  votingPower={scores && scores[delegation.delegator.toLowerCase()]}
+                  votingPower={delegation.vp}
                 />
               )
             })}

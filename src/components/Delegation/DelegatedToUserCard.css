@@ -1,28 +1,23 @@
-.ActionableLayout.DelegatedToUser {
-	flex: 0 0 64% !important;
-}
-
 .DelegatedToUser__Title {
 	display: inline-flex;
 	align-items: baseline;
 	justify-content: space-between;
 }
 
-.DelegatedToUser__Title__Header {
+.ui.header.DelegatedToUser__Title__Header{
+	font-weight: 400;
 	margin-bottom: 0 !important;
 }
 
-button.ui.button.DelegatedToUser__ViewMore {
+.DelegatedToUser .dg.Paragraph {
+	font-size: 15px;
+	line-height: 24px;
+}
+
+button.ui.button.DelegatedToUser__ViewAll {
 	background-color: #edf3fd;
 	color: var(--background-catalyst);
 	margin-bottom: 8px;
 	border-radius: 12px;
 	outline: 1px solid #0000000a;
-}
-
-.ui.container.VotingPowerDetail .ui.card .ProfileListContainer {
-	max-height: 256px;
-	overflow: auto;
-	display: flex;
-	flex-direction: column;
 }
