@@ -1,34 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import Helmet from "react-helmet"
-import { navigate } from "gatsby-plugin-intl"
-import { Button } from "decentraland-ui/dist/components/Button/Button"
-import { Header } from "decentraland-ui/dist/components/Header/Header"
-import { Field } from "decentraland-ui/dist/components/Field/Field"
-import { Container } from "decentraland-ui/dist/components/Container/Container"
-import { Loader } from "decentraland-ui/dist/components/Loader/Loader"
-import { getPoiTypeAction, newProposalPOIScheme, PoiType } from "../../../entities/Proposal/types"
-import {
-  asNumber,
-  isAlreadyPointOfInterest,
-  isValidPointOfInterest,
-} from "../../../entities/Proposal/utils"
-import Paragraph from "decentraland-gatsby/dist/components/Text/Paragraph"
-import MarkdownTextarea from "decentraland-gatsby/dist/components/Form/MarkdownTextarea"
-import Label from "decentraland-gatsby/dist/components/Form/Label"
-import useFormatMessage from "decentraland-gatsby/dist/hooks/useFormatMessage"
-import useEditor, {
-  assert,
-  createValidator,
-} from "decentraland-gatsby/dist/hooks/useEditor"
-import ContentLayout, {
-  ContentSection,
-} from "../../Layout/ContentLayout"
-import { Governance } from "../../../api/Governance"
-import locations from "../../../modules/locations"
-import loader from "../../../modules/loader"
-import useAuthContext from "decentraland-gatsby/dist/context/Auth/useAuthContext"
-import Head from "decentraland-gatsby/dist/components/Head/Head"
-import MarkdownNotice from "../../Form/MarkdownNotice"
+import Helmet from 'react-helmet'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { getPoiTypeAction, newProposalPOIScheme, PoiType } from '../../../entities/Proposal/types'
+import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+import { Governance } from '../../../api/Governance'
+import locations from '../../../modules/locations'
+import loader from '../../../modules/loader'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MarkdownNotice from '../../Form/MarkdownNotice'
 import LogIn from '../../User/LogIn'
 
 type POIState = {
@@ -39,9 +30,9 @@ type POIState = {
 
 const schema = newProposalPOIScheme.properties
 const initialPoiState: POIState = {
-  x: "",
-  y: "",
-  description: "",
+  x: '',
+  y: '',
+  description: '',
 }
 
 const edit = (state: POIState, props: Partial<POIState>) => {
@@ -52,20 +43,14 @@ const edit = (state: POIState, props: Partial<POIState>) => {
 }
 
 function assertInMap(value: string | number) {
-  if (value === "") {
+  if (value === '') {
     return undefined
   }
 
   const x = asNumber(value)
   return (
-    assert(
-      !Number.isNaN(x) && Number.isFinite(x),
-      "error.poi.coordinates_not_a_number"
-    ) ||
-    assert(
-      x <= schema.x.maximum && x >= schema.x.minimum,
-      "error.poi.coordinates_out_of_map"
-    ) ||
+    assert(!Number.isNaN(x) && Number.isFinite(x), 'error.poi.coordinates_not_a_number') ||
+    assert(x <= schema.x.maximum && x >= schema.x.minimum, 'error.poi.coordinates_out_of_map') ||
     undefined
   )
 }
@@ -74,28 +59,15 @@ const validate = createValidator<POIState>({
   x: (state) => ({ x: assertInMap(state.x) }),
   y: (state) => ({ y: assertInMap(state.y) }),
   description: (state) => ({
-    description: assert(
-      state.description.length <= schema.description.maxLength,
-      "error.poi.description_too_large"
-    ),
+    description: assert(state.description.length <= schema.description.maxLength, 'error.poi.description_too_large'),
   }),
-  "*": (state) => ({
-    x:
-      assert(state.x !== "", "error.poi.coordinates_incomplete") ||
-      assertInMap(state.x),
-    y:
-      assert(state.y !== "", "error.poi.coordinates_incomplete") ||
-      assertInMap(state.y),
+  '*': (state) => ({
+    x: assert(state.x !== '', 'error.poi.coordinates_incomplete') || assertInMap(state.x),
+    y: assert(state.y !== '', 'error.poi.coordinates_incomplete') || assertInMap(state.y),
     description:
-      assert(state.description.length > 0, "error.poi.description_empty") ||
-      assert(
-        state.description.length >= schema.description.minLength,
-        "error.poi.description_too_short"
-      ) ||
-      assert(
-        state.description.length <= schema.description.maxLength,
-        "error.poi.description_too_large"
-      ),
+      assert(state.description.length > 0, 'error.poi.description_empty') ||
+      assert(state.description.length >= schema.description.minLength, 'error.poi.description_too_short') ||
+      assert(state.description.length <= schema.description.maxLength, 'error.poi.description_too_large'),
   }),
 })
 
@@ -122,12 +94,11 @@ async function validateAlreadyPointOfInterest(x: number, y: number, required: bo
     throw new Error(`error.poi.fetching_pois`)
   }
 
-  if(required) {
+  if (required) {
     if (!alreadyPointOfInterest) {
       throw new Error(`error.poi.coordinates_are_not_a_poi`)
     }
-  }
-  else {
+  } else {
     if (alreadyPointOfInterest) {
       throw new Error(`error.poi.coordinates_already_a_poi`)
     }
@@ -135,11 +106,11 @@ async function validateAlreadyPointOfInterest(x: number, y: number, required: bo
 }
 
 export type ProposalPoiPageProps = {
-  poiType: PoiType,
+  poiType: PoiType
 }
 
 export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPoiPageProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPoiState)
   const [formDisabled, setFormDisabled] = useState(false)
@@ -147,13 +118,13 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
 
   useEffect(() => {
     if (state.validated) {
-      setFormDisabled(true);
+      setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
           const x = asNumber(state.value.x)
           const y = asNumber(state.value.y)
 
-          switch(poiType) {
+          switch (poiType) {
             case PoiType.AddPOI:
               await validateAlreadyPointOfInterest(x, y, false)
               await validateTilePointOfInterest(x, y)
@@ -174,14 +145,14 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)
-          navigate(locations.proposal(proposal.id, { new: "true" }), {
+          navigate(locations.proposal(proposal.id, { new: 'true' }), {
             replace: true,
           })
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ "*": err.body?.error || err.message })
-          setFormDisabled(false);
+          editor.error({ '*': err.body?.error || err.message })
+          setFormDisabled(false)
         })
     }
   }, [state.validated])
@@ -197,38 +168,37 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   }
 
   if (!account) {
-    return <LogIn
-      title={l(`page.submit_poi.${action}.title`) || ""}
-      description={l("page.submit_poi.description") || ""}
-    />
+    return (
+      <LogIn title={t(`page.submit_poi.${action}.title`) || ''} description={t('page.submit_poi.description') || ''} />
+    )
   }
 
   return (
     <ContentLayout small>
       <Head
-        title={l(`page.submit_poi.${action}.title`) || ""}
-        description={l("page.submit_poi.description") || ""}
+        title={t(`page.submit_poi.${action}.title`) || ''}
+        description={t('page.submit_poi.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Helmet title={l(`page.submit_poi.${action}.title`) || ""} />
+      <Helmet title={t(`page.submit_poi.${action}.title`) || ''} />
       <ContentSection>
-        <Header size="huge">{l(`page.submit_poi.${action}.title`)}</Header>
+        <Header size="huge">{t(`page.submit_poi.${action}.title`)}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{l("page.submit_poi.description")}</Paragraph>
+        <Paragraph small>{t('page.submit_poi.description')}</Paragraph>
       </ContentSection>
       <ContentSection className="CoordinatesField">
-        <Label>{l(`page.submit_poi.${action}.coordinates_label`)}</Label>
+        <Label>{t(`page.submit_poi.${action}.coordinates_label`)}</Label>
         <Paragraph tiny secondary className="details">
-          {l("page.submit_poi.coordinates_detail")}
+          {t('page.submit_poi.coordinates_detail')}
         </Paragraph>
-        <div style={{ display: "flex", position: "relative" }}>
+        <div style={{ display: 'flex', position: 'relative' }}>
           <Field
             value={state.value.x}
             type="number"
             min={schema.x.minimum}
             max={schema.x.maximum}
-            placeholder={l("page.submit_poi.x_placeholder")}
+            placeholder={t('page.submit_poi.x_placeholder')}
             onChange={(_, { value }) => editor.set({ x: value })}
             error={!!state.error.x}
             disabled={formDisabled}
@@ -238,42 +208,38 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
             type="number"
             min={schema.y.minimum}
             max={schema.y.maximum}
-            placeholder={l("page.submit_poi.y_placeholder")}
+            placeholder={t('page.submit_poi.y_placeholder')}
             onChange={(_, { value }) => editor.set({ y: value })}
             error={!!state.error.y}
             disabled={formDisabled}
           />
 
-          <div style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0 }}>
             <Paragraph tiny primary>
-              {l.optional(state.error.x) || l.optional(state.error.y)}
+              {t(state.error.x) || t(state.error.y)}
             </Paragraph>
           </div>
         </div>
       </ContentSection>
       <ContentSection>
         <Label>
-          {l("page.submit_poi.description_label")}
+          {t('page.submit_poi.description_label')}
           <MarkdownNotice />
         </Label>
         <Paragraph tiny secondary className="details">
-          {l(`page.submit_poi.${action}.description_detail`)}
+          {t(`page.submit_poi.${action}.description_detail`)}
         </Paragraph>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
-          placeholder={l(`page.submit_poi.${action}.description_placeholder`)}
-          onChange={(_: any, { value }: any) =>
-            editor.set({ description: value })
-          }
-          onBlur={() =>
-            editor.set({ description: state.value.description.trim() })
-          }
+          placeholder={t(`page.submit_poi.${action}.description_placeholder`)}
+          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description}
           message={
-            l.optional(state.error.description) +
-            " " +
-            l("page.submit.character_counter", {
+            t(state.error.description) +
+            ' ' +
+            t('page.submit.character_counter', {
               current: state.value.description.length,
               limit: schema.description.maxLength,
             })
@@ -282,19 +248,14 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
         />
       </ContentSection>
       <ContentSection>
-        <Button
-          primary
-          disabled={state.validated}
-          loading={state.validated}
-          onClick={() => editor.validate()}
-        >
-          {l("page.submit.button_submit")}
+        <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
+          {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
-      {state.error["*"] && (
+      {state.error['*'] && (
         <ContentSection>
           <Paragraph small primary>
-            {l(state.error["*"]) || state.error["*"]}
+            {t(state.error['*']) || state.error['*']}
           </Paragraph>
         </ContentSection>
       )}

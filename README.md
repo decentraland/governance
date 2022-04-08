@@ -20,11 +20,11 @@ Before you start make sure you have installed:
 
 ### Node version
 
-use node `12.22.7`
+use node >= `16`
 
-If you are starting from scratch and you don't have Node installed in your computer, we recommend using a Node version manager like [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm instead of the Node installer:
+If you are starting from scratch and you don't have Node installed in your computer, we recommend using a Node version manager like [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm instead of the Node installer.
 
-`nvm install 12.22.7`
+`nvm install node` will install the latest version of node and npm.
 
 **NOTE**
 

@@ -13,40 +13,48 @@ export type MonthlyTotalProps = React.HTMLAttributes<HTMLDivElement> & {
   monthlyTotal: MonthlyTotal
 }
 
-export default React.memo(function MonthlyTotal({title, monthlyTotal }: MonthlyTotalProps) {
-  const l = useFormatMessage()
+export default React.memo(function MonthlyTotal({ title, monthlyTotal }: MonthlyTotalProps) {
+  const t = useFormatMessage()
 
-  return <div className="MonthlyTotal">
-    <Card>
-      <Card.Content className="MonthlyTotal_Headers">
-        <div>
-          <Header className="MonthlyTotal__Header">{title}</Header>
-          <Header size="huge" className="MonthlyTotal__Header">
-            ${formatBalance(monthlyTotal.total)}
-            <Header size="small" >USD</Header>
-          </Header>
-          <Header sub className="MonthlyTotal__Sub">
-            <strong className={TokenList.join([
-              'Number',
-              monthlyTotal.previous < 0 && `Number--Red`,
-              monthlyTotal.previous >= 0 && `Number--Green`])}>
-              {formatBalance(monthlyTotal.previous) + "% "}
-            </strong>
-            {l('page.transparency.mission.diff_label')}
-          </Header>
-        </div>
-      </Card.Content>
-      <Card.Content className="MonthlyTotal__Detail">
-        <div className="ItemsList">
-          {monthlyTotal.details && monthlyTotal.details.map((detail, index) => {
-            return <DetailItem
-              key={['incomeDetail', index].join('::')}
-              name={detail.name}
-              value={'$' + formatBalance(detail.value)}
-            />
-          })}
-        </div>
-      </Card.Content>
-    </Card>
-  </div>
+  return (
+    <div className="MonthlyTotal">
+      <Card>
+        <Card.Content className="MonthlyTotal_Headers">
+          <div>
+            <Header className="MonthlyTotal__Header">{title}</Header>
+            <Header size="huge" className="MonthlyTotal__Header">
+              ${formatBalance(monthlyTotal.total)}
+              <Header size="small">USD</Header>
+            </Header>
+            <Header sub className="MonthlyTotal__Sub">
+              <strong
+                className={TokenList.join([
+                  'Number',
+                  monthlyTotal.previous < 0 && `Number--Red`,
+                  monthlyTotal.previous >= 0 && `Number--Green`,
+                ])}
+              >
+                {formatBalance(monthlyTotal.previous) + '% '}
+              </strong>
+              {t('page.transparency.mission.diff_label')}
+            </Header>
+          </div>
+        </Card.Content>
+        <Card.Content className="MonthlyTotal__Detail">
+          <div className="ItemsList">
+            {monthlyTotal.details &&
+              monthlyTotal.details.map((detail, index) => {
+                return (
+                  <DetailItem
+                    key={['incomeDetail', index].join('::')}
+                    name={detail.name}
+                    value={'$' + formatBalance(detail.value)}
+                  />
+                )
+              })}
+          </div>
+        </Card.Content>
+      </Card>
+    </div>
+  )
 })
