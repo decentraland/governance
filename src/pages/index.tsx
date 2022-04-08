@@ -41,6 +41,7 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import { ShowBanner } from '../components/Banner/Banner'
 import useNewsletterSubscriptionModal from '../hooks/useNewsletterSubscriptionModal'
 import { NewsletterSubscriptionModal } from '../components/Modal/NewsletterSubscriptionModal'
+import DelegationBanner from '../components/Banner/Delegation/DelegationBanner'
 
 const ITEMS_PER_PAGE = 25
 
@@ -83,6 +84,8 @@ export default function IndexPage() {
       onAction={() => openState.setIsOpen(true)}
     />
   )
+
+  const [showDelegateBanner, setShowDelegateBanner] = useState(ShowBanner.NO)
 
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
@@ -156,6 +159,15 @@ export default function IndexPage() {
       />
       <Navigation activeTab={NavigationTab.Proposals} />
       <Container>
+        <div className="OnlyDesktop">
+          <DelegationBanner
+            active={!type}
+            bannerState={{
+              showBanner: showDelegateBanner,
+              setShowBanner: setShowDelegateBanner,
+            }}
+          />
+        </div>
         {!isMobile && search && proposals && <SearchTitle />}
         <Grid stackable>
           <Grid.Row>

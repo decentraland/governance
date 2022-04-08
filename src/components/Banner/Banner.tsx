@@ -2,7 +2,7 @@ import './Banner.css'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 
 export enum ShowBanner {
   YES,
@@ -16,8 +16,8 @@ export type BannerState = {
 
 export type BannerProps = {
   state: BannerState
-  title: string | null
-  description: string | null
+  title: string
+  description: string
   active?: boolean
   bannerHideKey: string
   icon: React.ReactNode

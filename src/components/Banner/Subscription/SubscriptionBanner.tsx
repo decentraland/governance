@@ -1,10 +1,14 @@
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import React from 'react'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import React, { useEffect } from 'react'
 
-import { HIDE_NEWSLETTER_SUBSCRIPTION_KEY } from '../../../hooks/useNewsletterSubscriptionModal'
 import Email from '../../Icon/Email'
-import Banner, { BannerProps, BannerState } from '../Banner'
-import SubscriptionBannerAction from './SubscriptionBannerAction'
+import Banner, { BannerProps, BannerState, ShowBanner } from '../Banner'
+
+export const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
+export const ANONYMOUS_USR_SUBSCRIPTION: string = 'anonymous_subscription'
+export const HIDE_NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription.hide'
 
 type SubscriptionBannerProps = {
   bannerState: BannerState
@@ -12,8 +16,28 @@ type SubscriptionBannerProps = {
   onAction?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
+const button = (label: string, onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) => {
+  return (
+    <Button className="Banner__Button" primary size="small" onClick={onClick}>
+      {label}
+    </Button>
+  )
+}
+
 function SubscriptionBanner({ active, bannerState, onAction }: SubscriptionBannerProps) {
   const t = useFormatMessage()
+  const [account] = useAuthContext()
+  const { setShowBanner } = bannerState
+
+  useEffect(() => {
+    const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]')
+
+    const showSubsBanner =
+      localStorage.getItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY) != 'true' &&
+      ((!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION)) ||
+        (account && !subscriptions.includes(account)))
+    setShowBanner(showSubsBanner ? ShowBanner.YES : ShowBanner.NO)
+  }, [account])
 
   const bannerProps: BannerProps = {
     state: bannerState,
@@ -22,7 +46,7 @@ function SubscriptionBanner({ active, bannerState, onAction }: SubscriptionBanne
     active,
     bannerHideKey: HIDE_NEWSLETTER_SUBSCRIPTION_KEY,
     icon: <Email />,
-    actionButton: <SubscriptionBannerAction onClick={onAction} />,
+    actionButton: button(t(`page.subscription_banner.subscribe_button_label`), onAction),
   }
 
   return <Banner {...bannerProps} />
