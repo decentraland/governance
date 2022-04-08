@@ -13,7 +13,7 @@ export type FilterProps = {
 }
 
 export default React.memo(function CategoryFilter({onChange}:FilterProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const type = toProposalType(params.get('type')) ?? undefined
@@ -26,21 +26,24 @@ export default React.memo(function CategoryFilter({onChange}:FilterProps) {
   }
 
   return (
-    <CollapsibleFilter title={l('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
-      <CategoryOption type={'all'}
-                      href={handleTypeFilter(null)}
-                      active={!type}
-                      className={'CategoryFilter__CategoryOption'} />{
-      (Object.keys(ProposalType) as Array<keyof typeof ProposalType>).map((key, index) => {
-        return <CategoryOption
-          key={'category_filter' + index}
-          type={ProposalType[key]}
-          href={handleTypeFilter(ProposalType[key])}
-          active={type === ProposalType[key]}
-          className={'CategoryFilter__CategoryOption'}
-        />
-      })
-    }
+    <CollapsibleFilter title={t('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
+      <CategoryOption
+        type={'all'}
+        href={handleTypeFilter(null)}
+        active={!type}
+        className={'CategoryFilter__CategoryOption'}
+      />
+      {(Object.keys(ProposalType) as Array<keyof typeof ProposalType>).map((key, index) => {
+        return (
+          <CategoryOption
+            key={'category_filter' + index}
+            type={ProposalType[key]}
+            href={handleTypeFilter(ProposalType[key])}
+            active={type === ProposalType[key]}
+            className={'CategoryFilter__CategoryOption'}
+          />
+        )
+      })}
     </CollapsibleFilter>
   )
 })
