@@ -130,8 +130,8 @@ const validate = createValidator<LinkedWearablesState>({
         ),
       items:
         assert(Number.isFinite(asNumber(state.items)), 'error.linked_wearables.items_invalid') ||
-        assert(asNumber(state.items) > schema.items.minLength, 'error.linked_wearables.items_too_low') ||
-        assert(asNumber(state.items) < schema.items.maxLength, 'error.linked_wearables.items_too_high'),
+        assert(asNumber(state.items) >= schema.items.minimum, 'error.linked_wearables.items_too_low') ||
+        assert(asNumber(state.items) <= schema.items.maximum, 'error.linked_wearables.items_too_high'),
       smart_contract:
         assert(
           smart_contract.some((option) => option !== ''),
