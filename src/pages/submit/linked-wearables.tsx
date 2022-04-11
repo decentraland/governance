@@ -112,7 +112,7 @@ const validate = createValidator<LinkedWearablesState>({
       links:
         assert(
           links.some((option) => option !== ''),
-          `error.linked_wearables.smart_contract_empty`
+          `error.linked_wearables.links_empty`
         ) ||
         assert(
           links.every((option) => isURL(option, { protocols: ['https'], require_protocol: true })),
