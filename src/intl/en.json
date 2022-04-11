@@ -452,7 +452,7 @@
       "delegated_to_user_empty_link": "Become a Delegate",
       "delegated_to_view_all_button": "View All",
       "delegated_voting_power_list_title": "Delegated Voting Power",
-      "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice. [Read more](https://google.com)",
+      "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice.",
       "delegations_from_label": "DELEGATIONS",
       "delegations_from_action": "EDIT DELEGATIONS",
       "delegations_from_user_title": "Your delegation",

@@ -46,7 +46,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: Props) => {
                     : 'page.balance.delegations_from_address_empty'
                 ) || ''
               }
-              linkText={t('page.balance.delegations_from_delegate_vp')}
+              linkText={isLoggedUserProfile ? t('page.balance.delegations_from_delegate_vp') : ''}
               onLinkClick={() => alert('TODO: Opens voting power delegation modal')}
             />
           )}
