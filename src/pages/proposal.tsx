@@ -12,7 +12,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Governance } from '../api/Governance'
 import useProposal from '../hooks/useProposal'
-
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import CategoryLabel from '../components/Category/CategoryLabel'
 import StatusLabel from '../components/Status/StatusLabel'
@@ -35,10 +34,6 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
-
-import './index.css'
-import './proposal.css'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalComments from '../components/Proposal/ProposalComments'
@@ -50,6 +45,9 @@ import ProposalUpdates from '../components/Proposal/ProposalUpdates'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import { UpdateAttributes } from '../entities/Updates/types'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
+import useProfile from '../hooks/useProfile'
+import './index.css'
+import './proposal.css'
 
 type ProposalPageOptions = {
   changing: boolean
@@ -76,9 +74,7 @@ export default function ProposalPage() {
   })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
-  const [profile] = useAsyncMemo(async () => (proposal?.user ? profiles.load(proposal.user) : null), [proposal?.user], {
-    callWithTruthyDeps: true,
-  })
+  const { profile } = useProfile(proposal?.user)
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [votes, votesState] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], {
     callWithTruthyDeps: true,

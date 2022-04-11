@@ -7,14 +7,15 @@ import { TextareaProps } from 'decentraland-gatsby/dist/components/Form/Textarea
 
 interface Props {
   label: string | null
+  showMarkdownNotice?: boolean
 }
 
-const MarkdownField = ({ label, ...props }: Props & TextareaProps) => {
+const MarkdownField = ({ label, showMarkdownNotice = true, ...props }: Props & TextareaProps) => {
   return (
     <ContentSection>
       <Label>
         {label}
-        <MarkdownNotice />
+        {showMarkdownNotice && <MarkdownNotice />}
       </Label>
       <MarkdownTextarea minHeight={140} {...props} />
     </ContentSection>

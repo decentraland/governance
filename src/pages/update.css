@@ -41,8 +41,8 @@
 }
 
 .UpdateDetail__Date a {
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 15px !important;
+  line-height: 24px !important;
   margin-left: 5px;
 }
 
