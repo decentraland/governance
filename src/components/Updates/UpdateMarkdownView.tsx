@@ -11,6 +11,7 @@ import Username from '../User/Username'
 import ProjectHealthStatus from './ProjectHealthStatus'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { ContentSection } from '../Layout/ContentLayout'
+import './UpdateMarkdownView.css'
 
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id' | 'created_at' | 'updated_at'>

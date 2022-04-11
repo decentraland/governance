@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Cancel({ className, size = "32" }: { size?: string; className?: string }) {
+function Cancel({ className, size = '32' }: { size?: string; className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

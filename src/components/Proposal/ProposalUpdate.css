@@ -16,18 +16,15 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 12px 16px;
+  border: 1px solid #736e7d;
 }
 
 .ProposalUpdate--pending {
   cursor: default;
 }
 
-.ProposalUpdate--done-expanded {
-  border: 1px solid #44b600;
-}
-
-.ProposalUpdate--late-expanded {
-  border: 1px solid #ffbc5b;
+.ProposalUpdate--missed {
+  border: 1px solid #f3b3be;
 }
 
 .ProposalUpdate:last-child {
@@ -51,16 +48,10 @@
   overflow: hidden;
 }
 
-.ProposalUpdate__Icon {
-  margin-right: 8px;
-}
-
-.ProposalUpdate__Icon--done {
-  filter: invert(61%) sepia(71%) saturate(3551%) hue-rotate(61deg) brightness(96%) contrast(101%);
-}
-
-.ProposalUpdate__Icon--late {
-  filter: invert(89%) sepia(63%) saturate(4395%) hue-rotate(311deg) brightness(98%) contrast(105%);
+.ProposalUpdate__IconContainer {
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
 }
 
 .ProposalUpdate__Description {
@@ -85,39 +76,40 @@
   margin-bottom: 8px;
 }
 
-.ProposalUpdate__Month {
+.ProposalUpdate__Index {
   font-size: 13px;
   line-height: 13px;
   font-weight: 500;
   color: #736e7d;
-  opacity: 0.6;
   text-transform: uppercase;
   margin-right: 5px;
 }
 
-.ProposalUpdate__Month--expanded {
+.ProposalUpdate__Index--expanded {
   font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
+  color: #161419;
   margin-right: 0;
-  opacity: 1;
-}
-
-.ProposalUpdate__Month--done,
-.ProposalUpdate__KeepReading--done {
-  color: #44b600;
-}
-
-.ProposalUpdate__Month--late,
-.ProposalUpdate__KeepReading--late {
-  color: #ffbc5b;
 }
 
 .ProposalUpdate__Date {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   font-size: 12px;
   line-height: 24px;
   color: #736e7d;
-  opacity: 0.6;
   text-transform: uppercase;
+}
+
+.ProposalUpdate__DateText {
+  color: #736e7d;
+  text-transform: uppercase;
+  opacity: 0.5;
 }
 
 .ProposalUpdate__Date i {
@@ -134,6 +126,26 @@
   margin-left: 3px;
 }
 
+.ProposalUpdate__KeepReading--done {
+  color: #44b600;
+}
+
+.ProposalUpdate__KeepReading--late {
+  color: #ffbc5b;
+}
+
 .ProposalUpdate .ui.basic.button {
   padding-right: 0;
+}
+
+.ProposalUpdate__Late {
+  padding: 3px 8px;
+  margin-left: 10px;
+  border-radius: 12px;
+  background: #ffeed5;
+  color: #ff7439;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
 }

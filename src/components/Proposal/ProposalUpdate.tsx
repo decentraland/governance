@@ -6,12 +6,14 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+import { ProjectHealth, UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import CancelIcon from '../Icon/Cancel'
-import DocumentIcon from '../Icon/Document'
 import locations from '../../modules/locations'
+import CheckIcon from '../Icon/Check'
+import WarningIcon from '../Icon/Warning'
 import './ProposalUpdate.css'
+import QuestionCircleIcon from '../Icon/QuestionCircle'
 
 interface Props {
   proposal: ProposalAttributes
@@ -21,16 +23,33 @@ interface Props {
   index: number
 }
 
-export default function ProposalUpdate({ proposal, update, expanded, onClick, index }: Props) {
+const getStatusIcon = (health: UpdateAttributes['health'], completion_date: UpdateAttributes['completion_date']) => {
+  if (!completion_date) {
+    return QuestionCircleIcon
+  }
+
+  switch (health) {
+    case ProjectHealth.OnTrack:
+      return CheckIcon
+    case ProjectHealth.AtRisk:
+      return WarningIcon
+    case ProjectHealth.OffTrack:
+    default:
+      return CancelIcon
+  }
+}
+
+const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) => {
   const l = useFormatMessage()
   const [account] = useAuthContext()
-  const { introduction, status, completion_date } = update
+  const { introduction, status, health, completion_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
     ? l('page.proposal_detail.grant.update_missed_owner')
     : l('page.proposal_detail.grant.update_missed')
-  const UpdateIcon = completion_date ? DocumentIcon : CancelIcon
+
+  const UpdateIcon = getStatusIcon(health, completion_date)
 
   const handleClick = useCallback(() => {
     if (!completion_date) {
@@ -53,36 +72,29 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick, in
       <div
         role="button"
         onClick={handleClick}
-        className={TokenList.join([
-          'ProposalUpdate',
-          'ProposalUpdate--expanded',
-          `ProposalUpdate--${status}`,
-          expanded && `ProposalUpdate--${status}-expanded`,
-        ])}
+        className={TokenList.join(['ProposalUpdate', 'ProposalUpdate--expanded', `ProposalUpdate--${status}`])}
       >
         <div className="ProposalUpdate__Heading">
           <div className="ProposalUpdate__Left">
-            <UpdateIcon
-              size="15"
-              className={TokenList.join(['ProposalUpdate__Icon', `ProposalUpdate__Icon--${status}`])}
-            />
-            <span
-              className={TokenList.join([
-                'ProposalUpdate__Month',
-                expanded && `ProposalUpdate__Month--expanded`,
-                `ProposalUpdate__Month--${status}`,
-              ])}
-            >
+            <div className="ProposalUpdate__IconContainer">
+              <UpdateIcon size="16" />
+            </div>
+            <span className={TokenList.join(['ProposalUpdate__Index', expanded && `ProposalUpdate__Index--expanded`])}>
               {l('page.proposal_detail.grant.update_index', { index })}
             </span>
           </div>
-          <div className="ProposalUpdate__Date">{Time.from(completion_date).fromNow()}</div>
+          <div className="ProposalUpdate__Date">
+            <span className="ProposalUpdate__DateText">{Time.from(completion_date).fromNow()}</span>
+            {status === UpdateStatus.Late && (
+              <span className="ProposalUpdate__Late">{l('page.proposal_detail.grant.update_late')}</span>
+            )}
+          </div>
         </div>
         <div className="ProposalUpdate__Description--expanded">
           <span>{introduction}</span>
         </div>
         <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${status}`])}>
-          Keep reading
+          {l('page.proposal_detail.grant.update_keep_reading')}
           <Icon name="chevron right" />
         </div>
         {!completion_date && isOwner && (
@@ -99,19 +111,30 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick, in
     <div
       role="button"
       onClick={handleClick}
-      className={TokenList.join(['ProposalUpdate', status === UpdateStatus.Pending && 'ProposalUpdate--pending'])}
+      className={TokenList.join([
+        'ProposalUpdate',
+        status === UpdateStatus.Pending && 'ProposalUpdate--pending',
+        !completion_date && 'ProposalUpdate--missed',
+      ])}
     >
       <div className="ProposalUpdate__Left">
-        <UpdateIcon className="ProposalUpdate__Icon" size="15" />
+        <div className="ProposalUpdate__IconContainer">
+          <UpdateIcon size="16" />
+        </div>
         <div className="ProposalUpdate__Description">
-          <span className="ProposalUpdate__Month">{l('page.proposal_detail.grant.update_index', { index })}:</span>
+          <span className="ProposalUpdate__Index">{l('page.proposal_detail.grant.update_index', { index })}:</span>
           <span>{completion_date ? introduction : missedUpdateText}</span>
         </div>
       </div>
       {completion_date && (
         <div className="ProposalUpdate__Date">
-          {Time.from(completion_date).fromNow()}
-          <Icon name="chevron right" />
+          <span className="ProposalUpdate__DateText">{Time.from(completion_date).fromNow()}</span>
+          {status === UpdateStatus.Late && (
+            <span className="ProposalUpdate__Late">{l('page.proposal_detail.grant.update_late')}</span>
+          )}
+          <div>
+            <Icon name="chevron right" />
+          </div>
         </div>
       )}
       {!completion_date && isOwner && (
@@ -122,3 +145,5 @@ export default function ProposalUpdate({ proposal, update, expanded, onClick, in
     </div>
   )
 }
+
+export default ProposalUpdate
