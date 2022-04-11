@@ -36,7 +36,7 @@ function Banner({ state, title, description, active, bannerHideKey, icon, action
   return (
     <>
       {showBanner == ShowBanner.YES && active && (
-        <a className="Banner">
+        <div className="Banner">
           <div className="Banner__Icon">{icon}</div>
           <div className="Banner__Content">
             <div className="Banner__Description">
@@ -48,7 +48,7 @@ function Banner({ state, title, description, active, bannerHideKey, icon, action
             <div className="Banner__ButtonContainer">{actionButton}</div>
           </div>
           <Close small onClick={handleClose} />
-        </a>
+        </div>
       )}
     </>
   )
