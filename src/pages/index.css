@@ -37,6 +37,10 @@
   justify-content: center !important;
 }
 
+.dg.Paragraph.Paragraph--semi-bold {
+  font-weight: 400;
+}
+
 /* Only Mobile */
 @media only screen and (max-width: 767px) {
   .ui.pagination.menu .item + .item {

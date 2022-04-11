@@ -16,12 +16,7 @@ const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hi
 
 const button = (label: string) => {
   return (
-    <Button
-      className="Banner__Button"
-      primary
-      size="small"
-      href="https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840"
-    >
+    <Button className="Banner__Button" primary size="small" href={process.env.GATSBY_DELEGATE_APPLICATION_URL || ''}>
       {label}
     </Button>
   )
