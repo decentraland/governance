@@ -4,13 +4,13 @@ import { SuccessModal, SuccessModalProps } from './SuccessModal'
 import { getUpdateUrl } from '../../entities/Proposal/utils'
 
 export default function UpdateSuccessModal({ updateId, proposalId, ...props }: SuccessModalProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const linkToCopy = getUpdateUrl(updateId, proposalId)
 
   return (
     <SuccessModal
-      title={l('modal.update_success.title')}
-      description={l('modal.update_success.description')}
+      title={t('modal.update_success.title')}
+      description={t('modal.update_success.description')}
       linkToCopy={linkToCopy}
       {...props}
     />

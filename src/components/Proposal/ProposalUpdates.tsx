@@ -18,7 +18,7 @@ export default function ProposalUpdates({
   updates?: UpdateAttributes[] | null
   onUpdateClick: (update: UpdateAttributes) => void
 }) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
 
   if (!updates || !proposal) {
     return null
@@ -30,14 +30,14 @@ export default function ProposalUpdates({
     <div className="ProposalUpdates">
       <Divider />
       <div className="ProposalUpdates__Header">
-        <Header>{l('page.proposal_detail.grant.update_title')}</Header>
+        <Header>{t('page.proposal_detail.grant.update_title')}</Header>
       </div>
       <div>
         {!hasUpdates && (
           <div className="ProposalUpdates__EmptyContainer">
             <Megaphone className="ProposalUpdates__EmptyIcon" />
             <Paragraph secondary className="ProposalUpdates__EmptyText">
-              {l('page.proposal_detail.grant.update_empty')}
+              {t('page.proposal_detail.grant.update_empty')}
             </Paragraph>
           </div>
         )}

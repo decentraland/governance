@@ -25,9 +25,9 @@ interface Props {
 }
 
 const ProjectHealthStatus = ({ health }: Props) => {
-  const l = useFormatMessage()
-  const titleText = l(`page.update_detail.${toSnakeCase(health)}_title`)
-  const descriptionText = l(`page.update_detail.${toSnakeCase(health)}_description`)
+  const t = useFormatMessage()
+  const titleText = t(`page.update_detail.${toSnakeCase(health)}_title`)
+  const descriptionText = t(`page.update_detail.${toSnakeCase(health)}_description`)
   const Icon = getIconComponent(health)
 
   return (

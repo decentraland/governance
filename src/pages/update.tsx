@@ -15,7 +15,7 @@ import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
 import './update.css'
 
 export default function UpdateDetail() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const updateId = params.get('id')
@@ -53,9 +53,9 @@ export default function UpdateDetail() {
     <ContentLayout small>
       <ContentSection className="UpdateDetail__Header">
         <span className="UpdateDetail__ProjectTitle">
-          {l('page.update_detail.project_title', { title: proposal?.title })}
+          {t('page.update_detail.project_title', { title: proposal?.title })}
         </span>
-        <Header size="huge">{l('page.update_detail.title', { index })}</Header>
+        <Header size="huge">{t('page.update_detail.title', { index })}</Header>
       </ContentSection>
       {update && <UpdateMarkdownView update={update} profile={profile} proposalUser={proposal?.user} />}
     </ContentLayout>

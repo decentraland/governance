@@ -40,14 +40,14 @@ const getStatusIcon = (health: UpdateAttributes['health'], completion_date: Upda
 }
 
 const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) => {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const [account] = useAuthContext()
   const { introduction, status, health, completion_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
-    ? l('page.proposal_detail.grant.update_missed_owner')
-    : l('page.proposal_detail.grant.update_missed')
+    ? t('page.proposal_detail.grant.update_missed_owner')
+    : t('page.proposal_detail.grant.update_missed')
 
   const UpdateIcon = getStatusIcon(health, completion_date)
 
@@ -80,13 +80,13 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
               <UpdateIcon size="16" />
             </div>
             <span className={TokenList.join(['ProposalUpdate__Index', expanded && `ProposalUpdate__Index--expanded`])}>
-              {l('page.proposal_detail.grant.update_index', { index })}
+              {t('page.proposal_detail.grant.update_index', { index })}
             </span>
           </div>
           <div className="ProposalUpdate__Date">
             <span className="ProposalUpdate__DateText">{Time.from(completion_date).fromNow()}</span>
             {status === UpdateStatus.Late && (
-              <span className="ProposalUpdate__Late">{l('page.proposal_detail.grant.update_late')}</span>
+              <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
             )}
           </div>
         </div>
@@ -94,12 +94,12 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
           <span>{introduction}</span>
         </div>
         <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${status}`])}>
-          {l('page.proposal_detail.grant.update_keep_reading')}
+          {t('page.proposal_detail.grant.update_keep_reading')}
           <Icon name="chevron right" />
         </div>
         {!completion_date && isOwner && (
           <Button basic onClick={handlePostUpdateClick}>
-            {l('page.proposal_detail.grant.update_button')}
+            {t('page.proposal_detail.grant.update_button')}
             <Icon name="chevron right" />
           </Button>
         )}
@@ -122,7 +122,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
           <UpdateIcon size="16" />
         </div>
         <div className="ProposalUpdate__Description">
-          <span className="ProposalUpdate__Index">{l('page.proposal_detail.grant.update_index', { index })}:</span>
+          <span className="ProposalUpdate__Index">{t('page.proposal_detail.grant.update_index', { index })}:</span>
           <span>{completion_date ? introduction : missedUpdateText}</span>
         </div>
       </div>
@@ -130,7 +130,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
         <div className="ProposalUpdate__Date">
           <span className="ProposalUpdate__DateText">{Time.from(completion_date).fromNow()}</span>
           {status === UpdateStatus.Late && (
-            <span className="ProposalUpdate__Late">{l('page.proposal_detail.grant.update_late')}</span>
+            <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
           )}
           <div>
             <Icon name="chevron right" />
@@ -139,7 +139,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
       )}
       {!completion_date && isOwner && (
         <Button basic onClick={handlePostUpdateClick}>
-          {l('page.proposal_detail.grant.update_button')}
+          {t('page.proposal_detail.grant.update_button')}
         </Button>
       )}
     </div>
