@@ -6,7 +6,7 @@ import profiles, { Profile } from 'decentraland-gatsby/dist/utils/loader/profile
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'gatsby-plugin-intl'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import locations from '../../modules/locations'
 import './DelegatedCardProfile.css'
 
@@ -15,7 +15,7 @@ export type DelegatedCardProfileProps = {
 }
 
 export default function DelegatedCardProfile({ address }: DelegatedCardProfileProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const [profile, profileState] = useAsyncMemo<Profile>(() => profiles.load(address || ''), [address])
 
   if (!address) {
@@ -23,7 +23,6 @@ export default function DelegatedCardProfile({ address }: DelegatedCardProfilePr
   }
 
   const isProfile = !!profile && !profile.isDefaultProfile
-  const href = locations.balance({ address })
 
   return (
     <div className="DelegatedCardProfile">
@@ -36,7 +35,7 @@ export default function DelegatedCardProfile({ address }: DelegatedCardProfilePr
         <div className="DelegatedCardProfile__ProfileContainer">
           <Avatar className="DelegatedCardProfile__ProfileAvatar" address={profile!.ethAddress} size="big" />
           <span className="DelegatedCardProfile__ProfileName">{profile!.name}</span>
-          <Link to={href}>{l('page.balance.delegations_from_view_profile')}</Link>
+          <Link href={locations.balance({ address })}>{t('page.balance.delegations_from_view_profile')}</Link>
         </div>
       )}
       <Loader size="small" active={profileState.loading} />

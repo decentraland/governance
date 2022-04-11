@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
 import CategoryOption from '../Category/CategoryOption'
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import CollapsibleFilter from './CollapsibleFilter'
 
 import './CategoryFilter.css'

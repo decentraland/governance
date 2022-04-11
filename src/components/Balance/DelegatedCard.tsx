@@ -23,13 +23,13 @@ interface Props {
 }
 
 const DelegatedCard = ({ delegation, account, accountBalance }: Props) => {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
 
   return (
     <ActionableLayout
       rightAction={
         <Button basic as={Link} href={EDIT_DELEGATION_URL} className="screenOnly">
-          {l(`page.balance.delegations_from_action`)}
+          {t(`page.balance.delegations_from_action`)}
           <Icon name="chevron right" />
         </Button>
       }
@@ -39,23 +39,20 @@ const DelegatedCard = ({ delegation, account, accountBalance }: Props) => {
           {delegation.delegatedTo.length === 0 && (
             <div className="DelegatedCard__Empty">
               <Scale />
-              <Header>{l('page.balance.delegations_from_empty_title')}</Header>
-              <Markdown
-                className="DelegatedCard__EmptyDescription"
-                source={
-                  l(
-                    account === accountBalance
-                      ? `page.balance.delegations_from_you_empty_description`
-                      : `page.balance.delegations_from_address_empty`
-                  ) || ''
-                }
-              />
-              <Button basic>{l('page.balance.delegations_from_delegate_vp')}</Button>
+              <Header>{t('page.balance.delegations_from_empty_title')}</Header>
+              <Markdown className="DelegatedCard__EmptyDescription">
+                {t(
+                  account === accountBalance
+                    ? `page.balance.delegations_from_you_empty_description`
+                    : `page.balance.delegations_from_address_empty`
+                ) || ''}
+              </Markdown>
+              <Button basic>{t('page.balance.delegations_from_delegate_vp')}</Button>
             </div>
           )}
           {delegation.delegatedTo.length > 0 && (
             <>
-              <Header>{l(`page.balance.delegations_from_title`)}</Header>
+              <Header>{t(`page.balance.delegations_from_title`)}</Header>
               {delegation.delegatedTo.map((delegation) => {
                 return (
                   <DelegatedCardProfile

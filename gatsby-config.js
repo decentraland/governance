@@ -1,4 +1,4 @@
-require("dotenv").config({
+require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
 })
 
@@ -18,6 +18,8 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-postcss`,
+    `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -30,9 +32,9 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-sri',
       options: {
-        hash: 'sha512', // 'sha256', 'sha384' or 'sha512' ('sha512' = default)
-        crossorigin: false // Optional
-      }
+        hash: 'sha512',
+        crossorigin: false,
+      },
     },
     {
       resolve: `gatsby-plugin-manifest`,
@@ -49,9 +51,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-typescript`,
       options: {
-        isTSX: true, // defaults to false
-        // jsxPragma: `jsx`, // defaults to `React`
-        allExtensions: true, // defaults to false,
+        isTSX: true,
+        allExtensions: true,
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
@@ -59,16 +60,14 @@ module.exports = {
     // `gatsby-plugin-offline`,
     // `gatsby-plugin-i18n`,
     {
-      resolve: `gatsby-plugin-intl`,
+      resolve: `decentraland-gatsby/dist/plugins/intl`,
       options: {
         // language JSON resource path
-        path: `${__dirname}/src/intl`,
+        paths: [`${__dirname}/src/intl`],
         // supported language
         languages: [`en` /*, `es`, `zh` */],
         // language file path
         defaultLanguage: `en`,
-        // option to redirect to `/ko` when connecting `/`
-        redirect: false,
       },
     },
   ],

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import locations from '../../modules/locations'
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import FilterLabel from './FilterLabel'
 import CollapsibleFilter from './CollapsibleFilter'
 import { FilterProps } from './CategoryFilter'

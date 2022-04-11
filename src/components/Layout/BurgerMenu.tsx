@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import './BurgerMenu.css'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 
 const FILTER_SHAPE_TRANSFORMS = [
   'rotate(0)',
