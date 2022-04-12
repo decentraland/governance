@@ -53,3 +53,15 @@ export const getPendingUpdates = (updates: UpdateAttributes[]): UpdateAttributes
 
   return pendingUpdates
 }
+
+const THRESHOLD_DAYS_TO_UPDATE = 15
+
+export const isBetweenThresholdDate = (dueDate?: Date) => {
+  if (!dueDate) {
+    return true
+  }
+
+  const newDueDate = Time(dueDate).add(THRESHOLD_DAYS_TO_UPDATE, 'day')
+
+  return Time().isBefore(newDueDate)
+}

@@ -14,6 +14,7 @@ import CheckIcon from '../Icon/Check'
 import WarningIcon from '../Icon/Warning'
 import './ProposalUpdate.css'
 import QuestionCircleIcon from '../Icon/QuestionCircle'
+import { isBetweenThresholdDate } from '../../entities/Updates/utils'
 
 interface Props {
   proposal: ProposalAttributes
@@ -42,7 +43,7 @@ const getStatusIcon = (health: UpdateAttributes['health'], completion_date: Upda
 const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) => {
   const t = useFormatMessage()
   const [account] = useAuthContext()
-  const { introduction, status, health, completion_date } = update
+  const { introduction, status, health, completion_date, due_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
@@ -97,15 +98,11 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
           {t('page.proposal_detail.grant.update_keep_reading')}
           <Icon name="chevron right" />
         </div>
-        {!completion_date && isOwner && (
-          <Button basic onClick={handlePostUpdateClick}>
-            {t('page.proposal_detail.grant.update_button')}
-            <Icon name="chevron right" />
-          </Button>
-        )}
       </div>
     )
   }
+
+  const showPostUpdateButton = !completion_date && isOwner && isBetweenThresholdDate(due_date)
 
   return (
     <div
@@ -137,7 +134,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
           </div>
         </div>
       )}
-      {!completion_date && isOwner && (
+      {showPostUpdateButton && (
         <Button basic onClick={handlePostUpdateClick}>
           {t('page.proposal_detail.grant.update_button')}
         </Button>

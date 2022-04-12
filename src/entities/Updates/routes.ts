@@ -6,7 +6,7 @@ import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate } from './utils'
+import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate, isBetweenThresholdDate } from './utils'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
 
@@ -51,7 +51,7 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
     publicUpdates,
     pendingUpdates,
     nextUpdate,
-    currentUpdate
+    currentUpdate,
   }
 }
 
@@ -92,7 +92,13 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   }
 
   const now = new Date()
-  const status = !update.due_date || Time(now).isBefore(update.due_date) ? UpdateStatus.Done : UpdateStatus.Late
+  const isOnTime = Time(now).isBefore(update.due_date)
+
+  if (!isOnTime && !isBetweenThresholdDate(update.due_date)) {
+    throw new RequestError(`Update is not on time: "${update.id}"`, RequestError.BadRequest)
+  }
+
+  const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
 
   await UpdateModel.update<UpdateAttributes>(
     { health, introduction, highlights, blockers, next_steps, additional_notes, status, completion_date: now },
