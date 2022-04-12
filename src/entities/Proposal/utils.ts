@@ -1,6 +1,5 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { ProposalAttributes, ProposalGrantTier, ProposalGrantTierValues, ProposalStatus, toProposalGrantTier } from './types'
 import numeral from 'numeral'
 
@@ -11,7 +10,7 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 
 export const MIN_NAME_SIZE = 2
 export const MAX_NAME_SIZE = 15
-export const DEFAULT_CHOICES = [ 'yes', 'no' ]
+export const DEFAULT_CHOICES = ['yes', 'no']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
 export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
@@ -55,20 +54,20 @@ export async function isValidPointOfInterest(x: number, y: number) {
 
 export async function isAlreadyACatalyst(domain: string) {
   const servers = await Catalyst.get().getServers()
-  return !!servers.find(server => server.address === 'https://' + domain)
+  return !!servers.find(server => server.baseUrl === 'https://' + domain)
 }
 
 export function isGrantSizeValid(tier: string | null, size: string | number): boolean {
   const tierIndex = Object.values(ProposalGrantTier).indexOf(toProposalGrantTier(tier)!)
   const values = Object.values(ProposalGrantTierValues)
 
-  if(tierIndex < 0 || tierIndex >= values.length) {
+  if (tierIndex < 0 || tierIndex >= values.length) {
     return false
   }
 
   const sizeNumber = asNumber(size)
   const upperTierLimit = values[tierIndex]
-  const lowerTierLimit = tierIndex === 0 ? asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0) : values[tierIndex-1]
+  const lowerTierLimit = tierIndex === 0 ? asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
 
   return sizeNumber > lowerTierLimit && sizeNumber <= upperTierLimit
 }
@@ -88,28 +87,8 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
   }
 }
 
-export function calcualteProposalStatus(proposal: ProposalAttributes): ProposalStatus {
-  const now = Date.now()
-  if (
-    (
-      proposal.status === ProposalStatus.Passed ||
-      proposal.status === ProposalStatus.Active
-    ) &&
-    Time.utc(proposal.finish_at).isBefore(now)
-  ) {
-    return ProposalStatus.Finished
-  } else if (
-    proposal.status === ProposalStatus.Pending &&
-    Time.utc(proposal.start_at).isBefore(now)
-  ) {
-    return ProposalStatus.Active
-  } else {
-    return proposal.status
-  }
-}
-
 export function asNumber(value: string | number): number {
-  switch(typeof value) {
+  switch (typeof value) {
     case 'number':
       return value
     case 'string':

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
-import { Modal, ModalProps} from 'decentraland-ui/dist/components/Modal/Modal'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from "decentraland-ui/dist/components/Field/Field"
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -17,15 +17,15 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 type UpdateProposalState = {
-  proposal: ProposalAttributes | null,
-  vestingAddress: string,
+  proposal: ProposalAttributes | null
+  vestingAddress: string
   description: string
 }
 
 const initialPollState: UpdateProposalState = {
   proposal: null,
   vestingAddress: '',
-  description: ''
+  description: '',
 }
 
 const edit = (state: UpdateProposalState, props: Partial<UpdateProposalState>) => {
@@ -37,70 +37,101 @@ const edit = (state: UpdateProposalState, props: Partial<UpdateProposalState>) =
 
 const validate = createValidator<UpdateProposalState>({
   vestingAddress: (state) => ({
-    vestingAddress: assert(!state.vestingAddress || isEthereumAddress(state.vestingAddress), 'error.update_status_proposal.grant_vesting_address_invalid')
+    vestingAddress: assert(
+      !state.vestingAddress || isEthereumAddress(state.vestingAddress),
+      'error.update_status_proposal.grant_vesting_address_invalid'
+    ),
   }),
   description: (state) => ({
-    description: undefined
-  })
+    description: undefined,
+  }),
 })
 
 export type UpdateProposalStatusModalProps = Omit<ModalProps, 'children'> & {
-  proposal?: ProposalAttributes | null,
-  status?: ProposalStatus | null,
+  proposal?: ProposalAttributes | null
+  status?: ProposalStatus | null
   loading?: boolean
-  onClickAccept?: (e: React.MouseEvent<any>, status: ProposalStatus, vestingContract: string | null, description: string) => void
+  onClickAccept?: (
+    e: React.MouseEvent<any>,
+    status: ProposalStatus,
+    vestingContract: string | null,
+    description: string
+  ) => void
 }
 
-export function UpdateProposalStatusModal({ onClickAccept, proposal, status, loading, open, ...props }: UpdateProposalStatusModalProps) {
-  const l = useFormatMessage()
-  const [ state, editor ] = useEditor(edit, validate, initialPollState)
+export function UpdateProposalStatusModal({
+  onClickAccept,
+  proposal,
+  status,
+  loading,
+  open,
+  ...props
+}: UpdateProposalStatusModalProps) {
+  const t = useFormatMessage()
+  const [state, editor] = useEditor(edit, validate, initialPollState)
 
   function handleAccept(e: React.MouseEvent<any>) {
-    editor.validate();
-    const hasErrors = Object.keys(state.error).length != 0;
+    editor.validate()
+    const hasErrors = Object.keys(state.error).length != 0
     if (status && !hasErrors && onClickAccept) {
       onClickAccept(e, status, state.value.vestingAddress ? state.value.vestingAddress : null, state.value.description)
     }
   }
 
   const cta = useMemo(() => {
-    switch(status) {
+    switch (status) {
       case ProposalStatus.Enacted:
         return 'page.proposal_detail.enact'
-        case ProposalStatus.Passed:
-          return 'page.proposal_detail.pass'
+      case ProposalStatus.Passed:
+        return 'page.proposal_detail.pass'
       case ProposalStatus.Rejected:
         return 'page.proposal_detail.reject'
       default:
         return 'modal.update_status_proposal.accept'
     }
-  }, [ status ])
+  }, [status])
 
-  return <Modal {...props} open={open && !!status} size="small" className={TokenList.join(['ProposalModal', 'UpdateProposalStatusModal', props.className])} closeIcon={<Close />}>
-    <Modal.Content className="ProposalModal__Title">
-      <Header>{l('modal.update_status_proposal.title', { status })}</Header>
-      <Markdown source={l('modal.update_status_proposal.description', { status }) || ''}/>
-    </Modal.Content>
-    {proposal && proposal.type === ProposalType.Grant && 
-      <Modal.Content className="ProposalModal__GrantVestingAddress">
-        <Label>{l('modal.update_status_proposal.grant_vesting_address')}</Label>
-        <Field
-          type="address"
-          value={state.value.vestingAddress}
-          onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
-          onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
-          message={l.optional(state.error.vestingAddress)}
-          error={!!state.error.vestingAddress}
+  return (
+    <Modal
+      {...props}
+      open={open && !!status}
+      size="small"
+      className={TokenList.join(['ProposalModal', 'UpdateProposalStatusModal', props.className])}
+      closeIcon={<Close />}
+    >
+      <Modal.Content className="ProposalModal__Title">
+        <Header>{t('modal.update_status_proposal.title', { status })}</Header>
+        <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
+      </Modal.Content>
+      {proposal && proposal.type === ProposalType.Grant && (
+        <Modal.Content className="ProposalModal__GrantVestingAddress">
+          <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
+          <Field
+            type="address"
+            value={state.value.vestingAddress}
+            onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
+            onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
+            message={t(state.error.vestingAddress)}
+            error={!!state.error.vestingAddress}
+          />
+        </Modal.Content>
+      )}
+      <Modal.Content className="ProposalModal__Form">
+        <Label>{t('modal.update_status_proposal.comments')}</Label>
+        <MarkdownTextarea
+          minHeight={150}
+          value={state.value.description}
+          onChange={(_: any, { value }: any) => editor.set({ description: value }, { validate: false })}
         />
       </Modal.Content>
-    }
-    <Modal.Content className="ProposalModal__Form">
-      <Label>{l('modal.update_status_proposal.comments')}</Label>
-      <MarkdownTextarea minHeight={150} value={state.value.description} onChange={(_: any, { value }: any) => editor.set({ description: value }, { validate: false })} />
-    </Modal.Content>
-    <Modal.Content className="ProposalModal__Actions">
-      <Button primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>{l(cta)}</Button>
-      <Button className="cancel" onClick={props.onClose}>{l('modal.update_status_proposal.reject')}</Button>
-    </Modal.Content>
-  </Modal>
+      <Modal.Content className="ProposalModal__Actions">
+        <Button primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
+          {t(cta)}
+        </Button>
+        <Button className="cancel" onClick={props.onClose}>
+          {t('modal.update_status_proposal.reject')}
+        </Button>
+      </Modal.Content>
+    </Modal>
+  )
 }

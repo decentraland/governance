@@ -32,40 +32,74 @@
   padding-right: 20px;
 }
 
+.CategoryBanner .CategoryBanner__TitleContainer {
+  display: flex;
+  align-items: center;
+}
+
+.CategoryBanner .NewBadge {
+  margin-left: 8px;
+  border-radius: 4px;
+  z-index: 1;
+  padding: 4px 5px;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 5px;
+  letter-spacing: -0.2px;
+  font-style: normal;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.CategoryBanner.CategoryBanner--catalyst .NewBadge,
 .CategoryBanner.CategoryBanner--catalyst:hover::before,
 .CategoryBanner.CategoryBanner--catalyst.CategoryBanner--active::before {
   background-color: var(--background-catalyst);
 }
 
+.CategoryBanner.CategoryBanner--poi .NewBadge,
 .CategoryBanner.CategoryBanner--poi:hover::before,
 .CategoryBanner.CategoryBanner--poi.CategoryBanner--active::before {
   background-color: var(--background-poi);
 }
 
+.CategoryBanner.CategoryBanner--add_poi .NewBadge,
 .CategoryBanner.CategoryBanner--add_poi:hover::before,
 .CategoryBanner.CategoryBanner--add_poi.CategoryBanner--active::before {
   background-color: var(--background-poi);
 }
 
+.CategoryBanner.CategoryBanner--remove_poi .NewBadge,
 .CategoryBanner.CategoryBanner--remove_poi:hover::before,
 .CategoryBanner.CategoryBanner--remove_poi.CategoryBanner--active::before {
   background-color: var(--background-remove-poi);
 }
 
+.CategoryBanner.CategoryBanner--ban_name .NewBadge,
 .CategoryBanner.CategoryBanner--ban_name:hover::before,
 .CategoryBanner.CategoryBanner--ban_name.CategoryBanner--active::before {
   background-color: var(--background-ban-name);
 }
 
+.CategoryBanner.CategoryBanner--grant .NewBadge,
 .CategoryBanner.CategoryBanner--grant:hover::before,
 .CategoryBanner.CategoryBanner--grant.CategoryBanner--active::before {
   background-color: var(--background-grant);
 }
 
+.CategoryBanner.CategoryBanner--linked_wearables .NewBadge,
+.CategoryBanner.CategoryBanner--linked_wearables:hover::before,
+.CategoryBanner.CategoryBanner--linked_wearables.CategoryBanner--active::before {
+  background-color: var(--background-linked-wearables);
+}
+
+.CategoryBanner.CategoryBanner--poll .NewBadge,
 .CategoryBanner.CategoryBanner--poll:hover::before,
 .CategoryBanner.CategoryBanner--poll.CategoryBanner--active::before,
+.CategoryBanner.CategoryBanner--draft .NewBadge,
 .CategoryBanner.CategoryBanner--draft:hover::before,
 .CategoryBanner.CategoryBanner--draft.CategoryBanner--active::before,
+.CategoryBanner.CategoryBanner--governance .NewBadge,
 .CategoryBanner.CategoryBanner--governance:hover::before,
 .CategoryBanner.CategoryBanner--governance.CategoryBanner--active::before {
   background-color: var(--background-poll);

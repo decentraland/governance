@@ -20,7 +20,7 @@ export type BurgerMenuContentProps = {
 
 const filtersInitialStatus = { categoryOpen: true, statusOpen: false, timeFrameOpen: false }
 
-const OPEN_BURGER_HEIGHT = 584
+const OPEN_BURGER_HEIGHT = 604
 const SEARCH_TITLE_HEIGHT = 32
 const CATEGORY_FILTER_HEIGHT = 368
 const STATUS_FILTER_HEIGHT = 290

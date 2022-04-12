@@ -51,6 +51,12 @@
   font-size: 17px;
 }
 
+.ContentLayout .ContentLayout__Section .ui.radio.checkbox label .dg.Paragraph {
+  font-size: 15px;
+  line-height: 18px;
+  color: #736E7D;
+}
+
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
   border-color: rgba(115, 110, 125, .32);
 }
@@ -66,4 +72,19 @@
 
 .ContentLayout .ContentLayout__Section.GrantSize .dcl.field .ui.input input {
   padding-right: 70px;
+}
+
+.SectionList {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+.ProgrammaticallyGeneratedRadioButtons {
+  margin-bottom: 10px;
+}
+
+.ProgrammaticallyGeneratedLabel .dg.Paragraph {
+  font-size: 15px;
+  color: var(--secondary-text);
 }
