@@ -3,7 +3,7 @@ import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import locations from '../../modules/locations'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { useSearchParams } from '../../hooks/useSearchParams'
@@ -29,7 +29,9 @@ export function SearchTitle() {
               <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__Ellipsis'])}>
                 {l('navigation.search.search_results', { title: search })}
               </Header>
-              <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__ClosingDoubleQuote'])}>{'"'}</Header>
+              <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__ClosingDoubleQuote'])}>
+                {'"'}
+              </Header>
             </div>
           </div>
         </div>

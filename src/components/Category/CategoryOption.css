@@ -54,6 +54,11 @@
   background-color: var(--background-grant);
 }
 
+.CategoryOption.CategoryOption--linked_wearables:hover::before,
+.CategoryOption.CategoryOption--linked_wearables.CategoryOption--active::before {
+  background-color: var(--background-linked-wearables);
+}
+
 .CategoryOption.CategoryOption--poll:hover::before,
 .CategoryOption.CategoryOption--poll.CategoryOption--active::before,
 .CategoryOption.CategoryOption--draft:hover::before,

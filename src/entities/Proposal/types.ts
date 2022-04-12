@@ -45,7 +45,7 @@ export enum ProposalStatus {
   Deleted = 'deleted'
 }
 
-export function isProposalStatus(value:  string | null | undefined): boolean {
+export function isProposalStatus(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalStatus.Pending:
     case ProposalStatus.Finished:
@@ -60,7 +60,7 @@ export function isProposalStatus(value:  string | null | undefined): boolean {
 }
 
 export function toProposalStatus(value: string | null | undefined): ProposalStatus | null {
-  return isProposalStatus(value)?
+  return isProposalStatus(value) ?
     value as ProposalStatus :
     null
 }
@@ -70,6 +70,7 @@ export enum ProposalType {
   Catalyst = 'catalyst',
   BanName = 'ban_name',
   Grant = 'grant',
+  LinkedWearables = 'linked_wearables',
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
@@ -80,7 +81,7 @@ export enum PoiType {
   RemovePOI = 'remove_poi',
 }
 
-export function isProposalType(value:  string | null | undefined): boolean {
+export function isProposalType(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
     case ProposalType.Catalyst:
@@ -89,13 +90,14 @@ export function isProposalType(value:  string | null | undefined): boolean {
     case ProposalType.Poll:
     case ProposalType.Draft:
     case ProposalType.Governance:
+    case ProposalType.LinkedWearables:
       return true
     default:
       return false
   }
 }
 
-export function isPoiType(value:  string | null | undefined): boolean {
+export function isPoiType(value: string | null | undefined): boolean {
   switch (value) {
     case PoiType.AddPOI:
     case PoiType.RemovePOI:
@@ -106,13 +108,13 @@ export function isPoiType(value:  string | null | undefined): boolean {
 }
 
 export function toProposalType(value: string | null | undefined): ProposalType | null {
-  return isProposalType(value)?
+  return isProposalType(value) ?
     value as ProposalType :
     null
 }
 
 export function toPoiType(value: string | null | undefined): PoiType | null {
-  return isPoiType(value)?
+  return isPoiType(value) ?
     value as PoiType :
     null
 }
@@ -136,9 +138,9 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
 
 export type UpdateProposalStatusProposal = {
   status:
-    | ProposalStatus.Rejected
-    | ProposalStatus.Passed
-    | ProposalStatus.Enacted
+  | ProposalStatus.Rejected
+  | ProposalStatus.Passed
+  | ProposalStatus.Enacted
   vesting_address: string | null
   description: string
 }
@@ -175,7 +177,7 @@ export type NewProposalPoll = {
   choices: string[],
 }
 
-export const INVALID_PROPOSAL_POLL_OPTIONS ='Invalid question/options'
+export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
 
 export const newProposalPollScheme = {
   type: 'object',
@@ -230,7 +232,7 @@ export const newProposalDraftScheme = {
     'conclusion'
   ],
   properties: {
-    linked_proposal_id:{
+    linked_proposal_id: {
       type: 'string',
       minLength: 36,
       maxLength: 255,
@@ -295,7 +297,7 @@ export const newProposalGovernanceScheme = {
     'conclusion'
   ],
   properties: {
-    linked_proposal_id:{
+    linked_proposal_id: {
       type: 'string',
       minLength: 36,
       maxLength: 255,
@@ -417,7 +419,7 @@ export const newProposalCatalystScheme = {
     },
     domain: {
       type: 'string',
-      format: 'domain'
+      format: 'hostname'
     },
     description: {
       type: 'string',
@@ -434,7 +436,7 @@ export enum ProposalGrantCategory {
   Gaming = 'Gaming'
 }
 
-export function isProposalGrantCategory(value:  string | null | undefined): boolean {
+export function isProposalGrantCategory(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantCategory.Community:
     case ProposalGrantCategory.ContentCreator:
@@ -464,7 +466,7 @@ export const ProposalGrantTierValues = {
   [ProposalGrantTier.Tier6]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER6 || 0),
 }
 
-export function isProposalGrantTier(value:  string | null | undefined): boolean {
+export function isProposalGrantTier(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantTier.Tier1:
     case ProposalGrantTier.Tier2:
@@ -478,11 +480,12 @@ export function isProposalGrantTier(value:  string | null | undefined): boolean 
   }
 }
 
-export function toProposalGrantTier(value:  string | null | undefined): ProposalGrantTier | null {
+export function toProposalGrantTier(value: string | null | undefined): ProposalGrantTier | null {
   return isProposalGrantTier(value) ? value as ProposalGrantTier : null
 }
 
 export const ProposalRequiredVP = {
+  [ProposalType.LinkedWearables]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
   [ProposalType.Grant]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT, 0),
   [ProposalType.Catalyst]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_CATALYST, 0),
   [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
@@ -573,7 +576,7 @@ export const newProposalGrantScheme = {
     },
     size: {
       type: 'integer',
-      min: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0)
+      minimum: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0),
     },
     beneficiary: {
       type: 'string',
@@ -599,6 +602,93 @@ export const newProposalGrantScheme = {
       minLength: 20,
       maxLength: 1500,
     }
+  }
+}
+
+export type NewProposalLinkedWearables = {
+  name: string,
+  links: string[],
+  nft_collections: string,
+  items: number,
+  smart_contract: string[],
+  governance: string,
+  motivation: string,
+  managers: string[],
+  programmatically_generated: boolean,
+  method: string,
+}
+
+export const newProposalLinkedWearablesScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'name',
+    'links',
+    'nft_collections',
+    'items',
+    'smart_contract',
+    'governance',
+    'motivation',
+    'managers',
+    'programmatically_generated',
+  ],
+  properties: {
+    name: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    links: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+      minItems: 1
+    },
+    nft_collections: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 750,
+    },
+    items: {
+      type: 'integer',
+      minimum: 1,
+      maximum: 99999,
+    },
+    smart_contract: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: "address",
+      },
+      minItems: 1
+    },
+    governance: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 750,
+    },
+    motivation: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 750,
+    },
+    managers: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: "address",
+      },
+      minItems: 1
+    },
+    programmatically_generated: {
+      type: 'boolean',
+    },
+    method: {
+      type: 'string',
+      minLength: 0,
+      maxLength: 750,
+    },
   }
 }
 
