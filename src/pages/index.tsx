@@ -38,8 +38,7 @@ import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
-import { ShowBanner } from '../components/Banner/Banner'
-import useNewsletterSubscriptionModal from '../hooks/useNewsletterSubscriptionModal'
+import useNewsletterSubscription from '../hooks/useNewsletterSubscription'
 import { NewsletterSubscriptionModal } from '../components/Modal/NewsletterSubscriptionModal'
 import DelegationBanner from '../components/Banner/Delegation/DelegationBanner'
 
@@ -69,23 +68,14 @@ export default function IndexPage() {
   const { status: burgerStatus } = useBurgerMenu()
   const { open, translate } = burgerStatus
 
-  const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(ShowBanner.NO)
-  const { openState, onSubscriptionSuccess, subscribed, onclose } = useNewsletterSubscriptionModal({
-    showBanner: showSubscriptionBanner,
-    setShowBanner: setShowSubscriptionBanner,
-  })
-  const subscriptionBanner = (
-    <SubscriptionBanner
-      active={!type}
-      bannerState={{
-        showBanner: showSubscriptionBanner,
-        setShowBanner: setShowSubscriptionBanner,
-      }}
-      onAction={() => openState.setIsOpen(true)}
-    />
-  )
-
-  const [showDelegateBanner, setShowDelegateBanner] = useState(ShowBanner.NO)
+  const {
+    showSubscriptionBanner,
+    isSubscriptionModalOpen,
+    setIsSubscriptionModalOpen,
+    onSubscriptionSuccess,
+    subscribed,
+    onclose,
+  } = useNewsletterSubscription()
 
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
@@ -136,7 +126,10 @@ export default function IndexPage() {
         className="OnlyMobile Animated"
         style={(isMobile && open && { transform: 'translateX(-200%)', height: 0 }) || {}}
       >
-        {subscriptionBanner}
+        <SubscriptionBanner
+          isVisible={showSubscriptionBanner && !searching}
+          onAction={() => setIsSubscriptionModalOpen(true)}
+        />
       </div>
       <Head
         title={
@@ -160,13 +153,7 @@ export default function IndexPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       <Container>
         <div className="OnlyDesktop">
-          <DelegationBanner
-            active={!type}
-            bannerState={{
-              showBanner: showDelegateBanner,
-              setShowBanner: setShowDelegateBanner,
-            }}
-          />
+          <DelegationBanner isVisible={!searching} />
         </div>
         {!isMobile && search && proposals && <SearchTitle />}
         <Grid stackable>
@@ -214,7 +201,14 @@ export default function IndexPage() {
                 }
               >
                 <Loader active={!proposals || proposalsState.loading} />
-                <div className="OnlyDesktop">{!searching && subscriptionBanner}</div>
+                <div className="OnlyDesktop">
+                  {!searching && (
+                    <SubscriptionBanner
+                      isVisible={showSubscriptionBanner && !searching}
+                      onAction={() => setIsSubscriptionModalOpen(true)}
+                    />
+                  )}
+                </div>
                 {type && !searching && <CategoryBanner type={type} active />}
                 {proposals && proposals.data.length === 0 && (
                   <Empty
@@ -253,7 +247,7 @@ export default function IndexPage() {
         </Grid>
       </Container>
       <NewsletterSubscriptionModal
-        open={openState.isOpen}
+        open={isSubscriptionModalOpen}
         onSubscriptionSuccess={onSubscriptionSuccess}
         subscribed={subscribed}
         onClose={onclose}
