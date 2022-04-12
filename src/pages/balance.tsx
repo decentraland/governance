@@ -59,6 +59,9 @@ export default function WrappingPage() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
+  const getAuthText = (authText: String, defaultText: String): String => {
+    return accountBalance === account ? authText : defaultText
+  }
   const wManaContract = useWManaContract()
   const [ff] = useFeatureFlagContext()
   const [space] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [SNAPSHOT_SPACE])
@@ -316,7 +319,7 @@ export default function WrappingPage() {
             <Card>
               <Card.Content>
                 <Header>
-                  <b>{t(`page.balance.delegated_to_title`)}</b>
+                  <b>{getAuthText(t(`page.balance.delegated_to_title`), t(`page.balance.received_delegations`))}</b>
                 </Header>
                 <Loader size="tiny" className="balance" active={delegationState.loading || scoresState.loading} />
                 <div className="ProfileListContainer">
@@ -363,7 +366,7 @@ export default function WrappingPage() {
             <Card>
               <Card.Content>
                 <Header>
-                  <b>{t(`page.balance.delegations_from_title`)}</b>
+                  <b>{getAuthText(t(`page.balance.delegations_from_you`), t(`page.balance.delegations_from_title`))}</b>
                 </Header>
                 <div className="ProfileListContainer">
                   {delegation.delegatedTo.length === 0 && (
