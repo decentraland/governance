@@ -741,7 +741,7 @@
       "off_track_label": "Off Track",
       "introduction_label": "Introduction",
       "highlights_label": "Highlights",
-      "highlights_placeholder": "What have you shipped? Where you’ve made progress? What are you proud of?",
+      "highlights_placeholder": "What have you shipped? Where have you made progress? What are you proud of?",
       "blockers_label": "Blockers",
       "blockers_placeholder": "What is being difficult? Why is the project delayed? When sharing a blocker, share the mitigation strategy you’re planning to remove that blocker.",
       "next_steps_label": "Next Steps",
