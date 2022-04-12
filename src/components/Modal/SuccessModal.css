@@ -28,30 +28,16 @@
   outline: 1px solid #0000000a;
 }
 
-.ui.modal.SuccessModal .SuccessModal__Banner::before {
-  display: block;
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 8px;
-  padding: 20px;
-  width: 100%;
-  height: 100%;
-}
-
 .SuccessModal__Banner .Description {
   max-width: 270px;
 }
 
-div.SuccessModal__Banner.JoinTheDiscussion::before {
-  background-color: #ff2d55;
-  opacity: 0.2;
+div.SuccessModal__Banner.JoinTheDiscussion {
+  background-color: rgba(255, 45, 85, 0.2);
 }
 
-div.SuccessModal__Banner.Discord::before {
-  background-color: #5865f2;
-  opacity: 0.3;
+div.SuccessModal__Banner.Discord {
+  background-color: rgba(88, 101, 242, 0.3);
 }
 
 div.SuccessModal__Banner.CopyLink {
