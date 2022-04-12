@@ -103,7 +103,14 @@ const validate = createValidator<GrantState>({
     tier: assert(!state.tier || isProposalGrantTier(state.tier), 'error.grant.tier_invalid') || undefined,
   }),
   size: (state) => ({
-    size: assert(!state.size || Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid'),
+    size:
+      assert(!state.size || Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
+      assert(!state.size || asNumber(state.size) > schema.size.minimum, 'error.grant.size_too_low') ||
+      assert(
+        !state.size || (!!state.tier && isGrantSizeValid(state.tier, state.size)),
+        'error.grant.size_tier_invalid'
+      ) ||
+      undefined,
   }),
   title: (state) => ({
     title: assert(state.title.length <= schema.title.maxLength, 'error.grant.title_too_large') || undefined,
@@ -312,6 +319,7 @@ export default function SubmitBanName() {
           type="number"
           value={state.value.size}
           onChange={(_, { value }) => editor.set({ size: value })}
+          onBlur={() => editor.set({ size: state.value.size })}
           error={!!state.error.size}
           action={
             <Paragraph tiny secondary>
