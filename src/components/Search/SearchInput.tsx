@@ -4,11 +4,11 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { useSearchParams } from '../../hooks/useSearchParams'
 import { useLocation } from '@reach/router'
-import { navigate } from 'gatsby-plugin-intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import locations from '../../modules/locations'
 import './SearchInput.css'
 
-export function handleSearch(textSearch:string, location: Location) {
+export function handleSearch(textSearch: string, location: Location) {
   const newParams = new URLSearchParams(location.search)
   if (textSearch) {
     newParams.set('search', textSearch)
@@ -26,28 +26,29 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>)
   const l = useFormatMessage()
   const location = useLocation()
   const { search } = useSearchParams()
-  const searchInput = useRef<HTMLInputElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
-  const [searchText, setSearchText] = useState(() => search || '');
-
-  useEffect(() => {
-    if(location.pathname === '/')  focusSearch()
-  }, [])
+  const [searchText, setSearchText] = useState(() => search || '')
 
   function focusSearch() {
-    searchInput.current?.focus();
+    searchInput.current?.focus()
   }
 
   useEffect(() => {
-    if (!search) setSearchText('')
+    if (!search) {
+      setSearchText('')
+      setOpen(false)
+    } else {
+      focusSearch()
+    }
   }, [search])
 
   function handleChange(e: React.ChangeEvent<any>) {
-    setSearchText(e.target.value);
+    setSearchText(e.target.value)
   }
 
   function handleClear() {
-    setSearchText('');
+    setSearchText('')
     focusSearch()
   }
 
@@ -59,17 +60,15 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>)
 
   const keyUpHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.code === 'Escape') {
-      setSearchText('');
+      setSearchText('')
     }
-  };
+  }
 
   return (
     <div className={'SearchContainer'}>
       <input
         {...props}
-        className={TokenList.join(['SearchInput',
-          open && 'SearchInput--open',
-          props.className])}
+        className={TokenList.join(['SearchInput', open && 'SearchInput--open', props.className])}
         value={searchText}
         placeholder={props.placeholder || l('navigation.search.placeholder') || ''}
         onChange={handleChange}
