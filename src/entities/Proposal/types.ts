@@ -701,5 +701,5 @@ export type ProposalComment = {
 
 export type ProposalCommentsInDiscourse = {
   totalComments: number,
-  firstComments: ProposalComment[]
+  comments: ProposalComment[]
 }

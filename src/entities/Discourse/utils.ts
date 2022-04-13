@@ -25,10 +25,9 @@ function setAvatarUrl(post: DiscoursePostInTopic) {
 
 export function filterComments(comments: DiscourseTopic):ProposalCommentsInDiscourse {
   const posts = comments.post_stream.posts
-  let filteredComments = posts.filter((post) =>
+  const userPosts = posts.filter((post) =>
     ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase()))
 
-  const userPosts: DiscoursePostInTopic[] = filteredComments.slice(0, 3)
 
   const proposalComments: ProposalComment[] = userPosts.map(post => {
     return {
@@ -40,7 +39,7 @@ export function filterComments(comments: DiscourseTopic):ProposalCommentsInDisco
   })
 
   return {
-    totalComments: filteredComments.length,
-    firstComments: proposalComments
+    totalComments: userPosts.length,
+    comments: proposalComments
   }
 }
