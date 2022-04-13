@@ -4,25 +4,31 @@
   </a>
 </p>
 <h1 align="center">
-  # Decentralized Autonomous Organization
+  Decentralized Autonomous Organization
 </h1>
 
 The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.
 
-![preview](./static/home.jpg)
+![Screenshot of the governance hub for Decentraland homepage](./static/home.jpg)
 
 ## Setup
 
----
-**NOTE**
+Before you start make sure you have installed:
 
-If you are using WSL (Windows Subsystem for Linux) as your development environment, clone the repository into the WSL filesystem. If you clone it inside the Windows filesystem, the project will not work.
-
----
+- [NodeJS](https://nodejs.dev/) that includes `npm`
+- [Homebrew](https://brew.sh/)
 
 ### Node version
 
-use node >= 16
+use node >= `16`
+
+If you are starting from scratch and you don't have Node installed in your computer, we recommend using a Node version manager like [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm instead of the Node installer.
+
+`nvm install node` will install the latest version of node and npm.
+
+**NOTE**
+
+If you are using WSL (Windows Subsystem for Linux) as your development environment, clone the repository into the WSL filesystem. If you clone it inside the Windows filesystem, the project will not work.
 
 ### environment setup
 
