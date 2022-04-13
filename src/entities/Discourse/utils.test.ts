@@ -30,7 +30,7 @@ describeIf(DISCOURSE_API_KEY !== 'DISCOURSE_API_KEY')('filterUserComments', () =
 
     it('should return a parsed list of the user comments with avatar, username, user comment, and comment date', () => {
       expect(filteredComments.firstComments[0].username).toBe('yemel')
-      expect(filteredComments.firstComments[0].avatar_url).toBe('https://sjc6.discourse-cdn.com/standard10/user_avatar/forum.decentraland.vote/yemel/45/1_2.png')
+      expect(filteredComments.firstComments[0].avatar_url).toBe('https://sea1.discourse-cdn.com/standard10/user_avatar/forum.decentraland.vote/yemel/45/1_2.png')
       expect(filteredComments.firstComments[0].created_at).toBe('2021-11-19T21:36:13.181Z')
       expect(filteredComments.firstComments[0].cooked).toBe('<p>I am commenting as Yemel</p>')
     });
