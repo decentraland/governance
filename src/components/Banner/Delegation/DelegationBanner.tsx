@@ -1,7 +1,7 @@
 import './DelegationBanner.css'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Delegate from '../../Icon/Delegate'
 import Banner from '../Banner'
@@ -14,12 +14,16 @@ const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hi
 
 function DelegationBanner({ isVisible }: DelegationBannerProps) {
   const t = useFormatMessage()
-  const hasHideDelegateBannerKey = localStorage.getItem(HIDE_DELEGATE_BANNER_KEY) === 'true'
+  const [hasHideBannerKey, setHasHideBannerKey] = useState(true)
+
+  useEffect(() => {
+    setHasHideBannerKey(localStorage.getItem(HIDE_DELEGATE_BANNER_KEY) === 'true')
+  }, [])
 
   return (
     <div className="DelegationBanner__Container">
       <Banner
-        isVisible={!hasHideDelegateBannerKey && isVisible}
+        isVisible={!hasHideBannerKey && isVisible}
         title={t(`page.delegate_banner.title`)}
         description={t(`page.delegate_banner.description`)}
         bannerHideKey={HIDE_DELEGATE_BANNER_KEY}

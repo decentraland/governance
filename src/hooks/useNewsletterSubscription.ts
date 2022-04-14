@@ -1,5 +1,5 @@
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ANONYMOUS_USR_SUBSCRIPTION, HIDE_NEWSLETTER_SUBSCRIPTION_KEY, NEWSLETTER_SUBSCRIPTION_KEY } from '../components/Banner/Subscription/SubscriptionBanner'
 
 function useNewsletterSubscription() {
@@ -8,12 +8,11 @@ function useNewsletterSubscription() {
 
   const [account, { loading }] = useAuthContext()
 
-  const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]')
-
   const [showBanner, setShowBanner] = useState(false)
 
   useEffect(() => {
     if (!loading) {
+      const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]')
       setShowBanner(
         localStorage.getItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY) != 'true' &&
         ((!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION)) || (!!account && !subscriptions.includes(account)))
