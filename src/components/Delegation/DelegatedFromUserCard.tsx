@@ -10,53 +10,54 @@ import Scale from '../Icon/Scale'
 import { snapshotUrl } from '../../entities/Proposal/utils'
 import { DelegationResult } from '../../hooks/useDelegation'
 import DelegatedCardProfile from './DelegatedCardProfile'
-import Empty from '../Proposal/Empty'
-import './DelegatedCard.css'
+import Empty from '../Common/Empty'
+import './DelegatedFromUserCard.css'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || '' // TODO: Move to snapshot utils file
 const EDIT_DELEGATION_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`) // TODO: Move to snapshot utils file
 
-interface Props {
+interface DelegatedFromUserCardProps {
+  isLoggedUserProfile: boolean
   delegation: DelegationResult
-  account: string | null
-  accountBalance: string | null
 }
 
-const DelegatedCard = ({ delegation, account, accountBalance }: Props) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
-  const getAuthText = (authText: String, defaultText: String): String => {
-    return accountBalance === account ? authText : defaultText
-  }
 
   return (
-    <ActionableLayout
+    <ActionableLayout className="DelegatedFromUserCard"
       rightAction={
-        <Button basic as={Link} href={EDIT_DELEGATION_URL} className="screenOnly">
+        isLoggedUserProfile && <Button basic as={Link} href={EDIT_DELEGATION_URL} >
           {t(`page.balance.delegations_from_action`)}
           <Icon name="chevron right" />
         </Button>
       }
     >
       <Card>
-        <Card.Content className="DelegatedCard">
+        <Card.Content className="DelegatedFromUserCard__Content">
           {delegation.delegatedTo.length === 0 && (
             <Empty
               icon={<Scale />}
               title={t('page.balance.delegations_from_empty_title')}
               description={
                 t(
-                  account === accountBalance
-                    ? `page.balance.delegations_from_you_empty_description`
-                    : `page.balance.delegations_from_address_empty`
+                  isLoggedUserProfile
+                    ? 'page.balance.delegations_from_you_empty_description'
+                    : 'page.balance.delegations_from_address_empty'
                 ) || ''
               }
-              linkText={t('page.balance.delegations_from_delegate_vp')}
+              linkText={isLoggedUserProfile ? t('page.balance.delegations_from_delegate_vp') : ''}
               onLinkClick={() => alert('TODO: Opens voting power delegation modal')}
             />
           )}
           {delegation.delegatedTo.length > 0 && (
             <>
-              <Header>{t(`page.balance.delegations_from_title`)}</Header>
+              <Header>{
+                t(
+                  isLoggedUserProfile ?
+                    'page.balance.delegations_from_user_title' :
+                    'page.balance.delegations_from_address_title'
+                )}</Header>
               {delegation.delegatedTo.map((delegation) => {
                 return (
                   <DelegatedCardProfile
@@ -73,4 +74,4 @@ const DelegatedCard = ({ delegation, account, accountBalance }: Props) => {
   )
 }
 
-export default DelegatedCard
+export default DelegatedFromUserCard
