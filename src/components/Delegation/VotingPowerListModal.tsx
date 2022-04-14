@@ -5,33 +5,33 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import React from 'react'
 
 import VotingPowerListItem from './VotingPowerListItem'
-import './VotingPowerList.css'
+import './VotingPowerListModal.css'
 
-export type VotingPowerListProps = Omit<ModalProps, 'children'> & {
+export type VotingPowerListModalProps = Omit<ModalProps, 'children'> & {
   delegations: { delegator: string; vp: number }[]
   open: boolean
 }
 
-export function VotingPowerList({ delegations, scores, ...props }: VotingPowerListProps) {
+export function VotingPowerListModal({ delegations, scores, ...props }: VotingPowerListModalProps) {
   const t = useFormatMessage()
 
   return (
-    <Modal {...props} size="tiny" className="VotingPowerList">
-      <div className="VotingPowerList__Content">
-        <div className="VotingPowerList__Header">
+    <Modal {...props} size="tiny" className="VotingPowerListModal">
+      <div className="VotingPowerListModal__Content">
+        <div className="VotingPowerListModal__Header">
           {t('page.balance.delegated_voting_power_list_title')}
           <Close onClick={props.onClose}
           />
         </div>
-        <div className="VotingPowerList_Description">
+        <div className="VotingPowerListModal_Description">
           <Markdown>{t('page.balance.delegated_voting_power_list_description')}</Markdown>
         </div>
-        <div className="VotingPowerList_Items">
+        <div className="VotingPowerListModal_Items">
           {delegations.length > 0 &&
           delegations.map((delegation) => {
               return (
                 <VotingPowerListItem
-                  className={'VotingPowerList_ItemWithDivider'}
+                  className={'VotingPowerListModal_ItemWithDivider'}
                   key={delegation.delegator}
                   address={delegation.delegator}
                   votingPower={delegation.vp}

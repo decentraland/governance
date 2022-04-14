@@ -1,4 +1,4 @@
-.VotingPowerListItem__Address {
+.VotingPowerListModalItem__Address {
 	padding-left: 8px;
 	color: var(--primary) !important;
 	font-weight: 400;
@@ -13,13 +13,13 @@
 	justify-content: space-between;
 }
 
-.VotingPowerListItem__Profile {
+.VotingPowerListModalItem__Profile {
 	display: inline-flex;
 	align-items: center;
 }
 
 
-.VotingPowerListItem__Blockie {
+.VotingPowerListModalItem__Blockie {
 	margin-left: 3px !important;
 	margin-right: 3px;
 }

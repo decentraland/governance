@@ -10,7 +10,7 @@ import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPower from '../Token/VotingPower'
-import { VotingPowerList } from './VotingPowerList'
+import { VotingPowerListModal } from './VotingPowerListModal'
 import VotingPowerListItem from './VotingPowerListItem'
 import './DelegatedToUserCard.css'
 
@@ -27,21 +27,21 @@ interface Props {
 export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, scores, loading }: Props) {
   const t = useFormatMessage()
   const [showDelegatorsList, setShowDelegatorsList] = useState(false)
-  const delegators = delegation.delegatedFrom
+  const delegatedFrom = delegation.delegatedFrom
   const delegatedVotingPower = useMemo(
     () => Object.values(scores || {}).reduce((total, current) => total + current, 0),
     [scores]
   )
   const delegationsList = useMemo(
     () =>
-      delegators && delegators.length > 0 && scores
-        ? delegators
-            .map((delegation) => {
-              return { delegator: delegation.delegator, vp: scores[delegation.delegator.toLowerCase()] || 0 }
+      delegatedFrom && delegatedFrom.length > 0 && scores
+        ? delegatedFrom
+            .map(({ delegator }) => {
+              return { delegator: delegator, vp: scores[delegator.toLowerCase()] || 0 }
             })
             .sort((d1, d2) => (d1.vp > d2.vp ? -1 : d1.vp < d2.vp ? 1 : 0))
         : [],
-    [delegators, scores]
+    [delegatedFrom, scores]
   )
 
   return (
@@ -52,7 +52,7 @@ export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, s
       >
         <Card>
           <Card.Content className="DelegatedCard">
-            {delegators.length === 0 && (
+            {delegatedFrom.length === 0 && (
               <Empty
                 icon={<Scale />}
                 title={
@@ -67,7 +67,7 @@ export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, s
                 linkHref={OPEN_CALL_FOR_DELEGATES_LINK}
               />
             )}
-            {delegators.length > 0 && (
+            {delegatedFrom.length > 0 && (
               <>
                 <div className={'DelegatedToUser__Title'}>
                   <Header className={'DelegatedToUser__Title__Header'}>
@@ -81,17 +81,11 @@ export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, s
                   <Loader size="tiny" className="balance" active={loading} />
                 </div>
 
-                <Stats className={'DelegatedToUser__Subtitle'} title={delegators.length + ' individuals' || ''} />
+                <Stats className={'DelegatedToUser__Subtitle'} title={delegatedFrom.length + ' individuals' || ''} />
                 <div className="ProfileListContainer">
                   {delegationsList &&
-                    delegationsList.slice(0, DISPLAYED_DELEGATIONS).map((delegation) => {
-                      return (
-                        <VotingPowerListItem
-                          key={delegation.delegator}
-                          address={delegation.delegator}
-                          votingPower={delegation.vp}
-                        />
-                      )
+                    delegationsList.slice(0, DISPLAYED_DELEGATIONS).map(({ delegator, vp }) => {
+                      return <VotingPowerListItem key={delegator} address={delegator} votingPower={vp} />
                     })}
                 </div>
                 {delegationsList && delegationsList.length > DISPLAYED_DELEGATIONS && (
@@ -109,7 +103,7 @@ export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, s
           </Card.Content>
         </Card>
       </ActionableLayout>
-      <VotingPowerList
+      <VotingPowerListModal
         open={showDelegatorsList}
         delegations={delegationsList}
         onClose={() => setShowDelegatorsList(false)}

@@ -1,32 +1,32 @@
-.VotingPowerList__Content {
+.VotingPowerListModal__Content {
 	width: 90%;
 	margin-left: 24px;
 	margin-top: 8px;
 }
 
-.VotingPowerList__Header {
+.VotingPowerListModal__Header {
 	width: 100%;
 	display: inline-flex;
 	align-items: center;
 	justify-content: space-between;
 }
 
-.VotingPowerList__Header .dcl.close {
+.VotingPowerListModal__Header .dcl.close {
 	position: inherit !important;
 	background-color: transparent;
 	width: 16px;
 }
 
-.VotingPowerList_Description p.dg.Paragraph  {
+.VotingPowerListModal_Description p.dg.Paragraph  {
 	font-size: 15px;
 	line-height: 24px;
 }
 
-p.dg.Paragraph a.dg.Link.Link--pointer .VotingPowerList_Description {
+p.dg.Paragraph a.dg.Link.Link--pointer .VotingPowerListModal_Description {
 	color: #6299f0;
 }
 
-.VotingPowerList_Items {
+.VotingPowerListModal_Items {
 	margin: 0 auto 40px;
 	height: 50vh;
 	padding: 20px 0;
@@ -36,6 +36,6 @@ p.dg.Paragraph a.dg.Link.Link--pointer .VotingPowerList_Description {
 	flex-direction: column;
 }
 
-.VotingPowerList_ItemWithDivider {
+.VotingPowerListModal_ItemWithDivider {
 	border-bottom: 1px solid #eaeaea;
 }
