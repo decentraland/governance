@@ -17,14 +17,14 @@ import './DelegatedToUserCard.css'
 const DISPLAYED_DELEGATIONS = 5
 const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5'
 
-interface Props {
+interface DelegatedToUserCardProps {
   delegation: DelegationResult
   scores: Record<string, number> | null
   isLoggedUserProfile: boolean
   loading: boolean
 }
 
-export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, scores, loading }: Props) {
+export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, scores, loading }: DelegatedToUserCardProps) {
   const t = useFormatMessage()
   const [showDelegatorsList, setShowDelegatorsList] = useState(false)
   const delegatedFrom = delegation.delegatedFrom

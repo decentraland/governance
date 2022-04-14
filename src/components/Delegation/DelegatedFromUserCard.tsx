@@ -16,12 +16,12 @@ import './DelegatedFromUserCard.css'
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || '' // TODO: Move to snapshot utils file
 const EDIT_DELEGATION_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`) // TODO: Move to snapshot utils file
 
-interface Props {
+interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
   delegation: DelegationResult
 }
 
-const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: Props) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
 
   return (
