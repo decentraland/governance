@@ -18,6 +18,7 @@ import { calculateChoiceColor, calculateResult } from '../../entities/Votes/util
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
+import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
@@ -90,14 +91,9 @@ export default React.memo(function ProposalResultSection({
           )
         })}
         <ProposalPromotionSection proposal={proposal} loading={loading} />
-        {proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed) && (
-          <div className="DetailsSection__Secondary">
-            <div className="DetailsSection__Secondary__Subtitle">{t('page.proposal_detail.required_vp')}</div>
-            <div className="DetailsSection__Secondary__Title">
-              {t('general.number', { value: proposal.required_to_pass })} VP
-            </div>
-          </div>
-        )}
+        {proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed) &&
+          <VotingStatusSummary proposal={proposal} votes={results}/>
+        }
       </div>
       {!finished && (
         <div className="DetailsSection__Content OnlyDesktop">
