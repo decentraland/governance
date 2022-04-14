@@ -1,29 +1,29 @@
-import React, { useMemo, useEffect } from 'react'
 import { useLocation } from '@gatsbyjs/reach-router'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
-import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
-import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import ActionableLayout from '../components/Layout/ActionableLayout'
-import StatusMenu from '../components/Status/StatusMenu'
-import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
-import Filter from '../components/Filter/Filter'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { Governance } from '../api/Governance'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import ProposalCard from '../components/Proposal/ProposalCard'
-import useSubscriptions from '../hooks/useSubscriptions'
-import Empty from '../components/Proposal/Empty'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import useProposals from '../hooks/useProposals'
-import './activity.css'
-import { isUnderMaintenance } from '../modules/maintenance'
+import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
+import React, { useEffect, useMemo } from 'react'
+import { Governance } from '../api/Governance'
+import Empty from '../components/Common/Empty'
+import Filter from '../components/Filter/Filter'
+import ActionableLayout from '../components/Layout/ActionableLayout'
+import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import ProposalCard from '../components/Proposal/ProposalCard'
+import StatusMenu from '../components/Status/StatusMenu'
 import LogIn from '../components/User/LogIn'
+import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
+import useProposals from '../hooks/useProposals'
+import useSubscriptions from '../hooks/useSubscriptions'
+import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
+import { isUnderMaintenance } from '../modules/maintenance'
+import './activity.css'
 
 const ITEMS_PER_PAGE = 12
 
@@ -46,7 +46,7 @@ export default function ActivityPage() {
       : {}
   const [proposals, proposalsState] = useProposals({ load, page, status, ...filters, itemsPerPage: ITEMS_PER_PAGE })
   const [subscriptions, subscriptionsState] = useSubscriptions()
-  const [results, subscriptionsResultsState] = useAsyncMemo(
+  const [results] = useAsyncMemo(
     () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
     [account, proposals],
     { callWithTruthyDeps: true }

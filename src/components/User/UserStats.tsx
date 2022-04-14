@@ -26,6 +26,8 @@ function sizeToScale(size?: HeaderProps['size']) {
       return 8
     case 'medium':
       return 5
+    case "small":
+      return 3
     default:
       return undefined
   }

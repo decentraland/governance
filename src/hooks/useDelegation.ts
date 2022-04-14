@@ -61,7 +61,7 @@ export default function useDelegation(address?: string | null, space?: string | 
     const data = body.data as DelegationQueryResult
     const result: DelegationResult = {
       delegatedTo: data.delegatedTo,
-      delegatedFrom: data.delegatedFrom.slice(0,99),
+      delegatedFrom: data.delegatedFrom,
       hasMoreDelegatedFrom: data.delegatedFrom.length > 99
     }
 
