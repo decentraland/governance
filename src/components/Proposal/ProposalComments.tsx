@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -12,6 +12,8 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Governance } from '../../api/Governance'
 import { forumUrl } from '../../entities/Proposal/utils'
 
+const DEFAULT_SHOWN_COMMENTS = 5
+
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   loading?: boolean
@@ -19,12 +21,26 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
   const t = useFormatMessage()
-  const [comments] = useAsyncMemo(
-    async () => (proposal ? Governance.get().getProposalComments(proposal!.id) : null),
-    [proposal]
-  )
-  let renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
+  const [comments] = useAsyncMemo(async () => (proposal ? Governance.get().getProposalComments(proposal!.id) : null), [
+    proposal,
+  ])
+  const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
   const commentsCount = useMemo(() => (renderComments ? comments!.totalComments : ''), [renderComments])
+  const [showAllComments, setShowAllComments] = useState(true)
+
+  useEffect(() => {
+    if (comments && comments.totalComments > DEFAULT_SHOWN_COMMENTS) {
+      setShowAllComments(false)
+    }
+  }, [comments])
+
+  const renderedComments = useMemo(() => {
+    if (comments && comments.totalComments > 0) {
+      return showAllComments ? comments!.comments : comments!.comments.slice(0, DEFAULT_SHOWN_COMMENTS)
+    } else {
+      return null
+    }
+  }, [comments, showAllComments])
 
   return (
     <div>
@@ -67,8 +83,8 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
                   </Button>
                 </div>
               )}
-              {renderComments &&
-                comments!.firstComments.map((comment, index) => (
+              {renderedComments &&
+                renderedComments.map((comment, index) => (
                   <ProposalComment
                     key={'comment_' + index}
                     avatar_url={comment.avatar_url}
@@ -78,7 +94,21 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
                   />
                 ))}
             </div>
-            {renderComments && (
+            {renderComments && !showAllComments && (
+              <Button
+                basic
+                className="ProposalComments__ReadMore"
+                disabled={!proposal}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  setShowAllComments(true)
+                }}
+              >
+                {t('page.proposal_comments.read_more_label')}
+              </Button>
+            )}
+            {renderComments && showAllComments && (
               <Button
                 basic
                 className="ProposalComments__ReadMore"
@@ -87,7 +117,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
                 rel="noopener noreferrer"
                 href={(proposal && forumUrl(proposal)) || ''}
               >
-                {t('page.proposal_comments.read_more_label')}
+                {t('page.proposal_comments.comment_on_this_proposal_label')}
               </Button>
             )}
           </div>
