@@ -406,6 +406,7 @@
     "proposal_comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",
       "join_discussion_label": "Join the discussion",
+      "comment_on_this_proposal_label": "Comment on this Proposal",
       "read_more_label": "Read More",
       "no_comments_text": "No comments yet, you have the chance to be the first one!"
     },
