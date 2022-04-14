@@ -38,7 +38,7 @@ function useNewsletterSubscription() {
     setIsSubscriptionModalOpen: setIsOpen,
     onSubscriptionSuccess: finishSubscription,
     subscribed,
-    onclose: closeSubscriptionBanner
+    onClose: closeSubscriptionBanner
   }
 
 }

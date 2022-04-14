@@ -74,7 +74,7 @@ export default function IndexPage() {
     setIsSubscriptionModalOpen,
     onSubscriptionSuccess,
     subscribed,
-    onclose,
+    onClose,
   } = useNewsletterSubscription()
 
   useEffect(() => {
@@ -250,7 +250,7 @@ export default function IndexPage() {
         open={isSubscriptionModalOpen}
         onSubscriptionSuccess={onSubscriptionSuccess}
         subscribed={subscribed}
-        onClose={onclose}
+        onClose={onClose}
       />
     </>
   )
