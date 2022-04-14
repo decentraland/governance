@@ -1,5 +1,5 @@
-import fetch from "isomorphic-fetch";
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo";
+import fetch from "isomorphic-fetch";
 
 const ENDPOINT = `https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot`
 const QUERY = `
@@ -44,13 +44,11 @@ const initialValue: DelegationResult = {
 }
 
 export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
-
-  if (delegations.length === 0) {
-    return []
+  if (delegations.length > 1) {
+    return delegations.filter(delegation => delegation.space === space)
   }
-  const delegation = delegations.find(d => d.space === space)
 
-  return [delegation || delegations[0]]
+  return delegations
 }
 
 export function filterDelegationFrom(delegations: Delegation[], space: string): Delegation[] {
@@ -60,7 +58,7 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
 
   const unique_delegations = new Map<String, Delegation>()
 
-  delegations.forEach(deleg => {
+  for (const deleg of delegations) {
     if (unique_delegations.has(deleg.delegate)) {
       if (unique_delegations.get(deleg.delegate)?.space !== space) {
         unique_delegations.set(deleg.delegate, deleg)
@@ -69,7 +67,7 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
     else {
       unique_delegations.set(deleg.delegate, deleg)
     }
-  })
+  }
 
   return Array.from(unique_delegations.values())
 }
