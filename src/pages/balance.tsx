@@ -4,6 +4,7 @@ import { ChainId, Network } from '@dcl/schemas'
 import { useLocation } from '@gatsbyjs/reach-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTransactionContext from 'decentraland-gatsby/dist/context/Auth/useTransactionContext'
@@ -28,17 +29,18 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { toWei } from 'web3x/utils/units'
 
 import { Snapshot } from '../api/Snapshot'
+import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
+import DelegatedToUserCard from '../components/Delegation/DelegatedToUserCard'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+
 import VotingPower from '../components/Token/VotingPower'
+import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
 import { useBalanceOf, useWManaContract } from '../hooks/useContract'
 import useDelegation from '../hooks/useDelegation'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
 import { isUnderMaintenance } from '../modules/maintenance'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
-import LogIn from '../components/User/LogIn'
-import DelegatedCard from '../components/Balance/DelegatedCard'
 
 const NAME_MULTIPLIER = 100
 const LAND_MULTIPLIER = 2000
@@ -52,20 +54,21 @@ export default function WrappingPage() {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [account] = useAuthContext()
-  const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
+  const [userAddress] = useAuthContext()
+  const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
+  const isLoggedUserProfile = userAddress === address
   const wManaContract = useWManaContract()
   const [space] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [SNAPSHOT_SPACE])
-  const [wMana, wManaState] = useBalanceOf(wManaContract, accountBalance, 'ether')
-  const [mana, manaState] = useManaBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
-  const [maticMana, maticManaState] = useManaBalance(accountBalance, ChainId.MATIC_MAINNET)
-  const [ens, ensState] = useEnsBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
-  const [land, landState] = useLandBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
-  const [estate, estateLand, estateState] = useEstateBalance(accountBalance, ChainId.ETHEREUM_MAINNET)
-  const [delegation] = useDelegation(accountBalance, SNAPSHOT_SPACE)
-  const [votingPower, votingPowerState] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
+  const [wMana, wManaState] = useBalanceOf(wManaContract, address, 'ether')
+  const [mana, manaState] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
+  const [maticMana, maticManaState] = useManaBalance(address, ChainId.MATIC_MAINNET)
+  const [ens, ensState] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
+  const [land, landState] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
+  const [estate, estateLand, estateState] = useEstateBalance(address, ChainId.ETHEREUM_MAINNET)
+  const [delegation, delegationState] = useDelegation(address, SNAPSHOT_SPACE)
+  const [votingPower, votingPowerState] = useVotingPowerBalance(address, SNAPSHOT_SPACE)
   const [transactions, transactionsState] = useTransactionContext()
-  const [scores] = useAsyncMemo(
+  const [scores, scoresState] = useAsyncMemo(
     () =>
       Snapshot.get().getLatestScores(
         space!,
@@ -73,10 +76,6 @@ export default function WrappingPage() {
       ),
     [space, delegation.delegatedFrom],
     { callWithTruthyDeps: true }
-  )
-  const delegatedVotingPower = useMemo(
-    () => Object.values(scores || {}).reduce((total, current) => total + current, 0),
-    [scores]
   )
   const unwrappingTransaction = useMemo(
     () => (transactions || []).find((tx) => tx.payload.id === UNWRAPPING_TRANSACTION_ID),
@@ -124,12 +123,12 @@ export default function WrappingPage() {
     )
   }
 
-  if (!account) {
+  if (!userAddress) {
     return <LogIn title={t('page.balance.title') || ''} description={t('page.balance.description') || ''} />
   }
 
   return (
-    <>
+    <div className="BalancePage">
       <Head
         title={t('page.balance.title') || ''}
         description={t('page.balance.description') || ''}
@@ -137,7 +136,7 @@ export default function WrappingPage() {
       />
       <Navigation activeTab={NavigationTab.Wrapping} />
       <Container className="VotingPowerSummary">
-        <UserStats size="huge" className="VotingPowerProfile" address={accountBalance || account} />
+        <UserStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
         <Stats title={t(`page.balance.total_label`) || ''}>
           <VotingPower value={votingPower} size="huge" />
           <Loader
@@ -203,7 +202,7 @@ export default function WrappingPage() {
                 <Stats title={t('page.balance.wrapped_balance_label') || ''}>
                   <VotingPower value={wMana!} size="medium" />
                 </Stats>
-                {account === accountBalance && (
+                {userAddress === address && (
                   <Button
                     basic
                     loading={unwrapping || (unwrappingTransaction?.status && isPending(unwrappingTransaction?.status!))}
@@ -295,8 +294,15 @@ export default function WrappingPage() {
           </Card>
         </ActionableLayout>
 
-        <DelegatedCard account={account} accountBalance={accountBalance} delegation={delegation} />
+        <DelegatedToUserCard
+          isLoggedUserProfile={isLoggedUserProfile}
+          delegation={delegation}
+          scores={scores}
+          loading={delegationState.loading || scoresState.loading}
+        />
+
+        <DelegatedFromUserCard isLoggedUserProfile={isLoggedUserProfile} delegation={delegation} />
       </Container>
-    </>
+    </div>
   )
 }

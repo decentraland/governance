@@ -1,0 +1,23 @@
+.DelegatedToUser__Title {
+	display: inline-flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.ui.header.DelegatedToUser__Title__Header{
+	font-weight: 400;
+	margin-bottom: 0 !important;
+}
+
+.DelegatedToUser .dg.Paragraph {
+	font-size: 15px;
+	line-height: 24px;
+}
+
+button.ui.button.DelegatedToUser__ViewAll {
+	background-color: #edf3fd;
+	color: var(--background-catalyst);
+	margin-bottom: 8px;
+	border-radius: 12px;
+	outline: 1px solid #0000000a;
+}

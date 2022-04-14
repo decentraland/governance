@@ -100,5 +100,5 @@ export default function useDelegation(address?: string | null, space?: string | 
     }
 
     return result
-  }, [ space, address ], { initialValue, callWithTruthyDeps: true })
+  }, [space, address], { initialValue, callWithTruthyDeps: true })
 }
