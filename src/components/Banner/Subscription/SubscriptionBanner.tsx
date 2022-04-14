@@ -1,6 +1,5 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import Email from '../../Icon/Email'
 import Banner from '../Banner'
