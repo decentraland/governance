@@ -20,18 +20,21 @@ const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call
 interface DelegatedToUserCardProps {
   delegation: DelegationResult
   scores: Record<string, number> | null
+  delegatedVotingPower: number
   isLoggedUserProfile: boolean
   loading: boolean
 }
 
-export default function DelegatedToUserCard({ isLoggedUserProfile, delegation, scores, loading }: DelegatedToUserCardProps) {
+export default function DelegatedToUserCard({
+  isLoggedUserProfile,
+  delegation,
+  loading,
+  scores,
+  delegatedVotingPower,
+}: DelegatedToUserCardProps) {
   const t = useFormatMessage()
   const [showDelegatorsList, setShowDelegatorsList] = useState(false)
   const delegatedFrom = delegation.delegatedFrom
-  const delegatedVotingPower = useMemo(
-    () => Object.values(scores || {}).reduce((total, current) => total + current, 0),
-    [scores]
-  )
   const delegationsList = useMemo(
     () =>
       delegatedFrom && delegatedFrom.length > 0 && scores
