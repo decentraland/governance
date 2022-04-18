@@ -10,7 +10,6 @@ query ($space: String!, $address: String!) {
     space
     timestamp
   },
-
   delegatedFrom: delegations(where: { space_in: ["", $space], delegate: $address }, orderBy: timestamp, orderDirection: desc) {
     delegator
     delegate

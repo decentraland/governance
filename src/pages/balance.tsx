@@ -8,7 +8,6 @@ import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/Maintena
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTransactionContext from 'decentraland-gatsby/dist/context/Auth/useTransactionContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useEnsBalance from 'decentraland-gatsby/dist/hooks/useEnsBalance'
 import useEstateBalance from 'decentraland-gatsby/dist/hooks/useEstateBalance'
@@ -28,7 +27,6 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { toWei } from 'web3x/utils/units'
 
-import { Snapshot } from '../api/Snapshot'
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
 import DelegatedToUserCard from '../components/Delegation/DelegatedToUserCard'
 import ActionableLayout from '../components/Layout/ActionableLayout'
@@ -39,6 +37,7 @@ import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
 import { useBalanceOf, useWManaContract } from '../hooks/useContract'
 import useDelegation from '../hooks/useDelegation'
+import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -58,25 +57,17 @@ export default function WrappingPage() {
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
   const wManaContract = useWManaContract()
-  const [space] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [SNAPSHOT_SPACE])
   const [wMana, wManaState] = useBalanceOf(wManaContract, address, 'ether')
   const [mana, manaState] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
   const [maticMana, maticManaState] = useManaBalance(address, ChainId.MATIC_MAINNET)
   const [ens, ensState] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
   const [land, landState] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
   const [estate, estateLand, estateState] = useEstateBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [delegation, delegationState] = useDelegation(address, SNAPSHOT_SPACE)
+  const [delegation, delegationState] = useDelegation(address)
   const [votingPower, votingPowerState] = useVotingPowerBalance(address, SNAPSHOT_SPACE)
   const [transactions, transactionsState] = useTransactionContext()
-  const [scores, scoresState] = useAsyncMemo(
-    () =>
-      Snapshot.get().getLatestScores(
-        space!,
-        delegation.delegatedFrom.map((delegation) => delegation.delegator)
-      ),
-    [space, delegation.delegatedFrom],
-    { callWithTruthyDeps: true }
-  )
+  const { scores, isLoadingScores, delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
+
   const unwrappingTransaction = useMemo(
     () => (transactions || []).find((tx) => tx.payload.id === UNWRAPPING_TRANSACTION_ID),
     [transactions]
@@ -298,7 +289,8 @@ export default function WrappingPage() {
           isLoggedUserProfile={isLoggedUserProfile}
           delegation={delegation}
           scores={scores}
-          loading={delegationState.loading || scoresState.loading}
+          loading={delegationState.loading || isLoadingScores}
+          delegatedVotingPower={delegatedVotingPower}
         />
 
         <DelegatedFromUserCard isLoggedUserProfile={isLoggedUserProfile} delegation={delegation} />
