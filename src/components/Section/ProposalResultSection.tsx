@@ -98,6 +98,7 @@ export default React.memo(function ProposalResultSection({
       {!finished && (
         <ProposalVotingSection
           vote={vote}
+          votes={votes}
           loading={loading}
           account={account}
           accountStateLoading={accountState.loading}

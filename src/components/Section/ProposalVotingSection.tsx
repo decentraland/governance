@@ -9,9 +9,12 @@ import { Vote } from '../../entities/Votes/types'
 import locations from '../../modules/locations'
 import { calculateChoiceColor } from '../../entities/Votes/utils'
 import ChoiceButton from './ChoiceButton'
+import useDelegation from '../../hooks/useDelegation'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 interface Props {
   vote: Vote | null
+  votes?: Record<string, Vote> | null
   loading?: boolean
   account: string | null
   accountStateLoading: boolean
@@ -25,6 +28,7 @@ interface Props {
 
 const ProposalVotingSection = ({
   vote,
+  votes,
   loading,
   account,
   accountStateLoading,
@@ -37,6 +41,11 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
 
+  const [delegations] = useDelegation(account)
+
+  const delegate = delegations?.delegatedTo[0]?.delegate
+  const delegateVote = votes?.[delegate]
+
   return (
     <div className="DetailsSection__Content OnlyDesktop">
       <Loader active={!loading && accountStateLoading} />
@@ -45,6 +54,13 @@ const ProposalVotingSection = ({
         <Button basic loading={accountStateLoading} disabled={accountStateLoading} onClick={() => accountStateSelect()}>
           {t('general.sign_in')}
         </Button>
+      )}
+
+      {!delegateVote && <span>{delegate} is your delegate.</span>}
+      {!!delegateVote && (
+        <span>
+          {delegate} voted {Time.unix(delegateVote.timestamp).fromNow()}.
+        </span>
       )}
 
       {account &&
