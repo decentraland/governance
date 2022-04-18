@@ -2,7 +2,6 @@ import React from 'react'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import ActionableLayout from '../Layout/ActionableLayout'
@@ -36,7 +35,6 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
         isLoggedUserProfile && (
           <Button basic as={Link} href={EDIT_DELEGATION_URL}>
             {t(`page.balance.delegations_from_action`)}
-            <Icon name="chevron right" />
           </Button>
         )
       }
