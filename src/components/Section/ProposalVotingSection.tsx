@@ -10,10 +10,11 @@ import locations from '../../modules/locations'
 import { calculateChoiceColor } from '../../entities/Votes/utils'
 import ChoiceButton from './ChoiceButton'
 import useDelegation from '../../hooks/useDelegation'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
+import DelegateLabel from './DelegateLabel'
+import VotedChoiceButton from './VotedChoiceButton'
 
 interface Props {
-  vote: Vote | null
   votes?: Record<string, Vote> | null
   loading?: boolean
   account: string | null
@@ -22,12 +23,13 @@ interface Props {
   changingVote?: boolean
   choices: string[]
   started: boolean
+  finished: boolean
   onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
+  onChangeVote?: (e: React.MouseEvent<any, MouseEvent>, changing: boolean) => void
   votingPower?: number
 }
 
 const ProposalVotingSection = ({
-  vote,
   votes,
   loading,
   account,
@@ -36,15 +38,25 @@ const ProposalVotingSection = ({
   changingVote,
   choices,
   started,
+  finished,
   onVote,
+  onChangeVote,
   votingPower,
 }: Props) => {
   const t = useFormatMessage()
-
   const [delegations] = useDelegation(account)
-
+  const vote = (account && votes && votes[account]) || null
   const delegate = delegations?.delegatedTo[0]?.delegate
   const delegateVote = votes?.[delegate]
+  const somebodyVoted = vote || delegateVote
+  const hasChoices = choices.length > 0
+  const showChoiceButtons = account && hasChoices && (!somebodyVoted || changingVote)
+  const showVotingPower = started && account && (!somebodyVoted || changingVote)
+  const showVote = account && hasChoices && vote && !changingVote
+  const showDelegateVote = account && !vote && delegateVote && !changingVote
+  const isVotingOpen = started && !finished
+  const showChangeVoteButton = isVotingOpen && somebodyVoted && !changingVote
+  const showCancelChangeVoteButton = isVotingOpen && somebodyVoted && changingVote
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">
@@ -56,28 +68,25 @@ const ProposalVotingSection = ({
         </Button>
       )}
 
-      {!delegateVote && <span>{delegate} is your delegate.</span>}
-      {!!delegateVote && (
-        <span>
-          {delegate} voted {Time.unix(delegateVote.timestamp).fromNow()}.
-        </span>
-      )}
+      {delegate && <DelegateLabel vote={vote} delegateVote={delegateVote} delegate={delegate} />}
 
-      {account &&
-        (!vote || changingVote) &&
+      {showChoiceButtons &&
         choices.map((currentChoice, currentChoiceIndex) => {
           return (
             <ChoiceButton
               key={currentChoice}
               choice={currentChoice}
-              voted={vote?.choice === currentChoiceIndex + 1}
-              disabled={vote?.choice === currentChoiceIndex + 1 || !started}
+              voted={vote?.choice === currentChoiceIndex + 1 || delegateVote?.choice === currentChoiceIndex + 1}
+              disabled={
+                vote?.choice === currentChoiceIndex + 1 || delegateVote?.choice === currentChoiceIndex + 1 || !started
+              }
               color={calculateChoiceColor(currentChoice, currentChoiceIndex)}
               onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
+              text={t('page.proposal_detail.vote_choice', { choice: currentChoice })}
             />
           )
         })}
-      {started && account && (!vote || changingVote) && (
+      {showVotingPower && (
         <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
           <div>
             {t('page.proposal_detail.voting_with', {
@@ -90,13 +99,20 @@ const ProposalVotingSection = ({
         </div>
       )}
 
-      {account && vote && !changingVote && (
-        <ChoiceButton
-          disabled={!started}
-          choice={choices[vote.choice - 1]}
-          color={calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1)}
-          voted={true}
-        />
+      {(showVote || showDelegateVote) && (
+        <VotedChoiceButton vote={vote} delegateVote={delegateVote} choices={choices} />
+      )}
+
+      {showChangeVoteButton && (
+        <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>
+          {vote ? t('page.proposal_detail.vote_change') : t('page.proposal_detail.vote_overrule')}
+        </Button>
+      )}
+
+      {showCancelChangeVoteButton && (
+        <Button basic onClick={(e) => onChangeVote && onChangeVote(e, false)}>
+          {t('general.cancel')}
+        </Button>
       )}
     </div>
   )

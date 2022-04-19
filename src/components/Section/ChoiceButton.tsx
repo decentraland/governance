@@ -9,9 +9,10 @@ export type ChoiceButtonProps = Omit<ButtonProps, 'children' | 'color'> & {
   choice?: string
   voted?: boolean
   color?: ChoiceColor
+  text: string
 }
 
-export default function ChoiceButton({ voted, color, choice, ...props }: ChoiceButtonProps) {
+export default function ChoiceButton({ voted, color, choice, text, ...props }: ChoiceButtonProps) {
   const t = useFormatMessage()
   return (
     <Button
@@ -24,7 +25,7 @@ export default function ChoiceButton({ voted, color, choice, ...props }: ChoiceB
         props.className,
       ])}
     >
-      {voted ? t('page.proposal_detail.voted_choice', { choice }) : t('page.proposal_detail.vote_choice', { choice })}
+      {text}
     </Button>
   )
 }
