@@ -4,22 +4,18 @@ import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Vote } from '../../entities/Votes/types'
 import locations from '../../modules/locations'
 import { calculateChoiceColor } from '../../entities/Votes/utils'
 import ChoiceButton from './ChoiceButton'
 import useDelegation from '../../hooks/useDelegation'
-
 import DelegateLabel from './DelegateLabel'
 import VotedChoiceButton from './VotedChoiceButton'
 
 interface Props {
   votes?: Record<string, Vote> | null
   loading?: boolean
-  account: string | null
-  accountStateLoading: boolean
-  accountStateSelect: (selecting?: boolean) => void
   changingVote?: boolean
   choices: string[]
   started: boolean
@@ -32,9 +28,6 @@ interface Props {
 const ProposalVotingSection = ({
   votes,
   loading,
-  account,
-  accountStateLoading,
-  accountStateSelect,
   changingVote,
   choices,
   started,
@@ -43,6 +36,7 @@ const ProposalVotingSection = ({
   onChangeVote,
   votingPower,
 }: Props) => {
+  const [account, accountState] = useAuthContext()
   const t = useFormatMessage()
   const [delegations] = useDelegation(account)
   const vote = (account && votes && votes[account]) || null
@@ -60,10 +54,15 @@ const ProposalVotingSection = ({
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">
-      <Loader active={!loading && accountStateLoading} />
+      <Loader active={!loading && accountState.loading} />
 
       {!account && (
-        <Button basic loading={accountStateLoading} disabled={accountStateLoading} onClick={() => accountStateSelect()}>
+        <Button
+          basic
+          loading={accountState.loading}
+          disabled={accountState.loading}
+          onClick={() => accountState.select()}
+        >
           {t('general.sign_in')}
         </Button>
       )}
@@ -75,7 +74,6 @@ const ProposalVotingSection = ({
           return (
             <ChoiceButton
               key={currentChoice}
-              choice={currentChoice}
               voted={vote?.choice === currentChoiceIndex + 1 || delegateVote?.choice === currentChoiceIndex + 1}
               disabled={
                 vote?.choice === currentChoiceIndex + 1 || delegateVote?.choice === currentChoiceIndex + 1 || !started

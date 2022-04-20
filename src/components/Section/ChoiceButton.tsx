@@ -6,14 +6,12 @@ import { ChoiceColor } from '../../entities/Votes/types'
 import './ChoiceButton.css'
 
 export type ChoiceButtonProps = Omit<ButtonProps, 'children' | 'color'> & {
-  choice?: string
   voted?: boolean
   color?: ChoiceColor
   text: string
 }
 
-export default function ChoiceButton({ voted, color, choice, text, ...props }: ChoiceButtonProps) {
-  const t = useFormatMessage()
+export default function ChoiceButton({ voted, color, text, ...props }: ChoiceButtonProps) {
   return (
     <Button
       {...props}

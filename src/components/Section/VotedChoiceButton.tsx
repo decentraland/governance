@@ -10,14 +10,12 @@ const useVotedButtonProps = (
   choices: string[]
 ): {
   color: ChoiceColor
-  choice: string
   text: string
 } => {
   const t = useFormatMessage()
 
   if (vote && delegateVote && vote.choice === delegateVote.choice) {
     return {
-      choice: choices[vote.choice - 1],
       color: calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1),
       text: t('page.proposal_detail.both_voted_choice', { choice: choices[vote.choice - 1] }),
     }
@@ -25,7 +23,6 @@ const useVotedButtonProps = (
 
   if (vote) {
     return {
-      choice: choices[vote.choice - 1],
       color: calculateChoiceColor(choices[vote.choice - 1], vote.choice - 1),
       text: t('page.proposal_detail.voted_choice', { choice: choices[vote.choice - 1] }),
     }
@@ -33,7 +30,6 @@ const useVotedButtonProps = (
 
   if (delegateVote) {
     return {
-      choice: choices[delegateVote.choice - 1],
       color: calculateChoiceColor(choices[delegateVote.choice - 1], delegateVote.choice - 1),
       text: t('page.proposal_detail.delegate_voted_choice', { choice: choices[delegateVote.choice - 1] }),
     }
@@ -41,7 +37,6 @@ const useVotedButtonProps = (
 
   return {
     color: 1,
-    choice: 'yes',
     text: '',
   }
 }

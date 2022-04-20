@@ -6,7 +6,6 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import ChoiceProgress from '../Status/ChoiceProgress'
 import { Vote } from '../../entities/Votes/types'
@@ -28,7 +27,7 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
   onVote?: (e: React.MouseEvent<any>, choice: string, choiceIndex: number) => void
 }
 
-export default React.memo(function ProposalResultSection({
+export default function ProposalResultSection({
   proposal,
   loading,
   disabled,
@@ -41,8 +40,7 @@ export default React.memo(function ProposalResultSection({
   ...props
 }: ProposalResultSectionProps) {
   const t = useFormatMessage()
-  const [account, accountState] = useAuthContext()
-  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
+  const choices = proposal?.snapshot_proposal?.choices || []
   const results = useMemo(() => calculateResult(choices, votes || {}), [proposal, choices, votes])
   const now = Time.utc()
   const startAt = Time.utc(proposal?.start_at) || now
@@ -93,9 +91,6 @@ export default React.memo(function ProposalResultSection({
         <ProposalVotingSection
           votes={votes}
           loading={loading}
-          account={account}
-          accountStateLoading={accountState.loading}
-          accountStateSelect={accountState.select}
           changingVote={changingVote}
           choices={choices}
           started={started}
@@ -107,4 +102,4 @@ export default React.memo(function ProposalResultSection({
       )}
     </div>
   )
-})
+}
