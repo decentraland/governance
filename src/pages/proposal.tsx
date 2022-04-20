@@ -44,6 +44,7 @@ import ProposalComments from '../components/Proposal/ProposalComments'
 import { FollowUpModal } from '../components/Modal/FollowUpModal'
 import { isUnderMaintenance } from '../modules/maintenance'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import useProposalVotingPower from '../hooks/useProposalVotingPower'
 
 type ProposalPageOptions = {
   changing: boolean
@@ -77,14 +78,9 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
-  const [votingPower, votingPowerState] = useAsyncMemo(
-    () =>
-      account && proposal!.status === ProposalStatus.Active
-        ? Governance.get().getVotingPower(proposal!.id)
-        : Promise.resolve(0),
-    [account, proposal],
-    { callWithTruthyDeps: true }
-  )
+
+  const { votingPower, isLoadingVotingPower } = useProposalVotingPower(account, proposal)
+
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
@@ -232,7 +228,7 @@ export default function ProposalPage() {
               />
               <ProposalResultSection
                 disabled={!proposal || !votes}
-                loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
+                loading={voting || proposalState.loading || votesState.loading || isLoadingVotingPower}
                 proposal={proposal}
                 votes={votes}
                 votingPower={votingPower || 0}
