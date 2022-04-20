@@ -13,15 +13,13 @@ import DelegatedCardProfile from './DelegatedCardProfile'
 import Empty from '../Common/Empty'
 import './DelegatedFromUserCard.css'
 
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || '' // TODO: Move to snapshot utils file
-const EDIT_DELEGATION_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`) // TODO: Move to snapshot utils file
-
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
   delegation: DelegationResult
+  onEdit: () => void
 }
 
-const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFromUserCardProps) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, onEdit }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
 
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
@@ -33,7 +31,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
       className="DelegatedFromUserCard"
       rightAction={
         isLoggedUserProfile && (
-          <Button basic as={Link} href={EDIT_DELEGATION_URL}>
+          <Button basic onClick={onEdit}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )

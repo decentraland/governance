@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react'
+import './balance.css'
+
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
@@ -7,23 +8,24 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
+import React, { useMemo, useState } from 'react'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
 import DelegatedToUserCard from '../components/Delegation/DelegatedToUserCard'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import VPDelegationModal from '../components/Modal/VPDelegationModal'
+import EstateBalanceCard from '../components/Token/EstateBalanceCard'
+import LandBalanceCard from '../components/Token/LandBalanceCard'
+import ManaBalanceCard from '../components/Token/ManaBalanceCard'
+import NameBalanceCard from '../components/Token/NameBalanceCard'
 import VotingPower from '../components/Token/VotingPower'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
-import useDelegation from '../hooks/useDelegation'
 import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
+import useDelegation from '../hooks/useDelegation'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
 import { isUnderMaintenance } from '../modules/maintenance'
-import ManaBalanceCard from '../components/Token/ManaBalanceCard'
-import LandBalanceCard from '../components/Token/LandBalanceCard'
-import EstateBalanceCard from '../components/Token/EstateBalanceCard'
-import NameBalanceCard from '../components/Token/NameBalanceCard'
-import './balance.css'
 
 const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
@@ -38,6 +40,8 @@ export default function BalancePage() {
   const [delegation, delegationState] = useDelegation(address)
   const [votingPower, votingPowerState] = useVotingPowerBalance(address, SNAPSHOT_SPACE)
   const { scores, isLoadingScores, delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
+
+  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
 
   if (isUnderMaintenance()) {
     return (
@@ -84,8 +88,18 @@ export default function BalancePage() {
           loading={delegationState.loading || isLoadingScores}
           delegatedVotingPower={delegatedVotingPower}
         />
-        <DelegatedFromUserCard isLoggedUserProfile={isLoggedUserProfile} delegation={delegation} />
+        <DelegatedFromUserCard
+          isLoggedUserProfile={isLoggedUserProfile}
+          delegation={delegation}
+          onEdit={() => setIsDelegationModalOpen(true)}
+        />
       </Container>
+      <VPDelegationModal
+        open={isDelegationModalOpen}
+        onClose={() => setIsDelegationModalOpen(false)}
+        vp={votingPower}
+        space={SNAPSHOT_SPACE}
+      />
     </div>
   )
 }

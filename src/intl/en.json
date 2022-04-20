@@ -306,6 +306,14 @@
       "copy_link_label": "Copy Link",
       "link_copied_label": "Link Copied!",
       "dismiss_button_label": "Dismiss"
+    },
+    "vp_delegation": {
+      "title": "Voting Power Delegation",
+      "description": "Choose who you’d like to receive the 100% of your **{VP} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates. [Read more](#)",
+      "candidate_name": "Candidate name",
+      "picked_by": "Picked by",
+      "total_vp": "Total vp",
+      "button": "Pick somebody else"
     }
   },
   "page": {
