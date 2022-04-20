@@ -41,6 +41,7 @@ const ProposalVotingSection = ({
   const [delegations] = useDelegation(account)
   const vote = (account && votes && votes[account]) || null
   const delegate = delegations?.delegatedTo[0]?.delegate
+  const delegators = delegations?.delegatedFrom
   const delegateVote = votes?.[delegate]
   const somebodyVoted = vote || delegateVote
   const hasChoices = choices.length > 0
@@ -67,7 +68,15 @@ const ProposalVotingSection = ({
         </Button>
       )}
 
-      {delegate && <DelegateLabel vote={vote} delegateVote={delegateVote} delegate={delegate} />}
+      {(delegate || delegators) && (
+        <DelegateLabel
+          vote={vote}
+          votes={votes}
+          delegateVote={delegateVote}
+          delegate={delegate}
+          delegators={delegators}
+        />
+      )}
 
       {showChoiceButtons &&
         choices.map((currentChoice, currentChoiceIndex) => {
@@ -84,6 +93,7 @@ const ProposalVotingSection = ({
             />
           )
         })}
+
       {showVotingPower && (
         <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
           <div>

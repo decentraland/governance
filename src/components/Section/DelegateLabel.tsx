@@ -1,13 +1,51 @@
 import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { intersection } from 'lodash'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Vote } from '../../entities/Votes/types'
 import Username from '../User/Username'
+import { Delegation } from '../../hooks/useDelegation'
 
-const useDelegateLabel = (vote: Vote | null, delegateVote: Vote | undefined, delegate: string): string => {
+const useDelegateLabel = (
+  vote: Vote | null,
+  votes?: Record<string, Vote> | null,
+  delegateVote?: Vote,
+  delegate?: string,
+  delegators?: Delegation[]
+): string => {
   const t = useFormatMessage()
 
-  if (!delegateVote) {
+  if (delegators) {
+    const votesAddresses = Object.keys(votes || {})
+    const delegatorsAddresses = delegators.map((i) => i.delegator) || []
+    const delegatorsVotes = intersection(votesAddresses, delegatorsAddresses).length
+    const totalDelegators = delegators.length
+    const delegatorsWithoutVotes = totalDelegators - delegatorsVotes
+
+    if (delegate && !vote && !delegateVote) {
+      return t('page.proposal_detail.delegators_with_delegate_no_votes', { delegate, total: totalDelegators })
+    }
+
+    if (!delegate && !vote && delegatorsVotes > 0) {
+      return t('page.proposal_detail.delegators_voted_without_delegate_without_vote', {
+        votes: delegatorsVotes,
+        total: totalDelegators,
+      })
+    }
+
+    if (!delegate && !vote) {
+      return t('page.proposal_detail.delegators_without_delegate_without_votes', { total: totalDelegators })
+    }
+
+    if (!delegate && vote && delegatorsVotes > 0) {
+      return t('page.proposal_detail.delegators_voted_without_delegate_with_vote', {
+        votes: delegatorsWithoutVotes,
+        total: totalDelegators,
+      })
+    }
+  }
+
+  if (!delegators && delegate && !delegateVote) {
     if (vote) {
       return t('page.proposal_detail.delegate_not_voted', { delegate })
     } else {
@@ -15,7 +53,7 @@ const useDelegateLabel = (vote: Vote | null, delegateVote: Vote | undefined, del
     }
   }
 
-  if (delegateVote) {
+  if (!delegators && delegate && delegateVote) {
     if ((vote && vote?.choice === delegateVote.choice) || !vote) {
       return t('page.proposal_detail.delegate_voted', { date: Time.unix(delegateVote.timestamp).fromNow() })
     }
@@ -30,16 +68,18 @@ const useDelegateLabel = (vote: Vote | null, delegateVote: Vote | undefined, del
 
 interface Props {
   vote: Vote | null
+  votes?: Record<string, Vote> | null
   delegateVote?: Vote
-  delegate: string
+  delegate?: string
+  delegators?: Delegation[]
 }
 
-const DelegateLabel = ({ vote, delegateVote, delegate }: Props) => {
-  const label = useDelegateLabel(vote, delegateVote, delegate)
+const DelegateLabel = ({ vote, votes, delegateVote, delegate, delegators }: Props) => {
+  const label = useDelegateLabel(vote, votes, delegateVote, delegate, delegators)
 
   return (
     <span>
-      <Username address={delegate} />
+      {delegate && <Username address={delegate} />}
       {label}
     </span>
   )
