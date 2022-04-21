@@ -14,7 +14,6 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
 import DelegatedToUserCard from '../components/Delegation/DelegatedToUserCard'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import VotingPowerDelegationModal from '../components/Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import EstateBalanceCard from '../components/Token/EstateBalanceCard'
 import LandBalanceCard from '../components/Token/LandBalanceCard'
 import ManaBalanceCard from '../components/Token/ManaBalanceCard'
@@ -40,8 +39,6 @@ export default function BalancePage() {
   const [delegation, delegationState] = useDelegation(address)
   const [votingPower, votingPowerState] = useVotingPowerBalance(address, SNAPSHOT_SPACE)
   const { scores, isLoadingScores, delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
-
-  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
 
   if (isUnderMaintenance()) {
     return (
@@ -91,15 +88,9 @@ export default function BalancePage() {
         <DelegatedFromUserCard
           isLoggedUserProfile={isLoggedUserProfile}
           delegation={delegation}
-          onEdit={() => setIsDelegationModalOpen(true)}
+          space={SNAPSHOT_SPACE}
         />
       </Container>
-      <VotingPowerDelegationModal
-        open={isDelegationModalOpen}
-        onClose={() => setIsDelegationModalOpen(false)}
-        vp={votingPower}
-        space={SNAPSHOT_SPACE}
-      />
     </div>
   )
 }

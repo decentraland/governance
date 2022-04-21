@@ -1,37 +1,44 @@
-import React from 'react'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import './DelegatedFromUserCard.css'
+
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import ActionableLayout from '../Layout/ActionableLayout'
-import Scale from '../Icon/Scale'
-import { snapshotUrl } from '../../entities/Proposal/utils'
-import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
+import React, { useState } from 'react'
+
 import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
-import DelegatedCardProfile from './DelegatedCardProfile'
+import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import Empty from '../Common/Empty'
-import './DelegatedFromUserCard.css'
+import Scale from '../Icon/Scale'
+import ActionableLayout from '../Layout/ActionableLayout'
+import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
+import DelegatedCardProfile from './DelegatedCardProfile'
 
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
   delegation: DelegationResult
-  onEdit: () => void
+  space: string
 }
 
-const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, onEdit }: DelegatedFromUserCardProps) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
 
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
   const [delegateDelegations] = useDelegation(address)
   const { delegatedVotingPower } = useDelegatedVotingPower(delegateDelegations.delegatedFrom)
 
+  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
+  const [userAddress] = useAuthContext()
+  const [votingPower] = useVotingPowerBalance(userAddress, space)
+
   return (
     <ActionableLayout
       className="DelegatedFromUserCard"
       rightAction={
         isLoggedUserProfile && (
-          <Button basic onClick={onEdit}>
+          <Button basic onClick={() => setIsDelegationModalOpen(true)}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )
@@ -77,6 +84,12 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, onEdit }: Dele
           )}
         </Card.Content>
       </Card>
+      <VotingPowerDelegationModal
+        open={isDelegationModalOpen}
+        onClose={() => setIsDelegationModalOpen(false)}
+        vp={votingPower}
+        space={space}
+      />
     </ActionableLayout>
   )
 }

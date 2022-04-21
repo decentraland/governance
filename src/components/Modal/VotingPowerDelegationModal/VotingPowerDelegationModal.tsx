@@ -1,75 +1,75 @@
 import './VotingPowerDelegationModal.css'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import React, { useRef, useMemo, useState } from 'react'
-import { IntlShape } from 'react-intl'
+import React, { useMemo, useState } from 'react'
 
 import { snapshotUrl } from '../../../entities/Proposal/utils'
 import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import exampleDelegates from '../../../modules/delegates/example_delegates.json'
 import locations from '../../../modules/locations'
 import Sort from '../../Icon/Sort'
+import VotingPowerDelegationItem from './VotingPowerDelegationItem'
 
-type Delegate = {
+export type Delegate = {
   address: string
-  ens_name: string | undefined
   total_vp: number
 }
 
-type VPDelegationModalProps = Omit<ModalProps, 'children'> & {
+type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   vp: number
   space: string
 }
 
-function addressShortener(address: string) {
-  return address.substring(0, 6) + '...' + address.substring(38, 42)
-}
-
-function tableCell(delegate: Delegate, picked_by: number, intl: IntlShape, arrowRef: React.RefObject<HTMLDivElement>) {
-  return (
-    <>
-      <Table.Cell>
-        <span className="Candidate">
-          <Avatar address={delegate.address} size="small" />
-          {delegate.ens_name || addressShortener(delegate.address)}
-        </span>
-      </Table.Cell>
-      <Table.Cell>{intl.formatNumber(picked_by)}</Table.Cell>
-      <Table.Cell>{intl.formatNumber(delegate.total_vp)}</Table.Cell>
-      <Table.Cell>
-        <div ref={arrowRef} className="Arrow" />
-      </Table.Cell>
-    </>
-  )
-}
-
-function VotingPowerDelegationModal({ vp, space, ...props }: VPDelegationModalProps) {
-  const EDIT_DELEGATION_URL = snapshotUrl(`#/delegate/${space}`)
+function VotingPowerDelegationModal({ vp, space, ...props }: VotingPowerDelegationModalProps) {
+  const editDelegationUrl = snapshotUrl(`#/delegate/${space}`)
 
   const t = useFormatMessage()
-  const intl = useIntl()
   const [isDescending, setIsDescending] = useState(true)
 
-  const delegates_with_total_vp = exampleDelegates.map((dgt) => {
-    const [votingPower] = useVotingPowerBalance(dgt.address, space)
-    return { ...dgt, total_vp: votingPower }
+  const delegates_with_total_vp = exampleDelegates.map((delegate) => {
+    const [votingPower] = useVotingPowerBalance(delegate.address, space)
+    return { ...delegate, total_vp: votingPower }
   })
   const delegates = useMemo(
     () => delegates_with_total_vp.sort((a, b) => (isDescending ? b.total_vp - a.total_vp : a.total_vp - b.total_vp)),
     [delegates_with_total_vp, isDescending]
   ) as Delegate[]
 
-  const arrowRefs: React.RefObject<HTMLDivElement>[] = []
+  const arrowFilledState: [boolean, React.Dispatch<React.SetStateAction<boolean>>][] = []
+
+  const changeArrowFilledState = (idx: number, state: boolean) => {
+    const [isFilled, setIsFilled] = arrowFilledState[idx]
+    setIsFilled(state)
+  }
+
+  const createDelegateRow = (delegate: Delegate, idx: number) => {
+    const [isFilled, setIsFilled] = useState(false)
+    arrowFilledState.push([isFilled, setIsFilled])
+    return (
+      <Table.Row
+        key={idx}
+        onMouseEnter={() => changeArrowFilledState(idx, true)}
+        onMouseLeave={() => changeArrowFilledState(idx, false)}
+        onClick={() => {
+          navigate(locations.balance({ address: delegate.address }))
+          setTimeout(() => {
+            props.onClose()
+          }, 100)
+        }}
+      >
+        <VotingPowerDelegationItem delegate={delegate} picked_by={0} arrowFilled={isFilled} />
+      </Table.Row>
+    )
+  }
 
   return (
-    <Modal {...props} closeIcon={<Close />} className="VPDelegationModal">
+    <Modal {...props} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
       <Modal.Header>{t('modal.vp_delegation.title')}</Modal.Header>
       <Modal.Description>
         <Markdown>{t('modal.vp_delegation.description', { VP: vp })}</Markdown>
@@ -89,31 +89,11 @@ function VotingPowerDelegationModal({ vp, space, ...props }: VPDelegationModalPr
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
-          <Table.Body>
-            {delegates.map((dgt, idx) => {
-              const ref = useRef<HTMLDivElement | null>(null)
-              arrowRefs.push(ref)
-              return (
-                <Table.Row
-                  key={idx}
-                  onMouseEnter={() => arrowRefs[idx].current?.classList.add('Filled')}
-                  onMouseLeave={() => arrowRefs[idx].current?.classList.remove('Filled')}
-                  onClick={() => {
-                    navigate(locations.balance({ address: dgt.address }))
-                    setTimeout(() => {
-                      props.onClose()
-                    }, 100)
-                  }}
-                >
-                  {tableCell(dgt, 0, intl, ref)}
-                </Table.Row>
-              )
-            })}
-          </Table.Body>
+          <Table.Body>{delegates.map(createDelegateRow)}</Table.Body>
         </Table>
       </Modal.Content>
       <Modal.Actions>
-        <Button primary href={EDIT_DELEGATION_URL}>
+        <Button primary href={editDelegationUrl}>
           {t('modal.vp_delegation.button')}
         </Button>
       </Modal.Actions>

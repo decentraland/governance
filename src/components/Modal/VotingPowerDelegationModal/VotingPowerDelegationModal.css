@@ -1,66 +1,67 @@
-.ui.modal.VPDelegationModal .header {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 10px;
+.VotingPowerDelegationModal .header {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  margin-bottom: 10px !important;
 }
 
-.ui.modal.VPDelegationModal .description .dg.Paragraph {
+.VotingPowerDelegationModal .description .dg.Paragraph {
   font-size: 15px;
 }
 
-.ui.modal.VPDelegationModal .ui.table th {
+.VotingPowerDelegationModal .description .dg.Paragraph .dg.Link {
+  color: var(--blue);
+}
+
+.VotingPowerDelegationModal .actions .ui.button.primary {
+  color: var(--blue);
+  background-color: rgba(72, 136, 238, 0.1);
+}
+
+.VotingPowerDelegationModal .ui.table th {
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;
 }
 
-.ui.modal.VPDelegationModal .ui.table td {
+.VotingPowerDelegationModal .ui.table td {
   padding: 10px 0;
 }
 
-.ui.modal.VPDelegationModal .ui.table td .Candidate {
+.VotingPowerDelegationModal .ui.table td .Candidate {
   font-weight: 500;
 }
 
-.ui.modal.VPDelegationModal .ui.table tbody tr:hover {
+.VotingPowerDelegationModal .ui.table tbody tr:hover {
   box-shadow: 0px 3px 15px rgba(115, 110, 125, 0.3);
   border-radius: 6px;
   cursor: pointer;
 }
 
-.ui.modal.VPDelegationModal .TotalVP {
-  cursor: pointer;
+.VotingPowerDelegationModal .TotalVP {
+  cursor: pointer !important;
 }
 
-.ui.modal.VPDelegationModal .TotalVP>span {
+.VotingPowerDelegationModal .TotalVP>span {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ui.modal.VPDelegationModal .TotalVP>span svg {
+.VotingPowerDelegationModal .TotalVP>span svg {
   margin-left: 5px;
 }
 
-.ui.modal.VPDelegationModal .ui.table th:not(:first-child),
-.ui.modal.VPDelegationModal .ui.table td:not(:first-child) {
+.VotingPowerDelegationModal .ui.table th:not(:first-child),
+.VotingPowerDelegationModal .ui.table td:not(:first-child) {
   text-align: center;
 }
 
-.ui.modal.VPDelegationModal .dg.dcl-avatar {
+.VotingPowerDelegationModal .dg.dcl-avatar {
   margin-right: 11px;
 }
 
-.ui.modal.VPDelegationModal .Arrow,
-.ui.modal.VPDelegationModal .Arrow.Filled {
-  width: 16px;
-  height: 16px;
-}
-
-.ui.modal.VPDelegationModal .Arrow {
-  background-image: url('../../../images/icons/arrow.svg');
-}
-
-.ui.modal.VPDelegationModal .Arrow.Filled {
-  background-image: url('../../../images/icons/arrow-filled.svg');
+/* Animation */
+.VotingPowerDelegationModal .TotalVP>span svg,
+.VotingPowerDelegationModal .ui.table tbody tr:hover {
+  transition: all 0.3s linear;
 }
