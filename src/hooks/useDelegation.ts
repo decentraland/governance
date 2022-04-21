@@ -1,18 +1,20 @@
-import fetch from "isomorphic-fetch";
 import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo";
+import fetch from "isomorphic-fetch";
 
 const ENDPOINT = `https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot`
 const QUERY = `
 query ($space: String!, $address: String!) {
-  delegatedTo: delegations(where: { space: $space, delegator: $address }, first: 1, orderBy: timestamp, orderDirection: desc) {
+  delegatedTo: delegations(where: { space_in: ["", $space], delegator: $address }, orderBy: timestamp, orderDirection: desc) {
     delegator
     delegate
+    space
     timestamp
   },
 
-  delegatedFrom: delegations(where: { space: $space, delegate: $address }, first: 100, orderBy: timestamp, orderDirection: desc) {
+  delegatedFrom: delegations(where: { space_in: ["", $space], delegate: $address }, orderBy: timestamp, orderDirection: desc) {
     delegator
     delegate
+    space
     timestamp
   }
 }
@@ -21,6 +23,7 @@ query ($space: String!, $address: String!) {
 export type Delegation = {
   delegator: string,
   delegate: string,
+  space: string
 }
 
 export type DelegationQueryResult = {
@@ -39,6 +42,36 @@ const initialValue: DelegationResult = {
   delegatedFrom: [],
   hasMoreDelegatedFrom: false,
 }
+
+export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
+  if (delegations.length > 1) {
+    return delegations.filter(delegation => delegation.space === space)
+  }
+
+  return delegations
+}
+
+export function filterDelegationFrom(delegations: Delegation[], space: string): Delegation[] {
+  if (delegations.length === 0) {
+    return []
+  }
+
+  const unique_delegations = new Map<String, Delegation>()
+
+  for (const deleg of delegations) {
+    if (unique_delegations.has(deleg.delegate)) {
+      if (unique_delegations.get(deleg.delegate)?.space !== space) {
+        unique_delegations.set(deleg.delegate, deleg)
+      }
+    }
+    else {
+      unique_delegations.set(deleg.delegate, deleg)
+    }
+  }
+
+  return Array.from(unique_delegations.values())
+}
+
 
 export default function useDelegation(address?: string | null, space?: string | null) {
   return useAsyncMemo(async () => {
@@ -59,10 +92,11 @@ export default function useDelegation(address?: string | null, space?: string | 
     )
     const body = await request.json()
     const data = body.data as DelegationQueryResult
+    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, space)
     const result: DelegationResult = {
-      delegatedTo: data.delegatedTo,
-      delegatedFrom: data.delegatedFrom.slice(0,99),
-      hasMoreDelegatedFrom: data.delegatedFrom.length > 99
+      delegatedTo: filterDelegationTo(data.delegatedTo, space),
+      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
+      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99
     }
 
     return result
