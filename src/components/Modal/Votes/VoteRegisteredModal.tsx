@@ -1,13 +1,13 @@
-import React from 'react'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import '../ProposalModal.css'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
-import './ProposalModal.css'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import React from 'react'
 
 export type VoteRegisteredModalProps = Omit<ModalProps, 'children'> & {
   loading?: boolean

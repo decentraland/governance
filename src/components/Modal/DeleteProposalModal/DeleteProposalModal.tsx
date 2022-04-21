@@ -7,7 +7,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import './ProposalModal.css'
+import '../ProposalModal.css'
 
 export type DeleteProposalModalProps = Omit<ModalProps, 'children'> & {
   loading?: boolean

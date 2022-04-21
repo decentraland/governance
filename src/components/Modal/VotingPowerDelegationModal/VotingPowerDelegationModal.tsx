@@ -1,4 +1,4 @@
-import './VPDelegationModal.css'
+import './VotingPowerDelegationModal.css'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
@@ -11,11 +11,11 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import React, { useRef, useMemo, useState } from 'react'
 import { IntlShape } from 'react-intl'
 
-import { snapshotUrl } from '../../entities/Proposal/utils'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
-import exampleDelegates from '../../modules/delegates/example_delegates.json'
-import locations from '../../modules/locations'
-import Sort from '../Icon/Sort'
+import { snapshotUrl } from '../../../entities/Proposal/utils'
+import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import exampleDelegates from '../../../modules/delegates/example_delegates.json'
+import locations from '../../../modules/locations'
+import Sort from '../../Icon/Sort'
 
 type Delegate = {
   address: string
@@ -50,7 +50,7 @@ function tableCell(delegate: Delegate, picked_by: number, intl: IntlShape, arrow
   )
 }
 
-function VPDelegationModal({ vp, space, ...props }: VPDelegationModalProps) {
+function VotingPowerDelegationModal({ vp, space, ...props }: VPDelegationModalProps) {
   const EDIT_DELEGATION_URL = snapshotUrl(`#/delegate/${space}`)
 
   const t = useFormatMessage()
@@ -121,4 +121,4 @@ function VPDelegationModal({ vp, space, ...props }: VPDelegationModalProps) {
   )
 }
 
-export default VPDelegationModal
+export default VotingPowerDelegationModal

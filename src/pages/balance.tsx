@@ -14,7 +14,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
 import DelegatedToUserCard from '../components/Delegation/DelegatedToUserCard'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import VPDelegationModal from '../components/Modal/VPDelegationModal'
+import VotingPowerDelegationModal from '../components/Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import EstateBalanceCard from '../components/Token/EstateBalanceCard'
 import LandBalanceCard from '../components/Token/LandBalanceCard'
 import ManaBalanceCard from '../components/Token/ManaBalanceCard'
@@ -94,7 +94,7 @@ export default function BalancePage() {
           onEdit={() => setIsDelegationModalOpen(true)}
         />
       </Container>
-      <VPDelegationModal
+      <VotingPowerDelegationModal
         open={isDelegationModalOpen}
         onClose={() => setIsDelegationModalOpen(false)}
         vp={votingPower}

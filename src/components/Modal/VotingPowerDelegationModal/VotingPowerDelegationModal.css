@@ -58,9 +58,9 @@
 }
 
 .ui.modal.VPDelegationModal .Arrow {
-  background-image: url('../../images/icons/arrow.svg');
+  background-image: url('../../../images/icons/arrow.svg');
 }
 
 .ui.modal.VPDelegationModal .Arrow.Filled {
-  background-image: url('../../images/icons/arrow-filled.svg');
+  background-image: url('../../../images/icons/arrow-filled.svg');
 }
