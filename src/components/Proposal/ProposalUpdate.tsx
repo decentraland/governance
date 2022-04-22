@@ -15,6 +15,7 @@ import WarningIcon from '../Icon/Warning'
 import './ProposalUpdate.css'
 import QuestionCircleIcon from '../Icon/QuestionCircle'
 import { isBetweenThresholdDate } from '../../entities/Updates/utils'
+import Date from '../Common/Date'
 
 interface Props {
   proposal: ProposalAttributes
@@ -85,7 +86,9 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
             </span>
           </div>
           <div className="ProposalUpdate__Date">
-            <span className="ProposalUpdate__DateText">{Time.from(completion_date).fromNow()}</span>
+            <span className="ProposalUpdate__DateText">
+              <Date date={completion_date}>{Time.from(completion_date).fromNow()}</Date>
+            </span>
             {status === UpdateStatus.Late && (
               <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
             )}
@@ -125,7 +128,9 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
       </div>
       {completion_date && (
         <div className="ProposalUpdate__Date">
-          <span className="ProposalUpdate__DateText">{Time.from(completion_date).fromNow()}</span>
+          <span className="ProposalUpdate__DateText">
+            <Date date={completion_date}>{Time.from(completion_date).fromNow()}</Date>
+          </span>
           {status === UpdateStatus.Late && (
             <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
           )}

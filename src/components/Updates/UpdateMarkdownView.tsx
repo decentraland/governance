@@ -11,6 +11,7 @@ import Username from '../User/Username'
 import ProjectHealthStatus from './ProjectHealthStatus'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { ContentSection } from '../Layout/ContentLayout'
+import Date from '../Common/Date'
 import './UpdateMarkdownView.css'
 
 interface Props {
@@ -41,12 +42,16 @@ const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
           <Markdown>{update?.additional_notes}</Markdown>
         </>
       )}
-      {(profile || proposalUser) && (
+      {(profile || proposalUser) && update.completion_date && (
         <>
           <Divider size="small" />
           <div className="UpdateDetail__Date">
             <div className="UpdateDetail__CompletionDate">
-              <Paragraph>{l('page.update_detail.completion_date', { date: formattedCompletionDate })}</Paragraph>
+              <Paragraph>
+                <Date date={update.completion_date}>
+                  {l('page.update_detail.completion_date', { date: formattedCompletionDate })}
+                </Date>
+              </Paragraph>
               <Username profile={profile} proposalUser={proposalUser} />
             </div>
             {update?.status === UpdateStatus.Late && (
