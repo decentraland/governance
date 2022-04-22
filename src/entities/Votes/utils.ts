@@ -1,5 +1,6 @@
 import isUUID from 'validator/lib/isUUID'
 import { SnapshotVote } from '../../api/Snapshot';
+import { Delegation } from '../../hooks/useDelegation'
 import { ChoiceColor, Vote } from './types';
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
@@ -160,3 +161,27 @@ export function abbreviateNumber(vp: number) {
   return scaled.toFixed(1) + suffix
 }
 
+
+export function getPartyVotes(
+  delegators: Delegation[] | [],
+  votes: Record<string, Vote> | null | undefined,
+  choices: string[]
+): { votesByChoices: Record<string, number>; totalVotes: number } {
+  let totalVotes = 0
+  const votesByChoices: Record<string, number> = {}
+
+  if (delegators.length === 0) return { votesByChoices, totalVotes }
+
+  choices.map((value, index) => (votesByChoices[index] = 0))
+
+  delegators.map((i) => {
+    const address = i.delegator
+    if (votes && votes[address]) {
+      totalVotes += 1
+      const choiceIndex = votes[address].choice - 1
+      votesByChoices[choiceIndex] += 1
+    }
+  })
+
+  return { votesByChoices, totalVotes }
+}

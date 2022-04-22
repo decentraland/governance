@@ -45,12 +45,22 @@ interface Props {
   vote: Vote | null
   delegateVote?: Vote
   choices: string[]
+  votesByChoices: Record<string, number>
+  totalVotes: number
 }
 
-const VotedChoiceButton = ({ vote, delegateVote, choices }: Props) => {
+
+const VotedChoiceButton = ({ vote, delegateVote, choices, votesByChoices, totalVotes }: Props) => {
   const props = useVotedButtonProps(vote, delegateVote, choices)
 
-  return <ChoiceButton disabled voted {...props} />
+  return (
+    <ChoiceButton disabled voted
+                  voteCount={vote && votesByChoices[vote?.choice - 1] || 0}
+                  partyTotalVotes={totalVotes}
+                  {...props}>
+      {props.text}
+    </ChoiceButton>
+  )
 }
 
 export default VotedChoiceButton

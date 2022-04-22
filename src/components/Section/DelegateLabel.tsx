@@ -1,3 +1,4 @@
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { intersection } from 'lodash'
@@ -5,6 +6,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Vote } from '../../entities/Votes/types'
 import Username from '../User/Username'
 import { Delegation } from '../../hooks/useDelegation'
+import './DelegateLabel.css'
 
 const useDelegateLabel = (
   vote: Vote | null,
@@ -80,7 +82,7 @@ const DelegateLabel = ({ vote, votes, delegateVote, delegate, delegators }: Prop
   return (
     <span>
       {delegate && <Username address={delegate} />}
-      {label}
+      <Markdown className="DelegateLabel">{label}</Markdown>
     </span>
   )
 }

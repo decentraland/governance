@@ -6,10 +6,10 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Vote } from '../../entities/Votes/types'
+import { getPartyVotes } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
-import { calculateChoiceColor } from '../../entities/Votes/utils'
-import ChoiceButton from './ChoiceButton'
 import useDelegation from '../../hooks/useDelegation'
+import { ChoiceButtons } from './ChoiceButtons'
 import DelegateLabel from './DelegateLabel'
 import VotedChoiceButton from './VotedChoiceButton'
 
@@ -36,8 +36,8 @@ const ProposalVotingSection = ({
   onChangeVote,
   votingPower,
 }: Props) => {
-  const [account, accountState] = useAuthContext()
   const t = useFormatMessage()
+  const [account, accountState] = useAuthContext()
   const [delegations] = useDelegation(account)
   const vote = (account && votes && votes[account]) || null
   const delegate = delegations?.delegatedTo[0]?.delegate
@@ -52,6 +52,7 @@ const ProposalVotingSection = ({
   const isVotingOpen = started && !finished
   const showChangeVoteButton = isVotingOpen && somebodyVoted && !changingVote
   const showCancelChangeVoteButton = isVotingOpen && somebodyVoted && changingVote
+  const { votesByChoices, totalVotes } = getPartyVotes(delegators, votes, choices)
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">
@@ -78,21 +79,17 @@ const ProposalVotingSection = ({
         />
       )}
 
-      {showChoiceButtons &&
-        choices.map((currentChoice, currentChoiceIndex) => {
-          return (
-            <ChoiceButton
-              key={currentChoice}
-              voted={vote?.choice === currentChoiceIndex + 1 || delegateVote?.choice === currentChoiceIndex + 1}
-              disabled={
-                vote?.choice === currentChoiceIndex + 1 || delegateVote?.choice === currentChoiceIndex + 1 || !started
-              }
-              color={calculateChoiceColor(currentChoice, currentChoiceIndex)}
-              onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
-              text={t('page.proposal_detail.vote_choice', { choice: currentChoice })}
-            />
-          )
-        })}
+      {showChoiceButtons && (
+        <ChoiceButtons
+          choices={choices}
+          vote={vote}
+          votesByChoices={votesByChoices}
+          delegateVote={delegateVote}
+          totalVotes={totalVotes}
+          onVote={onVote}
+          started={started}
+        />
+      )}
 
       {showVotingPower && (
         <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
@@ -108,7 +105,13 @@ const ProposalVotingSection = ({
       )}
 
       {(showVote || showDelegateVote) && (
-        <VotedChoiceButton vote={vote} delegateVote={delegateVote} choices={choices} />
+        <VotedChoiceButton
+          vote={vote}
+          delegateVote={delegateVote}
+          choices={choices}
+          votesByChoices={votesByChoices}
+          totalVotes={totalVotes}
+        />
       )}
 
       {showChangeVoteButton && (
