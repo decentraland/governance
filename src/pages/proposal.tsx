@@ -273,19 +273,6 @@ export default function ProposalPage() {
                 subscribed={subscribed}
                 onClick={() => subscribe(!subscribed)}
               />
-              {!showVestingStatus && (
-                <ProposalResultSection
-                  disabled={!proposal || !votes}
-                  loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
-                  proposal={proposal}
-                  votes={votes}
-                  votingPower={votingPower || 0}
-                  changingVote={options.changing}
-                  onChangeVote={(_, changing) => patchOptions({ changing })}
-                  onOpenVotesList={() => patchOptions({ showVotesList: true })}
-                  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
-                />
-              )}
               {showVestingStatus && (
                 <ProposalVestingStatus
                   proposal={proposal}
@@ -295,6 +282,17 @@ export default function ProposalPage() {
                   onPostUpdateClick={handlePostUpdateClick}
                 />
               )}
+              <ProposalResultSection
+                disabled={!proposal || !votes}
+                loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
+                proposal={proposal}
+                votes={votes}
+                votingPower={votingPower || 0}
+                changingVote={options.changing}
+                onChangeVote={(_, changing) => patchOptions({ changing })}
+                onOpenVotesList={() => patchOptions({ showVotesList: true })}
+                onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
+              />
               <ProposalDetailSection proposal={proposal} profile={profile} />
               {(isOwner || isCommittee) && (
                 <Button
