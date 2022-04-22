@@ -126,12 +126,16 @@
   margin-left: 3px;
 }
 
-.ProposalUpdate__KeepReading--done {
+.ProposalUpdate__KeepReading--onTrack {
   color: #44b600;
 }
 
-.ProposalUpdate__KeepReading--late {
-  color: #ffbc5b;
+.ProposalUpdate__KeepReading--atRisk {
+  color: #ffb03f;
+}
+
+.ProposalUpdate__KeepReading--offTrack {
+  color: #d80027;
 }
 
 .ProposalUpdate .ui.basic.button {

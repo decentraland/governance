@@ -94,7 +94,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
         <div className="ProposalUpdate__Description--expanded">
           <span>{introduction}</span>
         </div>
-        <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${status}`])}>
+        <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${health}`])}>
           {t('page.proposal_detail.grant.update_keep_reading')}
           <Icon name="chevron right" />
         </div>
