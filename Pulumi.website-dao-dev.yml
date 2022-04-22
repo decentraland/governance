@@ -36,6 +36,7 @@ config:
   website-dao:GATSBY_SNAPSHOT_DURATION: "600"
   website-dao:GATSBY_SNAPSHOT_SPACE: frami.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
+  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot
   website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: "1000"
   website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: "2500"
   website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: "100"

@@ -16,7 +16,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #4888EE;
+  background-color: var(--blue);
   border-radius: 8px;
   padding: 20px;
   width: 100%;

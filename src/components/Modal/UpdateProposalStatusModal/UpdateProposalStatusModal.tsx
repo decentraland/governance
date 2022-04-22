@@ -1,20 +1,21 @@
-import React, { useMemo } from 'react'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
-
-import './ProposalModal.css'
+import '../ProposalModal.css'
 import './UpdateProposalStatusModal.css'
+
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import React, { useMemo } from 'react'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 
 type UpdateProposalState = {
   proposal: ProposalAttributes | null

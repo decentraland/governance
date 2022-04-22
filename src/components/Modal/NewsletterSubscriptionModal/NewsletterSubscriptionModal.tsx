@@ -1,22 +1,23 @@
-import React, { useState, useCallback } from 'react'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import './NewsletterSubscriptionModal.css'
+import '../ProposalModal.css'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import React, { useCallback, useState } from 'react'
 import isEmail from 'validator/lib/isEmail'
 
-import './ProposalModal.css'
-import './NewsletterSubscriptionModal.css'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { Decentraland } from '../../api/Decentraland'
+import { Decentraland } from '../../../api/Decentraland'
 
-const check = require('../../images/icons/check-cloud.svg').default
+const check = require('../../../images/icons/check-cloud.svg').default
 
 export const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
 export const ANONYMOUS_USR_SUBSCRIPTION: string = 'anonymous_subscription'

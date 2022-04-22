@@ -1,7 +1,15 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
-import { ProposalAttributes, ProposalGrantTier, ProposalGrantTierValues, ProposalStatus, toProposalGrantTier } from './types'
 import numeral from 'numeral'
+
+import { SNAPSHOT_URL } from '../Snapshot/constants'
+import {
+  ProposalAttributes,
+  ProposalGrantTier,
+  ProposalGrantTierValues,
+  ProposalStatus,
+  toProposalGrantTier
+} from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
@@ -99,7 +107,7 @@ export function asNumber(value: string | number): number {
 }
 
 export function snapshotUrl(hash: string) {
-  const target = new URL(process.env.GATSBY_SNAPSHOT_URL || '')
+  const target = new URL(SNAPSHOT_URL)
   target.pathname = ''
   target.hash = hash
   return target.toString()
