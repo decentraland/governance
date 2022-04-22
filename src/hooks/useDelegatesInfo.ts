@@ -49,44 +49,49 @@ function getPickedBy(addresses: string[]) {
       return initialValue
     }
 
-    const request = await fetch(
-      SNAPSHOT_QUERY_ENDPOINT,
-      {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: QUERY,
-          variables: { address: addresses, space: SNAPSHOT_SPACE },
-        }),
-      }
-    )
+    try {
+      const request = await fetch(
+        SNAPSHOT_QUERY_ENDPOINT,
+        {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: QUERY,
+            variables: { address: addresses, space: SNAPSHOT_SPACE },
+          }),
+        }
+      )
 
-    const body = await request.json()
-    const queryResult = body.data.delegatedFrom as DelegationQueryResult[]
+      const body = await request.json()
+      const queryResult = body.data.delegatedFrom as DelegationQueryResult[]
 
-    const pickedBy = new Map<string, Set<string>>()
+      const pickedBy = new Map<string, Set<string>>()
 
-    for (const addr of addresses) {
+      for (const addr of addresses) {
 
-      const delegations = queryResult.filter(deleg => deleg.delegate === addr)
-      pickedBy.set(addr, new Set())
+        const delegations = queryResult.filter(deleg => deleg.delegate === addr)
+        pickedBy.set(addr, new Set())
 
-      if (delegations.length > 0) {
-        for (const deleg of delegations) {
-          pickedBy.get(deleg.delegate)?.add(deleg.delegator)
+        if (delegations.length > 0) {
+          for (const deleg of delegations) {
+            pickedBy.get(deleg.delegate)?.add(deleg.delegator)
+          }
         }
       }
+
+      const result: PickedByResult[] = []
+
+      for (const entry of pickedBy.entries()) {
+        const address = entry[0]
+        const pickedBy = entry[1].size
+        result.push({ address, pickedBy })
+      }
+
+      return result
+    } catch (error) {
+      console.error(error)
+      return initialValue
     }
-
-    const result: PickedByResult[] = []
-
-    for (const entry of pickedBy.entries()) {
-      const address = entry[0]
-      const pickedBy = entry[1].size
-      result.push({ address, pickedBy })
-    }
-
-    return result
 
   }, [], { initialValue, callWithTruthyDeps: true })
 }
