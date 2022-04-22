@@ -6,6 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import React, { useState } from 'react'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 
 import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
 import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
@@ -15,6 +16,7 @@ import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import DelegatedCardProfile from './DelegatedCardProfile'
+import { snapshotUrl } from '../../entities/Proposal/utils'
 
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
@@ -38,7 +40,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: Deleg
       className="DelegatedFromUserCard"
       rightAction={
         isLoggedUserProfile && (
-          <Button basic onClick={() => setIsDelegationModalOpen(true)}>
+          <Button as={Link} basic href={snapshotUrl(`#/delegate/${space}`)}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )
@@ -58,7 +60,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: Deleg
                 ) || ''
               }
               linkText={isLoggedUserProfile ? t('page.balance.delegations_from_delegate_vp') : ''}
-              onLinkClick={() => alert('TODO: Opens voting power delegation modal')}
+              onLinkClick={() => setIsDelegationModalOpen(true)}
             />
           )}
           {delegation.delegatedTo.length > 0 && (
