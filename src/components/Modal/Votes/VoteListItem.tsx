@@ -1,15 +1,16 @@
-import React from 'react'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
-import { Vote } from '../../entities/Votes/types'
-import { abbreviateNumber } from '../../entities/Votes/utils'
-import locations from '../../modules/locations'
-import { formatChoice } from '../../entities/Proposal/templates/messages'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import React from 'react'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+
+import { formatChoice } from '../../../entities/Proposal/templates/messages'
+import { Vote } from '../../../entities/Votes/types'
+import { abbreviateNumber } from '../../../entities/Votes/utils'
+import locations from '../../../modules/locations'
 
 export type VoteListItemModalProps = {
   address: string

@@ -1,39 +1,46 @@
-import React from 'react'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import ActionableLayout from '../Layout/ActionableLayout'
-import Scale from '../Icon/Scale'
-import { snapshotUrl } from '../../entities/Proposal/utils'
-import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
-import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
-import DelegatedCardProfile from './DelegatedCardProfile'
-import Empty from '../Common/Empty'
 import './DelegatedFromUserCard.css'
 
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || '' // TODO: Move to snapshot utils file
-const EDIT_DELEGATION_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`) // TODO: Move to snapshot utils file
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import React, { useState } from 'react'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
+
+import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
+import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+import Empty from '../Common/Empty'
+import Scale from '../Icon/Scale'
+import ActionableLayout from '../Layout/ActionableLayout'
+import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
+import DelegatedCardProfile from './DelegatedCardProfile'
+import { snapshotUrl } from '../../entities/Proposal/utils'
 
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
   delegation: DelegationResult
+  space: string
 }
 
-const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFromUserCardProps) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
 
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
   const [delegateDelegations] = useDelegation(address)
   const { delegatedVotingPower } = useDelegatedVotingPower(delegateDelegations.delegatedFrom)
 
+  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
+  const [userAddress] = useAuthContext()
+  const [votingPower] = useVotingPowerBalance(userAddress, space)
+
   return (
     <ActionableLayout
       className="DelegatedFromUserCard"
       rightAction={
         isLoggedUserProfile && (
-          <Button basic as={Link} href={EDIT_DELEGATION_URL}>
+          <Button as={Link} basic href={snapshotUrl(`#/delegate/${space}`)}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )
@@ -53,7 +60,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
                 ) || ''
               }
               linkText={isLoggedUserProfile ? t('page.balance.delegations_from_delegate_vp') : ''}
-              onLinkClick={() => alert('TODO: Opens voting power delegation modal')}
+              onLinkClick={() => setIsDelegationModalOpen(true)}
             />
           )}
           {delegation.delegatedTo.length > 0 && (
@@ -79,6 +86,12 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
           )}
         </Card.Content>
       </Card>
+      <VotingPowerDelegationModal
+        open={isDelegationModalOpen}
+        onClose={() => setIsDelegationModalOpen(false)}
+        vp={votingPower}
+        space={space}
+      />
     </ActionableLayout>
   )
 }

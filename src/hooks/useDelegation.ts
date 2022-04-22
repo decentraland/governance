@@ -1,7 +1,8 @@
-import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo";
-import fetch from "isomorphic-fetch";
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import fetch from 'isomorphic-fetch'
 
-const ENDPOINT = `https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot`
+import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+
 const QUERY = `
 query ($space: String!, $address: String!) {
   delegatedTo: delegations(where: { space_in: ["", $space], delegator: $address }, orderBy: timestamp, orderDirection: desc) {
@@ -71,33 +72,34 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
   return Array.from(unique_delegations.values())
 }
 
+const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
-export default function useDelegation(address?: string | null, space?: string | null) {
+export default function useDelegation(address?: string | null) {
   return useAsyncMemo(async () => {
-    if (!space || !address) {
+    if (!SNAPSHOT_SPACE || !address) {
       return initialValue
     }
 
     const request = await fetch(
-      ENDPOINT,
+      SNAPSHOT_QUERY_ENDPOINT,
       {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: QUERY,
-          variables: { address: address.toLowerCase(), space },
+          variables: { address: address.toLowerCase(), space: SNAPSHOT_SPACE },
         }),
       }
     )
     const body = await request.json()
     const data = body.data as DelegationQueryResult
-    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, space)
+    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, SNAPSHOT_SPACE)
     const result: DelegationResult = {
-      delegatedTo: filterDelegationTo(data.delegatedTo, space),
+      delegatedTo: filterDelegationTo(data.delegatedTo, SNAPSHOT_SPACE),
       delegatedFrom: filteredDelegatedFrom.slice(0, 99),
       hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99
     }
 
     return result
-  }, [space, address], { initialValue, callWithTruthyDeps: true })
+  }, [SNAPSHOT_SPACE, address], { initialValue, callWithTruthyDeps: true })
 }

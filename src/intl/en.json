@@ -306,6 +306,14 @@
       "copy_link_label": "Copy Link",
       "link_copied_label": "Link Copied!",
       "dismiss_button_label": "Dismiss"
+    },
+    "vp_delegation": {
+      "title": "Voting Power Delegation",
+      "description": "Choose who you’d like to receive the 100% of your **{VP} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates. [Read more](#)",
+      "candidate_name": "Candidate name",
+      "picked_by": "Picked by",
+      "total_vp": "Total vp",
+      "button": "Pick somebody else"
     }
   },
   "page": {
@@ -367,11 +375,22 @@
       "finished_result_label": "Result",
       "threshold_not_met_label": "VP threshold not met",
       "see_votes_button": "See Votes",
+      "delegate_name": " is your Delegate",
+      "delegate_not_voted": " still hasn't voted",
+      "delegate_voted": " voted {date}",
+      "delegate_voted_differently": " voted differently",
+      "delegators_with_delegate_no_votes": "Delegated vote to **{delegate}**, but also representing **{total}**",
+      "delegators_voted_without_delegate_without_vote": "**{votes}/{total}** of your party have voted",
+      "delegators_without_delegate_without_votes": "You're representing **{total} {total, plural, one {individual} other {individuals}}**",
+      "delegators_voted_without_delegate_with_vote": "You voted on behalf of **{votes}/{total}** {total, plural, one {individual} other {individuals}}",
       "result_label": "Current result",
       "vote_change": "Change Vote",
+      "vote_overrule": "Overrule Vote",
       "vote_manage": "Manage",
       "vote_choice": "Vote {choice}",
-      "voted_choice": "Voted {choice}",
+      "delegate_voted_choice": "They voted {choice}",
+      "both_voted_choice": "You both voted {choice}",
+      "voted_choice": "You voted {choice}",
       "voting_with": "Voting with {vp}",
       "details_label": "Details",
       "details_user_label": "Created by",

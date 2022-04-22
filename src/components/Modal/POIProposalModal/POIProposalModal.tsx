@@ -1,15 +1,16 @@
-import React from 'react'
-import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import '../ProposalModal.css'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
+import React from 'react'
 
-import './ProposalModal.css'
-import { PoiType, ProposalType } from '../../entities/Proposal/types'
-import CategoryBanner from '../Category/CategoryBanner'
-import locations from '../../modules/locations'
+import { PoiType, ProposalType } from '../../../entities/Proposal/types'
+import locations from '../../../modules/locations'
+import CategoryBanner from '../../Category/CategoryBanner'
 
 export function POIProposalModal({ ...props }) {
   const t = useFormatMessage()
