@@ -39,7 +39,6 @@ function VotingPowerDelegationModal({ vp, space, ...props }: VotingPowerDelegati
       <VotingPowerDelegationItem
         key={idx}
         delegate={delegate}
-        arrowFilled={false}
         onClick={() => {
           navigate(locations.balance({ address: delegate.address }))
           setTimeout(() => {
@@ -64,7 +63,7 @@ function VotingPowerDelegationModal({ vp, space, ...props }: VotingPowerDelegati
               <Table.HeaderCell>{t('modal.vp_delegation.picked_by')}</Table.HeaderCell>
               <Table.HeaderCell className="TotalVP" onClick={() => setIsDescending((prev) => !prev)}>
                 <span>
-                  {t('modal.vp_delegation.totalVP')}
+                  {t('modal.vp_delegation.total_vp')}
                   <Sort rotate={isDescending ? 0 : 180} />
                 </span>
               </Table.HeaderCell>

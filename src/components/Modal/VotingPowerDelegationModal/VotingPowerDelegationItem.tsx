@@ -10,20 +10,15 @@ import Arrow from '../../Icon/Arrow'
 
 type VotingPowerDelegationItemProps = {
   delegate: Delegate
-  arrowFilled: boolean
   onClick: () => void
 }
 
-function VotingPowerDelegationItem({ delegate, arrowFilled, onClick }: VotingPowerDelegationItemProps) {
+function VotingPowerDelegationItem({ delegate, onClick }: VotingPowerDelegationItemProps) {
   const intl = useIntl()
   const { profile } = useProfile(delegate.address)
   const [isFilled, setIsFilled] = useState(false)
   return (
-    <Table.Row
-        onMouseEnter={() => setIsFilled(true)}
-        onMouseLeave={() => setIsFilled(false)}
-        onClick={onClick}
-      >
+    <Table.Row onMouseEnter={() => setIsFilled(true)} onMouseLeave={() => setIsFilled(false)} onClick={onClick}>
       <Table.Cell>
         <span className="Candidate">
           <Avatar address={delegate.address} size="small" />
