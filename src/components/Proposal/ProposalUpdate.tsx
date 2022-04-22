@@ -12,10 +12,11 @@ import CancelIcon from '../Icon/Cancel'
 import locations from '../../modules/locations'
 import CheckIcon from '../Icon/Check'
 import WarningIcon from '../Icon/Warning'
-import './ProposalUpdate.css'
 import QuestionCircleIcon from '../Icon/QuestionCircle'
 import { isBetweenThresholdDate } from '../../entities/Updates/utils'
 import Date from '../Common/Date'
+import { formatDate } from '../../modules/time'
+import './ProposalUpdate.css'
 
 interface Props {
   proposal: ProposalAttributes
@@ -69,6 +70,8 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
     [update.id, proposal.id]
   )
 
+  const formattedCompletionDate = completion_date ? formatDate(completion_date) : ''
+
   if (expanded && completion_date) {
     return (
       <div
@@ -87,7 +90,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
           </div>
           <div className="ProposalUpdate__Date">
             <span className="ProposalUpdate__DateText">
-              <Date date={completion_date}>{Time.from(completion_date).fromNow()}</Date>
+              <Date date={completion_date}>{formattedCompletionDate}</Date>
             </span>
             {status === UpdateStatus.Late && (
               <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
@@ -129,7 +132,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
       {completion_date && (
         <div className="ProposalUpdate__Date">
           <span className="ProposalUpdate__DateText">
-            <Date date={completion_date}>{Time.from(completion_date).fromNow()}</Date>
+            <Date date={completion_date}>{formattedCompletionDate}</Date>
           </span>
           {status === UpdateStatus.Late && (
             <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>

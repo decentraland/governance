@@ -12,6 +12,7 @@ import ProjectHealthStatus from './ProjectHealthStatus'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { ContentSection } from '../Layout/ContentLayout'
 import Date from '../Common/Date'
+import { formatDate } from '../../modules/time'
 import './UpdateMarkdownView.css'
 
 interface Props {
@@ -22,8 +23,8 @@ interface Props {
 
 const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
   const l = useFormatMessage()
-  const formattedCompletionDate = Time(update?.completion_date).fromNow()
-  const formattedDueDate = Time(update?.completion_date).from(Time(update?.due_date), true)
+  const formattedCompletionDate = update?.completion_date ? formatDate(update.completion_date) : ''
+  const formattedDueDate = Time.utc(update?.completion_date).from(Time.utc(update?.due_date), true)
 
   return (
     <ContentSection className="UpdateDetail__Content">
