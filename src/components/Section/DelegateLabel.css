@@ -1,3 +1,10 @@
-.DelegateLabel p.dg.Paragraph {
-  font-size: 14px;
+.DelegateLabel {
+	display: inline-flex;
+	align-items: center;
 }
+
+.DelegateLabel__Text p.dg.Paragraph {
+	font-size: 14px;
+	padding-left: 4px;
+}
+

@@ -19,8 +19,9 @@ const useDelegateLabel = (
   delegators?: Delegation[]
 ): string => {
   const t = useFormatMessage()
+  const hasDelegators = delegators && delegators.length > 0
 
-  if (delegators) {
+  if (hasDelegators) {
     const votesAddresses = Object.keys(votes || {})
     const delegatorsAddresses = delegators.map((i) => i.delegator) || []
     const delegatorsVotes = intersection(votesAddresses, delegatorsAddresses).length
@@ -50,7 +51,7 @@ const useDelegateLabel = (
     }
   }
 
-  if (!delegators && delegate && !delegateVote) {
+  if (!hasDelegators && delegate && !delegateVote) {
     if (vote) {
       return t('page.proposal_detail.delegate_not_voted', { delegate })
     } else {
@@ -58,9 +59,9 @@ const useDelegateLabel = (
     }
   }
 
-  if (!delegators && delegate && delegateVote) {
+  if (!hasDelegators && delegate && delegateVote) {
     if ((vote && vote?.choice === delegateVote.choice) || !vote) {
-      return t('page.proposal_detail.delegate_voted', { date: Time.unix(delegateVote.timestamp).fromNow() })
+      return t('page.proposal_detail.delegate_voted', { date: Time.from(delegateVote.timestamp).fromNow() })
     }
 
     if (vote && vote?.choice !== delegateVote.choice) {
@@ -80,12 +81,13 @@ interface Props {
 }
 
 const DelegateLabel = ({ vote, votes, delegateVote, delegate, delegators }: Props) => {
+  const hasDelegators = delegators && delegators.length > 0
   const label = useDelegateLabel(vote, votes, delegateVote, delegate, delegators)
 
   return (
-    <span>
-      {delegate && <Username address={delegate} linked />}
-      <Markdown className="DelegateLabel">{label}</Markdown>
+    <span className={"DelegateLabel"}>
+      {delegate && !hasDelegators && <Username address={delegate} linked />}
+      <Markdown className="DelegateLabel__Text">{label}</Markdown>
     </span>
   )
 }
