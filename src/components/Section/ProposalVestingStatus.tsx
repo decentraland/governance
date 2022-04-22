@@ -8,6 +8,7 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import './DetailsSection.css'
 import './ProposalVestingStatus.css'
+import Date from '../Common/Date'
 
 export type ProposalVestingStatusProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
@@ -54,22 +55,26 @@ export default function ProposalVestingStatus({
         >
           {t('page.proposal_detail.grant.update_button')}
         </Button>
-        {!hasSubmittedUpdate && nextUpdate?.due_date && (
+        {!hasSubmittedUpdate && nextUpdate?.due_date && currentUpdate?.due_date && (
           <span className="ProposalVestingStatus__DueDate">
-            <Markdown>
-              {t('page.proposal_detail.grant.current_update_due_date', {
-                date: Time(currentUpdate?.due_date).fromNow(true),
-              })}
-            </Markdown>
+            <Date date={currentUpdate.due_date}>
+              <Markdown>
+                {t('page.proposal_detail.grant.current_update_due_date', {
+                  date: Time(currentUpdate.due_date).fromNow(true),
+                })}
+              </Markdown>
+            </Date>
           </span>
         )}
-        {hasSubmittedUpdate && !!currentUpdate?.due_date && (
+        {hasSubmittedUpdate && !!currentUpdate?.due_date && nextUpdate?.due_date && (
           <span className="ProposalVestingStatus__DueDate">
-            <Markdown>
-              {t('page.proposal_detail.grant.next_update_due_date', {
-                date: Time(nextUpdate?.due_date).fromNow(true),
-              })}
-            </Markdown>
+            <Date date={nextUpdate.due_date}>
+              <Markdown>
+                {t('page.proposal_detail.grant.next_update_due_date', {
+                  date: Time(nextUpdate.due_date).fromNow(true),
+                })}
+              </Markdown>
+            </Date>
           </span>
         )}
       </div>
