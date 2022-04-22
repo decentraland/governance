@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { Snapshot } from '../api/Snapshot'
-import { Delegation } from './useDelegation'
+import { useMemo } from 'react'
 
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
+import { Snapshot } from '../api/Snapshot'
+import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { Delegation } from './useDelegation'
 
 export default function useDelegatedVotingPower(delegatedFrom: Delegation[]) {
   const [space] = useAsyncMemo(() => Snapshot.get().getSpace(SNAPSHOT_SPACE), [SNAPSHOT_SPACE])

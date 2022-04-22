@@ -21,12 +21,11 @@ import NameBalanceCard from '../components/Token/NameBalanceCard'
 import VotingPower from '../components/Token/VotingPower'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
+import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
 import useDelegation from '../hooks/useDelegation'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
 import { isUnderMaintenance } from '../modules/maintenance'
-
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
 export default function BalancePage() {
   const t = useFormatMessage()

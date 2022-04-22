@@ -1,5 +1,7 @@
-import { asNumber, MAX_NAME_SIZE, MIN_NAME_SIZE } from "./utils"
-import { SQLStatement } from "decentraland-gatsby/dist/entities/Database/utils"
+import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
+
+import { SNAPSHOT_DURATION } from '../Snapshot/constants'
+import { asNumber, MAX_NAME_SIZE, MIN_NAME_SIZE } from './utils'
 
 export type ProposalAttributes<C extends {} = any> = {
   id: string
@@ -505,7 +507,7 @@ export const GrantRequiredVP = {
 }
 
 function grantDuration(value: string | undefined | null) {
-  return Number(value || process.env.GATSBY_SNAPSHOT_DURATION);
+  return Number(value || SNAPSHOT_DURATION)
 }
 export const GrantDuration = {
   [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),

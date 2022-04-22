@@ -1,73 +1,73 @@
+import { AlchemyProvider, Block } from '@ethersproject/providers'
+import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import validate from 'decentraland-gatsby/dist/entities/Route/validate'
+import schema from 'decentraland-gatsby/dist/entities/Schema'
+import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
-import { AlchemyProvider, Block } from '@ethersproject/providers'
-import routes from 'decentraland-gatsby/dist/entities/Route/routes';
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
-import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
-import validate from 'decentraland-gatsby/dist/entities/Route/validate';
-import schema from 'decentraland-gatsby/dist/entities/Schema'
+import isUUID from 'validator/lib/isUUID'
+
+import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
+import { HashContent, IPFS } from '../../api/IPFS'
+import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
+import isCommitee from '../Committee/isCommittee'
+import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
+import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
+import { signMessage, SNAPSHOT_ACCOUNT } from '../Snapshot/utils'
+import VotesModel from '../Votes/model'
+import { getVotes } from '../Votes/routes'
+import ProposalModel from './model'
+import * as templates from './templates'
+import { getUpdateMessage } from './templates/messages'
 import {
-  SNAPSHOT_SPACE,
-  SNAPSHOT_ACCOUNT,
-  SNAPSHOT_ADDRESS,
-  SNAPSHOT_DURATION,
-  signMessage
-} from '../Snapshot/utils';
-import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
-import { Discourse, DiscoursePost, DiscourseComment } from '../../api/Discourse'
-import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils';
-import Time from 'decentraland-gatsby/dist/utils/date/Time';
-import ProposalModel from './model';
-import {
-  ProposalAttributes,
+  GrantDuration,
+  GrantRequiredVP,
+  INVALID_PROPOSAL_POLL_OPTIONS,
+  NewProposalBanName,
+  newProposalBanNameScheme,
+  NewProposalCatalyst,
+  newProposalCatalystScheme,
+  NewProposalDraft,
+  newProposalDraftScheme,
+  NewProposalGovernance,
+  newProposalGovernanceScheme,
+  NewProposalGrant,
+  newProposalGrantScheme,
+  NewProposalLinkedWearables,
+  newProposalLinkedWearablesScheme,
+  NewProposalPOI,
+  newProposalPOIScheme,
   NewProposalPoll,
   newProposalPollScheme,
-  ProposalType,
   PoiType,
-  ProposalStatus,
-  NewProposalBanName,
-  newProposalPOIScheme,
-  NewProposalPOI,
-  newProposalCatalystScheme,
-  NewProposalCatalyst,
-  newProposalGrantScheme,
-  NewProposalGrant,
-  UpdateProposalStatusProposal,
-  updateProposalStatusScheme,
-  newProposalBanNameScheme,
+  ProposalAttributes,
   ProposalRequiredVP,
-  GrantRequiredVP,
-  GrantDuration,
-  INVALID_PROPOSAL_POLL_OPTIONS,
-  newProposalDraftScheme,
-  NewProposalDraft, newProposalGovernanceScheme, NewProposalGovernance, newProposalLinkedWearablesScheme, NewProposalLinkedWearables
-} from './types';
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
+  ProposalStatus,
+  ProposalType,
+  UpdateProposalStatusProposal,
+  updateProposalStatusScheme
+} from './types'
 import {
   DEFAULT_CHOICES,
+  forumUrl,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  proposalUrl,
-  snapshotProposalUrl,
-  forumUrl,
+  isGrantSizeValid,
   isValidName,
-  MAX_PROPOSAL_LIMIT,
-  MIN_PROPOSAL_OFFSET,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
-  isGrantSizeValid
-} from './utils';
-import { IPFS, HashContent } from '../../api/IPFS';
-import VotesModel from '../Votes/model'
-import isCommitee from '../Committee/isCommittee';
-import isUUID from 'validator/lib/isUUID';
-import * as templates from './templates'
-import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
-import { getUpdateMessage } from './templates/messages'
-import { getVotes } from '../Votes/routes'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+  MAX_PROPOSAL_LIMIT,
+  MIN_PROPOSAL_OFFSET,
+  proposalUrl,
+  snapshotProposalUrl
+} from './utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
@@ -96,7 +96,7 @@ function formatError(err: Error) {
     ...err,
     message: err.message,
     stack: err.stack,
-  };
+  }
 }
 
 function inBackground(fun: () => Promise<any>) {
@@ -254,7 +254,7 @@ export async function createProposalBanName(req: WithAuth) {
 }
 
 const newProposalPOIValidator = schema.compile(newProposalPOIScheme)
-type VerifyFunction = (config: NewProposalPOI) => Promise<void>;
+type VerifyFunction = (config: NewProposalPOI) => Promise<void>
 
 const verify: VerifyFunction = async (config: NewProposalPOI) => {
 
@@ -325,7 +325,7 @@ export async function createProposalGrant(req: WithAuth) {
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
 
   if(!isGrantSizeValid(configuration.tier, configuration.size)) {
-    throw new RequestError("Grant size is not valid for the selected tier");
+    throw new RequestError("Grant size is not valid for the selected tier")
   }
 
   return createProposal({
@@ -574,18 +574,18 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   }
 
   if (update.status === ProposalStatus.Enacted) {
-    update.enacted = true;
-    update.enacted_by = user;
-    update.enacted_description = configuration.description || null;
+    update.enacted = true
+    update.enacted_by = user
+    update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      update.vesting_address = configuration.vesting_address;
+      update.vesting_address = configuration.vesting_address
     }
   } else if (configuration.status === ProposalStatus.Passed) {
-    update.passed_by = user;
-    update.passed_description = configuration.description || null;
+    update.passed_by = user
+    update.passed_description = configuration.description || null
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
-    update.rejected_description = configuration.description || null;
+    update.rejected_description = configuration.description || null
   }
 
   update.textsearch = ProposalModel.textsearch({
@@ -633,7 +633,7 @@ export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
     const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
-    return filterComments(comments);
+    return filterComments(comments)
   } catch (e) {
     logger.error('Could not get proposal comments', e as Error)
     return []
