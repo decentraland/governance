@@ -42,6 +42,7 @@ import StatusLabel from '../components/Status/StatusLabel'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import useProposal from '../hooks/useProposal'
+import useProposalVotingPower from '../hooks/useProposalVotingPower'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -77,14 +78,9 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
-  const [votingPower, votingPowerState] = useAsyncMemo(
-    () =>
-      account && proposal!.status === ProposalStatus.Active
-        ? Governance.get().getVotingPower(proposal!.id)
-        : Promise.resolve(0),
-    [account, proposal],
-    { callWithTruthyDeps: true }
-  )
+
+  const { votingPower, isLoadingVotingPower } = useProposalVotingPower(account, proposal)
+
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
@@ -232,7 +228,7 @@ export default function ProposalPage() {
               />
               <ProposalResultSection
                 disabled={!proposal || !votes}
-                loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
+                loading={voting || proposalState.loading || votesState.loading || isLoadingVotingPower}
                 proposal={proposal}
                 votes={votes}
                 votingPower={votingPower || 0}

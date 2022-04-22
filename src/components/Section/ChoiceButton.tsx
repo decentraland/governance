@@ -1,18 +1,18 @@
 import React from 'react'
 import { Button, ButtonProps } from 'decentraland-ui/dist/components/Button/Button'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { ChoiceColor } from '../../entities/Votes/types'
 import './ChoiceButton.css'
 
-export type ChoiceButtonProps = Omit<ButtonProps, 'children' | 'color'> & {
-  choice?: string
+export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   voted?: boolean
   color?: ChoiceColor
+  voteCount?: number
+  partyTotalVotes?: number
 }
 
-export default function ChoiceButton({ voted, color, choice, ...props }: ChoiceButtonProps) {
-  const t = useFormatMessage()
+export default function ChoiceButton({ voted, color, voteCount, partyTotalVotes, children, ...props }: ChoiceButtonProps) {
+  const percentage = voteCount && partyTotalVotes ? Math.round((voteCount / partyTotalVotes) * 100) + '%' : null
   return (
     <Button
       {...props}
@@ -24,7 +24,11 @@ export default function ChoiceButton({ voted, color, choice, ...props }: ChoiceB
         props.className,
       ])}
     >
-      {voted ? t('page.proposal_detail.voted_choice', { choice }) : t('page.proposal_detail.vote_choice', { choice })}
+      {percentage && <div className={'ChoiceButton__Background'} style={{ width: percentage }} />}
+      <span className={'ChoiceButton__Text'}>
+        {children}
+      </span>
+      {!!partyTotalVotes && (partyTotalVotes > 0) && <span className={'ChoiceButton__VoteCount'}>({voteCount})</span>}
     </Button>
   )
 }
