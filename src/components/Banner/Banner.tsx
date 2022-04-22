@@ -52,7 +52,14 @@ function Banner({
               <Paragraph tiny>{description}</Paragraph>
             </div>
             <div className="Banner__ButtonContainer">
-              <Button className="Banner__Button" primary size="small" onClick={onButtonClick} href={buttonHref}>
+              <Button
+                className="Banner__Button"
+                primary
+                size="small"
+                onClick={onButtonClick}
+                href={buttonHref}
+                target="blank"
+              >
                 {buttonLabel}
               </Button>
             </div>
