@@ -1,7 +1,8 @@
-import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo";
-import fetch from "isomorphic-fetch";
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import fetch from 'isomorphic-fetch'
 
-const ENDPOINT = `https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot`
+import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+
 const QUERY = `
 query ($space: String!, $address: String!) {
   delegatedTo: delegations(where: { space_in: ["", $space], delegator: $address }, orderBy: timestamp, orderDirection: desc) {
@@ -79,7 +80,7 @@ export default function useDelegation(address?: string | null, space?: string | 
     }
 
     const request = await fetch(
-      ENDPOINT,
+      SNAPSHOT_QUERY_ENDPOINT,
       {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },

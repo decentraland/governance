@@ -2,35 +2,40 @@ import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import React from 'react'
+import React, {useState} from 'react'
 
+import { Delegate } from '../../../hooks/useDelegatesInfo'
 import useProfile from '../../../hooks/useProfile'
 import Arrow from '../../Icon/Arrow'
-import { Delegate } from './VotingPowerDelegationModal'
 
 type VotingPowerDelegationItemProps = {
   delegate: Delegate
-  picked_by: number
   arrowFilled: boolean
+  onClick: () => void
 }
 
-function VotingPowerDelegationItem({ delegate, picked_by, arrowFilled }: VotingPowerDelegationItemProps) {
+function VotingPowerDelegationItem({ delegate, arrowFilled, onClick }: VotingPowerDelegationItemProps) {
   const intl = useIntl()
   const { profile } = useProfile(delegate.address)
+  const [isFilled, setIsFilled] = useState(false)
   return (
-    <>
+    <Table.Row
+        onMouseEnter={() => setIsFilled(true)}
+        onMouseLeave={() => setIsFilled(false)}
+        onClick={onClick}
+      >
       <Table.Cell>
         <span className="Candidate">
           <Avatar address={delegate.address} size="small" />
           {profile?.name || <Address value={delegate.address} />}
         </span>
       </Table.Cell>
-      <Table.Cell>{intl.formatNumber(picked_by)}</Table.Cell>
-      <Table.Cell>{intl.formatNumber(delegate.total_vp)}</Table.Cell>
+      <Table.Cell>{intl.formatNumber(delegate.pickedBy)}</Table.Cell>
+      <Table.Cell>{intl.formatNumber(delegate.totalVP)}</Table.Cell>
       <Table.Cell>
-        <Arrow filled={arrowFilled} />
+        <Arrow filled={isFilled} />
       </Table.Cell>
-    </>
+    </Table.Row>
   )
 }
 

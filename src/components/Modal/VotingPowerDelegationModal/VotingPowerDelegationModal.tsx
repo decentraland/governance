@@ -10,16 +10,11 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import React, { useMemo, useState } from 'react'
 
 import { snapshotUrl } from '../../../entities/Proposal/utils'
-import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import exampleDelegates from '../../../modules/delegates/example_delegates.json'
 import locations from '../../../modules/locations'
 import Sort from '../../Icon/Sort'
 import VotingPowerDelegationItem from './VotingPowerDelegationItem'
-
-export type Delegate = {
-  address: string
-  total_vp: number
-}
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   vp: number
@@ -32,39 +27,26 @@ function VotingPowerDelegationModal({ vp, space, ...props }: VotingPowerDelegati
   const t = useFormatMessage()
   const [isDescending, setIsDescending] = useState(true)
 
-  const delegates_with_total_vp = exampleDelegates.map((delegate) => {
-    const [votingPower] = useVotingPowerBalance(delegate.address, space)
-    return { ...delegate, total_vp: votingPower }
-  })
-  const delegates = useMemo(
-    () => delegates_with_total_vp.sort((a, b) => (isDescending ? b.total_vp - a.total_vp : a.total_vp - b.total_vp)),
-    [delegates_with_total_vp, isDescending]
-  ) as Delegate[]
+  const delegates = useDelegatesInfo(exampleDelegates.map((deleg) => deleg.address))
 
-  const arrowFilledState: [boolean, React.Dispatch<React.SetStateAction<boolean>>][] = []
-
-  const changeArrowFilledState = (idx: number, state: boolean) => {
-    const [isFilled, setIsFilled] = arrowFilledState[idx]
-    setIsFilled(state)
-  }
+  const delegatesSorted = useMemo(
+    () => delegates.sort((a, b) => (isDescending ? b.totalVP - a.totalVP : a.totalVP - b.totalVP)),
+    [delegates, isDescending]
+  )
 
   const createDelegateRow = (delegate: Delegate, idx: number) => {
-    const [isFilled, setIsFilled] = useState(false)
-    arrowFilledState.push([isFilled, setIsFilled])
     return (
-      <Table.Row
+      <VotingPowerDelegationItem
         key={idx}
-        onMouseEnter={() => changeArrowFilledState(idx, true)}
-        onMouseLeave={() => changeArrowFilledState(idx, false)}
+        delegate={delegate}
+        arrowFilled={false}
         onClick={() => {
           navigate(locations.balance({ address: delegate.address }))
           setTimeout(() => {
             props.onClose()
           }, 100)
         }}
-      >
-        <VotingPowerDelegationItem delegate={delegate} picked_by={0} arrowFilled={isFilled} />
-      </Table.Row>
+      />
     )
   }
 
@@ -82,14 +64,14 @@ function VotingPowerDelegationModal({ vp, space, ...props }: VotingPowerDelegati
               <Table.HeaderCell>{t('modal.vp_delegation.picked_by')}</Table.HeaderCell>
               <Table.HeaderCell className="TotalVP" onClick={() => setIsDescending((prev) => !prev)}>
                 <span>
-                  {t('modal.vp_delegation.total_vp')}
+                  {t('modal.vp_delegation.totalVP')}
                   <Sort rotate={isDescending ? 0 : 180} />
                 </span>
               </Table.HeaderCell>
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
-          <Table.Body>{delegates.map(createDelegateRow)}</Table.Body>
+          <Table.Body>{delegatesSorted.map(createDelegateRow)}</Table.Body>
         </Table>
       </Modal.Content>
       <Modal.Actions>
