@@ -24,9 +24,9 @@ import UserStats from '../components/User/UserStats'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
 import useDelegation from '../hooks/useDelegation'
-import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
 import { isUnderMaintenance } from '../modules/maintenance'
+
 export default function BalancePage() {
   const t = useFormatMessage()
   const location = useLocation()
