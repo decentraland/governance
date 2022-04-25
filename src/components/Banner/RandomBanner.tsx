@@ -10,6 +10,8 @@ interface Props {
   isVisible: boolean
 }
 
+const now = new Date()
+
 function RandomBanner({ isVisible }: Props) {
   const {
     showSubscriptionBanner,
@@ -22,32 +24,9 @@ function RandomBanner({ isVisible }: Props) {
 
   const showDelegationBanner = useDelegationBanner()
 
-  if (!showSubscriptionBanner) {
-    return <DelegationBanner isVisible={isVisible} />
-  }
+  const delegationBanner = <DelegationBanner isVisible={isVisible} />
 
-  if (!showDelegationBanner) {
-    return (
-      <>
-        <SubscriptionBanner
-          isVisible={showSubscriptionBanner && isVisible}
-          onAction={() => setIsSubscriptionModalOpen(true)}
-        />
-        <NewsletterSubscriptionModal
-          open={isSubscriptionModalOpen}
-          onSubscriptionSuccess={onSubscriptionSuccess}
-          subscribed={subscribed}
-          onClose={onClose}
-        />
-      </>
-    )
-  }
-
-  const now = new Date()
-
-  return now.valueOf() % 2 === 0 ? (
-    <DelegationBanner isVisible={isVisible} />
-  ) : (
+  const subscriptionBanner = (
     <>
       <SubscriptionBanner
         isVisible={showSubscriptionBanner && isVisible}
@@ -61,6 +40,16 @@ function RandomBanner({ isVisible }: Props) {
       />
     </>
   )
+
+  if (!showSubscriptionBanner) {
+    return delegationBanner
+  }
+
+  if (!showDelegationBanner) {
+    return subscriptionBanner
+  }
+
+  return now.valueOf() % 2 === 0 ? delegationBanner : subscriptionBanner
 }
 
 export default RandomBanner
