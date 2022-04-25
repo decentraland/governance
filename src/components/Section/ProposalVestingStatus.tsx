@@ -61,6 +61,7 @@ export default function ProposalVestingStatus({
                 </div>
               }
               on="hover"
+              position="bottom right"
             />
           </span>
         )}
