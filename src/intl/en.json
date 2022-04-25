@@ -313,7 +313,8 @@
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
       "total_vp": "Total vp",
-      "button": "Pick somebody else"
+      "button": "Pick somebody else",
+      "backButtonLabel": "Go back to delegates list"
     }
   },
   "page": {
