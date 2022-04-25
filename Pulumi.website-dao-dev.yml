@@ -19,6 +19,7 @@ config:
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
   website-dao:GATSBY_DISCOURSE_CATEGORY: "5"
   website-dao:GATSBY_DISCOURSE_USER: dao
+  website-dao:GATSBY_DELEGATE_APPLICATION_URL: https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840
   website-dao:GATSBY_DURATION_DRAFT: "1200"
   website-dao:GATSBY_DURATION_GOVERNANCE: "1200"
   website-dao:GATSBY_DURATION_GRANT_TIER4: "1200"

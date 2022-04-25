@@ -15,11 +15,9 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Decentraland } from '../../api/Decentraland'
+import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../Banner/Subscription/SubscriptionBanner'
 
 const check = require('../../images/icons/check-cloud.svg').default
-
-export const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
-export const ANONYMOUS_USR_SUBSCRIPTION: string = 'anonymous_subscription'
 
 type NewsletterSubscriptionResult = {
   email: string
