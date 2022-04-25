@@ -93,6 +93,10 @@
 
 @media (min-width: 768px) {
 
+  .Banner {
+    margin-bottom: 35px;
+  }
+  
   .OnlyDesktop .Banner {
     display: flex;
   }

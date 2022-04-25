@@ -19,7 +19,7 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../api/Governance'
-import SubscriptionBanner from '../components/Banner/Subscription/SubscriptionBanner'
+import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
@@ -38,9 +38,6 @@ import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
-import useNewsletterSubscription from '../hooks/useNewsletterSubscription'
-import { NewsletterSubscriptionModal } from '../components/Modal/NewsletterSubscriptionModal'
-import DelegationBanner from '../components/Banner/Delegation/DelegationBanner'
 
 const ITEMS_PER_PAGE = 25
 
@@ -67,15 +64,6 @@ export default function IndexPage() {
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const { status: burgerStatus } = useBurgerMenu()
   const { open, translate } = burgerStatus
-
-  const {
-    showSubscriptionBanner,
-    isSubscriptionModalOpen,
-    setIsSubscriptionModalOpen,
-    onSubscriptionSuccess,
-    subscribed,
-    onClose,
-  } = useNewsletterSubscription()
 
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
@@ -126,10 +114,7 @@ export default function IndexPage() {
         className="OnlyMobile Animated"
         style={(isMobile && open && { transform: 'translateX(-200%)', height: 0 }) || {}}
       >
-        <SubscriptionBanner
-          isVisible={showSubscriptionBanner && !searching}
-          onAction={() => setIsSubscriptionModalOpen(true)}
-        />
+        <RandomBanner isVisible={!searching} />
       </div>
       <Head
         title={
@@ -153,7 +138,7 @@ export default function IndexPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       <Container>
         <div className="OnlyDesktop">
-          <DelegationBanner isVisible={!searching} />
+          <RandomBanner isVisible={!searching} />
         </div>
         {!isMobile && search && proposals && <SearchTitle />}
         <Grid stackable>
@@ -201,14 +186,6 @@ export default function IndexPage() {
                 }
               >
                 <Loader active={!proposals || proposalsState.loading} />
-                <div className="OnlyDesktop">
-                  {!searching && (
-                    <SubscriptionBanner
-                      isVisible={showSubscriptionBanner && !searching}
-                      onAction={() => setIsSubscriptionModalOpen(true)}
-                    />
-                  )}
-                </div>
                 {type && !searching && <CategoryBanner type={type} active />}
                 {proposals && proposals.data.length === 0 && (
                   <Empty
@@ -246,12 +223,6 @@ export default function IndexPage() {
           </Grid.Row>
         </Grid>
       </Container>
-      <NewsletterSubscriptionModal
-        open={isSubscriptionModalOpen}
-        onSubscriptionSuccess={onSubscriptionSuccess}
-        subscribed={subscribed}
-        onClose={onClose}
-      />
     </>
   )
 }
