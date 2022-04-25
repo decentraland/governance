@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useEffect } from 'react'
+import React, { useMemo } from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
@@ -143,6 +143,7 @@ export default function WrappingPage() {
                         <MonthlyTotal
                           title={t('page.transparency.mission.monthly_expenses') || ''}
                           monthlyTotal={data.expenses}
+                          invertDiffColors={true}
                         />
                       </Grid.Row>
                     </Grid.Column>
