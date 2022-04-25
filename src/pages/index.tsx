@@ -1,41 +1,43 @@
-import React, { useEffect } from 'react'
+import './index.css'
+
 import { useLocation } from '@gatsbyjs/reach-router'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import locations from '../modules/locations'
-import ActionableLayout from '../components/Layout/ActionableLayout'
-import { ProposalType } from '../entities/Proposal/types'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import CategoryBanner from '../components/Category/CategoryBanner'
-import ProposalItem from '../components/Proposal/ProposalItem'
-import useSubscriptions from '../hooks/useSubscriptions'
-import Empty from '../components/Proposal/Empty'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
-import useProposals from '../hooks/useProposals'
-import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
-import { Governance } from '../api/Governance'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import React, { useEffect, useState } from 'react'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+
+import { Governance } from '../api/Governance'
+import RandomBanner from '../components/Banner/RandomBanner'
+import CategoryBanner from '../components/Category/CategoryBanner'
+import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
-import { isUnderMaintenance } from '../modules/maintenance'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import Empty from '../components/Proposal/Empty'
+import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
-import StatusFilter from '../components/Search/StatusFilter'
-import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { SearchTitle } from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
+import StatusFilter from '../components/Search/StatusFilter'
+import TimeFrameFilter from '../components/Search/TimeFrameFilter'
+import { ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
+import useProposals from '../hooks/useProposals'
 import { useSearchParams } from '../hooks/useSearchParams'
-import './index.css'
+import useSubscriptions from '../hooks/useSubscriptions'
+import locations from '../modules/locations'
+import { isUnderMaintenance } from '../modules/maintenance'
 
 const ITEMS_PER_PAGE = 25
 
@@ -112,7 +114,7 @@ export default function IndexPage() {
         className="OnlyMobile Animated"
         style={(isMobile && open && { transform: 'translateX(-200%)', height: 0 }) || {}}
       >
-        <SubscriptionBanner active={!type} />
+        <RandomBanner isVisible={!searching} />
       </div>
       <Head
         title={
@@ -135,6 +137,9 @@ export default function IndexPage() {
       />
       <Navigation activeTab={NavigationTab.Proposals} />
       <Container>
+        <div className="OnlyDesktop">
+          <RandomBanner isVisible={!searching} />
+        </div>
         {!isMobile && search && proposals && <SearchTitle />}
         <Grid stackable>
           <Grid.Row>
@@ -181,7 +186,6 @@ export default function IndexPage() {
                 }
               >
                 <Loader active={!proposals || proposalsState.loading} />
-                <div className="OnlyDesktop">{!searching && <SubscriptionBanner active={!type} />}</div>
                 {type && !searching && <CategoryBanner type={type} active />}
                 {proposals && proposals.data.length === 0 && (
                   <Empty

@@ -679,6 +679,11 @@
       "title": "Stay in the loop",
       "description": "The DAO Weekly Newsletter includes updates regarding proposals",
       "subscribe_button_label": "Subscribe"
+    },
+    "delegate_banner": {
+      "title": "Call for Delegates Open",
+      "description": "The Decentraland DAO is looking to get commited individuals on the spotlight to help them get more VP",
+      "button_label": "Read more"
     }
   }
 }

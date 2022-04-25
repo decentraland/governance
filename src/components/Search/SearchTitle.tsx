@@ -1,17 +1,19 @@
-import React from 'react'
+import './SearchTitle.css'
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import locations from '../../modules/locations'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import React from 'react'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+
 import { useSearchParams } from '../../hooks/useSearchParams'
-import './SearchTitle.css'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import locations from '../../modules/locations'
 
 export function SearchTitle() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const responsive = useResponsive()
   const { search } = useSearchParams()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
@@ -27,7 +29,7 @@ export function SearchTitle() {
             </div>
             <div className={'SearchTitle_TextContainer'}>
               <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__Ellipsis'])}>
-                {l('navigation.search.search_results', { title: search })}
+                {t('navigation.search.search_results', { title: search })}
               </Header>
               <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__ClosingDoubleQuote'])}>
                 {'"'}
