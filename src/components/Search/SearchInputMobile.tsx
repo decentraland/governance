@@ -1,43 +1,47 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { useSearchParams } from '../../hooks/useSearchParams'
-import { useLocation } from '@reach/router'
-import { handleSearch } from './SearchInput'
 import './SearchInputMobile.css'
+
+import { useLocation } from '@reach/router'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import React, { useEffect, useRef, useState } from 'react'
+
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import { useSearchParams } from '../../hooks/useSearchParams'
+import { handleSearch } from './SearchInput'
 
 export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivElement>) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const { search, searching } = useSearchParams()
-  const searchInput = useRef<HTMLInputElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
-  const [searchText, setSearchText] = useState(() => search || '');
-  const [placeholder, setPlaceholder] = useState(l('navigation.search.mobile.placeholder') || '')
+  const [searchText, setSearchText] = useState(() => search || '')
+  const [placeholder, setPlaceholder] = useState(t('navigation.search.mobile.placeholder') || '')
   const burgerMenu = useBurgerMenu()
-  useEffect(() => { burgerMenu?.setStatus((prev) => ({...prev, searching: searching}))}, [searching]);
+  useEffect(() => {
+    burgerMenu?.setStatus((prev) => ({ ...prev, searching: searching }))
+  }, [searching])
 
   function focusSearch() {
-    searchInput.current?.focus();
+    searchInput.current?.focus()
   }
 
   useEffect(() => {
-    if (!search){
+    if (!search) {
       setSearchText('')
     } else {
-      setSearchText(search);
+      setSearchText(search)
       setOpen(true)
     }
   }, [search])
 
   function handleChange(e: React.ChangeEvent<any>) {
-    setSearchText(e.target.value);
+    setSearchText(e.target.value)
   }
 
   function handleClear() {
-    setSearchText('');
+    setSearchText('')
     focusSearch()
   }
 
@@ -49,21 +53,19 @@ export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivEle
 
   function handleFocus() {
     setOpen(true)
-    if (!searchText) setPlaceholder(l('navigation.search.mobile.focus_placeholder') || '')
+    if (!searchText) setPlaceholder(t('navigation.search.mobile.focus_placeholder') || '')
   }
 
   function handleBlur() {
     setOpen(!!searchText)
-    if (!searchText) setPlaceholder(l('navigation.search.mobile.placeholder') || '')
+    if (!searchText) setPlaceholder(t('navigation.search.mobile.placeholder') || '')
   }
 
   return (
-    <div className={'SearchContainerMobile'} >
+    <div className={'SearchContainerMobile'}>
       <input
         {...props}
-        className={TokenList.join(['SearchInputMobile',
-          open && 'SearchInputMobile--open',
-          props.className])}
+        className={TokenList.join(['SearchInputMobile', open && 'SearchInputMobile--open', props.className])}
         value={searchText}
         placeholder={placeholder}
         onChange={handleChange}

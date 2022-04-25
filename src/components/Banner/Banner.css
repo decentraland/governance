@@ -1,4 +1,4 @@
-.SubscriptionBanner  {
+.Banner {
   display: none;
   align-items: center;
   align-content: stretch;
@@ -10,7 +10,7 @@
   outline: 1px solid #0000000a;
 }
 
-.SubscriptionBanner::before {
+.Banner::before {
   display: block;
   content: "";
   position: absolute;
@@ -24,7 +24,7 @@
   opacity: .08;
 }
 
-.SubscriptionBanner .SubscriptionBanner__Icon  {
+.Banner .Banner__Icon {
   flex: 0 0 68px;
   height: 48px;
   display: none;
@@ -32,25 +32,25 @@
   align-items: center;
 }
 
-.SubscriptionBanner .SubscriptionBanner__Icon img {
+.Banner .Banner__Icon img {
   position: relative;
   height: 100%;
   width: auto;
 }
 
-.SubscriptionBanner .SubscriptionBanner__Description {
+.Banner .Banner__Description {
   flex-grow: 1;
 }
 
-.SubscriptionBanner .dg.Paragraph  {
+.Banner .dg.Paragraph {
   margin-bottom: 0;
 }
 
-.SubscriptionBanner .dg.Paragraph.Paragraph--tiny  {
+.Banner .dg.Paragraph.Paragraph--tiny {
   font-size: 15px;
 }
 
-.SubscriptionBanner > .dcl.close {
+.Banner>.dcl.close {
   position: absolute;
   top: 0;
   right: 0;
@@ -59,23 +59,23 @@
   z-index: 10;
 }
 
-.SubscriptionBanner .SubscriptionBanner__Button {
+.Banner .Banner__Button {
   background-color: #4888EE !important;
 }
 
 @media (max-width: 767px) {
-  .OnlyMobile .SubscriptionBanner {
+  .OnlyMobile .Banner {
     display: flex;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__Content {
+  .Banner .Banner__Content {
     display: contents;
     flex-direction: column;
     width: 100%;
     text-align: initial;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__ButtonContainer {
+  .Banner .Banner__ButtonContainer {
     width: auto;
     display: flex;
     align-items: center;
@@ -84,7 +84,7 @@
     z-index: 1;
   }
 
-  .OnlyMobile .SubscriptionBanner .SubscriptionBanner__Button {
+  .OnlyMobile .Banner .Banner__Button {
     padding-left: 0;
     padding-right: 0;
     min-width: 87px;
@@ -93,31 +93,34 @@
 
 @media (min-width: 768px) {
 
-  .OnlyDesktop .SubscriptionBanner {
+  .Banner {
+    margin-bottom: 35px;
+  }
+  
+  .OnlyDesktop .Banner {
     display: flex;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__Icon {
+  .Banner .Banner__Icon {
     display: flex;
     padding-right: 20px;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__Content{
+  .Banner .Banner__Content {
     display: flex;
     flex-direction: row;
     width: 100%;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__ButtonContainer {
-    width: 30%;
+  .Banner .Banner__ButtonContainer {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    margin-right: 2em;
   }
 
-  .SubscriptionBanner .SubscriptionBanner__Button {
+  .Banner .Banner__Button {
     position: relative;
-    width: 80% !important;
     background-color: #4888EE !important;
   }
 }

@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { useSearchParams } from '../../hooks/useSearchParams'
-import { useLocation } from '@reach/router'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import locations from '../../modules/locations'
 import './SearchInput.css'
+
+import { useLocation } from '@reach/router'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import React, { useEffect, useRef, useState } from 'react'
+
+import { useSearchParams } from '../../hooks/useSearchParams'
+import locations from '../../modules/locations'
 
 export function handleSearch(textSearch: string, location: Location) {
   const newParams = new URLSearchParams(location.search)
@@ -23,7 +25,7 @@ export function handleSearch(textSearch: string, location: Location) {
 }
 
 export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const { search } = useSearchParams()
   const searchInput = useRef<HTMLInputElement>(null)
@@ -70,7 +72,7 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>)
         {...props}
         className={TokenList.join(['SearchInput', open && 'SearchInput--open', props.className])}
         value={searchText}
-        placeholder={props.placeholder || l('navigation.search.placeholder') || ''}
+        placeholder={props.placeholder || t('navigation.search.placeholder') || ''}
         onChange={handleChange}
         onKeyPress={handleKeyPress}
         onKeyUp={keyUpHandler}
