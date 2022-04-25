@@ -11,10 +11,15 @@ import { formatBalance } from '../../entities/Proposal/utils'
 export type MonthlyTotalProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string
   monthlyTotal: MonthlyTotal
+  invertDiffColors?: boolean
 }
 
-export default React.memo(function MonthlyTotal({ title, monthlyTotal }: MonthlyTotalProps) {
+const RED = `Number--Red`
+const GREEN = `Number--Green`
+
+export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDiffColors = false }: MonthlyTotalProps) {
   const t = useFormatMessage()
+  const [belowZeroColor, zeroOrOverColor] = invertDiffColors ? [GREEN, RED] : [RED, GREEN]
 
   return (
     <div className="MonthlyTotal">
@@ -30,8 +35,8 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal }: Monthly
               <strong
                 className={TokenList.join([
                   'Number',
-                  monthlyTotal.previous < 0 && `Number--Red`,
-                  monthlyTotal.previous >= 0 && `Number--Green`,
+                  monthlyTotal.previous < 0 && belowZeroColor,
+                  monthlyTotal.previous >= 0 && zeroOrOverColor,
                 ])}
               >
                 {formatBalance(monthlyTotal.previous) + '% '}
