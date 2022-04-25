@@ -2,11 +2,11 @@ import { Request } from 'express'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
-import UpdateModel from './model'
-import { UpdateAttributes, UpdateStatus } from './types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate, isBetweenThresholdDate } from './utils'
+import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate, isBetweenLateThresholdDate } from './utils'
+import UpdateModel from './model'
+import { UpdateAttributes, UpdateStatus } from './types'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
 
@@ -22,7 +22,7 @@ async function getProposalUpdate(req: Request<{ update: string }>) {
   const id = req.params.update
 
   if (!id) {
-    throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
+    throw new RequestError(`Missing id`, RequestError.NotFound)
   }
 
   const update = await UpdateModel.findOne<UpdateAttributes>({ id })
@@ -59,10 +59,20 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
 
   const user = req.auth!
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
+  const proposalId = req.params.proposal
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
 
   if (proposal?.user !== user) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
+  }
+
+  const updates = await UpdateModel.find({
+    proposal_id: proposalId,
+    status: UpdateStatus.Pending
+  })
+
+  if (updates.length > 0) {
+    throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
   }
 
   return await UpdateModel.createUpdate({
@@ -94,7 +104,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const now = new Date()
   const isOnTime = Time(now).isBefore(update.due_date)
 
-  if (!isOnTime && !isBetweenThresholdDate(update.due_date)) {
+  if (!isOnTime && !isBetweenLateThresholdDate(update.due_date)) {
     throw new RequestError(`Update is not on time: "${update.id}"`, RequestError.BadRequest)
   }
 

@@ -421,9 +421,11 @@
         "update_keep_reading": "Keep reading",
         "update_missed_owner": "You missed this update.",
         "update_missed": "Beneficiary missed this update.",
-        "update_description": "**Don’t forget to share some news** to keep the community in the loop.",
+        "update_description": "Take notes as you make progress on your project and use them to write your updates to the community.",
         "update_button": "Post Update",
+        "current_update_available_in": "Update available in **{date}**",
         "current_update_due_date": "Update due in **{date}**",
+        "current_update_info": "You must share a community update once every 30 days during your vesting period. Updates can be posted on the last 15 days of every 30-days period.",
         "next_update_due_date": "Next one due in **{date}**"
       }
     },

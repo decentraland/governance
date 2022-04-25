@@ -13,7 +13,7 @@ import locations from '../../modules/locations'
 import CheckIcon from '../Icon/Check'
 import WarningIcon from '../Icon/Warning'
 import QuestionCircleIcon from '../Icon/QuestionCircle'
-import { isBetweenThresholdDate } from '../../entities/Updates/utils'
+import { isBetweenLateThresholdDate } from '../../entities/Updates/utils'
 import Date from '../Common/Date'
 import { formatDate } from '../../modules/time'
 import './ProposalUpdate.css'
@@ -108,7 +108,7 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
     )
   }
 
-  const showPostUpdateButton = !completion_date && isOwner && isBetweenThresholdDate(due_date)
+  const showPostUpdateButton = !completion_date && isOwner && isBetweenLateThresholdDate(due_date)
 
   return (
     <div

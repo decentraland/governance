@@ -15,8 +15,19 @@
   padding: 0 !important;
 }
 
-.ProposalVestingStatus__DueDate .dg.Paragraph {
+.ProposalVestingStatus__DueDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 10px;
+}
+
+.ProposalVestingStatus__DueDate .dg.Paragraph {
   font-size: 13px;
   line-height: 18px;
+}
+
+.ProposalVestingStatus__InfoIconContainer {
+  display: flex;
+  align-items: center;
 }

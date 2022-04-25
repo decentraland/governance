@@ -275,7 +275,6 @@ export default function ProposalPage() {
               />
               {showVestingStatus && (
                 <ProposalVestingStatus
-                  proposal={proposal}
                   nextUpdate={nextUpdate}
                   currentUpdate={currentUpdate}
                   pendingUpdates={pendingUpdates}

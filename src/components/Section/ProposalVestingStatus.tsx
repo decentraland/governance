@@ -1,19 +1,16 @@
 import React from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
-import './DetailsSection.css'
-import './ProposalVestingStatus.css'
+import { getOnTimeThresholdDate } from '../../entities/Updates/utils'
 import Date from '../Common/Date'
+import Info from '../Icon/Info'
+import './ProposalVestingStatus.css'
 
-export type ProposalVestingStatusProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  proposal?: ProposalAttributes | null
-  loading?: boolean
-  disabled?: boolean
+type ProposalVestingStatusProps = {
   nextUpdate?: UpdateAttributes | null
   currentUpdate?: UpdateAttributes | null
   pendingUpdates?: UpdateAttributes[] | null
@@ -21,34 +18,24 @@ export type ProposalVestingStatusProps = Omit<React.HTMLAttributes<HTMLDivElemen
 }
 
 export default function ProposalVestingStatus({
-  proposal,
-  loading,
-  disabled,
   onPostUpdateClick,
   nextUpdate,
   currentUpdate,
   pendingUpdates,
-  ...props
 }: ProposalVestingStatusProps) {
   const t = useFormatMessage()
   const hasSubmittedUpdate = !!currentUpdate?.completion_date && !!pendingUpdates && pendingUpdates.length > 0
+  const thresholdDate = getOnTimeThresholdDate(currentUpdate?.due_date)
+  const canSubmitUpdate = (!nextUpdate && !currentUpdate) || Time().isAfter(thresholdDate)
 
   return (
-    <div
-      {...props}
-      className={TokenList.join([
-        'DetailsSection',
-        disabled && 'DetailsSection--disabled',
-        loading && 'DetailsSection--loading',
-        props.className,
-      ])}
-    >
+    <div className="DetailsSection">
       <div className="DetailsSection__Content">
         <span className="ProposalVestingStatus__UpdateDescription">
           <Markdown>{t('page.proposal_detail.grant.update_description')}</Markdown>
         </span>
         <Button
-          disabled={hasSubmittedUpdate}
+          disabled={hasSubmittedUpdate || !canSubmitUpdate}
           onClick={onPostUpdateClick}
           className="ProposalVestingStatus__UpdateButton"
           primary
@@ -64,6 +51,17 @@ export default function ProposalVestingStatus({
                 })}
               </Markdown>
             </Date>
+            <Popup
+              content={t('page.proposal_detail.grant.current_update_info')}
+              inverted
+              basic
+              trigger={
+                <div className="ProposalVestingStatus__InfoIconContainer">
+                  <Info />
+                </div>
+              }
+              on="hover"
+            />
           </span>
         )}
         {hasSubmittedUpdate && !!currentUpdate?.due_date && nextUpdate?.due_date && (
