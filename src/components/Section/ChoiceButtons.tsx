@@ -7,7 +7,7 @@ import ChoiceButton from './ChoiceButton'
 interface Props {
   choices: string[]
   vote: Vote | null
-  delegateVote?: Vote
+  delegateVote?: Vote | null
   votesByChoices: Record<string, number>
   totalVotes: number
   onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
@@ -30,7 +30,7 @@ export const ChoiceButtons = ({ choices, vote, delegateVote, votesByChoices, tot
             color={calculateChoiceColor(currentChoice, currentChoiceIndex)}
             onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
             voteCount={votesByChoices[currentChoiceIndex]}
-            partyTotalVotes={totalVotes}
+            totalVotes={totalVotes}
           >
             {t('page.proposal_detail.vote_choice', { choice: currentChoice })}
           </ChoiceButton>

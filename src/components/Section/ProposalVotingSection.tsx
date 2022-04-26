@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Vote } from '../../entities/Votes/types'
-import { getPartyVotes } from '../../entities/Votes/utils'
+import { getPartyVotes, getVotingSectionConfig } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
 import useDelegation from '../../hooks/useDelegation'
 import { ChoiceButtons } from './ChoiceButtons'
@@ -39,16 +39,17 @@ const ProposalVotingSection = ({
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [delegations] = useDelegation(account)
-  const vote = (account && votes && votes[account]) || null
   const delegate = delegations?.delegatedTo[0]?.delegate
-  const delegators = delegations?.delegatedFrom
-  const delegateVote = votes?.[delegate]
+  const delegators: string[] = delegations?.delegatedFrom.map((delegator) => delegator.delegator)
+  const { vote, delegateVote, delegationsLabel, votedChoice, showChoiceButtons } = getVotingSectionConfig(
+    votes,
+    choices,
+    delegate,
+    delegators,
+    account
+  )
   const somebodyVoted = vote || delegateVote
-  const hasChoices = choices.length > 0
-  const showChoiceButtons = account && hasChoices && (!somebodyVoted || changingVote)
   const showVotingPower = started && account && (!somebodyVoted || changingVote)
-  const showVote = account && hasChoices && vote && !changingVote
-  const showDelegateVote = account && !vote && delegateVote && !changingVote
   const isVotingOpen = started && !finished
   const showChangeVoteButton = isVotingOpen && somebodyVoted && !changingVote
   const showCancelChangeVoteButton = isVotingOpen && somebodyVoted && changingVote
@@ -69,17 +70,9 @@ const ProposalVotingSection = ({
         </Button>
       )}
 
-      {(delegate || delegators) && (
-        <DelegateLabel
-          vote={vote}
-          votes={votes}
-          delegateVote={delegateVote}
-          delegate={delegate}
-          delegators={delegators}
-        />
-      )}
+      {delegationsLabel && <DelegateLabel delegationsLabel={delegationsLabel} delegate={delegate!} />}
 
-      {showChoiceButtons && (
+      {(showChoiceButtons || changingVote) && (
         <ChoiceButtons
           choices={choices}
           vote={vote}
@@ -104,15 +97,7 @@ const ProposalVotingSection = ({
         </div>
       )}
 
-      {(showVote || showDelegateVote) && (
-        <VotedChoiceButton
-          vote={vote}
-          delegateVote={delegateVote}
-          choices={choices}
-          votesByChoices={votesByChoices}
-          totalVotes={totalVotes}
-        />
-      )}
+      {votedChoice && !changingVote && <VotedChoiceButton {...votedChoice} />}
 
       {showChangeVoteButton && (
         <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>

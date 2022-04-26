@@ -8,11 +8,11 @@ export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   voted?: boolean
   color?: ChoiceColor
   voteCount?: number
-  partyTotalVotes?: number
+  totalVotes?: number
 }
 
-export default function ChoiceButton({ voted, color, voteCount, partyTotalVotes, children, ...props }: ChoiceButtonProps) {
-  const percentage = voteCount && partyTotalVotes ? Math.round((voteCount / partyTotalVotes) * 100) + '%' : null
+export default function ChoiceButton({ voted, color, voteCount, totalVotes, children, ...props }: ChoiceButtonProps) {
+  const percentage = voteCount && totalVotes ? Math.round((voteCount / totalVotes) * 100) + '%' : null
   return (
     <Button
       {...props}
@@ -28,7 +28,7 @@ export default function ChoiceButton({ voted, color, voteCount, partyTotalVotes,
       <span className={'ChoiceButton__Text'}>
         {children}
       </span>
-      {!!partyTotalVotes && (partyTotalVotes > 0) && <span className={'ChoiceButton__VoteCount'}>({voteCount})</span>}
+      {!!totalVotes && (totalVotes > 0) && <span className={'ChoiceButton__VoteCount'}>({voteCount})</span>}
     </Button>
   )
 }

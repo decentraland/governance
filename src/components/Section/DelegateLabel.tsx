@@ -1,92 +1,22 @@
-import React from 'react'
-
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { intersection } from 'lodash'
-
-import { Vote } from '../../entities/Votes/types'
-import { Delegation } from '../../hooks/useDelegation'
+import React from 'react'
+import { DelegationsLabel } from '../../entities/Votes/utils'
 import Username from '../User/Username'
-
 import './DelegateLabel.css'
 
-const useDelegateLabel = (
-  vote: Vote | null,
-  votes?: Record<string, Vote> | null,
-  delegateVote?: Vote,
-  delegate?: string,
-  delegators?: Delegation[]
-): string => {
-  const t = useFormatMessage()
-  const hasDelegators = delegators && delegators.length > 0
-
-  if (hasDelegators) {
-    const votesAddresses = Object.keys(votes || {})
-    const delegatorsAddresses = delegators.map((i) => i.delegator) || []
-    const delegatorsVotes = intersection(votesAddresses, delegatorsAddresses).length
-    const totalDelegators = delegators.length
-    const delegatorsWithoutVotes = totalDelegators - delegatorsVotes
-
-    if (delegate && !vote && !delegateVote) {
-      return t('page.proposal_detail.delegators_with_delegate_no_votes', { delegate, total: totalDelegators })
-    }
-
-    if (!delegate && !vote && delegatorsVotes > 0) {
-      return t('page.proposal_detail.delegators_voted_without_delegate_without_vote', {
-        votes: delegatorsVotes,
-        total: totalDelegators,
-      })
-    }
-
-    if (!delegate && !vote) {
-      return t('page.proposal_detail.delegators_without_delegate_without_votes', { total: totalDelegators })
-    }
-
-    if (!delegate && vote && delegatorsVotes > 0) {
-      return t('page.proposal_detail.delegators_voted_without_delegate_with_vote', {
-        votes: delegatorsWithoutVotes,
-        total: totalDelegators,
-      })
-    }
-  }
-
-  if (!hasDelegators && delegate && !delegateVote) {
-    if (vote) {
-      return t('page.proposal_detail.delegate_not_voted', { delegate })
-    } else {
-      return t('page.proposal_detail.delegate_name', { delegate })
-    }
-  }
-
-  if (!hasDelegators && delegate && delegateVote) {
-    if ((vote && vote?.choice === delegateVote.choice) || !vote) {
-      return t('page.proposal_detail.delegate_voted', { date: Time.from(delegateVote.timestamp).fromNow() })
-    }
-
-    if (vote && vote?.choice !== delegateVote.choice) {
-      return t('page.proposal_detail.delegate_voted_differently')
-    }
-  }
-
-  return ''
-}
-
 interface Props {
-  vote: Vote | null
-  votes?: Record<string, Vote> | null
-  delegateVote?: Vote
-  delegate?: string
-  delegators?: Delegation[]
+  delegate: string
+  delegationsLabel: DelegationsLabel
 }
 
-const DelegateLabel = ({ vote, votes, delegateVote, delegate, delegators }: Props) => {
-  const hasDelegators = delegators && delegators.length > 0
-  const label = useDelegateLabel(vote, votes, delegateVote, delegate, delegators)
-
+const DelegateLabel = ({ delegationsLabel, delegate }: Props) => {
+  const t = useFormatMessage()
+  const {id, values, showDelegate} = delegationsLabel
+  const label = t(id, values)
   return (
     <span className={"DelegateLabel"}>
-      {delegate && !hasDelegators && <Username address={delegate} linked />}
+      {showDelegate && <Username address={delegate} />}
       <Markdown className="DelegateLabel__Text">{label}</Markdown>
     </span>
   )
