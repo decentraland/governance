@@ -5,7 +5,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import React, { useMemo, useState } from 'react'
 
-import { snapshotUrl } from '../../../entities/Proposal/utils'
+import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants'
 import { Delegate } from '../../../hooks/useDelegatesInfo'
 
 import Sort from '../../Icon/Sort'
@@ -13,14 +13,11 @@ import VotingPowerDelegationItem from './VotingPowerDelegationItem'
 
 type VotingPowerDelegationListProps = {
   vp: number
-  space: string
   delegates: Delegate[]
   onDelegateClick: (delegate: Delegate) => void
 }
 
-function VotinPowerDelegationList({ vp, space, delegates, onDelegateClick }: VotingPowerDelegationListProps) {
-  const editDelegationUrl = snapshotUrl(`#/delegate/${space}`)
-
+function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPowerDelegationListProps) {
   const t = useFormatMessage()
   const [isDescending, setIsDescending] = useState(true)
 
@@ -58,7 +55,7 @@ function VotinPowerDelegationList({ vp, space, delegates, onDelegateClick }: Vot
         </Table>
       </Modal.Content>
       <Modal.Actions>
-        <Button primary href={editDelegationUrl}>
+        <Button primary href={EDIT_DELEGATE_SNAPSHOT_URL}>
           {t('modal.vp_delegation.button')}
         </Button>
       </Modal.Actions>
@@ -66,4 +63,4 @@ function VotinPowerDelegationList({ vp, space, delegates, onDelegateClick }: Vot
   )
 }
 
-export default VotinPowerDelegationList
+export default VotingPowerDelegationList

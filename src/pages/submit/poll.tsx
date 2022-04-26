@@ -25,7 +25,6 @@ import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LogIn from '../../components/User/LogIn'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
-import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -90,7 +89,7 @@ export default function SubmitPoll() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
-  const [votingPower, votingPowerState] = useVotingPowerBalance(account, SNAPSHOT_SPACE)
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(account)
   const submissionVpNotMet = useMemo(
     () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
     [votingPower]
@@ -201,7 +200,7 @@ export default function SubmitPoll() {
               limit: schema.title.maxLength,
             })
           }
-          loading={votingPowerState.loading}
+          loading={isLoadingVotingPower}
           disabled={submissionVpNotMet || formDisabled}
         />
       </ContentSection>
@@ -276,7 +275,7 @@ export default function SubmitPoll() {
         <Button
           primary
           disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || votingPowerState.loading}
+          loading={state.validated || isLoadingVotingPower}
           onClick={() => editor.validate()}
         >
           {t('page.submit.button_submit')}

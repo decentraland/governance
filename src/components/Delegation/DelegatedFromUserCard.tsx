@@ -16,7 +16,7 @@ import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import DelegatedCardProfile from './DelegatedCardProfile'
-import { snapshotUrl } from '../../entities/Proposal/utils'
+import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../entities/Snapshot/constants'
 
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
@@ -24,7 +24,7 @@ interface DelegatedFromUserCardProps {
   space: string
 }
 
-const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: DelegatedFromUserCardProps) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
 
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
@@ -33,14 +33,14 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: Deleg
 
   const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
   const [userAddress] = useAuthContext()
-  const [votingPower] = useVotingPowerBalance(userAddress, space)
+  const { votingPower } = useVotingPowerBalance(userAddress)
 
   return (
     <ActionableLayout
       className="DelegatedFromUserCard"
       rightAction={
         isLoggedUserProfile && (
-          <Button as={Link} basic href={snapshotUrl(`#/delegate/${space}`)}>
+          <Button as={Link} basic href={EDIT_DELEGATE_SNAPSHOT_URL}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )
@@ -90,7 +90,6 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, space }: Deleg
         open={isDelegationModalOpen}
         onClose={() => setIsDelegationModalOpen(false)}
         vp={votingPower}
-        space={space}
       />
     </ActionableLayout>
   )
