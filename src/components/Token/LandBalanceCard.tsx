@@ -12,7 +12,7 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPower from './VotingPower'
 
-const LAND_MULTIPLIER = 2000
+export const LAND_MULTIPLIER = 2000
 const BUY_LAND_URL = process.env.GATSBY_BUY_LAND_URL || '#'
 
 interface Props {

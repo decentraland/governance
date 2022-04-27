@@ -322,7 +322,9 @@
       "stats_total_voting_power": "Total voting power",
       "stats_mana": "MANA",
       "stats_land": "LAND",
-      "stats_name": "NAME"
+      "stats_name": "NAME",
+      "stats_active_since": "Active since",
+      "stats_voted_on": "Voted on"
     }
   },
   "page": {
