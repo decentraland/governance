@@ -26,7 +26,6 @@ import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LogIn from '../../components/User/LogIn'
 import { newProposalDraftScheme } from '../../entities/Proposal/types'
-import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -115,7 +114,7 @@ export default function SubmitDraftProposal() {
   const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const [votingPower, votingPowerState] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(accountBalance)
   const submissionVpNotMet = useMemo(
     () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT),
     [votingPower]
@@ -207,7 +206,7 @@ export default function SubmitDraftProposal() {
           error={!!state.error.linked_proposal_id}
           message={t(state.error.linked_proposal_id)}
           disabled={true}
-          loading={votingPowerState.loading}
+          loading={isLoadingVotingPower}
         />
       </ContentSection>
 
@@ -228,7 +227,7 @@ export default function SubmitDraftProposal() {
             })
           }
           disabled={submissionVpNotMet || formDisabled}
-          loading={votingPowerState.loading}
+          loading={isLoadingVotingPower}
         />
       </ContentSection>
 
@@ -371,7 +370,7 @@ export default function SubmitDraftProposal() {
         <Button
           primary
           disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || votingPowerState.loading}
+          loading={state.validated || isLoadingVotingPower}
           onClick={() => editor.validate()}
         >
           {t('page.submit.button_submit')}

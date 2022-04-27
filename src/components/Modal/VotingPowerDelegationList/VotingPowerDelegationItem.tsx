@@ -2,7 +2,7 @@ import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 import { Delegate } from '../../../hooks/useDelegatesInfo'
 import useProfile from '../../../hooks/useProfile'
@@ -17,6 +17,7 @@ function VotingPowerDelegationItem({ delegate, onClick }: VotingPowerDelegationI
   const intl = useIntl()
   const { profile } = useProfile(delegate.address)
   const [isFilled, setIsFilled] = useState(false)
+
   return (
     <Table.Row onMouseEnter={() => setIsFilled(true)} onMouseLeave={() => setIsFilled(false)} onClick={onClick}>
       <Table.Cell>
