@@ -13,17 +13,32 @@ type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   vp: number
 }
 
+export type Candidate = Delegate & {
+  bio: string
+  links: string[]
+  relevant_skills: string[]
+  involvement: string
+  motivation: string
+  vision: string
+  most_important_issue: string
+}
+
 function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModalProps) {
-  const [selectedDelegate, setSelectedDelegate] = useState<Delegate | null>(null)
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const delegates = useDelegatesInfo(exampleDelegates.map((delegate) => delegate.address))
+
+  const handleOnDelegateClick = (delegate: Delegate) => {
+    const candidateInfo = exampleDelegates.find(deleg => deleg.address.toLowerCase() === delegate.address.toLowerCase())
+    setSelectedCandidate({...delegate, ...candidateInfo!})
+  }
 
   return (
     <Modal {...props} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
-      {!selectedDelegate && (
-        <VotingPowerDelegationList delegates={delegates} vp={vp} onDelegateClick={setSelectedDelegate} />
+      {!selectedCandidate && (
+        <VotingPowerDelegationList delegates={delegates} vp={vp} onDelegateClick={handleOnDelegateClick} />
       )}
-      {selectedDelegate && (
-        <VotingPowerDelegationDetail delegate={selectedDelegate} onBackClick={() => setSelectedDelegate(null)} />
+      {selectedCandidate && (
+        <VotingPowerDelegationDetail candidate={selectedCandidate} onBackClick={() => setSelectedCandidate(null)} />
       )}
     </Modal>
   )

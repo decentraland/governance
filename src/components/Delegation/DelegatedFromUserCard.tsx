@@ -40,7 +40,8 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
       className="DelegatedFromUserCard"
       rightAction={
         isLoggedUserProfile && (
-          <Button as={Link} basic href={EDIT_DELEGATE_SNAPSHOT_URL}>
+          // <Button as={Link} basic href={EDIT_DELEGATE_SNAPSHOT_URL}>
+          <Button basic onClick={() => setIsDelegationModalOpen(true)}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )
