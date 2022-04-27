@@ -1,5 +1,6 @@
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
 import React from 'react'
 import './VotingPowerDistribution.css'
 
@@ -10,9 +11,15 @@ interface Props {
   delegated: number
 }
 
+const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
+
 const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
   const t = useFormatMessage()
   const total = mana + name + land + delegated
+  const manaPercentage = getPercentage(mana, total)
+  const namePercentage = getPercentage(name, total)
+  const landPercentage = getPercentage(land, total)
+  const delegatedPercentage = getPercentage(delegated, total)
 
   return (
     <>
@@ -20,28 +27,52 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
         className={TokenList.join(['VotingPowerDistributionBar', total <= 0 && 'VotingPowerDistributionBar--Empty'])}
       >
         {mana > 0 && (
-          <div
-            className="VotingPowerDistributionBar__Item VotingPowerDistribution__Mana"
-            style={{ width: `${(mana * 100) / total}%` }}
-          />
+          <VotingPowerDistributionPopup
+            amount={mana}
+            percentage={manaPercentage}
+            label={t('modal.vp_delegation_detail.stats_mana')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__Mana"
+              style={{ width: manaPercentage }}
+            />
+          </VotingPowerDistributionPopup>
         )}
         {name > 0 && (
-          <div
-            className="VotingPowerDistributionBar__Item VotingPowerDistribution__Name"
-            style={{ width: `${(name * 100) / total}%` }}
-          />
+          <VotingPowerDistributionPopup
+            amount={name}
+            percentage={namePercentage}
+            label={t('modal.vp_delegation_detail.stats_name')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__Name"
+              style={{ width: namePercentage }}
+            />
+          </VotingPowerDistributionPopup>
         )}
         {land > 0 && (
-          <div
-            className="VotingPowerDistributionBar__Item VotingPowerDistribution__Land"
-            style={{ width: `${(land * 100) / total}%` }}
-          />
+          <VotingPowerDistributionPopup
+            amount={land}
+            percentage={landPercentage}
+            label={t('modal.vp_delegation_detail.stats_land')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__Land"
+              style={{ width: landPercentage }}
+            />
+          </VotingPowerDistributionPopup>
         )}
         {delegated > 0 && (
-          <div
-            className="VotingPowerDistributionBar__Item VotingPowerDistribution__Delegated"
-            style={{ width: `${(delegated * 100) / total}%` }}
-          />
+          <VotingPowerDistributionPopup
+            amount={delegated}
+            percentage={delegatedPercentage}
+            label={t('modal.vp_delegation_detail.stats_delegated')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__Delegated"
+              style={{ width: delegatedPercentage }}
+            />
+          </VotingPowerDistributionPopup>
         )}
       </div>
       <div className="VotingPowerDistribution__Labels">

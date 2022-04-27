@@ -323,12 +323,14 @@
       "stats_mana": "MANA",
       "stats_land": "LAND",
       "stats_name": "NAMES",
+      "stats_delegated": "DELEGATED",
       "stats_active_since": "Active since",
       "stats_voted_on": "Voted on",
       "stats_bar_mana": "Mana VP",
       "stats_bar_land": "Land VP",
       "stats_bar_name": "Names VP",
-      "stats_bar_delegated": "Delegated VP"
+      "stats_bar_delegated": "Delegated VP",
+      "stats_popup_percentage": "{percentage} of total VP held"
     }
   },
   "page": {
