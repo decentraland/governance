@@ -37,7 +37,7 @@ export type Delegate = {
 
 function getTotalVP(addresses: string[]) {
   return addresses.map(addr => {
-    const [votingPower] = useVotingPowerBalance(addr, SNAPSHOT_SPACE)
+    const { votingPower } = useVotingPowerBalance(addr)
     return { [addr]: votingPower }
   }).reduce((obj, item) => Object.assign(obj, item), {})
 }

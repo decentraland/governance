@@ -8,7 +8,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
@@ -35,7 +35,7 @@ export default function BalancePage() {
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
   const [delegation, delegationState] = useDelegation(address)
-  const [votingPower, votingPowerState] = useVotingPowerBalance(address, SNAPSHOT_SPACE)
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
   const { scores, isLoadingScores, delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
 
   if (isUnderMaintenance()) {
@@ -68,7 +68,7 @@ export default function BalancePage() {
         <UserStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
         <Stats title={t(`page.balance.total_label`) || ''}>
           <VotingPower value={votingPower} size="huge" />
-          <Loader size="small" className="balance" active={votingPowerState.loading} />
+          <Loader size="small" className="balance" active={isLoadingVotingPower} />
         </Stats>
       </Container>
       <Container className="VotingPowerDetail">
