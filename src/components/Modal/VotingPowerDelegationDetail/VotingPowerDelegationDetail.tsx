@@ -12,6 +12,7 @@ import React from 'react'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Snapshot } from '../../../api/Snapshot'
 import { SNAPSHOT_SPACE } from '../../../entities/Snapshot/constants'
+import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import { Delegate } from '../../../hooks/useDelegatesInfo'
 import useDelegation from '../../../hooks/useDelegation'
@@ -20,6 +21,7 @@ import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
+import VotingPowerDistribution from './VotingPowerDistribution'
 import './VotingPowerDelegationDetail.css'
 
 type VotingPowerDelegationDetailProps = {
@@ -33,12 +35,16 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
   const { votingPower } = useVotingPowerBalance(address)
   const [delegation] = useDelegation(address)
   const { delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
-  const [mana] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
+  const [mainnetMana] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
+  const [maticMana] = useManaBalance(address, ChainId.MATIC_MAINNET)
+  const wManaContract = useWManaContract()
+  const [wMana] = useBalanceOf(wManaContract, address, 'ether')
   const [land] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
   const [ens] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
-
   const [votes] = useAsyncMemo(async () => Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address), [])
-  console.log('v', votes)
+
+  const mana = mainnetMana + maticMana + (wMana || 0)
+  const totalVotingPower = votingPower - delegatedVotingPower
 
   return (
     <>
@@ -63,7 +69,7 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
             </Grid.Column>
             <Grid.Column>
               <Stats title={t('modal.vp_delegation_detail.stats_total_voting_power')}>
-                <VotingPower value={votingPower - delegatedVotingPower} size="large" />
+                <VotingPower value={totalVotingPower} size="large" />
               </Stats>
             </Grid.Column>
           </Grid.Row>
@@ -82,6 +88,16 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
               <Stats title={t('modal.vp_delegation_detail.stats_name')}>
                 <VotingPower value={ens * NAME_MULTIPLIER} size="medium" />
               </Stats>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns="1">
+            <Grid.Column>
+              <VotingPowerDistribution
+                mana={mana}
+                name={ens * NAME_MULTIPLIER}
+                land={land * LAND_MULTIPLIER}
+                delegated={delegatedVotingPower}
+              />
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
