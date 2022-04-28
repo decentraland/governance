@@ -39,7 +39,7 @@ export enum ProposalActivityList {
 }
 
 export function toProposalActivityList(list: string | null | undefined): ProposalActivityList | null {
-  switch(list) {
+  switch (list) {
     case ProposalActivityList.MyProposals:
     case ProposalActivityList.Watchlist:
       return list
@@ -62,9 +62,10 @@ export function url(path: string = '/', query: Record<string, string> | URLSearc
 
 export default {
   proposals: (options: Partial<ProposalListPage & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal> | URLSearchParams = {}) => url('/', options),
-  proposal: (proposal: string, options: { new?: "true" } = {} ) => url(`/proposal/`, { id: proposal, ...options }),
+  proposal: (proposal: string, options: { new?: "true", newUpdate?: "true" } = {}) => url(`/proposal/`, { id: proposal, ...options }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) => url(`/activity/`, options),
-  submit: (type?: ProposalType, options: { linked_proposal_id?: string, request?: PoiType} = {}) => url(type ? `/submit/${String(type).replace('_','-')}/` : '/submit/', options),
+  submit: (type?: ProposalType, options: { linked_proposal_id?: string, request?: PoiType } = {}) => url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
+  submitUpdate: (options: { id?: string; proposalId: string }) => url(`/submit/update`, options),
   balance: (options: Partial<{ address: string }> = {}) => url(`/balance/`, options),
   transparency: () => url(`/transparency/`),
   welcome: () => url(`/welcome/`, {}),

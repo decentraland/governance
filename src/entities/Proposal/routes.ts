@@ -68,6 +68,7 @@ import { getUpdateMessage } from './templates/messages'
 import { getVotes } from '../Votes/routes'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+import UpdateModel from '../Updates/model';
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
@@ -579,6 +580,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_description = configuration.description || null;
     if (proposal.type == ProposalType.Grant) {
       update.vesting_address = configuration.vesting_address;
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
   } else if (configuration.status === ProposalStatus.Passed) {
     update.passed_by = user;

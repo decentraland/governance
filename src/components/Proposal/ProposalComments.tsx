@@ -11,6 +11,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Governance } from '../../api/Governance'
 import { forumUrl } from '../../entities/Proposal/utils'
+import Divider from '../Section/Divider'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 
@@ -46,7 +47,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
     <div>
       {!loading && (
         <div className="ProposalComments">
-          <hr />
+          <Divider />
           <div className="ProposalComments__Header">
             <Header>{t('page.proposal_comments.title', { count: commentsCount })}</Header>
             {renderComments && (
@@ -68,7 +69,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
             <div className="ProposalComments__Content">
               {!renderComments && (
                 <div className="ProposalComments__NoComments">
-                  <Watermelon />
+                  <Watermelon className="ProposalComments__EmptyIcon" />
                   <Paragraph small secondary>
                     {t('page.proposal_comments.no_comments_text')}
                   </Paragraph>
