@@ -6,7 +6,6 @@ import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import locations from '../../modules/locations'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 
 interface Props {
   className?: string
