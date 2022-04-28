@@ -66,6 +66,7 @@
     "gatsby-source-filesystem": "^4.10.0",
     "gatsby-transformer-sharp": "^4.10.0",
     "keccak": "^3.0.1",
+    "lodash": "^4.17.21",
     "markdown-escape": "^1.1.0",
     "node-pg-migrate": "^6.0.0",
     "numeral": "^2.0.6",

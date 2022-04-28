@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
-import omit from 'lodash.omit'
+import omit from 'lodash/omit'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'

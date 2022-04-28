@@ -11,24 +11,25 @@ export type ContentLayoutProps = {
   className?: string
   small?: boolean
   children?: React.ReactNode
+  navigateHref?: string
 }
 
-export default function ContentLayout(props: ContentLayoutProps) {
+export default function ContentLayout({ navigateHref, className, small, children }: ContentLayoutProps) {
   function handleBack() {
     if ((window as any).routeUpdate) {
       window.history.back()
     } else {
-      navigate(locations.proposals())
+      navigate(navigateHref || locations.proposals())
     }
   }
 
   return (
-    <Container className={TokenList.join(['ContentLayout', props.className])}>
+    <Container className={TokenList.join(['ContentLayout', className])}>
       <div className="ContentLayout__Back">
         <Back onClick={handleBack} />
       </div>
-      <div className={TokenList.join(['ContentLayout__Container', props.small && 'ContentLayout__Container--small'])}>
-        {props.children}
+      <div className={TokenList.join(['ContentLayout__Container', small && 'ContentLayout__Container--small'])}>
+        {children}
       </div>
     </Container>
   )

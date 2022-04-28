@@ -1,0 +1,53 @@
+.UpdateDetail__ProjectTitle {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: #736e7d;
+}
+
+.UpdateDetail__Header .header {
+  font-size: 36px !important;
+  margin: 0;
+}
+
+.UpdateDetail__Content .ui.header {
+  font-size: 13px;
+  line-height: 24px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #736e7d;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.UpdateDetail__Content .dg.Paragraph {
+  font-size: 17px;
+  line-height: 26px;
+  overflow-wrap: break-word;
+}
+
+.UpdateDetail__Date {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+}
+
+.UpdateDetail__Date .dg.Paragraph {
+  color: #736e7d;
+  margin-bottom: 0;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.UpdateDetail__Date a {
+  font-size: 15px !important;
+  line-height: 24px !important;
+  margin-left: 5px;
+}
+
+.UpdateDetail__CompletionDate {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

@@ -1,7 +1,7 @@
-import API from 'decentraland-gatsby/dist/utils/api/API';
-import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types';
-import Time from 'decentraland-gatsby/dist/utils/date/Time';
-import env from 'decentraland-gatsby/dist/utils/env';
+import API from 'decentraland-gatsby/dist/utils/api/API'
+import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import env from 'decentraland-gatsby/dist/utils/env'
 import {
   NewProposalBanName,
   NewProposalCatalyst,
@@ -14,10 +14,11 @@ import {
   ProposalStatus,
   NewProposalDraft,
   NewProposalGovernance,
-  ProposalCommentsInDiscourse
-} from '../entities/Proposal/types';
-import { SubscriptionAttributes } from '../entities/Subscription/types';
-import { Vote } from '../entities/Votes/types';
+  ProposalCommentsInDiscourse,
+} from '../entities/Proposal/types'
+import { SubscriptionAttributes } from '../entities/Subscription/types'
+import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
+import { Vote } from '../entities/Votes/types'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
@@ -31,26 +32,24 @@ type NewProposalMap = {
 }
 
 export type GetProposalsFilter = {
-  user: string,
-  type: ProposalType,
-  status: ProposalStatus,
-  subscribed: boolean | string,
-  search?: string | null,
-  timeFrame?: string | null,
-  order?: "ASC" | "DESC"
-  limit: number,
+  user: string
+  type: ProposalType
+  status: ProposalStatus
+  subscribed: boolean | string
+  search?: string | null
+  timeFrame?: string | null
+  order?: 'ASC' | 'DESC'
+  limit: number
   offset: number
 }
 
 export class Governance extends API {
-
-  static Url = (
+  static Url =
     process.env.GATSBY_GOVERNANCE_API ||
     process.env.REACT_APP_GOVERNANCE_API ||
     process.env.STORYBOOK_GOVERNANCE_API ||
     process.env.GOVERNANCE_API ||
     'https://governance.decentraland.org/api'
-  )
 
   static Cache = new Map<string, Governance>()
 
@@ -93,10 +92,13 @@ export class Governance extends API {
       options = options.authorization({ sign: true })
     }
 
-    const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(`/proposals${query}`, options)
+    const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(
+      `/proposals${query}`,
+      options
+    )
     return {
       ...proposals,
-      data: proposals.data.map(proposal => Governance.parseProposal(proposal))
+      data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
     }
   }
 
@@ -139,7 +141,7 @@ export class Governance extends API {
   async createProposalGrant(proposal: NewProposalGrant) {
     return this.createProposal(`/proposals/grant`, proposal)
   }
-  
+
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {
     return this.createProposal(`/proposals/linked-wearables`, proposal)
   }
@@ -153,7 +155,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async updateProposalStatus(proposal_id: string, status: ProposalStatus, vesting_address: string | null, description: string | null = null) {
+  async updateProposalStatus(
+    proposal_id: string,
+    status: ProposalStatus,
+    vesting_address: string | null,
+    description: string | null = null
+  ) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
       this.options()
@@ -162,6 +169,53 @@ export class Governance extends API {
         .json({ status, vesting_address, description })
     )
 
+    return result.data
+  }
+
+  async getProposalUpdate(update_id: string) {
+    const result = await this.fetch<
+      ApiResponse<UpdateAttributes>
+    >(`/proposals/${update_id}/update`)
+    return result.data
+  }
+
+  async getProposalUpdates(proposal_id: string) {
+    const result = await this.fetch<
+      ApiResponse<{ publicUpdates: UpdateAttributes[]; pendingUpdates: UpdateAttributes[]; nextUpdate: UpdateAttributes; currentUpdate: UpdateAttributes | null }>
+    >(`/proposals/${proposal_id}/updates`)
+    return result.data
+  }
+
+  async createProposalUpdate(update: {
+    proposal_id: string
+    health: ProjectHealth
+    introduction: string
+    highlights: string
+    blockers: string
+    next_steps: string
+    additional_notes: string
+  }) {
+    const result = await this.fetch<ApiResponse<UpdateAttributes>>(
+      `/proposals/${update.proposal_id}/update`,
+      this.options().method('POST').authorization({ sign: true }).json(update)
+    )
+    return result.data
+  }
+
+  async updateProposalUpdate(update: {
+    id: string
+    proposal_id: string
+    health: ProjectHealth
+    introduction: string
+    highlights: string
+    blockers: string
+    next_steps: string
+    additional_notes: string
+  }) {
+    const result = await this.fetch<ApiResponse<UpdateAttributes>>(
+      `/proposals/${update.proposal_id}/update`,
+      this.options().method('PATCH').authorization({ sign: true }).json(update)
+    )
     return result.data
   }
 
@@ -178,7 +232,7 @@ export class Governance extends API {
     const params = proposal_ids.reduce((result, id) => {
       result.append('id', id)
       return result
-    }, new URLSearchParams)
+    }, new URLSearchParams())
 
     const result = await this.fetch<ApiResponse<Record<string, Record<string, Vote>>>>(`/votes?${params.toString()}`)
     return result.data

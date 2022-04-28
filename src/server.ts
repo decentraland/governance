@@ -16,6 +16,7 @@ import subscription from './entities/Subscription/routes'
 import committee from './entities/Committee/routes'
 import social from './entities/Social/routes'
 import sitemap from './entities/Sitemap/routes'
+import updates from './entities/Updates/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 
 const jobs = manager()
@@ -34,6 +35,7 @@ app.use('/api', [
   proposal,
   score,
   subscription,
+  updates,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   })

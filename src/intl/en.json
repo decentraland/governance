@@ -198,6 +198,17 @@
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid"
+    },
+    "proposal_update": {
+      "introduction_empty": "Introduction field is empty",
+      "introduction_too_large": "Introduction field is too large",
+      "highlights_empty": "Highlights field is empty",
+      "highlights_too_large": "Highlights field is too large",
+      "blockers_empty": "Blockers field is empty",
+      "blockers_too_large": "Blockers field is too large",
+      "next_steps_empty": "Next steps field is empty",
+      "next_steps_too_large": "Next steps field is too large",
+      "additional_notes_too_large": "Additional notes and links field is too large"
     }
   },
   "category": {
@@ -291,21 +302,27 @@
       "thanks": "Thanks for your interest",
       "heads_up": "You'll hear from us soon and frequently enough!"
     },
-    "follow_up": {
-      "title": "Proposal successfully submitted",
-      "description": "Thanks for taking part in the DAO",
-      "sub": "Here's what you could do next",
+    "success": {
+      "sub": "Here's what you could do next:",
       "view_on_forum_title": "Join the discussion",
       "view_on_forum_description": "Comment, ideate, expand.",
       "view_on_forum_label": "View on forum",
-      "join_discord_title": "Visualize on Discord",
-      "join_discord_description": "Our #dao channel is just for that",
+      "join_discord_title": "Discuss on Discord",
+      "join_discord_description": "Engage with the Community on our #dao channel",
       "join_discord_label": "Join Discord",
-      "copy_link_title": "Keep this at hand",
-      "copy_link_description": "Come back later to check progress",
+      "copy_link_title": "Share it on Social Media",
+      "copy_link_description": "Gather feedback, ideate, and improve",
       "copy_link_label": "Copy Link",
       "link_copied_label": "Link Copied!",
       "dismiss_button_label": "Dismiss"
+    },
+    "proposal_success": {
+      "title": "Proposal successfully submitted",
+      "description": "Thanks for taking part in the DAO"
+    },
+    "update_success": {
+      "title": "Thanks for sharing your Grant Update",
+      "description": "Now go make some noise and let the\n\ncommunity know about your progress."
     }
   },
   "page": {
@@ -395,6 +412,21 @@
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal"
+      },
+      "grant": {
+        "update_title": "Project updates",
+        "update_empty": "This team has not posted any updates yet.",
+        "update_index": "Update #{index}",
+        "update_late": "LATE",
+        "update_keep_reading": "Keep reading",
+        "update_missed_owner": "You missed this update.",
+        "update_missed": "Beneficiary missed this update.",
+        "update_description": "Take notes as you make progress on your project and use them to write your updates to the community.",
+        "update_button": "Post Update",
+        "current_update_available_in": "Update available in **{date}**",
+        "current_update_due_date": "Update due in **{date}**",
+        "current_update_info": "You must share a community update once every 30 days during your vesting period. Updates can be posted on the last 15 days of every 30-days period.",
+        "next_update_due_date": "Next one due in **{date}**"
       }
     },
     "proposal_activity": {
@@ -493,6 +525,23 @@
         "wearables_curator_button": "Apply as Wearables Curator",
         "delegate_button": "Apply as DAO Delegate"
       }
+    },
+    "update_detail": {
+      "project_title": "Project update for {title}",
+      "title": "Update #{index}",
+      "on_track_title": "Project Health: On Track",
+      "on_track_description": "This team has indicated that the project is overall going according to plan.",
+      "at_risk_title": "Project Health: At Risk",
+      "at_risk_description": "This team has indicated that the project plan is at risk or delayed.",
+      "off_track_title": "Project Health: Off Track",
+      "off_track_description": "This team has indicated that the project is not going according to plan.",
+      "introduction": "Introduction",
+      "highlights": "Highlights",
+      "blockers": "Blockers",
+      "next_steps": "Next steps",
+      "additional_notes": "Additional notes and links",
+      "completion_date": "Posted {date} by",
+      "due_date": "Update shared **{date} late**, after it was due."
     },
     "submit": {
       "title": "Submit Proposal",
@@ -684,6 +733,26 @@
       "title": "Call for Delegates Open",
       "description": "The Decentraland DAO is looking to get commited individuals on the spotlight to help them get more VP",
       "button_label": "Read more"
+    },
+    "proposal_update": {
+      "title": "Publish New Grant Update",
+      "description": "Share your grant updates with the Decentraland Community. Use this space to talk about the progress but also to raise issues or blockers you might have with your project. Feel free to add any relevant information or links to demo what you’ve been up to.",
+      "health_label": "Project Health",
+      "on_track_label": "On Track",
+      "at_risk_label": "At Risk",
+      "off_track_label": "Off Track",
+      "introduction_label": "Introduction",
+      "highlights_label": "Highlights",
+      "highlights_placeholder": "What have you shipped? Where have you made progress? What are you proud of?",
+      "blockers_label": "Blockers",
+      "blockers_placeholder": "What is being difficult? Why is the project delayed? When sharing a blocker, share the mitigation strategy you’re planning to remove that blocker.",
+      "next_steps_label": "Next Steps",
+      "next_steps_placeholder": "What are your upcoming tasks? Where is your focus going to be next?",
+      "additional_notes_label": "Additional notes and links",
+      "additional_notes_placeholder": "Feel free to share any additional information or resources to showcase your project.",
+      "publish_update": "Publish update",
+      "preview_update": "Preview update",
+      "edit_update": "Edit update"
     }
   }
 }
