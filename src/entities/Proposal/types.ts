@@ -1,7 +1,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
-import { asNumber, MAX_NAME_SIZE, MIN_NAME_SIZE } from './utils'
+import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './utils'
 
 export type ProposalAttributes<C extends {} = any> = {
   id: string
@@ -460,12 +460,12 @@ export enum ProposalGrantTier {
 }
 
 export const ProposalGrantTierValues = {
-  [ProposalGrantTier.Tier1]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER1 || 0),
-  [ProposalGrantTier.Tier2]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER2 || 0),
-  [ProposalGrantTier.Tier3]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER3 || 0),
-  [ProposalGrantTier.Tier4]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER4 || 0),
-  [ProposalGrantTier.Tier5]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER5 || 0),
-  [ProposalGrantTier.Tier6]: asNumber(process.env.GATSBY_GRANT_SIZE_TIER6 || 0),
+  [ProposalGrantTier.Tier1]: Number(process.env.GATSBY_GRANT_SIZE_TIER1 || 0),
+  [ProposalGrantTier.Tier2]: Number(process.env.GATSBY_GRANT_SIZE_TIER2 || 0),
+  [ProposalGrantTier.Tier3]: Number(process.env.GATSBY_GRANT_SIZE_TIER3 || 0),
+  [ProposalGrantTier.Tier4]: Number(process.env.GATSBY_GRANT_SIZE_TIER4 || 0),
+  [ProposalGrantTier.Tier5]: Number(process.env.GATSBY_GRANT_SIZE_TIER5 || 0),
+  [ProposalGrantTier.Tier6]: Number(process.env.GATSBY_GRANT_SIZE_TIER6 || 0),
 }
 
 export function isProposalGrantTier(value: string | null | undefined): boolean {
@@ -578,7 +578,7 @@ export const newProposalGrantScheme = {
     },
     size: {
       type: 'integer',
-      minimum: asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0),
+      minimum: Number(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0),
     },
     beneficiary: {
       type: 'string',
