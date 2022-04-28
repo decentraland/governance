@@ -11,7 +11,7 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 interface Props {
   className?: string
   profile?: Profile | null
-  address?: ProposalAttributes['user']
+  address?: string
 }
 
 export default function Username({ className, profile, address = '' }: Props) {
