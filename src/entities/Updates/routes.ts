@@ -90,7 +90,11 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const { id, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
   const update = await UpdateModel.findOne(id)
 
-  if (!!update.completion_date) {
+  if (!update) {
+    throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
+  }
+
+  if (!!update?.completion_date) {
     throw new RequestError(`Update already completed: "${update.id}"`, RequestError.BadRequest)
   }
 

@@ -18,7 +18,7 @@ const ProjectHealthButton = ({ children, type, selectedValue, onClick, disabled 
     <button
       onClick={() => onClick(type)}
       disabled={disabled}
-      className={TokenList.join(['ProjectHealthButton', isSelected && type && `ProjectHealthButton--${type}`])}
+      className={TokenList.join(['ProjectHealthButton', isSelected && `ProjectHealthButton--${type}`])}
     >
       {children}
     </button>

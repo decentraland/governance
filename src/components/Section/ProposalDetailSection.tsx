@@ -42,7 +42,7 @@ export default React.memo(function ProposalDetailSection({
         <Header sub>{t('page.proposal_detail.details_label')}</Header>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_user_label')}</div>
-          <Username className="DetailsSection__Value" profile={profile} proposalUser={proposal?.user} />
+          <Username className="DetailsSection__Value" profile={profile} address={proposal?.user} />
         </div>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_start_label')}</div>

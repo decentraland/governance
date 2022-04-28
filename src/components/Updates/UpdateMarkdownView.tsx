@@ -53,7 +53,7 @@ const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
                   {l('page.update_detail.completion_date', { date: formattedCompletionDate })}
                 </Date>
               </Paragraph>
-              <Username profile={profile} proposalUser={proposalUser} />
+              <Username profile={profile} address={proposalUser} />
             </div>
             {update?.status === UpdateStatus.Late && (
               <Markdown>{l('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown>

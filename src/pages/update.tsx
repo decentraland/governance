@@ -24,7 +24,7 @@ export default function UpdateDetail() {
   const { profile, state: profileState } = useProfile(proposal?.user)
   const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
-  if (updateState.loading || profileState.loading || updatesState.loading) {
+  if (updateState.loading || profileState.loading || updatesState.loading || proposalState.loading) {
     return (
       <Container>
         <Loader size="huge" active />

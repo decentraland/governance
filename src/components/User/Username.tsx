@@ -11,19 +11,19 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 interface Props {
   className?: string
   profile?: Profile | null
-  proposalUser?: ProposalAttributes['user']
+  address?: ProposalAttributes['user']
 }
 
-export default function Username({ className, profile, proposalUser }: Props) {
+export default function Username({ className, profile, address = '' }: Props) {
   const hasProfileName = profile && profile.name
 
   return (
-    <Link className={TokenList.join([className])} href={locations.balance({ address: proposalUser || '' })}>
+    <Link className={TokenList.join([className])} href={locations.balance({ address })}>
       {hasProfileName && <Avatar size="mini" address={profile?.ethAddress} style={{ marginRight: '.5rem' }} />}
       {hasProfileName}
-      {!hasProfileName && !!proposalUser && (
-        <Blockie scale={3} seed={proposalUser || ''}>
-          <Address value={proposalUser || ''} />
+      {!hasProfileName && !!address && (
+        <Blockie scale={3} seed={address}>
+          <Address value={address} />
         </Blockie>
       )}
     </Link>
