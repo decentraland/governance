@@ -2,8 +2,8 @@
 
 export const CHOICES = ['yes', 'no', 'maybe']
 export const USER_ACCOUNT = '0x529a9021661a85b6bc51c07b3a451135848d0090'
-const DELEGATOR_1 = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98691'
-const DELEGATOR_2 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f92'
+export const DELEGATOR_1 = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98691'
+export const DELEGATOR_2 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f92'
 const DELEGATOR_3 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f93'
 const NON_VOTER_DELEGATOR = '0xe58d9940a395d303e691dbe0676710d9c1401000'
 export const ACCOUNT_DELEGATE = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f80'

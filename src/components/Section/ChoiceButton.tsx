@@ -3,15 +3,17 @@ import { Button, ButtonProps } from 'decentraland-ui/dist/components/Button/Butt
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { ChoiceColor } from '../../entities/Votes/types'
 import './ChoiceButton.css'
+import Username from '../User/Username'
 
 export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   voted?: boolean
   color?: ChoiceColor
+  delegate?: string
   voteCount?: number
   totalVotes?: number
 }
 
-export default function ChoiceButton({ voted, color, voteCount, totalVotes, children, ...props }: ChoiceButtonProps) {
+export default function ChoiceButton({ voted, color, delegate, voteCount, totalVotes, children, ...props }: ChoiceButtonProps) {
   const percentage = voteCount && totalVotes ? Math.round((voteCount / totalVotes) * 100) + '%' : null
   return (
     <Button
@@ -25,6 +27,7 @@ export default function ChoiceButton({ voted, color, voteCount, totalVotes, chil
       ])}
     >
       {percentage && <div className={'ChoiceButton__Background'} style={{ width: percentage }} />}
+      {!!delegate && <span className={'ChoiceButton__Delegate'}><Username address={delegate} hideAddress /></span>}
       <span className={'ChoiceButton__Text'}>
         {children}
       </span>

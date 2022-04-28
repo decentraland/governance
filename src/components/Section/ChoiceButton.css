@@ -70,6 +70,12 @@
   z-index: 2;
 }
 
+.ChoiceButton__Delegate {
+  position: absolute;
+  left: 15px;
+  z-index: 2;
+}
+
 .ChoiceButton__Background {
   position:absolute;
   background: var(--secondary);

@@ -161,16 +161,16 @@ export function abbreviateNumber(vp: number) {
 }
 
 export interface VotedChoice {
-  id: string
+  id?: string
   values?: any
+  delegate?: string
   voteCount?: number
   totalVotes?: number
 }
 
-export interface DelegationsLabel {
-  id: string
-  values?: any
-  showDelegate: boolean
+export interface DelegationsLabelProps {
+  delegateLabel?: { id: string; values?: any }
+  delegatorsLabel?: { id: string; values?: any }
 }
 
 function votedChoiceVoteCount(
@@ -219,7 +219,7 @@ export function getPartyVotes(
 interface VotingSectionConfigProps {
   vote: Vote | null
   delegateVote: Vote | null
-  delegationsLabel: DelegationsLabel | null
+  delegationsLabel: DelegationsLabelProps | null
   votedChoice: VotedChoice | null
   showChoiceButtons: boolean
 }
@@ -275,23 +275,24 @@ export function getVotingSectionConfig(
           return {
             ...configuration,
             delegationsLabel: {
-              id: 'page.proposal_detail.delegators_voted_without_delegate_without_vote',
-              values: { votes: delegatorsVotes, total: totalDelegators },
-              showDelegate: false,
+              delegatorsLabel: {
+                id: 'page.proposal_detail.delegators_voted',
+                values: { votes: delegatorsVotes, total: totalDelegators },
+              },
             },
           }
         } else {
           return {
             ...configuration,
             delegationsLabel: {
-              id: 'page.proposal_detail.delegators_without_delegate_without_votes',
-              values: { total: totalDelegators },
-              showDelegate: false,
+              delegatorsLabel: {
+                id: 'page.proposal_detail.delegators_represented',
+                values: { total: totalDelegators },
+              },
             },
           }
         }
       }
-
       if (vote) {
         return {
           ...configuration,
@@ -302,9 +303,10 @@ export function getVotingSectionConfig(
             totalVotes: totalDelegators,
           },
           delegationsLabel: {
-            id: 'page.proposal_detail.delegators_voted_without_delegate_with_vote',
-            values: { amountRepresented: totalDelegators - delegatorsVotes},
-            showDelegate: false,
+            delegatorsLabel: {
+              id: 'page.proposal_detail.user_voted_for_delegators',
+              values: { amountRepresented: totalDelegators - delegatorsVotes },
+            },
           },
         }
       }
@@ -312,73 +314,129 @@ export function getVotingSectionConfig(
   }
 
   if (delegate) {
-    if (!vote && !delegateVote) {
-      return {
-        ...configuration,
-        showChoiceButtons: true,
-        delegationsLabel: {
-          id: 'page.proposal_detail.delegate_name',
-          values: { delegate },
-          showDelegate: !hasDelegators,
-        },
+    if (!vote) {
+      if (hasDelegators) {
+        configuration.showChoiceButtons = true
+        const votesAddresses = Object.keys(votes || {})
+        const delegatorsVotes = intersection(votesAddresses, delegators).length
+        const totalDelegators = delegators.length
+        if(delegatorsVotes > 0){
+          configuration.delegationsLabel = {
+            delegatorsLabel: {
+              id: 'page.proposal_detail.delegators_voted',
+              values: { votes: delegatorsVotes, total: totalDelegators },
+            },
+          }
+        } else {
+          configuration.delegationsLabel = {
+            delegatorsLabel: {
+              id: 'page.proposal_detail.delegators_represented',
+              values: { total: totalDelegators },
+            },
+          }
+        }
+      }
+      if (!delegateVote) {
+        return {
+          ...configuration,
+          showChoiceButtons: true,
+          delegationsLabel: {
+            ...configuration.delegationsLabel,
+            delegateLabel: { id: 'page.proposal_detail.delegate_not_voted' },
+          },
+        }
+      }
+      if (delegateVote) {
+        return {
+          ...configuration,
+          delegationsLabel: {
+            ...configuration.delegationsLabel,
+            delegateLabel: {
+              id: 'page.proposal_detail.delegate_voted',
+              values: { date: Time.from(delegateVote.timestamp).fromNow() },
+            },
+          },
+          votedChoice: {
+            id: 'page.proposal_detail.delegate_voted_choice',
+            values: { choice: choices[delegateVote.choice - 1] },
+            delegate: delegate,
+          },
+        }
       }
     }
-
-    if (!vote && delegateVote)
-      return {
-        ...configuration,
-        delegationsLabel: {
-          id: 'page.proposal_detail.delegate_voted',
-          values: { date: Time.from(delegateVote.timestamp).fromNow() },
-          showDelegate: !!delegate && !hasDelegators,
-        },
-        votedChoice: {
-          id: 'page.proposal_detail.delegate_voted_choice',
-          values: { choice: choices[delegateVote.choice - 1] },
-        },
+    if (vote) {
+      if (hasDelegators) {
+        const votesAddresses = Object.keys(votes || {})
+        const delegatorsVotes = intersection(votesAddresses, delegators).length
+        const totalDelegators = delegators.length
+        configuration.votedChoice = {
+          ...configuration.votedChoice,
+          voteCount: votedChoiceVoteCount(choices, votes, account, delegators),
+          totalVotes: totalDelegators
+        }
+        configuration.delegationsLabel = {
+          delegatorsLabel: {
+            id: 'page.proposal_detail.user_voted_for_delegators',
+            values: { amountRepresented: totalDelegators - delegatorsVotes },
+          },
+        }
       }
-  }
-
-  if (vote && !delegateVote) {
-    return {
-      ...configuration,
-      delegationsLabel: {
-        id: 'page.proposal_detail.delegate_not_voted',
-        values: { delegate },
-        showDelegate: !hasDelegators,
-      },
-      votedChoice: {
-        id: 'page.proposal_detail.voted_choice',
-        values: { choice: choices[vote.choice - 1] },
-      },
-    }
-  }
-
-  if (vote && delegateVote) {
-    if (vote.choice === delegateVote.choice) {
-      return {
-        ...configuration,
-        delegationsLabel: {
-          id: 'page.proposal_detail.delegate_voted',
-          values: { date: Time.from(delegateVote.timestamp).fromNow() },
-          showDelegate: !hasDelegators,
-        },
-        votedChoice: {
-          id: 'page.proposal_detail.both_voted_choice',
-          values: { choice: choices[vote.choice - 1] },
-        },
+      if (!delegateVote) {
+        return {
+          ...configuration,
+          delegationsLabel: {
+            ...configuration.delegationsLabel,
+            delegateLabel: { id: 'page.proposal_detail.delegate_not_voted' },
+          },
+          votedChoice: {
+            ...configuration.votedChoice,
+            id: 'page.proposal_detail.voted_choice',
+            values: { choice: choices[vote.choice - 1] },
+          },
+        }
       }
-    } else {
-      return {
-        ...configuration,
-        delegationsLabel: {
-          id: 'page.proposal_detail.delegate_voted_differently',
-          showDelegate: !!delegate && !hasDelegators,
-        },
-        votedChoice: {
-          id: 'page.proposal_detail.voted_choice',
-          values: { choice: choices[vote.choice - 1] },
-        },
+      if (delegateVote) {
+        if (vote.choice === delegateVote.choice) {
+          configuration.delegationsLabel = {
+            ...configuration.delegationsLabel,
+            delegateLabel: {
+              id: 'page.proposal_detail.delegate_voted',
+              values: { date: Time.from(delegateVote.timestamp).fromNow() },
+            },
+          }
+          return {
+            ...configuration,
+            votedChoice: {
+              ...configuration.votedChoice,
+              id: 'page.proposal_detail.both_voted_choice',
+              values: { choice: choices[vote.choice - 1] },
+              delegate: delegate,
+            },
+          }
+        } else {
+          if(!hasDelegators){
+            configuration.delegationsLabel = {
+              ...configuration.delegationsLabel,
+              delegateLabel: { id: 'page.proposal_detail.delegate_voted_differently' },
+            }
+          } else{
+            configuration.delegationsLabel = {
+              ...configuration.delegationsLabel,
+              delegateLabel: {
+                id: 'page.proposal_detail.delegate_voted',
+                values: { date: Time.from(delegateVote.timestamp).fromNow() },
+              },
+            }
+          }
+          return {
+            ...configuration,
+            votedChoice: {
+              ...configuration.votedChoice,
+              id: 'page.proposal_detail.voted_choice',
+              values: { choice: choices[vote.choice - 1] },
+            },
+          }
+        }
       }
     }
   }

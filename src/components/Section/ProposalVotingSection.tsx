@@ -7,10 +7,11 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Vote } from '../../entities/Votes/types'
 import { getPartyVotes, getVotingSectionConfig } from '../../entities/Votes/utils'
-import locations from '../../modules/locations'
 import useDelegation from '../../hooks/useDelegation'
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+import locations from '../../modules/locations'
 import { ChoiceButtons } from './ChoiceButtons'
-import DelegateLabel from './DelegateLabel'
+import DelegationsLabel from './DelegationsLabel'
 import VotedChoiceButton from './VotedChoiceButton'
 
 interface Props {
@@ -49,11 +50,14 @@ const ProposalVotingSection = ({
     account
   )
   const somebodyVoted = vote || delegateVote
-  const showVotingPower = started && account && (!somebodyVoted || changingVote)
+  const showVotingPowerInfo = started && account && (!somebodyVoted || changingVote)
   const isVotingOpen = started && !finished
   const showChangeVoteButton = isVotingOpen && somebodyVoted && !changingVote
   const showCancelChangeVoteButton = isVotingOpen && somebodyVoted && changingVote
   const { votesByChoices, totalVotes } = getPartyVotes(delegators, votes, choices)
+  const [accountVotingPower, votingPowerState] = useVotingPowerBalance(account)
+  console.log('accountVotingPower', accountVotingPower)
+  const hasEnoughVP =  !!accountVotingPower && accountVotingPower > 0 && !votingPowerState.loading
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">
@@ -70,13 +74,14 @@ const ProposalVotingSection = ({
         </Button>
       )}
 
-      {delegationsLabel && <DelegateLabel delegationsLabel={delegationsLabel} delegate={delegate!} />}
+      {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
       {(showChoiceButtons || changingVote) && (
         <ChoiceButtons
           choices={choices}
           vote={vote}
           votesByChoices={votesByChoices}
+          delegate={delegate}
           delegateVote={delegateVote}
           totalVotes={totalVotes}
           onVote={onVote}
@@ -84,26 +89,32 @@ const ProposalVotingSection = ({
         />
       )}
 
-      {showVotingPower && (
-        <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            {t('page.proposal_detail.voting_with', {
-              vp: <Bold>{t(`general.number`, { value: votingPower || 0 })} VP</Bold>,
-            })}
-          </div>
-          <div>
-            <Link href={locations.balance()}>{t('page.proposal_detail.vote_manage')}</Link>
-          </div>
-        </div>
-      )}
-
       {votedChoice && !changingVote && <VotedChoiceButton {...votedChoice} />}
 
-      {showChangeVoteButton && (
-        <Button basic onClick={(e) => onChangeVote && onChangeVote(e, true)}>
-          {vote ? t('page.proposal_detail.vote_change') : t('page.proposal_detail.vote_overrule')}
-        </Button>
-      )}
+      <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
+        {showVotingPowerInfo && (
+          <div>
+            {hasEnoughVP &&
+              (vote
+                ? t('page.proposal_detail.voted_with', {
+                    vp: <Bold>{t(`general.number`, { value: votingPower || 0 })} VP</Bold>,
+                  })
+                : t('page.proposal_detail.voting_with', {
+                    vp: <Bold>{t(`general.number`, { value: votingPower || 0 })} VP</Bold>,
+                  }))}
+            {!hasEnoughVP &&
+              t('page.proposal_detail.vp_needed', { vp: <Bold>{t(`general.number`, { value: 1 })} VP</Bold> })}
+          </div>
+        )}
+        <div>
+          {showChangeVoteButton && (
+            <Link onClick={(e) => onChangeVote && onChangeVote(e, true)}>
+              {vote ? t('page.proposal_detail.vote_change') : t('page.proposal_detail.vote_overrule')}
+            </Link>
+          )}
+          {!hasEnoughVP && <Link href={locations.balance()}>{t('page.proposal_detail.get_vp')}</Link>}
+        </div>
+      </div>
 
       {showCancelChangeVoteButton && (
         <Button basic onClick={(e) => onChangeVote && onChangeVote(e, false)}>
