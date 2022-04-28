@@ -23,7 +23,6 @@ interface Props {
   finished: boolean
   onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
   onChangeVote?: (e: React.MouseEvent<any, MouseEvent>, changing: boolean) => void
-  votingPower?: number
 }
 
 const ProposalVotingSection = ({
@@ -35,7 +34,6 @@ const ProposalVotingSection = ({
   finished,
   onVote,
   onChangeVote,
-  votingPower,
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -55,9 +53,8 @@ const ProposalVotingSection = ({
   const showChangeVoteButton = isVotingOpen && somebodyVoted && !changingVote
   const showCancelChangeVoteButton = isVotingOpen && somebodyVoted && changingVote
   const { votesByChoices, totalVotes } = getPartyVotes(delegators, votes, choices)
-  const [accountVotingPower, votingPowerState] = useVotingPowerBalance(account)
-  console.log('accountVotingPower', accountVotingPower)
-  const hasEnoughVP =  !!accountVotingPower && accountVotingPower > 0 && !votingPowerState.loading
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(account)
+  const hasEnoughVP =  !!votingPower && votingPower > 0 && !isLoadingVotingPower
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">

@@ -99,7 +99,6 @@ export default function ProposalResultSection({
           started={started}
           finished={finished}
           onVote={onVote}
-          votingPower={votingPower}
           onChangeVote={onChangeVote}
         />
       )}
