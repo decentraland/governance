@@ -19,11 +19,10 @@ export default function UpdateDetail() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const updateId = params.get('id')
-  const proposalId = params.get('proposalId')
-  const [proposal] = useProposal(proposalId)
-  const { profile, state: profileState } = useProfile(proposal?.user)
   const { update, state: updateState } = useProposalUpdate(updateId)
-  const { publicUpdates, state: updatesState } = useProposalUpdates(proposalId)
+  const [proposal, proposalState] = useProposal(update?.proposal_id)
+  const { profile, state: profileState } = useProfile(proposal?.user)
+  const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
   if (updateState.loading || profileState.loading || updatesState.loading) {
     return (
@@ -33,7 +32,7 @@ export default function UpdateDetail() {
     )
   }
 
-  if (updateState.error || !proposalId) {
+  if (updateState.error || proposalState.error || updatesState.error) {
     return (
       <ContentLayout className="ProposalDetailPage">
         <NotFound />
@@ -44,7 +43,7 @@ export default function UpdateDetail() {
   const index = publicUpdates && publicUpdates.length - Number(publicUpdates?.findIndex((item) => item.id === updateId))
 
   return (
-    <ContentLayout navigateHref={locations.proposal(proposalId)} small>
+    <ContentLayout navigateHref={update ? locations.proposal(update.proposal_id) : undefined} small>
       <ContentSection className="UpdateDetail__Header">
         <span className="UpdateDetail__ProjectTitle">
           {t('page.update_detail.project_title', { title: proposal?.title })}
