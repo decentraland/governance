@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import exampleDelegates from '../../../modules/delegates/example_delegates.json'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
-import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
+import VotingPowerDelegationDetails from '../VotingPowerDelegationDetail/VotingPowerDelegationDetails'
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   vp: number
@@ -28,8 +28,10 @@ function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModal
   const delegates = useDelegatesInfo(exampleDelegates.map((delegate) => delegate.address))
 
   const handleOnDelegateClick = (delegate: Delegate) => {
-    const candidateInfo = exampleDelegates.find(deleg => deleg.address.toLowerCase() === delegate.address.toLowerCase())
-    setSelectedCandidate({...delegate, ...candidateInfo!})
+    const candidateInfo = exampleDelegates.find(
+      (deleg) => deleg.address.toLowerCase() === delegate.address.toLowerCase()
+    )
+    setSelectedCandidate({ ...delegate, ...candidateInfo! })
   }
 
   return (
@@ -38,7 +40,7 @@ function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModal
         <VotingPowerDelegationList delegates={delegates} vp={vp} onDelegateClick={handleOnDelegateClick} />
       )}
       {selectedCandidate && (
-        <VotingPowerDelegationDetail candidate={selectedCandidate} onBackClick={() => setSelectedCandidate(null)} />
+        <VotingPowerDelegationDetails candidate={selectedCandidate} onBackClick={() => setSelectedCandidate(null)} />
       )}
     </Modal>
   )

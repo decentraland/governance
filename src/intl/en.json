@@ -313,7 +313,18 @@
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
       "total_vp": "Total vp",
-      "button": "Pick somebody else"
+      "button": "Pick somebody else",
+      "details": {
+        "about_title": "About",
+        "links_title": "Links",
+        "relevant_skills_title": "Relevant Skills",
+        "involvement_title": "Involvement with Decentraland",
+        "motivation_title": "Motivation to be a delegate",
+        "vision_title": "5-year vision for Decentraland",
+        "most_important_issue_title": "Most important issue in Decentraland",
+        "show_more": "Show more",
+        "show_less": "Show less"
+      }
     },
     "vp_delegation_detail": {
       "backButtonLabel": "Go back to delegates list",
