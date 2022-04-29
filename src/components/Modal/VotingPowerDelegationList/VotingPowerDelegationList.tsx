@@ -1,14 +1,15 @@
+import React, { useMemo, useState } from 'react'
+
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import React, { useMemo, useState } from 'react'
 
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants'
 import { Delegate } from '../../../hooks/useDelegatesInfo'
-
 import Sort from '../../Icon/Sort'
+
 import VotingPowerDelegationItem from './VotingPowerDelegationItem'
 
 type VotingPowerDelegationListProps = {
