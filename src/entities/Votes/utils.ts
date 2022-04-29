@@ -3,6 +3,7 @@ import { intersection } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 import { SnapshotVote } from '../../api/Snapshot'
 import { ChoiceColor, Vote } from './types'
+import { VotedChoiceBuilder } from './VotedChoiceBuilder'
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -173,25 +174,6 @@ export interface DelegationsLabelProps {
   delegatorsLabel?: { id: string; values?: any }
 }
 
-function votedChoiceVoteCount(
-  choices: string[],
-  votes: Record<string, Vote> | null,
-  account: string,
-  delegators: string[]
-): number {
-  if (!votes) return 0
-
-  let delegatorsWhoVotedTheSame = 0
-  let delegatorsThatVoted = 0
-  delegators.map((delegator) => {
-    if (votes[delegator]) {
-      delegatorsThatVoted += 1
-      if (votes[delegator].choice === votes[account].choice) delegatorsWhoVotedTheSame += 1
-    }
-  })
-  const representedByUser = delegators.length - delegatorsThatVoted
-  return representedByUser + delegatorsWhoVotedTheSame
-}
 
 export function getPartyVotes(
   delegators: string[],
@@ -224,6 +206,7 @@ interface VotingSectionConfigProps {
   showChoiceButtons: boolean
 }
 
+
 export function getVotingSectionConfig(
   votes: Record<string, Vote> | null | undefined,
   choices: string[],
@@ -246,15 +229,15 @@ export function getVotingSectionConfig(
 
   if (!account || !hasChoices || !votes) return configuration
 
+  const votedChoice = new VotedChoiceBuilder(vote, delegateVote, choices, votes, account, delegate, delegators).build()
+
+  if(votedChoice) configuration.votedChoice = votedChoice
+
   if (!delegate) {
     if (!hasDelegators) {
       if (vote) {
         return {
           ...configuration,
-          votedChoice: {
-            id: 'page.proposal_detail.voted_choice',
-            values: { choice: choices[vote.choice - 1] },
-          },
         }
       } else {
         return {
@@ -296,12 +279,6 @@ export function getVotingSectionConfig(
       if (vote) {
         return {
           ...configuration,
-          votedChoice: {
-            id: 'page.proposal_detail.voted_choice',
-            values: { choice: choices[vote.choice - 1] },
-            voteCount: votedChoiceVoteCount(choices, votes, account, delegators),
-            totalVotes: totalDelegators,
-          },
           delegationsLabel: {
             delegatorsLabel: {
               id: 'page.proposal_detail.user_voted_for_delegators',
@@ -356,11 +333,6 @@ export function getVotingSectionConfig(
               values: { date: Time.from(delegateVote.timestamp).fromNow() },
             },
           },
-          votedChoice: {
-            id: 'page.proposal_detail.delegate_voted_choice',
-            values: { choice: choices[delegateVote.choice - 1] },
-            delegate: delegate,
-          },
         }
       }
     }
@@ -369,11 +341,6 @@ export function getVotingSectionConfig(
         const votesAddresses = Object.keys(votes || {})
         const delegatorsVotes = intersection(votesAddresses, delegators).length
         const totalDelegators = delegators.length
-        configuration.votedChoice = {
-          ...configuration.votedChoice,
-          voteCount: votedChoiceVoteCount(choices, votes, account, delegators),
-          totalVotes: totalDelegators
-        }
         configuration.delegationsLabel = {
           delegatorsLabel: {
             id: 'page.proposal_detail.user_voted_for_delegators',
@@ -388,11 +355,6 @@ export function getVotingSectionConfig(
             ...configuration.delegationsLabel,
             delegateLabel: { id: 'page.proposal_detail.delegate_not_voted' },
           },
-          votedChoice: {
-            ...configuration.votedChoice,
-            id: 'page.proposal_detail.voted_choice',
-            values: { choice: choices[vote.choice - 1] },
-          },
         }
       }
       if (delegateVote) {
@@ -406,12 +368,6 @@ export function getVotingSectionConfig(
           }
           return {
             ...configuration,
-            votedChoice: {
-              ...configuration.votedChoice,
-              id: !hasDelegators ? 'page.proposal_detail.both_voted_choice' : 'page.proposal_detail.voted_choice',
-              values: { choice: choices[vote.choice - 1] },
-              delegate: delegate,
-            },
           }
         } else {
           if(!hasDelegators){
@@ -430,11 +386,6 @@ export function getVotingSectionConfig(
           }
           return {
             ...configuration,
-            votedChoice: {
-              ...configuration.votedChoice,
-              id: 'page.proposal_detail.voted_choice',
-              values: { choice: choices[vote.choice - 1] },
-            },
           }
         }
       }
