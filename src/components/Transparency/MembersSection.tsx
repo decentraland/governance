@@ -23,7 +23,7 @@ export default function MembersSection({ title, description, members }: MembersS
         <Popup
           className="MembersPopup"
           content={
-            <Paragraph small secondary className={'MembersPopup__Content'}>
+            <Paragraph secondary className={'MembersPopup__Content'}>
               {description}
             </Paragraph>
           }

@@ -12,7 +12,7 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPower from './VotingPower'
 
-const NAME_MULTIPLIER = 100
+export const NAME_MULTIPLIER = 100
 const BUY_NAME_URL = process.env.GATSBY_BUY_NAME_URL || '#'
 
 interface Props {

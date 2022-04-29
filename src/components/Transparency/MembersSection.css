@@ -1,4 +1,3 @@
-
 .ui.header.MembersHeader {
   display: flex !important;
   justify-content: flex-start;
@@ -15,11 +14,12 @@ img.MembersPopup__Icon {
 
 .ui.popup.transition.visible.MembersPopup {
   padding: 0 0;
-  background-color: white;
 }
 
-.ui.popup:before {
-  background: #fff !important;
+.MembersPopup .dg.Paragraph {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 p.dg.Paragraph.MembersPopup__Content {

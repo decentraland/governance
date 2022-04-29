@@ -9,7 +9,6 @@ export default function MarkdownNotice() {
     <Popup
       content={t('page.submit.markdown_notice')}
       position="bottom left"
-      inverted
       trigger={<sup>{t('page.submit.markdown_tooltip')}</sup>}
       on="hover"
     />
