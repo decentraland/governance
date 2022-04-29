@@ -408,7 +408,7 @@ export function getVotingSectionConfig(
             ...configuration,
             votedChoice: {
               ...configuration.votedChoice,
-              id: 'page.proposal_detail.both_voted_choice',
+              id: !hasDelegators ? 'page.proposal_detail.both_voted_choice' : 'page.proposal_detail.voted_choice',
               values: { choice: choices[vote.choice - 1] },
               delegate: delegate,
             },

@@ -536,7 +536,7 @@ describe('getVotingSectionConfig', () => {
             it('voted choice shows both voted the same, and votes represented by user plus delegator votes', () => {
               const config = getVotingSectionConfig(votes, CHOICES, delegate, delegators, account)
               expect(config.votedChoice).toEqual({
-                id: 'page.proposal_detail.both_voted_choice',
+                id: 'page.proposal_detail.voted_choice',
                 values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
                 delegate: ACCOUNT_DELEGATE,
                 voteCount: DELEGATORS.length,
@@ -610,7 +610,7 @@ describe('getVotingSectionConfig', () => {
             it('voted choice shows delegator vote, and votes represented by user plus delegator votes', () => {
               const config = getVotingSectionConfig(votes, CHOICES, delegate, delegators, account)
               expect(config.votedChoice).toEqual({
-                id: 'page.proposal_detail.both_voted_choice',
+                id: 'page.proposal_detail.voted_choice',
                 values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
                 delegate: ACCOUNT_DELEGATE,
                 voteCount: 3,
