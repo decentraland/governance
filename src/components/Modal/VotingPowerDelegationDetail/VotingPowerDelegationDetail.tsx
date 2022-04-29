@@ -103,34 +103,34 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
         <Grid columns={3}>
           <Grid.Row>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_own_voting_power')}>
+              <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
                 <VotingPower value={votingPower} size="large" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_delegated_voting_power')}>
+              <Stats title={t('modal.vp_delegation.details.stats_delegated_voting_power')}>
                 <VotingPower value={delegatedVotingPower} size="large" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_total_voting_power')}>
+              <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
                 <VotingPower value={totalVotingPower} size="large" />
               </Stats>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_mana')}>
+              <Stats title={t('modal.vp_delegation.details.stats_mana')}>
                 <VotingPower value={Math.floor(mana)} size="medium" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_land')}>
+              <Stats title={t('modal.vp_delegation.details.stats_land')}>
                 <VotingPower value={land! * LAND_MULTIPLIER} size="medium" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_name')}>
+              <Stats title={t('modal.vp_delegation.details.stats_name')}>
                 <VotingPower value={ens * NAME_MULTIPLIER} size="medium" />
               </Stats>
             </Grid.Column>
@@ -148,7 +148,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
           <Grid.Row>
             {votes && votes.length > 0 && (
               <Grid.Column>
-                <Stats title={t('modal.vp_delegation_detail.stats_active_since')}>
+                <Stats title={t('modal.vp_delegation.details.stats_active_since')}>
                   <div className="VotingPowerDelegationDetail__StatsValue">
                     {Time.unix(votes[0].created).format('MMMM, YYYY')}
                   </div>
@@ -157,7 +157,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
             )}
             {votes && (
               <Grid.Column>
-                <Stats title={t('modal.vp_delegation_detail.stats_voted_on')}>
+                <Stats title={t('modal.vp_delegation.details.stats_voted_on')}>
                   <div className="VotingPowerDelegationDetail__StatsValue">{votes.length}</div>
                 </Stats>
               </Grid.Column>
