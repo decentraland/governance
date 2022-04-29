@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import exampleDelegates from '../../../modules/delegates/example_delegates.json'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
-import VotingPowerDelegationDetails from '../VotingPowerDelegationDetail/VotingPowerDelegationDetails'
+import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   vp: number
@@ -40,7 +40,7 @@ function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModal
         <VotingPowerDelegationList delegates={delegates} vp={vp} onDelegateClick={handleOnDelegateClick} />
       )}
       {selectedCandidate && (
-        <VotingPowerDelegationDetails candidate={selectedCandidate} onBackClick={() => setSelectedCandidate(null)} />
+        <VotingPowerDelegationDetail candidate={selectedCandidate} onBackClick={() => setSelectedCandidate(null)} />
       )}
     </Modal>
   )

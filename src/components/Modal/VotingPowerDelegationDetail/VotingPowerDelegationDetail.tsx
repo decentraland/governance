@@ -13,14 +13,14 @@ import ChevronLeft from '../../Icon/ChevronLeft'
 import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import CandidateDetails from './CandidateDetails'
-import './VotingPowerDelegationDetails.css'
+import './VotingPowerDelegationDetail.css'
 
 type VotingPowerDelegationDetailProps = {
   candidate: Candidate
   onBackClick: () => void
 }
 
-function VotingPowerDelegationDetails({ candidate, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
   const { profile } = useProfile(candidate.address)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -74,4 +74,4 @@ function VotingPowerDelegationDetails({ candidate, onBackClick }: VotingPowerDel
   )
 }
 
-export default VotingPowerDelegationDetails
+export default VotingPowerDelegationDetail
