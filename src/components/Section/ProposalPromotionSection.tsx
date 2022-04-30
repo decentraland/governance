@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
-import TextLabel from '../Layout/TextLabel'
+
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
+import TextLabel from '../Layout/TextLabel'
+
 import './ProposalPromotionSection.css'
 
 export type ProposalPromotionSectionProps = React.HTMLAttributes<HTMLDivElement> & {

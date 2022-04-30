@@ -1,5 +1,4 @@
-import './index.css'
-import './proposal.css'
+import React, { useEffect, useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -17,7 +16,6 @@ import retry from 'decentraland-gatsby/dist/utils/promise/retry'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import React, { useEffect, useMemo } from 'react'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Address } from 'web3x/address'
 import { Personal } from 'web3x/personal'
@@ -45,6 +43,9 @@ import useProposal from '../hooks/useProposal'
 import useProposalVotingPower from '../hooks/useProposalVotingPower'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
+
+import './index.css'
+import './proposal.css'
 
 type ProposalPageOptions = {
   changing: boolean

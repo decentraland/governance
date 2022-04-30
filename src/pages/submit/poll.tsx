@@ -1,4 +1,5 @@
-import './submit.css'
+import React, { useEffect, useMemo, useState } from 'react'
+import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
@@ -16,8 +17,6 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import omit from 'lodash.omit'
-import React, { useEffect, useMemo, useState } from 'react'
-import Helmet from 'react-helmet'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Governance } from '../../api/Governance'
@@ -28,6 +27,8 @@ import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../enti
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
+
+import './submit.css'
 
 type PollState = {
   title: string

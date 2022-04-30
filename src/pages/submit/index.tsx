@@ -1,16 +1,17 @@
-import './submit.css'
+import React, { useState } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import React, { useState } from 'react'
 
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import { POIProposalModal } from '../../components/Modal/POIProposalModal/POIProposalModal'
 import { ProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
+
+import './submit.css'
 
 export default function NewProposalPage() {
   const t = useFormatMessage()

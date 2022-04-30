@@ -1,5 +1,4 @@
-import './NewsletterSubscriptionModal.css'
-import '../ProposalModal.css'
+import React, { useCallback, useState } from 'react'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -12,10 +11,12 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import React, { useCallback, useState } from 'react'
 import isEmail from 'validator/lib/isEmail'
 
 import { Decentraland } from '../../../api/Decentraland'
+import '../ProposalModal.css'
+
+import './NewsletterSubscriptionModal.css'
 
 const check = require('../../../images/icons/check-cloud.svg').default
 

@@ -1,5 +1,4 @@
-import '../ProposalModal.css'
-import './UpdateProposalStatusModal.css'
+import React, { useMemo } from 'react'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
@@ -12,10 +11,12 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import React, { useMemo } from 'react'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import '../ProposalModal.css'
+
+import './UpdateProposalStatusModal.css'
 
 type UpdateProposalState = {
   proposal: ProposalAttributes | null

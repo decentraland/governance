@@ -1,11 +1,14 @@
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import React from 'react'
+
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { intersection } from 'lodash'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { intersection } from 'lodash'
+
 import { Vote } from '../../entities/Votes/types'
-import Username from '../User/Username'
 import { Delegation } from '../../hooks/useDelegation'
+import Username from '../User/Username'
+
 import './DelegateLabel.css'
 
 const useDelegateLabel = (

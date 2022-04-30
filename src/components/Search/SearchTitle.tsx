@@ -1,14 +1,17 @@
 import React from 'react'
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import locations from '../../modules/locations'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+
 import { useSearchParams } from '../../hooks/useSearchParams'
+import locations from '../../modules/locations'
+
 import './SearchTitle.css'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 export function SearchTitle() {
   const l = useFormatMessage()

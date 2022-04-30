@@ -1,5 +1,4 @@
-import './FollowUpModal.css'
-import '../ProposalModal.css'
+import React, { useCallback, useMemo } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
@@ -10,10 +9,12 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import React, { useCallback, useMemo } from 'react'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { forumUrl, JOIN_DISCORD_URL, proposalUrl } from '../../../entities/Proposal/utils'
+import { JOIN_DISCORD_URL, forumUrl, proposalUrl } from '../../../entities/Proposal/utils'
+import '../ProposalModal.css'
+
+import './FollowUpModal.css'
 
 export type FollowUpModalProps = Omit<ModalProps, 'children'> & {
   onDismiss: (e: React.MouseEvent<any>) => void
