@@ -10,6 +10,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
@@ -49,15 +50,15 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
   const [ens] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
   const [votes] = useAsyncMemo(async () => Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address), [])
   const [isExpanded, setIsExpanded] = useState(false)
-  const [showFadeout, setShowFadeout] = useState('')
+  const [showFadeout, setShowFadeout] = useState(true)
 
   useEffect(() => {
     if (!isExpanded) {
       setTimeout(() => {
-        setShowFadeout('')
+        setShowFadeout(true)
       }, 500)
     } else {
-      setShowFadeout('Fadeout--hidden')
+      setShowFadeout(false)
     }
   }, [isExpanded])
 
@@ -99,7 +100,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
               />
             </Grid.Column>
           </Grid>
-          <div className={TokenList.join(['Fadeout', showFadeout])} />
+          <div className={TokenList.join(['Fadeout', !showFadeout && 'Fadeout--hidden'])} />
         </div>
         <div className="ShowMore">
           <div className="Divider" />
@@ -152,25 +153,48 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
               />
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
-            {votes && votes.length > 0 && (
-              <Grid.Column>
-                <Stats title={t('modal.vp_delegation.details.stats_active_since')}>
-                  <div className="VotingPowerDelegationDetail__StatsValue">
-                    {Time.unix(votes[0].created).format('MMMM, YYYY')}
-                  </div>
-                </Stats>
-              </Grid.Column>
-            )}
-            {votes && (
+          {votes && (
+            <Grid.Row>
+              {votes.length > 0 && (
+                <Grid.Column>
+                  <Stats title={t('modal.vp_delegation.details.stats_active_since')}>
+                    <div className="VotingPowerDelegationDetail__StatsValue">
+                      {Time.unix(votes[0].created).format('MMMM, YYYY')}
+                    </div>
+                  </Stats>
+                </Grid.Column>
+              )}
               <Grid.Column>
                 <Stats title={t('modal.vp_delegation.details.stats_voted_on')}>
                   <div className="VotingPowerDelegationDetail__StatsValue">{votes.length}</div>
                 </Stats>
               </Grid.Column>
-            )}
-          </Grid.Row>
+            </Grid.Row>
+          )}
         </Grid>
+        {votes && votes.length > 0 && (
+          <div className="Initiatives">
+            <span className="Initiatives__Title">{t('modal.vp_delegation.details.stats_initiatives_title')}</span>
+            <div className="Initiatives__List">
+              {votes.map((item) => (
+                <div className="Initiative">
+                  <h2 className="Initiative__Title">{item.proposal.title}</h2>
+                  <Popup
+                    className="Initiative__PopupVote"
+                    content={<span>{item.proposal.choices[item.choice - 1]}</span>}
+                    trigger={
+                      <div className="Initiative__Vote">
+                        {t('modal.vp_delegation.details.stats_initiatives_voted')}
+                        <span className="Initiative__Vote--highlight">{item.proposal.choices[item.choice - 1]}</span>
+                      </div>
+                    }
+                    on="hover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </Modal.Content>
     </>
   )

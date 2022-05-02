@@ -1,7 +1,7 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import fetch from 'isomorphic-fetch'
 
-import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 const QUERY = `
 query ($space: String!, $address: String!) {
@@ -71,8 +71,6 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
 
   return Array.from(unique_delegations.values())
 }
-
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
 
 export default function useDelegation(address?: string | null) {
   return useAsyncMemo(async () => {

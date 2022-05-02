@@ -91,6 +91,10 @@ export type SnapshotVote = {
   voter: string
   created: number
   choice: number
+  proposal: {
+    title: string
+    choices: string[]
+  }
 }
 
 export class Snapshot extends API {
@@ -242,6 +246,12 @@ export class Snapshot extends API {
           id
           voter
           created
+          choice
+          proposal {
+            id
+            title
+            choices
+          }
         }
       }
     `
