@@ -1,17 +1,14 @@
 import React, { useMemo } from 'react'
-
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-
-import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
-import { formatBalance } from '../../entities/Proposal/utils'
-import useProposals from '../../hooks/useProposals'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import locations from '../../modules/locations'
+import { ProposalType, ProposalStatus } from '../../entities/Proposal/types'
 import { DetailItem } from '../Section/DetailItem'
-
+import useProposals from '../../hooks/useProposals'
 import './GrantList.css'
+import { formatBalance } from '../../entities/Proposal/utils'
 
 export type GrantListProps = React.HTMLAttributes<HTMLDivElement> & {
   status: ProposalStatus

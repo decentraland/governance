@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import './index.css'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -14,6 +14,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
+import React, { useEffect, useState } from 'react'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
@@ -37,8 +38,6 @@ import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
-
-import './index.css'
 
 const ITEMS_PER_PAGE = 25
 
