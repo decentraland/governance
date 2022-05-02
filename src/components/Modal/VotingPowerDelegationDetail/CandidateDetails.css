@@ -2,7 +2,7 @@
   display: none;
 }
 
-.CandidateDetails__Title.tiny {
+.CandidateDetails__Title.tiny.sub.header {
   font-size: 12px !important;
 }
 
