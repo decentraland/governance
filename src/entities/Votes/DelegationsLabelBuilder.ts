@@ -52,20 +52,17 @@ export class DelegationsLabelBuilder {
   }
 
   private delegatorsLabel(hasDelegators: boolean, delegationsLabel: DelegationsLabelProps | null) {
-    if (!this.vote) {
-      if (hasDelegators) {
-        const { delegatorsVotes, totalDelegators } = this.calculateDelegatorsVotes()
-        if (delegatorsVotes > 0) {
+    if (hasDelegators) {
+      const { delegatorsVotes, totalDelegators } = this.calculateDelegatorsVotes()
+      const delegatorsVoted = delegatorsVotes > 0
+      if (this.vote) {
+        delegationsLabel = this.userVotedForDelegatorsLabel(totalDelegators, delegatorsVotes)
+      } else {
+        if (delegatorsVoted) {
           delegationsLabel = this.delegatorsVotedLabel(delegatorsVotes, totalDelegators)
         } else {
           delegationsLabel = this.delegatorsRepresentedLabel(totalDelegators)
         }
-      }
-    }
-    if (this.vote) {
-      if (hasDelegators) {
-        const { delegatorsVotes, totalDelegators } = this.calculateDelegatorsVotes()
-        delegationsLabel = this.userVotedForDelegatorsLabel(totalDelegators, delegatorsVotes)
       }
     }
     return delegationsLabel
