@@ -2,13 +2,13 @@ import { Vote } from './types'
 import { VotedChoice } from './utils'
 
 export class VotedChoiceBuilder {
-  private readonly _choices: string[] = []
-  private readonly _votes: Record<string, Vote> | null
-  private readonly _account: string
-  private readonly _delegators: string[] | null
-  private readonly _vote: Vote | null
-  private readonly _delegateVote: Vote | null
-  private readonly _delegate: string | null
+  private readonly choices: string[] = []
+  private readonly votes: Record<string, Vote> | null
+  private readonly account: string
+  private readonly delegators: string[] | null
+  private readonly vote: Vote | null
+  private readonly delegateVote: Vote | null
+  private readonly delegate: string | null
 
   constructor(
     vote: Vote | null,
@@ -19,80 +19,80 @@ export class VotedChoiceBuilder {
     delegate: string | null,
     delegators: string[] | null
   ) {
-    this._choices = choices
-    this._votes = votes
-    this._account = account
-    this._delegators = delegators
-    this._vote = vote
-    this._delegateVote = delegateVote
-    this._delegate = delegate
+    this.choices = choices
+    this.votes = votes
+    this.account = account
+    this.delegators = delegators
+    this.vote = vote
+    this.delegateVote = delegateVote
+    this.delegate = delegate
   }
 
   build(): VotedChoice | null {
     let votedChoice = null
-    const hasDelegators = !!this._delegators && this._delegators.length > 0
+    const hasDelegators = !!this.delegators && this.delegators.length > 0
 
-    if (!this._delegate) {
+    if (!this.delegate) {
       if (!hasDelegators) {
-        if (this._vote) {
+        if (this.vote) {
           votedChoice = {
             id: 'page.proposal_detail.voted_choice',
-            values: { choice: this._choices[this._vote.choice - 1] },
+            values: { choice: this.votedChoiceName(this.vote) },
           }
         }
       }
       if (hasDelegators) {
-        const totalDelegators = this._delegators!.length
-        if (this._vote) {
+        const totalDelegators = this.delegators!.length
+        if (this.vote) {
           votedChoice = {
             id: 'page.proposal_detail.voted_choice',
-            values: { choice: this._choices[this._vote.choice - 1] },
-            voteCount: this.votedChoiceVoteCount(this._choices, this._votes, this._account, this._delegators!),
+            values: { choice: this.votedChoiceName(this.vote) },
+            voteCount: this.votedChoiceVoteCount(this.choices, this.votes, this.account, this.delegators!),
             totalVotes: totalDelegators,
           }
         }
       }
     }
 
-    if (this._delegate) {
-      if (!this._vote) {
-        if (this._delegateVote) {
+    if (this.delegate) {
+      if (!this.vote) {
+        if (this.delegateVote) {
           votedChoice = {
             id: 'page.proposal_detail.delegate_voted_choice',
-            values: { choice: this._choices[this._delegateVote.choice - 1] },
-            delegate: this._delegate,
+            values: { choice: this.votedChoiceName(this.delegateVote) },
+            delegate: this.delegate,
           }
         }
       }
-      if (this._vote) {
-        if (!this._delegateVote) {
+      if (this.vote) {
+        if (!this.delegateVote) {
           votedChoice = {
             ...votedChoice,
             id: 'page.proposal_detail.voted_choice',
-            values: { choice: this._choices[this._vote.choice - 1] },
+            values: { choice: this.votedChoiceName(this.vote) },
           }
         }
-        if (this._delegateVote) {
-          if (this._vote.choice === this._delegateVote.choice) {
+        if (this.delegateVote) {
+          if (this.vote.choice === this.delegateVote.choice) {
             votedChoice = {
               ...votedChoice,
               id: !hasDelegators ? 'page.proposal_detail.both_voted_choice' : 'page.proposal_detail.voted_choice',
-              values: { choice: this._choices[this._vote.choice - 1] },
-              delegate: this._delegate,
+              values: { choice: this.votedChoiceName(this.vote) },
+              delegate: this.delegate,
             }
           } else {
             votedChoice = {
               ...votedChoice,
               id: 'page.proposal_detail.voted_choice',
-              values: { choice: this._choices[this._vote.choice - 1] },
+              values: { choice: this.votedChoiceName(this.vote) },
             }
           }
         }
         if (hasDelegators) {
-          const totalDelegators = this._delegators!.length
+          const totalDelegators = this.delegators!.length
           votedChoice = {
             ...votedChoice,
-            voteCount: this.votedChoiceVoteCount(this._choices, this._votes, this._account, this._delegators!),
+            voteCount: this.votedChoiceVoteCount(this.choices, this.votes, this.account, this.delegators!),
             totalVotes: totalDelegators,
           }
         }
@@ -100,6 +100,10 @@ export class VotedChoiceBuilder {
     }
 
     return votedChoice
+  }
+
+  private votedChoiceName(vote: Vote) {
+    return this.choices[vote.choice - 1]
   }
 
   votedChoiceVoteCount(
