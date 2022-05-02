@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ChainId } from '@dcl/schemas'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
@@ -52,6 +52,17 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
   const [votes] = useAsyncMemo(async () => Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address), [])
   const { profile } = useProfile(address)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [showFadeout, setShowFadeout] = useState('')
+
+  useEffect(() => {
+    if (!isExpanded) {
+      setTimeout(() => {
+        setShowFadeout('')
+      }, 500)
+    } else {
+      setShowFadeout('Fadeout--hidden')
+    }
+  }, [isExpanded])
 
   const mana = mainnetMana + maticMana + (wMana || 0)
   const totalVotingPower = votingPower - delegatedVotingPower
@@ -92,7 +103,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
               />
             </Grid.Column>
           </Grid>
-          <div className={TokenList.join(['Fadeout', isExpanded && 'Fadeout--hidden'])} />
+          <div className={TokenList.join(['Fadeout', showFadeout])} />
         </div>
         <div className="ShowMore">
           <div className="Divider" />
