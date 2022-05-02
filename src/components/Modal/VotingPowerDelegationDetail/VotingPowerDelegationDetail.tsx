@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { ChainId } from '@dcl/schemas'
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useEnsBalance from 'decentraland-gatsby/dist/hooks/useEnsBalance'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -9,7 +8,6 @@ import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
 import useManaBalance from 'decentraland-gatsby/dist/hooks/useManaBalance'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
@@ -20,12 +18,12 @@ import { SNAPSHOT_SPACE } from '../../../entities/Snapshot/constants'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import useDelegation from '../../../hooks/useDelegation'
-import useProfile from '../../../hooks/useProfile'
 import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
+import Username from '../../User/Username'
 import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import CandidateDetails from './CandidateDetails'
@@ -50,7 +48,6 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
   const [land] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
   const [ens] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
   const [votes] = useAsyncMemo(async () => Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address), [])
-  const { profile } = useProfile(address)
   const [isExpanded, setIsExpanded] = useState(false)
   const [showFadeout, setShowFadeout] = useState('')
 
@@ -73,8 +70,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
         <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
           <ChevronLeft />
         </Button>
-        <Avatar size="small" address={candidate.address} />
-        {profile?.name || <Address value={candidate.address} />}
+        <Username address={candidate.address} size="small" blockieScale={4} />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
