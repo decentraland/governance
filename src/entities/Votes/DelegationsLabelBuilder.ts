@@ -30,18 +30,21 @@ export class DelegationsLabelBuilder {
 
   build(): DelegationsLabelProps | null {
     let delegationsLabel = null
-    const hasDelegators = !!this.delegators && this.delegators.length > 0
-    delegationsLabel = this.delegatorsLabel(hasDelegators, delegationsLabel)
-    delegationsLabel = this.addDelegateLabel(hasDelegators, delegationsLabel)
+    delegationsLabel = this.delegatorsLabel(delegationsLabel)
+    delegationsLabel = this.addDelegateLabel(delegationsLabel)
     return delegationsLabel
   }
 
-  private addDelegateLabel(hasDelegators: boolean, delegationsLabel: DelegationsLabelProps | null) {
+  private hasDelegators() {
+    return !!this.delegators && this.delegators.length > 0
+  }
+
+  private addDelegateLabel(delegationsLabel: DelegationsLabelProps | null) {
     if (this.delegate) {
       if (!this.delegateVote) {
         delegationsLabel = this.addDelegateNotVotedLabel(delegationsLabel)
       } else {
-        if (this.vote && !hasDelegators && this.vote.choice !== this.delegateVote.choice) {
+        if (this.vote && !this.hasDelegators() && this.vote.choice !== this.delegateVote.choice) {
           delegationsLabel = this.addDelegateVotedDifferentlyLabel(delegationsLabel)
         } else {
           delegationsLabel = this.addDelegateVotedLabel(delegationsLabel)
@@ -51,8 +54,8 @@ export class DelegationsLabelBuilder {
     return delegationsLabel
   }
 
-  private delegatorsLabel(hasDelegators: boolean, delegationsLabel: DelegationsLabelProps | null) {
-    if (hasDelegators) {
+  private delegatorsLabel(delegationsLabel: DelegationsLabelProps | null) {
+    if (this.hasDelegators()) {
       const { delegatorsVotes, totalDelegators } = this.calculateDelegatorsVotes()
       const delegatorsVoted = delegatorsVotes > 0
       if (this.vote) {

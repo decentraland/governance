@@ -51,7 +51,7 @@ export default function ProposalResultSection({
   const untilStart = useCountdown(startAt)
   const untilFinish = useCountdown(finishAt)
   const started = untilStart.time === 0
-  const finished = untilFinish.time === 0
+  const finished = false // TODO: untilFinish.time === 0
   const showVotingStatusSummary =
     proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
   const showSeeVotesButton = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
