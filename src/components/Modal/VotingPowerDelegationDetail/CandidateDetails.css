@@ -15,14 +15,11 @@
 }
 
 .CandidateDetails__Content--links a {
-  display: inline-flex;
+  display: block;
   color: var(--blue);
-}
-
-.CandidateDetails__Content--links a>svg {
-  margin-right: 6px;
-  position: relative;
-  top: 0.45em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .CandidateDetails__Content--skills {

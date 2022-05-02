@@ -15,14 +15,6 @@ interface Props {
   skills?: string[]
 }
 
-function linkShortener(link: string) {
-  const optimalLength = 26
-
-  const linkTrimmed = link.replace(/^https?\:\/\//i, '').replace(/^www\./i, '')
-
-  return linkTrimmed.length > optimalLength ? linkTrimmed.substring(0, optimalLength - 3).concat('...') : linkTrimmed
-}
-
 function CandidateDetails({ title, content, links, skills }: Props) {
   return (
     <div
@@ -47,7 +39,7 @@ function CandidateDetails({ title, content, links, skills }: Props) {
         {links &&
           links.map((link) => (
             <a href={link}>
-              <LinkIcon color="var(--blue)" /> {linkShortener(link)}
+              <LinkIcon color="var(--blue)" /> {link}
             </a>
           ))}
         {skills && skills.map((skill) => <span className="Chip">{skill.toUpperCase()}</span>)}
