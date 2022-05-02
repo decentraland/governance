@@ -1,20 +1,22 @@
 import React, { useMemo } from 'react'
+
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import locations from '../../modules/locations'
-import StatusLabel from '../Status/StatusLabel'
-import CategoryLabel from '../Category/CategoryLabel'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 
-import './ProposalItem.css'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import { Vote } from '../../entities/Votes/types'
+import { calculateResultWinner } from '../../entities/Votes/utils'
+import locations from '../../modules/locations'
+import CategoryLabel from '../Category/CategoryLabel'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
-import { calculateResultWinner } from '../../entities/Votes/utils'
-import { Vote } from '../../entities/Votes/types'
+import StatusLabel from '../Status/StatusLabel'
+
+import './ProposalItem.css'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes

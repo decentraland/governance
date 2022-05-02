@@ -1,10 +1,12 @@
 import React from 'react'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
+
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+
 import locations from '../../modules/locations'
 
 interface Props {
