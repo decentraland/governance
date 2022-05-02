@@ -1,35 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
+import { Governance } from '../../api/Governance'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LogIn from '../../components/User/LogIn'
 import {
+  ProposalGrantCategory,
+  ProposalGrantTier,
   isProposalGrantCategory,
   isProposalGrantTier,
   newProposalGrantScheme,
-  ProposalGrantCategory,
-  ProposalGrantTier,
 } from '../../entities/Proposal/types'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
-import { Governance } from '../../api/Governance'
+import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import LogIn from '../../components/User/LogIn'
+
 import './submit.css'
 
 type GrantState = {

@@ -1,18 +1,20 @@
 import React, { useMemo } from 'react'
+
+import { useLocation } from '@reach/router'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
 import CategoryOption from '../Category/CategoryOption'
-import { useLocation } from '@reach/router'
-import CollapsibleFilter from './CollapsibleFilter'
 
 import './CategoryFilter.css'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import CollapsibleFilter from './CollapsibleFilter'
 
 export type FilterProps = {
   onChange?: (open: boolean) => void
 }
 
-export default React.memo(function CategoryFilter({onChange}:FilterProps) {
+export default React.memo(function CategoryFilter({ onChange }: FilterProps) {
   const l = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
@@ -27,20 +29,23 @@ export default React.memo(function CategoryFilter({onChange}:FilterProps) {
 
   return (
     <CollapsibleFilter title={l('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
-      <CategoryOption type={'all'}
-                      href={handleTypeFilter(null)}
-                      active={!type}
-                      className={'CategoryFilter__CategoryOption'} />{
-      (Object.keys(ProposalType) as Array<keyof typeof ProposalType>).map((key, index) => {
-        return <CategoryOption
-          key={'category_filter' + index}
-          type={ProposalType[key]}
-          href={handleTypeFilter(ProposalType[key])}
-          active={type === ProposalType[key]}
-          className={'CategoryFilter__CategoryOption'}
-        />
-      })
-    }
+      <CategoryOption
+        type={'all'}
+        href={handleTypeFilter(null)}
+        active={!type}
+        className={'CategoryFilter__CategoryOption'}
+      />
+      {(Object.keys(ProposalType) as Array<keyof typeof ProposalType>).map((key, index) => {
+        return (
+          <CategoryOption
+            key={'category_filter' + index}
+            type={ProposalType[key]}
+            href={handleTypeFilter(ProposalType[key])}
+            active={type === ProposalType[key]}
+            className={'CategoryFilter__CategoryOption'}
+          />
+        )
+      })}
     </CollapsibleFilter>
   )
 })

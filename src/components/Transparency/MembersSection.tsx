@@ -1,11 +1,14 @@
 import React from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
+
+import { Member } from '../../api/DclData'
+
 import MemberCard from './MemberCard'
 import './MembersSection.css'
-import { Member } from '../../api/DclData'
 
 const infoIcon = require('../../images/icons/info.svg').default
 

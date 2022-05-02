@@ -1,17 +1,18 @@
-import '../ProposalModal.css'
-import './VotesList.css'
+import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import React, { useMemo } from 'react'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
+import '../ProposalModal.css'
+
 import { VoteListItem } from './VoteListItem'
+import './VotesList.css'
 
 export type VotesListModalProps = Omit<ModalProps, 'children'> & {
   proposal?: ProposalAttributes | null

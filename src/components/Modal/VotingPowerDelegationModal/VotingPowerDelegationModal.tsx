@@ -1,13 +1,14 @@
-import './VotingPowerDelegationModal.css'
+import React, { useState } from 'react'
 
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import React, { useState } from 'react'
 
-import exampleDelegates from '../../../modules/delegates/example_delegates.json'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
-import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
+import exampleDelegates from '../../../modules/delegates/example_delegates.json'
 import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
+import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
+
+import './VotingPowerDelegationModal.css'
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   vp: number

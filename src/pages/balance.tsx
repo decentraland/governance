@@ -1,4 +1,4 @@
-import './balance.css'
+import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -8,7 +8,6 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import React, { useMemo } from 'react'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
@@ -26,6 +25,8 @@ import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
 import useDelegation from '../hooks/useDelegation'
 import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
 import { isUnderMaintenance } from '../modules/maintenance'
+
+import './balance.css'
 
 export default function BalancePage() {
   const t = useFormatMessage()

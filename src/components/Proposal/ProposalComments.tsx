@@ -1,16 +1,18 @@
-import React, { useMemo, useState, useEffect } from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { ProposalAttributes } from '../../entities/Proposal/types'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import './ProposalComments.css'
-import ProposalComment from './ProposalComment'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import React, { useEffect, useMemo, useState } from 'react'
+
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../api/Governance'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import { forumUrl } from '../../entities/Proposal/utils'
 import Empty from '../Common/Empty'
+
+import ProposalComment from './ProposalComment'
+import './ProposalComments.css'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 

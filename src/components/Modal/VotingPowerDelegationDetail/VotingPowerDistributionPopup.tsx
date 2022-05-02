@@ -1,7 +1,10 @@
+import React from 'react'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
-import React from 'react'
+
 import VotingPower from '../../Token/VotingPower'
+
 import './VotingPowerDistributionPopup.css'
 
 interface Props {

@@ -1,17 +1,18 @@
-import './SubscriptionBanner.css'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import React, { useCallback, useEffect, useState } from 'react'
 
 import {
   ANONYMOUS_USR_SUBSCRIPTION,
   NEWSLETTER_SUBSCRIPTION_KEY,
   NewsletterSubscriptionModal,
 } from '../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
+
+import './SubscriptionBanner.css'
 
 const icon = require('../../images/icons/email-outline.svg').default
 const HIDE_NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription.hide'
