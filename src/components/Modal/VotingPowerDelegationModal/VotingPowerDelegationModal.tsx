@@ -4,7 +4,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
-import exampleDelegates from '../../../modules/delegates/example_delegates.json'
+import Candidates from '../../../modules/delegates/candidates.json'
 import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
 
@@ -26,12 +26,10 @@ export type Candidate = Delegate & {
 
 function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModalProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
-  const delegates = useDelegatesInfo(exampleDelegates.map((delegate) => delegate.address))
+  const delegates = useDelegatesInfo(Candidates.map((delegate) => delegate.address))
 
   const handleOnDelegateClick = (delegate: Delegate) => {
-    const candidateInfo = exampleDelegates.find(
-      (deleg) => deleg.address.toLowerCase() === delegate.address.toLowerCase()
-    )
+    const candidateInfo = Candidates.find((deleg) => deleg.address.toLowerCase() === delegate.address.toLowerCase())
     setSelectedCandidate({ ...delegate, ...candidateInfo! })
   }
 

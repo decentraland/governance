@@ -25,8 +25,6 @@ type Props = SizeProps & {
 const Username = ({ address, size, linked, showName = true, blockieScale = 3, className }: Props) => {
   const { profile } = useProfile(address)
 
-  console.log(profile)
-
   const userElement = (
     <>
       {profile && !profile.isDefaultProfile && <Avatar size={size || 'mini'} address={address} />}
