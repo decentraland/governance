@@ -1,8 +1,10 @@
+import React from 'react'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
-import React from 'react'
+
 import './VotingPowerDistribution.css'
+import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
 
 interface Props {
   mana: number

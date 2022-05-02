@@ -1,12 +1,15 @@
 import React from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { MonthlyTotal } from '../../api/DclData'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import './MonthlyTotal.css'
-import { DetailItem } from '../Section/DetailItem'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
+import { MonthlyTotal } from '../../api/DclData'
 import { formatBalance } from '../../entities/Proposal/utils'
+import { DetailItem } from '../Section/DetailItem'
+
+import './MonthlyTotal.css'
 
 export type MonthlyTotalProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string

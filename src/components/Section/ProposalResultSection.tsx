@@ -1,19 +1,22 @@
 import React, { useMemo } from 'react'
+
+import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
+import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
-import ChoiceProgress from '../Status/ChoiceProgress'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
-import { ProposalPromotionSection } from './ProposalPromotionSection'
-import VotingStatusSummary from './VotingStatusSummary'
-import ProposalVotingSection from './ProposalVotingSection'
+import ChoiceProgress from '../Status/ChoiceProgress'
+
 import './DetailsSection.css'
+import { ProposalPromotionSection } from './ProposalPromotionSection'
+import ProposalVotingSection from './ProposalVotingSection'
+import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null

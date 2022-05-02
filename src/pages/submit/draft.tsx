@@ -1,4 +1,5 @@
-import './submit.css'
+import React, { useEffect, useMemo, useState } from 'react'
+import Helmet from 'react-helmet'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -17,8 +18,6 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import React, { useEffect, useMemo, useState } from 'react'
-import Helmet from 'react-helmet'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../api/Governance'
@@ -29,6 +28,8 @@ import { newProposalDraftScheme } from '../../entities/Proposal/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
+
+import './submit.css'
 
 type DraftState = {
   linked_proposal_id: string | null

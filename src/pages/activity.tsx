@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo } from 'react'
+
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
@@ -9,7 +11,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import React, { useEffect, useMemo } from 'react'
+
 import { Governance } from '../api/Governance'
 import Empty from '../components/Common/Empty'
 import Filter from '../components/Filter/Filter'
@@ -23,6 +25,7 @@ import useProposals from '../hooks/useProposals'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
+
 import './activity.css'
 
 const ITEMS_PER_PAGE = 12

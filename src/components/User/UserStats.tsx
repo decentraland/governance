@@ -1,15 +1,16 @@
 import React from 'react'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Header, HeaderProps } from 'decentraland-ui/dist/components/Header/Header'
-import profiles, { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import './UserStats.css'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import profiles, { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+import { Header, HeaderProps } from 'decentraland-ui/dist/components/Header/Header'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
+import './UserStats.css'
 
 export type UserStatsProps = {
   size?: HeaderProps['size']
