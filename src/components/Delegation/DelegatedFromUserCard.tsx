@@ -1,12 +1,10 @@
-import './DelegatedFromUserCard.css'
+import React, { useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import React, { useState } from 'react'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 
 import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
 import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
@@ -15,8 +13,9 @@ import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
+
 import DelegatedCardProfile from './DelegatedCardProfile'
-import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../entities/Snapshot/constants'
+import './DelegatedFromUserCard.css'
 
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
@@ -39,8 +38,9 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
     <ActionableLayout
       className="DelegatedFromUserCard"
       rightAction={
-        isLoggedUserProfile && (
-          <Button as={Link} basic href={EDIT_DELEGATE_SNAPSHOT_URL}>
+        isLoggedUserProfile &&
+        delegateDelegations.delegatedFrom.length > 0 && (
+          <Button basic onClick={() => setIsDelegationModalOpen(true)}>
             {t(`page.balance.delegations_from_action`)}
           </Button>
         )

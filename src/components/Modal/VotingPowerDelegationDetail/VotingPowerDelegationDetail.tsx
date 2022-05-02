@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react'
+
 import { ChainId } from '@dcl/schemas'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useEnsBalance from 'decentraland-gatsby/dist/hooks/useEnsBalance'
@@ -5,33 +7,37 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
 import useManaBalance from 'decentraland-gatsby/dist/hooks/useManaBalance'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import React from 'react'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+
 import { Snapshot } from '../../../api/Snapshot'
 import { SNAPSHOT_SPACE } from '../../../entities/Snapshot/constants'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
-import { Delegate } from '../../../hooks/useDelegatesInfo'
 import useDelegation from '../../../hooks/useDelegation'
 import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
-import VotingPowerDistribution from './VotingPowerDistribution'
+import Username from '../../User/Username'
+import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
+
+import CandidateDetails from './CandidateDetails'
 import './VotingPowerDelegationDetail.css'
+import VotingPowerDistribution from './VotingPowerDistribution'
 
 type VotingPowerDelegationDetailProps = {
-  delegate: Delegate
+  candidate: Candidate
   onBackClick: () => void
 }
 
-function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
-  const { address } = delegate
+  const { address } = candidate
   const { votingPower } = useVotingPowerBalance(address)
   const [delegation] = useDelegation(address)
   const { delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
@@ -42,6 +48,18 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
   const [land] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
   const [ens] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
   const [votes] = useAsyncMemo(async () => Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address), [])
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [showFadeout, setShowFadeout] = useState('')
+
+  useEffect(() => {
+    if (!isExpanded) {
+      setTimeout(() => {
+        setShowFadeout('')
+      }, 500)
+    } else {
+      setShowFadeout('Fadeout--hidden')
+    }
+  }, [isExpanded])
 
   const mana = mainnetMana + maticMana + (wMana || 0)
   const totalVotingPower = votingPower - delegatedVotingPower
@@ -49,43 +67,77 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
   return (
     <>
       <Modal.Header className="VotingPowerDelegationDetail__Header">
-        <Button basic aria-label={t('modal.vp_delegation_detail.backButtonLabel')} onClick={onBackClick}>
+        <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
           <ChevronLeft />
         </Button>
-        <span>{address}</span>
+        <Username address={candidate.address} size="small" blockieScale={4} />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
+        <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
+          <Grid columns="equal">
+            <Grid.Column width={10}>
+              <CandidateDetails title={t('modal.vp_delegation.details.about_title')} content={candidate.bio} />
+              <CandidateDetails
+                title={t('modal.vp_delegation.details.involvement_title')}
+                content={candidate.involvement}
+              />
+              <CandidateDetails
+                title={t('modal.vp_delegation.details.motivation_title')}
+                content={candidate.motivation}
+              />
+              <CandidateDetails title={t('modal.vp_delegation.details.vision_title')} content={candidate.vision} />
+              <CandidateDetails
+                title={t('modal.vp_delegation.details.most_important_issue_title')}
+                content={candidate.most_important_issue}
+              />
+            </Grid.Column>
+            <Grid.Column>
+              <CandidateDetails title={t('modal.vp_delegation.details.links_title')} links={candidate.links} />
+              <CandidateDetails
+                title={t('modal.vp_delegation.details.relevant_skills_title')}
+                skills={candidate.relevant_skills}
+              />
+            </Grid.Column>
+          </Grid>
+          <div className={TokenList.join(['Fadeout', showFadeout])} />
+        </div>
+        <div className="ShowMore">
+          <div className="Divider" />
+          <Button secondary onClick={() => setIsExpanded((prev) => !prev)}>
+            {t(`modal.vp_delegation.details.${!isExpanded ? 'show_more' : 'show_less'}`)}
+          </Button>
+        </div>
         <Grid columns={3}>
           <Grid.Row>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_own_voting_power')}>
+              <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
                 <VotingPower value={votingPower} size="large" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_delegated_voting_power')}>
+              <Stats title={t('modal.vp_delegation.details.stats_delegated_voting_power')}>
                 <VotingPower value={delegatedVotingPower} size="large" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_total_voting_power')}>
+              <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
                 <VotingPower value={totalVotingPower} size="large" />
               </Stats>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_mana')}>
+              <Stats title={t('modal.vp_delegation.details.stats_mana')}>
                 <VotingPower value={Math.floor(mana)} size="medium" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_land')}>
+              <Stats title={t('modal.vp_delegation.details.stats_land')}>
                 <VotingPower value={land! * LAND_MULTIPLIER} size="medium" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
-              <Stats title={t('modal.vp_delegation_detail.stats_name')}>
+              <Stats title={t('modal.vp_delegation.details.stats_name')}>
                 <VotingPower value={ens * NAME_MULTIPLIER} size="medium" />
               </Stats>
             </Grid.Column>
@@ -103,7 +155,7 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
           <Grid.Row>
             {votes && votes.length > 0 && (
               <Grid.Column>
-                <Stats title={t('modal.vp_delegation_detail.stats_active_since')}>
+                <Stats title={t('modal.vp_delegation.details.stats_active_since')}>
                   <div className="VotingPowerDelegationDetail__StatsValue">
                     {Time.unix(votes[0].created).format('MMMM, YYYY')}
                   </div>
@@ -112,7 +164,7 @@ function VotingPowerDelegationDetail({ delegate, onBackClick }: VotingPowerDeleg
             )}
             {votes && (
               <Grid.Column>
-                <Stats title={t('modal.vp_delegation_detail.stats_voted_on')}>
+                <Stats title={t('modal.vp_delegation.details.stats_voted_on')}>
                   <div className="VotingPowerDelegationDetail__StatsValue">{votes.length}</div>
                 </Stats>
               </Grid.Column>

@@ -30,7 +30,7 @@ const VotingPowerDistributionPopup = ({ label, amount, percentage, children }: P
           <div className="VotingPowerDistributionPopup__Label">{label}</div>
           <VotingPower value={amount} />
           <div className="VotingPowerDistributionPopup__Percentage">
-            {t('modal.vp_delegation_detail.stats_popup_percentage', { percentage })}
+            {t('modal.vp_delegation.details.stats_popup_percentage', { percentage })}
           </div>
         </div>
       </Popup.Content>

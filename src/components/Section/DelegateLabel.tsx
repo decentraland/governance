@@ -84,7 +84,7 @@ const DelegateLabel = ({ vote, votes, delegateVote, delegate, delegators }: Prop
 
   return (
     <span>
-      {delegate && <Username address={delegate} />}
+      {delegate && <Username address={delegate} linked />}
       <Markdown className="DelegateLabel">{label}</Markdown>
     </span>
   )

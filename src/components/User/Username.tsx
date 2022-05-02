@@ -1,24 +1,53 @@
-import React from 'react'
+import React from 'react';
+
+
+
+import { SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+
 import useProfile from '../../hooks/useProfile'
 import locations from '../../modules/locations'
 
-const Username = ({ address }: { address: string }) => {
+import './Username.css'
+
+type Props = SizeProps & {
+  address: string
+  linked?: boolean
+  showName?: boolean
+  className?: string
+  blockieScale?: number
+}
+
+const Username = ({ address, size, linked, showName = true, blockieScale = 3, className }: Props) => {
   const { profile } = useProfile(address)
 
-  return (
-    <Link className="DetailsSection__Value" href={locations.balance({ address: address })}>
-      {profile && profile.name && <Avatar size="mini" address={profile.ethAddress} style={{ marginRight: '.5rem' }} />}
-      {profile && profile.name}
-      {(!profile || !profile.name) && !!address && (
-        <Blockie scale={3} seed={address || ''}>
+  const userElement = (
+    <>
+      {profile && !profile.isDefaultProfile && <Avatar size={size || 'mini'} address={address} />}
+      {profile && showName && profile.name}
+      {profile && !showName && <Address value={address} />}
+      {(!profile || profile.isDefaultProfile) && !!address && (
+        <Blockie scale={blockieScale} seed={address || ''}>
           <Address value={address || ''} />
         </Blockie>
       )}
-    </Link>
+    </>
+  )
+
+  return (
+    <>
+      {linked ? (
+        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address: address })}>
+          {userElement}
+        </Link>
+      ) : (
+        <span className={TokenList.join(['Username', className])}>{userElement}</span>
+      )}
+    </>
   )
 }
 

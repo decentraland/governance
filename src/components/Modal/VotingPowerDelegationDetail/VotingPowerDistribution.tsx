@@ -32,7 +32,7 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
           <VotingPowerDistributionPopup
             amount={mana}
             percentage={manaPercentage}
-            label={t('modal.vp_delegation_detail.stats_mana')}
+            label={t('modal.vp_delegation.details.stats_mana')}
           >
             <div
               className="VotingPowerDistributionBar__Item VotingPowerDistribution__Mana"
@@ -44,7 +44,7 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
           <VotingPowerDistributionPopup
             amount={name}
             percentage={namePercentage}
-            label={t('modal.vp_delegation_detail.stats_name')}
+            label={t('modal.vp_delegation.details.stats_name')}
           >
             <div
               className="VotingPowerDistributionBar__Item VotingPowerDistribution__Name"
@@ -56,7 +56,7 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
           <VotingPowerDistributionPopup
             amount={land}
             percentage={landPercentage}
-            label={t('modal.vp_delegation_detail.stats_land')}
+            label={t('modal.vp_delegation.details.stats_land')}
           >
             <div
               className="VotingPowerDistributionBar__Item VotingPowerDistribution__Land"
@@ -68,7 +68,7 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
           <VotingPowerDistributionPopup
             amount={delegated}
             percentage={delegatedPercentage}
-            label={t('modal.vp_delegation_detail.stats_delegated')}
+            label={t('modal.vp_delegation.details.stats_delegated')}
           >
             <div
               className="VotingPowerDistributionBar__Item VotingPowerDistribution__Delegated"
@@ -80,19 +80,19 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
       <div className="VotingPowerDistribution__Labels">
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Mana" />
-          {t('modal.vp_delegation_detail.stats_bar_mana')}
+          {t('modal.vp_delegation.details.stats_bar_mana')}
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Land" />
-          {t('modal.vp_delegation_detail.stats_bar_land')}
+          {t('modal.vp_delegation.details.stats_bar_land')}
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
-          {t('modal.vp_delegation_detail.stats_bar_name')}
+          {t('modal.vp_delegation.details.stats_bar_name')}
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Delegated" />
-          {t('modal.vp_delegation_detail.stats_bar_delegated')}
+          {t('modal.vp_delegation.details.stats_bar_delegated')}
         </div>
       </div>
     </>

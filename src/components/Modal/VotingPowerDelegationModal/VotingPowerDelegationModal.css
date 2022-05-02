@@ -27,7 +27,7 @@
   padding: 10px 0;
 }
 
-.VotingPowerDelegationModal .ui.table td .Candidate {
+.VotingPowerDelegationModal .ui.table td .Username {
   font-weight: 500;
 }
 
@@ -58,6 +58,11 @@
 
 .VotingPowerDelegationModal .dg.dcl-avatar {
   margin-right: 11px;
+}
+
+.VotingPowerDelegationModal .dcl.blockie {
+  margin-left: 4px;
+  margin-right: 7px;
 }
 
 /* Animation */
