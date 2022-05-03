@@ -88,9 +88,14 @@ export type SnapshotVotePayload = {
 export type SnapshotVoteMessage = SnapshotMessage<'vote', SnapshotVotePayload>
 export type SnapshotVoteResponse = SnapshotQueryResponse<{ votes: SnapshotVote[] }>
 export type SnapshotVote = {
+  id: string
   voter: string
   created: number
   choice: number
+  proposal: {
+    title: string
+    choices: string[]
+  }
 }
 
 export class Snapshot extends API {
@@ -242,6 +247,12 @@ export class Snapshot extends API {
           id
           voter
           created
+          choice
+          proposal {
+            id
+            title
+            choices
+          }
         }
       }
     `

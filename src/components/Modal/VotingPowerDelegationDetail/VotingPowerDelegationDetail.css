@@ -16,18 +16,18 @@
 }
 
 .VotingPowerDelegationDetail__Content .Info--expanded {
-  max-height: 2000px
+  max-height: 2000px;
 }
 
-.VotingPowerDelegationDetail__Content .Info>.Fadeout {
+.VotingPowerDelegationDetail__Content .Info > .Fadeout {
   position: sticky;
   bottom: 0em;
   width: 100%;
   height: 4em;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
 }
 
-.VotingPowerDelegationDetail__Content .Info>.Fadeout--hidden {
+.VotingPowerDelegationDetail__Content .Info > .Fadeout--hidden {
   display: none;
 }
 
@@ -49,7 +49,7 @@
   position: relative;
   bottom: -0.9em;
   width: 100%;
-  opacity: .23;
+  opacity: 0.23;
   border: 1px solid var(--gray);
 }
 
@@ -69,4 +69,67 @@
   line-height: 32px;
   letter-spacing: 0.4px;
   color: #16141a;
+}
+
+.Initiatives {
+  margin-top: 25px;
+}
+
+.Initiatives__Title {
+  display: flex;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #736e7d;
+}
+
+.Initiatives__List {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Initiative {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.Initiative__Title {
+  max-width: 500px;
+  font-size: 15px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: #16141a;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.Initiative__Vote {
+  max-width: 65px;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 24px;
+  text-transform: uppercase;
+  color: #000000;
+  opacity: 0.6;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.Initiative__Vote--highlight {
+  font-weight: 600;
+}
+
+.Initiative__PopupVote {
+  padding: 10px;
 }
