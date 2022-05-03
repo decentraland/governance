@@ -257,12 +257,11 @@ describe('getVotingSectionConfig', () => {
           })
         })
 
-        it('voted choice shows delegate vote', () => {
+        it('voted choice shows delegate vote but does not display avatar', () => {
           const config = getVotingSectionConfig(votes, CHOICES, delegate, delegators, account)
           expect(config.votedChoice).toEqual({
             id: 'page.proposal_detail.delegate_voted_choice',
             values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
-            delegate: ACCOUNT_DELEGATE,
           })
         })
       })
@@ -316,12 +315,11 @@ describe('getVotingSectionConfig', () => {
             })
           })
 
-          it('voted choice shows both voted the same', () => {
+          it('voted choice shows both voted the same but does not display avatar', () => {
             const config = getVotingSectionConfig(votes, CHOICES, delegate, delegators, account)
             expect(config.votedChoice).toEqual({
               id: 'page.proposal_detail.both_voted_choice',
               values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
-              delegate: ACCOUNT_DELEGATE,
             })
           })
         })

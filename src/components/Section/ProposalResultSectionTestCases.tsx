@@ -1,13 +1,12 @@
 import { Vote } from '../../entities/Votes/types'
 
-const choices = ['yes', 'no', 'maybe']
 const DELEGATOR_1 = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98691'
 const DELEGATOR_2 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f92'
 const DELEGATOR_3 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f93'
 const NON_VOTER_DELEGATOR = '0xe58d9940a395d303e691dbe0676710d9c1401000'
 const ACCOUNT_DELEGATE = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f80'
 const RANDOM_ACCOUNT = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f65'
-const account: string = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98690'
+const ACCOUNT: string = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98690'
 
 const CHOICE_1_VOTE = {
   choice: 1,
@@ -21,41 +20,177 @@ const CHOICE_2_VOTE = {
   timestamp: 1650828044
 }
 
-const ACCOUNT_AND_DELEGATORS_VOTED = {
-  [account!]: CHOICE_1_VOTE,
+const DELEGATORS_VOTES = {
   [DELEGATOR_1]: CHOICE_1_VOTE,
   [DELEGATOR_2]: CHOICE_2_VOTE,
   [DELEGATOR_3]: CHOICE_1_VOTE,
   [RANDOM_ACCOUNT]: CHOICE_1_VOTE
 }
-const VOTES_WITH_DELEGATORS = {
-  [DELEGATOR_1]: CHOICE_1_VOTE,
-  [DELEGATOR_2]: CHOICE_2_VOTE,
-  [DELEGATOR_3]: CHOICE_1_VOTE,
-  [RANDOM_ACCOUNT]: CHOICE_1_VOTE
-}
-const ONLY_DELEGATE_VOTE = { [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
-const ACCOUNT_VOTE = { [account!]: CHOICE_1_VOTE }
-const SAME_VOTES = { [account!]: CHOICE_1_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
-const DIFFERENT_VOTES = { [account!]: CHOICE_2_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
+const DELEGATE_VOTE = { [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
+const ACCOUNT_VOTE = { [ACCOUNT]: CHOICE_1_VOTE }
+const SAME_VOTES = { [ACCOUNT]: CHOICE_1_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
+const DIFFERENT_VOTES = { [ACCOUNT]: CHOICE_2_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
 const DELEGATORS = [DELEGATOR_1, DELEGATOR_2, DELEGATOR_3, NON_VOTER_DELEGATOR]
-const votes = {} // ONLY_DELEGATE_VOTE
-const delegators: string[] = [] //DELEGATORS
-const delegate = ACCOUNT_DELEGATE
-const hasEnoughVP = true
 
 export interface TestData {
-  votes: Record<string, Vote> | null | undefined
-  delegators: string[]
-  accountDelegate: string
   caseLabel: string
+  account: string
+  accountDelegate: string | null
+  delegators: string[]
+  votes: Record<string, Vote> | null | undefined
 }
 
 export const TEST_CASES: TestData[] = [
+  // --------------------------- NO DELEGATE - NO DELEGATORS
   {
-    caseLabel: 'test name',
-    votes: votes,
+    caseLabel: 'No Vote, No Dg, No Dr',
+    votes: {},
+    delegators: [],
+    accountDelegate: null,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, No Dg, No Dr',
+    votes: ACCOUNT_VOTE,
+    delegators: [],
+    accountDelegate: null,
+    account: ACCOUNT
+  },
+  // --------------------------- WITH DELEGATE - NO DELEGATORS
+  {
+    caseLabel: 'No Vote, Dg, No Dr',
+    votes: {},
+    delegators: [],
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'No Vote, Dg Voted, No Dr',
+    votes: DELEGATE_VOTE,
+    delegators: [],
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg not Voted, No Dr',
+    votes: ACCOUNT_VOTE,
+    delegators: [],
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg Voted Same, No Dr',
+    votes: SAME_VOTES,
+    delegators: [],
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg Voted Differently, No Dr',
+    votes: DIFFERENT_VOTES,
+    delegators: [],
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  // --------------------------- NO DELEGATE - WITH DELEGATORS
+  {
+    caseLabel: 'No Vote, No Dg, Dr',
+    votes: {},
     delegators: DELEGATORS,
-    accountDelegate: ACCOUNT_DELEGATE
-  }
+    accountDelegate: null,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, No Dg, Dr',
+    votes: ACCOUNT_VOTE,
+    delegators: DELEGATORS,
+    accountDelegate: null,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'No Vote, No Dg, Dr Voted',
+    votes: DELEGATORS_VOTES,
+    delegators: DELEGATORS,
+    accountDelegate: null,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg not Voted, Dr Voted',
+    votes: {...ACCOUNT_VOTE, ...DELEGATORS_VOTES},
+    delegators: DELEGATORS,
+    accountDelegate: null,
+    account: ACCOUNT
+  },
+  // --------------------------- WITH DELEGATE - WITH DELEGATORS
+  {
+    caseLabel: 'No Vote, Dg, Dr',
+    votes: {},
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'No Vote, Dg Voted, Dr',
+    votes: DELEGATE_VOTE,
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg not Voted, Dr',
+    votes: ACCOUNT_VOTE,
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg Voted Same, Dr',
+    votes: SAME_VOTES,
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg Voted Differently, Dr',
+    votes: DIFFERENT_VOTES,
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  //---------------------------------------- WITH DELEGATORS VOTING
+  {
+    caseLabel: 'No Vote, Dg, Dr Votes',
+    votes: DELEGATORS_VOTES,
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'No Vote, Dg Voted, Dr Votes',
+    votes: {...DELEGATE_VOTE, ...DELEGATORS_VOTES},
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg not Voted, Dr Votes',
+    votes: {...ACCOUNT_VOTE, ...DELEGATORS_VOTES},
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg Voted Same, Dr Votes',
+    votes: {...SAME_VOTES, ...DELEGATORS_VOTES},
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
+  {
+    caseLabel: 'Vote, Dg Voted Differently, Dr Votes',
+    votes: {...DIFFERENT_VOTES, ...DELEGATORS_VOTES},
+    delegators: DELEGATORS,
+    accountDelegate: ACCOUNT_DELEGATE,
+    account: ACCOUNT
+  },
 ]

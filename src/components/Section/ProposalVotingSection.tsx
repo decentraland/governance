@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -35,29 +35,33 @@ const ProposalVotingSection = ({
   onChangeVote,
 }: Props) => {
   const t = useFormatMessage()
-  const [account, accountState] = useAuthContext()
+  let [account, accountState] = useAuthContext()
   const [delegations] = useDelegation(account)
+  let delegate: string | null = delegations?.delegatedTo[0]?.delegate
+  let delegators: string[] = delegations?.delegatedFrom.map((delegator) => delegator.delegator)
+
 
   const testing = true // TODO: this can all be deleted after demo, or we can use a feature flag
   const [testCaseIndex, setTestCaseIndex] = useState(0)
   const testData: TestData = TEST_CASES[testCaseIndex]
-  let delegate = delegations?.delegatedTo[0]?.delegate
-  let delegators: string[] = delegations?.delegatedFrom.map((delegator) => delegator.delegator)
-
   if (testing) {
     votes = testData.votes
     delegators = testData.delegators
+    account = testData.account
     delegate = testData.accountDelegate
   }
-
-  const { vote, delegateVote, delegationsLabel, votedChoice, showChoiceButtons } = getVotingSectionConfig(
-    votes,
-    choices,
-    delegate,
-    delegators,
-    account
+  const { vote, delegateVote, delegationsLabel, votedChoice, showChoiceButtons } = useMemo(
+    () => getVotingSectionConfig(votes, choices, delegate, delegators, account),
+    [testData]
   )
-  const { votesByChoices, totalVotes } = getPartyVotes(delegators, votes, choices)
+  const { votesByChoices, totalVotes } = useMemo(() => getPartyVotes(delegators, votes, choices), [testData])
+
+  function next() {
+    if(testCaseIndex < TEST_CASES.length - 1) setTestCaseIndex(testCaseIndex + 1)
+  }
+  function prev() {
+    if(testCaseIndex > 0) setTestCaseIndex(testCaseIndex - 1)
+  }
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">
@@ -65,11 +69,11 @@ const ProposalVotingSection = ({
         <div className={'TestCases'}>
           <span className={'TestCase__Name'}>{testData.caseLabel}</span>
           <div className={'TestCases__Buttons'}>
-            <Button basic onClick={() => setTestCaseIndex(testCaseIndex + 1)}>
-              Next
-            </Button>
-            <Button basic onClick={() => setTestCaseIndex(testCaseIndex - 1)}>
+            <Button basic onClick={prev}>
               Prev
+            </Button>
+            <Button basic onClick={next}>
+              Next
             </Button>
           </div>
         </div>
@@ -107,6 +111,7 @@ const ProposalVotingSection = ({
       <VotingSectionFooter
         vote={vote}
         delegateVote={delegateVote}
+        hasDelegators={delegators && delegators.length > 0}
         started={started}
         finished={finished}
         account={account}

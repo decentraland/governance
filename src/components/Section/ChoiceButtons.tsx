@@ -6,7 +6,7 @@ import ChoiceButton from './ChoiceButton'
 interface Props {
   choices: string[]
   vote: Vote | null
-  delegate?: string
+  delegate?: string | null
   delegateVote?: Vote | null
   votesByChoices: Record<string, number>
   totalVotes: number
@@ -28,7 +28,7 @@ export const ChoiceButtons = ({ choices, vote, delegate, delegateVote, votesByCh
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
             onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
-            delegate={delegateVotedCurrentChoice ? delegate : undefined}
+            delegate={delegateVotedCurrentChoice ? delegate! : undefined}
             voteCount={votesByChoices[currentChoiceIndex]}
             totalVotes={totalVotes}
           >
