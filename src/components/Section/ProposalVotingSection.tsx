@@ -41,7 +41,7 @@ const ProposalVotingSection = ({
   let delegators: string[] = delegations?.delegatedFrom.map((delegator) => delegator.delegator)
 
 
-  const testing = true // TODO: this can all be deleted after demo, or we can use a feature flag
+  const testing = false // TODO: this can all be deleted after demo, or we can use a feature flag
   const [testCaseIndex, setTestCaseIndex] = useState(0)
   const testData: TestData = TEST_CASES[testCaseIndex]
   if (testing) {

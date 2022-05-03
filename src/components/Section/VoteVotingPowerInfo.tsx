@@ -2,7 +2,7 @@ import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import React from 'react'
 import { Vote } from '../../entities/Votes/types'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+import useVotingPowerBalance, { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../hooks/useVotingPowerBalance'
 import './DelegationsLabel.css'
 import './VotingSectionFooter.css'
 
@@ -27,7 +27,7 @@ const VoteVotingPowerInfo = ({ vote, account }: VotingSectionFooterProps) => {
         (vote
           ? t('page.proposal_detail.voted_with', { vp: vpLabel(votingPower) })
           : t('page.proposal_detail.voting_with', { vp: vpLabel(votingPower) }))}
-      {!hasEnoughVP && t('page.proposal_detail.vp_needed', { vp: vpLabel(0) })}
+      {!hasEnoughVP && t('page.proposal_detail.vp_needed', { vp: vpLabel(MINIMUM_VP_REQUIRED_TO_VOTE) })}
     </>
   )
 }
