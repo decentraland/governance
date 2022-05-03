@@ -1,6 +1,8 @@
-import { SnapshotVote } from "../../api/Snapshot"
-import { VOTES_1, VOTES_2, VOTES_3, VOTES_4, VOTES_5 } from "./testData"
-import { calculateMatch, MatchResult } from "./utils"
+import { SnapshotVote } from '../../api/Snapshot'
+
+import { VOTES_1, VOTES_2, VOTES_3, VOTES_4, VOTES_5 } from './testData'
+import { MatchResult, calculateMatch } from './utils'
+
 
 let userVotes: SnapshotVote[]
 let candidateVotes: SnapshotVote[]
