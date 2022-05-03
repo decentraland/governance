@@ -1,6 +1,9 @@
 import React from 'react'
+
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { isProposalStatus, ProposalStatus } from '../../entities/Proposal/types'
+
+import { ProposalStatus, isProposalStatus } from '../../entities/Proposal/types'
+
 import './StatusLabel.css'
 
 const check = require('../../images/icons/check.svg').default

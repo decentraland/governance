@@ -17,7 +17,7 @@ import {
   ProposalCommentsInDiscourse
 } from '../entities/Proposal/types';
 import { SubscriptionAttributes } from '../entities/Subscription/types';
-import { Vote } from '../entities/Votes/types';
+import { Vote, SnapshotVoteWithProposal } from '../entities/Votes/types';
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
@@ -139,7 +139,7 @@ export class Governance extends API {
   async createProposalGrant(proposal: NewProposalGrant) {
     return this.createProposal(`/proposals/grant`, proposal)
   }
-  
+
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {
     return this.createProposal(`/proposals/linked-wearables`, proposal)
   }
@@ -181,6 +181,11 @@ export class Governance extends API {
     }, new URLSearchParams)
 
     const result = await this.fetch<ApiResponse<Record<string, Record<string, Vote>>>>(`/votes?${params.toString()}`)
+    return result.data
+  }
+
+  async getAddressVotes(address: string) {
+    const result = await this.fetch<ApiResponse<SnapshotVoteWithProposal[]>>(`/votes/${address}`)
     return result.data
   }
 

@@ -115,6 +115,7 @@
 
 .Initiative__Vote {
   max-width: 65px;
+  margin: 0 5px;
   font-weight: 400;
   font-size: 10px;
   line-height: 24px;
@@ -132,4 +133,10 @@
 
 .Initiative__PopupVote {
   padding: 10px;
+}
+
+.Initiative__ProposalDetails {
+  display :flex;
+  flex-direction: row;
+  align-items: center;
 }
