@@ -1,9 +1,54 @@
-import { Wallet } from '@ethersproject/wallet';
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env';
+import { Wallet } from '@ethersproject/wallet'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+import { intersection } from 'lodash'
+
+export interface SnapshotVote {
+  "id": string,
+  "voter": string,
+  "created": number,
+  "choice": number,
+  "proposal": {
+    "id": string,
+    "title": string,
+    "choices": string[]
+  }
+}
+
+export interface MatchResult {
+  percentage: number,
+  matches: { proposal_id: string, sameVote: boolean }[]
+}
 
 const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
 export const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
 
 export async function signMessage(wallet: Wallet, msg: string) {
   return wallet.signMessage(Buffer.from(msg, 'utf8'));
+}
+
+export function calculateMatch(votes1: SnapshotVote[], votes2: SnapshotVote[]): MatchResult {
+
+  const match: MatchResult = { percentage: 0, matches: [] }
+  const commonProposalIds = intersection(votes1.map(vote => vote.proposal.id), votes2.map(vote => vote.proposal.id))
+
+  if (commonProposalIds.length !== 0) {
+
+    let matchCounter = 0
+    for (const proposalId of commonProposalIds) {
+      const vote1 = votes1.find(v => v.proposal.id === proposalId)!
+      const vote2 = votes2.find(v => v.proposal.id === proposalId)!
+
+      if (vote1.choice === vote2.choice) {
+        matchCounter++
+        match.matches.push({ proposal_id: proposalId, sameVote: true })
+      }
+      else {
+        match.matches.push({ proposal_id: proposalId, sameVote: false })
+      }
+    }
+
+    match.percentage = Math.round(matchCounter / commonProposalIds.length * 100)
+  }
+
+  return match
 }
