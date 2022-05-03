@@ -177,7 +177,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
             <span className="Initiatives__Title">{t('modal.vp_delegation.details.stats_initiatives_title')}</span>
             <div className="Initiatives__List">
               {votes.map((item) => (
-                <div className="Initiative">
+                <div key={item.id} className="Initiative">
                   <h2 className="Initiative__Title">{item.proposal.title}</h2>
                   <Popup
                     className="Initiative__PopupVote"
