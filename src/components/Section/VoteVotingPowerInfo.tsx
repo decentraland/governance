@@ -1,8 +1,11 @@
+import React from 'react'
+
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import React from 'react'
+
 import { Vote } from '../../entities/Votes/types'
 import useVotingPowerBalance, { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../hooks/useVotingPowerBalance'
+
 import './DelegationsLabel.css'
 import './VotingSectionFooter.css'
 

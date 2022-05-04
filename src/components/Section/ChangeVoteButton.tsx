@@ -1,7 +1,9 @@
+import React, { useCallback } from 'react'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import React, { useCallback } from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+
 import { Vote } from '../../entities/Votes/types'
 
 interface ChangeVoteButtonProps {

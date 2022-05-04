@@ -1,8 +1,10 @@
 import isUUID from 'validator/lib/isUUID'
+
 import { SnapshotVote } from '../../api/Snapshot'
+
 import { DelegationsLabelBuilder } from './DelegationsLabelBuilder'
-import { ChoiceColor, Vote } from './types'
 import { VotedChoiceBuilder } from './VotedChoiceBuilder'
+import { ChoiceColor, Vote } from './types'
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -224,7 +226,7 @@ export function getVotingSectionConfig(
     votedChoice: null,
   }
 
-  if (!account || !hasChoices || !votes) return configuration
+  if (!account || !hasChoices) return configuration
 
   const votedChoice = new VotedChoiceBuilder(vote, delegateVote, choices, votes, account, delegate, delegators).build()
   const delegationsLabel = new DelegationsLabelBuilder(
@@ -239,8 +241,8 @@ export function getVotingSectionConfig(
 
   if (votedChoice) configuration.votedChoice = votedChoice
   if (delegationsLabel) configuration.delegationsLabel = delegationsLabel
-  if (!vote && (!delegate || (!delegateVote || hasDelegators))) {
-      configuration.showChoiceButtons = true
+  if (!vote && (!delegate || !delegateVote || hasDelegators)) {
+    configuration.showChoiceButtons = true
   }
   return configuration
 }

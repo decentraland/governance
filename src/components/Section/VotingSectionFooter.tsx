@@ -1,13 +1,16 @@
+import React from 'react'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import React from 'react'
+
 import { Vote } from '../../entities/Votes/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import locations from '../../modules/locations'
+
 import { ChangeVoteButton } from './ChangeVoteButton'
 import './DelegationsLabel.css'
-import './VotingSectionFooter.css'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'
+import './VotingSectionFooter.css'
 
 interface VotingSectionFooterProps {
   vote: Vote | null
@@ -37,21 +40,23 @@ const VotingSectionFooter = ({
   return (
     <div className={'VotingSectionFooter'}>
       <div className={'VotingSectionFooter__VP'}>
-        {showVotingPowerInfo && <VoteVotingPowerInfo vote={vote} account={account}/>}
+        {showVotingPowerInfo && <VoteVotingPowerInfo vote={vote} account={account} />}
       </div>
       <div className={'VotingSectionFooter__Actions'}>
         {showVotingPowerInfo && !hasEnoughToVote && (
           <Link href={locations.balance()}>{t('page.proposal_detail.get_vp')}</Link>
         )}
-        {hasEnoughToVote && <ChangeVoteButton
-          vote={vote}
-          delegateVote={delegateVote}
-          hasDelegators={hasDelegators}
-          started={started}
-          finished={finished}
-          changingVote={changingVote}
-          onChangeVote={onChangeVote}
-        />}
+        {hasEnoughToVote && (
+          <ChangeVoteButton
+            vote={vote}
+            delegateVote={delegateVote}
+            hasDelegators={hasDelegators}
+            started={started}
+            finished={finished}
+            changingVote={changingVote}
+            onChangeVote={onChangeVote}
+          />
+        )}
       </div>
     </div>
   )

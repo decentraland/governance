@@ -3,7 +3,7 @@ import { VotedChoice } from './utils'
 
 export class VotedChoiceBuilder {
   private readonly choices: string[] = []
-  private readonly votes: Record<string, Vote> | null
+  private readonly votes: Record<string, Vote> | null | undefined
   private readonly account: string
   private readonly delegators: string[] | null
   private readonly vote: Vote | null
@@ -14,7 +14,7 @@ export class VotedChoiceBuilder {
     vote: Vote | null,
     delegateVote: Vote | null,
     choices: string[],
-    votes: Record<string, Vote> | null,
+    votes: Record<string, Vote> | null | undefined,
     account: string,
     delegate: string | null,
     delegators: string[] | null
@@ -33,7 +33,7 @@ export class VotedChoiceBuilder {
     const hasDelegators = !!this.delegators && this.delegators.length > 0
     const delegateVoted = this.delegate && this.delegateVote
 
-    if (!this.vote && !this.delegateVote || (!this.vote && hasDelegators)) return null
+    if (!this.votes || !this.vote && !this.delegateVote || (!this.vote && hasDelegators) ) return null
 
     if (this.vote) {
       if (delegateVoted) {
@@ -71,7 +71,7 @@ export class VotedChoiceBuilder {
       const totalDelegators = this.delegators!.length
       votedChoice = {
         ...votedChoice,
-        voteCount: this.votedChoiceVoteCount(this.choices, this.votes, this.account, this.delegators!),
+        voteCount: this.votedChoiceVoteCount(this.choices, this.votes!, this.account, this.delegators!),
         totalVotes: totalDelegators,
       }
     }

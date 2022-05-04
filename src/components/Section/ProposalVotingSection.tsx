@@ -1,17 +1,20 @@
-import React, { useMemo, useState } from 'react'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import React, { useMemo } from 'react'
+
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import { Vote } from '../../entities/Votes/types'
 import { getPartyVotes, getVotingSectionConfig } from '../../entities/Votes/utils'
 import useDelegation from '../../hooks/useDelegation'
+import useVotingSectionTestData, { TestData } from '../../hooks/useVotingSectionTestData'
+
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
-import { TEST_CASES, TestData } from './ProposalResultSectionTestCases'
 import VotedChoiceButton from './VotedChoiceButton'
 import VotingSectionFooter from './VotingSectionFooter'
-import './TestCases.css'
+import VotingSectionTester from './VotingSectionTester'
 
 interface Props {
   votes?: Record<string, Vote> | null
@@ -40,44 +43,24 @@ const ProposalVotingSection = ({
   let delegate: string | null = delegations?.delegatedTo[0]?.delegate
   let delegators: string[] = delegations?.delegatedFrom.map((delegator) => delegator.delegator)
 
-
-  const testing = false // TODO: this can all be deleted after demo, or we can use a feature flag
-  const [testCaseIndex, setTestCaseIndex] = useState(0)
-  const testData: TestData = TEST_CASES[testCaseIndex]
-  if (testing) {
-    votes = testData.votes
-    delegators = testData.delegators
+  const testData: TestData | null = useVotingSectionTestData()
+  if (testData) {
     account = testData.account
     delegate = testData.accountDelegate
+    delegators = testData.delegators
+    votes = testData.votes
+    choices = testData.choices
   }
+
   const { vote, delegateVote, delegationsLabel, votedChoice, showChoiceButtons } = useMemo(
     () => getVotingSectionConfig(votes, choices, delegate, delegators, account),
     [testData]
   )
   const { votesByChoices, totalVotes } = useMemo(() => getPartyVotes(delegators, votes, choices), [testData])
 
-  function next() {
-    if(testCaseIndex < TEST_CASES.length - 1) setTestCaseIndex(testCaseIndex + 1)
-  }
-  function prev() {
-    if(testCaseIndex > 0) setTestCaseIndex(testCaseIndex - 1)
-  }
-
   return (
     <div className="DetailsSection__Content OnlyDesktop">
-      {testing && (
-        <div className={'TestCases'}>
-          <span className={'TestCase__Name'}>{testData.caseLabel}</span>
-          <div className={'TestCases__Buttons'}>
-            <Button basic onClick={prev}>
-              Prev
-            </Button>
-            <Button basic onClick={next}>
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      {testData && <VotingSectionTester testData={testData} />}
       <Loader active={!loading && accountState.loading} />
 
       {!account && (

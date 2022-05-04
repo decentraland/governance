@@ -52,6 +52,7 @@
       "choices_insufficient": "Insufficient options",
       "choices_empty": "Some option is empty",
       "choices_too_short": "Some option is to short",
+      "choices_too_long": "Some option is to long",
       "submission_vp_not_met": "This action requires at least 100 VP."
     },
     "draft": {
@@ -408,8 +409,8 @@
       "delegate_voted": "**Your delegate** voted {date}",
       "delegate_voted_differently": "**Your delegate** voted differently",
       "delegators_voted": "**{votes}/{total}** of your party have voted",
-      "delegators_represented": "You're representing **{total} {total, plural, one {individual} other {individuals}}**",
-      "user_voted_for_delegators": "You voted on behalf of **{amountRepresented}** {amountRepresented, plural, one {individual} other {individuals}}",
+      "delegators_represented": "You're representing **{total} {total, plural, one {account} other {accounts}}**",
+      "user_voted_for_delegators": "You voted on behalf of **{amountRepresented}** {amountRepresented, plural, one {account} other {accounts}}",
       "result_label": "Current result",
       "vote_change": "Change Vote",
       "vote_overrule": "Overrule Vote",

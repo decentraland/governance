@@ -108,7 +108,7 @@ describe('getVotingSectionConfig', () => {
             expect(config.delegateVote).toBe(null)
           })
 
-          it('delegations label should show how many individuals you are representing', () => {
+          it('delegations label should show how many accounts you are representing', () => {
             const config = getVotingSectionConfig(votes, CHOICES, delegate, delegators, account)
             expect(config.delegationsLabel).toEqual({
               delegatorsLabel: {

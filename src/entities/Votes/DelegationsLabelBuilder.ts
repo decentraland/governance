@@ -4,7 +4,7 @@ import { Vote } from './types'
 import { DelegationsLabelProps } from './utils'
 
 export class DelegationsLabelBuilder {
-  private readonly votes: Record<string, Vote> | null
+  private readonly votes: Record<string, Vote> | null | undefined
   private readonly account: string
   private readonly delegators: string[] | null
   private readonly vote: Vote | null
@@ -15,7 +15,7 @@ export class DelegationsLabelBuilder {
     vote: Vote | null,
     delegateVote: Vote | null,
     choices: string[],
-    votes: Record<string, Vote> | null,
+    votes: Record<string, Vote> | null | undefined,
     account: string,
     delegate: string | null,
     delegators: string[] | null

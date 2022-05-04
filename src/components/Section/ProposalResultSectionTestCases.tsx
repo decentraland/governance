@@ -1,4 +1,4 @@
-import { Vote } from '../../entities/Votes/types'
+import { TestData } from '../../hooks/useVotingSectionTestData'
 
 const DELEGATOR_1 = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98691'
 const DELEGATOR_2 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f92'
@@ -6,10 +6,10 @@ const DELEGATOR_3 = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f93'
 const NON_VOTER_DELEGATOR = '0xe58d9940a395d303e691dbe0676710d9c1401000'
 const ACCOUNT_DELEGATE = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f80'
 const RANDOM_ACCOUNT = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f65'
-const ACCOUNT: string = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98690'
+const ACCOUNT: string = '0xcD15d83f42179b9A5B515eea0975f554444a9646' // use prod snapshot space
 
-const CHOICE_1_VOTE = {
-  choice: 1,
+const CHOICE_3_VOTE = {
+  choice: 3,
   vp: 2000,
   timestamp: 1650828044
 }
@@ -21,26 +21,20 @@ const CHOICE_2_VOTE = {
 }
 
 const DELEGATORS_VOTES = {
-  [DELEGATOR_1]: CHOICE_1_VOTE,
+  [DELEGATOR_1]: CHOICE_3_VOTE,
   [DELEGATOR_2]: CHOICE_2_VOTE,
-  [DELEGATOR_3]: CHOICE_1_VOTE,
-  [RANDOM_ACCOUNT]: CHOICE_1_VOTE
+  [DELEGATOR_3]: CHOICE_3_VOTE,
+  [RANDOM_ACCOUNT]: CHOICE_3_VOTE
 }
-const DELEGATE_VOTE = { [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
-const ACCOUNT_VOTE = { [ACCOUNT]: CHOICE_1_VOTE }
-const SAME_VOTES = { [ACCOUNT]: CHOICE_1_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
-const DIFFERENT_VOTES = { [ACCOUNT]: CHOICE_2_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
+const DELEGATE_VOTE = { [ACCOUNT_DELEGATE]: CHOICE_3_VOTE }
+const ACCOUNT_VOTE = { [ACCOUNT]: CHOICE_3_VOTE }
+const SAME_VOTES = { [ACCOUNT]: CHOICE_3_VOTE, [ACCOUNT_DELEGATE]: CHOICE_3_VOTE }
+const DIFFERENT_VOTES = { [ACCOUNT]: CHOICE_2_VOTE, [ACCOUNT_DELEGATE]: CHOICE_3_VOTE }
 const DELEGATORS = [DELEGATOR_1, DELEGATOR_2, DELEGATOR_3, NON_VOTER_DELEGATOR]
 
-export interface TestData {
-  caseLabel: string
-  account: string
-  accountDelegate: string | null
-  delegators: string[]
-  votes: Record<string, Vote> | null | undefined
-}
+export const TEST_CHOICES:string[] = ['Yes, we need a VR client for Decentraland', 'Refund the DAO for the costs associated with this Grant', 'This option has 100chars 00000000000000 0000000000000 0000000000000000000000 000000 0000000000000 00']
 
-export const TEST_CASES: TestData[] = [
+export const TEST_CASES: Omit<TestData, 'choices'>[] = [
   // --------------------------- NO DELEGATE - NO DELEGATORS
   {
     caseLabel: 'No Vote, No Dg, No Dr',

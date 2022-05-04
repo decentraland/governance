@@ -1,4 +1,4 @@
-.TestCases {
+.VotingSectionTester {
 	display: flex;
 	width: 100%;
 	padding-bottom: 16px;
@@ -6,13 +6,15 @@
 	flex-direction: column;
 }
 
-.TestCases .button.ui.basic.button {
-	border: 1px solid rgba(115,110,125,.32);
+.VotingSectionTester .button.ui.basic.button {
+	border: 1px solid rgba(115, 110, 125, .32);
 	background: #00800017 !important;
 	border-radius: 25px;
+	margin-right: 2px;
+	margin-left: 2px;
 }
 
-.TestCases__Buttons{
+.VotingSectionTester__Buttons {
 	display: inline-flex;
 	width: 100%;
 }

@@ -1,7 +1,10 @@
+import React from 'react'
+
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import React from 'react'
+
 import { DelegationsLabelProps } from '../../entities/Votes/utils'
+
 import './DelegationsLabel.css'
 
 const DelegationsLabel = ({ delegateLabel, delegatorsLabel }: DelegationsLabelProps) => {
