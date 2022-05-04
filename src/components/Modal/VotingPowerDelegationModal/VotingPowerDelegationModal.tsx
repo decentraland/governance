@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -24,7 +24,7 @@ export type Candidate = Delegate & {
   most_important_issue: string
 }
 
-function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModalProps) {
+function VotingPowerDelegationModal({ vp, onClose, ...props }: VotingPowerDelegationModalProps) {
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const delegates = useDelegatesInfo(Candidates.map((delegate) => delegate.address))
 
@@ -33,8 +33,13 @@ function VotingPowerDelegationModal({ vp, ...props }: VotingPowerDelegationModal
     setSelectedCandidate({ ...delegate, ...candidateInfo! })
   }
 
+  const handleClose = useCallback(() => {
+    onClose()
+    setSelectedCandidate(null)
+  }, [onClose])
+
   return (
-    <Modal {...props} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
+    <Modal {...props} onClose={handleClose} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
       {!selectedCandidate && (
         <VotingPowerDelegationList delegates={delegates} vp={vp} onDelegateClick={handleOnDelegateClick} />
       )}

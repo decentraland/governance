@@ -51,8 +51,6 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
   const [isExpanded, setIsExpanded] = useState(false)
   const [showFadeout, setShowFadeout] = useState(true)
 
-  console.log('v', votes)
-
   useEffect(() => {
     if (!isExpanded) {
       setTimeout(() => {
