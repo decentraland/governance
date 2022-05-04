@@ -4,14 +4,14 @@ import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import { SnapshotVoteWithProposal } from '../../../entities/Votes/types'
+import { VotedProposal } from '../../../entities/Votes/types'
 import locations from '../../../modules/locations'
 import CategoryLabel from '../../Category/CategoryLabel'
 import StatusLabel from '../../Status/StatusLabel'
 
 import './VotedInitiative.css'
 
-const VotedInitiative = ({ vote }: { vote: SnapshotVoteWithProposal }) => {
+const VotedInitiative = ({ vote }: { vote: VotedProposal }) => {
   const t = useFormatMessage()
   const { choice, proposal } = vote
 

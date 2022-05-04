@@ -15,7 +15,7 @@ export type Vote = {
   vp: number
 }
 
-export type SnapshotVoteWithProposal = SnapshotVote & {
+export type VotedProposal = SnapshotVote & {
   proposal: {
     proposal_id: string
     type: ProposalType
