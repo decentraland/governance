@@ -10,12 +10,10 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { Snapshot } from '../../../api/Snapshot'
-import { SNAPSHOT_SPACE } from '../../../entities/Snapshot/constants'
+import { Governance } from '../../../api/Governance'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import useDelegation from '../../../hooks/useDelegation'
@@ -28,6 +26,7 @@ import Username from '../../User/Username'
 import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import CandidateDetails from './CandidateDetails'
+import VotedInitiative from './VotedInitiative'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
 
@@ -48,7 +47,7 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
   const [wMana] = useBalanceOf(wManaContract, address, 'ether')
   const [land] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
   const [ens] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [votes] = useAsyncMemo(async () => Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address), [])
+  const [votes] = useAsyncMemo(async () => Governance.get().getAddressVotes(address), [])
   const [isExpanded, setIsExpanded] = useState(false)
   const [showFadeout, setShowFadeout] = useState(true)
 
@@ -173,24 +172,13 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
           )}
         </Grid>
         {votes && votes.length > 0 && (
-          <div className="Initiatives">
-            <span className="Initiatives__Title">{t('modal.vp_delegation.details.stats_initiatives_title')}</span>
-            <div className="Initiatives__List">
+          <div className="VotingPowerDelegationDetail__Initiatives">
+            <span className="VotingPowerDelegationDetail__InitiativesTitle">
+              {t('modal.vp_delegation.details.stats_initiatives_title')}
+            </span>
+            <div className="VotingPowerDelegationDetail__InitiativesList">
               {votes.map((item) => (
-                <div key={item.id} className="Initiative">
-                  <h2 className="Initiative__Title">{item.proposal.title}</h2>
-                  <Popup
-                    className="Initiative__PopupVote"
-                    content={<span>{item.proposal.choices[item.choice - 1]}</span>}
-                    trigger={
-                      <div className="Initiative__Vote">
-                        {t('modal.vp_delegation.details.stats_initiatives_voted')}
-                        <span className="Initiative__Vote--highlight">{item.proposal.choices[item.choice - 1]}</span>
-                      </div>
-                    }
-                    on="hover"
-                  />
-                </div>
+                <VotedInitiative key={item.id} vote={item} />
               ))}
             </div>
           </div>

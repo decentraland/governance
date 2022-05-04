@@ -93,6 +93,7 @@ export type SnapshotVote = {
   created: number
   choice: number
   proposal: {
+    id: string
     title: string
     choices: string[]
   }
@@ -242,7 +243,7 @@ export class Snapshot extends API {
             voter: $address
           },
           orderBy: "created",
-          orderDirection: asc
+          orderDirection: desc
         ) {
           id
           voter
