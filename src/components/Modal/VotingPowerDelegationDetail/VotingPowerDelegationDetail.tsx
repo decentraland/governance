@@ -10,7 +10,6 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
@@ -19,9 +18,7 @@ import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import useDelegation from '../../../hooks/useDelegation'
 import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
-import CategoryLabel from '../../Category/CategoryLabel'
 import ChevronLeft from '../../Icon/ChevronLeft'
-import StatusLabel from '../../Status/StatusLabel'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
@@ -29,6 +26,7 @@ import Username from '../../User/Username'
 import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import CandidateDetails from './CandidateDetails'
+import VotedInitiative from './VotedInitiative'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
 
@@ -176,28 +174,13 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
           )}
         </Grid>
         {votes && votes.length > 0 && (
-          <div className="Initiatives">
-            <span className="Initiatives__Title">{t('modal.vp_delegation.details.stats_initiatives_title')}</span>
-            <div className="Initiatives__List">
+          <div className="VotingPowerDelegationDetail__Initiatives">
+            <span className="VotingPowerDelegationDetail__InitiativesTitle">
+              {t('modal.vp_delegation.details.stats_initiatives_title')}
+            </span>
+            <div className="VotingPowerDelegationDetail__InitiativesList">
               {votes.map((item) => (
-                <div key={item.id} className="Initiative">
-                  <h2 className="Initiative__Title">{item.proposal.title}</h2>
-                  <div className="Initiative__ProposalDetails">
-                    <Popup
-                      className="Initiative__PopupVote"
-                      content={<span>{item.proposal.choices[item.choice - 1]}</span>}
-                      trigger={
-                        <div className="Initiative__Vote">
-                          {t('modal.vp_delegation.details.stats_initiatives_voted')}
-                          <span className="Initiative__Vote--highlight">{item.proposal.choices[item.choice - 1]}</span>
-                        </div>
-                      }
-                      on="hover"
-                    />
-                    {item.proposal.type && <CategoryLabel type={item.proposal.type} />}
-                    {item.proposal.status && <StatusLabel status={item.proposal.status} />}
-                  </div>
-                </div>
+                <VotedInitiative key={item.id} vote={item} />
               ))}
             </div>
           </div>

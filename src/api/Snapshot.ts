@@ -243,7 +243,7 @@ export class Snapshot extends API {
             voter: $address
           },
           orderBy: "created",
-          orderDirection: asc
+          orderDirection: desc
         ) {
           id
           voter
