@@ -13,7 +13,6 @@
 }
 
 .VotedInitiative__Title {
-  max-width: 500px;
   font-size: 15px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -31,6 +30,13 @@
   text-transform: uppercase;
   color: #000000;
   opacity: 0.6;
+}
+
+.VotedInitiative__TitleContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
 }
 
 .VotedInitiative__Title, 
