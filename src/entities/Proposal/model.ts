@@ -43,7 +43,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const sql = SQL`
       INSERT INTO ${table(this)} ${columns(keys)}
-      VALUES ${objectValues(keys, [ proposal ])}
+      VALUES ${objectValues(keys, [proposal])}
     `
 
     return this.query(sql) as any
@@ -73,6 +73,16 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async countAll() {
     return this.count<ProposalAttributes>({ deleted: false })
+  }
+
+  static async findFromSnapshotIds(ids: string[]): Promise<ProposalAttributes[]> {
+    const query = SQL`
+      SELECT *
+      FROM ${table(ProposalModel)}
+      WHERE "snapshot_id" IN (${join(ids.map(id => SQL`${id}`), SQL`, `)})`
+
+    const results = await this.query(query)
+    return results.map(item => ProposalModel.parse(item))
   }
 
   static async getSitemapProposals(page: number): Promise<{ id: string }[]> {
@@ -216,7 +226,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  private static parseTimeframe(timeFrame?:string|null) {
+  private static parseTimeframe(timeFrame?: string | null) {
     let date = Time.utc()
     switch (timeFrame) {
       case '3months':

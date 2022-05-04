@@ -93,6 +93,7 @@ export type SnapshotVote = {
   created: number
   choice: number
   proposal: {
+    id: string
     title: string
     choices: string[]
   }
