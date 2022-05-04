@@ -10,13 +10,22 @@ import CategoryLabel from '../../Category/CategoryLabel'
 import StatusLabel from '../../Status/StatusLabel'
 
 import './VotedInitiative.css'
+import QuestionCircle from '../../Icon/QuestionCircle'
+import Check from '../../Icon/Check'
+import Cancel from '../../Icon/Cancel'
 
-const VotedInitiative = ({ vote }: { vote: VotedProposal }) => {
+interface Props {
+  vote: VotedProposal
+  voteMatch?: boolean
+}
+
+const VotedInitiative = ({ vote, voteMatch }: Props) => {
   const t = useFormatMessage()
   const { choice, proposal } = vote
 
   return (
     <Link className="VotedInitiative" href={locations.proposal(proposal.proposal_id)} target="_blank">
+      {voteMatch === undefined ? <QuestionCircle size="16" /> : voteMatch ? <Check size="16" /> : <Cancel size="16" />}
       <Popup
         className="VotedInitiative__PopupVote"
         content={<span>{proposal.title}</span>}

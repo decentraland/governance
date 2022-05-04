@@ -1,26 +1,11 @@
-import { Wallet } from '@ethersproject/wallet'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
-import { intersection } from 'lodash'
-
-export interface SnapshotVote {
-  "id": string,
-  "voter": string,
-  "created": number,
-  "choice": number,
-  "proposal": {
-    "id": string,
-    "title": string,
-    "choices": string[]
-  }
-}
+import { Wallet } from '@ethersproject/wallet';
+import { intersection } from 'lodash';
+import { SnapshotVote } from '../../api/Snapshot';
 
 export interface MatchResult {
   percentage: number,
   matches: { proposal_id: string, sameVote: boolean }[]
 }
-
-const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
-export const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
 
 export async function signMessage(wallet: Wallet, msg: string) {
   return wallet.signMessage(Buffer.from(msg, 'utf8'));

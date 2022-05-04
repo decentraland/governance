@@ -1,4 +1,4 @@
-import { SnapshotVote } from "./utils"
+import { SnapshotVote } from "../../api/Snapshot"
 
 export const VOTES_1: SnapshotVote[] = [
   {

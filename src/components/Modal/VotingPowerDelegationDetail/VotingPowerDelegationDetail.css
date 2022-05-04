@@ -71,6 +71,10 @@
   color: #16141a;
 }
 
+.VotingPowerDelegationDetail__StatsValue--green {
+  color: var(--background-happy-green);
+}
+
 .VotingPowerDelegationDetail__Initiatives {
   margin-top: 25px;
 }
