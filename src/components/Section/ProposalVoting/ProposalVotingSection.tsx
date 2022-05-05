@@ -5,16 +5,16 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { Vote } from '../../entities/Votes/types'
-import { getPartyVotes, getVotingSectionConfig } from '../../entities/Votes/utils'
-import useDelegation from '../../hooks/useDelegation'
-import useVotingSectionTestData, { TestData } from '../../hooks/useVotingSectionTestData'
+import { Vote } from '../../../entities/Votes/types'
+import useDelegation from '../../../hooks/useDelegation'
+import useVotingSectionTestData, { TestData } from '../../../hooks/useVotingSectionTestData'
+import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
+import VotingSectionTester from '../VotingSectionTester'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
 import VotedChoiceButton from './VotedChoiceButton'
 import VotingSectionFooter from './VotingSectionFooter'
-import VotingSectionTester from './VotingSectionTester'
 
 interface Props {
   votes?: Record<string, Vote> | null

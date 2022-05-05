@@ -1,6 +1,6 @@
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import React from 'react'
-import { Vote } from '../../entities/Votes/types'
+import { Vote } from '../../../entities/Votes/types'
 import ChoiceButton from './ChoiceButton'
 
 interface Props {

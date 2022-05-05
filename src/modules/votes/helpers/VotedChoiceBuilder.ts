@@ -1,5 +1,5 @@
-import { Vote } from './types'
-import { VotedChoice } from './utils'
+import { VotedChoice } from '../../../components/Section/ProposalVoting/VotedChoiceButton'
+import { Vote } from '../../../entities/Votes/types'
 
 export class VotedChoiceBuilder {
   private readonly choices: string[] = []

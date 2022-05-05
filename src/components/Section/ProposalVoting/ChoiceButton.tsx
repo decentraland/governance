@@ -3,11 +3,11 @@ import React from 'react'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button, ButtonProps } from 'decentraland-ui/dist/components/Button/Button'
 
-import { ChoiceColor } from '../../entities/Votes/types'
-import Username from '../User/Username'
+import { ChoiceColor } from '../../../entities/Votes/types'
+import Username from '../../User/Username'
 
 import './ChoiceButton.css'
-import TextWithTooltip from './TextWithTooltip'
+import TextWithTooltip from '../TextWithTooltip'
 
 export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   voted?: boolean

@@ -3,9 +3,9 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
-import { Vote } from '../../entities/Votes/types'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
-import locations from '../../modules/locations'
+import { Vote } from '../../../entities/Votes/types'
+import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import locations from '../../../modules/locations'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
 import './DelegationsLabel.css'
