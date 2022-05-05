@@ -55,7 +55,11 @@
 }
 
 .VotedInitiative__ProposalDetails {
-  display :flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.VotedInitiative__ChoiceTitle:first-letter {
+  text-transform: uppercase;
 }
