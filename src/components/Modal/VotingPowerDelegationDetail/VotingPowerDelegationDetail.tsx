@@ -130,7 +130,9 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
             <Grid.Row>
               <div className="VotingPowerDelegationDetail__Loading">
                 <Loader size="big" />
-                <span className="VotingPowerDelegationDetail__LoaderText">Compiling profile...</span>
+                <span className="VotingPowerDelegationDetail__LoaderText">
+                  {t('modal.vp_delegation.details.stats_loading')}
+                </span>
               </div>
             </Grid.Row>
           </Grid>
