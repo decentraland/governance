@@ -11,6 +11,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../../api/Governance'
@@ -32,6 +33,7 @@ import CandidateDetails from './CandidateDetails'
 import VotedInitiative from './VotedInitiative'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
+import Info from '../../Icon/Info'
 
 type VotingPowerDelegationDetailProps = {
   userVotes: SnapshotVote[] | null
@@ -73,7 +75,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
   }, [userVotes, candidateVotes])
 
   const mana = mainnetMana + maticMana + (wMana || 0)
-  const totalVotingPower = votingPower - delegatedVotingPower
+  const ownVotingPower = votingPower - delegatedVotingPower
 
   return (
     <>
@@ -122,7 +124,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
           <Grid.Row>
             <Grid.Column>
               <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
-                <VotingPower value={votingPower} size="large" />
+                <VotingPower value={ownVotingPower} size="large" />
               </Stats>
             </Grid.Column>
             <Grid.Column>
@@ -132,7 +134,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
             </Grid.Column>
             <Grid.Column>
               <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
-                <VotingPower value={totalVotingPower} size="large" />
+                <VotingPower value={votingPower} size="large" />
               </Stats>
             </Grid.Column>
           </Grid.Row>
@@ -169,7 +171,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
                 <Grid.Column>
                   <Stats title={t('modal.vp_delegation.details.stats_active_since')}>
                     <div className="VotingPowerDelegationDetail__StatsValue">
-                      {Time.unix(candidateVotes[0].created).format('MMMM, YYYY')}
+                      {Time.unix(candidateVotes[candidateVotes.length - 1].created).format('MMMM, YYYY')}
                     </div>
                   </Stats>
                 </Grid.Column>
@@ -182,11 +184,19 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
               {matchingVotes && (
                 <Grid.Column>
                   <Stats title={t('modal.vp_delegation.details.stats_match')}>
+                    <Popup
+                      content={<span>{t('modal.vp_delegation.details.stats_match_helper')}</span>}
+                      position="right center"
+                      trigger={
+                        <div className="VotingPowerDelegationDetail__MatchInfo">
+                          <Info width="14" height="14" />
+                        </div>
+                      }
+                      on="hover"
+                    />
                     <div
-                      className={TokenList.join([
-                        'VotingPowerDelegationDetail__StatsValue',
-                        'VotingPowerDelegationDetail__StatsValue--green',
-                      ])}
+                      className="VotingPowerDelegationDetail__StatsValue"
+                      style={{ color: `rgb(0, ${Math.round((200 * matchingVotes.percentage) / 100)}, 0)` }}
                     >
                       {matchingVotes.percentage}%
                     </div>
@@ -196,14 +206,14 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
             </Grid.Row>
           )}
         </Grid>
-        {matchingVotes && candidateVotes && candidateVotes.length > 0 && (
+        {candidateVotes && candidateVotes.length > 0 && (
           <div className="VotingPowerDelegationDetail__Initiatives">
             <span className="VotingPowerDelegationDetail__InitiativesTitle">
               {t('modal.vp_delegation.details.stats_initiatives_title')}
             </span>
             <div className="VotingPowerDelegationDetail__InitiativesList">
               {candidateVotes.map((item) => {
-                const match = matchingVotes.matches.find((p) => p.proposal_id === item.proposal.id)
+                const match = matchingVotes?.matches.find((p) => p.proposal_id === item.proposal.id)
                 return <VotedInitiative key={item.id} vote={item} voteMatch={match?.sameVote} />
               })}
             </div>

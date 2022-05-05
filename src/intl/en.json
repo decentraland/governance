@@ -335,6 +335,7 @@
         "stats_active_since": "Active since",
         "stats_voted_on": "Voted on",
         "stats_match": "Match",
+        "stats_match_helper": "This indicator displays the percentage of proposals where you and this Delegate voted choosing the same outcome",
         "stats_bar_mana": "Mana VP",
         "stats_bar_land": "Land VP",
         "stats_bar_name": "Names VP",

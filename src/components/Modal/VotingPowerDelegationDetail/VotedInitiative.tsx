@@ -19,6 +19,10 @@ interface Props {
   voteMatch?: boolean
 }
 
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 const VotedInitiative = ({ vote, voteMatch }: Props) => {
   const t = useFormatMessage()
   const { choice, proposal } = vote
@@ -43,7 +47,7 @@ const VotedInitiative = ({ vote, voteMatch }: Props) => {
       <div className="VotedInitiative__ProposalDetails">
         <Popup
           className="VotedInitiative__PopupVote"
-          content={<span>{proposal.choices[choice - 1]}</span>}
+          content={<span>{capitalizeFirstLetter(proposal.choices[choice - 1])}</span>}
           trigger={
             <div className="VotedInitiative__Vote">
               {t('modal.vp_delegation.details.stats_initiatives_voted')}

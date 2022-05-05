@@ -71,10 +71,6 @@
   color: #16141a;
 }
 
-.VotingPowerDelegationDetail__StatsValue--green {
-  color: var(--background-happy-green);
-}
-
 .VotingPowerDelegationDetail__Initiatives {
   margin-top: 25px;
 }
@@ -93,4 +89,11 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.VotingPowerDelegationDetail__MatchInfo {
+  display: flex;
+  width: fit-content;
+  position: absolute;
+  left: 53px;
 }
