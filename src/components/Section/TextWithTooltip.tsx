@@ -17,7 +17,6 @@ export default function TextWithTooltip({ className, children }: React.HTMLAttri
           className={'TextWithTooltip'}
           content={children}
           position="bottom left"
-          inverted
           trigger={<span className={TokenList.join([className, 'TextWithTooltip__Trigger'])}>{children}</span>}
           on="hover"
         />
