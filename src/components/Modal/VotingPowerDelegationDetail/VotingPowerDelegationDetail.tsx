@@ -36,6 +36,8 @@ type VotingPowerDelegationDetailProps = {
   onBackClick: () => void
 }
 
+let timeout: ReturnType<typeof setTimeout>
+
 function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
   const { address } = candidate
@@ -54,11 +56,15 @@ function VotingPowerDelegationDetail({ candidate, onBackClick }: VotingPowerDele
 
   useEffect(() => {
     if (!isExpanded) {
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         setShowFadeout(true)
       }, 500)
     } else {
       setShowFadeout(false)
+    }
+
+    return () => {
+      clearTimeout(timeout)
     }
   }, [isExpanded])
 
