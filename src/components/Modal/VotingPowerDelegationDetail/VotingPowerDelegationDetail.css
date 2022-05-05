@@ -7,6 +7,11 @@
   margin-right: 0 !important;
 }
 
+.VotingPowerDelegationDetail__Header .ui.button.DelegateVP {
+  float: right;
+  margin-right: 55px;
+}
+
 .VotingPowerDelegationDetail__Content .Info {
   -webkit-transition: max-height 0.8s;
   -moz-transition: max-height 0.8s;

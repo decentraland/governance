@@ -313,7 +313,8 @@
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
       "total_vp": "Total vp",
-      "button": "Pick somebody else",
+      "delegate_button": "Delegate VP",
+      "pick_button": "Pick somebody else",
       "details": {
         "about_title": "About",
         "links_title": "Links",
@@ -324,7 +325,7 @@
         "most_important_issue_title": "Most important issue in Decentraland",
         "show_more": "Show more",
         "show_less": "Show less",
-        "backButtonLabel": "Go back to delegates list",
+        "back_button_label": "Go back to delegates list",
         "stats_own_voting_power": "Own voting power",
         "stats_delegated_voting_power": "Delegated voting power",
         "stats_total_voting_power": "Total voting power",

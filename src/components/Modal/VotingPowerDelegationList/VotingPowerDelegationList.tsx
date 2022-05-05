@@ -57,7 +57,7 @@ function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPow
       </Modal.Content>
       <Modal.Actions>
         <Button primary href={EDIT_DELEGATE_SNAPSHOT_URL}>
-          {t('modal.vp_delegation.button')}
+          {t('modal.vp_delegation.pick_button')}
         </Button>
       </Modal.Actions>
     </>
