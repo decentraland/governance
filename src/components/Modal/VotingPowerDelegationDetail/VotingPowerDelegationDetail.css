@@ -1,3 +1,7 @@
+.VotingPowerDelegationDetail__Header {
+  margin-left: 25px !important;
+}
+
 .VotingPowerDelegationDetail__Header img.dcl-avatar,
 .VotingPowerDelegationDetail__Header .dcl.blockie {
   margin-left: 15px !important;
