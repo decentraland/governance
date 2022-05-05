@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { TEST_CASES, TEST_CHOICES } from '../components/Section/ProposalResultSectionTestCases'
+import { TEST_CASES, TEST_CHOICES } from '../components/Section/ProposalVotingSectionTestCases'
 import { Vote } from '../entities/Votes/types'
 
 export interface TestData {
