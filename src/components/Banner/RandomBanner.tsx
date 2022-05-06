@@ -3,7 +3,7 @@ import React from 'react'
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal'
 
-import DelegationBanner, { HIDE_DELEGATE_BANNER_KEY } from './Delegation/DelegationBanner'
+import DelegationBanner, { shouldShowDelegationBanner } from './Delegation/DelegationBanner'
 import SubscriptionBanner from './Subscription/SubscriptionBanner'
 
 interface Props {
@@ -28,8 +28,6 @@ function RandomBanner({ isVisible }: Props) {
 
   const delegationBanner = <DelegationBanner />
 
-  const showDelegationBanner = localStorage.getItem(HIDE_DELEGATE_BANNER_KEY) !== 'true'
-
   const subscriptionBanner = (
     <>
       <SubscriptionBanner
@@ -49,7 +47,7 @@ function RandomBanner({ isVisible }: Props) {
     return delegationBanner
   }
 
-  if (!showDelegationBanner) {
+  if (!shouldShowDelegationBanner()) {
     return subscriptionBanner
   }
 
