@@ -2,8 +2,6 @@ import { PoiType, ProposalStatus, ProposalType } from "../entities/Proposal/type
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
 const GATSBY_BASE_URL = process.env.GATSBY_BASE_URL || '/'
-export const WELCOME_STORE_KEY: string = 'org.decentraland.governance.welcome'
-export const WELCOME_STORE_VERSION: string = '1'
 
 export function toProposalListPage(value: string | number | null | undefined): number {
   if (typeof value === 'number') {
@@ -14,11 +12,6 @@ export function toProposalListPage(value: string | number | null | undefined): n
   } else {
     return 1
   }
-}
-
-export enum ProposalListView {
-  Enacted = 'enacted',
-  Onboarding = 'onboarding',
 }
 
 export type ProposalListPage = {

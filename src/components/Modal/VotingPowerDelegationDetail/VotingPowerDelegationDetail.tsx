@@ -22,7 +22,6 @@ import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import useDelegation from '../../../hooks/useDelegation'
 import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import ChevronLeft from '../../Icon/ChevronLeft'
-import Info from '../../Icon/Info'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
@@ -34,7 +33,6 @@ import CandidateMatch from './CandidateMatch'
 import VotedInitiative from './VotedInitiative'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
-
 
 type VotingPowerDelegationDetailProps = {
   userVotes: SnapshotVote[] | null
