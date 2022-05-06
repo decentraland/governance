@@ -7,8 +7,7 @@ import Banner from '../Banner'
 
 import './DelegationBanner.css'
 
-const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hide'
-export const showDelegationBanner = localStorage.getItem(HIDE_DELEGATE_BANNER_KEY) !== 'true'
+export const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hide'
 
 function DelegationBanner() {
   const t = useFormatMessage()
@@ -16,7 +15,7 @@ function DelegationBanner() {
   return (
     <div className="DelegationBanner__Container">
       <Banner
-        isVisible={showDelegationBanner}
+        isVisible={localStorage.getItem(HIDE_DELEGATE_BANNER_KEY) !== 'true'}
         title={t(`page.delegate_banner.title`)}
         description={t(`page.delegate_banner.description`)}
         bannerHideKey={HIDE_DELEGATE_BANNER_KEY}
