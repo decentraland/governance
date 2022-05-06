@@ -12,18 +12,17 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../../api/Governance'
-import { Snapshot, SnapshotVote } from '../../../api/Snapshot'
-import { SNAPSHOT_SPACE } from '../../../entities/Snapshot/constants'
+import { SnapshotVote } from '../../../api/Snapshot'
 import { MatchResult, calculateMatch } from '../../../entities/Snapshot/utils'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import useDelegation from '../../../hooks/useDelegation'
 import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import ChevronLeft from '../../Icon/ChevronLeft'
+import Info from '../../Icon/Info'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
@@ -31,10 +30,11 @@ import Username from '../../User/Username'
 import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import CandidateDetails from './CandidateDetails'
+import CandidateMatch from './CandidateMatch'
 import VotedInitiative from './VotedInitiative'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
-import Info from '../../Icon/Info'
+
 
 type VotingPowerDelegationDetailProps = {
   userVotes: SnapshotVote[] | null
@@ -212,28 +212,12 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
                     <Stats title={t('modal.vp_delegation.details.stats_voted_on')}>
                       <div className="VotingPowerDelegationDetail__StatsValue">{candidateVotes.length}</div>
                     </Stats>
-                  </Grid.Column>{matchingVotes && (
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_match')}>
-                    <Popup
-                      content={<span>{t('modal.vp_delegation.details.stats_match_helper')}</span>}
-                      position="right center"
-                      trigger={
-                        <div className="VotingPowerDelegationDetail__MatchInfo">
-                          <Info width="14" height="14" />
-                        </div>
-                      }
-                      on="hover"
-                    />
-                    <div
-                      className="VotingPowerDelegationDetail__StatsValue"
-                      style={{ color: `rgb(0, ${Math.round((200 * matchingVotes.percentage) / 100)}, 0)` }}
-                    >
-                      {matchingVotes.percentage}%
-                    </div>
-                  </Stats>
-                </Grid.Column>
-              )}
+                  </Grid.Column>
+                  {matchingVotes && (
+                    <Grid.Column>
+                      <CandidateMatch matchingVotes={matchingVotes} />
+                    </Grid.Column>
+                  )}
                 </Grid.Row>
               )}
             </Grid>
@@ -245,7 +229,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
                 <div className="VotingPowerDelegationDetail__InitiativesList">
                   {candidateVotes.map((item) => {
                     const match = matchingVotes?.matches.find((p) => p.proposal_id === item.proposal.id)
-                return <VotedInitiative key={item.id} vote={item} voteMatch={match?.sameVote}/>
+                    return <VotedInitiative key={item.id} vote={item} voteMatch={match?.sameVote} />
                   })}
                 </div>
               </div>
