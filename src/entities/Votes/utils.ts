@@ -1,7 +1,8 @@
 import isUUID from 'validator/lib/isUUID'
-import { SnapshotVote } from '../../api/Snapshot';
-import { Delegation } from '../../hooks/useDelegation'
-import { ChoiceColor, Vote } from './types';
+
+import { SnapshotVote } from '../../api/Snapshot'
+
+import { ChoiceColor, Vote} from './types'
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -10,23 +11,22 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
 
   const list = Array.isArray(ids) ? ids : [ids]
 
-  return list.filter(id => isUUID(String(id)))
+  return list.filter((id) => isUUID(String(id)))
 }
 
 export function createVotes(votes: SnapshotVote[], balances: Record<string, number>) {
-  const balance = new Map(Object.keys(balances).map(address => [address.toLowerCase(), balances[address] || 0] as const))
-  return votes.reduce(
-    (result, vote) => {
-      const address = vote.voter.toLowerCase()
-      result[address] = {
-        choice: vote.choice,
-        vp: balance.get(address) || 0,
-        timestamp: Number(vote.created),
-      }
-      return result
-    },
-    {} as Record<string, Vote>
+  const balance = new Map(
+    Object.keys(balances).map((address) => [address.toLowerCase(), balances[address] || 0] as const)
   )
+  return votes.reduce((result, vote) => {
+    const address = vote.voter.toLowerCase()
+    result[address] = {
+      choice: vote.choice,
+      vp: balance.get(address) || 0,
+      timestamp: Number(vote.created),
+    }
+    return result
+  }, {} as Record<string, Vote>)
 }
 
 export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
@@ -62,7 +62,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
         color,
         votes,
         power: 0,
-        progress: 0
+        progress: 0,
       }
     }
 
@@ -72,7 +72,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
         color,
         votes,
         power: 0,
-        progress: 0
+        progress: 0,
       }
     }
 
@@ -82,7 +82,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
         color,
         votes,
         power,
-        progress: 100
+        progress: 100,
       }
     }
 
@@ -102,12 +102,12 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
       power,
       votes,
       color,
-      progress
+      progress,
     }
   })
 
   if (rest !== 0 && rest !== 100 && totalPower >= requiredVotingPower) {
-    const maxChoiceResults = result.filter(choiceResult => choiceResult.progress === maxProgress)
+    const maxChoiceResults = result.filter((choiceResult) => choiceResult.progress === maxProgress)
     for (const choiceResult of maxChoiceResults) {
       choiceResult.progress += rest / maxChoiceResults.length
     }
@@ -121,12 +121,12 @@ export function calculateChoiceColor(value: string, index: number): ChoiceColor 
     case 'yes':
     case 'for':
     case 'approve':
-      return 'approve';
+      return 'approve'
 
     case 'no':
     case 'against':
     case 'reject':
-      return 'reject';
+      return 'reject'
 
     default:
       return index % 8
@@ -145,43 +145,17 @@ export function calculateResultWinner(choices: string[], votes: Record<string, V
   }, result[0])
 }
 
-const SI_SYMBOL = ["", "k", "M", "G", "T", "P", "E"]
+const SI_SYMBOL = ['', 'k', 'M', 'G', 'T', 'P', 'E']
 
 export function abbreviateNumber(vp: number) {
-
-  const tier = Math.log10(Math.abs(vp)) / 3 | 0
+  const tier = (Math.log10(Math.abs(vp)) / 3) | 0
 
   if (tier == 0) return vp
 
-  const suffix = SI_SYMBOL[tier];
+  const suffix = SI_SYMBOL[tier]
   const scale = Math.pow(10, tier * 3)
 
   const scaled = vp / scale
 
   return scaled.toFixed(1) + suffix
-}
-
-
-export function getPartyVotes(
-  delegators: Delegation[] | [],
-  votes: Record<string, Vote> | null | undefined,
-  choices: string[]
-): { votesByChoices: Record<string, number>; totalVotes: number } {
-  let totalVotes = 0
-  const votesByChoices: Record<string, number> = {}
-
-  if (delegators.length === 0) return { votesByChoices, totalVotes }
-
-  choices.map((value, index) => (votesByChoices[index] = 0))
-
-  delegators.map((i) => {
-    const address = i.delegator
-    if (votes && votes[address]) {
-      totalVotes += 1
-      const choiceIndex = votes[address].choice - 1
-      votesByChoices[choiceIndex] += 1
-    }
-  })
-
-  return { votesByChoices, totalVotes }
 }
