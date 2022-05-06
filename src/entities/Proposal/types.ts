@@ -205,8 +205,9 @@ export const newProposalPollScheme = {
       items: {
         type: 'string',
         minLength: 1,
+        maxLength: 100,
       },
-      minItems: 2
+      minItems: 2,
     }
   }
 }

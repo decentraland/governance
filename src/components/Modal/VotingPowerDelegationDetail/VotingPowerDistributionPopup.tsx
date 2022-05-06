@@ -18,13 +18,7 @@ const VotingPowerDistributionPopup = ({ label, amount, percentage, children }: P
   const t = useFormatMessage()
 
   return (
-    <Popup
-      className="VotingPowerDistributionPopup"
-      content={t('page.submit_poll.mandatory_option')}
-      position="top center"
-      trigger={children}
-      on="hover"
-    >
+    <Popup className="VotingPowerDistributionPopup" position="top center" trigger={children} on="hover">
       <Popup.Content>
         <div className="VotingPowerDistributionPopup">
           <div className="VotingPowerDistributionPopup__Label">{label}</div>

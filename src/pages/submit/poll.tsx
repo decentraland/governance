@@ -75,12 +75,16 @@ const validate = createValidator<PollState>({
       choices:
         assert(choices.length >= schema.choices.minItems, `error.poll.choices_insufficient`) ||
         assert(
-          choices.some((option) => option !== ''),
+          choices.every((option) => option !== ''),
           `error.poll.choices_empty`
         ) ||
         assert(
-          choices.some((option) => option.length >= schema.choices.items.minLength),
+          choices.every((option) => option.length >= schema.choices.items.minLength),
           `error.poll.choices_too_short`
+        ) ||
+        assert(
+          choices.every((option) => option.length <= schema.choices.items.maxLength),
+          `error.poll.choices_too_long`
         ),
     }
   },
