@@ -1,7 +1,7 @@
+import snapshot from '@snapshot-labs/snapshot.js'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
-import snapshot from '@snapshot-labs/snapshot.js'
 
 export type SnapshotQueryResponse<T> = { data: T }
 

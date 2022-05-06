@@ -13,13 +13,14 @@ import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
 import isUUID from 'validator/lib/isUUID'
 
+import { Wallet } from '@ethersproject/wallet'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
 import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
-import { signMessage, SNAPSHOT_ACCOUNT } from '../Snapshot/utils'
+import { signMessage } from '../Snapshot/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 import ProposalModel from './model'
@@ -70,6 +71,8 @@ import {
 } from './utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
+const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
+const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
 
 export default routes((route) => {
   const withAuth = auth()

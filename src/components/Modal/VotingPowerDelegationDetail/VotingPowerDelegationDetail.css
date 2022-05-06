@@ -108,3 +108,10 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.VotingPowerDelegationDetail__MatchInfo {
+  display: flex;
+  width: fit-content;
+  position: absolute;
+  left: 53px;
+}
