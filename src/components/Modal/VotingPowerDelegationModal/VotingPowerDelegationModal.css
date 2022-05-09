@@ -9,7 +9,6 @@
 
 .VotingPowerDelegationModal > .dcl.close, .ui.modal > .dcl.close {
   top: 14px;
-  background-color: var(--background);
 }
 
 .VotingPowerDelegationModal .description .dg.Paragraph {
