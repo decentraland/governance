@@ -1,0 +1,33 @@
+.ProposalVestingStatus__UpdateDescription .dg.Bold {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.ProposalVestingStatus__UpdateDescription .dg.Paragraph {
+  margin-bottom: 8px;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.ProposalVestingStatus__UpdateButton {
+  height: 36px;
+  padding: 0 !important;
+}
+
+.ProposalVestingStatus__DueDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.ProposalVestingStatus__DueDate .dg.Paragraph {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.ProposalVestingStatus__InfoIconContainer {
+  display: flex;
+  align-items: center;
+}

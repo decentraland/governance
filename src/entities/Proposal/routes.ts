@@ -69,6 +69,7 @@ import {
   proposalUrl,
   snapshotProposalUrl
 } from './utils'
+import UpdateModel from '../Updates/model';
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
@@ -327,7 +328,7 @@ export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
 
-  if(!isGrantSizeValid(configuration.tier, configuration.size)) {
+  if (!isGrantSizeValid(configuration.tier, configuration.size)) {
     throw new RequestError("Grant size is not valid for the selected tier")
   }
 
@@ -581,7 +582,8 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_by = user
     update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      update.vesting_address = configuration.vesting_address
+      update.vesting_address = configuration.vesting_address;
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
   } else if (configuration.status === ProposalStatus.Passed) {
     update.passed_by = user

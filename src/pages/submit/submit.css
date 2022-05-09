@@ -58,7 +58,7 @@
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
-  border-color: rgba(115, 110, 125, .32);
+  border-color: rgba(115, 110, 125, 0.32);
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:hover:before {

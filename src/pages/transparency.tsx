@@ -145,6 +145,7 @@ export default function WrappingPage() {
                         <MonthlyTotal
                           title={t('page.transparency.mission.monthly_expenses') || ''}
                           monthlyTotal={data.expenses}
+                          invertDiffColors={true}
                         />
                       </Grid.Row>
                     </Grid.Column>

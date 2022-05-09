@@ -1,6 +1,4 @@
-import React from 'react';
-
-
+import React from 'react'
 
 import { SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
