@@ -18,14 +18,14 @@ export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
 }
 
 export default function ChoiceButton({
-  voted,
-  color,
-  delegate,
-  voteCount,
-  totalVotes,
-  children,
-  ...props
-}: ChoiceButtonProps) {
+                                       voted,
+                                       color,
+                                       delegate,
+                                       voteCount,
+                                       totalVotes,
+                                       children,
+                                       ...props
+                                     }: ChoiceButtonProps) {
   const percentage = voteCount && totalVotes ? Math.round((voteCount / totalVotes) * 100) + '%' : null
   return (
     <Button
@@ -38,10 +38,12 @@ export default function ChoiceButton({
         props.className,
       ])}
     >
-      {percentage && <div className={'ChoiceButton__Background'} style={{ width: percentage }} />}
+      {percentage && <div className={TokenList.join(['ChoiceButton__Background',
+        percentage === '100%' && 'ChoiceButton__BackgroundFull',
+      ])} style={{ width: percentage }} />}
       {!!delegate && (
         <span className={'ChoiceButton__Delegate'}>
-          <Username address={delegate} showName={false} />
+          <Username address={delegate} iconOnly />
         </span>
       )}
       <TextWithTooltip className={'ChoiceButton__Text'}>{children}</TextWithTooltip>
