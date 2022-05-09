@@ -1,9 +1,9 @@
 import React from 'react'
-import useDelegationBanner from '../../hooks/useDelegationBanner'
 
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal'
-import DelegationBanner from './Delegation/DelegationBanner'
+
+import DelegationBanner, { shouldShowDelegationBanner } from './Delegation/DelegationBanner'
 import SubscriptionBanner from './Subscription/SubscriptionBanner'
 
 interface Props {
@@ -22,9 +22,11 @@ function RandomBanner({ isVisible }: Props) {
     onClose,
   } = useNewsletterSubscription()
 
-  const showDelegationBanner = useDelegationBanner()
+  if (!isVisible) {
+    return null
+  }
 
-  const delegationBanner = <DelegationBanner isVisible={isVisible} />
+  const delegationBanner = <DelegationBanner />
 
   const subscriptionBanner = (
     <>
@@ -45,7 +47,7 @@ function RandomBanner({ isVisible }: Props) {
     return delegationBanner
   }
 
-  if (!showDelegationBanner) {
+  if (!shouldShowDelegationBanner()) {
     return subscriptionBanner
   }
 
