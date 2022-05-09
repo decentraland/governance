@@ -353,7 +353,8 @@
         "stats_bar_delegated": "Delegated VP",
         "stats_popup_percentage": "{percentage} of total VP held",
         "stats_initiatives_title": "Initiatives voted on",
-        "stats_initiatives_voted": "Voted "
+        "stats_initiatives_voted": "Voted ",
+        "stats_read_more": "Read more"
       }
     },
     "proposal_success": {
