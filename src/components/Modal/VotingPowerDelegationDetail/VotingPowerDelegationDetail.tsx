@@ -60,7 +60,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
   const [isExpanded, setIsExpanded] = useState(false)
   const [matchingVotes, setMatchingVotes] = useState<MatchResult | null>(null)
   const [showFadeout, setShowFadeout] = useState(true)
-  const [filteredCandidateVotes, setCandidateVotes] = useState<VotedProposal[]>([])
+  const [filteredCandidateVotes, setFilteredCandidateVotes] = useState<VotedProposal[]>([])
 
   useEffect(() => {
     if (!isExpanded) {
@@ -84,14 +84,14 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
 
   useEffect(() => {
     if (candidateVotes) {
-      setCandidateVotes(candidateVotes.slice(0, 10))
+      setFilteredCandidateVotes(candidateVotes.slice(0, 10))
     }
   }, [candidateVotes])
 
   const handleReadMoreClick = useCallback(() => {
     if (candidateVotes) {
       const newVotes = candidateVotes.slice(0, filteredCandidateVotes.length + VOTES_PER_PAGE)
-      setCandidateVotes(newVotes)
+      setFilteredCandidateVotes(newVotes)
     }
   }, [candidateVotes, filteredCandidateVotes])
 
