@@ -30,7 +30,7 @@ import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationMo
 
 import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
-import VotedInitiative from './VotedInitiative'
+import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
 
@@ -220,17 +220,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
               )}
             </Grid>
             {candidateVotes && candidateVotes.length > 0 && (
-              <div className="VotingPowerDelegationDetail__Initiatives">
-                <span className="VotingPowerDelegationDetail__InitiativesTitle">
-                  {t('modal.vp_delegation.details.stats_initiatives_title')}
-                </span>
-                <div className="VotingPowerDelegationDetail__InitiativesList">
-                  {candidateVotes.map((item) => {
-                    const match = matchingVotes?.matches.find((p) => p.proposal_id === item.proposal.id)
-                    return <VotedInitiative key={item.id} vote={item} voteMatch={match?.sameVote} />
-                  })}
-                </div>
-              </div>
+              <VotedInitiativeList candidateVotes={candidateVotes} matches={matchingVotes?.matches} />
             )}
           </>
         )}

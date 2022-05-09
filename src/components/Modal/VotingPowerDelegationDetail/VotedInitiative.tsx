@@ -6,11 +6,9 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { VotedProposal } from '../../../entities/Votes/types'
 import locations from '../../../modules/locations'
-import CategoryLabel from '../../Category/CategoryLabel'
 import Cancel from '../../Icon/Cancel'
 import Check from '../../Icon/Check'
 import QuestionCircle from '../../Icon/QuestionCircle'
-import StatusLabel from '../../Status/StatusLabel'
 
 import './VotedInitiative.css'
 
@@ -51,8 +49,6 @@ const VotedInitiative = ({ vote, voteMatch }: Props) => {
             </div>
           }
         />
-        {proposal.type && <CategoryLabel type={proposal.type} />}
-        {proposal.status && <StatusLabel status={proposal.status} />}
       </div>
     </Link>
   )

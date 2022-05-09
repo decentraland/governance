@@ -1,0 +1,19 @@
+.VotedInitiativeList {
+  margin-top: 25px;
+}
+
+.VotedInitiativeList__Title {
+  display: flex;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #736e7d;
+}
+
+.VotedInitiativeList__List {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
