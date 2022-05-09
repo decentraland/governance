@@ -246,7 +246,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
       {!isLoading && !hasShownAllVotes && (
         <Modal.Actions>
           <Button onClick={handleReadMoreClick} primary>
-            {t('modal.vp_delegation.details.stats_read_more')}
+            {t('modal.vp_delegation.details.stats_view_more')}
           </Button>
         </Modal.Actions>
       )}
