@@ -21,19 +21,18 @@ type Props = SizeProps & {
 }
 
 const Username = ({ address, size, linked, iconOnly = false, blockieScale = 3, className}: Props) => {
-  const { profile } = useProfile(address)
-  const userHasCustomProfile = profile && !profile.isDefaultProfile
-  const profileHasName = userHasCustomProfile && profile.name && profile.name.length > 0
+  const { profile, hasDclProfile } = useProfile(address)
+  const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
 
   const userElement = (
     <>
-      {userHasCustomProfile && <>
+      {hasDclProfile && <>
         <Avatar size={size || 'mini'} address={address}  />
-        {profileHasName && !iconOnly && profile.name}
+        {profileHasName && !iconOnly && profile!.name}
         {!profileHasName && !iconOnly && <Address value={address || ''} />}
       </>}
 
-      {(!userHasCustomProfile || !profile) && (
+      {(!hasDclProfile || !profile) && (
         <Blockie scale={blockieScale} seed={address || ''}>
           {!iconOnly && <Address value={address || ''} />}
         </Blockie>

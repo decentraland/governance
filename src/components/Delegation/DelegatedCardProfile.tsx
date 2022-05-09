@@ -18,7 +18,7 @@ export type DelegatedCardProfileProps = {
 
 export default function DelegatedCardProfile({ address, pickedBy, votingPower }: DelegatedCardProfileProps) {
   const t = useFormatMessage()
-  const { profile, profileState, hasDclAvatar } = useProfile(address)
+  const { profile, profileState, hasDclProfile } = useProfile(address)
 
   if (!address) {
     return null
@@ -26,12 +26,12 @@ export default function DelegatedCardProfile({ address, pickedBy, votingPower }:
 
   return (
     <div className="DelegatedCardProfile">
-      {!hasDclAvatar && (
+      {!hasDclProfile && (
         <Blockie seed={address!}>
           <Address value={address!} strong />
         </Blockie>
       )}
-      {hasDclAvatar && (
+      {hasDclProfile && (
         <div className="DelegatedCardProfile__Container">
           <Avatar className="DelegatedCardProfile__Avatar" address={profile!.ethAddress} size="big" />
           <span className="DelegatedCardProfile__Name">{profile!.name}</span>
