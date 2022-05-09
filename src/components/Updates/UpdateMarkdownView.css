@@ -1,0 +1,8 @@
+.UpdateDetail__Content .dg.Paragraph,
+.UpdateDetail__Content .dg.ListItem {
+  font-size: 15px !important;
+}
+
+.UpdateDetail__Content .dg.Paragraph img {
+  max-width: 100%;
+}

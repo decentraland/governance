@@ -1,9 +1,10 @@
 import React from 'react'
 
-import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -14,12 +15,14 @@ const openIcon = require('../../images/icons/open.svg').default
 
 export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
+  profile?: Profile | null
   loading?: boolean
   disabled?: boolean
 }
 
 export default React.memo(function ProposalDetailSection({
   proposal,
+  profile,
   loading,
   disabled,
   ...props
@@ -41,7 +44,7 @@ export default React.memo(function ProposalDetailSection({
         <Header sub>{t('page.proposal_detail.details_label')}</Header>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_user_label')}</div>
-          <Username address={proposal?.user!} linked className='DetailsSection__Value' />
+          <Username address={proposal?.user!} linked className="DetailsSection__Value" />
         </div>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_start_label')}</div>
@@ -57,10 +60,10 @@ export default React.memo(function ProposalDetailSection({
           <div>{t('page.proposal_detail.details_snapshot_label')}</div>
           <div className="DetailsSection__Value">
             {proposal && (
-              <Anchor href={snapshotProposalUrl(proposal)}>
+              <Link href={snapshotProposalUrl(proposal)}>
                 {'#' + proposal.snapshot_id.slice(0, 7)}
                 <img src={openIcon} width="12" height="12" style={{ marginLeft: '.5rem' }} />
-              </Anchor>
+              </Link>
             )}
           </div>
         </div>

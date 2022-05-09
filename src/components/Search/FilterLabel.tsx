@@ -1,9 +1,9 @@
-import React from 'react'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import './FilterLabel.css'
+
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import React from 'react'
 
 export type FilterLabelProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean
@@ -11,7 +11,6 @@ export type FilterLabelProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement
 }
 
 export default React.memo(function FilterLabel({ active, label, className, ...props }: FilterLabelProps) {
-  const l = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
       props.onClick(e)

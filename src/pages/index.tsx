@@ -18,6 +18,7 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../api/Governance'
+import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
 import ActionableLayout from '../components/Layout/ActionableLayout'
@@ -29,7 +30,6 @@ import { SearchTitle } from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
-import SubscriptionBanner from '../components/Subscription/SubscriptionBanner'
 import { ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
@@ -115,7 +115,7 @@ export default function IndexPage() {
         className="OnlyMobile Animated"
         style={(isMobile && open && { transform: 'translateX(-200%)', height: 0 }) || {}}
       >
-        <SubscriptionBanner active={!type} />
+        <RandomBanner isVisible={!searching} />
       </div>
       <Head
         title={
@@ -138,6 +138,9 @@ export default function IndexPage() {
       />
       <Navigation activeTab={NavigationTab.Proposals} />
       <Container>
+        <div className="OnlyDesktop">
+          <RandomBanner isVisible={!searching} />
+        </div>
         {!isMobile && search && proposals && <SearchTitle />}
         <Grid stackable>
           <Grid.Row>
@@ -184,7 +187,6 @@ export default function IndexPage() {
                 }
               >
                 <Loader active={!proposals || proposalsState.loading} />
-                <div className="OnlyDesktop">{!searching && <SubscriptionBanner active={!type} />}</div>
                 {type && !searching && <CategoryBanner type={type} active />}
                 {proposals && proposals.data.length === 0 && (
                   <Empty
