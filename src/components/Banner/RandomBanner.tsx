@@ -1,8 +1,9 @@
 import React from 'react'
-import useDelegationBanner from '../../hooks/useDelegationBanner'
 
+import useDelegationBanner from '../../hooks/useDelegationBanner'
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
-import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal'
+import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
+
 import DelegationBanner from './Delegation/DelegationBanner'
 import SubscriptionBanner from './Subscription/SubscriptionBanner'
 
