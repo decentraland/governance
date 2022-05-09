@@ -89,26 +89,6 @@
   color: #16141a;
 }
 
-.VotingPowerDelegationDetail__Initiatives {
-  margin-top: 25px;
-}
-
-.VotingPowerDelegationDetail__InitiativesTitle {
-  display: flex;
-  margin-bottom: 10px;
-  font-weight: 600;
-  font-size: 11px;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: #736e7d;
-}
-
-.VotingPowerDelegationDetail__InitiativesList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .VotingPowerDelegationDetail__MatchInfo {
   display: flex;
   width: fit-content;

@@ -2,9 +2,14 @@ import { Wallet } from '@ethersproject/wallet'
 
 import { SnapshotVote } from '../../api/Snapshot'
 
+export type Match = {
+  proposal_id: string
+  sameVote: boolean
+}
+
 export interface MatchResult {
   percentage: number
-  matches: { proposal_id: string; sameVote: boolean }[]
+  matches: Match[]
 }
 
 export async function signMessage(wallet: Wallet, msg: string) {
