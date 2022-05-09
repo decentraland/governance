@@ -1,0 +1,9 @@
+.DelegationsLabel {
+	align-items: center;
+}
+
+.DelegationsLabel__Text p.dg.Paragraph {
+	font-size: 14px;
+	padding-left: 4px;
+}
+

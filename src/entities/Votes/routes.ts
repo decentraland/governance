@@ -1,18 +1,18 @@
-import { Request } from 'express'
-import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
-import { getProposal } from '../Proposal/routes'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { Request } from 'express'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { Snapshot, SnapshotVote } from '../../api/Snapshot'
+import ProposalModel from '../Proposal/model'
+import { getProposal } from '../Proposal/routes'
+import { ProposalAttributes } from '../Proposal/types'
+import { SNAPSHOT_SPACE } from '../Snapshot/constants'
 import VotesModel from './model'
 import { Vote, VoteAttributes } from './types'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import { ProposalAttributes } from '../Proposal/types'
 import { createVotes, toProposalIds } from './utils'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
-import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
-import { SNAPSHOT_SPACE } from '../Snapshot/constants'
-import ProposalModel from '../Proposal/model'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -135,6 +135,11 @@ export async function getVotes(proposal_id: string) {
 async function getAddressVotes(req: Request) {
   const address = req.params.address
   const votes = await Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address)
+
+  if (votes.length === 0) {
+    return []
+  }
+
   const proposalIds = votes.map((vote) => vote.proposal.id)
   const proposals = await ProposalModel.findFromSnapshotIds(proposalIds)
 

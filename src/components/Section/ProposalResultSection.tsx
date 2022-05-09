@@ -15,7 +15,7 @@ import ChoiceProgress from '../Status/ChoiceProgress'
 
 import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
-import ProposalVotingSection from './ProposalVotingSection'
+import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
@@ -99,7 +99,6 @@ export default function ProposalResultSection({
           started={started}
           finished={finished}
           onVote={onVote}
-          votingPower={votingPower}
           onChangeVote={onChangeVote}
         />
       )}

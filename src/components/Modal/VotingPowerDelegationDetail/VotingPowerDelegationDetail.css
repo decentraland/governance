@@ -1,3 +1,7 @@
+.VotingPowerDelegationDetail__Header {
+  margin-left: 25px !important;
+}
+
 .VotingPowerDelegationDetail__Header img.dcl-avatar,
 .VotingPowerDelegationDetail__Header .dcl.blockie {
   margin-left: 15px !important;
@@ -68,6 +72,20 @@
   border-radius: 0;
 }
 
+.VotingPowerDelegationDetail__Loading {
+  width: 100%;
+  height: 450px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 110px;
+}
+
+.VotingPowerDelegationDetail__LoaderText {
+  margin-top: 115px;
+}
+
 .VotingPowerDelegationDetail__StatsValue {
   font-weight: 600;
   font-size: 17px;
@@ -94,4 +112,11 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.VotingPowerDelegationDetail__MatchInfo {
+  display: flex;
+  width: fit-content;
+  position: absolute;
+  left: 53px;
 }

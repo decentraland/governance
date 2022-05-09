@@ -2,6 +2,9 @@
   background: var(--background);
   border: 1px solid rgba(115,110,125,.32);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ChoiceButton__Text {
@@ -10,7 +13,13 @@
 }
 
 .ui.button.ChoiceButton.ChoiceButton--voted {
-  pointer-events: none;
+  pointer-events: all;
+  cursor: default;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--voted:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .ui.button.ChoiceButton.ChoiceButton--approve:hover,
@@ -65,9 +74,16 @@
 
 .ChoiceButton__VoteCount {
   position: absolute;
-  right: 15px;
+  right: 8px;
   opacity: 0.4;
   z-index: 2;
+}
+
+.ChoiceButton__Delegate {
+  position: absolute;
+  left: 8px;
+  z-index: 2;
+  display: flex;
 }
 
 .ChoiceButton__Background {
