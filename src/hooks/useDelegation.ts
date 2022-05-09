@@ -59,13 +59,13 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
   const unique_delegations = new Map<String, Delegation>()
 
   for (const deleg of delegations) {
-    if (unique_delegations.has(deleg.delegate)) {
-      if (unique_delegations.get(deleg.delegate)?.space !== space) {
-        unique_delegations.set(deleg.delegate, deleg)
+    if (unique_delegations.has(deleg.delegator)) {
+      if (unique_delegations.get(deleg.delegator)?.space !== space) {
+        unique_delegations.set(deleg.delegator, deleg)
       }
     }
     else {
-      unique_delegations.set(deleg.delegate, deleg)
+      unique_delegations.set(deleg.delegator, deleg)
     }
   }
 
