@@ -1,14 +1,15 @@
-import './SearchInput.css'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import React, { useEffect, useRef, useState } from 'react'
 
 import { useSearchParams } from '../../hooks/useSearchParams'
 import locations from '../../modules/locations'
+
+import './SearchInput.css'
 
 export function handleSearch(textSearch: string, location: Location) {
   const newParams = new URLSearchParams(location.search)
