@@ -33,7 +33,7 @@ function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPow
 
   return (
     <>
-      <Modal.Header>{t('modal.vp_delegation.title')}</Modal.Header>
+      <Modal.Header className="VotingPowerDelegationModal__Header">{t('modal.vp_delegation.title')}</Modal.Header>
       <Modal.Description>
         <Markdown>{t('modal.vp_delegation.description', { VP: vp })}</Markdown>
       </Modal.Description>
@@ -56,8 +56,8 @@ function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPow
         </Table>
       </Modal.Content>
       <Modal.Actions>
-        <Button primary href={EDIT_DELEGATE_SNAPSHOT_URL}>
-          {t('modal.vp_delegation.pick_button')}
+        <Button primary href={EDIT_DELEGATE_SNAPSHOT_URL} target="_blank" rel="noopener noreferrer">
+          {t('modal.vp_delegation.button')}
         </Button>
       </Modal.Actions>
     </>

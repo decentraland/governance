@@ -37,9 +37,9 @@ function CandidateDetails({ title, content, links, skills }: Props) {
       >
         {content}
         {links &&
-          links.map((link) => (
+          links.map((link, index) => (
             <a href={link}>
-              <LinkIcon color="var(--blue)" /> {link.replace(/^https?\:\/\//i, '').replace(/^www\./i, '')}
+              <LinkIcon key={'LinkIcon_' + index} color="var(--blue)" /> {link.replace(/^https?\:\/\//i, '').replace(/^www\./i, '')}
             </a>
           ))}
         {skills && skills.map((skill) => <span className="Chip">{skill.toUpperCase()}</span>)}

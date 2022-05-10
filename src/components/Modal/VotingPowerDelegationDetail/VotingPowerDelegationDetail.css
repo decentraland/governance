@@ -1,5 +1,8 @@
 .VotingPowerDelegationDetail__Header {
   margin-left: 25px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
 
 .VotingPowerDelegationDetail__Header img.dcl-avatar,
@@ -9,6 +12,10 @@
 
 .VotingPowerDelegationDetail__Header .dcl.blockie {
   margin-right: 0 !important;
+}
+
+.VotingPowerDelegationDetail__CandidateName {
+  display: inline-flex;
 }
 
 .VotingPowerDelegationDetail__Content .Info {
@@ -87,26 +94,6 @@
   line-height: 32px;
   letter-spacing: 0.4px;
   color: #16141a;
-}
-
-.VotingPowerDelegationDetail__Initiatives {
-  margin-top: 25px;
-}
-
-.VotingPowerDelegationDetail__InitiativesTitle {
-  display: flex;
-  margin-bottom: 10px;
-  font-weight: 600;
-  font-size: 11px;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: #736e7d;
-}
-
-.VotingPowerDelegationDetail__InitiativesList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .VotingPowerDelegationDetail__MatchInfo {

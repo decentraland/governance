@@ -5,9 +5,9 @@ import { Button, ButtonProps } from 'decentraland-ui/dist/components/Button/Butt
 
 import { ChoiceColor } from '../../../entities/Votes/types'
 import Username from '../../User/Username'
+import TextWithTooltip from '../TextWithTooltip'
 
 import './ChoiceButton.css'
-import TextWithTooltip from '../TextWithTooltip'
 
 export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   voted?: boolean
@@ -38,10 +38,18 @@ export default function ChoiceButton({
         props.className,
       ])}
     >
-      {percentage && <div className={'ChoiceButton__Background'} style={{ width: percentage }} />}
+      {percentage && (
+        <div
+          className={TokenList.join([
+            'ChoiceButton__Background',
+            percentage === '100%' && 'ChoiceButton__BackgroundFull',
+          ])}
+          style={{ width: percentage }}
+        />
+      )}
       {!!delegate && (
         <span className={'ChoiceButton__Delegate'}>
-          <Username address={delegate} showName={false} />
+          <Username address={delegate} iconOnly />
         </span>
       )}
       <TextWithTooltip className={'ChoiceButton__Text'}>{children}</TextWithTooltip>

@@ -143,7 +143,7 @@ body {
   --background-remove-poi: #FF247C;
   --background-happy-green: #44B600;
   --background-linked-wearables: #FFBC5B;
-  
+
   --blue: #4888EE;
   --gray: #A19EA8;
 }
@@ -180,4 +180,8 @@ body {
   .tabletOnly.tabletOnly.tabletOnly {
     visibility: hidden;
   }
+}
+
+.ui.modal > .dcl.close, .ui.modal > .dcl.close, .dcl.close {
+  background-color: var(--background) !important;
 }

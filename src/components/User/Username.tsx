@@ -1,6 +1,4 @@
-import React from 'react';
-
-
+import React from 'react'
 
 import { SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
@@ -17,37 +15,43 @@ import './Username.css'
 type Props = SizeProps & {
   address: string
   linked?: boolean
-  showName?: boolean
   className?: string
   blockieScale?: number
+  iconOnly?: boolean
 }
 
-const Username = ({ address, size, linked, showName = true, blockieScale = 3, className }: Props) => {
-  const { profile } = useProfile(address)
+const Username = ({ address, size, linked, iconOnly = false, blockieScale = 3, className}: Props) => {
+  const { profile, hasDclProfile } = useProfile(address)
+  const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
 
   const userElement = (
     <>
-      {profile && !profile.isDefaultProfile && <Avatar size={size || 'mini'} address={address} />}
-      {profile && showName && profile.name}
-      {profile && !showName && <Address value={address} />}
-      {(!profile || profile.isDefaultProfile) && !!address && (
+      {hasDclProfile && <>
+        <Avatar size={size || 'mini'} address={address}  />
+        {profileHasName && !iconOnly && profile!.name}
+        {!profileHasName && !iconOnly && <Address value={address || ''} />}
+      </>}
+
+      {(!hasDclProfile || !profile) && (
         <Blockie scale={blockieScale} seed={address || ''}>
-          <Address value={address || ''} />
+          {!iconOnly && <Address value={address || ''} />}
         </Blockie>
       )}
     </>
   )
 
   return (
-    <>
+    <div className='Username'>
       {linked ? (
-        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address: address })}>
+        <Link className={TokenList.join(['Username', className])}
+              href={locations.balance({ address })}
+        >
           {userElement}
         </Link>
       ) : (
         <span className={TokenList.join(['Username', className])}>{userElement}</span>
       )}
-    </>
+    </div>
   )
 }
 

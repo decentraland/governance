@@ -1,0 +1,56 @@
+.ProjectHealthStatus {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 24px;
+  border-radius: 6px;
+  margin-bottom: 32px;
+}
+
+.ProjectHealthStatus--onTrack {
+  background-color: rgba(68, 182, 0, 0.1);
+}
+
+.ProjectHealthStatus--atRisk {
+  background-color: rgba(255, 176, 63, 0.1);
+}
+
+.ProjectHealthStatus--offTrack {
+  background-color: rgba(216, 0, 39, 0.1);
+}
+
+.ProjectHealthStatus__Icon {
+  display: none;
+  margin-right: 16px;
+}
+
+@media (min-width: 768px) {
+  .ProjectHealthStatus__Icon {
+    display: block;
+  }
+}
+
+.ProjectHealthStatus__Title {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.ProjectHealthStatus__Title--onTrack {
+  color: #44b600;
+}
+
+.ProjectHealthStatus__Title--atRisk {
+  color: #ffb03f;
+}
+
+.ProjectHealthStatus__Title--offTrack {
+  color: #d80027;
+}
+
+.ProjectHealthStatus__Description {
+  font-size: 15px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: #16141a;
+}

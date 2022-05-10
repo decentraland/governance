@@ -22,11 +22,11 @@ export default function VotingPowerListItem({
   className,
   ...props
 }: VotingPowerListModalItemProps) {
-  const { profile, hasDclAvatar } = useProfile(address)
+  const { profile, hasDclProfile } = useProfile(address)
 
   return (
     <div className={TokenList.join(['VotingPowerListItem', className])} {...props}>
-      {!hasDclAvatar && (
+      {!hasDclProfile && (
         <div className="VotingPowerListModalItem__Profile">
           <Blockie className="VotingPowerListModalItem__Blockie" seed={address!} scale={3} />
           <a href={locations.balance({ address: address })}>
@@ -34,7 +34,7 @@ export default function VotingPowerListItem({
           </a>
         </div>
       )}
-      {hasDclAvatar && (
+      {hasDclProfile && (
         <div className="VotingPowerListModalItem__Profile">
           <Avatar address={profile!.ethAddress} size="tiny" />
           <a className={'VotingPowerListModalItem__Address'} href={locations.balance({ address: address })}>

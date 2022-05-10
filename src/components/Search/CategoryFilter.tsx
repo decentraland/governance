@@ -15,7 +15,7 @@ export type FilterProps = {
 }
 
 export default React.memo(function CategoryFilter({ onChange }: FilterProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const type = toProposalType(params.get('type')) ?? undefined
@@ -28,7 +28,7 @@ export default React.memo(function CategoryFilter({ onChange }: FilterProps) {
   }
 
   return (
-    <CollapsibleFilter title={l('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
+    <CollapsibleFilter title={t('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
       <CategoryOption
         type={'all'}
         href={handleTypeFilter(null)}

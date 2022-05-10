@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { ChainId } from '@dcl/schemas'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
@@ -17,6 +17,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Governance } from '../../../api/Governance'
 import { SnapshotVote } from '../../../api/Snapshot'
 import { MatchResult, calculateMatch } from '../../../entities/Snapshot/utils'
+import { VotedProposal } from '../../../entities/Votes/types'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
 import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
 import useDelegation from '../../../hooks/useDelegation'
@@ -30,7 +31,7 @@ import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationMo
 
 import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
-import VotedInitiative from './VotedInitiative'
+import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
 import useSnapshotDelegateContract from '../../../hooks/useSnapshotDelegateContract'
@@ -44,6 +45,7 @@ type VotingPowerDelegationDetailProps = {
 }
 
 let timeout: ReturnType<typeof setTimeout>
+const VOTES_PER_PAGE = 10
 
 function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
@@ -63,6 +65,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
   const [matchingVotes, setMatchingVotes] = useState<MatchResult | null>(null)
   const [showFadeout, setShowFadeout] = useState(true)
   const [isDelegating, setIsDelegating] = useState(false)
+  const [filteredCandidateVotes, setFilteredCandidateVotes] = useState<VotedProposal[]>([])
 
   const [delegatedAddress] = useAsyncMemo(
     async () => {
@@ -106,6 +109,21 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
     }
   }, [userVotes, candidateVotes])
 
+  useEffect(() => {
+    if (candidateVotes) {
+      setFilteredCandidateVotes(candidateVotes.slice(0, 10))
+    }
+  }, [candidateVotes])
+
+  const handleReadMoreClick = useCallback(() => {
+    if (candidateVotes) {
+      const newVotes = candidateVotes.slice(0, filteredCandidateVotes.length + VOTES_PER_PAGE)
+      setFilteredCandidateVotes(newVotes)
+    }
+  }, [candidateVotes, filteredCandidateVotes])
+
+  const hasShownAllVotes = candidateVotes?.length === filteredCandidateVotes.length
+
   const mana = mainnetMana + maticMana + (wMana || 0)
   const ownVotingPower = votingPower - delegatedVotingPower
 
@@ -122,11 +140,15 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
 
   return (
     <>
-      <Modal.Header className="VotingPowerDelegationDetail__Header">
-        <Button basic aria-label={t('modal.vp_delegation.back_button_label')} onClick={onBackClick}>
-          <ChevronLeft />
-        </Button>
-        <Username address={candidate.address} size="small" blockieScale={4} />
+      <Modal.Header
+        className={TokenList.join(['VotingPowerDelegationModal__Header', 'VotingPowerDelegationDetail__Header'])}
+      >
+        <div className="VotingPowerDelegationDetail__CandidateName">
+          <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
+            <ChevronLeft />
+          </Button>
+          <Username address={candidate.address} size="small" blockieScale={4} />
+        </div>
         <VotingPowerDelegationButton
           revoke={!!delegatedAddress && delegatedAddress.toLowerCase() === address.toLowerCase()}
           disabled={!isContractUsable || isDelegating}
@@ -254,22 +276,19 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
                 </Grid.Row>
               )}
             </Grid>
-            {candidateVotes && candidateVotes.length > 0 && (
-              <div className="VotingPowerDelegationDetail__Initiatives">
-                <span className="VotingPowerDelegationDetail__InitiativesTitle">
-                  {t('modal.vp_delegation.details.stats_initiatives_title')}
-                </span>
-                <div className="VotingPowerDelegationDetail__InitiativesList">
-                  {candidateVotes.map((item) => {
-                    const match = matchingVotes?.matches.find((p) => p.proposal_id === item.proposal.id)
-                    return <VotedInitiative key={item.id} vote={item} voteMatch={match?.sameVote} />
-                  })}
-                </div>
-              </div>
+            {filteredCandidateVotes.length > 0 && (
+              <VotedInitiativeList candidateVotes={filteredCandidateVotes} matches={matchingVotes?.matches} />
             )}
           </>
         )}
       </Modal.Content>
+      {!isLoading && !hasShownAllVotes && (
+        <Modal.Actions>
+          <Button onClick={handleReadMoreClick} primary>
+            {t('modal.vp_delegation.details.stats_view_more')}
+          </Button>
+        </Modal.Actions>
+      )}
     </>
   )
 }

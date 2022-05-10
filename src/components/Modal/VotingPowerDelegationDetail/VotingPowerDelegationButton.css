@@ -1,12 +1,10 @@
 
 .VotingPowerDelegationDetail__Header .DelegateButton__Container {
-  float: right;
   margin-right: 55px;
   display: inline-flex;
   align-items: center;
 }
 
-.VotingPowerDelegationDetail__Header .DelegateButton__Container .ui.header.tiny {
-  font-size: 12px !important;
+.VotingPowerDelegationDetail__Header .DelegateButton__Container .ui.header {
   margin: 0 16px 0 0 !important;
 }

@@ -12,13 +12,13 @@ import { handleSearch } from './SearchInput'
 import './SearchInputMobile.css'
 
 export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivElement>) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const location = useLocation()
   const { search, searching } = useSearchParams()
   const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
   const [searchText, setSearchText] = useState(() => search || '')
-  const [placeholder, setPlaceholder] = useState(l('navigation.search.mobile.placeholder') || '')
+  const [placeholder, setPlaceholder] = useState(t('navigation.search.mobile.placeholder') || '')
   const burgerMenu = useBurgerMenu()
   useEffect(() => {
     burgerMenu?.setStatus((prev) => ({ ...prev, searching: searching }))
@@ -54,12 +54,12 @@ export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivEle
 
   function handleFocus() {
     setOpen(true)
-    if (!searchText) setPlaceholder(l('navigation.search.mobile.focus_placeholder') || '')
+    if (!searchText) setPlaceholder(t('navigation.search.mobile.focus_placeholder') || '')
   }
 
   function handleBlur() {
     setOpen(!!searchText)
-    if (!searchText) setPlaceholder(l('navigation.search.mobile.placeholder') || '')
+    if (!searchText) setPlaceholder(t('navigation.search.mobile.placeholder') || '')
   }
 
   return (
