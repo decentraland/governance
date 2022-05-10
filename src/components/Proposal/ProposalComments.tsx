@@ -10,6 +10,7 @@ import { Governance } from '../../api/Governance'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { forumUrl } from '../../entities/Proposal/utils'
 import Empty from '../Common/Empty'
+import Divider from '../Section/Divider'
 
 import ProposalComment from './ProposalComment'
 import './ProposalComments.css'
@@ -49,7 +50,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
     <div>
       {!loading && (
         <div className="ProposalComments">
-          <hr />
+          <Divider />
           <div className="ProposalComments__Header">
             <Header>{t('page.proposal_comments.title', { count: commentsCount })}</Header>
             {renderComments && (

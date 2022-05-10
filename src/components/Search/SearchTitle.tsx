@@ -14,7 +14,7 @@ import locations from '../../modules/locations'
 import './SearchTitle.css'
 
 export function SearchTitle() {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const responsive = useResponsive()
   const { search } = useSearchParams()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
@@ -30,7 +30,7 @@ export function SearchTitle() {
             </div>
             <div className={'SearchTitle_TextContainer'}>
               <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__Ellipsis'])}>
-                {l('navigation.search.search_results', { title: search })}
+                {t('navigation.search.search_results', { title: search })}
               </Header>
               <Header className={TokenList.join(['SearchTitle__Text', 'SearchTitle__ClosingDoubleQuote'])}>
                 {'"'}

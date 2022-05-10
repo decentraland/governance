@@ -1,0 +1,9 @@
+.DelegationBanner__Container .Banner__Description {
+  margin-right: 10px;
+}
+
+@media (min-width: 768px) {
+  .DelegationBanner__Container .Banner__Description {
+    margin-right: 0;
+  }
+}
