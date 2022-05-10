@@ -33,17 +33,21 @@ import CandidateMatch from './CandidateMatch'
 import VotedInitiative from './VotedInitiative'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
+import useSnapshotDelegateContract from '../../../hooks/useSnapshotDelegateContract'
+import VotingPowerDelegationButton from './VotingPowerDelegationButton'
 
 type VotingPowerDelegationDetailProps = {
   userVotes: SnapshotVote[] | null
   candidate: Candidate
+  userVP: number
   onBackClick: () => void
 }
 
 let timeout: ReturnType<typeof setTimeout>
 
-function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
+  const { isContractUsable, setDelegate, clearDelegate, checkDelegation } = useSnapshotDelegateContract()
   const { address } = candidate
   const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
   const [delegation, delegationState] = useDelegation(address)
@@ -58,6 +62,29 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
   const [isExpanded, setIsExpanded] = useState(false)
   const [matchingVotes, setMatchingVotes] = useState<MatchResult | null>(null)
   const [showFadeout, setShowFadeout] = useState(true)
+  const [isDelegating, setIsDelegating] = useState(false)
+
+  const [delegatedAddress] = useAsyncMemo(
+    async () => {
+      if (!!isContractUsable) {
+        return await checkDelegation!()
+      }
+      return null
+    },
+    [isContractUsable, isDelegating],
+    { initialValue: null }
+  )
+
+  const delegationButtonHandler = async (contractFunc: () => Promise<void>) => {
+    try {
+      setIsDelegating(true)
+      await contractFunc()
+      setIsDelegating(false)
+    } catch (error) {
+      setIsDelegating(false)
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
     if (!isExpanded) {
@@ -100,9 +127,14 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
           <ChevronLeft />
         </Button>
         <Username address={candidate.address} size="small" blockieScale={4} />
-        <Button primary size="small" className="DelegateVP">
-          {t('modal.vp_delegation.delegate_button')}
-        </Button>
+        <VotingPowerDelegationButton
+          revoke={!!delegatedAddress && delegatedAddress.toLowerCase() === address.toLowerCase()}
+          disabled={!isContractUsable || isDelegating}
+          loading={isDelegating}
+          userVP={userVP}
+          onRevoke={() => delegationButtonHandler(async () => isContractUsable && clearDelegate!())}
+          onDelegate={() => delegationButtonHandler(async () => isContractUsable && setDelegate!(address))}
+        />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>

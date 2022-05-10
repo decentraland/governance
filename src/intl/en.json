@@ -315,6 +315,8 @@
       "picked_by": "Picked by",
       "total_vp": "Total vp",
       "delegate_button": "Delegate VP",
+      "revoke_delegation_button": "Revoke delegation",
+      "delegated_stats": "Delegated {VP} VP",
       "pick_button": "Pick somebody else",
       "details": {
         "about_title": "About",
