@@ -3,8 +3,7 @@ import { useMemo } from 'react'
 
 import { Snapshot } from '../api/Snapshot'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-
-export const MINIMUM_VP_REQUIRED_TO_VOTE = 1
+import { MINIMUM_VP_REQUIRED_TO_VOTE } from './useVotingPowerBalance'
 
 export default function useVotingPowerBalanceList(addresses?: string[] | null) {
   const [votingPower, state] = useAsyncMemo(
