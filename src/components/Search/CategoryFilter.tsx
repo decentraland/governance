@@ -1,18 +1,20 @@
 import React, { useMemo } from 'react'
+
+import { useLocation } from '@gatsbyjs/reach-router'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
 import CategoryOption from '../Category/CategoryOption'
-import { useLocation } from '@reach/router'
-import CollapsibleFilter from './CollapsibleFilter'
 
 import './CategoryFilter.css'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import CollapsibleFilter from './CollapsibleFilter'
 
 export type FilterProps = {
   onChange?: (open: boolean) => void
 }
 
-export default React.memo(function CategoryFilter({onChange}:FilterProps) {
+export default React.memo(function CategoryFilter({ onChange }: FilterProps) {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
