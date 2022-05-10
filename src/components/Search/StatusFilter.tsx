@@ -1,9 +1,11 @@
-import { useLocation } from '@reach/router'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import React, { useMemo } from 'react'
+
+import { useLocation } from '@gatsbyjs/reach-router'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ProposalStatus, toProposalStatus } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
+
 import { FilterProps } from './CategoryFilter'
 import CollapsibleFilter from './CollapsibleFilter'
 import FilterLabel from './FilterLabel'
