@@ -1,14 +1,15 @@
-import './SearchInputMobile.css'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import React, { useEffect, useRef, useState } from 'react'
 
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import { useSearchParams } from '../../hooks/useSearchParams'
+
 import { handleSearch } from './SearchInput'
+import './SearchInputMobile.css'
 
 export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivElement>) {
   const t = useFormatMessage()

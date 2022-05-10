@@ -1,15 +1,16 @@
-import './SortingMenu.css'
+import React, { useMemo } from 'react'
 
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
-import React, { useMemo } from 'react'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import locations from '../../modules/locations'
+
+import './SortingMenu.css'
 
 export default function SortingMenu() {
   const location = useLocation()
