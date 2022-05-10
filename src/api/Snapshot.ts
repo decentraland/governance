@@ -299,6 +299,7 @@ export class Snapshot extends API {
     addresses: string[],
     block?: string | number
   ) {
+    addresses = addresses.map(addr => addr.toLowerCase())
     const result: Record<string, number> = {}
     const scores: Record<string, number>[] = await snapshot.utils.getScores(
       space,
@@ -310,9 +311,16 @@ export class Snapshot extends API {
 
     for (const score of scores) {
       for (const address of Object.keys(score)) {
-        result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(score[address] || 0)
+        result[address] = (result[address] || 0) + Math.floor(score[address] || 0)
       }
     }
+
+    for (const addr of addresses) {
+      if (!result[addr]) {
+        result[addr] = 0
+      }
+    }
+
     return result
   }
 
@@ -326,10 +334,16 @@ export class Snapshot extends API {
       return 0
     }
 
+    const vp = await this.getVotingPowerList([address], space)
+    return Object.values(vp)[0]
+  }
+
+  async getVotingPowerList(addresses?: string[] | null, space?: string | null) {
+    if (!addresses || addresses.length === 0 || !space) {
+      return {}
+    }
+
     const info = await this.getSpace(space)
-    const vp: Record<string, number>[] = await snapshot.utils.getScores(space, info.strategies, info.network, [address])
-    return vp.reduce((total, current) => {
-      return total + Object.values(current).reduce((total, current) => total + (current | 0), 0)
-    }, 0)
+    return await this.getScores(space, info.strategies, info.network, addresses)
   }
 }
