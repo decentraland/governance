@@ -7,6 +7,8 @@ import { Delegate } from '../../../hooks/useDelegatesInfo'
 import Arrow from '../../Icon/Arrow'
 import Username from '../../User/Username'
 
+import './VotingPowerDelegationItem.css'
+
 type VotingPowerDelegationItemProps = {
   delegate: Delegate
   onClick: () => void
@@ -19,7 +21,12 @@ function VotingPowerDelegationItem({ delegate, onClick }: VotingPowerDelegationI
   return (
     <Table.Row onMouseEnter={() => setIsFilled(true)} onMouseLeave={() => setIsFilled(false)} onClick={onClick}>
       <Table.Cell>
-        <Username address={delegate.address} size="small" blockieScale={4} />
+        <Username
+          address={delegate.address}
+          size="small"
+          blockieScale={4}
+          className="VotingPowerDelegationItem__Username"
+        />
       </Table.Cell>
       <Table.Cell>{intl.formatNumber(delegate.pickedBy)}</Table.Cell>
       <Table.Cell>{intl.formatNumber(delegate.totalVP)}</Table.Cell>

@@ -1,3 +1,13 @@
+.Username {
+  display: inline-flex;
+  align-items: center;
+}
+
+.Username span.dcl.blockie-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 a.Username span.address {
   color: inherit;
 }

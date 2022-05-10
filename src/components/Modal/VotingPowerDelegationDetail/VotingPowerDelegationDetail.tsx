@@ -113,11 +113,13 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
 
   return (
     <>
-      <Modal.Header className="VotingPowerDelegationDetail__Header">
-        <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
-          <ChevronLeft />
-        </Button>
-        <Username address={candidate.address} size="small" blockieScale={4} />
+      <Modal.Header className={TokenList.join(['VotingPowerDelegationModal__Header', "VotingPowerDelegationDetail__Header"])}>
+        <div className="VotingPowerDelegationDetail__CandidateName">
+          <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
+            <ChevronLeft />
+          </Button>
+          <Username address={candidate.address} size="small" blockieScale={4} />
+        </div>
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>

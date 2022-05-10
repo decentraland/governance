@@ -55,6 +55,10 @@
   font-weight: 500;
 }
 
+.DetailsSection .DetailsSection__Flex .Username {
+  justify-content: flex-end;
+}
+
 .DetailsSection .DetailsSection__Secondary {
   background: var(--secondary);
   border-radius: 6px;
