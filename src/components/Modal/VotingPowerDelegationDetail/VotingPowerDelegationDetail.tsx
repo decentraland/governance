@@ -69,7 +69,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
 
   const [delegatedAddress] = useAsyncMemo(
     async () => {
-      if (!!isContractUsable) {
+      if (isContractUsable) {
         return await checkDelegation!()
       }
       return null

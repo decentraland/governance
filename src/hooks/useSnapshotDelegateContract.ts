@@ -17,12 +17,13 @@ function useSnapshotDelegateContract() {
     let clearDelegate = null
     let checkDelegation = null
 
-    if (authState.provider) {
+    const contractAddress = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
+
+    if (authState.provider && contractAddress) {
       const enc = new TextEncoder()
       const signer = new Web3Provider(authState.provider).getSigner()
       const spaceId = hexlify(enc.encode(SNAPSHOT_SPACE))
       const fullSpaceId = spaceId.concat(new Array(66 - spaceId.length + 1).join('0'))
-      const contractAddress = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS || ''
       const contract = new Contract(contractAddress, DelegateABI, signer)
 
       setDelegate = async (address: string) => contract.setDelegate(fullSpaceId, address)
