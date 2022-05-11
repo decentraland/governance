@@ -34,7 +34,6 @@ import CandidateMatch from './CandidateMatch'
 import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
-import useSnapshotDelegateContract from '../../../hooks/useSnapshotDelegateContract'
 import VotingPowerDelegationButton from './VotingPowerDelegationButton'
 
 type VotingPowerDelegationDetailProps = {
@@ -49,8 +48,6 @@ const VOTES_PER_PAGE = 10
 
 function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
-  const { isContractUsable, delegatedAddress, isGlobalDelegation, setDelegate, clearDelegate } =
-    useSnapshotDelegateContract()
   const { address: candidateAddress } = candidate
   const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(candidateAddress)
   const [delegation, delegationState] = useDelegation(candidateAddress)
@@ -130,15 +127,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
           </Button>
           <Username address={candidate.address} size="small" blockieScale={4} />
         </div>
-        <VotingPowerDelegationButton
-          disabled={!isContractUsable}
-          userVP={userVP}
-          isGlobalDelegation={isGlobalDelegation}
-          candidateAddress={candidateAddress}
-          delegatedAddress={delegatedAddress}
-          onRevoke={clearDelegate}
-          onDelegate={setDelegate}
-        />
+        <VotingPowerDelegationButton userVP={userVP} candidateAddress={candidateAddress} />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
