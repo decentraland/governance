@@ -326,6 +326,7 @@
       "delegate_button": "Delegate VP",
       "revoke_delegation_button": "Revoke delegation",
       "delegated_stats": "Delegated {vp} VP",
+      "delegated_globally": "Delegated globally",
       "pick_button": "Pick somebody else",
       "details": {
         "about_title": "About",

@@ -11,6 +11,7 @@ const spaceId = hexlify(enc.encode(SNAPSHOT_SPACE))
 const fullSpaceId = spaceId.concat(new Array(66 - spaceId.length + 1).join('0'))
 const contractAddress = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+const GLOBAL_SPACE_ID = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const validateContract = <T>(contract: Contract | undefined, callback: (contract: Contract) => Promise<T>) => {
   if (!contract) {
@@ -23,6 +24,7 @@ const validateContract = <T>(contract: Contract | undefined, callback: (contract
 function useSnapshotDelegateContract() {
   const [userAddress, authState] = useAuth()
   const [delegatedAddress, setDelegatedAddress] = useState<string | undefined>()
+  const [isGlobalDelegation, setGlobalDelegation] = useState(false)
   const [contract, setContract] = useState<Contract | undefined>()
 
   const provider = authState.provider || undefined
@@ -52,7 +54,15 @@ function useSnapshotDelegateContract() {
 
   const checkDelegation = useCallback(async () => {
     return validateContract<string>(contract, async (contract) => {
-      const address: string = await contract.delegation(userAddress, fullSpaceId)
+      let address: string = await contract.delegation(userAddress, fullSpaceId)
+
+      if (address === NULL_ADDRESS) {
+        address = await contract.delegation(userAddress, GLOBAL_SPACE_ID)
+        if (address !== NULL_ADDRESS) {
+          setGlobalDelegation(true)
+        }
+      }
+
       setDelegatedAddress(address !== NULL_ADDRESS ? address : undefined)
 
       return address
@@ -65,7 +75,7 @@ function useSnapshotDelegateContract() {
     }
   }, [contract, isContractUsable])
 
-  return { isContractUsable, delegatedAddress, setDelegate, clearDelegate, checkDelegation }
+  return { isContractUsable, delegatedAddress, isGlobalDelegation, setDelegate, clearDelegate, checkDelegation }
 }
 
 export default useSnapshotDelegateContract

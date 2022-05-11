@@ -49,7 +49,8 @@ const VOTES_PER_PAGE = 10
 
 function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
-  const { isContractUsable, delegatedAddress, setDelegate, clearDelegate } = useSnapshotDelegateContract()
+  const { isContractUsable, delegatedAddress, isGlobalDelegation, setDelegate, clearDelegate } =
+    useSnapshotDelegateContract()
   const { address: candidateAddress } = candidate
   const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(candidateAddress)
   const [delegation, delegationState] = useDelegation(candidateAddress)
@@ -132,6 +133,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
         <VotingPowerDelegationButton
           disabled={!isContractUsable}
           userVP={userVP}
+          isGlobalDelegation={isGlobalDelegation}
           candidateAddress={candidateAddress}
           delegatedAddress={delegatedAddress}
           onRevoke={clearDelegate}

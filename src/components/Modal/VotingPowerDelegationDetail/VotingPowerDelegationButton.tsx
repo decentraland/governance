@@ -8,6 +8,7 @@ import './VotingPowerDelegationButton.css'
 interface Props {
   delegatedAddress: string | undefined
   candidateAddress: string
+  isGlobalDelegation: boolean
   disabled: boolean
   userVP: number
   onRevoke: () => Promise<void>
@@ -17,6 +18,7 @@ interface Props {
 function VotingPowerDelegationButton({
   delegatedAddress,
   candidateAddress,
+  isGlobalDelegation,
   userVP,
   disabled,
   onRevoke,
@@ -26,6 +28,7 @@ function VotingPowerDelegationButton({
   const [isLoading, setLoading] = useState(false)
 
   const isRevocable = !!delegatedAddress && delegatedAddress.toLowerCase() === candidateAddress.toLowerCase()
+  const isDelegatedGlobally = isRevocable && isGlobalDelegation
 
   const handleClick = async () => {
     setLoading(true)
@@ -47,11 +50,13 @@ function VotingPowerDelegationButton({
     <span className="DelegateButton__Container">
       {isRevocable && (
         <Header sub size="tiny">
-          {t('modal.vp_delegation.delegated_stats', { vp: userVP })}
+          {isGlobalDelegation
+            ? t('modal.vp_delegation.delegated_globally')
+            : t('modal.vp_delegation.delegated_stats', { vp: userVP })}
         </Header>
       )}
       <Button
-        disabled={isLoading || disabled}
+        disabled={isLoading || disabled || isDelegatedGlobally}
         loading={isLoading}
         inverted={isRevocable}
         primary
