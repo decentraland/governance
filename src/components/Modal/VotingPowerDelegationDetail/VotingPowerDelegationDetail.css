@@ -11,6 +11,10 @@
   margin-right: 0 !important;
 }
 
+.VotingPowerDelegationDetail__CandidateName {
+  display: inline-flex;
+}
+
 .VotingPowerDelegationDetail__Content .Info {
   -webkit-transition: max-height 0.8s;
   -moz-transition: max-height 0.8s;

@@ -431,7 +431,7 @@
       "delegate_voted_differently": "**Your delegate** voted differently",
       "delegators_voted": "**{votes}/{total}** of your party have voted",
       "delegators_represented": "You're representing **{total} {total, plural, one {account} other {accounts}}**",
-      "user_voted_for_delegators": "You voted on behalf of **{amountRepresented}** {amountRepresented, plural, one {account} other {accounts}}",
+      "user_voted_for_delegators": "You voted on behalf of **{amountRepresented} {amountRepresented, plural, one {account} other {accounts}}**",
       "result_label": "Current result",
       "vote_change": "Change Vote",
       "vote_overrule": "Overrule Vote",
