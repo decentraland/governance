@@ -309,15 +309,13 @@ export class Snapshot extends API {
       block
     )
 
+    for (const addr of addresses) {
+      result[addr] = 0
+    }
+
     for (const score of scores) {
       for (const address of Object.keys(score)) {
         result[address] = (result[address] || 0) + Math.floor(score[address] || 0)
-      }
-    }
-
-    for (const addr of addresses) {
-      if (!result[addr]) {
-        result[addr] = 0
       }
     }
 
