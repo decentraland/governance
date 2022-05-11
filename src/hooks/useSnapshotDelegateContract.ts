@@ -2,38 +2,70 @@ import { hexlify } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import DelegateABI from '../modules/contracts/abi/Delegate.abi.json'
 
+const enc = new TextEncoder()
+const spaceId = hexlify(enc.encode(SNAPSHOT_SPACE))
+const fullSpaceId = spaceId.concat(new Array(66 - spaceId.length + 1).join('0'))
+const contractAddress = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+
+const validateContract = <T>(contract: Contract | undefined, callback: (contract: Contract) => Promise<T>) => {
+  if (!contract) {
+    throw new Error("Delegation Contract is undefined")
+  }
+
+  return callback(contract)
+}
+
 function useSnapshotDelegateContract() {
-
   const [userAddress, authState] = useAuth()
+  const [delegatedAddress, setDelegatedAddress] = useState<string | undefined>()
+  const [contract, setContract] = useState<Contract | undefined>()
 
-  return useMemo(() => {
+  const provider = authState.provider || undefined
+  const isContractUsable = !!provider && !!contractAddress
 
-    let isContractUsable = false
-    let setDelegate = null
-    let clearDelegate = null
-    let checkDelegation = null
-
-    const contractAddress = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
-
-    if (authState.provider && contractAddress) {
-      const enc = new TextEncoder()
-      const signer = new Web3Provider(authState.provider).getSigner()
-      const spaceId = hexlify(enc.encode(SNAPSHOT_SPACE))
-      const fullSpaceId = spaceId.concat(new Array(66 - spaceId.length + 1).join('0'))
-      const contract = new Contract(contractAddress, DelegateABI, signer)
-
-      setDelegate = async (address: string) => contract.setDelegate(fullSpaceId, address)
-      clearDelegate = async () => contract.clearDelegate(fullSpaceId)
-      checkDelegation = async (): Promise<string> => contract.delegation(userAddress, fullSpaceId)
-      isContractUsable = true
+  useEffect(() => {
+    if (isContractUsable) {
+      const signer = new Web3Provider(provider).getSigner()
+      const newContract = new Contract(contractAddress, DelegateABI, signer)
+      setContract(newContract)
     }
+  }, [isContractUsable])
 
-    return { isContractUsable, setDelegate, clearDelegate, checkDelegation }
-  }, [authState.provider])
+  const setDelegate = useCallback(async (address: string) => {
+    return validateContract(contract, async (contract) => {
+      await contract.setDelegate(fullSpaceId, address)
+      setDelegatedAddress(address)
+    })
+  }, [contract])
+
+  const clearDelegate = useCallback(async () => {
+    return validateContract(contract, async (contract) => {
+      await contract.clearDelegate(fullSpaceId)
+      setDelegatedAddress(undefined)
+    })
+  }, [contract])
+
+  const checkDelegation = useCallback(async () => {
+    return validateContract<string>(contract, async (contract) => {
+      const address: string = await contract.delegation(userAddress, fullSpaceId)
+      setDelegatedAddress(address !== NULL_ADDRESS ? address : undefined)
+
+      return address
+    })
+  }, [contract])
+
+  useEffect(() => {
+    if (contract) {
+      checkDelegation()
+    }
+  }, [contract, isContractUsable])
+
+  return { isContractUsable, delegatedAddress, setDelegate, clearDelegate, checkDelegation }
 }
 
 export default useSnapshotDelegateContract

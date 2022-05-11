@@ -49,45 +49,25 @@ const VOTES_PER_PAGE = 10
 
 function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
-  const { isContractUsable, setDelegate, clearDelegate, checkDelegation } = useSnapshotDelegateContract()
-  const { address } = candidate
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
-  const [delegation, delegationState] = useDelegation(address)
+  const { isContractUsable, delegatedAddress, setDelegate, clearDelegate } = useSnapshotDelegateContract()
+  const { address: candidateAddress } = candidate
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(candidateAddress)
+  const [delegation, delegationState] = useDelegation(candidateAddress)
   const { delegatedVotingPower, isLoadingScores } = useDelegatedVotingPower(delegation.delegatedFrom)
-  const [mainnetMana, mainnetManaState] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [maticMana, maticManaState] = useManaBalance(address, ChainId.MATIC_MAINNET)
+  const [mainnetMana, mainnetManaState] = useManaBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [maticMana, maticManaState] = useManaBalance(candidateAddress, ChainId.MATIC_MAINNET)
   const wManaContract = useWManaContract()
-  const [wMana, wManaState] = useBalanceOf(wManaContract, address, 'ether')
-  const [land, landState] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [ens, ensState] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [candidateVotes, candidateVotesState] = useAsyncMemo(async () => Governance.get().getAddressVotes(address), [])
+  const [wMana, wManaState] = useBalanceOf(wManaContract, candidateAddress, 'ether')
+  const [land, landState] = useLandBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [ens, ensState] = useEnsBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [candidateVotes, candidateVotesState] = useAsyncMemo(
+    async () => Governance.get().getAddressVotes(candidateAddress),
+    []
+  )
   const [isExpanded, setIsExpanded] = useState(false)
   const [matchingVotes, setMatchingVotes] = useState<MatchResult | null>(null)
   const [showFadeout, setShowFadeout] = useState(true)
-  const [isDelegating, setIsDelegating] = useState(false)
   const [filteredCandidateVotes, setFilteredCandidateVotes] = useState<VotedProposal[]>([])
-
-  const [delegatedAddress] = useAsyncMemo(
-    async () => {
-      if (isContractUsable) {
-        return await checkDelegation!()
-      }
-      return null
-    },
-    [isContractUsable, isDelegating],
-    { initialValue: null }
-  )
-
-  const delegationButtonHandler = async (contractFunc: () => Promise<void>) => {
-    try {
-      setIsDelegating(true)
-      await contractFunc()
-      setIsDelegating(false)
-    } catch (error) {
-      setIsDelegating(false)
-      console.error(error)
-    }
-  }
 
   useEffect(() => {
     if (!isExpanded) {
@@ -150,12 +130,12 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
           <Username address={candidate.address} size="small" blockieScale={4} />
         </div>
         <VotingPowerDelegationButton
-          revoke={!!delegatedAddress && delegatedAddress.toLowerCase() === address.toLowerCase()}
-          disabled={!isContractUsable || isDelegating}
-          loading={isDelegating}
+          disabled={!isContractUsable}
           userVP={userVP}
-          onRevoke={() => delegationButtonHandler(async () => isContractUsable && clearDelegate!())}
-          onDelegate={() => delegationButtonHandler(async () => isContractUsable && setDelegate!(address))}
+          candidateAddress={candidateAddress}
+          delegatedAddress={delegatedAddress}
+          onRevoke={clearDelegate}
+          onDelegate={setDelegate}
         />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">

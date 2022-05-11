@@ -319,13 +319,13 @@
     },
     "vp_delegation": {
       "title": "Voting Power Delegation",
-      "description": "Choose who you’d like to receive the 100% of your **{VP} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates. [Read more](#)",
+      "description": "Choose who you’d like to receive the 100% of your **{vp} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates. [Read more](#)",
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
       "total_vp": "Total vp",
       "delegate_button": "Delegate VP",
       "revoke_delegation_button": "Revoke delegation",
-      "delegated_stats": "Delegated {VP} VP",
+      "delegated_stats": "Delegated {vp} VP",
       "pick_button": "Pick somebody else",
       "details": {
         "about_title": "About",
