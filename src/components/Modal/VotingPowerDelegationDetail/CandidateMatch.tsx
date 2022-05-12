@@ -28,7 +28,7 @@ function CandidateMatch({ matchingVotes }: Props) {
           position="right center"
           trigger={
             <div className="CandidateMatch__Info">
-              <Info width="14" height="14" />
+              <Info size="14" />
             </div>
           }
           on="hover"

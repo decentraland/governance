@@ -42,7 +42,6 @@ import SubscribeButton from '../components/Section/SubscribeButton'
 import StatusLabel from '../components/Status/StatusLabel'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
-import { UpdateAttributes } from '../entities/Updates/types'
 import useProfile from '../hooks/useProfile'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -193,8 +192,6 @@ export default function ProposalPage() {
     )
   }, [nextUpdate?.id, proposal?.id])
 
-  const handleUpdateClick = (update: UpdateAttributes) => navigate(`/update/?id=${update.id}`)
-
   if (proposalState.error) {
     return (
       <>
@@ -252,9 +249,7 @@ export default function ProposalPage() {
               <ProposalHeaderPoi proposal={proposal} />
               <Markdown>{proposal?.description || ''}</Markdown>
               <ProposalFooterPoi proposal={proposal} />
-              {showProposalUpdates && (
-                <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateClick={handleUpdateClick} />
-              )}
+              {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 

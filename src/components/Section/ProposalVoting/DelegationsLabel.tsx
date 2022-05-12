@@ -60,7 +60,7 @@ const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: Deleg
           position="left center"
           trigger={
             <div className="DelegationsLabel__PopupContainer">
-              <Info className={'DelegationsLabel__Info'} width="14" height="14" />
+              <Info className="DelegationsLabel__Info" size="14" />
             </div>
           }
           on="hover"

@@ -1,22 +1,23 @@
 import React from 'react'
+
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import { UpdateAttributes } from '../../entities/Updates/types'
+
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import Divider from '../Section/Divider'
-import ProposalUpdate from './ProposalUpdate'
+import { UpdateAttributes } from '../../entities/Updates/types'
 import Megaphone from '../Icon/Megaphone'
+import Divider from '../Section/Divider'
+
+import ProposalUpdate from './ProposalUpdate'
 import './ProposalUpdates.css'
 
 export default function ProposalUpdates({
   proposal,
   updates,
-  onUpdateClick,
 }: {
   proposal: ProposalAttributes | null
   updates?: UpdateAttributes[] | null
-  onUpdateClick: (update: UpdateAttributes) => void
 }) {
   const t = useFormatMessage()
 
@@ -49,7 +50,6 @@ export default function ProposalUpdates({
               proposal={proposal}
               update={item}
               expanded={index === 0}
-              onClick={onUpdateClick}
             />
           ))}
       </div>
