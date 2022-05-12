@@ -62,4 +62,5 @@ export default {
   balance: (options: Partial<{ address: string }> = {}) => url(`/balance/`, options),
   transparency: () => url(`/transparency/`),
   welcome: () => url(`/welcome/`, {}),
+  update: (id: string) => url(`/update/`, { id })
 }

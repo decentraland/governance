@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import './VotingPowerDelegationHandler.css'
-import useSnapshotDelegateContract, { DelegateContractStatusCode } from '../../../hooks/useSnapshotDelegateContract'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants'
+import useSnapshotDelegateContract, { DelegateContractStatusCode } from '../../../hooks/useSnapshotDelegateContract'
 import Info from '../../Icon/Info'
+
+import './VotingPowerDelegationButton.css'
 
 interface Props {
   candidateAddress: string
@@ -57,7 +59,7 @@ function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
               position="bottom center"
               trigger={
                 <a className="DelegateButton__Container--Global" href={EDIT_DELEGATE_SNAPSHOT_URL} target="_blank">
-                  {t('modal.vp_delegation.delegated_globally')} <Info width="18px" height="18px" />
+                  {t('modal.vp_delegation.delegated_globally')} <Info size="18" />
                 </a>
               }
               on="hover"

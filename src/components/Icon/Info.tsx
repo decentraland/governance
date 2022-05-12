@@ -1,17 +1,16 @@
 import React from 'react'
 
 interface Props {
-  width?: string
-  height?: string
+  size?: string
   className?: string
 }
 
-function Info({ width = '24', height = '24', className }: Props) {
+function Info({ size = '24', className }: Props) {
   return (
     <svg
       className={className}
-      width={width}
-      height={height}
+      width={size}
+      height={size}
       viewBox="0 2 24 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
