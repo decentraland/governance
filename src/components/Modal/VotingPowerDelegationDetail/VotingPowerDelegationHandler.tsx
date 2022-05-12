@@ -14,10 +14,12 @@ interface Props {
   userVP: number
 }
 
+const TRANSACTION_CANCELED_BY_USER_STATUS_CODE = 4001
+
 function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
   const t = useFormatMessage()
   const [isLoading, setLoading] = useState(false)
-  const [isError, setIsError] = useState(false)
+  const [isError, setError] = useState(false)
   const { isContractUsable, delegatedAddress, isGlobalDelegation, setDelegate, clearDelegate } =
     useSnapshotDelegateContract()
 
@@ -27,7 +29,7 @@ function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
 
   const handleClick = async () => {
     setLoading(true)
-    setIsError(false)
+    setError(false)
     try {
       if (isRevocable) {
         await clearDelegate()
@@ -36,8 +38,8 @@ function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
       }
     } catch (error: any) {
       console.error(error)
-      if (error.code !== 4001) { // transaction canceled by user
-        setIsError(true)
+      if (error.code !== TRANSACTION_CANCELED_BY_USER_STATUS_CODE) {
+        setError(true)
       }
     } finally {
       setLoading(false)
