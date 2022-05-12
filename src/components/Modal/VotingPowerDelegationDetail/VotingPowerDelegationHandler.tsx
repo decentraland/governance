@@ -9,7 +9,7 @@ import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants
 import useSnapshotDelegateContract, { DelegateContractStatusCode } from '../../../hooks/useSnapshotDelegateContract'
 import Info from '../../Icon/Info'
 
-import './VotingPowerDelegationButton.css'
+import './VotingPowerDelegationHandler.css'
 
 interface Props {
   candidateAddress: string
