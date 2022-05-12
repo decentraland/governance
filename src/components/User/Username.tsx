@@ -18,34 +18,54 @@ type Props = SizeProps & {
   className?: string
   blockieScale?: number
   iconOnly?: boolean
+  addressOnly?: boolean
 }
 
-const Username = ({ address, size, linked, iconOnly = false, blockieScale = 3, className}: Props) => {
+const Username = ({
+  address,
+  size,
+  linked,
+  iconOnly = false,
+  addressOnly = false,
+  blockieScale = 3,
+  className,
+}: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
 
   const userElement = (
     <>
-      {hasDclProfile && <>
-        <Avatar size={size || 'mini'} address={address}  />
-        {profileHasName && !iconOnly && profile!.name}
-        {!profileHasName && !iconOnly && <Address value={address || ''} />}
-      </>}
+      {addressOnly && (
+        <>
+          {profileHasName && profile!.name}
+          {!profileHasName && <Address value={address || ''} className={className} />}
+        </>
+      )}
 
-      {(!hasDclProfile || !profile) && (
-        <Blockie scale={blockieScale} seed={address || ''}>
-          {!iconOnly && <Address value={address || ''} />}
-        </Blockie>
+      {!addressOnly && (
+        <>
+          {hasDclProfile && (
+            <>
+              <Avatar size={size || 'mini'} address={address} />
+              {profileHasName && !iconOnly && profile!.name}
+              {!profileHasName && !iconOnly && <Address value={address || ''} />}
+            </>
+          )}
+
+          {(!hasDclProfile || !profile) && (
+            <Blockie scale={blockieScale} seed={address || ''}>
+              {!iconOnly && <Address value={address || ''} />}
+            </Blockie>
+          )}
+        </>
       )}
     </>
   )
 
   return (
-    <div className='Username'>
+    <div className="Username">
       {linked ? (
-        <Link className={TokenList.join(['Username', className])}
-              href={locations.balance({ address })}
-        >
+        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
           {userElement}
         </Link>
       ) : (

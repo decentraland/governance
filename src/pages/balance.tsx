@@ -21,9 +21,7 @@ import VotingPower from '../components/Token/VotingPower'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-import useDelegatedVotingPower from '../hooks/useDelegatedVotingPower'
-import useDelegation from '../hooks/useDelegation'
-import useVotingPowerBalance from '../hooks/useVotingPowerBalance'
+import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './balance.css'
@@ -35,9 +33,15 @@ export default function BalancePage() {
   const [userAddress] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
-  const [delegation, delegationState] = useDelegation(address)
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
-  const { scores, isLoadingScores, delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
+  const {
+    votingPower,
+    isLoadingVotingPower,
+    delegation,
+    delegationState,
+    scores,
+    isLoadingScores,
+    delegatedVotingPower,
+  } = useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
     return (
