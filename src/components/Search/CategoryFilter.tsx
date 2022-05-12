@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
