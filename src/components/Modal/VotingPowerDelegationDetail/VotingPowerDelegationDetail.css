@@ -1,5 +1,8 @@
 .VotingPowerDelegationDetail__Header {
   margin-left: 25px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
 
 .VotingPowerDelegationDetail__Header img.dcl-avatar,

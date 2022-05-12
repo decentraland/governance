@@ -148,6 +148,13 @@ body {
   --gray: #A19EA8;
 }
 
+.ui.inverted.primary.button:active, 
+.ui.inverted.primary.buttons .button:active,
+.ui.inverted.primary.button:focus, 
+.ui.inverted.primary.buttons .button:focus {
+  background-color: var(--primary)
+}
+
 @media only screen and (min-width: 992px) {
   .tabletOnly.tabletOnly.tabletOnly {
     visibility: hidden;

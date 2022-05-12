@@ -54,6 +54,7 @@ function VotingPowerDelegationModal({ vp, onClose, ...props }: VotingPowerDelega
       )}
       {selectedCandidate && (
         <VotingPowerDelegationDetail
+          userVP={vp}
           userVotes={userVotes}
           candidate={selectedCandidate}
           onBackClick={() => setSelectedCandidate(null)}

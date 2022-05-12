@@ -34,29 +34,34 @@ import CandidateMatch from './CandidateMatch'
 import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
+import VotingPowerDelegationButton from './VotingPowerDelegationButton'
 
 type VotingPowerDelegationDetailProps = {
   userVotes: SnapshotVote[] | null
   candidate: Candidate
+  userVP: number
   onBackClick: () => void
 }
 
 let timeout: ReturnType<typeof setTimeout>
 const VOTES_PER_PAGE = 10
 
-function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
-  const { address } = candidate
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
-  const [delegation, delegationState] = useDelegation(address)
+  const { address: candidateAddress } = candidate
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(candidateAddress)
+  const [delegation, delegationState] = useDelegation(candidateAddress)
   const { delegatedVotingPower, isLoadingScores } = useDelegatedVotingPower(delegation.delegatedFrom)
-  const [mainnetMana, mainnetManaState] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [maticMana, maticManaState] = useManaBalance(address, ChainId.MATIC_MAINNET)
+  const [mainnetMana, mainnetManaState] = useManaBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [maticMana, maticManaState] = useManaBalance(candidateAddress, ChainId.MATIC_MAINNET)
   const wManaContract = useWManaContract()
-  const [wMana, wManaState] = useBalanceOf(wManaContract, address, 'ether')
-  const [land, landState] = useLandBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [ens, ensState] = useEnsBalance(address, ChainId.ETHEREUM_MAINNET)
-  const [candidateVotes, candidateVotesState] = useAsyncMemo(async () => Governance.get().getAddressVotes(address), [])
+  const [wMana, wManaState] = useBalanceOf(wManaContract, candidateAddress, 'ether')
+  const [land, landState] = useLandBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [ens, ensState] = useEnsBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [candidateVotes, candidateVotesState] = useAsyncMemo(
+    async () => Governance.get().getAddressVotes(candidateAddress),
+    []
+  )
   const [isExpanded, setIsExpanded] = useState(false)
   const [matchingVotes, setMatchingVotes] = useState<MatchResult | null>(null)
   const [showFadeout, setShowFadeout] = useState(true)
@@ -113,13 +118,16 @@ function VotingPowerDelegationDetail({ userVotes, candidate, onBackClick }: Voti
 
   return (
     <>
-      <Modal.Header className={TokenList.join(['VotingPowerDelegationModal__Header', "VotingPowerDelegationDetail__Header"])}>
+      <Modal.Header
+        className={TokenList.join(['VotingPowerDelegationModal__Header', 'VotingPowerDelegationDetail__Header'])}
+      >
         <div className="VotingPowerDelegationDetail__CandidateName">
           <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
             <ChevronLeft />
           </Button>
           <Username address={candidate.address} size="small" blockieScale={4} />
         </div>
+        <VotingPowerDelegationButton userVP={userVP} candidateAddress={candidateAddress} />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
