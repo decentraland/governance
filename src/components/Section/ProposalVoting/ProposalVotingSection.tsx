@@ -6,7 +6,8 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Vote } from '../../../entities/Votes/types'
-import useDelegation from '../../../hooks/useDelegation'
+import useVotesMatch from '../../../hooks/useVotesMatch'
+import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
 import useVotingSectionTestData, { TestData } from '../../../hooks/useVotingSectionTestData'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
 import VotingSectionTester from '../VotingSectionTester'
@@ -39,9 +40,12 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
   let [account, accountState] = useAuthContext()
-  const [delegations] = useDelegation(account)
-  let delegate: string | null = delegations?.delegatedTo[0]?.delegate
-  let delegators: string[] = delegations?.delegatedFrom.map((delegator) => delegator.delegator)
+  let { delegation, delegatedVotingPower, ownVotingPower } = useVotingPowerInformation(account)
+  let delegate: string | null = delegation?.delegatedTo[0]?.delegate
+  let delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
+
+  const { matchResult } = useVotesMatch(account, delegate)
+  let voteDifference = matchResult.voteDifference
 
   const testData: TestData | null = useVotingSectionTestData()
   if (testData) {
@@ -50,10 +54,23 @@ const ProposalVotingSection = ({
     delegators = testData.delegators
     votes = testData.votes
     choices = testData.choices
+    ownVotingPower = testData.ownVotingPower
+    delegatedVotingPower = testData.delegatedVotingPower
+    voteDifference = testData.voteDifference
   }
 
   const { vote, delegateVote, delegationsLabel, votedChoice, showChoiceButtons } = useMemo(
-    () => getVotingSectionConfig(votes, choices, delegate, delegators, account),
+    () =>
+      getVotingSectionConfig(
+        votes,
+        choices,
+        delegate,
+        delegators,
+        account,
+        ownVotingPower,
+        delegatedVotingPower,
+        voteDifference
+      ),
     [testData]
   )
   const { votesByChoices, totalVotes } = useMemo(() => getPartyVotes(delegators, votes, choices), [testData])
