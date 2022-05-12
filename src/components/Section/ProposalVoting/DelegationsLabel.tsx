@@ -10,35 +10,38 @@ import Username from '../../User/Username'
 
 import './DelegationsLabel.css'
 
+interface InfoMessageValues {
+  delegate?: string
+  own_vp?: number
+  delegators_that_voted?: number
+  total_delegators?: number
+  delegators_without_vote?: number
+}
+
 export interface DelegationsLabelProps {
   delegateLabel?: { id: string; values?: any }
   delegatorsLabel?: { id: string; values?: any }
-  infoMessage?: { id: string; values?: any }
+  infoMessage?: { id: string; values?: InfoMessageValues }
 }
 
-function formatInfoMessage(infoMessage: { id: string; values?: any } | undefined) {
-  if (infoMessage && infoMessage.values) {
-    if (infoMessage.values.delegate) {
-      infoMessage.values.delegate = (
-        <Username className="DelegationsLabel__InfoMessage" address={infoMessage.values.delegate} addressOnly />
-      )
+function formatInfoMessageValues(values?: any) {
+  if (values) {
+    if (values.delegate) {
+      values.delegate = <Username className="DelegationsLabel__InfoMessage" address={values.delegate} addressOnly />
     }
-    if (infoMessage.values.own_vp) {
-      infoMessage.values.own_vp = (
-        <VotingPower className="DelegationsLabel__InfoMessage" value={infoMessage.values.own_vp} />
-      )
+    if (values.own_vp) {
+      values.own_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={values.own_vp} />
     }
-    if (infoMessage.values.delegated_vp) {
-      infoMessage.values.delegated_vp = (
-        <VotingPower className="DelegationsLabel__InfoMessage" value={infoMessage.values.delegated_vp} />
-      )
+    if (values.delegated_vp) {
+      values.delegated_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={values.delegated_vp} />
     }
   }
+  return values
 }
 
 const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: DelegationsLabelProps) => {
   const t = useFormatMessage()
-  formatInfoMessage(infoMessage)
+  const formattedInfoValues = formatInfoMessageValues(infoMessage?.values)
 
   return (
     <div className="DelegationsLabel">
@@ -53,7 +56,7 @@ const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: Deleg
 
       {infoMessage && (
         <Popup
-          content={<span>{t(infoMessage.id, infoMessage.values)}</span>}
+          content={<span>{t(infoMessage.id, formattedInfoValues)}</span>}
           position="left center"
           trigger={
             <div className="DelegationsLabel__PopupContainer">
