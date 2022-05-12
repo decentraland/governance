@@ -193,7 +193,7 @@ export default function ProposalPage() {
     )
   }, [nextUpdate?.id, proposal?.id])
 
-  const handleUpdateClick = (update: UpdateAttributes) => navigate(`/update?id=${update.id}`)
+  const handleUpdateClick = (update: UpdateAttributes) => navigate(`/update/?id=${update.id}`)
 
   if (proposalState.error) {
     return (

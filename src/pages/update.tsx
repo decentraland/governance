@@ -1,17 +1,20 @@
 import React, { useMemo } from 'react'
+
 import { useLocation } from '@reach/router'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
-import useProposalUpdate from '../hooks/useProposalUpdate'
-import useProposal from '../hooks/useProposal'
-import useProposalUpdates from '../hooks/useProposalUpdates'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
-import locations from '../modules/locations'
 import useProfile from '../hooks/useProfile'
+import useProposal from '../hooks/useProposal'
+import useProposalUpdate from '../hooks/useProposalUpdate'
+import useProposalUpdates from '../hooks/useProposalUpdates'
+import locations from '../modules/locations'
+
 import './update.css'
 
 export default function UpdateDetail() {
@@ -21,7 +24,7 @@ export default function UpdateDetail() {
   const updateId = params.get('id')
   const { update, state: updateState } = useProposalUpdate(updateId)
   const [proposal, proposalState] = useProposal(update?.proposal_id)
-  const { profile, state: profileState } = useProfile(proposal?.user)
+  const { profile, profileState } = useProfile(proposal?.user)
   const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
   if (updateState.loading || profileState.loading || updatesState.loading || proposalState.loading) {

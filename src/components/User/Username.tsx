@@ -20,17 +20,19 @@ type Props = SizeProps & {
   iconOnly?: boolean
 }
 
-const Username = ({ address, size, linked, iconOnly = false, blockieScale = 3, className}: Props) => {
+const Username = ({ address, size, linked, iconOnly = false, blockieScale = 3, className }: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
 
   const userElement = (
     <>
-      {hasDclProfile && <>
-        <Avatar size={size || 'mini'} address={address}  />
-        {profileHasName && !iconOnly && profile!.name}
-        {!profileHasName && !iconOnly && <Address value={address || ''} />}
-      </>}
+      {hasDclProfile && (
+        <>
+          <Avatar size={size || 'mini'} address={address} />
+          {profileHasName && !iconOnly && profile!.name}
+          {!profileHasName && !iconOnly && <Address value={address || ''} />}
+        </>
+      )}
 
       {(!hasDclProfile || !profile) && (
         <Blockie scale={blockieScale} seed={address || ''}>
@@ -41,11 +43,9 @@ const Username = ({ address, size, linked, iconOnly = false, blockieScale = 3, c
   )
 
   return (
-    <div className='Username'>
+    <div className="Username">
       {linked ? (
-        <Link className={TokenList.join(['Username', className])}
-              href={locations.balance({ address })}
-        >
+        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
           {userElement}
         </Link>
       ) : (

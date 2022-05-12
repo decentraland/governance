@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import { toProposalType, toProposalStatus, ProposalType, ProposalStatus } from '../entities/Proposal/types'
 import { toProposalListPage } from '../modules/locations'
 
