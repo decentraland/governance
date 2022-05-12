@@ -38,7 +38,7 @@ const Username = ({
       {addressOnly && (
         <>
           {profileHasName && profile!.name}
-          {!profileHasName && <Address value={address || ''} className={className}/>}
+          {!profileHasName && <Address value={address || ''} className={className} />}
         </>
       )}
 
@@ -63,11 +63,9 @@ const Username = ({
   )
 
   return (
-    <div className='Username'>
+    <div className="Username">
       {linked ? (
-        <Link className={TokenList.join(['Username', className])}
-              href={locations.balance({ address })}
-        >
+        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
           {userElement}
         </Link>
       ) : (

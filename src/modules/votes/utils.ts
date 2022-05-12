@@ -1,7 +1,8 @@
-import { DelegationsLabelProps } from '../../components/Section/ProposalVoting/DelegationsLabel';
-import { VotedChoice } from '../../components/Section/ProposalVoting/VotedChoiceButton';
-import { Vote } from '../../entities/Votes/types';
-import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder';
+import { DelegationsLabelProps } from '../../components/Section/ProposalVoting/DelegationsLabel'
+import { VotedChoice } from '../../components/Section/ProposalVoting/VotedChoiceButton'
+import { Vote } from '../../entities/Votes/types'
+
+import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 import { VotedChoiceBuilder } from './helpers/VotedChoiceBuilder'
 
 export interface VotingSectionConfigProps {

@@ -17,8 +17,10 @@ export async function signMessage(wallet: Wallet, msg: string) {
   return wallet.signMessage(Buffer.from(msg, 'utf8'))
 }
 
-export function calculateMatch(votes1: SnapshotVote[], votes2: SnapshotVote[]): MatchResult {
+export function calculateMatch(votes1: SnapshotVote[] | null, votes2: SnapshotVote[] | null): MatchResult {
   const match: MatchResult = { percentage: 0, voteDifference: 0, matches: [] }
+
+  if (!votes1 || !votes2) return match
 
   let matchCounter = 0
   let voteDifference = 0

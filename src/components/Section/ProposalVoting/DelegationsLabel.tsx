@@ -1,21 +1,14 @@
-import React from 'react';
+import React from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
+import Info from '../../Icon/Info'
+import VotingPower from '../../Token/VotingPower'
+import Username from '../../User/Username'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown';
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage';
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup';
-
-
-
-import Info from '../../Icon/Info';
-import VotingPower from '../../Token/VotingPower';
-import Username from '../../User/Username';
-
-
-
-import './DelegationsLabel.css';
-
+import './DelegationsLabel.css'
 
 export interface DelegationsLabelProps {
   delegateLabel?: { id: string; values?: any }
@@ -26,13 +19,19 @@ export interface DelegationsLabelProps {
 function formatInfoMessage(infoMessage: { id: string; values?: any } | undefined) {
   if (infoMessage && infoMessage.values) {
     if (infoMessage.values.delegate) {
-      infoMessage.values.delegate = <Username className="DelegationsLabel__InfoMessage" address={infoMessage.values.delegate} addressOnly />
+      infoMessage.values.delegate = (
+        <Username className="DelegationsLabel__InfoMessage" address={infoMessage.values.delegate} addressOnly />
+      )
     }
     if (infoMessage.values.own_vp) {
-      infoMessage.values.own_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={infoMessage.values.own_vp} />
+      infoMessage.values.own_vp = (
+        <VotingPower className="DelegationsLabel__InfoMessage" value={infoMessage.values.own_vp} />
+      )
     }
     if (infoMessage.values.delegated_vp) {
-      infoMessage.values.delegated_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={infoMessage.values.delegated_vp} />
+      infoMessage.values.delegated_vp = (
+        <VotingPower className="DelegationsLabel__InfoMessage" value={infoMessage.values.delegated_vp} />
+      )
     }
   }
 }

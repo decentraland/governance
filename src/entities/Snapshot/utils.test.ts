@@ -9,6 +9,13 @@ const EMPTY_MATCH_RESULT = { percentage: 0, voteDifference: 0, matches: [] }
 
 describe('calculateMatch', () => {
 
+  describe('If the user or candidate votes are null', () => {
+    it('should return a 0 match percentage and an empty matches list', () => {
+      expect(calculateMatch(null, [])).toStrictEqual(EMPTY_MATCH_RESULT)
+      expect(calculateMatch([], null)).toStrictEqual(EMPTY_MATCH_RESULT)
+    })
+  })
+
   describe('If the user and candidate have not voted', () => {
 
     beforeEach(() => {

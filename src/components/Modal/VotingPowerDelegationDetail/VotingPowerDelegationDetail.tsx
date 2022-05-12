@@ -16,7 +16,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { VotedProposal } from '../../../entities/Votes/types'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
-import useVotesInformation from '../../../hooks/useVotesInformation'
+import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
@@ -58,7 +58,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
     otherAccountVotes: candidateVotes,
     matchResult,
     votesInformationLoading,
-  } = useVotesInformation(userAddress, candidateAddress)
+  } = useVotesMatch(userAddress, candidateAddress)
   const [isExpanded, setIsExpanded] = useState(false)
   const [showFadeout, setShowFadeout] = useState(true)
   const [filteredCandidateVotes, setFilteredCandidateVotes] = useState<VotedProposal[]>([])
@@ -91,7 +91,6 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   }, [candidateVotes, filteredCandidateVotes])
 
   const hasShownAllVotes = candidateVotes?.length === filteredCandidateVotes.length
-
   const mana = mainnetMana + maticMana + (wMana || 0)
 
   const isLoading =
@@ -236,7 +235,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
               )}
             </Grid>
             {filteredCandidateVotes.length > 0 && (
-              <VotedInitiativeList candidateVotes={filteredCandidateVotes} matches={matchingVotes?.matches} />
+              <VotedInitiativeList candidateVotes={filteredCandidateVotes} matches={matchResult.matches} />
             )}
           </>
         )}

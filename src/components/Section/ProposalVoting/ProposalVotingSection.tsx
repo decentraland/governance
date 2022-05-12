@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Vote } from '../../../entities/Votes/types'
-import useVotesInformation from '../../../hooks/useVotesInformation'
+import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
 import useVotingSectionTestData, { TestData } from '../../../hooks/useVotingSectionTestData'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
@@ -40,19 +40,12 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
   let [account, accountState] = useAuthContext()
-  let {
-      delegation,
-      delegatedVotingPower,
-      ownVotingPower
-  } = useVotingPowerInformation(account)
+  let { delegation, delegatedVotingPower, ownVotingPower } = useVotingPowerInformation(account)
   let delegate: string | null = delegation?.delegatedTo[0]?.delegate
   let delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
 
-  let voteDifference:number = 0
-  if(!!delegate){
-    const { matchResult } = useVotesInformation(account,  delegate)
-    voteDifference = matchResult?.voteDifference || 0
-  }
+  const { matchResult } = useVotesMatch(account, delegate)
+  let voteDifference = matchResult.voteDifference
 
   const testData: TestData | null = useVotingSectionTestData()
   if (testData) {
