@@ -12,14 +12,18 @@ const RANDOM_ACCOUNT = '0xd2d950cea649feef4d6111c18adbd9a37b3a9f65'
 export const CHOICE_1_VOTE = {
   choice: 1,
   vp: 2000,
-  timestamp: 1000,
+  timestamp: 1650828044,
 }
 
 export const CHOICE_2_VOTE = {
   choice: 2,
   vp: 2000,
-  timestamp: 2000,
+  timestamp: 1750828044,
 }
+
+export const OWN_VOTING_POWER = 111
+export const DELEGATED_VOTING_POWER = 222
+export const VOTE_DIFFERENCE =  3
 
 export const VOTES_WITH_DELEGATORS = {
   [DELEGATOR_1]: CHOICE_1_VOTE,

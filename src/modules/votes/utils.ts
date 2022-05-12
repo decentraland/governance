@@ -17,7 +17,10 @@ export function getVotingSectionConfig(
   choices: string[],
   delegate: string | null,
   delegators: string[] | null,
-  account: string | null
+  account: string | null,
+  ownVotingPower: number,
+  delegatedVotingPower: number,
+  voteDifference: number | null
 ): VotingSectionConfigProps {
   const vote = (account && votes?.[account]) || null
   const delegateVote = (delegate && votes?.[delegate]) || null
@@ -35,13 +38,15 @@ export function getVotingSectionConfig(
 
   const votedChoice = new VotedChoiceBuilder(vote, delegateVote, choices, votes, account, delegate, delegators).build()
   const delegationsLabel = new DelegationsLabelBuilder(
-    vote,
-    delegateVote,
-    choices,
-    votes,
     account,
+    ownVotingPower,
+    delegatedVotingPower,
+    vote,
     delegate,
-    delegators
+    delegateVote,
+    voteDifference,
+    delegators,
+    votes
   ).build()
 
   if (votedChoice) configuration.votedChoice = votedChoice

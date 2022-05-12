@@ -1,5 +1,15 @@
 .DelegationsLabel {
+	display: inline-flex;
+}
+
+.DelegationsLabel__TextContainer {
 	align-items: center;
+	width: 99%;
+}
+
+.DelegationsLabel__InfoMessage {
+	font-weight: 500;
+	color: #ffffff !important;
 }
 
 .DelegationsLabel__Text p.dg.Paragraph {
@@ -7,3 +17,14 @@
 	padding-left: 4px;
 }
 
+svg.DelegationsLabel__Info {
+	margin-top: 6px;
+	margin-left: 3px;
+}
+
+
+@media (min-width: 1440px) {
+	.DelegationsLabel__TextContainer {
+		min-width: 232px;
+	}
+}

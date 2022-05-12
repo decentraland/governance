@@ -11,13 +11,13 @@ const ACCOUNT: string = '0xcD15d83f42179b9A5B515eea0975f554444a9646' // use prod
 const CHOICE_3_VOTE = {
   choice: 3,
   vp: 2000,
-  timestamp: 1650828044
+  timestamp: 1950828044
 }
 
 const CHOICE_2_VOTE = {
   choice: 2,
   vp: 2000,
-  timestamp: 1650828044
+  timestamp: 1951828044
 }
 
 const DELEGATORS_VOTES = {
@@ -33,8 +33,11 @@ const DIFFERENT_VOTES = { [ACCOUNT]: CHOICE_2_VOTE, [ACCOUNT_DELEGATE]: CHOICE_3
 const DELEGATORS = [DELEGATOR_1, DELEGATOR_2, DELEGATOR_3, NON_VOTER_DELEGATOR]
 
 export const TEST_CHOICES:string[] = ['Yes, we need a VR client for Decentraland', 'Refund the DAO for the costs associated with this Grant', 'This option has 100chars 00000000000000 0000000000000 0000000000000000000000 000000 0000000000000 00']
+export const OWN_VOTING_POWER = 111
+export const DELEGATED_VOTING_POWER = 222
+export const VOTE_DIFFERENCE =  3
 
-export const TEST_CASES: Omit<TestData, 'choices'>[] = [
+export const TEST_CASES: Omit<TestData, 'choices' | 'ownVotingPower' | 'delegatedVotingPower' | 'voteDifference'>[] = [
   // --------------------------- NO DELEGATE - NO DELEGATORS
   {
     caseLabel: 'No Vote, No Dg, No Dr',

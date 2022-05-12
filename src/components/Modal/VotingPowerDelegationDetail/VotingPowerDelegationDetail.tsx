@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { ChainId } from '@dcl/schemas'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEnsBalance from 'decentraland-gatsby/dist/hooks/useEnsBalance'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
@@ -14,14 +14,10 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { Governance } from '../../../api/Governance'
-import { SnapshotVote } from '../../../api/Snapshot'
-import { MatchResult, calculateMatch } from '../../../entities/Snapshot/utils'
 import { VotedProposal } from '../../../entities/Votes/types'
 import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
-import useDelegatedVotingPower from '../../../hooks/useDelegatedVotingPower'
-import useDelegation from '../../../hooks/useDelegation'
-import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import useVotesInformation from '../../../hooks/useVotesInformation'
+import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
@@ -32,12 +28,11 @@ import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationMo
 import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
 import VotedInitiativeList from './VotedInitiativeList'
+import VotingPowerDelegationButton from './VotingPowerDelegationButton'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
-import VotingPowerDelegationButton from './VotingPowerDelegationButton'
 
 type VotingPowerDelegationDetailProps = {
-  userVotes: SnapshotVote[] | null
   candidate: Candidate
   userVP: number
   onBackClick: () => void
@@ -46,24 +41,25 @@ type VotingPowerDelegationDetailProps = {
 let timeout: ReturnType<typeof setTimeout>
 const VOTES_PER_PAGE = 10
 
-function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
   const { address: candidateAddress } = candidate
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(candidateAddress)
-  const [delegation, delegationState] = useDelegation(candidateAddress)
-  const { delegatedVotingPower, isLoadingScores } = useDelegatedVotingPower(delegation.delegatedFrom)
+  const { votingPower, isLoadingVotingPower, delegatedVotingPower, isLoadingScores, ownVotingPower } =
+    useVotingPowerInformation(candidateAddress)
   const [mainnetMana, mainnetManaState] = useManaBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
   const [maticMana, maticManaState] = useManaBalance(candidateAddress, ChainId.MATIC_MAINNET)
   const wManaContract = useWManaContract()
   const [wMana, wManaState] = useBalanceOf(wManaContract, candidateAddress, 'ether')
   const [land, landState] = useLandBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
   const [ens, ensState] = useEnsBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
-  const [candidateVotes, candidateVotesState] = useAsyncMemo(
-    async () => Governance.get().getAddressVotes(candidateAddress),
-    []
-  )
+
+  const [userAddress] = useAuthContext()
+  const {
+    otherAccountVotes: candidateVotes,
+    matchResult,
+    votesInformationLoading,
+  } = useVotesInformation(userAddress, candidateAddress)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [matchingVotes, setMatchingVotes] = useState<MatchResult | null>(null)
   const [showFadeout, setShowFadeout] = useState(true)
   const [filteredCandidateVotes, setFilteredCandidateVotes] = useState<VotedProposal[]>([])
 
@@ -82,12 +78,6 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
   }, [isExpanded])
 
   useEffect(() => {
-    if (userVotes && candidateVotes) {
-      setMatchingVotes(calculateMatch(userVotes, candidateVotes))
-    }
-  }, [userVotes, candidateVotes])
-
-  useEffect(() => {
     if (candidateVotes) {
       setFilteredCandidateVotes(candidateVotes.slice(0, 10))
     }
@@ -103,10 +93,8 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
   const hasShownAllVotes = candidateVotes?.length === filteredCandidateVotes.length
 
   const mana = mainnetMana + maticMana + (wMana || 0)
-  const ownVotingPower = votingPower - delegatedVotingPower
 
   const isLoading =
-    delegationState.loading ||
     isLoadingVotingPower ||
     isLoadingScores ||
     mainnetManaState.loading ||
@@ -114,7 +102,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
     wManaState.loading ||
     landState.loading ||
     ensState.loading ||
-    candidateVotesState.loading
+    votesInformationLoading
 
   return (
     <>
@@ -239,9 +227,9 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
                       <div className="VotingPowerDelegationDetail__StatsValue">{candidateVotes.length}</div>
                     </Stats>
                   </Grid.Column>
-                  {matchingVotes && (
+                  {matchResult.percentage > 0 && (
                     <Grid.Column>
-                      <CandidateMatch matchingVotes={matchingVotes} />
+                      <CandidateMatch matchingVotes={matchResult} />
                     </Grid.Column>
                   )}
                 </Grid.Row>

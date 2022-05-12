@@ -9,6 +9,7 @@ export type Match = {
 
 export interface MatchResult {
   percentage: number
+  voteDifference: number
   matches: Match[]
 }
 
@@ -17,9 +18,10 @@ export async function signMessage(wallet: Wallet, msg: string) {
 }
 
 export function calculateMatch(votes1: SnapshotVote[], votes2: SnapshotVote[]): MatchResult {
-  const match: MatchResult = { percentage: 0, matches: [] }
+  const match: MatchResult = { percentage: 0, voteDifference: 0, matches: [] }
 
   let matchCounter = 0
+  let voteDifference = 0
   let proposalsInCommon = 0
   for (const vote1 of votes1) {
     const proposalId = vote1.proposal.id
@@ -30,12 +32,14 @@ export function calculateMatch(votes1: SnapshotVote[], votes2: SnapshotVote[]): 
         matchCounter++
         match.matches.push({ proposal_id: proposalId, sameVote: true })
       } else {
+        voteDifference++
         match.matches.push({ proposal_id: proposalId, sameVote: false })
       }
     }
   }
   if (proposalsInCommon > 0) {
     match.percentage = Math.round((matchCounter / proposalsInCommon) * 100)
+    match.voteDifference = voteDifference
   }
   return match
 }

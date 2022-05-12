@@ -5,6 +5,7 @@ import { calculateMatch, MatchResult } from "./utils"
 let userVotes: SnapshotVote[]
 let candidateVotes: SnapshotVote[]
 
+const EMPTY_MATCH_RESULT = { percentage: 0, voteDifference: 0, matches: [] }
 
 describe('calculateMatch', () => {
 
@@ -17,7 +18,7 @@ describe('calculateMatch', () => {
 
     it('should return a 0 match percentage and an empty matches list', () => {
       const result = calculateMatch(userVotes, candidateVotes)
-      const expected: MatchResult = { percentage: 0, matches: [] }
+      const expected: MatchResult = EMPTY_MATCH_RESULT
       expect(result).toStrictEqual(expected)
     })
 
@@ -32,7 +33,7 @@ describe('calculateMatch', () => {
 
     it('should return a 0 match percentage and an empty matches list', () => {
       const result = calculateMatch(userVotes, candidateVotes)
-      const expected: MatchResult = { percentage: 0, matches: [] }
+      const expected: MatchResult = EMPTY_MATCH_RESULT
       expect(result).toStrictEqual(expected)
     })
 
@@ -47,7 +48,7 @@ describe('calculateMatch', () => {
 
     it('should return a 0 match percentage and an empty matches list', () => {
       const result = calculateMatch(userVotes, candidateVotes)
-      const expected: MatchResult = { percentage: 0, matches: [] }
+      const expected: MatchResult = EMPTY_MATCH_RESULT
       expect(result).toStrictEqual(expected)
     })
 
@@ -62,7 +63,7 @@ describe('calculateMatch', () => {
 
     it('should return a 0 match percentage and an empty matches list', () => {
       const result = calculateMatch(userVotes, candidateVotes)
-      const expected: MatchResult = { percentage: 0, matches: [] }
+      const expected: MatchResult = EMPTY_MATCH_RESULT
       expect(result).toStrictEqual(expected)
     })
 
@@ -78,7 +79,9 @@ describe('calculateMatch', () => {
     it('should return a 0 match percentage and the list with the proposals ids of the proposals voted by the candidate', () => {
       const result = calculateMatch(userVotes, candidateVotes)
       const expected: MatchResult = {
-        percentage: 0, matches:
+        percentage: 0,
+        voteDifference: 2,
+        matches:
           [
             {
               proposal_id: 'QmYjzpzdp8z5nQZaavRtr5wuMXv3c6wHPAmx7Fs8QYsmBt',
@@ -105,7 +108,9 @@ describe('calculateMatch', () => {
     it('should return a 100 match percentage and the list with the proposals ids of the proposals voted by the candidate', () => {
       const result = calculateMatch(userVotes, candidateVotes)
       const expected: MatchResult = {
-        percentage: 100, matches:
+        percentage: 100,
+        voteDifference: 0,
+        matches:
           [
             {
               proposal_id: 'QmYjzpzdp8z5nQZaavRtr5wuMXv3c6wHPAmx7Fs8QYsmBt',
@@ -132,7 +137,9 @@ describe('calculateMatch', () => {
     it('should return a 50 match percentage and the list with the proposals ids of the proposals voted by the candidate', () => {
       const result = calculateMatch(userVotes, candidateVotes)
       const expected: MatchResult = {
-        percentage: 50, matches:
+        percentage: 50,
+        voteDifference: 1,
+        matches:
           [
             {
               proposal_id: 'QmYjzpzdp8z5nQZaavRtr5wuMXv3c6wHPAmx7Fs8QYsmBt',
