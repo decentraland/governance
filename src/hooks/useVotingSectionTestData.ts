@@ -1,6 +1,12 @@
 import { useState } from 'react'
 
-import { TEST_CASES, TEST_CHOICES } from '../components/Section/ProposalVotingSectionTestCases'
+import {
+  DELEGATED_VOTING_POWER,
+  OWN_VOTING_POWER,
+  TEST_CASES,
+  TEST_CHOICES,
+  VOTE_DIFFERENCE,
+} from '../components/Section/ProposalVotingSectionTestCases'
 import { Vote } from '../entities/Votes/types'
 
 export interface TestData {
@@ -10,6 +16,9 @@ export interface TestData {
   delegators: string[]
   votes: Record<string, Vote> | null | undefined
   choices: string[]
+  ownVotingPower: number
+  delegatedVotingPower: number
+  voteDifference: number
   nextCase?: () => void
   previousCase?: () => void
 }
@@ -21,6 +30,9 @@ export default function useVotingSectionTestData(): TestData | null {
   const testData: TestData = {
     ...TEST_CASES[testCaseIndex],
     choices: TEST_CHOICES,
+    ownVotingPower: OWN_VOTING_POWER,
+    delegatedVotingPower: DELEGATED_VOTING_POWER,
+    voteDifference: VOTE_DIFFERENCE,
   }
   testData.nextCase = () => {
     if (testCaseIndex < TEST_CASES.length - 1) setTestCaseIndex(testCaseIndex + 1)
