@@ -5,7 +5,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import './VotingPowerDelegationHandler.css'
-import useSnapshotDelegateContract from '../../../hooks/useSnapshotDelegateContract'
+import useSnapshotDelegateContract, { DelegateContractStatusCode } from '../../../hooks/useSnapshotDelegateContract'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants'
 import Info from '../../Icon/Info'
 
@@ -13,8 +13,6 @@ interface Props {
   candidateAddress: string
   userVP: number
 }
-
-const TRANSACTION_CANCELED_BY_USER_STATUS_CODE = 4001
 
 function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
   const t = useFormatMessage()
@@ -38,7 +36,7 @@ function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
       }
     } catch (error: any) {
       console.error(error)
-      if (error.code !== TRANSACTION_CANCELED_BY_USER_STATUS_CODE) {
+      if (error.code !== DelegateContractStatusCode.TRANSACTION_CANCELED_BY_USER) {
         setError(true)
       }
     } finally {
