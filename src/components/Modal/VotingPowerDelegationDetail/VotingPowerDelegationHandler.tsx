@@ -4,8 +4,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import './VotingPowerDelegationButton.css'
-import useSnapshotDelegateContract from '../../../hooks/useSnapshotDelegateContract'
+import './VotingPowerDelegationHandler.css'
+import useSnapshotDelegateContract, { DelegateContractStatusCode } from '../../../hooks/useSnapshotDelegateContract'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants'
 import Info from '../../Icon/Info'
 
@@ -14,26 +14,31 @@ interface Props {
   userVP: number
 }
 
-function VotingPowerDelegationButton({ candidateAddress, userVP }: Props) {
+function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
   const t = useFormatMessage()
   const [isLoading, setLoading] = useState(false)
+  const [isError, setError] = useState(false)
   const { isContractUsable, delegatedAddress, isGlobalDelegation, setDelegate, clearDelegate } =
     useSnapshotDelegateContract()
 
   const isRevocable = !!delegatedAddress && delegatedAddress.toLowerCase() === candidateAddress.toLowerCase()
   const isDelegatedGlobally = isRevocable && isGlobalDelegation
+  const showDelegatedInfo = isRevocable && !isLoading && !isError
 
   const handleClick = async () => {
     setLoading(true)
-
+    setError(false)
     try {
       if (isRevocable) {
         await clearDelegate()
       } else {
         await setDelegate(candidateAddress)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
+      if (error.code !== DelegateContractStatusCode.TRANSACTION_CANCELED_BY_USER) {
+        setError(true)
+      }
     } finally {
       setLoading(false)
     }
@@ -41,9 +46,11 @@ function VotingPowerDelegationButton({ candidateAddress, userVP }: Props) {
 
   return (
     <span className="DelegateButton__Container">
-      {isRevocable && (
-        <Header sub size="tiny">
-          {isGlobalDelegation ? (
+      <Header sub size="tiny">
+        {isLoading && t('modal.vp_delegation.wait_helper')}
+        {isError && t('modal.vp_delegation.error_helper')}
+        {showDelegatedInfo &&
+          (isGlobalDelegation ? (
             <Popup
               className="GlobalDelegationPopUp"
               content={<span>{t('modal.vp_delegation.delegated_globally_helper')}</span>}
@@ -57,9 +64,8 @@ function VotingPowerDelegationButton({ candidateAddress, userVP }: Props) {
             />
           ) : (
             t('modal.vp_delegation.delegated_stats', { vp: userVP })
-          )}
-        </Header>
-      )}
+          ))}
+      </Header>
       <Button
         disabled={isLoading || !isContractUsable || isDelegatedGlobally}
         loading={isLoading}
@@ -74,4 +80,4 @@ function VotingPowerDelegationButton({ candidateAddress, userVP }: Props) {
   )
 }
 
-export default VotingPowerDelegationButton
+export default VotingPowerDelegationHandler
