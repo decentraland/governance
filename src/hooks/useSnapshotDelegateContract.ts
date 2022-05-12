@@ -15,10 +15,18 @@ const GLOBAL_SPACE_ID = '0x00000000000000000000000000000000000000000000000000000
 
 const validateContract = <T>(contract: Contract | undefined, callback: (contract: Contract) => Promise<T>) => {
   if (!contract) {
-    throw new Error("Delegation Contract is undefined")
+    throw { code: -1, message: "Delegation Contract is undefined" }
   }
 
   return callback(contract)
+}
+
+const validateResult = <T>(result: any, callback: (result: any) => T) => {
+  if (!result || result.status !== 1) {
+    throw { code: result.status, message: "Transaction failed" }
+  }
+
+  return callback(result)
 }
 
 function useSnapshotDelegateContract() {
@@ -40,15 +48,22 @@ function useSnapshotDelegateContract() {
 
   const setDelegate = useCallback(async (address: string) => {
     return validateContract(contract, async (contract) => {
-      await contract.setDelegate(fullSpaceId, address)
-      setDelegatedAddress(address)
+      const transaction = await contract.setDelegate(fullSpaceId, address)
+      const result = await transaction.wait()
+      validateResult(result, () => {
+        setDelegatedAddress(address)
+      })
+
     })
   }, [contract])
 
   const clearDelegate = useCallback(async () => {
     return validateContract(contract, async (contract) => {
-      await contract.clearDelegate(fullSpaceId)
-      setDelegatedAddress(undefined)
+      const transaction = await contract.clearDelegate(fullSpaceId)
+      const result = await transaction.wait()
+      validateResult(result, () => {
+        setDelegatedAddress(undefined)
+      })
     })
   }, [contract])
 

@@ -328,6 +328,8 @@
       "delegated_stats": "Delegated {vp} VP",
       "delegated_globally": "Delegated globally",
       "delegated_globally_helper": "Click to edit this delegation on Snapshot",
+      "wait_helper": "Please wait...",
+      "error_helper": "An Error occured, please try again later",
       "pick_button": "Pick somebody else",
       "details": {
         "about_title": "About",

@@ -34,7 +34,7 @@ import CandidateMatch from './CandidateMatch'
 import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
 import VotingPowerDistribution from './VotingPowerDistribution'
-import VotingPowerDelegationButton from './VotingPowerDelegationButton'
+import VotingPowerDelegationHandler from './VotingPowerDelegationHandler'
 
 type VotingPowerDelegationDetailProps = {
   userVotes: SnapshotVote[] | null
@@ -127,7 +127,7 @@ function VotingPowerDelegationDetail({ userVotes, candidate, userVP, onBackClick
           </Button>
           <Username address={candidate.address} size="small" blockieScale={4} />
         </div>
-        <VotingPowerDelegationButton userVP={userVP} candidateAddress={candidateAddress} />
+        <VotingPowerDelegationHandler userVP={userVP} candidateAddress={candidateAddress} />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
