@@ -5,6 +5,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import React, { useMemo, useState } from 'react'
+import { Scores } from '../../entities/Votes/utils'
 import { DelegationResult } from '../../hooks/useDelegation'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
@@ -19,7 +20,7 @@ const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call
 
 interface DelegatedToUserCardProps {
   delegation: DelegationResult
-  scores: Record<string, number> | null
+  scores: Scores | null
   delegatedVotingPower: number
   isLoggedUserProfile: boolean
   loading: boolean

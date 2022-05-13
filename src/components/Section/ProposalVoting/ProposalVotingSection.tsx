@@ -93,17 +93,17 @@ const ProposalVotingSection = ({
     [delegators, votes, choices]
   )
 
-  loading = loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
+  const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
   return (
     <div className="DetailsSection__Content OnlyDesktop">
       {testData && <VotingSectionTester testData={testData} />
         // TODO remove test data
       }
-      {loading && <div className={'ProposalVotingSection__Loader'}>
-        <Loader active={loading} />
+      {proposalVotingSectionLoading && <div className={'ProposalVotingSection__Loader'}>
+        <Loader active={proposalVotingSectionLoading} />
       </div>}
 
-      {!loading && (
+      {!proposalVotingSectionLoading && (
         <>
           {!account && (
             <Button

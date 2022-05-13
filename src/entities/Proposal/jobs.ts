@@ -1,6 +1,7 @@
 import JobContext from "decentraland-gatsby/dist/entities/Job/context";
 import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
 import { Vote } from "../Votes/types";
+import { Scores } from '../Votes/utils'
 import ProposalModel from "./model";
 import { ProposalAttributes, ProposalStatus, INVALID_PROPOSAL_POLL_OPTIONS } from './types'
 import { commentProposalUpdateInDiscourse } from './routes'
@@ -42,7 +43,7 @@ export async function finishProposal(context: JobContext) {
     const votes: Record<string, Vote> = await updateSnapshotProposalVotes(proposal, snapshotVotes)
     const voters = Object.keys(votes)
 
-    const result: Record<string, number> = {}
+    const result: Scores = {}
     for (const choice of choices) {
       result[choice] = 0
     }

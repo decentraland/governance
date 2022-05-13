@@ -2,13 +2,12 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { Vote } from '../entities/Votes/types'
-import { getProposalScores } from '../entities/Votes/utils'
-
+import { Scores, getProposalScores } from '../entities/Votes/utils'
 
 export const MINIMUM_VP_REQUIRED_TO_VOTE = 1
 
 function getDelegatedVotingPowerOnProposal(
-  scoresAtProposalCreation: Record<string, number>,
+  scoresAtProposalCreation: Scores,
   delegators: string[] | null,
   votes: Record<string, Vote> | null | undefined
 ) {

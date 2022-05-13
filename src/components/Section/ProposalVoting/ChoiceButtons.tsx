@@ -1,14 +1,19 @@
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import React from 'react'
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
 import { Vote } from '../../../entities/Votes/types'
+import { Scores } from '../../../entities/Votes/utils'
+
 import ChoiceButton from './ChoiceButton'
+
 
 interface Props {
   choices: string[]
   vote: Vote | null
   delegate?: string | null
   delegateVote?: Vote | null
-  votesByChoices: Record<string, number>
+  votesByChoices: Scores
   totalVotes: number
   onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
   started: boolean
