@@ -4,20 +4,19 @@ import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { Vote } from '../../../entities/Votes/types'
-import useVotingPowerBalance, { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../../hooks/useVotingPowerBalance'
+import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../../hooks/useVotingPowerOnProposal'
 
 import './DelegationsLabel.css'
 import './VotingSectionFooter.css'
 
+
 interface VotingSectionFooterProps {
+  accountVotingPower: number
+  hasEnoughToVote: boolean
   vote: Vote | null
-  account: string | null
 }
 
-const VoteVotingPowerInfo = ({ vote, account }: VotingSectionFooterProps) => {
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(account)
-  const hasEnoughVP = !!votingPower && votingPower > 0 && !isLoadingVotingPower
-
+const VoteVotingPowerInfo = ({accountVotingPower, hasEnoughToVote, vote}: VotingSectionFooterProps) => {
   const t = useFormatMessage()
 
   function vpLabel(value: number) {
@@ -26,11 +25,11 @@ const VoteVotingPowerInfo = ({ vote, account }: VotingSectionFooterProps) => {
 
   return (
     <>
-      {hasEnoughVP &&
+      {hasEnoughToVote &&
         (vote
-          ? t('page.proposal_detail.voted_with', { vp: vpLabel(votingPower) })
-          : t('page.proposal_detail.voting_with', { vp: vpLabel(votingPower) }))}
-      {!hasEnoughVP && t('page.proposal_detail.vp_needed', { vp: vpLabel(MINIMUM_VP_REQUIRED_TO_VOTE) })}
+          ? t('page.proposal_detail.voted_with', { vp: vpLabel(accountVotingPower) })
+          : t('page.proposal_detail.voting_with', { vp: vpLabel(accountVotingPower) }))}
+      {!hasEnoughToVote && t('page.proposal_detail.vp_needed', { vp: vpLabel(MINIMUM_VP_REQUIRED_TO_VOTE) })}
     </>
   )
 }

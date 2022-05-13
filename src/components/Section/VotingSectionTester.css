@@ -1,17 +1,17 @@
 .VotingSectionTester {
 	display: flex;
 	width: 100%;
-	padding-bottom: 16px;
 	align-items: center;
 	flex-direction: column;
 }
 
 .VotingSectionTester .button.ui.basic.button {
 	border: 1px solid rgba(115, 110, 125, .32);
-	background: #00800017 !important;
+	background: #5c5c6e !important;
 	border-radius: 25px;
 	margin-right: 2px;
 	margin-left: 2px;
+	color: var(--background) !important;
 }
 
 .VotingSectionTester__Buttons {
