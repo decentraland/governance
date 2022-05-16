@@ -10,9 +10,7 @@ import { Vote } from '../../../entities/Votes/types'
 import useDelegation from '../../../hooks/useDelegation'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
-import useVotingSectionTestData, { TestData } from '../../../hooks/useVotingSectionTestData'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
-import VotingSectionTester from '../VotingSectionTester'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -45,11 +43,11 @@ const ProposalVotingSection = ({
   onChangeVote,
 }: Props) => {
   const t = useFormatMessage()
-  let [account, accountState] = useAuthContext()
-  let [delegation, delegationState] = useDelegation(account)
-  let delegate: string | null = delegation?.delegatedTo[0]?.delegate
-  let delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
-  let {
+  const [account, accountState] = useAuthContext()
+  const [delegation, delegationState] = useDelegation(account)
+  const delegate: string | null = delegation?.delegatedTo[0]?.delegate
+  const delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
+  const {
     delegatedVp,
     addressVp: ownVotingPower,
     totalVpOnProposal,
@@ -58,20 +56,7 @@ const ProposalVotingSection = ({
   } = useVotingPowerOnProposal(account, delegators, votes, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
-  let voteDifference = matchResult.voteDifference
-
-  // TODO remove test data
-  const testData: TestData | null = useVotingSectionTestData()
-  if (testData) {
-    account = testData.account
-    delegate = testData.accountDelegate
-    delegators = testData.delegators
-    votes = testData.votes
-    choices = testData.choices
-    ownVotingPower = testData.ownVotingPower
-    delegatedVp = testData.delegatedVotingPower
-    voteDifference = testData.voteDifference
-  }
+  const voteDifference = matchResult.voteDifference
 
   const { vote, delegateVote, delegationsLabel, votedChoice, showChoiceButtons } = useMemo(
     () =>
@@ -85,8 +70,7 @@ const ProposalVotingSection = ({
         delegatedVp,
         voteDifference
       ),
-    // TODO remove test data
-    [testData ? testData : [votes, choices, delegate, delegators, account, ownVotingPower, delegatedVp, voteDifference]]
+    [votes, choices, delegate, delegators, account, ownVotingPower, delegatedVp, voteDifference]
   )
   const { votesByChoices, totalVotes } = useMemo(
     () => getPartyVotes(delegators, votes, choices),
@@ -96,9 +80,6 @@ const ProposalVotingSection = ({
   const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
   return (
     <div className="DetailsSection__Content OnlyDesktop">
-      {testData && <VotingSectionTester testData={testData} />
-        // TODO remove test data
-      }
       {proposalVotingSectionLoading && <div className={'ProposalVotingSection__Loader'}>
         <Loader active={proposalVotingSectionLoading} />
       </div>}
