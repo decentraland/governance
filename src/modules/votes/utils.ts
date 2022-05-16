@@ -1,6 +1,7 @@
 import { DelegationsLabelProps } from '../../components/Section/ProposalVoting/DelegationsLabel'
 import { VotedChoice } from '../../components/Section/ProposalVoting/VotedChoiceButton'
 import { Vote } from '../../entities/Votes/types'
+import { Scores } from '../../entities/Votes/utils'
 
 import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 import { VotedChoiceBuilder } from './helpers/VotedChoiceBuilder'
@@ -62,9 +63,9 @@ export function getPartyVotes(
   delegators: string[],
   votes: Record<string, Vote> | null | undefined,
   choices: string[]
-): { votesByChoices: Record<string, number>; totalVotes: number } {
+): { votesByChoices: Scores; totalVotes: number } {
   let totalVotes = 0
-  const votesByChoices: Record<string, number> = {}
+  const votesByChoices: Scores = {}
 
   if (delegators.length === 0) return { votesByChoices, totalVotes }
 

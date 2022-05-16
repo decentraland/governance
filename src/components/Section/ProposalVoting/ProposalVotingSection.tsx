@@ -5,9 +5,11 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
+import useDelegation from '../../../hooks/useDelegation'
 import useVotesMatch from '../../../hooks/useVotesMatch'
-import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
+import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
 import useVotingSectionTestData, { TestData } from '../../../hooks/useVotingSectionTestData'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
 import VotingSectionTester from '../VotingSectionTester'
@@ -17,7 +19,10 @@ import DelegationsLabel from './DelegationsLabel'
 import VotedChoiceButton from './VotedChoiceButton'
 import VotingSectionFooter from './VotingSectionFooter'
 
+import './ProposalVotingSection.css'
+
 interface Props {
+  proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   loading?: boolean
   changingVote?: boolean
@@ -29,6 +34,7 @@ interface Props {
 }
 
 const ProposalVotingSection = ({
+  proposal,
   votes,
   loading,
   changingVote,
@@ -40,13 +46,21 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
   let [account, accountState] = useAuthContext()
-  let { delegation, delegatedVotingPower, ownVotingPower } = useVotingPowerInformation(account)
+  let [delegation, delegationState] = useDelegation(account)
   let delegate: string | null = delegation?.delegatedTo[0]?.delegate
   let delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
+  let {
+    delegatedVp,
+    addressVp: ownVotingPower,
+    totalVpOnProposal,
+    hasEnoughToVote,
+    vpOnProposalState,
+  } = useVotingPowerOnProposal(account, delegators, votes, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
   let voteDifference = matchResult.voteDifference
 
+  // TODO remove test data
   const testData: TestData | null = useVotingSectionTestData()
   if (testData) {
     account = testData.account
@@ -55,7 +69,7 @@ const ProposalVotingSection = ({
     votes = testData.votes
     choices = testData.choices
     ownVotingPower = testData.ownVotingPower
-    delegatedVotingPower = testData.delegatedVotingPower
+    delegatedVp = testData.delegatedVotingPower
     voteDifference = testData.voteDifference
   }
 
@@ -68,56 +82,71 @@ const ProposalVotingSection = ({
         delegators,
         account,
         ownVotingPower,
-        delegatedVotingPower,
+        delegatedVp,
         voteDifference
       ),
-    [testData]
+    // TODO remove test data
+    [testData ? testData : [votes, choices, delegate, delegators, account, ownVotingPower, delegatedVp, voteDifference]]
   )
-  const { votesByChoices, totalVotes } = useMemo(() => getPartyVotes(delegators, votes, choices), [testData])
+  const { votesByChoices, totalVotes } = useMemo(
+    () => getPartyVotes(delegators, votes, choices),
+    [delegators, votes, choices]
+  )
 
+  const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
   return (
     <div className="DetailsSection__Content OnlyDesktop">
-      {testData && <VotingSectionTester testData={testData} />}
-      <Loader active={!loading && accountState.loading} />
+      {testData && <VotingSectionTester testData={testData} />
+        // TODO remove test data
+      }
+      {proposalVotingSectionLoading && <div className={'ProposalVotingSection__Loader'}>
+        <Loader active={proposalVotingSectionLoading} />
+      </div>}
 
-      {!account && (
-        <Button
-          basic
-          loading={accountState.loading}
-          disabled={accountState.loading}
-          onClick={() => accountState.select()}
-        >
-          {t('general.sign_in')}
-        </Button>
+      {!proposalVotingSectionLoading && (
+        <>
+          {!account && (
+            <Button
+              basic
+              loading={accountState.loading}
+              disabled={accountState.loading}
+              onClick={() => accountState.select()}
+            >
+              {t('general.sign_in')}
+            </Button>
+          )}
+
+          {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
+
+          {(showChoiceButtons || changingVote) && (
+            <ChoiceButtons
+              choices={choices}
+              vote={vote}
+              votesByChoices={votesByChoices}
+              delegate={delegate}
+              delegateVote={delegateVote}
+              totalVotes={totalVotes}
+              onVote={onVote}
+              started={started}
+            />
+          )}
+
+          {votedChoice && !changingVote && <VotedChoiceButton {...votedChoice} />}
+
+          <VotingSectionFooter
+            vote={vote}
+            delegateVote={delegateVote}
+            started={started}
+            finished={finished}
+            account={account}
+            changingVote={changingVote}
+            onChangeVote={onChangeVote}
+            delegators={delegators}
+            totalVpOnProposal={totalVpOnProposal}
+            hasEnoughToVote={hasEnoughToVote}
+          />
+        </>
       )}
-
-      {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
-
-      {(showChoiceButtons || changingVote) && (
-        <ChoiceButtons
-          choices={choices}
-          vote={vote}
-          votesByChoices={votesByChoices}
-          delegate={delegate}
-          delegateVote={delegateVote}
-          totalVotes={totalVotes}
-          onVote={onVote}
-          started={started}
-        />
-      )}
-
-      {votedChoice && !changingVote && <VotedChoiceButton {...votedChoice} />}
-
-      <VotingSectionFooter
-        vote={vote}
-        delegateVote={delegateVote}
-        hasDelegators={delegators && delegators.length > 0}
-        started={started}
-        finished={finished}
-        account={account}
-        changingVote={changingVote}
-        onChangeVote={onChangeVote}
-      />
     </div>
   )
 }

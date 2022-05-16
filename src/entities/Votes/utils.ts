@@ -1,8 +1,12 @@
+import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
 import isUUID from 'validator/lib/isUUID'
 
-import { SnapshotVote } from '../../api/Snapshot'
+import { Snapshot, SnapshotVote } from '../../api/Snapshot'
+import { ProposalAttributes } from '../Proposal/types'
 
-import { ChoiceColor, Vote} from './types'
+import { ChoiceColor, Vote } from './types'
+
+export type Scores = Record<string, number>
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -14,7 +18,7 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
   return list.filter((id) => isUUID(String(id)))
 }
 
-export function createVotes(votes: SnapshotVote[], balances: Record<string, number>) {
+export function createVotes(votes: SnapshotVote[], balances: Scores) {
   const balance = new Map(
     Object.keys(balances).map((address) => [address.toLowerCase(), balances[address] || 0] as const)
   )
@@ -31,8 +35,8 @@ export function createVotes(votes: SnapshotVote[], balances: Record<string, numb
 
 export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
   let totalPower = 0
-  const balance: Record<string, number> = {}
-  const choiceCount: Record<string, number> = {}
+  const balance: Scores = {}
+  const choiceCount: Scores = {}
   for (const choice of choices) {
     balance[choice] = 0
     choiceCount[choice] = 0
@@ -158,4 +162,23 @@ export function abbreviateNumber(vp: number) {
   const scaled = vp / scale
 
   return scaled.toFixed(1) + suffix
+}
+
+export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
+  const result: Scores = {}
+  for (const addressesChunk of chunk(addresses, 500)) {
+    const blockchainScores: Scores = await Snapshot.get().getScores(
+      proposal.snapshot_space,
+      proposal.snapshot_proposal.metadata.strategies,
+      proposal.snapshot_network,
+      addressesChunk,
+      proposal.snapshot_proposal.snapshot
+    )
+
+    for (const address of Object.keys(blockchainScores)) {
+      result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address] || 0)
+    }
+  }
+
+  return result
 }

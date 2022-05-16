@@ -1,18 +1,20 @@
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
-import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
 import { Snapshot, SnapshotVote } from '../../api/Snapshot'
 import ProposalModel from '../Proposal/model'
 import { getProposal } from '../Proposal/routes'
 import { ProposalAttributes } from '../Proposal/types'
 import { SNAPSHOT_SPACE } from '../Snapshot/constants'
+
 import VotesModel from './model'
 import { Vote, VoteAttributes } from './types'
-import { createVotes, toProposalIds } from './utils'
+import { createVotes, getProposalScores, toProposalIds } from './utils'
+
 
 export default routes((route) => {
   const withAuth = auth()
@@ -55,7 +57,7 @@ export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
   const now = new Date()
   const hash = VotesModel.hashVotes(snapshotVotes)
-  const balance = await getScores(
+  const balance = await getProposalScores(
     proposal,
     snapshotVotes.map((vote) => vote.voter)
   )
@@ -93,7 +95,7 @@ export async function getMyProposalVotingPower(req: WithAuth<Request<{ proposal:
     return powerCache.get(key)
   }
 
-  const scores = await getScores(proposal, [user])
+  const scores = await getProposalScores(proposal, [user])
   const score = (scores && scores[user]) || 0
   powerCache.set(key, score)
   return score
@@ -106,25 +108,6 @@ export async function getCachedVotes(req: Request) {
     result[vote.proposal_id] = vote.votes
     return result
   }, {} as Record<string, Record<string, Vote>>)
-}
-
-export async function getScores(proposal: ProposalAttributes, addresses: string[]) {
-  const result = {} as Record<string, number>
-  for (const addressesChuck of chunk(addresses, 500)) {
-    const blockchainScores: Record<string, number> = await Snapshot.get().getScores(
-      proposal.snapshot_space,
-      proposal.snapshot_proposal.metadata.strategies,
-      proposal.snapshot_network,
-      addressesChuck,
-      proposal.snapshot_proposal.snapshot
-    )
-
-    for (const address of Object.keys(blockchainScores)) {
-      result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address] || 0)
-    }
-  }
-
-  return result
 }
 
 export async function getVotes(proposal_id: string) {

@@ -13,9 +13,10 @@ import { Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import ChoiceProgress from '../Status/ChoiceProgress'
 
+import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
+
 import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
-import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
@@ -92,6 +93,7 @@ export default function ProposalResultSection({
       </div>
       {!finished && (
         <ProposalVotingSection
+          proposal={proposal}
           votes={votes}
           loading={loading}
           changingVote={changingVote}

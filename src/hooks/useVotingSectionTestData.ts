@@ -24,7 +24,7 @@ export interface TestData {
 }
 
 export default function useVotingSectionTestData(): TestData | null {
-  const testing = true // TODO: this can all be deleted after demo, or we can use a feature flag || env var
+  const testing = true // TODO: remove test data
   if (!testing) return null
   const [testCaseIndex, setTestCaseIndex] = useState(0)
   const testData: TestData = {
