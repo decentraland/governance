@@ -6,6 +6,7 @@ import { Contract, ContractAbi, ContractAbiDefinition } from 'web3x/contract'
 import { fromWei, unitMap } from 'web3x/utils/units'
 import { ERC20ABI, LAND, wMANA, MANA, ESTATE, MiniMeABI, RegisterABI } from '../modules/contracts'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { getEnvironmentChainId } from '../modules/votes/utils'
 
 function createContract(eth: Eth | null, abi: any, address: string | null | undefined, fromAccount: string | null) {
   if (!eth || !address || !fromAccount) {
@@ -24,13 +25,15 @@ export function useEth() {
 
 export function useManaContract() {
   const eth = useEth()
-  const [account, { chainId }] = useAuthContext()
+  const [account] = useAuthContext()
+  const chainId = getEnvironmentChainId()
   return useMemo(() => createContract(eth, ERC20ABI, MANA[chainId!], account), [eth, account, chainId])
 }
 
 export function useWManaContract() {
   const eth = useEth()
-  const [account, { chainId }] = useAuthContext()
+  const [account] = useAuthContext()
+  const chainId = getEnvironmentChainId()
   return useMemo(() => createContract(eth, MiniMeABI, wMANA[chainId!], account), [eth, account, chainId])
 }
 

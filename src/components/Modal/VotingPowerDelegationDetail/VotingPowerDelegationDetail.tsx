@@ -16,9 +16,14 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { VotedProposal } from '../../../entities/Votes/types'
-import { useBalanceOf, useWManaContract } from '../../../hooks/useContract'
+import {
+  useBalanceOf,
+  useManaContract,
+  useWManaContract,
+} from '../../../hooks/useContract'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
+import { getEnvironmentChainId } from '../../../modules/votes/utils'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
@@ -47,8 +52,12 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   const { address: candidateAddress } = candidate
   const { votingPower, isLoadingVotingPower, delegatedVotingPower, isLoadingScores, ownVotingPower } =
     useVotingPowerInformation(candidateAddress)
-  const [mainnetMana, mainnetManaState] = useManaBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+
   const [maticMana, maticManaState] = useManaBalance(candidateAddress, ChainId.MATIC_MAINNET)
+
+  const manaContract = useManaContract()
+  const [mainnetMana, mainnetManaState] = useBalanceOf(manaContract, candidateAddress, 'ether')
+
   const wManaContract = useWManaContract()
   const [wMana, wManaState] = useBalanceOf(wManaContract, candidateAddress, 'ether')
   const [land, landState] = useLandBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
@@ -93,7 +102,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   }, [candidateVotes, filteredCandidateVotes])
 
   const hasShownAllVotes = candidateVotes?.length === filteredCandidateVotes.length
-  const mana = mainnetMana + maticMana + (wMana || 0)
+  const mana = (mainnetMana || 0) + maticMana + (wMana || 0)
 
   const isLoading =
     isLoadingVotingPower ||

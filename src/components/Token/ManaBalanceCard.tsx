@@ -17,7 +17,7 @@ import { Mana } from 'decentraland-ui/dist/components/Mana/Mana'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import { toWei } from 'web3x/utils/units'
 
-import { useBalanceOf, useWManaContract } from '../../hooks/useContract'
+import { useBalanceOf, useManaContract, useWManaContract } from '../../hooks/useContract'
 import ActionableLayout from '../Layout/ActionableLayout'
 
 import './ManaBalanceCard.css'
@@ -32,10 +32,14 @@ interface Props {
 
 const ManaBalanceCard = ({ address }: Props) => {
   const t = useFormatMessage()
-  const wManaContract = useWManaContract()
-  const [mana, manaState] = useManaBalance(address, ChainId.ETHEREUM_MAINNET)
   const [maticMana, maticManaState] = useManaBalance(address, ChainId.MATIC_MAINNET)
+
+  const wManaContract = useWManaContract()
   const [wMana, wManaState] = useBalanceOf(wManaContract, address, 'ether')
+
+  const manaContract = useManaContract()
+  const [mana, manaState] = useBalanceOf(manaContract, address, 'ether')
+
   const [userAddress] = useAuthContext()
   const [transactions, transactionsState] = useTransactionContext()
   const unwrappingTransaction = useMemo(
