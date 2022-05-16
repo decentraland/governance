@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
@@ -8,7 +7,6 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
 import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
@@ -29,10 +27,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
   const [delegateDelegations] = useDelegation(address)
   const { delegatedVotingPower } = useDelegatedVotingPower(delegateDelegations.delegatedFrom)
-
   const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
-  const [userAddress] = useAuthContext()
-  const { votingPower } = useVotingPowerBalance(userAddress)
 
   return (
     <ActionableLayout
@@ -86,11 +81,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
           )}
         </Card.Content>
       </Card>
-      <VotingPowerDelegationModal
-        open={isDelegationModalOpen}
-        onClose={() => setIsDelegationModalOpen(false)}
-        vp={votingPower}
-      />
+      <VotingPowerDelegationModal open={isDelegationModalOpen} onClose={() => setIsDelegationModalOpen(false)} />
     </ActionableLayout>
   )
 }

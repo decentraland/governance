@@ -1,18 +1,18 @@
 import React, { useCallback, useState } from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
+import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import Candidates from '../../../modules/delegates/candidates.json'
 import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
 
 import './VotingPowerDelegationModal.css'
 
-type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
-  vp: number
-}
+type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'>
 
 export type Candidate = Delegate & {
   bio: string
@@ -24,7 +24,9 @@ export type Candidate = Delegate & {
   most_important_issue: string
 }
 
-function VotingPowerDelegationModal({ vp, onClose, ...props }: VotingPowerDelegationModalProps) {
+function VotingPowerDelegationModal({ onClose, ...props }: VotingPowerDelegationModalProps) {
+  const [userAddress] = useAuthContext()
+  const { votingPower } = useVotingPowerBalance(userAddress)
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const delegates = useDelegatesInfo(Candidates.map((delegate) => delegate.address))
 
@@ -41,11 +43,11 @@ function VotingPowerDelegationModal({ vp, onClose, ...props }: VotingPowerDelega
   return (
     <Modal {...props} onClose={handleClose} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
       {!selectedCandidate && (
-        <VotingPowerDelegationList delegates={delegates} vp={vp} onDelegateClick={handleOnDelegateClick} />
+        <VotingPowerDelegationList delegates={delegates} vp={votingPower} onDelegateClick={handleOnDelegateClick} />
       )}
       {selectedCandidate && (
         <VotingPowerDelegationDetail
-          userVP={vp}
+          userVP={votingPower}
           candidate={selectedCandidate}
           onBackClick={() => setSelectedCandidate(null)}
         />

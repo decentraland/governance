@@ -1,9 +1,12 @@
 import React from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
 import Watermelon from '../Icon/Watermelon'
+
 import './Empty.css'
 
 interface Props {

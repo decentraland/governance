@@ -35,7 +35,7 @@ function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPow
     <>
       <Modal.Header className="VotingPowerDelegationModal__Header">{t('modal.vp_delegation.title')}</Modal.Header>
       <Modal.Description>
-        <Markdown>{t('modal.vp_delegation.description', { vp: vp })}</Markdown>
+        <Markdown>{t('modal.vp_delegation.description', { vp })}</Markdown>
       </Modal.Description>
       <Modal.Content>
         <Table basic="very">

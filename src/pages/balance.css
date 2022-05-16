@@ -20,6 +20,12 @@
   height: 100%;
 }
 
+@media (min-width: 768px) {
+  .ui.container.VotingPowerDetail .ui.card {
+    height: 298px;
+  }
+}
+
 .ui.container.VotingPowerDetail .ui.card >.ui.header,
 .ui.container.VotingPowerDetail .ui.card .dcl.stats {
   margin: 8px 0 16px;
