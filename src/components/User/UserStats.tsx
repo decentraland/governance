@@ -10,7 +10,6 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import './UserStats.css'
 import Username from './Username'
 
-
 export type UserStatsProps = {
   size?: HeaderProps['size']
   to?: string
@@ -40,7 +39,7 @@ export default React.memo(function UserStats(props: UserStatsProps) {
     >
       {props.sub !== false && <Header sub>{isProfile ? 'PROFILE' : 'ADDRESS'}</Header>}
       <Header size={props.size} className="UserStatsHeader" as={props.to ? Link : undefined} href={props.to}>
-        <Username address={props.address} size={props.size}/>
+        <Username address={props.address} size={props.size} />
       </Header>
       <Loader size="small" active={profileState.loading} />
     </span>

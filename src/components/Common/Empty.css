@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  height: 100%;
 }
 
 .Empty .ui.header {
