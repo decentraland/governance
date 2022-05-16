@@ -1,15 +1,19 @@
+import React from 'react'
+
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
-import React from 'react'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+
 import locations from '../../modules/locations'
+
+import './LogIn.css'
 
 type LogInProps = {
   title: string
@@ -24,22 +28,23 @@ function handleBack() {
   }
 }
 
+const IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
+
 function LogIn({ title, description }: LogInProps) {
-  const [account, accountState] = useAuthContext()
+  const [, accountState] = useAuthContext()
   const t = useFormatMessage()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  const imageUrl = 'https://decentraland.org/images/decentraland.png'
 
   if (isMobile) {
     return (
-      <Container style={{ textAlign: 'center' }}>
-        <Head title={title} description={description} image={imageUrl} />
-        <img src={imageUrl} style={{ display: 'block', margin: 'auto', maxWidth: '50%' }} />
-        <Paragraph semiBold style={{ fontSize: 'xx-large', marginBottom: '1rem' }}>
+      <Container className="LoginMobile__Container">
+        <Head title={title} description={description} image={IMAGE_URL} />
+        <img src={IMAGE_URL} className="LoginMobile__Logo" />
+        <Paragraph semiBold className="LoginMobile__Title">
           {t(`mobile_login.exclamation`)}
         </Paragraph>
-        <Paragraph semiBold style={{ marginBottom: '5rem' }}>
+        <Paragraph semiBold className="LoginMobile__Message">
           {t(`mobile_login.message`)}
         </Paragraph>
         <Button primary onClick={handleBack}>
@@ -51,7 +56,7 @@ function LogIn({ title, description }: LogInProps) {
 
   return (
     <Container>
-      <Head title={title} description={description} image={imageUrl} />
+      <Head title={title} description={description} image={IMAGE_URL} />
       <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
     </Container>
   )

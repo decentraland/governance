@@ -22,7 +22,7 @@
 
 @media (min-width: 768px) {
   .ui.container.VotingPowerDetail .ui.card {
-    height: 298px;
+    min-height: 298px;
   }
 }
 

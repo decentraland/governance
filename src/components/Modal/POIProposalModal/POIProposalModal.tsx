@@ -1,4 +1,4 @@
-import '../ProposalModal.css'
+import React from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -6,11 +6,11 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
-import React from 'react'
 
 import { PoiType, ProposalType } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
 import CategoryBanner from '../../Category/CategoryBanner'
+import '../ProposalModal.css'
 
 export function POIProposalModal({ ...props }) {
   const t = useFormatMessage()
@@ -21,7 +21,7 @@ export function POIProposalModal({ ...props }) {
         <Header>{t('category.poi_title')}</Header>
         <Paragraph small>{t('modal.poi_proposal.description')}</Paragraph>
       </Modal.Content>
-      <Modal.Content className="ProposalModal__Actions" style={{ width: '90%' }}>
+      <Modal.Content className="PoiProposalModal__Actions">
         <CategoryBanner
           type={PoiType.AddPOI}
           href={locations.submit(ProposalType.POI, { request: PoiType.AddPOI })}

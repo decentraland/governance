@@ -67,7 +67,7 @@ export default function WrappingPage() {
       />
       <div className="TransparencyMobile">
         {!data && (
-          <div style={{ position: 'relative', paddingTop: '200px' }}>
+          <div className="Transparency__Loader">
             <Loader active />
           </div>
         )}

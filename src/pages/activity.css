@@ -2,6 +2,12 @@
   position: relative;
 }
 
+.ActivityPage__ListContainer {
+  margin-top: 16px;
+  position: relative;
+  min-height: 200px;
+}
+
 .ActivityPage .ChoiceProgress .ChoiceProgress__Description {
   flex-wrap: nowrap;
 }

@@ -28,6 +28,7 @@ import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
+import './poll.css'
 import './submit.css'
 
 type PollState = {
@@ -243,7 +244,7 @@ export default function SubmitPoll() {
         <Paragraph small primary>
           {t(state.error.choices)}
         </Paragraph>
-        <div style={{ width: '90%', maxWidth: '300px', margin: '0 5%' }}>
+        <div className="Poll__Options">
           {Object.keys(state.value.choices)
             .sort()
             .map((key, i) => (
@@ -271,7 +272,7 @@ export default function SubmitPoll() {
             }
             onAction={() => {}}
           />
-          <Button basic style={{ width: '100%' }} onClick={handleAddOption}>
+          <Button basic fluid onClick={handleAddOption}>
             {t('page.submit_poll.choices_add')}
           </Button>
         </div>

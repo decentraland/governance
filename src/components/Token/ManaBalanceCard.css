@@ -1,0 +1,11 @@
+.ManaBalanceCard__WrappedManaContainer {
+  flex: 0 !important;
+  position: relative !important;
+}
+
+.ManaBalanceCard__WrappedManaButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 24px 20px 16px !important;
+}

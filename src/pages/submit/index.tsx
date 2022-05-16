@@ -34,7 +34,7 @@ export default function NewProposalPage() {
             Common Actions
           </Header>
           <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
-          <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} style={{ cursor: 'pointer' }} active />
+          <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} active />
           <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
           <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
           <CategoryBanner

@@ -29,8 +29,8 @@ import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
 import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
-import VotingPowerDistribution from './VotingPowerDistribution'
 import VotingPowerDelegationHandler from './VotingPowerDelegationHandler'
+import VotingPowerDistribution from './VotingPowerDistribution'
 
 type VotingPowerDelegationDetailProps = {
   candidate: Candidate

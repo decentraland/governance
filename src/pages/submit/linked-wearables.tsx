@@ -423,28 +423,24 @@ export default function SubmitLinkedWearables() {
           {t('page.submit_linked_wearables.programmatically_generated_description')}
         </Paragraph>
         <div className="ProgrammaticallyGeneratedRadioButtons">
-          <span>
-            <Radio
-              checked={state.value.programmatically_generated}
-              label={
-                <label>
-                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
-                </label>
-              }
-              onChange={handleProgrammaticallyGeneratedOption}
-            />
-          </span>
-          <span style={{ marginLeft: '10px' }}>
-            <Radio
-              checked={!state.value.programmatically_generated}
-              label={
-                <label>
-                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
-                </label>
-              }
-              onChange={handleProgrammaticallyGeneratedOption}
-            />
-          </span>
+          <Radio
+            checked={state.value.programmatically_generated}
+            label={
+              <label>
+                <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
+              </label>
+            }
+            onChange={handleProgrammaticallyGeneratedOption}
+          />
+          <Radio
+            checked={!state.value.programmatically_generated}
+            label={
+              <label>
+                <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
+              </label>
+            }
+            onChange={handleProgrammaticallyGeneratedOption}
+          />
         </div>
         <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
           <Markdown className="tinyMarkdown">
