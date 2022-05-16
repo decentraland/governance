@@ -63,7 +63,7 @@ const Username = ({
   )
 
   return (
-    <div className="Username">
+    <>
       {linked ? (
         <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
           {userElement}
@@ -71,7 +71,7 @@ const Username = ({
       ) : (
         <span className={TokenList.join(['Username', className])}>{userElement}</span>
       )}
-    </div>
+    </>
   )
 }
 
