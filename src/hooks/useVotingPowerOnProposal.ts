@@ -9,7 +9,7 @@ export const MINIMUM_VP_REQUIRED_TO_VOTE = 1
 function getDelegatedVotingPowerOnProposal(
   scoresAtProposalCreation: Scores,
   delegators: string[] | null,
-  votes: Record<string, Vote> | null | undefined
+  votes?: Record<string, Vote> | null
 ) {
   let delegatedVotingPower = 0
   if (scoresAtProposalCreation && !!delegators) {

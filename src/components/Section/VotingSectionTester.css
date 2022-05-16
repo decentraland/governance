@@ -7,7 +7,7 @@
 
 .VotingSectionTester .button.ui.basic.button {
 	border: 1px solid rgba(115, 110, 125, .32);
-	background: #5c5c6e !important;
+	background: var(--background-popup) !important;
 	border-radius: 25px;
 	margin-right: 2px;
 	margin-left: 2px;
