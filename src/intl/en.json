@@ -347,7 +347,7 @@
         "stats_delegated_voting_power": "Delegated voting power",
         "stats_total_voting_power": "Total voting power",
         "stats_mana": "MANA",
-        "stats_land": "LAND",
+        "stats_land": "LAND + ESTATE",
         "stats_name": "NAMES",
         "stats_delegated": "DELEGATED",
         "stats_active_since": "Active since",
