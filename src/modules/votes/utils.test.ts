@@ -1,6 +1,6 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-
 import { Vote } from '../../entities/Votes/types'
+
+import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 
 import { getVotingSectionConfig } from './utils'
 import {
@@ -398,7 +398,7 @@ describe('getVotingSectionConfig', () => {
           expect(config.delegationsLabel).toEqual({
             delegateLabel: {
               id: 'page.proposal_detail.delegate_voted',
-              values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+              values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
             },
             infoMessage: {
               id: 'page.proposal_detail.info.user_has_not_voted_delegate_voted_without_delegators',
@@ -521,7 +521,7 @@ describe('getVotingSectionConfig', () => {
             expect(config.delegationsLabel).toEqual({
               delegateLabel: {
                 id: 'page.proposal_detail.delegate_voted',
-                values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
               },
               infoMessage: {
                 id: 'page.proposal_detail.info.user_voted_delegate_voted_the_same_without_delegators',
@@ -585,7 +585,7 @@ describe('getVotingSectionConfig', () => {
                 id: 'page.proposal_detail.info.user_voted_delegate_voted_differently_without_delegators',
                 values: {
                   delegate: ACCOUNT_DELEGATE,
-                  date: Time.from(CHOICE_2_VOTE.timestamp).fromNow(),
+                  date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp),
                   vote_difference: voteDifference,
                 },
               },
@@ -699,7 +699,7 @@ describe('getVotingSectionConfig', () => {
             expect(config.delegationsLabel).toEqual({
               delegateLabel: {
                 id: 'page.proposal_detail.delegate_voted',
-                values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
               },
               delegatorsLabel: {
                 id: 'page.proposal_detail.delegators_represented',
@@ -752,7 +752,7 @@ describe('getVotingSectionConfig', () => {
             expect(config.delegationsLabel).toEqual({
               delegateLabel: {
                 id: 'page.proposal_detail.delegate_voted',
-                values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
               },
               delegatorsLabel: {
                 id: 'page.proposal_detail.delegators_voted',
@@ -951,7 +951,7 @@ describe('getVotingSectionConfig', () => {
               expect(config.delegationsLabel).toEqual({
                 delegateLabel: {
                   id: 'page.proposal_detail.delegate_voted',
-                  values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                  values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
                 },
                 delegatorsLabel: {
                   id: 'page.proposal_detail.user_voted_for_delegators',
@@ -1022,7 +1022,7 @@ describe('getVotingSectionConfig', () => {
               expect(config.delegationsLabel).toEqual({
                 delegateLabel: {
                   id: 'page.proposal_detail.delegate_voted',
-                  values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                  values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp) },
                 },
                 delegatorsLabel: {
                   id: 'page.proposal_detail.user_voted_for_delegators',
@@ -1034,7 +1034,7 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: DELEGATORS.length,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
-                    date: Time.from(CHOICE_2_VOTE.timestamp).fromNow(),
+                    date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp),
                     vote_difference: voteDifference,
                   },
                 },
@@ -1100,7 +1100,7 @@ describe('getVotingSectionConfig', () => {
               expect(config.delegationsLabel).toEqual({
                 delegateLabel: {
                   id: 'page.proposal_detail.delegate_voted',
-                  values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                  values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
                 },
                 delegatorsLabel: {
                   id: 'page.proposal_detail.user_voted_for_delegators',
@@ -1174,7 +1174,7 @@ describe('getVotingSectionConfig', () => {
               expect(config.delegationsLabel).toEqual({
                 delegateLabel: {
                   id: 'page.proposal_detail.delegate_voted',
-                  values: { date: Time.from(CHOICE_1_VOTE.timestamp).fromNow() },
+                  values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp) },
                 },
                 delegatorsLabel: {
                   id: 'page.proposal_detail.user_voted_for_delegators',
@@ -1186,7 +1186,7 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: 1,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
-                    date: Time.from(CHOICE_2_VOTE.timestamp).fromNow(),
+                    date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp),
                     vote_difference: voteDifference,
                   },
                 },
