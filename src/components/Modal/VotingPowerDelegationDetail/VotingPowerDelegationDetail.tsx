@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { ChainId } from '@dcl/schemas'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEnsBalance from 'decentraland-gatsby/dist/hooks/useEnsBalance'
+import useEstateBalance from 'decentraland-gatsby/dist/hooks/useEstateBalance'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
 import useManaBalance from 'decentraland-gatsby/dist/hooks/useManaBalance'
@@ -29,8 +30,8 @@ import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
 import VotedInitiativeList from './VotedInitiativeList'
 import './VotingPowerDelegationDetail.css'
-import VotingPowerDistribution from './VotingPowerDistribution'
 import VotingPowerDelegationHandler from './VotingPowerDelegationHandler'
+import VotingPowerDistribution from './VotingPowerDistribution'
 
 type VotingPowerDelegationDetailProps = {
   candidate: Candidate
@@ -52,6 +53,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   const [wMana, wManaState] = useBalanceOf(wManaContract, candidateAddress, 'ether')
   const [land, landState] = useLandBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
   const [ens, ensState] = useEnsBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
+  const [, estateLand, estateState] = useEstateBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
 
   const [userAddress] = useAuthContext()
   const {
@@ -101,6 +103,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
     wManaState.loading ||
     landState.loading ||
     ensState.loading ||
+    estateState.loading ||
     votesInformationLoading
 
   return (
@@ -191,7 +194,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 </Grid.Column>
                 <Grid.Column>
                   <Stats title={t('modal.vp_delegation.details.stats_land')}>
-                    <VotingPower value={land! * LAND_MULTIPLIER} size="medium" />
+                    <VotingPower value={(land + estateLand) * LAND_MULTIPLIER} size="medium" />
                   </Stats>
                 </Grid.Column>
                 <Grid.Column>

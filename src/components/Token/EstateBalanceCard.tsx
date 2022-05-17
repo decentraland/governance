@@ -1,13 +1,14 @@
 import React from 'react'
+
 import { ChainId } from '@dcl/schemas'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import useEstateBalance from 'decentraland-gatsby/dist/hooks/useEstateBalance'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import useEstateBalance from 'decentraland-gatsby/dist/hooks/useEstateBalance'
 
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPower from '../Token/VotingPower'
