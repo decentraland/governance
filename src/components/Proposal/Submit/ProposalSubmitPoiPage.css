@@ -1,0 +1,23 @@
+.CoordinatesField .dcl.field {
+  max-width: 200px;
+  margin-right: 1rem;
+  text-align: center;
+}
+
+.CoordinatesField .dcl.field,
+.CoordinatesField .dcl.field .ui.input,
+.CoordinatesField .dcl.field .ui.input input {
+  text-align: center;
+  width: 100%;
+}
+
+.CoordinatesField__Inputs {
+  display: flex;
+  position: relative;
+}
+
+.CoordinatesField__Error {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

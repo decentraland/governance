@@ -27,6 +27,7 @@ import { isValidDomainName } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
+import './catalyst.css'
 import './submit.css'
 
 type CatalystState = {
@@ -211,45 +212,31 @@ export default function SubmitCatalyst() {
           <div>
             <Paragraph tiny>
               {commsState.loading && (
-                <span style={{ display: 'block', color: '#676370' }}>
-                  {t('page.submit_catalyst.domain_comms_checking')}
-                </span>
+                <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
               )}
               {commsState.error && (
-                <span style={{ display: 'block', color: '#ff0000' }}>
-                  {t('page.submit_catalyst.domain_comms_failed')}
-                </span>
+                <span className="Catalyst__Error">{t('page.submit_catalyst.domain_comms_failed')}</span>
               )}
               {!commsState.loading && !commsState.error && (
-                <span style={{ display: 'block', color: '#59a14f' }}>{t('page.submit_catalyst.domain_comms_ok')}</span>
+                <span className="Catalyst__Success">{t('page.submit_catalyst.domain_comms_ok')}</span>
               )}
               {contentState.loading && (
-                <span style={{ display: 'block', color: '#676370' }}>
-                  {t('page.submit_catalyst.domain_content_checking')}
-                </span>
+                <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_content_checking')}</span>
               )}
               {contentState.error && (
-                <span style={{ display: 'block', color: '#ff0000' }}>
-                  {t('page.submit_catalyst.domain_content_failed')}
-                </span>
+                <span className="Catalyst__Error">{t('page.submit_catalyst.domain_content_failed')}</span>
               )}
               {!contentState.loading && !contentState.error && (
-                <span style={{ display: 'block', color: '#59a14f' }}>
-                  {t('page.submit_catalyst.domain_content_ok')}
-                </span>
+                <span className="Catalyst__Success">{t('page.submit_catalyst.domain_content_ok')}</span>
               )}
               {lambdaState.loading && (
-                <span style={{ display: 'block', color: '#676370' }}>
-                  {t('page.submit_catalyst.domain_lambda_checking')}
-                </span>
+                <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_lambda_checking')}</span>
               )}
               {lambdaState.error && (
-                <span style={{ display: 'block', color: '#ff0000' }}>
-                  {t('page.submit_catalyst.domain_lambda_failed')}
-                </span>
+                <span className="Catalyst__Error">{t('page.submit_catalyst.domain_lambda_failed')}</span>
               )}
               {!lambdaState.loading && !lambdaState.error && (
-                <span style={{ display: 'block', color: '#59a14f' }}>{t('page.submit_catalyst.domain_lambda_ok')}</span>
+                <span className="Catalyst__Success">{t('page.submit_catalyst.domain_lambda_ok')}</span>
               )}
             </Paragraph>
           </div>

@@ -30,3 +30,7 @@
   background-color: var(--background);
   border: 1px solid rgba(115,110,125,.32);
 }
+
+.PoiProposalModal__Actions {
+  width: 90% !important;
+}

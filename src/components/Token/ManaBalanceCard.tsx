@@ -1,24 +1,27 @@
 import React, { useEffect, useMemo } from 'react'
+
 import { ChainId, Network } from '@dcl/schemas'
-import { Mana } from 'decentraland-ui/dist/components/Mana/Mana'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useTransactionContext from 'decentraland-gatsby/dist/context/Auth/useTransactionContext'
+import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useManaBalance from 'decentraland-gatsby/dist/hooks/useManaBalance'
+import delay from 'decentraland-gatsby/dist/utils/promise/delay'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Mana } from 'decentraland-ui/dist/components/Mana/Mana'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
-import useTransactionContext from 'decentraland-gatsby/dist/context/Auth/useTransactionContext'
 import { toWei } from 'web3x/utils/units'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import delay from 'decentraland-gatsby/dist/utils/promise/delay'
-import useManaBalance from 'decentraland-gatsby/dist/hooks/useManaBalance'
 
-import ActionableLayout from '../Layout/ActionableLayout'
-import VotingPower from './VotingPower'
 import { useBalanceOf, useWManaContract } from '../../hooks/useContract'
+import ActionableLayout from '../Layout/ActionableLayout'
+
+import './ManaBalanceCard.css'
+import VotingPower from './VotingPower'
 
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
 const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || '#'
@@ -110,7 +113,7 @@ const ManaBalanceCard = ({ address }: Props) => {
           </Stats>
         </Card.Content>
         {wMana! > 0 && (
-          <Card.Content style={{ flex: 0, position: 'relative' }}>
+          <Card.Content className="ManaBalanceCard__WrappedManaContainer">
             <Stats title={t('page.balance.wrapped_balance_label') || ''}>
               <VotingPower value={wMana!} size="medium" />
             </Stats>
@@ -119,7 +122,7 @@ const ManaBalanceCard = ({ address }: Props) => {
                 basic
                 loading={unwrapping || (unwrappingTransaction?.status && isPending(unwrappingTransaction?.status!))}
                 onClick={() => unwrap()}
-                style={{ position: 'absolute', top: 0, right: 0, padding: '24px 20px 16px' }}
+                className="ManaBalanceCard__WrappedManaButton"
               >
                 {t('page.balance.unwrap')}
               </Button>

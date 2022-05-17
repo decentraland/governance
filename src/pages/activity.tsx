@@ -141,34 +141,30 @@ export default function ActivityPage() {
               </Filter>
             </>
           }
-          rightAction={
-            <StatusMenu
-              style={{ marginRight: '1rem' }}
-              value={status}
-              onChange={(_, { value }) => handleStatusFilter(value)}
-            />
-          }
+          rightAction={<StatusMenu value={status} onChange={(_, { value }) => handleStatusFilter(value)} />}
         >
-          <div style={{ marginTop: '16px', position: 'relative', minHeight: '200px' }}>
+          <div className="ActivityPage__ListContainer">
             <Loader active={proposalsState.loading} />
             {proposals && proposals.data.length === 0 && (
-              <Empty
-                description={
-                  list === ProposalActivityList.Watchlist
-                    ? t(`page.proposal_activity.no_proposals_subscriptions`)
-                    : t(`page.proposal_activity.no_proposals_submitted`)
-                }
-                linkText={
-                  list === ProposalActivityList.Watchlist
-                    ? t(`page.proposal_activity.no_proposals_subscriptions_action`)
-                    : t(`page.proposal_activity.no_proposals_submitted_action`)
-                }
-                onLinkClick={
-                  list === ProposalActivityList.Watchlist
-                    ? () => navigate(locations.proposals())
-                    : () => navigate(locations.submit())
-                }
-              />
+              <div className="ActivityPage__EmptyContainer">
+                <Empty
+                  description={
+                    list === ProposalActivityList.Watchlist
+                      ? t(`page.proposal_activity.no_proposals_subscriptions`)
+                      : t(`page.proposal_activity.no_proposals_submitted`)
+                  }
+                  linkText={
+                    list === ProposalActivityList.Watchlist
+                      ? t(`page.proposal_activity.no_proposals_subscriptions_action`)
+                      : t(`page.proposal_activity.no_proposals_submitted_action`)
+                  }
+                  onLinkClick={
+                    list === ProposalActivityList.Watchlist
+                      ? () => navigate(locations.proposals())
+                      : () => navigate(locations.submit())
+                  }
+                />
+              </div>
             )}
             {proposals && proposals.data.length > 0 && (
               <Card.Group>

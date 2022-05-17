@@ -77,7 +77,6 @@ export default function ProposalPage() {
   })
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
-  const { profile } = useProfile(proposal?.user)
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [votes, votesState] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], {
     callWithTruthyDeps: true,
@@ -237,7 +236,7 @@ export default function ProposalPage() {
         <ContentSection>
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
-          <div style={{ minHeight: '24px' }}>
+          <div className="ProposalDetailPage__Labels">
             {proposal && <StatusLabel status={proposal.status} />}
             {proposal && <CategoryLabel type={proposal.type} />}
           </div>
@@ -248,7 +247,7 @@ export default function ProposalPage() {
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
               <Markdown>{proposal?.description || ''}</Markdown>
-              <ProposalFooterPoi proposal={proposal} />
+              {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
@@ -284,12 +283,12 @@ export default function ProposalPage() {
                 onOpenVotesList={() => patchOptions({ showVotesList: true })}
                 onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
               />
-              <ProposalDetailSection proposal={proposal} profile={profile} />
+              {proposal && <ProposalDetailSection proposal={proposal} />}
               {(isOwner || isCommittee) && (
                 <Button
                   basic
+                  fluid
                   loading={deleting}
-                  style={{ width: '100%' }}
                   disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
                   onClick={() => patchOptions({ confirmDeletion: true })}
                 >
@@ -300,7 +299,7 @@ export default function ProposalPage() {
                 <Button
                   basic
                   loading={updatingStatus}
-                  style={{ width: '100%' }}
+                  fluid
                   onClick={() =>
                     patchOptions({
                       confirmStatusUpdate: ProposalStatus.Enacted,
@@ -315,7 +314,7 @@ export default function ProposalPage() {
                   <Button
                     basic
                     loading={updatingStatus}
-                    style={{ width: '100%' }}
+                    fluid
                     onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
                   >
                     {t('page.proposal_detail.pass')}
@@ -323,7 +322,7 @@ export default function ProposalPage() {
                   <Button
                     basic
                     loading={updatingStatus}
-                    style={{ width: '100%' }}
+                    fluid
                     onClick={() =>
                       patchOptions({
                         confirmStatusUpdate: ProposalStatus.Rejected,
