@@ -106,6 +106,9 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
     estateState.loading ||
     votesInformationLoading
 
+  const landVotingPower = (land + estateLand) * LAND_MULTIPLIER
+  const nameVotingPower = ens * NAME_MULTIPLIER
+
   return (
     <>
       <Modal.Header
@@ -194,12 +197,12 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 </Grid.Column>
                 <Grid.Column>
                   <Stats title={t('modal.vp_delegation.details.stats_land')}>
-                    <VotingPower value={(land + estateLand) * LAND_MULTIPLIER} size="medium" />
+                    <VotingPower value={landVotingPower} size="medium" />
                   </Stats>
                 </Grid.Column>
                 <Grid.Column>
                   <Stats title={t('modal.vp_delegation.details.stats_name')}>
-                    <VotingPower value={ens * NAME_MULTIPLIER} size="medium" />
+                    <VotingPower value={nameVotingPower} size="medium" />
                   </Stats>
                 </Grid.Column>
               </Grid.Row>
@@ -207,8 +210,8 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 <Grid.Column>
                   <VotingPowerDistribution
                     mana={mana}
-                    name={ens * NAME_MULTIPLIER}
-                    land={land * LAND_MULTIPLIER}
+                    name={nameVotingPower}
+                    land={landVotingPower}
                     delegated={delegatedVotingPower}
                   />
                 </Grid.Column>
