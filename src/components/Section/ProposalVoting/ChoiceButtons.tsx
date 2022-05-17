@@ -1,12 +1,13 @@
 import React from 'react'
 
+import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
 
 import ChoiceButton from './ChoiceButton'
-
 
 interface Props {
   choices: string[]
@@ -16,11 +17,23 @@ interface Props {
   votesByChoices: Scores
   totalVotes: number
   onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
-  started: boolean
+  startAt?: Date
 }
 
-export const ChoiceButtons = ({ choices, vote, delegate, delegateVote, votesByChoices, totalVotes, onVote, started }: Props) => {
+export const ChoiceButtons = ({
+  choices,
+  vote,
+  delegate,
+  delegateVote,
+  votesByChoices,
+  totalVotes,
+  onVote,
+  startAt,
+}: Props) => {
   const t = useFormatMessage()
+  const now = Time.utc()
+  const untilStart = useCountdown(Time.utc(startAt) || now)
+  const started = untilStart.time === 0
 
   return (
     <>
