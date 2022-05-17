@@ -43,16 +43,15 @@ export default function useVotingPowerOnProposal(
       if (!address || !proposal) {
         return initialVotingPowerOnProposal
       }
-
-      const addresses = delegators ? [address, ...delegators] : [address]
+      const addresses = !!delegators ? [address, ...delegators] : [address]
       const scoresAtProposalCreation = await getProposalScores(proposal, addresses)
 
       const delegatedVp = getDelegatedVotingPowerOnProposal(scoresAtProposalCreation, delegators, votes)
       const addressVp = scoresAtProposalCreation[address] || 0
       return { addressVp, delegatedVp }
     },
-    [address, delegators?.length, proposal?.id],
-    { initialValue: initialVotingPowerOnProposal, callWithTruthyDeps: true }
+    [],
+    { initialValue: initialVotingPowerOnProposal}
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !vpOnProposalState.loading
