@@ -128,7 +128,7 @@ export class DelegationsLabelBuilder {
       ...delegationsLabel,
       delegateLabel: {
         id: 'page.proposal_detail.delegate_voted',
-        values: { date: Time.from(this.delegateVote.timestamp).fromNow() },
+        values: { date: DelegationsLabelBuilder.dateFormat(this.delegateVote.timestamp) },
       },
     }
   }
@@ -260,7 +260,7 @@ export class DelegationsLabelBuilder {
                   delegators_without_vote: totalDelegators - delegatorsVotes,
                   total_delegators: totalDelegators,
                   delegate: this.delegate,
-                  date: Time.from(this.delegateVote.timestamp).fromNow(),
+                  date: DelegationsLabelBuilder.dateFormat(this.delegateVote.timestamp),
                   vote_difference: this.voteDifference,
                 },
               }
@@ -270,7 +270,7 @@ export class DelegationsLabelBuilder {
                 id: 'page.proposal_detail.info.user_voted_delegate_voted_differently_without_delegators',
                 values: {
                   delegate: this.delegate,
-                  date: Time.from(this.delegateVote.timestamp).fromNow(),
+                  date: DelegationsLabelBuilder.dateFormat(this.delegateVote.timestamp),
                   vote_difference: this.voteDifference,
                 },
               }
@@ -326,5 +326,9 @@ export class DelegationsLabelBuilder {
       }
     }
     return infoMessage
+  }
+
+  public static dateFormat(timestamp: number) {
+    return Time.unix(timestamp).fromNow()
   }
 }
