@@ -1,7 +1,9 @@
 import React from 'react'
 
+import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Vote } from '../../../entities/Votes/types'
 import locations from '../../../modules/locations'
@@ -11,12 +13,11 @@ import './DelegationsLabel.css'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'
 import './VotingSectionFooter.css'
 
-
 interface VotingSectionFooterProps {
   vote: Vote | null
   delegateVote: Vote | null
-  started: boolean
-  finished: boolean
+  startAt?: Date
+  finishAt?: Date
   account: string | null
   changingVote?: boolean
   onChangeVote?: (e: React.MouseEvent<any, MouseEvent>, changing: boolean) => void
@@ -28,8 +29,8 @@ interface VotingSectionFooterProps {
 const VotingSectionFooter = ({
   vote,
   delegateVote,
-  started,
-  finished,
+  startAt,
+  finishAt,
   account,
   changingVote,
   onChangeVote,
@@ -37,8 +38,13 @@ const VotingSectionFooter = ({
   totalVpOnProposal,
   hasEnoughToVote,
 }: VotingSectionFooterProps) => {
-  const showVotingPowerInfo = started && account
   const t = useFormatMessage()
+  const now = Time.utc()
+  const untilStart = useCountdown(Time.utc(startAt) || now)
+  const untilFinish = useCountdown(Time.utc(finishAt) || now)
+  const started = untilStart.time === 0
+  const finished = untilFinish.time === 0
+  const showVotingPowerInfo = started && account
   const hasDelegators = !!delegators && delegators.length > 0
 
   return (

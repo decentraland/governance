@@ -14,10 +14,9 @@ import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/ut
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
+import './ProposalVotingSection.css'
 import VotedChoiceButton from './VotedChoiceButton'
 import VotingSectionFooter from './VotingSectionFooter'
-
-import './ProposalVotingSection.css'
 
 interface Props {
   proposal?: ProposalAttributes | null
@@ -25,23 +24,12 @@ interface Props {
   loading?: boolean
   changingVote?: boolean
   choices: string[]
-  started: boolean
   finished: boolean
   onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
   onChangeVote?: (e: React.MouseEvent<any, MouseEvent>, changing: boolean) => void
 }
 
-const ProposalVotingSection = ({
-  proposal,
-  votes,
-  loading,
-  changingVote,
-  choices,
-  started,
-  finished,
-  onVote,
-  onChangeVote,
-}: Props) => {
+const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices, onVote, onChangeVote }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [delegation, delegationState] = useDelegation(account)
@@ -77,12 +65,16 @@ const ProposalVotingSection = ({
     [delegators, votes, choices]
   )
 
-  const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
+  const proposalVotingSectionLoading =
+    loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
+
   return (
     <div className="DetailsSection__Content OnlyDesktop">
-      {proposalVotingSectionLoading && <div className={'ProposalVotingSection__Loader'}>
-        <Loader active={proposalVotingSectionLoading} />
-      </div>}
+      {proposalVotingSectionLoading && (
+        <div className={'ProposalVotingSection__Loader'}>
+          <Loader active={proposalVotingSectionLoading} />
+        </div>
+      )}
 
       {!proposalVotingSectionLoading && (
         <>
@@ -108,7 +100,7 @@ const ProposalVotingSection = ({
               delegateVote={delegateVote}
               totalVotes={totalVotes}
               onVote={onVote}
-              started={started}
+              startAt={proposal?.start_at}
             />
           )}
 
@@ -117,8 +109,8 @@ const ProposalVotingSection = ({
           <VotingSectionFooter
             vote={vote}
             delegateVote={delegateVote}
-            started={started}
-            finished={finished}
+            startAt={proposal?.start_at}
+            finishAt={proposal?.finish_at}
             account={account}
             changingVote={changingVote}
             onChangeVote={onChangeVote}

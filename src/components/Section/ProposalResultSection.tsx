@@ -47,12 +47,8 @@ export default function ProposalResultSection({
   const choices = proposal?.snapshot_proposal?.choices || []
   const results = useMemo(() => calculateResult(choices, votes || {}), [proposal, choices, votes])
   const now = Time.utc()
-  const startAt = Time.utc(proposal?.start_at) || now
-  const finishAt = Time.utc(proposal?.finish_at) || now
-  const untilStart = useCountdown(startAt)
-  const untilFinish = useCountdown(finishAt)
-  const started = untilStart.time === 0
-  const finished = untilFinish.time === 0
+  const finishAt = Time.utc(proposal?.finish_at)
+  const finished = finishAt.isBefore(now)
   const showVotingStatusSummary =
     proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
   const showSeeVotesButton = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
@@ -98,7 +94,6 @@ export default function ProposalResultSection({
           loading={loading}
           changingVote={changingVote}
           choices={choices}
-          started={started}
           finished={finished}
           onVote={onVote}
           onChangeVote={onChangeVote}
