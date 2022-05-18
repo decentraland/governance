@@ -254,7 +254,7 @@ export default function SubmitCatalyst() {
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
-          onChange={(_: unknown, { value }: never) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description || state.value.description.length > schema.description.maxLength}
           message={

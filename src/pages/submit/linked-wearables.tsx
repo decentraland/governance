@@ -334,7 +334,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.motivation}
           placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ motivation: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
           onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
           error={!!state.error.motivation}
           message={
@@ -360,7 +360,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.nft_collections}
           placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ nft_collections: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ nft_collections: value })}
           onBlur={() => editor.set({ nft_collections: state.value.nft_collections.trim() })}
           error={!!state.error.nft_collections}
           message={
@@ -402,7 +402,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.governance}
           placeholder={t('page.submit_linked_wearables.governance_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ governance: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ governance: value })}
           onBlur={() => editor.set({ governance: state.value.governance.trim() })}
           error={!!state.error.governance}
           message={
@@ -461,7 +461,7 @@ export default function SubmitLinkedWearables() {
             minHeight={175}
             value={state.value.method}
             placeholder={t('page.submit_linked_wearables.method_placeholder')}
-            onChange={(_: unknown, { value }: never) => editor.set({ method: value })}
+            onChange={(_: unknown, { value }: { value: string }) => editor.set({ method: value })}
             onBlur={() => editor.set({ method: state.value.method.trim() })}
             error={!!state.error.method}
             message={

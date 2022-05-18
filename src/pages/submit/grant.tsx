@@ -299,7 +299,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.abstract}
           placeholder={t('page.submit_grant.abstract_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ abstract: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ abstract: value })}
           onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
           error={!!state.error.abstract}
           message={
@@ -358,7 +358,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.description}
           placeholder={t('page.submit_grant.description_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description}
           message={
@@ -384,7 +384,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.specification}
           placeholder={t('page.submit_grant.specification_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ specification: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
           onBlur={() => editor.set({ specification: state.value.specification.trim() })}
           error={!!state.error.specification}
           message={
@@ -410,7 +410,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.personnel}
           placeholder={t('page.submit_grant.personnel_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ personnel: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ personnel: value })}
           onBlur={() => editor.set({ personnel: state.value.personnel.trim() })}
           error={!!state.error.personnel}
           message={
@@ -436,7 +436,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.roadmap}
           placeholder={t('page.submit_grant.roadmap_placeholder')}
-          onChange={(_: unknown, { value }: never) => editor.set({ roadmap: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ roadmap: value })}
           onBlur={() => editor.set({ roadmap: state.value.roadmap.trim() })}
           error={!!state.error.roadmap}
           message={

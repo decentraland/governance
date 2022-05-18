@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useMemo } from 'react'
 
 import usePickedBy from './usePickedBy'
@@ -18,7 +17,7 @@ function useDelegatesInfo(addresses: string[]): Delegate[] {
 
   return useMemo(
     () => pickedByResults.map((delegate) => ({ ...delegate, totalVP: votingPower[delegate.address] })),
-    [JSON.stringify(pickedByResults), JSON.stringify(votingPower)]
+    [pickedByResults, votingPower]
   )
 }
 
