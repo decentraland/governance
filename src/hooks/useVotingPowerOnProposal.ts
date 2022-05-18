@@ -2,7 +2,7 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { Vote } from '../entities/Votes/types'
-import { Scores, getProposalScores } from '../entities/Votes/utils'
+import { getProposalScores, Scores } from '../entities/Votes/utils'
 
 export const MINIMUM_VP_REQUIRED_TO_VOTE = 1
 
@@ -43,7 +43,7 @@ export default function useVotingPowerOnProposal(
       if (!address || !proposal) {
         return initialVotingPowerOnProposal
       }
-      const addresses = !!delegators ? [address, ...delegators] : [address]
+      const addresses = delegators ? [address, ...delegators] : [address]
       const scoresAtProposalCreation = await getProposalScores(proposal, addresses)
 
       const delegatedVp = getDelegatedVotingPowerOnProposal(scoresAtProposalCreation, delegators, votes)
@@ -51,7 +51,7 @@ export default function useVotingPowerOnProposal(
       return { addressVp, delegatedVp }
     },
     [votes, address, proposal, delegators?.length],
-    { initialValue: initialVotingPowerOnProposal}
+    { initialValue: initialVotingPowerOnProposal }
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !vpOnProposalState.loading

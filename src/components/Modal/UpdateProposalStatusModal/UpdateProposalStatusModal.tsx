@@ -123,7 +123,7 @@ export function UpdateProposalStatusModal({
         <MarkdownTextarea
           minHeight={150}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value }, { validate: false })}
+          onChange={(_: unknown, { value }: never) => editor.set({ description: value }, { validate: false })}
         />
       </Modal.Content>
       <Modal.Content className="ProposalModal__Actions">

@@ -1,25 +1,25 @@
-import unified from 'unified'
+import escapeMarkdown from 'markdown-escape'
 import markdown from 'remark-parse'
 import stringify from 'remark-stringify'
-import escapeMarkdown from 'markdown-escape'
+import unified from 'unified'
+
 import ProposalModel from '../model'
-import { proposalUrl } from '../utils'
 import { ProposalAttributes } from '../types'
+import { proposalUrl } from '../utils'
 
 type NodeItem = {
-  type: string;
+  type: string
   depth?: number
 }
 
 type Node = {
-  type: string;
-  depth: number;
+  type: string
+  depth: number
   children: NodeItem[]
 }
 
 export function template(raw: TemplateStringsArray, ...subs: any[]) {
-  return String.raw(raw, ...subs)
-    .trim()
+  return String.raw(raw, ...subs).trim()
 }
 
 export async function formatLinkedProposal(linked_proposal_id: string) {
@@ -28,9 +28,7 @@ export async function formatLinkedProposal(linked_proposal_id: string) {
   return `[${proposal?.title}](${url})` || ''
 }
 
-const parser = unified()
-  .use(markdown)
-  .use(stringify)
+const parser = unified().use(markdown).use(stringify)
 
 export function formatMarkdown(value: string): string {
   const tree = parser.parse(value)
@@ -44,12 +42,12 @@ export function formatMarkdownAST(node: Node): Node {
       return {
         ...node,
         depth: (node.depth as number) < 3 ? 3 : (node.depth as number),
-        children: node.children && (node.children as Node[]).map(node => formatMarkdownAST(node))
+        children: node.children && (node.children as Node[]).map((node) => formatMarkdownAST(node)),
       }
     default:
       return {
         ...node,
-        children: node.children && (node.children as Node[]).map(node => formatMarkdownAST(node))
+        children: node.children && (node.children as Node[]).map((node) => formatMarkdownAST(node)),
       }
   }
 }

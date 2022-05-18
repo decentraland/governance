@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -30,6 +30,18 @@ import './activity.css'
 
 const ITEMS_PER_PAGE = 12
 
+const getFilters = (account: string | null, list: ProposalActivityList | null) => {
+  if (!!account && list === ProposalActivityList.MyProposals) {
+    return { user: account }
+  }
+
+  if (!!account && list === ProposalActivityList.Watchlist) {
+    return { subscribed: account }
+  }
+
+  return {}
+}
+
 export default function ActivityPage() {
   const t = useFormatMessage()
   const [account] = useAuthContext()
@@ -39,20 +51,23 @@ export default function ActivityPage() {
   const page = toProposalListPage(params.get('page')) ?? undefined
   const list = toProposalActivityList(params.get('list'))
   const load = !!account && !!list
-  const filters =
-    !account || !list
-      ? {}
-      : list === ProposalActivityList.MyProposals
-      ? { user: account }
-      : list === ProposalActivityList.Watchlist
-      ? { subscribed: account }
-      : {}
+
+  const filters = getFilters(account, list)
   const [proposals, proposalsState] = useProposals({ load, page, status, ...filters, itemsPerPage: ITEMS_PER_PAGE })
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const [results] = useAsyncMemo(
     () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
     [account, proposals],
     { callWithTruthyDeps: true }
+  )
+
+  const handlePageFilter = useCallback(
+    (page: number) => {
+      const newParams = new URLSearchParams(params)
+      page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
+      return navigate(locations.activity(newParams))
+    },
+    [params]
   )
 
   useEffect(() => {
@@ -62,7 +77,7 @@ export default function ActivityPage() {
         handlePageFilter(maxPage)
       }
     }
-  }, [page, proposals])
+  }, [handlePageFilter, page, proposals])
 
   function handleStatusFilter(status: ProposalStatus | null) {
     const newParams = new URLSearchParams(params)
@@ -78,19 +93,13 @@ export default function ActivityPage() {
     return navigate(locations.activity(newParams))
   }
 
-  function handlePageFilter(page: number) {
-    const newParams = new URLSearchParams(params)
-    page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
-    return navigate(locations.activity(newParams))
-  }
-
   useEffect(() => {
     if (!list) {
       const newParams = new URLSearchParams(params)
       newParams.set('list', ProposalActivityList.MyProposals)
       navigate(locations.activity(newParams))
     }
-  }, [list])
+  }, [list, params])
 
   if (isUnderMaintenance()) {
     return (
@@ -150,13 +159,13 @@ export default function ActivityPage() {
                 <Empty
                   description={
                     list === ProposalActivityList.Watchlist
-                      ? t(`page.proposal_activity.no_proposals_subscriptions`)
-                      : t(`page.proposal_activity.no_proposals_submitted`)
+                      ? t('page.proposal_activity.no_proposals_subscriptions')
+                      : t('page.proposal_activity.no_proposals_submitted')
                   }
                   linkText={
                     list === ProposalActivityList.Watchlist
-                      ? t(`page.proposal_activity.no_proposals_subscriptions_action`)
-                      : t(`page.proposal_activity.no_proposals_submitted_action`)
+                      ? t('page.proposal_activity.no_proposals_subscriptions_action')
+                      : t('page.proposal_activity.no_proposals_submitted_action')
                   }
                   onLinkClick={
                     list === ProposalActivityList.Watchlist

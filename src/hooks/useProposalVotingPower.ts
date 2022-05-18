@@ -1,4 +1,5 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+
 import { Governance } from '../api/Governance'
 import { ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
 
@@ -14,6 +15,6 @@ export default function useProposalVotingPower(account: string | null, proposal:
 
   return {
     votingPower,
-    isLoadingVotingPower: votingPowerState.loading
+    isLoadingVotingPower: votingPowerState.loading,
   }
 }

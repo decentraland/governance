@@ -21,8 +21,8 @@ query ($space: String!, $address: String!) {
 `
 
 export type Delegation = {
-  delegator: string,
-  delegate: string,
+  delegator: string
+  delegate: string
   space: string
 }
 
@@ -45,7 +45,7 @@ const initialValue: DelegationResult = {
 
 export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
   if (delegations.length > 1) {
-    return delegations.filter(delegation => delegation.space === space)
+    return delegations.filter((delegation) => delegation.space === space)
   }
 
   return delegations
@@ -56,15 +56,14 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
     return []
   }
 
-  const unique_delegations = new Map<String, Delegation>()
+  const unique_delegations = new Map<string, Delegation>()
 
   for (const deleg of delegations) {
     if (unique_delegations.has(deleg.delegator)) {
       if (unique_delegations.get(deleg.delegator)?.space !== space) {
         unique_delegations.set(deleg.delegator, deleg)
       }
-    }
-    else {
+    } else {
       unique_delegations.set(deleg.delegator, deleg)
     }
   }
@@ -73,31 +72,32 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
 }
 
 export default function useDelegation(address?: string | null) {
-  return useAsyncMemo(async () => {
-    if (!SNAPSHOT_SPACE || !address) {
-      return initialValue
-    }
+  return useAsyncMemo(
+    async () => {
+      if (!SNAPSHOT_SPACE || !address) {
+        return initialValue
+      }
 
-    const request = await fetch(
-      SNAPSHOT_QUERY_ENDPOINT,
-      {
+      const request = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: QUERY,
           variables: { address: address.toLowerCase(), space: SNAPSHOT_SPACE },
         }),
+      })
+      const body = await request.json()
+      const data = body.data as DelegationQueryResult
+      const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, SNAPSHOT_SPACE)
+      const result: DelegationResult = {
+        delegatedTo: filterDelegationTo(data.delegatedTo, SNAPSHOT_SPACE),
+        delegatedFrom: filteredDelegatedFrom.slice(0, 99),
+        hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99,
       }
-    )
-    const body = await request.json()
-    const data = body.data as DelegationQueryResult
-    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, SNAPSHOT_SPACE)
-    const result: DelegationResult = {
-      delegatedTo: filterDelegationTo(data.delegatedTo, SNAPSHOT_SPACE),
-      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
-      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99
-    }
 
-    return result
-  }, [SNAPSHOT_SPACE, address], { initialValue, callWithTruthyDeps: true })
+      return result
+    },
+    [SNAPSHOT_SPACE, address],
+    { initialValue, callWithTruthyDeps: true }
+  )
 }

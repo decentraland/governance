@@ -114,11 +114,11 @@ const validate = createValidator<LinkedWearablesState>({
       links:
         assert(
           links.some((option) => option !== ''),
-          `error.linked_wearables.links_empty`
+          'error.linked_wearables.links_empty'
         ) ||
         assert(
           links.every((option) => isURL(option, { protocols: ['https'], require_protocol: true })),
-          `error.linked_wearables.url_invalid`
+          'error.linked_wearables.url_invalid'
         ),
       nft_collections:
         assert(state.nft_collections.length > 0, 'error.linked_wearables.nft_collections_empty') ||
@@ -137,11 +137,11 @@ const validate = createValidator<LinkedWearablesState>({
       smart_contract:
         assert(
           smart_contract.some((option) => option !== ''),
-          `error.linked_wearables.smart_contract_empty`
+          'error.linked_wearables.smart_contract_empty'
         ) ||
         assert(
           smart_contract.every((option) => isEthereumAddress(option)),
-          `error.linked_wearables.address_invalid`
+          'error.linked_wearables.address_invalid'
         ),
       governance:
         assert(state.governance.length > 0, 'error.linked_wearables.governance_empty') ||
@@ -155,11 +155,11 @@ const validate = createValidator<LinkedWearablesState>({
       managers:
         assert(
           managers.some((option) => option !== ''),
-          `error.linked_wearables.managers_empty`
+          'error.linked_wearables.managers_empty'
         ) ||
         assert(
           managers.every((option) => isEthereumAddress(option)),
-          `error.linked_wearables.address_invalid`
+          'error.linked_wearables.address_invalid'
         ),
     }
   },
@@ -264,7 +264,7 @@ export default function SubmitLinkedWearables() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -334,7 +334,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.motivation}
           placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ motivation: value })}
           onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
           error={!!state.error.motivation}
           message={
@@ -360,7 +360,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.nft_collections}
           placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ nft_collections: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ nft_collections: value })}
           onBlur={() => editor.set({ nft_collections: state.value.nft_collections.trim() })}
           error={!!state.error.nft_collections}
           message={
@@ -402,7 +402,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.governance}
           placeholder={t('page.submit_linked_wearables.governance_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ governance: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ governance: value })}
           onBlur={() => editor.set({ governance: state.value.governance.trim() })}
           error={!!state.error.governance}
           message={
@@ -461,7 +461,7 @@ export default function SubmitLinkedWearables() {
             minHeight={175}
             value={state.value.method}
             placeholder={t('page.submit_linked_wearables.method_placeholder')}
-            onChange={(_: any, { value }: any) => editor.set({ method: value })}
+            onChange={(_: unknown, { value }: never) => editor.set({ method: value })}
             onBlur={() => editor.set({ method: state.value.method.trim() })}
             error={!!state.error.method}
             message={

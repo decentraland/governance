@@ -1,10 +1,12 @@
-import JobContext from "decentraland-gatsby/dist/entities/Job/context";
-import { updateSnapshotProposalVotes, getSnapshotProposalVotes } from "../Votes/routes";
-import { Vote } from "../Votes/types";
+import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
+
+import { getSnapshotProposalVotes, updateSnapshotProposalVotes } from '../Votes/routes'
+import { Vote } from '../Votes/types'
 import { Scores } from '../Votes/utils'
-import ProposalModel from "./model";
-import { ProposalAttributes, ProposalStatus, INVALID_PROPOSAL_POLL_OPTIONS } from './types'
+
+import ProposalModel from './model'
 import { commentProposalUpdateInDiscourse } from './routes'
+import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus } from './types'
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -16,8 +18,8 @@ function sameOptions(options: string[], expected: string[]) {
     return false
   }
 
-  options = options.map(option => option.toLowerCase()).sort()
-  expected = expected.map(option => option.toLowerCase()).sort()
+  options = options.map((option) => option.toLowerCase()).sort()
+  expected = expected.map((option) => option.toLowerCase()).sort()
   return options.every((option, i) => option === expected[i])
 }
 
@@ -82,9 +84,9 @@ export async function finishProposal(context: JobContext) {
       // reject/pass boolean proposals
     } else if (isYesNo || isAcceptReject || isForAgainst) {
       if (
-        isYesNo && result['yes'] > result['no'] ||
-        isAcceptReject && result['accept'] > result['reject'] ||
-        isForAgainst && result['for'] > result['against']
+        (isYesNo && result['yes'] > result['no']) ||
+        (isAcceptReject && result['accept'] > result['reject']) ||
+        (isForAgainst && result['for'] > result['against'])
       ) {
         acceptedProposals.push(proposal)
       } else {
@@ -99,23 +101,32 @@ export async function finishProposal(context: JobContext) {
 
   if (finishedProposals.length > 0) {
     context.log(`Finishing ${finishedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(finishedProposals.map(proposal => proposal.id), ProposalStatus.Finished)
+    await ProposalModel.finishProposal(
+      finishedProposals.map((proposal) => proposal.id),
+      ProposalStatus.Finished
+    )
   }
 
   if (acceptedProposals.length > 0) {
     context.log(`Accepting ${acceptedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(acceptedProposals.map(proposal => proposal.id), ProposalStatus.Passed)
+    await ProposalModel.finishProposal(
+      acceptedProposals.map((proposal) => proposal.id),
+      ProposalStatus.Passed
+    )
   }
 
   if (rejectedProposals.length > 0) {
     context.log(`Rejecting ${rejectedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(rejectedProposals.map(proposal => proposal.id), ProposalStatus.Rejected)
+    await ProposalModel.finishProposal(
+      rejectedProposals.map((proposal) => proposal.id),
+      ProposalStatus.Rejected
+    )
   }
 
   //
   // Update proposal in Discourse
   //
-  let proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
+  const proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
   for (const proposal of proposals) {
     commentProposalUpdateInDiscourse(proposal.id)

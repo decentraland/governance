@@ -1,5 +1,3 @@
-
-
 export const CHOICES = ['yes', 'no', 'maybe']
 export const USER_ACCOUNT = '0x529a9021661a85b6bc51c07b3a451135848d0090'
 export const DELEGATOR_1 = '0x521b0fef9cdcf250abaf8e7bc798cbe13fa98691'
@@ -23,7 +21,7 @@ export const CHOICE_2_VOTE = {
 
 export const OWN_VOTING_POWER = 111
 export const DELEGATED_VOTING_POWER = 222
-export const VOTE_DIFFERENCE =  3
+export const VOTE_DIFFERENCE = 3
 
 export const VOTES_WITH_DELEGATORS = {
   [DELEGATOR_1]: CHOICE_1_VOTE,

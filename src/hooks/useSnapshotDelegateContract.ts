@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useEffect, useState } from 'react'
+
 import { hexlify } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
-import { useCallback, useEffect, useState } from 'react'
+
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import DelegateABI from '../modules/contracts/abi/Delegate.abi.json'
 
 export enum DelegateContractStatusCode {
   TRANSACTION_CANCELED_BY_USER = 4001,
   UNDEFINED_CONTRACT = -1,
-  SUCCESS = 1
+  SUCCESS = 1,
 }
 
 const enc = new TextEncoder()
@@ -21,7 +24,7 @@ const GLOBAL_SPACE_ID = '0x00000000000000000000000000000000000000000000000000000
 
 const validateContract = <T>(contract: Contract | undefined, callback: (contract: Contract) => Promise<T>) => {
   if (!contract) {
-    throw { code: DelegateContractStatusCode.UNDEFINED_CONTRACT, message: "Delegate Contract is undefined" }
+    throw { code: DelegateContractStatusCode.UNDEFINED_CONTRACT, message: 'Delegate Contract is undefined' }
   }
 
   return callback(contract)
@@ -29,7 +32,7 @@ const validateContract = <T>(contract: Contract | undefined, callback: (contract
 
 const validateResult = <T>(result: any, callback: (result: any) => T) => {
   if (!result || result.status !== DelegateContractStatusCode.SUCCESS) {
-    throw { code: result.status, message: "Transaction failed" }
+    throw { code: result.status, message: 'Transaction failed' }
   }
 
   return callback(result)
@@ -52,16 +55,18 @@ function useSnapshotDelegateContract() {
     }
   }, [isContractUsable])
 
-  const setDelegate = useCallback(async (address: string) => {
-    return validateContract(contract, async (contract) => {
-      const transaction = await contract.setDelegate(fullSpaceId, address)
-      const result = await transaction.wait()
-      validateResult(result, () => {
-        setDelegatedAddress(address)
+  const setDelegate = useCallback(
+    async (address: string) => {
+      return validateContract(contract, async (contract) => {
+        const transaction = await contract.setDelegate(fullSpaceId, address)
+        const result = await transaction.wait()
+        validateResult(result, () => {
+          setDelegatedAddress(address)
+        })
       })
-
-    })
-  }, [contract])
+    },
+    [contract]
+  )
 
   const clearDelegate = useCallback(async () => {
     return validateContract(contract, async (contract) => {
@@ -88,13 +93,13 @@ function useSnapshotDelegateContract() {
 
       return address
     })
-  }, [contract])
+  }, [contract, userAddress])
 
   useEffect(() => {
     if (contract) {
       checkDelegation()
     }
-  }, [contract, isContractUsable])
+  }, [checkDelegation, contract, isContractUsable])
 
   return { isContractUsable, delegatedAddress, isGlobalDelegation, setDelegate, clearDelegate, checkDelegation }
 }

@@ -71,7 +71,7 @@ export default function BalancePage() {
       <Navigation activeTab={NavigationTab.Wrapping} />
       <Container className="VotingPowerSummary">
         <UserStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
-        <Stats title={t(`page.balance.total_label`) || ''}>
+        <Stats title={t('page.balance.total_label') || ''}>
           <VotingPower value={votingPower} size="huge" />
           <Loader size="small" className="balance" active={isLoadingVotingPower} />
         </Stats>

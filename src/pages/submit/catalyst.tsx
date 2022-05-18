@@ -103,7 +103,7 @@ export default function SubmitCatalyst() {
     if (!state.error.domain && (commsState.error || contentState.error || lambdaState.error)) {
       editor.error({ domain: 'error.catalyst.server_invalid_status' })
     }
-  }, [domain, commsState.error, contentState.error, lambdaState.error, state.error.domain])
+  }, [domain, commsState.error, contentState.error, lambdaState.error, state.error.domain, editor])
 
   useEffect(() => {
     const errors = [commsState.error, contentState.error, lambdaState.error].filter(Boolean)
@@ -129,11 +129,11 @@ export default function SubmitCatalyst() {
             servers = await Catalyst.get().getServers()
           } catch (err) {
             console.error(err)
-            throw new Error(`error.catalyst.fetching_catalyst`)
+            throw new Error('error.catalyst.fetching_catalyst')
           }
 
           if (servers.find((server) => server.baseUrl === 'https://' + state.value.domain)) {
-            throw new Error(`error.catalyst.domain_already_a_catalyst`)
+            throw new Error('error.catalyst.domain_already_a_catalyst')
           }
 
           return Governance.get().createProposalCatalyst(state.value)
@@ -148,6 +148,7 @@ export default function SubmitCatalyst() {
           setFormDisabled(false)
         })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, commsStatus, contentStatus, lambdaStatus])
 
   if (accountState.loading) {
@@ -253,7 +254,7 @@ export default function SubmitCatalyst() {
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description || state.value.description.length > schema.description.maxLength}
           message={

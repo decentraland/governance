@@ -140,10 +140,10 @@ export default function SubmitDraftProposal() {
   const [formDisabled, setFormDisabled] = useState(false)
 
   useEffect(() => {
-    if (!!preselectedLinkedProposalId) {
+    if (preselectedLinkedProposalId) {
       editor.set({ linked_proposal_id: preselectedLinkedProposalId })
     }
-  }, [preselectedLinkedProposalId])
+  }, [editor, preselectedLinkedProposalId])
 
   useEffect(() => {
     if (state.validated) {
@@ -165,7 +165,7 @@ export default function SubmitDraftProposal() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -244,7 +244,7 @@ export default function SubmitDraftProposal() {
           minHeight={175}
           value={state.value.summary}
           placeholder={t('page.submit_draft.summary_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ summary: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ summary: value })}
           onBlur={() => editor.set({ summary: state.value.summary.trim() })}
           error={!!state.error.summary}
           message={
@@ -271,7 +271,7 @@ export default function SubmitDraftProposal() {
           minHeight={175}
           value={state.value.abstract}
           placeholder={t('page.submit_draft.abstract_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ abstract: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ abstract: value })}
           onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
           error={!!state.error.abstract}
           message={
@@ -298,7 +298,7 @@ export default function SubmitDraftProposal() {
           minHeight={175}
           value={state.value.motivation}
           placeholder={t('page.submit_draft.motivation_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ motivation: value })}
           onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
           error={!!state.error.motivation}
           message={
@@ -325,7 +325,7 @@ export default function SubmitDraftProposal() {
           minHeight={175}
           value={state.value.specification}
           placeholder={t('page.submit_draft.specification_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ specification: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ specification: value })}
           onBlur={() => editor.set({ specification: state.value.specification.trim() })}
           error={!!state.error.specification}
           message={
@@ -352,7 +352,7 @@ export default function SubmitDraftProposal() {
           minHeight={175}
           value={state.value.conclusion}
           placeholder={t('page.submit_draft.conclusion_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ conclusion: value })}
+          onChange={(_: unknown, { value }: never) => editor.set({ conclusion: value })}
           onBlur={() => editor.set({ conclusion: state.value.conclusion.trim() })}
           error={!!state.error.conclusion}
           message={
