@@ -5,7 +5,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
-import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
 import Candidates from '../../../modules/delegates/candidates.json'
 import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
@@ -26,7 +26,7 @@ export type Candidate = Delegate & {
 
 function VotingPowerDelegationModal({ onClose, ...props }: VotingPowerDelegationModalProps) {
   const [userAddress] = useAuthContext()
-  const { votingPower } = useVotingPowerBalance(userAddress)
+  const { ownVotingPower } = useVotingPowerInformation(userAddress)
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const delegates = useDelegatesInfo(Candidates.map((delegate) => delegate.address))
 
@@ -43,11 +43,11 @@ function VotingPowerDelegationModal({ onClose, ...props }: VotingPowerDelegation
   return (
     <Modal {...props} onClose={handleClose} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
       {!selectedCandidate && (
-        <VotingPowerDelegationList delegates={delegates} vp={votingPower} onDelegateClick={handleOnDelegateClick} />
+        <VotingPowerDelegationList delegates={delegates} vp={ownVotingPower} onDelegateClick={handleOnDelegateClick} />
       )}
       {selectedCandidate && (
         <VotingPowerDelegationDetail
-          userVP={votingPower}
+          userVP={ownVotingPower}
           candidate={selectedCandidate}
           onBackClick={() => setSelectedCandidate(null)}
         />
