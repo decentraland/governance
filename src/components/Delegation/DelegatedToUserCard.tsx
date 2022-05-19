@@ -1,6 +1,4 @@
-import React, { useMemo, useState } from 'react';
-
-
+import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -9,7 +7,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
-import { DelegationResult, ScoreDetail } from '../../api/Snapshot'
+import { DelegationResult, DetailedScores } from '../../api/Snapshot'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
@@ -19,13 +17,12 @@ import './DelegatedToUserCard.css'
 import VotingPowerListItem from './VotingPowerListItem'
 import { VotingPowerListModal } from './VotingPowerListModal'
 
-
 const DISPLAYED_DELEGATIONS = 5
 const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5'
 
 interface DelegatedToUserCardProps {
   delegation: DelegationResult
-  scores: Record<string, ScoreDetail>
+  scores: DetailedScores
   delegatedVotingPower: number
   isLoggedUserProfile: boolean
   loading: boolean

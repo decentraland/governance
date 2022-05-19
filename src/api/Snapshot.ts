@@ -99,11 +99,13 @@ export type DelegationResult = {
   hasMoreDelegatedFrom: boolean
 }
 
-export type ScoreDetail = {
+type ScoreDetail = {
   ownVp: number
   delegatedVp: number
   totalVp: number
 }
+
+export type DetailedScores = Record<string, ScoreDetail>
 
 export const EMPTY_DELEGATION: DelegationResult = {
   delegatedTo: [],
@@ -314,7 +316,7 @@ export class Snapshot extends API {
     block?: string | number
   ) {
     addresses = addresses.map((addr) => addr.toLowerCase())
-    const result: Record<string, ScoreDetail> = {}
+    const result: DetailedScores = {}
     const scores: Scores[] = await snapshot.utils.getScores(space, strategies, network, addresses, block)
 
     for (const addr of addresses) {
