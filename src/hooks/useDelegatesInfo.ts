@@ -16,7 +16,7 @@ function useDelegatesInfo(addresses: string[]): Delegate[] {
   const { pickedByResults } = usePickedBy(addresses)
 
   return useMemo(
-    () => pickedByResults.map(delegate => ({ ...delegate, totalVP: votingPower[delegate.address] })),
+    () => pickedByResults.map(delegate => ({ ...delegate, totalVP: votingPower[delegate.address]?.totalVp || 0 })),
     [JSON.stringify(pickedByResults), JSON.stringify(votingPower)]
   )
 }

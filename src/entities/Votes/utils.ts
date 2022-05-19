@@ -167,7 +167,7 @@ export function abbreviateNumber(vp: number) {
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
   const result: Scores = {}
   for (const addressesChunk of chunk(addresses, 500)) {
-    const blockchainScores: Scores = await Snapshot.get().getScores(
+    const blockchainScores = await Snapshot.get().getScores(
       proposal.snapshot_space,
       proposal.snapshot_proposal.metadata.strategies,
       proposal.snapshot_network,
@@ -176,7 +176,7 @@ export async function getProposalScores(proposal: ProposalAttributes, addresses:
     )
 
     for (const address of Object.keys(blockchainScores)) {
-      result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address] || 0)
+      result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address].totalVp || 0)
     }
   }
 

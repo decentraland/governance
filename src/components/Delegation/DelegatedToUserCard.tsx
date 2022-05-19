@@ -1,26 +1,31 @@
+import React, { useMemo, useState } from 'react';
+
+
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
-import React, { useMemo, useState } from 'react'
-import { Scores } from '../../entities/Votes/utils'
-import { DelegationResult } from '../../hooks/useDelegation'
+
+import { DelegationResult, ScoreDetail } from '../../api/Snapshot'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
 import VotingPower from '../Token/VotingPower'
-import { VotingPowerListModal } from './VotingPowerListModal'
-import VotingPowerListItem from './VotingPowerListItem'
+
 import './DelegatedToUserCard.css'
+import VotingPowerListItem from './VotingPowerListItem'
+import { VotingPowerListModal } from './VotingPowerListModal'
+
 
 const DISPLAYED_DELEGATIONS = 5
 const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5'
 
 interface DelegatedToUserCardProps {
   delegation: DelegationResult
-  scores: Scores | null
+  scores: Record<string, ScoreDetail>
   delegatedVotingPower: number
   isLoggedUserProfile: boolean
   loading: boolean
@@ -38,10 +43,10 @@ export default function DelegatedToUserCard({
   const delegatedFrom = delegation.delegatedFrom
   const delegationsList = useMemo(
     () =>
-      delegatedFrom && delegatedFrom.length > 0 && scores
+      delegatedFrom && delegatedFrom.length > 0 && Object.keys(scores).length !== 0
         ? delegatedFrom
             .map(({ delegator }) => {
-              return { delegator, vp: scores[delegator.toLowerCase()] || 0 }
+              return { delegator, vp: scores[delegator.toLowerCase()].ownVp || 0 }
             })
             .sort((d1, d2) => (d1.vp > d2.vp ? -1 : d1.vp < d2.vp ? 1 : 0))
         : [],

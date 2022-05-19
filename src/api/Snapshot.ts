@@ -99,11 +99,19 @@ export type DelegationResult = {
   hasMoreDelegatedFrom: boolean
 }
 
+export type ScoreDetail = {
+  ownVp: number
+  delegatedVp: number
+  totalVp: number
+}
+
 export const EMPTY_DELEGATION: DelegationResult = {
   delegatedTo: [],
   delegatedFrom: [],
   hasMoreDelegatedFrom: false,
 }
+
+const DELEGATION_STRATEGY_NAME = 'delegation'
 
 export class Snapshot extends API {
   static Url =
@@ -306,17 +314,26 @@ export class Snapshot extends API {
     block?: string | number
   ) {
     addresses = addresses.map((addr) => addr.toLowerCase())
-    const result: Scores = {}
+    const result: Record<string, ScoreDetail> = {}
     const scores: Scores[] = await snapshot.utils.getScores(space, strategies, network, addresses, block)
 
     for (const addr of addresses) {
-      result[addr] = 0
+      result[addr] = {
+        ownVp: 0,
+        delegatedVp: Math.round(scores[strategies.findIndex(s => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,
+        totalVp: 0,
+      }
     }
 
     for (const score of scores) {
-      for (const address of Object.keys(score)) {
-        result[address] = (result[address] || 0) + Math.floor(score[address] || 0)
+      for (const addr of Object.keys(score)) {
+        const address = addr.toLowerCase()
+        result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[addr] || 0)
       }
+    }
+
+    for (const address of Object.keys(result)) {
+      result[address].ownVp = result[address].totalVp - result[address].delegatedVp
     }
 
     return result
@@ -324,25 +341,12 @@ export class Snapshot extends API {
 
   async getLatestScores(space: string | SnapshotSpace, addresses: string[]) {
     const info = typeof space === 'string' ? await this.getSpace(space) : space
-    return this.getScores(info.id, info.strategies, info.network, addresses)
+    return await this.getScores(info.id, info.strategies, info.network, addresses)
   }
 
-  async getVotingPower(address?: string | null, space?: string | null) {
-    if (!address || !space) {
-      return 0
-    }
-
-    const vp = await this.getVotingPowerList([address], space)
+  async getVotingPower(address: string, space: string) {
+    const vp = await this.getLatestScores(space, [address])
     return Object.values(vp)[0]
-  }
-
-  async getVotingPowerList(addresses?: string[] | null, space?: string | null) {
-    if (!addresses || addresses.length === 0 || !space) {
-      return {}
-    }
-
-    const info = await this.getSpace(space)
-    return await this.getScores(space, info.strategies, info.network, addresses)
   }
 }
 

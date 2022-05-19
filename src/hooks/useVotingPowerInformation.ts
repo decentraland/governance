@@ -1,20 +1,20 @@
-import useDelegatedVotingPower from './useDelegatedVotingPower'
 import useDelegation from './useDelegation'
 import useVotingPowerBalance from './useVotingPowerBalance'
+import useVotingPowerBalanceList from './useVotingPowerBalanceList'
 
 export default function useVotingPowerInformation(address?: string | null) {
   const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
   const [delegation, delegationState] = useDelegation(address)
-  const { scores, isLoadingScores, delegatedVotingPower } = useDelegatedVotingPower(delegation.delegatedFrom)
+  const { votingPower: scores, isLoadingVotingPower: isLoadingScores } = useVotingPowerBalanceList(delegation.delegatedFrom.map(d => d.delegator))
 
   return {
-    votingPower,
+    votingPower: votingPower?.totalVp || 0,
     isLoadingVotingPower,
     delegation,
     delegationState,
-    delegatedVotingPower,
+    delegatedVotingPower: votingPower?.delegatedVp || 0,
     isLoadingScores,
     scores,
-    ownVotingPower: votingPower - delegatedVotingPower,
+    ownVotingPower: votingPower?.ownVp || 0
   }
 }
