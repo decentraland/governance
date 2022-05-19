@@ -7,7 +7,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
-import useDelegation from '../../../hooks/useDelegation'
+import useDelegationOnProposal from '../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
@@ -32,7 +32,7 @@ interface Props {
 const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices, onVote, onChangeVote }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [delegation, delegationState] = useDelegation(account)
+  const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
   const delegate: string | null = delegation?.delegatedTo[0]?.delegate
   const delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
   const {
