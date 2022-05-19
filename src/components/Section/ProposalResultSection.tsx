@@ -30,6 +30,8 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
   onVote?: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
 }
 
+const EMPTY_CHOICES: string[] = []
+
 export default function ProposalResultSection({
   proposal,
   loading,
@@ -42,7 +44,7 @@ export default function ProposalResultSection({
   ...props
 }: ProposalResultSectionProps) {
   const t = useFormatMessage()
-  const choices = useMemo(() => proposal?.snapshot_proposal?.choices || [], [proposal?.snapshot_proposal?.choices])
+  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
   const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)

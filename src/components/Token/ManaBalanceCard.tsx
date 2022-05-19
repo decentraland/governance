@@ -59,7 +59,7 @@ const ManaBalanceCard = ({ address }: Props) => {
   }, [wManaContract, wMana, transactionsState])
 
   useEffect(() => {
-    const cancelled = false
+    let cancelled = false
     if (unwrappingTransaction) {
       setTimeout(() => {
         if (!cancelled) {
@@ -70,7 +70,7 @@ const ManaBalanceCard = ({ address }: Props) => {
     }
 
     return () => {
-      cancelled
+      cancelled = true
     }
   }, [manaState, unwrappingTransaction, wManaState])
 
