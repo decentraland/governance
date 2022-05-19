@@ -159,7 +159,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, poiType, state])
 
   if (accountState.loading) {
     return (

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useMemo } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'

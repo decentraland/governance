@@ -16,7 +16,7 @@ interface Props {
   delegateVote?: Vote | null
   votesByChoices: Scores
   totalVotes: number
-  onVote?: (e: React.MouseEvent<any, MouseEvent>, choice: string, choiceIndex: number) => void
+  onVote?: (e: React.MouseEvent<unknown, MouseEvent>, choice: string, choiceIndex: number) => void
   startAt?: Date
 }
 
@@ -45,7 +45,7 @@ export const ChoiceButtons = ({
             key={currentChoice}
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
-            onClick={(e: React.MouseEvent<any>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
+            onClick={(e: React.MouseEvent<unknown>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
             delegate={delegateVotedCurrentChoice ? delegate! : undefined}
             voteCount={votesByChoices[currentChoiceIndex]}
             totalVotes={totalVotes}

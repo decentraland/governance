@@ -33,12 +33,15 @@ function Banner({
     setShow(isVisible)
   }, [isVisible])
 
-  const handleClose = useCallback((e: React.MouseEvent<any>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    localStorage.setItem(bannerHideKey, 'true')
-    setShow(false)
-  }, [])
+  const handleClose = useCallback(
+    (e: React.MouseEvent<unknown>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      localStorage.setItem(bannerHideKey, 'true')
+      setShow(false)
+    },
+    [bannerHideKey]
+  )
 
   return (
     <>

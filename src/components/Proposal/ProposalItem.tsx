@@ -23,7 +23,7 @@ export type ProposalItemProps = {
   votes?: Record<string, Vote>
   subscribed?: boolean
   subscribing?: boolean
-  onSubscribe?: (e: React.MouseEvent<any>, proposal: ProposalAttributes) => void
+  onSubscribe?: (e: React.MouseEvent<unknown>, proposal: ProposalAttributes) => void
 }
 
 const subscribeIcon = require('../../images/icons/subscribe.svg').default
@@ -33,7 +33,7 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
-  function handleSubscription(e: React.MouseEvent<any>) {
+  function handleSubscription(e: React.MouseEvent<unknown>) {
     e.stopPropagation()
     e.preventDefault()
     onSubscribe && onSubscribe(e, proposal)

@@ -1,28 +1,41 @@
 import React, { useEffect, useState } from 'react'
+
+import { useLocation } from '@gatsbyjs/reach-router'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+
 import locations from '../../modules/locations'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { useLocation } from '@gatsbyjs/reach-router'
-import { NavigationTab } from './Navigation'
 
 import './MobileNavigation.css'
+import { NavigationTab } from './Navigation'
+
+type SelectedButtonType = {
+  inverted: boolean
+  primary: boolean
+}
+
+type UnselectedButtonType = {
+  secondary: boolean
+}
+
+type ButtonState = SelectedButtonType | UnselectedButtonType
+
+const selectedButton: ButtonState = {
+  inverted: true,
+  primary: true,
+}
+const unselectedButton: ButtonState = {
+  secondary: true,
+}
 
 function MobileNavigation() {
   const t = useFormatMessage()
   const location = useLocation()
   const page = location.pathname.replaceAll('/', '')
-
-  const selectedButton: any = {
-    inverted: true,
-    primary: true,
-  }
-  const unselectedButton: any = {
-    secondary: true,
-  }
 
   const [proposalsButtonProps, setProposalsButtonProps] = useState(selectedButton)
   const [transparencyButtonProps, setTransparencyButtonProps] = useState(unselectedButton)

@@ -58,7 +58,12 @@ function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
               content={<span>{t('modal.vp_delegation.delegated_globally_helper')}</span>}
               position="bottom center"
               trigger={
-                <a className="DelegateButton__Container--Global" href={EDIT_DELEGATE_SNAPSHOT_URL} target="_blank">
+                <a
+                  className="DelegateButton__Container--Global"
+                  href={EDIT_DELEGATE_SNAPSHOT_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {t('modal.vp_delegation.delegated_globally')} <Info size="18" />
                 </a>
               }

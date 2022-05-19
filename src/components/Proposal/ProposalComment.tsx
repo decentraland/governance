@@ -22,7 +22,7 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked }
       }
     })
 
-    let clean = DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
+    const clean = DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
     return { __html: clean }
   }
 

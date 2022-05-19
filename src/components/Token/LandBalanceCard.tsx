@@ -1,15 +1,17 @@
 import React from 'react'
+
 import { ChainId } from '@dcl/schemas'
-import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
 import ActionableLayout from '../Layout/ActionableLayout'
+
 import VotingPower from './VotingPower'
 
 export const LAND_MULTIPLIER = 2000

@@ -16,7 +16,7 @@ const infoIcon = require('../../images/icons/info.svg').default
 export type TokensPerWalletPopupProps = React.HTMLAttributes<HTMLDivElement> & {
   tokensPerWallet: TokenInWallet[]
   open: boolean
-  onCloseHandler: (e: React.MouseEvent<any>) => void
+  onCloseHandler: (e: React.MouseEvent<unknown>) => void
 }
 
 export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHandler }: TokensPerWalletPopupProps) {

@@ -1,10 +1,11 @@
 import React from 'react'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import './DetailsSection.css'
-import './SectionButton.css'
 import './LinkWithIcon.css'
+import './SectionButton.css'
 
 const openIcon = require('../../images/icons/open.svg').default
 
@@ -12,7 +13,7 @@ export type ExternalLinkWithIconProps = Omit<React.AnchorHTMLAttributes<HTMLAnch
   loading?: boolean
   disabled?: boolean
   href: string
-  imageSrc: any
+  imageSrc?: string
   text: string | null
 }
 

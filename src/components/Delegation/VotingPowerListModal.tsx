@@ -13,7 +13,7 @@ export type VotingPowerListModalProps = Omit<ModalProps, 'children'> & {
   open: boolean
 }
 
-export function VotingPowerListModal({ delegations, scores, ...props }: VotingPowerListModalProps) {
+export function VotingPowerListModal({ delegations, ...props }: VotingPowerListModalProps) {
   const t = useFormatMessage()
 
   return (

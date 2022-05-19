@@ -2,6 +2,7 @@ import snapshot from '@snapshot-labs/snapshot.js'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+
 import { Scores } from '../entities/Votes/utils'
 
 export type SnapshotQueryResponse<T> = { data: T }
@@ -300,15 +301,9 @@ export class Snapshot extends API {
     addresses: string[],
     block?: string | number
   ) {
-    addresses = addresses.map(addr => addr.toLowerCase())
+    addresses = addresses.map((addr) => addr.toLowerCase())
     const result: Scores = {}
-    const scores: Scores[] = await snapshot.utils.getScores(
-      space,
-      strategies,
-      network,
-      addresses,
-      block
-    )
+    const scores: Scores[] = await snapshot.utils.getScores(space, strategies, network, addresses, block)
 
     for (const addr of addresses) {
       result[addr] = 0

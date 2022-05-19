@@ -29,7 +29,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
     [proposal]
   )
   const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
-  const commentsCount = useMemo(() => (renderComments ? comments!.totalComments : ''), [renderComments])
+  const commentsCount = useMemo(() => (renderComments ? comments!.totalComments : ''), [comments, renderComments])
   const [showAllComments, setShowAllComments] = useState(true)
 
   useEffect(() => {

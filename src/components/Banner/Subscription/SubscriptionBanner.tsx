@@ -1,12 +1,13 @@
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import React from 'react'
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import Email from '../../Icon/Email'
 import Banner from '../Banner'
 
-export const NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription'
-export const ANONYMOUS_USR_SUBSCRIPTION: string = 'anonymous_subscription'
-export const HIDE_NEWSLETTER_SUBSCRIPTION_KEY: string = 'org.decentraland.governance.newsletter_subscription.hide'
+export const NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription'
+export const ANONYMOUS_USR_SUBSCRIPTION = 'anonymous_subscription'
+export const HIDE_NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription.hide'
 
 type SubscriptionBannerProps = {
   isVisible: boolean

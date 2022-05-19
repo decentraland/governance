@@ -26,6 +26,8 @@
       "usePrettierrc": true
     }],
     "linebreak-style": ["error", "unix"],
-    "semi": ["error", "never"]
+    "semi": ["error", "never"],
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-var-requires": "off"
   }
 }

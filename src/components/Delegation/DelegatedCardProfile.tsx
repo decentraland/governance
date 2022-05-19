@@ -1,13 +1,16 @@
 import React from 'react'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import locations from '../../modules/locations'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import useProfile from '../../hooks/useProfile'
+import locations from '../../modules/locations'
 import VotingPower from '../Token/VotingPower'
+
 import './DelegatedCardProfile.css'
 
 export type DelegatedCardProfileProps = {

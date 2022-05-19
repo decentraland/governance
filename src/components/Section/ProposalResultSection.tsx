@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
-import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -26,9 +25,9 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
   loading?: boolean
   disabled?: boolean
   changingVote?: boolean
-  onChangeVote?: (e: React.MouseEvent<any>, changing: boolean) => void
+  onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
   onOpenVotesList?: () => void
-  onVote?: (e: React.MouseEvent<any>, choice: string, choiceIndex: number) => void
+  onVote?: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
 }
 
 export default function ProposalResultSection({
@@ -37,15 +36,14 @@ export default function ProposalResultSection({
   disabled,
   votes,
   changingVote,
-  votingPower,
   onChangeVote,
   onVote,
   onOpenVotesList,
   ...props
 }: ProposalResultSectionProps) {
   const t = useFormatMessage()
-  const choices = proposal?.snapshot_proposal?.choices || []
-  const results = useMemo(() => calculateResult(choices, votes || {}), [proposal, choices, votes])
+  const choices = useMemo(() => proposal?.snapshot_proposal?.choices || [], [proposal?.snapshot_proposal?.choices])
+  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)

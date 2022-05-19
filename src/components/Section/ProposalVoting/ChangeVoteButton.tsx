@@ -13,7 +13,7 @@ interface ChangeVoteButtonProps {
   started: boolean
   finished: boolean
   changingVote?: boolean
-  onChangeVote?: (e: React.MouseEvent<any, MouseEvent>, changing: boolean) => void
+  onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
 }
 
 export function ChangeVoteButton({
@@ -31,15 +31,21 @@ export function ChangeVoteButton({
   const showOverruleVoteButton = isVotingOpen && !changingVote && !vote && delegateVote && !hasDelegators
   const showCancelChangeVoteButton = isVotingOpen && (vote || delegateVote) && changingVote
 
-  const changeVote = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
-    e.preventDefault()
-    onChangeVote && onChangeVote(e, true)
-  }, [])
+  const changeVote = useCallback(
+    (e: React.MouseEvent<unknown, MouseEvent>) => {
+      e.preventDefault()
+      onChangeVote && onChangeVote(e, true)
+    },
+    [onChangeVote]
+  )
 
-  const cancel = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
-    e.preventDefault()
-    onChangeVote && onChangeVote(e, false)
-  }, [])
+  const cancel = useCallback(
+    (e: React.MouseEvent<unknown, MouseEvent>) => {
+      e.preventDefault()
+      onChangeVote && onChangeVote(e, false)
+    },
+    [onChangeVote]
+  )
 
   return (
     <>

@@ -9,14 +9,13 @@ import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../../hooks/useVotingPowerOnProp
 import './DelegationsLabel.css'
 import './VotingSectionFooter.css'
 
-
 interface VotingSectionFooterProps {
   accountVotingPower: number
   hasEnoughToVote: boolean
   vote: Vote | null
 }
 
-const VoteVotingPowerInfo = ({accountVotingPower, hasEnoughToVote, vote}: VotingSectionFooterProps) => {
+const VoteVotingPowerInfo = ({ accountVotingPower, hasEnoughToVote, vote }: VotingSectionFooterProps) => {
   const t = useFormatMessage()
 
   function vpLabel(value: number) {

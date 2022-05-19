@@ -28,7 +28,7 @@ export default React.memo(function GrantList({ status, title }: GrantListProps) 
     page: 1,
     itemsPerPage: ITEMS_PER_PAGE,
   })
-  const additionalGrants = useMemo(() => (!!grantsList ? grantsList.total - grantsList.data.length : 0), [grantsList])
+  const additionalGrants = useMemo(() => (grantsList ? grantsList.total - grantsList.data.length : 0), [grantsList])
 
   return (
     <>

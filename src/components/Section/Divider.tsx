@@ -1,5 +1,7 @@
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import React from 'react'
+
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
 import './Divider.css'
 
 export default function Divider({ className, size }: { className?: string; size?: 'small' }) {
