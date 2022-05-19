@@ -15,7 +15,9 @@ export default function useVotingPowerBalance(address?: string | null) {
     { callWithTruthyDeps: true }
   )
   return {
-    votingPower,
+    votingPower: votingPower?.totalVp || 0,
+    ownVotingPower: votingPower?.ownVp || 0,
+    delegatedVotingPower: votingPower?.delegatedVp || 0,
     isLoadingVotingPower: state.loading,
   }
 }
