@@ -1,9 +1,8 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import fetch from 'isomorphic-fetch'
+import { EMPTY_DELEGATION, fetchAndFilterDelegates } from '../api/Snapshot'
+import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
-import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-
-const QUERY = `
+const LATEST_DELEGATIONS_QUERY = `
 query ($space: String!, $address: String!) {
   delegatedTo: delegations(where: { space_in: ["", $space], delegator: $address }, orderBy: timestamp, orderDirection: desc) {
     delegator
@@ -20,84 +19,19 @@ query ($space: String!, $address: String!) {
 }
 `
 
-export type Delegation = {
-  delegator: string,
-  delegate: string,
-  space: string
-}
-
-export type DelegationQueryResult = {
-  delegatedTo: Delegation[]
-  delegatedFrom: Delegation[]
-}
-
-export type DelegationResult = {
-  delegatedTo: Delegation[]
-  delegatedFrom: Delegation[]
-  hasMoreDelegatedFrom: boolean
-}
-
-const initialValue: DelegationResult = {
-  delegatedTo: [],
-  delegatedFrom: [],
-  hasMoreDelegatedFrom: false,
-}
-
-export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
-  if (delegations.length > 1) {
-    return delegations.filter(delegation => delegation.space === space)
-  }
-
-  return delegations
-}
-
-export function filterDelegationFrom(delegations: Delegation[], space: string): Delegation[] {
-  if (delegations.length === 0) {
-    return []
-  }
-
-  const unique_delegations = new Map<String, Delegation>()
-
-  for (const deleg of delegations) {
-    if (unique_delegations.has(deleg.delegator)) {
-      if (unique_delegations.get(deleg.delegator)?.space !== space) {
-        unique_delegations.set(deleg.delegator, deleg)
-      }
-    }
-    else {
-      unique_delegations.set(deleg.delegator, deleg)
-    }
-  }
-
-  return Array.from(unique_delegations.values())
-}
-
 export default function useDelegation(address?: string | null) {
-  return useAsyncMemo(async () => {
-    if (!SNAPSHOT_SPACE || !address) {
-      return initialValue
-    }
-
-    const request = await fetch(
-      SNAPSHOT_QUERY_ENDPOINT,
-      {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: QUERY,
-          variables: { address: address.toLowerCase(), space: SNAPSHOT_SPACE },
-        }),
+  return useAsyncMemo(
+    async () => {
+      if (!SNAPSHOT_SPACE || !address) {
+        return EMPTY_DELEGATION
       }
-    )
-    const body = await request.json()
-    const data = body.data as DelegationQueryResult
-    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, SNAPSHOT_SPACE)
-    const result: DelegationResult = {
-      delegatedTo: filterDelegationTo(data.delegatedTo, SNAPSHOT_SPACE),
-      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
-      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99
-    }
-
-    return result
-  }, [SNAPSHOT_SPACE, address], { initialValue, callWithTruthyDeps: true })
+      const variables = {
+        address: address.toLowerCase(),
+        space: SNAPSHOT_SPACE,
+      }
+      return await fetchAndFilterDelegates(LATEST_DELEGATIONS_QUERY, variables)
+    },
+    [SNAPSHOT_SPACE, address],
+    { initialValue: EMPTY_DELEGATION, callWithTruthyDeps: true }
+  )
 }

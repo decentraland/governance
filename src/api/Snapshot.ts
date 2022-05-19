@@ -2,6 +2,9 @@ import snapshot from '@snapshot-labs/snapshot.js'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+import fetch from 'isomorphic-fetch'
+
+import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { Scores } from '../entities/Votes/utils'
 
 export type SnapshotQueryResponse<T> = { data: T }
@@ -49,20 +52,7 @@ export type SnapshotMessage<T extends string, P extends {}> = {
   payload: P
 }
 
-export type SnapshotProposalPayload = {
-  end: number
-  body: string
-  name: string
-  start: number
-  choices: string[]
-  metadata: {
-    strategies: SnapshotStrategy[]
-  }
-  snapshot: number
-}
-
 export type SnapshotRemoveProposalMessage = SnapshotMessage<'delete-proposal', { proposal: string }>
-export type SnapshotProposalMessage = SnapshotMessage<'proposal', SnapshotProposalPayload>
 export type SnapshotNewProposalPayload = {
   name: string
   body: string
@@ -70,14 +60,6 @@ export type SnapshotNewProposalPayload = {
   start: Pick<Date, 'getTime'>
   snapshot: number
   choices: string[]
-}
-
-export type SnapshotProposal = {
-  address: string
-  msg: SnapshotProposalMessage
-  sig: string
-  authorIpfsHash: string
-  relayerIpfsHash: string
 }
 
 export type SnapshotVotePayload = {
@@ -98,6 +80,29 @@ export type SnapshotVote = {
     title: string
     choices: string[]
   }
+}
+
+export type Delegation = {
+  delegator: string
+  delegate: string
+  space: string
+}
+
+export type DelegationQueryResult = {
+  delegatedTo: Delegation[]
+  delegatedFrom: Delegation[]
+}
+
+export type DelegationResult = {
+  delegatedTo: Delegation[]
+  delegatedFrom: Delegation[]
+  hasMoreDelegatedFrom: boolean
+}
+
+export const EMPTY_DELEGATION: DelegationResult = {
+  delegatedTo: [],
+  delegatedFrom: [],
+  hasMoreDelegatedFrom: false,
 }
 
 export class Snapshot extends API {
@@ -300,15 +305,9 @@ export class Snapshot extends API {
     addresses: string[],
     block?: string | number
   ) {
-    addresses = addresses.map(addr => addr.toLowerCase())
+    addresses = addresses.map((addr) => addr.toLowerCase())
     const result: Scores = {}
-    const scores: Scores[] = await snapshot.utils.getScores(
-      space,
-      strategies,
-      network,
-      addresses,
-      block
-    )
+    const scores: Scores[] = await snapshot.utils.getScores(space, strategies, network, addresses, block)
 
     for (const addr of addresses) {
       result[addr] = 0
@@ -344,5 +343,60 @@ export class Snapshot extends API {
 
     const info = await this.getSpace(space)
     return await this.getScores(space, info.strategies, info.network, addresses)
+  }
+}
+
+export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
+  if (delegations.length > 1) {
+    return delegations.filter((delegation) => delegation.space === space)
+  }
+
+  return delegations
+}
+
+export function filterDelegationFrom(delegations: Delegation[], space: string): Delegation[] {
+  if (delegations.length === 0) {
+    return []
+  }
+
+  const unique_delegations = new Map<String, Delegation>()
+
+  for (const deleg of delegations) {
+    if (unique_delegations.has(deleg.delegator)) {
+      if (unique_delegations.get(deleg.delegator)?.space !== space) {
+        unique_delegations.set(deleg.delegator, deleg)
+      }
+    } else {
+      unique_delegations.set(deleg.delegator, deleg)
+    }
+  }
+
+  return Array.from(unique_delegations.values())
+}
+
+export async function fetchAndFilterDelegates(query: string, variables: any): Promise<DelegationResult> {
+  try {
+    const request = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: query,
+        variables: variables,
+      }),
+    })
+    const body = await request.json()
+    const data = body.data as DelegationQueryResult
+    if (!data) {
+      return EMPTY_DELEGATION
+    }
+    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, SNAPSHOT_SPACE)
+    return {
+      delegatedTo: filterDelegationTo(data.delegatedTo, SNAPSHOT_SPACE),
+      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
+      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99,
+    }
+  } catch (error) {
+    console.error(error)
+    return EMPTY_DELEGATION
   }
 }
