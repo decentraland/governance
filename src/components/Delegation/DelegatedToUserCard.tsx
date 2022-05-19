@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react';
+
+
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -16,6 +18,7 @@ import VotingPower from '../Token/VotingPower'
 import './DelegatedToUserCard.css'
 import VotingPowerListItem from './VotingPowerListItem'
 import { VotingPowerListModal } from './VotingPowerListModal'
+
 
 const DISPLAYED_DELEGATIONS = 5
 const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5'
@@ -40,7 +43,7 @@ export default function DelegatedToUserCard({
   const delegatedFrom = delegation.delegatedFrom
   const delegationsList = useMemo(
     () =>
-      delegatedFrom && delegatedFrom.length > 0 && scores
+      delegatedFrom && delegatedFrom.length > 0 && Object.keys(scores).length !== 0
         ? delegatedFrom
             .map(({ delegator }) => {
               return { delegator, vp: scores[delegator.toLowerCase()].ownVp || 0 }

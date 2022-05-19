@@ -328,7 +328,7 @@ export class Snapshot extends API {
     for (const score of scores) {
       for (const addr of Object.keys(score)) {
         const address = addr.toLowerCase()
-        result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[address] || 0)
+        result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[addr] || 0)
       }
     }
 
