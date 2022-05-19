@@ -21,6 +21,7 @@ import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import { signMessage } from '../Snapshot/utils'
+import UpdateModel from '../Updates/model'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 import ProposalModel from './model'
@@ -69,7 +70,6 @@ import {
   proposalUrl,
   snapshotProposalUrl
 } from './utils'
-import UpdateModel from '../Updates/model';
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
@@ -662,7 +662,7 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
   const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
-  if (userVp < requiredVp) {
+  if (userVp.totalVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
+
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage';
+import { Button } from 'decentraland-ui/dist/components/Button/Button';
+import { Card } from 'decentraland-ui/dist/components/Card/Card';
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import useDelegatedVotingPower from '../../hooks/useDelegatedVotingPower'
-import useDelegation, { DelegationResult } from '../../hooks/useDelegation'
+import { DelegationResult } from '../../api/Snapshot'
+import useDelegation from '../../hooks/useDelegation'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
@@ -18,15 +20,14 @@ import './DelegatedFromUserCard.css'
 interface DelegatedFromUserCardProps {
   isLoggedUserProfile: boolean
   delegation: DelegationResult
-  space: string
+  ownVp: number
 }
 
-const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFromUserCardProps) => {
+const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, ownVp }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
 
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
   const [delegateDelegations] = useDelegation(address)
-  const { delegatedVotingPower } = useDelegatedVotingPower(delegateDelegations.delegatedFrom)
   const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
 
   return (
@@ -73,7 +74,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
                     key={[delegation.delegate, delegation.delegator].join('::')}
                     address={delegation.delegate}
                     pickedBy={delegateDelegations?.delegatedFrom.length - 1}
-                    votingPower={delegatedVotingPower}
+                    votingPower={ownVp}
                   />
                 )
               })}
@@ -81,7 +82,11 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation }: DelegatedFro
           )}
         </Card.Content>
       </Card>
-      <VotingPowerDelegationModal open={isDelegationModalOpen} onClose={() => setIsDelegationModalOpen(false)} />
+      <VotingPowerDelegationModal
+        userVp={ownVp}
+        open={isDelegationModalOpen}
+        onClose={() => setIsDelegationModalOpen(false)}
+      />
     </ActionableLayout>
   )
 }

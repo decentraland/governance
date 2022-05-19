@@ -41,6 +41,7 @@ export default function BalancePage() {
     scores,
     isLoadingScores,
     delegatedVotingPower,
+    ownVotingPower
   } = useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
@@ -91,7 +92,7 @@ export default function BalancePage() {
         <DelegatedFromUserCard
           isLoggedUserProfile={isLoggedUserProfile}
           delegation={delegation}
-          space={SNAPSHOT_SPACE}
+          ownVp={ownVotingPower}
         />
       </Container>
     </div>
