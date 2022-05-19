@@ -3,18 +3,18 @@ import useVotingPowerBalance from './useVotingPowerBalance'
 import useVotingPowerBalanceList from './useVotingPowerBalanceList'
 
 export default function useVotingPowerInformation(address?: string | null) {
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
+  const { votingPower, delegatedVotingPower, ownVotingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
   const [delegation, delegationState] = useDelegation(address)
   const { votingPower: scores, isLoadingVotingPower: isLoadingScores } = useVotingPowerBalanceList(delegation.delegatedFrom.map(d => d.delegator))
 
   return {
-    votingPower: votingPower?.totalVp || 0,
+    votingPower,
     isLoadingVotingPower,
     delegation,
     delegationState,
-    delegatedVotingPower: votingPower?.delegatedVp || 0,
+    delegatedVotingPower,
     isLoadingScores,
     scores,
-    ownVotingPower: votingPower?.ownVp || 0
+    ownVotingPower
   }
 }
