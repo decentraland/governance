@@ -34,12 +34,13 @@ const initialVotingPowerOnProposal: CurrentVPOnProposal = {
 export default function useVotingPowerOnProposal(
   address: string | null,
   delegators: string[] | null,
+  isLoadingDelegators: boolean,
   votes?: Record<string, Vote> | null,
   proposal?: ProposalAttributes | null
 ) {
   const [vpOnProposal, vpOnProposalState] = useAsyncMemo(
     async () => {
-      if (!address || !proposal) {
+      if (!address || !proposal || isLoadingDelegators) {
         return initialVotingPowerOnProposal
       }
       const addresses = !!delegators ? [address, ...delegators] : [address]
@@ -49,7 +50,7 @@ export default function useVotingPowerOnProposal(
       const addressVp = scoresAtProposalCreation[address] || 0
       return { addressVp, delegatedVp }
     },
-    [votes, address, proposal, delegators?.length],
+    [votes, address, proposal, delegators],
     { initialValue: initialVotingPowerOnProposal }
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp

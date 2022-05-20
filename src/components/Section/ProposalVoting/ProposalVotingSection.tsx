@@ -34,14 +34,18 @@ const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices
   const [account, accountState] = useAuthContext()
   const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
   const delegate: string | null = delegation?.delegatedTo[0]?.delegate
-  const delegators: string[] = delegation?.delegatedFrom.map((delegator) => delegator.delegator)
+  const delegators: string[] = useMemo(
+    () => delegation?.delegatedFrom.map((delegator) => delegator.delegator),
+    [delegation?.delegatedFrom]
+  )
+
   const {
     delegatedVp,
     addressVp: ownVotingPower,
     totalVpOnProposal,
     hasEnoughToVote,
     vpOnProposalState,
-  } = useVotingPowerOnProposal(account, delegators, votes, proposal)
+  } = useVotingPowerOnProposal(account, delegators, delegationState.loading, votes, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
   const voteDifference = matchResult.voteDifference
