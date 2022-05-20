@@ -22,7 +22,6 @@ import VotingStatusSummary from './VotingStatusSummary'
 export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
-  votingPower?: number
   loading?: boolean
   disabled?: boolean
   changingVote?: boolean
@@ -37,7 +36,6 @@ export default function ProposalResultSection({
   disabled,
   votes,
   changingVote,
-  votingPower,
   onChangeVote,
   onVote,
   onOpenVotesList,

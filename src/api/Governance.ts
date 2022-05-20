@@ -276,11 +276,6 @@ export class Governance extends API {
     return result.data
   }
 
-  async getVotingPower(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<number>>(`/proposals/${proposal_id}/vp`, this.options().method('GET').authorization({ sign: true }))
-    return result.data
-  }
-
   async getCommittee() {
     const result = await this.fetch<ApiResponse<string[]>>(`/committee`)
     return result.data
