@@ -20,7 +20,6 @@ import NameBalanceCard from '../components/Token/NameBalanceCard'
 import VotingPower from '../components/Token/VotingPower'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
-import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -41,7 +40,7 @@ export default function BalancePage() {
     scores,
     isLoadingScores,
     delegatedVotingPower,
-    ownVotingPower
+    ownVotingPower,
   } = useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
