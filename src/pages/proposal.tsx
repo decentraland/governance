@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -73,6 +73,7 @@ export default function ProposalPage() {
     showProposalSuccessModal: false,
     showUpdateSuccessModal: false,
   })
+  const patchOptionsRef = useRef(patchOptions)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
@@ -157,12 +158,12 @@ export default function ProposalPage() {
   }, [proposal, account, isCommittee])
 
   useEffect(() => {
-    patchOptions({ showProposalSuccessModal: params.get('new') === 'true' })
-  }, [params, patchOptions])
+    patchOptionsRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
+  }, [params])
 
   useEffect(() => {
-    patchOptions({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
-  }, [params, patchOptions])
+    patchOptionsRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
+  }, [params])
 
   const closeProposalSuccessModal = () => {
     patchOptions({ showProposalSuccessModal: false })
