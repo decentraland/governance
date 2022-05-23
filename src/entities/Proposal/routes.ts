@@ -69,6 +69,7 @@ import { getVotes } from '../Votes/routes'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import UpdateModel from '../Updates/model';
+import { getSnapshotVersion } from '../Votes/utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
@@ -325,7 +326,7 @@ export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
 
-  if(!isGrantSizeValid(configuration.tier, configuration.size)) {
+  if (!isGrantSizeValid(configuration.tier, configuration.size)) {
     throw new RequestError("Grant size is not valid for the selected tier");
   }
 
@@ -405,7 +406,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     }
 
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
-      snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
+      getSnapshotVersion(snapshotStatus.version), snapshotSpace.network, snapshotSpace.strategies, {
       name: await templates.snapshotTitle(snapshotTemplateProps),
       body: await templates.snapshotDescription(snapshotTemplateProps),
       choices: data.configuration.choices,

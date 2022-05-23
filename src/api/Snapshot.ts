@@ -3,6 +3,8 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 import snapshot from '@snapshot-labs/snapshot.js'
 
+import { getSnapshotVersion } from '../entities/Votes/utils'
+
 export type SnapshotQueryResponse<T> = { data: T }
 
 export type SnapshotResult = { ipfsHash: string }
@@ -184,8 +186,8 @@ export class Snapshot extends API {
 
     const msg: SnapshotRemoveProposalMessage = {
       space,
-      type: "delete-proposal",
-      version: status.version,
+      type: 'delete-proposal',
+      version: getSnapshotVersion(status.version),
       timestamp: Time.from().getTime().toString().slice(0, -3),
       payload: { proposal }
     }
@@ -238,8 +240,8 @@ export class Snapshot extends API {
 
     const msg: SnapshotVoteMessage = {
       space,
-      type: "vote",
-      version: status.version,
+      type: 'vote',
+      version: getSnapshotVersion(status.version),
       timestamp: Time.from().getTime().toString().slice(0, -3),
       payload: { proposal, choice, metadata: {} }
     }
