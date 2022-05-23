@@ -674,7 +674,7 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
   const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
-  if (userVp < requiredVp) {
+  if (userVp.totalVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

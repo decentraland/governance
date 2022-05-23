@@ -7,8 +7,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
-import { Scores } from '../../entities/Votes/utils'
-import { DelegationResult } from '../../hooks/useDelegation'
+import { DelegationResult, DetailedScores } from '../../api/Snapshot'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
@@ -23,7 +22,7 @@ const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call
 
 interface DelegatedToUserCardProps {
   delegation: DelegationResult
-  scores: Scores | null
+  scores: DetailedScores
   delegatedVotingPower: number
   isLoggedUserProfile: boolean
   loading: boolean
@@ -41,10 +40,10 @@ export default function DelegatedToUserCard({
   const delegatedFrom = delegation.delegatedFrom
   const delegationsList = useMemo(
     () =>
-      delegatedFrom && delegatedFrom.length > 0 && scores
+      delegatedFrom && delegatedFrom.length > 0 && Object.keys(scores).length !== 0
         ? delegatedFrom
             .map(({ delegator }) => {
-              return { delegator, vp: scores[delegator.toLowerCase()] || 0 }
+              return { delegator, vp: scores[delegator.toLowerCase()].ownVp || 0 }
             })
             .sort((d1, d2) => (d1.vp > d2.vp ? -1 : d1.vp < d2.vp ? 1 : 0))
         : [],

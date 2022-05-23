@@ -6,13 +6,18 @@ import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 export default function useVotingPowerBalance(address?: string | null) {
   const [votingPower, state] = useAsyncMemo(
     async () => {
+      if (!address) {
+        return await Promise.resolve(null)
+      }
       return await Snapshot.get().getVotingPower(address, SNAPSHOT_SPACE)
     },
     [address],
-    { initialValue: 0, callWithTruthyDeps: true }
+    { callWithTruthyDeps: true }
   )
   return {
-    votingPower,
+    votingPower: votingPower?.totalVp || 0,
+    ownVotingPower: votingPower?.ownVp || 0,
+    delegatedVotingPower: votingPower?.delegatedVp || 0,
     isLoadingVotingPower: state.loading,
   }
 }

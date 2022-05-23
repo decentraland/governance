@@ -33,7 +33,7 @@ export function createVotes(votes: SnapshotVote[], balances: Scores) {
   }, {} as Record<string, Vote>)
 }
 
-export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
+export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
   let totalPower = 0
   const balance: Scores = {}
   const choiceCount: Scores = {}
@@ -54,7 +54,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
 
   let rest = 100
   let maxProgress = 0
-  let totalPowerProgress = Math.max(totalPower, requiredVotingPower)
+  const totalPowerProgress = Math.max(totalPower, requiredVotingPower)
   const result = choices.map((choice, i) => {
     const color = calculateChoiceColor(choice, i)
     const power = balance[choice] || 0
@@ -137,7 +137,7 @@ export function calculateChoiceColor(value: string, index: number): ChoiceColor 
   }
 }
 
-export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
+export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
   const result = calculateResult(choices, votes, requiredVotingPower)
 
   return result.reduce((winner, current) => {
@@ -167,7 +167,7 @@ export function abbreviateNumber(vp: number) {
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
   const result: Scores = {}
   for (const addressesChunk of chunk(addresses, 500)) {
-    const blockchainScores: Scores = await Snapshot.get().getScores(
+    const blockchainScores = await Snapshot.get().getScores(
       proposal.snapshot_space,
       proposal.snapshot_proposal.metadata.strategies,
       proposal.snapshot_network,
@@ -176,7 +176,8 @@ export async function getProposalScores(proposal: ProposalAttributes, addresses:
     )
 
     for (const address of Object.keys(blockchainScores)) {
-      result[address.toLowerCase()] = (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address] || 0)
+      result[address.toLowerCase()] =
+        (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address].totalVp || 0)
     }
   }
 
