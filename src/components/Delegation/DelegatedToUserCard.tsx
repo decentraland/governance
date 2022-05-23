@@ -43,7 +43,8 @@ export default function DelegatedToUserCard({
       delegatedFrom && delegatedFrom.length > 0 && Object.keys(scores).length !== 0
         ? delegatedFrom
             .map(({ delegator }) => {
-              return { delegator, vp: scores[delegator.toLowerCase()].ownVp || 0 }
+              const delegatorAddress = delegator.toLowerCase()
+              return { delegator, vp: (scores[delegatorAddress] && scores[delegatorAddress].ownVp) || 0 }
             })
             .sort((d1, d2) => (d1.vp > d2.vp ? -1 : d1.vp < d2.vp ? 1 : 0))
         : [],
