@@ -1,4 +1,3 @@
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
@@ -17,9 +16,7 @@ import { createVotes, getProposalScores, toProposalIds } from './utils'
 
 
 export default routes((route) => {
-  const withAuth = auth()
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
-  route.get('/proposals/:proposal/vp', withAuth, handleAPI(getMyProposalVotingPower))
   route.get('/votes', handleAPI(getCachedVotes))
   route.get('/votes/:address', handleAPI(getAddressVotes))
 })
@@ -84,21 +81,6 @@ export async function getProposalVote(req: Request<{ proposal: string; address: 
 
   let latestVotes = await VotesModel.getVotes(proposal.id)
   return latestVotes?.votes[address.toLowerCase()] || null
-}
-
-const powerCache = new Map<string, number>()
-export async function getMyProposalVotingPower(req: WithAuth<Request<{ proposal: string }>>) {
-  const user = req.auth!
-  const proposal = await getProposal(req)
-  const key = [proposal.id, user].join('/')
-  if (powerCache.has(key)) {
-    return powerCache.get(key)
-  }
-
-  const scores = await getProposalScores(proposal, [user])
-  const score = (scores && scores[user]) || 0
-  powerCache.set(key, score)
-  return score
 }
 
 export async function getCachedVotes(req: Request) {
