@@ -159,7 +159,3 @@ export function abbreviateNumber(vp: number) {
 
   return scaled.toFixed(1) + suffix
 }
-
-export function getSnapshotVersion(version: string) {
-  return version.split('#')[0]
-} 
