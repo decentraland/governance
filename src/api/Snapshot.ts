@@ -142,7 +142,12 @@ export class Snapshot extends API {
   }
 
   async getStatus() {
-    return this.fetch<SnapshotStatus>('/api/')
+    const status = await this.fetch<SnapshotStatus>('/api/')
+
+    return {
+      ...status,
+      version: status.version.split('#')[0]
+    }
   }
 
   async getSpace(space: string) {
