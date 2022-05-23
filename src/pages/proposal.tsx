@@ -44,7 +44,6 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
-import useProposalVotingPower from '../hooks/useProposalVotingPower'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -86,7 +85,6 @@ export default function ProposalPage() {
     { callWithTruthyDeps: true }
   )
 
-  const { votingPower, isLoadingVotingPower } = useProposalVotingPower(account, proposal)
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate } = useProposalUpdates(proposal?.id)
 
   const subscribed = useMemo(
@@ -273,10 +271,9 @@ export default function ProposalPage() {
               )}
               <ProposalResultSection
                 disabled={!proposal || !votes}
-                loading={voting || proposalState.loading || votesState.loading || isLoadingVotingPower}
+                loading={voting || proposalState.loading || votesState.loading}
                 proposal={proposal}
                 votes={votes}
-                votingPower={votingPower || 0}
                 changingVote={options.changing}
                 onChangeVote={(_, changing) => patchOptions({ changing })}
                 onOpenVotesList={() => patchOptions({ showVotesList: true })}
