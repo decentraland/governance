@@ -22,7 +22,7 @@ interface Props {
 export default function Empty({ icon, title, description, className, linkText, linkHref, onLinkClick }: Props) {
   return (
     <div className={TokenList.join(['Empty', className])}>
-      {!!icon ? icon : <Watermelon />}
+      {icon ? icon : <Watermelon />}
       {!!title && <Header>{title}</Header>}
       {!!description && <Markdown className="Empty__Description" children={description} />}
       {!!linkText && (onLinkClick || linkHref) && (

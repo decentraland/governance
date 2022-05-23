@@ -39,7 +39,7 @@ function CandidateDetails({ title, content, links, skills }: Props) {
         {links &&
           links.map((link, idx) => (
             <a href={link} key={`links_${idx}`}>
-              <LinkIcon color="var(--blue)" /> {link.replace(/^https?\:\/\//i, '').replace(/^www\./i, '')}
+              <LinkIcon color="var(--blue)" /> {link.replace(/^https?:\/\//i, '').replace(/^www\./i, '')}
             </a>
           ))}
         {skills &&

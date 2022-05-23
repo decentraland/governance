@@ -29,25 +29,20 @@ import locations from '../modules/locations'
 import './transparency.css'
 
 const discordIcon = require('../images/icons/discord.svg').default
+const docsIcon = require('../images/icons/docs.svg').default
+const dashboardIcon = require('../images/icons/chart-bar.svg').default
+const dataSheetIcon = require('../images/icons/database.svg').default
+const viewAllProposalsIcon = require('../images/icons/open-folder.svg').default
+const documentOutline = require('../images/icons/document-outline.svg').default
+const personIcon = require('../images/icons/person-icon.svg').default
 
 const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
-const docsIcon = require('../images/icons/docs.svg').default
-
 const DASHBOARD_URL =
   'https://datastudio.google.com/u/3/reporting/fca13118-c18d-4e68-9582-ad46d2dd5ce9/page/p_n06szvxkrc'
-const dashboardIcon = require('../images/icons/chart-bar.svg').default
-
 const DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo/edit'
-const dataSheetIcon = require('../images/icons/database.svg').default
-
 const ABOUT_DAO_URL = 'https://docs.decentraland.org/decentraland/how-does-the-dao-work/'
 const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curation-committee-member-nominations/2047'
 const ABOUT_DELEGATES = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
-
-const viewAllProposalsIcon = require('../images/icons/open-folder.svg').default
-
-const documentOutline = require('../images/icons/document-outline.svg').default
-const personIcon = require('../images/icons/person-icon.svg').default
 
 export default function WrappingPage() {
   const t = useFormatMessage()

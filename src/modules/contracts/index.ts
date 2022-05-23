@@ -1,4 +1,5 @@
 import { ChainId } from '@dcl/schemas'
+
 export { default as ERC20ABI } from './abi/ERC20.abi.json'
 export { default as MiniMeABI } from './abi/MiniMe.abi.json'
 export { default as RegisterABI } from './abi/Register.abi.json'

@@ -159,7 +159,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, poiType, state])
 
   if (accountState.loading) {
     return (
@@ -237,7 +237,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           minHeight={175}
           value={state.value.description}
           placeholder={t(`page.submit_poi.${action}.description_placeholder`)}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description}
           message={

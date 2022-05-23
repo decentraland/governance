@@ -1,17 +1,18 @@
 import React from 'react'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import '../ProposalModal.css'
 
 export type DeleteProposalModalProps = Omit<ModalProps, 'children'> & {
   loading?: boolean
-  onClickAccept?: (e: React.MouseEvent<any>) => void
+  onClickAccept?: (e: React.MouseEvent<unknown>) => void
 }
 
 export function DeleteProposalModal({ onClickAccept, loading, ...props }: DeleteProposalModalProps) {

@@ -322,7 +322,7 @@ export class Snapshot extends API {
     for (const addr of addresses) {
       result[addr] = {
         ownVp: 0,
-        delegatedVp: Math.round(scores[strategies.findIndex(s => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,
+        delegatedVp: Math.round(scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,
         totalVp: 0,
       }
     }
@@ -365,7 +365,7 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
     return []
   }
 
-  const unique_delegations = new Map<String, Delegation>()
+  const unique_delegations = new Map<string, Delegation>()
 
   for (const deleg of delegations) {
     if (unique_delegations.has(deleg.delegator)) {

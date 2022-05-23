@@ -74,18 +74,18 @@ const validate = createValidator<PollState>({
         assert(state.description.length >= schema.description.minLength, 'error.poll.description_too_short') ||
         assert(state.description.length <= schema.description.maxLength, 'error.poll.description_too_large'),
       choices:
-        assert(choices.length >= schema.choices.minItems, `error.poll.choices_insufficient`) ||
+        assert(choices.length >= schema.choices.minItems, 'error.poll.choices_insufficient') ||
         assert(
           choices.every((option) => option !== ''),
-          `error.poll.choices_empty`
+          'error.poll.choices_empty'
         ) ||
         assert(
           choices.every((option) => option.length >= schema.choices.items.minLength),
-          `error.poll.choices_too_short`
+          'error.poll.choices_too_short'
         ) ||
         assert(
           choices.every((option) => option.length <= schema.choices.items.maxLength),
-          `error.poll.choices_too_long`
+          'error.poll.choices_too_long'
         ),
     }
   },
@@ -155,7 +155,7 @@ export default function SubmitPoll() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -222,7 +222,7 @@ export default function SubmitPoll() {
           minHeight={175}
           placeholder={t('page.submit_poll.description_placeholder') || ''}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description || state.value.description.length > schema.description.maxLength}
           message={

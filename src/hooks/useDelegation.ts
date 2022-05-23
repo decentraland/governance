@@ -1,4 +1,5 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+
 import { EMPTY_DELEGATION, fetchAndFilterDelegates } from '../api/Snapshot'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 

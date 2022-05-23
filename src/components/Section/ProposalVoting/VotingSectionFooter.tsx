@@ -20,7 +20,7 @@ interface VotingSectionFooterProps {
   finishAt?: Date
   account: string | null
   changingVote?: boolean
-  onChangeVote?: (e: React.MouseEvent<any, MouseEvent>, changing: boolean) => void
+  onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   delegators: string[] | null
   totalVpOnProposal: number
   hasEnoughToVote: boolean

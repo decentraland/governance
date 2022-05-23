@@ -1,5 +1,7 @@
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import React from 'react'
+
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
 import { forumUrl, proposalUrl } from '../../entities/Proposal/utils'
 
 import { SuccessModal, SuccessModalProps } from './SuccessModal'

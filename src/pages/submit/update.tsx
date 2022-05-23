@@ -141,7 +141,7 @@ export default function Update() {
 
   const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
     value: state.value[fieldName],
-    onChange: (_: any, { value }: any) => editor.set({ [fieldName]: value }),
+    onChange: (_: unknown, { value }: { value: string }) => editor.set({ [fieldName]: value }),
     onBlur: () => editor.set({ [fieldName]: state.value[fieldName].trim() }),
     error: !!state.error[fieldName],
     message:

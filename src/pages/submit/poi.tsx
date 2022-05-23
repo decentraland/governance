@@ -8,7 +8,7 @@ import { toPoiType } from '../../entities/Proposal/types'
 
 import './submit.css'
 
-export default function poi() {
+export default function Poi() {
   const location = useLocation()
   const param = new URLSearchParams(useMemo(() => new URLSearchParams(location.search), [location.search]))
   const request = param.get('request')

@@ -17,7 +17,7 @@ import '../ProposalModal.css'
 import './FollowUpModal.css'
 
 export type FollowUpModalProps = Omit<ModalProps, 'children'> & {
-  onDismiss: (e: React.MouseEvent<any>) => void
+  onDismiss: (e: React.MouseEvent<unknown>) => void
   proposal?: ProposalAttributes | null
   loading?: boolean
 }
@@ -30,7 +30,7 @@ export function FollowUpModal({ open, onDismiss, proposal, loading, ...props }: 
 
   const handleCopy = useCallback(() => {
     state.copy(linkToProposal)
-  }, [state.copy])
+  }, [linkToProposal, state])
 
   return (
     <Modal

@@ -44,7 +44,7 @@ const validate = createValidator<UpdateProposalState>({
       'error.update_status_proposal.grant_vesting_address_invalid'
     ),
   }),
-  description: (state) => ({
+  description: () => ({
     description: undefined,
   }),
 })
@@ -54,7 +54,7 @@ export type UpdateProposalStatusModalProps = Omit<ModalProps, 'children'> & {
   status?: ProposalStatus | null
   loading?: boolean
   onClickAccept?: (
-    e: React.MouseEvent<any>,
+    e: React.MouseEvent<unknown>,
     status: ProposalStatus,
     vestingContract: string | null,
     description: string
@@ -72,7 +72,7 @@ export function UpdateProposalStatusModal({
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, initialPollState)
 
-  function handleAccept(e: React.MouseEvent<any>) {
+  function handleAccept(e: React.MouseEvent<unknown>) {
     editor.validate()
     const hasErrors = Object.keys(state.error).length != 0
     if (status && !hasErrors && onClickAccept) {
@@ -123,7 +123,9 @@ export function UpdateProposalStatusModal({
         <MarkdownTextarea
           minHeight={150}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value }, { validate: false })}
+          onChange={(_: unknown, { value }: { value: string }) =>
+            editor.set({ description: value }, { validate: false })
+          }
         />
       </Modal.Content>
       <Modal.Content className="ProposalModal__Actions">

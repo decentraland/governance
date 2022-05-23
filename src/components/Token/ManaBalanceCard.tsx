@@ -70,9 +70,9 @@ const ManaBalanceCard = ({ address }: Props) => {
     }
 
     return () => {
-      cancelled
+      cancelled = true
     }
-  }, [unwrappingTransaction?.status])
+  }, [manaState, unwrappingTransaction, wManaState])
 
   return (
     <ActionableLayout

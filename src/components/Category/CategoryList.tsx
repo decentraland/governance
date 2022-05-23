@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react'
+
 import { useLocation } from '@gatsbyjs/reach-router'
-import ActionableLayout from '../Layout/ActionableLayout'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import CategoryOption from './CategoryOption'
-import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import locations from '../../modules/locations'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
+import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import locations from '../../modules/locations'
+import ActionableLayout from '../Layout/ActionableLayout'
+
+import CategoryOption from './CategoryOption'
 
 function CategoryList() {
   const t = useFormatMessage()

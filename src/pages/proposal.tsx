@@ -108,8 +108,8 @@ export default function ProposalPage() {
     [proposal, account, provider, votes]
   )
 
-  const [subscribing, subscribe] = useAsyncTask(
-    async (subscribe: boolean = true) => {
+  const [subscribing, subscribe] = useAsyncTask<[subscribe?: boolean | undefined]>(
+    async (subscribe = true) => {
       if (proposal) {
         if (subscribe) {
           const newSubscription = await Governance.get().subscribe(proposal.id)
@@ -158,11 +158,11 @@ export default function ProposalPage() {
 
   useEffect(() => {
     patchOptions({ showProposalSuccessModal: params.get('new') === 'true' })
-  }, [])
+  }, [params, patchOptions])
 
   useEffect(() => {
     patchOptions({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
-  }, [])
+  }, [params, patchOptions])
 
   const closeProposalSuccessModal = () => {
     patchOptions({ showProposalSuccessModal: false })
@@ -186,7 +186,7 @@ export default function ProposalPage() {
         proposalId: proposal.id,
       })
     )
-  }, [nextUpdate?.id, proposal?.id])
+  }, [currentUpdate?.id, pendingUpdates, proposal])
 
   if (proposalState.error) {
     return (

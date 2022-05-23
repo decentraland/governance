@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -66,6 +66,15 @@ export default function IndexPage() {
   const { status: burgerStatus } = useBurgerMenu()
   const { open, translate } = burgerStatus
 
+  const handlePageFilter = useCallback(
+    (page: number) => {
+      const newParams = new URLSearchParams(location.search)
+      page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
+      return navigate(locations.proposals(newParams))
+    },
+    [location.search]
+  )
+
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
       const maxPage = Math.ceil(proposals.total / ITEMS_PER_PAGE)
@@ -73,13 +82,7 @@ export default function IndexPage() {
         handlePageFilter(maxPage)
       }
     }
-  }, [page, proposals])
-
-  function handlePageFilter(page: number) {
-    const newParams = new URLSearchParams(location.search)
-    page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
-    return navigate(locations.proposals(newParams))
-  }
+  }, [handlePageFilter, page, proposals])
 
   if (isUnderMaintenance()) {
     return (
@@ -158,14 +161,14 @@ export default function IndexPage() {
             <Grid.Column
               tablet="12"
               className="Animated ProposalsTable"
-              style={isMobile ? (!!translate ? { transform: `translateY(${translate})` } : {}) : {}}
+              style={isMobile ? (translate ? { transform: `translateY(${translate})` } : {}) : {}}
             >
               {isMobile && proposals && <SearchTitle />}
               <ActionableLayout
                 leftAction={
                   <Header sub>
                     {!proposals && ''}
-                    {proposals && t(`general.count_proposals`, { count: proposals.total || 0 })}
+                    {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
                   </Header>
                 }
                 rightAction={
@@ -180,7 +183,7 @@ export default function IndexPage() {
                         href={locations.submit()}
                         onClick={prevent(() => navigate(locations.submit()))}
                       >
-                        {t(`page.proposal_list.new_proposal`)}
+                        {t('page.proposal_list.new_proposal')}
                       </Button>
                     </>
                   )
@@ -192,8 +195,8 @@ export default function IndexPage() {
                   <Empty
                     description={
                       searching || status || timeFrame?.length > 0
-                        ? t(`navigation.search.no_matches`)
-                        : t(`page.proposal_list.no_proposals_yet`)
+                        ? t('navigation.search.no_matches')
+                        : t('page.proposal_list.no_proposals_yet')
                     }
                   />
                 )}

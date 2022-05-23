@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
@@ -46,7 +46,7 @@ const getStatusIcon = (health: UpdateAttributes['health'], completion_date: Upda
 const ProposalUpdate = ({ proposal, update, expanded, index }: Props) => {
   const t = useFormatMessage()
   const [account] = useAuthContext()
-  const { id, introduction, status, health, completion_date, due_date } = update
+  const { introduction, status, health, completion_date, due_date } = update
 
   const isOwner = account && proposal.user === account
   const missedUpdateText = isOwner
@@ -61,7 +61,7 @@ const ProposalUpdate = ({ proposal, update, expanded, index }: Props) => {
     }
 
     navigate(`/update?id=${update.id}`)
-  }, [update])
+  }, [completion_date, update.id])
 
   const handlePostUpdateClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {

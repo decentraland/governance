@@ -1,6 +1,9 @@
-import React, { useCallback } from 'react'
+import React from 'react'
+
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
 import { ProjectHealth } from '../../entities/Updates/types'
+
 import './ProjectHealthButton.css'
 
 interface Props {

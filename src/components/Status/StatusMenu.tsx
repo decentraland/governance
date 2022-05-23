@@ -1,19 +1,21 @@
 import React from 'react'
-import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { ProposalStatus } from '../../entities/Proposal/types'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+
+import { ProposalStatus } from '../../entities/Proposal/types'
 
 export type StatusMenu = {
   style?: React.CSSProperties
   value?: ProposalStatus | null
-  onChange?: (e: React.MouseEvent<any>, props: { value: ProposalStatus | null }) => void
+  onChange?: (e: React.MouseEvent<unknown>, props: { value: ProposalStatus | null }) => void
 }
 
 export default function StatusMenu(props: StatusMenu) {
   const t = useFormatMessage()
-  function handleChange(e: React.MouseEvent<any>, value: ProposalStatus | null) {
+  function handleChange(e: React.MouseEvent<unknown>, value: ProposalStatus | null) {
     if (props.onChange) {
       props.onChange(e, { value })
     }

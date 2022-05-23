@@ -1,6 +1,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
+
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './utils'
 
 export type ProposalAttributes<C extends {} = any> = {
@@ -15,14 +16,14 @@ export type ProposalAttributes<C extends {} = any> = {
   discourse_topic_slug: string
   user: string
   title: string
-  description: string,
+  description: string
   type: ProposalType
   status: ProposalStatus
   configuration: C
   start_at: Date
   finish_at: Date
   deleted: boolean
-  deleted_by: string | null,
+  deleted_by: string | null
   enacted: boolean
   enacted_by: string | null
   enacted_description: string | null
@@ -44,7 +45,7 @@ export enum ProposalStatus {
   Rejected = 'rejected',
   Passed = 'passed',
   Enacted = 'enacted',
-  Deleted = 'deleted'
+  Deleted = 'deleted',
 }
 
 export function isProposalStatus(value: string | null | undefined): boolean {
@@ -62,9 +63,7 @@ export function isProposalStatus(value: string | null | undefined): boolean {
 }
 
 export function toProposalStatus(value: string | null | undefined): ProposalStatus | null {
-  return isProposalStatus(value) ?
-    value as ProposalStatus :
-    null
+  return isProposalStatus(value) ? (value as ProposalStatus) : null
 }
 
 export enum ProposalType {
@@ -110,15 +109,11 @@ export function isPoiType(value: string | null | undefined): boolean {
 }
 
 export function toProposalType(value: string | null | undefined): ProposalType | null {
-  return isProposalType(value) ?
-    value as ProposalType :
-    null
+  return isProposalType(value) ? (value as ProposalType) : null
 }
 
 export function toPoiType(value: string | null | undefined): PoiType | null {
-  return isPoiType(value) ?
-    value as PoiType :
-    null
+  return isPoiType(value) ? (value as PoiType) : null
 }
 
 export function getPoiTypeAction(poiType: PoiType) {
@@ -139,10 +134,7 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
 }
 
 export type UpdateProposalStatusProposal = {
-  status:
-  | ProposalStatus.Rejected
-  | ProposalStatus.Passed
-  | ProposalStatus.Enacted
+  status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
   vesting_address: string | null
   description: string
 }
@@ -150,33 +142,26 @@ export type UpdateProposalStatusProposal = {
 export const updateProposalStatusScheme = {
   type: 'object',
   additionalProperties: false,
-  required: [
-    'status',
-    'description',
-  ],
+  required: ['status', 'description'],
   properties: {
     status: {
       type: 'string',
-      enum: [
-        ProposalStatus.Rejected,
-        ProposalStatus.Passed,
-        ProposalStatus.Enacted
-      ]
+      enum: [ProposalStatus.Rejected, ProposalStatus.Passed, ProposalStatus.Enacted],
     },
     vesting_address: {
       type: ['string', 'null'],
-      format: 'address'
+      format: 'address',
     },
     description: {
-      type: ['string', 'null']
-    }
-  }
+      type: ['string', 'null'],
+    },
+  },
 }
 
 export type NewProposalPoll = {
-  title: string,
-  description: string,
-  choices: string[],
+  title: string
+  description: string
+  choices: string[]
 }
 
 export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
@@ -184,11 +169,7 @@ export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
 export const newProposalPollScheme = {
   type: 'object',
   additionalProperties: false,
-  required: [
-    'title',
-    'description',
-    'choices',
-  ],
+  required: ['title', 'description', 'choices'],
   properties: {
     title: {
       type: 'string',
@@ -208,32 +189,24 @@ export const newProposalPollScheme = {
         maxLength: 100,
       },
       minItems: 2,
-    }
-  }
+    },
+  },
 }
 
 export type NewProposalDraft = {
-  linked_proposal_id: string,
-  title: string,
-  summary: string,
-  abstract: string,
-  motivation: string,
-  specification: string,
-  conclusion: string,
+  linked_proposal_id: string
+  title: string
+  summary: string
+  abstract: string
+  motivation: string
+  specification: string
+  conclusion: string
 }
 
 export const newProposalDraftScheme = {
   type: 'object',
   additionalProperties: false,
-  required: [
-    'linked_proposal_id',
-    'title',
-    'summary',
-    'abstract',
-    'motivation',
-    'specification',
-    'conclusion'
-  ],
+  required: ['linked_proposal_id', 'title', 'summary', 'abstract', 'motivation', 'specification', 'conclusion'],
   properties: {
     linked_proposal_id: {
       type: 'string',
@@ -269,20 +242,20 @@ export const newProposalDraftScheme = {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
-    }
-  }
+    },
+  },
 }
 
 export type NewProposalGovernance = {
-  linked_proposal_id: string,
-  title: string,
-  summary: string,
-  abstract: string,
-  motivation: string,
-  specification: string,
-  impacts: string,
-  implementation_pathways: string,
-  conclusion: string,
+  linked_proposal_id: string
+  title: string
+  summary: string
+  abstract: string
+  motivation: string
+  specification: string
+  impacts: string
+  implementation_pathways: string
+  conclusion: string
 }
 
 export const newProposalGovernanceScheme = {
@@ -297,7 +270,7 @@ export const newProposalGovernanceScheme = {
     'specification',
     'impacts',
     'implementation_pathways',
-    'conclusion'
+    'conclusion',
   ],
   properties: {
     linked_proposal_id: {
@@ -344,13 +317,13 @@ export const newProposalGovernanceScheme = {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
-    }
-  }
+    },
+  },
 }
 
 export type NewProposalBanName = {
-  name: string,
-  description: string,
+  name: string
+  description: string
 }
 
 export const newProposalBanNameScheme = {
@@ -361,21 +334,21 @@ export const newProposalBanNameScheme = {
     name: {
       type: 'string',
       minLength: MIN_NAME_SIZE,
-      maxLength: MAX_NAME_SIZE
+      maxLength: MAX_NAME_SIZE,
     },
     description: {
       type: 'string',
       minLength: 20,
       maxLength: 250,
-    }
-  }
+    },
+  },
 }
 
 export type NewProposalPOI = {
-  x: number,
-  y: number,
-  type: PoiType,
-  description: string,
+  x: number
+  y: number
+  type: PoiType
+  description: string
 }
 
 export const newProposalPOIScheme = {
@@ -386,7 +359,7 @@ export const newProposalPOIScheme = {
     x: {
       type: 'integer',
       minimum: -150,
-      maximum: 150
+      maximum: 150,
     },
     y: {
       type: 'integer',
@@ -395,19 +368,19 @@ export const newProposalPOIScheme = {
     },
     type: {
       type: 'string',
-      enum: Object.values(PoiType)
+      enum: Object.values(PoiType),
     },
     description: {
       type: 'string',
       minLength: 20,
       maxLength: 250,
-    }
-  }
+    },
+  },
 }
 
 export type NewProposalCatalyst = {
-  owner: string,
-  domain: string,
+  owner: string
+  domain: string
   description: string
 }
 
@@ -418,25 +391,25 @@ export const newProposalCatalystScheme = {
   properties: {
     owner: {
       type: 'string',
-      format: 'address'
+      format: 'address',
     },
     domain: {
       type: 'string',
-      format: 'hostname'
+      format: 'hostname',
     },
     description: {
       type: 'string',
       minLength: 20,
       maxLength: 250,
-    }
-  }
+    },
+  },
 }
 
 export enum ProposalGrantCategory {
   Community = 'Community',
   ContentCreator = 'Content Creator',
   PlatformContributor = 'Platform Contributor',
-  Gaming = 'Gaming'
+  Gaming = 'Gaming',
 }
 
 export function isProposalGrantCategory(value: string | null | undefined): boolean {
@@ -484,7 +457,7 @@ export function isProposalGrantTier(value: string | null | undefined): boolean {
 }
 
 export function toProposalGrantTier(value: string | null | undefined): ProposalGrantTier | null {
-  return isProposalGrantTier(value) ? value as ProposalGrantTier : null
+  return isProposalGrantTier(value) ? (value as ProposalGrantTier) : null
 }
 
 export const ProposalRequiredVP = {
@@ -499,12 +472,30 @@ export const ProposalRequiredVP = {
 }
 
 export const GrantRequiredVP = {
-  [ProposalGrantTier.Tier1]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER1, ProposalRequiredVP[ProposalType.Grant]),
-  [ProposalGrantTier.Tier2]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER2, ProposalRequiredVP[ProposalType.Grant]),
-  [ProposalGrantTier.Tier3]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER3, ProposalRequiredVP[ProposalType.Grant]),
-  [ProposalGrantTier.Tier4]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4, ProposalRequiredVP[ProposalType.Grant]),
-  [ProposalGrantTier.Tier5]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5, ProposalRequiredVP[ProposalType.Grant]),
-  [ProposalGrantTier.Tier6]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6, ProposalRequiredVP[ProposalType.Grant]),
+  [ProposalGrantTier.Tier1]: requiredVotingPower(
+    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER1,
+    ProposalRequiredVP[ProposalType.Grant]
+  ),
+  [ProposalGrantTier.Tier2]: requiredVotingPower(
+    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER2,
+    ProposalRequiredVP[ProposalType.Grant]
+  ),
+  [ProposalGrantTier.Tier3]: requiredVotingPower(
+    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER3,
+    ProposalRequiredVP[ProposalType.Grant]
+  ),
+  [ProposalGrantTier.Tier4]: requiredVotingPower(
+    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4,
+    ProposalRequiredVP[ProposalType.Grant]
+  ),
+  [ProposalGrantTier.Tier5]: requiredVotingPower(
+    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5,
+    ProposalRequiredVP[ProposalType.Grant]
+  ),
+  [ProposalGrantTier.Tier6]: requiredVotingPower(
+    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6,
+    ProposalRequiredVP[ProposalType.Grant]
+  ),
 }
 
 function grantDuration(value: string | undefined | null) {
@@ -520,15 +511,15 @@ export const GrantDuration = {
 }
 
 export type NewProposalGrant = {
-  title: string,
-  abstract: string,
-  category: ProposalGrantCategory,
-  tier: ProposalGrantTier,
-  size: number,
-  beneficiary: string,
-  description: string,
-  specification: string,
-  personnel: string,
+  title: string
+  abstract: string
+  category: ProposalGrantCategory
+  tier: ProposalGrantTier
+  size: number
+  beneficiary: string
+  description: string
+  specification: string
+  personnel: string
   roadmap: string
 }
 
@@ -544,7 +535,7 @@ export const newProposalGrantScheme = {
     'description',
     'specification',
     'personnel',
-    'roadmap'
+    'roadmap',
   ],
   properties: {
     title: {
@@ -564,7 +555,7 @@ export const newProposalGrantScheme = {
         ProposalGrantCategory.ContentCreator,
         ProposalGrantCategory.PlatformContributor,
         ProposalGrantCategory.Gaming,
-      ]
+      ],
     },
     tier: {
       type: 'string',
@@ -575,7 +566,7 @@ export const newProposalGrantScheme = {
         ProposalGrantTier.Tier4,
         ProposalGrantTier.Tier5,
         ProposalGrantTier.Tier6,
-      ]
+      ],
     },
     size: {
       type: 'integer',
@@ -583,7 +574,7 @@ export const newProposalGrantScheme = {
     },
     beneficiary: {
       type: 'string',
-      format: 'address'
+      format: 'address',
     },
     description: {
       type: 'string',
@@ -604,21 +595,21 @@ export const newProposalGrantScheme = {
       type: 'string',
       minLength: 20,
       maxLength: 1500,
-    }
-  }
+    },
+  },
 }
 
 export type NewProposalLinkedWearables = {
-  name: string,
-  links: string[],
-  nft_collections: string,
-  items: number,
-  smart_contract: string[],
-  governance: string,
-  motivation: string,
-  managers: string[],
-  programmatically_generated: boolean,
-  method: string,
+  name: string
+  links: string[]
+  nft_collections: string
+  items: number
+  smart_contract: string[]
+  governance: string
+  motivation: string
+  managers: string[]
+  programmatically_generated: boolean
+  method: string
 }
 
 export const newProposalLinkedWearablesScheme = {
@@ -646,7 +637,7 @@ export const newProposalLinkedWearablesScheme = {
       items: {
         type: 'string',
       },
-      minItems: 1
+      minItems: 1,
     },
     nft_collections: {
       type: 'string',
@@ -662,9 +653,9 @@ export const newProposalLinkedWearablesScheme = {
       type: 'array',
       items: {
         type: 'string',
-        format: "address",
+        format: 'address',
       },
-      minItems: 1
+      minItems: 1,
     },
     governance: {
       type: 'string',
@@ -680,9 +671,9 @@ export const newProposalLinkedWearablesScheme = {
       type: 'array',
       items: {
         type: 'string',
-        format: "address",
+        format: 'address',
       },
-      minItems: 1
+      minItems: 1,
     },
     programmatically_generated: {
       type: 'boolean',
@@ -692,17 +683,17 @@ export const newProposalLinkedWearablesScheme = {
       minLength: 0,
       maxLength: 750,
     },
-  }
+  },
 }
 
 export type ProposalComment = {
-  username: string,
-  avatar_url: string,
-  created_at: string,
-  cooked: string,
+  username: string
+  avatar_url: string
+  created_at: string
+  cooked: string
 }
 
 export type ProposalCommentsInDiscourse = {
-  totalComments: number,
+  totalComments: number
   comments: ProposalComment[]
 }

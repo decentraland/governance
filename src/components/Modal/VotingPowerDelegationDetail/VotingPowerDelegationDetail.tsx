@@ -16,14 +16,9 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { VotedProposal } from '../../../entities/Votes/types'
-import {
-  useBalanceOf,
-  useManaContract,
-  useWManaContract,
-} from '../../../hooks/useContract'
+import { useBalanceOf, useManaContract, useWManaContract } from '../../../hooks/useContract'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
-import { getEnvironmentChainId } from '../../../modules/votes/utils'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'

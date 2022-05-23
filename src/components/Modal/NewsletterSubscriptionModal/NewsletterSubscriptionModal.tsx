@@ -62,22 +62,25 @@ export function NewsletterSubscriptionModal({
     email: '',
   })
 
-  const validateEmail = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const email = event.target.value
-    if (isEmail(email)) {
-      setState({
-        isValid: true,
-        message: '',
-        email: email,
-      })
-    } else {
-      setState({
-        isValid: false,
-        message: t('modal.newsletter_subscription.email_error_message') || '',
-        email: email,
-      })
-    }
-  }, [])
+  const validateEmail = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const email = event.target.value
+      if (isEmail(email)) {
+        setState({
+          isValid: true,
+          message: '',
+          email: email,
+        })
+      } else {
+        setState({
+          isValid: false,
+          message: t('modal.newsletter_subscription.email_error_message') || '',
+          email: email,
+        })
+      }
+    },
+    [t]
+  )
 
   const saveSubscription = useCallback(() => {
     const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]')
@@ -87,7 +90,7 @@ export function NewsletterSubscriptionModal({
 
   const resetModal = useCallback(() => {
     setState({ isValid: true, message: '', email: '' })
-  }, [state])
+  }, [])
 
   const [subscribing, handleAccept] = useAsyncTask(async () => {
     if (state.email && isEmail(state.email) && onSubscriptionSuccess) {

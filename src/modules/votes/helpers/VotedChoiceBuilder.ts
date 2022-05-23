@@ -33,7 +33,7 @@ export class VotedChoiceBuilder {
     const hasDelegators = !!this.delegators && this.delegators.length > 0
     const delegateVoted = this.delegate && this.delegateVote
 
-    if (!this.votes || !this.vote && !this.delegateVote || (!this.vote && hasDelegators) ) return null
+    if (!this.votes || (!this.vote && !this.delegateVote) || (!this.vote && hasDelegators)) return null
 
     if (this.vote) {
       if (delegateVoted) {
