@@ -69,7 +69,6 @@ import { getVotes } from '../Votes/routes'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import UpdateModel from '../Updates/model';
-import { getSnapshotVersion } from '../Votes/utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
@@ -406,7 +405,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     }
 
     msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
-      getSnapshotVersion(snapshotStatus.version), snapshotSpace.network, snapshotSpace.strategies, {
+      snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
       name: await templates.snapshotTitle(snapshotTemplateProps),
       body: await templates.snapshotDescription(snapshotTemplateProps),
       choices: data.configuration.choices,
