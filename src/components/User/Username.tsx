@@ -1,30 +1,78 @@
 import React from 'react'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
+
+import { SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+
+import useProfile from '../../hooks/useProfile'
 import locations from '../../modules/locations'
 
-interface Props {
+import './Username.css'
+
+type Props = SizeProps & {
+  address: string
+  linked?: boolean
   className?: string
-  profile?: Profile | null
-  address?: string
+  blockieScale?: number
+  iconOnly?: boolean
+  addressOnly?: boolean
 }
 
-export default function Username({ className, profile, address = '' }: Props) {
-  const hasProfileName = profile && profile.name
+const Username = ({
+  address,
+  size,
+  linked,
+  iconOnly = false,
+  addressOnly = false,
+  blockieScale = 3,
+  className,
+}: Props) => {
+  const { profile, hasDclProfile } = useProfile(address)
+  const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
+
+  const userElement = (
+    <>
+      {addressOnly && (
+        <>
+          {profileHasName && profile!.name}
+          {!profileHasName && <Address value={address || ''} className={className} />}
+        </>
+      )}
+
+      {!addressOnly && (
+        <>
+          {hasDclProfile && (
+            <>
+              <Avatar size={size || 'mini'} address={address} />
+              {profileHasName && !iconOnly && profile!.name}
+              {!profileHasName && !iconOnly && <Address value={address || ''} />}
+            </>
+          )}
+
+          {(!hasDclProfile || !profile) && (
+            <Blockie scale={blockieScale} seed={address || ''}>
+              {!iconOnly && <Address value={address || ''} />}
+            </Blockie>
+          )}
+        </>
+      )}
+    </>
+  )
 
   return (
-    <Link className={TokenList.join([className])} href={locations.balance({ address })}>
-      {hasProfileName && <Avatar size="mini" address={profile?.ethAddress} style={{ marginRight: '.5rem' }} />}
-      {hasProfileName}
-      {!hasProfileName && !!address && (
-        <Blockie scale={3} seed={address}>
-          <Address value={address} />
-        </Blockie>
+    <>
+      {linked ? (
+        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
+          {userElement}
+        </Link>
+      ) : (
+        <span className={TokenList.join(['Username', className])}>{userElement}</span>
       )}
-    </Link>
+    </>
   )
 }
+
+export default Username

@@ -1,7 +1,16 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
-import { ProposalAttributes, ProposalGrantTier, ProposalGrantTierValues, ProposalStatus, toProposalGrantTier } from './types'
 import numeral from 'numeral'
+
+import { SNAPSHOT_URL } from '../Snapshot/constants'
+
+import {
+  ProposalAttributes,
+  ProposalGrantTier,
+  ProposalGrantTierValues,
+  ProposalStatus,
+  toProposalGrantTier,
+} from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
@@ -24,7 +33,7 @@ export function isValidName(name: string) {
 }
 
 export function isValidDomainName(domain: string) {
-  return new RegExp('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$').test(domain)
+  return new RegExp('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$').test(domain)
 }
 
 export async function isAlreadyBannedName(name: string) {
@@ -54,7 +63,7 @@ export async function isValidPointOfInterest(x: number, y: number) {
 
 export async function isAlreadyACatalyst(domain: string) {
   const servers = await Catalyst.get().getServers()
-  return !!servers.find(server => server.baseUrl === 'https://' + domain)
+  return !!servers.find((server) => server.baseUrl === 'https://' + domain)
 }
 
 export function isGrantSizeValid(tier: string | null, size: string | number): boolean {
@@ -75,11 +84,7 @@ export function isGrantSizeValid(tier: string | null, size: string | number): bo
 export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
   switch (current) {
     case ProposalStatus.Finished:
-      return (
-        next === ProposalStatus.Rejected ||
-        next === ProposalStatus.Passed ||
-        next === ProposalStatus.Enacted
-      )
+      return next === ProposalStatus.Rejected || next === ProposalStatus.Passed || next === ProposalStatus.Enacted
     case ProposalStatus.Passed:
       return next === ProposalStatus.Enacted
     default:
@@ -99,7 +104,7 @@ export function asNumber(value: string | number): number {
 }
 
 export function snapshotUrl(hash: string) {
-  const target = new URL(process.env.GATSBY_SNAPSHOT_URL || '')
+  const target = new URL(SNAPSHOT_URL)
   target.pathname = ''
   target.hash = hash
   return target.toString()
@@ -115,7 +120,7 @@ export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id'
   return target.toString()
 }
 
-export function governanceUrl(pathname: string = '') {
+export function governanceUrl(pathname = '') {
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
   target.pathname = pathname
   target.search = ''
@@ -126,7 +131,7 @@ export function governanceUrl(pathname: string = '') {
 export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   const params = new URLSearchParams({ id: proposal.id })
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
-  target.pathname = `/proposal/`
+  target.pathname = '/proposal/'
   target.search = '?' + params.toString()
   return target.toString()
 }
@@ -134,7 +139,7 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
 export function getUpdateUrl(updateId: string, proposalId: string) {
   const params = new URLSearchParams({ id: updateId, proposalId })
   const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
-  target.pathname = `/update/`
+  target.pathname = '/update/'
   target.search = '?' + params.toString()
   return target.toString()
 }

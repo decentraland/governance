@@ -1,5 +1,6 @@
-import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
-import { Governance } from "../api/Governance"
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+
+import { Governance } from '../api/Governance'
 
 export default function useProposalUpdates(proposalId?: string | null) {
   const [updates, state] = useAsyncMemo(() => Governance.get().getProposalUpdates(proposalId!), [proposalId], {

@@ -1,5 +1,5 @@
-import { ProposalGrantTier, ProposalGrantTierValues } from "./types"
-import { isGrantSizeValid } from "./utils"
+import { ProposalGrantTier, ProposalGrantTierValues } from './types'
+import { isGrantSizeValid } from './utils'
 
 describe('isGrantSizeValid', () => {
   let tier: ProposalGrantTier | null, size: string | number
@@ -14,7 +14,7 @@ describe('isGrantSizeValid', () => {
         size = 800
       })
       it('should say it is valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(true);
+        expect(isGrantSizeValid(tier, size)).toBe(true)
       })
     })
 
@@ -23,7 +23,7 @@ describe('isGrantSizeValid', () => {
         size = 0
       })
       it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false);
+        expect(isGrantSizeValid(tier, size)).toBe(false)
       })
     })
 
@@ -32,7 +32,7 @@ describe('isGrantSizeValid', () => {
         size = -100
       })
       it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false);
+        expect(isGrantSizeValid(tier, size)).toBe(false)
       })
     })
 
@@ -41,7 +41,7 @@ describe('isGrantSizeValid', () => {
         size = ProposalGrantTierValues[ProposalGrantTier.Tier1]
       })
       it('should say it valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(true);
+        expect(isGrantSizeValid(tier, size)).toBe(true)
       })
     })
 
@@ -50,7 +50,7 @@ describe('isGrantSizeValid', () => {
         size = ProposalGrantTierValues[ProposalGrantTier.Tier1] + 1
       })
       it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false);
+        expect(isGrantSizeValid(tier, size)).toBe(false)
       })
     })
   })
@@ -62,7 +62,7 @@ describe('isGrantSizeValid', () => {
     })
 
     it('should say it is not valid', () => {
-      expect(isGrantSizeValid(tier, size)).toBe(false);
+      expect(isGrantSizeValid(tier, size)).toBe(false)
     })
   })
 
@@ -76,7 +76,7 @@ describe('isGrantSizeValid', () => {
         size = ProposalGrantTierValues[ProposalGrantTier.Tier5] + 500
       })
       it('should say it is valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(true);
+        expect(isGrantSizeValid(tier, size)).toBe(true)
       })
     })
 
@@ -85,7 +85,7 @@ describe('isGrantSizeValid', () => {
         size = ProposalGrantTierValues[ProposalGrantTier.Tier5] - 500
       })
       it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false);
+        expect(isGrantSizeValid(tier, size)).toBe(false)
       })
     })
 
@@ -94,7 +94,7 @@ describe('isGrantSizeValid', () => {
         size = ProposalGrantTierValues[ProposalGrantTier.Tier5]
       })
       it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false);
+        expect(isGrantSizeValid(tier, size)).toBe(false)
       })
     })
 
@@ -103,7 +103,7 @@ describe('isGrantSizeValid', () => {
         size = ProposalGrantTierValues[ProposalGrantTier.Tier6] + 500
       })
       it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false);
+        expect(isGrantSizeValid(tier, size)).toBe(false)
       })
     })
   })

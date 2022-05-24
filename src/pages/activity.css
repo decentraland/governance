@@ -2,6 +2,12 @@
   position: relative;
 }
 
+.ActivityPage__ListContainer {
+  margin-top: 16px;
+  position: relative;
+  min-height: 200px;
+}
+
 .ActivityPage .ChoiceProgress .ChoiceProgress__Description {
   flex-wrap: nowrap;
 }
@@ -14,4 +20,11 @@
 
 .ActivityPage .ChoiceProgress  .ChoiceProgress__Stats {
   font-weight: normal;
+}
+
+.ActivityPage__EmptyContainer {
+  padding: 100px 0;
+  text-align: center;
+  border: 1px solid rgba(115, 110, 125, .24);
+  border-radius: 8px;
 }

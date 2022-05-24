@@ -1,0 +1,40 @@
+.CandidateDetails--hidden {
+  display: none;
+}
+
+.CandidateDetails__Title.tiny.sub.header {
+  font-size: 12px !important;
+}
+
+.CandidateDetails__Content.Paragraph--small {
+  font-size: 15px !important;
+}
+
+.CandidateDetails__Content {
+  margin-bottom: 24px !important;
+}
+
+.CandidateDetails__Content--links a {
+  display: block;
+  color: var(--blue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CandidateDetails__Content--skills {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.CandidateDetails__Content--skills .Chip {
+  opacity: 0.67;
+  border: 1px solid var(--gray);
+  box-sizing: border-box;
+  border-radius: 12px;
+  padding: 0px 5px;
+  margin: 2px;
+  font-size: 10px;
+  font-weight: 600;
+}

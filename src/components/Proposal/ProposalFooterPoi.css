@@ -1,0 +1,12 @@
+.ProposalFooterPoi {
+  padding-top: 24px;
+}
+
+.ProposalFooterPoi__Button {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.ProposalFooterPoi__Icon {
+  margin-left: 1rem;
+}

@@ -1,4 +1,4 @@
-import './index.css'
+import React, { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -14,17 +14,16 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import React, { useEffect, useState } from 'react'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../api/Governance'
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
+import Empty from '../components/Common/Empty'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import Empty from '../components/Proposal/Empty'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
 import { SearchTitle } from '../components/Search/SearchTitle'
@@ -38,6 +37,8 @@ import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
+
+import './index.css'
 
 const ITEMS_PER_PAGE = 25
 
@@ -65,6 +66,15 @@ export default function IndexPage() {
   const { status: burgerStatus } = useBurgerMenu()
   const { open, translate } = burgerStatus
 
+  const handlePageFilter = useCallback(
+    (page: number) => {
+      const newParams = new URLSearchParams(location.search)
+      page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
+      return navigate(locations.proposals(newParams))
+    },
+    [location.search]
+  )
+
   useEffect(() => {
     if (typeof proposals?.total === 'number') {
       const maxPage = Math.ceil(proposals.total / ITEMS_PER_PAGE)
@@ -72,13 +82,7 @@ export default function IndexPage() {
         handlePageFilter(maxPage)
       }
     }
-  }, [page, proposals])
-
-  function handlePageFilter(page: number) {
-    const newParams = new URLSearchParams(location.search)
-    page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
-    return navigate(locations.proposals(newParams))
-  }
+  }, [handlePageFilter, page, proposals])
 
   if (isUnderMaintenance()) {
     return (
@@ -157,14 +161,14 @@ export default function IndexPage() {
             <Grid.Column
               tablet="12"
               className="Animated ProposalsTable"
-              style={isMobile ? (!!translate ? { transform: `translateY(${translate})` } : {}) : {}}
+              style={isMobile ? (translate ? { transform: `translateY(${translate})` } : {}) : {}}
             >
               {isMobile && proposals && <SearchTitle />}
               <ActionableLayout
                 leftAction={
                   <Header sub>
                     {!proposals && ''}
-                    {proposals && t(`general.count_proposals`, { count: proposals.total || 0 })}
+                    {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
                   </Header>
                 }
                 rightAction={
@@ -179,7 +183,7 @@ export default function IndexPage() {
                         href={locations.submit()}
                         onClick={prevent(() => navigate(locations.submit()))}
                       >
-                        {t(`page.proposal_list.new_proposal`)}
+                        {t('page.proposal_list.new_proposal')}
                       </Button>
                     </>
                   )
@@ -191,8 +195,8 @@ export default function IndexPage() {
                   <Empty
                     description={
                       searching || status || timeFrame?.length > 0
-                        ? t(`navigation.search.no_matches`)
-                        : t(`page.proposal_list.no_proposals_yet`)
+                        ? t('navigation.search.no_matches')
+                        : t('page.proposal_list.no_proposals_yet')
                     }
                   />
                 )}

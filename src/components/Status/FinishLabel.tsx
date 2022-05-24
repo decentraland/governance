@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
-import './FinishLabel.css'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import './FinishLabel.css'
 
 const clock = require('../../images/icons/time.svg').default
 

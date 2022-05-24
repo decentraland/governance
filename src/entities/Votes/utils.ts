@@ -1,6 +1,12 @@
+import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
 import isUUID from 'validator/lib/isUUID'
-import { SnapshotVote } from '../../api/Snapshot';
-import { ChoiceColor, Vote } from './types';
+
+import { Snapshot, SnapshotVote } from '../../api/Snapshot'
+import { ProposalAttributes } from '../Proposal/types'
+
+import { ChoiceColor, Vote } from './types'
+
+export type Scores = Record<string, number>
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -9,29 +15,28 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
 
   const list = Array.isArray(ids) ? ids : [ids]
 
-  return list.filter(id => isUUID(String(id)))
+  return list.filter((id) => isUUID(String(id)))
 }
 
-export function createVotes(votes: SnapshotVote[], balances: Record<string, number>) {
-  const balance = new Map(Object.keys(balances).map(address => [address.toLowerCase(), balances[address] || 0] as const))
-  return votes.reduce(
-    (result, vote) => {
-      const address = vote.voter.toLowerCase()
-      result[address] = {
-        choice: vote.choice,
-        vp: balance.get(address) || 0,
-        timestamp: Number(vote.created),
-      }
-      return result
-    },
-    {} as Record<string, Vote>
+export function createVotes(votes: SnapshotVote[], balances: Scores) {
+  const balance = new Map(
+    Object.keys(balances).map((address) => [address.toLowerCase(), balances[address] || 0] as const)
   )
+  return votes.reduce((result, vote) => {
+    const address = vote.voter.toLowerCase()
+    result[address] = {
+      choice: vote.choice,
+      vp: balance.get(address) || 0,
+      timestamp: Number(vote.created),
+    }
+    return result
+  }, {} as Record<string, Vote>)
 }
 
-export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
+export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
   let totalPower = 0
-  const balance: Record<string, number> = {}
-  const choiceCount: Record<string, number> = {}
+  const balance: Scores = {}
+  const choiceCount: Scores = {}
   for (const choice of choices) {
     balance[choice] = 0
     choiceCount[choice] = 0
@@ -49,7 +54,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
 
   let rest = 100
   let maxProgress = 0
-  let totalPowerProgress = Math.max(totalPower, requiredVotingPower)
+  const totalPowerProgress = Math.max(totalPower, requiredVotingPower)
   const result = choices.map((choice, i) => {
     const color = calculateChoiceColor(choice, i)
     const power = balance[choice] || 0
@@ -61,7 +66,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
         color,
         votes,
         power: 0,
-        progress: 0
+        progress: 0,
       }
     }
 
@@ -71,7 +76,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
         color,
         votes,
         power: 0,
-        progress: 0
+        progress: 0,
       }
     }
 
@@ -81,7 +86,7 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
         color,
         votes,
         power,
-        progress: 100
+        progress: 100,
       }
     }
 
@@ -101,12 +106,12 @@ export function calculateResult(choices: string[], votes: Record<string, Vote>, 
       power,
       votes,
       color,
-      progress
+      progress,
     }
   })
 
   if (rest !== 0 && rest !== 100 && totalPower >= requiredVotingPower) {
-    const maxChoiceResults = result.filter(choiceResult => choiceResult.progress === maxProgress)
+    const maxChoiceResults = result.filter((choiceResult) => choiceResult.progress === maxProgress)
     for (const choiceResult of maxChoiceResults) {
       choiceResult.progress += rest / maxChoiceResults.length
     }
@@ -120,19 +125,19 @@ export function calculateChoiceColor(value: string, index: number): ChoiceColor 
     case 'yes':
     case 'for':
     case 'approve':
-      return 'approve';
+      return 'approve'
 
     case 'no':
     case 'against':
     case 'reject':
-      return 'reject';
+      return 'reject'
 
     default:
       return index % 8
   }
 }
 
-export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower: number = 0) {
+export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
   const result = calculateResult(choices, votes, requiredVotingPower)
 
   return result.reduce((winner, current) => {
@@ -144,18 +149,37 @@ export function calculateResultWinner(choices: string[], votes: Record<string, V
   }, result[0])
 }
 
-const SI_SYMBOL = ["", "k", "M", "G", "T", "P", "E"]
+const SI_SYMBOL = ['', 'k', 'M', 'G', 'T', 'P', 'E']
 
 export function abbreviateNumber(vp: number) {
-
-  const tier = Math.log10(Math.abs(vp)) / 3 | 0
+  const tier = (Math.log10(Math.abs(vp)) / 3) | 0
 
   if (tier == 0) return vp
 
-  const suffix = SI_SYMBOL[tier];
+  const suffix = SI_SYMBOL[tier]
   const scale = Math.pow(10, tier * 3)
 
   const scaled = vp / scale
 
   return scaled.toFixed(1) + suffix
+}
+
+export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
+  const result: Scores = {}
+  for (const addressesChunk of chunk(addresses, 500)) {
+    const blockchainScores = await Snapshot.get().getScores(
+      proposal.snapshot_space,
+      proposal.snapshot_proposal.metadata.strategies,
+      proposal.snapshot_network,
+      addressesChunk,
+      proposal.snapshot_proposal.snapshot
+    )
+
+    for (const address of Object.keys(blockchainScores)) {
+      result[address.toLowerCase()] =
+        (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address].totalVp || 0)
+    }
+  }
+
+  return result
 }

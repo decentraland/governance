@@ -1,15 +1,17 @@
 import { useMemo } from 'react'
+
 import { useLocation } from '@gatsbyjs/reach-router'
-import { toProposalType, toProposalStatus, ProposalType, ProposalStatus } from '../entities/Proposal/types'
+
+import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from '../entities/Proposal/types'
 import { toProposalListPage } from '../modules/locations'
 
 export type SearchParams = {
   type: ProposalType | undefined
-  status: ProposalStatus | undefined,
-  search: string,
-  searching: boolean,
-  timeFrame: string,
-  order: 'ASC' | 'DESC' | undefined,
+  status: ProposalStatus | undefined
+  search: string
+  searching: boolean
+  timeFrame: string
+  order: 'ASC' | 'DESC' | undefined
   page: number
 }
 

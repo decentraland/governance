@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { getPoiTypeAction, newProposalPOIScheme, PoiType } from '../../../entities/Proposal/types'
-import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+
 import { Governance } from '../../../api/Governance'
-import locations from '../../../modules/locations'
+import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
+import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import locations from '../../../modules/locations'
 import MarkdownNotice from '../../Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 import LogIn from '../../User/LogIn'
+
+import './ProposalSubmitPoiPage.css'
 
 type POIState = {
   x: string | number
@@ -155,7 +159,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, poiType, state])
 
   if (accountState.loading) {
     return (
@@ -192,7 +196,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
         <Paragraph tiny secondary className="details">
           {t('page.submit_poi.coordinates_detail')}
         </Paragraph>
-        <div style={{ display: 'flex', position: 'relative' }}>
+        <div className="CoordinatesField__Inputs">
           <Field
             value={state.value.x}
             type="number"
@@ -214,7 +218,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
             disabled={formDisabled}
           />
 
-          <div style={{ position: 'absolute', bottom: 0, left: 0 }}>
+          <div className="CoordinatesField__Error">
             <Paragraph tiny primary>
               {t(state.error.x) || t(state.error.y)}
             </Paragraph>
@@ -233,7 +237,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           minHeight={175}
           value={state.value.description}
           placeholder={t(`page.submit_poi.${action}.description_placeholder`)}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description}
           message={

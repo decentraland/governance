@@ -1,10 +1,13 @@
 import React from 'react'
-import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
+
 import locations, { ProposalActivityList } from '../../modules/locations'
 import SearchInput from '../Search/SearchInput'
+
 import './Navigation.css'
 
 export enum NavigationTab {

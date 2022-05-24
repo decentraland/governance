@@ -1,29 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { newProposalCatalystScheme } from '../../entities/Proposal/types'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
-import { Governance } from '../../api/Governance'
-import locations from '../../modules/locations'
-import loader from '../../modules/loader'
-import Catalyst, { Servers } from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import { isValidDomainName } from '../../entities/Proposal/utils'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import Catalyst, { Servers } from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
+import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LogIn from '../../components/User/LogIn'
+import { newProposalCatalystScheme } from '../../entities/Proposal/types'
+import { isValidDomainName } from '../../entities/Proposal/utils'
+import loader from '../../modules/loader'
+import locations from '../../modules/locations'
+
+import './catalyst.css'
 import './submit.css'
 
 type CatalystState = {
@@ -99,7 +103,7 @@ export default function SubmitCatalyst() {
     if (!state.error.domain && (commsState.error || contentState.error || lambdaState.error)) {
       editor.error({ domain: 'error.catalyst.server_invalid_status' })
     }
-  }, [domain, commsState.error, contentState.error, lambdaState.error, state.error.domain])
+  }, [domain, commsState.error, contentState.error, lambdaState.error, state.error.domain, editor])
 
   useEffect(() => {
     const errors = [commsState.error, contentState.error, lambdaState.error].filter(Boolean)
@@ -125,11 +129,11 @@ export default function SubmitCatalyst() {
             servers = await Catalyst.get().getServers()
           } catch (err) {
             console.error(err)
-            throw new Error(`error.catalyst.fetching_catalyst`)
+            throw new Error('error.catalyst.fetching_catalyst')
           }
 
           if (servers.find((server) => server.baseUrl === 'https://' + state.value.domain)) {
-            throw new Error(`error.catalyst.domain_already_a_catalyst`)
+            throw new Error('error.catalyst.domain_already_a_catalyst')
           }
 
           return Governance.get().createProposalCatalyst(state.value)
@@ -144,6 +148,7 @@ export default function SubmitCatalyst() {
           setFormDisabled(false)
         })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, commsStatus, contentStatus, lambdaStatus])
 
   if (accountState.loading) {
@@ -208,45 +213,31 @@ export default function SubmitCatalyst() {
           <div>
             <Paragraph tiny>
               {commsState.loading && (
-                <span style={{ display: 'block', color: '#676370' }}>
-                  {t('page.submit_catalyst.domain_comms_checking')}
-                </span>
+                <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
               )}
               {commsState.error && (
-                <span style={{ display: 'block', color: '#ff0000' }}>
-                  {t('page.submit_catalyst.domain_comms_failed')}
-                </span>
+                <span className="Catalyst__Error">{t('page.submit_catalyst.domain_comms_failed')}</span>
               )}
               {!commsState.loading && !commsState.error && (
-                <span style={{ display: 'block', color: '#59a14f' }}>{t('page.submit_catalyst.domain_comms_ok')}</span>
+                <span className="Catalyst__Success">{t('page.submit_catalyst.domain_comms_ok')}</span>
               )}
               {contentState.loading && (
-                <span style={{ display: 'block', color: '#676370' }}>
-                  {t('page.submit_catalyst.domain_content_checking')}
-                </span>
+                <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_content_checking')}</span>
               )}
               {contentState.error && (
-                <span style={{ display: 'block', color: '#ff0000' }}>
-                  {t('page.submit_catalyst.domain_content_failed')}
-                </span>
+                <span className="Catalyst__Error">{t('page.submit_catalyst.domain_content_failed')}</span>
               )}
               {!contentState.loading && !contentState.error && (
-                <span style={{ display: 'block', color: '#59a14f' }}>
-                  {t('page.submit_catalyst.domain_content_ok')}
-                </span>
+                <span className="Catalyst__Success">{t('page.submit_catalyst.domain_content_ok')}</span>
               )}
               {lambdaState.loading && (
-                <span style={{ display: 'block', color: '#676370' }}>
-                  {t('page.submit_catalyst.domain_lambda_checking')}
-                </span>
+                <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_lambda_checking')}</span>
               )}
               {lambdaState.error && (
-                <span style={{ display: 'block', color: '#ff0000' }}>
-                  {t('page.submit_catalyst.domain_lambda_failed')}
-                </span>
+                <span className="Catalyst__Error">{t('page.submit_catalyst.domain_lambda_failed')}</span>
               )}
               {!lambdaState.loading && !lambdaState.error && (
-                <span style={{ display: 'block', color: '#59a14f' }}>{t('page.submit_catalyst.domain_lambda_ok')}</span>
+                <span className="Catalyst__Success">{t('page.submit_catalyst.domain_lambda_ok')}</span>
               )}
             </Paragraph>
           </div>
@@ -263,7 +254,7 @@ export default function SubmitCatalyst() {
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description || state.value.description.length > schema.description.maxLength}
           message={

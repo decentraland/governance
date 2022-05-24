@@ -1,0 +1,1 @@
+export const MINIMUM_VP_REQUIRED_TO_VOTE = 1

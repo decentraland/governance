@@ -1,10 +1,10 @@
 .ui.popup.transition.visible.TokensPerWalletPopup {
 	padding: 0 0;
-	background-color: white;
 }
 
 .TokensPerWalletPopup__Card {
 	width: 100% !important;
+	background-color: transparent !important;
 }
 
 .TokensPerWalletPopup .ui.card.content.TokensPerWalletPopup__Content {
@@ -13,10 +13,6 @@
 	margin-bottom: 1rem;
 	display: flex;
 	flex-direction: row;
-}
-
-.ui.popup.TokensPerWalletPopup::before {
-	background: #fff !important;
 }
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Row {
@@ -41,6 +37,11 @@
 	justify-content: center;
 }
 
+.TokensPerWalletPopup .TokensPerWalletPopup__Block .ui.header,
+.TokensPerWalletPopup .TokensPerWalletPopup__Block .dg.Paragraph {
+	color: #ffffff;
+}
+
 .TokensPerWalletPopup .TokensPerWalletPopup__Balance{
 	display: flex;
 	align-items: baseline;
@@ -49,6 +50,7 @@
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Balance .ui.header{
 	margin-right: 8px;
+	color: #ffffff;
 }
 
 .TokensPerWalletPopup .TokensPerWalletPopup__RightBlock {
@@ -65,7 +67,7 @@
 .TokensPerWalletPopup .ui.header.sub {
 	margin-top: 0;
 	margin-bottom: 0;
-	color: var(--secondary-text);
+	color: #ffffff;
 	font-size: 10px;
 	line-height: 10px;
 	font-weight: normal;
@@ -84,7 +86,7 @@
 }
 
 .TokensPerWalletPopup__Row:hover {
-	background: #e9f1fb;
+	background: #4a4a57;
 }
 
 @media (min-width: 768px) {
@@ -92,7 +94,6 @@
 		opacity: 0;
 	}
 	.TokensPerWalletPopup__Row:hover .ui.sub.header.TokensPerWalletPopup__Link {
-		background: #e9f1fb;
 		opacity: 1;
 	}
 	.ui.popup.transition.visible.TokensPerWalletPopup {

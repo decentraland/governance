@@ -1,33 +1,35 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
-import omit from 'lodash/omit'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
-import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
+import omit from 'lodash.omit'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
-import { Governance } from '../../api/Governance'
-import locations from '../../modules/locations'
-import loader from '../../modules/loader'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
-import LogIn from '../../components/User/LogIn'
-import './submit.css'
 
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
+import { Governance } from '../../api/Governance'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LogIn from '../../components/User/LogIn'
+import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+import loader from '../../modules/loader'
+import locations from '../../modules/locations'
+
+import './poll.css'
+import './submit.css'
 
 type PollState = {
   title: string
@@ -72,14 +74,18 @@ const validate = createValidator<PollState>({
         assert(state.description.length >= schema.description.minLength, 'error.poll.description_too_short') ||
         assert(state.description.length <= schema.description.maxLength, 'error.poll.description_too_large'),
       choices:
-        assert(choices.length >= schema.choices.minItems, `error.poll.choices_insufficient`) ||
+        assert(choices.length >= schema.choices.minItems, 'error.poll.choices_insufficient') ||
         assert(
-          choices.some((option) => option !== ''),
-          `error.poll.choices_empty`
+          choices.every((option) => option !== ''),
+          'error.poll.choices_empty'
         ) ||
         assert(
-          choices.some((option) => option.length >= schema.choices.items.minLength),
-          `error.poll.choices_too_short`
+          choices.every((option) => option.length >= schema.choices.items.minLength),
+          'error.poll.choices_too_short'
+        ) ||
+        assert(
+          choices.every((option) => option.length <= schema.choices.items.maxLength),
+          'error.poll.choices_too_long'
         ),
     }
   },
@@ -89,7 +95,7 @@ export default function SubmitPoll() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
-  const [votingPower, votingPowerState] = useVotingPowerBalance(account, SNAPSHOT_SPACE)
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(account)
   const submissionVpNotMet = useMemo(
     () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
     [votingPower]
@@ -149,7 +155,7 @@ export default function SubmitPoll() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -200,7 +206,7 @@ export default function SubmitPoll() {
               limit: schema.title.maxLength,
             })
           }
-          loading={votingPowerState.loading}
+          loading={isLoadingVotingPower}
           disabled={submissionVpNotMet || formDisabled}
         />
       </ContentSection>
@@ -216,7 +222,7 @@ export default function SubmitPoll() {
           minHeight={175}
           placeholder={t('page.submit_poll.description_placeholder') || ''}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description || state.value.description.length > schema.description.maxLength}
           message={
@@ -238,7 +244,7 @@ export default function SubmitPoll() {
         <Paragraph small primary>
           {t(state.error.choices)}
         </Paragraph>
-        <div style={{ width: '90%', maxWidth: '300px', margin: '0 5%' }}>
+        <div className="Poll__Options">
           {Object.keys(state.value.choices)
             .sort()
             .map((key, i) => (
@@ -264,9 +270,9 @@ export default function SubmitPoll() {
                 on="hover"
               />
             }
-            onAction={() => {}}
+            onAction={() => null}
           />
-          <Button basic style={{ width: '100%' }} onClick={handleAddOption}>
+          <Button basic fluid onClick={handleAddOption}>
             {t('page.submit_poll.choices_add')}
           </Button>
         </div>
@@ -275,7 +281,7 @@ export default function SubmitPoll() {
         <Button
           primary
           disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || votingPowerState.loading}
+          loading={state.validated || isLoadingVotingPower}
           onClick={() => editor.validate()}
         >
           {t('page.submit.button_submit')}

@@ -1,10 +1,13 @@
+import React from 'react'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { ProposalType } from '../../entities/Proposal/types'
-import { categoryIcons } from './CategoryBanner'
-import React from 'react'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import { ProposalType } from '../../entities/Proposal/types'
+
+import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
 
 export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
