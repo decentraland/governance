@@ -270,7 +270,7 @@ export default function SubmitPoll() {
                 on="hover"
               />
             }
-            onAction={() => {}}
+            onAction={() => null}
           />
           <Button basic fluid onClick={handleAddOption}>
             {t('page.submit_poll.choices_add')}

@@ -5,7 +5,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import {
   ANONYMOUS_USR_SUBSCRIPTION,
   HIDE_NEWSLETTER_SUBSCRIPTION_KEY,
-  NEWSLETTER_SUBSCRIPTION_KEY
+  NEWSLETTER_SUBSCRIPTION_KEY,
 } from '../components/Banner/Subscription/SubscriptionBanner'
 
 function useNewsletterSubscription() {

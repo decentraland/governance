@@ -15,7 +15,7 @@ import {
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
-  ProposalType
+  ProposalType,
 } from '../entities/Proposal/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'

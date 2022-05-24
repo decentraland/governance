@@ -1,6 +1,6 @@
 import { AlchemyProvider, Block } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
@@ -33,24 +33,44 @@ import {
   GrantDuration,
   GrantRequiredVP,
   INVALID_PROPOSAL_POLL_OPTIONS,
-  NewProposalBanName, newProposalBanNameScheme, NewProposalCatalyst, newProposalCatalystScheme, NewProposalDraft, newProposalDraftScheme, NewProposalGovernance, newProposalGovernanceScheme, NewProposalGrant, newProposalGrantScheme, NewProposalLinkedWearables, newProposalLinkedWearablesScheme, NewProposalPOI, newProposalPOIScheme, NewProposalPoll, newProposalPollScheme, PoiType,
+  NewProposalBanName,
+  NewProposalCatalyst,
+  NewProposalDraft,
+  NewProposalGovernance,
+  NewProposalGrant,
+  NewProposalLinkedWearables,
+  NewProposalPOI,
+  NewProposalPoll,
+  PoiType,
   ProposalAttributes,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
-  UpdateProposalStatusProposal, updateProposalStatusScheme
+  UpdateProposalStatusProposal,
+  newProposalBanNameScheme,
+  newProposalCatalystScheme,
+  newProposalDraftScheme,
+  newProposalGovernanceScheme,
+  newProposalGrantScheme,
+  newProposalLinkedWearablesScheme,
+  newProposalPOIScheme,
+  newProposalPollScheme,
+  updateProposalStatusScheme,
 } from './types'
 import {
-  DEFAULT_CHOICES, forumUrl,
+  DEFAULT_CHOICES,
+  MAX_PROPOSAL_LIMIT,
+  MIN_PROPOSAL_OFFSET,
+  forumUrl,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
   isGrantSizeValid,
   isValidName,
   isValidPointOfInterest,
-  isValidUpdateProposalStatus, MAX_PROPOSAL_LIMIT,
-  MIN_PROPOSAL_OFFSET, proposalUrl,
-  snapshotProposalUrl
+  isValidUpdateProposalStatus,
+  proposalUrl,
+  snapshotProposalUrl,
 } from './utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
@@ -78,13 +98,13 @@ export default routes((route) => {
 })
 
 function formatError(err: Error) {
-  return process.env.NODE_ENV !== 'production'
-    ? err
-    : {
-      ...err,
-      message: err.message,
-      stack: err.stack,
-    }
+  const errorObj = {
+    ...err,
+    message: err.message,
+    stack: err.stack,
+  }
+
+  return process.env.NODE_ENV !== 'production' ? err : errorObj
 }
 
 function inBackground(fun: () => Promise<any>) {

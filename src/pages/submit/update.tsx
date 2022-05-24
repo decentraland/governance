@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
 
-import { useLocation } from '@reach/router'
+import { useLocation } from '@gatsbyjs/reach-router'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
