@@ -22,7 +22,7 @@ export default function SortingMenu() {
 
   const t = useFormatMessage()
 
-  function handleSortingChange(e: React.MouseEvent<any>, value: string) {
+  function handleSortingChange(e: React.MouseEvent<unknown>, value: string) {
     const newParams = new URLSearchParams(params)
     order ? newParams.set('order', value) : newParams.delete('order')
     newParams.delete('page')

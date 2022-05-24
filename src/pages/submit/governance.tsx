@@ -1,34 +1,35 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
+
+import { useLocation } from '@gatsbyjs/reach-router'
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import { newProposalGovernanceScheme, NewProposalDraft } from '../../entities/Proposal/types'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
 import { Governance } from '../../api/Governance'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LogIn from '../../components/User/LogIn'
+import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import './submit.css'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import { useLocation } from '@gatsbyjs/reach-router'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import LogIn from '../../components/User/LogIn'
 
-const SNAPSHOT_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || ''
+import './submit.css'
 
 type GovernanceState = {
   linked_proposal_id: string | null
@@ -153,7 +154,7 @@ export default function SubmitGovernanceProposal() {
   const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const [votingPower, votingPowerState] = useVotingPowerBalance(accountBalance, SNAPSHOT_SPACE)
+  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(accountBalance)
   const submissionVpNotMet = useMemo(
     () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE),
     [votingPower]
@@ -178,14 +179,14 @@ export default function SubmitGovernanceProposal() {
   const [formDisabled, setFormDisabled] = useState(false)
 
   useEffect(() => {
-    if (!!preselectedLinkedProposalId) {
+    if (preselectedLinkedProposalId) {
       Promise.resolve()
         .then(async () => {
           return await Governance.get().getProposal(preselectedLinkedProposalId)
         })
         .then((linkedProposal) => {
           if (linkedProposal) {
-            let configuration = linkedProposal.configuration as NewProposalDraft
+            const configuration = linkedProposal.configuration as NewProposalDraft
             editor.set({
               linked_proposal_id: linkedProposal.id,
               title: configuration.title,
@@ -202,7 +203,7 @@ export default function SubmitGovernanceProposal() {
           editor.error({ '*': err.body?.error || err.message })
         })
     }
-  }, [preselectedLinkedProposalId])
+  }, [editor, preselectedLinkedProposalId])
 
   useEffect(() => {
     if (state.validated) {
@@ -224,7 +225,7 @@ export default function SubmitGovernanceProposal() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -271,7 +272,7 @@ export default function SubmitGovernanceProposal() {
           error={!!state.error.linked_proposal_id}
           message={t(state.error.linked_proposal_id)}
           disabled={true}
-          loading={votingPowerState.loading}
+          loading={isLoadingVotingPower}
         />
       </ContentSection>
 
@@ -292,7 +293,7 @@ export default function SubmitGovernanceProposal() {
             })
           }
           disabled={submissionVpNotMet || formDisabled}
-          loading={votingPowerState.loading}
+          loading={isLoadingVotingPower}
         />
       </ContentSection>
 
@@ -308,7 +309,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.summary}
           placeholder={t('page.submit_governance.summary_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ summary: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ summary: value })}
           onBlur={() => editor.set({ summary: state.value.summary.trim() })}
           error={!!state.error.summary}
           message={
@@ -335,7 +336,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.abstract}
           placeholder={t('page.submit_governance.abstract_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ abstract: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ abstract: value })}
           onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
           error={!!state.error.abstract}
           message={
@@ -362,7 +363,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.motivation}
           placeholder={t('page.submit_governance.motivation_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
           onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
           error={!!state.error.motivation}
           message={
@@ -389,7 +390,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.specification}
           placeholder={t('page.submit_governance.specification_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ specification: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
           onBlur={() => editor.set({ specification: state.value.specification.trim() })}
           error={!!state.error.specification}
           message={
@@ -416,7 +417,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.impacts}
           placeholder={t('page.submit_governance.impacts_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ impacts: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ impacts: value })}
           onBlur={() => editor.set({ impacts: state.value.impacts.trim() })}
           error={!!state.error.impacts}
           message={
@@ -443,7 +444,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.implementation_pathways}
           placeholder={t('page.submit_governance.implementation_pathways_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ implementation_pathways: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ implementation_pathways: value })}
           onBlur={() => editor.set({ implementation_pathways: state.value.implementation_pathways.trim() })}
           error={!!state.error.implementation_pathways}
           message={
@@ -470,7 +471,7 @@ export default function SubmitGovernanceProposal() {
           minHeight={175}
           value={state.value.conclusion}
           placeholder={t('page.submit_governance.conclusion_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ conclusion: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ conclusion: value })}
           onBlur={() => editor.set({ conclusion: state.value.conclusion.trim() })}
           error={!!state.error.conclusion}
           message={
@@ -489,7 +490,7 @@ export default function SubmitGovernanceProposal() {
         <Button
           primary
           disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || votingPowerState.loading}
+          loading={state.validated || isLoadingVotingPower}
           onClick={() => editor.validate()}
         >
           {t('page.submit.button_submit')}

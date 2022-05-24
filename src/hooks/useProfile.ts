@@ -1,17 +1,9 @@
-import useAsyncMemo from "decentraland-gatsby/dist/hooks/useAsyncMemo"
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import profiles, { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
 
 export default function useProfile(address?: string | null) {
-  const [profile, state] = useAsyncMemo(
-    async () => (address ? profiles.load(address) : null),
-    [address],
-    {
-      callWithTruthyDeps: true,
-    }
-  )
+  const [profile, profileState] = useAsyncMemo<Profile>(() => profiles.load(address || ''), [address])
+  const hasDclProfile = !!profile && !profile.isDefaultProfile
 
-  return {
-    profile,
-    state,
-  }
+  return { profile, profileState, hasDclProfile }
 }

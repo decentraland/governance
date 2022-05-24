@@ -1,9 +1,10 @@
-import './Banner.css'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import React, { useCallback, useState, useEffect } from 'react'
+
+import './Banner.css'
 
 export type BannerProps = {
   isVisible: boolean
@@ -32,12 +33,15 @@ function Banner({
     setShow(isVisible)
   }, [isVisible])
 
-  const handleClose = useCallback((e: React.MouseEvent<any>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    localStorage.setItem(bannerHideKey, 'true')
-    setShow(false)
-  }, [])
+  const handleClose = useCallback(
+    (e: React.MouseEvent<unknown>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      localStorage.setItem(bannerHideKey, 'true')
+      setShow(false)
+    },
+    [bannerHideKey]
+  )
 
   return (
     <>

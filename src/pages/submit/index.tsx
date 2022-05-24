@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
 import CategoryBanner from '../../components/Category/CategoryBanner'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import { POIProposalModal } from '../../components/Modal/POIProposalModal/POIProposalModal'
 import { ProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
+
 import './submit.css'
-import { POIProposalModal } from '../../components/Modal/POIProposalModal'
 
 export default function NewProposalPage() {
   const t = useFormatMessage()
@@ -32,7 +34,7 @@ export default function NewProposalPage() {
             Common Actions
           </Header>
           <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
-          <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} style={{ cursor: 'pointer' }} active />
+          <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} active />
           <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
           <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
           <CategoryBanner

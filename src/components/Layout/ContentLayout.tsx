@@ -1,10 +1,12 @@
 import React from 'react'
+
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import locations from '../../modules/locations'
+
 import './ContentLayout.css'
 
 export type ContentLayoutProps = {

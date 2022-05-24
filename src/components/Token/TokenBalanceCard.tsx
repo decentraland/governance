@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+
+import Icon from '@jparnaudo/react-crypto-icons'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import './TokenBalanceCard.css'
-import Icon from '@jparnaudo/react-crypto-icons'
-import TokensPerWalletPopup from './TokensPerWalletPopup'
+
 import { AggregatedTokenBalance } from '../../entities/Transparency/types'
+
+import './TokenBalanceCard.css'
+import TokensPerWalletPopup from './TokensPerWalletPopup'
 
 export type TokenBalanceCardProps = React.HTMLAttributes<HTMLDivElement> & {
   aggregatedTokenBalance: AggregatedTokenBalance

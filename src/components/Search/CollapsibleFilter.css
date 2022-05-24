@@ -75,3 +75,6 @@
   top: 45%;
 }
 
+.PlusMinus--closed {
+	transform: rotate(90deg);
+}

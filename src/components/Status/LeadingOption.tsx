@@ -1,8 +1,11 @@
 import React, { useMemo } from 'react'
-import './LeadingOption.css'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
 import { ProposalStatus } from '../../entities/Proposal/types'
+
+import './LeadingOption.css'
 
 export type LeadingOptionProps = React.HTMLAttributes<HTMLDivElement> & {
   leadingOption: string | null

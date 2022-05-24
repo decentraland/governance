@@ -1,89 +1,94 @@
+import { AlchemyProvider, Block } from '@ethersproject/providers'
+import { Wallet } from '@ethersproject/wallet'
+import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import validate from 'decentraland-gatsby/dist/entities/Route/validate'
+import schema from 'decentraland-gatsby/dist/entities/Schema'
+import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
-import { AlchemyProvider, Block } from '@ethersproject/providers'
-import routes from 'decentraland-gatsby/dist/entities/Route/routes';
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
-import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle';
-import validate from 'decentraland-gatsby/dist/entities/Route/validate';
-import schema from 'decentraland-gatsby/dist/entities/Schema'
+import isUUID from 'validator/lib/isUUID'
+
+import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
+import { HashContent, IPFS } from '../../api/IPFS'
+import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
+import isCommitee from '../Committee/isCommittee'
+import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
+import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
+import { signMessage } from '../Snapshot/utils'
+import UpdateModel from '../Updates/model'
+import VotesModel from '../Votes/model'
+import { getVotes } from '../Votes/routes'
+
+import { getUpdateMessage } from './templates/messages'
+
+import ProposalModel from './model'
+import * as templates from './templates'
 import {
-  SNAPSHOT_SPACE,
-  SNAPSHOT_ACCOUNT,
-  SNAPSHOT_ADDRESS,
-  SNAPSHOT_DURATION,
-  signMessage
-} from '../Snapshot/utils';
-import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot';
-import { Discourse, DiscoursePost, DiscourseComment } from '../../api/Discourse'
-import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils';
-import Time from 'decentraland-gatsby/dist/utils/date/Time';
-import ProposalModel from './model';
-import {
-  ProposalAttributes,
-  NewProposalPoll,
-  newProposalPollScheme,
-  ProposalType,
-  PoiType,
-  ProposalStatus,
-  NewProposalBanName,
-  newProposalPOIScheme,
-  NewProposalPOI,
-  newProposalCatalystScheme,
-  NewProposalCatalyst,
-  newProposalGrantScheme,
-  NewProposalGrant,
-  UpdateProposalStatusProposal,
-  updateProposalStatusScheme,
-  newProposalBanNameScheme,
-  ProposalRequiredVP,
-  GrantRequiredVP,
   GrantDuration,
+  GrantRequiredVP,
   INVALID_PROPOSAL_POLL_OPTIONS,
+  NewProposalBanName,
+  NewProposalCatalyst,
+  NewProposalDraft,
+  NewProposalGovernance,
+  NewProposalGrant,
+  NewProposalLinkedWearables,
+  NewProposalPOI,
+  NewProposalPoll,
+  PoiType,
+  ProposalAttributes,
+  ProposalRequiredVP,
+  ProposalStatus,
+  ProposalType,
+  UpdateProposalStatusProposal,
+  newProposalBanNameScheme,
+  newProposalCatalystScheme,
   newProposalDraftScheme,
-  NewProposalDraft, newProposalGovernanceScheme, NewProposalGovernance, newProposalLinkedWearablesScheme, NewProposalLinkedWearables
-} from './types';
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error';
+  newProposalGovernanceScheme,
+  newProposalGrantScheme,
+  newProposalLinkedWearablesScheme,
+  newProposalPOIScheme,
+  newProposalPollScheme,
+  updateProposalStatusScheme,
+} from './types'
 import {
   DEFAULT_CHOICES,
+  MAX_PROPOSAL_LIMIT,
+  MIN_PROPOSAL_OFFSET,
+  forumUrl,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  proposalUrl,
-  snapshotProposalUrl,
-  forumUrl,
+  isGrantSizeValid,
   isValidName,
-  MAX_PROPOSAL_LIMIT,
-  MIN_PROPOSAL_OFFSET,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
-  isGrantSizeValid
-} from './utils';
-import { IPFS, HashContent } from '../../api/IPFS';
-import VotesModel from '../Votes/model'
-import isCommitee from '../Committee/isCommittee';
-import isUUID from 'validator/lib/isUUID';
-import * as templates from './templates'
-import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst';
-import { getUpdateMessage } from './templates/messages'
-import { getVotes } from '../Votes/routes'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
-import UpdateModel from '../Updates/model';
+  proposalUrl,
+  snapshotProposalUrl,
+} from './utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
+const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
+const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
 
 export default routes((route) => {
   const withAuth = auth()
   const withOptionalAuth = auth({ optional: true })
   route.get('/proposals', withOptionalAuth, handleJSON(getProposals))
-  route.post(`/proposals/poll`, withAuth, handleAPI(createProposalPoll))
-  route.post(`/proposals/draft`, withAuth, handleAPI(createProposalDraft))
-  route.post(`/proposals/governance`, withAuth, handleAPI(createProposalGovernance))
-  route.post(`/proposals/ban-name`, withAuth, handleAPI(createProposalBanName))
-  route.post(`/proposals/poi`, withAuth, handleAPI(createProposalPOI))
-  route.post(`/proposals/catalyst`, withAuth, handleAPI(createProposalCatalyst))
-  route.post(`/proposals/grant`, withAuth, handleAPI(createProposalGrant))
-  route.post(`/proposals/linked-wearables`, withAuth, handleAPI(createProposalLinkedWearables))
+  route.post('/proposals/poll', withAuth, handleAPI(createProposalPoll))
+  route.post('/proposals/draft', withAuth, handleAPI(createProposalDraft))
+  route.post('/proposals/governance', withAuth, handleAPI(createProposalGovernance))
+  route.post('/proposals/ban-name', withAuth, handleAPI(createProposalBanName))
+  route.post('/proposals/poi', withAuth, handleAPI(createProposalPOI))
+  route.post('/proposals/catalyst', withAuth, handleAPI(createProposalCatalyst))
+  route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
+  route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -93,11 +98,13 @@ export default routes((route) => {
 })
 
 function formatError(err: Error) {
-  return process.env.NODE_ENV !== 'production' ? err : {
+  const errorObj = {
     ...err,
     message: err.message,
     stack: err.stack,
-  };
+  }
+
+  return process.env.NODE_ENV !== 'production' ? err : errorObj
 }
 
 function inBackground(fun: () => Promise<any>) {
@@ -109,7 +116,7 @@ function inBackground(fun: () => Promise<any>) {
 
 function dropDiscourseTopic(topic_id: number) {
   inBackground(() => {
-    logger.log(`Dropping discourse topic`, { topic_id: topic_id })
+    logger.log('Dropping discourse topic', { topic_id: topic_id })
     return Discourse.get().removeTopic(topic_id, DISCOURSE_AUTH)
   })
 }
@@ -144,11 +151,9 @@ export async function getProposals(req: WithAuth<Request>) {
     subscribed = req.auth || ''
   }
 
-  let offset = query.offset && Number.isFinite(Number(query.offset)) ?
-    Number(query.offset) : MIN_PROPOSAL_OFFSET
+  const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
 
-  let limit = query.limit && Number.isFinite(Number(query.limit)) ?
-    Number(query.limit) : MAX_PROPOSAL_LIMIT
+  const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
 
   if (search && !/\w{3}/.test(search)) {
     return []
@@ -156,7 +161,7 @@ export async function getProposals(req: WithAuth<Request>) {
 
   const [total, data] = await Promise.all([
     ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit })
+    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit }),
   ])
 
   return { ok: true, total, data }
@@ -174,10 +179,7 @@ export async function createProposalPoll(req: WithAuth) {
   await validateSubmissionThreshold(user, POLL_SUBMISSION_THRESHOLD)
 
   // add default options
-  configuration.choices = [
-    ...configuration.choices,
-    INVALID_PROPOSAL_POLL_OPTIONS
-  ]
+  configuration.choices = [...configuration.choices, INVALID_PROPOSAL_POLL_OPTIONS]
 
   return createProposal({
     user,
@@ -203,7 +205,7 @@ export async function createProposalDraft(req: WithAuth) {
     finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_DRAFT)),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
@@ -223,7 +225,7 @@ export async function createProposalGovernance(req: WithAuth) {
     finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_GOVERNANCE)),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
@@ -234,12 +236,12 @@ export async function createProposalBanName(req: WithAuth) {
   const configuration = validate<NewProposalBanName>(newProposalBanNameValidator, req.body || {})
   const validName = isValidName(configuration.name)
   if (!validName) {
-    throw new RequestError(`Name is not valid`)
+    throw new RequestError('Name is not valid')
   }
 
   const alreadyBanned = await isAlreadyBannedName(configuration.name)
   if (alreadyBanned) {
-    throw new RequestError(`Name is already banned`)
+    throw new RequestError('Name is already banned')
   }
 
   return createProposal({
@@ -249,34 +251,37 @@ export async function createProposalBanName(req: WithAuth) {
     finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
 
 const newProposalPOIValidator = schema.compile(newProposalPOIScheme)
-type VerifyFunction = (config: NewProposalPOI) => Promise<void>;
+type VerifyFunction = (config: NewProposalPOI) => Promise<void>
 
 const verify: VerifyFunction = async (config: NewProposalPOI) => {
-
   const alreadyPointOfInterest = await isAlreadyPointOfInterest(config.x, config.y)
 
   if (config.type === PoiType.AddPOI) {
     if (alreadyPointOfInterest) {
-      throw new RequestError(`Coordinate "${config.x},${config.y}" is already a point of interest`, RequestError.BadRequest)
+      throw new RequestError(
+        `Coordinate "${config.x},${config.y}" is already a point of interest`,
+        RequestError.BadRequest
+      )
     }
 
     const validPointOfInterest = await isValidPointOfInterest(config.x, config.y)
     if (!validPointOfInterest) {
-      throw new RequestError(`Coodinate "${config.x},${config.y}" is not valid as point of interest`, RequestError.BadRequest)
+      throw new RequestError(
+        `Coodinate "${config.x},${config.y}" is not valid as point of interest`,
+        RequestError.BadRequest
+      )
     }
-  }
-  else if (config.type === PoiType.RemovePOI) {
+  } else if (config.type === PoiType.RemovePOI) {
     if (!alreadyPointOfInterest) {
       throw new RequestError(`Coordinate "${config.x},${config.y}" is not a point of interest`, RequestError.BadRequest)
     }
-  }
-  else {
+  } else {
     throw new RequestError(`"${config.type}" is an invalid type`, RequestError.BadRequest)
   }
 }
@@ -294,7 +299,7 @@ export async function createProposalPOI(req: WithAuth) {
     finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
@@ -305,7 +310,7 @@ export async function createProposalCatalyst(req: WithAuth) {
   const configuration = validate<NewProposalCatalyst>(newProposalCatalystValidator, req.body || {})
   const alreadyCatalyst = await isAlreadyACatalyst(configuration.domain)
   if (alreadyCatalyst) {
-    throw new RequestError(`Domain is already a catalyst`)
+    throw new RequestError('Domain is already a catalyst')
   }
 
   return createProposal({
@@ -315,7 +320,7 @@ export async function createProposalCatalyst(req: WithAuth) {
     finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
@@ -326,7 +331,7 @@ export async function createProposalGrant(req: WithAuth) {
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
 
   if (!isGrantSizeValid(configuration.tier, configuration.size)) {
-    throw new RequestError("Grant size is not valid for the selected tier");
+    throw new RequestError('Grant size is not valid for the selected tier')
   }
 
   return createProposal({
@@ -336,7 +341,7 @@ export async function createProposalGrant(req: WithAuth) {
     finish_at: proposalDuration(GrantDuration[configuration.tier]),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
@@ -353,12 +358,14 @@ export async function createProposalLinkedWearables(req: WithAuth) {
     finish_at: proposalDuration(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
-      choices: DEFAULT_CHOICES
+      choices: DEFAULT_CHOICES,
     },
   })
 }
 
-export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>) {
+export async function createProposal(
+  data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>
+) {
   const id = uuid()
   const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)
@@ -385,14 +392,18 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     snapshotStatus = await Snapshot.get().getStatus()
     snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
   } catch (err) {
-    throw new RequestError(`Error getting snapshot space "${SNAPSHOT_SPACE}"`, RequestError.InternalServerError, err as Error)
+    throw new RequestError(
+      `Error getting snapshot space "${SNAPSHOT_SPACE}"`,
+      RequestError.InternalServerError,
+      err as Error
+    )
   }
 
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
     block = await provider.getBlock('latest')
   } catch (err) {
-    throw new RequestError(`Couldn't get the latest block`, RequestError.InternalServerError, err as Error)
+    throw new RequestError("Couldn't get the latest block", RequestError.InternalServerError, err as Error)
   }
 
   try {
@@ -401,20 +412,25 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
       type: data.type,
       configuration: data.configuration,
       profile,
-      proposal_url
+      proposal_url,
     }
 
-    msg = await Snapshot.get().createProposalMessage(SNAPSHOT_SPACE,
-      snapshotStatus.version, snapshotSpace.network, snapshotSpace.strategies, {
-      name: await templates.snapshotTitle(snapshotTemplateProps),
-      body: await templates.snapshotDescription(snapshotTemplateProps),
-      choices: data.configuration.choices,
-      snapshot: block.number,
-      end,
-      start,
-    })
+    msg = await Snapshot.get().createProposalMessage(
+      SNAPSHOT_SPACE,
+      snapshotStatus.version,
+      snapshotSpace.network,
+      snapshotSpace.strategies,
+      {
+        name: await templates.snapshotTitle(snapshotTemplateProps),
+        body: await templates.snapshotDescription(snapshotTemplateProps),
+        choices: data.configuration.choices,
+        snapshot: block.number,
+        end,
+        start,
+      }
+    )
   } catch (err) {
-    throw new RequestError(`Error creating the snapshot message`, RequestError.InternalServerError, err as Error)
+    throw new RequestError('Error creating the snapshot message', RequestError.InternalServerError, err as Error)
   }
 
   //
@@ -426,11 +442,14 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     logger.log('Creating proposal in snapshot', { signed: sig, message: msg })
     snapshotProposal = await Snapshot.get().send(address, msg, sig)
   } catch (err) {
-    throw new RequestError(`Couldn't create proposal in snapshot`, RequestError.InternalServerError, err as Error)
+    throw new RequestError("Couldn't create proposal in snapshot", RequestError.InternalServerError, err as Error)
   }
 
   const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
-  logger.log(`Snapshot proposal created`, { snapshot_url: snapshot_url, snapshot_proposal: JSON.stringify(snapshotProposal) })
+  logger.log('Snapshot proposal created', {
+    snapshot_url: snapshot_url,
+    snapshot_proposal: JSON.stringify(snapshotProposal),
+  })
 
   //
   // Get snapshot content
@@ -440,7 +459,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     snapshotContent = await IPFS.get().getHash(snapshotProposal.ipfsHash)
   } catch (err) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError(`Couldn't retrieve proposal from the IPFS`, RequestError.InternalServerError, err as Error)
+    throw new RequestError("Couldn't retrieve proposal from the IPFS", RequestError.InternalServerError, err as Error)
   }
 
   //
@@ -455,22 +474,30 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
       profile,
       proposal_url,
       snapshot_url,
-      snapshot_id: snapshotProposal.ipfsHash
+      snapshot_id: snapshotProposal.ipfsHash,
     }
 
-    discourseProposal = await Discourse.get().createPost({
-      category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-      title: await templates.forumTitle(discourseTemplateProps),
-      raw: await templates.forumDescription(discourseTemplateProps),
-    }, DISCOURSE_AUTH)
-  } catch (err) {
+    discourseProposal = await Discourse.get().createPost(
+      {
+        category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
+        title: await templates.forumTitle(discourseTemplateProps),
+        raw: await templates.forumDescription(discourseTemplateProps),
+      },
+      DISCOURSE_AUTH
+    )
+  } catch (error: any) {
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    const error = err as any // Fixes typescript issue
     throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
   }
 
-  const forum_url = forumUrl({ discourse_topic_slug: discourseProposal.topic_slug, discourse_topic_id: discourseProposal.topic_id })
-  logger.log(`Discourse proposal created`, { forum_url: forum_url, discourse_proposal: JSON.stringify(discourseProposal) })
+  const forum_url = forumUrl({
+    discourse_topic_slug: discourseProposal.topic_slug,
+    discourse_topic_id: discourseProposal.topic_id,
+  })
+  logger.log('Discourse proposal created', {
+    forum_url: forum_url,
+    discourse_proposal: JSON.stringify(discourseProposal),
+  })
 
   //
   // Create proposal in DB
@@ -505,7 +532,7 @@ export async function createProposal(data: Pick<ProposalAttributes, 'type' | 'us
     rejected_description: null,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
-    textsearch: null
+    textsearch: null,
   }
 
   newProposal.textsearch = ProposalModel.textsearch(newProposal)
@@ -542,15 +569,15 @@ export function commentProposalUpdateInDiscourse(id: string) {
   inBackground(async () => {
     const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
     if (!updatedProposal) {
-      logger.error(`Invalid proposal id for discourse update`, { id: id })
+      logger.error('Invalid proposal id for discourse update', { id: id })
       return
     }
-    let votes = await getVotes(updatedProposal.id)
-    let updateMessage = getUpdateMessage(updatedProposal, votes)
-    let discourseComment: DiscourseComment = {
+    const votes = await getVotes(updatedProposal.id)
+    const updateMessage = getUpdateMessage(updatedProposal, votes)
+    const discourseComment: DiscourseComment = {
       topic_id: updatedProposal.discourse_topic_id,
       raw: updateMessage,
-      created_at: updatedProposal.created_at.toJSON()
+      created_at: updatedProposal.created_at.toJSON(),
     }
     await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
   })
@@ -560,13 +587,17 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   const user = req.auth!
   const id = req.params.proposal
   if (!isCommitee(user)) {
-    throw new RequestError(`Only committed menbers can enact a proposal`, RequestError.Forbidden)
+    throw new RequestError('Only committed menbers can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)
   const configuration = validate<UpdateProposalStatusProposal>(updateProposalStatusValidator, req.body || {})
   if (!isValidUpdateProposalStatus(proposal.status, configuration.status)) {
-    throw new RequestError(`${proposal.status} can't be updated to ${configuration.status}`, RequestError.BadRequest, configuration)
+    throw new RequestError(
+      `${proposal.status} can't be updated to ${configuration.status}`,
+      RequestError.BadRequest,
+      configuration
+    )
   }
 
   const update: Partial<ProposalAttributes> = {
@@ -575,19 +606,19 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   }
 
   if (update.status === ProposalStatus.Enacted) {
-    update.enacted = true;
-    update.enacted_by = user;
-    update.enacted_description = configuration.description || null;
+    update.enacted = true
+    update.enacted_by = user
+    update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      update.vesting_address = configuration.vesting_address;
+      update.vesting_address = configuration.vesting_address
       await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
   } else if (configuration.status === ProposalStatus.Passed) {
-    update.passed_by = user;
-    update.passed_description = configuration.description || null;
+    update.passed_by = user
+    update.passed_description = configuration.description || null
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
-    update.rejected_description = configuration.description || null;
+    update.rejected_description = configuration.description || null
   }
 
   update.textsearch = ProposalModel.textsearch({
@@ -601,7 +632,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
 
   return {
     ...proposal,
-    ...update
+    ...update,
   }
 }
 
@@ -613,7 +644,7 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
 
   const allowToRemove = proposal.user === user || isCommitee(user)
   if (!allowToRemove) {
-    throw new RequestError(`Forbidden`, RequestError.Forbidden)
+    throw new RequestError('Forbidden', RequestError.Forbidden)
   }
 
   await ProposalModel.update<ProposalAttributes>(
@@ -621,10 +652,11 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
       deleted: true,
       deleted_by: user,
       updated_at,
-      status: ProposalStatus.Deleted
-    }, {
-    id
-  }
+      status: ProposalStatus.Deleted,
+    },
+    {
+      id,
+    }
   )
   dropDiscourseTopic(proposal.discourse_topic_id)
   dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
@@ -635,7 +667,7 @@ export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
     const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
-    return filterComments(comments);
+    return filterComments(comments)
   } catch (e) {
     logger.error('Could not get proposal comments', e as Error)
     return []
@@ -646,20 +678,23 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
   const linkedProposal = await ProposalModel.findOne<ProposalAttributes>({
     id: linkedProposalId,
     type: expectedProposalType,
-    deleted: false
+    deleted: false,
   })
   if (!linkedProposal) {
-    throw new RequestError(`Could not find a matching ${expectedProposalType} proposal for "${linkedProposalId}"`, RequestError.NotFound)
+    throw new RequestError(
+      `Could not find a matching ${expectedProposalType} proposal for "${linkedProposalId}"`,
+      RequestError.NotFound
+    )
   }
   if (linkedProposal.status != ProposalStatus.Passed) {
-    throw new RequestError(`Cannot link selected proposal since it's not in a PASSED status`, RequestError.Forbidden)
+    throw new RequestError("Cannot link selected proposal since it's not in a PASSED status", RequestError.Forbidden)
   }
 }
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
   const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
-  if (userVp < requiredVp) {
+  if (userVp.totalVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

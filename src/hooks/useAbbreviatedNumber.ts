@@ -1,7 +1,7 @@
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 export default function useAbbreviatedNumber(value: number) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
 
   const lookup = [
     { magnitude: 1, abv: '' },
@@ -18,5 +18,5 @@ export default function useAbbreviatedNumber(value: number) {
   const minNumber = Math.min(...diffArr)
   const idx = diffArr.findIndex((x) => x === minNumber)
 
-  return `${l(`general.number`, { value: value / lookup[idx].magnitude })}${lookup[idx].abv}`
+  return `${t('general.number', { value: value / lookup[idx].magnitude })}${lookup[idx].abv}`
 }

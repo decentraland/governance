@@ -1,0 +1,59 @@
+.VotingPowerDistribution__Mana {
+  background: #ff2d55;
+}
+
+.VotingPowerDistribution__Name {
+  background: #44b600;
+}
+
+.VotingPowerDistribution__Land {
+  background: #ffc95b;
+}
+
+.VotingPowerDistribution__Delegated {
+  background: #4888ee;
+}
+
+.VotingPowerDistributionBar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  margin-bottom: 9px;
+}
+
+.VotingPowerDistributionBar--Empty {
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.VotingPowerDistributionBar__Item {
+  height: 6px;
+  min-width: 6px;
+  margin: 1px;
+  border-radius: 2px;
+}
+
+.VotingPowerDistribution__Labels {
+  display: flex;
+  gap: 24px;
+}
+
+.VotingPowerDistribution__Label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #736e7d;
+}
+
+.VotingPowerDistribution__Color {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-right: 6px;
+}

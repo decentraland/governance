@@ -2,33 +2,34 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+
 import {
   NewProposalBanName,
   NewProposalCatalyst,
-  NewProposalPOI,
-  NewProposalPoll,
-  NewProposalGrant,
-  NewProposalLinkedWearables,
-  ProposalAttributes,
-  ProposalType,
-  ProposalStatus,
   NewProposalDraft,
   NewProposalGovernance,
+  NewProposalGrant,
+  NewProposalLinkedWearables,
+  NewProposalPOI,
+  NewProposalPoll,
+  ProposalAttributes,
   ProposalCommentsInDiscourse,
+  ProposalStatus,
+  ProposalType,
 } from '../entities/Proposal/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
-import { Vote } from '../entities/Votes/types'
+import { Vote, VotedProposal } from '../entities/Votes/types'
 
 type NewProposalMap = {
-  [`/proposals/poll`]: NewProposalPoll,
-  [`/proposals/draft`]: NewProposalDraft,
-  [`/proposals/governance`]: NewProposalGovernance,
-  [`/proposals/ban-name`]: NewProposalBanName,
-  [`/proposals/poi`]: NewProposalPOI,
-  [`/proposals/catalyst`]: NewProposalCatalyst,
-  [`/proposals/grant`]: NewProposalGrant,
-  [`/proposals/linked-wearables`]: NewProposalLinkedWearables,
+  [`/proposals/poll`]: NewProposalPoll
+  [`/proposals/draft`]: NewProposalDraft
+  [`/proposals/governance`]: NewProposalGovernance
+  [`/proposals/ban-name`]: NewProposalBanName
+  [`/proposals/poi`]: NewProposalPOI
+  [`/proposals/catalyst`]: NewProposalCatalyst
+  [`/proposals/grant`]: NewProposalGrant
+  [`/proposals/linked-wearables`]: NewProposalLinkedWearables
 }
 
 export type GetProposalsFilter = {
@@ -105,10 +106,7 @@ export class Governance extends API {
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {
     const newProposal = await this.fetch<ApiResponse<ProposalAttributes>>(
       path,
-      this.options()
-        .method('POST')
-        .authorization({ sign: true })
-        .json(proposal)
+      this.options().method('POST').authorization({ sign: true }).json(proposal)
     )
 
     return newProposal.data
@@ -163,25 +161,25 @@ export class Governance extends API {
   ) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
-      this.options()
-        .method('PATCH')
-        .authorization({ sign: true })
-        .json({ status, vesting_address, description })
+      this.options().method('PATCH').authorization({ sign: true }).json({ status, vesting_address, description })
     )
 
     return result.data
   }
 
   async getProposalUpdate(update_id: string) {
-    const result = await this.fetch<
-      ApiResponse<UpdateAttributes>
-    >(`/proposals/${update_id}/update`)
+    const result = await this.fetch<ApiResponse<UpdateAttributes>>(`/proposals/${update_id}/update`)
     return result.data
   }
 
   async getProposalUpdates(proposal_id: string) {
     const result = await this.fetch<
-      ApiResponse<{ publicUpdates: UpdateAttributes[]; pendingUpdates: UpdateAttributes[]; nextUpdate: UpdateAttributes; currentUpdate: UpdateAttributes | null }>
+      ApiResponse<{
+        publicUpdates: UpdateAttributes[]
+        pendingUpdates: UpdateAttributes[]
+        nextUpdate: UpdateAttributes
+        currentUpdate: UpdateAttributes | null
+      }>
     >(`/proposals/${proposal_id}/updates`)
     return result.data
   }
@@ -238,6 +236,11 @@ export class Governance extends API {
     return result.data
   }
 
+  async getAddressVotes(address: string) {
+    const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}`)
+    return result.data
+  }
+
   async getUserSubscriptions() {
     const result = await this.fetch<ApiResponse<SubscriptionAttributes[]>>(
       `/subscriptions`,
@@ -254,9 +257,7 @@ export class Governance extends API {
   async subscribe(proposal_id: string) {
     const result = await this.fetch<ApiResponse<SubscriptionAttributes>>(
       `/proposals/${proposal_id}/subscriptions`,
-      this.options()
-        .method('POST')
-        .authorization({ sign: true })
+      this.options().method('POST').authorization({ sign: true })
     )
     return result.data
   }
@@ -264,15 +265,8 @@ export class Governance extends API {
   async unsubscribe(proposal_id: string) {
     const result = await this.fetch<ApiResponse<boolean>>(
       `/proposals/${proposal_id}/subscriptions`,
-      this.options()
-        .method('DELETE')
-        .authorization({ sign: true })
+      this.options().method('DELETE').authorization({ sign: true })
     )
-    return result.data
-  }
-
-  async getVotingPower(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<number>>(`/proposals/${proposal_id}/vp`, this.options().method('GET').authorization({ sign: true }))
     return result.data
   }
 

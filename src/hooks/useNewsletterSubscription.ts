@@ -1,6 +1,12 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { useEffect, useState } from 'react'
-import { ANONYMOUS_USR_SUBSCRIPTION, HIDE_NEWSLETTER_SUBSCRIPTION_KEY, NEWSLETTER_SUBSCRIPTION_KEY } from '../components/Banner/Subscription/SubscriptionBanner'
+
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+
+import {
+  ANONYMOUS_USR_SUBSCRIPTION,
+  HIDE_NEWSLETTER_SUBSCRIPTION_KEY,
+  NEWSLETTER_SUBSCRIPTION_KEY,
+} from '../components/Banner/Subscription/SubscriptionBanner'
 
 function useNewsletterSubscription() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,11 +21,11 @@ function useNewsletterSubscription() {
       const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]')
       setShowBanner(
         localStorage.getItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY) != 'true' &&
-        ((!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION)) || (!!account && !subscriptions.includes(account)))
+        ((!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION)) ||
+          (!!account && !subscriptions.includes(account)))
       )
     }
-  }, [loading])
-
+  }, [account, loading])
 
   function finishSubscription() {
     setSubscribed(true)
@@ -37,9 +43,8 @@ function useNewsletterSubscription() {
     setIsSubscriptionModalOpen: setIsOpen,
     onSubscriptionSuccess: finishSubscription,
     subscribed,
-    onClose: closeSubscriptionBanner
+    onClose: closeSubscriptionBanner,
   }
-
 }
 
 export default useNewsletterSubscription

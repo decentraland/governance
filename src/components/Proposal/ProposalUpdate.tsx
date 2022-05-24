@@ -1,28 +1,29 @@
 import React, { useCallback } from 'react'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
+
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import { ProjectHealth, UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import CancelIcon from '../Icon/Cancel'
-import locations from '../../modules/locations'
-import CheckIcon from '../Icon/Check'
-import WarningIcon from '../Icon/Warning'
-import QuestionCircleIcon from '../Icon/QuestionCircle'
+import { ProjectHealth, UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../entities/Updates/utils'
-import Date from '../Common/Date'
+import locations from '../../modules/locations'
 import { formatDate } from '../../modules/time'
+import Date from '../Common/Date'
+import CancelIcon from '../Icon/Cancel'
+import CheckIcon from '../Icon/Check'
+import QuestionCircleIcon from '../Icon/QuestionCircle'
+import WarningIcon from '../Icon/Warning'
+
 import './ProposalUpdate.css'
 
 interface Props {
   proposal: ProposalAttributes
   update: UpdateAttributes
   expanded: boolean
-  onClick: (update: UpdateAttributes) => void
   index: number
 }
 
@@ -42,7 +43,7 @@ const getStatusIcon = (health: UpdateAttributes['health'], completion_date: Upda
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) => {
+const ProposalUpdate = ({ proposal, update, expanded, index }: Props) => {
   const t = useFormatMessage()
   const [account] = useAuthContext()
   const { introduction, status, health, completion_date, due_date } = update
@@ -59,8 +60,8 @@ const ProposalUpdate = ({ proposal, update, expanded, onClick, index }: Props) =
       return
     }
 
-    onClick(update)
-  }, [update])
+    navigate(`/update?id=${update.id}`)
+  }, [completion_date, update.id])
 
   const handlePostUpdateClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {

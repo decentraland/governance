@@ -1,27 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { newProposalBanNameScheme } from '../../entities/Proposal/types'
-import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import { Governance } from '../../api/Governance'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LogIn from '../../components/User/LogIn'
+import { newProposalBanNameScheme } from '../../entities/Proposal/types'
+import { isValidName } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import { isValidName } from '../../entities/Proposal/utils'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import LogIn from '../../components/User/LogIn'
+
 import './submit.css'
 
 type BanNameState = {
@@ -103,7 +106,7 @@ export default function SubmitBanName() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -164,7 +167,7 @@ export default function SubmitBanName() {
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description}
           message={
