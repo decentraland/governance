@@ -18,6 +18,5 @@
 .VestingSection .dg.Paragraph {
   font-size: 15px;
   line-height: 24px;
-  margin-top: 9px;
-  margin-bottom: 16px;
+  margin: 9px 0;
 }
