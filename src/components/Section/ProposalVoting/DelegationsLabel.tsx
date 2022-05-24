@@ -24,7 +24,7 @@ export interface DelegationsLabelProps {
   infoMessage?: { id: string; values?: InfoMessageValues }
 }
 
-function formatInfoMessageValues(values?: any) {
+function formatInfoMessageValues(t:any, values?: any) {
   if (values) {
     if (values.delegate) {
       values.delegate = <Username className="DelegationsLabel__InfoMessage" address={values.delegate} addressOnly />
@@ -35,13 +35,16 @@ function formatInfoMessageValues(values?: any) {
     if (values.delegated_vp) {
       values.delegated_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={values.delegated_vp} />
     }
+    if(values.delegators_info_id){
+      values.delegators_info = t(values.delegators_info_id, values)
+    }
   }
   return values
 }
 
 const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: DelegationsLabelProps) => {
   const t = useFormatMessage()
-  const formattedInfoValues = formatInfoMessageValues(infoMessage?.values)
+  const formattedInfoValues = formatInfoMessageValues(t, infoMessage?.values)
 
   return (
     <div className="DelegationsLabel">

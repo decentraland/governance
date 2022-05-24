@@ -17,6 +17,7 @@
 
 .DelegationsLabel__Text p.dg.Paragraph {
 	font-size: 13px;
+	letter-spacing: 0;
 	padding-left: 4px;
 }
 
