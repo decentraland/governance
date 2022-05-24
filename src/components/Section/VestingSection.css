@@ -1,0 +1,23 @@
+.VestingSection {
+  padding: 9px 11px;
+  border-color: var(--background-poi);
+}
+
+.VestingLabel {
+  text-transform: uppercase;
+  background-color: var(--background-poi);
+  width: fit-content;
+  color: white;
+  padding: 1px 8px;
+  border-radius: 42px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.VestingSection .dg.Paragraph {
+  font-size: 15px;
+  line-height: 24px;
+  margin-top: 9px;
+  margin-bottom: 16px;
+}
