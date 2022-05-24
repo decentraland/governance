@@ -14,6 +14,7 @@ import {
   DELEGATOR_2,
   OWN_VOTING_POWER,
   USER_ACCOUNT,
+  VOTES_FROM_ALL_DELEGATORS,
   VOTES_WITH_DELEGATORS,
   VOTE_DIFFERENCE,
 } from './utils.testData'
@@ -185,6 +186,31 @@ describe('getVotingSectionConfig', () => {
               infoMessage: {
                 id: 'page.proposal_detail.info.user_has_not_voted_no_delegate_some_delegators_voted',
                 values: { delegators_without_vote: 1 },
+              },
+            })
+          })
+        })
+
+        describe('when all delegators voted', () => {
+          beforeEach(() => {
+            votes = VOTES_FROM_ALL_DELEGATORS
+          })
+          it('delegations label should show how many delegators voted', () => {
+            const config = getVotingSectionConfig(
+              votes,
+              CHOICES,
+              delegate,
+              delegators,
+              account,
+              ownVotingPower,
+              delegatedVotingPower,
+              voteDifference
+            )
+            expect(config.delegationsLabel?.delegatorsLabel).toEqual({
+              id: 'page.proposal_detail.all_delegators_voted',
+              values: {
+                votes: DELEGATORS.length,
+                total: DELEGATORS.length,
               },
             })
           })
@@ -585,7 +611,6 @@ describe('getVotingSectionConfig', () => {
                 id: 'page.proposal_detail.info.user_voted_delegate_voted_differently_without_delegators',
                 values: {
                   delegate: ACCOUNT_DELEGATE,
-                  date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp),
                   vote_difference: voteDifference,
                 },
               },
@@ -774,6 +799,45 @@ describe('getVotingSectionConfig', () => {
             })
           })
         })
+
+        describe('when all delegators voted', () => {
+          beforeEach(() => {
+            votes = { [ACCOUNT_DELEGATE]: CHOICE_1_VOTE, ...VOTES_FROM_ALL_DELEGATORS }
+          })
+
+          it('delegations label should show when the delegate voted and the party votes', () => {
+            const config = getVotingSectionConfig(
+              votes,
+              CHOICES,
+              delegate,
+              delegators,
+              account,
+              ownVotingPower,
+              delegatedVotingPower,
+              voteDifference
+            )
+            expect(config.delegationsLabel).toEqual({
+              delegateLabel: {
+                id: 'page.proposal_detail.delegate_voted',
+                values: { date: DelegationsLabelBuilder.dateFormat(CHOICE_1_VOTE.timestamp) },
+              },
+              delegatorsLabel: {
+                id: 'page.proposal_detail.all_delegators_voted',
+                values: {
+                  votes: DELEGATORS.length,
+                  total: DELEGATORS.length,
+                },
+              },
+              infoMessage: {
+                id: 'page.proposal_detail.info.user_has_not_voted_delegate_voted_all_delegators_voted',
+                values: {
+                  delegate: ACCOUNT_DELEGATE,
+                  own_vp: ownVotingPower,
+                },
+              },
+            })
+          })
+        })
       })
 
       describe('when user voted and delegate has not voted', () => {
@@ -884,7 +948,7 @@ describe('getVotingSectionConfig', () => {
             })
           })
 
-          it('delegations label should show the delegate has not and how many delegators you voted for', () => {
+          it('delegations label should show the delegate has not voted and how many delegators you voted for', () => {
             const config = getVotingSectionConfig(
               votes,
               CHOICES,
@@ -908,6 +972,76 @@ describe('getVotingSectionConfig', () => {
                   total_delegators: DELEGATORS.length,
                   delegated_vp: delegatedVotingPower,
                   delegate: ACCOUNT_DELEGATE,
+                  delegators_info_id: 'many_delegators',
+                },
+              },
+            })
+          })
+        })
+
+        describe('when all delegators voted', () => {
+          beforeEach(() => {
+            votes = { [USER_ACCOUNT]: CHOICE_1_VOTE, ...VOTES_FROM_ALL_DELEGATORS }
+          })
+
+          it('should show delegations label and voted choice', () => {
+            const config = getVotingSectionConfig(
+              votes,
+              CHOICES,
+              delegate,
+              delegators,
+              account,
+              ownVotingPower,
+              delegatedVotingPower,
+              voteDifference
+            )
+            expect(config.showChoiceButtons).toBe(false)
+            expect(config.vote).toBe(CHOICE_1_VOTE)
+            expect(config.delegateVote).toBe(null)
+          })
+
+          it('voted choice shows user vote and delegators votes and votes represented by user plus delegator votes', () => {
+            const config = getVotingSectionConfig(
+              votes,
+              CHOICES,
+              delegate,
+              delegators,
+              account,
+              ownVotingPower,
+              delegatedVotingPower,
+              voteDifference
+            )
+            expect(config.votedChoice).toEqual({
+              id: 'page.proposal_detail.voted_choice',
+              values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
+              voteCount: 3, // all delegators who voted yes
+              totalVotes: DELEGATORS.length,
+            })
+          })
+
+          it('delegations label should show the delegate has not voted and how many delegators you voted for', () => {
+            const config = getVotingSectionConfig(
+              votes,
+              CHOICES,
+              delegate,
+              delegators,
+              account,
+              ownVotingPower,
+              delegatedVotingPower,
+              voteDifference
+            )
+            expect(config.delegationsLabel).toEqual({
+              delegateLabel: { id: 'page.proposal_detail.delegate_not_voted' },
+              delegatorsLabel: {
+                id: 'page.proposal_detail.all_delegators_voted',
+                values: {
+                  amountRepresented: 0,
+                },
+              },
+              infoMessage: {
+                id: 'page.proposal_detail.info.user_voted_delegate_has_not_voted_all_delegators_voted',
+                values: {
+                  delegate: ACCOUNT_DELEGATE,
                 },
               },
             })
@@ -921,22 +1055,6 @@ describe('getVotingSectionConfig', () => {
             beforeEach(() => {
               votes = { [USER_ACCOUNT]: CHOICE_1_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
             })
-            it('should show delegations label and voted choice', () => {
-              const config = getVotingSectionConfig(
-                votes,
-                CHOICES,
-                delegate,
-                delegators,
-                account,
-                ownVotingPower,
-                delegatedVotingPower,
-                voteDifference
-              )
-              expect(config.showChoiceButtons).toBe(false)
-              expect(config.vote).toBe(CHOICE_1_VOTE)
-              expect(config.delegateVote).toBe(CHOICE_1_VOTE)
-            })
-
             it('delegations label should show when the delegate voted and and how many delegators you voted for', () => {
               const config = getVotingSectionConfig(
                 votes,
@@ -963,28 +1081,9 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: DELEGATORS.length,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
+                    delegators_info_id: 'many_delegators',
                   },
                 },
-              })
-            })
-
-            it('voted choice shows both voted the same, and votes represented by user plus delegator votes', () => {
-              const config = getVotingSectionConfig(
-                votes,
-                CHOICES,
-                delegate,
-                delegators,
-                account,
-                ownVotingPower,
-                delegatedVotingPower,
-                voteDifference
-              )
-              expect(config.votedChoice).toEqual({
-                id: 'page.proposal_detail.voted_choice',
-                values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
-                delegate: ACCOUNT_DELEGATE,
-                voteCount: DELEGATORS.length,
-                totalVotes: DELEGATORS.length,
               })
             })
           })
@@ -1034,8 +1133,8 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: DELEGATORS.length,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
-                    date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp),
                     vote_difference: voteDifference,
+                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1112,6 +1211,7 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: 1,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
+                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1186,8 +1286,8 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: 1,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
-                    date: DelegationsLabelBuilder.dateFormat(CHOICE_2_VOTE.timestamp),
                     vote_difference: voteDifference,
+                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1209,6 +1309,42 @@ describe('getVotingSectionConfig', () => {
                 values: { choice: CHOICES[CHOICE_1_VOTE.choice - 1] },
                 voteCount: 3,
                 totalVotes: DELEGATORS.length,
+              })
+            })
+          })
+        })
+      })
+    })
+
+    describe('when user has only one delegator', () => {
+      beforeEach(() => {
+        delegators = [DELEGATOR_1]
+      })
+      describe('when user and delegate voted', () => {
+        describe('when no delegators voted', () => {
+          describe('if user and delegate voted the same', () => {
+            beforeEach(() => {
+              votes = { [USER_ACCOUNT]: CHOICE_1_VOTE, [ACCOUNT_DELEGATE]: CHOICE_1_VOTE }
+            })
+            it('delegations label should show when the delegate voted and and how many delegators you voted for', () => {
+              const config = getVotingSectionConfig(
+                votes,
+                CHOICES,
+                delegate,
+                delegators,
+                account,
+                ownVotingPower,
+                delegatedVotingPower,
+                voteDifference
+              )
+              expect(config.delegationsLabel?.infoMessage).toEqual({
+                id: 'page.proposal_detail.info.user_voted_delegate_voted_the_same_with_delegators',
+                values: {
+                  delegators_without_vote: 1,
+                  total_delegators: 1,
+                  delegate: ACCOUNT_DELEGATE,
+                  delegators_info_id: 'single_delegator',
+                },
               })
             })
           })
