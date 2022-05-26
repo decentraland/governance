@@ -24,7 +24,6 @@ function VotingPowerDelegationItem({ delegate, onClick }: VotingPowerDelegationI
         <Username
           address={delegate.address}
           size="small"
-          blockieScale={4}
           className="VotingPowerDelegationItem__Username"
         />
       </Table.Cell>

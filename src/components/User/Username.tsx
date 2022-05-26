@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
+import { Size, SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -16,29 +16,48 @@ type Props = SizeProps & {
   address: string
   linked?: boolean
   className?: string
-  blockieScale?: number
   iconOnly?: boolean
   addressOnly?: boolean
+  strong?: boolean
 }
 
-const Username = ({
-  address,
-  size,
-  linked,
-  iconOnly = false,
-  addressOnly = false,
-  blockieScale = 3,
-  className,
-}: Props) => {
+function getBlockieScale(size?: string) {
+  const DEFAULT_BLOCKIE_SCALE = 3
+  switch (size) {
+    case Size.Mini:
+      return 3
+    case Size.Tiny:
+      return 3.5
+    case Size.Small:
+      return 4.9
+    case Size.Medium:
+      return 7
+    case Size.Large:
+      return 8.4
+    case Size.Big:
+      return 10.5
+    case Size.Huge:
+      return 14.5
+    case Size.Massive:
+      return 20
+    case Size.Full:
+      return 42.5
+    default:
+      return DEFAULT_BLOCKIE_SCALE
+  }
+}
+
+const Username = ({ address, size, linked, iconOnly = false, addressOnly = false, strong = false, className }: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
+  const blockieScale = getBlockieScale(size)
 
   const userElement = (
     <>
       {addressOnly && (
         <>
           {profileHasName && profile!.name}
-          {!profileHasName && <Address value={address || ''} className={className} />}
+          {!profileHasName && <Address value={address || ''} className={className} strong={strong}/>}
         </>
       )}
 
@@ -48,13 +67,13 @@ const Username = ({
             <>
               <Avatar size={size || 'mini'} address={address} />
               {profileHasName && !iconOnly && profile!.name}
-              {!profileHasName && !iconOnly && <Address value={address || ''} />}
+              {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong}/>}
             </>
           )}
 
           {(!hasDclProfile || !profile) && (
             <Blockie scale={blockieScale} seed={address || ''}>
-              {!iconOnly && <Address value={address || ''} />}
+              {!iconOnly && <Address value={address || ''} strong={strong}/>}
             </Blockie>
           )}
         </>

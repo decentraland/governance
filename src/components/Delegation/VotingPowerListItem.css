@@ -1,11 +1,3 @@
-.VotingPowerListModalItem__Address {
-	padding-left: 8px;
-	color: var(--primary) !important;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 28px;
-}
-
 .VotingPowerListItem {
 	display: flex;
 	align-items: center;
@@ -16,8 +8,8 @@
 .VotingPowerListModalItem__Profile {
 	display: inline-flex;
 	align-items: center;
+	padding-bottom: 2px;
 }
-
 
 .VotingPowerListModalItem__Blockie {
 	margin-left: 3px !important;
