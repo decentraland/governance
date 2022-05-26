@@ -24,27 +24,34 @@ export interface DelegationsLabelProps {
   infoMessage?: { id: string; values?: InfoMessageValues }
 }
 
-function formatInfoMessageValues(t:any, values?: any) {
+function formatInfoMessageValues(values?: any) {
+  const formattedInfoValues: {
+    delegate?: JSX.Element
+    own_vp?: JSX.Element
+    delegated_vp?: JSX.Element
+  } = {}
+
   if (values) {
     if (values.delegate) {
-      values.delegate = <Username className="DelegationsLabel__InfoMessage" address={values.delegate} addressOnly />
+      formattedInfoValues.delegate = (
+        <Username className="DelegationsLabel__InfoMessage" address={values.delegate} addressOnly />
+      )
     }
     if (values.own_vp) {
-      values.own_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={values.own_vp} />
+      formattedInfoValues.own_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={values.own_vp} />
     }
     if (values.delegated_vp) {
-      values.delegated_vp = <VotingPower className="DelegationsLabel__InfoMessage" value={values.delegated_vp} />
-    }
-    if(values.delegators_info_id){
-      values.delegators_info = t(values.delegators_info_id, values)
+      formattedInfoValues.delegated_vp = (
+        <VotingPower className="DelegationsLabel__InfoMessage" value={values.delegated_vp} />
+      )
     }
   }
-  return values
+  return { ...values, ...formattedInfoValues }
 }
 
 const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: DelegationsLabelProps) => {
   const t = useFormatMessage()
-  const formattedInfoValues = formatInfoMessageValues(t, infoMessage?.values)
+  const formattedInfoValues = formatInfoMessageValues(infoMessage?.values)
 
   return (
     <div className="DelegationsLabel">
