@@ -27,7 +27,7 @@ export default React.memo(function StatusFilter({ onChange }: FilterProps) {
     <CollapsibleFilter title={t('navigation.search.status_filter_title') || ''} startOpen={false} onChange={onChange}>
       <FilterLabel label={t(`status.all`) || ''} href={handleStatusFilter(null)} active={!status} />
       {(Object.keys(ProposalStatus) as Array<keyof typeof ProposalStatus>).map((key, index) => {
-        let proposalStatus = ProposalStatus[key]
+        const proposalStatus = ProposalStatus[key]
         if (![ProposalStatus.Deleted, ProposalStatus.Pending].includes(proposalStatus)) {
           return (
             <FilterLabel

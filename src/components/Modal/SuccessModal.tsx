@@ -1,19 +1,22 @@
 import React, { useCallback } from 'react'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+
 import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
+
 import './ProposalModal.css'
 import './SuccessModal.css'
 
 export type SuccessModalProps = Omit<ModalProps, 'children'> & {
-  onDismiss: (e: React.MouseEvent<any>) => void
+  onDismiss: (e: React.MouseEvent<unknown>) => void
   loading?: boolean
   linkToCopy?: string
   linkToForum?: string
@@ -35,7 +38,7 @@ export function SuccessModal({
     if (linkToCopy) {
       state.copy(linkToCopy)
     }
-  }, [state.copy, linkToCopy])
+  }, [linkToCopy, state])
 
   return (
     <Modal

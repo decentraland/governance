@@ -1,0 +1,79 @@
+.VotingPowerDelegationModal__Header {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  margin-bottom: 10px !important;
+  line-height: 36px !important;
+  margin-top: 16px !important;
+  min-height: 36px !important;
+}
+
+.VotingPowerDelegationModal > .dcl.close, .ui.modal > .dcl.close {
+  top: 14px;
+}
+
+.VotingPowerDelegationModal .description .dg.Paragraph {
+  font-size: 15px;
+}
+
+.VotingPowerDelegationModal .description .dg.Paragraph .dg.Link {
+  color: var(--blue);
+}
+
+.VotingPowerDelegationModal .actions .ui.button.primary {
+  color: var(--blue);
+  background-color: rgba(72, 136, 238, 0.1);
+}
+
+.VotingPowerDelegationModal .ui.table th {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.VotingPowerDelegationModal .ui.table td {
+  padding: 10px 0;
+}
+
+.VotingPowerDelegationModal .ui.table td .Username {
+  font-weight: 500;
+}
+
+.VotingPowerDelegationModal .ui.table tbody tr:hover {
+  box-shadow: 0px 3px 15px rgba(115, 110, 125, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.VotingPowerDelegationModal .TotalVP {
+  cursor: pointer !important;
+}
+
+.VotingPowerDelegationModal .TotalVP>span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VotingPowerDelegationModal .TotalVP>span svg {
+  margin-left: 5px;
+}
+
+.VotingPowerDelegationModal .ui.table th:not(:first-child),
+.VotingPowerDelegationModal .ui.table td:not(:first-child) {
+  text-align: center;
+}
+
+.VotingPowerDelegationModal .dg.dcl-avatar {
+  margin-right: 11px;
+}
+
+.VotingPowerDelegationModal .dcl.blockie {
+  margin-left: 4px;
+  margin-right: 7px;
+}
+
+/* Animation */
+.VotingPowerDelegationModal .TotalVP>span svg,
+.VotingPowerDelegationModal .ui.table tbody tr:hover {
+  transition: all 0.3s linear;
+}

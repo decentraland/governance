@@ -1,18 +1,21 @@
 import React from 'react'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
-import Divider from '../Section/Divider'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
 import { UpdateStatus } from '../../entities/Updates/types'
-import Username from '../User/Username'
-import ProjectHealthStatus from './ProjectHealthStatus'
 import { UpdateAttributes } from '../../entities/Updates/types'
-import { ContentSection } from '../Layout/ContentLayout'
-import Date from '../Common/Date'
 import { formatDate } from '../../modules/time'
+import Date from '../Common/Date'
+import { ContentSection } from '../Layout/ContentLayout'
+import Divider from '../Section/Divider'
+import Username from '../User/Username'
+
+import ProjectHealthStatus from './ProjectHealthStatus'
 import './UpdateMarkdownView.css'
 
 interface Props {
@@ -21,7 +24,7 @@ interface Props {
   proposalUser?: string
 }
 
-const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
+const UpdateMarkdownView = ({ update, proposalUser }: Props) => {
   const l = useFormatMessage()
   const formattedCompletionDate = update?.completion_date ? formatDate(update.completion_date) : ''
   const formattedDueDate = Time.utc(update?.completion_date).from(Time.utc(update?.due_date), true)
@@ -43,7 +46,7 @@ const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
           <Markdown>{update?.additional_notes}</Markdown>
         </>
       )}
-      {(profile || proposalUser) && update.completion_date && (
+      {proposalUser && update.completion_date && (
         <>
           <Divider size="small" />
           <div className="UpdateDetail__Date">
@@ -53,7 +56,7 @@ const UpdateMarkdownView = ({ update, profile, proposalUser }: Props) => {
                   {l('page.update_detail.completion_date', { date: formattedCompletionDate })}
                 </Date>
               </Paragraph>
-              <Username profile={profile} address={proposalUser} />
+              {proposalUser && <Username address={proposalUser} linked />}
             </div>
             {update?.status === UpdateStatus.Late && (
               <Markdown>{l('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown>

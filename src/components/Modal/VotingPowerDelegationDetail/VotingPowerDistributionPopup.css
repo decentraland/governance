@@ -1,0 +1,31 @@
+.popup.VotingPowerDistributionPopup {
+  background-color: var(--background-popup);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+}
+
+.ui.popup:before {
+  background-color: var(--background-popup) !important;
+}
+
+.VotingPowerDistributionPopup__Label {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.VotingPowerDistributionPopup__Percentage {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #ffffff;
+  opacity: 0.5;
+}
+
+.VotingPowerDistributionPopup .VotingPower {
+  font-size: 17px;
+  color: #ffffff;
+}

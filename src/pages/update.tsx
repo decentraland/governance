@@ -9,7 +9,6 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
-import useProfile from '../hooks/useProfile'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -24,10 +23,9 @@ export default function UpdateDetail() {
   const updateId = params.get('id')
   const { update, state: updateState } = useProposalUpdate(updateId)
   const [proposal, proposalState] = useProposal(update?.proposal_id)
-  const { profile, state: profileState } = useProfile(proposal?.user)
   const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
-  if (updateState.loading || profileState.loading || updatesState.loading || proposalState.loading) {
+  if (updateState.loading || updatesState.loading || proposalState.loading) {
     return (
       <Container>
         <Loader size="huge" active />
@@ -53,7 +51,7 @@ export default function UpdateDetail() {
         </span>
         <Header size="huge">{t('page.update_detail.title', { index })}</Header>
       </ContentSection>
-      {update && <UpdateMarkdownView update={update} profile={profile} proposalUser={proposal?.user} />}
+      {update && <UpdateMarkdownView update={update} proposalUser={proposal?.user} />}
     </ContentLayout>
   )
 }

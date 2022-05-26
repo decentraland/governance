@@ -1,6 +1,8 @@
 import React from 'react'
-import { ProposalType } from '../../entities/Proposal/types'
+
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import { ProposalType } from '../../entities/Proposal/types'
 
 import './CategoryLabel.css'
 

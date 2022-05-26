@@ -1,30 +1,33 @@
 import React from 'react'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { ProposalAttributes, ProposalType, NewProposalPOI } from '../../entities/Proposal/types'
 
-import JumpIn from '../Icon/JumpIn'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import './ProposalFooter.css'
+import { NewProposalPOI } from '../../entities/Proposal/types'
+import JumpIn from '../Icon/JumpIn'
 
-export type ProposalHeaderPoi = {
-  proposal?: ProposalAttributes | null
+import './ProposalFooterPoi.css'
+
+export type ProposalFooterPoiProps = {
+  configuration: NewProposalPOI
 }
 
-export default React.memo(function ProposalHeaderPoi({ proposal }: ProposalHeaderPoi) {
+export default function ProposalFooterPoi({ configuration }: ProposalFooterPoiProps) {
   const t = useFormatMessage()
-  if (proposal?.type !== ProposalType.POI) {
-    return null
-  }
 
-  const configuration: NewProposalPOI = proposal.configuration
   return (
-    <div className="ProposalFooter ProposalFooterPoi">
-      <Button primary as={Link} href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}>
+    <div className="ProposalFooterPoi">
+      <Button
+        primary
+        as={Link}
+        className="ProposalFooterPoi__Button"
+        href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}
+        target="_blank"
+      >
         {t('general.jump_in')}
-        <JumpIn width="17" height="17" style={{ marginLeft: '1rem' }} />
+        <JumpIn width="17" height="17" className="ProposalFooterPoi__Icon" />
       </Button>
     </div>
   )
-})
+}

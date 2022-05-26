@@ -1,0 +1,14 @@
+.CandidateMatch__StatsValue {
+	font-weight: 600;
+	font-size: 17px;
+	line-height: 32px;
+	letter-spacing: 0.4px;
+	color: #16141a;
+}
+
+.CandidateMatch__Info {
+	display: flex;
+	width: fit-content;
+	position: absolute;
+	left: 57px;
+}

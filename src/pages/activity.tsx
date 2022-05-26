@@ -1,59 +1,73 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
+
 import { useLocation } from '@gatsbyjs/reach-router'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
-import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
-import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import ActionableLayout from '../components/Layout/ActionableLayout'
-import StatusMenu from '../components/Status/StatusMenu'
-import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
-import Filter from '../components/Filter/Filter'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Governance } from '../api/Governance'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import Empty from '../components/Common/Empty'
+import Filter from '../components/Filter/Filter'
+import ActionableLayout from '../components/Layout/ActionableLayout'
+import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalCard from '../components/Proposal/ProposalCard'
-import useSubscriptions from '../hooks/useSubscriptions'
-import Empty from '../components/Proposal/Empty'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
-import useProposals from '../hooks/useProposals'
-import './activity.css'
-import { isUnderMaintenance } from '../modules/maintenance'
+import StatusMenu from '../components/Status/StatusMenu'
 import LogIn from '../components/User/LogIn'
+import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
+import useProposals from '../hooks/useProposals'
+import useSubscriptions from '../hooks/useSubscriptions'
+import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
+import { isUnderMaintenance } from '../modules/maintenance'
+
+import './activity.css'
 
 const ITEMS_PER_PAGE = 12
 
-export default function WelcomePage() {
+const getFilters = (account: string | null, list: ProposalActivityList | null) => {
+  if (!!account && list === ProposalActivityList.MyProposals) {
+    return { user: account }
+  }
+
+  if (!!account && list === ProposalActivityList.Watchlist) {
+    return { subscribed: account }
+  }
+
+  return {}
+}
+
+export default function ActivityPage() {
   const t = useFormatMessage()
-  const [account, accountState] = useAuthContext()
+  const [account] = useAuthContext()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const status = toProposalStatus(params.get('status')) ?? undefined
   const page = toProposalListPage(params.get('page')) ?? undefined
   const list = toProposalActivityList(params.get('list'))
   const load = !!account && !!list
-  const filters =
-    !account || !list
-      ? {}
-      : list === ProposalActivityList.MyProposals
-      ? { user: account }
-      : list === ProposalActivityList.Watchlist
-      ? { subscribed: account }
-      : {}
+
+  const filters = getFilters(account, list)
   const [proposals, proposalsState] = useProposals({ load, page, status, ...filters, itemsPerPage: ITEMS_PER_PAGE })
   const [subscriptions, subscriptionsState] = useSubscriptions()
-  const [results, subscriptionsResultsState] = useAsyncMemo(
+  const [results] = useAsyncMemo(
     () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
     [account, proposals],
     { callWithTruthyDeps: true }
+  )
+
+  const handlePageFilter = useCallback(
+    (page: number) => {
+      const newParams = new URLSearchParams(params)
+      page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
+      return navigate(locations.activity(newParams))
+    },
+    [params]
   )
 
   useEffect(() => {
@@ -63,7 +77,7 @@ export default function WelcomePage() {
         handlePageFilter(maxPage)
       }
     }
-  }, [page, proposals])
+  }, [handlePageFilter, page, proposals])
 
   function handleStatusFilter(status: ProposalStatus | null) {
     const newParams = new URLSearchParams(params)
@@ -79,19 +93,13 @@ export default function WelcomePage() {
     return navigate(locations.activity(newParams))
   }
 
-  function handlePageFilter(page: number) {
-    const newParams = new URLSearchParams(params)
-    page !== 1 ? newParams.set('page', String(page)) : newParams.delete('page')
-    return navigate(locations.activity(newParams))
-  }
-
   useEffect(() => {
     if (!list) {
       const newParams = new URLSearchParams(params)
       newParams.set('list', ProposalActivityList.MyProposals)
       navigate(locations.activity(newParams))
     }
-  }, [list])
+  }, [list, params])
 
   if (isUnderMaintenance()) {
     return (
@@ -142,37 +150,30 @@ export default function WelcomePage() {
               </Filter>
             </>
           }
-          rightAction={
-            <StatusMenu
-              style={{ marginRight: '1rem' }}
-              value={status}
-              onChange={(_, { value }) => handleStatusFilter(value)}
-            />
-          }
+          rightAction={<StatusMenu value={status} onChange={(_, { value }) => handleStatusFilter(value)} />}
         >
-          <div style={{ marginTop: '16px', position: 'relative', minHeight: '200px' }}>
+          <div className="ActivityPage__ListContainer">
             <Loader active={proposalsState.loading} />
             {proposals && proposals.data.length === 0 && (
-              <Empty
-                description={
-                  <Paragraph small secondary>
-                    {list === ProposalActivityList.Watchlist
-                      ? t(`page.proposal_activity.no_proposals_subscriptions`)
-                      : list === ProposalActivityList.MyProposals
-                      ? t(`page.proposal_activity.no_proposals_submitted`)
-                      : null}{' '}
-                    {list === ProposalActivityList.Watchlist ? (
-                      <Link href={locations.proposals()} onClick={prevent(() => navigate(locations.proposals()))}>
-                        {t(`page.proposal_activity.no_proposals_subscriptions_action`)}
-                      </Link>
-                    ) : list === ProposalActivityList.MyProposals ? (
-                      <Link href={locations.submit()} onClick={prevent(() => navigate(locations.submit()))}>
-                        {t(`page.proposal_activity.no_proposals_submitted_action`)}
-                      </Link>
-                    ) : null}
-                  </Paragraph>
-                }
-              />
+              <div className="ActivityPage__EmptyContainer">
+                <Empty
+                  description={
+                    list === ProposalActivityList.Watchlist
+                      ? t('page.proposal_activity.no_proposals_subscriptions')
+                      : t('page.proposal_activity.no_proposals_submitted')
+                  }
+                  linkText={
+                    list === ProposalActivityList.Watchlist
+                      ? t('page.proposal_activity.no_proposals_subscriptions_action')
+                      : t('page.proposal_activity.no_proposals_submitted_action')
+                  }
+                  onLinkClick={
+                    list === ProposalActivityList.Watchlist
+                      ? () => navigate(locations.proposals())
+                      : () => navigate(locations.submit())
+                  }
+                />
+              </div>
             )}
             {proposals && proposals.data.length > 0 && (
               <Card.Group>

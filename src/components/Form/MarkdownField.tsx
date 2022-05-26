@@ -1,9 +1,12 @@
 import React from 'react'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import { ContentSection } from '../Layout/ContentLayout'
-import MarkdownNotice from './MarkdownNotice'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import { TextareaProps } from 'decentraland-gatsby/dist/components/Form/Textarea'
+
+import { ContentSection } from '../Layout/ContentLayout'
+
+import MarkdownNotice from './MarkdownNotice'
 
 interface Props {
   label: string | null

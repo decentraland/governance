@@ -1,0 +1,38 @@
+.DelegationsLabel {
+	display: flex;
+	justify-content: space-between;
+}
+
+.DelegationsLabel__TextContainer {
+	align-items: center;
+	font-size: 13px;
+	width: 100%;
+}
+
+.DelegationsLabel__InfoMessage {
+	display: inline-flex;
+	font-weight: 500;
+	color: #ffffff !important;
+}
+
+.DelegationsLabel__Text p.dg.Paragraph {
+	font-size: 13px;
+	letter-spacing: 0;
+	padding-left: 4px;
+}
+
+.DelegationsLabel__PopupContainer {
+	display: block;
+	height: 24px;
+}
+
+svg.DelegationsLabel__Info {
+	margin-top: 5px;
+}
+
+
+@media (min-width: 1440px) {
+	.DelegationsLabel__TextContainer {
+		min-width: 232px;
+	}
+}

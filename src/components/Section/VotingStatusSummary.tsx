@@ -1,13 +1,16 @@
-import React, { useRef} from 'react'
+import React, { useRef } from 'react'
 import Flickity from 'react-flickity-component'
+
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
-import useAbbreviatedNumber from '../../hooks/useAbbreviatedNumber'
-import { ProposalAttributes } from '../../entities/Proposal/types'
-import { ChoiceProgressProps } from '../Status/ChoiceProgress'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'flickity/css/flickity.css'
+
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import useAbbreviatedNumber from '../../hooks/useAbbreviatedNumber'
+import { ChoiceProgressProps } from '../Status/ChoiceProgress'
+
 import './VotingStatusSummary.css'
 
 const flickityOptions = {
@@ -82,9 +85,7 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
               : l('page.proposal_detail.threshold_not_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="VotingStatusSummary__Title">
-            <Bold>
-              {l('page.proposal_detail.proposal_status', {status: proposal?.status})}
-            </Bold>
+            <Bold>{l('page.proposal_detail.proposal_status', { status: proposal?.status })}</Bold>
           </div>
         </div>
       )}

@@ -1,0 +1,28 @@
+
+.VotingPowerDelegationDetail__Header .DelegateButton__Container {
+  margin-right: 55px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.VotingPowerDelegationDetail__Header .DelegateButton__Container .ui.header {
+  margin: 0 16px 0 0 !important;
+}
+
+.DelegateButton__Container .DelegateButton__Container--Global {
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.DelegateButton__Container .ui.header {
+  text-align: end;
+}
+
+.DelegateButton__Container .DelegateButton__Container--Global > svg {
+  margin-left: 5px;
+}
+
+.GlobalDelegationPopUp {
+  box-sizing: content-box !important;
+}

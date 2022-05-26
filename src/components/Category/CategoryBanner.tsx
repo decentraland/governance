@@ -1,9 +1,11 @@
 import React from 'react'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { PoiType, ProposalType } from '../../entities/Proposal/types'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import { PoiType, ProposalType } from '../../entities/Proposal/types'
 
 import './CategoryBanner.css'
 

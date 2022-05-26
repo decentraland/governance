@@ -1,6 +1,7 @@
 import React from 'react'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 Time.extend(LocalizedFormat)
 

@@ -1,26 +1,35 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { conditional, SQL, table, limit, offset, join, columns, objectValues } from 'decentraland-gatsby/dist/entities/Database/utils'
-import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus } from './types'
+import {
+  columns,
+  conditional,
+  join,
+  limit,
+  objectValues,
+  offset, SQL, table
+} from 'decentraland-gatsby/dist/entities/Database/utils'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { QueryPart } from 'decentraland-server/dist/db/types'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
+
 import SubscriptionModel from '../Subscription/model'
-import { SITEMAP_ITEMS_PER_PAGE } from "./utils"
-import tsquery from "./tsquery"
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { QueryPart } from "decentraland-server/dist/db/types"
+
+import tsquery from './tsquery'
+import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus } from './types'
+import { SITEMAP_ITEMS_PER_PAGE } from './utils'
 
 export type FilterProposalList = {
-  type: string,
-  user: string,
-  status: string,
-  subscribed: string,
-  search?: string,
-  timeFrame?: string,
-  order?: "ASC" | "DESC"
+  type: string
+  user: string
+  status: string
+  subscribed: string
+  search?: string
+  timeFrame?: string
+  order?: 'ASC' | 'DESC'
 }
 
 export type FilterPaginatation = {
-  limit: number,
+  limit: number
   offset: number
 }
 
@@ -33,25 +42,27 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return {
       ...proposal,
       configuration: JSON.parse(proposal.configuration),
-      snapshot_proposal: JSON.parse(proposal.snapshot_proposal)
+      snapshot_proposal: JSON.parse(proposal.snapshot_proposal),
     }
   }
 
   static create<U extends QueryPart = any>(proposal: U): Promise<U> {
-    const keys = Object.keys(proposal)
-      .map(key => key.replace(/\W/gi, ''))
+    const keys = Object.keys(proposal).map((key) => key.replace(/\W/gi, ''))
 
     const sql = SQL`
       INSERT INTO ${table(this)} ${columns(keys)}
-      VALUES ${objectValues(keys, [ proposal ])}
+      VALUES ${objectValues(keys, [proposal])}
     `
 
     return this.query(sql) as any
   }
 
-  static update<U extends QueryPart = any, P extends QueryPart = any>(changes: Partial<U>, conditions: Partial<P>): Promise<U> {
-    const changesKeys = Object.keys(changes).map(key => key.replace(/\W/gi, ''))
-    const conditionsKeys = Object.keys(conditions).map(key => key.replace(/\W/gi, ''))
+  static update<U extends QueryPart = any, P extends QueryPart = any>(
+    changes: Partial<U>,
+    conditions: Partial<P>
+  ): Promise<U> {
+    const changesKeys = Object.keys(changes).map((key) => key.replace(/\W/gi, ''))
+    const conditionsKeys = Object.keys(conditions).map((key) => key.replace(/\W/gi, ''))
     if (changesKeys.length === 0) {
       throw new Error(`Missing update changes`)
     }
@@ -63,9 +74,15 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sql = SQL`
       UPDATE ${table(this)}
       SET
-        ${join(changesKeys.map(key => SQL`"${SQL.raw(key)}" = ${changes[key]}`), SQL`,`)}
+        ${join(
+          changesKeys.map((key) => SQL`"${SQL.raw(key)}" = ${changes[key]}`),
+          SQL`,`
+        )}
       WHERE
-        ${join(conditionsKeys.map(key => SQL`"${SQL.raw(key)}" = ${conditions[key]}`), SQL`,`)}
+        ${join(
+          conditionsKeys.map((key) => SQL`"${SQL.raw(key)}" = ${conditions[key]}`),
+          SQL`,`
+        )}
     `
 
     return this.query(sql) as any
@@ -73,6 +90,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async countAll() {
     return this.count<ProposalAttributes>({ deleted: false })
+  }
+
+  static async findFromSnapshotIds(ids: string[]): Promise<ProposalAttributes[]> {
+    const query = SQL`
+      SELECT *
+      FROM ${table(ProposalModel)}
+      WHERE "snapshot_id" IN (${join(
+        ids.map((id) => SQL`${id}`),
+        SQL`, `
+      )})`
+
+    const results = await this.query(query)
+    return results.map((item) => ProposalModel.parse(item))
   }
 
   static async getSitemapProposals(page: number): Promise<{ id: string }[]> {
@@ -117,18 +147,18 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async finishProposal(proposal_ids: string[], status: ProposalStatus) {
-    const valid_ids = (proposal_ids || []).filter(id => isUUID(id))
+    const valid_ids = (proposal_ids || []).filter((id) => isUUID(id))
     if (valid_ids.length === 0) {
       return 0
     }
 
-    const ids = valid_ids.map(id => SQL`${id}`)
+    const ids = valid_ids.map((id) => SQL`${id}`)
 
     const query = SQL`
       UPDATE ${table(ProposalModel)}
       SET
         "status" = ${status},
-        "updated_at" = ${new Date}
+        "updated_at" = ${new Date()}
       WHERE
         "deleted" = FALSE
         AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
@@ -155,13 +185,16 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
-    let timeFrame = this.parseTimeframe(filter.timeFrame)
+    const timeFrame = this.parseTimeframe(filter.timeFrame)
 
     const result = await this.query(SQL`
       SELECT COUNT(*) as "total"
       FROM ${table(ProposalModel)} p
       ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      ${conditional(!!filter.search, SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`)}
+      ${conditional(
+        !!filter.search,
+        SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+      )}
       WHERE "deleted" = FALSE
       ${conditional(!!filter.user, SQL`AND p."user" = ${filter.user}`)}
       ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)}
@@ -171,7 +204,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
     `)
 
-    return result && result[0] && Number(result[0].total) || 0
+    return (result && result[0] && Number(result[0].total)) || 0
   }
 
   static async getProposalList(filter: Partial<FilterProposalList & FilterPaginatation> = {}) {
@@ -191,7 +224,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
-    let timeFrame = this.parseTimeframe(filter.timeFrame)
+    const timeFrame = this.parseTimeframe(filter.timeFrame)
 
     const orderBy = filter.search ? '"rank"' : 'p.created_at'
     const orderDirection = filter.order || 'DESC'
@@ -200,7 +233,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       SELECT p.*
       FROM ${table(ProposalModel)} p
       ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      ${conditional(!!filter.search, SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`)}
+      ${conditional(
+        !!filter.search,
+        SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+      )}
       WHERE "deleted" = FALSE
       ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)}
       ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)}
@@ -216,8 +252,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  private static parseTimeframe(timeFrame?:string|null) {
-    let date = Time.utc()
+  private static parseTimeframe(timeFrame?: string | null) {
+    const date = Time.utc()
     switch (timeFrame) {
       case '3months':
         return date.subtract(90, 'days').toDate()
@@ -231,11 +267,14 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static textsearch(proposal: ProposalAttributes) {
-    return SQL`(${join([
-      SQL`setweight(to_tsvector(${proposal.title}), 'A')`,
-      SQL`setweight(to_tsvector(${proposal.user}), 'B')`,
-      SQL`setweight(to_tsvector(${proposal.vesting_address || ''}), 'B')`,
-      SQL`setweight(to_tsvector(${proposal.description || ''}), 'C')`,
-    ], SQL` || `)})`
+    return SQL`(${join(
+      [
+        SQL`setweight(to_tsvector(${proposal.title}), 'A')`,
+        SQL`setweight(to_tsvector(${proposal.user}), 'B')`,
+        SQL`setweight(to_tsvector(${proposal.vesting_address || ''}), 'B')`,
+        SQL`setweight(to_tsvector(${proposal.description || ''}), 'C')`,
+      ],
+      SQL` || `
+    )})`
   }
 }

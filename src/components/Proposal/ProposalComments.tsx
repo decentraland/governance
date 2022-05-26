@@ -1,17 +1,19 @@
-import React, { useMemo, useState, useEffect } from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { ProposalAttributes } from '../../entities/Proposal/types'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import './ProposalComments.css'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Watermelon from '../Icon/Watermelon'
-import ProposalComment from './ProposalComment'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import React, { useEffect, useMemo, useState } from 'react'
+
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
 import { Governance } from '../../api/Governance'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import { forumUrl } from '../../entities/Proposal/utils'
+import Empty from '../Common/Empty'
 import Divider from '../Section/Divider'
+
+import ProposalComment from './ProposalComment'
+import './ProposalComments.css'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 
@@ -22,11 +24,12 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
   const t = useFormatMessage()
-  const [comments] = useAsyncMemo(async () => (proposal ? Governance.get().getProposalComments(proposal!.id) : null), [
-    proposal,
-  ])
+  const [comments] = useAsyncMemo(
+    async () => (proposal ? Governance.get().getProposalComments(proposal!.id) : null),
+    [proposal]
+  )
   const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
-  const commentsCount = useMemo(() => (renderComments ? comments!.totalComments : ''), [renderComments])
+  const commentsCount = useMemo(() => (renderComments ? comments!.totalComments : ''), [comments, renderComments])
   const [showAllComments, setShowAllComments] = useState(true)
 
   useEffect(() => {
@@ -69,19 +72,11 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
             <div className="ProposalComments__Content">
               {!renderComments && (
                 <div className="ProposalComments__NoComments">
-                  <Watermelon className="ProposalComments__EmptyIcon" />
-                  <Paragraph small secondary>
-                    {t('page.proposal_comments.no_comments_text')}
-                  </Paragraph>
-                  <Button
-                    basic
-                    disabled={!proposal}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={(proposal && forumUrl(proposal)) || ''}
-                  >
-                    {t('page.proposal_comments.join_discussion_label')}
-                  </Button>
+                  <Empty
+                    description={t('page.proposal_comments.no_comments_text')}
+                    linkText={t('page.proposal_comments.join_discussion_label')}
+                    linkHref={(proposal && forumUrl(proposal)) || ''}
+                  />
                 </div>
               )}
               {renderedComments &&

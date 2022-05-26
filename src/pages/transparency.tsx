@@ -1,51 +1,48 @@
 import React, { useMemo } from 'react'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import TokenBalanceCard from '../components/Token/TokenBalanceCard'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
-import { DclData } from '../api/DclData'
-import { aggregateBalances } from '../entities/Transparency/utils'
-import locations from '../modules/locations'
-import LinkWithIcon from '../components/Section/LinkWithIcon'
-import { ProposalStatus } from '../entities/Proposal/types'
-import GrantList from '../components/Transparency/GrantList'
-import MonthlyTotal from '../components/Transparency/MonthlyTotal'
-import MembersSection from '../components/Transparency/MembersSection'
-import './transparency.css'
-import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+
+import { DclData } from '../api/DclData'
+import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
+import LinkWithIcon from '../components/Section/LinkWithIcon'
+import TokenBalanceCard from '../components/Token/TokenBalanceCard'
+import GrantList from '../components/Transparency/GrantList'
+import MembersSection from '../components/Transparency/MembersSection'
+import MonthlyTotal from '../components/Transparency/MonthlyTotal'
+import { ProposalStatus } from '../entities/Proposal/types'
+import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
+import { aggregateBalances } from '../entities/Transparency/utils'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
+import locations from '../modules/locations'
+
+import './transparency.css'
 
 const discordIcon = require('../images/icons/discord.svg').default
+const docsIcon = require('../images/icons/docs.svg').default
+const dashboardIcon = require('../images/icons/chart-bar.svg').default
+const dataSheetIcon = require('../images/icons/database.svg').default
+const viewAllProposalsIcon = require('../images/icons/open-folder.svg').default
+const documentOutline = require('../images/icons/document-outline.svg').default
+const personIcon = require('../images/icons/person-icon.svg').default
 
 const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
-const docsIcon = require('../images/icons/docs.svg').default
-
 const DASHBOARD_URL =
   'https://datastudio.google.com/u/3/reporting/fca13118-c18d-4e68-9582-ad46d2dd5ce9/page/p_n06szvxkrc'
-const dashboardIcon = require('../images/icons/chart-bar.svg').default
-
 const DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo/edit'
-const dataSheetIcon = require('../images/icons/database.svg').default
-
 const ABOUT_DAO_URL = 'https://docs.decentraland.org/decentraland/how-does-the-dao-work/'
 const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curation-committee-member-nominations/2047'
 const ABOUT_DELEGATES = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
-
-const viewAllProposalsIcon = require('../images/icons/open-folder.svg').default
-
-const documentOutline = require('../images/icons/document-outline.svg').default
-const personIcon = require('../images/icons/person-icon.svg').default
 
 export default function WrappingPage() {
   const t = useFormatMessage()
@@ -65,7 +62,7 @@ export default function WrappingPage() {
       />
       <div className="TransparencyMobile">
         {!data && (
-          <div style={{ position: 'relative', paddingTop: '200px' }}>
+          <div className="Transparency__Loader">
             <Loader active />
           </div>
         )}
