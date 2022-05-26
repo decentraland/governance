@@ -10,6 +10,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../modules/locations'
 import VotingPower from '../Token/VotingPower'
+import Username from '../User/Username'
 
 import './DelegatedCardProfile.css'
 
@@ -37,7 +38,9 @@ export default function DelegatedCardProfile({ address, pickedBy, votingPower }:
       {hasDclProfile && (
         <div className="DelegatedCardProfile__Container">
           <Avatar className="DelegatedCardProfile__Avatar" address={profile!.ethAddress} size="big" />
-          <span className="DelegatedCardProfile__Name">{profile!.name}</span>
+          <span className="DelegatedCardProfile__Name">
+            <Username address={address} addressOnly />
+          </span>
           {(!!votingPower || !!pickedBy) && (
             <div className="DelegatedCardProfile__DescriptionContainer">
               {!!votingPower && (
