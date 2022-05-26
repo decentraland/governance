@@ -1,3 +1,4 @@
+import { Size } from 'decentraland-gatsby/dist/components/Props/types'
 import React from 'react'
 
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
@@ -39,7 +40,7 @@ export default React.memo(function UserStats(props: UserStatsProps) {
     >
       {props.sub !== false && <Header sub>{isProfile ? 'PROFILE' : 'ADDRESS'}</Header>}
       <Header size={props.size} className="UserStatsHeader" as={props.to ? Link : undefined} href={props.to}>
-        <Username address={props.address} size={props.size} />
+        <Username address={props.address} size={Size.Large} />
       </Header>
       <Loader size="small" active={profileState.loading} />
     </span>
