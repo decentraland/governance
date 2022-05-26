@@ -20,7 +20,7 @@ function VestingSection({ vestingAddress }: Props) {
     return <></>
   }
 
-  const url = vestingUrl.replace('%23', '#').concat(vestingAddress)
+  const url = vestingUrl.replace('%23', '#').concat(vestingAddress.toLowerCase())
 
   return (
     <div className="VestingSection DetailsSection">
