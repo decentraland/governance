@@ -972,7 +972,6 @@ describe('getVotingSectionConfig', () => {
                   total_delegators: DELEGATORS.length,
                   delegated_vp: delegatedVotingPower,
                   delegate: ACCOUNT_DELEGATE,
-                  delegators_info_id: 'many_delegators',
                 },
               },
             })
@@ -1081,7 +1080,6 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: DELEGATORS.length,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
-                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1134,7 +1132,6 @@ describe('getVotingSectionConfig', () => {
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
                     vote_difference: voteDifference,
-                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1211,7 +1208,6 @@ describe('getVotingSectionConfig', () => {
                     delegators_without_vote: 1,
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
-                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1287,7 +1283,6 @@ describe('getVotingSectionConfig', () => {
                     total_delegators: DELEGATORS.length,
                     delegate: ACCOUNT_DELEGATE,
                     vote_difference: voteDifference,
-                    delegators_info_id: 'many_delegators',
                   },
                 },
               })
@@ -1343,7 +1338,6 @@ describe('getVotingSectionConfig', () => {
                   delegators_without_vote: 1,
                   total_delegators: 1,
                   delegate: ACCOUNT_DELEGATE,
-                  delegators_info_id: 'single_delegator',
                 },
               })
             })

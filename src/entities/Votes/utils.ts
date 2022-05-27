@@ -1,7 +1,7 @@
 import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
 import isUUID from 'validator/lib/isUUID'
 
-import { Snapshot, SnapshotVote } from '../../api/Snapshot'
+import { DetailedScores, Snapshot, SnapshotVote } from '../../api/Snapshot'
 import { ProposalAttributes } from '../Proposal/types'
 
 import { ChoiceColor, Vote } from './types'
@@ -18,7 +18,7 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
   return list.filter((id) => isUUID(String(id)))
 }
 
-export function createVotes(votes: SnapshotVote[], balances: Scores) {
+export function createVotes(votes: SnapshotVote[], balances: DetailedScores) {
   const balance = new Map(
     Object.keys(balances).map((address) => [address.toLowerCase(), balances[address] || 0] as const)
   )
@@ -26,7 +26,7 @@ export function createVotes(votes: SnapshotVote[], balances: Scores) {
     const address = vote.voter.toLowerCase()
     result[address] = {
       choice: vote.choice,
-      vp: balance.get(address) || 0,
+      vp: balance.get(address)?.totalVp || 0,
       timestamp: Number(vote.created),
     }
     return result
@@ -164,10 +164,14 @@ export function abbreviateNumber(vp: number) {
   return scaled.toFixed(1) + suffix
 }
 
+function getNumber(number: number) {
+  return Math.floor(number || 0)
+}
+
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
-  const result: Scores = {}
+  let results: DetailedScores = {}
   for (const addressesChunk of chunk(addresses, 500)) {
-    const blockchainScores = await Snapshot.get().getScores(
+    const blockchainScores: DetailedScores = await Snapshot.get().getScores(
       proposal.snapshot_space,
       proposal.snapshot_proposal.metadata.strategies,
       proposal.snapshot_network,
@@ -176,10 +180,15 @@ export async function getProposalScores(proposal: ProposalAttributes, addresses:
     )
 
     for (const address of Object.keys(blockchainScores)) {
-      result[address.toLowerCase()] =
-        (result[address.toLowerCase()] || 0) + Math.floor(blockchainScores[address].totalVp || 0)
+      const lowercaseAddress = address.toLowerCase()
+      if (!results[lowercaseAddress]) {
+        results[lowercaseAddress] = { totalVp: 0, delegatedVp: 0, ownVp: 0 }
+      }
+      results[lowercaseAddress].totalVp += getNumber(blockchainScores[address].totalVp)
+      results[lowercaseAddress].delegatedVp += getNumber(blockchainScores[address].delegatedVp)
+      results[lowercaseAddress].ownVp += getNumber(blockchainScores[address].ownVp)
     }
   }
 
-  return result
+  return results
 }

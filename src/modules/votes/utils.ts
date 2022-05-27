@@ -54,7 +54,6 @@ export function getVotingSectionConfig(
 
   const votedChoice = new VotedChoiceBuilder(vote, delegateVote, choices, votes, account, delegate, delegators).build()
   const delegationsLabel = new DelegationsLabelBuilder(
-    account,
     ownVotingPower,
     delegatedVotingPower,
     vote,
