@@ -15,3 +15,7 @@ a.Username span.address {
 .Username img.dcl-avatar {
   margin-right: .5rem;
 }
+
+.Username .dcl.blockie-wrapper .dcl.blockie-children {
+  margin-left: 0.5rem;
+}

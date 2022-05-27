@@ -27,6 +27,7 @@
 .dcl.stats.UserStats .ui.header.UserStatsHeader,
 .dcl.stats.UserStats .ui.header .dcl.address {
   margin-bottom: 0;
+  padding-bottom: 4px;
 }
 
 .dcl.stats.UserStats .ui.header.medium.UserStatsHeader,
@@ -42,10 +43,4 @@
   line-height: 48px;
   font-weight: 600;
 
-}
-
-.dcl.stats.UserStats .dg.dcl-avatar {
-  margin: 0 .25em 0 0;
-  vertical-align: text-bottom;
-  width: 1em;
 }

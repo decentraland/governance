@@ -122,7 +122,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
           <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
             <ChevronLeft />
           </Button>
-          <Username address={candidate.address} size="small" blockieScale={4} />
+          <Username address={candidate.address} size="small" />
         </div>
         <VotingPowerDelegationHandler userVP={userVP} candidateAddress={candidateAddress} />
       </Modal.Header>

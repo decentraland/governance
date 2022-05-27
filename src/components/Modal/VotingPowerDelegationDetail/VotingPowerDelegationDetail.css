@@ -5,8 +5,7 @@
   align-items: center !important;
 }
 
-.VotingPowerDelegationDetail__Header img.dcl-avatar,
-.VotingPowerDelegationDetail__Header .dcl.blockie {
+.VotingPowerDelegationDetail__Header .Username {
   margin-left: 15px !important;
 }
 
