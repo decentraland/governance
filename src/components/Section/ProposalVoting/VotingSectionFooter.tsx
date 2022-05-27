@@ -9,7 +9,6 @@ import { Vote } from '../../../entities/Votes/types'
 import locations from '../../../modules/locations'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
-import './DelegationsLabel.css'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'
 import './VotingSectionFooter.css'
 

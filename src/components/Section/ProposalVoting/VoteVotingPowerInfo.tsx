@@ -6,16 +6,13 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../../entities/Votes/constants'
 import { Vote } from '../../../entities/Votes/types'
 
-import './DelegationsLabel.css'
-import './VotingSectionFooter.css'
-
-interface VotingSectionFooterProps {
+interface VoteVotingPowerInfoProps {
   accountVotingPower: number
   hasEnoughToVote: boolean
   vote: Vote | null
 }
 
-const VoteVotingPowerInfo = ({ accountVotingPower, hasEnoughToVote, vote }: VotingSectionFooterProps) => {
+const VoteVotingPowerInfo = ({ accountVotingPower, hasEnoughToVote, vote }: VoteVotingPowerInfoProps) => {
   const t = useFormatMessage()
 
   function vpLabel(value: number) {
