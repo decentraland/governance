@@ -117,15 +117,15 @@ export function NewsletterSubscriptionModal({
       closeIcon={<Close />}
     >
       {!subscribed && (
-        <div>
-          <Modal.Content className="ProposalModal__Title NewsletterSubscriptionModal__Title">
+        <Modal.Content>
+          <div className="ProposalModal__Title">
             <Header>{t('modal.newsletter_subscription.title')}</Header>
             <Paragraph small className="NewsletterSubscriptionModal__Description">
               {t('modal.newsletter_subscription.description')}
             </Paragraph>
             <Paragraph small>{t('modal.newsletter_subscription.description_sub')}</Paragraph>
-          </Modal.Content>
-          <Modal.Content className="ProposalModal__Form">
+          </div>
+          <div className="ProposalModal__Form">
             <Label>{t('modal.newsletter_subscription.email_label')}</Label>
             <Field
               type="email"
@@ -135,25 +135,23 @@ export function NewsletterSubscriptionModal({
               message={state.message}
               error={!state.isValid}
             />
-          </Modal.Content>
-          <Modal.Content className="ProposalModal__Actions">
+          </div>
+          <div className="ProposalModal__Actions">
             <Button primary onClick={handleAccept} loading={subscribing}>
               {t('modal.newsletter_subscription.accept')}
             </Button>
-          </Modal.Content>
-        </div>
+          </div>
+        </Modal.Content>
       )}
       {subscribed && (
-        <div>
-          <Modal.Content className="ProposalModal__Title NewsletterSubscriptionModal__Title">
-            <img src={check} alt="check icon" />
-            <Header>{t('modal.newsletter_subscription.subscribed')}</Header>
-            <Paragraph small className="NewsletterSubscriptionModal__Description">
-              {t('modal.newsletter_subscription.thanks')}
-            </Paragraph>
-            <Paragraph small>{t('modal.newsletter_subscription.heads_up')}</Paragraph>
-          </Modal.Content>
-        </div>
+        <Modal.Content className="NewsletterSubscriptionModal__Subscribed">
+          <img src={check} aria-hidden="true" />
+          <Header>{t('modal.newsletter_subscription.subscribed')}</Header>
+          <Paragraph small className="NewsletterSubscriptionModal__Description">
+            {t('modal.newsletter_subscription.thanks')}
+          </Paragraph>
+          <Paragraph small>{t('modal.newsletter_subscription.heads_up')}</Paragraph>
+        </Modal.Content>
       )}
     </Modal>
   )

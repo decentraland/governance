@@ -29,7 +29,7 @@ import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
-import { VotesList } from '../components/Modal/Votes/VotesList'
+import { VotesListModal } from '../components/Modal/Votes/VotesList'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -336,7 +336,7 @@ export default function ProposalPage() {
           </Grid.Row>
         </Grid>
       </ContentLayout>
-      <VotesList
+      <VotesListModal
         open={options.showVotesList}
         proposal={proposal}
         votes={votes}

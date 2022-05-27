@@ -186,3 +186,18 @@ body {
 .ui.modal > .dcl.close, .ui.modal > .dcl.close, .dcl.close {
   background-color: var(--background) !important;
 }
+
+.ui.modal {
+  padding: 24px !important;
+}
+
+@media only screen and (min-width: 768px) {
+  .ui.modal {
+    padding: 25px !important; /* 64px small modals, 25px bigger ones, maybe we can have two types of modals */
+  }
+}
+
+.ui.modal > .content {
+  margin: 0 !important;
+  padding: 0 !important;
+}

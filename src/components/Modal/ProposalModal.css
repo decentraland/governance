@@ -1,34 +1,36 @@
-.ui.modal.ProposalModal .content {
-  margin: 48px auto;
-  width: 360px;
+.ProposalModal__Title {
+  margin-bottom: 32px;
 }
 
-.ui.modal.ProposalModal .content.ProposalModal__GrantVestingAddress {
+.ProposalModal .content.ProposalModal__GrantVestingAddress {
   margin: 24px auto;
-  width: 480px;
+  width: 80%;
 }
 
-.ui.modal.ProposalModal .content.ProposalModal__Form {
-  margin: 24px auto;
-  width: 480px;
-}
-
-.ui.modal.ProposalModal .ProposalModal__Title {
-  text-align: center;
-}
-
-.ui.modal.ProposalModal .ProposalModal__Title .ui.header {
-  margin-bottom: .5rem;
-}
-
-.ui.modal.ProposalModal .ui.button {
+.ProposalModal .content.ProposalModal__Form {
   width: 100%;
 }
 
-.ui.modal.ProposalModal .ui.button.cancel {
+.ProposalModal .ProposalModal__Title {
+  text-align: center;
+}
+
+.ProposalModal .ProposalModal__Title .ui.header {
+  margin-bottom: .5rem;
+}
+
+.ProposalModal .ui.button {
+  width: 100%;
+}
+
+.ProposalModal .ui.button.cancel {
   margin-top: 8px;
   background-color: var(--background);
   border: 1px solid rgba(115,110,125,.32);
+}
+
+.ProposalModal__Actions {
+  width: 100%;
 }
 
 .PoiProposalModal__Actions {
