@@ -1,15 +1,18 @@
 .VotingSectionFooter {
-	margin-top: 8px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 300;
+  letter-spacing: 0;
 }
 
 .VotingSectionFooter .VotingSectionFooter__Button {
-	text-transform: capitalize !important;
-	margin-top: 0 !important;
-	margin-right: 0 !important;
-	padding-right: 0 !important;
-	width: 100%;
-	font-size: 14px;
+  text-transform: capitalize !important;
+  margin-top: 0 !important;
+  width: 100%;
+  font-size: 13px;
 }
