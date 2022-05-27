@@ -17,7 +17,8 @@
     "clean": "gatsby clean",
     "version": "tsc -p .",
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",
-    "production": "./node_modules/node-pg-migrate/bin/node-pg-migrate -m lib/migrations -d CONNECTION_STRING up && NODE_ENV=production node lib/server.js"
+    "production": "./node_modules/node-pg-migrate/bin/node-pg-migrate -m lib/migrations -d CONNECTION_STRING up && NODE_ENV=production node lib/server.js",
+    "prepare": "husky install"
   },
   "jest": {
     "preset": "ts-jest",
@@ -104,7 +105,9 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
+    "husky": "^8.0.0",
     "jest": "^26.6.3",
+    "lint-staged": "^12.4.2",
     "nodemon": "^2.0.7",
     "postcss-assets": "^6.0.0",
     "postcss-svg": "^3.0.0",
@@ -112,5 +115,9 @@
     "ts-jest": "^26.5.6",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx,css}": "prettier --write"
   }
 }
