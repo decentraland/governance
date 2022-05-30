@@ -18,7 +18,7 @@ export enum DelegateContractStatusCode {
 const enc = new TextEncoder()
 const spaceId = hexlify(enc.encode(SNAPSHOT_SPACE))
 const fullSpaceId = spaceId.concat(new Array(66 - spaceId.length + 1).join('0'))
-const contractAddress = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
+const DELEGATE_CONTRACT_ADDRESS = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const GLOBAL_SPACE_ID = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
@@ -45,12 +45,12 @@ function useSnapshotDelegateContract() {
   const [contract, setContract] = useState<Contract | undefined>()
 
   const provider = authState.provider || undefined
-  const isContractUsable = !!provider && !!contractAddress
+  const isContractUsable = !!provider && !!DELEGATE_CONTRACT_ADDRESS
 
   useEffect(() => {
     if (isContractUsable) {
       const signer = new Web3Provider(provider).getSigner()
-      const newContract = new Contract(contractAddress, DelegateABI, signer)
+      const newContract = new Contract(DELEGATE_CONTRACT_ADDRESS, DelegateABI, signer)
       setContract(newContract)
     }
   }, [isContractUsable])
