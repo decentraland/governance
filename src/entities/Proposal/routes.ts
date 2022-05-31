@@ -367,11 +367,10 @@ export async function createProposal(
   data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>
 ) {
   const id = uuid()
-  const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)
   const end = data.finish_at
   const proposal_url = proposalUrl({ id })
-  const title = await templates.title({ type: data.type, configuration: data.configuration })
+  const title = templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
 
   let profile: Avatar | null
@@ -384,11 +383,10 @@ export async function createProposal(
   //
   // Create proposal payload
   //
-  let msg: string
-  let block: Block
   let snapshotStatus: SnapshotStatus
   let snapshotSpace: SnapshotSpace
   try {
+    // TODO: This two calls can be called at the same time
     snapshotStatus = await Snapshot.get().getStatus()
     snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
   } catch (err) {
@@ -399,6 +397,8 @@ export async function createProposal(
     )
   }
 
+  // TODO: Check if snapshot returns latest block and avoid using Alchemy to get latest block
+  let block: Block
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
     block = await provider.getBlock('latest')
@@ -406,6 +406,7 @@ export async function createProposal(
     throw new RequestError("Couldn't get the latest block", RequestError.InternalServerError, err as Error)
   }
 
+  let msg: string
   try {
     const snapshotTemplateProps: templates.SnapshotTemplateProps = {
       user: data.user,
@@ -421,7 +422,7 @@ export async function createProposal(
       snapshotSpace.network,
       snapshotSpace.strategies,
       {
-        name: await templates.snapshotTitle(snapshotTemplateProps),
+        name: templates.snapshotTitle(snapshotTemplateProps),
         body: await templates.snapshotDescription(snapshotTemplateProps),
         choices: data.configuration.choices,
         snapshot: block.number,
@@ -440,7 +441,7 @@ export async function createProposal(
   try {
     const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
     logger.log('Creating proposal in snapshot', { signed: sig, message: msg })
-    snapshotProposal = await Snapshot.get().send(address, msg, sig)
+    snapshotProposal = await Snapshot.get().send(SNAPSHOT_ADDRESS, msg, sig)
   } catch (err) {
     throw new RequestError("Couldn't create proposal in snapshot", RequestError.InternalServerError, err as Error)
   }
@@ -480,7 +481,7 @@ export async function createProposal(
     discourseProposal = await Discourse.get().createPost(
       {
         category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-        title: await templates.forumTitle(discourseTemplateProps),
+        title: templates.forumTitle(discourseTemplateProps),
         raw: await templates.forumDescription(discourseTemplateProps),
       },
       DISCOURSE_AUTH
@@ -495,7 +496,7 @@ export async function createProposal(
     discourse_topic_id: discourseProposal.topic_id,
   })
   logger.log('Discourse proposal created', {
-    forum_url: forum_url,
+    forum_url,
     discourse_proposal: JSON.stringify(discourseProposal),
   })
 
@@ -535,6 +536,7 @@ export async function createProposal(
     textsearch: null,
   }
 
+  // TODO: this can be inside newProposal object. textsearch can receive only what needs to be used.
   newProposal.textsearch = ProposalModel.textsearch(newProposal)
 
   try {
