@@ -23,6 +23,7 @@ RUN apk add --no-cache --virtual native-deps \
 WORKDIR /app
 COPY ./package-lock.json /app/package-lock.json
 COPY ./package.json      /app/package.json
+COPY ./newrelic.js      /app/newrelic.js
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
