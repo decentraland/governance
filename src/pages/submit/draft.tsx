@@ -143,7 +143,8 @@ export default function SubmitDraftProposal() {
     if (preselectedLinkedProposalId) {
       editor.set({ linked_proposal_id: preselectedLinkedProposalId })
     }
-  }, [editor, preselectedLinkedProposalId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preselectedLinkedProposalId])
 
   useEffect(() => {
     if (state.validated) {
@@ -165,7 +166,8 @@ export default function SubmitDraftProposal() {
           setFormDisabled(false)
         })
     }
-  }, [editor, state.validated, state.value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.validated])
 
   if (accountState.loading) {
     return (
