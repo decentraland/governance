@@ -63,6 +63,7 @@ config:
   website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "500000"
   website-dao:INFURA_KEYS:
     secure: v1:b66vOHUKvamiB8VP:VjyyAraMpkIFnXmTf0PY6/DhVEkc143Y0Nd404NInFx0xDQwi52jskUrQB2iJqPa
+  website-dao:NEW_RELIC_APP_NAME: governance.production
   website-dao:NEW_RELIC_LICENSE_KEY:
     secure: v1:wl6EWe5alyXpDeQA:ivmTjco3vpy/qoLDSEBqOTUust4l42DhrgD1BrefB8Pk9wPs1CvtPWyOtvtgu6PLaxwEplA13Rc=
   website-dao:SNAPSHOT_PRIVATE_KEY:
