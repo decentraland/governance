@@ -203,7 +203,8 @@ export default function SubmitGovernanceProposal() {
           editor.error({ '*': err.body?.error || err.message })
         })
     }
-  }, [editor, preselectedLinkedProposalId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preselectedLinkedProposalId])
 
   useEffect(() => {
     if (state.validated) {
@@ -225,7 +226,8 @@ export default function SubmitGovernanceProposal() {
           setFormDisabled(false)
         })
     }
-  }, [editor, state.validated, state.value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.validated])
 
   if (accountState.loading) {
     return (
