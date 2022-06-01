@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import SearchInputMobile from '../Search/SearchInputMobile'
+import React, { useEffect, useState } from 'react'
+
+import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import CategoryList from '../Category/CategoryList'
+import CategoryFilter from '../Search/CategoryFilter'
+import SearchInputMobile from '../Search/SearchInputMobile'
 import StatusFilter from '../Search/StatusFilter'
 import TimeFrameFilter from '../Search/TimeFrameFilter'
-import MobileNavigation from './MobileNavigation'
-import CategoryFilter from '../Search/CategoryFilter'
+
 import './BurgerMenuContent.css'
-import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import MobileNavigation from './MobileNavigation'
 
 export type FilterStatus = {
   categoryOpen: boolean
@@ -31,8 +33,8 @@ const MOBILE_NAVIGATION_HEIGHT = 104
 function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
   const [footer, setFooter] = useState<Element | null>(null)
   const [filterStatus, setFilterStatus] = useState(filtersInitialStatus)
-  const {status, setStatus} = useBurgerMenu()
-  const {open, searching, filtering, translate} = status
+  const { status, setStatus } = useBurgerMenu()
+  const { open, searching, filtering, translate } = status
 
   useEffect(() => {
     setFooter(document.querySelectorAll('.dcl.footer')[0])
@@ -41,12 +43,12 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
         footer.setAttribute('style', '')
       }
     }
-  }, [])
+  }, [footer])
 
   useEffect(() => {
     if (footer) {
       footer.classList.add('Animated')
-      if (!!translate) {
+      if (translate) {
         footer.setAttribute('style', `transform: translateY(${translate})`)
       } else {
         footer.setAttribute('style', '')
@@ -65,31 +67,27 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
   }, [open, filtering, searching])
 
   useEffect(() => {
-    let filtersHeight =
+    const filtersHeight =
       (filterStatus.categoryOpen ? CATEGORY_FILTER_HEIGHT : CLOSED_FILTER_HEIGHT) +
       (filterStatus.statusOpen ? STATUS_FILTER_HEIGHT : CLOSED_FILTER_HEIGHT) +
       (filterStatus.timeFrameOpen ? TIMEFRAME_FILTER_HEIGHT : CLOSED_FILTER_HEIGHT)
 
-    let newTranslate:string | undefined
-    if (!!navigationOnly) {
+    let newTranslate: string | undefined
+    if (navigationOnly) {
       newTranslate = MOBILE_NAVIGATION_HEIGHT + SEARCH_TITLE_HEIGHT + 'px'
     } else {
       if (!open) {
         newTranslate = undefined
       } else {
-        newTranslate =
-          (searching ? (filtering ? filtersHeight : SEARCH_TITLE_HEIGHT) : OPEN_BURGER_HEIGHT) + 'px'
+        newTranslate = (searching ? (filtering ? filtersHeight : SEARCH_TITLE_HEIGHT) : OPEN_BURGER_HEIGHT) + 'px'
       }
     }
-    setStatus((prev) => ({...prev, translate: newTranslate }))
-  }, [open, searching, filtering, filterStatus, navigationOnly])
+    setStatus((prev) => ({ ...prev, translate: newTranslate }))
+  }, [open, searching, filtering, filterStatus, navigationOnly, setStatus])
 
   return (
-    <div
-      className="BurgerMenuContent Animated"
-      style={(!open && { transform: 'translateY(-200%)' }) || {}}
-    >
-      {!!navigationOnly ? (
+    <div className="BurgerMenuContent Animated" style={(!open && { transform: 'translateY(-200%)' }) || {}}>
+      {navigationOnly ? (
         <>
           <SearchInputMobile />
           <MobileNavigation />

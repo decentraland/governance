@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
+import omit from 'lodash.omit'
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+import isURL from 'validator/lib/isURL'
+
 import { Governance } from '../../api/Governance'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LogIn from '../../components/User/LogIn'
+import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
+import { asNumber } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import isURL from 'validator/lib/isURL'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import omit from 'lodash.omit'
-import LogIn from '../../components/User/LogIn'
-import { asNumber } from '../../entities/Proposal/utils'
 
 import './submit.css'
 
@@ -112,11 +114,11 @@ const validate = createValidator<LinkedWearablesState>({
       links:
         assert(
           links.some((option) => option !== ''),
-          `error.linked_wearables.links_empty`
+          'error.linked_wearables.links_empty'
         ) ||
         assert(
           links.every((option) => isURL(option, { protocols: ['https'], require_protocol: true })),
-          `error.linked_wearables.url_invalid`
+          'error.linked_wearables.url_invalid'
         ),
       nft_collections:
         assert(state.nft_collections.length > 0, 'error.linked_wearables.nft_collections_empty') ||
@@ -135,11 +137,11 @@ const validate = createValidator<LinkedWearablesState>({
       smart_contract:
         assert(
           smart_contract.some((option) => option !== ''),
-          `error.linked_wearables.smart_contract_empty`
+          'error.linked_wearables.smart_contract_empty'
         ) ||
         assert(
           smart_contract.every((option) => isEthereumAddress(option)),
-          `error.linked_wearables.address_invalid`
+          'error.linked_wearables.address_invalid'
         ),
       governance:
         assert(state.governance.length > 0, 'error.linked_wearables.governance_empty') ||
@@ -153,11 +155,11 @@ const validate = createValidator<LinkedWearablesState>({
       managers:
         assert(
           managers.some((option) => option !== ''),
-          `error.linked_wearables.managers_empty`
+          'error.linked_wearables.managers_empty'
         ) ||
         assert(
           managers.every((option) => isEthereumAddress(option)),
-          `error.linked_wearables.address_invalid`
+          'error.linked_wearables.address_invalid'
         ),
     }
   },
@@ -262,7 +264,7 @@ export default function SubmitLinkedWearables() {
           setFormDisabled(false)
         })
     }
-  }, [state.validated])
+  }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
     return (
@@ -332,7 +334,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.motivation}
           placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ motivation: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
           onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
           error={!!state.error.motivation}
           message={
@@ -358,7 +360,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.nft_collections}
           placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ nft_collections: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ nft_collections: value })}
           onBlur={() => editor.set({ nft_collections: state.value.nft_collections.trim() })}
           error={!!state.error.nft_collections}
           message={
@@ -400,7 +402,7 @@ export default function SubmitLinkedWearables() {
           minHeight={175}
           value={state.value.governance}
           placeholder={t('page.submit_linked_wearables.governance_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ governance: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ governance: value })}
           onBlur={() => editor.set({ governance: state.value.governance.trim() })}
           error={!!state.error.governance}
           message={
@@ -421,28 +423,24 @@ export default function SubmitLinkedWearables() {
           {t('page.submit_linked_wearables.programmatically_generated_description')}
         </Paragraph>
         <div className="ProgrammaticallyGeneratedRadioButtons">
-          <span>
-            <Radio
-              checked={state.value.programmatically_generated}
-              label={
-                <label>
-                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
-                </label>
-              }
-              onChange={handleProgrammaticallyGeneratedOption}
-            />
-          </span>
-          <span style={{ marginLeft: '10px' }}>
-            <Radio
-              checked={!state.value.programmatically_generated}
-              label={
-                <label>
-                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
-                </label>
-              }
-              onChange={handleProgrammaticallyGeneratedOption}
-            />
-          </span>
+          <Radio
+            checked={state.value.programmatically_generated}
+            label={
+              <label>
+                <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
+              </label>
+            }
+            onChange={handleProgrammaticallyGeneratedOption}
+          />
+          <Radio
+            checked={!state.value.programmatically_generated}
+            label={
+              <label>
+                <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
+              </label>
+            }
+            onChange={handleProgrammaticallyGeneratedOption}
+          />
         </div>
         <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
           <Markdown className="tinyMarkdown">
@@ -463,7 +461,7 @@ export default function SubmitLinkedWearables() {
             minHeight={175}
             value={state.value.method}
             placeholder={t('page.submit_linked_wearables.method_placeholder')}
-            onChange={(_: any, { value }: any) => editor.set({ method: value })}
+            onChange={(_: unknown, { value }: { value: string }) => editor.set({ method: value })}
             onBlur={() => editor.set({ method: state.value.method.trim() })}
             error={!!state.error.method}
             message={

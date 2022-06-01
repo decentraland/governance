@@ -1,0 +1,18 @@
+.LoginMobile__Container {
+  text-align: center;
+}
+
+.LoginMobile__Logo {
+  display: block;
+  margin: auto;
+  max-width: 50%;
+}
+
+.LoginMobile__Title {
+  margin-bottom: 1rem !important;
+  font-size: xx-large !important;
+}
+
+.LoginMobile__Message {
+  margin-bottom: 5rem !important;
+}

@@ -1,27 +1,29 @@
 import React, { useMemo } from 'react'
+
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import locations from '../../modules/locations'
-import StatusLabel from '../Status/StatusLabel'
-import CategoryLabel from '../Category/CategoryLabel'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 
-import './ProposalItem.css'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import { Vote } from '../../entities/Votes/types'
+import { calculateResultWinner } from '../../entities/Votes/utils'
+import locations from '../../modules/locations'
+import CategoryLabel from '../Category/CategoryLabel'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
-import { calculateResultWinner } from '../../entities/Votes/utils'
-import { Vote } from '../../entities/Votes/types'
+import StatusLabel from '../Status/StatusLabel'
+
+import './ProposalItem.css'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes
   votes?: Record<string, Vote>
   subscribed?: boolean
   subscribing?: boolean
-  onSubscribe?: (e: React.MouseEvent<any>, proposal: ProposalAttributes) => void
+  onSubscribe?: (e: React.MouseEvent<unknown>, proposal: ProposalAttributes) => void
 }
 
 const subscribeIcon = require('../../images/icons/subscribe.svg').default
@@ -31,7 +33,7 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
-  function handleSubscription(e: React.MouseEvent<any>) {
+  function handleSubscription(e: React.MouseEvent<unknown>) {
     e.stopPropagation()
     e.preventDefault()
     onSubscribe && onSubscribe(e, proposal)
@@ -40,7 +42,6 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
     <Card
       as={Link}
       href={locations.proposal(proposal.id)}
-      style={{ width: '100%' }}
       className={TokenList.join(['ProposalItem', subscribed && 'ProposalItem--subscribed'])}
     >
       <Card.Content>

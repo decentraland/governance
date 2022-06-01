@@ -1,0 +1,7 @@
+@media (min-width: 768px) {
+  .Poll__Options {
+    width: 90%;
+    max-width: 300px;
+    margin: 0 40px;
+  }
+}

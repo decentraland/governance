@@ -1,7 +1,8 @@
 import React from 'react'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import './DetailsSection.css'
 import './SectionButton.css'

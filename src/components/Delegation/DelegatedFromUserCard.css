@@ -1,0 +1,8 @@
+.DelegatedFromUserCard__Content .dg.Paragraph {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.content.DelegatedFromUserCard__Content {
+  justify-content: space-between;
+}

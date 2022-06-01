@@ -30,19 +30,6 @@
   font-size: 15px;
 }
 
-.CoordinatesField .dcl.field {
-  max-width: 200px;
-  margin-right: 1rem;
-  text-align: center;
-}
-
-.CoordinatesField .dcl.field,
-.CoordinatesField .dcl.field .ui.input,
-.CoordinatesField .dcl.field .ui.input input {
-  text-align: center;
-  width: 100%;
-}
-
 .ContentLayout .ContentLayout__Section .dg.Paragraph.details {
   margin-bottom: 2px;
 }
@@ -54,7 +41,7 @@
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox label .dg.Paragraph {
   font-size: 15px;
   line-height: 18px;
-  color: #736E7D;
+  color: #736e7d;
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
@@ -81,6 +68,8 @@
 }
 
 .ProgrammaticallyGeneratedRadioButtons {
+  display: flex;
+  gap: 10px;
   margin-bottom: 10px;
 }
 

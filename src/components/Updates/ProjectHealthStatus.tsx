@@ -1,12 +1,15 @@
 import React from 'react'
+
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import toSnakeCase from 'lodash/snakeCase'
+
 import { ProjectHealth } from '../../entities/Updates/types'
-import './ProjectHealthStatus.css'
+import Cancel from '../Icon/Cancel'
 import Check from '../Icon/Check'
 import Warning from '../Icon/Warning'
-import Cancel from '../Icon/Cancel'
+
+import './ProjectHealthStatus.css'
 
 const getIconComponent = (health: ProjectHealth) => {
   if (health === ProjectHealth.AtRisk) {

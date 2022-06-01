@@ -20,6 +20,12 @@
   height: 100%;
 }
 
+@media (min-width: 768px) {
+  .ui.container.VotingPowerDetail .ui.card {
+    min-height: 298px;
+  }
+}
+
 .ui.container.VotingPowerDetail .ui.card >.ui.header,
 .ui.container.VotingPowerDetail .ui.card .dcl.stats {
   margin: 8px 0 16px;
@@ -45,16 +51,6 @@
   align-items: center;
   margin-bottom: 8px;
 }
-
-/* .ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i {
-  line-height: 1em;
-  vertical-align: text-top;
-}
-
-.ui.container.VotingPowerDetail .ui.card .dcl.stats .ui.header .dcl.mana.inline i.matic {
-  font-size: .9em;
-  background-repeat: no-repeat;
-} */
 
 .ui.container.VotingPowerDetail .ui.card .ui.loader.balance {
   top: 0;
@@ -123,6 +119,10 @@
   }
 
   .ui.container.VotingPowerDetail .ActionableLayout.EstateBalance {
-    margin-top: 0px;
+    margin-top: 0;
   }
+}
+
+.BalancePage .ActionableLayout__Action {
+  min-height: 35.99px !important;
 }

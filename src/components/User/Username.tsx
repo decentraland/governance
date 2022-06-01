@@ -1,30 +1,97 @@
 import React from 'react'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
-import { Address } from 'decentraland-ui/dist/components/Address/Address'
+
+import { Size, SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
-import { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Address } from 'decentraland-ui/dist/components/Address/Address'
+import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
+
+import useProfile from '../../hooks/useProfile'
 import locations from '../../modules/locations'
 
-interface Props {
+import './Username.css'
+
+type Props = SizeProps & {
+  address: string
+  linked?: boolean
   className?: string
-  profile?: Profile | null
-  address?: string
+  iconOnly?: boolean
+  addressOnly?: boolean
+  strong?: boolean
 }
 
-export default function Username({ className, profile, address = '' }: Props) {
-  const hasProfileName = profile && profile.name
+function getBlockieScale(size?: string) {
+  const DEFAULT_BLOCKIE_SCALE = 3
+  switch (size) {
+    case Size.Mini:
+      return 3
+    case Size.Tiny:
+      return 3.5
+    case Size.Small:
+      return 4.9
+    case Size.Medium:
+      return 7
+    case Size.Large:
+      return 8.4
+    case Size.Big:
+      return 10.5
+    case Size.Huge:
+      return 14.5
+    case Size.Massive:
+      return 20
+    case Size.Full:
+      return 42.5
+    default:
+      return DEFAULT_BLOCKIE_SCALE
+  }
+}
+
+const Username = ({ address, size, linked, iconOnly = false, addressOnly = false, strong = false, className }: Props) => {
+  const { profile, hasDclProfile } = useProfile(address)
+  const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
+  const blockieScale = getBlockieScale(size)
+
+  const userElement = (
+    <>
+      {addressOnly && (
+        <>
+          {profileHasName && profile!.name}
+          {!profileHasName && <Address value={address || ''} className={className} strong={strong}/>}
+        </>
+      )}
+
+      {!addressOnly && (
+        <>
+          {hasDclProfile && (
+            <>
+              <Avatar size={size || 'mini'} address={address} />
+              {profileHasName && !iconOnly && profile!.name}
+              {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong}/>}
+            </>
+          )}
+
+          {(!hasDclProfile || !profile) && (
+            <Blockie scale={blockieScale} seed={address || ''}>
+              {!iconOnly && <Address value={address || ''} strong={strong}/>}
+            </Blockie>
+          )}
+        </>
+      )}
+    </>
+  )
 
   return (
-    <Link className={TokenList.join([className])} href={locations.balance({ address })}>
-      {hasProfileName && <Avatar size="mini" address={profile?.ethAddress} style={{ marginRight: '.5rem' }} />}
-      {hasProfileName}
-      {!hasProfileName && !!address && (
-        <Blockie scale={3} seed={address}>
-          <Address value={address} />
-        </Blockie>
+    <>
+      {linked ? (
+        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
+          {userElement}
+        </Link>
+      ) : (
+        <span className={TokenList.join(['Username', className])}>{userElement}</span>
       )}
-    </Link>
+    </>
   )
 }
+
+export default Username

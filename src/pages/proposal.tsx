@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -24,12 +24,12 @@ import { Governance } from '../api/Governance'
 import { Snapshot } from '../api/Snapshot'
 import CategoryLabel from '../components/Category/CategoryLabel'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
-import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal'
+import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
-import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal'
+import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
-import { VoteRegisteredModal } from '../components/Modal/VoteRegisteredModal'
-import { VotesList } from '../components/Modal/VotesList'
+import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
+import { VotesList } from '../components/Modal/Votes/VotesList'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -42,8 +42,6 @@ import SubscribeButton from '../components/Section/SubscribeButton'
 import StatusLabel from '../components/Status/StatusLabel'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
-import { UpdateAttributes } from '../entities/Updates/types'
-import useProfile from '../hooks/useProfile'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import locations from '../modules/locations'
@@ -75,9 +73,9 @@ export default function ProposalPage() {
     showProposalSuccessModal: false,
     showUpdateSuccessModal: false,
   })
+  const patchOptionsRef = useRef(patchOptions)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
-  const { profile } = useProfile(proposal?.user)
   const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
   const [votes, votesState] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], {
     callWithTruthyDeps: true,
@@ -85,14 +83,6 @@ export default function ProposalPage() {
   const [subscriptions, subscriptionsState] = useAsyncMemo(
     () => Governance.get().getSubscriptions(proposal!.id),
     [proposal],
-    { callWithTruthyDeps: true }
-  )
-  const [votingPower, votingPowerState] = useAsyncMemo(
-    () =>
-      account && proposal!.status === ProposalStatus.Active
-        ? Governance.get().getVotingPower(proposal!.id)
-        : Promise.resolve(0),
-    [account, proposal],
     { callWithTruthyDeps: true }
   )
 
@@ -119,8 +109,8 @@ export default function ProposalPage() {
     [proposal, account, provider, votes]
   )
 
-  const [subscribing, subscribe] = useAsyncTask(
-    async (subscribe: boolean = true) => {
+  const [subscribing, subscribe] = useAsyncTask<[subscribe?: boolean | undefined]>(
+    async (subscribe = true) => {
       if (proposal) {
         if (subscribe) {
           const newSubscription = await Governance.get().subscribe(proposal.id)
@@ -168,12 +158,12 @@ export default function ProposalPage() {
   }, [proposal, account, isCommittee])
 
   useEffect(() => {
-    patchOptions({ showProposalSuccessModal: params.get('new') === 'true' })
-  }, [])
+    patchOptionsRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
+  }, [params])
 
   useEffect(() => {
-    patchOptions({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
-  }, [])
+    patchOptionsRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
+  }, [params])
 
   const closeProposalSuccessModal = () => {
     patchOptions({ showProposalSuccessModal: false })
@@ -197,9 +187,7 @@ export default function ProposalPage() {
         proposalId: proposal.id,
       })
     )
-  }, [nextUpdate?.id, proposal?.id])
-
-  const handleUpdateClick = (update: UpdateAttributes) => navigate(`/update/?id=${update.id}`)
+  }, [currentUpdate?.id, pendingUpdates, proposal])
 
   if (proposalState.error) {
     return (
@@ -246,7 +234,7 @@ export default function ProposalPage() {
         <ContentSection>
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
-          <div style={{ minHeight: '24px' }}>
+          <div className="ProposalDetailPage__Labels">
             {proposal && <StatusLabel status={proposal.status} />}
             {proposal && <CategoryLabel type={proposal.type} />}
           </div>
@@ -257,10 +245,8 @@ export default function ProposalPage() {
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
               <Markdown>{proposal?.description || ''}</Markdown>
-              <ProposalFooterPoi proposal={proposal} />
-              {showProposalUpdates && (
-                <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateClick={handleUpdateClick} />
-              )}
+              {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
+              {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 
@@ -286,21 +272,20 @@ export default function ProposalPage() {
               )}
               <ProposalResultSection
                 disabled={!proposal || !votes}
-                loading={voting || proposalState.loading || votesState.loading || votingPowerState.loading}
+                loading={voting || proposalState.loading || votesState.loading}
                 proposal={proposal}
                 votes={votes}
-                votingPower={votingPower || 0}
                 changingVote={options.changing}
                 onChangeVote={(_, changing) => patchOptions({ changing })}
                 onOpenVotesList={() => patchOptions({ showVotesList: true })}
                 onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
               />
-              <ProposalDetailSection proposal={proposal} profile={profile} />
+              {proposal && <ProposalDetailSection proposal={proposal} />}
               {(isOwner || isCommittee) && (
                 <Button
                   basic
+                  fluid
                   loading={deleting}
-                  style={{ width: '100%' }}
                   disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
                   onClick={() => patchOptions({ confirmDeletion: true })}
                 >
@@ -311,7 +296,7 @@ export default function ProposalPage() {
                 <Button
                   basic
                   loading={updatingStatus}
-                  style={{ width: '100%' }}
+                  fluid
                   onClick={() =>
                     patchOptions({
                       confirmStatusUpdate: ProposalStatus.Enacted,
@@ -326,7 +311,7 @@ export default function ProposalPage() {
                   <Button
                     basic
                     loading={updatingStatus}
-                    style={{ width: '100%' }}
+                    fluid
                     onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
                   >
                     {t('page.proposal_detail.pass')}
@@ -334,7 +319,7 @@ export default function ProposalPage() {
                   <Button
                     basic
                     loading={updatingStatus}
-                    style={{ width: '100%' }}
+                    fluid
                     onClick={() =>
                       patchOptions({
                         confirmStatusUpdate: ProposalStatus.Rejected,

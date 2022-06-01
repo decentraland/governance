@@ -1,0 +1,40 @@
+.VotingPowerListModal__Content {
+	width: 90%;
+	margin-left: 24px;
+	margin-top: 8px;
+}
+
+.VotingPowerListModal__Header {
+	width: 100%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.VotingPowerListModal__Header .dcl.close {
+	position: inherit !important;
+	width: 16px;
+}
+
+.VotingPowerListModal_Description p.dg.Paragraph  {
+	font-size: 15px;
+	line-height: 24px;
+}
+
+p.dg.Paragraph a.dg.Link.Link--pointer .VotingPowerListModal_Description {
+	color: #6299f0;
+}
+
+.VotingPowerListModal_Items {
+	margin: 0 auto 40px;
+	height: 50vh;
+	padding: 20px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.VotingPowerListModal_ItemWithDivider {
+	border-bottom: 1px solid #eaeaea;
+}

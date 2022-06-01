@@ -1,35 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
+
+import Label from 'decentraland-gatsby/dist/components/Form/Label'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
+import { Governance } from '../../api/Governance'
+import MarkdownNotice from '../../components/Form/MarkdownNotice'
+import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LogIn from '../../components/User/LogIn'
 import {
+  ProposalGrantCategory,
+  ProposalGrantTier,
   isProposalGrantCategory,
   isProposalGrantTier,
   newProposalGrantScheme,
-  ProposalGrantCategory,
-  ProposalGrantTier,
 } from '../../entities/Proposal/types'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
-import { Governance } from '../../api/Governance'
+import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import LogIn from '../../components/User/LogIn'
+
 import './submit.css'
 
 type GrantState = {
@@ -296,7 +299,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.abstract}
           placeholder={t('page.submit_grant.abstract_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ abstract: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ abstract: value })}
           onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
           error={!!state.error.abstract}
           message={
@@ -355,7 +358,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.description}
           placeholder={t('page.submit_grant.description_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ description: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
           onBlur={() => editor.set({ description: state.value.description.trim() })}
           error={!!state.error.description}
           message={
@@ -381,7 +384,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.specification}
           placeholder={t('page.submit_grant.specification_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ specification: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
           onBlur={() => editor.set({ specification: state.value.specification.trim() })}
           error={!!state.error.specification}
           message={
@@ -407,7 +410,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.personnel}
           placeholder={t('page.submit_grant.personnel_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ personnel: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ personnel: value })}
           onBlur={() => editor.set({ personnel: state.value.personnel.trim() })}
           error={!!state.error.personnel}
           message={
@@ -433,7 +436,7 @@ export default function SubmitBanName() {
           minHeight={175}
           value={state.value.roadmap}
           placeholder={t('page.submit_grant.roadmap_placeholder')}
-          onChange={(_: any, { value }: any) => editor.set({ roadmap: value })}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ roadmap: value })}
           onBlur={() => editor.set({ roadmap: state.value.roadmap.trim() })}
           error={!!state.error.roadmap}
           message={

@@ -1,0 +1,101 @@
+.ui.button.ChoiceButton {
+  background: var(--background);
+  border: 1px solid rgba(115,110,125,.32);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ChoiceButton__Text {
+  position: relative;
+  z-index: 2;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--voted {
+  pointer-events: all;
+  cursor: default;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--voted:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--approve:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--approve {
+  color: var(--background-happy-green);
+}
+
+.ui.button.ChoiceButton.ChoiceButton--reject:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--reject {
+  color: #FF4545;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-0:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-0 {
+  color: #4e79a7;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-1:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-1 {
+  color: #f28e2c;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-2:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-2 {
+  color: #e15759;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-3:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-3 {
+  color: #76b7b2;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-3:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-3 {
+  color: #59a14f;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-5:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-5 {
+  color: #edc949;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-6:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-6 {
+  color: #af7aa1;
+}
+
+.ui.button.ChoiceButton.ChoiceButton--status-7:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-7 {
+  color: #ff9da7;
+}
+
+.ChoiceButton__VoteCount {
+  position: absolute;
+  right: 8px;
+  opacity: 0.4;
+  z-index: 2;
+}
+
+.ChoiceButton__Delegate {
+  position: absolute;
+  left: 8px;
+  z-index: 2;
+  display: flex;
+}
+
+.ChoiceButton__Background {
+  position:absolute;
+  background: var(--secondary);
+  height: 100%;
+  top:0; bottom:0;
+  left:0;
+  z-index: 1;
+  border-radius: 6px 0 0 6px;
+}
+
+.ChoiceButton__BackgroundFull {
+  border-radius: 6px !important;
+}
