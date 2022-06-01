@@ -13,56 +13,58 @@ config:
   website-dao:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
   website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.io/
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names
-  website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
   website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
-  website-dao:GATSBY_DEFAULT_CHAIN_ID: '4'
-  website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
-  website-dao:GATSBY_DISCOURSE_CATEGORY: '5'
-  website-dao:GATSBY_DISCOURSE_USER: dao
+  website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
+  website-dao:GATSBY_DEFAULT_CHAIN_ID: "4"
   website-dao:GATSBY_DELEGATE_APPLICATION_URL: https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840
-  website-dao:GATSBY_DURATION_DRAFT: '1200'
-  website-dao:GATSBY_DURATION_GOVERNANCE: '1200'
-  website-dao:GATSBY_DURATION_GRANT_TIER4: '1200'
-  website-dao:GATSBY_DURATION_GRANT_TIER5: '1200'
-  website-dao:GATSBY_DURATION_GRANT_TIER6: '1200'
-  website-dao:GATSBY_DURATION_POLL: '1200'
+  website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
+  website-dao:GATSBY_DISCOURSE_CATEGORY: "5"
+  website-dao:GATSBY_DISCOURSE_USER: dao
+  website-dao:GATSBY_DURATION_DRAFT: "1200"
+  website-dao:GATSBY_DURATION_GOVERNANCE: "1200"
+  website-dao:GATSBY_DURATION_GRANT_TIER4: "1200"
+  website-dao:GATSBY_DURATION_GRANT_TIER5: "1200"
+  website-dao:GATSBY_DURATION_GRANT_TIER6: "1200"
+  website-dao:GATSBY_DURATION_POLL: "1200"
   website-dao:GATSBY_FEATURE_FLAGS_API: https://feature-flags.decentraland.org/dao.json
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.io/api
+  website-dao:GATSBY_GRANT_SIZE_MINIMUM: "100"
+  website-dao:GATSBY_GRANT_SIZE_TIER1: "1500"
+  website-dao:GATSBY_GRANT_SIZE_TIER2: "3000"
+  website-dao:GATSBY_GRANT_SIZE_TIER3: "5000"
+  website-dao:GATSBY_GRANT_SIZE_TIER4: "60000"
+  website-dao:GATSBY_GRANT_SIZE_TIER5: "120000"
+  website-dao:GATSBY_GRANT_SIZE_TIER6: "240000"
+  website-dao:GATSBY_IPFS_API: https://cloudflare-ipfs.com
   website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
-  website-dao:GATSBY_MAINTENANCE: 'false'
+  website-dao:GATSBY_MAINTENANCE: "false"
   website-dao:GATSBY_ROLLBAR_TOKEN: 81d278538c65450e93604cf1493a69ab
   website-dao:GATSBY_SEGMENT_KEY: CXcLRdj0SnrRBlwYTcyWVBuE9kYaIP47
-  website-dao:GATSBY_SNAPSHOT_ADDRESS: "0x2Ba0352480bd1Ea073A83e6639b06362131894CE"
-  website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: "0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446"
+  website-dao:GATSBY_SNAPSHOT_ADDRESS: 0x2Ba0352480bd1Ea073A83e6639b06362131894CE
   website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.org/
-  website-dao:GATSBY_SNAPSHOT_DURATION: '172800'
+  website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: 0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446
+  website-dao:GATSBY_SNAPSHOT_DURATION: "172800"
+  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot-rinkeby
   website-dao:GATSBY_SNAPSHOT_SPACE: ginoct.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
-  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot-rinkeby
-  website-dao:GATSBY_IPFS_API: https://cloudflare-ipfs.com
-  website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: '1000'
-  website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: '2500'
-  website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: '100'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES: '10000'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_BAN_NAME: '10000'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_CATALYST: '10000'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_DRAFT: '500'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE: '500'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT: '10000'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4: '600'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5: '700'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6: '800'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: '10000'
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: '500'
-  website-dao:GATSBY_GRANT_SIZE_MINIMUM: '100'
-  website-dao:GATSBY_GRANT_SIZE_TIER1: '1500'
-  website-dao:GATSBY_GRANT_SIZE_TIER2: '3000'
-  website-dao:GATSBY_GRANT_SIZE_TIER3: '5000'
-  website-dao:GATSBY_GRANT_SIZE_TIER4: '60000'
-  website-dao:GATSBY_GRANT_SIZE_TIER5: '120000'
-  website-dao:GATSBY_GRANT_SIZE_TIER6: '240000'
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: "1000"
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: "2500"
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: "100"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_BAN_NAME: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_CATALYST: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_DRAFT: "500"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE: "500"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4: "600"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5: "700"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6: "800"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: "10000"
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "500"
   website-dao:INFURA_KEYS:
     secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
+  website-dao:NEW_RELIC_LICENSE_KEY:
+    secure: v1:5mwkgKc+mKLOTiwz:oSdLw6rMYh9/Y2SANZZuP94fsqVBD5Xseb417a3za9XrKDUJBJVFGJVvh3OtnPMMUf8RKcf3gUY=
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=
-  website-dao:USE_PUBLIC_TLD: 'false'
+  website-dao:USE_PUBLIC_TLD: "false"
