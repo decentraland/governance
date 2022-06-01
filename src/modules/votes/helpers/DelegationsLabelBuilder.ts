@@ -1,15 +1,11 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time';
-import { intersection } from 'lodash';
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { intersection } from 'lodash'
 
-
-
-import { DelegationsLabelProps } from '../../../components/Section/ProposalVoting/DelegationsLabel';
-import { Vote } from '../../../entities/Votes/types';
-
+import { DelegationsLabelProps } from '../../../components/Section/ProposalVoting/DelegationsLabel'
+import { Vote } from '../../../entities/Votes/types'
 
 export class DelegationsLabelBuilder {
   private readonly votes: Record<string, Vote> | null | undefined
-  private readonly account: string
   private readonly ownVotingPower: number
   private readonly delegatedVotingPower: number
   private readonly delegators: string[] | null
@@ -19,7 +15,6 @@ export class DelegationsLabelBuilder {
   private readonly voteDifference: number | null
 
   constructor(
-    account: string,
     ownVotingPower: number,
     delegatedVotingPower: number,
     vote: Vote | null,
@@ -29,7 +24,6 @@ export class DelegationsLabelBuilder {
     delegators: string[] | null,
     votes: Record<string, Vote> | null | undefined
   ) {
-    this.account = account
     this.ownVotingPower = ownVotingPower
     this.delegatedVotingPower = delegatedVotingPower
     this.vote = vote
@@ -101,7 +95,10 @@ export class DelegationsLabelBuilder {
   private delegatorsVotedLabel(delegatorsVotes: number, totalDelegators: number) {
     return {
       delegatorsLabel: {
-        id: delegatorsVotes === totalDelegators ? 'page.proposal_detail.all_delegators_voted' : 'page.proposal_detail.delegators_voted',
+        id:
+          delegatorsVotes === totalDelegators
+            ? 'page.proposal_detail.all_delegators_voted'
+            : 'page.proposal_detail.delegators_voted',
         values: { votes: delegatorsVotes, total: totalDelegators },
       },
     }
@@ -111,7 +108,10 @@ export class DelegationsLabelBuilder {
     const amountRepresented = totalDelegators - delegatorsVotes
     return {
       delegatorsLabel: {
-        id: amountRepresented === 0 ? 'page.proposal_detail.all_delegators_voted' : 'page.proposal_detail.user_voted_for_delegators',
+        id:
+          amountRepresented === 0
+            ? 'page.proposal_detail.all_delegators_voted'
+            : 'page.proposal_detail.user_voted_for_delegators',
         values: { amountRepresented },
       },
     }
@@ -155,7 +155,7 @@ export class DelegationsLabelBuilder {
             const delegatorsVoted = delegatorsVotes > 0
             if (delegatorsVoted) {
               const delegatorsWithoutVote = totalDelegators - delegatorsVotes
-              if(delegatorsWithoutVote === 0){
+              if (delegatorsWithoutVote === 0) {
                 infoMessage = {
                   id: 'page.proposal_detail.info.user_has_not_voted_delegate_voted_all_delegators_voted',
                   values: {
@@ -256,7 +256,6 @@ export class DelegationsLabelBuilder {
                   delegators_without_vote: totalDelegators - delegatorsVotes,
                   total_delegators: totalDelegators,
                   delegate: this.delegate,
-                  delegators_info_id: this.getDelegatorsInfoId(totalDelegators),
                 },
               }
             }
@@ -277,7 +276,6 @@ export class DelegationsLabelBuilder {
                   total_delegators: totalDelegators,
                   delegate: this.delegate,
                   vote_difference: this.voteDifference,
-                  delegators_info_id: this.getDelegatorsInfoId(totalDelegators),
                 },
               }
             }
@@ -298,7 +296,7 @@ export class DelegationsLabelBuilder {
             const delegatorsVoted = delegatorsVotes > 0
             if (delegatorsVoted) {
               const delegatorsWithoutVote = totalDelegators - delegatorsVotes
-              if(delegatorsWithoutVote === 0){
+              if (delegatorsWithoutVote === 0) {
                 infoMessage = {
                   id: 'page.proposal_detail.info.user_voted_delegate_has_not_voted_all_delegators_voted',
                   values: {
@@ -313,7 +311,6 @@ export class DelegationsLabelBuilder {
                     total_delegators: totalDelegators,
                     delegated_vp: this.delegatedVotingPower,
                     delegate: this.delegate,
-                    delegators_info_id: this.getDelegatorsInfoId(totalDelegators),
                   },
                 }
               }
@@ -354,11 +351,7 @@ export class DelegationsLabelBuilder {
     return infoMessage
   }
 
-  private getDelegatorsInfoId(totalDelegators: number) {
-    return totalDelegators >  1 ? 'many_delegators' : 'single_delegator'
-  }
-
   public static dateFormat(timestamp: number) {
-    return Time(timestamp).fromNow().replace('a few ', '')
+    return Time.unix(timestamp).fromNow().replace('a few ', '')
   }
 }
