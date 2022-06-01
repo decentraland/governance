@@ -15,6 +15,7 @@ config:
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names
   website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
   website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
+  website-dao:GATSBY_VESTING_DASHBOARD_URL: https://vesting.decentraland.org/%23/
   website-dao:GATSBY_DEFAULT_CHAIN_ID: "4"
   website-dao:GATSBY_DELEGATE_APPLICATION_URL: https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
