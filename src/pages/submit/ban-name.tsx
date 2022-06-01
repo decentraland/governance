@@ -19,6 +19,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import CoAuthor from '../../components/Proposal/Submit/CoAuthor/CoAuthor'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isValidName } from '../../entities/Proposal/utils'
@@ -180,6 +181,9 @@ export default function SubmitBanName() {
           }
           disabled={formDisabled}
         />
+      </ContentSection>
+      <ContentSection>
+        <CoAuthor />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

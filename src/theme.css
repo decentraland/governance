@@ -147,6 +147,8 @@ body {
 
   --blue: #4888EE;
   --gray: #A19EA8;
+  --dark-gray: #736E7D;
+  --dark-gray-rgb: 115, 110, 125;
 }
 
 .ui.inverted.primary.button:active,

@@ -47,7 +47,15 @@ function getBlockieScale(size?: string) {
   }
 }
 
-const Username = ({ address, size, linked, iconOnly = false, addressOnly = false, strong = false, className }: Props) => {
+const Username = ({
+  address,
+  size,
+  linked,
+  iconOnly = false,
+  addressOnly = false,
+  strong = false,
+  className,
+}: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
   const blockieScale = getBlockieScale(size)
@@ -57,7 +65,7 @@ const Username = ({ address, size, linked, iconOnly = false, addressOnly = false
       {addressOnly && (
         <>
           {profileHasName && profile!.name}
-          {!profileHasName && <Address value={address || ''} className={className} strong={strong}/>}
+          {!profileHasName && <Address value={address || ''} className={className} strong={strong} />}
         </>
       )}
 
@@ -67,13 +75,13 @@ const Username = ({ address, size, linked, iconOnly = false, addressOnly = false
             <>
               <Avatar size={size || 'mini'} address={address} />
               {profileHasName && !iconOnly && profile!.name}
-              {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong}/>}
+              {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong} />}
             </>
           )}
 
           {(!hasDclProfile || !profile) && (
             <Blockie scale={blockieScale} seed={address || ''}>
-              {!iconOnly && <Address value={address || ''} strong={strong}/>}
+              {!iconOnly && <Address value={address || ''} strong={strong} />}
             </Blockie>
           )}
         </>

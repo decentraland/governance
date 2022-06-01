@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 12px 16px;
-  border: 1px solid #736e7d;
+  border: 1px solid var(--dark-gray);
 }
 
 .ProposalUpdate--pending {
@@ -58,7 +58,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #736e7d;
+  color: var(--dark-gray);
   max-width: 570px;
   padding-right: 10px;
 }
@@ -80,7 +80,7 @@
   font-size: 13px;
   line-height: 13px;
   font-weight: 500;
-  color: #736e7d;
+  color: var(--dark-gray);
   text-transform: uppercase;
   margin-right: 5px;
 }
@@ -102,12 +102,12 @@
   align-items: center;
   font-size: 12px;
   line-height: 24px;
-  color: #736e7d;
+  color: var(--dark-gray);
   text-transform: uppercase;
 }
 
 .ProposalUpdate__DateText {
-  color: #736e7d;
+  color: var(--dark-gray);
   text-transform: uppercase;
   opacity: 0.5;
 }

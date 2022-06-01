@@ -510,7 +510,16 @@
         "current_update_due_date": "Update due in **{date}**",
         "current_update_info": "You must share a community update once every 30 days during your vesting period. Updates can be posted on the last 15 days of every 30-days period.",
         "next_update_due_date": "Next one due in **{date}**"
-      }
+      },
+      "co_author_request_label": "Co-author request",
+      "co_author_request_description": "You’ve been added as a potential co-author for this initiative by its creator.",
+      "confirm_label": "Confirm",
+      "deny_label": "Deny",
+      "co_authoring_label": "Co-authoring",
+      "co_authoring_description": "You’ve confirmed being involved in this initiative.",
+      "not_co_authoring_label": "Not co-authoring",
+      "not_co_authoring_description": "You’ve denied being involved in this initiative.",
+      "revert_label": "Revert"
     },
     "proposal_activity": {
       "title": "Decentraland DAO",
@@ -641,7 +650,13 @@
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
       "markdown_tooltip": " (markdown)",
-      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed."
+      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
+      "co_author_label": "Co-authors",
+      "co_author_description": "If the proposal you’re about to submit is the product of more than one individual putting thoughts into it, adding them as co-authors will help provide an extra layer of social proof that may result in more votes.",
+      "co_author_placeholder": "Enter their address",
+      "co_author_placeholder_extra": "Enter another address",
+      "co_author_count": "{amount} co-authors added",
+      "co_author_error": "Invalid address added"
     },
     "submit_poll": {
       "title": "Create a community poll",
