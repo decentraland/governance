@@ -172,6 +172,7 @@ function proposalDuration(duration: number) {
 }
 
 const newProposalPollValidator = schema.compile(newProposalPollScheme)
+
 export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
@@ -191,6 +192,7 @@ export async function createProposalPoll(req: WithAuth) {
 }
 
 const newProposalDraftValidator = schema.compile(newProposalDraftScheme)
+
 export async function createProposalDraft(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalDraft>(newProposalDraftValidator, req.body || {})
@@ -211,6 +213,7 @@ export async function createProposalDraft(req: WithAuth) {
 }
 
 const newProposalGovernanceValidator = schema.compile(newProposalGovernanceScheme)
+
 export async function createProposalGovernance(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGovernance>(newProposalGovernanceValidator, req.body || {})
@@ -231,6 +234,7 @@ export async function createProposalGovernance(req: WithAuth) {
 }
 
 const newProposalBanNameValidator = schema.compile(newProposalBanNameScheme)
+
 export async function createProposalBanName(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalBanName>(newProposalBanNameValidator, req.body || {})
@@ -305,6 +309,7 @@ export async function createProposalPOI(req: WithAuth) {
 }
 
 const newProposalCatalystValidator = schema.compile(newProposalCatalystScheme)
+
 export async function createProposalCatalyst(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalCatalyst>(newProposalCatalystValidator, req.body || {})
@@ -326,6 +331,7 @@ export async function createProposalCatalyst(req: WithAuth) {
 }
 
 const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
+
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
@@ -347,6 +353,7 @@ export async function createProposalGrant(req: WithAuth) {
 }
 
 const newProposalLinkedWearablesValidator = schema.compile(newProposalLinkedWearablesScheme)
+
 export async function createProposalLinkedWearables(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalLinkedWearables>(newProposalLinkedWearablesValidator, req.body || {})
@@ -532,11 +539,8 @@ export async function createProposal(
     rejected_description: null,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
-    textsearch: null,
+    textsearch: ProposalModel.textsearch(title, description, data.user, null),
   }
-
-  // TODO: this can be inside newProposal object. textsearch can receive only what needs to be used.
-  newProposal.textsearch = ProposalModel.textsearch(newProposal)
 
   try {
     await ProposalModel.create(newProposal)
@@ -612,6 +616,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
       update.vesting_address = configuration.vesting_address
+      update.textsearch = ProposalModel.textsearch(
+        proposal.title,
+        proposal.description,
+        proposal.user,
+        update.vesting_address
+      )
       await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
   } else if (configuration.status === ProposalStatus.Passed) {
@@ -621,11 +631,6 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.rejected_by = user
     update.rejected_description = configuration.description || null
   }
-
-  update.textsearch = ProposalModel.textsearch({
-    ...proposal,
-    ...update,
-  })
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
 
