@@ -386,9 +386,9 @@ export async function createProposal(
   let snapshotStatus: SnapshotStatus
   let snapshotSpace: SnapshotSpace
   try {
-    // TODO: This two calls can be called at the same time
-    snapshotStatus = await Snapshot.get().getStatus()
-    snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
+    const values = await Promise.all([await Snapshot.get().getStatus(), await Snapshot.get().getSpace(SNAPSHOT_SPACE)])
+    snapshotStatus = values[0]
+    snapshotSpace = values[1]
   } catch (err) {
     throw new RequestError(
       `Error getting snapshot space "${SNAPSHOT_SPACE}"`,
