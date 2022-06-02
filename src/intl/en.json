@@ -509,7 +509,10 @@
         "current_update_available_in": "Update available in **{date}**",
         "current_update_due_date": "Update due in **{date}**",
         "current_update_info": "You must share a community update once every 30 days during your vesting period. Updates can be posted on the last 15 days of every 30-days period.",
-        "next_update_due_date": "Next one due in **{date}**"
+        "next_update_due_date": "Next one due in **{date}**",
+        "vesting_label": "Grant beneficiary",
+        "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
+        "vesting_button": "View vesting contract"
       }
     },
     "proposal_activity": {
