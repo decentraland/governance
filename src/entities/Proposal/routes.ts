@@ -491,12 +491,11 @@ export async function createProposal(
     throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
   }
 
-  const forum_url = forumUrl({
-    discourse_topic_slug: discourseProposal.topic_slug,
-    discourse_topic_id: discourseProposal.topic_id,
-  })
   logger.log('Discourse proposal created', {
-    forum_url,
+    forum_url: forumUrl({
+      discourse_topic_slug: discourseProposal.topic_slug,
+      discourse_topic_id: discourseProposal.topic_id,
+    }),
     discourse_proposal: JSON.stringify(discourseProposal),
   })
 
