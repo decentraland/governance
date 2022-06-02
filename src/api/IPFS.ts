@@ -9,12 +9,8 @@ export type HashContent = {
 }
 
 export class IPFS extends API {
-  static Url =
-    process.env.GATSBY_IPFS_API ||
-    process.env.REACT_APP_IPFS_API ||
-    process.env.STORYBOOK_IPFS_API ||
-    process.env.IPFS_API ||
-    'https://ipfs.io'
+  // TODO: Public Infura IPFS gateway will be deprecated by October 5th, 2022. Use dedicated gateway.
+  static Url = process.env.INFURA_IPFS_GATEWAY_API || 'https://ipfs.infura.io:5001/api/v0'
 
   static Cache = new Map<string, IPFS>()
 
@@ -27,11 +23,12 @@ export class IPFS extends API {
   }
 
   static get() {
-    return this.from(env('IPFS_API', this.Url))
+    return this.from(env('INFURA_IPFS_GATEWAY_API', this.Url))
   }
 
   async getHash(hash: string): Promise<HashContent> {
-    console.log(this.baseUrl + `/ipfs/${hash}`)
-    return this.fetch<HashContent>(`/ipfs/${hash}`)
+    const url = `/cat?arg=${hash}`
+    console.log(this.baseUrl + url)
+    return this.fetch<HashContent>(url, this.options().method('POST'))
   }
 }
