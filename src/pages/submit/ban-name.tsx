@@ -19,7 +19,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
-import CoAuthor from '../../components/Proposal/Submit/CoAuthor/CoAuthor'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isValidName } from '../../entities/Proposal/utils'
@@ -31,6 +31,7 @@ import './submit.css'
 type BanNameState = {
   name: string
   description: string
+  coAuthors?: string[]
 }
 
 const initialPollState: BanNameState = {
@@ -77,6 +78,10 @@ export default function SubmitBanName() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+
+  useEffect(() => {
+    console.log(state.value.coAuthors)
+  }, [state.value.coAuthors])
 
   useEffect(() => {
     if (state.validated) {
@@ -183,7 +188,7 @@ export default function SubmitBanName() {
         />
       </ContentSection>
       <ContentSection>
-        <CoAuthor />
+        <CoAuthors setCoAuthors={editor.set} />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

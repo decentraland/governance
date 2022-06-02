@@ -3,10 +3,18 @@ import React from 'react'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import './CoAuthor.css'
 import CoAuthorSelect from './CoAuthorSelect'
+import './CoAuthors.css'
 
-function CoAuthor() {
+interface CoAuthors {
+  coAuthors?: string[]
+}
+
+export interface CoAuthorProps {
+  setCoAuthors: <T>(newProps: Partial<T extends CoAuthors ? T : unknown>) => void
+}
+
+function CoAuthors({ setCoAuthors }: CoAuthorProps) {
   const t = useFormatMessage()
 
   return (
@@ -19,9 +27,9 @@ function CoAuthor() {
       <Paragraph tiny secondary className="details">
         {t('page.submit.co_author_description')}
       </Paragraph>
-      <CoAuthorSelect />
+      <CoAuthorSelect setCoAuthors={setCoAuthors} />
     </div>
   )
 }
 
-export default CoAuthor
+export default CoAuthors

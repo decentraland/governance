@@ -1,7 +1,8 @@
-import React, { KeyboardEventHandler, useState } from 'react'
+import React, { KeyboardEventHandler, useEffect, useState } from 'react'
 import { OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -9,6 +10,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import Username from '../../../User/Username'
 
 import './CoAuthorSelect.css'
+import { CoAuthorProps } from './CoAuthors'
 
 interface CoAuthor {
   readonly label: JSX.Element
@@ -29,7 +31,7 @@ const createCoAuthor = (address: string): CoAuthor => ({
   value: address.toLowerCase(),
 })
 
-function CoAuthorSelect() {
+function CoAuthorSelect({ setCoAuthors }: CoAuthorProps) {
   const [state, setState] = useState<State>({
     inputValue: '',
     value: [],
@@ -37,8 +39,21 @@ function CoAuthorSelect() {
   })
 
   const t = useFormatMessage()
+  const [account] = useAuthContext()
 
-  const isDuplicate = (address: string): boolean => state.value.map((ca) => ca.value).includes(address.toLowerCase())
+  useEffect(() => {
+    if (state.value.length > 0) {
+      setCoAuthors({ coAuthors: state.value.map((ca) => ca.value) })
+    } else {
+      setCoAuthors({ coAuthors: undefined })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.value])
+
+  const isDuplicate = (address: string): boolean => {
+    const addressLower = address.toLowerCase()
+    return account?.toLowerCase() === addressLower || state.value.map((ca) => ca.value).includes(addressLower)
+  }
 
   const handleChange = (value: OnChangeValue<CoAuthor, true>) => {
     setState((prev) => ({ ...prev, value }))
