@@ -655,10 +655,11 @@
       "markdown_tooltip": " (markdown)",
       "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
       "co_author_label": "Co-authors",
+      "optional_tooltip": " (optional)",
       "co_author_description": "If the proposal you’re about to submit is the product of more than one individual putting thoughts into it, adding them as co-authors will help provide an extra layer of social proof that may result in more votes.",
       "co_author_placeholder": "Enter their address",
-      "co_author_count": "{amount} co-authors added",
-      "co_author_error": "Invalid address added"
+      "co_author_count": "{amount} Co-author{s} added",
+      "co_author_error": "Invalid address"
     },
     "submit_poll": {
       "title": "Create a community poll",

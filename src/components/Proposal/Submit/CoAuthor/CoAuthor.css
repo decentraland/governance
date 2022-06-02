@@ -1,0 +1,24 @@
+.Co-author .Title__Container {
+  display: flex;
+  align-items: center;
+}
+
+.Co-author .Title__Container {
+  line-height: 18px;
+}
+
+.Co-author .Title__Container > :not(:first-child) {
+  margin-left: 5px;
+}
+
+.Co-author .Title__Container .NewBadge {
+  text-transform: uppercase;
+  font-size: 9px;
+  color: white;
+  background-color: var(--red);
+  border-radius: 12px;
+  padding: 0 5px;
+  height: fit-content;
+  line-height: 13px;
+  font-weight: 500;
+}

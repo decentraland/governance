@@ -135,7 +135,7 @@
 }
 
 .ProposalUpdate__KeepReading--offTrack {
-  color: #d80027;
+  color: var(--red);
 }
 
 .ProposalUpdate .ui.basic.button {

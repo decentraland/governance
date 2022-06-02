@@ -24,6 +24,6 @@
 }
 
 .ProjectHealthButton--offTrack {
-  border: 1px solid #d80027;
-  color: #d80027;
+  border: 1px solid var(--red);
+  color: var(--red);
 }
