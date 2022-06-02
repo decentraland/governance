@@ -39,6 +39,7 @@ import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
 import SubscribeButton from '../components/Section/SubscribeButton'
+import VestingSection from '../components/Section/VestingSection'
 import StatusLabel from '../components/Status/StatusLabel'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
@@ -251,6 +252,7 @@ export default function ProposalPage() {
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
+              {!!proposal?.vesting_address && <VestingSection vestingAddress={proposal.vesting_address} />}
               <ForumButton
                 loading={proposalState.loading}
                 disabled={!proposal}

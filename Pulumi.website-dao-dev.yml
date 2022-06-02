@@ -15,6 +15,7 @@ config:
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names
   website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
   website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
+  website-dao:GATSBY_VESTING_DASHBOARD_URL: https://vesting.decentraland.org/%23/
   website-dao:GATSBY_DEFAULT_CHAIN_ID: "4"
   website-dao:GATSBY_DELEGATE_APPLICATION_URL: https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
@@ -63,6 +64,7 @@ config:
   website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "500"
   website-dao:INFURA_KEYS:
     secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
+  website-dao:NEW_RELIC_APP_NAME: governance.staging
   website-dao:NEW_RELIC_LICENSE_KEY:
     secure: v1:5mwkgKc+mKLOTiwz:oSdLw6rMYh9/Y2SANZZuP94fsqVBD5Xseb417a3za9XrKDUJBJVFGJVvh3OtnPMMUf8RKcf3gUY=
   website-dao:SNAPSHOT_PRIVATE_KEY:
