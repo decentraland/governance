@@ -404,7 +404,6 @@ export async function createProposal(
     )
   }
 
-  // TODO: Check if snapshot returns latest block and avoid using Alchemy to get latest block
   let block: Block
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
