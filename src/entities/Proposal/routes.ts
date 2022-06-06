@@ -172,6 +172,7 @@ function proposalDuration(duration: number) {
 }
 
 const newProposalPollValidator = schema.compile(newProposalPollScheme)
+
 export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
@@ -191,6 +192,7 @@ export async function createProposalPoll(req: WithAuth) {
 }
 
 const newProposalDraftValidator = schema.compile(newProposalDraftScheme)
+
 export async function createProposalDraft(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalDraft>(newProposalDraftValidator, req.body || {})
@@ -211,6 +213,7 @@ export async function createProposalDraft(req: WithAuth) {
 }
 
 const newProposalGovernanceValidator = schema.compile(newProposalGovernanceScheme)
+
 export async function createProposalGovernance(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGovernance>(newProposalGovernanceValidator, req.body || {})
@@ -231,6 +234,7 @@ export async function createProposalGovernance(req: WithAuth) {
 }
 
 const newProposalBanNameValidator = schema.compile(newProposalBanNameScheme)
+
 export async function createProposalBanName(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalBanName>(newProposalBanNameValidator, req.body || {})
@@ -305,6 +309,7 @@ export async function createProposalPOI(req: WithAuth) {
 }
 
 const newProposalCatalystValidator = schema.compile(newProposalCatalystScheme)
+
 export async function createProposalCatalyst(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalCatalyst>(newProposalCatalystValidator, req.body || {})
@@ -326,6 +331,7 @@ export async function createProposalCatalyst(req: WithAuth) {
 }
 
 const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
+
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
@@ -347,6 +353,7 @@ export async function createProposalGrant(req: WithAuth) {
 }
 
 const newProposalLinkedWearablesValidator = schema.compile(newProposalLinkedWearablesScheme)
+
 export async function createProposalLinkedWearables(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalLinkedWearables>(newProposalLinkedWearablesValidator, req.body || {})
@@ -367,11 +374,10 @@ export async function createProposal(
   data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>
 ) {
   const id = uuid()
-  const address = SNAPSHOT_ADDRESS
   const start = Time.utc().set('seconds', 0)
   const end = data.finish_at
   const proposal_url = proposalUrl({ id })
-  const title = await templates.title({ type: data.type, configuration: data.configuration })
+  const title = templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
 
   let profile: Avatar | null
@@ -384,13 +390,12 @@ export async function createProposal(
   //
   // Create proposal payload
   //
-  let msg: string
-  let block: Block
   let snapshotStatus: SnapshotStatus
   let snapshotSpace: SnapshotSpace
   try {
-    snapshotStatus = await Snapshot.get().getStatus()
-    snapshotSpace = await Snapshot.get().getSpace(SNAPSHOT_SPACE)
+    const values = await Promise.all([await Snapshot.get().getStatus(), await Snapshot.get().getSpace(SNAPSHOT_SPACE)])
+    snapshotStatus = values[0]
+    snapshotSpace = values[1]
   } catch (err) {
     throw new RequestError(
       `Error getting snapshot space "${SNAPSHOT_SPACE}"`,
@@ -399,6 +404,7 @@ export async function createProposal(
     )
   }
 
+  let block: Block
   try {
     const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
     block = await provider.getBlock('latest')
@@ -406,6 +412,7 @@ export async function createProposal(
     throw new RequestError("Couldn't get the latest block", RequestError.InternalServerError, err as Error)
   }
 
+  let msg: string
   try {
     const snapshotTemplateProps: templates.SnapshotTemplateProps = {
       user: data.user,
@@ -421,7 +428,7 @@ export async function createProposal(
       snapshotSpace.network,
       snapshotSpace.strategies,
       {
-        name: await templates.snapshotTitle(snapshotTemplateProps),
+        name: templates.snapshotTitle(snapshotTemplateProps),
         body: await templates.snapshotDescription(snapshotTemplateProps),
         choices: data.configuration.choices,
         snapshot: block.number,
@@ -440,7 +447,7 @@ export async function createProposal(
   try {
     const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
     logger.log('Creating proposal in snapshot', { signed: sig, message: msg })
-    snapshotProposal = await Snapshot.get().send(address, msg, sig)
+    snapshotProposal = await Snapshot.get().send(SNAPSHOT_ADDRESS, msg, sig)
   } catch (err) {
     throw new RequestError("Couldn't create proposal in snapshot", RequestError.InternalServerError, err as Error)
   }
@@ -480,7 +487,7 @@ export async function createProposal(
     discourseProposal = await Discourse.get().createPost(
       {
         category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-        title: await templates.forumTitle(discourseTemplateProps),
+        title: templates.forumTitle(discourseTemplateProps),
         raw: await templates.forumDescription(discourseTemplateProps),
       },
       DISCOURSE_AUTH
@@ -490,12 +497,11 @@ export async function createProposal(
     throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
   }
 
-  const forum_url = forumUrl({
-    discourse_topic_slug: discourseProposal.topic_slug,
-    discourse_topic_id: discourseProposal.topic_id,
-  })
   logger.log('Discourse proposal created', {
-    forum_url: forum_url,
+    forum_url: forumUrl({
+      discourse_topic_slug: discourseProposal.topic_slug,
+      discourse_topic_id: discourseProposal.topic_id,
+    }),
     discourse_proposal: JSON.stringify(discourseProposal),
   })
 
@@ -532,10 +538,8 @@ export async function createProposal(
     rejected_description: null,
     created_at: start.toJSON() as any,
     updated_at: start.toJSON() as any,
-    textsearch: null,
+    textsearch: ProposalModel.textsearch(title, description, data.user, null),
   }
-
-  newProposal.textsearch = ProposalModel.textsearch(newProposal)
 
   try {
     await ProposalModel.create(newProposal)
@@ -611,6 +615,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
       update.vesting_address = configuration.vesting_address
+      update.textsearch = ProposalModel.textsearch(
+        proposal.title,
+        proposal.description,
+        proposal.user,
+        update.vesting_address
+      )
       await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
   } else if (configuration.status === ProposalStatus.Passed) {
@@ -620,11 +630,6 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.rejected_by = user
     update.rejected_description = configuration.description || null
   }
-
-  update.textsearch = ProposalModel.textsearch({
-    ...proposal,
-    ...update,
-  })
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
 

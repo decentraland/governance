@@ -1,11 +1,13 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import {
+  SQL,
   columns,
   conditional,
   join,
   limit,
   objectValues,
-  offset, SQL, table
+  offset,
+  table,
 } from 'decentraland-gatsby/dist/entities/Database/utils'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { QueryPart } from 'decentraland-server/dist/db/types'
@@ -15,7 +17,7 @@ import isUUID from 'validator/lib/isUUID'
 import SubscriptionModel from '../Subscription/model'
 
 import tsquery from './tsquery'
-import { isProposalStatus, isProposalType, ProposalAttributes, ProposalStatus } from './types'
+import { ProposalAttributes, ProposalStatus, isProposalStatus, isProposalType } from './types'
 import { SITEMAP_ITEMS_PER_PAGE } from './utils'
 
 export type FilterProposalList = {
@@ -50,8 +52,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const keys = Object.keys(proposal).map((key) => key.replace(/\W/gi, ''))
 
     const sql = SQL`
-      INSERT INTO ${table(this)} ${columns(keys)}
-      VALUES ${objectValues(keys, [proposal])}
+        INSERT INTO ${table(this)} ${columns(keys)}
+        VALUES
+        ${objectValues(keys, [proposal])}
     `
 
     return this.query(sql) as any
@@ -72,14 +75,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     const sql = SQL`
-      UPDATE ${table(this)}
-      SET
-        ${join(
+        UPDATE ${table(this)}
+        SET ${join(
           changesKeys.map((key) => SQL`"${SQL.raw(key)}" = ${changes[key]}`),
           SQL`,`
         )}
-      WHERE
-        ${join(
+        WHERE ${join(
           conditionsKeys.map((key) => SQL`"${SQL.raw(key)}" = ${conditions[key]}`),
           SQL`,`
         )}
@@ -94,12 +95,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async findFromSnapshotIds(ids: string[]): Promise<ProposalAttributes[]> {
     const query = SQL`
-      SELECT *
-      FROM ${table(ProposalModel)}
-      WHERE "snapshot_id" IN (${join(
-        ids.map((id) => SQL`${id}`),
-        SQL`, `
-      )})`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "snapshot_id" IN (${join(
+          ids.map((id) => SQL`${id}`),
+          SQL`, `
+        )})`
 
     const results = await this.query(query)
     return results.map((item) => ProposalModel.parse(item))
@@ -107,11 +108,11 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async getSitemapProposals(page: number): Promise<{ id: string }[]> {
     const query = SQL`
-      SELECT id FROM ${table(ProposalModel)}
-      WHERE "deleted" = FALSE
-      ORDER BY created_at ASC
-      OFFSET ${page * SITEMAP_ITEMS_PER_PAGE}
-      LIMIT ${SITEMAP_ITEMS_PER_PAGE}
+        SELECT id
+        FROM ${table(ProposalModel)}
+        WHERE "deleted" = FALSE
+        ORDER BY created_at ASC
+        OFFSET ${page * SITEMAP_ITEMS_PER_PAGE} LIMIT ${SITEMAP_ITEMS_PER_PAGE}
     `
 
     return this.query(query)
@@ -119,14 +120,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async activateProposals() {
     const query = SQL`
-      UPDATE ${table(ProposalModel)}
-      SET
-        "status" = ${ProposalStatus.Active},
-        "updated_at" = now()
-      WHERE
-        "deleted" = FALSE
-        AND "status" = ${ProposalStatus.Pending}
-        AND "start_at" >= now()
+        UPDATE ${table(ProposalModel)}
+        SET "status"     = ${ProposalStatus.Active},
+            "updated_at" = now()
+        WHERE "deleted" = FALSE
+          AND "status" = ${ProposalStatus.Pending}
+          AND "start_at" >= now()
     `
 
     return this.rowCount(query)
@@ -134,12 +133,11 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async getFinishedProposal() {
     const query = SQL`
-      SELECT *
-      FROM ${table(ProposalModel)}
-      WHERE
-        "deleted" = FALSE
-        AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
-        AND "finish_at" <= (now() + interval '1 minute')
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "deleted" = FALSE
+          AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
+          AND "finish_at" <= (now() + interval '1 minute')
     `
 
     const result = await this.query(query)
@@ -155,14 +153,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const ids = valid_ids.map((id) => SQL`${id}`)
 
     const query = SQL`
-      UPDATE ${table(ProposalModel)}
-      SET
-        "status" = ${status},
-        "updated_at" = ${new Date()}
-      WHERE
-        "deleted" = FALSE
-        AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
-        AND "id" IN (${join(ids)})
+        UPDATE ${table(ProposalModel)}
+        SET "status"     = ${status},
+            "updated_at" = ${new Date()}
+        WHERE "deleted" = FALSE
+          AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
+          AND "id" IN (${join(ids)})
     `
 
     return this.rowCount(query)
@@ -188,20 +184,25 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const timeFrame = this.parseTimeframe(filter.timeFrame)
 
     const result = await this.query(SQL`
-      SELECT COUNT(*) as "total"
-      FROM ${table(ProposalModel)} p
-      ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      ${conditional(
-        !!filter.search,
-        SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
-      )}
-      WHERE "deleted" = FALSE
-      ${conditional(!!filter.user, SQL`AND p."user" = ${filter.user}`)}
-      ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)}
-      ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)}
-      ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)}
-      ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)}
-      ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
+        SELECT COUNT(*) as "total"
+        FROM ${table(ProposalModel)} p
+            ${conditional(
+              !!filter.subscribed,
+              SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`
+            )} ${conditional(
+      !!filter.search,
+      SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+    )}
+        WHERE "deleted" = FALSE ${conditional(!!filter.user, SQL`AND p."user" = ${filter.user}`)} ${conditional(
+      !!filter.type,
+      SQL`AND p."type" = ${filter.type}`
+    )} ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} ${conditional(
+      !!filter.subscribed,
+      SQL`AND s."user" = ${filter.subscribed}`
+    )} ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} ${conditional(
+      !!filter.search,
+      SQL`AND "rank" > 0`
+    )}
     `)
 
     return (result && result[0] && Number(result[0].total)) || 0
@@ -230,23 +231,30 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const orderDirection = filter.order || 'DESC'
 
     const proposals = await this.query(SQL`
-      SELECT p.*
-      FROM ${table(ProposalModel)} p
-      ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-      ${conditional(
-        !!filter.search,
-        SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
-      )}
-      WHERE "deleted" = FALSE
-      ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)}
-      ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)}
-      ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)}
-      ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)}
-      ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)}
-      ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
-      ORDER BY ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)}
-      ${limit(filter.limit, { min: 0, max: 100, defaultValue: 100 })}
-      ${offset(filter.offset)}
+        SELECT p.*
+        FROM ${table(ProposalModel)} p
+            ${conditional(
+              !!filter.subscribed,
+              SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`
+            )} ${conditional(
+      !!filter.search,
+      SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+    )}
+        WHERE "deleted" = FALSE ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)} ${conditional(
+      !!filter.type,
+      SQL`AND "type" = ${filter.type}`
+    )} ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} ${conditional(
+      !!filter.subscribed,
+      SQL`AND s."user" = ${filter.subscribed}`
+    )} ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} ${conditional(
+      !!filter.search,
+      SQL`AND "rank" > 0`
+    )}
+        ORDER BY ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} ${limit(filter.limit, {
+      min: 0,
+      max: 100,
+      defaultValue: 100,
+    })} ${offset(filter.offset)}
     `)
 
     return proposals.map(this.parse)
@@ -266,13 +274,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
   }
 
-  static textsearch(proposal: ProposalAttributes) {
+  static textsearch(title: string, description: string, user: string, vesting_address: string | null) {
     return SQL`(${join(
       [
-        SQL`setweight(to_tsvector(${proposal.title}), 'A')`,
-        SQL`setweight(to_tsvector(${proposal.user}), 'B')`,
-        SQL`setweight(to_tsvector(${proposal.vesting_address || ''}), 'B')`,
-        SQL`setweight(to_tsvector(${proposal.description || ''}), 'C')`,
+        SQL`setweight(to_tsvector(${title}), 'A')`,
+        SQL`setweight(to_tsvector(${user}), 'B')`,
+        SQL`setweight(to_tsvector(${vesting_address || ''}), 'B')`,
+        SQL`setweight(to_tsvector(${description || ''}), 'C')`,
       ],
       SQL` || `
     )})`

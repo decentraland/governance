@@ -9,12 +9,7 @@ export type HashContent = {
 }
 
 export class IPFS extends API {
-  static Url =
-    process.env.GATSBY_IPFS_API ||
-    process.env.REACT_APP_IPFS_API ||
-    process.env.STORYBOOK_IPFS_API ||
-    process.env.IPFS_API ||
-    'https://ipfs.io'
+  static Url = process.env.INFURA_IPFS_GATEWAY_API || 'https://cloudflare-ipfs.com'
 
   static Cache = new Map<string, IPFS>()
 
@@ -27,11 +22,13 @@ export class IPFS extends API {
   }
 
   static get() {
-    return this.from(env('IPFS_API', this.Url))
+    return this.from(env('INFURA_IPFS_GATEWAY_API', this.Url))
   }
 
   async getHash(hash: string): Promise<HashContent> {
-    console.log(this.baseUrl + `/ipfs/${hash}`)
-    return this.fetch<HashContent>(`/ipfs/${hash}`)
+    const url = `/ipfs/${hash}`
+    console.log(this.baseUrl + url)
+
+    return this.fetch<HashContent>(url, this.options().method('GET'))
   }
 }
