@@ -8,9 +8,6 @@ export type HashContent = {
   version: string
 }
 
-const INFURA_IPFS_PROJECT_ID = process.env.INFURA_IPFS_PROJECT_ID || ''
-const INFURA_IPFS_PROJECT_SECRET = process.env.INFURA_IPFS_PROJECT_SECRET || ''
-
 export class IPFS extends API {
   static Url = process.env.INFURA_IPFS_GATEWAY_API || 'https://cloudflare-ipfs.com'
 
@@ -31,13 +28,7 @@ export class IPFS extends API {
   async getHash(hash: string): Promise<HashContent> {
     const url = `/ipfs/${hash}`
     console.log(this.baseUrl + url)
-    const auth = Buffer.from(`${INFURA_IPFS_PROJECT_ID}:${INFURA_IPFS_PROJECT_SECRET}`).toString('base64')
 
-    return this.fetch<HashContent>(
-      url,
-      this.options()
-        .method('GET')
-        .headers({ Authorization: `Basic ${auth}` })
-    )
+    return this.fetch<HashContent>(url, this.options().method('GET'))
   }
 }
