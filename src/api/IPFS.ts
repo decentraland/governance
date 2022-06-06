@@ -8,9 +8,11 @@ export type HashContent = {
   version: string
 }
 
+const INFURA_IPFS_PROJECT_ID = process.env.INFURA_IPFS_PROJECT_ID || ''
+const INFURA_IPFS_PROJECT_SECRET = process.env.INFURA_IPFS_PROJECT_SECRET || ''
+
 export class IPFS extends API {
-  // TODO: Public Infura IPFS gateway will be deprecated by October 5th, 2022. Use dedicated gateway.
-  static Url = process.env.INFURA_IPFS_GATEWAY_API || 'https://ipfs.infura.io:5001/api/v0'
+  static Url = process.env.INFURA_IPFS_GATEWAY_API || 'https://cloudflare-ipfs.com'
 
   static Cache = new Map<string, IPFS>()
 
@@ -27,8 +29,15 @@ export class IPFS extends API {
   }
 
   async getHash(hash: string): Promise<HashContent> {
-    const url = `/cat?arg=${hash}`
+    const url = `/ipfs/${hash}`
     console.log(this.baseUrl + url)
-    return this.fetch<HashContent>(url, this.options().method('POST'))
+    const auth = Buffer.from(`${INFURA_IPFS_PROJECT_ID}:${INFURA_IPFS_PROJECT_SECRET}`).toString('base64')
+
+    return this.fetch<HashContent>(
+      url,
+      this.options()
+        .method('GET')
+        .headers({ Authorization: `Basic ${auth}` })
+    )
   }
 }

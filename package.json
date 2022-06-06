@@ -13,7 +13,7 @@
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
-    "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/server.ts -e ts,json --exec 'ts-node -r dotenv/config' src/server",
+    "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/api --watch src/server.ts -e ts,json --exec 'ts-node -r dotenv/config' src/server",
     "clean": "gatsby clean",
     "version": "tsc -p .",
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",

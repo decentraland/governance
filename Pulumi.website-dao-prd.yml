@@ -26,8 +26,8 @@ config:
   website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
   website-dao:GATSBY_ROLLBAR_TOKEN: 81d278538c65450e93604cf1493a69ab
   website-dao:GATSBY_SEGMENT_KEY: vNzuKtwiBQvYxLAVzWQARB1i507VkSHq
-  website-dao:GATSBY_SNAPSHOT_ADDRESS: "0x5E23D08324f017d5425e59A2782C9ae27aCE0958"
-  website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: "0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446"
+  website-dao:GATSBY_SNAPSHOT_ADDRESS: '0x5E23D08324f017d5425e59A2782C9ae27aCE0958'
+  website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
   website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.org/
   website-dao:GATSBY_SNAPSHOT_DURATION: '604800'
   website-dao:GATSBY_SNAPSHOT_SPACE: snapshot.dcl.eth
@@ -63,6 +63,10 @@ config:
   website-dao:GATSBY_GRANT_SIZE_TIER6: '240000'
   website-dao:INFURA_KEYS:
     secure: v1:b66vOHUKvamiB8VP:VjyyAraMpkIFnXmTf0PY6/DhVEkc143Y0Nd404NInFx0xDQwi52jskUrQB2iJqPa
+  website-dao:INFURA_IPFS_GATEWAY_API: https://dal-dao.infura-ipfs.io
+  website-dao:INFURA_IPFS_PROJECT_ID: 2A4zopZLxn3MG5QOWKTdF67pRhI
+  website-dao:INFURA_IPFS_PROJECT_SECRET:
+    secure: v1:WXNkQeCxUagwj2ws:Hp3onkN85bdbRFVvAEHS6rxEJJ90clq+4H3+qySk8S1oNC+5J4j33Z7ZZxNhhJOP
   website-dao:NEW_RELIC_APP_NAME: governance.production
   website-dao:NEW_RELIC_LICENSE_KEY:
     secure: v1:wl6EWe5alyXpDeQA:ivmTjco3vpy/qoLDSEBqOTUust4l42DhrgD1BrefB8Pk9wPs1CvtPWyOtvtgu6PLaxwEplA13Rc=
