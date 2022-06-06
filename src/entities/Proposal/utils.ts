@@ -2,8 +2,9 @@ import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import numeral from 'numeral'
 
-import { SNAPSHOT_URL } from '../Snapshot/constants'
+import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
+import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 import {
   ProposalAttributes,
   ProposalGrantTier,
@@ -17,8 +18,6 @@ export const MIN_PROPOSAL_LIMIT = 0
 export const MAX_PROPOSAL_LIMIT = 100
 export const SITEMAP_ITEMS_PER_PAGE = 100
 
-export const MIN_NAME_SIZE = 2
-export const MAX_NAME_SIZE = 15
 export const DEFAULT_CHOICES = ['yes', 'no']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
@@ -143,3 +142,18 @@ export function getUpdateUrl(updateId: string, proposalId: string) {
   target.search = '?' + params.toString()
   return target.toString()
 }
+
+function grantDuration(value: string | undefined | null) {
+  return Number(value || SNAPSHOT_DURATION)
+}
+
+export const GrantDuration = {
+  [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),
+  [ProposalGrantTier.Tier2]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER2),
+  [ProposalGrantTier.Tier3]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER3),
+  [ProposalGrantTier.Tier4]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER4),
+  [ProposalGrantTier.Tier5]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER5),
+  [ProposalGrantTier.Tier6]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER6),
+}
+
+export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)

@@ -30,7 +30,6 @@ import { getUpdateMessage } from './templates/messages'
 import ProposalModel from './model'
 import * as templates from './templates'
 import {
-  GrantDuration,
   GrantRequiredVP,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -59,6 +58,7 @@ import {
 } from './types'
 import {
   DEFAULT_CHOICES,
+  GrantDuration,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
   forumUrl,
