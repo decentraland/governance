@@ -13,61 +13,63 @@ config:
   website-dao:GATSBY_BUY_LAND_URL: https://market.decentraland.org/browse?section=land
   website-dao:GATSBY_BUY_MANA_URL: https://account.decentraland.org/
   website-dao:GATSBY_BUY_NAME_URL: https://builder.decentraland.org/names
-  website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
   website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
-  website-dao:GATSBY_DEFAULT_CHAIN_ID: "1"
-  website-dao:GATSBY_DELEGATE_APPLICATION_URL: https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840
+  website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
+  website-dao:GATSBY_VESTING_DASHBOARD_URL: https://vesting.decentraland.org/%23/
+  website-dao:GATSBY_DEFAULT_CHAIN_ID: '1'
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.org
-  website-dao:GATSBY_DISCOURSE_CATEGORY: "13"
+  website-dao:GATSBY_DISCOURSE_CATEGORY: '13'
   website-dao:GATSBY_DISCOURSE_USER: dao
-  website-dao:GATSBY_DURATION_DRAFT: "604800"
-  website-dao:GATSBY_DURATION_GOVERNANCE: "1209600"
-  website-dao:GATSBY_DURATION_GRANT_TIER4: "1209600"
-  website-dao:GATSBY_DURATION_GRANT_TIER5: "1209600"
-  website-dao:GATSBY_DURATION_GRANT_TIER6: "1209600"
-  website-dao:GATSBY_DURATION_POLL: "432000"
+  website-dao:GATSBY_DELEGATE_APPLICATION_URL: https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840
   website-dao:GATSBY_FEATURE_FLAGS_API: https://feature-flags.decentraland.org/dao.json
   website-dao:GATSBY_GOVERNANCE_API: https://governance.decentraland.org/api
-  website-dao:GATSBY_GRANT_SIZE_MINIMUM: "100"
-  website-dao:GATSBY_GRANT_SIZE_TIER1: "1500"
-  website-dao:GATSBY_GRANT_SIZE_TIER2: "3000"
-  website-dao:GATSBY_GRANT_SIZE_TIER3: "5000"
-  website-dao:GATSBY_GRANT_SIZE_TIER4: "60000"
-  website-dao:GATSBY_GRANT_SIZE_TIER5: "120000"
-  website-dao:GATSBY_GRANT_SIZE_TIER6: "240000"
-  website-dao:GATSBY_IPFS_API: https://cloudflare-ipfs.com
   website-dao:GATSBY_JOIN_DISCORD_URL: https://dcl.gg/discord
   website-dao:GATSBY_ROLLBAR_TOKEN: 81d278538c65450e93604cf1493a69ab
   website-dao:GATSBY_SEGMENT_KEY: vNzuKtwiBQvYxLAVzWQARB1i507VkSHq
-  website-dao:GATSBY_SNAPSHOT_ADDRESS: 0x5E23D08324f017d5425e59A2782C9ae27aCE0958
+  website-dao:GATSBY_SNAPSHOT_ADDRESS: '0x5E23D08324f017d5425e59A2782C9ae27aCE0958'
+  website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
   website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.org/
-  website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: 0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446
-  website-dao:GATSBY_SNAPSHOT_DURATION: "604800"
-  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot
+  website-dao:GATSBY_SNAPSHOT_DURATION: '604800'
   website-dao:GATSBY_SNAPSHOT_SPACE: snapshot.dcl.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
-  website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: "1000"
-  website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: "2500"
-  website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: "100"
-  website-dao:GATSBY_VESTING_DASHBOARD_URL: https://vesting.decentraland.org/%23/
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_BAN_NAME: "500000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_CATALYST: "500000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_DRAFT: "1000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE: "6000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT: "1000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4: "2000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5: "4000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6: "8000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES: "4000000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: "500000"
-  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: "500000"
-  website-dao:INFURA_IPFS_PROJECT_SECRET:
-    secure: v1:Zln9+P760s51Qq/N:K+yr8V9g8DOiOrWrWLJtavoPXlUynYMZHKdXr1fCuTadHuw1tPRLJOGlZcTzFzPy
+  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot
+  website-dao:GATSBY_IPFS_API: https://cloudflare-ipfs.com
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES: '4000000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_BAN_NAME: '500000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_CATALYST: '500000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POI: '500000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_POLL: '500000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_DRAFT: '1000000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE: '6000000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT: '1000000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4: '2000000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5: '4000000'
+  website-dao:GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6: '8000000'
+  website-dao:GATSBY_DURATION_GRANT_TIER4: '1209600'
+  website-dao:GATSBY_DURATION_GRANT_TIER5: '1209600'
+  website-dao:GATSBY_DURATION_GRANT_TIER6: '1209600'
+  website-dao:GATSBY_DURATION_POLL: '432000'
+  website-dao:GATSBY_DURATION_DRAFT: '604800'
+  website-dao:GATSBY_DURATION_GOVERNANCE: '1209600'
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: '100'
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: '1000'
+  website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: '2500'
+  website-dao:GATSBY_GRANT_SIZE_MINIMUM: '100'
+  website-dao:GATSBY_GRANT_SIZE_TIER1: '1500'
+  website-dao:GATSBY_GRANT_SIZE_TIER2: '3000'
+  website-dao:GATSBY_GRANT_SIZE_TIER3: '5000'
+  website-dao:GATSBY_GRANT_SIZE_TIER4: '60000'
+  website-dao:GATSBY_GRANT_SIZE_TIER5: '120000'
+  website-dao:GATSBY_GRANT_SIZE_TIER6: '240000'
   website-dao:INFURA_KEYS:
     secure: v1:b66vOHUKvamiB8VP:VjyyAraMpkIFnXmTf0PY6/DhVEkc143Y0Nd404NInFx0xDQwi52jskUrQB2iJqPa
+  website-dao:INFURA_IPFS_GATEWAY_API: https://dal-dao.infura-ipfs.io
+  website-dao:INFURA_IPFS_PROJECT_ID: 2A4zopZLxn3MG5QOWKTdF67pRhI
+  website-dao:INFURA_IPFS_PROJECT_SECRET:
+    secure: v1:WXNkQeCxUagwj2ws:Hp3onkN85bdbRFVvAEHS6rxEJJ90clq+4H3+qySk8S1oNC+5J4j33Z7ZZxNhhJOP
   website-dao:NEW_RELIC_APP_NAME: governance.production
   website-dao:NEW_RELIC_LICENSE_KEY:
     secure: v1:wl6EWe5alyXpDeQA:ivmTjco3vpy/qoLDSEBqOTUust4l42DhrgD1BrefB8Pk9wPs1CvtPWyOtvtgu6PLaxwEplA13Rc=
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:NCALHJc3wgvqdspj:vZ5nu/emrqARzgCo/nkJ6XsGvHdEHaYzBwSj3UpJu+ZdNuy4M4W0ruHyJ12U0KOXTAvi5+vWXJYGeW5tvzLVubYAT7hEXuhVtHYb6QKyyPg=
-  website-dao:USE_PUBLIC_TLD: "true"
+  website-dao:USE_PUBLIC_TLD: 'true'

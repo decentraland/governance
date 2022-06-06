@@ -1,24 +1,25 @@
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
+
 import {
-  NewProposalLinkedWearables,
   NewProposalBanName,
   NewProposalCatalyst,
+  NewProposalDraft,
+  NewProposalGovernance,
   NewProposalGrant,
+  NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
   ProposalType,
-  NewProposalDraft,
-  NewProposalGovernance
 } from '../types'
 
+import * as linkedWearables from './LinkedWearables'
 import * as banName from './banName'
 import * as catalyst from './catalyst'
+import * as draft from './draft'
+import * as governance from './governance'
 import * as grant from './grant'
 import * as poi from './poi'
 import * as poll from './poll'
-import * as draft from './draft'
-import * as governance from './governance'
-import * as linkedWearables from './LinkedWearables'
 import { template } from './utils'
 
 type NewConfiguration =
@@ -31,7 +32,7 @@ type NewConfiguration =
   | NewProposalDraft
   | NewProposalGovernance
 
-export const title = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => {
+export const title = ({ type, configuration }: { type: ProposalType; configuration: NewConfiguration }) => {
   switch (type) {
     case ProposalType.POI:
       return poi.title(configuration as any)
@@ -52,7 +53,7 @@ export const title = async ({ type, configuration }: { type: ProposalType, confi
   }
 }
 
-export const description = async ({ type, configuration }: { type: ProposalType, configuration: NewConfiguration }) => {
+export const description = async ({ type, configuration }: { type: ProposalType; configuration: NewConfiguration }) => {
   switch (type) {
     case ProposalType.POI:
       return poi.description(configuration as any)
@@ -74,22 +75,28 @@ export const description = async ({ type, configuration }: { type: ProposalType,
 }
 
 export type SnapshotTemplateProps = {
-  type: ProposalType,
-  configuration: NewConfiguration,
-  user: string,
-  profile: Avatar | null,
+  type: ProposalType
+  configuration: NewConfiguration
+  user: string
+  profile: Avatar | null
   proposal_url: string
 }
 
-export const snapshotTitle = async ({ type, configuration }: SnapshotTemplateProps) => title({ type, configuration })
+export const snapshotTitle = ({ type, configuration }: SnapshotTemplateProps) => title({ type, configuration })
 
-export const snapshotDescription = async ({ type, configuration, user, profile, proposal_url }: SnapshotTemplateProps) => template`
+export const snapshotDescription = async ({
+  type,
+  configuration,
+  user,
+  profile,
+  proposal_url,
+}: SnapshotTemplateProps) => template`
 
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
-  await description({type, configuration}) +
+  (await description({ type, configuration })) +
   (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }
 
@@ -98,25 +105,32 @@ ${
 `
 
 export type ForumTemplateProps = {
-  type: ProposalType,
-  configuration: NewConfiguration,
-  user: string,
-  profile: Avatar | null,
-  proposal_url: string,
-  snapshot_url: string,
+  type: ProposalType
+  configuration: NewConfiguration
+  user: string
+  profile: Avatar | null
+  proposal_url: string
+  snapshot_url: string
   snapshot_id: string
 }
 
-export const forumTitle = async ({ type, configuration, snapshot_id }: ForumTemplateProps) =>
-  `[DAO: ${snapshot_id.slice(0, 7)}] ` + await title({ type, configuration })
+export const forumTitle = ({ type, configuration, snapshot_id }: ForumTemplateProps) =>
+  `[DAO: ${snapshot_id.slice(0, 7)}] ` + title({ type, configuration })
 
-export const forumDescription = async ({ type, configuration, user, profile, proposal_url, snapshot_url }: ForumTemplateProps) => template`
+export const forumDescription = async ({
+  type,
+  configuration,
+  user,
+  profile,
+  proposal_url,
+  snapshot_url,
+}: ForumTemplateProps) => template`
 
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
-  await description({type, configuration}) +
+  (await description({ type, configuration })) +
   (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }
 
