@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
-import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Snapshot/constants'
+import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import { Delegate } from '../../../hooks/useDelegatesInfo'
 import Sort from '../../Icon/Sort'
 

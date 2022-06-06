@@ -1,10 +1,8 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { SNAPSHOT_DURATION } from '../Snapshot/constants'
+import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './utils'
-
-export type ProposalAttributes<C extends {} = any> = {
+export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   id: string
   snapshot_id: string
   snapshot_space: string
@@ -496,18 +494,6 @@ export const GrantRequiredVP = {
     process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6,
     ProposalRequiredVP[ProposalType.Grant]
   ),
-}
-
-function grantDuration(value: string | undefined | null) {
-  return Number(value || SNAPSHOT_DURATION)
-}
-export const GrantDuration = {
-  [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),
-  [ProposalGrantTier.Tier2]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER2),
-  [ProposalGrantTier.Tier3]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER3),
-  [ProposalGrantTier.Tier4]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER4),
-  [ProposalGrantTier.Tier5]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER5),
-  [ProposalGrantTier.Tier6]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER6),
 }
 
 export type NewProposalGrant = {
