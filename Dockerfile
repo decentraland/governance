@@ -31,7 +31,7 @@ COPY ./newrelic.js      /app/newrelic.js
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
-RUN npm ci
+RUN npm install
 RUN npm install --arch=arm64 --platform=linux --libc=musl sharp
 
 RUN apk del native-deps && rm -rf /var/cache/apk/*
