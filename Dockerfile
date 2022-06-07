@@ -37,7 +37,6 @@ RUN apk del native-deps && rm -rf /var/cache/apk/*
 
 COPY ./src                  /app/src
 COPY ./static               /app/static
-COPY ./templates            /app/templates
 COPY ./.env                 /app/.env.production
 COPY ./entrypoint.sh        /app/entrypoint.sh
 COPY ./gatsby-browser.js    /app/gatsby-browser.js
