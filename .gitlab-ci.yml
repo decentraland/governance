@@ -26,8 +26,12 @@ build:code:
 
     # install dependencies
     - git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
-    - npm i -g npm@6
-    - npm ci --cache .npm --prefer-offline
+    - mv package-lock.json package-lock.json.temp
+    - mv package.json package.json.temp
+    - npm i -g npm@8
+    - npm i -D decentraland-gatsby-deploy@1 --legacy-peer-deps
+    - mv package-lock.json.temp package-lock.json
+    - mv package.json.temp package.json
 
     # setup dcl environment
     - export PATH="$PATH:$HOME/.pulumi/bin"
