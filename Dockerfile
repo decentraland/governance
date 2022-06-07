@@ -32,6 +32,7 @@ COPY ./newrelic.js      /app/newrelic.js
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
 RUN npm ci
+RUN npm install --ignore-scripts=false --verbose sharp
 
 RUN apk del native-deps && rm -rf /var/cache/apk/*
 
@@ -47,7 +48,8 @@ COPY ./tsconfig.json        /app/tsconfig.json
 
 RUN sed -i.temp '/Pulumi\.ts/d' package.json
 
-RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build
+RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build:server
+RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build:front
 RUN npm prune --production
 
 FROM node:16-alpine
