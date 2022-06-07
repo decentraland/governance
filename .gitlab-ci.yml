@@ -25,7 +25,7 @@ build:code:
   script:
 
     # install dependencies
-    - git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+    # - npm ci --cache .npm --prefer-offline
     - mv package-lock.json package-lock.json.temp
     - mv package.json package.json.temp
     - npm i -g npm@8
@@ -49,16 +49,22 @@ build:code:
 
     - source ./node_modules/.bin/setup-environment
 
-    # build source
-    - npm run build
+    - env | grep GATSBY_ > .env
+    # - echo .env
 
     # push server
+    - pulumi plugin install resource aws v4.36.0
+    - pulumi plugin install resource cloudflare v4.3.0
     - dcl-lock-sync
     - dcl-up $PULUMI_STACK
     - dcl-sync-release
 
-    # push static
+    # # push static
+    - mkdir ./public
+    - docker run -v $PWD:/data --rm --entrypoint cp $(pulumi stack output serviceImage) -r '/app/public' '/data'
+
     - export BUCKET_WEBSITE_NAME="$(pulumi stack output bucketName)"
+
     - >
       npx @dcl/cdn-uploader@next \
             --bucket $BUCKET_WEBSITE_NAME \
