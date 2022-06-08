@@ -80,7 +80,7 @@
     "react-flickity-component": "^3.6.2",
     "remark-parse": "^9.0.0",
     "remark-stringify": "^9.0.1",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.6",
     "slug": "^4.0.4",
     "unified": "9.2.2"
   },
