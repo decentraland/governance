@@ -12,6 +12,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import DelegatedFromUserCard from '../components/Delegation/DelegatedFromUserCard'
 import DelegatedToUserCard from '../components/Delegation/DelegatedToUserCard'
+import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import EstateBalanceCard from '../components/Token/EstateBalanceCard'
 import LandBalanceCard from '../components/Token/LandBalanceCard'
@@ -29,7 +30,7 @@ export default function BalancePage() {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [userAddress] = useAuthContext()
+  const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
   const {
@@ -55,6 +56,10 @@ export default function BalancePage() {
         <MaintenancePage />
       </>
     )
+  }
+
+  if (authState.loading) {
+    return <LoadingView />
   }
 
   if (!userAddress) {

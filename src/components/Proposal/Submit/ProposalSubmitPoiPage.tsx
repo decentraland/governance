@@ -10,10 +10,8 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Governance } from '../../../api/Governance'
 import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
@@ -22,6 +20,7 @@ import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+import LoadingView from '../../Layout/LoadingView'
 import LogIn from '../../User/LogIn'
 
 import './ProposalSubmitPoiPage.css'
@@ -162,13 +161,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   }, [editor, poiType, state])
 
   if (accountState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   if (!account) {
