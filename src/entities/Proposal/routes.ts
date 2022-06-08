@@ -581,7 +581,7 @@ export function commentProposalUpdateInDiscourse(id: string) {
     const discourseComment: DiscourseComment = {
       topic_id: updatedProposal.discourse_topic_id,
       raw: updateMessage,
-      created_at: updatedProposal.created_at.toJSON(),
+      created_at: new Date().toJSON(),
     }
     await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
   })
