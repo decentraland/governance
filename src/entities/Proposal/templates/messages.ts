@@ -46,7 +46,7 @@ function getJobTriggeredUpdateMessage(
   proposal: ProposalAttributes,
   votes: Record<string, Vote>
 ) {
-  const resultsByChoices = calculateResult(getProposalChoices(proposal), votes, proposal.required_to_pass || 0)
+  const resultsByChoices = calculateResult(getProposalChoices(proposal), votes)
   const votingResults = getVotingResultsMessage(resultsByChoices)
   return `${proposal.title}\n\n` + `This proposal is now in status: ${statusDisplayName}.\n\n` + votingResults
 }

@@ -1,6 +1,5 @@
 import { def, get } from 'bdd-lazy-var/getter'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import 'jest'
 
 import VotesModel from '../../Votes/model'
 import ProposalModel from '../model'
@@ -16,8 +15,6 @@ import {
 import { DEFAULT_CHOICES } from '../utils'
 
 import { getUpdateMessage } from './messages'
-
-require('bdd-lazy-var')
 
 const start = Time.utc().set('seconds', 0)
 const SNAPSHOT_DURATION = 600
@@ -50,8 +47,8 @@ export function initProposalAttributes(
     discourse_id: 333,
     discourse_topic_id: 444,
     discourse_topic_slug: 'discourse test topic slug',
-    start_at: start.toJSON() as any,
-    finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toJSON() as any,
+    start_at: start.toJSON() as never,
+    finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toJSON() as never,
     deleted: false,
     deleted_by: null,
     enacted: enactedStatus,
@@ -62,8 +59,8 @@ export function initProposalAttributes(
     passed_description: passedDescription,
     rejected_by: updatingUser,
     rejected_description: rejectedDescription,
-    created_at: start.toJSON() as any,
-    updated_at: start.toJSON() as any,
+    created_at: start.toJSON() as never,
+    updated_at: start.toJSON() as never,
     textsearch: null,
   }
 }
@@ -89,6 +86,10 @@ export const PASSED_VOTES = {
     vp: 110000,
     timestamp: 0,
   },
+}
+
+const POLL_VOTES = {
+  ...PASSED_VOTES,
   '0x1f149885bb140f07ff88de2ac4d521bc27964c12': {
     choice: 3,
     vp: 100,
@@ -152,27 +153,18 @@ export const DEFAULT_CONFIGURATION = {
 export const DEFAULT_PROPOSAL_TYPE = ProposalType.POI
 
 describe('getUpdateMessage', () => {
-  let enactedDescription: string | null
   let proposalAttributes: ProposalAttributes
-  let passedDescription: string | null
-  let rejectedDescription: string | null
-  let proposal: ProposalAttributes
-  let configuration: any
-  let user: string | null = null
-  let proposalType: ProposalType
-
   def('updateMessage', () => getUpdateMessage(get.proposal, get.votes))
-
   def('proposal', () => {
     proposalAttributes = initProposalAttributes(
       get.proposalStatus,
       get.enactedStatus,
-      enactedDescription,
-      passedDescription,
-      rejectedDescription,
+      get.enactedDescription,
+      get.passedDescription,
+      get.rejectedDescription,
       get.configuration,
       get.proposalType,
-      user
+      get.user
     )
     return ProposalModel.parse(proposalAttributes)
   })
@@ -188,7 +180,7 @@ describe('getUpdateMessage', () => {
       def('votes', () => PASSED_VOTES)
 
       it('should return a message with the Finished status and the results of the voting', () => {
-        expect(get.updateMessage).toContain(proposal.title)
+        expect(get.updateMessage).toContain(get.proposal.title)
         expect(get.updateMessage).toBe(
           'Test Proposal\n\n' +
             'This proposal is now in status: FINISHED.\n\n' +
@@ -213,9 +205,9 @@ describe('getUpdateMessage', () => {
       def('proposalStatus', () => ProposalStatus.Passed)
 
       describe('when the proposal is Catalyst', () => {
-        beforeAll(() => {
-          proposalType = ProposalType.Catalyst
-          configuration = {
+        def('proposalType', () => ProposalType.Catalyst)
+        def('configuration', () => {
+          return {
             owner: 'Catalyst node owner',
             domain: 'node.domain',
             description: 'node description',
@@ -224,8 +216,8 @@ describe('getUpdateMessage', () => {
         })
         it('should return a message with the passed status and the results of the voting', () => {
           expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-          expect(get.updateMessage).not.toContain(passedDescription)
-          expect(get.updateMessage).toContain(proposal.title)
+          expect(get.updateMessage).not.toContain(get.passedDescription)
+          expect(get.updateMessage).toContain(get.proposal.title)
           expect(get.updateMessage).toBe(
             'Test Proposal\n\n' +
               'This proposal is now in status: PASSED.\n\n' +
@@ -237,10 +229,7 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the proposal is BanName', () => {
-        beforeAll(() => {
-          proposalType = ProposalType.BanName
-        })
-
+        def('proposalType', () => ProposalType.BanName)
         def('configuration', () => {
           return {
             name: 'Banned Name',
@@ -251,8 +240,8 @@ describe('getUpdateMessage', () => {
 
         it('should return a message with the passed status and the results of the voting', () => {
           expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-          expect(get.updateMessage).not.toContain(passedDescription)
-          expect(get.updateMessage).toContain(proposal.title)
+          expect(get.updateMessage).not.toContain(get.passedDescription)
+          expect(get.updateMessage).toContain(get.proposal.title)
           expect(get.updateMessage).toBe(
             'Test Proposal\n\n' +
               'This proposal is now in status: PASSED.\n\n' +
@@ -264,9 +253,7 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the proposal is POI', () => {
-        beforeAll(() => {
-          proposalType = ProposalType.POI
-        })
+        def('proposalType', () => ProposalType.POI)
         def('configuration', () => {
           return {
             x: 15,
@@ -278,8 +265,8 @@ describe('getUpdateMessage', () => {
 
         it('should return a message with the passed status and the results of the voting', () => {
           expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-          expect(get.updateMessage).not.toContain(passedDescription)
-          expect(get.updateMessage).toContain(proposal.title)
+          expect(get.updateMessage).not.toContain(get.passedDescription)
+          expect(get.updateMessage).toContain(get.proposal.title)
           expect(get.updateMessage).toBe(
             'Test Proposal\n\n' +
               'This proposal is now in status: PASSED.\n\n' +
@@ -291,9 +278,9 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the proposal is Grant', () => {
-        beforeAll(() => {
-          proposalType = ProposalType.Grant
-          configuration = {
+        def('proposalType', () => ProposalType.Grant)
+        def('configuration', () => {
+          return {
             title: 'Grant Title',
             abstract: 'Grant Abstract',
             category: ProposalGrantCategory.Community,
@@ -309,8 +296,8 @@ describe('getUpdateMessage', () => {
         })
         it('should return a message with the passed status and the results of the voting', () => {
           expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-          expect(get.updateMessage).not.toContain(passedDescription)
-          expect(get.updateMessage).toContain(proposal.title)
+          expect(get.updateMessage).not.toContain(get.passedDescription)
+          expect(get.updateMessage).toContain(get.proposal.title)
           expect(get.updateMessage).toBe(
             'Test Proposal\n\n' +
               'This proposal is now in status: PASSED.\n\n' +
@@ -322,9 +309,10 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the proposal is a Poll', () => {
-        beforeAll(() => {
-          proposalType = ProposalType.Poll
-          configuration = {
+        def('proposalType', () => ProposalType.Poll)
+        def('votes', () => POLL_VOTES)
+        def('configuration', () => {
+          return {
             title: 'Poll title',
             description: 'Poll description',
             choices: ['Let’s change the protocol', 'There is no need to change it', INVALID_PROPOSAL_POLL_OPTIONS],
@@ -333,8 +321,8 @@ describe('getUpdateMessage', () => {
 
         it('should return a message with the passed status and the results of the voting', () => {
           expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-          expect(get.updateMessage).not.toContain(passedDescription)
-          expect(get.updateMessage).toContain(proposal.title)
+          expect(get.updateMessage).not.toContain(get.passedDescription)
+          expect(get.updateMessage).toContain(get.proposal.title)
           expect(get.updateMessage).toBe(
             'Test Proposal\n\n' +
               'This proposal is now in status: PASSED.\n\n' +
@@ -346,10 +334,10 @@ describe('getUpdateMessage', () => {
         })
 
         describe('if there is no voting information available', () => {
-          def('votes', () => VotesModel.newScore(proposal.id).votes)
+          def('votes', () => VotesModel.newScore(get.proposal.id).votes)
 
           it('should return a message with the passed status, with 0 votes', () => {
-            expect(get.updateMessage).toContain(proposal.title)
+            expect(get.updateMessage).toContain(get.proposal.title)
             expect(get.updateMessage).toBe(
               'Test Proposal\n\n' +
                 'This proposal is now in status: PASSED.\n\n' +
@@ -362,8 +350,8 @@ describe('getUpdateMessage', () => {
         })
 
         describe('if there are more than two options', () => {
-          beforeAll(() => {
-            configuration = {
+          def('configuration', () => {
+            return {
               title: 'Poll title',
               description: 'Poll description',
               choices: ['Option 1', 'Option 2', 'Option 3', INVALID_PROPOSAL_POLL_OPTIONS],
@@ -373,8 +361,8 @@ describe('getUpdateMessage', () => {
 
           it('shows the results for every option', () => {
             expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-            expect(get.updateMessage).not.toContain(passedDescription)
-            expect(get.updateMessage).toContain(proposal.title)
+            expect(get.updateMessage).not.toContain(get.passedDescription)
+            expect(get.updateMessage).toContain(get.proposal.title)
             expect(get.updateMessage).toBe(
               'Test Proposal\n\n' +
                 'This proposal is now in status: PASSED.\n\n' +
@@ -390,16 +378,14 @@ describe('getUpdateMessage', () => {
     })
 
     describe('when the updated status is rejected', () => {
-      beforeAll(() => {
-        configuration = DEFAULT_CONFIGURATION
-      })
+      def('configuration', () => DEFAULT_CONFIGURATION)
       def('votes', () => REJECTED_VOTES)
       def('proposalStatus', () => ProposalStatus.Rejected)
 
       it('should return a message with the rejected status and the results of the voting', () => {
         expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
-        expect(get.updateMessage).not.toContain(rejectedDescription)
-        expect(get.updateMessage).toContain(proposal.title)
+        expect(get.updateMessage).not.toContain(get.rejectedDescription)
+        expect(get.updateMessage).toContain(get.proposal.title)
         expect(get.updateMessage).toBe(
           'Test Proposal\n\n' +
             'This proposal is now in status: REJECTED.\n' +
@@ -414,10 +400,8 @@ describe('getUpdateMessage', () => {
         def('votes', () => {
           return { '0xcd15d83f42179b9a5b515eea0975f554444a9646': { choice: 3, vp: 500, timestamp: 1635863435 } }
         })
-
-        beforeAll(() => {
-          proposalType = ProposalType.Poll
-          configuration = {
+        def('configuration', () => {
+          return {
             title: 'Poll title',
             description: 'Poll description',
             choices: ['Option 1', 'Option 2', INVALID_PROPOSAL_POLL_OPTIONS],
@@ -438,10 +422,11 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when a POLL is rejected because there are no votes', () => {
-        def('votes', () => {})
-        beforeAll(() => {
-          proposalType = ProposalType.Poll
-          configuration = {
+        def('votes', () => {
+          return {}
+        })
+        def('configuration', () => {
+          return {
             title: 'Poll title',
             description: 'Poll description',
             choices: ['Let’s change the protocol', 'There is no need to change it', INVALID_PROPOSAL_POLL_OPTIONS],
@@ -464,22 +449,18 @@ describe('getUpdateMessage', () => {
   })
 
   describe('when the proposal status is updated by a committee user', () => {
-    beforeAll(() => {
-      user = TESTING_COMMITTEE_USER
-      proposalType = ProposalType.Poll
-    })
+    def('proposalType', () => ProposalType.Poll)
+    def('user', () => TESTING_COMMITTEE_USER)
 
     describe('when the updated status is enacted', () => {
-      beforeAll(() => {
-        enactedDescription = 'enacted description'
-      })
+      def('enactedDescription', () => 'enacted description')
       def('enactedStatus', () => true)
       def('proposalStatus', () => ProposalStatus.Passed)
 
       it('should return a message with the enacting user address, the enacted status and the enacted description', () => {
         expect(get.updateMessage).toContain(TESTING_COMMITTEE_USER)
-        expect(get.updateMessage).toContain(enactedDescription)
-        expect(get.updateMessage).toContain(proposal.title)
+        expect(get.updateMessage).toContain(get.enactedDescription)
+        expect(get.updateMessage).toContain(get.proposal.title)
         expect(get.updateMessage).toBe(
           'Test Proposal\n\n' +
             'This proposal has been ENACTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n' +
@@ -488,9 +469,7 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the enacting description is null', () => {
-        beforeAll(() => {
-          enactedDescription = null
-        })
+        def('enactedDescription', () => null)
 
         it('should not append anything to the original message', () => {
           expect(get.updateMessage).not.toContain('null')
@@ -502,15 +481,13 @@ describe('getUpdateMessage', () => {
     })
 
     describe('when the updated status is passed', () => {
-      beforeAll(() => {
-        passedDescription = 'passed description'
-      })
+      def('passedDescription', () => 'passed description')
       def('proposalStatus', () => ProposalStatus.Passed)
 
       it('should return a message with the DAO user address, the passed status and the passed description', () => {
         expect(get.updateMessage).toContain(TESTING_COMMITTEE_USER)
-        expect(get.updateMessage).toContain(passedDescription)
-        expect(get.updateMessage).toContain(proposal.title)
+        expect(get.updateMessage).toContain(get.passedDescription)
+        expect(get.updateMessage).toContain(get.proposal.title)
         expect(get.updateMessage).toBe(
           'Test Proposal\n\n' +
             'This proposal has been PASSED by a DAO Committee Member (0xCommiteeUserAddress)\n\n' +
@@ -519,9 +496,7 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the passed description is null', () => {
-        beforeAll(() => {
-          passedDescription = null
-        })
+        def('passedDescription', () => null)
 
         it('should not append anything to the original message', () => {
           expect(get.updateMessage).not.toContain('null')
@@ -533,15 +508,13 @@ describe('getUpdateMessage', () => {
     })
 
     describe('when the updated status is rejected', () => {
-      beforeAll(() => {
-        rejectedDescription = 'rejected description'
-      })
+      def('rejectedDescription', () => 'rejected description')
       def('proposalStatus', () => ProposalStatus.Rejected)
 
       it('should return a message with the DAO user address, the rejected status and the rejected description', () => {
         expect(get.updateMessage).toContain(TESTING_COMMITTEE_USER)
-        expect(get.updateMessage).toContain(rejectedDescription)
-        expect(get.updateMessage).toContain(proposal.title)
+        expect(get.updateMessage).toContain(get.rejectedDescription)
+        expect(get.updateMessage).toContain(get.proposal.title)
         expect(get.updateMessage).toBe(
           'Test Proposal\n\n' +
             'This proposal has been REJECTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n' +
@@ -550,9 +523,7 @@ describe('getUpdateMessage', () => {
       })
 
       describe('when the passed description is null', () => {
-        beforeAll(() => {
-          rejectedDescription = null
-        })
+        def('rejectedDescription', () => null)
 
         it('should not append anything to the original message', () => {
           expect(get.updateMessage).not.toContain('null')
