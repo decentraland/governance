@@ -43,7 +43,7 @@ jobs:
           DISCOURSE_API_KEY: ${{ secrets.DISCOURSE_API_KEY }}
 
       - name: setup environment
-        run: source ./node_modules/.bin/setup-environment $PWD website-events-prd
+        run: source ./node_modules/.bin/setup-environment $PWD website-dao-prd
 
       - name: export public env
         run: env | grep GATSBY_ > .env
