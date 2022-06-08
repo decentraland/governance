@@ -20,11 +20,16 @@
   },
   "plugins": ["react", "@typescript-eslint", "react-hooks", "prettier"],
   "rules": {
+    "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    "prettier/prettier": ["error", {}, {
-      "usePrettierrc": true
-    }],
+    "prettier/prettier": [
+      "error",
+      {},
+      {
+        "usePrettierrc": true
+      }
+    ],
     "linebreak-style": ["error", "unix"],
     "semi": ["error", "never"],
     "@typescript-eslint/no-non-null-assertion": "off",
