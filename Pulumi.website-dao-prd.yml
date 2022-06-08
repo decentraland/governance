@@ -66,7 +66,7 @@ config:
   website-dao:INFURA_IPFS_GATEWAY_API: https://dal-dao.infura-ipfs.io
   website-dao:INFURA_IPFS_PROJECT_ID: 2A4zopZLxn3MG5QOWKTdF67pRhI
   website-dao:INFURA_IPFS_PROJECT_SECRET:
-    secure: v1:WXNkQeCxUagwj2ws:Hp3onkN85bdbRFVvAEHS6rxEJJ90clq+4H3+qySk8S1oNC+5J4j33Z7ZZxNhhJOP
+    secure: v1:Zln9+P760s51Qq/N:K+yr8V9g8DOiOrWrWLJtavoPXlUynYMZHKdXr1fCuTadHuw1tPRLJOGlZcTzFzPy
   website-dao:NEW_RELIC_APP_NAME: governance.production
   website-dao:NEW_RELIC_LICENSE_KEY:
     secure: v1:wl6EWe5alyXpDeQA:ivmTjco3vpy/qoLDSEBqOTUust4l42DhrgD1BrefB8Pk9wPs1CvtPWyOtvtgu6PLaxwEplA13Rc=
