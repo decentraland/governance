@@ -61,7 +61,6 @@ COPY --from=compiler /app/node_modules         /app/node_modules
 COPY --from=compiler /app/lib                  /app/lib
 COPY --from=compiler /app/public               /app/public
 COPY --from=compiler /app/static               /app/static
-COPY --from=compiler /app/templates            /app/templates
 COPY --from=compiler /app/entrypoint.sh        /app/entrypoint.sh
 
 VOLUME [ "/data" ]
