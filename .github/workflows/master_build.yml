@@ -42,5 +42,20 @@ jobs:
         env:
           DISCOURSE_API_KEY: ${{ secrets.DISCOURSE_API_KEY }}
 
+      - name: setup environment
+        run: source ./node_modules/.bin/setup-environment $PWD website-events-prd
+
+      - name: export public env
+        run: env | grep GATSBY_ > .env
+
+      - name: build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: events
+          tags: ${{ github.sha }} latest
+          dockerfiles: |
+            ./Dockerfile
+
       - name: building
         run: npm run build
