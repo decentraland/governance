@@ -11,6 +11,7 @@ import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/han
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
 
+import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
@@ -39,6 +40,7 @@ app.use('/api', [
   score,
   subscription,
   updates,
+  coauthor,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),
