@@ -3,6 +3,7 @@
   padding: 0 11px;
   height: 24px;
   display: inline-flex;
+  align-items: center;
   border-radius: 42px;
   border-color: var(--background-happy-green);
   background-color: var(--background-happy-green);
