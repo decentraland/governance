@@ -17,6 +17,7 @@ import isUUID from 'validator/lib/isUUID'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
+import CoauthorModel from '../Coauthor/model'
 import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
@@ -377,6 +378,13 @@ export async function createProposal(
   const start = Time.utc().set('seconds', 0)
   const end = data.finish_at
   const proposal_url = proposalUrl({ id })
+  let coAuthors: string[] | null = null
+
+  if (data.configuration.coAuthors) {
+    coAuthors = data.configuration.coAuthors
+    delete data.configuration.coAuthors
+  }
+
   const title = templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
 
@@ -544,6 +552,9 @@ export async function createProposal(
   try {
     await ProposalModel.create(newProposal)
     await VotesModel.createEmpty(id)
+    if (coAuthors) {
+      CoauthorModel.createMultiple(id, coAuthors)
+    }
   } catch (err) {
     dropDiscourseTopic(discourseProposal.topic_id)
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)

@@ -21,7 +21,7 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 
-import { CoauthorAttributes } from './../entities/Coauthor/types'
+import { CoauthorAttributes, CoauthorStatus } from './../entities/Coauthor/types'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -285,5 +285,19 @@ export class Governance extends API {
   async getProposalsByCoAuthor(address: string) {
     const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/proposals/${address}`)
     return result.data
+  }
+
+  async getCoAuthorsByProposal(id: string) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}`)
+    return result.data
+  }
+
+  async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
+    const newsSatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
+      `/coauthors/${proposalId}`,
+      this.options().method('PUT').authorization({ sign: true }).json({ status })
+    )
+
+    return newsSatus.data
   }
 }

@@ -166,6 +166,15 @@ export type NewProposalPoll = {
   coAuthors?: string[]
 }
 
+const coAuthors = {
+  type: 'array',
+  items: {
+    type: 'string',
+    minLength: 42,
+    maxLength: 42,
+  },
+}
+
 export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
 
 export const newProposalPollScheme = {
@@ -192,12 +201,7 @@ export const newProposalPollScheme = {
       },
       minItems: 2,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -252,12 +256,7 @@ export const newProposalDraftScheme = {
       minLength: 20,
       maxLength: 3500,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -334,12 +333,7 @@ export const newProposalGovernanceScheme = {
       minLength: 20,
       maxLength: 3500,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -364,12 +358,7 @@ export const newProposalBanNameScheme = {
       minLength: 20,
       maxLength: 250,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -405,12 +394,7 @@ export const newProposalPOIScheme = {
       minLength: 20,
       maxLength: 250,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -439,12 +423,7 @@ export const newProposalCatalystScheme = {
       minLength: 20,
       maxLength: 250,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -628,12 +607,7 @@ export const newProposalGrantScheme = {
       minLength: 20,
       maxLength: 1500,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
@@ -722,12 +696,7 @@ export const newProposalLinkedWearablesScheme = {
       minLength: 0,
       maxLength: 750,
     },
-    coAuthors: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
+    coAuthors,
   },
 }
 
