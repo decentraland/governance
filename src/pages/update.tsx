@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import { useLocation } from '@gatsbyjs/reach-router'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -25,29 +26,32 @@ export default function UpdateDetail() {
   const [proposal, proposalState] = useProposal(update?.proposal_id)
   const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
-  if (updateState.loading || updatesState.loading || proposalState.loading) {
-    return (
-      <Container>
-        <Loader size="huge" active />
-      </Container>
-    )
-  }
-
   if (updateState.error || proposalState.error || updatesState.error) {
     return (
-      <ContentLayout className="ProposalDetailPage">
+      <ContentLayout>
         <NotFound />
       </ContentLayout>
     )
   }
 
+  if (!update || updateState.loading || updatesState.loading || proposalState.loading) {
+    return (
+      <Container className="WelcomePage">
+        <div>
+          <Loader size="huge" active />
+        </div>
+      </Container>
+    )
+  }
+
   const index = publicUpdates && publicUpdates.length - Number(publicUpdates?.findIndex((item) => item.id === updateId))
+  const proposalHref = update ? locations.proposal(update.proposal_id) : undefined
 
   return (
-    <ContentLayout navigateHref={update ? locations.proposal(update.proposal_id) : undefined} small>
+    <ContentLayout navigateHref={proposalHref} small>
       <ContentSection className="UpdateDetail__Header">
         <span className="UpdateDetail__ProjectTitle">
-          {t('page.update_detail.project_title', { title: proposal?.title })}
+          {t('page.update_detail.project_title', { title: <Link href={proposalHref}>{proposal?.title}</Link> })}
         </span>
         <Header size="huge">{t('page.update_detail.title', { index })}</Header>
       </ContentSection>

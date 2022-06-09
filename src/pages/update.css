@@ -6,6 +6,10 @@
   color: #736e7d;
 }
 
+.UpdateDetail__ProjectTitle a {
+  color: #736e7d !important;
+}
+
 .UpdateDetail__Header .header {
   font-size: 36px !important;
   margin: 0;
