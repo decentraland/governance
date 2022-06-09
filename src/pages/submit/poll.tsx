@@ -16,7 +16,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
-import omit from 'lodash.omit'
+import { omit } from 'lodash'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Governance } from '../../api/Governance'
