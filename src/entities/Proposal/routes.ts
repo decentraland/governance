@@ -380,9 +380,8 @@ export async function createProposal(
   const proposal_url = proposalUrl({ id })
   let coAuthors: string[] | null = null
 
-  if (data.configuration.coAuthors) {
+  if (data.configuration && data.configuration.coAuthors) {
     coAuthors = data.configuration.coAuthors
-    delete data.configuration.coAuthors
   }
 
   const title = templates.title({ type: data.type, configuration: data.configuration })

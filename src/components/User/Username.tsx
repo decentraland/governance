@@ -22,12 +22,12 @@ type Props = SizeProps & {
 }
 
 function getBlockieScale(size?: string) {
-  const DEFAULT_BLOCKIE_SCALE = 3
+  const DEFAULT_BLOCKIE_SCALE = 3.35
   switch (size) {
     case Size.Mini:
       return 3
     case Size.Tiny:
-      return 3.5
+      return 3.35
     case Size.Small:
       return 4.9
     case Size.Medium:
@@ -74,15 +74,16 @@ const Username = ({
           {hasDclProfile && (
             <>
               <Avatar size={size || 'mini'} address={address} />
-              {profileHasName && !iconOnly && profile!.name}
+              {profileHasName && !iconOnly && <span>{profile!.name}</span>}
               {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong} />}
             </>
           )}
 
           {(!hasDclProfile || !profile) && (
-            <Blockie scale={blockieScale} seed={address || ''}>
+            <>
+              <Blockie scale={blockieScale} seed={address || ''} />
               {!iconOnly && <Address value={address || ''} strong={strong} />}
-            </Blockie>
+            </>
           )}
         </>
       )}

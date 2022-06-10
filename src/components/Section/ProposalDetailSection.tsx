@@ -1,15 +1,18 @@
 import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import { Governance } from '../../api/Governance'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
 import Username from '../User/Username'
 
+import ProposalDetailCoauthors from './ProposalDetailCoauthors'
 import './ProposalDetailSection.css'
 
 const openIcon = require('../../images/icons/open.svg').default
@@ -20,6 +23,10 @@ export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalDetailSection({ proposal, ...props }: ProposalDetailSectionProps) {
   const t = useFormatMessage()
+  const [coAuthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposal.id), [proposal.id], {
+    initialValue: [],
+    callWithTruthyDeps: true,
+  })
 
   return (
     <div {...props} className={TokenList.join(['DetailsSection', 'ResultSection', props.className])}>
@@ -29,6 +36,16 @@ export default React.memo(function ProposalDetailSection({ proposal, ...props }:
           <div>{t('page.proposal_detail.details_user_label')}</div>
           <Username address={proposal.user} linked />
         </div>
+        {coAuthors.length > 0 && (
+          <div className="DetailsSection__Flex">
+            <div>{t('page.proposal_detail.details_coauthors_label')}</div>
+            <div className="DetailsSection__Flex--Coauthors">
+              {coAuthors.map((ca) => (
+                <ProposalDetailCoauthors coauthor={ca} key={ca.coauthor_address} />
+              ))}
+            </div>
+          </div>
+        )}
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_start_label')}</div>
           <div className="DetailsSection__Value">{Time.from(proposal.start_at).format('MMM DD HH:mm')}</div>

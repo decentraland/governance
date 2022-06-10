@@ -293,7 +293,7 @@ export class Governance extends API {
   }
 
   async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
-    const newsSatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
+    const newsSatus = await this.fetch<ApiResponse<CoauthorAttributes | null>>(
       `/coauthors/${proposalId}`,
       this.options().method('PUT').authorization({ sign: true }).json({ status })
     )

@@ -422,6 +422,18 @@
       "title": "Polls",
       "description": "Recent community polls in the Decentraland DAO"
     },
+    "coauthor_detail": {
+      "pending_label": "Co-author request",
+      "pending_description": "You’ve been added as a potential co-author for this initiative by its creator.",
+      "pending_helper": "",
+      "confirm_label": "Confirm",
+      "deny_label": "Deny",
+      "accepted_label": "Co-authoring",
+      "accepted_description": "You’ve confirmed being involved in this initiative.",
+      "rejected_label": "Not co-authoring",
+      "rejected_description": "You’ve denied being involved in this initiative.",
+      "revert_label": "Revert"
+    },
     "proposal_detail": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
@@ -475,6 +487,10 @@
       },
       "details_label": "Details",
       "details_user_label": "Created by",
+      "details_coauthors_label": "Co-authors",
+      "details_coauthor_accepted_helper": "this user has accepted the co-author request",
+      "details_coauthor_rejected_helper": "This user has declined the co-author request",
+      "details_coauthor_pending_helper": "This user has the co-author status as pending",
       "details_start_label": "Started",
       "details_finish_label": "Ends",
       "details_snapshot_label": "Snapshot",
@@ -513,16 +529,7 @@
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
         "vesting_button": "View vesting contract"
-      },
-      "co_author_request_label": "Co-author request",
-      "co_author_request_description": "You’ve been added as a potential co-author for this initiative by its creator.",
-      "confirm_label": "Confirm",
-      "deny_label": "Deny",
-      "co_authoring_label": "Co-authoring",
-      "co_authoring_description": "You’ve confirmed being involved in this initiative.",
-      "not_co_authoring_label": "Not co-authoring",
-      "not_co_authoring_description": "You’ve denied being involved in this initiative.",
-      "revert_label": "Revert"
+      }
     },
     "proposal_activity": {
       "title": "Decentraland DAO",
