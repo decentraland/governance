@@ -82,7 +82,7 @@ export class Governance extends API {
   }
 
   async getProposals(filters: Partial<GetProposalsFilter> = {}) {
-    const params = new URLSearchParams(filters as any)
+    const params = new URLSearchParams(filters as never)
     let query = params.toString()
     if (query) {
       query = '?' + query
@@ -272,6 +272,11 @@ export class Governance extends API {
 
   async getCommittee() {
     const result = await this.fetch<ApiResponse<string[]>>(`/committee`)
+    return result.data
+  }
+
+  async getAdminAddresses() {
+    const result = await this.fetch<ApiResponse<string[]>>(`/admin`)
     return result.data
   }
 

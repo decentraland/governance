@@ -13,6 +13,7 @@
     "activity": "Activity",
     "enacted": "Enacted",
     "transparency": "Transparency",
+    "admin": "Admin",
     "search": {
       "mobile": {
         "placeholder": "Search on the DAO...",
@@ -377,6 +378,10 @@
     "404": {
       "title": "Not found",
       "description": "You just hit a route that doesn't exist..."
+    },
+    "admin": {
+      "title": "Admin",
+      "description": "A tab where anything is possible"
     },
     "welcome": {
       "title": "Welcome to the Decentraland DAO",
