@@ -50,7 +50,6 @@ RUN sed -i.temp '/Pulumi\.ts/d' package.json
 RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build:server
 RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build:front
 RUN npm prune --production
-RUN rm /app/src/migrations/*.map
 
 FROM node:16.14-alpine
 WORKDIR /app
