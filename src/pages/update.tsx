@@ -4,11 +4,10 @@ import { useLocation } from '@gatsbyjs/reach-router'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
+import LoadingView from '../components/Layout/LoadingView'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdate from '../hooks/useProposalUpdate'
@@ -35,13 +34,7 @@ export default function UpdateDetail() {
   }
 
   if (!update || updateState.loading || updatesState.loading || proposalState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   const index = publicUpdates && publicUpdates.length - Number(publicUpdates?.findIndex((item) => item.id === updateId))
