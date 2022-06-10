@@ -35,7 +35,6 @@ export class HttpStat extends API {
   }
 
   async fetch<T extends Record<string, unknown>>(path: string, options: Options = new Options({})): Promise<T> {
-    let res: Response
     let body = ''
     let json: T = null as any
     const url = this.url(path)
@@ -44,13 +43,10 @@ export class HttpStat extends API {
     opt = await this.authorizeOptions(path, opt)
     opt = await this.signOptions(path, opt)
 
-    try {
-      res = await fetch(url, opt.toObject())
-    } catch (error) {
-      throw new FetchError(url, opt.toObject(), String(error))
+    const res = await fetch(url, opt.toObject())
+    if (!res.ok) {
+      throw new FetchError(url, opt.toObject(), await res.text())
     }
-
-    console.log('response from replaced fetch', res)
 
     try {
       body = await res.text()
