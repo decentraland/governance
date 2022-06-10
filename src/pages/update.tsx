@@ -38,7 +38,7 @@ export default function UpdateDetail() {
   }
 
   const index = publicUpdates && publicUpdates.length - Number(publicUpdates?.findIndex((item) => item.id === updateId))
-  const proposalHref = update ? locations.proposal(update.proposal_id) : undefined
+  const proposalHref = locations.proposal(update.proposal_id)
 
   return (
     <ContentLayout navigateHref={proposalHref} small>
