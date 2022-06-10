@@ -113,7 +113,7 @@ export function NewsletterSubscriptionModal({
     <Modal
       {...props}
       size="tiny"
-      className={TokenList.join(['ProposalModal', 'NewsletterSubscriptionModal'])}
+      className={TokenList.join(['GovernanceActionModal', 'ProposalModal', 'NewsletterSubscriptionModal'])}
       closeIcon={<Close />}
     >
       {!subscribed && (
@@ -137,7 +137,7 @@ export function NewsletterSubscriptionModal({
             />
           </div>
           <div className="ProposalModal__Actions">
-            <Button primary onClick={handleAccept} loading={subscribing}>
+            <Button fluid primary onClick={handleAccept} loading={subscribing}>
               {t('modal.newsletter_subscription.accept')}
             </Button>
           </div>

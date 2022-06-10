@@ -187,17 +187,23 @@ body {
   background-color: var(--background) !important;
 }
 
-.ui.modal {
+.GovernanceContentModal.ui.modal {
   padding: 24px !important;
 }
 
 @media only screen and (min-width: 768px) {
-  .ui.modal {
-    padding: 25px !important; /* 64px small modals, 25px bigger ones, maybe we can have two types of modals */
+  .GovernanceActionModal.ui.modal {
+    padding: 64px !important;
   }
 }
 
-.ui.modal > .content {
+.GovernanceContentModal.ui.modal > .content {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+}
+
+.GovernanceActionModal.ui.modal > .content {
   margin: 0 !important;
   padding: 0 !important;
 }

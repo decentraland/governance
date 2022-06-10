@@ -19,10 +19,6 @@
   margin-bottom: .5rem;
 }
 
-.ProposalModal .ui.button {
-  width: 100%;
-}
-
 .ProposalModal .ui.button.cancel {
   margin-top: 8px;
   background-color: var(--background);

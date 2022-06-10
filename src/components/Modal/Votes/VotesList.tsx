@@ -28,7 +28,7 @@ export function VotesListModal({ proposal, votes, ...props }: VotesListModalProp
     <Modal
       {...props}
       size="tiny"
-      className={TokenList.join(['ProposalModal', 'VotesList', props.className])}
+      className={TokenList.join(['GovernanceContentModal', 'ProposalModal', 'VotesList', props.className])}
       closeIcon={<Close />}
     >
       <Modal.Content>

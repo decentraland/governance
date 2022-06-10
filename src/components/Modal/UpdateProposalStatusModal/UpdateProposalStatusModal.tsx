@@ -98,7 +98,12 @@ export function UpdateProposalStatusModal({
       {...props}
       open={open && !!status}
       size="small"
-      className={TokenList.join(['ProposalModal', 'UpdateProposalStatusModal', props.className])}
+      className={TokenList.join([
+        'GovernanceActionModal',
+        'ProposalModal',
+        'UpdateProposalStatusModal',
+        props.className,
+      ])}
       closeIcon={<Close />}
     >
       <Modal.Content>
@@ -131,10 +136,10 @@ export function UpdateProposalStatusModal({
           />
         </div>
         <div className="ProposalModal__Actions">
-          <Button primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
+          <Button fluid primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
             {t(cta)}
           </Button>
-          <Button className="cancel" onClick={props.onClose}>
+          <Button fluid className="cancel" onClick={props.onClose}>
             {t('modal.update_status_proposal.reject')}
           </Button>
         </div>

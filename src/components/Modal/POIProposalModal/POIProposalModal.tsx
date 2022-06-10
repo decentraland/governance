@@ -15,7 +15,7 @@ export function POIProposalModal({ ...props }) {
   const t = useFormatMessage()
 
   return (
-    <Modal {...props} size="tiny" className="ProposalModal" closeIcon={<Close />}>
+    <Modal {...props} size="tiny" className="GovernanceContentModal ProposalModal" closeIcon={<Close />}>
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('category.poi_title')}</Header>

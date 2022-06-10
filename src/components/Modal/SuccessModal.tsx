@@ -45,7 +45,7 @@ export function SuccessModal({
       {...props}
       open={open}
       size="tiny"
-      className={TokenList.join(['ProposalModal', 'SuccessModal'])}
+      className={TokenList.join(['GovernanceContentModal', 'ProposalModal', 'SuccessModal'])}
       closeIcon={<Close />}
     >
       <Modal.Content>
@@ -115,7 +115,7 @@ export function SuccessModal({
           </div>
         )}
         <div className="ProposalModal__Actions">
-          <Button className="SuccessModal__DismissButton" secondary onClick={onDismiss} loading={loading}>
+          <Button fluid className="SuccessModal__DismissButton" secondary onClick={onDismiss} loading={loading}>
             {t('modal.success.dismiss_button_label')}
           </Button>
         </div>

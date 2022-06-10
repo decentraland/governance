@@ -19,7 +19,12 @@ export function DeleteProposalModal({ onClickAccept, loading, ...props }: Delete
   const t = useFormatMessage()
 
   return (
-    <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', props.className])} closeIcon={<Close />}>
+    <Modal
+      {...props}
+      size="tiny"
+      className={TokenList.join(['GovernanceActionModal', 'ProposalModal', props.className])}
+      closeIcon={<Close />}
+    >
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.delete_proposal.title')}</Header>
