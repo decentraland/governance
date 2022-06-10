@@ -1,25 +1,3 @@
-.WelcomePage > div {
-  width: 100%;
-  max-width: 800px;
-  min-height: calc(100vh - 64px - 156px);
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.WelcomePage > div > .Carousel {
-  flex: 0 0 100%
-}
-
-.WelcomePage .ui.header {
-  margin-bottom: 8px;
-}
-
-.WelcomePage .dg.Paragraph {
-  font-size: 15px;
-}
-
 .ui.pagination.menu {
   justify-content: flex-end;
   width: 100%;
@@ -43,8 +21,8 @@
     margin-left: 5px;
   }
 
-  .ui.pagination.menu .item[type="nextItem"],
-  .ui.pagination.menu .item[type="prevItem"] {
+  .ui.pagination.menu .item[type='nextItem'],
+  .ui.pagination.menu .item[type='prevItem'] {
     display: none !important;
   }
 
@@ -60,6 +38,6 @@
 /* Desktop Only */
 @media only screen and (min-width: 768px) {
   .SubmitButton {
-    display: inline !important
+    display: inline !important;
   }
 }

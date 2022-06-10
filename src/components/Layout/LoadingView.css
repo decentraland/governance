@@ -1,0 +1,9 @@
+.LoadingView {
+  width: 100%;
+  max-width: 800px;
+  min-height: calc(100vh - 64px - 156px);
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
