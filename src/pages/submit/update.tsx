@@ -13,12 +13,12 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import { Governance } from '../../api/Governance'
 import MarkdownField from '../../components/Form/MarkdownField'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LoadingView from '../../components/Layout/LoadingView'
 import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
@@ -204,13 +204,7 @@ export default function Update() {
   }, [state.validated])
 
   if (accountState.loading || updateState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   if (updateId && (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)) {
