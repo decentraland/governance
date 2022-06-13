@@ -211,6 +211,10 @@
       "next_steps_empty": "Next steps field is empty",
       "next_steps_too_large": "Next steps field is too large",
       "additional_notes_too_large": "Additional notes and links field is too large"
+    },
+    "admin": {
+      "invalid_http_status": "Http status must be between 100 and 530",
+      "invalid_sleep_time": "Sleep time must be between 0 and 300000 ms (5 minutes)"
     }
   },
   "category": {

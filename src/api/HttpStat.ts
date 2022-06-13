@@ -21,19 +21,14 @@ export class HttpStat extends API {
     return this.from(env('GOVERNANCE_API', this.Url))
   }
 
-  async fetchResponse(responseType: string) {
+  async fetchResponse(responseType: string, sleepTime: number) {
+    if (sleepTime > 0) {
+      responseType += '?sleep=' + sleepTime
+    }
     return await this.fetch(responseType, this.options().method('POST').authorization({ sign: true }))
-    // try {
-    // } catch (e) {
-    //   return e
-    // }
   }
 
-  static catch<T>(prom: Promise<T>): Promise<T | null> {
-    console.log('our static catch!', 'lalala')
-    return prom
-  }
-
+  // @ts-ignore
   async fetch<T extends Record<string, unknown>>(path: string, options: Options = new Options({})): Promise<T> {
     let body = ''
     let json: T = null as any
@@ -56,8 +51,9 @@ export class HttpStat extends API {
 
     try {
       json = JSON.parse(body || '{}') as T
-    } catch (error) {
-      throw new RequestError(url, opt.toObject(), res, error.message + ' at ' + body)
+    } catch (parsingError) {
+      // @ts-ignore
+      return body
     }
 
     if (res.status >= 400) {

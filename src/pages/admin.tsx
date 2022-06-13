@@ -15,17 +15,18 @@ import { HttpStat } from '../api/HttpStat'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
-import { isValidName } from '../entities/Proposal/utils'
 import useIsAdmin from '../hooks/useIsAdmin'
 
 import './transparency.css'
 
 type TestState = {
-  name: string
+  httpStatus: string
+  sleepTime: number
 }
 
 const initialState: TestState = {
-  name: '',
+  httpStatus: '',
+  sleepTime: 0,
 }
 
 const edit = (state: TestState, props: Partial<TestState>) => {
@@ -35,17 +36,18 @@ const edit = (state: TestState, props: Partial<TestState>) => {
   }
 }
 
+const MAX_SLEEP_TIME = 300000 // 5 minutes
+
 const validate = createValidator<TestState>({
-  name: (state) => ({
-    name:
-      (state.name.length >= 2 && assert(isValidName(state.name), 'error.ban_name.name_invalid')) ||
-      assert(state.name.length <= 4, 'error.ban_name.name_too_large'),
+  httpStatus: (state) => ({
+    httpStatus: assert(state.httpStatus.length === 3, 'error.admin.invalid_http_status'),
+  }),
+  sleepTime: (state) => ({
+    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.admin.invalid_sleep_time'),
   }),
   '*': (state) => ({
-    name:
-      assert(state.name.length > 0, 'error.ban_name.name_empty') ||
-      assert(state.name.length >= 2, 'error.ban_name.name_too_short') ||
-      assert(state.name.length <= 4, 'error.ban_name.name_too_large'),
+    httpStatus: assert(state.httpStatus.length === 3, 'error.admin.invalid_http_status'),
+    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.admin.invalid_sleep_time'),
   }),
 })
 
@@ -61,16 +63,16 @@ export default function WrappingPage() {
       setFormDisabled(true)
       Promise.resolve()
         .then(async () => {
-          return HttpStat.get().fetchResponse(state.value.name)
+          return HttpStat.get().fetchResponse(state.value.httpStatus, state.value.sleepTime)
         })
         .then((result) => {
           console.log('result', result)
+          editor.error({ '*': '' })
           setFormDisabled(false)
-          editor.error({ '*': 'There was an error!' })
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ '*': err.body?.error || err.message })
+          editor.error({ '*': 'There was an error, please try again.' })
           setFormDisabled(false)
         })
     }
@@ -94,12 +96,24 @@ export default function WrappingPage() {
           <Helmet title={t('page.admin.title') || ''} />
         </ContentSection>
         <ContentSection>
-          <Label>{'Error type'}</Label>
+          <Label>{'Http Status'}</Label>
           <Field
-            value={state.value.name}
-            onChange={(_, { value }) => editor.set({ name: value })}
-            onBlur={() => editor.set({ name: state.value.name.trim() })}
-            error={!!state.error.name}
+            value={state.value.httpStatus}
+            onChange={(_, { value }) => editor.set({ httpStatus: value })}
+            onBlur={() => editor.set({ httpStatus: state.value.httpStatus.trim() })}
+            error={!!state.error.httpStatus}
+            disabled={formDisabled}
+            message={t(state.error.httpStatus)}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>{'Sleep'}</Label>
+          <Field
+            value={state.value.sleepTime}
+            onChange={(_, { value }) => editor.set({ sleepTime: value ? Number(value) : undefined })}
+            onBlur={() => editor.set({ sleepTime: state.value.sleepTime })}
+            error={!!state.error.sleepTime}
+            message={t(state.error.sleepTime)}
             disabled={formDisabled}
           />
         </ContentSection>
