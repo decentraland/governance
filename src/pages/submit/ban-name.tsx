@@ -80,10 +80,6 @@ export default function SubmitBanName() {
   const [formDisabled, setFormDisabled] = useState(false)
 
   useEffect(() => {
-    console.log(state.value.coAuthors)
-  }, [state.value.coAuthors])
-
-  useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
       Promise.resolve()

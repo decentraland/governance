@@ -6,23 +6,39 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 
 import CoauthorModel from './model'
-import { CoauthorAttributes, UpdateStatus, updateStatusScheme } from './types'
+import {
+  CoauthorAttributes,
+  UpdateStatus,
+  isCoauthorStatusType,
+  toCoauthorStatusType,
+  updateStatusScheme,
+} from './types'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/coauthors/proposals/:address', handleAPI(getProposals))
-  route.get('/coauthors/:proposal', handleAPI(getCoauthors))
+  route.get('/coauthors/proposals/:address/:status?', handleAPI(getProposals))
+  route.get('/coauthors/:proposal/:status?', handleAPI(getCoauthors))
   route.put('/coauthors/:proposal', withAuth, handleAPI(updateStatus))
 })
 
+function validateStatus(status: string | undefined) {
+  if (status && !isCoauthorStatusType(status.toUpperCase())) {
+    throw new Error('Invalid status')
+  }
+
+  return toCoauthorStatusType(status?.toUpperCase())
+}
+
 export async function getProposals(req: Request) {
   const address = req.params.address
-  return await CoauthorModel.findProposals(address)
+  const status = validateStatus(req.params.status)
+  return await CoauthorModel.findProposals(address, status)
 }
 
 export async function getCoauthors(req: Request) {
   const id = req.params.proposal
-  return await CoauthorModel.findCoauthors(id)
+  const status = validateStatus(req.params.status)
+  return await CoauthorModel.findCoauthors(id, status)
 }
 
 const updateStatusValidator = schema.compile(updateStatusScheme)

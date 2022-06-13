@@ -282,13 +282,15 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalsByCoAuthor(address: string) {
-    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/proposals/${address}`)
+  async getProposalsByCoAuthor(address: string, status?: CoauthorStatus) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(
+      `/coauthors/proposals/${address}${status ? `/${status}` : ''}`
+    )
     return result.data
   }
 
-  async getCoAuthorsByProposal(id: string) {
-    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}`)
+  async getCoAuthorsByProposal(id: string, status?: CoauthorStatus) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}${status ? `/${status}` : ''}`)
     return result.data
   }
 

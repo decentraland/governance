@@ -23,3 +23,19 @@ export const updateStatusScheme = {
     },
   },
 }
+
+export function isCoauthorStatusType(value: string | null | undefined): boolean {
+  switch (value) {
+    case CoauthorStatus.APPROVED:
+    case CoauthorStatus.REJECTED:
+    case CoauthorStatus.PENDING:
+      return true
+
+    default:
+      return false
+  }
+}
+
+export function toCoauthorStatusType(value: string | null | undefined): CoauthorStatus | undefined {
+  return isCoauthorStatusType(value) ? (value as CoauthorStatus) : undefined
+}

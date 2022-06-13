@@ -1,5 +1,5 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, columns, objectValues, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, columns, conditional, objectValues, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { CoauthorAttributes, CoauthorStatus } from './types'
 
@@ -8,21 +8,22 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
   static withTimestamps = false
   static primaryKey = 'proposal_id'
 
-  static async findByColumn(columnName: string, value: string): Promise<CoauthorAttributes[]> {
+  static async findByColumn(columnName: string, value: string, status?: CoauthorStatus): Promise<CoauthorAttributes[]> {
     const query = SQL`
       SELECT *
       FROM ${table(this)}
       WHERE lower(${columns([columnName])}) = lower(${value})
+      ${conditional(!!status, SQL` AND "status" = ${status}`)}
     `
     return await this.query(query)
   }
 
-  static async findCoauthors(proposalId: string): Promise<CoauthorAttributes[]> {
-    return await this.findByColumn('proposal_id', proposalId)
+  static async findCoauthors(proposalId: string, status?: CoauthorStatus): Promise<CoauthorAttributes[]> {
+    return await this.findByColumn('proposal_id', proposalId, status)
   }
 
-  static async findProposals(userAddress: string): Promise<CoauthorAttributes[]> {
-    return await this.findByColumn('coauthor_address', userAddress)
+  static async findProposals(userAddress: string, status?: CoauthorStatus): Promise<CoauthorAttributes[]> {
+    return await this.findByColumn('coauthor_address', userAddress, status)
   }
 
   static async createMultiple(proposalId: string, userAddresses: string[]): Promise<void> {
