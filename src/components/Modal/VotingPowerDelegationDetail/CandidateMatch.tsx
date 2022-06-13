@@ -1,11 +1,10 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
 import { MatchResult } from '../../../entities/Snapshot/utils'
-import Info from '../../Icon/Info'
+import Helper from '../../Helper/Helper'
 
 import './CandidateMatch.css'
 
@@ -22,17 +21,8 @@ function CandidateMatch({ matchingVotes }: Props) {
 
   return (
     matchingVotes && (
-      <Stats title={t('modal.vp_delegation.details.stats_match')}>
-        <Popup
-          content={<span>{t('modal.vp_delegation.details.stats_match_helper')}</span>}
-          position="right center"
-          trigger={
-            <div className="CandidateMatch__Info">
-              <Info size="14" />
-            </div>
-          }
-          on="hover"
-        />
+      <Stats title={t('modal.vp_delegation.details.stats_match')} className="CandidateMatch">
+        <Helper text={t('modal.vp_delegation.details.stats_match_helper')} position="right center" size="14" />
         <div className="CandidateMatch__StatsValue" style={matchColor(matchingVotes)}>
           {matchingVotes.percentage}%
         </div>
