@@ -18,14 +18,14 @@ export enum NavigationTab {
   Activity = 'activity',
   Transparency = 'transparency',
   Admin = 'admin',
+  Grants = 'grants',
 }
 
 type NavigationProps = {
   activeTab?: NavigationTab
-  search?: boolean
 }
 
-const Navigation = (props: NavigationProps) => {
+const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
   const { isAdmin } = useIsAdmin(user)
@@ -34,24 +34,27 @@ const Navigation = (props: NavigationProps) => {
     <Tabs>
       <Tabs.Left>
         <Link href={locations.proposals()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+        </Link>
+        <Link href={locations.grants()}>
+          <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
         </Link>
         {user && (
           <Link href={locations.balance()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
+            <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
           </Link>
         )}
         <Link href={locations.transparency()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
         </Link>
         {user && (
           <Link href={locations.activity({ list: ProposalActivityList.MyProposals })}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Activity}>{t('navigation.activity')}</Tabs.Tab>
+            <Tabs.Tab active={activeTab === NavigationTab.Activity}>{t('navigation.activity')}</Tabs.Tab>
           </Link>
         )}
         {user && isAdmin && (
           <Link href={locations.admin()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Admin}>{t('navigation.admin')}</Tabs.Tab>
+            <Tabs.Tab active={activeTab === NavigationTab.Admin}>{t('navigation.admin')}</Tabs.Tab>
           </Link>
         )}
       </Tabs.Left>

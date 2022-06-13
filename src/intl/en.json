@@ -9,6 +9,7 @@
   },
   "navigation": {
     "proposals": "Proposals",
+    "grants": "Grants",
     "wrapping": "Voting Power",
     "activity": "Activity",
     "enacted": "Enacted",
@@ -523,6 +524,10 @@
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
         "vesting_button": "View vesting contract"
       }
+    },
+    "grants": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse."
     },
     "proposal_activity": {
       "title": "Decentraland DAO",
