@@ -4,6 +4,7 @@ import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
@@ -30,6 +31,7 @@ import { SearchTitle } from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
+import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
@@ -83,6 +85,19 @@ export default function IndexPage() {
       }
     }
   }, [handlePageFilter, page, proposals])
+
+  const [user] = useAuthContext()
+  const [pendingCoathoring] = useAsyncMemo(
+    () => {
+      if (user) {
+        return Governance.get().getProposalsByCoAuthor(user, CoauthorStatus.PENDING)
+      }
+
+      return Promise.resolve([] as CoauthorAttributes[])
+    },
+    [user],
+    { initialValue: [] as CoauthorAttributes[], callWithTruthyDeps: true }
+  )
 
   if (isUnderMaintenance()) {
     return (
@@ -206,6 +221,7 @@ export default function IndexPage() {
                       <ProposalItem
                         key={proposal.id}
                         proposal={proposal}
+                        coauthorRequest={!!pendingCoathoring.find((req) => req.proposal_id === proposal.id)}
                         votes={votes ? votes[proposal.id] : undefined}
                         subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                         subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}

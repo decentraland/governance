@@ -12,6 +12,7 @@ import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
 import CategoryLabel from '../Category/CategoryLabel'
+import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
 import StatusLabel from '../Status/StatusLabel'
@@ -20,6 +21,7 @@ import './ProposalItem.css'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes
+  coauthorRequest?: boolean
   votes?: Record<string, Vote>
   subscribed?: boolean
   subscribing?: boolean
@@ -29,7 +31,14 @@ export type ProposalItemProps = {
 const subscribeIcon = require('../../images/icons/subscribe.svg').default
 const subscribedIcon = require('../../images/icons/subscribed.svg').default
 
-export default function ProposalItem({ proposal, votes, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
+export default function ProposalItem({
+  proposal,
+  coauthorRequest,
+  votes,
+  subscribing,
+  subscribed,
+  onSubscribe,
+}: ProposalItemProps) {
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
@@ -42,7 +51,11 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
     <Card
       as={Link}
       href={locations.proposal(proposal.id)}
-      className={TokenList.join(['ProposalItem', subscribed && 'ProposalItem--subscribed'])}
+      className={TokenList.join([
+        'ProposalItem',
+        subscribed && 'ProposalItem--subscribed',
+        coauthorRequest && 'ProposalItem--coauthor',
+      ])}
     >
       <Card.Content>
         <div className="ProposalItem__Title">
@@ -66,6 +79,7 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
             <CategoryLabel type={proposal.type} />
           </div>
           <FinishLabel date={proposal.finish_at} />
+          {coauthorRequest && <CoauthorRequestLabel />}
         </div>
       </Card.Content>
     </Card>
