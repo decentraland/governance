@@ -5,33 +5,40 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button, Header } from 'decentraland-ui'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../api/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../../entities/Coauthor/types'
+import Helper from '../Helper/Helper'
+import Cancel from '../Icon/Cancel'
+import Check from '../Icon/Check'
+
+import './ProposalCoAuthorStatus.css'
 
 interface Props {
   proposalId: string
 }
 
-interface LabelKey {
+interface Data {
   title: string
   description: string
-  helper?: string
+  icon?: JSX.Element
 }
 
-const labelKeys: Record<CoauthorStatus, LabelKey> = {
+const statusData: Record<CoauthorStatus, Data> = {
   [CoauthorStatus.PENDING]: {
     title: 'page.coauthor_detail.pending_label',
     description: 'page.coauthor_detail.pending_description',
-    helper: 'page.coauthor_detail.pending_helper',
   },
   [CoauthorStatus.APPROVED]: {
     title: 'page.coauthor_detail.accepted_label',
     description: 'page.coauthor_detail.accepted_description',
+    icon: <Check size="9px" />,
   },
   [CoauthorStatus.REJECTED]: {
     title: 'page.coauthor_detail.rejected_label',
     description: 'page.coauthor_detail.rejected_description',
+    icon: <Cancel size="9px" />,
   },
 }
 
@@ -52,29 +59,61 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
 
   const t = useFormatMessage()
 
-  const onClick = async (status: CoauthorStatus) => {
+  const updateStatus = async (status: CoauthorStatus) => {
     await Governance.get().updateCoauthorStatus(proposalId, status)
     location.reload()
+  }
+
+  const pending = status === CoauthorStatus.PENDING ? 'Pending' : ''
+  const revertAction = async (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    status: Omit<CoauthorStatus, 'Pending'>
+  ) => {
+    event.preventDefault()
+    if (status === CoauthorStatus.APPROVED) {
+      await updateStatus(CoauthorStatus.REJECTED)
+    } else {
+      await updateStatus(CoauthorStatus.APPROVED)
+    }
   }
 
   return (
     <>
       {status && (
-        <div className="CoAuthorStatus DetailsSection">
+        <div className={TokenList.join(['CoAuthorStatus DetailsSection', pending])}>
           <div className="DetailsSection__Content">
-            <span className={TokenList.join(['Title', status === CoauthorStatus.PENDING && 'Pending'])}>
-              <Header>{t(labelKeys[status].title)}</Header>
-              {/*AGREGAR HELPER*/}
+            <span className={TokenList.join(['Title', pending])}>
+              <Header sub>{t(statusData[status].title)}</Header>
+              {status === CoauthorStatus.PENDING ? (
+                <Helper text={t('page.coauthor_detail.pending_helper')} position="top center" size="14" />
+              ) : (
+                statusData[status].icon
+              )}
             </span>
-            <p>{t(labelKeys[status].description)}</p>
+            <p>
+              {t(statusData[status].description)}{' '}
+              {status !== CoauthorStatus.PENDING && (
+                <a href="" onClick={(e) => revertAction(e, status)}>
+                  {t('page.coauthor_detail.revert_label')}
+                </a>
+              )}
+            </p>
             {status === CoauthorStatus.PENDING && (
               <div className="DetailsSection__Actions">
-                <Button primary size="small" onClick={() => onClick(CoauthorStatus.APPROVED)}>
-                  {t('page.coauthor_detail.confirm_label')}
-                </Button>
-                <Button inverted size="small" onClick={() => onClick(CoauthorStatus.REJECTED)}>
-                  {t('page.coauthor_detail.deny_label')}
-                </Button>
+                <Grid columns="equal">
+                  <Grid.Row>
+                    <Grid.Column>
+                      <Button primary size="small" onClick={() => updateStatus(CoauthorStatus.APPROVED)}>
+                        {t('page.coauthor_detail.confirm_label')}
+                      </Button>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Button inverted size="small" onClick={() => updateStatus(CoauthorStatus.REJECTED)}>
+                        {t('page.coauthor_detail.deny_label')}
+                      </Button>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
               </div>
             )}
           </div>
