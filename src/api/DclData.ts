@@ -1,6 +1,6 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
-
 import { TokenInWallet } from '../entities/Transparency/types'
+
+import { GovernanceAPI } from './GovernanceAPI'
 
 export type Detail = {
   name: string
@@ -35,7 +35,7 @@ export type TransparencyData = {
   teams: Team[]
 }
 
-export class DclData extends API {
+export class DclData extends GovernanceAPI {
   static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
   static Cache = new Map<string, DclData>()
