@@ -11,7 +11,7 @@ interface CoAuthors {
 }
 
 export interface CoAuthorProps {
-  setCoAuthors: <T>(newProps: Partial<T extends CoAuthors ? T : unknown>) => void
+  setCoAuthors: (addresses?: string[]) => void
 }
 
 function CoAuthors({ setCoAuthors }: CoAuthorProps) {

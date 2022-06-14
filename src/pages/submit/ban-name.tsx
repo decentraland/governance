@@ -78,6 +78,8 @@ export default function SubmitBanName() {
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
 
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
@@ -177,7 +179,7 @@ export default function SubmitBanName() {
         />
       </ContentSection>
       <ContentSection>
-        <CoAuthors setCoAuthors={editor.set} />
+        <CoAuthors setCoAuthors={setCoAuthors} />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

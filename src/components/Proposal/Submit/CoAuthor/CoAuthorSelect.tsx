@@ -1,5 +1,5 @@
 import React, { KeyboardEventHandler, useEffect, useState } from 'react'
-import { OnChangeValue } from 'react-select'
+import { OnChangeValue, components } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -22,8 +22,9 @@ interface State {
   error: boolean
 }
 
-const components = {
+const comp = {
   DropdownIndicator: null,
+  Input: (props: any) => <components.Input {...props} onPaste={() => console.log('ON PASTE')} />,
 }
 
 const createCoAuthor = (address: string): CoAuthor => ({
@@ -43,16 +44,16 @@ function CoAuthorSelect({ setCoAuthors }: CoAuthorProps) {
 
   useEffect(() => {
     if (state.value.length > 0) {
-      setCoAuthors({ coAuthors: state.value.map((ca) => ca.value) })
+      setCoAuthors(state.value.map((address) => address.value))
     } else {
-      setCoAuthors({ coAuthors: undefined })
+      setCoAuthors(undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.value])
 
   const isDuplicate = (address: string): boolean => {
     const addressLower = address.toLowerCase()
-    return account?.toLowerCase() === addressLower || state.value.map((ca) => ca.value).includes(addressLower)
+    return account?.toLowerCase() === addressLower || state.value.map((address) => address.value).includes(addressLower)
   }
 
   const handleChange = (value: OnChangeValue<CoAuthor, true>) => {
@@ -96,7 +97,7 @@ function CoAuthorSelect({ setCoAuthors }: CoAuthorProps) {
   return (
     <div className={TokenList.join(['CoAuthorSelect dcl field', state.error && 'error'])}>
       <CreatableSelect
-        components={components}
+        components={comp}
         inputValue={state.inputValue}
         isClearable
         isMulti
