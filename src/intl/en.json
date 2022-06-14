@@ -527,7 +527,15 @@
     },
     "grants": {
       "title": "Decentraland DAO",
-      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse."
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "current_banner": {
+        "title": "The future of Decentraland is actually on your hands",
+        "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+      },
+      "past_banner": {
+        "title": "We’ve been heavily invested for a while now",
+        "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+      }
     },
     "proposal_activity": {
       "title": "Decentraland DAO",

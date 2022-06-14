@@ -1,0 +1,51 @@
+.GrantsBanner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: 30px;
+  border-radius: 8px;
+  color: #fff;
+  gap: 50px;
+}
+
+.GrantsBanner--current {
+  background: linear-gradient(180deg, #a524b3 0%, #ff2d55 100%);
+  box-shadow: 0px 6px 24px rgba(253, 45, 88, 0.3);
+}
+
+.GrantsBanner--past {
+  background: linear-gradient(180deg, #ff2d55 0%, #ffc700 100%);
+  box-shadow: 0px 6px 24px rgba(255, 53, 82, 0.3);
+}
+
+.GrantsBanner__Title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 33px;
+  letter-spacing: -1px;
+  color: #ffffff;
+}
+
+.GrantsBanner__Description {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.3px;
+  color: #ffffff;
+}
+
+.GrantsBanner__Items {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+}
+
+.GrantsBanner__ItemsDivider {
+  opacity: 0.3;
+  width: 293px;
+  border: 1px solid #ffffff;
+}
