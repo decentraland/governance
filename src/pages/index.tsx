@@ -31,9 +31,10 @@ import { SearchTitle } from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
-import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
+import useCoauthoring from '../hooks/useCoauthoring'
 import useProposals from '../hooks/useProposals'
 import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
@@ -87,17 +88,7 @@ export default function IndexPage() {
   }, [handlePageFilter, page, proposals])
 
   const [user] = useAuthContext()
-  const [pendingCoathoring] = useAsyncMemo(
-    () => {
-      if (user) {
-        return Governance.get().getProposalsByCoAuthor(user, CoauthorStatus.PENDING)
-      }
-
-      return Promise.resolve([] as CoauthorAttributes[])
-    },
-    [user],
-    { initialValue: [] as CoauthorAttributes[], callWithTruthyDeps: true }
-  )
+  const [pendingCoathoring] = useCoauthoring(user, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (

@@ -20,7 +20,9 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalCard from '../components/Proposal/ProposalCard'
 import StatusMenu from '../components/Status/StatusMenu'
 import LogIn from '../components/User/LogIn'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
+import useCoauthoring from '../hooks/useCoauthoring'
 import useProposals from '../hooks/useProposals'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
@@ -37,6 +39,10 @@ const getFilters = (account: string | null, list: ProposalActivityList | null) =
 
   if (!!account && list === ProposalActivityList.Watchlist) {
     return { subscribed: account }
+  }
+
+  if (!!account && list === ProposalActivityList.CoAuthoring) {
+    return { user: account, coauthor: true }
   }
 
   return {}
@@ -101,6 +107,8 @@ export default function ActivityPage() {
     }
   }, [list, params])
 
+  const [pendingCoathoring] = useCoauthoring(account, CoauthorStatus.PENDING)
+
   if (isUnderMaintenance()) {
     return (
       <>
@@ -148,6 +156,12 @@ export default function ActivityPage() {
               >
                 {t('page.proposal_activity.list_watchlist')}
               </Filter>
+              <Filter
+                active={list === ProposalActivityList.CoAuthoring}
+                onClick={() => handleListFilter(ProposalActivityList.CoAuthoring)}
+              >
+                {t('page.coauthor_detail.accepted_label')}
+              </Filter>
             </>
           }
           rightAction={<StatusMenu value={status} onChange={(_, { value }) => handleStatusFilter(value)} />}
@@ -181,6 +195,7 @@ export default function ActivityPage() {
                   <ProposalCard
                     key={proposal.id}
                     proposal={proposal}
+                    coauthorRequest={!!pendingCoathoring.find((req) => req.proposal_id === proposal.id)}
                     subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
                     subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                     onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}

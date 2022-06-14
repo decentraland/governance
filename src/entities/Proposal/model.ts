@@ -14,6 +14,7 @@ import { QueryPart } from 'decentraland-server/dist/db/types'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import CoauthorModel from '../Coauthor/model'
 import SubscriptionModel from '../Subscription/model'
 
 import tsquery from './tsquery'
@@ -25,6 +26,7 @@ export type FilterProposalList = {
   user: string
   status: string
   subscribed: string
+  coauthor: boolean
   search?: string
   timeFrame?: string
   order?: 'ASC' | 'DESC'
@@ -181,29 +183,29 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
+    if (filter.coauthor && !filter.user) {
+      return 0
+    }
+
     const timeFrame = this.parseTimeframe(filter.timeFrame)
 
     const result = await this.query(SQL`
-        SELECT COUNT(*) as "total"
-        FROM ${table(ProposalModel)} p
-            ${conditional(
-              !!filter.subscribed,
-              SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`
-            )} ${conditional(
-      !!filter.search,
-      SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
-    )}
-        WHERE "deleted" = FALSE ${conditional(!!filter.user, SQL`AND p."user" = ${filter.user}`)} ${conditional(
-      !!filter.type,
-      SQL`AND p."type" = ${filter.type}`
-    )} ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} ${conditional(
-      !!filter.subscribed,
-      SQL`AND s."user" = ${filter.subscribed}`
-    )} ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} ${conditional(
-      !!filter.search,
-      SQL`AND "rank" > 0`
-    )}
-    `)
+    SELECT COUNT(*) as "total"
+    FROM ${table(ProposalModel)} p
+        ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)} 
+        ${conditional(!!filter.coauthor, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)}
+      ${conditional(
+        !!filter.search,
+        SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+      )}
+    WHERE "deleted" = FALSE 
+    ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
+    ${conditional(!!filter.coauthor, SQL`AND lower(c."coauthor_address") = lower(${filter.user})`)}
+    ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)} 
+    ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} 
+    ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
+    ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} 
+    ${conditional(!!filter.search, SQL`AND "rank" > 0`)}`)
 
     return (result && result[0] && Number(result[0].total)) || 0
   }
@@ -225,37 +227,39 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
+    if (filter.coauthor && !filter.user) {
+      return []
+    }
+
     const timeFrame = this.parseTimeframe(filter.timeFrame)
 
     const orderBy = filter.search ? '"rank"' : 'p.created_at'
     const orderDirection = filter.order || 'DESC'
 
     const proposals = await this.query(SQL`
-        SELECT p.*
-        FROM ${table(ProposalModel)} p
-            ${conditional(
-              !!filter.subscribed,
-              SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`
-            )} ${conditional(
-      !!filter.search,
-      SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
-    )}
-        WHERE "deleted" = FALSE ${conditional(!!filter.user, SQL`AND "user" = ${filter.user}`)} ${conditional(
-      !!filter.type,
-      SQL`AND "type" = ${filter.type}`
-    )} ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} ${conditional(
-      !!filter.subscribed,
-      SQL`AND s."user" = ${filter.subscribed}`
-    )} ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} ${conditional(
-      !!filter.search,
-      SQL`AND "rank" > 0`
-    )}
-        ORDER BY ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} ${limit(filter.limit, {
+    SELECT p.*
+    FROM ${table(ProposalModel)} p
+        ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
+        ${conditional(!!filter.coauthor, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)} 
+        ${conditional(
+          !!filter.search,
+          SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+        )}
+    WHERE "deleted" = FALSE 
+    ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
+    ${conditional(!!filter.coauthor, SQL`AND lower(c."coauthor_address") = lower(${filter.user})`)} 
+    ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
+    ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} 
+    ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
+    ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} 
+    ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
+    ORDER BY ${conditional(!!filter.coauthor, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
+    ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
+    ${limit(filter.limit, {
       min: 0,
       max: 100,
       defaultValue: 100,
-    })} ${offset(filter.offset)}
-    `)
+    })} ${offset(filter.offset)}`)
 
     return proposals.map(this.parse)
   }

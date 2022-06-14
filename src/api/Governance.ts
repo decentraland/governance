@@ -39,6 +39,7 @@ export type GetProposalsFilter = {
   type: ProposalType
   status: ProposalStatus
   subscribed: boolean | string
+  coauthor: boolean
   search?: string | null
   timeFrame?: string | null
   order?: 'ASC' | 'DESC'

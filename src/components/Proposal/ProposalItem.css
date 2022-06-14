@@ -77,7 +77,3 @@
   border: 1px solid var(--light-orange) !important;
   box-shadow: 0 2px 4px rgba(var(--light-orange-rgb), 0.5);
 }
-
-/* .ProposalItem.ProposalItem--coauthor .ProposalItem__Status:last-child {
-  margin-left: auto;
-} */

@@ -145,6 +145,7 @@ export async function getProposals(req: WithAuth<Request>) {
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
+  const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
 
   let subscribed: string | undefined = undefined
@@ -161,8 +162,19 @@ export async function getProposals(req: WithAuth<Request>) {
   }
 
   const [total, data] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit }),
+    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed, coauthor }),
+    ProposalModel.getProposalList({
+      type,
+      status,
+      user,
+      subscribed,
+      coauthor,
+      search,
+      timeFrame,
+      order,
+      offset,
+      limit,
+    }),
   ])
 
   return { ok: true, total, data }
