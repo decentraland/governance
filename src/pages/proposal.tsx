@@ -43,6 +43,7 @@ import VestingSection from '../components/Section/VestingSection'
 import StatusLabel from '../components/Status/StatusLabel'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
+import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import locations from '../modules/locations'
@@ -77,7 +78,7 @@ export default function ProposalPage() {
   const patchOptionsRef = useRef(patchOptions)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
-  const [committee] = useAsyncMemo(() => Governance.get().getCommittee(), [])
+  const { isCommittee } = useIsCommittee(account)
   const [votes, votesState] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], {
     callWithTruthyDeps: true,
   })
@@ -131,7 +132,7 @@ export default function ProposalPage() {
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(
     async (status: ProposalStatus, vesting_address: string | null, description: string) => {
-      if (proposal && account && committee && committee.includes(account)) {
+      if (proposal && isCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
@@ -142,14 +143,10 @@ export default function ProposalPage() {
         patchOptions({ confirmStatusUpdate: false })
       }
     },
-    [proposal, account, committee, proposalState, patchOptions]
+    [proposal, account, isCommittee, proposalState, patchOptions]
   )
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
-  const isCommittee = useMemo(
-    () => !!(proposal && account && committee && committee.includes(account)),
-    [proposal, account, committee]
-  )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
     if (proposal && account && (proposal.user === account || isCommittee)) {

@@ -1,6 +1,6 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
-
 import { DISCOURSE_AUTH } from '../entities/Discourse/utils'
+
+import { GovernanceAPI } from './GovernanceAPI'
 
 export type DiscourseAuth = {
   apiKey: string
@@ -133,34 +133,34 @@ export type DiscourseTopic = {
     }
     participants: (
       | {
-        flair_color: null
-        moderator: boolean
-        admin: boolean
-        trust_level: number
-        flair_url: null
-        flair_bg_color: null
-        primary_group_name: null
-        name: string
-        id: number
-        post_count: number
-        avatar_template: string
-        flair_name: null
-        username: string
-      }
+          flair_color: null
+          moderator: boolean
+          admin: boolean
+          trust_level: number
+          flair_url: null
+          flair_bg_color: null
+          primary_group_name: null
+          name: string
+          id: number
+          post_count: number
+          avatar_template: string
+          flair_name: null
+          username: string
+        }
       | {
-        flair_bg_color: null
-        primary_group_name: null
-        flair_color: null
-        name: string
-        admin: boolean
-        trust_level: number
-        id: number
-        post_count: number
-        flair_url: null
-        avatar_template: string
-        flair_name: null
-        username: string
-      }
+          flair_bg_color: null
+          primary_group_name: null
+          flair_color: null
+          name: string
+          admin: boolean
+          trust_level: number
+          id: number
+          post_count: number
+          flair_url: null
+          avatar_template: string
+          flair_name: null
+          username: string
+        }
     )[]
   }
   id: number
@@ -266,7 +266,7 @@ export type DiscoursePostInTopic = {
   reviewable_score_pending_count?: number
 }
 
-export class Discourse extends API {
+export class Discourse extends GovernanceAPI {
   static Url =
     process.env.GATSBY_DISCOURSE_API ||
     process.env.REACT_APP_DISCOURSE_API ||

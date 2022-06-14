@@ -1,6 +1,6 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
+import { GovernanceAPI } from './GovernanceAPI'
 
-export class Decentraland extends API {
+export class Decentraland extends GovernanceAPI {
   static Url = process.env.GATSBY_DECENTRALAND_API || 'https://decentraland.org'
 
   static Cache = new Map<string, Decentraland>()

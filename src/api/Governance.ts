@@ -1,4 +1,3 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
@@ -20,6 +19,8 @@ import {
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
+
+import { GovernanceAPI } from './GovernanceAPI'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -44,7 +45,7 @@ export type GetProposalsFilter = {
   offset: number
 }
 
-export class Governance extends API {
+export class Governance extends GovernanceAPI {
   static Url =
     process.env.GATSBY_GOVERNANCE_API ||
     process.env.REACT_APP_GOVERNANCE_API ||
@@ -82,7 +83,7 @@ export class Governance extends API {
   }
 
   async getProposals(filters: Partial<GetProposalsFilter> = {}) {
-    const params = new URLSearchParams(filters as any)
+    const params = new URLSearchParams(filters as never)
     let query = params.toString()
     if (query) {
       query = '?' + query
@@ -272,6 +273,11 @@ export class Governance extends API {
 
   async getCommittee() {
     const result = await this.fetch<ApiResponse<string[]>>(`/committee`)
+    return result.data
+  }
+
+  async getAdminAddresses() {
+    const result = await this.fetch<ApiResponse<string[]>>(`/admin`)
     return result.data
   }
 

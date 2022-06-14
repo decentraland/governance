@@ -101,7 +101,7 @@ export default function SubmitBanName() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ '*': err.body?.error || err.message })
+          editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
           setFormDisabled(false)
         })
     }
