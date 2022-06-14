@@ -7,6 +7,7 @@ import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import useCoauthoring from '../../hooks/useCoauthoring'
+import useIsAdmin from '../../hooks/useIsAdmin'
 import locations, { ProposalActivityList } from '../../modules/locations'
 import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
@@ -19,6 +20,7 @@ export enum NavigationTab {
   Enacted = 'enacted',
   Activity = 'activity',
   Transparency = 'transparency',
+  Admin = 'admin',
 }
 
 type NavigationProps = {
@@ -38,6 +40,8 @@ const Navigation = (props: NavigationProps) => {
       setActivityLocation(locations.activity({ list: ProposalActivityList.CoAuthoring }))
     }
   }, [pendingCoathoring])
+
+  const { isAdmin } = useIsAdmin(user)
 
   return (
     <Tabs>
@@ -60,6 +64,11 @@ const Navigation = (props: NavigationProps) => {
                 {t('navigation.activity')} {pendingCoathoring.length > 0 && <Dot />}
               </div>
             </Tabs.Tab>
+          </Link>
+        )}
+        {user && isAdmin && (
+          <Link href={locations.admin()}>
+            <Tabs.Tab active={props.activeTab === NavigationTab.Admin}>{t('navigation.admin')}</Tabs.Tab>
           </Link>
         )}
       </Tabs.Left>

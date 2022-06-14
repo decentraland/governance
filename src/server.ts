@@ -12,6 +12,7 @@ import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/util
 import express from 'express'
 
 import coauthor from './entities/Coauthor/routes'
+import admin from './entities/Admin/routes'
 import committee from './entities/Committee/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
@@ -36,6 +37,7 @@ app.use('/api', [
   withCors(),
   withBody(),
   committee,
+  admin,
   proposal,
   score,
   subscription,
