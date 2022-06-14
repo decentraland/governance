@@ -10,10 +10,3 @@ export const ADMIN_ADDRESSES = (env('ADMIN_ADDRESSES', '') || '')
 const adminAddresses = new Set(ADMIN_ADDRESSES)
 
 adminAddresses.forEach((address) => console.log('admin address:', magenta(address)))
-
-export default function isAdmin(user?: string | null | undefined) {
-  if (!user) {
-    return false
-  }
-  return adminAddresses.has(user)
-}

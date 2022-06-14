@@ -17,8 +17,6 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
 import useIsAdmin from '../hooks/useIsAdmin'
 
-import './transparency.css'
-
 type TestState = {
   httpStatus: string
   sleepTime: number
