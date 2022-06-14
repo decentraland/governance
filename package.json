@@ -100,6 +100,7 @@
     "@types/validator": "^13.6.6",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
+    "bdd-lazy-var": "^2.6.1",
     "concurrently": "^6.0.0",
     "decentraland-gatsby-deploy": "^1.13.5",
     "devcert": "1.1.0",

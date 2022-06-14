@@ -12,15 +12,14 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Catalyst, { Servers } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
 import { newProposalCatalystScheme } from '../../entities/Proposal/types'
 import { isValidDomainName } from '../../entities/Proposal/utils'
@@ -152,13 +151,7 @@ export default function SubmitCatalyst() {
   }, [state.validated, commsStatus, contentStatus, lambdaStatus])
 
   if (accountState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   if (!account) {

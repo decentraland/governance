@@ -13,16 +13,15 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
@@ -230,13 +229,7 @@ export default function SubmitGovernanceProposal() {
   }, [state.validated])
 
   if (accountState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   if (!account) {

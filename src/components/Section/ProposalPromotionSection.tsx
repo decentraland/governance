@@ -35,20 +35,17 @@ export function ProposalPromotionSection({ proposal, loading }: ProposalPromotio
       {showPromotionSection && (
         <div className="ProposalPromotionSection">
           <TextLabel text={t('page.proposal_detail.promotion.opportunity_label')} />
-          <Markdown
-            className="smallMarkdown"
-            children={
-              (proposal?.type == ProposalType.Poll
-                ? t('page.proposal_detail.promotion.draft_text')
-                : t('page.proposal_detail.promotion.governance_text')) || ''
-            }
-          />
+          <Markdown className="smallMarkdown">
+            {(proposal?.type == ProposalType.Poll
+              ? t('page.proposal_detail.promotion.draft_text')
+              : t('page.proposal_detail.promotion.governance_text')) || ''}
+          </Markdown>
           <Button primary size="small" loading={loading} onClick={() => promoteProposal(proposal?.type)}>
             {proposal?.type == ProposalType.Poll
               ? t('page.proposal_detail.promotion.promote_to_draft_label')
               : t('page.proposal_detail.promotion.promote_to_governance_label')}
           </Button>
-          <Markdown className="tinyMarkdown" children={t('page.proposal_detail.promotion.info_text') || ''} />
+          <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
         </div>
       )}
     </>

@@ -60,7 +60,7 @@ const ProposalUpdate = ({ proposal, update, expanded, index }: Props) => {
       return
     }
 
-    navigate(`/update?id=${update.id}`)
+    navigate(locations.update(update.id))
   }, [completion_date, update.id])
 
   const handlePostUpdateClick = useCallback(
