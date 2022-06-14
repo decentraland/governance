@@ -11,14 +11,13 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
@@ -111,13 +110,7 @@ export default function SubmitBanName() {
   }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   if (!account) {

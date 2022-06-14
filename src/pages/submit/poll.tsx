@@ -11,10 +11,8 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import omit from 'lodash.omit'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
@@ -22,6 +20,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
@@ -158,13 +157,7 @@ export default function SubmitPoll() {
   }, [editor, state.validated, state.value])
 
   if (accountState.loading) {
-    return (
-      <Container className="WelcomePage">
-        <div>
-          <Loader size="huge" active />
-        </div>
-      </Container>
-    )
+    return <LoadingView />
   }
 
   if (!account) {
