@@ -4,8 +4,8 @@
   "description": "",
   "main": "Pulumi.ts",
   "engines": {
-    "node": "16.x",
-    "npm": "7.x"
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   },
   "scripts": {
     "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --runInBand",
