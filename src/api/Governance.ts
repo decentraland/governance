@@ -46,8 +46,8 @@ export type GetProposalsFilter = {
 }
 
 const getGovernanceApiUrl = () => {
-  if (process.env.HEROKU === 'true' && process.env.HEROKU_APP_NAME) {
-    return `https://${process.env.HEROKU_APP_NAME}.herokuapp.com/api`
+  if (process.env.HEROKU === 'true' && process.env.GATSBY_HEROKU_APP_NAME) {
+    return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
   }
 
   return (
