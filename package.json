@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --runInBand",
-    "build": "npm run build:server && npm run build:front",
+    "build": "GATSBY_HEROKU_APP_NAME=$HEROKU_APP_NAME && npm run build:server && npm run build:front",
     "build:server": "echo $HEROKU_APP_NAME && tsc -p .",
     "build:front": "gatsby build",
     "develop": "gatsby develop --https -H 0.0.0.0",
