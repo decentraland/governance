@@ -88,7 +88,7 @@ export default function IndexPage() {
   }, [handlePageFilter, page, proposals])
 
   const [user] = useAuthContext()
-  const [pendingCoathoring] = useCoauthoring(user, CoauthorStatus.PENDING)
+  const [pendingCoauthorRequests] = useCoauthoring(user, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -212,7 +212,7 @@ export default function IndexPage() {
                       <ProposalItem
                         key={proposal.id}
                         proposal={proposal}
-                        coauthorRequest={!!pendingCoathoring.find((req) => req.proposal_id === proposal.id)}
+                        coauthorRequest={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
                         votes={votes ? votes[proposal.id] : undefined}
                         subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                         subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}

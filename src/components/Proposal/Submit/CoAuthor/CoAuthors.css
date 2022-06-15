@@ -22,3 +22,7 @@
   line-height: 13px;
   font-weight: 500;
 }
+
+.Co-author .dg.Paragraph.details {
+  margin-bottom: 20px !important;
+}

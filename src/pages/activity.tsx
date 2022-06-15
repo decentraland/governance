@@ -107,7 +107,7 @@ export default function ActivityPage() {
     }
   }, [list, params])
 
-  const [pendingCoathoring] = useCoauthoring(account, CoauthorStatus.PENDING)
+  const [pendingCoauthorRequests] = useCoauthoring(account, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -195,7 +195,7 @@ export default function ActivityPage() {
                   <ProposalCard
                     key={proposal.id}
                     proposal={proposal}
-                    coauthorRequest={!!pendingCoathoring.find((req) => req.proposal_id === proposal.id)}
+                    coauthorRequest={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
                     subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
                     subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                     onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}

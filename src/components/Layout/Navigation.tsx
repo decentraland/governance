@@ -31,15 +31,15 @@ type NavigationProps = {
 const Navigation = (props: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
-  const [pendingCoathoring] = useCoauthoring(user, CoauthorStatus.PENDING)
+  const [pendingCoauthorRequests] = useCoauthoring(user, CoauthorStatus.PENDING)
   const [activityLocation, setActivityLocation] = useState<string>(
     locations.activity({ list: ProposalActivityList.MyProposals })
   )
   useEffect(() => {
-    if (pendingCoathoring.length > 0) {
+    if (pendingCoauthorRequests.length > 0) {
       setActivityLocation(locations.activity({ list: ProposalActivityList.CoAuthoring }))
     }
-  }, [pendingCoathoring])
+  }, [pendingCoauthorRequests])
 
   const { isAdmin } = useIsAdmin(user)
 
@@ -61,7 +61,7 @@ const Navigation = (props: NavigationProps) => {
           <Link href={activityLocation} state={activityLocation}>
             <Tabs.Tab active={props.activeTab === NavigationTab.Activity}>
               <div className="ActivityTab">
-                {t('navigation.activity')} {pendingCoathoring.length > 0 && <Dot />}
+                {t('navigation.activity')} {pendingCoauthorRequests.length > 0 && <Dot />}
               </div>
             </Tabs.Tab>
           </Link>

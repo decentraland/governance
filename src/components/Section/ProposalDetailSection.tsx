@@ -40,8 +40,8 @@ export default React.memo(function ProposalDetailSection({ proposal, ...props }:
           <div className="DetailsSection__Flex">
             <div>{t('page.proposal_detail.details_coauthors_label')}</div>
             <div className="DetailsSection__Flex--Coauthors">
-              {coAuthors.map((ca) => (
-                <ProposalDetailCoauthors coauthor={ca} key={ca.address} />
+              {coAuthors.map((coauthor) => (
+                <ProposalDetailCoauthors coauthor={coauthor} key={coauthor.address} />
               ))}
             </div>
           </div>
