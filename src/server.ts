@@ -10,6 +10,7 @@ import { status } from 'decentraland-gatsby/dist/entities/Route/routes'
 import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/handler'
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
+import path from 'path'
 
 import admin from './entities/Admin/routes'
 import committee from './entities/Committee/routes'
@@ -58,6 +59,9 @@ app.get(
 app.use(sitemap)
 app.use('/', social)
 app.use(express.static('public'))
+app.use(function (_req, res) {
+  res.status(404).sendFile('404/index.html', { root: path.join(__dirname, '../public') })
+})
 
 void initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),
