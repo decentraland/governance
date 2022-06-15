@@ -50,6 +50,10 @@ const getGovernanceApiUrl = () => {
     return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
   }
 
+  console.log('HEROKU ENV', process.env.HEROKU)
+  console.log('GATSBY HEROKU APP NAME ENV', process.env.GATSBY_HEROKU_APP_NAME)
+  console.log('HEROKU APP NAME ENV', process.env.HEROKU_APP_NAME)
+
   return (
     process.env.GATSBY_GOVERNANCE_API ||
     process.env.REACT_APP_GOVERNANCE_API ||
