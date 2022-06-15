@@ -57,6 +57,7 @@ app.get(
 
 app.use(sitemap)
 app.use('/', social)
+app.use(filesystem('public', '404.html'))
 app.use(function (req, res, next) {
   res.setHeader(
     'Content-Security-Policy',
@@ -64,7 +65,6 @@ app.use(function (req, res, next) {
   );
   next();
 });
-app.use(filesystem('public', '404.html'))
 
 void initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),
