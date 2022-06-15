@@ -6,7 +6,7 @@ import metrics from 'decentraland-gatsby/dist/entities/Prometheus/routes'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handle from 'decentraland-gatsby/dist/entities/Route/handle'
 import { withBody, withCors, withDDosProtection, withLogs } from 'decentraland-gatsby/dist/entities/Route/middleware'
-import { filesystem, status } from 'decentraland-gatsby/dist/entities/Route/routes'
+import { status } from 'decentraland-gatsby/dist/entities/Route/routes'
 import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/handler'
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
@@ -57,14 +57,7 @@ app.get(
 
 app.use(sitemap)
 app.use('/', social)
-app.use(filesystem('public', '404.html'))
-app.use(function (req, res, next) {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
-  );
-  next();
-});
+app.use(express.static('public'))
 
 void initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),
