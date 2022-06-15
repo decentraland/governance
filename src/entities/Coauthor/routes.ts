@@ -47,7 +47,7 @@ export async function updateStatus(req: WithAuth<Request>): Promise<CoauthorAttr
   const user = req.auth!
   const id = req.params.proposal
   const data = validate<UpdateStatus>(updateStatusValidator, req.body || {})
-  const conditions = { proposal_id: id, coauthor_address: user.toLowerCase() }
+  const conditions = { proposal_id: id, address: user.toLowerCase() }
 
   const result = await CoauthorModel.update<CoauthorAttributes>({ status: data.status }, conditions)
 

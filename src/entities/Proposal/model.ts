@@ -200,7 +200,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       )}
     WHERE "deleted" = FALSE 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
-    ${conditional(!!filter.coauthor, SQL`AND lower(c."coauthor_address") = lower(${filter.user})`)}
+    ${conditional(!!filter.coauthor, SQL`AND lower(c."address") = lower(${filter.user})`)}
     ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
@@ -247,7 +247,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         )}
     WHERE "deleted" = FALSE 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
-    ${conditional(!!filter.coauthor, SQL`AND lower(c."coauthor_address") = lower(${filter.user})`)} 
+    ${conditional(!!filter.coauthor, SQL`AND lower(c."address") = lower(${filter.user})`)}
     ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 

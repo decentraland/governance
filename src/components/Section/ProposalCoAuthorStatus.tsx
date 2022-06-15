@@ -53,7 +53,7 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
 
   useEffect(() => {
     if (user) {
-      setStatus(coAuthors.find((ca) => ca.coauthor_address.toLowerCase() === user.toLowerCase())?.status)
+      setStatus(coAuthors.find((coauthor) => coauthor.address.toLowerCase() === user.toLowerCase())?.status)
     }
   }, [user, coAuthors])
 

@@ -15,7 +15,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       primaryKey: true,
       notNull: true,
     },
-    coauthor_address: {
+    address: {
       type: 'TEXT',
       primaryKey: true,
       notNull: true,
@@ -32,7 +32,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     `FOREIGN KEY(${Model.primaryKey}) REFERENCES ${ProposalModel.tableName}(${ProposalModel.primaryKey})`
   )
 
-  pgm.addIndex(Model.tableName, ['proposal_id', 'coauthor_address'])
+  pgm.addIndex(Model.tableName, ['proposal_id', 'address'])
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {

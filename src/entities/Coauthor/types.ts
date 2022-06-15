@@ -6,7 +6,7 @@ export enum CoauthorStatus {
 
 export type CoauthorAttributes = {
   proposal_id: string
-  coauthor_address: string
+  address: string
   status: CoauthorStatus
 }
 

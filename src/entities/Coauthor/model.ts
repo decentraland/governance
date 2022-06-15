@@ -23,17 +23,17 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
   }
 
   static async findProposals(userAddress: string, status?: CoauthorStatus): Promise<CoauthorAttributes[]> {
-    return await this.findByColumn('coauthor_address', userAddress, status)
+    return await this.findByColumn('address', userAddress, status)
   }
 
   static async createMultiple(proposalId: string, userAddresses: string[]): Promise<void> {
     const coauthors = userAddresses.map<CoauthorAttributes>((address) => ({
       proposal_id: proposalId,
-      coauthor_address: address.toLowerCase(),
+      address: address.toLowerCase(),
       status: CoauthorStatus.PENDING,
     }))
 
-    const cols = ['proposal_id', 'coauthor_address', 'status']
+    const cols = ['proposal_id', 'address', 'status']
     const query = SQL`
         INSERT INTO ${table(this)} ${columns(cols)}
         VALUES

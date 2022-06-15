@@ -34,7 +34,7 @@ const data: Record<CoauthorStatus, StatusData> = {
 }
 
 function ProposalDetailCoauthors({ coauthor }: Props) {
-  const { coauthor_address, status } = coauthor
+  const { address, status } = coauthor
   const t = useFormatMessage()
   return (
     <Popup
@@ -42,7 +42,7 @@ function ProposalDetailCoauthors({ coauthor }: Props) {
       position="top center"
       trigger={
         <span>
-          <Username address={coauthor_address} linked />
+          <Username address={address} linked />
           {data[status].icon}
         </span>
       }
