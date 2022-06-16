@@ -27,7 +27,7 @@
   display: flex;
   margin-top: 16px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .DetailsSection .DetailsSection__Flex--Coauthors span {
@@ -64,7 +64,7 @@
 }
 
 .DetailsSection .DetailsSection__Flex > div:first-child {
-  flex: 0 0 50%;
+  flex: 0 0 32%;
 }
 
 .DetailsSection .DetailsSection__Flex .DetailsSection__Value {
@@ -112,10 +112,6 @@
   .DetailsSection .DetailsSection__Flex {
     flex-direction: column;
   }
-
-  .DetailsSection .DetailsSection__Flex:nth-child(3) > div:first-child {
-    flex: 0 0 45%;
-  }
 }
 
 @media (min-width: 1024px) {
@@ -133,7 +129,7 @@
     min-width: 10px;
   }
 
-  .DetailsSection .DetailsSection__Flex:nth-child(3) {
+  /* .DetailsSection .DetailsSection__Flex:nth-child(3) {
     align-items: flex-start;
-  }
+  } */
 }

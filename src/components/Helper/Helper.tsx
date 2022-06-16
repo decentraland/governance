@@ -7,16 +7,18 @@ import Info from '../Icon/Info'
 type Props = Pick<PopupProps, 'position'> & {
   text: string
   size?: string
+  containerClassName?: string
+  iconClassName?: string
 }
 
-function Helper({ position, text, size }: Props) {
+function Helper({ position, text, size, containerClassName, iconClassName }: Props) {
   return (
     <Popup
       content={<span>{text}</span>}
       position={position}
       trigger={
-        <div className="Helper__Container">
-          <Info className="Helper__Icon" size={size} />
+        <div className={containerClassName || 'Helper__Container'}>
+          <Info className={iconClassName || 'Helper__Icon'} size={size} />
         </div>
       }
       on="hover"

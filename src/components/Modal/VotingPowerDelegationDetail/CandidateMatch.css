@@ -1,4 +1,4 @@
-.CandidateMatch__StatsValue {
+.CandidateMatch .CandidateMatch__StatsValue {
   font-weight: 600;
   font-size: 17px;
   line-height: 32px;
@@ -6,7 +6,7 @@
   color: #16141a;
 }
 
-.CandidateMatch .Helper__Container {
+.CandidateMatch .CandidateMatch__Info {
   display: flex;
   width: fit-content;
   position: absolute;

@@ -549,7 +549,8 @@
       "no_proposals_subscriptions": "You haven't subscribed to any proposal yet.",
       "no_proposals_subscriptions_action": "Browse proposals",
       "no_proposals_submitted": "You haven't submitted any proposal yet.",
-      "no_proposals_submitted_action": "Create a proposal"
+      "no_proposals_submitted_action": "Create a proposal",
+      "no_proposals_coauthoring": "You have not yet been requested to co-author any proposals."
     },
     "proposal_comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",

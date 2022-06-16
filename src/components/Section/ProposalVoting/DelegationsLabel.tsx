@@ -63,7 +63,15 @@ const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: Deleg
         )}
       </span>
 
-      {infoMessage && <Helper text={t(infoMessage.id, formattedInfoValues)} position="left center" size="14" />}
+      {infoMessage && (
+        <Helper
+          text={t(infoMessage.id, formattedInfoValues)}
+          position="left center"
+          size="14"
+          containerClassName="DelegationsLabel__HelperContainer"
+          iconClassName="DelegationsLabel__HelperIcon"
+        />
+      )}
     </div>
   )
 }

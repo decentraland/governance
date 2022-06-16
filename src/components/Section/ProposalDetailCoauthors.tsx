@@ -13,12 +13,12 @@ interface Props {
   coauthor: CoauthorAttributes
 }
 
-interface StatusData {
+interface CoauthorHelperConfiguration {
   helperKey: string
   icon: JSX.Element
 }
 
-const data: Record<CoauthorStatus, StatusData> = {
+const helperConfig: Record<CoauthorStatus, CoauthorHelperConfiguration> = {
   [CoauthorStatus.PENDING]: {
     helperKey: 'page.proposal_detail.details_coauthor_pending_helper',
     icon: <Warning size="10" />,
@@ -38,12 +38,12 @@ function ProposalDetailCoauthors({ coauthor }: Props) {
   const t = useFormatMessage()
   return (
     <Popup
-      content={<span>{t(data[status].helperKey)}</span>}
+      content={<span>{t(helperConfig[status].helperKey)}</span>}
       position="top center"
       trigger={
         <span>
           <Username address={address} linked />
-          {data[status].icon}
+          {helperConfig[status].icon}
         </span>
       }
       on="hover"

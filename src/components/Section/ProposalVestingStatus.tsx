@@ -53,7 +53,12 @@ export default function ProposalVestingStatus({
                 })}
               </Markdown>
             </Date>
-            <Helper text={t('page.proposal_detail.grant.current_update_info')} position="bottom right" size="14" />
+            <Helper
+              text={t('page.proposal_detail.grant.current_update_info')}
+              position="bottom right"
+              size="14"
+              containerClassName="ProposalVestingStatus__InfoIconContainer"
+            />
           </span>
         )}
         {hasSubmittedUpdate && !!currentUpdate?.due_date && nextUpdate?.due_date && (

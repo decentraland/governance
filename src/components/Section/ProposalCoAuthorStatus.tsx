@@ -19,13 +19,13 @@ interface Props {
   proposalId: string
 }
 
-interface Data {
+interface CoauthorLabelConfiguration {
   title: string
   description: string
   icon?: JSX.Element
 }
 
-const statusData: Record<CoauthorStatus, Data> = {
+const labelConfig: Record<CoauthorStatus, CoauthorLabelConfiguration> = {
   [CoauthorStatus.PENDING]: {
     title: 'page.coauthor_detail.pending_label',
     description: 'page.coauthor_detail.pending_description',
@@ -64,7 +64,8 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
     location.reload()
   }
 
-  const pending = status === CoauthorStatus.PENDING ? 'Pending' : ''
+  const isPending = status === CoauthorStatus.PENDING
+  const pending = isPending ? 'Pending' : ''
   const revertAction = async (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     status: Omit<CoauthorStatus, 'Pending'>
@@ -83,22 +84,22 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
         <div className={TokenList.join(['CoAuthorStatus DetailsSection', pending])}>
           <div className="DetailsSection__Content">
             <span className={TokenList.join(['Title', pending])}>
-              <Header sub>{t(statusData[status].title)}</Header>
-              {status === CoauthorStatus.PENDING ? (
+              <Header sub>{t(labelConfig[status].title)}</Header>
+              {isPending ? (
                 <Helper text={t('page.coauthor_detail.pending_helper')} position="top center" size="14" />
               ) : (
-                statusData[status].icon
+                labelConfig[status].icon
               )}
             </span>
             <p>
-              {t(statusData[status].description)}{' '}
+              {t(labelConfig[status].description)}{' '}
               {status !== CoauthorStatus.PENDING && (
                 <a href="" onClick={(e) => revertAction(e, status)}>
                   {t('page.coauthor_detail.revert_label')}
                 </a>
               )}
             </p>
-            {status === CoauthorStatus.PENDING && (
+            {isPending && (
               <div className="DetailsSection__Actions">
                 <Grid columns="equal">
                   <Grid.Row>

@@ -27,7 +27,7 @@ function getBlockieScale(size?: string) {
     case Size.Mini:
       return 3
     case Size.Tiny:
-      return 3.35
+      return DEFAULT_BLOCKIE_SCALE
     case Size.Small:
       return 4.9
     case Size.Medium:

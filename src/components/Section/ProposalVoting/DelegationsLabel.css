@@ -21,12 +21,12 @@
   padding-left: 4px;
 }
 
-.DelegationsLabel .Helper__Container {
+.DelegationsLabel .DelegationsLabel__HelperContainer {
   display: block;
   height: 24px;
 }
 
-.DelegationsLabel .Helper__Icon {
+.DelegationsLabel .DelegationsLabel__HelperIcon {
   margin-top: 5px;
 }
 

@@ -24,18 +24,15 @@ export const updateStatusScheme = {
   },
 }
 
-export function isCoauthorStatusType(value: string | null | undefined): boolean {
-  switch (value) {
+export function toCoauthorStatusType(value: string | null | undefined): CoauthorStatus {
+  const upperValue = value?.toUpperCase()
+  switch (upperValue) {
     case CoauthorStatus.APPROVED:
     case CoauthorStatus.REJECTED:
     case CoauthorStatus.PENDING:
-      return true
+      return upperValue as CoauthorStatus
 
     default:
-      return false
+      throw new Error('Invalid status')
   }
-}
-
-export function toCoauthorStatusType(value: string | null | undefined): CoauthorStatus | undefined {
-  return isCoauthorStatusType(value) ? (value as CoauthorStatus) : undefined
 }

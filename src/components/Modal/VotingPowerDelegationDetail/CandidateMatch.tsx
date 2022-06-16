@@ -22,7 +22,12 @@ function CandidateMatch({ matchingVotes }: Props) {
   return (
     matchingVotes && (
       <Stats title={t('modal.vp_delegation.details.stats_match')} className="CandidateMatch">
-        <Helper text={t('modal.vp_delegation.details.stats_match_helper')} position="right center" size="14" />
+        <Helper
+          text={t('modal.vp_delegation.details.stats_match_helper')}
+          position="right center"
+          size="14"
+          containerClassName="CandidateMatch__Info"
+        />
         <div className="CandidateMatch__StatsValue" style={matchColor(matchingVotes)}>
           {matchingVotes.percentage}%
         </div>

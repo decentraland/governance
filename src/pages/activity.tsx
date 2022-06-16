@@ -48,6 +48,28 @@ const getFilters = (account: string | null, list: ProposalActivityList | null) =
   return {}
 }
 
+type EmptyState = {
+  descriptionKey: string
+  linkTextKey: string
+  onLinkClick: () => void
+}
+
+const empty: Record<ProposalActivityList, Partial<EmptyState>> = {
+  [ProposalActivityList.MyProposals]: {
+    descriptionKey: 'page.proposal_activity.no_proposals_submitted',
+    linkTextKey: 'page.proposal_activity.no_proposals_submitted_action',
+    onLinkClick: () => navigate(locations.submit()),
+  },
+  [ProposalActivityList.Watchlist]: {
+    descriptionKey: 'page.proposal_activity.no_proposals_subscriptions',
+    linkTextKey: 'page.proposal_activity.no_proposals_subscriptions_action',
+    onLinkClick: () => navigate(locations.proposals()),
+  },
+  [ProposalActivityList.CoAuthoring]: {
+    descriptionKey: 'page.proposal_activity.no_proposals_coauthoring',
+  },
+}
+
 export default function ActivityPage() {
   const t = useFormatMessage()
   const [account] = useAuthContext()
@@ -168,24 +190,12 @@ export default function ActivityPage() {
         >
           <div className="ActivityPage__ListContainer">
             <Loader active={proposalsState.loading} />
-            {proposals && proposals.data.length === 0 && (
+            {proposals && proposals.data.length === 0 && list && (
               <div className="ActivityPage__EmptyContainer">
                 <Empty
-                  description={
-                    list === ProposalActivityList.Watchlist
-                      ? t('page.proposal_activity.no_proposals_subscriptions')
-                      : t('page.proposal_activity.no_proposals_submitted')
-                  }
-                  linkText={
-                    list === ProposalActivityList.Watchlist
-                      ? t('page.proposal_activity.no_proposals_subscriptions_action')
-                      : t('page.proposal_activity.no_proposals_submitted_action')
-                  }
-                  onLinkClick={
-                    list === ProposalActivityList.Watchlist
-                      ? () => navigate(locations.proposals())
-                      : () => navigate(locations.submit())
-                  }
+                  description={t(empty[list].descriptionKey)}
+                  linkText={t(empty[list].linkTextKey)}
+                  onLinkClick={empty[list].onLinkClick}
                 />
               </div>
             )}

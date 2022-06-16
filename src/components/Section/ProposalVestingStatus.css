@@ -27,7 +27,7 @@
   line-height: 18px;
 }
 
-.ProposalVestingStatus__DueDate .Helper__Container {
+.ProposalVestingStatus__DueDate .ProposalVestingStatus__InfoIconContainer {
   display: flex;
   align-items: center;
 }
