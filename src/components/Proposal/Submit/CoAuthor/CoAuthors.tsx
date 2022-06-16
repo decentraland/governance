@@ -12,9 +12,10 @@ interface CoAuthors {
 
 export interface CoAuthorProps {
   setCoAuthors: (addresses?: string[]) => void
+  isDisabled?: boolean
 }
 
-function CoAuthors({ setCoAuthors }: CoAuthorProps) {
+function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
   const t = useFormatMessage()
 
   return (
@@ -27,7 +28,7 @@ function CoAuthors({ setCoAuthors }: CoAuthorProps) {
       <Paragraph tiny secondary className="details">
         {t('page.submit.co_author_description', { br: <br /> })}
       </Paragraph>
-      <CoAuthorSelect setCoAuthors={setCoAuthors} />
+      <CoAuthorSelect setCoAuthors={setCoAuthors} isDisabled={isDisabled} />
     </div>
   )
 }

@@ -179,7 +179,7 @@ export default function SubmitBanName() {
         />
       </ContentSection>
       <ContentSection>
-        <CoAuthors setCoAuthors={setCoAuthors} />
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

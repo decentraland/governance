@@ -674,10 +674,11 @@
       "optional_tooltip": " (optional)",
       "co_author_description": "If this proposal is a result of multiple individuals collaborating together, you can add them as co-authors to acknowledge their hard work. When adding a co-author, they will have to confirm or reject the addition by visiting the proposal page using the co-author's address. After they confirm the request, they will be listed publicly on the Proposal page.{br}Please note that only the author will be listed on the Snapshot proposal page.",
       "co_author_placeholder": "Enter their address",
-      "co_author_count": "{amount} Co-author{s} added",
+      "co_author_count": "{amount}/{maxAmount} Co-authors added",
       "co_author_error": "Invalid address",
       "co_author_as_author_error": "This address cannot be added since it belongs to the proposal's author.",
-      "co_author_duplicated_error": "It looks like this co-author's address has already been added."
+      "co_author_duplicated_error": "It looks like this co-author's address has already been added.",
+      "co_author_max_error": "The maximum number of co-authors was exceeded."
     },
     "submit_poll": {
       "title": "Create a community poll",
