@@ -24,8 +24,12 @@ export const updateStatusScheme = {
   },
 }
 
-export function toCoauthorStatusType(value: string | null | undefined): CoauthorStatus {
-  const upperValue = value?.toUpperCase()
+export function toCoauthorStatusType(value: string | null | undefined): CoauthorStatus | undefined {
+  if (!value) {
+    return
+  }
+
+  const upperValue = value.toUpperCase()
   switch (upperValue) {
     case CoauthorStatus.APPROVED:
     case CoauthorStatus.REJECTED:

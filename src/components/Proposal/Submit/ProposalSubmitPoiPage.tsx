@@ -23,12 +23,15 @@ import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 import LoadingView from '../../Layout/LoadingView'
 import LogIn from '../../User/LogIn'
 
+import CoAuthors from './CoAuthor/CoAuthors'
+
 import './ProposalSubmitPoiPage.css'
 
 type POIState = {
   x: string | number
   y: string | number
   description: string
+  coAuthors?: string[]
 }
 
 const schema = newProposalPOIScheme.properties
@@ -118,6 +121,8 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   const [state, editor] = useEditor(edit, validate, initialPoiState)
   const [formDisabled, setFormDisabled] = useState(false)
   const action = getPoiTypeAction(poiType)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
     if (state.validated) {
@@ -243,6 +248,9 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           }
           disabled={formDisabled}
         />
+      </ContentSection>
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

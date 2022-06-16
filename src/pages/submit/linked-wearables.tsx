@@ -23,6 +23,7 @@ import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber } from '../../entities/Proposal/utils'
@@ -42,6 +43,7 @@ type LinkedWearablesState = {
   managers: Record<string, string>
   programmatically_generated: boolean
   method: string
+  coAuthors?: string[]
 }
 
 type ListSectionType = {
@@ -169,6 +171,8 @@ export default function SubmitLinkedWearables() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   const handleRemoveOption = (field: 'smart_contract' | 'managers' | 'links', i: string) => {
     const addresses = omit(state.value[field], [i]) as Record<string, string>
@@ -469,6 +473,9 @@ export default function SubmitLinkedWearables() {
           />
         </ContentSection>
       )}
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+      </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
           {t('page.submit.button_submit')}

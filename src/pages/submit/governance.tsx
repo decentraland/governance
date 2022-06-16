@@ -22,6 +22,7 @@ import { Governance } from '../../api/Governance'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
@@ -40,6 +41,7 @@ type GovernanceState = {
   impacts: string
   implementation_pathways: string
   conclusion: string
+  coAuthors?: string[]
 }
 
 const initialState: GovernanceState = {
@@ -159,6 +161,9 @@ export default function SubmitGovernanceProposal() {
     [votingPower]
   )
   const [state, editor] = useEditor(edit, validate, initialState)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+
   const [preselectedProposal] = useAsyncMemo(
     async () => {
       if (!preselectedLinkedProposalId) return undefined
@@ -480,7 +485,9 @@ export default function SubmitGovernanceProposal() {
           disabled={submissionVpNotMet || formDisabled}
         />
       </ContentSection>
-
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+      </ContentSection>
       <ContentSection>
         <Button
           primary
