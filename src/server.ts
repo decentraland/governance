@@ -10,6 +10,8 @@ import metricsDatabase from 'decentraland-gatsby/dist/entities/Database/routes'
 import metrics from 'decentraland-gatsby/dist/entities/Prometheus/routes'
 import handle from 'decentraland-gatsby/dist/entities/Route/handle'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import path from 'path'
+
 import proposal from './entities/Proposal/routes'
 import score from './entities/Votes/routes'
 import subscription from './entities/Subscription/routes'
@@ -47,7 +49,15 @@ app.get('/metrics/*', handle(async () => {
 
 app.use(sitemap)
 app.use('/', social)
-app.use(filesystem('public', '404.html'))
+
+if (process.env.HEROKU === 'true') {
+  app.use(express.static('public'))
+  app.use(function (_req, res) {
+    res.status(404).sendFile('404/index.html', { root: path.join(__dirname, '../public') })
+  })
+} else {
+  app.use(filesystem('public', '404.html'))
+}
 
 initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),

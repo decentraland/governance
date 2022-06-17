@@ -1,7 +1,7 @@
-import API from 'decentraland-gatsby/dist/utils/api/API';
-import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types';
-import Time from 'decentraland-gatsby/dist/utils/date/Time';
-import env from 'decentraland-gatsby/dist/utils/env';
+import GovernanceAPI from 'decentraland-gatsby/dist/utils/api/API'
+import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import env from 'decentraland-gatsby/dist/utils/env'
 import {
   NewProposalBanName,
   NewProposalCatalyst,
@@ -14,9 +14,9 @@ import {
   NewProposalDraft,
   NewProposalGovernance,
   ProposalCommentsInDiscourse
-} from '../entities/Proposal/types';
-import { SubscriptionAttributes } from '../entities/Subscription/types';
-import { Vote } from '../entities/Votes/types';
+} from '../entities/Proposal/types'
+import { SubscriptionAttributes } from '../entities/Subscription/types'
+import { Vote } from '../entities/Votes/types'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll,
@@ -40,15 +40,22 @@ export type GetProposalsFilter = {
   offset: number
 }
 
-export class Governance extends API {
+const getGovernanceApiUrl = () => {
+  if (process.env.GATSBY_HEROKU_APP_NAME) {
+    return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
+  }
 
-  static Url = (
+  return (
     process.env.GATSBY_GOVERNANCE_API ||
     process.env.REACT_APP_GOVERNANCE_API ||
     process.env.STORYBOOK_GOVERNANCE_API ||
     process.env.GOVERNANCE_API ||
     'https://governance.decentraland.org/api'
   )
+}
+
+export class Governance extends GovernanceAPI {
+  static Url = getGovernanceApiUrl()
 
   static Cache = new Map<string, Governance>()
 
