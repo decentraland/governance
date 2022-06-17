@@ -1,0 +1,50 @@
+.PercentageLabel {
+  padding: 0 5px;
+  height: 14px;
+  display: inline-flex;
+  color: #fff;
+  border-radius: 42px;
+  font-size: 11px;
+  line-height: 18px;
+  vertical-align: middle;
+  align-content: center;
+  position: relative;
+  margin-left: 8px;
+}
+
+.PercentageLabel::before {
+  display: block;
+  content: '';
+  border: 1px solid transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  z-index: -1;
+}
+
+.PercentageLabel span {
+  text-transform: uppercase;
+  display: block;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 14px;
+  font-style: normal;
+}
+
+.PercentageLabel.PercentageLabel--Green::before {
+  background-color: var(--background-happy-green);
+  border-color: var(--background-happy-green);
+}
+
+.PercentageLabel.PercentageLabel--Yellow::before {
+  background-color: var(--yellow);
+  border-color: var(--yellow);
+}
+
+.PercentageLabel.PercentageLabel--Red::before {
+  background-color: var(--red);
+  border-color: var(--red);
+}

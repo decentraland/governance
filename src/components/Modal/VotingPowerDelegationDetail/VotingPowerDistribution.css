@@ -3,15 +3,15 @@
 }
 
 .VotingPowerDistribution__Name {
-  background: #44b600;
+  background: var(--background-happy-green);
 }
 
 .VotingPowerDistribution__Land {
-  background: #ffc95b;
+  background: var(--yellow);
 }
 
 .VotingPowerDistribution__Delegated {
-  background: #4888ee;
+  background: var(--blue);
 }
 
 .VotingPowerDistributionBar {

@@ -1,0 +1,103 @@
+.VestingProgress {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.VestingProgress__Labels {
+  display: flex;
+  justify-content: space-between;
+  color: #161419;
+  padding-bottom: 4px;
+}
+
+.VestingProgress__VestedInfo {
+  display: inline-flex;
+  font-size: 15px;
+  line-height: 24px;
+  padding-right: 2px;
+  align-items: center;
+}
+
+.VestingProgress__ReleasedInfo {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 18px;
+  font-style: normal;
+  opacity: 0.8;
+}
+
+.VestingProgress__ReleasedInfoLabel {
+  width: 8px;
+  height: 8px;
+  background: #ff2d55;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.VestingProgress__Bold {
+  font-weight: 600;
+  padding-right: 2px;
+}
+
+.VestingProgress__VestedPercentage {
+  background-color: var(--background-happy-green);
+  font-size: 11px;
+  line-height: 18px;
+  border: 2px solid rgba(115, 110, 125, 0.32) !important;
+  border-radius: 24px;
+  width: 32px;
+  height: 18px;
+}
+
+.VestingProgressBar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  border-radius: 2px;
+  margin-bottom: 8px;
+}
+
+.VestingProgressBar__Released {
+  background: var(--red);
+}
+
+.VestingProgressBar__Vested {
+  background: var(--yellow);
+}
+
+.VestingProgressBar__Rest {
+  background: #736e7d;
+  opacity: 0.15;
+}
+
+.VestingProgressBar--Empty {
+  height: 10px;
+  background: #736e7d;
+  opacity: 0.15;
+  border-radius: 4px;
+}
+
+.VestingProgressBar__Item {
+  height: 6px;
+  min-width: 6px;
+  border-radius: 2px;
+}
+
+.VestingProgress__VestedAt {
+  display: flex;
+  justify-content: flex-start;
+  color: #161419;
+  padding-bottom: 4px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.VestingProgress__VestedAt span {
+  padding-right: 3px;
+  font-weight: 400;
+}
+
+.VestingProgress__VestedDate {
+  font-weight: 600 !important;
+}

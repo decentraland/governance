@@ -1,0 +1,8 @@
+.GrantsCards__Container {
+  display: flex !important;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  margin-top: 15px;
+  row-gap: 16px;
+  column-gap: 32px;
+}

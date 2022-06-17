@@ -1,0 +1,55 @@
+.GrantCategoryLabel {
+  padding: 0 11px;
+  height: 19px;
+  display: inline-flex;
+  color: #fff;
+  border-radius: 42px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  vertical-align: middle;
+  align-content: center;
+  position: relative;
+}
+
+.GrantCategoryLabel::before {
+  display: block;
+  content: '';
+  border: 1px solid transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 42px;
+  z-index: -1;
+}
+
+.GrantCategoryLabel span {
+  text-transform: uppercase;
+  display: block;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 20px;
+  font-style: normal;
+}
+
+.GrantCategoryLabel.GrantCategoryLabel--Content::before {
+  background-color: var(--background-happy-green);
+  border-color: var(--background-happy-green);
+}
+
+.GrantCategoryLabel.GrantCategoryLabel--Platform::before {
+  background-color: var(--blue);
+  border-color: var(--blue);
+}
+
+.GrantCategoryLabel.GrantCategoryLabel--Gaming::before {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+
+.GrantCategoryLabel.GrantCategoryLabel--Community::before {
+  background-color: var(--magenta);
+  border-color: var(--magenta);
+}
