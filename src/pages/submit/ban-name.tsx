@@ -15,6 +15,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../api/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
@@ -79,6 +80,7 @@ export default function SubmitBanName() {
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
+      editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
       Promise.resolve()
         .then(async () => {
           let names: string[]
@@ -104,6 +106,7 @@ export default function SubmitBanName() {
           editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
           setFormDisabled(false)
         })
+      editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
     }
   }, [editor, state.validated, state.value])
 
@@ -179,13 +182,16 @@ export default function SubmitBanName() {
           {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
-      {state.error['*'] && (
-        <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
-        </ContentSection>
-      )}
+      {/*{state.error['*'] && (  t(state.error['*'] || state.error['*'])*/}
+      <ContentSection>
+        <ErrorMessage
+          label="There was an error while trying to create the proposal, please try again later."
+          errorMessage={
+            'Velit nibh elit at laoreet vestibulum donec augue. Amet dui vitae mauris, tristique sit sed tellus id urna. Blandit congue laoreet scelerisque dui nulla dictum volutpat tortor turpis. Eget risus elit pellentesque odio viverra pellentesque. Blandit ullamcorper nunc blandit id at risus eget venenatis. Donec ullamcorper sollicitudin leo porta ornare tortor a. Lorem sit sit mi in nunc maecenas at fames. '
+          }
+        />
+      </ContentSection>
+      {/*)}*/}
     </ContentLayout>
   )
 }
