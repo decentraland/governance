@@ -45,13 +45,22 @@ export type GetProposalsFilter = {
   offset: number
 }
 
-export class Governance extends GovernanceAPI {
-  static Url =
+const getGovernanceApiUrl = () => {
+  if (process.env.GATSBY_HEROKU_APP_NAME) {
+    return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
+  }
+
+  return (
     process.env.GATSBY_GOVERNANCE_API ||
     process.env.REACT_APP_GOVERNANCE_API ||
     process.env.STORYBOOK_GOVERNANCE_API ||
     process.env.GOVERNANCE_API ||
     'https://governance.decentraland.org/api'
+  )
+}
+
+export class Governance extends GovernanceAPI {
+  static Url = getGovernanceApiUrl()
 
   static Cache = new Map<string, Governance>()
 
