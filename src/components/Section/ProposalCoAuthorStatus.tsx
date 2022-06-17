@@ -4,7 +4,8 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Button, Header } from 'decentraland-ui'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../api/Governance'
