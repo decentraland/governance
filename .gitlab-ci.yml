@@ -18,6 +18,7 @@ build:code:
   image: decentraland/ci-node:latest
   variables:
     PULUMI_STACK: "website-dao"
+    REPOSITORY_NAME: "governance"
   only:
     - master
     - staging
@@ -50,7 +51,30 @@ build:code:
     - source ./node_modules/.bin/setup-environment
 
     - env | grep GATSBY_ > .env
-    # - echo .env
+
+    # login repository
+    - export CI_REGISTRY_IMAGE="$CI_REGISTRY_REPOSITORY_AWS/$REPOSITORY_NAME:$CI_COMMIT_SHA"
+    - aws ecr get-login-password --region $CI_REGISTRY_REGION | docker login --username AWS --password-stdin "$CI_REGISTRY_REPOSITORY_AWS"
+
+    # check repository exists
+    - export REPOSITORY_DESCRIPTION="$(aws ecr describe-repositories --repository-names $REPOSITORY_NAME)"
+    - >
+      if [ -z "$REPOSITORY_DESCRIPTION" ]; then
+        echo "Creating repository $REPOSITORY_NAME";
+        aws ecr create-repository --repository-name $REPOSITORY_NAME
+      fi
+
+    # build docker
+    - export REPOSITORY_IMAGE_DESCRIPTION="$(aws ecr describe-images --repository-name $REPOSITORY_NAME --image-ids imageTag=$CI_COMMIT_SHA)"
+    - >
+      if [ -z "$REPOSITORY_IMAGE_DESCRIPTION" ]; then
+        echo "Building image $CI_REGISTRY_IMAGE"
+        docker build --pull -t $CI_REGISTRY_IMAGE .
+        docker push $CI_REGISTRY_IMAGE
+      else
+        echo "Pulling image $CI_REGISTRY_IMAGE"
+        docker pull $CI_REGISTRY_IMAGE
+      fi
 
     # push server
     - pulumi plugin install resource aws v4.36.0
