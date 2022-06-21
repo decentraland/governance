@@ -57,20 +57,19 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   width: 100%;
 }
 
-.ErrorMessage__Copy {
+button.ui.small.primary.button.Button.ErrorMessage__Copy {
   width: 135px;
   height: 26px;
   text-align: center;
   vertical-align: middle;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding: 0 6px;
   font-weight: 400;
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;
   text-transform: uppercase;
   color: #736e7d;
-  background: #ffffff;
+  background: #fff;
   border: 1px solid rgba(115, 110, 125, 0.5);
   box-shadow: 0 2px 4px rgba(115, 110, 125, 0.2);
   border-radius: 4px;
@@ -78,12 +77,11 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   margin-right: 10px;
 }
 
-.ErrorMessage__CallForAction {
+.ErrorMessage__CallForAction p.dg.Paragraph {
   font-weight: 400;
   font-size: 13px;
   line-height: 20px;
   margin-left: 16px;
-  margin-bottom: 16px;
   color: var(--background-popup);
 }
 
@@ -92,4 +90,17 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   font-size: 13px;
   line-height: 20px;
   padding-left: 3px;
+}
+
+.ErrorMessage__Content {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 1s ease-out;
+}
+
+.ErrorMessage__Content--open {
+  height: auto;
+  opacity: 1;
+  margin-bottom: 16px;
 }
