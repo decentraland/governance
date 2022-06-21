@@ -535,6 +535,13 @@
       "past_banner": {
         "title": "We’ve been heavily invested for a while now",
         "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+      },
+      "currently_funded": "Currently being funded",
+      "past_funded": {
+        "title": "Past, successfully funded initiatives",
+        "category": "Category",
+        "date": "Date",
+        "size": "Size"
       }
     },
     "proposal_activity": {

@@ -6,3 +6,12 @@
   row-gap: 16px;
   column-gap: 32px;
 }
+
+.GrantsCard__Title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #736e7d;
+}

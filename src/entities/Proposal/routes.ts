@@ -89,6 +89,7 @@ export default routes((route) => {
   route.post('/proposals/catalyst', withAuth, handleAPI(createProposalCatalyst))
   route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
+  route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -702,6 +703,12 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   if (userVp.totalVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
+}
+
+async function getGrants() {
+  const proposals = await ProposalModel.getProposalList({ type: ProposalType.Grant, status: ProposalStatus.Enacted })
+
+  return proposals
 }
 
 // export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {

@@ -5,6 +5,7 @@ import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/Maintena
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import { v1 as uuid } from 'uuid'
 
 import Banner, { BannerType } from '../components/Grants/Banner'
@@ -12,6 +13,7 @@ import GrantCard from '../components/Grants/GrantCard'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { ProposalGrantCategory, ProposalGrantTier } from '../entities/Proposal/types'
 import { ProjectHealth, UpdateAttributes, UpdateStatus } from '../entities/Updates/types'
+import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './grants.css'
@@ -48,6 +50,8 @@ const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
 
 export default function GrantsPage() {
   const t = useFormatMessage()
+
+  const { grants } = useGrants()
 
   if (isUnderMaintenance()) {
     return (
@@ -167,6 +171,7 @@ export default function GrantsPage() {
       },
     ]
   }
+
   return (
     <div>
       <Head
@@ -182,26 +187,49 @@ export default function GrantsPage() {
           description={t('page.grants.current_banner.description')}
           items={getCurrentBannerItems()}
         />
-        <br />
-        <Container className="GrantsCards__Container">
-          {getCurrentGrants().map((grant, index) => (
-            <GrantCard
-              key={`CurrentGrantCard_${index}`}
-              title={grant.title}
-              category={grant.category}
-              size={grant.size}
-              tier={grant.tier}
-              update={grant.update}
-              vesting={grant.vesting}
-            />
-          ))}
-        </Container>
+        <div>
+          <h2 className="GrantsCard__Title">{t('page.grants.currently_funded')}</h2>
+          <Container className="GrantsCards__Container">
+            {getCurrentGrants().map((grant, index) => (
+              <GrantCard
+                key={`CurrentGrantCard_${index}`}
+                title={grant.title}
+                category={grant.category}
+                size={grant.size}
+                tier={grant.tier}
+                update={grant.update}
+                vesting={grant.vesting}
+              />
+            ))}
+          </Container>
+        </div>
         <Banner
           type={BannerType.Past}
           title={t('page.grants.past_banner.title')}
           description={t('page.grants.past_banner.description')}
           items={getPastBannerItems()}
         />
+        <Table basic="very">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>{t('page.grants.past_funded.title')}</Table.HeaderCell>
+              <Table.HeaderCell>{t('page.grants.past_funded.category')}</Table.HeaderCell>
+              <Table.HeaderCell>{t('page.grants.past_funded.date')}</Table.HeaderCell>
+              <Table.HeaderCell>{t('page.grants.past_funded.size')}</Table.HeaderCell>
+              <Table.HeaderCell />
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {grants.map((grant) => (
+              <Table.Row key={grant.id} onClick={() => null}>
+                <Table.Cell>{grant.title}</Table.Cell>
+                <Table.Cell>{grant.configuration.category}</Table.Cell>
+                <Table.Cell>{Time(grant.start_at).format('MMMM DD, YYYY')}</Table.Cell>
+                <Table.Cell>{`$${grant.configuration.size} USD`}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </Container>
     </div>
   )
