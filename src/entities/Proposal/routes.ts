@@ -10,6 +10,7 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+import { ethers } from 'ethers'
 import { Request } from 'express'
 import { v1 as uuid } from 'uuid'
 import isUUID from 'validator/lib/isUUID'
@@ -17,6 +18,11 @@ import isUUID from 'validator/lib/isUUID'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
+import daiAbi from '../../modules/contracts/abi/vesting/dai.json'
+import manaAbi from '../../modules/contracts/abi/vesting/mana.json'
+import usdcAbi from '../../modules/contracts/abi/vesting/usdc.json'
+import usdtAbi from '../../modules/contracts/abi/vesting/usdt.json'
+import vestingAbi from '../../modules/contracts/abi/vesting/vesting.json'
 import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
@@ -76,6 +82,20 @@ import {
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
 const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
+
+const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_KEYS}`)
+const TokenAddress = {
+  MANA: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+  DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+  USDC: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+}
+const TokenContracts = {
+  [TokenAddress.MANA]: new ethers.Contract(TokenAddress.MANA, manaAbi, provider),
+  [TokenAddress.DAI]: new ethers.Contract(TokenAddress.DAI, daiAbi, provider),
+  [TokenAddress.USDT]: new ethers.Contract(TokenAddress.USDT, usdtAbi, provider),
+  [TokenAddress.USDC]: new ethers.Contract(TokenAddress.USDC, usdcAbi, provider),
+}
 
 export default routes((route) => {
   const withAuth = auth()
@@ -707,8 +727,48 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
 
 async function getGrants() {
   const proposals = await ProposalModel.getProposalList({ type: ProposalType.Grant, status: ProposalStatus.Enacted })
+  // TODO: Filter directly in model query by proposals with vesting address only
+  const proposalsWithVestingAddress = proposals.filter((proposal) => !!proposal.vesting_address)
 
-  return proposals
+  const grants = await Promise.all(
+    proposalsWithVestingAddress.map(async (proposal) => {
+      if (!proposal.vesting_address) {
+        return null
+      }
+
+      try {
+        const vestingAddress = proposal.vesting_address.toLowerCase()
+        const vestingContract = new ethers.Contract(vestingAddress, vestingAbi, provider)
+        const tokenContractAddress = (await vestingContract.token()).toLowerCase()
+
+        const [decimals, symbol, balance, vestedAmount, released, start] = await Promise.all([
+          TokenContracts[tokenContractAddress].decimals(),
+          TokenContracts[tokenContractAddress].symbol(),
+          TokenContracts[tokenContractAddress].balanceOf(vestingAddress),
+          vestingContract.vestedAmount(),
+          vestingContract.released(),
+          vestingContract.start(),
+        ])
+
+        const contract = {
+          symbol,
+          balance: parseInt(balance, 10) / 10 ** decimals,
+          vestedAmount: parseInt(vestedAmount, 10) / 10 ** decimals,
+          released: parseInt(released, 10) / 10 ** decimals,
+          start: parseInt(start, 10),
+        }
+
+        return {
+          ...proposal,
+          contract,
+        }
+      } catch (error) {
+        throw new RequestError(`Failed to fetch contract data from vesting address ${proposal.vesting_address}`)
+      }
+    })
+  )
+
+  return grants
 }
 
 // export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {
