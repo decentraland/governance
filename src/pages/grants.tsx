@@ -6,52 +6,21 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import { v1 as uuid } from 'uuid'
+import { isEmpty } from 'lodash'
 
 import Banner, { BannerType } from '../components/Grants/Banner'
 import GrantCard from '../components/Grants/GrantCard'
+import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import { ProposalGrantCategory, ProposalGrantTier } from '../entities/Proposal/types'
-import { ProjectHealth, UpdateAttributes, UpdateStatus } from '../entities/Updates/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './grants.css'
 
-type GenerateUpdate = Pick<
-  UpdateAttributes,
-  | 'health'
-  | 'introduction'
-  | 'highlights'
-  | 'blockers'
-  | 'next_steps'
-  | 'additional_notes'
-  | 'status'
-  | 'created_at'
-  | 'updated_at'
-  | 'due_date'
-  | 'completion_date'
->
-const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
-  id: uuid(),
-  proposal_id: uuid(),
-  health: update.health,
-  introduction: update.introduction,
-  highlights: update.highlights,
-  blockers: update.blockers,
-  next_steps: update.next_steps,
-  additional_notes: update.additional_notes,
-  status: update.status,
-  due_date: update.due_date,
-  completion_date: update.completion_date,
-  created_at: update.created_at,
-  updated_at: update.updated_at,
-})
-
 export default function GrantsPage() {
   const t = useFormatMessage()
 
-  const { grants } = useGrants()
+  const { grants, isLoadingGrants } = useGrants()
 
   if (isUnderMaintenance()) {
     return (
@@ -67,9 +36,13 @@ export default function GrantsPage() {
     )
   }
 
+  if (isEmpty(grants) && isLoadingGrants) {
+    return <LoadingView />
+  }
+
   const getCurrentBannerItems = () => {
     return [
-      { title: '5 projects open', description: 'Initiatives currently being funded' },
+      { title: `${grants.current.length} projects open`, description: 'Initiatives currently being funded' },
       { title: '$2.5 million USD released', description: 'Funding so far, for current batch' },
       { title: '$1.3 million USD to go', description: 'To be released for current batch' },
     ]
@@ -77,98 +50,9 @@ export default function GrantsPage() {
 
   const getPastBannerItems = () => {
     return [
-      { title: '25 projects', description: 'Initiatives successfully funded' },
+      { title: `${grants.past.length} projects`, description: 'Initiatives successfully funded' },
       { title: '$4.5 million USD', description: 'Aggregated funding for past initiatives' },
       { title: '$1.3M per month', description: 'Avg. funding since Feb 2021' },
-    ]
-  }
-
-  const getCurrentGrants = () => {
-    const DONE_UPDATE = generateUpdate({
-      health: ProjectHealth.OnTrack,
-      introduction: 'Introduction',
-      highlights: 'Highlights',
-      blockers: 'Blockers',
-      next_steps: 'Next steps',
-      additional_notes: 'Additional notes',
-      status: UpdateStatus.Done,
-      created_at: Time.from().subtract(1, 'day').toDate(),
-      updated_at: Time.from().subtract(1, 'day').toDate(),
-      due_date: Time.from().add(1, 'month').toDate(),
-      completion_date: Time.from().add(20, 'day').toDate(),
-    })
-
-    const MISSED_UPDATE = generateUpdate({
-      health: undefined,
-      introduction: undefined,
-      highlights: undefined,
-      blockers: undefined,
-      next_steps: undefined,
-      additional_notes: undefined,
-      status: UpdateStatus.Pending,
-      created_at: Time.from().subtract(2, 'day').toDate(),
-      updated_at: Time.from().subtract(2, 'day').toDate(),
-      due_date: Time.from().subtract(1, 'day').toDate(),
-      completion_date: undefined,
-    })
-
-    return [
-      {
-        title: 'Expanding and improving WonderZone',
-        category: ProposalGrantCategory.Community,
-        tier: ProposalGrantTier.Tier6,
-        size: 240000,
-        update: DONE_UPDATE,
-        vesting: {
-          token: 'MANA',
-          total: 230000,
-          vested: 40000,
-          released: 30000,
-          vested_at: Time.from().subtract(1, 'month').toDate(),
-        },
-      },
-      {
-        title: 'Fund this initiative wo that everyone can be okay in the whole entire world',
-        category: ProposalGrantCategory.Gaming,
-        tier: ProposalGrantTier.Tier3,
-        size: 40000,
-        update: MISSED_UPDATE,
-        vesting: {
-          token: 'MANA',
-          total: 20000,
-          vested: 2000,
-          released: 200,
-          vested_at: Time.from().subtract(2, 'month').toDate(),
-        },
-      },
-      {
-        title: 'Implement an Escape Room SDK for further implementation',
-        category: ProposalGrantCategory.ContentCreator,
-        tier: ProposalGrantTier.Tier3,
-        size: 40000,
-        update: MISSED_UPDATE,
-        vesting: {
-          token: 'MANA',
-          total: 20000,
-          vested: 2000,
-          released: 3000,
-          vested_at: Time.from().subtract(2, 'month').toDate(),
-        },
-      },
-      {
-        title: 'Grant title',
-        category: ProposalGrantCategory.PlatformContributor,
-        tier: ProposalGrantTier.Tier3,
-        size: 40000,
-        update: MISSED_UPDATE,
-        vesting: {
-          token: 'DAI',
-          total: 30000,
-          vested: 3000,
-          released: 200,
-          vested_at: Time.from().subtract(2, 'month').toDate(),
-        },
-      },
     ]
   }
 
@@ -181,55 +65,62 @@ export default function GrantsPage() {
       />
       <Navigation activeTab={NavigationTab.Grants} />
       <Container>
-        <Banner
-          type={BannerType.Current}
-          title={t('page.grants.current_banner.title')}
-          description={t('page.grants.current_banner.description')}
-          items={getCurrentBannerItems()}
-        />
-        <div>
-          <h2 className="GrantsCard__Title">{t('page.grants.currently_funded')}</h2>
-          <Container className="GrantsCards__Container">
-            {getCurrentGrants().map((grant, index) => (
-              <GrantCard
-                key={`CurrentGrantCard_${index}`}
-                title={grant.title}
-                category={grant.category}
-                size={grant.size}
-                tier={grant.tier}
-                update={grant.update}
-                vesting={grant.vesting}
-              />
-            ))}
-          </Container>
-        </div>
-        <Banner
-          type={BannerType.Past}
-          title={t('page.grants.past_banner.title')}
-          description={t('page.grants.past_banner.description')}
-          items={getPastBannerItems()}
-        />
-        <Table basic="very">
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>{t('page.grants.past_funded.title')}</Table.HeaderCell>
-              <Table.HeaderCell>{t('page.grants.past_funded.category')}</Table.HeaderCell>
-              <Table.HeaderCell>{t('page.grants.past_funded.date')}</Table.HeaderCell>
-              <Table.HeaderCell>{t('page.grants.past_funded.size')}</Table.HeaderCell>
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {grants.map((grant) => (
-              <Table.Row key={grant.id} onClick={() => null}>
-                <Table.Cell>{grant.title}</Table.Cell>
-                <Table.Cell>{grant.configuration.category}</Table.Cell>
-                <Table.Cell>{Time(grant.start_at).format('MMMM DD, YYYY')}</Table.Cell>
-                <Table.Cell>{`$${grant.configuration.size} USD`}</Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+        {!isEmpty(grants.current) && (
+          <>
+            <Banner
+              type={BannerType.Current}
+              title={t('page.grants.current_banner.title')}
+              description={t('page.grants.current_banner.description')}
+              items={getCurrentBannerItems()}
+            />
+            <div>
+              <h2 className="GrantsCard__Title">{t('page.grants.currently_funded')}</h2>
+              <Container className="GrantsCards__Container">
+                {grants.current.map((grant) => (
+                  <GrantCard
+                    key={`CurrentGrantCard_${grant.id}`}
+                    title={grant.title}
+                    category={grant.configuration.category}
+                    tier={grant.configuration.tier}
+                    size={grant.configuration.size}
+                    vesting={grant.contract}
+                  />
+                ))}
+              </Container>
+            </div>
+          </>
+        )}
+        {!isEmpty(grants.past) && (
+          <>
+            <Banner
+              type={BannerType.Past}
+              title={t('page.grants.past_banner.title')}
+              description={t('page.grants.past_banner.description')}
+              items={getPastBannerItems()}
+            />
+            <Table basic="very">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>{t('page.grants.past_funded.title')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('page.grants.past_funded.category')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('page.grants.past_funded.date')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('page.grants.past_funded.size')}</Table.HeaderCell>
+                  <Table.HeaderCell />
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {grants.past.map((grant) => (
+                  <Table.Row key={grant.id} onClick={() => null}>
+                    <Table.Cell>{grant.title}</Table.Cell>
+                    <Table.Cell>{grant.configuration.category}</Table.Cell>
+                    <Table.Cell>{Time(grant.start_at).format('MMMM DD, YYYY')}</Table.Cell>
+                    <Table.Cell>{`$${grant.configuration.size} USD`}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </>
+        )}
       </Container>
     </div>
   )

@@ -3,7 +3,6 @@ import React from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { NewProposalGrant, ProposalGrantTier } from '../../entities/Proposal/types'
-import { UpdateAttributes } from '../../entities/Updates/types'
 
 import './GrantCard.css'
 import GrantCategoryLabel from './GrantCategoryLabel'
@@ -14,27 +13,26 @@ const getDisplayableName = (grantSize: ProposalGrantTier) => {
 }
 
 export type VestingAttributes = {
-  token: string
-  total: number
-  vested: number
+  symbol: string
+  vestedAmount: number
+  balance: number
   released: number
-  vested_at: Date
+  start: number
 }
 
 export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> &
   Pick<NewProposalGrant, 'title' | 'category' | 'tier' | 'size'> & {
-    update: UpdateAttributes
     vesting: VestingAttributes
   }
 
-const GrantCard = ({ title, category, tier, size, update, vesting }: GrantCardProps) => {
+const GrantCard = ({ title, category, size, tier, vesting }: GrantCardProps) => {
   return (
-    <div className={'GrantCard'}>
+    <div className="GrantCard">
       <div className="GrantCard__Header">
         <div className="GrantCard__TierSize">
           <p className="GrantCard__Tier">{getDisplayableName(tier)}</p>
           <p className="GrantCard__Size">
-            {size} {vesting.token}
+            {size} {vesting.symbol}
           </p>
         </div>
         <GrantCategoryLabel category={category} />

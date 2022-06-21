@@ -683,3 +683,14 @@ export type ProposalCommentsInDiscourse = {
   totalComments: number
   comments: ProposalComment[]
 }
+
+type VestingContractData = {
+  symbol: string
+  balance: number
+  vestedAmount: number
+  releasableAmount: number
+  released: number
+  start: number
+}
+
+export type GrantAttributes = ProposalAttributes & { contract: VestingContractData }

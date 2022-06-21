@@ -36,6 +36,7 @@ import { getUpdateMessage } from './templates/messages'
 import ProposalModel from './model'
 import * as templates from './templates'
 import {
+  GrantAttributes,
   GrantRequiredVP,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -730,7 +731,10 @@ async function getGrants() {
   // TODO: Filter directly in model query by proposals with vesting address only
   const proposalsWithVestingAddress = proposals.filter((proposal) => !!proposal.vesting_address)
 
-  const grants = await Promise.all(
+  const current: GrantAttributes[] = []
+  const past: GrantAttributes[] = []
+
+  await Promise.all(
     proposalsWithVestingAddress.map(async (proposal) => {
       if (!proposal.vesting_address) {
         return null
@@ -741,11 +745,12 @@ async function getGrants() {
         const vestingContract = new ethers.Contract(vestingAddress, vestingAbi, provider)
         const tokenContractAddress = (await vestingContract.token()).toLowerCase()
 
-        const [decimals, symbol, balance, vestedAmount, released, start] = await Promise.all([
+        const [decimals, symbol, balance, vestedAmount, releasableAmount, released, start] = await Promise.all([
           TokenContracts[tokenContractAddress].decimals(),
           TokenContracts[tokenContractAddress].symbol(),
           TokenContracts[tokenContractAddress].balanceOf(vestingAddress),
           vestingContract.vestedAmount(),
+          vestingContract.releasableAmount(),
           vestingContract.released(),
           vestingContract.start(),
         ])
@@ -754,13 +759,20 @@ async function getGrants() {
           symbol,
           balance: parseInt(balance, 10) / 10 ** decimals,
           vestedAmount: parseInt(vestedAmount, 10) / 10 ** decimals,
+          releasableAmount: parseInt(releasableAmount, 10) / 10 ** decimals,
           released: parseInt(released, 10) / 10 ** decimals,
           start: parseInt(start, 10),
         }
 
-        return {
+        const grant = {
           ...proposal,
           contract,
+        }
+
+        if (contract.vestedAmount === contract.balance + contract.released) {
+          past.push(grant)
+        } else {
+          current.push(grant)
         }
       } catch (error) {
         throw new RequestError(`Failed to fetch contract data from vesting address ${proposal.vesting_address}`)
@@ -768,7 +780,10 @@ async function getGrants() {
     })
   )
 
-  return grants
+  return {
+    current,
+    past,
+  }
 }
 
 // export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {

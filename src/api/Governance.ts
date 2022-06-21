@@ -3,6 +3,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
 import {
+  GrantAttributes,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -105,11 +106,13 @@ export class Governance extends GovernanceAPI {
   }
 
   async getGrants() {
-    const proposals = await this.fetch<ApiResponse<ProposalAttributes[]>>('/proposals/grants')
+    const proposals = await this.fetch<ApiResponse<{ current: GrantAttributes[]; past: GrantAttributes[] }>>(
+      '/proposals/grants'
+    )
 
     return {
-      ...proposals,
-      data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
+      current: proposals.data.current.map((proposal) => Governance.parseProposal(proposal)) as GrantAttributes[],
+      past: proposals.data.past.map((proposal) => Governance.parseProposal(proposal)) as GrantAttributes[],
     }
   }
 
