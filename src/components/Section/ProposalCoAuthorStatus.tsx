@@ -61,12 +61,16 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
   const t = useFormatMessage()
 
   const updateStatus = async (status: CoauthorStatus) => {
-    await Governance.get().updateCoauthorStatus(proposalId, status)
-    location.reload()
+    try {
+      await Governance.get().updateCoauthorStatus(proposalId, status)
+      location.reload()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const isPending = status === CoauthorStatus.PENDING
-  const pending = isPending ? 'Pending' : ''
+  const pendingStyleTag = isPending ? 'Pending' : ''
   const revertAction = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault()
     if (!status || status === CoauthorStatus.PENDING) {
@@ -82,9 +86,9 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
   return (
     <>
       {status && (
-        <div className={TokenList.join(['CoAuthorStatus DetailsSection', pending])}>
+        <div className={TokenList.join(['CoAuthorStatus DetailsSection', pendingStyleTag])}>
           <div className="DetailsSection__Content">
-            <span className={TokenList.join(['Title', pending])}>
+            <span className={TokenList.join(['Title', pendingStyleTag])}>
               <Header sub>{t(labelConfig[status].title)}</Header>
               {isPending ? (
                 <Helper text={t('page.coauthor_detail.pending_helper')} position="top center" size="14" />

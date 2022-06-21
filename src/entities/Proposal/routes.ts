@@ -390,10 +390,10 @@ export async function createProposal(
   const start = Time.utc().set('seconds', 0)
   const end = data.finish_at
   const proposal_url = proposalUrl({ id })
-  let coAuthors: string[] | null = null
+  const coAuthors =
+    data.configuration && data.configuration.coAuthors ? (data.configuration.coAuthors as string[]) : null
 
-  if (data.configuration && data.configuration.coAuthors) {
-    coAuthors = data.configuration.coAuthors
+  if (coAuthors) {
     delete data.configuration.coAuthors
   }
 

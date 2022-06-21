@@ -21,7 +21,7 @@ import './ProposalItem.css'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes
-  coauthorRequest?: boolean
+  hasCoauthorRequest?: boolean
   votes?: Record<string, Vote>
   subscribed?: boolean
   subscribing?: boolean
@@ -33,7 +33,7 @@ const subscribedIcon = require('../../images/icons/subscribed.svg').default
 
 export default function ProposalItem({
   proposal,
-  coauthorRequest,
+  hasCoauthorRequest,
   votes,
   subscribing,
   subscribed,
@@ -54,7 +54,7 @@ export default function ProposalItem({
       className={TokenList.join([
         'ProposalItem',
         subscribed && 'ProposalItem--subscribed',
-        coauthorRequest && 'ProposalItem--coauthor',
+        hasCoauthorRequest && 'ProposalItem--coauthor',
       ])}
     >
       <Card.Content>
@@ -79,7 +79,7 @@ export default function ProposalItem({
             <CategoryLabel type={proposal.type} />
           </div>
           <FinishLabel date={proposal.finish_at} />
-          {coauthorRequest && <CoauthorRequestLabel />}
+          {hasCoauthorRequest && <CoauthorRequestLabel />}
         </div>
       </Card.Content>
     </Card>

@@ -21,6 +21,7 @@ import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 
 import { CoauthorAttributes, CoauthorStatus } from './../entities/Coauthor/types'
+
 import { GovernanceAPI } from './GovernanceAPI'
 
 type NewProposalMap = {
@@ -301,7 +302,7 @@ export class Governance extends GovernanceAPI {
   }
 
   async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
-    const newsSatus = await this.fetch<ApiResponse<CoauthorAttributes | null>>(
+    const newsSatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
       `/coauthors/${proposalId}`,
       this.options().method('PUT').authorization({ sign: true }).json({ status })
     )

@@ -212,7 +212,7 @@ export default function IndexPage() {
                       <ProposalItem
                         key={proposal.id}
                         proposal={proposal}
-                        coauthorRequest={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
+                        hasCoauthorRequest={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
                         votes={votes ? votes[proposal.id] : undefined}
                         subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                         subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
