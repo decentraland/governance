@@ -77,19 +77,16 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   margin-right: 10px;
 }
 
+.ErrorMessage__CallForAction a.dg.Link.Link--pointer {
+  font-weight: 700;
+}
+
 .ErrorMessage__CallForAction p.dg.Paragraph {
   font-weight: 400;
   font-size: 13px;
   line-height: 20px;
   margin-left: 16px;
   color: var(--background-popup);
-}
-
-.ErrorMessage__DiscordLink {
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 20px;
-  padding-left: 3px;
 }
 
 .ErrorMessage__Content {

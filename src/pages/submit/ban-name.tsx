@@ -80,7 +80,6 @@ export default function SubmitBanName() {
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
-      editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
       Promise.resolve()
         .then(async () => {
           let names: string[]
@@ -103,10 +102,9 @@ export default function SubmitBanName() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
+          editor.error({ '*': err.body?.error || err.message })
           setFormDisabled(false)
         })
-      editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
     }
   }, [editor, state.validated, state.value])
 
@@ -182,16 +180,11 @@ export default function SubmitBanName() {
           {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
-      {/*{state.error['*'] && (  t(state.error['*'] || state.error['*'])*/}
-      <ContentSection>
-        <ErrorMessage
-          label="There was an error while trying to create the proposal, please try again later."
-          errorMessage={
-            'Velit nibh elit at laoreet vestibulum donec augue. Amet dui vitae mauris, tristique sit sed tellus id urna. Blandit congue laoreet scelerisque dui nulla dictum volutpat tortor turpis. Eget risus elit pellentesque odio viverra pellentesque. Blandit ullamcorper nunc blandit id at risus eget venenatis. Donec ullamcorper sollicitudin leo porta ornare tortor a. Lorem sit sit mi in nunc maecenas at fames. '
-          }
-        />
-      </ContentSection>
-      {/*)}*/}
+      {state.error['*'] && (
+        <ContentSection>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
+        </ContentSection>
+      )}
     </ContentLayout>
   )
 }
