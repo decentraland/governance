@@ -394,6 +394,7 @@ export async function createProposal(
 
   if (data.configuration && data.configuration.coAuthors) {
     coAuthors = data.configuration.coAuthors
+    delete data.configuration.coAuthors
   }
 
   const title = templates.title({ type: data.type, configuration: data.configuration })

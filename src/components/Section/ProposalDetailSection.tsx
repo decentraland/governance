@@ -1,17 +1,14 @@
 import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { Governance } from '../../api/Governance'
-import { CoauthorAttributes, CoauthorStatus } from '../../entities/Coauthor/types'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
+import { useCoAuthorsByProposal } from '../../hooks/useCoAuthorsByProposal'
 import Username from '../User/Username'
 
 import ProposalDetailCoauthors from './ProposalDetailCoauthors'
@@ -25,24 +22,7 @@ export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalDetailSection({ proposal, ...props }: ProposalDetailSectionProps) {
   const t = useFormatMessage()
-  const [account] = useAuthContext()
-  const [coAuthors] = useAsyncMemo(
-    async () => {
-      const allCoauthors = await Governance.get().getCoAuthorsByProposal(proposal.id)
-      if (proposal.user.toLowerCase() === account?.toLowerCase()) {
-        return allCoauthors
-      }
-
-      return allCoauthors.filter(
-        (coauthor) =>
-          coauthor.status === CoauthorStatus.APPROVED || coauthor.address.toLowerCase() === account?.toLowerCase()
-      )
-    },
-    [proposal.id, account],
-    {
-      initialValue: [] as CoauthorAttributes[],
-    }
-  )
+  const coAuthors = useCoAuthorsByProposal(proposal)
 
   return (
     <div {...props} className={TokenList.join(['DetailsSection', 'ResultSection', props.className])}>

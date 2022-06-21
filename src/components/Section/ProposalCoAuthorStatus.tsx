@@ -67,11 +67,11 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
 
   const isPending = status === CoauthorStatus.PENDING
   const pending = isPending ? 'Pending' : ''
-  const revertAction = async (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    status: Omit<CoauthorStatus, 'Pending'>
-  ) => {
+  const revertAction = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault()
+    if (!status || status === CoauthorStatus.PENDING) {
+      return
+    }
     if (status === CoauthorStatus.APPROVED) {
       await updateStatus(CoauthorStatus.REJECTED)
     } else {
@@ -95,7 +95,7 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
             <p>
               {t(labelConfig[status].description)}{' '}
               {status !== CoauthorStatus.PENDING && (
-                <a href="" onClick={(e) => revertAction(e, status)}>
+                <a href="" onClick={revertAction}>
                   {t('page.coauthor_detail.revert_label')}
                 </a>
               )}

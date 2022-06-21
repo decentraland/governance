@@ -6,8 +6,8 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import { CoauthorStatus } from '../../entities/Coauthor/types'
-import useCoauthoring from '../../hooks/useCoauthoring'
 import useIsAdmin from '../../hooks/useIsAdmin'
+import useProposalsByCoAuthor from '../../hooks/useProposalsByCoAuthor'
 import locations, { ProposalActivityList } from '../../modules/locations'
 import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
@@ -31,7 +31,7 @@ type NavigationProps = {
 const Navigation = (props: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
-  const [pendingCoauthorRequests] = useCoauthoring(user, CoauthorStatus.PENDING)
+  const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
   const [activityLocation, setActivityLocation] = useState<string>(
     locations.activity({ list: ProposalActivityList.MyProposals })
   )

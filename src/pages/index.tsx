@@ -34,8 +34,8 @@ import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
-import useCoauthoring from '../hooks/useCoauthoring'
 import useProposals from '../hooks/useProposals'
+import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
@@ -88,7 +88,7 @@ export default function IndexPage() {
   }, [handlePageFilter, page, proposals])
 
   const [user] = useAuthContext()
-  const [pendingCoauthorRequests] = useCoauthoring(user, CoauthorStatus.PENDING)
+  const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (

@@ -22,8 +22,8 @@ import StatusMenu from '../components/Status/StatusMenu'
 import LogIn from '../components/User/LogIn'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
-import useCoauthoring from '../hooks/useCoauthoring'
 import useProposals from '../hooks/useProposals'
+import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -54,7 +54,7 @@ type EmptyState = {
   onLinkClick: () => void
 }
 
-const empty: Record<ProposalActivityList, Partial<EmptyState>> = {
+const emptyConfiguration: Record<ProposalActivityList, Partial<EmptyState>> = {
   [ProposalActivityList.MyProposals]: {
     descriptionKey: 'page.proposal_activity.no_proposals_submitted',
     linkTextKey: 'page.proposal_activity.no_proposals_submitted_action',
@@ -129,7 +129,7 @@ export default function ActivityPage() {
     }
   }, [list, params])
 
-  const [pendingCoauthorRequests] = useCoauthoring(account, CoauthorStatus.PENDING)
+  const [pendingCoauthorRequests] = useProposalsByCoAuthor(account, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -193,9 +193,9 @@ export default function ActivityPage() {
             {proposals && proposals.data.length === 0 && list && (
               <div className="ActivityPage__EmptyContainer">
                 <Empty
-                  description={t(empty[list].descriptionKey)}
-                  linkText={t(empty[list].linkTextKey)}
-                  onLinkClick={empty[list].onLinkClick}
+                  description={t(emptyConfiguration[list].descriptionKey)}
+                  linkText={t(emptyConfiguration[list].linkTextKey)}
+                  onLinkClick={emptyConfiguration[list].onLinkClick}
                 />
               </div>
             )}

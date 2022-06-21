@@ -26,7 +26,7 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
         <sup className="Optional">{t('page.submit.optional_tooltip')}</sup>
       </div>
       <Paragraph tiny secondary className="details">
-        {t('page.submit.co_author_description', { br: <br /> })}
+        {t('page.submit.co_author_description')}
       </Paragraph>
       <CoAuthorSelect setCoAuthors={setCoAuthors} isDisabled={isDisabled} />
     </div>

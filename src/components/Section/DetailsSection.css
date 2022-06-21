@@ -128,8 +128,4 @@
   .DetailsSection .DetailsSection__Flex--Coauthors span svg {
     min-width: 10px;
   }
-
-  /* .DetailsSection .DetailsSection__Flex:nth-child(3) {
-    align-items: flex-start;
-  } */
 }

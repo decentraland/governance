@@ -145,10 +145,10 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           }
 
           return Governance.get().createProposalPOI({
+            ...state.value,
+            type: poiType,
             x,
             y,
-            type: poiType,
-            description: state.value.description,
           })
         })
         .then((proposal) => {
