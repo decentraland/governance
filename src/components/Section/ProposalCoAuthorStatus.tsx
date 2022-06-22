@@ -70,7 +70,7 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
   }
 
   const isPending = status === CoauthorStatus.PENDING
-  const pendingStyleTag = isPending ? 'Pending' : ''
+  const pendingClassName = isPending ? 'Pending' : ''
   const revertAction = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault()
     if (!status || status === CoauthorStatus.PENDING) {
@@ -86,9 +86,9 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
   return (
     <>
       {status && (
-        <div className={TokenList.join(['CoAuthorStatus DetailsSection', pendingStyleTag])}>
+        <div className={TokenList.join(['CoAuthorStatus DetailsSection', pendingClassName])}>
           <div className="DetailsSection__Content">
-            <span className={TokenList.join(['Title', pendingStyleTag])}>
+            <span className={TokenList.join(['Title', pendingClassName])}>
               <Header sub>{t(labelConfig[status].title)}</Header>
               {isPending ? (
                 <Helper text={t('page.coauthor_detail.pending_helper')} position="top center" size="14" />

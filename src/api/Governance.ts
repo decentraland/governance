@@ -302,11 +302,11 @@ export class Governance extends GovernanceAPI {
   }
 
   async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
-    const newsSatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
+    const newStatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
       `/coauthors/${proposalId}`,
       this.options().method('PUT').authorization({ sign: true }).json({ status })
     )
 
-    return newsSatus.data
+    return newStatus.data
   }
 }
