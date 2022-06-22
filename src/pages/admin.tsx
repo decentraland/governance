@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { HttpStat } from '../api/HttpStat'
-import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
+import ErrorMessage from '../components/Error/ErrorMessage'
+import { ContentSection } from '../components/Layout/ContentLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
 import useIsAdmin from '../hooks/useIsAdmin'
+
+import './admin.css'
 
 type TestState = {
   httpStatus: string
@@ -70,7 +71,7 @@ export default function WrappingPage() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ '*': 'There was an error, please try again.' })
+          editor.error({ '*': err.body?.error || err.message })
           setFormDisabled(false)
         })
     }
@@ -81,58 +82,46 @@ export default function WrappingPage() {
   }
 
   return (
-    <>
+    <Container className="AdminPage">
       <Navigation activeTab={NavigationTab.Admin} />
-      <ContentLayout small>
+      <Header size="huge">{t('page.admin.title')}</Header>
+      <ContentSection>
+        <Label>{'Http Status'}</Label>
+        <Field
+          value={state.value.httpStatus}
+          onChange={(_, { value }) => editor.set({ httpStatus: value })}
+          onBlur={() => editor.set({ httpStatus: state.value.httpStatus.trim() })}
+          error={!!state.error.httpStatus}
+          disabled={formDisabled}
+          message={t(state.error.httpStatus)}
+        />
+      </ContentSection>
+      <ContentSection>
+        <Label>{'Sleep'}</Label>
+        <Field
+          value={state.value.sleepTime}
+          onChange={(_, { value }) => editor.set({ sleepTime: value ? Number(value) : undefined })}
+          onBlur={() => editor.set({ sleepTime: state.value.sleepTime })}
+          error={!!state.error.sleepTime}
+          message={t(state.error.sleepTime)}
+          disabled={formDisabled}
+        />
+      </ContentSection>
+      <ContentSection className="AdminPage__Submit">
+        <Button
+          primary
+          disabled={state.validated || formDisabled}
+          loading={state.validated || formDisabled}
+          onClick={() => editor.validate()}
+        >
+          {t('page.submit.button_submit')}
+        </Button>
+      </ContentSection>
+      {state.error['*'] && (
         <ContentSection>
-          <Header size="huge">{t('page.admin.title')}</Header>
-          <Head
-            title={t('page.admin.title') || ''}
-            description={t('page.admin.description') || ''}
-            image="https://decentraland.org/images/decentraland.png"
-          />
-          <Helmet title={t('page.admin.title') || ''} />
+          <ErrorMessage label={t('page.admin.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
-        <ContentSection>
-          <Label>{'Http Status'}</Label>
-          <Field
-            value={state.value.httpStatus}
-            onChange={(_, { value }) => editor.set({ httpStatus: value })}
-            onBlur={() => editor.set({ httpStatus: state.value.httpStatus.trim() })}
-            error={!!state.error.httpStatus}
-            disabled={formDisabled}
-            message={t(state.error.httpStatus)}
-          />
-        </ContentSection>
-        <ContentSection>
-          <Label>{'Sleep'}</Label>
-          <Field
-            value={state.value.sleepTime}
-            onChange={(_, { value }) => editor.set({ sleepTime: value ? Number(value) : undefined })}
-            onBlur={() => editor.set({ sleepTime: state.value.sleepTime })}
-            error={!!state.error.sleepTime}
-            message={t(state.error.sleepTime)}
-            disabled={formDisabled}
-          />
-        </ContentSection>
-        <ContentSection>
-          <Button
-            primary
-            disabled={state.validated || formDisabled}
-            loading={state.validated || formDisabled}
-            onClick={() => editor.validate()}
-          >
-            {t('page.submit.button_submit')}
-          </Button>
-        </ContentSection>
-        {state.error['*'] && (
-          <ContentSection>
-            <Paragraph small primary>
-              {t(state.error['*']) || state.error['*']}
-            </Paragraph>
-          </ContentSection>
-        )}
-      </ContentLayout>
-    </>
+      )}
+    </Container>
   )
 }

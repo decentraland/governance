@@ -43,6 +43,13 @@
     "button": "Go Back"
   },
   "error": {
+    "message": {
+      "hide": "Hide error",
+      "show": "Show error",
+      "copy": "Copy to Clipboard",
+      "copied": "Copied!",
+      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on [Discord](https://discord.com/channels/894658869391933540/987439629533855774)."
+    },
     "poll": {
       "title_empty": "Title field is empty",
       "title_too_short": "Title field is too short",
@@ -385,7 +392,8 @@
     },
     "admin": {
       "title": "Admin",
-      "description": "A tab where anything is possible"
+      "description": "A tab where anything is possible",
+      "error_label": "There was an error."
     },
     "welcome": {
       "title": "Welcome to the Decentraland DAO",
@@ -653,7 +661,8 @@
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
       "markdown_tooltip": " (markdown)",
-      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed."
+      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
+      "error_label": "There was an error while trying to create the proposal, please try again later."
     },
     "submit_poll": {
       "title": "Create a community poll",
