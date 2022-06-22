@@ -36,11 +36,13 @@ export default function GrantsPage() {
     )
   }
 
-  if (isEmpty(grants) && isLoadingGrants) {
-    return <LoadingView />
-  }
+  const isLoading = isEmpty(grants) && isLoadingGrants
 
   const getCurrentBannerItems = () => {
+    if (isLoading) {
+      return []
+    }
+
     return [
       { title: `${grants.current.length} projects open`, description: 'Initiatives currently being funded' },
       { title: '$2.5 million USD released', description: 'Funding so far, for current batch' },
@@ -49,6 +51,10 @@ export default function GrantsPage() {
   }
 
   const getPastBannerItems = () => {
+    if (isLoading) {
+      return []
+    }
+
     return [
       { title: `${grants.past.length} projects`, description: 'Initiatives successfully funded' },
       { title: '$4.5 million USD', description: 'Aggregated funding for past initiatives' },
@@ -64,64 +70,67 @@ export default function GrantsPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Grants} />
-      <Container>
-        {!isEmpty(grants.current) && (
-          <>
-            <Banner
-              type={BannerType.Current}
-              title={t('page.grants.current_banner.title')}
-              description={t('page.grants.current_banner.description')}
-              items={getCurrentBannerItems()}
-            />
-            <div>
-              <h2 className="GrantsCard__Title">{t('page.grants.currently_funded')}</h2>
-              <Container className="GrantsCards__Container">
-                {grants.current.map((grant) => (
-                  <GrantCard
-                    key={`CurrentGrantCard_${grant.id}`}
-                    title={grant.title}
-                    category={grant.configuration.category}
-                    tier={grant.configuration.tier}
-                    size={grant.configuration.size}
-                    vesting={grant.contract}
-                  />
-                ))}
-              </Container>
-            </div>
-          </>
-        )}
-        {!isEmpty(grants.past) && (
-          <>
-            <Banner
-              type={BannerType.Past}
-              title={t('page.grants.past_banner.title')}
-              description={t('page.grants.past_banner.description')}
-              items={getPastBannerItems()}
-            />
-            <Table basic="very">
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>{t('page.grants.past_funded.title')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('page.grants.past_funded.category')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('page.grants.past_funded.date')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('page.grants.past_funded.size')}</Table.HeaderCell>
-                  <Table.HeaderCell />
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {grants.past.map((grant) => (
-                  <Table.Row key={grant.id} onClick={() => null}>
-                    <Table.Cell>{grant.title}</Table.Cell>
-                    <Table.Cell>{grant.configuration.category}</Table.Cell>
-                    <Table.Cell>{Time(grant.start_at).format('MMMM DD, YYYY')}</Table.Cell>
-                    <Table.Cell>{`$${grant.configuration.size} USD`}</Table.Cell>
+      {isLoading && <LoadingView />}
+      {!isLoading && (
+        <Container>
+          {!isEmpty(grants.current) && (
+            <>
+              <Banner
+                type={BannerType.Current}
+                title={t('page.grants.current_banner.title')}
+                description={t('page.grants.current_banner.description')}
+                items={getCurrentBannerItems()}
+              />
+              <div>
+                <h2 className="GrantsCard__Title">{t('page.grants.currently_funded')}</h2>
+                <Container className="GrantsCards__Container">
+                  {grants.current.map((grant) => (
+                    <GrantCard
+                      key={`CurrentGrantCard_${grant.id}`}
+                      title={grant.title}
+                      category={grant.configuration.category}
+                      tier={grant.configuration.tier}
+                      size={grant.configuration.size}
+                      vesting={grant.contract}
+                    />
+                  ))}
+                </Container>
+              </div>
+            </>
+          )}
+          {!isEmpty(grants.past) && (
+            <>
+              <Banner
+                type={BannerType.Past}
+                title={t('page.grants.past_banner.title')}
+                description={t('page.grants.past_banner.description')}
+                items={getPastBannerItems()}
+              />
+              <Table basic="very">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>{t('page.grants.past_funded.title')}</Table.HeaderCell>
+                    <Table.HeaderCell>{t('page.grants.past_funded.category')}</Table.HeaderCell>
+                    <Table.HeaderCell>{t('page.grants.past_funded.date')}</Table.HeaderCell>
+                    <Table.HeaderCell>{t('page.grants.past_funded.size')}</Table.HeaderCell>
+                    <Table.HeaderCell />
                   </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </>
-        )}
-      </Container>
+                </Table.Header>
+                <Table.Body>
+                  {grants.past.map((grant) => (
+                    <Table.Row key={grant.id} onClick={() => null}>
+                      <Table.Cell>{grant.title}</Table.Cell>
+                      <Table.Cell>{grant.configuration.category}</Table.Cell>
+                      <Table.Cell>{Time(grant.start_at).format('MMMM DD, YYYY')}</Table.Cell>
+                      <Table.Cell>{`$${grant.configuration.size} USD`}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            </>
+          )}
+        </Container>
+      )}
     </div>
   )
 }

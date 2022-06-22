@@ -741,13 +741,15 @@ async function getGrants() {
       }
 
       try {
+        // TODO: If grant is tier 1 or 2 we should not ask for vesting data.
+
         const vestingAddress = proposal.vesting_address.toLowerCase()
         const vestingContract = new ethers.Contract(vestingAddress, vestingAbi, provider)
         const tokenContractAddress = (await vestingContract.token()).toLowerCase()
 
         const [decimals, symbol, balance, vestedAmount, releasableAmount, released, start] = await Promise.all([
-          TokenContracts[tokenContractAddress].decimals(),
-          TokenContracts[tokenContractAddress].symbol(),
+          TokenContracts[tokenContractAddress].decimals(), // TODO: Check if we can use a constant for this
+          TokenContracts[tokenContractAddress].symbol(), // TODO: Check if we can use a constant for this
           TokenContracts[tokenContractAddress].balanceOf(vestingAddress),
           vestingContract.vestedAmount(),
           vestingContract.releasableAmount(),
