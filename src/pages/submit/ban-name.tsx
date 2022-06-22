@@ -15,6 +15,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../api/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
@@ -101,7 +102,7 @@ export default function SubmitBanName() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
+          editor.error({ '*': err.body?.error || err.message })
           setFormDisabled(false)
         })
     }
@@ -181,9 +182,7 @@ export default function SubmitBanName() {
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </ContentLayout>
