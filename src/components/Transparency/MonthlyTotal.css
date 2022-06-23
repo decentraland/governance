@@ -3,6 +3,24 @@
   display: flex;
 }
 
+.MonthlyTotal--Full {
+  max-height: 1500px;
+  -webkit-transition: max-height 0.8s;
+  -moz-transition: max-height 0.8s;
+  transition: max-height 0.8s;
+}
+
+.MonthlyTotal--Overview {
+  overflow: hidden;
+  -webkit-transition: max-height 0.3s;
+  -moz-transition: max-height 0.3s;
+  transition: max-height 0.3s;
+}
+
+.MonthlyTotal.MonthlyTotal--Overview {
+  max-height: 398px;
+}
+
 .content.MonthlyTotal_Headers {
   flex-grow: 0 !important;
 }
@@ -23,16 +41,13 @@
   margin-top: 0;
 }
 
-
-@media only screen and (min-width: 992px) {
-  .MonthlyTotal:last-of-type {
-    margin-left: 2em;
-  }
-}
-
 .content.MonthlyTotal__Detail {
   margin-top: 0;
   padding-top: 0 !important;
+}
+
+.content.MonthlyTotal__Detail.MonthlyTotal--Overview {
+  max-height: 196px;
 }
 
 .MonthlyTotal .DetailsSection__Flex {
@@ -50,5 +65,25 @@ strong.Number.Number--Green {
 }
 
 strong.Number.Number--Red {
-  color: #FF4545;
+  color: #ff4545;
+}
+
+.MonthlyTotal .ui.card .ui.basic.button {
+  padding-top: 0;
+}
+
+@media only screen and (min-width: 426px) {
+  .MonthlyTotal.MonthlyTotal--Overview {
+    max-height: 404px;
+  }
+
+  .content.MonthlyTotal__Detail.MonthlyTotal--Overview {
+    max-height: 240px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .MonthlyTotal:last-of-type {
+    margin-left: 2em;
+  }
 }
