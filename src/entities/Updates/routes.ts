@@ -12,7 +12,7 @@ import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
 import {
   getCurrentUpdate,
-  getNextUpdate,
+  getNextPendingUpdate,
   getPendingUpdates,
   getPublicUpdates,
   isBetweenLateThresholdDate,
@@ -51,7 +51,7 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
 
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id })
   const publicUpdates = getPublicUpdates(updates)
-  const nextUpdate = getNextUpdate(updates)
+  const nextUpdate = getNextPendingUpdate(updates)
   const currentUpdate = getCurrentUpdate(updates)
   const pendingUpdates = getPendingUpdates(updates)
 

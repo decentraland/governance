@@ -28,8 +28,8 @@ import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
-import { UpdateAttributes } from '../Updates/types'
-import { getCurrentUpdate, getNextUpdate } from '../Updates/utils'
+import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
+import { getCurrentUpdate } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
@@ -730,19 +730,24 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-export async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string) {
-  let updates: UpdateAttributes[]
-  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
-    updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
-      created_at: 'asc',
-    } as never)
-    return updates[0]
-  } else {
-    updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId })
-    const nextUpdate = getNextUpdate(updates)
-    const currentUpdate = getCurrentUpdate(updates)
-    return currentUpdate || nextUpdate
+export async function getGrantCurrentUpdate(
+  tier: ProposalGrantTier,
+  proposalId: string
+): Promise<IndexedUpdate | null> {
+  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
+    created_at: 'desc',
+  } as never)
+  if (updates && updates.length > 0) {
+    if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
+      return { ...updates[0], index: updates.length }
+    } else {
+      const currentUpdate = getCurrentUpdate(updates)
+      if (currentUpdate) {
+        return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) }
+      }
+    }
   }
+  return null
 }
 
 async function getGrants() {
@@ -792,10 +797,9 @@ async function getGrants() {
         if (contract.vestedAmount === contract.balance + contract.released) {
           past.push(grant)
         } else {
-          const update = await getGrantLatestUpdate(grant.configuration.tier, proposal.id)
-          const grantWithUpdate = {
+          const grantWithUpdate: GrantWithUpdateAttributes = {
             ...grant,
-            update: update,
+            update: await getGrantCurrentUpdate(grant.configuration.tier, proposal.id),
           }
           current.push(grantWithUpdate)
         }

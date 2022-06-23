@@ -1,6 +1,6 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { UpdateAttributes } from '../Updates/types'
+import { IndexedUpdate } from '../Updates/types'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 
@@ -704,5 +704,5 @@ type VestingContractData = {
 
 export type GrantAttributes = ProposalAttributes & { contract: VestingContractData }
 export type GrantWithUpdateAttributes = ProposalAttributes & { contract: VestingContractData } & {
-  update: UpdateAttributes | null
+  update: IndexedUpdate | null
 }
