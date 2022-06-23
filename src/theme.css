@@ -139,6 +139,8 @@ body {
   --light-yellow: #fef7d2;
   --light-fuchsia: #ffe4ff;
   --fuchsia: #ff5afe;
+  --light-green: #e1f3d6;
+  --green: #44b600;
   --light-red: #f9d6dc;
   --red: #d80027;
   --light-blue: #e2ecfc;
@@ -160,7 +162,7 @@ body {
   --background-grant: #3c24b3;
   --background-poll: #ff7439;
   --background-remove-poi: #ff247c;
-  --background-happy-green: #44b600;
+  --background-happy-green: var(--green);
   --background-linked-wearables: var(--yellow);
   --background-popup: #5c5c6e;
 }

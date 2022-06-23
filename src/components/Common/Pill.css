@@ -22,20 +22,20 @@
 }
 
 .Pill--light-green {
-  background-color: #e1f3d6;
-  border-color: #e1f3d6;
-  color: var(--background-happy-green);
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+  color: var(--green);
 }
 
 .Pill--medium-green {
-  background-color: #e1f3d6;
-  border-color: var(--background-happy-green);
-  color: var(--background-happy-green);
+  background-color: var(--light-green);
+  border-color: var(--green);
+  color: var(--green);
 }
 
 .Pill--shiny-green {
-  background-color: var(--background-happy-green);
-  border-color: var(--background-happy-green);
+  background-color: var(--green);
+  border-color: var(--green);
   color: var(--white);
 }
 
