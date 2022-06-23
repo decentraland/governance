@@ -85,14 +85,7 @@ export default function GrantsPage() {
                 <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
                 <Container className="GrantsPage__CurrentGrantsContainer">
                   {grants.current.map((grant) => (
-                    <GrantCard
-                      key={`CurrentGrantCard_${grant.id}`}
-                      title={grant.title}
-                      category={grant.configuration.category}
-                      tier={grant.configuration.tier}
-                      size={grant.configuration.size}
-                      vesting={grant.contract}
-                    />
+                    <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
                   ))}
                 </Container>
               </div>

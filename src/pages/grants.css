@@ -1,10 +1,24 @@
 .GrantsPage__CurrentGrantsContainer {
-  display: flex !important;
   flex-wrap: wrap;
   margin-bottom: 40px;
   margin-top: 15px;
-  row-gap: 16px;
-  column-gap: 32px;
+  display: grid !important;
+  grid-template-columns: 48.33% 48.33%;
+  grid-row-gap: 16px;
+  grid-column-gap: 31px;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 990px) {
+  .GrantsPage__CurrentGrantsContainer {
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    margin-top: 15px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    display: grid !important;
+    grid-template-columns: 100%;
+    grid-row-gap: 16px;
+  }
 }
 
 .GrantsPage__CurrentGrantsTitle {

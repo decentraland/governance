@@ -2,11 +2,13 @@ import React from 'react'
 
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { NewProposalGrant, ProposalGrantCategoryColor, ProposalGrantTier } from '../../entities/Proposal/types'
+import { GrantWithUpdateAttributes, ProposalGrantCategoryColor, ProposalGrantTier } from "../../entities/Proposal/types";
+import ProposalUpdate from '../Proposal/ProposalUpdate'
 import Pill from '../Common/Pill'
 
 import './GrantCard.css'
 import VestingProgress from './VestingProgress'
+import EmptyProposalUpdate from "../Proposal/EmptyProposalUpdate";
 
 const getDisplayableName = (grantSize: ProposalGrantTier) => {
   return grantSize.substring(0, 6) + ':  '
@@ -20,25 +22,26 @@ export type VestingAttributes = {
   start: number
 }
 
-export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> &
-  Pick<NewProposalGrant, 'title' | 'category' | 'tier' | 'size'> & {
-    vesting: VestingAttributes
-  }
+export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  grant: GrantWithUpdateAttributes
+}
 
-const GrantCard = ({ title, category, size, tier, vesting }: GrantCardProps) => {
+const GrantCard = ({ grant }: GrantCardProps) => {
   return (
     <div className="GrantCard">
       <div className="GrantCard__Header">
         <div className="GrantCard__TierSize">
-          <p className="GrantCard__Tier">{getDisplayableName(tier)}</p>
+          <p className="GrantCard__Tier">{getDisplayableName(grant.configuration.tier)}</p>
           <p className="GrantCard__Size">
-            {size} {vesting.symbol}
+            {grant.configuration.size} {grant.contract.symbol}
           </p>
         </div>
-        <Pill color={ProposalGrantCategoryColor[category]}>{category.split(' ')[0]}</Pill>
+        <Pill color={ProposalGrantCategoryColor[grant.configuration.category]}>{grant.configuration.category.split(' ')[0]}</Pill>
       </div>
-      <Header className="GrantCard__Title">{title}</Header>
-      <VestingProgress vesting={vesting} />
+      <Header className="GrantCard__Title">{grant.title}</Header>
+      <VestingProgress vesting={grant.contract} />
+      {grant.update && <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={0} />}
+      {!grant.update && <EmptyProposalUpdate />}
     </div>
   )
 }

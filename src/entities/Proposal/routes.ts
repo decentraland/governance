@@ -28,6 +28,8 @@ import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
+import { UpdateAttributes } from '../Updates/types'
+import { getCurrentUpdate, getNextUpdate } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
@@ -38,6 +40,7 @@ import * as templates from './templates'
 import {
   GrantAttributes,
   GrantRequiredVP,
+  GrantWithUpdateAttributes,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -49,6 +52,7 @@ import {
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
+  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -726,12 +730,26 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
+export async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string) {
+  let updates: UpdateAttributes[]
+  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
+    updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
+      created_at: 'asc',
+    } as never)
+    return updates[0]
+  } else {
+    updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId })
+    const nextUpdate = getNextUpdate(updates)
+    const currentUpdate = getCurrentUpdate(updates)
+    return currentUpdate || nextUpdate
+  }
+}
+
 async function getGrants() {
   const proposals = await ProposalModel.getProposalList({ type: ProposalType.Grant, status: ProposalStatus.Enacted })
   // TODO: Filter directly in model query by proposals with vesting address only
   const proposalsWithVestingAddress = proposals.filter((proposal) => !!proposal.vesting_address)
-
-  const current: GrantAttributes[] = []
+  const current: GrantWithUpdateAttributes[] = []
   const past: GrantAttributes[] = []
 
   await Promise.all(
@@ -759,10 +777,10 @@ async function getGrants() {
 
         const contract = {
           symbol,
-          balance: parseInt(balance, 10) / 10 ** decimals,
-          vestedAmount: parseInt(vestedAmount, 10) / 10 ** decimals,
-          releasableAmount: parseInt(releasableAmount, 10) / 10 ** decimals,
-          released: parseInt(released, 10) / 10 ** decimals,
+          balance: Math.round(parseInt(balance, 10) / 10 ** decimals),
+          vestedAmount: Math.round(parseInt(vestedAmount, 10) / 10 ** decimals),
+          releasableAmount: Math.round(parseInt(releasableAmount, 10) / 10 ** decimals),
+          released: Math.round(parseInt(released, 10) / 10 ** decimals),
           start: parseInt(start, 10),
         }
 
@@ -774,10 +792,18 @@ async function getGrants() {
         if (contract.vestedAmount === contract.balance + contract.released) {
           past.push(grant)
         } else {
-          current.push(grant)
+          const update = await getGrantLatestUpdate(grant.configuration.tier, proposal.id)
+          const grantWithUpdate = {
+            ...grant,
+            update: update,
+          }
+          current.push(grantWithUpdate)
         }
       } catch (error) {
-        throw new RequestError(`Failed to fetch contract data from vesting address ${proposal.vesting_address}`)
+        logger.error(
+          `Failed to fetch contract data from vesting address ${proposal.vesting_address}`,
+          formatError(error as Error)
+        )
       }
     })
   )

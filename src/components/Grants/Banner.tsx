@@ -20,7 +20,7 @@ interface Props {
 const Banner = ({ title, description, items, type }: Props) => {
   return (
     <div className={TokenList.join(['GrantsBanner', `GrantsBanner--${type}`])}>
-      <div>
+      <div className="GrantsBannerItem_Text">
         <h2 className="GrantsBanner__Title">{title}</h2>
         <p className="GrantsBanner__Description">{description}</p>
       </div>

@@ -1,6 +1,6 @@
 .VestingProgress {
   width: 100%;
-  margin-bottom: 40px;
+  margin-bottom: 16px;
 }
 
 .VestingProgress__Labels {
@@ -33,6 +33,8 @@
   background: #ff2d55;
   border-radius: 4px;
   margin-right: 6px;
+  min-width: 8px;
+  margin-left: 3px;
 }
 
 .VestingProgress__Bold {
@@ -94,4 +96,10 @@
 
 .VestingProgress__VestedDate {
   font-weight: 600 !important;
+}
+
+.VestingProgress__Ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

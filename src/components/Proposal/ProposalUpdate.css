@@ -153,3 +153,8 @@
   font-weight: 600;
   line-height: 18px;
 }
+
+.EmptyProposalUpdate__Icon path {
+  fill: #736e7d;
+  opacity: 0.8;
+}
