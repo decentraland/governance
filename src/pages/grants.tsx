@@ -70,7 +70,7 @@ export default function GrantsPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Grants} />
-      {isLoading && <LoadingView />}
+      {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
         <Container>
           {!isEmpty(grants.current) && (

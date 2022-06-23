@@ -149,6 +149,9 @@ body {
   --red: #d80027;
   --blue: #4888ee;
   --gray: #a19ea8;
+  --dao-footer-height: 156px;
+  --dao-header-height: 64px;
+  --dao-navigation-height: 89px;
 }
 
 .ui.inverted.primary.button:active,
