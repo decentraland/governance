@@ -410,6 +410,13 @@ export enum ProposalGrantCategory {
   Gaming = 'Gaming',
 }
 
+export enum ProposalGrantCategoryColor {
+  Community = 'green',
+  'Content Creator' = 'orange',
+  'Platform Contributor' = 'purple',
+  'Gaming' = 'blue',
+}
+
 export function isProposalGrantCategory(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantCategory.Community:

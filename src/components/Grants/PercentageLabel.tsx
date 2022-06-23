@@ -10,11 +10,7 @@ export type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
 }
 
 const PercentageLabel = ({ percentage, color }: Props) => {
-  return (
-    <div className={TokenList.join([`PercentageLabel`, `PercentageLabel--${color}`])}>
-      <span>{percentage}%</span>
-    </div>
-  )
+  return <span className={TokenList.join([`PercentageLabel`, `PercentageLabel--${color}`])}>{percentage}%</span>
 }
 
 export default PercentageLabel

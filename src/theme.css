@@ -135,23 +135,34 @@ body {
 }
 
 :root {
+  --yellow: #ffb03f;
+  --light-yellow: #fef7d2;
+  --light-fuchsia: #ffe4ff;
+  --fuchsia: #ff5afe;
+  --light-red: #f9d6dc;
+  --red: #d80027;
+  --light-blue: #e2ecfc;
+  --blue: #4888ee;
+  --gray: #a19ea8;
+  --white: #ffffff;
+  --light-orange: #ffe9df;
+  --orange: #ff7439;
+  --black-100: rgba(115, 110, 125, 0.16);
+  --black-600: #736e7d;
+  --purple: #3c24b3;
+  --light-purple: #e0dcf3;
+  --dao-footer-height: 156px;
+  --dao-header-height: 64px;
+  --dao-navigation-height: 89px;
   --background-catalyst: var(--blue);
   --background-poi: var(--background-happy-green);
-  --background-ban-name: var(--magenta);
+  --background-ban-name: var(--fuchsia);
   --background-grant: #3c24b3;
   --background-poll: #ff7439;
   --background-remove-poi: #ff247c;
   --background-happy-green: #44b600;
   --background-linked-wearables: var(--yellow);
   --background-popup: #5c5c6e;
-  --yellow: #ffc95b;
-  --magenta: #ff5afe;
-  --red: #d80027;
-  --blue: #4888ee;
-  --gray: #a19ea8;
-  --dao-footer-height: 156px;
-  --dao-header-height: 64px;
-  --dao-navigation-height: 89px;
 }
 
 .ui.inverted.primary.button:active,

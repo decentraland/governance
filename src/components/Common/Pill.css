@@ -1,0 +1,166 @@
+.Pill {
+  display: inline-flex;
+  padding: 0 8px;
+  border-radius: 42px;
+  font-weight: 600;
+  vertical-align: middle;
+  align-items: center;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.Pill--small {
+  height: 19px;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.Pill--default {
+  height: 24px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.Pill--light-green {
+  background-color: #e1f3d6;
+  border-color: #e1f3d6;
+  color: var(--background-happy-green);
+}
+
+.Pill--medium-green {
+  background-color: #e1f3d6;
+  border-color: var(--background-happy-green);
+  color: var(--background-happy-green);
+}
+
+.Pill--shiny-green {
+  background-color: var(--background-happy-green);
+  border-color: var(--background-happy-green);
+  color: var(--white);
+}
+
+.Pill--light-blue {
+  background-color: var(--light-blue);
+  border-color: var(--light-blue);
+  color: var(--blue);
+}
+
+.Pill--medium-blue {
+  background-color: var(--light-blue);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.Pill--shiny-blue {
+  background-color: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+}
+
+.Pill--light-red {
+  background-color: var(--light-red);
+  border-color: var(--light-red);
+  color: var(--red);
+}
+
+.Pill--medium-red {
+  background-color: var(--light-red);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.Pill--shiny-red {
+  background-color: var(--red);
+  border-color: var(--red);
+  color: var(--white);
+}
+
+.Pill--light-fuchsia {
+  background-color: var(--light-fuchsia);
+  border-color: var(--light-fuchsia);
+  color: var(--fuchsia);
+}
+
+.Pill--medium-fuchsia {
+  background-color: var(--light-fuchsia);
+  border-color: var(--fuchsia);
+  border-color: var(--fuchsia);
+}
+
+.Pill--shiny-fuchsia {
+  background-color: var(--fuchsia);
+  border-color: var(--fuchsia);
+  color: var(--white);
+}
+
+.Pill--light-purple {
+  background-color: var(--light-purple);
+  border-color: var(--light-purple);
+  color: var(--purple);
+}
+
+.Pill--medium-purple {
+  background-color: var(--light-purple);
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.Pill--shiny-purple {
+  background-color: var(--purple);
+  border-color: var(--purple);
+  color: var(--white);
+}
+
+.Pill--light-orange {
+  background-color: var(--light-orange);
+  border-color: var(--light-orange);
+  color: var(--orange);
+}
+
+.Pill--medium-orange {
+  background-color: var(--light-orange);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.Pill--shiny-orange {
+  background-color: var(--orange);
+  border-color: var(--orange);
+  color: var(--white);
+}
+
+.Pill--light-gray {
+  background-color: var(--black-100);
+  border-color: var(--black-100);
+  color: var(--black-600);
+}
+
+.Pill--medium-gray {
+  background-color: var(--black-100);
+  border-color: var(--black-600);
+  color: var(--black-600);
+}
+
+.Pill--shiny-gray {
+  background-color: var(--black-600);
+  border-color: var(--black-600);
+  color: var(--white);
+}
+
+.Pill--light-yellow {
+  background-color: var(--light-yellow);
+  border-color: var(--light-yellow);
+  color: var(--yellow);
+}
+
+.Pill--medium-yellow {
+  background-color: var(--light-yellow);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.Pill--shiny-yellow {
+  background-color: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--white);
+}
