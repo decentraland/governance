@@ -69,7 +69,7 @@ export default {
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
   balance: (options: Partial<{ address: string }> = {}) => url('/balance/', options),
   transparency: () => url('/transparency/'),
-  admin: () => url('/admin/'),
+  debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),
   update: (id: string) => url('/update/', { id }),
 }
