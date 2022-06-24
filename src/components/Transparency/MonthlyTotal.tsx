@@ -35,7 +35,7 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
   const [belowZeroColor, zeroOrOverColor] = invertDiffColors ? [Color.GREEN, Color.RED] : [Color.RED, Color.GREEN]
   const [detailsVisibility, setDetailsVisibility] = useState(DetailsVisibility.OVERVIEW)
 
-  const click = () => {
+  const handleButtonClick = () => {
     detailsVisibility === DetailsVisibility.OVERVIEW
       ? setDetailsVisibility(DetailsVisibility.FULL)
       : setDetailsVisibility(DetailsVisibility.OVERVIEW)
@@ -80,7 +80,7 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
           </div>
         </Card.Content>
         {monthlyTotal.details.length > MAX_TAGS && (
-          <Button basic onClick={click}>
+          <Button basic onClick={handleButtonClick}>
             {detailsVisibility === DetailsVisibility.OVERVIEW
               ? t('page.transparency.funding.view_more', { count: monthlyTotal.details.length - MAX_TAGS })
               : t('modal.vp_delegation.details.show_less')}

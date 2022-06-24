@@ -11,14 +11,11 @@
 }
 
 .MonthlyTotal--Overview {
+  max-height: 398px;
   overflow: hidden;
   -webkit-transition: max-height 0.3s;
   -moz-transition: max-height 0.3s;
   transition: max-height 0.3s;
-}
-
-.MonthlyTotal.MonthlyTotal--Overview {
-  max-height: 398px;
 }
 
 .content.MonthlyTotal_Headers {
