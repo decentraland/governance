@@ -285,8 +285,8 @@ export class Governance extends GovernanceAPI {
     return result.data
   }
 
-  async getAdminAddresses() {
-    const result = await this.fetch<ApiResponse<string[]>>(`/admin`)
+  async getDebugAddresses() {
+    const result = await this.fetch<ApiResponse<string[]>>(`/debug`)
     return result.data
   }
 
