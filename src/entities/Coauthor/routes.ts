@@ -1,4 +1,5 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
@@ -44,5 +45,8 @@ export async function updateStatus(req: WithAuth<Request>): Promise<CoauthorAttr
     }
   }
 
-  throw new Error(`Unable to update`)
+  const errorMsg = 'Unable to update coauthor status'
+
+  logger.error(errorMsg, { ...conditions, status: data.status, result })
+  throw new Error(errorMsg)
 }
