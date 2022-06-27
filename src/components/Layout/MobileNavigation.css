@@ -9,14 +9,16 @@
 
 .Browse__Buttons {
   display: flex !important;
-  justify-content: space-between;
+  flex-direction: column;
   padding-top: 8px;
   padding-bottom: 8px;
+  gap: 8px;
 }
+
 .Browse__Button {
   display: flex !important;
   justify-content: center;
-  width: 45%;
+  width: 100%;
 }
 
 .Browse__Button.inverted.primary:active,

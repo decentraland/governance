@@ -69,9 +69,7 @@ export default function WrappingPage() {
         {data && (
           <>
             {isMobile && (
-              <div className="Transparency">
-                <BurgerMenuContent navigationOnly={true} />
-              </div>
+              <BurgerMenuContent className="Padded" navigationOnly={true} activeTab={NavigationTab.Transparency} />
             )}
             <div
               className="Animated"

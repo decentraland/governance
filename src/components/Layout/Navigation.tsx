@@ -21,7 +21,7 @@ export enum NavigationTab {
   Grants = 'grants',
 }
 
-type NavigationProps = {
+export type NavigationProps = {
   activeTab?: NavigationTab
 }
 

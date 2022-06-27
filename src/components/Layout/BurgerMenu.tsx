@@ -14,11 +14,13 @@ const FILTER_SHAPE_TRANSFORMS = [
 const CROSS_SHAPE_TRANSFORMS = ['rotate(45deg)', 'translateX(0) translateX(200%)', 'rotate(-45deg)']
 const BURGER_SHAPE_TRANSFORMS = ['rotate(0)', 'translateX(0)', 'rotate(0)']
 
+const BURGER_MENU_LOCATIONS = ['/', '/transparency/', '/grants/']
+
 function BurgerMenu() {
   const location = useLocation()
   const { status, setStatus } = useBurgerMenu()
   const { open, searching, filtering } = status
-  const showBurgerMenu = location.pathname === '/' || location.pathname === '/transparency/'
+  const showBurgerMenu = BURGER_MENU_LOCATIONS.some((burgerLocation) => burgerLocation === location.pathname)
 
   const handleClick = () => {
     if (!searching) {

@@ -737,17 +737,19 @@ export async function getGrantCurrentUpdate(
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
     created_at: 'desc',
   } as never)
-  if (updates && updates.length > 0) {
-    if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
-      return { ...updates[0], index: updates.length }
-    } else {
-      const currentUpdate = getCurrentUpdate(updates)
-      if (currentUpdate) {
-        return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) }
-      }
-    }
+  if (!updates || updates.length === 0) {
+    return null
   }
-  return null
+
+  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
+    return { ...updates[0], index: updates.length }
+  } else {
+    const currentUpdate = getCurrentUpdate(updates)
+    if (!currentUpdate) {
+      return null
+    }
+    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) }
+  }
 }
 
 async function getGrants() {
@@ -817,18 +819,3 @@ async function getGrants() {
     past,
   }
 }
-
-// export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {
-//   const user = req.auth!
-//   if (!isAdmin(user)) {
-//     throw new RequestError(`Only admin menbers can reactivate a proposal`, RequestError.Forbidden)
-//   }
-
-//   const proposal = await getProposal(req)
-//   await ProposalModel.update<ProposalAttributes>({ status: ProposalStatus.Active }, { id: proposal.id })
-
-//   return {
-//     ...proposal,
-//     status: ProposalStatus.Active
-//   }
-// }

@@ -154,7 +154,7 @@ export default function IndexPage() {
             <Grid.Row>
               <Grid.Column tablet="4">
                 {isMobile ? (
-                  <BurgerMenuContent />
+                  <BurgerMenuContent activeTab={NavigationTab.Proposals} />
                 ) : (
                   <div>
                     <CategoryFilter />

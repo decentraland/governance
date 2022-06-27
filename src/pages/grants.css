@@ -1,6 +1,6 @@
 @media (min-width: 991px) {
   .GrantsPage__CurrentGrantsContainer {
-    grid-template-columns: 48.33% 48.33% !important;
+    grid-template-columns: 48.49% 48.49% !important;
     grid-column-gap: 31px;
   }
 }
