@@ -1,5 +1,5 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
+import {GovernanceAPI} from "./GovernanceAPI";
 
 export type HashContent = {
   address: string
@@ -8,7 +8,7 @@ export type HashContent = {
   version: string
 }
 
-export class IPFS extends API {
+export class IPFS extends GovernanceAPI {
   static Url = process.env.INFURA_IPFS_GATEWAY_API || 'https://cloudflare-ipfs.com'
 
   static Cache = new Map<string, IPFS>()

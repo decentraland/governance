@@ -10,8 +10,10 @@ import { filesystem, status } from 'decentraland-gatsby/dist/entities/Route/rout
 import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/handler'
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
+import path from 'path'
 
 import committee from './entities/Committee/routes'
+import debug from './entities/Debug/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
 import sitemap from './entities/Sitemap/routes'
@@ -35,6 +37,7 @@ app.use('/api', [
   withCors(),
   withBody(),
   committee,
+  debug,
   proposal,
   score,
   subscription,
@@ -55,7 +58,15 @@ app.get(
 
 app.use(sitemap)
 app.use('/', social)
-app.use(filesystem('public', '404.html'))
+
+if (process.env.HEROKU === 'true') {
+  app.use(express.static('public'))
+  app.use(function (_req, res) {
+    res.status(404).sendFile('404/index.html', { root: path.join(__dirname, '../public') })
+  })
+} else {
+  app.use(filesystem('public', '404.html'))
+}
 
 void initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),

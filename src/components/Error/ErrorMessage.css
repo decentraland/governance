@@ -1,0 +1,103 @@
+.ErrorMessage__Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: rgba(216, 0, 39, 0.2);
+  opacity: 0.9;
+  border-radius: 6px;
+}
+
+.ErrorMessage__Header {
+  display: inline-flex;
+  align-items: center;
+  margin: 12px 16px;
+}
+
+.ErrorMessage__Header span {
+  font-weight: 400;
+  line-height: 20px;
+  font-size: 15px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
+  height: 20px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--red) !important;
+  padding: 0;
+}
+
+.ErrorMessage__Message {
+  background: #ffffff;
+  border-radius: 8px;
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-bottom: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding-left: 16px;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  align-items: flex-end;
+}
+
+.ErrorMessage__Message pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  padding-right: 41px;
+  width: 100%;
+}
+
+button.ui.small.primary.button.Button.ErrorMessage__Copy {
+  width: 135px;
+  height: 26px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0 6px;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: #736e7d;
+  background: #fff;
+  border: 1px solid rgba(115, 110, 125, 0.5);
+  box-shadow: 0 2px 4px rgba(115, 110, 125, 0.2);
+  border-radius: 4px;
+  margin-bottom: 9px;
+  margin-right: 10px;
+}
+
+.ErrorMessage__CallForAction a.dg.Link.Link--pointer {
+  font-weight: 700;
+}
+
+.ErrorMessage__CallForAction p.dg.Paragraph {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  margin-left: 16px;
+  color: var(--background-popup);
+}
+
+.ErrorMessage__Content {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 1s ease-out;
+}
+
+.ErrorMessage__Content--open {
+  height: auto;
+  opacity: 1;
+  margin-bottom: 16px;
+}

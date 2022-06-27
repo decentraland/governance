@@ -20,6 +20,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
 
 import { Governance } from '../../api/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
@@ -476,9 +477,7 @@ export default function SubmitLinkedWearables() {
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </ContentLayout>

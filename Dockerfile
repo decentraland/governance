@@ -20,20 +20,15 @@ RUN apk add --no-cache --virtual native-deps \
   file \
   pkgconf
 
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+RUN apk add --no-cache tini
 
 WORKDIR /app
 COPY ./package-lock.json /app/package-lock.json
 COPY ./package.json      /app/package.json
-COPY ./newrelic.js      /app/newrelic.js
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
 RUN npm ci
-
-RUN apk del native-deps && rm -rf /var/cache/apk/*
 
 COPY ./src                  /app/src
 COPY ./static               /app/static
@@ -44,6 +39,7 @@ COPY ./gatsby-config.js     /app/gatsby-config.js
 COPY ./gatsby-node.js       /app/gatsby-node.js
 COPY ./gatsby-ssr.js        /app/gatsby-ssr.js
 COPY ./tsconfig.json        /app/tsconfig.json
+COPY ./newrelic.js          /app/newrelic.js
 
 RUN sed -i.temp '/Pulumi\.ts/d' package.json
 
@@ -54,7 +50,16 @@ RUN npm prune --production
 FROM node:16.14-alpine
 WORKDIR /app
 
-COPY --from=compiler /tini /tini
+RUN rm -rf \
+  /usr/local/lib/node_modules/npm/ \
+  /usr/local/bin/npm \
+  /usr/local/bin/npx \
+  /usr/local/bin/corepack \
+  /usr/local/bin/yarn \
+  /usr/local/bin/yarnpkg \
+  /opt/yarn-*
+
+COPY --from=compiler /sbin/tini                /sbin/tini
 COPY --from=compiler /app/package.json         /app/package.json
 COPY --from=compiler /app/package-lock.json    /app/package-lock.json
 COPY --from=compiler /app/node_modules         /app/node_modules
@@ -62,7 +67,8 @@ COPY --from=compiler /app/lib                  /app/lib
 COPY --from=compiler /app/public               /app/public
 COPY --from=compiler /app/static               /app/static
 COPY --from=compiler /app/entrypoint.sh        /app/entrypoint.sh
+COPY --from=compiler /app/newrelic.js         /app/newrelic.js
 
 VOLUME [ "/data" ]
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT ["/sbin/tini", "--", "/app/entrypoint.sh"]

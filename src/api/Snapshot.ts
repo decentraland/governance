@@ -1,11 +1,11 @@
 import snapshot from '@snapshot-labs/snapshot.js'
-import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 import fetch from 'isomorphic-fetch'
 
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { Scores } from '../entities/Votes/utils'
+import {GovernanceAPI} from "./GovernanceAPI";
 
 export type SnapshotQueryResponse<T> = { data: T }
 
@@ -115,7 +115,7 @@ export const EMPTY_DELEGATION: DelegationResult = {
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 
-export class Snapshot extends API {
+export class Snapshot extends GovernanceAPI {
   static Url =
     process.env.GATSBY_SNAPSHOT_API ||
     process.env.REACT_APP_SNAPSHOT_API ||

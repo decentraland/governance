@@ -18,6 +18,7 @@ import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entiti
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
+import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 import LoadingView from '../../Layout/LoadingView'
@@ -251,9 +252,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </ContentLayout>
