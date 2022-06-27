@@ -2,10 +2,15 @@ import React from 'react'
 
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategoryColor, ProposalGrantTier } from '../../entities/Proposal/types'
+import {
+  GrantWithUpdateAttributes,
+  PROPOSAL_GRANT_CATEGORY_COLORS,
+  ProposalGrantCategory,
+  ProposalGrantTier,
+} from '../../entities/Proposal/types'
+import Pill from '../Common/Pill'
 import EmptyProposalUpdate from '../Proposal/EmptyProposalUpdate'
 import ProposalUpdate from '../Proposal/ProposalUpdate'
-import Pill from '../Common/Pill'
 
 import './GrantCard.css'
 import VestingProgress from './VestingProgress'
@@ -27,6 +32,7 @@ export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 const GrantCard = ({ grant }: GrantCardProps) => {
+  const category: ProposalGrantCategory = grant.configuration.category
   return (
     <div className="GrantCard">
       <div className="GrantCard__Header">
@@ -36,7 +42,7 @@ const GrantCard = ({ grant }: GrantCardProps) => {
             {grant.configuration.size} {grant.contract.symbol}
           </p>
         </div>
-        <Pill color={ProposalGrantCategoryColor[grant.configuration.category]}>{grant.configuration.category.split(' ')[0]}</Pill>
+        <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
       </div>
       <Header className="GrantCard__Title">{grant.title}</Header>
       <VestingProgress vesting={grant.contract} />

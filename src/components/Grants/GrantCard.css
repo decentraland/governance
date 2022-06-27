@@ -38,19 +38,6 @@
   font-weight: 600;
 }
 
-.GrantsBanner__Items {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 10px;
-}
-
-.GrantsBanner__ItemsDivider {
-  opacity: 0.3;
-  width: 293px;
-  border: 1px solid #ffffff;
-}
-
 .ui.header.GrantCard__Title {
   min-height: 52px;
   margin-top: 5px;

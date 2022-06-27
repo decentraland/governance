@@ -10,9 +10,17 @@
   gap: 50px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 991px) {
   .GrantsBanner {
     flex-direction: row;
+  }
+
+  .GrantsBanner__Items {
+    width: auto;
+  }
+
+  .GrantsBanner__ItemsDivider {
+    width: 293px !important;
   }
 }
 
@@ -49,6 +57,7 @@
   flex-direction: column;
   flex: 1;
   gap: 10px;
+  width: 100%;
 }
 
 .GrantsBannerItem_Text {
@@ -58,6 +67,6 @@
 
 .GrantsBanner__ItemsDivider {
   opacity: 0.3;
-  width: 293px;
+  width: auto;
   border: 1px solid #ffffff;
 }
