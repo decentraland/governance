@@ -7,13 +7,13 @@ import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DclData } from '../api/DclData'
 import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
 import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
 import LinkWithIcon from '../components/Section/LinkWithIcon'
@@ -60,11 +60,7 @@ export default function WrappingPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <div className="TransparencyMobile">
-        {!data && (
-          <div className="Transparency__Loader">
-            <Loader active />
-          </div>
-        )}
+        {!data && <LoadingView withNavigation />}
         {data && (
           <>
             {isMobile && (
