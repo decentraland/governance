@@ -3,13 +3,13 @@ import React from 'react'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import { isEmpty } from 'lodash'
 
 import Banner, { BannerType } from '../components/Grants/Banner'
 import GrantCard from '../components/Grants/GrantCard'
+import GrantsPastItem from '../components/Grants/GrantsPastItem'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import useGrants from '../hooks/useGrants'
@@ -82,8 +82,8 @@ export default function GrantsPage() {
                 items={getCurrentBannerItems()}
               />
               <div>
-                <h2 className="GrantsCard__Title">{t('page.grants.currently_funded')}</h2>
-                <Container className="GrantsCards__Container">
+                <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
+                <Container className="GrantsPage__CurrentGrantsContainer">
                   {grants.current.map((grant) => (
                     <GrantCard
                       key={`CurrentGrantCard_${grant.id}`}
@@ -109,21 +109,26 @@ export default function GrantsPage() {
               <Table basic="very">
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell>{t('page.grants.past_funded.title')}</Table.HeaderCell>
-                    <Table.HeaderCell>{t('page.grants.past_funded.category')}</Table.HeaderCell>
-                    <Table.HeaderCell>{t('page.grants.past_funded.date')}</Table.HeaderCell>
-                    <Table.HeaderCell>{t('page.grants.past_funded.size')}</Table.HeaderCell>
-                    <Table.HeaderCell />
+                    <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader">
+                      {t('page.grants.past_funded.title')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
+                      {t('page.grants.past_funded.category')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
+                      {t('page.grants.past_funded.start_date')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
+                      {t('page.grants.past_funded.size')}
+                    </Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {grants.past.map((grant) => (
-                    <Table.Row key={grant.id} onClick={() => null}>
-                      <Table.Cell>{grant.title}</Table.Cell>
-                      <Table.Cell>{grant.configuration.category}</Table.Cell>
-                      <Table.Cell>{Time(grant.start_at).format('MMMM DD, YYYY')}</Table.Cell>
-                      <Table.Cell>{`$${grant.configuration.size} USD`}</Table.Cell>
-                    </Table.Row>
+                  {grants.past.map((grant, index) => (
+                    <>
+                      <GrantsPastItem grant={grant} />
+                      {grants.past.length - 1 !== index && <tr className="GrantsPage__PastGrantsSeparator" />}
+                    </>
                   ))}
                 </Table.Body>
               </Table>

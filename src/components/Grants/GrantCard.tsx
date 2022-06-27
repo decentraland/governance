@@ -2,10 +2,10 @@ import React from 'react'
 
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { NewProposalGrant, ProposalGrantTier } from '../../entities/Proposal/types'
+import { NewProposalGrant, ProposalGrantCategoryColor, ProposalGrantTier } from '../../entities/Proposal/types'
+import Pill from '../Common/Pill'
 
 import './GrantCard.css'
-import GrantCategoryLabel from './GrantCategoryLabel'
 import VestingProgress from './VestingProgress'
 
 const getDisplayableName = (grantSize: ProposalGrantTier) => {
@@ -35,7 +35,7 @@ const GrantCard = ({ title, category, size, tier, vesting }: GrantCardProps) => 
             {size} {vesting.symbol}
           </p>
         </div>
-        <GrantCategoryLabel category={category} />
+        <Pill color={ProposalGrantCategoryColor[category]}>{category.split(' ')[0]}</Pill>
       </div>
       <Header className="GrantCard__Title">{title}</Header>
       <VestingProgress vesting={vesting} />

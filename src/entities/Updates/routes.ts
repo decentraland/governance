@@ -1,14 +1,22 @@
-import { Request } from 'express'
-import routes from 'decentraland-gatsby/dist/entities/Route/routes'
-import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate, isBetweenLateThresholdDate } from './utils'
-import UpdateModel from './model'
-import { UpdateAttributes, UpdateStatus } from './types'
+import { Request } from 'express'
+
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
+
+import UpdateModel from './model'
+import { UpdateAttributes, UpdateStatus } from './types'
+import {
+  getCurrentUpdate,
+  getNextUpdate,
+  getPendingUpdates,
+  getPublicUpdates,
+  isBetweenLateThresholdDate,
+} from './utils'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -68,7 +76,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
   const updates = await UpdateModel.find({
     proposal_id: proposalId,
-    status: UpdateStatus.Pending
+    status: UpdateStatus.Pending,
   })
 
   if (updates.length > 0) {
@@ -76,7 +84,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   }
 
   return await UpdateModel.createUpdate({
-    proposal_id: proposal?.id!,
+    proposal_id: proposal.id,
     health,
     introduction,
     highlights,
@@ -94,7 +102,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  if (!!update?.completion_date) {
+  if (update?.completion_date) {
     throw new RequestError(`Update already completed: "${update.id}"`, RequestError.BadRequest)
   }
 

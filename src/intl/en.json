@@ -540,9 +540,10 @@
       "past_funded": {
         "title": "Past, successfully funded initiatives",
         "category": "Category",
-        "date": "Date",
+        "start_date": "Start Date",
         "size": "Size"
-      }
+      },
+      "navigate_to_proposal_label": "Navigate to proposal {title}"
     },
     "proposal_activity": {
       "title": "Decentraland DAO",
