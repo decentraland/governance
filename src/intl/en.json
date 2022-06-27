@@ -13,7 +13,7 @@
     "activity": "Activity",
     "enacted": "Enacted",
     "transparency": "Transparency",
-    "admin": "Admin",
+    "debug": "Debug",
     "search": {
       "mobile": {
         "placeholder": "Search on the DAO...",
@@ -219,7 +219,7 @@
       "next_steps_too_large": "Next steps field is too large",
       "additional_notes_too_large": "Additional notes and links field is too large"
     },
-    "admin": {
+    "debug": {
       "invalid_http_status": "Http status must be between 100 and 530",
       "invalid_sleep_time": "Sleep time must be between 0 and 300000 ms (5 minutes)"
     }
@@ -390,8 +390,8 @@
       "title": "Not found",
       "description": "You just hit a route that doesn't exist..."
     },
-    "admin": {
-      "title": "Admin",
+    "debug": {
+      "title": "Debug",
       "description": "A tab where anything is possible",
       "error_label": "There was an error."
     },

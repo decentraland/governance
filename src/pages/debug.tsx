@@ -14,9 +14,9 @@ import ErrorMessage from '../components/Error/ErrorMessage'
 import { ContentSection } from '../components/Layout/ContentLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
-import useIsAdmin from '../hooks/useIsAdmin'
+import useIsDebugAddress from '../hooks/useIsDebugAddress'
 
-import './admin.css'
+import './debug.css'
 
 type TestState = {
   httpStatus: string
@@ -39,21 +39,21 @@ const MAX_SLEEP_TIME = 300000 // 5 minutes
 
 const validate = createValidator<TestState>({
   httpStatus: (state) => ({
-    httpStatus: assert(state.httpStatus.length === 3, 'error.admin.invalid_http_status'),
+    httpStatus: assert(state.httpStatus.length === 3, 'error.debug.invalid_http_status'),
   }),
   sleepTime: (state) => ({
-    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.admin.invalid_sleep_time'),
+    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.debug.invalid_sleep_time'),
   }),
   '*': (state) => ({
-    httpStatus: assert(state.httpStatus.length === 3, 'error.admin.invalid_http_status'),
-    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.admin.invalid_sleep_time'),
+    httpStatus: assert(state.httpStatus.length === 3, 'error.debug.invalid_http_status'),
+    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.debug.invalid_sleep_time'),
   }),
 })
 
 export default function WrappingPage() {
   const t = useFormatMessage()
   const [account] = useAuthContext()
-  const { isAdmin } = useIsAdmin(account)
+  const { isDebugAddress } = useIsDebugAddress(account)
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
 
@@ -77,14 +77,14 @@ export default function WrappingPage() {
     }
   }, [editor, state.validated, state.value])
 
-  if (!account || !isAdmin) {
+  if (!account || !isDebugAddress) {
     return <LogIn title={'test'} description={'test'} />
   }
 
   return (
-    <Container className="AdminPage">
-      <Navigation activeTab={NavigationTab.Admin} />
-      <Header size="huge">{t('page.admin.title')}</Header>
+    <Container className="DebugPage">
+      <Navigation activeTab={NavigationTab.Debug} />
+      <Header size="huge">{t('page.debug.title')}</Header>
       <ContentSection>
         <Label>{'Http Status'}</Label>
         <Field
@@ -107,7 +107,7 @@ export default function WrappingPage() {
           disabled={formDisabled}
         />
       </ContentSection>
-      <ContentSection className="AdminPage__Submit">
+      <ContentSection className="DebugPage__Submit">
         <Button
           primary
           disabled={state.validated || formDisabled}
@@ -119,7 +119,7 @@ export default function WrappingPage() {
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <ErrorMessage label={t('page.admin.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
+          <ErrorMessage label={t('page.debug.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </Container>

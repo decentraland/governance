@@ -6,7 +6,7 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import { CoauthorStatus } from '../../entities/Coauthor/types'
-import useIsAdmin from '../../hooks/useIsAdmin'
+import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useProposalsByCoAuthor from '../../hooks/useProposalsByCoAuthor'
 import locations, { ProposalActivityList } from '../../modules/locations'
 import Dot from '../Icon/Dot'
@@ -20,7 +20,7 @@ export enum NavigationTab {
   Enacted = 'enacted',
   Activity = 'activity',
   Transparency = 'transparency',
-  Admin = 'admin',
+  Debug = 'debug',
 }
 
 type NavigationProps = {
@@ -41,7 +41,7 @@ const Navigation = (props: NavigationProps) => {
     }
   }, [pendingCoauthorRequests])
 
-  const { isAdmin } = useIsAdmin(user)
+  const { isDebugAddress } = useIsDebugAddress(user)
 
   return (
     <Tabs>
@@ -66,9 +66,9 @@ const Navigation = (props: NavigationProps) => {
             </Tabs.Tab>
           </Link>
         )}
-        {user && isAdmin && (
-          <Link href={locations.admin()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Admin}>{t('navigation.admin')}</Tabs.Tab>
+        {user && isDebugAddress && (
+          <Link href={locations.debug()}>
+            <Tabs.Tab active={props.activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
           </Link>
         )}
       </Tabs.Left>

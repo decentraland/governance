@@ -2,11 +2,11 @@ import { magenta } from 'colors/safe'
 import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-export const ADMIN_ADDRESSES = (env('ADMIN_ADDRESSES', '') || '')
+export const DEBUG_ADDRESSES = (env('DEBUG_ADDRESSES', '') || '')
   .split(',')
   .filter(isEthereumAddress)
   .map((address) => address.toLowerCase())
 
-const adminAddresses = new Set(ADMIN_ADDRESSES)
+const debugAddresses = new Set(DEBUG_ADDRESSES)
 
-adminAddresses.forEach((address) => console.log('admin address:', magenta(address)))
+debugAddresses.forEach((address) => console.log('debug address:', magenta(address)))
