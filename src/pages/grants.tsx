@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import { isEmpty } from 'lodash'
@@ -16,10 +17,14 @@ import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent
 import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import { GrantAttributes } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './grants.css'
+
+const CURRENT_GRANTS_PER_PAGE = 8
+const PAST_GRANTS_PER_PAGE = 10
 
 export default function GrantsPage() {
   const t = useFormatMessage()
@@ -27,6 +32,29 @@ export default function GrantsPage() {
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
   const { grants, isLoadingGrants } = useGrants()
+  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantAttributes[]>([])
+  const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
+
+  const handleLoadMoreCurrentGrantsClick = useCallback(() => {
+    if (grants) {
+      const newCurrentGrants = grants.current.slice(0, filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE)
+      setFilteredCurrentGrants(newCurrentGrants)
+    }
+  }, [grants, filteredCurrentGrants.length])
+
+  const handleLoadMorePastGrantsClick = useCallback(() => {
+    if (grants) {
+      const newPastGrants = grants.past.slice(0, filteredPastGrants.length + PAST_GRANTS_PER_PAGE)
+      setFilteredPastGrants(newPastGrants)
+    }
+  }, [grants, filteredPastGrants.length])
+
+  useEffect(() => {
+    if (!isEmpty(grants)) {
+      setFilteredCurrentGrants(grants.current.slice(0, CURRENT_GRANTS_PER_PAGE))
+      setFilteredPastGrants(grants.past.slice(0, PAST_GRANTS_PER_PAGE))
+    }
+  }, [grants])
 
   if (isUnderMaintenance()) {
     return (
@@ -68,6 +96,9 @@ export default function GrantsPage() {
     ]
   }
 
+  const showLoadMoreCurrentGrantsButton = filteredCurrentGrants.length !== grants?.current?.length
+  const showLoadMorePastGrantsButton = filteredPastGrants.length !== grants?.past?.length
+
   return (
     <div>
       <Head
@@ -98,6 +129,16 @@ export default function GrantsPage() {
                       ))}
                     </Container>
                   </div>
+                  {showLoadMoreCurrentGrantsButton && (
+                    <Button
+                      primary
+                      fluid
+                      className="GrantsPage_LoadMoreButton"
+                      onClick={handleLoadMoreCurrentGrantsClick}
+                    >
+                      {t('page.grants.load_more_button')}
+                    </Button>
+                  )}
                 </>
               )}
               {!isEmpty(grants.past) && (
@@ -134,6 +175,11 @@ export default function GrantsPage() {
                       ))}
                     </Table.Body>
                   </Table>
+                  {showLoadMorePastGrantsButton && (
+                    <Button primary fluid className="GrantsPage_LoadMoreButton" onClick={handleLoadMorePastGrantsClick}>
+                      {t('page.grants.load_more_button')}
+                    </Button>
+                  )}
                 </>
               )}
             </Container>

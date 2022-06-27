@@ -7,7 +7,7 @@
 
 .GrantsPage__CurrentGrantsContainer {
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   margin-top: 15px;
   display: grid !important;
   grid-template-columns: 100%;
@@ -28,6 +28,10 @@
   color: #736e7d;
 }
 
+.GrantsPage_PastGrantsTable {
+  margin-bottom: 24px !important;
+}
+
 .GrantsPage__PastGrantsTableHeader {
   border: none !important;
   font-weight: 600 !important;
@@ -42,4 +46,14 @@
 
 .GrantsPage__PastGrantsSeparator {
   height: 8px;
+}
+
+.GrantsPage_LoadMoreButton {
+  height: 40px !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: 2px solid #f3f2f5 !important;
+  color: #ff2d55 !important;
+  border-radius: 8px !important;
+  margin-bottom: 32px !important;
 }
