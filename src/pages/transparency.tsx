@@ -12,7 +12,8 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DclData } from '../api/DclData'
-import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
+import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
 import LinkWithIcon from '../components/Section/LinkWithIcon'
@@ -23,7 +24,6 @@ import MonthlyTotal from '../components/Transparency/MonthlyTotal'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
-import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import locations from '../modules/locations'
 
 import './transparency.css'
@@ -48,7 +48,6 @@ export default function WrappingPage() {
   const t = useFormatMessage()
   const [data] = useAsyncMemo(async () => DclData.get().getData())
   const balances = useMemo(() => (data && aggregateBalances(data.balances)) || [], [data])
-  const burgerMenu = useBurgerMenu()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
@@ -71,16 +70,7 @@ export default function WrappingPage() {
             {isMobile && (
               <BurgerMenuContent className="Padded" navigationOnly={true} activeTab={NavigationTab.Transparency} />
             )}
-            <div
-              className="Animated"
-              style={
-                isMobile
-                  ? burgerMenu?.status.open
-                    ? { transform: `translateY(${burgerMenu.status.translate})` }
-                    : {}
-                  : {}
-              }
-            >
+            <BurgerMenuPushableLayout>
               <Container className="TransparencyContainer">
                 <Grid className="TransparencyGrid" stackable>
                   <Grid.Row columns={2}>
@@ -236,7 +226,7 @@ export default function WrappingPage() {
                   </Grid.Row>
                 </Grid>
               </Container>
-            </div>
+            </BurgerMenuPushableLayout>
           </>
         )}
       </div>

@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { useBurgerMenu } from '../../hooks/useBurgerMenu'
-import CategoryList from '../Category/CategoryList'
-import CategoryFilter from '../Search/CategoryFilter'
-import SearchInputMobile from '../Search/SearchInputMobile'
-import StatusFilter from '../Search/StatusFilter'
-import TimeFrameFilter from '../Search/TimeFrameFilter'
+import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
+import CategoryList from '../../Category/CategoryList'
+import CategoryFilter from '../../Search/CategoryFilter'
+import SearchInputMobile from '../../Search/SearchInputMobile'
+import StatusFilter from '../../Search/StatusFilter'
+import TimeFrameFilter from '../../Search/TimeFrameFilter'
+import { NavigationProps } from '../Navigation'
 
 import './BurgerMenuContent.css'
 import MobileNavigation from './MobileNavigation'
-import { NavigationProps } from './Navigation'
 
 export type FilterStatus = {
   categoryOpen: boolean

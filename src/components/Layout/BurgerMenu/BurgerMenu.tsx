@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 
-import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
 
 import './BurgerMenu.css'
 

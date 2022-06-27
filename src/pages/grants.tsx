@@ -12,10 +12,10 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Banner, { BannerType } from '../components/Grants/Banner'
 import GrantCard from '../components/Grants/GrantCard'
 import GrantsPastItem from '../components/Grants/GrantsPastItem'
-import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
+import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -23,7 +23,6 @@ import './grants.css'
 
 export default function GrantsPage() {
   const t = useFormatMessage()
-  const burgerMenu = useBurgerMenu()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
@@ -81,16 +80,7 @@ export default function GrantsPage() {
       {!isLoading && (
         <>
           {isMobile && <BurgerMenuContent className="Padded" navigationOnly={true} activeTab={NavigationTab.Grants} />}
-          <div
-            className="Animated"
-            style={
-              isMobile
-                ? burgerMenu?.status.open
-                  ? { transform: `translateY(${burgerMenu.status.translate})` }
-                  : {}
-                : {}
-            }
-          >
+          <BurgerMenuPushableLayout>
             <Container>
               {!isEmpty(grants.current) && (
                 <>
@@ -147,7 +137,7 @@ export default function GrantsPage() {
                 </>
               )}
             </Container>
-          </div>
+          </BurgerMenuPushableLayout>
         </>
       )}
     </div>
