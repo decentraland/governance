@@ -9,8 +9,7 @@ import {
   ProposalGrantTier,
 } from '../../entities/Proposal/types'
 import Pill from '../Common/Pill'
-import EmptyProposalUpdate from '../Proposal/EmptyProposalUpdate'
-import ProposalUpdate from '../Proposal/ProposalUpdate'
+import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
 
 import './GrantCard.css'
 import VestingProgress from './VestingProgress'
@@ -46,10 +45,7 @@ const GrantCard = ({ grant }: GrantCardProps) => {
       </div>
       <Header className="GrantCard__Title">{grant.title}</Header>
       <VestingProgress vesting={grant.contract} />
-      {grant.update && (
-        <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update.index} />
-      )}
-      {!grant.update && <EmptyProposalUpdate />}
+      <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
     </div>
   )
 }

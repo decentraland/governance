@@ -782,11 +782,11 @@ async function getGrants() {
 
         const contract = {
           symbol,
-          balance: Math.round(parseInt(balance, 10) / 10 ** decimals),
-          vestedAmount: Math.round(parseInt(vestedAmount, 10) / 10 ** decimals),
-          releasableAmount: Math.round(parseInt(releasableAmount, 10) / 10 ** decimals),
-          released: Math.round(parseInt(released, 10) / 10 ** decimals),
-          start: parseInt(start, 10),
+          balance: Math.round(parseInt(balance) / 10 ** decimals),
+          vestedAmount: Math.round(parseInt(vestedAmount) / 10 ** decimals),
+          releasableAmount: Math.round(parseInt(releasableAmount) / 10 ** decimals),
+          released: Math.round(parseInt(released) / 10 ** decimals),
+          start: parseInt(start),
         }
 
         const grant = {
