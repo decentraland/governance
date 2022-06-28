@@ -84,7 +84,6 @@
 .Pill--medium-fuchsia {
   background-color: var(--light-fuchsia);
   border-color: var(--fuchsia);
-  border-color: var(--fuchsia);
 }
 
 .Pill--shiny-fuchsia {

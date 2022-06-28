@@ -2,13 +2,8 @@ import React from 'react'
 
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import {
-  GrantWithUpdateAttributes,
-  PROPOSAL_GRANT_CATEGORY_COLORS,
-  ProposalGrantCategory,
-  ProposalGrantTier,
-} from '../../entities/Proposal/types'
-import Pill from '../Common/Pill'
+import { GrantWithUpdateAttributes, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
+import Pill, { PillColor } from '../Common/Pill'
 import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
 
 import './GrantCard.css'
@@ -28,6 +23,13 @@ export type VestingAttributes = {
 
 export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
   grant: GrantWithUpdateAttributes
+}
+
+export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> = {
+  [ProposalGrantCategory.Community]: PillColor.Green,
+  [ProposalGrantCategory.ContentCreator]: PillColor.Orange,
+  [ProposalGrantCategory.PlatformContributor]: PillColor.Purple,
+  [ProposalGrantCategory.Gaming]: PillColor.Blue,
 }
 
 const GrantCard = ({ grant }: GrantCardProps) => {

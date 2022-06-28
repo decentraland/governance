@@ -1,6 +1,5 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { PillColor } from '../../components/Common/Pill'
 import { IndexedUpdate } from '../Updates/types'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
@@ -411,13 +410,6 @@ export enum ProposalGrantCategory {
   ContentCreator = 'Content Creator',
   PlatformContributor = 'Platform Contributor',
   Gaming = 'Gaming',
-}
-
-export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> = {
-  [ProposalGrantCategory.Community]: PillColor.Green,
-  [ProposalGrantCategory.ContentCreator]: PillColor.Orange,
-  [ProposalGrantCategory.PlatformContributor]: PillColor.Purple,
-  [ProposalGrantCategory.Gaming]: PillColor.Blue,
 }
 
 export function isProposalGrantCategory(value: string | null | undefined): boolean {
