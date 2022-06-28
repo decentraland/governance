@@ -23,7 +23,6 @@
   margin-top: 0;
 }
 
-
 @media only screen and (min-width: 992px) {
   .MonthlyTotal:last-of-type {
     margin-left: 2em;
@@ -46,9 +45,9 @@
 }
 
 strong.Number.Number--Green {
-  color: var(--background-happy-green);
+  color: var(--green);
 }
 
 strong.Number.Number--Red {
-  color: #FF4545;
+  color: #ff4545;
 }

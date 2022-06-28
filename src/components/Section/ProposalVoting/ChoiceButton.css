@@ -1,6 +1,6 @@
 .ui.button.ChoiceButton {
   background: var(--background);
-  border: 1px solid rgba(115,110,125,.32);
+  border: 1px solid rgba(115, 110, 125, 0.32);
   position: relative;
   display: flex;
   align-items: center;
@@ -24,12 +24,12 @@
 
 .ui.button.ChoiceButton.ChoiceButton--approve:hover,
 .ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--approve {
-  color: var(--background-happy-green);
+  color: var(--green);
 }
 
 .ui.button.ChoiceButton.ChoiceButton--reject:hover,
 .ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--reject {
-  color: #FF4545;
+  color: #ff4545;
 }
 
 .ui.button.ChoiceButton.ChoiceButton--status-0:hover,
@@ -87,11 +87,12 @@
 }
 
 .ChoiceButton__Background {
-  position:absolute;
+  position: absolute;
   background: var(--secondary);
   height: 100%;
-  top:0; bottom:0;
-  left:0;
+  top: 0;
+  bottom: 0;
+  left: 0;
   z-index: 1;
   border-radius: 6px 0 0 6px;
 }
