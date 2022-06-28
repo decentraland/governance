@@ -4,7 +4,7 @@
   padding: 1px 11px;
   height: 24px;
   display: inline-flex;
-  color: #736E7D;
+  color: var(--dark-gray);
   border-radius: 42px;
   font-weight: 500;
   font-size: 12px;

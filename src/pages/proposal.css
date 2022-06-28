@@ -24,7 +24,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: normal;
-  color: #736e7d;
+  color: var(--dark-gray);
 }
 
 .ProposalDetailPage .ProposalDetailDescription .dg.SubTitle {

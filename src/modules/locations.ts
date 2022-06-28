@@ -30,12 +30,14 @@ export type ProposalsTypeFilter = {
 export enum ProposalActivityList {
   MyProposals = 'proposals',
   Watchlist = 'watchlist',
+  CoAuthoring = 'coauthoring',
 }
 
 export function toProposalActivityList(list: string | null | undefined): ProposalActivityList | null {
   switch (list) {
     case ProposalActivityList.MyProposals:
     case ProposalActivityList.Watchlist:
+    case ProposalActivityList.CoAuthoring:
       return list
     default:
       return null

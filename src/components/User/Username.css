@@ -3,7 +3,12 @@
   align-items: center;
 }
 
-.Username span.dcl.blockie-wrapper {
+.Username .dcl.blockie {
+  margin: 0;
+  margin-right: 7px;
+}
+
+.Username .dcl.blockie-wrapper {
   display: flex;
   align-items: center;
 }
@@ -13,7 +18,7 @@ a.Username span.address {
 }
 
 .Username img.dcl-avatar {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 .Username .dcl.blockie-wrapper .dcl.blockie-children {

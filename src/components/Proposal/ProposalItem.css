@@ -9,17 +9,17 @@
 }
 
 .ProposalItem .ProposalItem__Status {
-	padding-top: 8px;
-	display: flex;
-	flex-flow: row wrap;
+  padding-top: 8px;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 @media only screen and (max-width: 425px) {
-	.ProposalItem .ProposalItem__Status {
-		flex-direction: row;
-	}
-  .ProposalItem .ProposalItem__Status .StatusLabel, 
-  .ProposalItem .ProposalItem__Status .CategoryLabel{
+  .ProposalItem .ProposalItem__Status {
+    flex-direction: row;
+  }
+  .ProposalItem .ProposalItem__Status .StatusLabel,
+  .ProposalItem .ProposalItem__Status .CategoryLabel {
     font-size: 10px;
     height: 20px;
     line-height: 20px;
@@ -49,11 +49,9 @@
   .dg.Paragraph.Paragraph--small {
     font-size: 14px;
   }
-
 }
 
-
-.ProposalItem .ProposalItem__Title .ui.header:first-child{
+.ProposalItem .ProposalItem__Title .ui.header:first-child {
   margin-bottom: 0;
 }
 
@@ -72,4 +70,10 @@
 .ProposalItem:hover .ProposalItem__Title .ui.button,
 .ProposalItem.ProposalItem--subscribed .ProposalItem__Title .ui.button {
   display: block;
+}
+
+.ui.card.ProposalItem.ProposalItem.ProposalItem--coauthor,
+.ui.card.ProposalItem.ProposalItem.ProposalItem--coauthor:hover {
+  border: 1px solid var(--light-orange) !important;
+  box-shadow: 0 2px 4px rgba(var(--light-orange-rgb), 0.5);
 }

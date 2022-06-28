@@ -26,5 +26,5 @@
 .DelegatedCardProfile__Description {
   font-size: 15px;
   line-height: 24px;
-  color: #736e7d;
+  color: var(--dark-gray);
 }

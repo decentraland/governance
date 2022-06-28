@@ -23,6 +23,7 @@ import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalDraftScheme } from '../../entities/Proposal/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
@@ -39,6 +40,7 @@ type DraftState = {
   motivation: string
   specification: string
   conclusion: string
+  coAuthors?: string[]
 }
 const initialState: DraftState = {
   linked_proposal_id: null,
@@ -56,6 +58,7 @@ const edit = (state: DraftState, props: Partial<DraftState>) => {
     ...props,
   }
 }
+
 const validate = createValidator<DraftState>({
   title: (state) => ({
     title: assert(state.title.length <= schema.title.maxLength, 'error.draft.title_too_large') || undefined,
@@ -138,6 +141,8 @@ export default function SubmitDraftProposal() {
   )
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
     if (preselectedLinkedProposalId) {
@@ -362,7 +367,9 @@ export default function SubmitDraftProposal() {
           disabled={submissionVpNotMet || formDisabled}
         />
       </ContentSection>
-
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+      </ContentSection>
       <ContentSection>
         <Button
           primary
