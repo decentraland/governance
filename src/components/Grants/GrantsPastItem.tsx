@@ -30,7 +30,9 @@ const GrantsPastItem = ({ grant }: { grant: GrantAttributes }) => {
     >
       <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__FirstCell">{title}</Table.Cell>
       <Table.Cell className="GrantsPastItem__Cell">
-        <Pill color={pillColor}>{category}</Pill>
+        <Pill size="small" color={pillColor}>
+          {category}
+        </Pill>
       </Table.Cell>
       <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">
         {Time(start_at).format('MMMM DD, YYYY')}

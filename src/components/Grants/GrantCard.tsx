@@ -34,6 +34,7 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
 
 const GrantCard = ({ grant }: GrantCardProps) => {
   const category: ProposalGrantCategory = grant.configuration.category
+
   return (
     <div className="GrantCard">
       <div className="GrantCard__Header">

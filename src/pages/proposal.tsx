@@ -22,7 +22,7 @@ import { Personal } from 'web3x/personal'
 
 import { Governance } from '../api/Governance'
 import { Snapshot } from '../api/Snapshot'
-import CategoryLabel from '../components/Category/CategoryLabel'
+import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
@@ -234,7 +234,7 @@ export default function ProposalPage() {
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
             {proposal && <StatusLabel status={proposal.status} />}
-            {proposal && <CategoryLabel type={proposal.type} />}
+            {proposal && <CategoryPill type={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>

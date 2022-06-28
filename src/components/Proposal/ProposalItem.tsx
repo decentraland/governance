@@ -11,7 +11,7 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
-import CategoryLabel from '../Category/CategoryLabel'
+import CategoryPill from '../Category/CategoryPill'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
 import StatusLabel from '../Status/StatusLabel'
@@ -63,7 +63,7 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
         <div className="ProposalItem__Status">
           <div>
             <StatusLabel status={proposal.status} />
-            <CategoryLabel type={proposal.type} />
+            <CategoryPill type={proposal.type} />
           </div>
           <FinishLabel date={proposal.finish_at} />
         </div>

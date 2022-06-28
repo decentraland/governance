@@ -1,12 +1,12 @@
 .Pill {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   padding: 0 8px;
   border-radius: 42px;
   font-weight: 600;
-  vertical-align: middle;
-  align-items: center;
   text-transform: uppercase;
-  position: relative;
 }
 
 .Pill--small {
@@ -84,6 +84,7 @@
 .Pill--medium-fuchsia {
   background-color: var(--light-fuchsia);
   border-color: var(--fuchsia);
+  color: var(--fuchsia);
 }
 
 .Pill--shiny-fuchsia {
