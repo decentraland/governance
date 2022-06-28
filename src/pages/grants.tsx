@@ -17,7 +17,7 @@ import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent
 import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import { GrantAttributes } from '../entities/Proposal/types'
+import { GrantAttributes, GrantWithUpdateAttributes } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -32,7 +32,7 @@ export default function GrantsPage() {
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
   const { grants, isLoadingGrants } = useGrants()
-  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantAttributes[]>([])
+  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
@@ -124,7 +124,7 @@ export default function GrantsPage() {
                   <div>
                     <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
                     <Container className="GrantsPage__CurrentGrantsContainer">
-                      {grants.current.map((grant) => (
+                      {filteredCurrentGrants.map((grant) => (
                         <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
                       ))}
                     </Container>
@@ -167,10 +167,12 @@ export default function GrantsPage() {
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                      {grants.past.map((grant, index) => (
+                      {filteredPastGrants.map((grant, index) => (
                         <>
                           <GrantsPastItem grant={grant} />
-                          {grants.past.length - 1 !== index && <tr className="GrantsPage__PastGrantsSeparator" />}
+                          {filteredPastGrants.length - 1 !== index && (
+                            <tr className="GrantsPage__PastGrantsSeparator" />
+                          )}
                         </>
                       ))}
                     </Table.Body>
