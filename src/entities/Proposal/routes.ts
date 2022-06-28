@@ -157,7 +157,7 @@ export async function getProposals(req: WithAuth<Request>) {
 
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
 
-  if (search && !/\w{3}/.test(search)) {
+  if (search && !/\w{2}/.test(search)) {
     return []
   }
 
