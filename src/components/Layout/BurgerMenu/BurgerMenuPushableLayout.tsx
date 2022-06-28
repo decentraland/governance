@@ -13,16 +13,19 @@ function BurgerMenuPushableLayout({ children }: Props) {
   const burgerMenu = useBurgerMenu()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  return (
-    <div
-      className="Animated"
-      style={
-        isMobile ? (burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : {}) : {}
-      }
-    >
-      {children}
-    </div>
-  )
+
+  if (isMobile) {
+    return (
+      <div
+        className="Animated"
+        style={burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : {}}
+      >
+        {children}
+      </div>
+    )
+  } else {
+    return children
+  }
 }
 
 export default BurgerMenuPushableLayout
