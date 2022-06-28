@@ -538,6 +538,13 @@
         "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
       },
       "currently_funded": "Currently being funded",
+      "category_filters": {
+        "all": "All",
+        "community": "Community",
+        "content": "Content",
+        "gaming": "Gaming",
+        "platform": "Platform"
+      },
       "past_funded": {
         "title": "Past, successfully funded initiatives",
         "category": "Category",
@@ -673,6 +680,8 @@
     "submit": {
       "title": "Submit Proposal",
       "description": "Select a proposal category to get started",
+      "common_actions": "Common Actions",
+      "governance_process": "Governance Process",
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
       "markdown_tooltip": " (markdown)",

@@ -11,6 +11,7 @@ import { isEmpty } from 'lodash'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import Banner, { BannerType } from '../components/Grants/Banner'
+import FilterButton from '../components/Grants/FilterButton'
 import GrantCard from '../components/Grants/GrantCard'
 import GrantsPastItem from '../components/Grants/GrantsPastItem'
 import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
@@ -26,6 +27,14 @@ import './grants.css'
 const CURRENT_GRANTS_PER_PAGE = 8
 const PAST_GRANTS_PER_PAGE = 10
 
+enum GrantsFilter {
+  All = 'All',
+  Community = 'Community',
+  Platform = 'Platform',
+  Gaming = 'Gaming',
+  Content = 'Content',
+}
+
 export default function GrantsPage() {
   const t = useFormatMessage()
   const responsive = useResponsive()
@@ -34,6 +43,7 @@ export default function GrantsPage() {
   const { grants, isLoadingGrants } = useGrants()
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<GrantsFilter>(GrantsFilter.All)
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
     if (grants) {
@@ -123,6 +133,43 @@ export default function GrantsPage() {
                   />
                   <div>
                     <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
+                    <div className="GrantsPage__CurrentGrantsFilters">
+                      <FilterButton
+                        selected={selectedCategory === GrantsFilter.All}
+                        onClick={() => setSelectedCategory(GrantsFilter.All)}
+                        count={28}
+                      >
+                        {t('page.grants.category_filters.all')}
+                      </FilterButton>
+                      <FilterButton
+                        selected={selectedCategory === GrantsFilter.Community}
+                        onClick={() => setSelectedCategory(GrantsFilter.Community)}
+                        count={8}
+                      >
+                        {t('page.grants.category_filters.community')}
+                      </FilterButton>
+                      <FilterButton
+                        selected={selectedCategory === GrantsFilter.Gaming}
+                        onClick={() => setSelectedCategory(GrantsFilter.Gaming)}
+                        count={3}
+                      >
+                        {t('page.grants.category_filters.gaming')}
+                      </FilterButton>
+                      <FilterButton
+                        selected={selectedCategory === GrantsFilter.Content}
+                        onClick={() => setSelectedCategory(GrantsFilter.Content)}
+                        count={7}
+                      >
+                        {t('page.grants.category_filters.content')}
+                      </FilterButton>
+                      <FilterButton
+                        selected={selectedCategory === GrantsFilter.Platform}
+                        onClick={() => setSelectedCategory(GrantsFilter.Platform)}
+                        count={2}
+                      >
+                        {t('page.grants.category_filters.platform')}
+                      </FilterButton>
+                    </div>
                     <Container className="GrantsPage__CurrentGrantsContainer">
                       {filteredCurrentGrants.map((grant) => (
                         <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
