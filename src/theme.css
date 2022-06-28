@@ -157,10 +157,10 @@ body {
   --dao-header-height: 64px;
   --dao-navigation-height: 89px;
   --background-catalyst: var(--blue);
-  --background-poi: var(--background-happy-green);
+  --background-poi: var(--green);
   --background-ban-name: var(--fuchsia);
-  --background-grant: #3c24b3;
-  --background-poll: #ff7439;
+  --background-grant: var(--purple);
+  --background-poll: var(--orange);
   --background-remove-poi: #ff247c;
   --background-happy-green: var(--green);
   --background-linked-wearables: var(--yellow);
