@@ -1,20 +1,11 @@
 import React from 'react'
 
-function Check({ className, size = '32' }: { size?: string; className?: string }) {
+function Check({ size = '20', color = 'var(--green)' }: { size?: string; color?: string }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      fill="none"
-      viewBox="0 0 32 32"
-      aria-hidden="true"
-      className={className}
-    >
-      <circle cx="16" cy="16" r="16" fill="#44B600"></circle>
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 20 20">
       <path
-        fill="#fff"
-        d="M14.95 20.947a1.697 1.697 0 01-2.437 0l-3.998-3.998a1.697 1.697 0 010-2.436 1.697 1.697 0 012.436 0l2.811 2.749 6.747-6.747a1.697 1.697 0 012.436 0 1.697 1.697 0 010 2.436l-7.996 7.996z"
+        fill={color}
+        d="M3.523 10.597a.628.628 0 01-.19-.418c0-.12.063-.298.19-.418l.883-.836a.634.634 0 01.884 0l2.509 2.612c.126.12.315.12.442 0l6.47-6.358a.634.634 0 01.883 0l.883.836a.556.556 0 010 .836L8.43 14.82a.589.589 0 01-.442.179.589.589 0 01-.442-.18l-4.023-4.223z"
       ></path>
     </svg>
   )

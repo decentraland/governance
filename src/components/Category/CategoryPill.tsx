@@ -24,7 +24,7 @@ const CategoryPill = ({ type }: Props) => {
   const label = type.replaceAll('_', ' ')
 
   return (
-    <Pill style="medium" color={ColorsConfig[type]} className="CategoryPill">
+    <Pill style="light" color={ColorsConfig[type]} className="CategoryPill">
       {label}
     </Pill>
   )

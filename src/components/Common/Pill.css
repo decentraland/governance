@@ -5,8 +5,13 @@
   position: relative;
   padding: 0 8px;
   border-radius: 42px;
+  border: 1px solid;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.Pill svg {
+  margin-right: 0.25em;
 }
 
 .Pill--small {

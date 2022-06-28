@@ -37,9 +37,7 @@
   bottom: 48px;
 }
 
-.ProposalCard .ProposalCard__StatusLabel {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
+.ProposalCard__Info {
+  display: flex;
+  flex-direction: row;
 }
