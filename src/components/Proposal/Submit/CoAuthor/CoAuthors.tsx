@@ -3,6 +3,8 @@ import React from 'react'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import NewBadge from '../../NewBadge/NewBadge'
+
 import CoAuthorSelect from './CoAuthorSelect'
 import './CoAuthors.css'
 
@@ -22,7 +24,7 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
     <div className="Co-author">
       <div className="Title__Container">
         <div className="Label">{t('page.submit.co_author_label')}</div>
-        <div className="NewBadge">{t('category.new')}</div>
+        <NewBadge />
         <sup className="Optional">{t('page.submit.optional_tooltip')}</sup>
       </div>
       <Paragraph tiny secondary className="details">

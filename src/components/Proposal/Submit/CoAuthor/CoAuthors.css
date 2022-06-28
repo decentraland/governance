@@ -11,18 +11,6 @@
   margin-left: 5px;
 }
 
-.Co-author .Title__Container .NewBadge {
-  text-transform: uppercase;
-  font-size: 9px;
-  color: white;
-  background-color: var(--red);
-  border-radius: 12px;
-  padding: 0 5px;
-  height: fit-content;
-  line-height: 13px;
-  font-weight: 500;
-}
-
 .Co-author .dg.Paragraph.details {
   margin-bottom: 20px !important;
 }
