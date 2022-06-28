@@ -12,7 +12,7 @@ import { NavigationProps, NavigationTab } from '../Navigation'
 
 import './MobileNavigation.css'
 
-function getProps(tab: NavigationTab, activeTab?: NavigationTab) {
+function getButtonProps(tab: NavigationTab, activeTab?: NavigationTab) {
   if (activeTab === tab) {
     return { inverted: true, primary: true }
   } else {
@@ -32,7 +32,7 @@ function MobileNavigation({ activeTab }: NavigationProps) {
         <Button
           className="Browse__Button"
           size="small"
-          {...getProps(NavigationTab.Proposals, activeTab)}
+          {...getButtonProps(NavigationTab.Proposals, activeTab)}
           as={Link}
           href={locations.proposals()}
           onClick={prevent(() => {
@@ -44,7 +44,7 @@ function MobileNavigation({ activeTab }: NavigationProps) {
         <Button
           className="Browse__Button"
           size="small"
-          {...getProps(NavigationTab.Grants, activeTab)}
+          {...getButtonProps(NavigationTab.Grants, activeTab)}
           as={Link}
           href={locations.grants()}
           onClick={prevent(() => {
@@ -56,7 +56,7 @@ function MobileNavigation({ activeTab }: NavigationProps) {
         <Button
           className="Browse__Button"
           size="small"
-          {...getProps(NavigationTab.Transparency, activeTab)}
+          {...getButtonProps(NavigationTab.Transparency, activeTab)}
           as={Link}
           href={locations.transparency()}
           onClick={prevent(() => {
