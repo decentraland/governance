@@ -1,10 +1,22 @@
+@media (min-width: 991px) {
+  .GrantsPage__CurrentGrantsContainer {
+    grid-template-columns: 48.49% 48.49% !important;
+    grid-column-gap: 31px;
+  }
+}
+
 .GrantsPage__CurrentGrantsContainer {
-  display: flex !important;
   flex-wrap: wrap;
   margin-bottom: 40px;
   margin-top: 15px;
-  row-gap: 16px;
-  column-gap: 32px;
+  display: grid !important;
+  grid-template-columns: 100%;
+  grid-row-gap: 16px;
+}
+
+.ui.container.GrantsPage__CurrentGrantsContainer {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .GrantsPage__CurrentGrantsTitle {

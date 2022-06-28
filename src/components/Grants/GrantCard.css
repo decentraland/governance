@@ -38,23 +38,14 @@
   font-weight: 600;
 }
 
-.GrantsBanner__Items {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 10px;
-}
-
-.GrantsBanner__ItemsDivider {
-  opacity: 0.3;
-  width: 293px;
-  border: 1px solid #ffffff;
-}
-
 .ui.header.GrantCard__Title {
-  height: 52px;
+  min-height: 52px;
   margin-top: 5px;
   line-height: 28px;
   letter-spacing: 0.3px;
   font-size: 20px;
+}
+
+.GrantCard .ProposalUpdate:last-child {
+  margin-bottom: 0;
 }

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-import { useLocation } from '@gatsbyjs/reach-router'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -8,50 +7,24 @@ import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import locations from '../../modules/locations'
+import locations from '../../../modules/locations'
+import { NavigationProps, NavigationTab } from '../Navigation'
 
 import './MobileNavigation.css'
-import { NavigationTab } from './Navigation'
 
-type SelectedButtonType = {
-  inverted: boolean
-  primary: boolean
+function getButtonProps(tab: NavigationTab, activeTab?: NavigationTab) {
+  if (activeTab === tab) {
+    return { inverted: true, primary: true }
+  } else {
+    return { secondary: true }
+  }
 }
 
-type UnselectedButtonType = {
-  secondary: boolean
-}
-
-type ButtonState = SelectedButtonType | UnselectedButtonType
-
-const selectedButton: ButtonState = {
-  inverted: true,
-  primary: true,
-}
-const unselectedButton: ButtonState = {
-  secondary: true,
-}
-
-function MobileNavigation() {
+function MobileNavigation({ activeTab }: NavigationProps) {
   const t = useFormatMessage()
-  const location = useLocation()
-  const page = location.pathname.replaceAll('/', '')
-
-  const [proposalsButtonProps, setProposalsButtonProps] = useState(selectedButton)
-  const [transparencyButtonProps, setTransparencyButtonProps] = useState(unselectedButton)
-
-  useEffect(() => {
-    if (page === NavigationTab.Transparency) {
-      setProposalsButtonProps(unselectedButton)
-      setTransparencyButtonProps(selectedButton)
-    } else {
-      setProposalsButtonProps(selectedButton)
-      setTransparencyButtonProps(unselectedButton)
-    }
-  }, [page])
 
   return (
-    <>
+    <div className="MobileNavigation">
       <Header sub className="Browse__header">
         {t(`page.proposal_list.browse`)}
       </Header>
@@ -59,7 +32,7 @@ function MobileNavigation() {
         <Button
           className="Browse__Button"
           size="small"
-          {...proposalsButtonProps}
+          {...getButtonProps(NavigationTab.Proposals, activeTab)}
           as={Link}
           href={locations.proposals()}
           onClick={prevent(() => {
@@ -71,7 +44,19 @@ function MobileNavigation() {
         <Button
           className="Browse__Button"
           size="small"
-          {...transparencyButtonProps}
+          {...getButtonProps(NavigationTab.Grants, activeTab)}
+          as={Link}
+          href={locations.grants()}
+          onClick={prevent(() => {
+            navigate(locations.grants())
+          })}
+        >
+          {t('navigation.grants')}
+        </Button>
+        <Button
+          className="Browse__Button"
+          size="small"
+          {...getButtonProps(NavigationTab.Transparency, activeTab)}
           as={Link}
           href={locations.transparency()}
           onClick={prevent(() => {
@@ -81,7 +66,7 @@ function MobileNavigation() {
           {t('navigation.transparency')}
         </Button>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-import { useBurgerMenu } from '../../hooks/useBurgerMenu'
-import CategoryList from '../Category/CategoryList'
-import CategoryFilter from '../Search/CategoryFilter'
-import SearchInputMobile from '../Search/SearchInputMobile'
-import StatusFilter from '../Search/StatusFilter'
-import TimeFrameFilter from '../Search/TimeFrameFilter'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
+import CategoryList from '../../Category/CategoryList'
+import CategoryFilter from '../../Search/CategoryFilter'
+import SearchInputMobile from '../../Search/SearchInputMobile'
+import StatusFilter from '../../Search/StatusFilter'
+import TimeFrameFilter from '../../Search/TimeFrameFilter'
+import { NavigationProps } from '../Navigation'
 
 import './BurgerMenuContent.css'
 import MobileNavigation from './MobileNavigation'
@@ -16,21 +19,22 @@ export type FilterStatus = {
   timeFrameOpen: boolean
 }
 
-export type BurgerMenuContentProps = {
+export type BurgerMenuContentProps = NavigationProps & {
   navigationOnly?: boolean
+  className?: string
 }
 
 const filtersInitialStatus = { categoryOpen: true, statusOpen: false, timeFrameOpen: false }
 
-const OPEN_BURGER_HEIGHT = 604
+const OPEN_BURGER_HEIGHT = 697
 const SEARCH_TITLE_HEIGHT = 32
-const CATEGORY_FILTER_HEIGHT = 368
+const CATEGORY_FILTER_HEIGHT = 407
 const STATUS_FILTER_HEIGHT = 290
 const TIMEFRAME_FILTER_HEIGHT = 212
 const CLOSED_FILTER_HEIGHT = 56
-const MOBILE_NAVIGATION_HEIGHT = 104
+const MOBILE_NAVIGATION_HEIGHT = 184
 
-function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
+function BurgerMenuContent({ navigationOnly, activeTab, className }: BurgerMenuContentProps) {
   const [footer, setFooter] = useState<Element | null>(null)
   const [filterStatus, setFilterStatus] = useState(filtersInitialStatus)
   const { status, setStatus } = useBurgerMenu()
@@ -86,11 +90,14 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
   }, [open, searching, filtering, filterStatus, navigationOnly, setStatus])
 
   return (
-    <div className="BurgerMenuContent Animated" style={(!open && { transform: 'translateY(-200%)' }) || {}}>
+    <div
+      className={TokenList.join(['BurgerMenuContent', 'Animated', className])}
+      style={(!open && { transform: 'translateY(-200%)' }) || {}}
+    >
       {navigationOnly ? (
         <>
           <SearchInputMobile />
-          <MobileNavigation />
+          <MobileNavigation activeTab={activeTab} />
         </>
       ) : (
         <>
@@ -106,7 +113,7 @@ function BurgerMenuContent({ navigationOnly }: BurgerMenuContentProps) {
           )}
           {!searching && (
             <>
-              <MobileNavigation />
+              <MobileNavigation activeTab={activeTab} />
               <CategoryList />
             </>
           )}

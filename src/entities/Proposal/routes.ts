@@ -28,6 +28,8 @@ import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
+import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
+import { getCurrentUpdate } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
@@ -38,6 +40,7 @@ import * as templates from './templates'
 import {
   GrantAttributes,
   GrantRequiredVP,
+  GrantWithUpdateAttributes,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -49,6 +52,7 @@ import {
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
+  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -726,12 +730,33 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
+export async function getGrantCurrentUpdate(
+  tier: ProposalGrantTier,
+  proposalId: string
+): Promise<IndexedUpdate | null> {
+  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
+    created_at: 'desc',
+  } as never)
+  if (!updates || updates.length === 0) {
+    return null
+  }
+
+  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
+    return { ...updates[0], index: updates.length }
+  } else {
+    const currentUpdate = getCurrentUpdate(updates)
+    if (!currentUpdate) {
+      return null
+    }
+    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) }
+  }
+}
+
 async function getGrants() {
   const proposals = await ProposalModel.getProposalList({ type: ProposalType.Grant, status: ProposalStatus.Enacted })
   // TODO: Filter directly in model query by proposals with vesting address only
   const proposalsWithVestingAddress = proposals.filter((proposal) => !!proposal.vesting_address)
-
-  const current: GrantAttributes[] = []
+  const current: GrantWithUpdateAttributes[] = []
   const past: GrantAttributes[] = []
 
   await Promise.all(
@@ -759,11 +784,11 @@ async function getGrants() {
 
         const contract = {
           symbol,
-          balance: parseInt(balance, 10) / 10 ** decimals,
-          vestedAmount: parseInt(vestedAmount, 10) / 10 ** decimals,
-          releasableAmount: parseInt(releasableAmount, 10) / 10 ** decimals,
-          released: parseInt(released, 10) / 10 ** decimals,
-          start: parseInt(start, 10),
+          balance: Math.round(parseInt(balance) / 10 ** decimals),
+          vestedAmount: Math.round(parseInt(vestedAmount) / 10 ** decimals),
+          releasableAmount: Math.round(parseInt(releasableAmount) / 10 ** decimals),
+          released: Math.round(parseInt(released) / 10 ** decimals),
+          start: parseInt(start),
         }
 
         const grant = {
@@ -774,10 +799,17 @@ async function getGrants() {
         if (contract.vestedAmount === contract.balance + contract.released) {
           past.push(grant)
         } else {
-          current.push(grant)
+          const grantWithUpdate: GrantWithUpdateAttributes = {
+            ...grant,
+            update: await getGrantCurrentUpdate(grant.configuration.tier, proposal.id),
+          }
+          current.push(grantWithUpdate)
         }
       } catch (error) {
-        throw new RequestError(`Failed to fetch contract data from vesting address ${proposal.vesting_address}`)
+        logger.error(
+          `Failed to fetch contract data from vesting address ${proposal.vesting_address}`,
+          formatError(error as Error)
+        )
       }
     })
   )
@@ -787,18 +819,3 @@ async function getGrants() {
     past,
   }
 }
-
-// export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {
-//   const user = req.auth!
-//   if (!isAdmin(user)) {
-//     throw new RequestError(`Only admin menbers can reactivate a proposal`, RequestError.Forbidden)
-//   }
-
-//   const proposal = await getProposal(req)
-//   await ProposalModel.update<ProposalAttributes>({ status: ProposalStatus.Active }, { id: proposal.id })
-
-//   return {
-//     ...proposal,
-//     status: ProposalStatus.Active
-//   }
-// }

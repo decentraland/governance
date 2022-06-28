@@ -543,7 +543,8 @@
         "start_date": "Start Date",
         "size": "Size"
       },
-      "navigate_to_proposal_label": "Navigate to proposal {title}"
+      "navigate_to_proposal_label": "Navigate to proposal {title}",
+      "empty_update": "When the team publishes their first update, it will appear here."
     },
     "proposal_activity": {
       "title": "Decentraland DAO",

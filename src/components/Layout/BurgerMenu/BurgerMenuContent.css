@@ -2,3 +2,7 @@
   position: absolute;
   width: 100%;
 }
+
+.BurgerMenuContent.Padded {
+  padding: 0 16px;
+}

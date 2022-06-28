@@ -32,7 +32,7 @@ export const getCurrentUpdate = (updates: UpdateAttributes[]): UpdateAttributes 
   return nextUpdate
 }
 
-export const getNextUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
+export const getNextPendingUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
   const now = new Date()
 
   const upcomingPendingUpdates = updates.filter(

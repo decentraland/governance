@@ -1,5 +1,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import { IndexedUpdate } from '../Updates/types'
+
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 
 export type ProposalAttributes<C extends Record<string, unknown> = any> = {
@@ -410,13 +412,6 @@ export enum ProposalGrantCategory {
   Gaming = 'Gaming',
 }
 
-export enum ProposalGrantCategoryColor {
-  Community = 'green',
-  'Content Creator' = 'orange',
-  'Platform Contributor' = 'purple',
-  'Gaming' = 'blue',
-}
-
 export function isProposalGrantCategory(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalGrantCategory.Community:
@@ -701,3 +696,6 @@ type VestingContractData = {
 }
 
 export type GrantAttributes = ProposalAttributes & { contract: VestingContractData }
+export type GrantWithUpdateAttributes = ProposalAttributes & { contract: VestingContractData } & {
+  update: IndexedUpdate | null
+}

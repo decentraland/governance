@@ -10,20 +10,28 @@
   gap: 50px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 991px) {
   .GrantsBanner {
     flex-direction: row;
+  }
+
+  .GrantsBanner__Items {
+    width: auto;
+  }
+
+  .GrantsBanner__ItemsDivider {
+    width: 293px !important;
   }
 }
 
 .GrantsBanner--current {
   background: linear-gradient(180deg, #a524b3 0%, #ff2d55 100%);
-  box-shadow: 0px 6px 24px rgba(253, 45, 88, 0.3);
+  box-shadow: 0 6px 24px rgba(253, 45, 88, 0.3);
 }
 
 .GrantsBanner--past {
   background: linear-gradient(180deg, #ff2d55 0%, #ffc700 100%);
-  box-shadow: 0px 6px 24px rgba(255, 53, 82, 0.3);
+  box-shadow: 0 6px 24px rgba(255, 53, 82, 0.3);
 }
 
 .GrantsBanner__Title {
@@ -49,10 +57,16 @@
   flex-direction: column;
   flex: 1;
   gap: 10px;
+  width: 100%;
+}
+
+.GrantsBannerItem_Text {
+  display: flex;
+  flex-direction: column;
 }
 
 .GrantsBanner__ItemsDivider {
   opacity: 0.3;
-  width: 293px;
+  width: auto;
   border: 1px solid #ffffff;
 }

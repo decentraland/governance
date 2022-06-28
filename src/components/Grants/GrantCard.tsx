@@ -2,8 +2,9 @@ import React from 'react'
 
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { NewProposalGrant, ProposalGrantCategoryColor, ProposalGrantTier } from '../../entities/Proposal/types'
-import Pill from '../Common/Pill'
+import { GrantWithUpdateAttributes, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
+import Pill, { PillColor } from '../Common/Pill'
+import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
 
 import './GrantCard.css'
 import VestingProgress from './VestingProgress'
@@ -20,25 +21,33 @@ export type VestingAttributes = {
   start: number
 }
 
-export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> &
-  Pick<NewProposalGrant, 'title' | 'category' | 'tier' | 'size'> & {
-    vesting: VestingAttributes
-  }
+export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  grant: GrantWithUpdateAttributes
+}
 
-const GrantCard = ({ title, category, size, tier, vesting }: GrantCardProps) => {
+export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> = {
+  [ProposalGrantCategory.Community]: PillColor.Green,
+  [ProposalGrantCategory.ContentCreator]: PillColor.Orange,
+  [ProposalGrantCategory.PlatformContributor]: PillColor.Purple,
+  [ProposalGrantCategory.Gaming]: PillColor.Blue,
+}
+
+const GrantCard = ({ grant }: GrantCardProps) => {
+  const category: ProposalGrantCategory = grant.configuration.category
   return (
     <div className="GrantCard">
       <div className="GrantCard__Header">
         <div className="GrantCard__TierSize">
-          <p className="GrantCard__Tier">{getDisplayableName(tier)}</p>
+          <p className="GrantCard__Tier">{getDisplayableName(grant.configuration.tier)}</p>
           <p className="GrantCard__Size">
-            {size} {vesting.symbol}
+            {grant.configuration.size} {grant.contract.symbol}
           </p>
         </div>
-        <Pill color={ProposalGrantCategoryColor[category]}>{category.split(' ')[0]}</Pill>
+        <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
       </div>
-      <Header className="GrantCard__Title">{title}</Header>
-      <VestingProgress vesting={vesting} />
+      <Header className="GrantCard__Title">{grant.title}</Header>
+      <VestingProgress vesting={grant.contract} />
+      <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
     </div>
   )
 }

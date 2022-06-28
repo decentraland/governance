@@ -23,15 +23,17 @@ const VestingProgress = ({ vesting }: Props) => {
     <div className="VestingProgress">
       <div className="VestingProgress__Labels">
         <div className="VestingProgress__VestedInfo">
-          <span className="VestingProgress__Bold">
+          <span className="VestingProgress__Bold VestingProgress__Ellipsis">
             {t(`general.number`, { value: vesting.vestedAmount }) + ' ' + vesting.symbol}
           </span>
-          <span>{'vested'}</span>
+          <span className="VestingProgress__Ellipsis">{'vested'}</span>
           <PercentageLabel percentage={vestedPercentage} color="Yellow" />
         </div>
-        <div className="VestingProgress__ReleasedInfo">
+        <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
           <div className="VestingProgress__ReleasedInfoLabel" />
-          <span>{t(`general.number`, { value: vesting.released }) + ' ' + vesting.symbol + ' released'}</span>
+          <span className="VestingProgress__Ellipsis">
+            {t(`general.number`, { value: vesting.released }) + ' ' + vesting.symbol + ' released'}
+          </span>
         </div>
       </div>
 
