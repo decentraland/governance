@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Check({ className, size = '32' }: { size?: string; className?: string }) {
+function CheckCircle({ className, size = '32' }: { size?: string; className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -20,4 +20,4 @@ function Check({ className, size = '32' }: { size?: string; className?: string }
   )
 }
 
-export default Check
+export default CheckCircle
