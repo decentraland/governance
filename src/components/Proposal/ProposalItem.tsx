@@ -11,10 +11,10 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
-import CategoryLabel from '../Category/CategoryLabel'
+import CategoryPill from '../Category/CategoryPill'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
-import StatusLabel from '../Status/StatusLabel'
+import StatusPill from '../Status/StatusPill'
 
 import './ProposalItem.css'
 
@@ -61,10 +61,8 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
           )}
         </div>
         <div className="ProposalItem__Status">
-          <div>
-            <StatusLabel status={proposal.status} />
-            <CategoryLabel type={proposal.type} />
-          </div>
+          <StatusPill status={proposal.status} />
+          <CategoryPill type={proposal.type} />
           <FinishLabel date={proposal.finish_at} />
         </div>
       </Card.Content>

@@ -3,7 +3,7 @@ import React from 'react'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
 import CancelIcon from '../../Icon/Cancel'
-import CheckIcon from '../../Icon/Check'
+import CheckCircleIcon from '../../Icon/CheckCircle'
 import QuestionCircleIcon from '../../Icon/QuestionCircle'
 import WarningIcon from '../../Icon/Warning'
 
@@ -29,7 +29,7 @@ export const getStatusIcon = (
 
   switch (health) {
     case ProjectHealth.OnTrack:
-      return CheckIcon
+      return CheckCircleIcon
     case ProjectHealth.AtRisk:
       return WarningIcon
     case ProjectHealth.OffTrack:

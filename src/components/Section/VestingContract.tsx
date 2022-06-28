@@ -4,28 +4,33 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import Pill from '../Common/Pill'
+
 import './DetailsSection.css'
-import './VestingSection.css'
+import './VestingContract.css'
+
+const VESTING_DASHBOARD_URL = process.env.GATSBY_VESTING_DASHBOARD_URL
 
 interface Props {
   vestingAddress: string
 }
 
-function VestingSection({ vestingAddress }: Props) {
-  const vestingUrl = process.env.GATSBY_VESTING_DASHBOARD_URL
+function VestingContract({ vestingAddress }: Props) {
   const t = useFormatMessage()
 
-  if (!vestingUrl) {
+  if (!VESTING_DASHBOARD_URL) {
     console.error('Vesting Dashboard URL not found')
     return <></>
   }
 
-  const url = vestingUrl.replace('%23', '#').concat(vestingAddress.toLowerCase())
+  const url = VESTING_DASHBOARD_URL.replace('%23', '#').concat(vestingAddress.toLowerCase())
 
   return (
-    <div className="VestingSection DetailsSection">
+    <div className="VestingContract DetailsSection">
       <div className="DetailsSection__Content">
-        <div className="VestingLabel">{t('page.proposal_detail.grant.vesting_label')}</div>
+        <Pill color="green" style="shiny" size="small">
+          {t('page.proposal_detail.grant.vesting_label')}
+        </Pill>
         <Markdown>{t('page.proposal_detail.grant.vesting_description')}</Markdown>
         <Button href={url} target="_blank" rel="noopener noreferrer" primary size="small">
           {t('page.proposal_detail.grant.vesting_button')}
@@ -35,4 +40,4 @@ function VestingSection({ vestingAddress }: Props) {
   )
 }
 
-export default VestingSection
+export default VestingContract

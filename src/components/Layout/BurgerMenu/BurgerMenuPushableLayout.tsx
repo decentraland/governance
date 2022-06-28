@@ -24,7 +24,7 @@ function BurgerMenuPushableLayout({ children }: Props) {
       </div>
     )
   } else {
-    return children
+    return <>{children}</>
   }
 }
 

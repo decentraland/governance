@@ -12,9 +12,9 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
-import CategoryLabel from '../Category/CategoryLabel'
+import CategoryPill from '../Category/CategoryPill'
 import ChoiceProgress from '../Status/ChoiceProgress'
-import StatusLabel from '../Status/StatusLabel'
+import StatusPill from '../Status/StatusPill'
 
 import './ProposalCard.css'
 
@@ -61,9 +61,9 @@ export default function ProposalCard({ proposal, subscribing, subscribed, votes,
         </div>
       </Card.Content>
       <Card.Content>
-        <div>
-          <StatusLabel status={proposal.status} />
-          <CategoryLabel type={proposal.type} />
+        <div className="ProposalCard__Info">
+          <StatusPill status={proposal.status} />
+          <CategoryPill type={proposal.type} />
         </div>
       </Card.Content>
     </Card>

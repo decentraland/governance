@@ -22,7 +22,7 @@ import { Personal } from 'web3x/personal'
 
 import { Governance } from '../api/Governance'
 import { Snapshot } from '../api/Snapshot'
-import CategoryLabel from '../components/Category/CategoryLabel'
+import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
@@ -39,8 +39,8 @@ import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
 import SubscribeButton from '../components/Section/SubscribeButton'
-import VestingSection from '../components/Section/VestingSection'
-import StatusLabel from '../components/Status/StatusLabel'
+import VestingContract from '../components/Section/VestingContract'
+import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import useIsCommittee from '../hooks/useIsCommittee'
@@ -233,8 +233,8 @@ export default function ProposalPage() {
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
-            {proposal && <StatusLabel status={proposal.status} />}
-            {proposal && <CategoryLabel type={proposal.type} />}
+            {proposal && <StatusPill status={proposal.status} />}
+            {proposal && <CategoryPill type={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>
@@ -249,7 +249,7 @@ export default function ProposalPage() {
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
-              {!!proposal?.vesting_address && <VestingSection vestingAddress={proposal.vesting_address} />}
+              {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
               <ForumButton
                 loading={proposalState.loading}
                 disabled={!proposal}
