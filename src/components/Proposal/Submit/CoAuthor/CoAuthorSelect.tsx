@@ -1,5 +1,5 @@
 import React, { KeyboardEventHandler, useEffect, useState } from 'react'
-import { OnChangeValue } from 'react-select'
+import { InputActionMeta, OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -62,8 +62,13 @@ function CoAuthorSelect({ setCoAuthors, isDisabled }: CoAuthorProps) {
     setState((prev) => ({ ...prev, value }))
   }
 
-  const handleInputChange = (inputValue: string) => {
-    setState((prev) => ({ ...prev, inputValue, errorKey: undefined }))
+  const handleInputChange = (inputValue: string, inputAction: InputActionMeta) => {
+    const { action } = inputAction
+    if (action !== 'menu-close') {
+      setState((prev) => ({ ...prev, inputValue, errorKey: undefined }))
+    } else if (state.inputValue !== '') {
+      addCoauthors(state.inputValue)
+    }
   }
 
   const addCoauthors = (addressList: string) => {
