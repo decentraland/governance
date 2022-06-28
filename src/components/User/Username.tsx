@@ -22,12 +22,12 @@ type Props = SizeProps & {
 }
 
 function getBlockieScale(size?: string) {
-  const DEFAULT_BLOCKIE_SCALE = 3
+  const DEFAULT_BLOCKIE_SCALE = 3.35
   switch (size) {
     case Size.Mini:
       return 3
     case Size.Tiny:
-      return 3.5
+      return DEFAULT_BLOCKIE_SCALE
     case Size.Small:
       return 4.9
     case Size.Medium:
@@ -47,7 +47,15 @@ function getBlockieScale(size?: string) {
   }
 }
 
-const Username = ({ address, size, linked, iconOnly = false, addressOnly = false, strong = false, className }: Props) => {
+const Username = ({
+  address,
+  size,
+  linked,
+  iconOnly = false,
+  addressOnly = false,
+  strong = false,
+  className,
+}: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
   const blockieScale = getBlockieScale(size)
@@ -57,7 +65,7 @@ const Username = ({ address, size, linked, iconOnly = false, addressOnly = false
       {addressOnly && (
         <>
           {profileHasName && profile!.name}
-          {!profileHasName && <Address value={address || ''} className={className} strong={strong}/>}
+          {!profileHasName && <Address value={address || ''} className={className} strong={strong} />}
         </>
       )}
 
@@ -66,15 +74,16 @@ const Username = ({ address, size, linked, iconOnly = false, addressOnly = false
           {hasDclProfile && (
             <>
               <Avatar size={size || 'mini'} address={address} />
-              {profileHasName && !iconOnly && profile!.name}
-              {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong}/>}
+              {profileHasName && !iconOnly && <span>{profile!.name}</span>}
+              {!profileHasName && !iconOnly && <Address value={address || ''} strong={strong} />}
             </>
           )}
 
           {(!hasDclProfile || !profile) && (
-            <Blockie scale={blockieScale} seed={address || ''}>
-              {!iconOnly && <Address value={address || ''} strong={strong}/>}
-            </Blockie>
+            <>
+              <Blockie scale={blockieScale} seed={address || ''} />
+              {!iconOnly && <Address value={address || ''} strong={strong} />}
+            </>
           )}
         </>
       )}

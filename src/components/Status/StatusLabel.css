@@ -4,8 +4,8 @@
   padding: 0 11px;
   height: 24px;
   display: inline-flex;
-  border: 1px solid #736E7D;
-  color: #736E7D;
+  border: 1px solid var(--dark-gray);
+  color: var(--dark-gray);
   border-radius: 42px;
   font-weight: 500;
   font-size: 12px;

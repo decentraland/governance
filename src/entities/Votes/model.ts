@@ -1,6 +1,7 @@
 import { createHash } from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, table, join } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+
 import { VoteAttributes } from './types'
 
 export default class VotesModel extends Model<VoteAttributes> {
@@ -11,7 +12,7 @@ export default class VotesModel extends Model<VoteAttributes> {
   static parse(score: VoteAttributes): VoteAttributes {
     return {
       ...score,
-      votes: JSON.parse(score.votes)
+      votes: JSON.parse(score.votes),
     }
   }
 
@@ -39,8 +40,8 @@ export default class VotesModel extends Model<VoteAttributes> {
       proposal_id,
       hash,
       votes: JSON.stringify(votes),
-      created_at: new Date,
-      updated_at: new Date,
+      created_at: new Date(),
+      updated_at: new Date(),
     }
     return newScore
   }
@@ -49,9 +50,12 @@ export default class VotesModel extends Model<VoteAttributes> {
     const query = SQL`
       SELECT *
       FROM ${table(VotesModel)}
-      WHERE "proposal_id" IN (${join(ids.map(id => SQL`${id}`), SQL`, `)})`
+      WHERE "proposal_id" IN (${join(
+        ids.map((id) => SQL`${id}`),
+        SQL`, `
+      )})`
 
     const results = await this.query(query)
-    return results.map(score => VotesModel.parse(score))
+    return results.map((score) => VotesModel.parse(score))
   }
 }

@@ -19,6 +19,7 @@ import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isValidName } from '../../entities/Proposal/utils'
@@ -30,6 +31,7 @@ import './submit.css'
 type BanNameState = {
   name: string
   description: string
+  coAuthors?: string[]
 }
 
 const initialPollState: BanNameState = {
@@ -76,6 +78,8 @@ export default function SubmitBanName() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
     if (state.validated) {
@@ -174,6 +178,9 @@ export default function SubmitBanName() {
           }
           disabled={formDisabled}
         />
+      </ContentSection>
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

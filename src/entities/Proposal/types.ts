@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
@@ -160,6 +163,16 @@ export type NewProposalPoll = {
   title: string
   description: string
   choices: string[]
+  coAuthors?: string[]
+}
+
+const coAuthors = {
+  type: 'array',
+  items: {
+    type: 'string',
+    minLength: 42,
+    maxLength: 42,
+  },
 }
 
 export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
@@ -188,6 +201,7 @@ export const newProposalPollScheme = {
       },
       minItems: 2,
     },
+    coAuthors,
   },
 }
 
@@ -199,6 +213,7 @@ export type NewProposalDraft = {
   motivation: string
   specification: string
   conclusion: string
+  coAuthors?: string[]
 }
 
 export const newProposalDraftScheme = {
@@ -241,6 +256,7 @@ export const newProposalDraftScheme = {
       minLength: 20,
       maxLength: 3500,
     },
+    coAuthors,
   },
 }
 
@@ -254,6 +270,7 @@ export type NewProposalGovernance = {
   impacts: string
   implementation_pathways: string
   conclusion: string
+  coAuthors?: string[]
 }
 
 export const newProposalGovernanceScheme = {
@@ -316,12 +333,14 @@ export const newProposalGovernanceScheme = {
       minLength: 20,
       maxLength: 3500,
     },
+    coAuthors,
   },
 }
 
 export type NewProposalBanName = {
   name: string
   description: string
+  coAuthors?: string[]
 }
 
 export const newProposalBanNameScheme = {
@@ -339,6 +358,7 @@ export const newProposalBanNameScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    coAuthors,
   },
 }
 
@@ -347,6 +367,7 @@ export type NewProposalPOI = {
   y: number
   type: PoiType
   description: string
+  coAuthors?: string[]
 }
 
 export const newProposalPOIScheme = {
@@ -373,6 +394,7 @@ export const newProposalPOIScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    coAuthors,
   },
 }
 
@@ -380,6 +402,7 @@ export type NewProposalCatalyst = {
   owner: string
   domain: string
   description: string
+  coAuthors?: string[]
 }
 
 export const newProposalCatalystScheme = {
@@ -400,6 +423,7 @@ export const newProposalCatalystScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    coAuthors,
   },
 }
 
@@ -507,6 +531,7 @@ export type NewProposalGrant = {
   specification: string
   personnel: string
   roadmap: string
+  coAuthors?: string[]
 }
 
 export const newProposalGrantScheme = {
@@ -582,6 +607,7 @@ export const newProposalGrantScheme = {
       minLength: 20,
       maxLength: 1500,
     },
+    coAuthors,
   },
 }
 
@@ -596,6 +622,7 @@ export type NewProposalLinkedWearables = {
   managers: string[]
   programmatically_generated: boolean
   method: string
+  coAuthors?: string[]
 }
 
 export const newProposalLinkedWearablesScheme = {
@@ -669,6 +696,7 @@ export const newProposalLinkedWearablesScheme = {
       minLength: 0,
       maxLength: 750,
     },
+    coAuthors,
   },
 }
 

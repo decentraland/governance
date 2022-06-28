@@ -14,7 +14,7 @@ function Sort({ rotate = 0 }: SortProps) {
       transform={`rotate(${rotate})`}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M2.5 2.5L0 0H5L2.5 2.5Z" fill="#736E7D" />
+      <path d="M2.5 2.5L0 0H5L2.5 2.5Z" fill="var(--dark-gray)" />
     </svg>
   )
 }

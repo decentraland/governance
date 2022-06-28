@@ -35,6 +35,7 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/ProposalUpdates'
 import ForumButton from '../components/Section/ForumButton'
+import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
@@ -250,6 +251,7 @@ export default function ProposalPage() {
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
               {!!proposal?.vesting_address && <VestingSection vestingAddress={proposal.vesting_address} />}
+              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} />}
               <ForumButton
                 loading={proposalState.loading}
                 disabled={!proposal}
