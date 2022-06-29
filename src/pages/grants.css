@@ -50,6 +50,16 @@
   opacity: 0.5;
 }
 
+.GrantsPage__PastGrantsTableHeaderCategory span {
+  display: flex;
+  align-items: center;
+}
+
+.GrantsPage__PastGrantsTableHeaderCategory span svg {
+  margin-left: 5px;
+  border-radius: 1px;
+}
+
 .GrantsPage__PastGrantsSeparator {
   height: 8px;
 }

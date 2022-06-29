@@ -14,12 +14,14 @@ import Banner, { BannerType } from '../components/Grants/Banner'
 import FilterButton from '../components/Grants/FilterButton'
 import GrantCard from '../components/Grants/GrantCard'
 import GrantsPastItem from '../components/Grants/GrantsPastItem'
+import Sort from '../components/Icon/Sort'
 import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
 import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { GrantAttributes, GrantWithUpdateAttributes, ProposalGrantCategory } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
+import { useSortingByKey } from '../hooks/useSortingByKey'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './grants.css'
@@ -45,6 +47,7 @@ export default function GrantsPage() {
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
+  const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'start_at')
 
   const currentGrantsFilteredByCategory = useMemo(
     () => ({
@@ -218,8 +221,14 @@ export default function GrantsPage() {
                         <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
                           {t('page.grants.past_funded.category')}
                         </Table.HeaderCell>
-                        <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
-                          {t('page.grants.past_funded.start_date')}
+                        <Table.HeaderCell
+                          className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory"
+                          onClick={changeSort}
+                        >
+                          <span>
+                            {t('page.grants.past_funded.start_date')}
+                            <Sort rotate={isDescendingSort ? 0 : 180} />
+                          </span>
                         </Table.HeaderCell>
                         <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
                           {t('page.grants.past_funded.size')}
@@ -227,12 +236,10 @@ export default function GrantsPage() {
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                      {filteredPastGrants.map((grant, index) => (
+                      {sortedPastGrants.map((grant, index) => (
                         <>
                           <GrantsPastItem grant={grant} />
-                          {filteredPastGrants.length - 1 !== index && (
-                            <tr className="GrantsPage__PastGrantsSeparator" />
-                          )}
+                          {sortedPastGrants.length - 1 !== index && <tr className="GrantsPage__PastGrantsSeparator" />}
                         </>
                       ))}
                     </Table.Body>
