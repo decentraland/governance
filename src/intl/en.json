@@ -156,6 +156,8 @@
       "abstract_too_short": "Abstract is too short",
       "beneficiary_empty": "Beneficiary is empty",
       "beneficiary_invalid": "Beneficiary is invalid",
+      "email_empty": "Email address is empty",
+      "email_invalid": "Email address is invalid",
       "description_empty": "Description is empty",
       "description_too_large": "Description is too large",
       "description_too_short": "Description is too short",
@@ -800,7 +802,12 @@
       "personnel_placeholder": "A description of your team and why they are particularly qualified for your project.",
       "roadmap_label": "Roadmap and milestones",
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
-      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
+      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
+      "email_label": "Email",
+      "email_detail": "<<DETAILS>>",
+      "email_placeholder": "Enter your email address",
+      "email_error_message": "Please enter a valid email",
+      "email_note": "For your consideration: keep your anonymity by not entering your everyday account."
     },
     "submit_linked_wearables": {
       "title": "Linked Wearables Registry",
