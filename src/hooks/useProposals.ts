@@ -43,6 +43,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     if (filter.order) {
       params.order = filter.order
     }
+    if (filter.coauthor) {
+      params.coauthor = filter.coauthor
+    }
     return Governance.get().getProposals({ ...params, limit, offset })
   }, [
     filter.status,
@@ -55,5 +58,6 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     filter.page,
     filter.itemsPerPage,
     filter.load,
+    filter.coauthor,
   ])
 }

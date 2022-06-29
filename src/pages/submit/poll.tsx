@@ -14,7 +14,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
-import omit from 'lodash.omit'
+import { omit } from 'lodash'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Governance } from '../../api/Governance'
@@ -22,6 +22,7 @@ import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
@@ -35,6 +36,7 @@ type PollState = {
   title: string
   description: string
   choices: Record<string, string>
+  coAuthors?: string[]
 }
 
 const schema = newProposalPollScheme.properties
@@ -101,6 +103,8 @@ export default function SubmitPoll() {
     [votingPower]
   )
   const [formDisabled, setFormDisabled] = useState(false)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   function handleAddOption() {
     editor.set({
@@ -270,6 +274,9 @@ export default function SubmitPoll() {
             {t('page.submit_poll.choices_add')}
           </Button>
         </div>
+      </ContentSection>
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
       </ContentSection>
       <ContentSection>
         <Button

@@ -18,13 +18,13 @@
   overflow: hidden;
 }
 
-.ActivityPage .ChoiceProgress  .ChoiceProgress__Stats {
+.ActivityPage .ChoiceProgress .ChoiceProgress__Stats {
   font-weight: normal;
 }
 
 .ActivityPage__EmptyContainer {
   padding: 100px 0;
   text-align: center;
-  border: 1px solid rgba(115, 110, 125, .24);
+  border: 1px solid rgba(var(--dark-gray-rgb), 0.24);
   border-radius: 8px;
 }

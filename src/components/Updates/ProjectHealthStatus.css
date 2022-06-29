@@ -45,7 +45,7 @@
 }
 
 .ProjectHealthStatus__Title--offTrack {
-  color: #d80027;
+  color: var(--red);
 }
 
 .ProjectHealthStatus__Description {

@@ -1,15 +1,14 @@
-
 .CategoryLabel {
   text-transform: uppercase;
   padding: 1px 11px;
   height: 24px;
   display: inline-flex;
-  color: #736E7D;
+  color: var(--dark-gray);
   border-radius: 42px;
   font-weight: 500;
   font-size: 12px;
   line-height: 20px;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   vertical-align: middle;
   align-content: center;
   position: relative;
@@ -17,14 +16,14 @@
 
 .CategoryLabel::before {
   display: block;
-  content: "";
+  content: '';
   border: 1px solid transparent;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: .08;
+  opacity: 0.08;
   border-radius: 42px;
 }
 

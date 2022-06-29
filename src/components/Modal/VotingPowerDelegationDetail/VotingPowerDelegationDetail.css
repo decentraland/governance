@@ -69,7 +69,7 @@
   margin-bottom: 0 !important;
   line-height: 18px;
   text-transform: uppercase;
-  color: #736e7d;
+  color: var(--dark-gray);
   border-radius: 0;
 }
 

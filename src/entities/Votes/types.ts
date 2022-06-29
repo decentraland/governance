@@ -1,17 +1,18 @@
-import { SnapshotVote } from "../../api/Snapshot"
-import { ProposalStatus, ProposalType } from "../Proposal/types"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SnapshotVote } from '../../api/Snapshot'
+import { ProposalStatus, ProposalType } from '../Proposal/types'
 
 export type VoteAttributes = {
-  proposal_id: string,
-  hash: string,
-  votes: any,
-  created_at: Date,
-  updated_at: Date,
+  proposal_id: string
+  hash: string
+  votes: any
+  created_at: Date
+  updated_at: Date
 }
 
 export type Vote = {
-  timestamp: number,
-  choice: number,
+  timestamp: number
+  choice: number
   vp: number
 }
 
@@ -23,4 +24,4 @@ export type VotedProposal = SnapshotVote & {
   }
 }
 
-export type ChoiceColor = "approve" | "reject" | number
+export type ChoiceColor = 'approve' | 'reject' | number

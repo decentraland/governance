@@ -23,6 +23,7 @@ import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import {
   ProposalGrantCategory,
@@ -50,6 +51,7 @@ type GrantState = {
   specification: string
   personnel: string
   roadmap: string
+  coAuthors?: string[]
 }
 
 const initialPollState: GrantState = {
@@ -199,6 +201,8 @@ export default function SubmitGrant() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
     if (state.validated) {
@@ -477,6 +481,9 @@ export default function SubmitGrant() {
           }
           disabled={formDisabled}
         />
+      </ContentSection>
+      <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
       </ContentSection>
       <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>

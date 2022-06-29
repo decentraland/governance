@@ -441,6 +441,18 @@
       "title": "Polls",
       "description": "Recent community polls in the Decentraland DAO"
     },
+    "coauthor_detail": {
+      "pending_label": "Co-author request",
+      "pending_description": "You’ve been added as a co-author for this initiative by its creator.",
+      "pending_helper": "If you confirm this request, your co-author status will be published on this proposal. If you are not sure why you are seeing this or if you do not want to be listed as co-author, you can reject this request.",
+      "confirm_label": "Confirm",
+      "deny_label": "Deny",
+      "accepted_label": "Co-authoring",
+      "accepted_description": "You’ve confirmed being involved in this initiative.",
+      "rejected_label": "Not co-authoring",
+      "rejected_description": "You’ve denied being involved in this initiative.",
+      "revert_label": "Revert"
+    },
     "proposal_detail": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
@@ -494,6 +506,10 @@
       },
       "details_label": "Details",
       "details_user_label": "Created by",
+      "details_coauthors_label": "Co-authors",
+      "details_coauthor_accepted_helper": "This user has accepted the co-author request",
+      "details_coauthor_rejected_helper": "This user has declined the co-author request",
+      "details_coauthor_pending_helper": "This user has a pending co-author request",
       "details_start_label": "Started",
       "details_finish_label": "Ends",
       "details_snapshot_label": "Snapshot",
@@ -543,7 +559,8 @@
       "no_proposals_subscriptions": "You haven't subscribed to any proposal yet.",
       "no_proposals_subscriptions_action": "Browse proposals",
       "no_proposals_submitted": "You haven't submitted any proposal yet.",
-      "no_proposals_submitted_action": "Create a proposal"
+      "no_proposals_submitted_action": "Create a proposal",
+      "no_proposals_coauthoring": "You don’t have active co-authoring requests currently."
     },
     "proposal_comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",
@@ -664,6 +681,15 @@
       "character_counter": "({current} out of {limit} characters)",
       "markdown_tooltip": " (markdown)",
       "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
+      "co_author_label": "Co-authors",
+      "optional_tooltip": " (optional)",
+      "co_author_description": "If you co-authored this proposal with someone else, you can add their addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
+      "co_author_placeholder": "Enter their address",
+      "co_author_count": "{amount}/{maxAmount} Co-authors added",
+      "co_author_error": "Invalid address",
+      "co_author_as_author_error": "This address cannot be added since it belongs to the proposal's author.",
+      "co_author_duplicated_error": "It looks like this co-author's address has already been added.",
+      "co_author_max_error": "The maximum number of co-authors was exceeded.",
       "error_label": "There was an error while trying to create the proposal, please try again later."
     },
     "submit_poll": {
