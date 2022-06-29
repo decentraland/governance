@@ -16,7 +16,6 @@ export = async function main() {
     // serviceSource: '.',
     serviceImage: process.env["CI_REGISTRY_IMAGE"],
     servicePaths: [
-      '/',
       '/proposal/',
       '/api/*',
       '/metrics',
