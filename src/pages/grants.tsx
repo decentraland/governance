@@ -25,9 +25,16 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import './grants.css'
 
 const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
-
 const CURRENT_GRANTS_PER_PAGE = 8
 const PAST_GRANTS_PER_PAGE = 10
+type GrantCategoryFilter = ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL
+const GRANTS_CATEGORY_FILTERS: GrantCategoryFilter[] = [
+  PROPOSAL_GRANT_CATEGORY_ALL,
+  ProposalGrantCategory.Community,
+  ProposalGrantCategory.Gaming,
+  ProposalGrantCategory.ContentCreator,
+  ProposalGrantCategory.PlatformContributor,
+]
 
 export default function GrantsPage() {
   const t = useFormatMessage()
@@ -37,9 +44,7 @@ export default function GrantsPage() {
   const { grants, isLoadingGrants } = useGrants()
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL>(
-    PROPOSAL_GRANT_CATEGORY_ALL
-  )
+  const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
 
   const currentGrantsFilteredByCategory = useMemo(
     () => ({
@@ -167,41 +172,16 @@ export default function GrantsPage() {
                   <div>
                     <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
                     <div className="GrantsPage__CurrentGrantsFilters">
-                      <FilterButton
-                        selected={selectedCategory === PROPOSAL_GRANT_CATEGORY_ALL}
-                        onClick={() => setSelectedCategory(PROPOSAL_GRANT_CATEGORY_ALL)}
-                        count={currentGrantsFilteredByCategory[PROPOSAL_GRANT_CATEGORY_ALL]?.length}
-                      >
-                        {t('page.grants.category_filters.all')}
-                      </FilterButton>
-                      <FilterButton
-                        selected={selectedCategory === ProposalGrantCategory.Community}
-                        onClick={() => setSelectedCategory(ProposalGrantCategory.Community)}
-                        count={currentGrantsFilteredByCategory[ProposalGrantCategory.Community]?.length}
-                      >
-                        {t('page.grants.category_filters.community')}
-                      </FilterButton>
-                      <FilterButton
-                        selected={selectedCategory === ProposalGrantCategory.Gaming}
-                        onClick={() => setSelectedCategory(ProposalGrantCategory.Gaming)}
-                        count={currentGrantsFilteredByCategory[ProposalGrantCategory.Gaming]?.length}
-                      >
-                        {t('page.grants.category_filters.gaming')}
-                      </FilterButton>
-                      <FilterButton
-                        selected={selectedCategory === ProposalGrantCategory.ContentCreator}
-                        onClick={() => setSelectedCategory(ProposalGrantCategory.ContentCreator)}
-                        count={currentGrantsFilteredByCategory[ProposalGrantCategory.ContentCreator]?.length}
-                      >
-                        {t('page.grants.category_filters.content')}
-                      </FilterButton>
-                      <FilterButton
-                        selected={selectedCategory === ProposalGrantCategory.PlatformContributor}
-                        onClick={() => setSelectedCategory(ProposalGrantCategory.PlatformContributor)}
-                        count={currentGrantsFilteredByCategory[ProposalGrantCategory.PlatformContributor]?.length}
-                      >
-                        {t('page.grants.category_filters.platform')}
-                      </FilterButton>
+                      {GRANTS_CATEGORY_FILTERS.map((item) => (
+                        <FilterButton
+                          key={item}
+                          selected={selectedCategory === item}
+                          onClick={() => setSelectedCategory(item)}
+                          count={currentGrantsFilteredByCategory[item]?.length}
+                        >
+                          {t(`page.grants.category_filters.${item.split(' ')[0].toLowerCase()}`)}
+                        </FilterButton>
+                      ))}
                     </div>
                     <Container className="GrantsPage__CurrentGrantsContainer">
                       {filteredCurrentGrants?.map((grant) => (
