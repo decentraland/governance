@@ -1,0 +1,11 @@
+.ImageGallery__CarouselCell--Container {
+  width: 500px;
+  height: 300px;
+  margin: 0 5px;
+}
+
+.ImageGallery__CarouselCell--Container > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

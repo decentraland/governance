@@ -23,6 +23,7 @@ import { Personal } from 'web3x/personal'
 import { Governance } from '../api/Governance'
 import { Snapshot } from '../api/Snapshot'
 import CategoryLabel from '../components/Category/CategoryLabel'
+import ImageGallery from '../components/ImageGallery/ImageGallery'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
@@ -243,6 +244,9 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
+              {!proposalState.loading && (
+                <ImageGallery options={{ cellSelector: '.LinkedWearablesGallery__CarouselCell' }} />
+              )}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
