@@ -7,7 +7,7 @@ Time.extend(LocalizedFormat)
 
 const Date = ({ children, date }: { children: React.ReactNode; date: Date }) => {
   return (
-    <time dateTime={String(date)} title={Time.utc(date).format('LLL')}>
+    <time dateTime={String(date)} title={Time(date).format('LLL')}>
       {children}
     </time>
   )
