@@ -446,9 +446,9 @@
       "confirm_label": "Confirm",
       "deny_label": "Deny",
       "accepted_label": "Co-authoring",
-      "accepted_description": "You’ve confirmed being involved in this initiative.",
-      "rejected_label": "Not co-authoring",
-      "rejected_description": "You’ve denied being involved in this initiative.",
+      "accepted_description": "You've accepted being involved in this initiative.",
+      "rejected_label": "Co-authoring",
+      "rejected_description": "You've rejected being involved in this initiative.",
       "revert_label": "Revert"
     },
     "proposal_detail": {
