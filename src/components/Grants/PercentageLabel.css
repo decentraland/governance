@@ -18,8 +18,8 @@
 }
 
 .PercentageLabel.PercentageLabel--Green {
-  background-color: var(--background-happy-green);
-  border-color: var(--background-happy-green);
+  background-color: var(--green);
+  border-color: var(--green);
 }
 
 .PercentageLabel.PercentageLabel--Yellow {

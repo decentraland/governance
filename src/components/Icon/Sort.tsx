@@ -7,8 +7,8 @@ type SortProps = {
 function Sort({ rotate = 0 }: SortProps) {
   return (
     <svg
-      width="5"
-      height="3"
+      width="10"
+      height="5"
       viewBox="0 0 5 3"
       fill="none"
       transform={`rotate(${rotate})`}

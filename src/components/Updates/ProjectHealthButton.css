@@ -14,16 +14,16 @@
 }
 
 .ProjectHealthButton--onTrack {
-  border: 1px solid #44b600;
-  color: #44b600;
+  border: 1px solid var(--green);
+  color: var(--green);
 }
 
 .ProjectHealthButton--atRisk {
-  border: 1px solid #ffb03f;
-  color: #ffb03f;
+  border: 1px solid var(--yellow);
+  color: var(--yellow);
 }
 
 .ProjectHealthButton--offTrack {
-  border: 1px solid #d80027;
-  color: #d80027;
+  border: 1px solid var(--red);
+  color: var(--red);
 }
