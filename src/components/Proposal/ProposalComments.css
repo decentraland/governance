@@ -27,7 +27,7 @@
 }
 
 .ProposalComments .ProposalComments__Content + .ProposalComments__Content {
-  border-top: 1px solid rgba(115, 110, 125, 0.24);
+  border-top: 1px solid rgba(var(--dark-gray-rgb), 0.24);
 }
 
 .ProposalComments .ui.button {
@@ -36,7 +36,7 @@
 
 .ProposalComments .ui.button.ProposalComments__ReadMore {
   background-color: var(--background);
-  border: 1px solid rgba(115, 110, 125, 0.32);
+  border: 1px solid rgba(var(--dark-gray-rgb), 0.32);
   width: 100%;
 }
 

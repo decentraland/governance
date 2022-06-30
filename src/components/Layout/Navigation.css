@@ -9,7 +9,7 @@
   }
 
   .LayoutMainContainer .dcl.tabs a {
-    color: var(--text)
+    color: var(--text);
   }
 
   .LayoutMainContainer .dcl.tabs .ui.container {
@@ -20,4 +20,13 @@
 .dcl.tabs-right {
   display: flex;
   align-items: center;
+}
+
+.dcl.tabs .ActivityTab {
+  display: flex;
+  align-items: center;
+}
+
+.dcl.tabs .ActivityTab svg {
+  margin-left: 4px;
 }

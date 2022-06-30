@@ -20,6 +20,8 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 
+import { CoauthorAttributes, CoauthorStatus } from './../entities/Coauthor/types'
+
 import { GovernanceAPI } from './GovernanceAPI'
 
 type NewProposalMap = {
@@ -38,6 +40,7 @@ export type GetProposalsFilter = {
   type: ProposalType
   status: ProposalStatus
   subscribed: boolean | string
+  coauthor: boolean
   search?: string | null
   timeFrame?: string | null
   order?: 'ASC' | 'DESC'
@@ -293,5 +296,26 @@ export class Governance extends GovernanceAPI {
   async getProposalComments(proposal_id: string) {
     const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${proposal_id}/comments`)
     return result.data
+  }
+
+  async getProposalsByCoAuthor(address: string, status?: CoauthorStatus) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(
+      `/coauthors/proposals/${address}${status ? `/${status}` : ''}`
+    )
+    return result.data
+  }
+
+  async getCoAuthorsByProposal(id: string, status?: CoauthorStatus) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}${status ? `/${status}` : ''}`)
+    return result.data
+  }
+
+  async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
+    const newStatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
+      `/coauthors/${proposalId}`,
+      this.options().method('PUT').authorization({ sign: true }).json({ status })
+    )
+
+    return newStatus.data
   }
 }

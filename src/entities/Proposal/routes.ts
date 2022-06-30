@@ -17,6 +17,7 @@ import isUUID from 'validator/lib/isUUID'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
+import CoauthorModel from '../Coauthor/model'
 import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
@@ -144,6 +145,7 @@ export async function getProposals(req: WithAuth<Request>) {
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
+  const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
 
   let subscribed: string | undefined = undefined
@@ -155,13 +157,24 @@ export async function getProposals(req: WithAuth<Request>) {
 
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
 
-  if (search && !/\w{3}/.test(search)) {
+  if (search && !/\w{2}/.test(search)) {
     return []
   }
 
   const [total, data] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit }),
+    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed, coauthor }),
+    ProposalModel.getProposalList({
+      type,
+      status,
+      user,
+      subscribed,
+      coauthor,
+      search,
+      timeFrame,
+      order,
+      offset,
+      limit,
+    }),
   ])
 
   return { ok: true, total, data }
@@ -377,6 +390,13 @@ export async function createProposal(
   const start = Time.utc().set('seconds', 0)
   const end = data.finish_at
   const proposal_url = proposalUrl({ id })
+  const coAuthors =
+    data.configuration && data.configuration.coAuthors ? (data.configuration.coAuthors as string[]) : null
+
+  if (coAuthors) {
+    delete data.configuration.coAuthors
+  }
+
   const title = templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
 
@@ -544,6 +564,9 @@ export async function createProposal(
   try {
     await ProposalModel.create(newProposal)
     await VotesModel.createEmpty(id)
+    if (coAuthors) {
+      CoauthorModel.createMultiple(id, coAuthors)
+    }
   } catch (err) {
     dropDiscourseTopic(discourseProposal.topic_id)
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)

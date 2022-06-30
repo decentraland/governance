@@ -4,12 +4,11 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { getOnTimeThresholdDate } from '../../entities/Updates/utils'
 import Date from '../Common/Date'
-import Info from '../Icon/Info'
+import Helper from '../Helper/Helper'
 
 import './ProposalVestingStatus.css'
 
@@ -54,16 +53,11 @@ export default function ProposalVestingStatus({
                 })}
               </Markdown>
             </Date>
-            <Popup
-              content={t('page.proposal_detail.grant.current_update_info')}
-              basic
-              trigger={
-                <div className="ProposalVestingStatus__InfoIconContainer">
-                  <Info size="14" />
-                </div>
-              }
-              on="hover"
+            <Helper
+              text={t('page.proposal_detail.grant.current_update_info')}
               position="bottom right"
+              size="14"
+              containerClassName="ProposalVestingStatus__InfoIconContainer"
             />
           </span>
         )}

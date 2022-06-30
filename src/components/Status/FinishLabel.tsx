@@ -5,6 +5,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import Date from '../Common/Date'
+
 import './FinishLabel.css'
 
 const clock = require('../../images/icons/time.svg').default
@@ -25,7 +27,9 @@ export default React.memo(function FinishLabel({ date, ...props }: FinishLabelPr
   return (
     <div {...props} className={TokenList.join([`FinishLabel`])}>
       <img src={clock} width="24" height="24" />
-      <span>{label}</span>
+      <span>
+        <Date date={date}>{label}</Date>
+      </span>
     </div>
   )
 })
