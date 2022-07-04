@@ -31,29 +31,29 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
 }
 
 const GrantCard = ({ grant }: GrantCardProps) => {
-  const category: ProposalGrantCategory = grant.configuration.category
-  const token = grant.contract ? grant.contract.symbol : grant.enacting_token
+  const { id, configuration, token, title, update } = grant
+  const category: ProposalGrantCategory = configuration.category
 
   const handleClick = useCallback(() => {
-    navigate(locations.proposal(grant.id))
-  }, [grant])
+    navigate(locations.proposal(id))
+  }, [id])
 
   return (
     <div onClick={handleClick} className="GrantCard">
       <div>
         <div className="GrantCard__Header">
           <div className="GrantCard__TierSize">
-            <p className="GrantCard__Tier">{`${grant.configuration.tier}: `}</p>
+            <p className="GrantCard__Tier">{`${configuration.tier}: `}</p>
             <p className="GrantCard__Size">
-              {grant.configuration.size} {token}
+              {configuration.size} {token}
             </p>
           </div>
           <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
         </div>
-        <Header className="GrantCard__Title">{grant.title}</Header>
+        <Header className="GrantCard__Title">{title}</Header>
         <VestingProgress grant={grant} />
       </div>
-      <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
+      <ProposalUpdate proposal={grant} update={update} expanded={false} index={update?.index} />
     </div>
   )
 }

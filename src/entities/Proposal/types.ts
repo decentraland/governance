@@ -687,14 +687,14 @@ export type ProposalCommentsInDiscourse = {
 }
 
 type VestingContractData = {
-  symbol: string
   balance: number
   vestedAmount: number
   releasable: number
   released: number
+  finish_at: number
 }
 
-type Grant = {
+type TransparencyGrant = {
   id: string
   title: string
   user: string
@@ -708,12 +708,12 @@ type Grant = {
 type GrantBlockchainData = {
   contract?: VestingContractData
   enacting_tx?: string
-  enacting_token?: string
-  enacted_at?: number
+  token?: string
+  enacted_at: number
 }
 
-export type GrantAttributes = Grant & GrantBlockchainData
-export type GrantWithUpdateAttributes = Grant &
+export type GrantAttributes = TransparencyGrant & GrantBlockchainData
+export type GrantWithUpdateAttributes = TransparencyGrant &
   GrantBlockchainData & {
     update: IndexedUpdate | null
   }

@@ -34,11 +34,9 @@ const GrantsPastItem = ({ grant }: { grant: GrantAttributes }) => {
           {category}
         </Pill>
       </Table.Cell>
-      {enacted_at && (
-        <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">
-          {Time.unix(enacted_at).format('MMMM DD, YYYY')}
-        </Table.Cell>
-      )}
+      <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">
+        {enacted_at ? Time.unix(enacted_at).format('MMMM DD, YYYY') : ''}
+      </Table.Cell>
       <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">{`$${configuration.size} USD`}</Table.Cell>
       <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__LastCell">
         <ChevronRight color="#bab8ba" />

@@ -762,6 +762,7 @@ async function getGrants() {
 
   await Promise.all(
     enactedGrants.map(async (grant) => {
+      const proposal = await ProposalModel.findOne(grant.id)
       const newGrant: GrantAttributes = {
         id: grant.id,
         configuration: {
@@ -771,10 +772,9 @@ async function getGrants() {
         },
         user: grant.user,
         title: grant.title,
+        token: grant.token || 'MANA', // TODO: Remove MANA when enacting_tx is available in transparency data,
+        enacted_at: Time(proposal.updated_at).unix(), // TODO: Replace with enacted_at/start from transparency data
       }
-
-      const proposal = await ProposalModel.findOne(grant.id)
-      newGrant.enacted_at = Time(proposal.updated_at).unix() // TODO: Replace with start from transparency data
 
       if (grant.grant_tier === 'Tier 1' || grant.grant_tier === 'Tier 2') {
         const threshold = Time(proposal.updated_at).add(1, 'month')
@@ -782,7 +782,6 @@ async function getGrants() {
           return current.push({
             ...newGrant,
             enacting_tx: '0xa05e2de34ef9cee592cd248f4f74d3b45c166880c99724949751a0b5781278ee', // TODO: Replace with tx from transparency data
-            enacting_token: 'MANA', // TODO: Replace with symbol from transparency data
           })
         }
 
@@ -791,11 +790,11 @@ async function getGrants() {
 
       try {
         newGrant.contract = {
-          symbol: grant.token,
           balance: Math.round(grant.grant_size),
           vestedAmount: Math.round(grant.released + grant.releasable),
           releasable: Math.round(grant.releasable),
           released: Math.round(grant.released),
+          finish_at: grant.vesting_finish_at,
         }
 
         if (newGrant.contract.vestedAmount === newGrant.contract.balance + newGrant.contract.released) {

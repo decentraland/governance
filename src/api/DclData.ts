@@ -47,8 +47,9 @@ type Grants = {
   symbol: string
   title: string
   token: string
-  vesting_address: string
   user: string
+  vesting_address: string
+  vesting_finish_at: number
 }[]
 
 export const TransparencyGrantsTiers = {

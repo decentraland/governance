@@ -15,18 +15,16 @@ export type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 const VestingProgress = ({ grant }: Props) => {
   const t = useFormatMessage()
-  const { contract, enacting_tx, enacting_token, enacted_at } = grant
+  const { contract, enacting_tx, token, enacted_at } = grant
 
   const total = contract ? contract.balance : 100
   const vestedPercentage = contract ? Math.min(Math.round((contract.vestedAmount * 100) / total), 100) : 100
   const releasedPercentage = contract ? Math.min(Math.round((contract.released * 100) / total), 100) : null
-  const vestedAmountText = `${t(`general.number`, { value: contract?.vestedAmount || 100 })} ${
-    contract?.symbol || enacting_token
-  }`
+  const vestedAmountText = `${t(`general.number`, { value: contract?.vestedAmount || 100 })} ${token}`
   const releasedText = contract
-    ? `${t(`general.number`, { value: contract.released })} ${contract.symbol} ${t('page.grants.released')}`
+    ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`
     : null
-  const date = Time.unix(enacted_at as number).fromNow() // TODO: Review type after using enacted_at from transparency data
+  const enactedDate = Time.unix(enacted_at).fromNow()
 
   return (
     <div className="VestingProgress">
@@ -64,7 +62,7 @@ const VestingProgress = ({ grant }: Props) => {
 
       <div className="VestingProgress__VestedAt">
         <span>{enacting_tx ? t('page.grants.transaction_date') : t('page.grants.started_date')}</span>
-        <span className="VestingProgress__VestedDate">{date}</span>
+        <span className="VestingProgress__VestedDate">{enactedDate}</span>
       </div>
     </div>
   )
