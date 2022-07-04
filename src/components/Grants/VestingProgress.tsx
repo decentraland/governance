@@ -26,7 +26,7 @@ const VestingProgress = ({ grant }: Props) => {
   const releasedText = contract
     ? `${t(`general.number`, { value: contract.released })} ${contract.symbol} ${t('page.grants.released')}`
     : null
-  const date = contract ? Time.unix(enacted_at as number).fromNow() : Time().subtract(1, 'week').fromNow()
+  const date = Time.unix(enacted_at as number).fromNow() // TODO: Review type after using enacted_at from transparency data
 
   return (
     <div className="VestingProgress">
