@@ -545,6 +545,11 @@
         "gaming": "Gaming",
         "platform": "Platform"
       },
+      "vested": "vested",
+      "transferred": "transferred",
+      "released": "released",
+      "started_date": "Started",
+      "transaction_date": "Transaction made",
       "past_funded": {
         "title": "Past, successfully funded initiatives",
         "category": "Category",

@@ -83,6 +83,7 @@
 .VestingProgressBar__Transferred {
   z-index: 2;
   background: var(--fuchsia);
+  width: 100%;
 }
 
 .VestingProgress__VestedAt {

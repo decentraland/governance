@@ -20,23 +20,28 @@ const VestingProgress = ({ grant }: Props) => {
   const total = contract ? contract.balance : 100
   const vestedPercentage = contract ? Math.min(Math.round((contract.vestedAmount * 100) / total), 100) : 100
   const releasedPercentage = contract ? Math.min(Math.round((contract.released * 100) / total), 100) : null
+  const vestedAmountText = `${t(`general.number`, { value: contract?.vestedAmount || 100 })} ${
+    contract?.symbol || enacting_token
+  }`
+  const releasedText = contract
+    ? `${t(`general.number`, { value: contract.released })} ${contract.symbol} ${t('page.grants.released')}`
+    : null
+  const date = contract ? Time.unix(enacted_at as number).fromNow() : Time().subtract(1, 'week').fromNow()
 
   return (
     <div className="VestingProgress">
       <div className="VestingProgress__Labels">
         <div className="VestingProgress__VestedInfo">
-          <span className="VestingProgress__Bold VestingProgress__Ellipsis">
-            {t(`general.number`, { value: contract?.vestedAmount || 100 }) + ' ' + (contract?.symbol || enacting_token)}
+          <span className="VestingProgress__Bold VestingProgress__Ellipsis">{vestedAmountText}</span>
+          <span className="VestingProgress__Ellipsis">
+            {enacting_tx ? t('page.grants.transferred') : t('page.grants.vested')}
           </span>
-          <span className="VestingProgress__Ellipsis">{enacting_tx ? 'transferred' : 'vested'}</span>
           <PercentageLabel percentage={vestedPercentage} color={enacting_tx ? 'Fuchsia' : 'Yellow'} />
         </div>
-        {contract && (
+        {releasedText && (
           <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
             <div className="VestingProgress__ReleasedInfoLabel" />
-            <span className="VestingProgress__Ellipsis">
-              {t(`general.number`, { value: contract.released }) + ' ' + contract.symbol + ' released'}
-            </span>
+            <span className="VestingProgress__Ellipsis">{releasedText}</span>
           </div>
         )}
       </div>
@@ -54,16 +59,12 @@ const VestingProgress = ({ grant }: Props) => {
             style={{ width: vestedPercentage + '%' }}
           />
         )}
-        {enacting_tx && (
-          <div className="VestingProgressBar__Item VestingProgressBar__Transferred" style={{ width: '100%' }} />
-        )}
+        {enacting_tx && <div className="VestingProgressBar__Item VestingProgressBar__Transferred" />}
       </div>
 
       <div className="VestingProgress__VestedAt">
-        <span>{enacting_tx ? 'Transaction made' : 'Started'}</span>
-        <span className="VestingProgress__VestedDate">
-          {contract ? Time.unix(enacted_at as number).fromNow() : Time().subtract(1, 'week').fromNow()}
-        </span>
+        <span>{enacting_tx ? t('page.grants.transaction_date') : t('page.grants.started_date')}</span>
+        <span className="VestingProgress__VestedDate">{date}</span>
       </div>
     </div>
   )
