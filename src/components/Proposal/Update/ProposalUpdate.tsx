@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { GrantAttributes, ProposalAttributes } from '../../../entities/Proposal/types'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
 import CancelIcon from '../../Icon/Cancel'
 import CheckCircleIcon from '../../Icon/CheckCircle'
@@ -13,7 +13,7 @@ import ExpandedProposalUpdate from './ExpandedProposalUpdate'
 import './ProposalUpdate.css'
 
 interface Props {
-  proposal: ProposalAttributes
+  proposal: ProposalAttributes | GrantAttributes
   update: UpdateAttributes | null
   expanded: boolean
   index?: number

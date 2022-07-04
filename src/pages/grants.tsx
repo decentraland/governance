@@ -47,7 +47,7 @@ export default function GrantsPage() {
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
-  const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'start_at')
+  const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'enacted_at')
 
   const currentGrantsFilteredByCategory = useMemo(
     () => ({

@@ -1,3 +1,4 @@
+import { ProposalGrantCategory, ProposalGrantTier } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 
 import { GovernanceAPI } from './GovernanceAPI'
@@ -35,6 +36,30 @@ export type TransparencyData = {
   teams: Team[]
 }
 
+type Grants = {
+  grant_category: ProposalGrantCategory
+  grant_size: number
+  grant_tier: keyof typeof TransparencyGrantsTiers
+  id: string
+  released: number
+  releasable: number
+  status: string
+  symbol: string
+  title: string
+  token: string
+  vesting_address: string
+  user: string
+}[]
+
+export const TransparencyGrantsTiers = {
+  'Tier 1': ProposalGrantTier.Tier1,
+  'Tier 2': ProposalGrantTier.Tier2,
+  'Tier 3': ProposalGrantTier.Tier3,
+  'Tier 4': ProposalGrantTier.Tier4,
+  'Tier 5': ProposalGrantTier.Tier5,
+  'Tier 6': ProposalGrantTier.Tier6,
+}
+
 export class DclData extends GovernanceAPI {
   static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
@@ -54,5 +79,9 @@ export class DclData extends GovernanceAPI {
 
   async getData() {
     return this.fetch<TransparencyData>('/api.json', this.options().method('GET'))
+  }
+
+  async getGrants() {
+    return this.fetch<Grants>('/grants.json', this.options().method('GET'))
   }
 }

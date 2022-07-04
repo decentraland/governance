@@ -17,6 +17,7 @@
 }
 
 .ProposalDetailPage__Labels {
+  display: flex;
   min-height: 24px;
 }
 

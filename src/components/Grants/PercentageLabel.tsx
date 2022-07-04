@@ -6,7 +6,7 @@ import './PercentageLabel.css'
 
 export type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   percentage: number
-  color: 'Yellow' | 'Green' | 'Red'
+  color: 'Yellow' | 'Green' | 'Red' | 'Fuchsia'
 }
 
 const PercentageLabel = ({ percentage, color }: Props) => {

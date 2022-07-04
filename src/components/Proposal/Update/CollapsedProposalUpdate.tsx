@@ -7,7 +7,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { GrantAttributes, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import locations from '../../../modules/locations'
@@ -18,7 +18,7 @@ import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
 
 interface Props {
-  proposal: ProposalAttributes
+  proposal: ProposalAttributes | GrantAttributes
   update: UpdateAttributes
   index?: number
 }

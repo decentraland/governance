@@ -80,6 +80,11 @@
   background: var(--yellow);
 }
 
+.VestingProgressBar__Transferred {
+  z-index: 2;
+  background: var(--fuchsia);
+}
+
 .VestingProgress__VestedAt {
   display: flex;
   justify-content: flex-start;

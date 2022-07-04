@@ -690,12 +690,30 @@ type VestingContractData = {
   symbol: string
   balance: number
   vestedAmount: number
-  releasableAmount: number
+  releasable: number
   released: number
-  start: number
 }
 
-export type GrantAttributes = ProposalAttributes & { contract: VestingContractData }
-export type GrantWithUpdateAttributes = ProposalAttributes & { contract: VestingContractData } & {
-  update: IndexedUpdate | null
+type Grant = {
+  id: string
+  title: string
+  user: string
+  configuration: {
+    category: ProposalGrantCategory
+    size: number
+    tier: string
+  }
 }
+
+type GrantBlockchainData = {
+  contract?: VestingContractData
+  enacting_tx?: string
+  enacting_token?: string
+  enacted_at?: number
+}
+
+export type GrantAttributes = Grant & GrantBlockchainData
+export type GrantWithUpdateAttributes = Grant &
+  GrantBlockchainData & {
+    update: IndexedUpdate | null
+  }

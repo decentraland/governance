@@ -15,7 +15,7 @@ import './GrantsPastItem.css'
 
 const GrantsPastItem = ({ grant }: { grant: GrantAttributes }) => {
   const t = useFormatMessage()
-  const { id, title, configuration, start_at } = grant
+  const { id, title, configuration, enacted_at } = grant
   const category = configuration.category.split(' ')[0]
   const pillColor = PROPOSAL_GRANT_CATEGORY_COLORS[configuration.category as ProposalGrantCategory]
   const handleClick = useCallback(() => navigate(locations.proposal(id)), [id])
@@ -34,9 +34,11 @@ const GrantsPastItem = ({ grant }: { grant: GrantAttributes }) => {
           {category}
         </Pill>
       </Table.Cell>
-      <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">
-        {Time(start_at).format('MMMM DD, YYYY')}
-      </Table.Cell>
+      {enacted_at && (
+        <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">
+          {Time.unix(enacted_at).format('MMMM DD, YYYY')}
+        </Table.Cell>
+      )}
       <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">{`$${configuration.size} USD`}</Table.Cell>
       <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__LastCell">
         <ChevronRight color="#bab8ba" />

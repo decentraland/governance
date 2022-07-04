@@ -27,6 +27,11 @@
   border-color: var(--yellow);
 }
 
+.PercentageLabel.PercentageLabel--Fuchsia {
+  background-color: var(--fuchsia);
+  border-color: var(--fuchsia);
+}
+
 .PercentageLabel.PercentageLabel--Red {
   background-color: var(--red);
   border-color: var(--red);
