@@ -13,7 +13,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalGrantTier, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'
@@ -21,12 +21,14 @@ import './UpdateProposalStatusModal.css'
 type UpdateProposalState = {
   proposal: ProposalAttributes | null
   vestingAddress: string
+  enactingTx: string
   description: string
 }
 
 const initialPollState: UpdateProposalState = {
   proposal: null,
   vestingAddress: '',
+  enactingTx: '',
   description: '',
 }
 
@@ -44,6 +46,12 @@ const validate = createValidator<UpdateProposalState>({
       'error.update_status_proposal.grant_vesting_address_invalid'
     ),
   }),
+  enactingTx: (state) => ({
+    enactingTx: assert(
+      !state.enactingTx || /^0x([A-Fa-f\d]{64})$/.test(state.enactingTx),
+      'error.update_status_proposal.grant_enacting_tx_invalid'
+    ),
+  }),
   description: () => ({
     description: undefined,
   }),
@@ -57,6 +65,7 @@ export type UpdateProposalStatusModalProps = Omit<ModalProps, 'children'> & {
     e: React.MouseEvent<unknown>,
     status: ProposalStatus,
     vestingContract: string | null,
+    enactingTx: string | null,
     description: string
   ) => void
 }
@@ -71,12 +80,21 @@ export function UpdateProposalStatusModal({
 }: UpdateProposalStatusModalProps) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, initialPollState)
+  const proposalIsTier1or2 =
+    proposal &&
+    (proposal.configuration.tier === ProposalGrantTier.Tier1 || proposal.configuration.tier === ProposalGrantTier.Tier2)
 
   function handleAccept(e: React.MouseEvent<unknown>) {
     editor.validate()
     const hasErrors = Object.keys(state.error).length != 0
     if (status && !hasErrors && onClickAccept) {
-      onClickAccept(e, status, state.value.vestingAddress ? state.value.vestingAddress : null, state.value.description)
+      onClickAccept(
+        e,
+        status,
+        state.value.vestingAddress ? state.value.vestingAddress : null,
+        state.value.enactingTx ? state.value.enactingTx : null,
+        state.value.description
+      )
     }
   }
 
@@ -105,7 +123,7 @@ export function UpdateProposalStatusModal({
         <Header>{t('modal.update_status_proposal.title', { status })}</Header>
         <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
       </Modal.Content>
-      {proposal && proposal.type === ProposalType.Grant && (
+      {proposal && proposal.type === ProposalType.Grant && !proposalIsTier1or2 && (
         <Modal.Content className="ProposalModal__GrantVestingAddress">
           <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
           <Field
@@ -115,6 +133,19 @@ export function UpdateProposalStatusModal({
             onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
             message={t(state.error.vestingAddress)}
             error={!!state.error.vestingAddress}
+          />
+        </Modal.Content>
+      )}
+      {proposal && proposal.type === ProposalType.Grant && proposalIsTier1or2 && (
+        <Modal.Content className="ProposalModal__GrantEnactingTransaction">
+          <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
+          <Field
+            type="address"
+            value={state.value.enactingTx}
+            onChange={(_, { value }) => editor.set({ enactingTx: value }, { validate: false })}
+            onBlur={() => editor.set({ enactingTx: state.value.enactingTx.trim() })}
+            message={t(state.error.enactingTx)}
+            error={!!state.error.enactingTx}
           />
         </Modal.Content>
       )}

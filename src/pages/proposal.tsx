@@ -132,12 +132,13 @@ export default function ProposalPage() {
   )
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(
-    async (status: ProposalStatus, vesting_address: string | null, description: string) => {
+    async (status: ProposalStatus, vesting_address: string | null, enactingTx: string | null, description: string) => {
       if (proposal && isCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
           vesting_address,
+          enactingTx,
           description
         )
         proposalState.set(updateProposal)
@@ -358,8 +359,8 @@ export default function ProposalPage() {
         proposal={proposal}
         status={options.confirmStatusUpdate || null}
         loading={updatingStatus}
-        onClickAccept={(_, status, vesting_contract, description) =>
-          updateProposalStatus(status, vesting_contract, description)
+        onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
+          updateProposalStatus(status, vesting_contract, enactingTx, description)
         }
         onClose={() => patchOptions({ confirmStatusUpdate: false })}
       />

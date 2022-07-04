@@ -1,3 +1,8 @@
 .UpdateProposalStatusModal .dg.Paragraph {
   font-size: 17px;
 }
+
+.content.ProposalModal__GrantEnactingTransaction {
+  margin: 24px auto !important;
+  width: 480px !important;
+}
