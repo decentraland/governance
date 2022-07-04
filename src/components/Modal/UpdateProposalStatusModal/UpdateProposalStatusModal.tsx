@@ -123,30 +123,34 @@ export function UpdateProposalStatusModal({
         <Header>{t('modal.update_status_proposal.title', { status })}</Header>
         <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
       </Modal.Content>
-      {proposal && proposal.type === ProposalType.Grant && !proposalIsTier1or2 && (
-        <Modal.Content className="ProposalModal__GrantVestingAddress">
-          <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
-          <Field
-            type="address"
-            value={state.value.vestingAddress}
-            onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
-            onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
-            message={t(state.error.vestingAddress)}
-            error={!!state.error.vestingAddress}
-          />
-        </Modal.Content>
-      )}
-      {proposal && proposal.type === ProposalType.Grant && proposalIsTier1or2 && (
-        <Modal.Content className="ProposalModal__GrantEnactingTransaction">
-          <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
-          <Field
-            type="address"
-            value={state.value.enactingTx}
-            onChange={(_, { value }) => editor.set({ enactingTx: value }, { validate: false })}
-            onBlur={() => editor.set({ enactingTx: state.value.enactingTx.trim() })}
-            message={t(state.error.enactingTx)}
-            error={!!state.error.enactingTx}
-          />
+      {proposal && proposal.type === ProposalType.Grant && (
+        <Modal.Content className="ProposalModal__GrantTransaction">
+          {!proposalIsTier1or2 && (
+            <>
+              <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
+              <Field
+                type="address"
+                value={state.value.vestingAddress}
+                onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
+                onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
+                message={t(state.error.vestingAddress)}
+                error={!!state.error.vestingAddress}
+              />
+            </>
+          )}
+          {proposalIsTier1or2 && (
+            <>
+              <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
+              <Field
+                type="address"
+                value={state.value.enactingTx}
+                onChange={(_, { value }) => editor.set({ enactingTx: value }, { validate: false })}
+                onBlur={() => editor.set({ enactingTx: state.value.enactingTx.trim() })}
+                message={t(state.error.enactingTx)}
+                error={!!state.error.enactingTx}
+              />
+            </>
+          )}
         </Modal.Content>
       )}
       <Modal.Content className="ProposalModal__Form">

@@ -157,6 +157,8 @@ export const updateProposalStatusScheme = {
     },
     enacting_tx: {
       type: ['string', 'null'],
+      minLength: 66,
+      maxLength: 66,
     },
     description: {
       type: ['string', 'null'],
