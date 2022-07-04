@@ -1,6 +1,16 @@
+.ImageGallery__Carousel.is-fullscreen {
+  z-index: 30;
+}
+
+.ImageGallery__Carousel.is-fullscreen .ImageGallery__CarouselCell--Container {
+  width: auto;
+  height: 100%;
+  margin-top: 3%;
+}
+
 .ImageGallery__CarouselCell--Container {
-  width: 500px;
-  height: 300px;
+  width: 250px;
+  height: 150px;
   margin: 0 5px;
 }
 

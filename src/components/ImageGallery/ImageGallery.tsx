@@ -2,17 +2,21 @@ import React from 'react'
 import Flickity, { FlickityOptions } from 'react-flickity-component'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import 'flickity-fullscreen'
+import 'flickity-fullscreen/fullscreen.css'
 import 'flickity/css/flickity.css'
 
 import './ImageGallery.css'
 
+type ImageGalleryOptions = FlickityOptions & { fullscreen?: boolean }
+
 interface Props {
-  options?: FlickityOptions
+  options?: ImageGalleryOptions
   className?: string
 }
 
 function ImageGallery({ options, className }: Props) {
-  const galleryOptions: FlickityOptions = {
+  const galleryOptions: ImageGalleryOptions = {
     initialIndex: 0,
     cellSelector: '.ImageGallery__CarouselCell',
     cellAlign: 'center',
@@ -22,6 +26,7 @@ function ImageGallery({ options, className }: Props) {
     autoPlay: 10000,
     groupCells: false,
     setGallerySize: true,
+    fullscreen: true,
     ...options,
   }
 
