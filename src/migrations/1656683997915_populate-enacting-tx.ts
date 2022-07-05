@@ -19,6 +19,9 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       UPDATE proposals SET enacting_tx = '0xa05e2de34ef9cee592cd248f4f74d3b45c166880c99724949751a0b5781278ee' WHERE id = '5701b9c0-8d25-11ec-b2d8-691324a163a7';
       UPDATE proposals SET enacting_tx = '0xa05e2de34ef9cee592cd248f4f74d3b45c166880c99724949751a0b5781278ee' WHERE id = '903c4130-8936-11ec-bd91-0316d7e70123';
       UPDATE proposals SET enacting_tx = '0xa05e2de34ef9cee592cd248f4f74d3b45c166880c99724949751a0b5781278ee' WHERE id = '38c72150-9286-11ec-831d-95af4f79cd2a';
+      UPDATE proposals SET enacting_tx = '0xca8ff8f79ab831aec93fee96eef581133b17d242060998af2f5d76c09076818c' WHERE id = 'f97ebc10-0450-11ec-bf2e-8bc0e796957b';
+      UPDATE proposals SET enacting_tx = '0x85bd68abc7797169a52b0659542b189226ffd00c3546ec4a73b90f12df457dcd' WHERE id = '9d3fa020-e945-11eb-93d6-8b93cd7e61d4';
+      UPDATE proposals SET enacting_tx = '0x5d23494fc1e9d73717930b2a0d9e03453b4075a0f4ef6081a51e492d2bee79fc' WHERE id = 'e1c99a80-f565-11eb-ab97-bfa89f33c258';
   `
   pgm.sql(sql)
 }
@@ -39,6 +42,9 @@ export async function down(pgm: MigrationBuilder): Promise<void> {
       UPDATE proposals SET enacting_tx = NULL WHERE id = '5701b9c0-8d25-11ec-b2d8-691324a163a7';
       UPDATE proposals SET enacting_tx = NULL WHERE id = '903c4130-8936-11ec-bd91-0316d7e70123';
       UPDATE proposals SET enacting_tx = NULL WHERE id = '38c72150-9286-11ec-831d-95af4f79cd2a';
+      UPDATE proposals SET enacting_tx = NULL WHERE id = 'f97ebc10-0450-11ec-bf2e-8bc0e796957b';
+      UPDATE proposals SET enacting_tx = NULL WHERE id = '9d3fa020-e945-11eb-93d6-8b93cd7e61d4';
+      UPDATE proposals SET enacting_tx = NULL WHERE id = 'e1c99a80-f565-11eb-ab97-bfa89f33c258';
   `
   pgm.sql(sql)
 }
