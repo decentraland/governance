@@ -14,6 +14,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { ProposalAttributes, ProposalGrantTier, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'
@@ -48,7 +49,7 @@ const validate = createValidator<UpdateProposalState>({
   }),
   enactingTx: (state) => ({
     enactingTx: assert(
-      !state.enactingTx || /^0x([A-Fa-f\d]{64})$/.test(state.enactingTx),
+      !state.enactingTx || isValidTransactionHash(state.enactingTx),
       'error.update_status_proposal.grant_enacting_tx_invalid'
     ),
   }),
@@ -80,7 +81,7 @@ export function UpdateProposalStatusModal({
 }: UpdateProposalStatusModalProps) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, initialPollState)
-  const proposalIsTier1or2 =
+  const isOneTimePaymentProposalTier =
     proposal &&
     (proposal.configuration.tier === ProposalGrantTier.Tier1 || proposal.configuration.tier === ProposalGrantTier.Tier2)
 
@@ -125,7 +126,7 @@ export function UpdateProposalStatusModal({
       </Modal.Content>
       {proposal && proposal.type === ProposalType.Grant && (
         <Modal.Content className="ProposalModal__GrantTransaction">
-          {!proposalIsTier1or2 && (
+          {!isOneTimePaymentProposalTier && (
             <>
               <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
               <Field
@@ -138,7 +139,7 @@ export function UpdateProposalStatusModal({
               />
             </>
           )}
-          {proposalIsTier1or2 && (
+          {isOneTimePaymentProposalTier && (
             <>
               <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
               <Field
