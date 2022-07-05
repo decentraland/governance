@@ -8,6 +8,10 @@
   margin-top: 3%;
 }
 
+.ImageGallery__Carousel .flickity-button:focus {
+  box-shadow: none;
+}
+
 .ImageGallery__CarouselCell--Container {
   width: 250px;
   height: 150px;

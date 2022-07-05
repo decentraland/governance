@@ -6,6 +6,7 @@ import { formatDescription } from 'decentraland-gatsby/dist/components/Head/util
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Title from 'decentraland-gatsby/dist/components/Text/Title'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
@@ -245,7 +246,19 @@ export default function ProposalPage() {
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
               {!proposalState.loading && (
-                <ImageGallery options={{ cellSelector: '.LinkedWearablesGallery__CarouselCell' }} />
+                <div className="ProposalImagePreview">
+                  <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
+                  <ImageGallery
+                    imageUrls={[
+                      'https://pisum.photos/id/1018/1000/600/',
+                      'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+                      'https://pisum.photos/id/1019/1000/600/',
+                      'https://http2.mlstatic.com/D_NQ_NP_2X_867446-MLA46302132635_062021-F.webp',
+                      'https://ps.w.org/tiny-compress-images/assets/icon-256x256.png',
+                    ]}
+                    options={{ cellSelector: '.LinkedWearablesGallery__CarouselCell' }}
+                  />
+                </div>
               )}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}

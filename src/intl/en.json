@@ -861,7 +861,12 @@
       "programmatically_generated_note": "_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
       "method_label": "Method",
       "method_detail": "Describe the method used to create the programmatic collection. If possible, share proof and links to the repository.",
-      "method_placeholder": "Describe the method"
+      "method_placeholder": "Describe the method",
+      "image_previews_label": "Image previews",
+      "image_previews_detail": "Provide up to {amount} images to show the community what this Wearable looks like. JPG, PNG, BMP & WEBP formats supported.",
+      "image_previews_placeholder": "Insert image URL",
+      "image_add": "Add another image",
+      "image_fetching": "Fetching..."
     },
     "subscription_banner": {
       "title": "Stay in the loop",
