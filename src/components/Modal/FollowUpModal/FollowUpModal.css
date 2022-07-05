@@ -8,7 +8,7 @@
   margin-bottom: 0;
 }
 
-.ui.modal.FollowUpModal .FollowUpModal__Banner  {
+.ui.modal.FollowUpModal .FollowUpModal__Banner {
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -21,7 +21,7 @@
 
 .ui.modal.FollowUpModal .FollowUpModal__Banner::before {
   display: block;
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -36,24 +36,24 @@
 }
 
 div.FollowUpModal__Banner.JoinTheDiscussion::before {
-  background-color: #FF2D55;
-  opacity: .20;
+  background-color: #ff2d55;
+  opacity: 0.2;
 }
 
 div.FollowUpModal__Banner.Discord::before {
-  background-color: #5865F2;
-  opacity: .30;
+  background-color: #5865f2;
+  opacity: 0.3;
 }
 
 div.FollowUpModal__Banner.CopyLink {
-  background-color: #CDF1B8;
+  background-color: #cdf1b8;
 }
 
-.FollowUpModal__Banner .dg.Paragraph  {
+.FollowUpModal__Banner .dg.Paragraph {
   margin-bottom: 0;
 }
 
-.FollowUpModal__Banner .dg.Paragraph.Paragraph--tiny  {
+.FollowUpModal__Banner .dg.Paragraph.Paragraph--tiny {
   font-size: 15px;
 }
 
@@ -64,11 +64,11 @@ div.FollowUpModal__Banner.CopyLink {
 }
 
 .ui.modal.FollowUpModal .FollowUpModal__Banner .Button.JoinTheDiscussion {
-  background-color: #FF2D55 !important;
+  background-color: #ff2d55 !important;
 }
 
 .ui.modal.FollowUpModal .FollowUpModal__Banner .Button.Discord {
-  background-color: #5865F2 !important;
+  background-color: #5865f2 !important;
 }
 
 .ui.modal.FollowUpModal .FollowUpModal__Banner .Button.CopyLink {
@@ -76,6 +76,6 @@ div.FollowUpModal__Banner.CopyLink {
 }
 
 .FollowUpModal__DismissButton {
-  background-color: #FFFFFF !important;
+  background-color: #ffffff !important;
   border: 1px solid rgba(var(--dark-gray-rgb), 0.32) !important;
 }
