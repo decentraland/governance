@@ -7,6 +7,7 @@ export = async function main() {
     name: 'governance',
     // contentSource: resolve(__dirname, '../public'),
     usePublicTLD: process.env['USE_PUBLIC_TLD'] === 'true',
+    useSecurityHeaders: true,
     serviceEnvironment: [
       variable('NODE_ENV', 'production')
     ],
