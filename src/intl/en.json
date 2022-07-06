@@ -198,6 +198,7 @@
       "motivation_empty": "Motivation is empty",
       "motivation_too_short": "Motivation is too short",
       "motivation_too_large": "Motivation is too large",
+      "image_type_invalid": "Some image is invalid, it must be a JPG, PNG, BMP or WEBP",
       "links_empty": "Insert at least one URL",
       "smart_contract_empty": "Insert at least one smart contract address",
       "managers_empty": "Insert at least one manager address",
@@ -871,9 +872,8 @@
       "method_placeholder": "Describe the method",
       "image_previews_label": "Image previews",
       "image_previews_detail": "Provide up to {amount} images to show the community what this Wearable looks like. JPG, PNG, BMP & WEBP formats supported.",
-      "image_previews_placeholder": "Insert image URL",
-      "image_add": "Add another image",
-      "image_fetching": "Fetching..."
+      "image_placeholder": "Insert image URL",
+      "image_add": "Add another image"
     },
     "subscription_banner": {
       "title": "Stay in the loop",

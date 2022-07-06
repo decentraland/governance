@@ -619,6 +619,7 @@ export const newProposalGrantScheme = {
 
 export type NewProposalLinkedWearables = {
   name: string
+  image_previews: string[]
   links: string[]
   nft_collections: string
   items: number
@@ -636,6 +637,7 @@ export const newProposalLinkedWearablesScheme = {
   additionalProperties: false,
   required: [
     'name',
+    'image_previews',
     'links',
     'nft_collections',
     'items',
@@ -650,6 +652,13 @@ export const newProposalLinkedWearablesScheme = {
       type: 'string',
       minLength: 1,
       maxLength: 80,
+    },
+    image_previews: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+      minItems: 1,
     },
     links: {
       type: 'array',

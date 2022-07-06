@@ -36,13 +36,17 @@ function ImageGallery({ options, className, imageUrls }: Props) {
   const cellClass = galleryOptions.cellSelector?.slice(1)
 
   return (
-    <Flickity className={TokenList.join(['ImageGallery__Carousel', className])} options={galleryOptions}>
-      {imageUrls.map((imageUrl, index) => (
-        <div key={index} className={TokenList.join(['ImageGallery__CarouselCell--Container', cellClass])}>
-          <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
-        </div>
-      ))}
-    </Flickity>
+    <>
+      {imageUrls.length > 0 && (
+        <Flickity className={TokenList.join(['ImageGallery__Carousel', className])} options={galleryOptions}>
+          {imageUrls.map((imageUrl, index) => (
+            <div key={index} className={TokenList.join(['ImageGallery__CarouselCell--Container', cellClass])}>
+              <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
+            </div>
+          ))}
+        </Flickity>
+      )}
+    </>
   )
 }
 

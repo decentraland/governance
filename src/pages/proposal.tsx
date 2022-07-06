@@ -245,21 +245,17 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
-              {!proposalState.loading && (
-                <div className="ProposalImagePreview">
-                  <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
-                  <ImageGallery
-                    imageUrls={[
-                      'https://pisum.photos/id/1018/1000/600/',
-                      'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
-                      'https://pisum.photos/id/1019/1000/600/',
-                      'https://http2.mlstatic.com/D_NQ_NP_2X_867446-MLA46302132635_062021-F.webp',
-                      'https://ps.w.org/tiny-compress-images/assets/icon-256x256.png',
-                    ]}
-                    options={{ cellSelector: '.LinkedWearablesGallery__CarouselCell' }}
-                  />
-                </div>
-              )}
+              {!proposalState.loading &&
+                proposal?.type === ProposalType.LinkedWearables &&
+                !!proposal.configuration.image_previews && (
+                  <div className="ProposalImagePreview">
+                    <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
+                    <ImageGallery
+                      imageUrls={proposal.configuration.image_previews}
+                      options={{ cellSelector: '.LinkedWearablesGallery__CarouselCell' }}
+                    />
+                  </div>
+                )}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
