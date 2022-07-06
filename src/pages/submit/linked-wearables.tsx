@@ -278,7 +278,6 @@ export default function SubmitLinkedWearables() {
     if (state.validated) {
       setFormDisabled(true)
       asyncEvery(Object.values(state.value.image_previews), isValidImage).then((result) => {
-        console.log(result)
         if (result) {
           Promise.resolve()
             .then(async () => {
