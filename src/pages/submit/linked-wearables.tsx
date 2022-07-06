@@ -36,6 +36,7 @@ import './submit.css'
 type LinkedWearablesState = {
   name: string
   image_previews: Record<string, string>
+  marketplace_link: string
   links: Record<string, string>
   nft_collections: string
   items: number
@@ -58,6 +59,7 @@ const initialPollState: LinkedWearablesState = {
   image_previews: {
     '0': '',
   },
+  marketplace_link: '',
   links: {
     '0': '',
   },
@@ -128,6 +130,12 @@ const validate = createValidator<LinkedWearablesState>({
         assert(
           image_previews.every((option) => isURL(option, { protocols: ['https'], require_protocol: true })),
           'error.linked_wearables.url_invalid'
+        ),
+      marketplace_link:
+        assert(state.marketplace_link.length > 0, 'error.linked_wearables.single_url_empty') ||
+        assert(
+          isURL(state.marketplace_link, { protocols: ['https'], require_protocol: true }),
+          'error.linked_wearables.single_url_invalid'
         ),
       links:
         assert(
@@ -232,7 +240,7 @@ export default function SubmitLinkedWearables() {
 
   const getListSection = (params: ListSectionType, detailOptions?: Record<string, unknown>, maxAmount?: number) => {
     const items = Object.values(state.value[params.section])
-    const canAdd = !maxAmount || maxAmount < 0 || items.length < maxAmount
+    const canAdd = (!maxAmount || maxAmount < 0 || items.length < maxAmount) && maxAmount !== 1
     return (
       <ContentSection>
         <Label>{t(`page.submit_linked_wearables.${params.section}_label`)}</Label>
@@ -346,6 +354,21 @@ export default function SubmitLinkedWearables() {
               limit: schema.name.maxLength,
             })
           }
+          disabled={formDisabled}
+        />
+      </ContentSection>
+      <ContentSection>
+        <Label>{t('page.submit_linked_wearables.marketplace_link_label')}</Label>
+        <Paragraph tiny secondary className="details">
+          {t('page.submit_linked_wearables.marketplace_link_detail')}
+        </Paragraph>
+        <Field
+          value={state.value.marketplace_link}
+          placeholder={t('page.submit_linked_wearables.url_placeholder')}
+          onChange={(_, { value }) => editor.set({ marketplace_link: value })}
+          onBlur={() => editor.set({ marketplace_link: state.value.marketplace_link.trim() })}
+          error={!!state.error.marketplace_link}
+          message={t(state.error.marketplace_link)}
           disabled={formDisabled}
         />
       </ContentSection>

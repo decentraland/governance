@@ -5,7 +5,7 @@
 .ImageGallery__Carousel.is-fullscreen .ImageGallery__CarouselCell--Container {
   width: auto;
   height: 100%;
-  margin-top: 3%;
+  padding-top: 3%;
 }
 
 .ImageGallery__Carousel .flickity-button:focus {
