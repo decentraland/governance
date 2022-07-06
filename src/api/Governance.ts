@@ -107,14 +107,11 @@ export class Governance extends GovernanceAPI {
   }
 
   async getGrants() {
-    const proposals = await this.fetch<ApiResponse<{ current: GrantWithUpdateAttributes[]; past: GrantAttributes[] }>>(
-      '/proposals/grants'
-    )
+    const proposals = await this.fetch<
+      ApiResponse<{ current: GrantWithUpdateAttributes[]; past: GrantAttributes[]; total: number }>
+    >('/proposals/grants')
 
-    return {
-      current: proposals.data.current.map((proposal) => Governance.parseProposal(proposal)) as GrantAttributes[],
-      past: proposals.data.past.map((proposal) => Governance.parseProposal(proposal)) as GrantAttributes[],
-    }
+    return proposals.data
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {

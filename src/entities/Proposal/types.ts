@@ -687,11 +687,11 @@ export type ProposalCommentsInDiscourse = {
 }
 
 type VestingContractData = {
-  balance: number
   vestedAmount: number
   releasable: number
   released: number
   finish_at: number
+  vesting_total_amount: number
 }
 
 type TransparencyGrant = {
@@ -703,6 +703,7 @@ type TransparencyGrant = {
     size: number
     tier: string
   }
+  created_at: string
 }
 
 type GrantBlockchainData = {
@@ -710,6 +711,7 @@ type GrantBlockchainData = {
   enacting_tx?: string
   token?: string
   enacted_at: number
+  tx_amount?: number
 }
 
 export type GrantAttributes = TransparencyGrant & GrantBlockchainData

@@ -22,7 +22,7 @@ export default function SortingMenu() {
 
   const t = useFormatMessage()
 
-  function handleSortingChange(e: React.MouseEvent<unknown>, value: string) {
+  function handleSortingChange(value: string) {
     const newParams = new URLSearchParams(params)
     order ? newParams.set('order', value) : newParams.delete('order')
     newParams.delete('page')
@@ -36,8 +36,8 @@ export default function SortingMenu() {
       text={t(`navigation.search.sorting.${order}`) || ''}
     >
       <Dropdown.Menu>
-        <Dropdown.Item text={t('navigation.search.sorting.DESC')} onClick={(e) => handleSortingChange(e, 'DESC')} />
-        <Dropdown.Item text={t('navigation.search.sorting.ASC')} onClick={(e) => handleSortingChange(e, 'ASC')} />
+        <Dropdown.Item text={t('navigation.search.sorting.DESC')} onClick={() => handleSortingChange('DESC')} />
+        <Dropdown.Item text={t('navigation.search.sorting.ASC')} onClick={() => handleSortingChange('ASC')} />
       </Dropdown.Menu>
     </Dropdown>
   )

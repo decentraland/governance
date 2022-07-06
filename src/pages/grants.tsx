@@ -6,6 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import { filter, isEmpty } from 'lodash'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
@@ -38,39 +39,44 @@ const GRANTS_CATEGORY_FILTERS: GrantCategoryFilter[] = [
   ProposalGrantCategory.PlatformContributor,
 ]
 
-export default function GrantsPage() {
-  const t = useFormatMessage()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+const formatter = Intl.NumberFormat('en', { notation: 'compact' })
 
-  const { grants, isLoadingGrants } = useGrants()
-  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
-  const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
-  const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'enacted_at')
-
-  const currentGrantsFilteredByCategory = useMemo(
+const useCurrentGrantsFilteredByCategory = (grants: GrantWithUpdateAttributes[]) =>
+  useMemo(
     () => ({
-      [PROPOSAL_GRANT_CATEGORY_ALL]: grants?.current,
+      [PROPOSAL_GRANT_CATEGORY_ALL]: grants,
       [ProposalGrantCategory.Community]: filter(
-        grants.current,
+        grants,
         (item) => item.configuration.category === ProposalGrantCategory.Community
       ),
       [ProposalGrantCategory.Gaming]: filter(
-        grants.current,
+        grants,
         (item) => item.configuration.category === ProposalGrantCategory.Gaming
       ),
       [ProposalGrantCategory.PlatformContributor]: filter(
-        grants.current,
+        grants,
         (item) => item.configuration.category === ProposalGrantCategory.PlatformContributor
       ),
       [ProposalGrantCategory.ContentCreator]: filter(
-        grants.current,
+        grants,
         (item) => item.configuration.category === ProposalGrantCategory.ContentCreator
       ),
     }),
     [grants]
   )
+
+export default function GrantsPage() {
+  const t = useFormatMessage()
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const { grants, isLoadingGrants } = useGrants()
+  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
+  const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
+  const [sortingKey, setSortingKey] = useState('enacted_at')
+  const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'enacted_at')
+  const { sorted: sortedCurrentGrants } = useSortingByKey(filteredCurrentGrants, sortingKey)
+  const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(grants.current)
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
     if (grants) {
@@ -106,6 +112,62 @@ export default function GrantsPage() {
     }
   }, [grants, selectedCategory])
 
+  const getPastBannerItems = () => {
+    if (isEmpty(grants)) {
+      return []
+    }
+
+    const totalProjects = grants.past.length
+    const sizes = grants.past.map((item) => item.configuration.size)
+    const totalFunding = sizes.reduce((prev, next) => prev + next, 0)
+    const approvedPercentage = Math.round(((grants.current.length + grants.past.length) * 100) / grants.total)
+
+    return [
+      { title: `${totalProjects} Projects`, description: 'Successfully completed Grants' },
+      {
+        title: `$${formatter.format(totalFunding)} USD`,
+        description: 'Total funding for past initiatives',
+      },
+      { title: `${approvedPercentage}% Approval`, description: 'Rate of approved Grant proposals' },
+    ]
+  }
+
+  const isLoading = isEmpty(grants) && isLoadingGrants
+
+  const getCurrentBannerItems = () => {
+    if (isEmpty(grants)) {
+      return []
+    }
+
+    const releasedValues = grants.current.map((item) => {
+      if (item.configuration.tier === 'Tier 1' || item.configuration.tier === 'Tier 2') {
+        return item.configuration.size
+      }
+
+      const releasedPercentage = ((item.contract?.released || 0) * 100) / (item.contract?.vesting_total_amount || 0)
+
+      return ((item.contract?.vesting_total_amount || 0) * releasedPercentage) / 100
+    })
+
+    const totalReleased = releasedValues.filter(Number).reduce((prev, next) => prev! + next!, 0) || 0
+    const toBeVestedValues = grants.current.map(
+      (item) => (item.contract?.vesting_total_amount || 0) - (item.contract?.vestedAmount || 0)
+    )
+    const totalToBeVested = toBeVestedValues.filter(Number).reduce((prev, next) => prev! + next!, 0) || 0
+
+    return [
+      { title: `${grants.current.length} Active Grants`, description: 'Initiatives currently being funded' },
+      {
+        title: `$${formatter.format(totalReleased)} USD Released`,
+        description: 'Funds already cashed out by Grant teams',
+      },
+      {
+        title: `$${formatter.format(totalToBeVested)} USD to be Vested`,
+        description: 'Funds to be made available for active Grants',
+      },
+    ]
+  }
+
   if (isUnderMaintenance()) {
     return (
       <>
@@ -118,32 +180,6 @@ export default function GrantsPage() {
         <MaintenancePage />
       </>
     )
-  }
-
-  const isLoading = isEmpty(grants) && isLoadingGrants
-
-  const getCurrentBannerItems = () => {
-    if (isLoading) {
-      return []
-    }
-
-    return [
-      { title: `${grants.current.length} projects open`, description: 'Initiatives currently being funded' },
-      { title: '$2.5 million USD released', description: 'Funding so far, for current batch' },
-      { title: '$1.3 million USD to go', description: 'To be released for current batch' },
-    ]
-  }
-
-  const getPastBannerItems = () => {
-    if (isLoading) {
-      return []
-    }
-
-    return [
-      { title: `${grants.past.length} projects`, description: 'Initiatives successfully funded' },
-      { title: '$4.5 million USD', description: 'Aggregated funding for past initiatives' },
-      { title: '$1.3M per month', description: 'Avg. funding since Feb 2021' },
-    ]
   }
 
   const showLoadMoreCurrentGrantsButton =
@@ -175,19 +211,28 @@ export default function GrantsPage() {
                   <div>
                     <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
                     <div className="GrantsPage__CurrentGrantsFilters">
-                      {GRANTS_CATEGORY_FILTERS.map((item) => (
-                        <FilterButton
-                          key={item}
-                          selected={selectedCategory === item}
-                          onClick={() => setSelectedCategory(item)}
-                          count={currentGrantsFilteredByCategory[item]?.length}
-                        >
-                          {t(`page.grants.category_filters.${item.split(' ')[0].toLowerCase()}`)}
-                        </FilterButton>
-                      ))}
+                      <div className="GrantsPage__CurrentGrantsCategoryFilters">
+                        {GRANTS_CATEGORY_FILTERS.map((item) => (
+                          <FilterButton
+                            key={item}
+                            selected={selectedCategory === item}
+                            onClick={() => setSelectedCategory(item)}
+                            count={currentGrantsFilteredByCategory[item]?.length}
+                          >
+                            {t(`page.grants.category_filters.${item.split(' ')[0].toLowerCase()}`)}
+                          </FilterButton>
+                        ))}
+                      </div>
+                      <Dropdown direction="left" text="Finish date">
+                        <Dropdown.Menu>
+                          <Dropdown.Item text="Finish date" onClick={() => setSortingKey('enacted_at')} />
+                          <Dropdown.Item text="Amount granted" onClick={() => setSortingKey('configuration.size')} />
+                          <Dropdown.Item text="Newest" onClick={() => setSortingKey('created_at')} />
+                        </Dropdown.Menu>
+                      </Dropdown>
                     </div>
                     <Container className="GrantsPage__CurrentGrantsContainer">
-                      {filteredCurrentGrants?.map((grant) => (
+                      {sortedCurrentGrants?.map((grant) => (
                         <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
                       ))}
                     </Container>
@@ -222,7 +267,7 @@ export default function GrantsPage() {
                           {t('page.grants.past_funded.category')}
                         </Table.HeaderCell>
                         <Table.HeaderCell
-                          className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory"
+                          className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderClickable GrantsPage__PastGrantsTableHeaderCategory"
                           onClick={changeSort}
                         >
                           <span>

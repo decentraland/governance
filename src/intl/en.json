@@ -530,12 +530,12 @@
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "load_more_button": "Load more",
       "current_banner": {
-        "title": "The future of Decentraland is actually on your hands",
-        "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+        "title": "Discover the projects making the Decentraland ecosystem grow",
+        "description": "All these projects have been funded by you via the Decentraland DAO Community Grants program. Browse them to see their goals, progress and how they are making an impact in our community."
       },
       "past_banner": {
-        "title": "We’ve been heavily invested for a while now",
-        "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+        "title": "See what the Community already achieved",
+        "description": "Check already finished Grant projects. Do your own due diligence, see how they performed and the value they added to Decentraland."
       },
       "currently_funded": "Currently being funded",
       "category_filters": {
@@ -544,6 +544,11 @@
         "content": "Content",
         "gaming": "Gaming",
         "platform": "Platform"
+      },
+      "sorting_filters": {
+        "finish_date": "Finish date",
+        "amount": "Amount granted",
+        "created_at": "Newest"
       },
       "vested": "vested",
       "transferred": "transferred",

@@ -774,6 +774,7 @@ async function getGrants() {
         title: grant.title,
         token: grant.token || 'MANA', // TODO: Remove MANA when enacting_tx is available in transparency data,
         enacted_at: Time(proposal.updated_at).unix(), // TODO: Replace with enacted_at/start from transparency data
+        created_at: proposal.created_at,
       }
 
       if (grant.grant_tier === 'Tier 1' || grant.grant_tier === 'Tier 2') {
@@ -782,6 +783,7 @@ async function getGrants() {
           return current.push({
             ...newGrant,
             enacting_tx: '0xa05e2de34ef9cee592cd248f4f74d3b45c166880c99724949751a0b5781278ee', // TODO: Replace with tx from transparency data
+            tx_amount: grant.grant_size, // TODO: Replace with tx amount from transparency data
           })
         }
 
@@ -790,14 +792,14 @@ async function getGrants() {
 
       try {
         newGrant.contract = {
-          balance: Math.round(grant.grant_size),
+          vesting_total_amount: Math.round(grant.grant_size), // TODO: replace with amount from transparency data
           vestedAmount: Math.round(grant.released + grant.releasable),
           releasable: Math.round(grant.releasable),
           released: Math.round(grant.released),
           finish_at: grant.vesting_finish_at,
         }
 
-        if (newGrant.contract.vestedAmount === newGrant.contract.balance + newGrant.contract.released) {
+        if (newGrant.contract.vestedAmount === newGrant.contract.vesting_total_amount) {
           past.push(newGrant)
         } else {
           const grantWithUpdate: GrantWithUpdateAttributes = {
@@ -818,5 +820,6 @@ async function getGrants() {
   return {
     current,
     past,
+    total: grants.length,
   }
 }

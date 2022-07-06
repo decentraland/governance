@@ -17,7 +17,7 @@ const VestingProgress = ({ grant }: Props) => {
   const t = useFormatMessage()
   const { contract, enacting_tx, token, enacted_at } = grant
 
-  const total = contract ? contract.balance : 100
+  const total = contract ? contract.vesting_total_amount : 100
   const vestedPercentage = contract ? Math.min(Math.round((contract.vestedAmount * 100) / total), 100) : 100
   const releasedPercentage = contract ? Math.min(Math.round((contract.released * 100) / total), 100) : null
   const vestedAmountText = `${t(`general.number`, { value: contract?.vestedAmount || 100 })} ${token}`
