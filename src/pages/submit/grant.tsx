@@ -14,6 +14,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
+import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../api/Governance'
@@ -21,6 +22,7 @@ import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import {
@@ -34,6 +36,7 @@ import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
+import './grant.css'
 import './submit.css'
 
 type GrantState = {
@@ -43,6 +46,7 @@ type GrantState = {
   tier: string | null
   size: string | number
   beneficiary: string
+  email: string
   description: string
   specification: string
   personnel: string
@@ -57,6 +61,7 @@ const initialPollState: GrantState = {
   tier: null,
   size: '',
   beneficiary: '',
+  email: '',
   description: '',
   specification: '',
   personnel: '',
@@ -126,6 +131,9 @@ const validate = createValidator<GrantState>({
   beneficiary: (state) => ({
     beneficiary: assert(!state.beneficiary || isEthereumAddress(state.beneficiary), 'error.grant.beneficiary_invalid'),
   }),
+  email: (state) => ({
+    email: assert(!state.email || isEmail(state.email), 'error.grant.email_invalid'),
+  }),
   description: (state) => ({
     description:
       assert(state.description.length <= schema.description.maxLength, 'error.grant.description_too_large') ||
@@ -166,6 +174,9 @@ const validate = createValidator<GrantState>({
     beneficiary:
       assert(state.beneficiary !== '', 'error.grant.beneficiary_empty') ||
       assert(isEthereumAddress(state.beneficiary), 'error.grant.beneficiary_invalid'),
+    email:
+      assert(state.email !== '', 'error.grant.email_empty') ||
+      assert(isEmail(state.email), 'error.grant.email_invalid'),
     description:
       assert(state.description.length > 0, 'error.grant.description_empty') ||
       assert(state.description.length >= schema.description.minLength, 'error.grant.description_too_short') ||
@@ -185,7 +196,7 @@ const validate = createValidator<GrantState>({
   }),
 })
 
-export default function SubmitBanName() {
+export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
@@ -218,6 +229,7 @@ export default function SubmitBanName() {
           setFormDisabled(false)
         })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated])
 
   if (accountState.loading) {
@@ -346,6 +358,28 @@ export default function SubmitBanName() {
           error={!!state.error.beneficiary}
           disabled={formDisabled}
         />
+      </ContentSection>
+      <ContentSection>
+        <Label>
+          <span className="EmailLabel">
+            {t('page.submit_grant.email_label')}
+            <NewBadge />
+          </span>
+        </Label>
+        <Paragraph tiny secondary className="details">
+          {t('page.submit_grant.email_detail')}
+        </Paragraph>
+        <Field
+          type="email"
+          value={state.value.email}
+          placeholder={t('page.submit_grant.email_placeholder')}
+          onChange={(_, { value }) => editor.set({ email: value })}
+          onBlur={() => editor.set({ email: state.value.email.trim() })}
+          message={t(state.error.email)}
+          error={!!state.error.email}
+          disabled={formDisabled}
+        />
+        <p>{t('page.submit_grant.email_note')}</p>
       </ContentSection>
       <ContentSection>
         <Label>
