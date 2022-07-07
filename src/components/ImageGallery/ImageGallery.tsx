@@ -1,51 +1,58 @@
-import React from 'react'
-import Flickity, { FlickityOptions } from 'react-flickity-component'
+import React, { useState } from 'react'
 
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import 'flickity-fullscreen'
-import 'flickity-fullscreen/fullscreen.css'
-import 'flickity/css/flickity.css'
+import { Pagination } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/bundle'
+import 'swiper/css/pagination'
+import { Swiper, SwiperSlide } from 'swiper/react'
 
 import './ImageGallery.css'
-
-type ImageGalleryOptions = FlickityOptions & { fullscreen?: boolean }
+import ImageGalleryFullscreen from './ImageGalleryFullscreen'
 
 interface Props {
-  options?: ImageGalleryOptions
   className?: string
   imageUrls: string[]
 }
 
 const NO_IMAGE = require('../../images/no-image.png').default
 
-function ImageGallery({ options, className, imageUrls }: Props) {
-  const galleryOptions: ImageGalleryOptions = {
-    initialIndex: 0,
-    cellSelector: '.ImageGallery__CarouselCell',
-    cellAlign: 'center',
-    accessibility: true,
-    pageDots: false,
-    wrapAround: true,
-    autoPlay: 10000,
-    groupCells: false,
-    setGallerySize: true,
-    fullscreen: true,
-    ...options,
-  }
+function ImageGallery({ className, imageUrls }: Props) {
+  const responsive = useResponsive()
+  const isNarrowScreen = responsive({ maxWidth: 991 })
+  const [openFullscreen, setOpenFullscreen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(0)
 
-  const cellClass = galleryOptions.cellSelector?.slice(1)
+  const imageClickHandeler = (index: number) => {
+    setSelectedImage(index)
+    setOpenFullscreen(true)
+  }
 
   return (
     <>
       {imageUrls.length > 0 && (
-        <Flickity className={TokenList.join(['ImageGallery__Carousel', className])} options={galleryOptions}>
+        <Swiper
+          slidesPerView={isNarrowScreen ? 3 : 4}
+          spaceBetween={10}
+          pagination={{ clickable: true }}
+          modules={[Pagination]}
+          className={TokenList.join(['ImageGallery__Carousel', className])}
+        >
           {imageUrls.map((imageUrl, index) => (
-            <div key={index} className={TokenList.join(['ImageGallery__CarouselCell--Container', cellClass])}>
+            <SwiperSlide key={index} onClick={() => imageClickHandeler(index)}>
               <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
-            </div>
+            </SwiperSlide>
           ))}
-        </Flickity>
+        </Swiper>
       )}
+      <ImageGalleryFullscreen
+        className={TokenList.join(['ImageGallery__Carousel--fullscreen', className])}
+        open={openFullscreen}
+        imageUrls={imageUrls}
+        onClose={() => setOpenFullscreen(false)}
+        startIndex={selectedImage}
+      />
     </>
   )
 }

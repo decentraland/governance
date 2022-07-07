@@ -251,8 +251,8 @@ export default function ProposalPage() {
                   <div className="ProposalImagePreview">
                     <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
                     <ImageGallery
+                      className="ProposalImagePreview__Gallery"
                       imageUrls={proposal.configuration.image_previews}
-                      options={{ cellSelector: '.LinkedWearablesGallery__CarouselCell' }}
                     />
                   </div>
                 )}

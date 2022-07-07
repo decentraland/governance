@@ -1,25 +1,65 @@
-.ImageGallery__Carousel.is-fullscreen {
-  z-index: 30;
-}
-
-.ImageGallery__Carousel.is-fullscreen .ImageGallery__CarouselCell--Container {
-  width: auto;
-  height: 100%;
-  padding-top: 3%;
-}
-
-.ImageGallery__Carousel .flickity-button:focus {
+.ImageGallery__Carousel--fullscreen.ui.modal,
+.ImageGallery__Carousel--fullscreen.ui.modal > .content {
+  background: rgba(255, 255, 255, 0);
+  border: none;
   box-shadow: none;
 }
 
-.ImageGallery__CarouselCell--Container {
-  width: 250px;
-  height: 150px;
-  margin: 0 5px;
+.ImageGallery__Carousel.swiper {
+  width: 100%;
+  height: 100%;
 }
 
-.ImageGallery__CarouselCell--Container > img {
+.ImageGallery__Carousel--fullscreen.ui.fullscreen.modal {
+  left: auto !important;
+}
+
+.ImageGallery__Carousel .swiper-slide,
+.ImageGallery__Carousel--fullscreen .swiper-slide {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.ImageGallery__Carousel .swiper-slide {
+  height: 150px;
+  cursor: pointer;
+}
+
+.ImageGallery__Carousel--fullscreen .swiper-slide {
+  height: 400px;
+  margin-top: 30px;
+}
+
+.ImageGallery__Carousel .swiper-slide img,
+.ImageGallery__Carousel--fullscreen .swiper-slide img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.ImageGallery__Carousel .swiper-pagination,
+.ImageGallery__Carousel--fullscreen .swiper-pagination {
+  position: initial;
+  margin-top: 10px;
+}
+
+.ImageGallery__Carousel .swiper-pagination-bullet-active,
+.ImageGallery__Carousel--fullscreen .swiper-pagination-bullet-active {
+  background-color: var(--primary) !important;
+}
+
+.ImageGallery__Carousel--fullscreen .swiper-pagination-bullet {
+  background-color: var(--secondary-on-modal);
+  opacity: unset;
 }
