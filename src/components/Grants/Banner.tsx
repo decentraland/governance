@@ -26,10 +26,12 @@ const Banner = ({ title, description, items, type }: Props) => {
       </div>
       <div className="GrantsBanner__Items">
         {items.map((item, index) => (
-          <>
-            <BannerItem title={item.title} description={item.description} />
-            {index !== items.length - 1 && <div className="GrantsBanner__ItemsDivider" />}
-          </>
+          <BannerItem
+            key={item.title}
+            title={item.title}
+            description={item.description}
+            showDivider={index !== items.length - 1}
+          />
         ))}
       </div>
     </div>

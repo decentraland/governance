@@ -8,7 +8,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import { filter, isEmpty } from 'lodash'
+import { filter, isEmpty, orderBy } from 'lodash'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import Banner, { BannerType } from '../components/Grants/Banner'
@@ -73,10 +73,10 @@ export default function GrantsPage() {
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
-  const [sortingKey, setSortingKey] = useState('enacted_at')
+  const [sortingKey, setSortingKey] = useState('created_at')
   const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'enacted_at')
-  const { sorted: sortedCurrentGrants } = useSortingByKey(filteredCurrentGrants, sortingKey)
-  const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(grants.current)
+  const sortedCurrentGrants = useMemo(() => orderBy(grants.current, [sortingKey], ['desc']), [grants, sortingKey])
+  const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
     if (grants) {
@@ -86,7 +86,7 @@ export default function GrantsPage() {
       )
       setFilteredCurrentGrants(newCurrentGrants)
     }
-  }, [grants, currentGrantsFilteredByCategory, selectedCategory, filteredCurrentGrants?.length])
+  }, [grants, currentGrantsFilteredByCategory, selectedCategory, filteredCurrentGrants])
 
   const handleLoadMorePastGrantsClick = useCallback(() => {
     if (grants) {
@@ -97,20 +97,28 @@ export default function GrantsPage() {
 
   useEffect(() => {
     if (!isEmpty(grants)) {
-      setFilteredCurrentGrants(grants.current.slice(0, CURRENT_GRANTS_PER_PAGE))
-      setFilteredPastGrants(grants.past.slice(0, PAST_GRANTS_PER_PAGE))
+      setFilteredCurrentGrants(sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE))
     }
-  }, [grants])
+  }, [grants, sortedCurrentGrants])
 
   useEffect(() => {
-    if (grants && selectedCategory) {
+    if (!isEmpty(grants) && isEmpty(filteredPastGrants)) {
+      setFilteredPastGrants(grants.past.slice(0, PAST_GRANTS_PER_PAGE))
+    }
+  }, [grants, filteredPastGrants])
+
+  useEffect(() => {
+    if (!isEmpty(sortedCurrentGrants) && selectedCategory) {
       const newGrants =
         selectedCategory === PROPOSAL_GRANT_CATEGORY_ALL
-          ? grants?.current?.slice(0, CURRENT_GRANTS_PER_PAGE)
-          : filter(grants?.current, (item) => item.configuration.category === selectedCategory)
+          ? sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE)
+          : filter(sortedCurrentGrants, (item) => item.configuration.category === selectedCategory).slice(
+              0,
+              CURRENT_GRANTS_PER_PAGE
+            )
       setFilteredCurrentGrants(newGrants)
     }
-  }, [grants, selectedCategory])
+  }, [sortedCurrentGrants, selectedCategory])
 
   const getPastBannerItems = () => {
     if (isEmpty(grants)) {
@@ -118,7 +126,7 @@ export default function GrantsPage() {
     }
 
     const totalProjects = grants.past.length
-    const sizes = grants.past.map((item) => item.configuration.size)
+    const sizes = grants.past.map((item) => item.size)
     const totalFunding = sizes.reduce((prev, next) => prev + next, 0)
     const approvedPercentage = Math.round(((grants.current.length + grants.past.length) * 100) / grants.total)
 
@@ -141,12 +149,12 @@ export default function GrantsPage() {
 
     const releasedValues = grants.current.map((item) => {
       if (item.configuration.tier === 'Tier 1' || item.configuration.tier === 'Tier 2') {
-        return item.configuration.size
+        return item.size
       }
 
       const releasedPercentage = ((item.contract?.released || 0) * 100) / (item.contract?.vesting_total_amount || 0)
 
-      return ((item.contract?.vesting_total_amount || 0) * releasedPercentage) / 100
+      return ((item.size || 0) * releasedPercentage) / 100
     })
 
     const totalReleased = releasedValues.filter(Number).reduce((prev, next) => prev! + next!, 0) || 0
@@ -223,16 +231,28 @@ export default function GrantsPage() {
                           </FilterButton>
                         ))}
                       </div>
-                      <Dropdown direction="left" text="Finish date">
+                      <Dropdown
+                        direction="left"
+                        text={
+                          sortingKey === 'created_at'
+                            ? t('page.grants.sorting_filters.created_at')
+                            : t('page.grants.sorting_filters.amount')
+                        }
+                      >
                         <Dropdown.Menu>
-                          <Dropdown.Item text="Finish date" onClick={() => setSortingKey('enacted_at')} />
-                          <Dropdown.Item text="Amount granted" onClick={() => setSortingKey('configuration.size')} />
-                          <Dropdown.Item text="Newest" onClick={() => setSortingKey('created_at')} />
+                          <Dropdown.Item
+                            text={t('page.grants.sorting_filters.amount')}
+                            onClick={() => setSortingKey('size')}
+                          />
+                          <Dropdown.Item
+                            text={t('page.grants.sorting_filters.created_at')}
+                            onClick={() => setSortingKey('created_at')}
+                          />
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>
                     <Container className="GrantsPage__CurrentGrantsContainer">
-                      {sortedCurrentGrants?.map((grant) => (
+                      {filteredCurrentGrants?.map((grant) => (
                         <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
                       ))}
                     </Container>
@@ -282,10 +302,11 @@ export default function GrantsPage() {
                     </Table.Header>
                     <Table.Body>
                       {sortedPastGrants.map((grant, index) => (
-                        <>
-                          <GrantsPastItem grant={grant} />
-                          {sortedPastGrants.length - 1 !== index && <tr className="GrantsPage__PastGrantsSeparator" />}
-                        </>
+                        <GrantsPastItem
+                          key={grant.id}
+                          grant={grant}
+                          showSeparator={sortedPastGrants.length - 1 !== index}
+                        />
                       ))}
                     </Table.Body>
                   </Table>

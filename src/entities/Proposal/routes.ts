@@ -765,16 +765,16 @@ async function getGrants() {
       const proposal = await ProposalModel.findOne(grant.id)
       const newGrant: GrantAttributes = {
         id: grant.id,
+        size: grant.grant_size,
         configuration: {
           category: grant.grant_category,
-          size: grant.grant_size,
           tier: grant.grant_tier,
         },
         user: grant.user,
         title: grant.title,
         token: grant.token || 'MANA', // TODO: Remove MANA when enacting_tx is available in transparency data,
         enacted_at: Time(proposal.updated_at).unix(), // TODO: Replace with enacted_at/start from transparency data
-        created_at: proposal.created_at,
+        created_at: Time(proposal.created_at).unix(),
       }
 
       if (grant.grant_tier === 'Tier 1' || grant.grant_tier === 'Tier 2') {

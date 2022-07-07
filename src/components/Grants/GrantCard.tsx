@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
+import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
@@ -31,7 +31,7 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
 }
 
 const GrantCard = ({ grant }: GrantCardProps) => {
-  const { id, configuration, token, title, update } = grant
+  const { id, configuration, size, token, title, update } = grant
   const category: ProposalGrantCategory = configuration.category
 
   const handleClick = useCallback(() => {
@@ -45,7 +45,7 @@ const GrantCard = ({ grant }: GrantCardProps) => {
           <div className="GrantCard__TierSize">
             <p className="GrantCard__Tier">{`${configuration.tier}: `}</p>
             <p className="GrantCard__Size">
-              {configuration.size} {token}
+              {size} {token}
             </p>
           </div>
           <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>

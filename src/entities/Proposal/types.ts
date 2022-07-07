@@ -698,12 +698,12 @@ type TransparencyGrant = {
   id: string
   title: string
   user: string
+  size: number
   configuration: {
     category: ProposalGrantCategory
-    size: number
     tier: string
   }
-  created_at: string
+  created_at: number
 }
 
 type GrantBlockchainData = {

@@ -64,9 +64,3 @@
   display: flex;
   flex-direction: column;
 }
-
-.GrantsBanner__ItemsDivider {
-  opacity: 0.3;
-  width: auto;
-  border: 1px solid #ffffff;
-}
