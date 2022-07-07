@@ -28,6 +28,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   enacted: boolean
   enacted_by: string | null
   enacted_description: string | null
+  enacting_tx: string | null
   vesting_address: string | null
   passed_by: string | null
   passed_description: string | null
@@ -137,6 +138,7 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
 export type UpdateProposalStatusProposal = {
   status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
   vesting_address: string | null
+  enacting_tx: string | null
   description: string
 }
 
@@ -152,6 +154,11 @@ export const updateProposalStatusScheme = {
     vesting_address: {
       type: ['string', 'null'],
       format: 'address',
+    },
+    enacting_tx: {
+      type: ['string', 'null'],
+      minLength: 66,
+      maxLength: 66,
     },
     description: {
       type: ['string', 'null'],

@@ -13,12 +13,14 @@ export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<str
     }
     let description: string | null = ''
     if (proposal.vesting_address) {
-      // It's optional
       description += 'Vesting Contract Address: ' + proposal.vesting_address
     }
     if (proposal.enacted_description) {
       description += description === '' ? '' : '\n'
       description += proposal.enacted_description
+    }
+    if (proposal.enacting_tx) {
+      description += '\nEnacting Transaction: https://etherscan.io/tx/' + proposal.enacting_tx
     }
     if (description === '') {
       description = null

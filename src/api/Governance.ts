@@ -2,6 +2,7 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
+import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
   NewProposalBanName,
   NewProposalCatalyst,
@@ -19,8 +20,6 @@ import {
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
-
-import { CoauthorAttributes, CoauthorStatus } from './../entities/Coauthor/types'
 
 import { GovernanceAPI } from './GovernanceAPI'
 
@@ -170,11 +169,17 @@ export class Governance extends GovernanceAPI {
     proposal_id: string,
     status: ProposalStatus,
     vesting_address: string | null,
+    enacting_tx: string | null,
     description: string | null = null
   ) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
-      this.options().method('PATCH').authorization({ sign: true }).json({ status, vesting_address, description })
+      this.options().method('PATCH').authorization({ sign: true }).json({
+        status,
+        vesting_address,
+        enacting_tx,
+        description,
+      })
     )
 
     return result.data

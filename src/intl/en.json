@@ -208,7 +208,8 @@
       "method_too_large": "Method is too large"
     },
     "update_status_proposal": {
-      "grant_vesting_address_invalid": "Vesting contract address is invalid"
+      "grant_vesting_address_invalid": "Vesting contract address is invalid",
+      "grant_enacting_tx_invalid": "Enacting transaction hash is invalid"
     },
     "proposal_update": {
       "introduction_empty": "Introduction field is empty",
@@ -282,6 +283,7 @@
       "title": "Confirmation",
       "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
       "grant_vesting_address": "Vesting Contract Address",
+      "grant_enacting_tx": "Enacting Transaction Hash",
       "comments": "Comments",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
