@@ -6,7 +6,6 @@ import { formatDescription } from 'decentraland-gatsby/dist/components/Head/util
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Title from 'decentraland-gatsby/dist/components/Text/Title'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
@@ -24,7 +23,6 @@ import { Personal } from 'web3x/personal'
 import { Governance } from '../api/Governance'
 import { Snapshot } from '../api/Snapshot'
 import CategoryLabel from '../components/Category/CategoryLabel'
-import ImageGallery from '../components/ImageGallery/ImageGallery'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
@@ -36,6 +34,7 @@ import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/ProposalUpdates'
+import ProposalImagePreview from '../components/ProposalImagePreview/ProposalImagePreview'
 import ForumButton from '../components/Section/ForumButton'
 import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
@@ -245,17 +244,10 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
-              {!proposalState.loading &&
-                proposal?.type === ProposalType.LinkedWearables &&
-                !!proposal.configuration.image_previews && (
-                  <div className="ProposalImagePreview">
-                    <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
-                    <ImageGallery
-                      className="ProposalImagePreview__Gallery"
-                      imageUrls={proposal.configuration.image_previews}
-                    />
-                  </div>
-                )}
+              <ProposalImagePreview
+                isVisible={!proposalState.loading && proposal?.type === ProposalType.LinkedWearables}
+                proposal={proposal!}
+              />
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
