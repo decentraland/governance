@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -7,13 +7,30 @@ import { isEmpty } from 'lodash'
 
 import { GrantAttributes } from '../../entities/Proposal/types'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
+import { numberFormat } from '../../modules/intl'
 import Sort from '../Icon/Sort'
 
 import Banner, { BannerType } from './Banner'
 import GrantsPastItem from './GrantsPastItem'
 
 const PAST_GRANTS_PER_PAGE = 10
-const formatter = Intl.NumberFormat('en', { notation: 'compact' })
+
+const getBannerStats = (grants: GrantAttributes[], currentGrantsTotal: number, totalGrants: number) => {
+  if (isEmpty(grants)) {
+    return {}
+  }
+
+  const totalProjects = grants.length
+  const sizes = grants.map((item) => item.size)
+  const totalFunding = sizes.reduce((prev, next) => prev + next, 0)
+  const approvedPercentage = Math.round(((currentGrantsTotal + totalProjects) * 100) / totalGrants)
+
+  return {
+    totalProjects,
+    totalFunding,
+    approvedPercentage,
+  }
+}
 
 const PastGrantsList = ({
   grants,
@@ -41,25 +58,31 @@ const PastGrantsList = ({
     }
   }, [grants, filteredPastGrants])
 
-  const getPastBannerItems = () => {
-    if (isEmpty(grants)) {
-      return []
-    }
-
-    const totalProjects = grants.length
-    const sizes = grants.map((item) => item.size)
-    const totalFunding = sizes.reduce((prev, next) => prev + next, 0)
-    const approvedPercentage = Math.round(((currentGrantsTotal + grants.length) * 100) / totalGrants)
-
-    return [
-      { title: `${totalProjects} Projects`, description: 'Successfully completed Grants' },
+  const bannerStats = useMemo(
+    () => getBannerStats(grants, currentGrantsTotal, totalGrants),
+    [grants, currentGrantsTotal, totalGrants]
+  )
+  const bannerItems = useMemo(
+    () => [
       {
-        title: `$${formatter.format(totalFunding)} USD`,
-        description: 'Total funding for past initiatives',
+        title: t('page.grants.past_banner.completed_grants_title', { value: bannerStats.totalProjects }),
+        description: t('page.grants.past_banner.completed_grants_description'),
       },
-      { title: `${approvedPercentage}% Approval`, description: 'Rate of approved Grant proposals' },
-    ]
-  }
+      {
+        title: t('page.grants.past_banner.total_funding_title', {
+          value: numberFormat.format(bannerStats.totalFunding || 0),
+        }),
+        description: t('page.grants.past_banner.total_funding_description'),
+      },
+      {
+        title: t('page.grants.past_banner.approved_rate_title', {
+          value: numberFormat.format(bannerStats.approvedPercentage || 0),
+        }),
+        description: t('page.grants.past_banner.approved_rate_description'),
+      },
+    ],
+    [bannerStats, t]
+  )
 
   const showLoadMorePastGrantsButton = filteredPastGrants.length !== grants.length
 
@@ -69,7 +92,7 @@ const PastGrantsList = ({
         type={BannerType.Past}
         title={t('page.grants.past_banner.title')}
         description={t('page.grants.past_banner.description')}
-        items={getPastBannerItems()}
+        items={bannerItems}
       />
       <Table basic="very">
         <Table.Header>
