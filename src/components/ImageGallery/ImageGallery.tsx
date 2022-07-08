@@ -24,7 +24,7 @@ function ImageGallery({ className, imageUrls }: Props) {
   const [openFullscreen, setOpenFullscreen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
 
-  const imageClickHandeler = (index: number) => {
+  const imageClickHandler = (index: number) => {
     setSelectedImage(index)
     setOpenFullscreen(true)
   }
@@ -32,27 +32,29 @@ function ImageGallery({ className, imageUrls }: Props) {
   return (
     <>
       {imageUrls.length > 0 && (
-        <Swiper
-          slidesPerView={isNarrowScreen ? 3 : 4}
-          spaceBetween={10}
-          pagination={{ clickable: true }}
-          modules={[Pagination]}
-          className={TokenList.join(['ImageGallery__Carousel', className])}
-        >
-          {imageUrls.map((imageUrl, index) => (
-            <SwiperSlide key={index} onClick={() => imageClickHandeler(index)}>
-              <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <>
+          <Swiper
+            slidesPerView={isNarrowScreen ? 3 : 4}
+            spaceBetween={10}
+            pagination={{ clickable: true }}
+            modules={[Pagination]}
+            className={TokenList.join(['ImageGallery__Carousel', className])}
+          >
+            {imageUrls.map((imageUrl, index) => (
+              <SwiperSlide key={index} onClick={() => imageClickHandler(index)}>
+                <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <ImageGalleryFullscreen
+            className={TokenList.join(['ImageGallery__Carousel--fullscreen', className])}
+            open={openFullscreen}
+            imageUrls={imageUrls}
+            onClose={() => setOpenFullscreen(false)}
+            startIndex={selectedImage}
+          />
+        </>
       )}
-      <ImageGalleryFullscreen
-        className={TokenList.join(['ImageGallery__Carousel--fullscreen', className])}
-        open={openFullscreen}
-        imageUrls={imageUrls}
-        onClose={() => setOpenFullscreen(false)}
-        startIndex={selectedImage}
-      />
     </>
   )
 }

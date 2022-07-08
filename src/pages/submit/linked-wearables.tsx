@@ -77,9 +77,9 @@ const initialPollState: LinkedWearablesState = {
   method: '',
 }
 
-const MAX_IMAGES = 10
-
 const schema = newProposalLinkedWearablesScheme.properties
+const MAX_IMAGES = schema.image_previews.maxItems
+
 const edit = (state: LinkedWearablesState, props: Partial<LinkedWearablesState>) => {
   return {
     ...state,
@@ -240,7 +240,7 @@ export default function SubmitLinkedWearables() {
 
   const getListSection = (params: ListSectionType, detailOptions?: Record<string, unknown>, maxAmount?: number) => {
     const items = Object.values(state.value[params.section])
-    const canAdd = (!maxAmount || maxAmount < 0 || items.length < maxAmount) && maxAmount !== 1
+    const canAdd = !maxAmount || maxAmount < 0 || (items.length < maxAmount && maxAmount !== 1)
     return (
       <ContentSection>
         <Label>{t(`page.submit_linked_wearables.${params.section}_label`)}</Label>

@@ -664,6 +664,7 @@ export const newProposalLinkedWearablesScheme = {
         type: 'string',
       },
       minItems: 1,
+      maxItems: 10,
     },
     links: {
       type: 'array',
