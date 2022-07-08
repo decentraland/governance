@@ -554,6 +554,7 @@
       "transferred": "transferred",
       "released": "released",
       "started_date": "Started",
+      "end_date": "Ends",
       "transaction_date": "Transaction made",
       "past_funded": {
         "title": "Past, successfully funded initiatives",

@@ -86,9 +86,10 @@
   width: 100%;
 }
 
-.VestingProgress__VestedAt {
+.VestingProgress__Dates {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
   color: #161419;
   padding-bottom: 4px;
   font-size: 13px;

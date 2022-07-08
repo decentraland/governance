@@ -60,9 +60,17 @@ const VestingProgress = ({ grant }: Props) => {
         {enacting_tx && <div className="VestingProgressBar__Item VestingProgressBar__Transferred" />}
       </div>
 
-      <div className="VestingProgress__VestedAt">
-        <span>{enacting_tx ? t('page.grants.transaction_date') : t('page.grants.started_date')}</span>
-        <span className="VestingProgress__VestedDate">{enactedDate}</span>
+      <div className="VestingProgress__Dates">
+        <div className="VestingProgress__VestedAt">
+          <span>{enacting_tx ? t('page.grants.transaction_date') : t('page.grants.started_date')}</span>
+          <span className="VestingProgress__VestedDate">{enactedDate}</span>
+        </div>
+        {contract?.finish_at && (
+          <div className="VestingProgress__VestedAt">
+            <span>{t('page.grants.end_date')}</span>
+            <span className="VestingProgress__VestedDate">{Time.unix(contract.finish_at).fromNow()}</span>
+          </div>
+        )}
       </div>
     </div>
   )

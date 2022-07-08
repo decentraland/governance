@@ -690,6 +690,7 @@ type VestingContractData = {
   vestedAmount: number
   releasable: number
   released: number
+  start_at: number
   finish_at: number
   vesting_total_amount: number
 }
@@ -699,11 +700,11 @@ type TransparencyGrant = {
   title: string
   user: string
   size: number
+  created_at: number
   configuration: {
     category: ProposalGrantCategory
     tier: string
   }
-  created_at: number
 }
 
 type GrantBlockchainData = {

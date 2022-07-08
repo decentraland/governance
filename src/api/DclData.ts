@@ -37,19 +37,22 @@ export type TransparencyData = {
 }
 
 type Grants = {
-  grant_category: ProposalGrantCategory
-  grant_size: number
-  grant_tier: keyof typeof TransparencyGrantsTiers
   id: string
-  released: number
-  releasable: number
+  category: ProposalGrantCategory
+  tier: keyof typeof TransparencyGrantsTiers
+  size: number
   status: string
   symbol: string
   title: string
   token: string
   user: string
   vesting_address: string
+  vesting_released: number
+  vesting_releasable: number
+  vesting_start_at: string
   vesting_finish_at: number
+  vesting_token_contract_balance: number
+  vesting_total_amount: number
 }[]
 
 export const TransparencyGrantsTiers = {
