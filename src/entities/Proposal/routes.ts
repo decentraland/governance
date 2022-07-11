@@ -782,7 +782,7 @@ async function getGrants() {
         if (Time().isBefore(threshold)) {
           return current.push({
             ...newGrant,
-            enacting_tx: '0xa05e2de34ef9cee592cd248f4f74d3b45c166880c99724949751a0b5781278ee', // TODO: Replace with tx from transparency data
+            enacting_tx: grant.enacting_tx,
             tx_amount: grant.size, // TODO: Replace with tx amount from transparency data
           })
         }
