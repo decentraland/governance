@@ -41,7 +41,7 @@
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox label .dg.Paragraph {
   font-size: 15px;
   line-height: 18px;
-  color: var(--dark-gray);
+  color: var(--black-400);
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
