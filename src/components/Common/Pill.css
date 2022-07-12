@@ -117,13 +117,13 @@
 }
 
 .Pill--light-orange {
-  background-color: var(--light-orange);
-  border-color: var(--light-orange);
+  background-color: var(--orange-200);
+  border-color: var(--orange-200);
   color: var(--orange);
 }
 
 .Pill--medium-orange {
-  background-color: var(--light-orange);
+  background-color: var(--orange-200);
   border-color: var(--orange);
   color: var(--orange);
 }

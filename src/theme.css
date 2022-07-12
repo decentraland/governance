@@ -13,8 +13,9 @@
   --dark-gray: #736e7d;
   --dark-gray-rgb: 115, 110, 125;
   --white: #ffffff;
-  --light-orange: #ffe9df; /* TODO: Review light-orange use outside Pill component, maybe use Yellow instead */
+  --light-orange: #ffbc5b;
   --light-orange-rgb: 255, 188, 91;
+  --orange-200: #ffe9df;
   --orange: #ff7439;
   --black-100: rgba(115, 110, 125, 0.16);
   --black-600: #736e7d;
