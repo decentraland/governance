@@ -772,9 +772,9 @@ async function getGrants() {
         },
         user: grant.user,
         title: grant.title,
-        token: grant.token || 'MANA', // TODO: Remove MANA when enacting_tx token is available in transparency data,
-        enacted_at: Time(proposal.updated_at).unix(), // TODO: Replace with enacted_at/start from transparency data
+        token: grant.token,
         created_at: Time(proposal.created_at).unix(),
+        enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
       }
 
       if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
@@ -783,7 +783,7 @@ async function getGrants() {
           return current.push({
             ...newGrant,
             enacting_tx: grant.enacting_tx,
-            tx_amount: grant.size, // TODO: Replace with tx amount from transparency data
+            tx_amount: grant.tx_amount,
           })
         }
 

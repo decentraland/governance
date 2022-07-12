@@ -54,6 +54,8 @@ type Grants = {
   vesting_token_contract_balance: number
   vesting_total_amount: number
   enacting_tx: string
+  tx_amount: number
+  tx_date: string
 }[]
 
 export const TransparencyGrantsTiers = {

@@ -713,6 +713,7 @@ type GrantBlockchainData = {
   token?: string
   enacted_at: number
   tx_amount?: number
+  tx_date?: number
 }
 
 export type GrantAttributes = TransparencyGrant & GrantBlockchainData
