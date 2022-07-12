@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Pagination } from 'swiper'
+import { Autoplay, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/bundle'
+import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
@@ -34,10 +35,12 @@ function ImageGallery({ className, imageUrls }: Props) {
       {imageUrls.length > 0 && (
         <>
           <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
             slidesPerView={isNarrowScreen ? 3 : 4}
             spaceBetween={10}
             pagination={{ clickable: true }}
-            modules={[Pagination]}
+            navigation
+            autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
             className={TokenList.join(['ImageGallery__Carousel', className])}
           >
             {imageUrls.map((imageUrl, index) => (

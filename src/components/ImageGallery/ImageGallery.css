@@ -1,3 +1,9 @@
+.ImageGallery__Carousel,
+.ImageGallery__Carousel--fullscreen {
+  --swiper-theme-color: var(--primary);
+  --swiper-navigation-size: 60px;
+}
+
 .ImageGallery__Carousel--fullscreen.ui.modal,
 .ImageGallery__Carousel--fullscreen.ui.modal > .content {
   background: rgba(255, 255, 255, 0);
@@ -8,6 +14,33 @@
 .ImageGallery__Carousel.swiper {
   width: 100%;
   height: 100%;
+}
+
+.ImageGallery__Carousel .swiper-button-next,
+.swiper-button-prev {
+  top: 42%;
+}
+
+.ImageGallery__Carousel .swiper-button-next,
+.ImageGallery__Carousel .swiper-button-prev,
+.ImageGallery__Carousel--fullscreen .swiper-button-next,
+.ImageGallery__Carousel--fullscreen .swiper-button-prev {
+  background-image: url(../../images/icons/gallery-arrow.svg);
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center;
+}
+
+.ImageGallery__Carousel .swiper-button-prev,
+.ImageGallery__Carousel--fullscreen .swiper-button-prev {
+  transform: rotate(180deg);
+}
+
+.ImageGallery__Carousel .swiper-button-next::after,
+.ImageGallery__Carousel .swiper-button-prev::after,
+.ImageGallery__Carousel--fullscreen .swiper-button-next::after,
+.ImageGallery__Carousel--fullscreen .swiper-button-prev::after {
+  display: none;
 }
 
 .ImageGallery__Carousel--fullscreen.ui.fullscreen.modal {
@@ -53,7 +86,7 @@
 
 .ImageGallery__Carousel .swiper-pagination-bullet-active,
 .ImageGallery__Carousel--fullscreen .swiper-pagination-bullet-active {
-  background-color: var(--primary) !important;
+  background-color: var(--swiper-theme-color) !important;
 }
 
 .ImageGallery__Carousel--fullscreen .swiper-pagination-bullet {

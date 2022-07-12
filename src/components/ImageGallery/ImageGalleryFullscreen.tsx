@@ -2,9 +2,10 @@ import React from 'react'
 
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { Pagination } from 'swiper'
+import { Keyboard, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/bundle'
+import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
@@ -21,7 +22,14 @@ function ImageGalleryFullscreen({ open, onClose, className, imageUrls, startInde
   return (
     <Modal size="fullscreen" open={open} closeIcon={<Close />} onClose={onClose} className={className}>
       <Modal.Content>
-        <Swiper pagination={{ clickable: true }} modules={[Pagination]} className={className} initialSlide={startIndex}>
+        <Swiper
+          pagination={{ clickable: true }}
+          modules={[Navigation, Pagination, Keyboard]}
+          navigation
+          className={className}
+          initialSlide={startIndex}
+          keyboard={{ enabled: true }}
+        >
           {imageUrls.map((imageUrl, index) => (
             <SwiperSlide key={index}>
               <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
