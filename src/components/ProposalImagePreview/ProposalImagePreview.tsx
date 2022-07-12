@@ -7,22 +7,16 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import ImageGallery from '../ImageGallery/ImageGallery'
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  proposal: ProposalAttributes<any>
-  isVisible: boolean
+  proposal: ProposalAttributes
 }
 
-function ProposalImagePreview({ proposal, isVisible }: Props) {
+function ProposalImagePreview({ proposal }: Props) {
   const t = useFormatMessage()
   return (
-    <>
-      {isVisible && !!proposal.configuration.image_previews && (
-        <div className="ProposalImagePreview">
-          <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
-          <ImageGallery className="ProposalImagePreview__Gallery" imageUrls={proposal.configuration.image_previews} />
-        </div>
-      )}
-    </>
+    <div className="ProposalImagePreview">
+      <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
+      <ImageGallery className="ProposalImagePreview__Gallery" imageUrls={proposal.configuration.image_previews} />
+    </div>
   )
 }
 

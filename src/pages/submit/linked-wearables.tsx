@@ -303,7 +303,7 @@ export default function SubmitLinkedWearables() {
                 onChange={(_, { value }) => handleEditOption(params.section, key, value)}
                 disabled={formDisabled}
                 error={listSectionErrors[params.section].includes(key)}
-                onBlur={({ target }) => handleErrorOption(target.value, key, params.section, validator)}
+                onBlur={() => handleErrorOption(state.value[params.section][key], key, params.section, validator)}
               />
             ))}
           {canAdd && (
@@ -351,7 +351,7 @@ export default function SubmitLinkedWearables() {
   }, [state.validated, state.value])
 
   useEffect(() => {
-    const errorFields = Object.keys(state.error)
+    const errorFields = Object.keys(state.error) as (keyof LinkedWearablesState | '*')[]
     const errorFieldsStr = JSON.stringify(errorFields)
     if (errorFields.length > 0 && errorFieldsStr !== formErrorKeys) {
       editor.error({

@@ -218,6 +218,8 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
   const showProposalUpdates =
     publicUpdates && proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+  const showImagePreview =
+    !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && proposal.configuration.image_previews
 
   return (
     <>
@@ -244,10 +246,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
-              <ProposalImagePreview
-                isVisible={!proposalState.loading && proposal?.type === ProposalType.LinkedWearables}
-                proposal={proposal!}
-              />
+              {showImagePreview && <ProposalImagePreview proposal={proposal!} />}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
