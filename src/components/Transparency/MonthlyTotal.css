@@ -45,7 +45,7 @@
 }
 
 strong.Number.Number--Green {
-  color: var(--green);
+  color: var(--green-800);
 }
 
 strong.Number.Number--Red {

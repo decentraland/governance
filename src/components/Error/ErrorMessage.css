@@ -27,7 +27,7 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   font-weight: 600;
   font-size: 13px;
   line-height: 20px;
-  color: var(--red) !important;
+  color: var(--red-800) !important;
   padding: 0;
 }
 

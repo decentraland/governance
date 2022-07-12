@@ -72,17 +72,17 @@
 
 .VestingProgressBar__Released {
   z-index: 3;
-  background: var(--red);
+  background: var(--red-800);
 }
 
 .VestingProgressBar__Vested {
   z-index: 2;
-  background: var(--yellow);
+  background: var(--yellow-800);
 }
 
 .VestingProgressBar__Transferred {
   z-index: 2;
-  background: var(--fuchsia);
+  background: var(--fuchsia-800);
   width: 100%;
 }
 

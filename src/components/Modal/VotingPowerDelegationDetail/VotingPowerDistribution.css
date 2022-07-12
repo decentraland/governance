@@ -7,11 +7,11 @@
 }
 
 .VotingPowerDistribution__Land {
-  background: var(--yellow);
+  background: var(--yellow-800);
 }
 
 .VotingPowerDistribution__Delegated {
-  background: var(--blue);
+  background: var(--blue-800);
 }
 
 .VotingPowerDistributionBar {

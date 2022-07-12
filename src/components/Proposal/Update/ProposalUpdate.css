@@ -127,15 +127,15 @@
 }
 
 .ProposalUpdate__KeepReading--onTrack {
-  color: var(--green);
+  color: var(--green-800);
 }
 
 .ProposalUpdate__KeepReading--atRisk {
-  color: var(--yellow);
+  color: var(--yellow-800);
 }
 
 .ProposalUpdate__KeepReading--offTrack {
-  color: var(--red);
+  color: var(--red-800);
 }
 
 .ProposalUpdate .ui.basic.button {

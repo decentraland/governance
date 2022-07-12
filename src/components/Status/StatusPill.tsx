@@ -23,7 +23,7 @@ const ColorsConfig: Record<ProposalStatus, PillColors> = {
 const StatusPill = ({ status }: Props) => {
   const label = isProposalStatus(status) ? status : ProposalStatus.Pending
   const showIcon = label === ProposalStatus.Enacted || label === ProposalStatus.Passed
-  const iconColor = label === ProposalStatus.Enacted ? 'var(--white)' : 'var(--green)'
+  const iconColor = label === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
 
   return (
     <Pill

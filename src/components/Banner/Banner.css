@@ -16,7 +16,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--blue);
+  background-color: var(--blue-800);
   border-radius: 8px;
   padding: 20px;
   width: 100%;
@@ -60,7 +60,7 @@
 }
 
 .Banner .Banner__Button {
-  background-color: var(--blue) !important;
+  background-color: var(--blue-800) !important;
 }
 
 @media (max-width: 767px) {
@@ -120,6 +120,6 @@
 
   .Banner .Banner__Button {
     position: relative;
-    background-color: var(--blue) !important;
+    background-color: var(--blue-800) !important;
   }
 }

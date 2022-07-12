@@ -24,7 +24,7 @@
 
 .ui.button.ChoiceButton.ChoiceButton--approve:hover,
 .ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--approve {
-  color: var(--green);
+  color: var(--green-800);
 }
 
 .ui.button.ChoiceButton.ChoiceButton--reject:hover,

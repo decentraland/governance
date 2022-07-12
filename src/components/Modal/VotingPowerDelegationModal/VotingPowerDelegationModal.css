@@ -17,11 +17,11 @@
 }
 
 .VotingPowerDelegationModal .description .dg.Paragraph .dg.Link {
-  color: var(--blue);
+  color: var(--blue-800);
 }
 
 .VotingPowerDelegationModal .actions .ui.button.primary {
-  color: var(--blue);
+  color: var(--blue-800);
   background-color: rgba(72, 136, 238, 0.1);
 }
 

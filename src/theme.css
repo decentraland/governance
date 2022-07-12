@@ -1,33 +1,33 @@
 :root {
-  --yellow: #ffb03f;
   --yellow-100: #ffd89f;
-  --light-yellow: #fef7d2;
-  --light-fuchsia: #ffe4ff;
-  --fuchsia: #ff5afe;
-  --light-green: #e1f3d6;
-  --green: #44b600;
-  --light-red: #f9d6dc;
-  --red: #d80027;
-  --light-blue: #e2ecfc;
-  --blue: #4888ee;
-  --gray: #a19ea8;
-  --white: #ffffff;
+  --yellow-200: #fef7d2;
+  --yellow-800: #ffb03f;
+  --fuchsia-200: #ffe4ff;
+  --fuchsia-800: #ff5afe;
+  --green-200: #e1f3d6;
+  --green-800: #44b600;
+  --red-200: #f9d6dc;
+  --red-800: #d80027;
+  --blue-200: #e2ecfc;
+  --blue-800: #4888ee;
+  --gray: #a19ea8; /* TODO: Sync with Figma color styles */
+  --white-900: #ffffff;
   --orange-200: #ffe9df;
-  --orange: #ff7439;
+  --orange-800: #ff7439;
   --black-100: rgba(115, 110, 125, 0.16);
   --black-400: #b9b7be;
   --black-600: #736e7d;
-  --purple: #3c24b3;
-  --light-purple: #e0dcf3;
+  --purple-200: #e0dcf3;
+  --purple-800: #3c24b3;
 
-  --background-catalyst: var(--blue);
-  --background-poi: var(--green);
-  --background-ban-name: var(--fuchsia);
-  --background-grant: var(--purple);
-  --background-poll: var(--orange);
+  --background-catalyst: var(--blue-800);
+  --background-poi: var(--green-800);
+  --background-ban-name: var(--fuchsia-800);
+  --background-grant: var(--purple-800);
+  --background-poll: var(--orange-800);
   --background-remove-poi: #ff247c;
-  --background-happy-green: var(--green);
-  --background-linked-wearables: var(--yellow);
+  --background-happy-green: var(--green-800);
+  --background-linked-wearables: var(--yellow-800);
   --background-popup: #5c5c6e;
 
   --dao-footer-height: 156px;

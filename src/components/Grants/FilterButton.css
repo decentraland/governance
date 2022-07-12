@@ -4,7 +4,7 @@
   justify-content: center;
   cursor: pointer;
   padding: 6px 12px;
-  background: var(--white);
+  background: var(--white-900);
   border: 1px solid #cccccd;
   border-radius: 24px;
   color: #cccccd;
@@ -27,7 +27,7 @@
   height: 16px;
   padding: 0 4px;
   margin-left: 4px;
-  color: var(--white);
+  color: var(--white-900);
   border-radius: 10px;
   font-weight: 600;
   font-size: 11px;
