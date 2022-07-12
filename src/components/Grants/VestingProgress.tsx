@@ -13,13 +13,15 @@ export type Props = React.HTMLAttributes<HTMLDivElement> & {
   grant: GrantAttributes
 }
 
+const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
+
 const VestingProgress = ({ grant }: Props) => {
   const t = useFormatMessage()
   const { contract, enacting_tx, token, enacted_at } = grant
 
-  const total = contract ? contract.vesting_total_amount : 100
-  const vestedPercentage = contract ? Math.min(Math.round((contract.vestedAmount * 100) / total), 100) : 100
-  const releasedPercentage = contract ? Math.min(Math.round((contract.released * 100) / total), 100) : null
+  const total = contract?.vesting_total_amount || 100
+  const vestedPercentage = contract ? getRoundedPercentage(contract.vestedAmount, total) : 100
+  const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null
   const vestedAmountText = `${t(`general.number`, { value: contract?.vestedAmount || 100 })} ${token}`
   const releasedText = contract
     ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`

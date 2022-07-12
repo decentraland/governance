@@ -778,7 +778,7 @@ async function getGrants() {
       }
 
       if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
-        const threshold = Time(proposal.updated_at).add(1, 'month')
+        const threshold = Time(grant.tx_date).add(1, 'month')
         if (Time().isBefore(threshold)) {
           return current.push({
             ...newGrant,
