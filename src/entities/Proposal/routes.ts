@@ -10,7 +10,6 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
-import { ethers } from 'ethers'
 import { Request } from 'express'
 import { filter } from 'lodash'
 import { v1 as uuid } from 'uuid'
@@ -20,10 +19,7 @@ import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
-import daiAbi from '../../modules/contracts/abi/vesting/dai.json'
-import manaAbi from '../../modules/contracts/abi/vesting/mana.json'
-import usdcAbi from '../../modules/contracts/abi/vesting/usdc.json'
-import usdtAbi from '../../modules/contracts/abi/vesting/usdt.json'
+import CoauthorModel from '../Coauthor/model'
 import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
@@ -88,20 +84,6 @@ import {
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
 const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
-
-const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_KEYS}`)
-const TokenAddress = {
-  MANA: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
-  DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
-  USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  USDC: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-}
-const TokenContracts = {
-  [TokenAddress.MANA]: new ethers.Contract(TokenAddress.MANA, manaAbi, provider),
-  [TokenAddress.DAI]: new ethers.Contract(TokenAddress.DAI, daiAbi, provider),
-  [TokenAddress.USDT]: new ethers.Contract(TokenAddress.USDT, usdtAbi, provider),
-  [TokenAddress.USDC]: new ethers.Contract(TokenAddress.USDC, usdcAbi, provider),
-}
 
 export default routes((route) => {
   const withAuth = auth()
@@ -171,6 +153,7 @@ export async function getProposals(req: WithAuth<Request>) {
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
+  const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
 
   let subscribed: string | undefined = undefined
@@ -182,13 +165,24 @@ export async function getProposals(req: WithAuth<Request>) {
 
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
 
-  if (search && !/\w{3}/.test(search)) {
+  if (search && !/\w{2}/.test(search)) {
     return []
   }
 
   const [total, data] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed }),
-    ProposalModel.getProposalList({ type, status, user, subscribed, search, timeFrame, order, offset, limit }),
+    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed, coauthor }),
+    ProposalModel.getProposalList({
+      type,
+      status,
+      user,
+      subscribed,
+      coauthor,
+      search,
+      timeFrame,
+      order,
+      offset,
+      limit,
+    }),
   ])
 
   return { ok: true, total, data }
@@ -404,6 +398,13 @@ export async function createProposal(
   const start = Time.utc().set('seconds', 0)
   const end = data.finish_at
   const proposal_url = proposalUrl({ id })
+  const coAuthors =
+    data.configuration && data.configuration.coAuthors ? (data.configuration.coAuthors as string[]) : null
+
+  if (coAuthors) {
+    delete data.configuration.coAuthors
+  }
+
   const title = templates.title({ type: data.type, configuration: data.configuration })
   const description = await templates.description({ type: data.type, configuration: data.configuration })
 
@@ -558,6 +559,7 @@ export async function createProposal(
     enacted: false,
     enacted_by: null,
     enacted_description: null,
+    enacting_tx: null,
     vesting_address: null,
     passed_by: null,
     passed_description: null,
@@ -571,6 +573,9 @@ export async function createProposal(
   try {
     await ProposalModel.create(newProposal)
     await VotesModel.createEmpty(id)
+    if (coAuthors) {
+      CoauthorModel.createMultiple(id, coAuthors)
+    }
   } catch (err) {
     dropDiscourseTopic(discourseProposal.topic_id)
     dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
@@ -642,6 +647,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
       update.vesting_address = configuration.vesting_address
+      update.enacting_tx = configuration.enacting_tx
       update.textsearch = ProposalModel.textsearch(
         proposal.title,
         proposal.description,

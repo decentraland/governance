@@ -14,7 +14,7 @@
     "activity": "Activity",
     "enacted": "Enacted",
     "transparency": "Transparency",
-    "admin": "Admin",
+    "debug": "Debug",
     "search": {
       "mobile": {
         "placeholder": "Search on the DAO...",
@@ -44,6 +44,13 @@
     "button": "Go Back"
   },
   "error": {
+    "message": {
+      "hide": "Hide error",
+      "show": "Show error",
+      "copy": "Copy to Clipboard",
+      "copied": "Copied!",
+      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on [Discord](https://discord.com/channels/894658869391933540/987439629533855774)."
+    },
     "poll": {
       "title_empty": "Title field is empty",
       "title_too_short": "Title field is too short",
@@ -150,6 +157,8 @@
       "abstract_too_short": "Abstract is too short",
       "beneficiary_empty": "Beneficiary is empty",
       "beneficiary_invalid": "Beneficiary is invalid",
+      "email_empty": "Email address is empty",
+      "email_invalid": "Email address is invalid",
       "description_empty": "Description is empty",
       "description_too_large": "Description is too large",
       "description_too_short": "Description is too short",
@@ -200,7 +209,8 @@
       "method_too_large": "Method is too large"
     },
     "update_status_proposal": {
-      "grant_vesting_address_invalid": "Vesting contract address is invalid"
+      "grant_vesting_address_invalid": "Vesting contract address is invalid",
+      "grant_enacting_tx_invalid": "Enacting transaction hash is invalid"
     },
     "proposal_update": {
       "introduction_empty": "Introduction field is empty",
@@ -213,7 +223,7 @@
       "next_steps_too_large": "Next steps field is too large",
       "additional_notes_too_large": "Additional notes and links field is too large"
     },
-    "admin": {
+    "debug": {
       "invalid_http_status": "Http status must be between 100 and 530",
       "invalid_sleep_time": "Sleep time must be between 0 and 300000 ms (5 minutes)"
     }
@@ -274,6 +284,7 @@
       "title": "Confirmation",
       "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
       "grant_vesting_address": "Vesting Contract Address",
+      "grant_enacting_tx": "Enacting Transaction Hash",
       "comments": "Comments",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
@@ -384,9 +395,10 @@
       "title": "Not found",
       "description": "You just hit a route that doesn't exist..."
     },
-    "admin": {
-      "title": "Admin",
-      "description": "A tab where anything is possible"
+    "debug": {
+      "title": "Debug",
+      "description": "A tab where anything is possible",
+      "error_label": "There was an error."
     },
     "welcome": {
       "title": "Welcome to the Decentraland DAO",
@@ -431,6 +443,18 @@
     "proposal_poll_list": {
       "title": "Polls",
       "description": "Recent community polls in the Decentraland DAO"
+    },
+    "coauthor_detail": {
+      "pending_label": "Co-author request",
+      "pending_description": "You’ve been added as a co-author for this initiative by its creator.",
+      "pending_helper": "If you confirm this request, your co-author status will be published on this proposal. If you are not sure why you are seeing this or if you do not want to be listed as co-author, you can reject this request.",
+      "confirm_label": "Confirm",
+      "deny_label": "Deny",
+      "accepted_label": "Co-authoring",
+      "accepted_description": "You've accepted being involved in this initiative.",
+      "rejected_label": "Co-authoring",
+      "rejected_description": "You've rejected being involved in this initiative.",
+      "revert_label": "Revert"
     },
     "proposal_detail": {
       "title": "Decentraland DAO",
@@ -485,6 +509,10 @@
       },
       "details_label": "Details",
       "details_user_label": "Created by",
+      "details_coauthors_label": "Co-authors",
+      "details_coauthor_accepted_helper": "This user has accepted the co-author request",
+      "details_coauthor_rejected_helper": "This user has declined the co-author request",
+      "details_coauthor_pending_helper": "This user has a pending co-author request",
       "details_start_label": "Started",
       "details_finish_label": "Ends",
       "details_snapshot_label": "Snapshot",
@@ -586,7 +614,8 @@
       "no_proposals_subscriptions": "You haven't subscribed to any proposal yet.",
       "no_proposals_subscriptions_action": "Browse proposals",
       "no_proposals_submitted": "You haven't submitted any proposal yet.",
-      "no_proposals_submitted_action": "Create a proposal"
+      "no_proposals_submitted_action": "Create a proposal",
+      "no_proposals_coauthoring": "You don’t have active co-authoring requests currently."
     },
     "proposal_comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",
@@ -708,7 +737,17 @@
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
       "markdown_tooltip": " (markdown)",
-      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed."
+      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
+      "co_author_label": "Co-authors",
+      "optional_tooltip": " (optional)",
+      "co_author_description": "If you co-authored this proposal with someone else, you can add their addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
+      "co_author_placeholder": "Enter their address",
+      "co_author_count": "{amount}/{maxAmount} Co-authors added",
+      "co_author_error": "Invalid address",
+      "co_author_as_author_error": "This address cannot be added since it belongs to the proposal's author.",
+      "co_author_duplicated_error": "It looks like this co-author's address has already been added.",
+      "co_author_max_error": "The maximum number of co-authors was exceeded.",
+      "error_label": "There was an error while trying to create the proposal, please try again later."
     },
     "submit_poll": {
       "title": "Create a community poll",
@@ -846,7 +885,12 @@
       "personnel_placeholder": "A description of your team and why they are particularly qualified for your project.",
       "roadmap_label": "Roadmap and milestones",
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
-      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
+      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
+      "email_label": "Contact Email Address",
+      "email_detail": "This email address will be used by the Grant Support teams to contact you to check the progress of the grant, set up meetings and maintain an open communication channel.",
+      "email_placeholder": "Enter your email address",
+      "email_error_message": "Please enter a valid email",
+      "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
     },
     "submit_linked_wearables": {
       "title": "Linked Wearables Registry",

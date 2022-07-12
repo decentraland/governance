@@ -15,9 +15,11 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../api/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isValidName } from '../../entities/Proposal/utils'
@@ -29,6 +31,7 @@ import './submit.css'
 type BanNameState = {
   name: string
   description: string
+  coAuthors?: string[]
 }
 
 const initialPollState: BanNameState = {
@@ -76,6 +79,8 @@ export default function SubmitBanName() {
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
 
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
@@ -101,7 +106,7 @@ export default function SubmitBanName() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          editor.error({ '*': 'There was an error while trying to create the proposal, please try again.' })
+          editor.error({ '*': err.body?.error || err.message })
           setFormDisabled(false)
         })
     }
@@ -175,15 +180,16 @@ export default function SubmitBanName() {
         />
       </ContentSection>
       <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+      </ContentSection>
+      <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
           {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </ContentLayout>

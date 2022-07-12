@@ -4,12 +4,17 @@
 }
 
 .ui.card.ProposalCard .content.ProposalCard__Content {
-  padding-bottom: 94px;
+  justify-content: space-between;
   height: 100%;
 }
 
+.ui.card.ProposalCard .content.ProposalCard__Content::after {
+  content: none;
+}
+
 .ProposalCard .ProposalCard__Title {
-  padding-right: 40px;
+  padding-right: 20px;
+  overflow-wrap: break-word;
 }
 
 .ProposalCard .ProposalCard__Title .ui.button {
@@ -30,9 +35,7 @@
 }
 
 .ProposalCard .ProposalCard__Progress {
-  position: absolute;
   width: 100%;
-  padding: 0 20px 24px;
   left: 0;
   bottom: 48px;
 }
@@ -40,4 +43,25 @@
 .ProposalCard__Info {
   display: flex;
   flex-direction: row;
+}
+
+.ProposalCard .ProposalCard__StatusLabel {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.ProposalCard .ProposalCard__Labels {
+  flex-direction: row !important;
+}
+
+.ProposalCard .ProposalCard__Spacer {
+  flex: 1 0 30px;
+}
+
+.ui.card.ProposalCard.ProposalCard--coauthor,
+.ui.card.ProposalCard.ProposalCard--coauthor:hover {
+  border: 1px solid var(--light-orange) !important;
+  box-shadow: 0 2px 4px rgba(var(--light-orange-rgb), 0.5);
 }

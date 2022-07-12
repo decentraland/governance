@@ -35,6 +35,7 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import ForumButton from '../components/Section/ForumButton'
+import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
@@ -131,12 +132,13 @@ export default function ProposalPage() {
   )
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(
-    async (status: ProposalStatus, vesting_address: string | null, description: string) => {
+    async (status: ProposalStatus, vesting_address: string | null, enactingTx: string | null, description: string) => {
       if (proposal && isCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
           vesting_address,
+          enactingTx,
           description
         )
         proposalState.set(updateProposal)
@@ -250,6 +252,7 @@ export default function ProposalPage() {
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
+              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} />}
               <ForumButton
                 loading={proposalState.loading}
                 disabled={!proposal}
@@ -356,8 +359,8 @@ export default function ProposalPage() {
         proposal={proposal}
         status={options.confirmStatusUpdate || null}
         loading={updatingStatus}
-        onClickAccept={(_, status, vesting_contract, description) =>
-          updateProposalStatus(status, vesting_contract, description)
+        onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
+          updateProposalStatus(status, vesting_contract, enactingTx, description)
         }
         onClose={() => patchOptions({ confirmStatusUpdate: false })}
       />

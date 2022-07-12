@@ -7,7 +7,8 @@
   min-height: 36px !important;
 }
 
-.VotingPowerDelegationModal > .dcl.close, .ui.modal > .dcl.close {
+.VotingPowerDelegationModal > .dcl.close,
+.ui.modal > .dcl.close {
   top: 14px;
 }
 
@@ -39,7 +40,7 @@
 }
 
 .VotingPowerDelegationModal .ui.table tbody tr:hover {
-  box-shadow: 0px 3px 15px rgba(115, 110, 125, 0.3);
+  box-shadow: 0px 3px 15px rgba(var(--dark-gray-rgb), 0.3);
   border-radius: 6px;
   cursor: pointer;
 }
@@ -48,13 +49,13 @@
   cursor: pointer !important;
 }
 
-.VotingPowerDelegationModal .TotalVP>span {
+.VotingPowerDelegationModal .TotalVP > span {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.VotingPowerDelegationModal .TotalVP>span svg {
+.VotingPowerDelegationModal .TotalVP > span svg {
   margin-left: 5px;
 }
 
@@ -72,7 +73,7 @@
 }
 
 /* Animation */
-.VotingPowerDelegationModal .TotalVP>span svg,
+.VotingPowerDelegationModal .TotalVP > span svg,
 .VotingPowerDelegationModal .ui.table tbody tr:hover {
   transition: all 0.3s linear;
 }

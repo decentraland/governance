@@ -91,6 +91,10 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
   }
 }
 
+export function isValidTransactionHash(transactionHash: string) {
+  return /^0x([A-Fa-f\d]{64})$/.test(transactionHash)
+}
+
 export function asNumber(value: string | number): number {
   switch (typeof value) {
     case 'number':

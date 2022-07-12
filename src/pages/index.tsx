@@ -4,6 +4,7 @@ import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
@@ -32,9 +33,11 @@ import { SearchTitle } from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
+import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
@@ -85,6 +88,9 @@ export default function IndexPage() {
       }
     }
   }, [handlePageFilter, page, proposals])
+
+  const [user] = useAuthContext()
+  const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -209,6 +215,9 @@ export default function IndexPage() {
                           <ProposalItem
                             key={proposal.id}
                             proposal={proposal}
+                            hasCoauthorRequest={
+                              !!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)
+                            }
                             votes={votes ? votes[proposal.id] : undefined}
                             subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                             subscribed={
