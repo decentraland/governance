@@ -77,5 +77,5 @@ div.FollowUpModal__Banner.CopyLink {
 
 .FollowUpModal__DismissButton {
   background-color: #ffffff !important;
-  border: 1px solid rgba(var(--dark-gray-rgb), 0.32) !important;
+  border: 1px solid var(--black-400) !important;
 }

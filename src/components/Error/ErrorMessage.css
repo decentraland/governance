@@ -70,8 +70,8 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   text-transform: uppercase;
   color: #736e7d;
   background: #fff;
-  border: 1px solid rgba(var(--dark-gray-rgb), 0.5);
-  box-shadow: 0 2px 4px rgba(var(--dark-gray-rgb), 0.2);
+  border: 1px solid var(--black-400);
+  box-shadow: 0 2px 4px var(--black-400);
   border-radius: 4px;
   margin-bottom: 9px;
   margin-right: 10px;

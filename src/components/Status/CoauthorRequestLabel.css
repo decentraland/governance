@@ -1,7 +1,7 @@
 .CoauthorRequestLabel {
   display: flex;
   align-items: center;
-  background-color: var(--light-orange);
+  background-color: var(--yellow);
   border-radius: 12px;
   font-size: 12px;
   line-height: 18px;

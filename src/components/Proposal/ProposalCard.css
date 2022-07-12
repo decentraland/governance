@@ -62,6 +62,6 @@
 
 .ui.card.ProposalCard.ProposalCard--coauthor,
 .ui.card.ProposalCard.ProposalCard--coauthor:hover {
-  border: 1px solid var(--light-orange) !important;
-  box-shadow: 0 2px 4px rgba(var(--light-orange-rgb), 0.5);
+  border: 1px solid var(--yellow) !important;
+  box-shadow: 0 2px 4px var(--yellow-100);
 }
