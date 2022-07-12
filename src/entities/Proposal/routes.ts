@@ -12,9 +12,11 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { ethers } from 'ethers'
 import { Request } from 'express'
+import { filter } from 'lodash'
 import { v1 as uuid } from 'uuid'
 import isUUID from 'validator/lib/isUUID'
 
+import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
@@ -22,7 +24,6 @@ import daiAbi from '../../modules/contracts/abi/vesting/dai.json'
 import manaAbi from '../../modules/contracts/abi/vesting/mana.json'
 import usdcAbi from '../../modules/contracts/abi/vesting/usdc.json'
 import usdtAbi from '../../modules/contracts/abi/vesting/usdt.json'
-import vestingAbi from '../../modules/contracts/abi/vesting/vesting.json'
 import isCommitee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
@@ -748,66 +749,69 @@ export async function getGrantCurrentUpdate(
     if (!currentUpdate) {
       return null
     }
-    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) }
+    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) + 1 }
   }
 }
 
 async function getGrants() {
-  const proposals = await ProposalModel.getProposalList({ type: ProposalType.Grant, status: ProposalStatus.Enacted })
-  // TODO: Filter directly in model query by proposals with vesting address only
-  const proposalsWithVestingAddress = proposals.filter((proposal) => !!proposal.vesting_address)
-  const current: GrantWithUpdateAttributes[] = []
+  const grants = await DclData.get().getGrants()
+  const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
+
+  const current: GrantAttributes[] = []
   const past: GrantAttributes[] = []
 
   await Promise.all(
-    proposalsWithVestingAddress.map(async (proposal) => {
-      if (!proposal.vesting_address) {
-        return null
+    enactedGrants.map(async (grant) => {
+      const proposal = await ProposalModel.findOne(grant.id)
+      const newGrant: GrantAttributes = {
+        id: grant.id,
+        size: grant.size,
+        configuration: {
+          category: grant.category,
+          tier: grant.tier,
+        },
+        user: grant.user,
+        title: grant.title,
+        token: grant.token,
+        created_at: Time(proposal.created_at).unix(),
+        enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
+      }
+
+      if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
+        const threshold = Time(grant.tx_date).add(1, 'month')
+        if (Time().isBefore(threshold)) {
+          return current.push({
+            ...newGrant,
+            enacting_tx: grant.enacting_tx,
+            tx_amount: grant.tx_amount,
+          })
+        }
+
+        return past.push(newGrant)
       }
 
       try {
-        // TODO: If grant is tier 1 or 2 we should not ask for vesting data.
-
-        const vestingAddress = proposal.vesting_address.toLowerCase()
-        const vestingContract = new ethers.Contract(vestingAddress, vestingAbi, provider)
-        const tokenContractAddress = (await vestingContract.token()).toLowerCase()
-
-        const [decimals, symbol, balance, vestedAmount, releasableAmount, released, start] = await Promise.all([
-          TokenContracts[tokenContractAddress].decimals(), // TODO: Check if we can use a constant for this
-          TokenContracts[tokenContractAddress].symbol(), // TODO: Check if we can use a constant for this
-          TokenContracts[tokenContractAddress].balanceOf(vestingAddress),
-          vestingContract.vestedAmount(),
-          vestingContract.releasableAmount(),
-          vestingContract.released(),
-          vestingContract.start(),
-        ])
-
-        const contract = {
-          symbol,
-          balance: Math.round(parseInt(balance) / 10 ** decimals),
-          vestedAmount: Math.round(parseInt(vestedAmount) / 10 ** decimals),
-          releasableAmount: Math.round(parseInt(releasableAmount) / 10 ** decimals),
-          released: Math.round(parseInt(released) / 10 ** decimals),
-          start: parseInt(start),
+        newGrant.contract = {
+          vesting_total_amount: Math.round(grant.vesting_total_amount),
+          vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
+          releasable: Math.round(grant.vesting_releasable),
+          released: Math.round(grant.vesting_released),
+          start_at: Time(grant.vesting_start_at).unix(),
+          finish_at: Time(grant.vesting_finish_at).unix(),
         }
 
-        const grant = {
-          ...proposal,
-          contract,
-        }
-
-        if (contract.vestedAmount === contract.balance + contract.released) {
-          past.push(grant)
+        if (newGrant.contract.vestedAmount === newGrant.contract.vesting_total_amount) {
+          past.push(newGrant)
         } else {
           const grantWithUpdate: GrantWithUpdateAttributes = {
-            ...grant,
-            update: await getGrantCurrentUpdate(grant.configuration.tier, proposal.id),
+            ...newGrant,
+            update: await getGrantCurrentUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
           }
           current.push(grantWithUpdate)
         }
       } catch (error) {
         logger.error(
-          `Failed to fetch contract data from vesting address ${proposal.vesting_address}`,
+          `Failed to fetch contract data from vesting address ${grant.vesting_address}`,
           formatError(error as Error)
         )
       }
@@ -817,5 +821,6 @@ async function getGrants() {
   return {
     current,
     past,
+    total: grants.length,
   }
 }

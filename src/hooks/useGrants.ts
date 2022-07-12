@@ -9,7 +9,7 @@ export default function useGrants() {
   }, [])
 
   return {
-    grants: (response || []) as { current: GrantWithUpdateAttributes[]; past: GrantAttributes[] },
+    grants: (response || []) as { current: GrantWithUpdateAttributes[]; past: GrantAttributes[]; total: number },
     isLoadingGrants: state.loading,
   }
 }

@@ -1,17 +1,15 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategory, ProposalGrantTier } from '../../entities/Proposal/types'
+import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
+import locations from '../../modules/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
 
 import './GrantCard.css'
 import VestingProgress from './VestingProgress'
-
-const getDisplayableName = (grantSize: ProposalGrantTier) => {
-  return grantSize.substring(0, 6) + ':  '
-}
 
 export type VestingAttributes = {
   symbol: string
@@ -33,22 +31,29 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
 }
 
 const GrantCard = ({ grant }: GrantCardProps) => {
-  const category: ProposalGrantCategory = grant.configuration.category
+  const { id, configuration, size, token, title, update } = grant
+  const category: ProposalGrantCategory = configuration.category
+
+  const handleClick = useCallback(() => {
+    navigate(locations.proposal(id))
+  }, [id])
 
   return (
-    <div className="GrantCard">
-      <div className="GrantCard__Header">
-        <div className="GrantCard__TierSize">
-          <p className="GrantCard__Tier">{getDisplayableName(grant.configuration.tier)}</p>
-          <p className="GrantCard__Size">
-            {grant.configuration.size} {grant.contract.symbol}
-          </p>
+    <div onClick={handleClick} className="GrantCard">
+      <div>
+        <div className="GrantCard__Header">
+          <div className="GrantCard__TierSize">
+            <p className="GrantCard__Tier">{`${configuration.tier}: `}</p>
+            <p className="GrantCard__Size">
+              {size} {token}
+            </p>
+          </div>
+          <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
         </div>
-        <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
+        <Header className="GrantCard__Title">{title}</Header>
+        <VestingProgress grant={grant} />
       </div>
-      <Header className="GrantCard__Title">{grant.title}</Header>
-      <VestingProgress vesting={grant.contract} />
-      <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
+      <ProposalUpdate proposal={grant} update={update} expanded={false} index={update?.index} />
     </div>
   )
 }

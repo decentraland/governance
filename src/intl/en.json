@@ -530,12 +530,24 @@
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
       "load_more_button": "Load more",
       "current_banner": {
-        "title": "The future of Decentraland is actually on your hands",
-        "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+        "title": "Discover the projects making the Decentraland ecosystem grow",
+        "description": "All these projects have been funded by you via the Decentraland DAO Community Grants program. Browse them to see their goals, progress and how they are making an impact in our community.",
+        "active_grants_title": "{value} Active Grants",
+        "active_grants_description": "Initiatives currently being funded",
+        "released_title": "${value} USD Released",
+        "released_description": "Funds already cashed out by Grant teams",
+        "to_be_vested_title": "${value} USD to be Vested",
+        "to_be_vested_description": "Funds to be made available for active Grants"
       },
       "past_banner": {
-        "title": "We’ve been heavily invested for a while now",
-        "description": "This text should be approach as if it were an insight to this sort of category, drawing attention to whatever we deem necessary. Use the buttons on the right to provide an extra layer of info."
+        "title": "See what the Community already achieved",
+        "description": "Check already finished Grant projects. Do your own due diligence, see how they performed and the value they added to Decentraland.",
+        "completed_grants_title": "{value} Projects",
+        "completed_grants_description": "Successfully completed Grants",
+        "total_funding_title": "${value} USD",
+        "total_funding_description": "Total funding for past initiatives",
+        "approved_rate_title": "{value}% Approval",
+        "approved_rate_description": "Rate of approved Grant proposals"
       },
       "currently_funded": "Currently being funded",
       "category_filters": {
@@ -545,6 +557,17 @@
         "gaming": "Gaming",
         "platform": "Platform"
       },
+      "sorting_filters": {
+        "finish_date": "Finish date",
+        "amount": "Amount granted",
+        "created_at": "Newest"
+      },
+      "vested": "vested",
+      "transferred": "transferred",
+      "released": "released",
+      "started_date": "Started",
+      "end_date": "Ends",
+      "transaction_date": "Transaction made",
       "past_funded": {
         "title": "Past, successfully funded initiatives",
         "category": "Category",

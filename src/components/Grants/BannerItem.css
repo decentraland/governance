@@ -3,7 +3,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
 }
 
 .GrantsBannerItem__Title {
@@ -21,4 +20,10 @@
   font-size: 14px;
   line-height: 17px;
   color: #ffffff;
+}
+
+.GrantsBanner__ItemsDivider {
+  opacity: 0.3;
+  width: auto;
+  border: 1px solid #ffffff;
 }

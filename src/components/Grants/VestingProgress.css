@@ -80,9 +80,16 @@
   background: var(--yellow);
 }
 
-.VestingProgress__VestedAt {
+.VestingProgressBar__Transferred {
+  z-index: 2;
+  background: var(--fuchsia);
+  width: 100%;
+}
+
+.VestingProgress__Dates {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
   color: #161419;
   padding-bottom: 4px;
   font-size: 13px;

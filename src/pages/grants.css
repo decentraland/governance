@@ -31,6 +31,12 @@
 .GrantsPage__CurrentGrantsFilters {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.GrantsPage__CurrentGrantsCategoryFilters {
+  display: flex;
   gap: 10px;
 }
 
@@ -44,6 +50,10 @@
   font-size: 13px !important;
   line-height: 18px !important;
   text-transform: uppercase !important;
+}
+
+.GrantsPage__PastGrantsTableHeaderClickable {
+  cursor: pointer !important;
 }
 
 .GrantsPage__PastGrantsTableHeaderCategory {
