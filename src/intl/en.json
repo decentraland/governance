@@ -198,14 +198,17 @@
       "motivation_empty": "Motivation is empty",
       "motivation_too_short": "Motivation is too short",
       "motivation_too_large": "Motivation is too large",
+      "image_type_invalid": "Some image is invalid, it must be a JPG, PNG, BMP or WEBP",
       "links_empty": "Insert at least one URL",
       "smart_contract_empty": "Insert at least one smart contract address",
       "managers_empty": "Insert at least one manager address",
-      "url_invalid": "Some url is invalid, they must start with 'https://'",
+      "url_invalid": "Some URL is invalid, they must start with 'https://'",
       "address_invalid": "Some address is invalid",
       "method_empty": "Method is empty",
       "method_too_short": "Method is too short",
-      "method_too_large": "Method is too large"
+      "method_too_large": "Method is too large",
+      "single_url_invalid": "The URL is invalid, it must start with 'https://'",
+      "single_url_empty": "Insert an URL"
     },
     "update_status_proposal": {
       "grant_vesting_address_invalid": "Vesting contract address is invalid",
@@ -870,7 +873,13 @@
       "programmatically_generated_note": "_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
       "method_label": "Method",
       "method_detail": "Describe the method used to create the programmatic collection. If possible, share proof and links to the repository.",
-      "method_placeholder": "Describe the method"
+      "method_placeholder": "Describe the method",
+      "image_previews_label": "Collection Images",
+      "image_previews_detail": "Provide up to {amount} images to show the community what your collection and wearables looks like. JPG, PNG, BMP & WEBP formats supported.",
+      "image_placeholder": "Insert image URL",
+      "image_add": "Add another image",
+      "marketplace_link_label": "NFT Marketplace Listing",
+      "marketplace_link_detail": "Provide an URL where users can see your NFT collection listed in an NFT marketplace like OpenSea, Rarible, or any other"
     },
     "subscription_banner": {
       "title": "Stay in the loop",

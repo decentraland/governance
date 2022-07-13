@@ -41,6 +41,10 @@
   max-width: 100%;
 }
 
+.ProposalImagesPreview {
+  margin-bottom: 20px;
+}
+
 @media only screen and (min-width: 320px) and (max-width: 767px) {
   .ProposalDetailPage .ui.grid > .row > .column.ProposalDetailDescription {
     width: 100% !important;
