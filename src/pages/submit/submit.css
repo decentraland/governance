@@ -67,6 +67,17 @@
   text-align: center;
 }
 
+.SectionList .overlay {
+  bottom: 32px !important;
+  right: 2px !important;
+}
+
+.SectionList .ui.button,
+.SectionList .ui.button:hover {
+  height: 42px !important;
+  background: white !important;
+}
+
 .ProgrammaticallyGeneratedRadioButtons {
   display: flex;
   gap: 10px;

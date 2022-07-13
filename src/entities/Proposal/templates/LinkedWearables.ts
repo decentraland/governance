@@ -1,12 +1,18 @@
-import { NewProposalLinkedWearables } from "../types";
-import { formatMarkdown, template } from "./utils";
+import { NewProposalLinkedWearables } from '../types'
 
-const getList = (items: string[]) => items.map(it => `- ${it}\n`).join('')
+import { formatMarkdown, template } from './utils'
 
-export const title = (proposal: NewProposalLinkedWearables) => template`Add ${proposal.name} to the Linked Wearables Registry`
+const getList = (items: string[]) => items.map((it) => `- ${it}\n`).join('')
+
+export const title = (proposal: NewProposalLinkedWearables) =>
+  template`Add ${proposal.name} to the Linked Wearables Registry`
 
 export const description = (proposal: NewProposalLinkedWearables) => template`
 Should ${proposal.name} be added to the Linked Wearables Registry?
+
+## NFT Marketplace Listing
+
+${getList([proposal.marketplace_link])}
 
 ## Relevant Links
 
@@ -16,6 +22,10 @@ ${getList(proposal.links)}
 
 ${formatMarkdown(proposal.nft_collections)}
 
+## Motivation
+
+${formatMarkdown(proposal.motivation)}
+
 ## Items to be Uploaded
 
 ${proposal.items}
@@ -23,10 +33,6 @@ ${proposal.items}
 ## Intellectual Property
 
 ${formatMarkdown(proposal.governance)}
-
-## Motivation
-
-${formatMarkdown(proposal.motivation)}
 
 ## Smart Contract Address${proposal.smart_contract.length > 1 ? 'es' : ''}
 
@@ -39,9 +45,13 @@ ${getList(proposal.managers)}
 ## Is this collection generated programmatically?
 - ${proposal.programmatically_generated ? 'Yes' : 'No'}
 
-${proposal.method.length > 0 ? `
+${
+  proposal.method.length > 0
+    ? `
 ## Method
 
 ${formatMarkdown(proposal.method)}
-` : ''}
+`
+    : ''
+}
 `
