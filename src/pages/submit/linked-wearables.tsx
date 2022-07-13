@@ -27,7 +27,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
-import { asNumber } from '../../entities/Proposal/utils'
+import { asNumber, isValidImage } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -35,6 +35,8 @@ import './submit.css'
 
 type LinkedWearablesState = {
   name: string
+  image_previews: Record<string, string>
+  marketplace_link: string
   links: Record<string, string>
   nft_collections: string
   items: number
@@ -48,12 +50,18 @@ type LinkedWearablesState = {
 }
 
 type ListSectionType = {
-  section: 'smart_contract' | 'managers' | 'links'
-  type: 'address' | 'url'
+  section: 'smart_contract' | 'managers' | 'links' | 'image_previews'
+  type: 'address' | 'url' | 'image'
 }
+
+type ListSectionValidator = (input: string) => string | undefined
 
 const initialPollState: LinkedWearablesState = {
   name: '',
+  image_previews: {
+    '0': '',
+  },
+  marketplace_link: '',
   links: {
     '0': '',
   },
@@ -72,6 +80,8 @@ const initialPollState: LinkedWearablesState = {
 }
 
 const schema = newProposalLinkedWearablesScheme.properties
+const MAX_IMAGES = schema.image_previews.maxItems
+
 const edit = (state: LinkedWearablesState, props: Partial<LinkedWearablesState>) => {
   return {
     ...state,
@@ -105,6 +115,7 @@ const validate = createValidator<LinkedWearablesState>({
     method: assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large'),
   }),
   '*': (state) => {
+    const image_previews = Object.values(state.image_previews)
     const links = Object.values(state.links)
     const smart_contract = Object.values(state.smart_contract)
     const managers = Object.values(state.managers)
@@ -113,15 +124,20 @@ const validate = createValidator<LinkedWearablesState>({
         assert(state.name.length > 0, 'error.linked_wearables.name_empty') ||
         assert(state.name.length >= schema.name.minLength, 'error.linked_wearables.name_too_short') ||
         assert(state.name.length <= schema.name.maxLength, 'error.linked_wearables.name_too_large'),
-      links:
+      image_previews: assert(
+        image_previews.some((option) => option !== ''),
+        'error.linked_wearables.links_empty'
+      ),
+      marketplace_link:
+        assert(state.marketplace_link.length > 0, 'error.linked_wearables.single_url_empty') ||
         assert(
-          links.some((option) => option !== ''),
-          'error.linked_wearables.links_empty'
-        ) ||
-        assert(
-          links.every((option) => isURL(option, { protocols: ['https'], require_protocol: true })),
-          'error.linked_wearables.url_invalid'
+          isURL(state.marketplace_link, { protocols: ['https'], require_protocol: true }),
+          'error.linked_wearables.single_url_invalid'
         ),
+      links: assert(
+        links.some((option) => option !== ''),
+        'error.linked_wearables.links_empty'
+      ),
       nft_collections:
         assert(state.nft_collections.length > 0, 'error.linked_wearables.nft_collections_empty') ||
         assert(
@@ -136,15 +152,10 @@ const validate = createValidator<LinkedWearablesState>({
         assert(Number.isFinite(asNumber(state.items)), 'error.linked_wearables.items_invalid') ||
         assert(asNumber(state.items) >= schema.items.minimum, 'error.linked_wearables.items_too_low') ||
         assert(asNumber(state.items) <= schema.items.maximum, 'error.linked_wearables.items_too_high'),
-      smart_contract:
-        assert(
-          smart_contract.some((option) => option !== ''),
-          'error.linked_wearables.smart_contract_empty'
-        ) ||
-        assert(
-          smart_contract.every((option) => isEthereumAddress(option)),
-          'error.linked_wearables.address_invalid'
-        ),
+      smart_contract: assert(
+        smart_contract.some((option) => option !== ''),
+        'error.linked_wearables.smart_contract_empty'
+      ),
       governance:
         assert(state.governance.length > 0, 'error.linked_wearables.governance_empty') ||
         assert(state.governance.length >= schema.governance.minLength, 'error.linked_wearables.governance_too_short') ||
@@ -154,28 +165,54 @@ const validate = createValidator<LinkedWearablesState>({
         assert(state.motivation.length >= schema.motivation.minLength, 'error.linked_wearables.motivation_too_short') ||
         assert(state.motivation.length <= schema.motivation.maxLength, 'error.linked_wearables.motivation_too_large'),
       method: assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large'),
-      managers:
-        assert(
-          managers.some((option) => option !== ''),
-          'error.linked_wearables.managers_empty'
-        ) ||
-        assert(
-          managers.every((option) => isEthereumAddress(option)),
-          'error.linked_wearables.address_invalid'
-        ),
+      managers: assert(
+        managers.some((option) => option !== ''),
+        'error.linked_wearables.managers_empty'
+      ),
     }
   },
 })
+
+const removeEmptyStrings = (array: string[]) => array.filter((item) => item)
+
+const urlValidator: ListSectionValidator = (input: string) => {
+  return assert(isURL(input, { protocols: ['https'], require_protocol: true }), 'error.linked_wearables.url_invalid')
+}
+
+const addressValidator: ListSectionValidator = (input: string) => {
+  return assert(isEthereumAddress(input), 'error.linked_wearables.address_invalid')
+}
+
+const imagesValidator = async (urls: Record<string, string>) => {
+  const errors: string[] = []
+  for (const [key, value] of Object.entries(urls)) {
+    if (value) {
+      const isValid = await isValidImage(value)
+      if (!isValid) {
+        errors.push(key)
+      }
+    }
+  }
+
+  return errors
+}
 
 export default function SubmitLinkedWearables() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+  const [formErrorKeys, setFormErrorKeys] = useState('')
+  const [listSectionErrors, setListSectionErrors] = useState<Record<ListSectionType['section'], string[]>>({
+    image_previews: [],
+    links: [],
+    smart_contract: [],
+    managers: [],
+  })
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
-  const handleRemoveOption = (field: 'smart_contract' | 'managers' | 'links', i: string) => {
+  const handleRemoveOption = (field: ListSectionType['section'], i: string) => {
     const addresses = omit(state.value[field], [i]) as Record<string, string>
     if (Object.keys(addresses).length < 1) {
       addresses[Date.now()] = ''
@@ -187,7 +224,7 @@ export default function SubmitLinkedWearables() {
     })
   }
 
-  const handleEditOption = (field: 'smart_contract' | 'managers' | 'links', i: string, value: string) => {
+  const handleEditOption = (field: ListSectionType['section'], i: string, value: string) => {
     editor.set({
       ...state.value,
       [field]: {
@@ -197,7 +234,7 @@ export default function SubmitLinkedWearables() {
     })
   }
 
-  const handleAddOption = (field: 'smart_contract' | 'managers' | 'links') => {
+  const handleAddOption = (field: ListSectionType['section']) => {
     editor.set({
       ...state.value,
       [field]: {
@@ -207,6 +244,28 @@ export default function SubmitLinkedWearables() {
     })
   }
 
+  const handleErrorOption = (
+    input: string,
+    fieldKey: string,
+    field: ListSectionType['section'],
+    validator: ListSectionValidator
+  ) => {
+    const error = validator(input)
+    if (input !== '' && error) {
+      setListSectionErrors({
+        ...listSectionErrors,
+        [field]: [...listSectionErrors[field], fieldKey],
+      })
+      editor.error({ [field]: state.error[field] || error })
+    } else {
+      setListSectionErrors({
+        ...listSectionErrors,
+        [field]: listSectionErrors[field].filter((key) => key !== fieldKey),
+      })
+      editor.error({ [field]: undefined })
+    }
+  }
+
   const handleProgrammaticallyGeneratedOption = () => {
     editor.set({
       ...state.value,
@@ -214,12 +273,19 @@ export default function SubmitLinkedWearables() {
     })
   }
 
-  const getListSection = (params: ListSectionType) => {
+  const getListSection = (
+    params: ListSectionType,
+    validator: ListSectionValidator,
+    detailOptions?: Record<string, unknown>,
+    maxAmount?: number
+  ) => {
+    const items = Object.values(state.value[params.section])
+    const canAdd = !maxAmount || maxAmount < 0 || (items.length < maxAmount && maxAmount !== 1)
     return (
       <ContentSection>
         <Label>{t(`page.submit_linked_wearables.${params.section}_label`)}</Label>
         <Paragraph tiny secondary className="details">
-          {t(`page.submit_linked_wearables.${params.section}_detail`)}
+          {t(`page.submit_linked_wearables.${params.section}_detail`, detailOptions)}
         </Paragraph>
         <Paragraph small primary>
           {t(state.error[params.section])}
@@ -236,11 +302,15 @@ export default function SubmitLinkedWearables() {
                 onAction={() => handleRemoveOption(params.section, key)}
                 onChange={(_, { value }) => handleEditOption(params.section, key, value)}
                 disabled={formDisabled}
+                error={listSectionErrors[params.section].includes(key)}
+                onBlur={() => handleErrorOption(state.value[params.section][key], key, params.section, validator)}
               />
             ))}
-          <Button basic onClick={() => handleAddOption(params.section)}>
-            {t(`page.submit_linked_wearables.${params.type}_add`)}
-          </Button>
+          {canAdd && (
+            <Button basic onClick={() => handleAddOption(params.section)}>
+              {t(`page.submit_linked_wearables.${params.type}_add`)}
+            </Button>
+          )}
         </div>
       </ContentSection>
     )
@@ -249,26 +319,56 @@ export default function SubmitLinkedWearables() {
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
-      Promise.resolve()
-        .then(async () => {
-          return Governance.get().createProposalLinkedWearables({
-            ...state.value,
-            links: Object.values(state.value.links),
-            smart_contract: Object.values(state.value.smart_contract),
-            managers: Object.values(state.value.managers),
-          })
-        })
-        .then((proposal) => {
-          loader.proposals.set(proposal.id, proposal)
-          navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-        })
-        .catch((err) => {
-          console.error(err, { ...err })
-          editor.error({ '*': err.body?.error || err.message })
+      imagesValidator(state.value.image_previews).then((errors) => {
+        if (errors.length === 0) {
+          Promise.resolve()
+            .then(async () => {
+              return Governance.get().createProposalLinkedWearables({
+                ...state.value,
+                links: removeEmptyStrings(Object.values(state.value.links)),
+                smart_contract: removeEmptyStrings(Object.values(state.value.smart_contract)),
+                managers: removeEmptyStrings(Object.values(state.value.managers)),
+                image_previews: removeEmptyStrings(Object.values(state.value.image_previews)),
+              })
+            })
+            .then((proposal) => {
+              loader.proposals.set(proposal.id, proposal)
+              navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+            })
+            .catch((err) => {
+              console.error(err, { ...err })
+              editor.error({ '*': err.body?.error || err.message })
+              setFormDisabled(false)
+            })
+        } else {
+          setListSectionErrors((prev) => ({ ...prev, image_previews: errors }))
+          editor.error({ image_previews: 'error.linked_wearables.image_type_invalid' })
           setFormDisabled(false)
-        })
+        }
+      })
     }
-  }, [editor, state.validated, state.value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.validated, state.value])
+
+  useEffect(() => {
+    const errorFields = Object.keys(state.error) as (keyof LinkedWearablesState | '*')[]
+    const errorFieldsStr = JSON.stringify(errorFields)
+    if (errorFields.length > 0 && errorFieldsStr !== formErrorKeys) {
+      editor.error({
+        '*': `${errorFields
+          .map((key) =>
+            key !== '*' ? `${t(`page.submit_linked_wearables.${key}_label`)}: ${t(state.error[key])}` : ''
+          )
+          .join('\n')}`,
+      })
+      setFormErrorKeys(errorFieldsStr)
+    }
+
+    if (errorFields.length === 0) {
+      setFormErrorKeys('')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.error])
 
   if (accountState.loading) {
     return <LoadingView />
@@ -319,33 +419,23 @@ export default function SubmitLinkedWearables() {
           disabled={formDisabled}
         />
       </ContentSection>
-      {getListSection({ section: 'links', type: 'url' })}
       <ContentSection>
-        <Label>
-          {t('page.submit_linked_wearables.motivation_label')}
-          <MarkdownNotice />
-        </Label>
+        <Label>{t('page.submit_linked_wearables.marketplace_link_label')}</Label>
         <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.motivation_detail')}
+          {t('page.submit_linked_wearables.marketplace_link_detail')}
         </Paragraph>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.motivation}
-          placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
-          onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
-          error={!!state.error.motivation}
-          message={
-            t(state.error.motivation) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.motivation.length,
-              limit: schema.motivation.maxLength,
-            })
-          }
+        <Field
+          value={state.value.marketplace_link}
+          placeholder={t('page.submit_linked_wearables.url_placeholder')}
+          onChange={(_, { value }) => editor.set({ marketplace_link: value })}
+          onBlur={() => editor.set({ marketplace_link: state.value.marketplace_link.trim() })}
+          error={!!state.error.marketplace_link}
+          message={t(state.error.marketplace_link)}
           disabled={formDisabled}
         />
       </ContentSection>
+      {getListSection({ section: 'links', type: 'url' }, urlValidator)}
+      {getListSection({ section: 'image_previews', type: 'image' }, urlValidator, { amount: MAX_IMAGES }, MAX_IMAGES)}
       <ContentSection>
         <Label>
           {t('page.submit_linked_wearables.nft_collections_label')}
@@ -373,6 +463,32 @@ export default function SubmitLinkedWearables() {
         />
       </ContentSection>
       <ContentSection>
+        <Label>
+          {t('page.submit_linked_wearables.motivation_label')}
+          <MarkdownNotice />
+        </Label>
+        <Paragraph tiny secondary className="details">
+          {t('page.submit_linked_wearables.motivation_detail')}
+        </Paragraph>
+        <MarkdownTextarea
+          minHeight={175}
+          value={state.value.motivation}
+          placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
+          onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
+          error={!!state.error.motivation}
+          message={
+            t(state.error.motivation) +
+            ' ' +
+            t('page.submit.character_counter', {
+              current: state.value.motivation.length,
+              limit: schema.motivation.maxLength,
+            })
+          }
+          disabled={formDisabled}
+        />
+      </ContentSection>
+      <ContentSection>
         <Label>{t('page.submit_linked_wearables.items_label')}</Label>
         <Paragraph tiny secondary className="details">
           {t('page.submit_linked_wearables.items_detail')}
@@ -387,7 +503,6 @@ export default function SubmitLinkedWearables() {
           disabled={formDisabled}
         />
       </ContentSection>
-      {getListSection({ section: 'smart_contract', type: 'address' })}
       <ContentSection>
         <Label>
           {t('page.submit_linked_wearables.governance_label')}
@@ -414,7 +529,8 @@ export default function SubmitLinkedWearables() {
           disabled={formDisabled}
         />
       </ContentSection>
-      {getListSection({ section: 'managers', type: 'address' })}
+      {getListSection({ section: 'smart_contract', type: 'address' }, addressValidator)}
+      {getListSection({ section: 'managers', type: 'address' }, addressValidator)}
       <ContentSection>
         <Label>{t('page.submit_linked_wearables.programmatically_generated_label')}</Label>
         <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
