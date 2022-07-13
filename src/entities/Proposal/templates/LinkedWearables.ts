@@ -22,6 +22,10 @@ ${getList(proposal.links)}
 
 ${formatMarkdown(proposal.nft_collections)}
 
+## Motivation
+
+${formatMarkdown(proposal.motivation)}
+
 ## Items to be Uploaded
 
 ${proposal.items}
@@ -29,10 +33,6 @@ ${proposal.items}
 ## Intellectual Property
 
 ${formatMarkdown(proposal.governance)}
-
-## Motivation
-
-${formatMarkdown(proposal.motivation)}
 
 ## Smart Contract Address${proposal.smart_contract.length > 1 ? 'es' : ''}
 

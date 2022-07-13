@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { Autoplay, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/bundle'
@@ -22,6 +23,7 @@ const NO_IMAGE = require('../../images/no-image.png').default
 function ImageGallery({ className, imageUrls }: Props) {
   const responsive = useResponsive()
   const isNarrowScreen = responsive({ maxWidth: 991 })
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const [openFullscreen, setOpenFullscreen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
 
@@ -39,7 +41,7 @@ function ImageGallery({ className, imageUrls }: Props) {
             slidesPerView={isNarrowScreen ? 3 : 4}
             spaceBetween={10}
             pagination={{ clickable: true }}
-            navigation
+            navigation={!isMobile}
             autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
             className={TokenList.join(['ImageGallery__Carousel', className])}
           >
@@ -55,6 +57,7 @@ function ImageGallery({ className, imageUrls }: Props) {
             imageUrls={imageUrls}
             onClose={() => setOpenFullscreen(false)}
             startIndex={selectedImage}
+            navigation={!isMobile}
           />
         </>
       )}

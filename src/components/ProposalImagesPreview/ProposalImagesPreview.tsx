@@ -3,21 +3,20 @@ import React from 'react'
 import Title from 'decentraland-gatsby/dist/components/Text/Title'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { ProposalAttributes } from '../../entities/Proposal/types'
 import ImageGallery from '../ImageGallery/ImageGallery'
 
 interface Props {
-  proposal: ProposalAttributes
+  imageUrls: string[]
 }
 
-function ProposalImagePreview({ proposal }: Props) {
+function ProposalImagesPreview({ imageUrls }: Props) {
   const t = useFormatMessage()
   return (
-    <div className="ProposalImagePreview">
+    <div className="ProposalImagesPreview">
       <Title>{t('page.submit_linked_wearables.image_previews_label')}</Title>
-      <ImageGallery className="ProposalImagePreview__Gallery" imageUrls={proposal.configuration.image_previews} />
+      <ImageGallery className="ProposalImagesPreview__Gallery" imageUrls={imageUrls} />
     </div>
   )
 }
 
-export default ProposalImagePreview
+export default ProposalImagesPreview

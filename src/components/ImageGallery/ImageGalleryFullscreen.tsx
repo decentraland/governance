@@ -14,18 +14,19 @@ import './ImageGallery.css'
 type Props = ModalProps & {
   imageUrls: string[]
   startIndex?: number
+  navigation?: boolean
 }
 
 const NO_IMAGE = require('../../images/no-image.png').default
 
-function ImageGalleryFullscreen({ open, onClose, className, imageUrls, startIndex }: Props) {
+function ImageGalleryFullscreen({ open, onClose, className, imageUrls, startIndex, navigation }: Props) {
   return (
     <Modal size="fullscreen" open={open} closeIcon={<Close />} onClose={onClose} className={className}>
       <Modal.Content>
         <Swiper
           pagination={{ clickable: true }}
           modules={[Navigation, Pagination, Keyboard]}
-          navigation
+          navigation={navigation}
           className={className}
           initialSlide={startIndex}
           keyboard={{ enabled: true }}
