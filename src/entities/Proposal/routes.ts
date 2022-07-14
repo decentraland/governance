@@ -768,35 +768,35 @@ async function getGrants() {
 
   await Promise.all(
     enactedGrants.map(async (grant) => {
-      const proposal = await ProposalModel.findOne(grant.id)
-      const newGrant: GrantAttributes = {
-        id: grant.id,
-        size: grant.size,
-        configuration: {
-          category: grant.category,
-          tier: grant.tier,
-        },
-        user: grant.user,
-        title: grant.title,
-        token: grant.token,
-        created_at: Time(proposal.created_at).unix(),
-        enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
-      }
-
-      if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
-        const threshold = Time(grant.tx_date).add(1, 'month')
-        if (Time().isBefore(threshold)) {
-          return current.push({
-            ...newGrant,
-            enacting_tx: grant.enacting_tx,
-            tx_amount: grant.tx_amount,
-          })
+      try {
+        const proposal = await ProposalModel.findOne(grant.id)
+        const newGrant: GrantAttributes = {
+          id: grant.id,
+          size: grant.size,
+          configuration: {
+            category: grant.category,
+            tier: grant.tier,
+          },
+          user: grant.user,
+          title: grant.title,
+          token: grant.token,
+          created_at: Time(proposal.created_at).unix(),
+          enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
         }
 
-        return past.push(newGrant)
-      }
+        if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
+          const threshold = Time(grant.tx_date).add(1, 'month')
+          if (Time().isBefore(threshold)) {
+            return current.push({
+              ...newGrant,
+              enacting_tx: grant.enacting_tx,
+              tx_amount: grant.tx_amount,
+            })
+          }
 
-      try {
+          return past.push(newGrant)
+        }
+
         newGrant.contract = {
           vesting_total_amount: Math.round(grant.vesting_total_amount),
           vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
@@ -809,17 +809,18 @@ async function getGrants() {
         if (newGrant.contract.vestedAmount === newGrant.contract.vesting_total_amount) {
           past.push(newGrant)
         } else {
-          const grantWithUpdate: GrantWithUpdateAttributes = {
-            ...newGrant,
-            update: await getGrantCurrentUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
+          try {
+            const grantWithUpdate: GrantWithUpdateAttributes = {
+              ...newGrant,
+              update: await getGrantCurrentUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
+            }
+            current.push(grantWithUpdate)
+          } catch (error) {
+            logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
           }
-          current.push(grantWithUpdate)
         }
       } catch (error) {
-        logger.error(
-          `Failed to fetch contract data from vesting address ${grant.vesting_address}`,
-          formatError(error as Error)
-        )
+        logger.error(`Failed to fetch proposal ${grant.id}`, formatError(error as Error))
       }
     })
   )
