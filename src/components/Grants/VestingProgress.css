@@ -46,7 +46,7 @@
   background-color: var(--background-happy-green);
   font-size: 11px;
   line-height: 18px;
-  border: 2px solid rgba(115, 110, 125, 0.32) !important;
+  border: 2px solid var(--black-100) !important;
   border-radius: 24px;
   width: 32px;
   height: 18px;
@@ -60,7 +60,7 @@
   height: 6px;
   border-radius: 2px;
   margin-bottom: 8px;
-  background: rgba(115, 110, 125, 0.15);
+  background: var(--black-100);
 }
 
 .VestingProgressBar__Item {

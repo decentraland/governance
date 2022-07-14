@@ -29,7 +29,7 @@
 }
 
 .GrantCard__Tier {
-  color: #736e7d;
+  color: var(--black-600);
   padding-right: 3px;
   margin-bottom: 0;
   font-weight: 400;

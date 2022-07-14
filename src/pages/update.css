@@ -7,7 +7,7 @@
 }
 
 .UpdateDetail__ProjectTitle a {
-  color: #736e7d !important;
+  color: var(--black-600) !important;
 }
 
 .UpdateDetail__Header .header {

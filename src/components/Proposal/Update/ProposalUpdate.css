@@ -155,6 +155,6 @@
 }
 
 .EmptyProposalUpdate__Icon path {
-  fill: #736e7d;
+  fill: var(--black-600);
   opacity: 0.8;
 }
