@@ -1,5 +1,7 @@
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
+import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
@@ -23,6 +25,24 @@ export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME
 
 export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
 
+export async function asyncSome<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
+  for (const item of arr) {
+    if (await predicate(item)) {
+      return true
+    }
+  }
+  return false
+}
+
+export async function asyncEvery<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
+  for (const item of arr) {
+    if (!(await predicate(item))) {
+      return false
+    }
+  }
+  return true
+}
+
 export function formatBalance(value: number | bigint) {
   return numeral(value).format('0,0')
 }
@@ -33,6 +53,21 @@ export function isValidName(name: string) {
 
 export function isValidDomainName(domain: string) {
   return new RegExp('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$').test(domain)
+}
+
+export async function isValidImage(imageUrl: string) {
+  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
+  return new Promise<boolean>((resolve) => {
+    fetch(imageUrl)
+      .then((response) => {
+        const mime = response.headers.get('content-type')
+        resolve(!!mime && allowedImageTypes.has(mime))
+      })
+      .catch((error) => {
+        logger.error('Fetching image error', error)
+        resolve(false)
+      })
+  })
 }
 
 export async function isAlreadyBannedName(name: string) {

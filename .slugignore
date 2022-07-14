@@ -1,0 +1,8 @@
+*.test.ts
+.prettierrc
+.prettierignore
+.gitignore
+.env.example
+.github
+.husky
+README.md

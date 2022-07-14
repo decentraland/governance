@@ -34,6 +34,7 @@ import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/ProposalUpdates'
+import ProposalImagesPreview from '../components/ProposalImagesPreview/ProposalImagesPreview'
 import ForumButton from '../components/Section/ForumButton'
 import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
@@ -218,6 +219,8 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
   const showProposalUpdates =
     publicUpdates && proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+  const showImagesPreview =
+    !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
   return (
     <>
@@ -244,6 +247,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
+              {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}

@@ -1,0 +1,95 @@
+.ImageGallery__Carousel,
+.ImageGallery__Carousel--fullscreen {
+  --swiper-theme-color: var(--primary);
+  --swiper-navigation-size: 60px;
+}
+
+.ImageGallery__Carousel--fullscreen.ui.modal,
+.ImageGallery__Carousel--fullscreen.ui.modal > .content {
+  background: rgba(255, 255, 255, 0);
+  border: none;
+  box-shadow: none;
+}
+
+.ImageGallery__Carousel.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.ImageGallery__Carousel .swiper-button-next,
+.ImageGallery__Carousel .swiper-button-prev {
+  top: 42%;
+}
+
+.ImageGallery__Carousel .swiper-button-next,
+.ImageGallery__Carousel .swiper-button-prev,
+.ImageGallery__Carousel--fullscreen .swiper-button-next,
+.ImageGallery__Carousel--fullscreen .swiper-button-prev {
+  background-image: url(../../images/icons/gallery-arrow.svg);
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center;
+}
+
+.ImageGallery__Carousel .swiper-button-prev,
+.ImageGallery__Carousel--fullscreen .swiper-button-prev {
+  transform: rotate(180deg);
+}
+
+.ImageGallery__Carousel .swiper-button-next::after,
+.ImageGallery__Carousel .swiper-button-prev::after,
+.ImageGallery__Carousel--fullscreen .swiper-button-next::after,
+.ImageGallery__Carousel--fullscreen .swiper-button-prev::after {
+  display: none;
+}
+
+.ImageGallery__Carousel--fullscreen.ui.fullscreen.modal {
+  left: auto !important;
+}
+
+.ImageGallery__Carousel .swiper-slide,
+.ImageGallery__Carousel--fullscreen .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+}
+
+.ImageGallery__Carousel .swiper-slide {
+  height: 150px;
+  cursor: pointer;
+}
+
+.ImageGallery__Carousel--fullscreen .swiper-slide {
+  height: 400px;
+  margin-top: 30px;
+}
+
+.ImageGallery__Carousel .swiper-slide img,
+.ImageGallery__Carousel--fullscreen .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ImageGallery__Carousel .swiper-pagination,
+.ImageGallery__Carousel--fullscreen .swiper-pagination {
+  position: initial;
+  margin-top: 10px;
+}
+
+.ImageGallery__Carousel .swiper-pagination-bullet-active,
+.ImageGallery__Carousel--fullscreen .swiper-pagination-bullet-active {
+  background-color: var(--swiper-theme-color) !important;
+}
+
+.ImageGallery__Carousel--fullscreen .swiper-pagination-bullet {
+  background-color: var(--secondary-on-modal);
+  opacity: unset;
+}
