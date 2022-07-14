@@ -1,3 +1,4 @@
+import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
@@ -21,8 +22,6 @@ import {
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
-
-import { GovernanceAPI } from './GovernanceAPI'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -62,7 +61,7 @@ const getGovernanceApiUrl = () => {
   )
 }
 
-export class Governance extends GovernanceAPI {
+export class Governance extends API {
   static Url = getGovernanceApiUrl()
 
   static Cache = new Map<string, Governance>()
