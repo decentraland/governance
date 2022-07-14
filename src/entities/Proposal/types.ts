@@ -777,3 +777,9 @@ export type GrantWithUpdateAttributes = TransparencyGrant &
   GrantBlockchainData & {
     update: IndexedUpdate | null
   }
+
+export type GrantsResponse = {
+  current: GrantWithUpdateAttributes[]
+  past: GrantAttributes[]
+  total: number
+}

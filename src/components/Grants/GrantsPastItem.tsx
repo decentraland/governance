@@ -13,7 +13,12 @@ import ChevronRight from '../Icon/ChevronRight'
 import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard'
 import './GrantsPastItem.css'
 
-const GrantsPastItem = ({ grant, showSeparator }: { grant: GrantAttributes; showSeparator: boolean }) => {
+interface Props {
+  grant: GrantAttributes
+  showSeparator: boolean
+}
+
+const GrantsPastItem = ({ grant, showSeparator }: Props) => {
   const t = useFormatMessage()
   const { id, title, configuration, enacted_at, size } = grant
   const category = configuration.category.split(' ')[0]

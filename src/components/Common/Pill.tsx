@@ -15,11 +15,9 @@ export enum PillColor {
   Yellow = 'yellow',
 }
 
-export type PillColors = 'green' | 'blue' | 'red' | 'gray' | 'purple' | 'fuchsia' | 'orange' | 'yellow'
-
 export type Props = {
   children: React.ReactText
-  color?: PillColor | PillColors
+  color?: PillColor | `${PillColor}`
   size?: 'small' | 'default'
   style?: 'shiny' | 'medium' | 'light'
   className?: string

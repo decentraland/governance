@@ -1,19 +1,19 @@
 import React from 'react'
 
 import { ProposalType } from '../../entities/Proposal/types'
-import Pill, { PillColors } from '../Common/Pill'
+import Pill, { PillColor } from '../Common/Pill'
 
 import './CategoryPill.css'
 
-const ColorsConfig: Record<ProposalType, PillColors> = {
-  [ProposalType.POI]: 'green',
-  [ProposalType.Catalyst]: 'blue',
-  [ProposalType.BanName]: 'fuchsia',
-  [ProposalType.Grant]: 'purple',
-  [ProposalType.LinkedWearables]: 'yellow',
-  [ProposalType.Poll]: 'orange',
-  [ProposalType.Draft]: 'orange',
-  [ProposalType.Governance]: 'orange',
+const ColorsConfig: Record<ProposalType, PillColor> = {
+  [ProposalType.POI]: PillColor.Green,
+  [ProposalType.Catalyst]: PillColor.Blue,
+  [ProposalType.BanName]: PillColor.Fuchsia,
+  [ProposalType.Grant]: PillColor.Purple,
+  [ProposalType.LinkedWearables]: PillColor.Yellow,
+  [ProposalType.Poll]: PillColor.Orange,
+  [ProposalType.Draft]: PillColor.Orange,
+  [ProposalType.Governance]: PillColor.Orange,
 }
 
 export type Props = {

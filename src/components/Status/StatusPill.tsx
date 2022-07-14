@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ProposalStatus, isProposalStatus } from '../../entities/Proposal/types'
-import Pill, { PillColors } from '../Common/Pill'
+import Pill, { PillColor } from '../Common/Pill'
 import Check from '../Icon/Check'
 
 import './StatusPill.css'
@@ -10,14 +10,14 @@ type Props = {
   status: ProposalStatus
 }
 
-const ColorsConfig: Record<ProposalStatus, PillColors> = {
-  [ProposalStatus.Rejected]: 'red',
-  [ProposalStatus.Pending]: 'gray',
-  [ProposalStatus.Passed]: 'green',
-  [ProposalStatus.Finished]: 'gray',
-  [ProposalStatus.Active]: 'gray',
-  [ProposalStatus.Enacted]: 'green',
-  [ProposalStatus.Deleted]: 'red',
+const ColorsConfig: Record<ProposalStatus, PillColor> = {
+  [ProposalStatus.Rejected]: PillColor.Red,
+  [ProposalStatus.Pending]: PillColor.Gray,
+  [ProposalStatus.Passed]: PillColor.Green,
+  [ProposalStatus.Finished]: PillColor.Gray,
+  [ProposalStatus.Active]: PillColor.Gray,
+  [ProposalStatus.Enacted]: PillColor.Green,
+  [ProposalStatus.Deleted]: PillColor.Red,
 }
 
 const StatusPill = ({ status }: Props) => {

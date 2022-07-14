@@ -32,15 +32,13 @@ const getBannerStats = (grants: GrantAttributes[], currentGrantsTotal: number, t
   }
 }
 
-const PastGrantsList = ({
-  grants,
-  currentGrantsTotal,
-  totalGrants,
-}: {
+interface Props {
   grants: GrantAttributes[]
   currentGrantsTotal: number
   totalGrants: number
-}) => {
+}
+
+const PastGrantsList = ({ grants, currentGrantsTotal, totalGrants }: Props) => {
   const t = useFormatMessage()
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
   const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'enacted_at')

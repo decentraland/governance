@@ -58,7 +58,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--black-400);
+  color: var(--black-600);
   max-width: 570px;
   padding-right: 10px;
 }
@@ -80,7 +80,7 @@
   font-size: 13px;
   line-height: 13px;
   font-weight: 500;
-  color: var(--black-400);
+  color: var(--black-600);
   text-transform: uppercase;
   margin-right: 5px;
 }
