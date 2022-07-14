@@ -18,6 +18,7 @@ import './ProposalCoAuthorStatus.css'
 
 interface Props {
   proposalId: string
+  proposalFinishDate: Date
 }
 
 interface CoauthorLabelConfiguration {
@@ -43,8 +44,9 @@ const labelConfig: Record<CoauthorStatus, CoauthorLabelConfiguration> = {
   },
 }
 
-function ProposalCoAuthorStatus({ proposalId }: Props) {
+function ProposalCoAuthorStatus({ proposalId, proposalFinishDate }: Props) {
   const [user] = useAuthContext()
+  const isUpdatable = Date.now() < proposalFinishDate.getTime()
 
   const [coAuthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposalId), [], {
     initialValue: [] as CoauthorAttributes[],
@@ -98,7 +100,7 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
             </span>
             <p>
               {t(labelConfig[status].description)}{' '}
-              {status !== CoauthorStatus.PENDING && (
+              {status !== CoauthorStatus.PENDING && isUpdatable && (
                 <a href="" onClick={revertAction}>
                   {t('page.coauthor_detail.revert_label')}
                 </a>

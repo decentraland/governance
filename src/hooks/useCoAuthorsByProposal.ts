@@ -7,7 +7,7 @@ import { Governance } from '../api/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
-export function useCoAuthorsByProposal(proposal: ProposalAttributes<any>) {
+export function useCoAuthorsByProposal(proposal: ProposalAttributes) {
   const [account] = useAuthContext()
   const [allCoauthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposal.id), [proposal.id], {
     initialValue: [] as CoauthorAttributes[],
