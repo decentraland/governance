@@ -654,11 +654,13 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
         proposal.user,
         update.vesting_address
       )
-      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
-  } else if (configuration.status === ProposalStatus.Passed) {
+  } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user
     update.passed_description = configuration.description || null
+    if (proposal.type == ProposalType.Grant) {
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
+    }
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
     update.rejected_description = configuration.description || null
