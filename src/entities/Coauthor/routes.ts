@@ -12,6 +12,7 @@ import { ProposalAttributes } from '../Proposal/types'
 
 import CoauthorModel from './model'
 import { CoauthorAttributes, CoauthorStatus, UpdateStatus, toCoauthorStatusType, updateStatusScheme } from './types'
+import { coauthoringIsUpdatable } from './utils'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -21,12 +22,11 @@ export default routes((route) => {
 })
 
 async function filterCoauthorRequests(requests: CoauthorAttributes[]) {
-  const now = Date.now()
   const filteredRequests: CoauthorAttributes[] = []
   for (const request of requests) {
     if (request.status === CoauthorStatus.PENDING) {
       const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: request.proposal_id, deleted: false })
-      if (proposal && now < proposal.finish_at.getTime()) {
+      if (proposal && coauthoringIsUpdatable(proposal.finish_at)) {
         filteredRequests.push(request)
       }
     } else {
@@ -66,7 +66,7 @@ export async function updateStatus(req: WithAuth<Request>): Promise<CoauthorAttr
   const conditions = { proposal_id: id, address: user.toLowerCase() }
   const errorData: Record<string, string> = { ...conditions, status: data.status }
 
-  if (Date.now() < proposal.finish_at.getTime()) {
+  if (coauthoringIsUpdatable(proposal.finish_at)) {
     const result = await CoauthorModel.update<CoauthorAttributes>({ status: data.status }, conditions)
 
     if (result.rowCount === 1) {
