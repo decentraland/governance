@@ -42,40 +42,6 @@
   }
 }
 
-.GrantsPage_PastGrantsTable {
-  margin-bottom: 24px !important;
-}
-
-.GrantsPage__PastGrantsTableHeader {
-  border: none !important;
-  font-weight: 600 !important;
-  font-size: 13px !important;
-  line-height: 18px !important;
-  text-transform: uppercase !important;
-}
-
-.GrantsPage__PastGrantsTableHeaderClickable {
-  cursor: pointer !important;
-}
-
-.GrantsPage__PastGrantsTableHeaderCategory {
-  opacity: 0.5;
-}
-
-.GrantsPage__PastGrantsTableHeaderCategory span {
-  display: flex;
-  align-items: center;
-}
-
-.GrantsPage__PastGrantsTableHeaderCategory span svg {
-  margin-left: 5px;
-  border-radius: 1px;
-}
-
-.GrantsPage__PastGrantsSeparator {
-  height: 8px;
-}
-
 .GrantsPage_LoadMoreButton {
   height: 40px !important;
   padding: 0 !important;
