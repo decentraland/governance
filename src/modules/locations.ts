@@ -30,12 +30,14 @@ export type ProposalsTypeFilter = {
 export enum ProposalActivityList {
   MyProposals = 'proposals',
   Watchlist = 'watchlist',
+  CoAuthoring = 'coauthoring',
 }
 
 export function toProposalActivityList(list: string | null | undefined): ProposalActivityList | null {
   switch (list) {
     case ProposalActivityList.MyProposals:
     case ProposalActivityList.Watchlist:
+    case ProposalActivityList.CoAuthoring:
       return list
     default:
       return null
@@ -69,6 +71,8 @@ export default {
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
   balance: (options: Partial<{ address: string }> = {}) => url('/balance/', options),
   transparency: () => url('/transparency/'),
+  debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),
   update: (id: string) => url('/update/', { id }),
+  grants: () => url('/grants/', {}),
 }

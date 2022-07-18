@@ -169,7 +169,7 @@ function getNumber(number: number) {
 }
 
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
-  let results: DetailedScores = {}
+  const results: DetailedScores = {}
   for (const addressesChunk of chunk(addresses, 500)) {
     const blockchainScores: DetailedScores = await Snapshot.get().getScores(
       proposal.snapshot_space,

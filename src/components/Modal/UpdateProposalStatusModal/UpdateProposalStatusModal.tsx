@@ -13,7 +13,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalGrantTier, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'
@@ -21,12 +22,14 @@ import './UpdateProposalStatusModal.css'
 type UpdateProposalState = {
   proposal: ProposalAttributes | null
   vestingAddress: string
+  enactingTx: string
   description: string
 }
 
 const initialPollState: UpdateProposalState = {
   proposal: null,
   vestingAddress: '',
+  enactingTx: '',
   description: '',
 }
 
@@ -44,6 +47,12 @@ const validate = createValidator<UpdateProposalState>({
       'error.update_status_proposal.grant_vesting_address_invalid'
     ),
   }),
+  enactingTx: (state) => ({
+    enactingTx: assert(
+      !state.enactingTx || isValidTransactionHash(state.enactingTx),
+      'error.update_status_proposal.grant_enacting_tx_invalid'
+    ),
+  }),
   description: () => ({
     description: undefined,
   }),
@@ -57,6 +66,7 @@ export type UpdateProposalStatusModalProps = Omit<ModalProps, 'children'> & {
     e: React.MouseEvent<unknown>,
     status: ProposalStatus,
     vestingContract: string | null,
+    enactingTx: string | null,
     description: string
   ) => void
 }
@@ -71,12 +81,21 @@ export function UpdateProposalStatusModal({
 }: UpdateProposalStatusModalProps) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, initialPollState)
+  const isOneTimePaymentProposalTier =
+    proposal &&
+    (proposal.configuration.tier === ProposalGrantTier.Tier1 || proposal.configuration.tier === ProposalGrantTier.Tier2)
 
   function handleAccept(e: React.MouseEvent<unknown>) {
     editor.validate()
     const hasErrors = Object.keys(state.error).length != 0
     if (status && !hasErrors && onClickAccept) {
-      onClickAccept(e, status, state.value.vestingAddress ? state.value.vestingAddress : null, state.value.description)
+      onClickAccept(
+        e,
+        status,
+        state.value.vestingAddress ? state.value.vestingAddress : null,
+        state.value.enactingTx ? state.value.enactingTx : null,
+        state.value.description
+      )
     }
   }
 
@@ -113,16 +132,33 @@ export function UpdateProposalStatusModal({
         </div>
 
         {proposal && proposal.type === ProposalType.Grant && (
-          <div className="ProposalModal__GrantVestingAddress">
-            <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
-            <Field
-              type="address"
-              value={state.value.vestingAddress}
-              onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
-              onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
-              message={t(state.error.vestingAddress)}
-              error={!!state.error.vestingAddress}
-            />
+          <div className="ProposalModal__GrantTransaction">
+            {!isOneTimePaymentProposalTier && (
+              <>
+                <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
+                <Field
+                  type="address"
+                  value={state.value.vestingAddress}
+                  onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
+                  onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
+                  message={t(state.error.vestingAddress)}
+                  error={!!state.error.vestingAddress}
+                />
+              </>
+            )}
+            {isOneTimePaymentProposalTier && (
+              <>
+                <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
+                <Field
+                  type="address"
+                  value={state.value.enactingTx}
+                  onChange={(_, { value }) => editor.set({ enactingTx: value }, { validate: false })}
+                  onBlur={() => editor.set({ enactingTx: state.value.enactingTx.trim() })}
+                  message={t(state.error.enactingTx)}
+                  error={!!state.error.enactingTx}
+                />
+              </>
+            )}
           </div>
         )}
         <div className="ProposalModal__Form">
@@ -136,10 +172,10 @@ export function UpdateProposalStatusModal({
           />
         </div>
         <div className="ProposalModal__Actions">
-          <Button fluid primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
+          <Button primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
             {t(cta)}
           </Button>
-          <Button fluid className="cancel" onClick={props.onClose}>
+          <Button className="cancel" onClick={props.onClose}>
             {t('modal.update_status_proposal.reject')}
           </Button>
         </div>

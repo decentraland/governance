@@ -19,11 +19,11 @@
 }
 
 .VotingPowerDelegationModal .description .dg.Paragraph .dg.Link {
-  color: var(--blue);
+  color: var(--blue-800);
 }
 
 .VotingPowerDelegationModal .VotingPowerDelegationModal__PickButton.ui.button.primary {
-  color: var(--blue);
+  color: var(--blue-800);
   background-color: rgba(72, 136, 238, 0.1);
 }
 
@@ -46,7 +46,7 @@
 }
 
 .VotingPowerDelegationModal .ui.table tbody tr:hover {
-  box-shadow: 0px 3px 15px rgba(115, 110, 125, 0.3);
+  box-shadow: 0px 3px 15px var(--black-400);
   border-radius: 6px;
   cursor: pointer;
 }
@@ -61,13 +61,13 @@
   cursor: pointer !important;
 }
 
-.VotingPowerDelegationModal .TotalVP>span {
+.VotingPowerDelegationModal .TotalVP > span {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.VotingPowerDelegationModal .TotalVP>span svg {
+.VotingPowerDelegationModal .TotalVP > span svg {
   margin-left: 5px;
 }
 
@@ -80,7 +80,7 @@
 }
 
 /* Animation */
-.VotingPowerDelegationModal .TotalVP>span svg,
+.VotingPowerDelegationModal .TotalVP > span svg,
 .VotingPowerDelegationModal .ui.table tbody tr:hover {
   transition: all 0.3s linear;
 }

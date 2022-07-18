@@ -1,11 +1,22 @@
-import { ProjectHealth, UpdateAttributes, UpdateStatus } from './types'
-import { getNextUpdate, getPublicUpdates, getPendingUpdates, getCurrentUpdate } from './utils'
-import { v1 as uuid } from 'uuid'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { v1 as uuid } from 'uuid'
+
+import { ProjectHealth, UpdateAttributes, UpdateStatus } from './types'
+import { getCurrentUpdate, getNextPendingUpdate, getPendingUpdates, getPublicUpdates } from './utils'
 
 type GenerateUpdate = Pick<
   UpdateAttributes,
-  'health' | 'introduction' | 'highlights' | 'blockers' | 'next_steps' | 'additional_notes' | 'status' | 'created_at' | 'updated_at' | 'due_date' | 'completion_date'
+  | 'health'
+  | 'introduction'
+  | 'highlights'
+  | 'blockers'
+  | 'next_steps'
+  | 'additional_notes'
+  | 'status'
+  | 'created_at'
+  | 'updated_at'
+  | 'due_date'
+  | 'completion_date'
 >
 const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
   id: uuid(),
@@ -112,7 +123,7 @@ const LATE_UPDATE = generateUpdate({
 
 describe('Public updates', () => {
   describe('when there are no updates for a proposal', () => {
-    let updates: UpdateAttributes[] = []
+    const updates: UpdateAttributes[] = []
 
     it('should return no updates', () => {
       expect(getPublicUpdates(updates)).toEqual([])
@@ -120,7 +131,7 @@ describe('Public updates', () => {
   })
 
   describe('when there is one done update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE]
 
     it('should return one update', () => {
       expect(getPublicUpdates(updates)).toEqual(updates)
@@ -128,7 +139,7 @@ describe('Public updates', () => {
   })
 
   describe('when there is one done update and one pending for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE, PENDING_UPDATE]
 
     it('should return the done update', () => {
       expect(getPublicUpdates(updates)).toEqual([DONE_UPDATE])
@@ -136,7 +147,7 @@ describe('Public updates', () => {
   })
 
   describe('when there is one pending', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [PENDING_UPDATE]
 
     it('should return no updates', () => {
       expect(getPublicUpdates(updates)).toEqual([])
@@ -144,7 +155,7 @@ describe('Public updates', () => {
   })
 
   describe('when there is one pending, one done, one missed and one late', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE, DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE]
+    const updates: UpdateAttributes[] = [PENDING_UPDATE, DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE]
 
     it('should return done, late and missed updates', () => {
       expect(getPublicUpdates(updates)).toEqual([DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE])
@@ -152,7 +163,13 @@ describe('Public updates', () => {
   })
 
   describe('when there is one pending, one done, one missed, one late and one out of schedule', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE, DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE, DONE_UPDATE_OUT_OF_SCHEDULE]
+    const updates: UpdateAttributes[] = [
+      PENDING_UPDATE,
+      DONE_UPDATE,
+      LATE_UPDATE,
+      MISSED_UPDATE,
+      DONE_UPDATE_OUT_OF_SCHEDULE,
+    ]
 
     it('should return out of schedule first and then done,late and missed updates', () => {
       expect(getPublicUpdates(updates)).toEqual([DONE_UPDATE_OUT_OF_SCHEDULE, DONE_UPDATE, LATE_UPDATE, MISSED_UPDATE])
@@ -162,7 +179,7 @@ describe('Public updates', () => {
 
 describe('Remaining updates', () => {
   describe('when there are no updates for a proposal', () => {
-    let updates: UpdateAttributes[] = []
+    const updates: UpdateAttributes[] = []
 
     it('should return no updates', () => {
       expect(getPendingUpdates(updates)).toEqual([])
@@ -170,7 +187,7 @@ describe('Remaining updates', () => {
   })
 
   describe('when there is non-pending updates for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE]
 
     it('should return no updates', () => {
       expect(getPendingUpdates(updates)).toEqual([])
@@ -178,7 +195,7 @@ describe('Remaining updates', () => {
   })
 
   describe('when there is one done and one pending update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE, PENDING_UPDATE]
 
     it('should return the pending update', () => {
       expect(getPendingUpdates(updates)).toEqual([PENDING_UPDATE])
@@ -188,7 +205,7 @@ describe('Remaining updates', () => {
 
 describe('Current update', () => {
   describe('when there are no updates for a proposal', () => {
-    let updates: UpdateAttributes[] = []
+    const updates: UpdateAttributes[] = []
 
     it('should return no update', () => {
       expect(getCurrentUpdate(updates)).toEqual(null)
@@ -196,7 +213,7 @@ describe('Current update', () => {
   })
 
   describe('when there is one done update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE]
 
     it('should return closest done update', () => {
       expect(getCurrentUpdate(updates)).toEqual(DONE_UPDATE)
@@ -204,7 +221,7 @@ describe('Current update', () => {
   })
 
   describe('when there is one late update and one pending for a proposal', () => {
-    let updates: UpdateAttributes[] = [LATE_UPDATE, PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [LATE_UPDATE, PENDING_UPDATE]
 
     it('should return the pending update', () => {
       expect(getCurrentUpdate(updates)).toEqual(PENDING_UPDATE)
@@ -212,7 +229,7 @@ describe('Current update', () => {
   })
 
   describe('when there are two pending updates for a proposal', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE, FUTURE_PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [PENDING_UPDATE, FUTURE_PENDING_UPDATE]
 
     it('should return the closest update', () => {
       expect(getCurrentUpdate(updates)).toEqual(PENDING_UPDATE)
@@ -220,7 +237,7 @@ describe('Current update', () => {
   })
 
   describe('when there is a done update and a future pending update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, FUTURE_PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE, FUTURE_PENDING_UPDATE]
 
     it('should return done update', () => {
       expect(getCurrentUpdate(updates)).toEqual(DONE_UPDATE)
@@ -228,7 +245,7 @@ describe('Current update', () => {
   })
 
   describe('when there is one pending and one missed update for a proposal', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE, MISSED_UPDATE]
+    const updates: UpdateAttributes[] = [PENDING_UPDATE, MISSED_UPDATE]
 
     it('should return the closest future update', () => {
       expect(getCurrentUpdate(updates)).toEqual(PENDING_UPDATE)
@@ -236,7 +253,7 @@ describe('Current update', () => {
   })
 
   describe('when there is one done and one missed update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, MISSED_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE, MISSED_UPDATE]
 
     it('should return done update', () => {
       expect(getCurrentUpdate(updates)).toEqual(DONE_UPDATE)
@@ -246,58 +263,58 @@ describe('Current update', () => {
 
 describe('Next update', () => {
   describe('when there are no updates for a proposal', () => {
-    let updates: UpdateAttributes[] = []
+    const updates: UpdateAttributes[] = []
 
     it('should return no update', () => {
-      expect(getNextUpdate(updates)).toEqual(null)
+      expect(getNextPendingUpdate(updates)).toEqual(null)
     })
   })
 
   describe('when there is one done update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE]
 
     it('should return no update', () => {
-      expect(getNextUpdate(updates)).toEqual(null)
+      expect(getNextPendingUpdate(updates)).toEqual(null)
     })
   })
 
   describe('when there is one late update and one pending for a proposal', () => {
-    let updates: UpdateAttributes[] = [LATE_UPDATE, PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [LATE_UPDATE, PENDING_UPDATE]
 
     it('should return the pending update', () => {
-      expect(getNextUpdate(updates)).toEqual(PENDING_UPDATE)
+      expect(getNextPendingUpdate(updates)).toEqual(PENDING_UPDATE)
     })
   })
 
   describe('when there are two pending updates for a proposal', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE, FUTURE_PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [PENDING_UPDATE, FUTURE_PENDING_UPDATE]
 
     it('should return the closest future update', () => {
-      expect(getNextUpdate(updates)).toEqual(PENDING_UPDATE)
+      expect(getNextPendingUpdate(updates)).toEqual(PENDING_UPDATE)
     })
   })
 
   describe('when there is a done update and a future pending update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, FUTURE_PENDING_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE, FUTURE_PENDING_UPDATE]
 
     it('should return future update', () => {
-      expect(getNextUpdate(updates)).toEqual(FUTURE_PENDING_UPDATE)
+      expect(getNextPendingUpdate(updates)).toEqual(FUTURE_PENDING_UPDATE)
     })
   })
 
   describe('when there is one pending and one missed update for a proposal', () => {
-    let updates: UpdateAttributes[] = [PENDING_UPDATE, MISSED_UPDATE]
+    const updates: UpdateAttributes[] = [PENDING_UPDATE, MISSED_UPDATE]
 
     it('should return the closest future update', () => {
-      expect(getNextUpdate(updates)).toEqual(PENDING_UPDATE)
+      expect(getNextPendingUpdate(updates)).toEqual(PENDING_UPDATE)
     })
   })
 
   describe('when there is one done and one missed update for a proposal', () => {
-    let updates: UpdateAttributes[] = [DONE_UPDATE, MISSED_UPDATE]
+    const updates: UpdateAttributes[] = [DONE_UPDATE, MISSED_UPDATE]
 
     it('should return no update', () => {
-      expect(getNextUpdate(updates)).toEqual(null)
+      expect(getNextPendingUpdate(updates)).toEqual(null)
     })
   })
 })

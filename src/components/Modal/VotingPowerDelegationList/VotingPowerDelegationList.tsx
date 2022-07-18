@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -8,6 +8,7 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import { Delegate } from '../../../hooks/useDelegatesInfo'
+import { useSortingByKey } from '../../../hooks/useSortingByKey'
 import Sort from '../../Icon/Sort'
 
 import VotingPowerDelegationItem from './VotingPowerDelegationItem'
@@ -20,12 +21,7 @@ type VotingPowerDelegationListProps = {
 
 function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPowerDelegationListProps) {
   const t = useFormatMessage()
-  const [isDescending, setIsDescending] = useState(true)
-
-  const delegatesSorted = useMemo(
-    () => delegates.sort((a, b) => (isDescending ? b.totalVP - a.totalVP : a.totalVP - b.totalVP)),
-    [delegates, isDescending]
-  )
+  const { sorted: delegatesSorted, changeSort, isDescendingSort } = useSortingByKey(delegates, 'totalVP')
 
   const createDelegateRow = (delegate: Delegate, idx: number) => {
     return <VotingPowerDelegationItem key={idx} delegate={delegate} onClick={() => onDelegateClick(delegate)} />
@@ -43,10 +39,10 @@ function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPow
             <Table.Row>
               <Table.HeaderCell>{t('modal.vp_delegation.candidate_name')}</Table.HeaderCell>
               <Table.HeaderCell>{t('modal.vp_delegation.picked_by')}</Table.HeaderCell>
-              <Table.HeaderCell className="TotalVP" onClick={() => setIsDescending((prev) => !prev)}>
+              <Table.HeaderCell className="TotalVP" onClick={changeSort}>
                 <span>
                   {t('modal.vp_delegation.total_vp')}
-                  <Sort rotate={isDescending ? 0 : 180} />
+                  <Sort rotate={isDescendingSort ? 0 : 180} />
                 </span>
               </Table.HeaderCell>
               <Table.HeaderCell />

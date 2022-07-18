@@ -7,7 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
-import TextLabel from '../Layout/TextLabel'
+import Pill from '../Common/Pill'
 
 import './ProposalPromotionSection.css'
 
@@ -34,7 +34,9 @@ export function ProposalPromotionSection({ proposal, loading }: ProposalPromotio
     <>
       {showPromotionSection && (
         <div className="ProposalPromotionSection">
-          <TextLabel text={t('page.proposal_detail.promotion.opportunity_label')} />
+          <Pill color="green" style="shiny">
+            {t('page.proposal_detail.promotion.opportunity_label')}
+          </Pill>
           <Markdown className="smallMarkdown">
             {(proposal?.type == ProposalType.Poll
               ? t('page.proposal_detail.promotion.draft_text')

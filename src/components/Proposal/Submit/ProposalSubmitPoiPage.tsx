@@ -18,10 +18,13 @@ import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entiti
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
+import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 import LoadingView from '../../Layout/LoadingView'
 import LogIn from '../../User/LogIn'
+
+import CoAuthors from './CoAuthor/CoAuthors'
 
 import './ProposalSubmitPoiPage.css'
 
@@ -29,6 +32,7 @@ type POIState = {
   x: string | number
   y: string | number
   description: string
+  coAuthors?: string[]
 }
 
 const schema = newProposalPOIScheme.properties
@@ -119,6 +123,8 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   const [formDisabled, setFormDisabled] = useState(false)
   const action = getPoiTypeAction(poiType)
 
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+
   useEffect(() => {
     if (state.validated) {
       setFormDisabled(true)
@@ -140,10 +146,10 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
           }
 
           return Governance.get().createProposalPOI({
+            ...state.value,
+            type: poiType,
             x,
             y,
-            type: poiType,
-            description: state.value.description,
           })
         })
         .then((proposal) => {
@@ -245,15 +251,16 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
         />
       </ContentSection>
       <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+      </ContentSection>
+      <ContentSection>
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
           {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </ContentLayout>

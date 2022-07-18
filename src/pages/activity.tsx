@@ -20,8 +20,10 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalCard from '../components/Proposal/ProposalCard'
 import StatusMenu from '../components/Status/StatusMenu'
 import LogIn from '../components/User/LogIn'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, toProposalStatus } from '../entities/Proposal/types'
 import useProposals from '../hooks/useProposals'
+import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { ProposalActivityList, toProposalActivityList, toProposalListPage } from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -39,7 +41,33 @@ const getFilters = (account: string | null, list: ProposalActivityList | null) =
     return { subscribed: account }
   }
 
+  if (!!account && list === ProposalActivityList.CoAuthoring) {
+    return { user: account, coauthor: true }
+  }
+
   return {}
+}
+
+type EmptyState = {
+  descriptionKey: string
+  linkTextKey: string
+  onLinkClick: () => void
+}
+
+const emptyConfiguration: Record<ProposalActivityList, Partial<EmptyState>> = {
+  [ProposalActivityList.MyProposals]: {
+    descriptionKey: 'page.proposal_activity.no_proposals_submitted',
+    linkTextKey: 'page.proposal_activity.no_proposals_submitted_action',
+    onLinkClick: () => navigate(locations.submit()),
+  },
+  [ProposalActivityList.Watchlist]: {
+    descriptionKey: 'page.proposal_activity.no_proposals_subscriptions',
+    linkTextKey: 'page.proposal_activity.no_proposals_subscriptions_action',
+    onLinkClick: () => navigate(locations.proposals()),
+  },
+  [ProposalActivityList.CoAuthoring]: {
+    descriptionKey: 'page.proposal_activity.no_proposals_coauthoring',
+  },
 }
 
 export default function ActivityPage() {
@@ -53,7 +81,13 @@ export default function ActivityPage() {
   const load = !!account && !!list
 
   const filters = getFilters(account, list)
-  const [proposals, proposalsState] = useProposals({ load, page, status, ...filters, itemsPerPage: ITEMS_PER_PAGE })
+  const { proposals, isLoadingProposals } = useProposals({
+    load,
+    page,
+    status,
+    ...filters,
+    itemsPerPage: ITEMS_PER_PAGE,
+  })
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const [results] = useAsyncMemo(
     () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
@@ -100,6 +134,8 @@ export default function ActivityPage() {
       navigate(locations.activity(newParams))
     }
   }, [list, params])
+
+  const [pendingCoauthorRequests] = useProposalsByCoAuthor(account, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -148,30 +184,24 @@ export default function ActivityPage() {
               >
                 {t('page.proposal_activity.list_watchlist')}
               </Filter>
+              <Filter
+                active={list === ProposalActivityList.CoAuthoring}
+                onClick={() => handleListFilter(ProposalActivityList.CoAuthoring)}
+              >
+                {t('page.coauthor_detail.accepted_label')}
+              </Filter>
             </>
           }
           rightAction={<StatusMenu value={status} onChange={(_, { value }) => handleStatusFilter(value)} />}
         >
           <div className="ActivityPage__ListContainer">
-            <Loader active={proposalsState.loading} />
-            {proposals && proposals.data.length === 0 && (
+            <Loader active={isLoadingProposals} />
+            {proposals && proposals.data.length === 0 && list && (
               <div className="ActivityPage__EmptyContainer">
                 <Empty
-                  description={
-                    list === ProposalActivityList.Watchlist
-                      ? t('page.proposal_activity.no_proposals_subscriptions')
-                      : t('page.proposal_activity.no_proposals_submitted')
-                  }
-                  linkText={
-                    list === ProposalActivityList.Watchlist
-                      ? t('page.proposal_activity.no_proposals_subscriptions_action')
-                      : t('page.proposal_activity.no_proposals_submitted_action')
-                  }
-                  onLinkClick={
-                    list === ProposalActivityList.Watchlist
-                      ? () => navigate(locations.proposals())
-                      : () => navigate(locations.submit())
-                  }
+                  description={t(emptyConfiguration[list].descriptionKey)}
+                  linkText={t(emptyConfiguration[list].linkTextKey)}
+                  onLinkClick={emptyConfiguration[list].onLinkClick}
                 />
               </div>
             )}
@@ -181,6 +211,7 @@ export default function ActivityPage() {
                   <ProposalCard
                     key={proposal.id}
                     proposal={proposal}
+                    coauthorRequest={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
                     subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
                     subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                     onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}

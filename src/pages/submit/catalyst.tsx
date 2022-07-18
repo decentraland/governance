@@ -17,9 +17,11 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../api/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalCatalystScheme } from '../../entities/Proposal/types'
 import { isValidDomainName } from '../../entities/Proposal/utils'
@@ -33,6 +35,7 @@ type CatalystState = {
   owner: string
   domain: string
   description: string
+  coAuthors?: string[]
 }
 
 const schema = newProposalCatalystScheme.properties
@@ -160,6 +163,8 @@ export default function SubmitCatalyst() {
     )
   }
 
+  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+
   return (
     <ContentLayout small>
       <Head
@@ -262,6 +267,9 @@ export default function SubmitCatalyst() {
         />
       </ContentSection>
       <ContentSection>
+        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+      </ContentSection>
+      <ContentSection>
         <Button
           primary
           disabled={state.validated || commsState.loading || contentState.loading || lambdaState.loading}
@@ -273,9 +281,7 @@ export default function SubmitCatalyst() {
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
-            {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
         </ContentSection>
       )}
     </ContentLayout>

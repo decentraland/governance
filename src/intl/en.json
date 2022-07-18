@@ -9,10 +9,12 @@
   },
   "navigation": {
     "proposals": "Proposals",
+    "grants": "Grants",
     "wrapping": "Voting Power",
     "activity": "Activity",
     "enacted": "Enacted",
     "transparency": "Transparency",
+    "debug": "Debug",
     "search": {
       "mobile": {
         "placeholder": "Search on the DAO...",
@@ -42,6 +44,13 @@
     "button": "Go Back"
   },
   "error": {
+    "message": {
+      "hide": "Hide error",
+      "show": "Show error",
+      "copy": "Copy to Clipboard",
+      "copied": "Copied!",
+      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on [Discord](https://discord.com/channels/894658869391933540/987439629533855774)."
+    },
     "poll": {
       "title_empty": "Title field is empty",
       "title_too_short": "Title field is too short",
@@ -148,6 +157,8 @@
       "abstract_too_short": "Abstract is too short",
       "beneficiary_empty": "Beneficiary is empty",
       "beneficiary_invalid": "Beneficiary is invalid",
+      "email_empty": "Email address is empty",
+      "email_invalid": "Email address is invalid",
       "description_empty": "Description is empty",
       "description_too_large": "Description is too large",
       "description_too_short": "Description is too short",
@@ -188,17 +199,21 @@
       "motivation_empty": "Motivation is empty",
       "motivation_too_short": "Motivation is too short",
       "motivation_too_large": "Motivation is too large",
+      "image_type_invalid": "Some image is invalid, it must be a JPG, PNG, BMP or WEBP",
       "links_empty": "Insert at least one URL",
       "smart_contract_empty": "Insert at least one smart contract address",
       "managers_empty": "Insert at least one manager address",
-      "url_invalid": "Some url is invalid, they must start with 'https://'",
+      "url_invalid": "Some URL is invalid, they must start with 'https://'",
       "address_invalid": "Some address is invalid",
       "method_empty": "Method is empty",
       "method_too_short": "Method is too short",
-      "method_too_large": "Method is too large"
+      "method_too_large": "Method is too large",
+      "single_url_invalid": "The URL is invalid, it must start with 'https://'",
+      "single_url_empty": "Insert an URL"
     },
     "update_status_proposal": {
-      "grant_vesting_address_invalid": "Vesting contract address is invalid"
+      "grant_vesting_address_invalid": "Vesting contract address is invalid",
+      "grant_enacting_tx_invalid": "Enacting transaction hash is invalid"
     },
     "proposal_update": {
       "introduction_empty": "Introduction field is empty",
@@ -210,6 +225,10 @@
       "next_steps_empty": "Next steps field is empty",
       "next_steps_too_large": "Next steps field is too large",
       "additional_notes_too_large": "Additional notes and links field is too large"
+    },
+    "debug": {
+      "invalid_http_status": "Http status must be between 100 and 530",
+      "invalid_sleep_time": "Sleep time must be between 0 and 300000 ms (5 minutes)"
     }
   },
   "category": {
@@ -268,6 +287,7 @@
       "title": "Confirmation",
       "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
       "grant_vesting_address": "Vesting Contract Address",
+      "grant_enacting_tx": "Enacting Transaction Hash",
       "comments": "Comments",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
@@ -378,6 +398,11 @@
       "title": "Not found",
       "description": "You just hit a route that doesn't exist..."
     },
+    "debug": {
+      "title": "Debug",
+      "description": "A tab where anything is possible",
+      "error_label": "There was an error."
+    },
     "welcome": {
       "title": "Welcome to the Decentraland DAO",
       "description": "A quick-start guide to participating in the governance of Decentraland’s virtual world",
@@ -421,6 +446,18 @@
     "proposal_poll_list": {
       "title": "Polls",
       "description": "Recent community polls in the Decentraland DAO"
+    },
+    "coauthor_detail": {
+      "pending_label": "Co-author request",
+      "pending_description": "You’ve been added as a co-author for this initiative by its creator.",
+      "pending_helper": "If you confirm this request, your co-author status will be published on this proposal. If you are not sure why you are seeing this or if you do not want to be listed as co-author, you can reject this request.",
+      "confirm_label": "Confirm",
+      "deny_label": "Deny",
+      "accepted_label": "Co-authoring",
+      "accepted_description": "You've accepted being involved in this initiative.",
+      "rejected_label": "Co-authoring",
+      "rejected_description": "You've rejected being involved in this initiative.",
+      "revert_label": "Revert"
     },
     "proposal_detail": {
       "title": "Decentraland DAO",
@@ -475,6 +512,10 @@
       },
       "details_label": "Details",
       "details_user_label": "Created by",
+      "details_coauthors_label": "Co-authors",
+      "details_coauthor_accepted_helper": "This user has accepted the co-author request",
+      "details_coauthor_rejected_helper": "This user has declined the co-author request",
+      "details_coauthor_pending_helper": "This user has a pending co-author request",
       "details_start_label": "Started",
       "details_finish_label": "Ends",
       "details_snapshot_label": "Snapshot",
@@ -515,6 +556,58 @@
         "vesting_button": "View vesting contract"
       }
     },
+    "grants": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "load_more_button": "Load more",
+      "current_banner": {
+        "title": "Discover the projects making the Decentraland ecosystem grow",
+        "description": "All these projects have been funded by you via the Decentraland DAO Community Grants program. Browse them to see their goals, progress and how they are making an impact in our community.",
+        "active_grants_title": "{value} Active Grants",
+        "active_grants_description": "Initiatives currently being funded",
+        "released_title": "${value} USD Released",
+        "released_description": "Funds already cashed out by Grant teams",
+        "to_be_vested_title": "${value} USD to be Vested",
+        "to_be_vested_description": "Funds to be made available for active Grants"
+      },
+      "past_banner": {
+        "title": "See what the Community already achieved",
+        "description": "Check already finished Grant projects. Do your own due diligence, see how they performed and the value they added to Decentraland.",
+        "completed_grants_title": "{value} Projects",
+        "completed_grants_description": "Successfully completed Grants",
+        "total_funding_title": "${value} USD",
+        "total_funding_description": "Total funding for past initiatives",
+        "approved_rate_title": "{value}% Approval",
+        "approved_rate_description": "Rate of approved Grant proposals"
+      },
+      "currently_funded": "Currently being funded",
+      "category_filters": {
+        "all": "All",
+        "community": "Community",
+        "content": "Content",
+        "gaming": "Gaming",
+        "platform": "Platform"
+      },
+      "sorting_filters": {
+        "finish_date": "Finish date",
+        "amount": "Amount granted",
+        "created_at": "Newest"
+      },
+      "vested": "vested",
+      "transferred": "transferred",
+      "released": "released",
+      "started_date": "Started",
+      "end_date": "Ends",
+      "transaction_date": "Transaction made",
+      "past_funded": {
+        "title": "Past, successfully funded initiatives",
+        "category": "Category",
+        "start_date": "Start Date",
+        "size": "Size"
+      },
+      "navigate_to_proposal_label": "Navigate to proposal {title}",
+      "empty_update": "When the team publishes their first update, it will appear here."
+    },
     "proposal_activity": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
@@ -524,7 +617,8 @@
       "no_proposals_subscriptions": "You haven't subscribed to any proposal yet.",
       "no_proposals_subscriptions_action": "Browse proposals",
       "no_proposals_submitted": "You haven't submitted any proposal yet.",
-      "no_proposals_submitted_action": "Create a proposal"
+      "no_proposals_submitted_action": "Create a proposal",
+      "no_proposals_coauthoring": "You don’t have active co-authoring requests currently."
     },
     "proposal_comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",
@@ -641,10 +735,22 @@
     "submit": {
       "title": "Submit Proposal",
       "description": "Select a proposal category to get started",
+      "common_actions": "Common Actions",
+      "governance_process": "Governance Process",
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
       "markdown_tooltip": " (markdown)",
-      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed."
+      "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
+      "co_author_label": "Co-authors",
+      "optional_tooltip": " (optional)",
+      "co_author_description": "If you co-authored this proposal with someone else, you can add their addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
+      "co_author_placeholder": "Enter their address",
+      "co_author_count": "{amount}/{maxAmount} Co-authors added",
+      "co_author_error": "Invalid address",
+      "co_author_as_author_error": "This address cannot be added since it belongs to the proposal's author.",
+      "co_author_duplicated_error": "It looks like this co-author's address has already been added.",
+      "co_author_max_error": "The maximum number of co-authors was exceeded.",
+      "error_label": "There was an error while trying to create the proposal, please try again later."
     },
     "submit_poll": {
       "title": "Create a community poll",
@@ -782,7 +888,12 @@
       "personnel_placeholder": "A description of your team and why they are particularly qualified for your project.",
       "roadmap_label": "Roadmap and milestones",
       "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
-      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community."
+      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
+      "email_label": "Contact Email Address",
+      "email_detail": "This email address will be used by the Grant Support teams to contact you to check the progress of the grant, set up meetings and maintain an open communication channel.",
+      "email_placeholder": "Enter your email address",
+      "email_error_message": "Please enter a valid email",
+      "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
     },
     "submit_linked_wearables": {
       "title": "Linked Wearables Registry",
@@ -817,7 +928,13 @@
       "programmatically_generated_note": "_In general, large collections of more than 5k NFTs are not created manually, they are systematically generated from individual traits that were designed individually. If your Linked Wearables Collection is made like this, share the details below._",
       "method_label": "Method",
       "method_detail": "Describe the method used to create the programmatic collection. If possible, share proof and links to the repository.",
-      "method_placeholder": "Describe the method"
+      "method_placeholder": "Describe the method",
+      "image_previews_label": "Collection Images",
+      "image_previews_detail": "Provide up to {amount} images to show the community what your collection and wearables looks like. JPG, PNG, BMP & WEBP formats supported.",
+      "image_placeholder": "Insert image URL",
+      "image_add": "Add another image",
+      "marketplace_link_label": "NFT Marketplace Listing",
+      "marketplace_link_detail": "Provide an URL where users can see your NFT collection listed in an NFT marketplace like OpenSea, Rarible, or any other"
     },
     "subscription_banner": {
       "title": "Stay in the loop",

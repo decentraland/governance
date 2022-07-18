@@ -1,0 +1,36 @@
+.CoAuthorSelect .CoAuthorSelect__control {
+  background-color: white;
+  border-color: rgba(34, 36, 38, 0.15);
+  box-shadow: none;
+}
+
+.CoAuthorSelect .CoAuthorSelect__control:hover {
+  border-color: rgba(34, 36, 38, 0.15);
+}
+
+.CoAuthorSelect.dcl.field.error .CoAuthorSelect__control,
+.CoAuthorSelect.dcl.field.error .CoAuthorSelect__control:hover {
+  border-color: var(--error);
+}
+
+.CoAuthorSelect .CoAuthorSelect__multi-value {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #d8d8d8;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+}
+
+.CoAuthorSelect .CoAuthorSelect__multi-value__remove {
+  color: var(--black-400);
+}
+
+.CoAuthorSelect .CoAuthorSelect__multi-value__remove:hover {
+  background-color: var(--black-400);
+  border-radius: 100px;
+  height: fit-content;
+  width: fit-content;
+  padding: 0;
+  margin: 0 4px;
+}

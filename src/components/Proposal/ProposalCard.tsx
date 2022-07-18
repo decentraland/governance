@@ -12,14 +12,16 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
-import CategoryLabel from '../Category/CategoryLabel'
+import CategoryPill from '../Category/CategoryPill'
 import ChoiceProgress from '../Status/ChoiceProgress'
-import StatusLabel from '../Status/StatusLabel'
+import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
+import StatusPill from '../Status/StatusPill'
 
 import './ProposalCard.css'
 
 export type ProposalCardProps = {
   proposal: ProposalAttributes
+  coauthorRequest?: boolean
   votes?: Record<string, Vote> | null
   subscribed?: boolean
   subscribing?: boolean
@@ -29,7 +31,14 @@ export type ProposalCardProps = {
 const subscribeIcon = require('../../images/icons/subscribe.svg').default
 const subscribedIcon = require('../../images/icons/subscribed.svg').default
 
-export default function ProposalCard({ proposal, subscribing, subscribed, votes, onSubscribe }: ProposalCardProps) {
+export default function ProposalCard({
+  proposal,
+  subscribing,
+  subscribed,
+  votes,
+  coauthorRequest,
+  onSubscribe,
+}: ProposalCardProps) {
   const t = useFormatMessage()
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
@@ -44,7 +53,11 @@ export default function ProposalCard({ proposal, subscribing, subscribed, votes,
     <Card
       as={Link}
       href={locations.proposal(proposal.id)}
-      className={TokenList.join(['ProposalCard', subscribed && 'ProposalCard--subscribed'])}
+      className={TokenList.join([
+        'ProposalCard',
+        subscribed && 'ProposalCard--subscribed',
+        coauthorRequest && 'ProposalCard--coauthor',
+      ])}
     >
       <Card.Content className="ProposalCard__Content">
         <div className="ProposalCard__Title">
@@ -55,16 +68,18 @@ export default function ProposalCard({ proposal, subscribing, subscribed, votes,
             </Button>
           )}
         </div>
+        <div className="ProposalCard__Spacer" />
         <div className="ProposalCard__Progress">
           <Header sub>{t('page.proposal_detail.result_label')}</Header>
           <ChoiceProgress {...winner} />
         </div>
       </Card.Content>
       <Card.Content>
-        <div>
-          <StatusLabel status={proposal.status} />
-          <CategoryLabel type={proposal.type} />
+        <div className="ProposalCard__Info">
+          <StatusPill status={proposal.status} />
+          <CategoryPill type={proposal.type} />
         </div>
+        {coauthorRequest && <CoauthorRequestLabel />}
       </Card.Content>
     </Card>
   )

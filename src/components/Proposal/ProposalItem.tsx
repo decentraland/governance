@@ -11,15 +11,17 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
-import CategoryLabel from '../Category/CategoryLabel'
+import CategoryPill from '../Category/CategoryPill'
+import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
-import StatusLabel from '../Status/StatusLabel'
+import StatusPill from '../Status/StatusPill'
 
 import './ProposalItem.css'
 
 export type ProposalItemProps = {
   proposal: ProposalAttributes
+  hasCoauthorRequest?: boolean
   votes?: Record<string, Vote>
   subscribed?: boolean
   subscribing?: boolean
@@ -29,7 +31,14 @@ export type ProposalItemProps = {
 const subscribeIcon = require('../../images/icons/subscribe.svg').default
 const subscribedIcon = require('../../images/icons/subscribed.svg').default
 
-export default function ProposalItem({ proposal, votes, subscribing, subscribed, onSubscribe }: ProposalItemProps) {
+export default function ProposalItem({
+  proposal,
+  hasCoauthorRequest,
+  votes,
+  subscribing,
+  subscribed,
+  onSubscribe,
+}: ProposalItemProps) {
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
@@ -42,7 +51,11 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
     <Card
       as={Link}
       href={locations.proposal(proposal.id)}
-      className={TokenList.join(['ProposalItem', subscribed && 'ProposalItem--subscribed'])}
+      className={TokenList.join([
+        'ProposalItem',
+        subscribed && 'ProposalItem--subscribed',
+        hasCoauthorRequest && 'ProposalItem--coauthor',
+      ])}
     >
       <Card.Content>
         <div className="ProposalItem__Title">
@@ -61,11 +74,10 @@ export default function ProposalItem({ proposal, votes, subscribing, subscribed,
           )}
         </div>
         <div className="ProposalItem__Status">
-          <div>
-            <StatusLabel status={proposal.status} />
-            <CategoryLabel type={proposal.type} />
-          </div>
+          <StatusPill status={proposal.status} />
+          <CategoryPill type={proposal.type} />
           <FinishLabel date={proposal.finish_at} />
+          {hasCoauthorRequest && <CoauthorRequestLabel />}
         </div>
       </Card.Content>
     </Card>

@@ -17,6 +17,7 @@
 }
 
 .ProposalDetailPage__Labels {
+  display: flex;
   min-height: 24px;
 }
 
@@ -24,7 +25,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: normal;
-  color: #736e7d;
+  color: var(--black-400);
 }
 
 .ProposalDetailPage .ProposalDetailDescription .dg.SubTitle {
@@ -35,6 +36,14 @@
 .ProposalDetailPage .ProposalDetailDescription .dg.Paragraph,
 .ProposalDetailPage .ProposalDetailDescription .dg.ListItem {
   font-size: 15px;
+}
+
+.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph img {
+  max-width: 100%;
+}
+
+.ProposalImagesPreview {
+  margin-bottom: 20px;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 767px) {

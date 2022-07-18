@@ -24,6 +24,7 @@ export function initProposalAttributes(
   proposalStatus: ProposalStatus,
   enactedStatus: boolean,
   enactedDescription: string | null,
+  enactingTransaction: string | null,
   passedDescription: string | null,
   rejectedDescription: string | null,
   configuration: Record<string, unknown>,
@@ -54,6 +55,7 @@ export function initProposalAttributes(
     enacted: enactedStatus,
     enacted_by: updatingUser,
     enacted_description: enactedDescription,
+    enacting_tx: enactingTransaction,
     vesting_address: null,
     passed_by: updatingUser,
     passed_description: passedDescription,
@@ -160,6 +162,7 @@ describe('getUpdateMessage', () => {
       get.proposalStatus,
       get.enactedStatus,
       get.enactedDescription,
+      get.enactingTransaction,
       get.passedDescription,
       get.rejectedDescription,
       get.configuration,
@@ -475,6 +478,21 @@ describe('getUpdateMessage', () => {
           expect(get.updateMessage).not.toContain('null')
           expect(get.updateMessage).toBe(
             'Test Proposal\n\n' + 'This proposal has been ENACTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n'
+          )
+        })
+      })
+
+      describe('when the proposal is a grant with an enacting transaction', () => {
+        def('proposalType', () => ProposalType.Grant)
+        def('enactingTransaction', () => '0xEnactingTransaction')
+
+        it('should return a message with the enacting transaction in etherscan', () => {
+          expect(get.updateMessage).toContain(get.proposal.enacting_tx)
+          expect(get.updateMessage).toBe(
+            'Test Proposal\n\n' +
+              'This proposal has been ENACTED by a DAO Committee Member (0xCommiteeUserAddress)\n\n' +
+              'enacted description\n' +
+              'Enacting Transaction: https://etherscan.io/tx/0xEnactingTransaction'
           )
         })
       })

@@ -1,0 +1,12 @@
+.CoauthorRequestLabel {
+  display: flex;
+  align-items: center;
+  background-color: var(--yellow-800);
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: white;
+  padding: 0 9px;
+  margin-left: auto;
+}
