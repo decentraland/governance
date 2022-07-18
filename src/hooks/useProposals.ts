@@ -11,7 +11,7 @@ export type UseProposalsFilter = Omit<GetProposalsFilter, 'subscribed' | 'limit'
 }
 
 export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
-  return useAsyncMemo(async () => {
+  const [proposals, state] = useAsyncMemo(async () => {
     if (filter.load === false) {
       return {
         ok: true,
@@ -60,4 +60,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     filter.load,
     filter.coauthor,
   ])
+
+  return {
+    proposals,
+    isLoadingProposals: state.loading,
+  }
 }

@@ -17,11 +17,11 @@
 }
 
 .VotingPowerDelegationModal .description .dg.Paragraph .dg.Link {
-  color: var(--blue);
+  color: var(--blue-800);
 }
 
 .VotingPowerDelegationModal .actions .ui.button.primary {
-  color: var(--blue);
+  color: var(--blue-800);
   background-color: rgba(72, 136, 238, 0.1);
 }
 
@@ -40,7 +40,7 @@
 }
 
 .VotingPowerDelegationModal .ui.table tbody tr:hover {
-  box-shadow: 0px 3px 15px rgba(var(--dark-gray-rgb), 0.3);
+  box-shadow: 0px 3px 15px var(--black-400);
   border-radius: 6px;
   cursor: pointer;
 }

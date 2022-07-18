@@ -6,7 +6,7 @@ import toSnakeCase from 'lodash/snakeCase'
 
 import { ProjectHealth } from '../../entities/Updates/types'
 import Cancel from '../Icon/Cancel'
-import Check from '../Icon/Check'
+import CheckCircle from '../Icon/CheckCircle'
 import Warning from '../Icon/Warning'
 
 import './ProjectHealthStatus.css'
@@ -20,7 +20,7 @@ const getIconComponent = (health: ProjectHealth) => {
     return Cancel
   }
 
-  return Check
+  return CheckCircle
 }
 
 interface Props {

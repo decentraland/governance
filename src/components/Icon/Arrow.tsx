@@ -5,8 +5,8 @@ type ArrowProps = {
 }
 
 function Arrow({ filled }: ArrowProps) {
-  const fill = filled ? 'var(--dark-gray)' : 'white'
-  const stroke = filled ? 'white' : 'var(--dark-gray)'
+  const fill = filled ? 'var(--black-400)' : 'white'
+  const stroke = filled ? 'white' : 'var(--black-400)'
 
   return (
     <svg className="Arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

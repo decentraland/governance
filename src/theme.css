@@ -1,3 +1,40 @@
+:root {
+  --yellow-100: #ffd89f;
+  --yellow-200: #fef7d2;
+  --yellow-800: #ffb03f;
+  --fuchsia-200: #ffe4ff;
+  --fuchsia-800: #ff5afe;
+  --green-200: #e1f3d6;
+  --green-800: #44b600;
+  --red-200: #f9d6dc;
+  --red-800: #d80027;
+  --blue-200: #e2ecfc;
+  --blue-800: #4888ee;
+  --gray: #a19ea8; /* TODO: Sync with Figma color styles */
+  --white-900: #ffffff;
+  --orange-200: #ffe9df;
+  --orange-800: #ff7439;
+  --black-100: rgba(115, 110, 125, 0.16);
+  --black-400: #b9b7be;
+  --black-600: #736e7d;
+  --purple-200: #e0dcf3;
+  --purple-800: #3c24b3;
+
+  --background-catalyst: var(--blue-800);
+  --background-poi: var(--green-800);
+  --background-ban-name: var(--fuchsia-800);
+  --background-grant: var(--purple-800);
+  --background-poll: var(--orange-800);
+  --background-remove-poi: #ff247c;
+  --background-happy-green: var(--green-800);
+  --background-linked-wearables: var(--yellow-800);
+  --background-popup: #5c5c6e;
+
+  --dao-footer-height: 156px;
+  --dao-header-height: 64px;
+  --dao-navigation-height: 89px;
+}
+
 body {
   background: var(--background);
 }
@@ -32,7 +69,7 @@ body {
 .ui.ui.popup {
   height: auto;
   background-color: var(--background-popup) !important;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .ui.ui.bottom.center.popup::before,
@@ -132,26 +169,6 @@ body {
 .dcl.select-field .divider.default.text {
   color: #cacaca !important;
   opacity: 1 !important;
-}
-
-:root {
-  --background-catalyst: #4888ee;
-  --background-poi: #44b600;
-  --background-ban-name: #ff5afe;
-  --background-grant: #3c24b3;
-  --background-poll: #ff7439;
-  --background-remove-poi: #ff247c;
-  --background-happy-green: #44b600;
-  --background-linked-wearables: #ffbc5b;
-  --background-popup: #5c5c6e;
-
-  --blue: #4888ee;
-  --red: #d80027;
-  --gray: #a19ea8;
-  --dark-gray: #736e7d;
-  --dark-gray-rgb: 115, 110, 125;
-  --light-orange: #ffbc5b;
-  --light-orange-rgb: 255, 188, 91;
 }
 
 .ui.inverted.primary.button:active,

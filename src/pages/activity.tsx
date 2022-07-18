@@ -81,7 +81,13 @@ export default function ActivityPage() {
   const load = !!account && !!list
 
   const filters = getFilters(account, list)
-  const [proposals, proposalsState] = useProposals({ load, page, status, ...filters, itemsPerPage: ITEMS_PER_PAGE })
+  const { proposals, isLoadingProposals } = useProposals({
+    load,
+    page,
+    status,
+    ...filters,
+    itemsPerPage: ITEMS_PER_PAGE,
+  })
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const [results] = useAsyncMemo(
     () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
@@ -189,7 +195,7 @@ export default function ActivityPage() {
           rightAction={<StatusMenu value={status} onChange={(_, { value }) => handleStatusFilter(value)} />}
         >
           <div className="ActivityPage__ListContainer">
-            <Loader active={proposalsState.loading} />
+            <Loader active={isLoadingProposals} />
             {proposals && proposals.data.length === 0 && list && (
               <div className="ActivityPage__EmptyContainer">
                 <Empty
