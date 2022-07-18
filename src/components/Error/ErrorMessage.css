@@ -27,7 +27,7 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   font-weight: 600;
   font-size: 13px;
   line-height: 20px;
-  color: var(--red) !important;
+  color: var(--red-800) !important;
   padding: 0;
 }
 
@@ -68,10 +68,10 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   line-height: 26px;
   letter-spacing: -0.2px;
   text-transform: uppercase;
-  color: #736e7d;
-  background: #fff;
-  border: 1px solid rgba(var(--dark-gray-rgb), 0.5);
-  box-shadow: 0 2px 4px rgba(var(--dark-gray-rgb), 0.2);
+  color: var(--black-600);
+  background: var(--white);
+  border: 1px solid var(--black-400);
+  box-shadow: 0 2px 4px var(--black-400);
   border-radius: 4px;
   margin-bottom: 9px;
   margin-right: 10px;

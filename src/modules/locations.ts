@@ -74,4 +74,5 @@ export default {
   debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),
   update: (id: string) => url('/update/', { id }),
+  grants: () => url('/grants/', {}),
 }

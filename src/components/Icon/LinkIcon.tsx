@@ -7,7 +7,7 @@ interface Props {
 function LinkIcon({ color }: Props) {
   return (
     <svg width="11" height="13" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 195.085 195.085">
-      <g fill={color || 'var(--dark-gray)'}>
+      <g fill={color || 'var(--black-400)'}>
         <path
           d="M179.617,15.453c-0.051-0.05-0.102-0.1-0.154-0.149c-18.689-18.549-48.477-20.463-69.37-4.441
 		c-2.091,1.599-3.776,3.053-5.302,4.575c-0.044,0.044-0.087,0.088-0.13,0.133L71.224,49.012c-2.929,2.929-2.929,7.678,0.001,10.606

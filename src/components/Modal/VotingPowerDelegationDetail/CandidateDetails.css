@@ -16,7 +16,7 @@
 
 .CandidateDetails__Content--links a {
   display: block;
-  color: var(--blue);
+  color: var(--blue-800);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

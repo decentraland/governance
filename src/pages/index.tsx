@@ -23,7 +23,9 @@ import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
 import ActionableLayout from '../components/Layout/ActionableLayout'
-import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
+import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
@@ -49,7 +51,7 @@ export default function IndexPage() {
   const t = useFormatMessage()
   const location = useLocation()
   const { type, status, search, searching, timeFrame, order, page } = useSearchParams()
-  const [proposals, proposalsState] = useProposals({
+  const { proposals, isLoadingProposals } = useProposals({
     type,
     status,
     page,
@@ -58,7 +60,7 @@ export default function IndexPage() {
     order,
     itemsPerPage: ITEMS_PER_PAGE,
   })
-  const [votes] = useAsyncMemo(
+  const [votes, votesState] = useAsyncMemo(
     () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
     [proposals],
     { callWithTruthyDeps: true }
@@ -67,7 +69,7 @@ export default function IndexPage() {
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const { status: burgerStatus } = useBurgerMenu()
-  const { open, translate } = burgerStatus
+  const { open } = burgerStatus
 
   const handlePageFilter = useCallback(
     (page: number) => {
@@ -118,6 +120,8 @@ export default function IndexPage() {
     )
   }
 
+  const isLoading = isLoadingProposals && votesState.loading
+
   return (
     <>
       <div
@@ -146,94 +150,99 @@ export default function IndexPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Proposals} />
-      <Container>
-        <div className="OnlyDesktop">
-          <RandomBanner isVisible={!searching} />
-        </div>
-        {!isMobile && search && proposals && <SearchTitle />}
-        <Grid stackable>
-          <Grid.Row>
-            <Grid.Column tablet="4">
-              {isMobile ? (
-                <BurgerMenuContent />
-              ) : (
-                <div>
-                  <CategoryFilter />
-                  <StatusFilter />
-                  <TimeFrameFilter />
-                </div>
-              )}
-            </Grid.Column>
-            <Grid.Column
-              tablet="12"
-              className="Animated ProposalsTable"
-              style={isMobile ? (translate ? { transform: `translateY(${translate})` } : {}) : {}}
-            >
-              {isMobile && proposals && <SearchTitle />}
-              <ActionableLayout
-                leftAction={
-                  <Header sub>
-                    {!proposals && ''}
-                    {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
-                  </Header>
-                }
-                rightAction={
-                  !searching && (
-                    <>
-                      {proposals && <SortingMenu />}
-                      <Button
-                        primary
-                        size="small"
-                        className="SubmitButton"
-                        as={Link}
-                        href={locations.submit()}
-                        onClick={prevent(() => navigate(locations.submit()))}
-                      >
-                        {t('page.proposal_list.new_proposal')}
-                      </Button>
-                    </>
-                  )
-                }
-              >
-                <Loader active={!proposals || proposalsState.loading} />
-                {type && !searching && <CategoryBanner type={type} active />}
-                {proposals && proposals.data.length === 0 && (
-                  <Empty
-                    description={
-                      searching || status || timeFrame?.length > 0
-                        ? t('navigation.search.no_matches')
-                        : t('page.proposal_list.no_proposals_yet')
+      {isLoading && <LoadingView withNavigation />}
+      {!isLoading && (
+        <Container>
+          <div className="OnlyDesktop">
+            <RandomBanner isVisible={!searching} />
+          </div>
+          {!isMobile && search && proposals && <SearchTitle />}
+          <Grid stackable>
+            <Grid.Row>
+              <Grid.Column tablet="4">
+                {isMobile ? (
+                  <BurgerMenuContent activeTab={NavigationTab.Proposals} />
+                ) : (
+                  <div>
+                    <CategoryFilter />
+                    <StatusFilter />
+                    <TimeFrameFilter />
+                  </div>
+                )}
+              </Grid.Column>
+              <BurgerMenuPushableLayout>
+                <Grid.Column tablet="12" className="ProposalsTable">
+                  {isMobile && proposals && <SearchTitle />}
+                  <ActionableLayout
+                    leftAction={
+                      <Header sub>
+                        {!proposals && ''}
+                        {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
+                      </Header>
                     }
-                  />
-                )}
-                {proposals &&
-                  proposals.data.map((proposal) => {
-                    return (
-                      <ProposalItem
-                        key={proposal.id}
-                        proposal={proposal}
-                        hasCoauthorRequest={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
-                        votes={votes ? votes[proposal.id] : undefined}
-                        subscribing={subscriptionsState.subscribing.includes(proposal.id)}
-                        subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
-                        onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
+                    rightAction={
+                      !searching && (
+                        <>
+                          {proposals && <SortingMenu />}
+                          <Button
+                            primary
+                            size="small"
+                            className="SubmitButton"
+                            as={Link}
+                            href={locations.submit()}
+                            onClick={prevent(() => navigate(locations.submit()))}
+                          >
+                            {t('page.proposal_list.new_proposal')}
+                          </Button>
+                        </>
+                      )
+                    }
+                  >
+                    <Loader active={!proposals || isLoadingProposals} />
+                    {type && !searching && <CategoryBanner type={type} active />}
+                    {proposals && proposals.data.length === 0 && (
+                      <Empty
+                        description={
+                          searching || status || timeFrame?.length > 0
+                            ? t('navigation.search.no_matches')
+                            : t('page.proposal_list.no_proposals_yet')
+                        }
                       />
-                    )
-                  })}
-                {proposals && proposals.total > ITEMS_PER_PAGE && (
-                  <Pagination
-                    onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
-                    totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
-                    activePage={page}
-                    firstItem={null}
-                    lastItem={null}
-                  />
-                )}
-              </ActionableLayout>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
+                    )}
+                    {proposals &&
+                      proposals.data.map((proposal) => {
+                        return (
+                          <ProposalItem
+                            key={proposal.id}
+                            proposal={proposal}
+                            hasCoauthorRequest={
+                              !!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)
+                            }
+                            votes={votes ? votes[proposal.id] : undefined}
+                            subscribing={subscriptionsState.subscribing.includes(proposal.id)}
+                            subscribed={
+                              !!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)
+                            }
+                            onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
+                          />
+                        )
+                      })}
+                    {proposals && proposals.total > ITEMS_PER_PAGE && (
+                      <Pagination
+                        onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
+                        totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
+                        activePage={page}
+                        firstItem={null}
+                        lastItem={null}
+                      />
+                    )}
+                  </ActionableLayout>
+                </Grid.Column>
+              </BurgerMenuPushableLayout>
+            </Grid.Row>
+          </Grid>
+        </Container>
+      )}
     </>
   )
 }

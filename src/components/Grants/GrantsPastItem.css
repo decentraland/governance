@@ -1,0 +1,33 @@
+.GrantsPastItem__Row {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  border-radius: 8px !important;
+  cursor: pointer;
+}
+
+.GrantsPastItem__Cell {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  border: none !important;
+}
+
+.GrantsPastItem__FirstCell {
+  padding-left: 16px !important;
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+}
+
+.GrantsPastItem__Text {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 24px;
+  color: rgba(115, 110, 125, 1);
+}
+
+.GrantsPastItem__LastCell {
+  padding-right: 16px !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}
