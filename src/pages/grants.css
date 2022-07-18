@@ -30,14 +30,16 @@
 
 .GrantsPage__CurrentGrantsFilters {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 }
 
-.GrantsPage__CurrentGrantsCategoryFilters {
-  display: flex;
-  gap: 10px;
+@media (min-width: 768px) {
+  .GrantsPage__CurrentGrantsFilters {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 
 .GrantsPage_PastGrantsTable {
