@@ -172,10 +172,10 @@ export function UpdateProposalStatusModal({
           />
         </div>
         <div className="ProposalModal__Actions">
-          <Button primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
+          <Button primary fluid disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
             {t(cta)}
           </Button>
-          <Button className="cancel" onClick={props.onClose}>
+          <Button className="cancel" fluid onClick={props.onClose}>
             {t('modal.update_status_proposal.reject')}
           </Button>
         </div>
