@@ -102,8 +102,6 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
-  // route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
-  // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
 })
 
 function formatError(err: Error) {
