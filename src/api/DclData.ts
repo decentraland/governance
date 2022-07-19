@@ -1,7 +1,7 @@
+import API from 'decentraland-gatsby/dist/utils/api/API'
+
 import { ProposalGrantCategory, ProposalGrantTier } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
-
-import { GovernanceAPI } from './GovernanceAPI'
 
 export type Detail = {
   name: string
@@ -67,7 +67,7 @@ export const TransparencyGrantsTiers = {
   'Tier 6': ProposalGrantTier.Tier6,
 }
 
-export class DclData extends GovernanceAPI {
+export class DclData extends API {
   static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
   static Cache = new Map<string, DclData>()
