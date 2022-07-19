@@ -1,30 +1,7 @@
-
-.ui.modal.NewsletterSubscriptionModal .ProposalModal__Form {
-  width: auto !important;
-  padding: 5px 10px;
-}
-
-.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__message {
-  margin-top: 20px;
-  font-size: 17px;
-}
-
-.ui.modal.NewsletterSubscriptionModal .ProposalModal__Actions {
-  padding: 0 10px;
-}
-
-.ui.modal.NewsletterSubscriptionModal .success {
-  color: blue;
-}
-
-.ui.modal.NewsletterSubscriptionModal .error {
-  color: red;
-}
-
-.ui.modal.NewsletterSubscriptionModal .NewsletterSubscriptionModal__Description {
+.NewsletterSubscriptionModal__Description {
   margin-bottom: 0;
 }
 
-.ui.modal.NewsletterSubscriptionModal .content {
-  width: auto;
+.NewsletterSubscriptionModal__Subscribed {
+  text-align: center;
 }

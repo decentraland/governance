@@ -19,7 +19,7 @@ export type VotesListModalProps = Omit<ModalProps, 'children'> & {
   votes?: Record<string, Vote> | null
 }
 
-export function VotesList({ proposal, votes, ...props }: VotesListModalProps) {
+export function VotesListModal({ proposal, votes, ...props }: VotesListModalProps) {
   const t = useFormatMessage()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const votesList = useMemo(() => Object.entries(votes || {}).sort((a, b) => b[1].vp - a[1].vp), [votes])
@@ -28,35 +28,37 @@ export function VotesList({ proposal, votes, ...props }: VotesListModalProps) {
     <Modal
       {...props}
       size="tiny"
-      className={TokenList.join(['ProposalModal', 'VotesList', props.className])}
+      className={TokenList.join(['GovernanceContentModal', 'ProposalModal', 'VotesList', props.className])}
       closeIcon={<Close />}
     >
-      <Modal.Content className="ProposalModal__Title">
-        <Header>{t('modal.votes_list.title', { votes: Object.keys(votes || {}).length })}</Header>
+      <Modal.Content>
+        <div className="ProposalModal__Title">
+          <Header>{t('modal.votes_list.title', { votes: Object.keys(votes || {}).length })}</Header>
+        </div>
+        <div className="VotesList_Container_Header">
+          <Grid columns="equal">
+            <Grid.Row className="VotesList_Divider_Line">
+              <Grid.Column width={6}>
+                <div className="VotesList_Header">{t('modal.votes_list.voter')}</div>
+              </Grid.Column>
+              <Grid.Column width={6}>
+                <div className="VotesList_Header">{t('modal.votes_list.voted')}</div>
+              </Grid.Column>
+              <Grid.Column>
+                <div className="VotesList_Header">{t('modal.votes_list.vp')}</div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </div>
+        <div className="VotesList_Container_Items">
+          <Grid columns="equal" className="VotesList_Divider">
+            {votesList.map((vote) => {
+              const [key, value] = vote
+              return <VoteListItem key={key} address={key} vote={value} choices={choices} />
+            })}
+          </Grid>
+        </div>
       </Modal.Content>
-      <div className="VotesList_Container_Header">
-        <Grid columns="equal">
-          <Grid.Row className="VotesList_Divider_Line">
-            <Grid.Column width={6}>
-              <div className="VotesList_Header">{t('modal.votes_list.voter')}</div>
-            </Grid.Column>
-            <Grid.Column width={6}>
-              <div className="VotesList_Header">{t('modal.votes_list.voted')}</div>
-            </Grid.Column>
-            <Grid.Column>
-              <div className="VotesList_Header">{t('modal.votes_list.vp')}</div>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </div>
-      <div className="VotesList_Container_Items">
-        <Grid columns="equal" className="VotesList_Divider">
-          {votesList.map((vote) => {
-            const [key, value] = vote
-            return <VoteListItem key={key} address={key} vote={value} choices={choices} />
-          })}
-        </Grid>
-      </div>
     </Modal>
   )
 }

@@ -1,10 +1,8 @@
 .VotesList .VotesList_Container_Header {
-  width: 90%;
   margin: 0 auto 20px;
 }
 
 .VotesList .VotesList_Container_Items {
-  width: 90%;
   margin: 0 auto 40px;
   height: 50vh;
   padding: 20px 0;
@@ -52,12 +50,7 @@
 }
 
 @media (max-width: 991px) {
-  .VotesList .VotesList_Container_Header {
-    width: 97%;
-  }
-
   .VotesList .VotesList_Container_Items {
-    width: 97%;
     font-size: 13px;
   }
 
