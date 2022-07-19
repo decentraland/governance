@@ -4,6 +4,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
+  GrantsResponse,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -113,6 +114,12 @@ export class Governance extends GovernanceAPI {
       ...proposals,
       data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
     }
+  }
+
+  async getGrants() {
+    const proposals = await this.fetch<ApiResponse<GrantsResponse>>('/proposals/grants')
+
+    return proposals.data
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {

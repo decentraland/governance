@@ -7,12 +7,13 @@ import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DclData } from '../api/DclData'
-import BurgerMenuContent from '../components/Layout/BurgerMenuContent'
+import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
+import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
 import LinkWithIcon from '../components/Section/LinkWithIcon'
@@ -23,7 +24,6 @@ import MonthlyTotal from '../components/Transparency/MonthlyTotal'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
-import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import locations from '../modules/locations'
 
 import './transparency.css'
@@ -48,7 +48,6 @@ export default function WrappingPage() {
   const t = useFormatMessage()
   const [data] = useAsyncMemo(async () => DclData.get().getData())
   const balances = useMemo(() => (data && aggregateBalances(data.balances)) || [], [data])
-  const burgerMenu = useBurgerMenu()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
@@ -61,28 +60,13 @@ export default function WrappingPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <div className="TransparencyMobile">
-        {!data && (
-          <div className="Transparency__Loader">
-            <Loader active />
-          </div>
-        )}
+        {!data && <LoadingView withNavigation />}
         {data && (
           <>
             {isMobile && (
-              <div className="Transparency">
-                <BurgerMenuContent navigationOnly={true} />
-              </div>
+              <BurgerMenuContent className="Padded" navigationOnly={true} activeTab={NavigationTab.Transparency} />
             )}
-            <div
-              className="Animated"
-              style={
-                isMobile
-                  ? burgerMenu?.status.open
-                    ? { transform: `translateY(${burgerMenu.status.translate})` }
-                    : {}
-                  : {}
-              }
-            >
+            <BurgerMenuPushableLayout>
               <Container className="TransparencyContainer">
                 <Grid className="TransparencyGrid" stackable>
                   <Grid.Row columns={2}>
@@ -238,7 +222,7 @@ export default function WrappingPage() {
                   </Grid.Row>
                 </Grid>
               </Container>
-            </div>
+            </BurgerMenuPushableLayout>
           </>
         )}
       </div>

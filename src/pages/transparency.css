@@ -72,6 +72,7 @@
   .ui.container.TransparencyContainer .ActionableLayout {
     flex: 0 0 49%;
   }
+
   .ui.container.TransparencyContainer {
     width: 95%;
   }
@@ -138,8 +139,4 @@
 .TransparencySection .ui.card > .content > .header,
 .ui.cards > .card > .content > .header {
   font-family: inherit;
-}
-
-.Transparency .BurgerMenuContent {
-  padding: 0 16px;
 }

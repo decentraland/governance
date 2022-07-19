@@ -11,9 +11,11 @@ import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
+import { filter } from 'lodash'
 import { v1 as uuid } from 'uuid'
 import isUUID from 'validator/lib/isUUID'
 
+import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
 import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
 import { HashContent, IPFS } from '../../api/IPFS'
 import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
@@ -23,6 +25,8 @@ import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
+import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
+import { getCurrentUpdate } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
@@ -31,7 +35,9 @@ import { getUpdateMessage } from './templates/messages'
 import ProposalModel from './model'
 import * as templates from './templates'
 import {
+  GrantAttributes,
   GrantRequiredVP,
+  GrantWithUpdateAttributes,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -43,6 +49,7 @@ import {
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
+  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -90,6 +97,7 @@ export default routes((route) => {
   route.post('/proposals/catalyst', withAuth, handleAPI(createProposalCatalyst))
   route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
+  route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -729,17 +737,97 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-// export async function reactivateProposal(req: WithAuth<Request<{ proposal: string }>>) {
-//   const user = req.auth!
-//   if (!isAdmin(user)) {
-//     throw new RequestError(`Only admin menbers can reactivate a proposal`, RequestError.Forbidden)
-//   }
+export async function getGrantCurrentUpdate(
+  tier: ProposalGrantTier,
+  proposalId: string
+): Promise<IndexedUpdate | null> {
+  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
+    created_at: 'desc',
+  } as never)
+  if (!updates || updates.length === 0) {
+    return null
+  }
 
-//   const proposal = await getProposal(req)
-//   await ProposalModel.update<ProposalAttributes>({ status: ProposalStatus.Active }, { id: proposal.id })
+  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
+    return { ...updates[0], index: updates.length }
+  } else {
+    const currentUpdate = getCurrentUpdate(updates)
+    if (!currentUpdate) {
+      return null
+    }
+    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) + 1 }
+  }
+}
 
-//   return {
-//     ...proposal,
-//     status: ProposalStatus.Active
-//   }
-// }
+async function getGrants() {
+  const grants = await DclData.get().getGrants()
+  const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
+
+  const current: GrantAttributes[] = []
+  const past: GrantAttributes[] = []
+
+  await Promise.all(
+    enactedGrants.map(async (grant) => {
+      try {
+        const proposal = await ProposalModel.findOne(grant.id)
+        const newGrant: GrantAttributes = {
+          id: grant.id,
+          size: grant.size,
+          configuration: {
+            category: grant.category,
+            tier: grant.tier,
+          },
+          user: grant.user,
+          title: grant.title,
+          token: grant.token,
+          created_at: Time(proposal.created_at).unix(),
+          enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
+        }
+
+        if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
+          const threshold = Time(grant.tx_date).add(1, 'month')
+          if (Time().isBefore(threshold)) {
+            return current.push({
+              ...newGrant,
+              enacting_tx: grant.enacting_tx,
+              tx_amount: grant.tx_amount,
+            })
+          }
+
+          return past.push(newGrant)
+        }
+
+        newGrant.contract = {
+          vesting_total_amount: Math.round(grant.vesting_total_amount),
+          vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
+          releasable: Math.round(grant.vesting_releasable),
+          released: Math.round(grant.vesting_released),
+          start_at: Time(grant.vesting_start_at).unix(),
+          finish_at: Time(grant.vesting_finish_at).unix(),
+        }
+
+        if (newGrant.contract.vestedAmount === newGrant.contract.vesting_total_amount) {
+          past.push(newGrant)
+        } else {
+          try {
+            const grantWithUpdate: GrantWithUpdateAttributes = {
+              ...newGrant,
+              update: await getGrantCurrentUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
+            }
+            current.push(grantWithUpdate)
+          } catch (error) {
+            logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
+          }
+        }
+      } catch (error) {
+        logger.error(`Failed to fetch proposal ${grant.id}`, formatError(error as Error))
+      }
+    })
+  )
+
+  return {
+    current,
+    past,
+    total: grants.length,
+  }
+}

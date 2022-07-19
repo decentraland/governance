@@ -33,7 +33,7 @@ export type VotingStatusSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>
 }
 
 export default function VotingStatusSummary({ proposal, votes }: VotingStatusSummaryProps) {
-  const l = useFormatMessage()
+  const t = useFormatMessage()
   const vpInFavor = votes[0].power || 0
   const threshold = proposal?.required_to_pass || 0
   const neededForAcceptance = threshold - vpInFavor
@@ -55,25 +55,25 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
             className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
             onClick={() => flickity.current?.next()}
           >
-            <div className="VotingStatusSummary__Subtitle">{l('page.proposal_detail.required_vp')}</div>
-            <div className="VotingStatusSummary__Title">{l('general.number', { value: threshold })} VP</div>
+            <div className="VotingStatusSummary__Subtitle">{t('page.proposal_detail.required_vp')}</div>
+            <div className="VotingStatusSummary__Title">{t('general.number', { value: threshold })} VP</div>
           </div>
           <div
             className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
             onClick={() => flickity.current?.previous()}
           >
-            <div className="VotingStatusSummary__Subtitle">{l('page.proposal_detail.needed_for_acceptance')}</div>
-            <div className="VotingStatusSummary__Title">{l('general.number', { value: neededForAcceptance })} VP</div>
+            <div className="VotingStatusSummary__Subtitle">{t('page.proposal_detail.needed_for_acceptance')}</div>
+            <div className="VotingStatusSummary__Title">{t('general.number', { value: neededForAcceptance })} VP</div>
           </div>
         </Flickity>
       )}
       {timeout.time > 0 && thresholdReached && (
         <div className="VotingStatusSummary__Container">
           <div className="VotingStatusSummary__Subtitle">
-            {thresholdReached && l('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
+            {thresholdReached && t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="VotingStatusSummary__Title">
-            <Bold>{l('page.proposal_detail.time_left_label', { countdown: endDate.fromNow() })}</Bold>
+            <Bold>{t('page.proposal_detail.time_left_label', { countdown: endDate.fromNow() })}</Bold>
           </div>
         </div>
       )}
@@ -81,11 +81,11 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
         <div className="VotingStatusSummary__Container">
           <div className="VotingStatusSummary__Subtitle">
             {thresholdReached
-              ? l('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })
-              : l('page.proposal_detail.threshold_not_reached', { threshold: abbreviatedThreshold })}
+              ? t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })
+              : t('page.proposal_detail.threshold_not_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="VotingStatusSummary__Title">
-            <Bold>{l('page.proposal_detail.proposal_status', { status: proposal?.status })}</Bold>
+            <Bold>{t('page.proposal_detail.proposal_status', { status: proposal?.status })}</Bold>
           </div>
         </div>
       )}

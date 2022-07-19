@@ -1,7 +1,8 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { v1 as uuid } from 'uuid'
-import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+
 import { ProposalGrantTier } from '../Proposal/types'
+
 import { UpdateAttributes, UpdateStatus } from './types'
 
 const UpdateCount: { [key: string]: number } = {

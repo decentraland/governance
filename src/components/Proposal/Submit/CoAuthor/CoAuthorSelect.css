@@ -23,11 +23,11 @@
 }
 
 .CoAuthorSelect .CoAuthorSelect__multi-value__remove {
-  color: var(--dark-gray);
+  color: var(--black-400);
 }
 
 .CoAuthorSelect .CoAuthorSelect__multi-value__remove:hover {
-  background-color: rgba(var(--dark-gray-rgb), 0.2);
+  background-color: var(--black-400);
   border-radius: 100px;
   height: fit-content;
   width: fit-content;

@@ -7,7 +7,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { VotedProposal } from '../../../entities/Votes/types'
 import locations from '../../../modules/locations'
 import Cancel from '../../Icon/Cancel'
-import Check from '../../Icon/Check'
+import CheckCircle from '../../Icon/CheckCircle'
 import QuestionCircle from '../../Icon/QuestionCircle'
 
 import './VotedInitiative.css'
@@ -27,7 +27,7 @@ const VotedInitiative = ({ vote, voteMatch }: Props) => {
         {voteMatch === undefined ? (
           <QuestionCircle size="16" />
         ) : voteMatch ? (
-          <Check size="16" />
+          <CheckCircle size="16" />
         ) : (
           <Cancel size="16" />
         )}

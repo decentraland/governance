@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Options from 'decentraland-gatsby/dist/utils/api/Options'
 import FetchError from 'decentraland-gatsby/dist/utils/errors/FetchError'
@@ -5,7 +6,10 @@ import RequestError from 'decentraland-gatsby/dist/utils/errors/RequestError'
 
 export class GovernanceAPI extends API {
   // @ts-ignore
-  async fetch<T extends Record<string, unknown>>(path: string, options: Options = new Options({})): Promise<T> {
+  async fetch<T extends Record<string, unknown> | unknown>(
+    path: string,
+    options: Options = new Options({})
+  ): Promise<T> {
     let body = ''
     let json: T = null as any
     const url = this.url(path)
