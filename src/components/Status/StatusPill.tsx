@@ -27,7 +27,7 @@ const StatusPill = ({ status }: Props) => {
 
   return (
     <Pill
-      style={label === ProposalStatus.Enacted ? 'shiny' : 'medium'}
+      style={label === ProposalStatus.Enacted ? 'shiny' : 'outline'}
       className="StatusPill"
       color={ColorsConfig[label]}
       icon={showIcon ? <Check color={iconColor} /> : null}
