@@ -10,6 +10,7 @@ import { useCurrentGrantsFilteredByCategory } from '../../hooks/useCurrentsGrant
 
 import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
+import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu from './CurrentGrantsSortingMenu'
 import GrantCard from './GrantCard'
 
@@ -59,15 +60,15 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
     <>
       <CurrentGrantsBanner grants={grants} />
       <div>
-        <h2 className="GrantsPage__CurrentGrantsTitle">{t('page.grants.currently_funded')}</h2>
-        <div className="GrantsPage__CurrentGrantsFilters">
+        <h2 className="CurrentGrants__Title">{t('page.grants.currently_funded')}</h2>
+        <div className="CurrentGrants__Filters">
           <CurrentGrantsCategoryFilters
             currentGrantsFilteredByCategory={currentGrantsFilteredByCategory}
             onSelectedCategoryChange={setSelectedCategory}
           />
           <CurrentGrantsSortingMenu onSortingKeyChange={setSortingKey} />
         </div>
-        <Container className="GrantsPage__CurrentGrantsContainer">
+        <Container className="CurrentGrants__Container">
           {filteredCurrentGrants?.map((grant) => (
             <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
           ))}
