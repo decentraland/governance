@@ -1,8 +1,7 @@
+import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 
-import { GovernanceAPI } from './GovernanceAPI'
-
-export class HttpStat extends GovernanceAPI {
+export class HttpStat extends API {
   static Url = 'https://httpstat.us'
 
   static Cache = new Map<string, HttpStat>()
@@ -23,6 +22,15 @@ export class HttpStat extends GovernanceAPI {
     if (sleepTime > 0) {
       responseType += '?sleep=' + sleepTime
     }
-    return await this.fetch(responseType, this.options().method('POST').authorization({ sign: true }))
+    return await this.fetch(
+      responseType,
+      this.options()
+        .headers({
+          Accept: 'application/json',
+          ContentType: 'application/json',
+        })
+        .method('POST')
+        .authorization({ sign: true })
+    )
   }
 }
