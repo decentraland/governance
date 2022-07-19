@@ -10,7 +10,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../api/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../../entities/Coauthor/types'
-import { coauthoringIsUpdatable } from '../../entities/Coauthor/utils'
+import { isCoauthoringUpdatable } from '../../entities/Coauthor/utils'
 import Helper from '../Helper/Helper'
 import Cancel from '../Icon/Cancel'
 import Check from '../Icon/Check'
@@ -47,7 +47,7 @@ const labelConfig: Record<CoauthorStatus, CoauthorLabelConfiguration> = {
 
 function ProposalCoAuthorStatus({ proposalId, proposalFinishDate }: Props) {
   const [user] = useAuthContext()
-  const isUpdatable = coauthoringIsUpdatable(proposalFinishDate)
+  const isUpdatable = isCoauthoringUpdatable(proposalFinishDate)
 
   const [coAuthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposalId), [], {
     initialValue: [] as CoauthorAttributes[],
