@@ -1,6 +1,6 @@
 .CurrentGrantsCategoryFilters__Carousel {
   width: 100%;
-  padding-bottom: 8px;
+  margin-bottom: 16px;
 }
 .CurrentGrantsCategoryFilters__CarouselCell {
   margin-right: 8px;
@@ -12,4 +12,10 @@
 .CurrentGrantsCategoryFilters {
   display: flex;
   gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .CurrentGrantsCategoryFilters__Carousel {
+    margin-bottom: 0;
+  }
 }

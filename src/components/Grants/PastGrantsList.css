@@ -14,11 +14,12 @@
 .PastGrantsList__Title {
   font-style: normal;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
-  margin-bottom: 0;
+  margin-bottom: 16px;
+  margin-right: 8px;
 }
 
 .PastGrantsList_Sort {
