@@ -17,6 +17,8 @@ import isUUID from 'validator/lib/isUUID'
 import CoauthorModel from '../Coauthor/model'
 import SubscriptionModel from '../Subscription/model'
 
+import { CoauthorStatus } from './../Coauthor/types'
+
 import tsquery from './tsquery'
 import { ProposalAttributes, ProposalStatus, isProposalStatus, isProposalType } from './types'
 import { SITEMAP_ITEMS_PER_PAGE } from './utils'
@@ -166,7 +168,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
-  static async getProposalTotal(filter: Partial<FilterProposalList> = {}) {
+  static async getProposalTotal(filter: Partial<FilterProposalList> = {}): Promise<number> {
     if (filter.user && !isEthereumAddress(filter.user)) {
       return 0
     }
@@ -200,14 +202,17 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       )}
     WHERE "deleted" = FALSE 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
-    ${conditional(!!filter.coauthor, SQL`AND lower(c."address") = lower(${filter.user})`)}
+    ${conditional(
+      !!filter.coauthor,
+      SQL`AND lower(c."address") = lower(${filter.user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
+    )}
     ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
     ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} 
     ${conditional(!!filter.search, SQL`AND "rank" > 0`)}`)
 
-    return (result && result[0] && Number(result[0].total)) || 0
+    return (!!result && result[0] && Number(result[0].total)) || 0
   }
 
   static async getProposalList(filter: Partial<FilterProposalList & FilterPaginatation> = {}) {
@@ -247,7 +252,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         )}
     WHERE "deleted" = FALSE 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
-    ${conditional(!!filter.coauthor, SQL`AND lower(c."address") = lower(${filter.user})`)}
+    ${conditional(
+      !!filter.coauthor,
+      SQL`AND lower(c."address") = lower(${filter.user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
+    )}
     ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 

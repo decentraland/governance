@@ -256,7 +256,7 @@ export default function ProposalPage() {
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
-              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} />}
+              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
               <ForumButton
                 loading={proposalState.loading}
                 disabled={!proposal}

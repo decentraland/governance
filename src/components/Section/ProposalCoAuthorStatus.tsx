@@ -10,6 +10,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../api/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../../entities/Coauthor/types'
+import { isCoauthoringUpdatable } from '../../entities/Coauthor/utils'
 import Helper from '../Helper/Helper'
 import Cancel from '../Icon/Cancel'
 import Check from '../Icon/Check'
@@ -18,6 +19,7 @@ import './ProposalCoAuthorStatus.css'
 
 interface Props {
   proposalId: string
+  proposalFinishDate: Date
 }
 
 interface CoauthorLabelConfiguration {
@@ -43,8 +45,9 @@ const labelConfig: Record<CoauthorStatus, CoauthorLabelConfiguration> = {
   },
 }
 
-function ProposalCoAuthorStatus({ proposalId }: Props) {
+function ProposalCoAuthorStatus({ proposalId, proposalFinishDate }: Props) {
   const [user] = useAuthContext()
+  const isUpdatable = isCoauthoringUpdatable(proposalFinishDate)
 
   const [coAuthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposalId), [], {
     initialValue: [] as CoauthorAttributes[],
@@ -98,7 +101,7 @@ function ProposalCoAuthorStatus({ proposalId }: Props) {
             </span>
             <p>
               {t(labelConfig[status].description)}{' '}
-              {status !== CoauthorStatus.PENDING && (
+              {status !== CoauthorStatus.PENDING && isUpdatable && (
                 <a href="" onClick={revertAction}>
                   {t('page.coauthor_detail.revert_label')}
                 </a>
