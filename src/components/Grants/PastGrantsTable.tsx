@@ -22,14 +22,12 @@ const PastGrantsTable = ({ sortedGrants, onSortClick, isDescendingSort }: Props)
     <Table basic="very">
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader">
-            {t('page.grants.past_funded.title')}
-          </Table.HeaderCell>
-          <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
+          <Table.HeaderCell className="PastGrantsTable__Header">{t('page.grants.past_funded.title')}</Table.HeaderCell>
+          <Table.HeaderCell className="PastGrantsTable__Header PastGrantsTable__HeaderCategory">
             {t('page.grants.past_funded.category')}
           </Table.HeaderCell>
           <Table.HeaderCell
-            className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderClickable GrantsPage__PastGrantsTableHeaderCategory"
+            className="PastGrantsTable__Header PastGrantsTable__HeaderClickable PastGrantsTable__HeaderCategory"
             onClick={onSortClick}
           >
             <span>
@@ -37,7 +35,7 @@ const PastGrantsTable = ({ sortedGrants, onSortClick, isDescendingSort }: Props)
               <Sort rotate={isDescendingSort ? 0 : 180} />
             </span>
           </Table.HeaderCell>
-          <Table.HeaderCell className="GrantsPage__PastGrantsTableHeader GrantsPage__PastGrantsTableHeaderCategory">
+          <Table.HeaderCell className="PastGrantsTable__Header PastGrantsTable__HeaderCategory">
             {t('page.grants.past_funded.size')}
           </Table.HeaderCell>
         </Table.Row>

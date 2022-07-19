@@ -603,6 +603,8 @@
         "title": "Past, successfully funded initiatives",
         "category": "Category",
         "start_date": "Start Date",
+        "oldest": "Oldest",
+        "newest": "Newest",
         "size": "Size"
       },
       "navigate_to_proposal_label": "Navigate to proposal {title}",

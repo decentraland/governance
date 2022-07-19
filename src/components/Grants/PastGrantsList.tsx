@@ -4,12 +4,12 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { isEmpty } from 'lodash'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { GrantAttributes } from '../../entities/Proposal/types'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
-import Sort from '../Icon/Sort'
 
 import PastGrantCard from './PastGrantCard'
 import PastGrantsBanner from './PastGrantsBanner'
@@ -27,9 +27,14 @@ interface Props {
 const PastGrantsList = ({ grants, currentGrantsTotal, totalGrants }: Props) => {
   const t = useFormatMessage()
   const [filteredPastGrants, setFilteredPastGrants] = useState<GrantAttributes[]>([])
-  const { sorted: sortedPastGrants, changeSort, isDescendingSort } = useSortingByKey(filteredPastGrants, 'enacted_at')
+  const {
+    sorted: sortedPastGrants,
+    changeSort,
+    setIsDescending,
+    isDescendingSort,
+  } = useSortingByKey(filteredPastGrants, 'enacted_at')
   const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const showTable = responsive({ minWidth: Responsive.onlyComputer.minWidth })
 
   const handleLoadMorePastGrantsClick = useCallback(() => {
     if (grants) {
@@ -50,16 +55,20 @@ const PastGrantsList = ({ grants, currentGrantsTotal, totalGrants }: Props) => {
     <>
       <PastGrantsBanner grants={grants} currentGrantsTotal={currentGrantsTotal} totalGrants={totalGrants} />
 
-      {isMobile ? (
+      {!showTable ? (
         <>
           <div className="PastGrantsList__Header">
             <h2 className="PastGrantsList__Title">{t('page.grants.past_funded.title')}</h2>
-            <div onClick={changeSort} className="PastGrantsList_Sort">
-              <span>
-                {t('page.grants.past_funded.start_date')}
-                <Sort rotate={isDescendingSort ? 0 : 180} color={'--background-remove-poi'} />
-              </span>
-            </div>
+            <Dropdown
+              className="PastGrantsSortingMenu"
+              direction="right"
+              text={isDescendingSort ? t('page.grants.past_funded.newest') : t('page.grants.past_funded.oldest')}
+            >
+              <Dropdown.Menu>
+                <Dropdown.Item text={t('page.grants.past_funded.oldest')} onClick={() => setIsDescending(false)} />
+                <Dropdown.Item text={t('page.grants.past_funded.newest')} onClick={() => setIsDescending(true)} />
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
           <Container className="PastGrantsList__Container">
             {sortedPastGrants.map((grant) => (

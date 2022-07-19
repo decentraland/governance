@@ -1,4 +1,4 @@
-.GrantsPage__PastGrantsTableHeader {
+.PastGrantsTable__Header {
   border: none !important;
   font-weight: 600 !important;
   font-size: 13px !important;
@@ -6,20 +6,20 @@
   text-transform: uppercase !important;
 }
 
-.GrantsPage__PastGrantsTableHeaderClickable {
+.PastGrantsTable__HeaderClickable {
   cursor: pointer !important;
 }
 
-.GrantsPage__PastGrantsTableHeaderCategory {
+.PastGrantsTable__HeaderCategory {
   opacity: 0.5;
 }
 
-.GrantsPage__PastGrantsTableHeaderCategory span {
+.PastGrantsTable__HeaderCategory span {
   display: flex;
   align-items: center;
 }
 
-.GrantsPage__PastGrantsTableHeaderCategory span svg {
+.PastGrantsTable__HeaderCategory span svg {
   margin-left: 5px;
   border-radius: 1px;
 }
