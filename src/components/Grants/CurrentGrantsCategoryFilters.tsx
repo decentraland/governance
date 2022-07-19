@@ -31,7 +31,7 @@ interface Props {
 const flickityOptions = {
   initialIndex: 0,
   cellSelector: '.CurrentGrantsCategoryFilters__CarouselCell',
-  cellAlign: 'center',
+  cellAlign: 'left',
   contain: true,
   accessibility: true,
   pageDots: false,
