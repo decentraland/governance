@@ -19,7 +19,7 @@ export type Props = {
   children: React.ReactText
   color?: PillColor | `${PillColor}`
   size?: 'small' | 'default'
-  style?: 'shiny' | 'medium' | 'light'
+  style?: 'shiny' | 'medium' | 'light' | 'outline'
   className?: string
   icon?: React.ReactNode
 }

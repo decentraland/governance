@@ -44,6 +44,12 @@
   color: var(--white-900);
 }
 
+.Pill--outline-green {
+  background-color: none;
+  border-color: var(--green-800);
+  color: var(--green-800);
+}
+
 .Pill--light-blue {
   background-color: var(--blue-200);
   border-color: var(--blue-200);
@@ -60,6 +66,12 @@
   background-color: var(--blue-800);
   border-color: var(--blue-800);
   color: var(--white-900);
+}
+
+.Pill--outline-blue {
+  background-color: none;
+  border-color: var(--blue-800);
+  color: var(--blue-800);
 }
 
 .Pill--light-red {
@@ -80,6 +92,12 @@
   color: var(--white-900);
 }
 
+.Pill--outline-red {
+  background-color: none;
+  border-color: var(--red-800);
+  color: var(--red-800);
+}
+
 .Pill--light-fuchsia {
   background-color: var(--fuchsia-200);
   border-color: var(--fuchsia-200);
@@ -96,6 +114,12 @@
   background-color: var(--fuchsia-800);
   border-color: var(--fuchsia-800);
   color: var(--white-900);
+}
+
+.Pill--outline-fuchsia {
+  background-color: none;
+  border-color: var(--fuchsia-800);
+  color: var(--fuchsia-800);
 }
 
 .Pill--light-purple {
@@ -116,6 +140,12 @@
   color: var(--white-900);
 }
 
+.Pill--outline-purple {
+  background-color: none;
+  border-color: var(--purple-800);
+  color: var(--purple-800);
+}
+
 .Pill--light-orange {
   background-color: var(--orange-200);
   border-color: var(--orange-200);
@@ -132,6 +162,12 @@
   background-color: var(--orange-800);
   border-color: var(--orange-800);
   color: var(--white-900);
+}
+
+.Pill--outline-orange {
+  background-color: transparent;
+  border-color: var(--orange-800);
+  color: var(--orange-800);
 }
 
 .Pill--light-gray {
@@ -152,6 +188,12 @@
   color: var(--white-900);
 }
 
+.Pill--outline-gray {
+  background-color: transparent;
+  border-color: var(--black-600);
+  color: var(--black-600);
+}
+
 .Pill--light-yellow {
   background-color: var(--yellow-200);
   border-color: var(--yellow-200);
@@ -168,4 +210,10 @@
   background-color: var(--yellow-800);
   border-color: var(--yellow-800);
   color: var(--white-900);
+}
+
+.Pill--outline-yellow {
+  background-color: transparent;
+  border-color: var(--yellow-800);
+  color: var(--yellow-800);
 }
