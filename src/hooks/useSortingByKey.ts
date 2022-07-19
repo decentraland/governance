@@ -13,5 +13,6 @@ export function useSortingByKey<T>(list: T[], key: string) {
     sorted,
     isDescendingSort: isDescending,
     changeSort: () => setIsDescending((prev) => !prev),
+    setIsDescending,
   }
 }

@@ -19,7 +19,8 @@ const CurrentGrantsSortingMenu = ({ onSortingKeyChange }: Props) => {
   return (
     <>
       <Dropdown
-        direction="left"
+        className="CurrentGrantsSortingMenu"
+        direction="right"
         text={
           sortingKey === 'created_at'
             ? t('page.grants.sorting_filters.created_at')

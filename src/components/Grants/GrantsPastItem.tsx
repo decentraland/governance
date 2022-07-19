@@ -48,7 +48,7 @@ const GrantsPastItem = ({ grant, showSeparator }: Props) => {
           <ChevronRight color="#bab8ba" />
         </Table.Cell>
       </Table.Row>
-      {showSeparator && <tr className="GrantsPage__PastGrantsSeparator" />}
+      {showSeparator && <tr className="GrantsPastItem__Separator" />}
     </>
   )
 }
