@@ -17,15 +17,14 @@ export function VotingPowerListModal({ delegations, ...props }: VotingPowerListM
   const t = useFormatMessage()
 
   return (
-    <Modal {...props} size="tiny" className="VotingPowerListModal">
-      <div className="VotingPowerListModal__Content">
-        <div className="VotingPowerListModal__Header">
-          {t('page.balance.delegated_voting_power_list_title')}
-          <Close onClick={props.onClose} />
-        </div>
-        <div className="VotingPowerListModal_Description">
-          <Markdown>{t('page.balance.delegated_voting_power_list_description')}</Markdown>
-        </div>
+    <Modal {...props} size="tiny" className="GovernanceContentModal VotingPowerListModal" closeIcon={<Close />}>
+      <Modal.Header className="VotingPowerListModal__Header">
+        {t('page.balance.delegated_voting_power_list_title')}
+      </Modal.Header>
+      <Modal.Description className="VotingPowerListModal__Description">
+        <Markdown>{t('page.balance.delegated_voting_power_list_description')}</Markdown>
+      </Modal.Description>
+      <Modal.Content>
         <div className="VotingPowerListModal_Items">
           {delegations.length > 0 &&
             delegations.map((delegation) => {
@@ -39,7 +38,7 @@ export function VotingPowerListModal({ delegations, ...props }: VotingPowerListM
               )
             })}
         </div>
-      </div>
+      </Modal.Content>
     </Modal>
   )
 }
