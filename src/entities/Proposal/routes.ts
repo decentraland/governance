@@ -26,7 +26,7 @@ import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
-import { getCurrentUpdate } from '../Updates/utils'
+import { getPublicUpdates } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
@@ -737,10 +737,7 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-export async function getGrantCurrentUpdate(
-  tier: ProposalGrantTier,
-  proposalId: string
-): Promise<IndexedUpdate | null> {
+async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string): Promise<IndexedUpdate | null> {
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
     created_at: 'desc',
   } as never)
@@ -751,7 +748,7 @@ export async function getGrantCurrentUpdate(
   if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
     return { ...updates[0], index: updates.length }
   } else {
-    const currentUpdate = getCurrentUpdate(updates)
+    const currentUpdate = getPublicUpdates(updates)[0]
     if (!currentUpdate) {
       return null
     }
@@ -812,7 +809,7 @@ async function getGrants() {
           try {
             const grantWithUpdate: GrantWithUpdateAttributes = {
               ...newGrant,
-              update: await getGrantCurrentUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
+              update: await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
             }
             current.push(grantWithUpdate)
           } catch (error) {
