@@ -17,12 +17,14 @@ const getRoundedPercentage = (value: number, total: number) => Math.min(Math.rou
 
 const VestingProgress = ({ grant }: Props) => {
   const t = useFormatMessage()
-  const { contract, enacting_tx, token, enacted_at } = grant
+  const { contract, enacting_tx, tx_amount, token, enacted_at } = grant
 
   const total = contract?.vesting_total_amount || 100
   const vestedPercentage = contract ? getRoundedPercentage(contract.vestedAmount, total) : 100
   const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null
-  const vestedAmountText = `${t(`general.number`, { value: contract?.vestedAmount || 100 })} ${token}`
+  const vestedAmountText = `${t(`general.number`, {
+    value: contract ? contract.vestedAmount : tx_amount || 0,
+  })} ${token}`
   const releasedText = contract
     ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`
     : null
