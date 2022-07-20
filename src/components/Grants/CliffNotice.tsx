@@ -17,8 +17,6 @@ const CliffNotice = ({ vesting_start_date }: Props) => {
   const t = useFormatMessage()
   const cliff_ends_date = Time.unix(vesting_start_date).add(CLIFF_PERIOD_IN_DAYS, 'day')
   const formattedCompletionDate = cliff_ends_date.format('MMMM DD, YYYY')
-  console.log('vesting_start_date', vesting_start_date)
-  console.log('cliff_ends_date', cliff_ends_date)
 
   return (
     <div className="CliffNotice">

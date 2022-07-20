@@ -464,6 +464,7 @@ export enum ProposalGrantTier {
   Tier5 = 'Tier 5: up to $120,000 USD, 6 months vesting (1 month cliff)',
   Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
 }
+export const ONE_TIME_PAYMENT_TIERS = [ProposalGrantTier.Tier1, ProposalGrantTier.Tier2]
 
 export const ProposalGrantTierValues = {
   [ProposalGrantTier.Tier1]: Number(process.env.GATSBY_GRANT_SIZE_TIER1 || 0),
