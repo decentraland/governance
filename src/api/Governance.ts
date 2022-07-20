@@ -1,9 +1,11 @@
+import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
+  GrantsResponse,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -20,8 +22,6 @@ import {
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
-
-import { GovernanceAPI } from './GovernanceAPI'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -61,7 +61,7 @@ const getGovernanceApiUrl = () => {
   )
 }
 
-export class Governance extends GovernanceAPI {
+export class Governance extends API {
   static Url = getGovernanceApiUrl()
 
   static Cache = new Map<string, Governance>()
@@ -113,6 +113,12 @@ export class Governance extends GovernanceAPI {
       ...proposals,
       data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
     }
+  }
+
+  async getGrants() {
+    const proposals = await this.fetch<ApiResponse<GrantsResponse>>('/proposals/grants')
+
+    return proposals.data
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {

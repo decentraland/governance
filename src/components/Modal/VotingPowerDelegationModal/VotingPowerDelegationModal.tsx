@@ -39,7 +39,13 @@ function VotingPowerDelegationModal({ onClose, userVp, ...props }: VotingPowerDe
   }, [onClose])
 
   return (
-    <Modal {...props} onClose={handleClose} size="small" closeIcon={<Close />} className="VotingPowerDelegationModal">
+    <Modal
+      {...props}
+      onClose={handleClose}
+      size="small"
+      closeIcon={<Close />}
+      className="GovernanceContentModal VotingPowerDelegationModal"
+    >
       {!selectedCandidate && (
         <VotingPowerDelegationList delegates={delegates} vp={userVp} onDelegateClick={handleOnDelegateClick} />
       )}

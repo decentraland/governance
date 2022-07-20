@@ -37,15 +37,15 @@
 }
 
 .ProjectHealthStatus__Title--onTrack {
-  color: #44b600;
+  color: var(--green-800);
 }
 
 .ProjectHealthStatus__Title--atRisk {
-  color: #ffb03f;
+  color: var(--yellow-800);
 }
 
 .ProjectHealthStatus__Title--offTrack {
-  color: var(--red);
+  color: var(--red-800);
 }
 
 .ProjectHealthStatus__Description {

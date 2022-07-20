@@ -17,6 +17,7 @@
 }
 
 .ProposalDetailPage__Labels {
+  display: flex;
   min-height: 24px;
 }
 
@@ -24,7 +25,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: normal;
-  color: var(--dark-gray);
+  color: var(--black-400);
 }
 
 .ProposalDetailPage .ProposalDetailDescription .dg.SubTitle {
@@ -55,4 +56,9 @@
     width: 100% !important;
     padding: 1rem 0 !important;
   }
+}
+
+.ProposalDetail__StickySidebar {
+  position: sticky;
+  top: 16px;
 }

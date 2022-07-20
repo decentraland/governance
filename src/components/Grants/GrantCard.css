@@ -1,0 +1,52 @@
+.GrantCard {
+  padding: 22px;
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.GrantCard__Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  width: 100%;
+}
+
+.GrantCard__TierSize {
+  display: inline-flex;
+  text-transform: uppercase;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+  align-items: center;
+}
+
+.GrantCard__Tier {
+  color: var(--black-600);
+  padding-right: 3px;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.GrantCard__Size {
+  font-weight: 600;
+}
+
+.ui.header.GrantCard__Title {
+  min-height: 52px;
+  margin-top: 5px;
+  line-height: 28px;
+  letter-spacing: 0.3px;
+  font-size: 20px;
+}
+
+.GrantCard .ProposalUpdate:last-child {
+  margin-bottom: 0;
+}

@@ -1,11 +1,11 @@
 import snapshot from '@snapshot-labs/snapshot.js'
+import API from 'decentraland-gatsby/dist/utils/api/API'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 import fetch from 'isomorphic-fetch'
 
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { Scores } from '../entities/Votes/utils'
-import {GovernanceAPI} from "./GovernanceAPI";
 
 export type SnapshotQueryResponse<T> = { data: T }
 
@@ -32,19 +32,9 @@ export type SnapshotSpace = {
   id: string
   network: string
   strategies: SnapshotStrategy[]
-  // filters: {
-  //   onlyMembers: boolean,
-  //   invalids: string[],
-  //   minScore: number
-  // },
-  // skin: string,
-  // members: string[], // address
-  // symbol: string,
-  // name: string,
-  // private: boolean
 }
 
-export type SnapshotMessage<T extends string, P extends {}> = {
+export type SnapshotMessage<T extends string, P> = {
   version: string
   timestamp: string
   space: string
@@ -115,7 +105,7 @@ export const EMPTY_DELEGATION: DelegationResult = {
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 
-export class Snapshot extends GovernanceAPI {
+export class Snapshot extends API {
   static Url =
     process.env.GATSBY_SNAPSHOT_API ||
     process.env.REACT_APP_SNAPSHOT_API ||
@@ -146,7 +136,7 @@ export class Snapshot extends GovernanceAPI {
 
     return {
       ...status,
-      version: status.version.split('#')[0]
+      version: status.version.split('#')[0],
     }
   }
 

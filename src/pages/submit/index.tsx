@@ -31,7 +31,7 @@ export default function NewProposalPage() {
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">
-            Common Actions
+            {t('page.submit.common_actions')}
           </Header>
           <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
           <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} active />
@@ -46,7 +46,7 @@ export default function NewProposalPage() {
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">
-            Governance Process
+            {t('page.submit.governance_process')}
           </Header>
           <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
         </ContentSection>

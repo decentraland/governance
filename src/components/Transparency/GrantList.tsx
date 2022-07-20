@@ -22,7 +22,7 @@ const ITEMS_PER_PAGE = 5
 
 export default React.memo(function GrantList({ status, title }: GrantListProps) {
   const t = useFormatMessage()
-  const [grantsList] = useProposals({
+  const { proposals: grantsList } = useProposals({
     type: ProposalType.Grant,
     status: status,
     page: 1,

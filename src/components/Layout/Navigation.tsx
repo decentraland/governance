@@ -20,15 +20,15 @@ export enum NavigationTab {
   Enacted = 'enacted',
   Activity = 'activity',
   Transparency = 'transparency',
+  Grants = 'grants',
   Debug = 'debug',
 }
 
-type NavigationProps = {
+export type NavigationProps = {
   activeTab?: NavigationTab
-  search?: boolean
 }
 
-const Navigation = (props: NavigationProps) => {
+const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
   const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
@@ -47,19 +47,22 @@ const Navigation = (props: NavigationProps) => {
     <Tabs>
       <Tabs.Left>
         <Link href={locations.proposals()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+        </Link>
+        <Link href={locations.grants()}>
+          <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
         </Link>
         {user && (
           <Link href={locations.balance()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
+            <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
           </Link>
         )}
         <Link href={locations.transparency()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
         </Link>
         {user && (
           <Link href={activityLocation} state={activityLocation}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Activity}>
+            <Tabs.Tab active={activeTab === NavigationTab.Activity}>
               <div className="ActivityTab">
                 {t('navigation.activity')} {pendingCoauthorRequests.length > 0 && <Dot />}
               </div>
@@ -68,7 +71,7 @@ const Navigation = (props: NavigationProps) => {
         )}
         {user && isDebugAddress && (
           <Link href={locations.debug()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
+            <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
           </Link>
         )}
       </Tabs.Left>

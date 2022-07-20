@@ -1,4 +1,5 @@
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
 import { UpdateAttributes, UpdateStatus } from './types'
 
 export const getPublicUpdates = (updates: UpdateAttributes[]): UpdateAttributes[] => {
@@ -14,7 +15,6 @@ export const getPublicUpdates = (updates: UpdateAttributes[]): UpdateAttributes[
 
   return [...outOfScheduleUpdates, ...scheduledUpdates]
 }
-
 
 export const getCurrentUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
   const now = new Date()
@@ -32,10 +32,12 @@ export const getCurrentUpdate = (updates: UpdateAttributes[]): UpdateAttributes 
   return nextUpdate
 }
 
-export const getNextUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
+export const getNextPendingUpdate = (updates: UpdateAttributes[]): UpdateAttributes | null => {
   const now = new Date()
 
-  const upcomingPendingUpdates = updates.filter((item) => item.status === UpdateStatus.Pending && Time(item.due_date).isAfter(now))
+  const upcomingPendingUpdates = updates.filter(
+    (item) => item.status === UpdateStatus.Pending && Time(item.due_date).isAfter(now)
+  )
 
   if (!(upcomingPendingUpdates && upcomingPendingUpdates.length > 0)) {
     return null

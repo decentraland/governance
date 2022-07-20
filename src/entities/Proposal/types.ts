@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import { IndexedUpdate } from '../Updates/types'
+
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 
 export type ProposalAttributes<C extends Record<string, unknown> = any> = {
@@ -434,6 +436,7 @@ export const newProposalCatalystScheme = {
   },
 }
 
+export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 export enum ProposalGrantCategory {
   Community = 'Community',
   ContentCreator = 'Content Creator',
@@ -738,4 +741,46 @@ export type ProposalComment = {
 export type ProposalCommentsInDiscourse = {
   totalComments: number
   comments: ProposalComment[]
+}
+
+type VestingContractData = {
+  vestedAmount: number
+  releasable: number
+  released: number
+  start_at: number
+  finish_at: number
+  vesting_total_amount: number
+}
+
+type TransparencyGrant = {
+  id: string
+  title: string
+  user: string
+  size: number
+  created_at: number
+  configuration: {
+    category: ProposalGrantCategory
+    tier: string
+  }
+}
+
+type GrantBlockchainData = {
+  contract?: VestingContractData
+  enacting_tx?: string
+  token?: string
+  enacted_at: number
+  tx_amount?: number
+  tx_date?: number
+}
+
+export type GrantAttributes = TransparencyGrant & GrantBlockchainData
+export type GrantWithUpdateAttributes = TransparencyGrant &
+  GrantBlockchainData & {
+    update: IndexedUpdate | null
+  }
+
+export type GrantsResponse = {
+  current: GrantWithUpdateAttributes[]
+  past: GrantAttributes[]
+  total: number
 }

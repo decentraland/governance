@@ -117,60 +117,68 @@ export function UpdateProposalStatusModal({
       {...props}
       open={open && !!status}
       size="small"
-      className={TokenList.join(['ProposalModal', 'UpdateProposalStatusModal', props.className])}
+      className={TokenList.join([
+        'GovernanceActionModal',
+        'ProposalModal',
+        'UpdateProposalStatusModal',
+        props.className,
+      ])}
       closeIcon={<Close />}
     >
-      <Modal.Content className="ProposalModal__Title">
-        <Header>{t('modal.update_status_proposal.title', { status })}</Header>
-        <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
-      </Modal.Content>
-      {proposal && proposal.type === ProposalType.Grant && (
-        <Modal.Content className="ProposalModal__GrantTransaction">
-          {!isOneTimePaymentProposalTier && (
-            <>
-              <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
-              <Field
-                type="address"
-                value={state.value.vestingAddress}
-                onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
-                onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
-                message={t(state.error.vestingAddress)}
-                error={!!state.error.vestingAddress}
-              />
-            </>
-          )}
-          {isOneTimePaymentProposalTier && (
-            <>
-              <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
-              <Field
-                type="address"
-                value={state.value.enactingTx}
-                onChange={(_, { value }) => editor.set({ enactingTx: value }, { validate: false })}
-                onBlur={() => editor.set({ enactingTx: state.value.enactingTx.trim() })}
-                message={t(state.error.enactingTx)}
-                error={!!state.error.enactingTx}
-              />
-            </>
-          )}
-        </Modal.Content>
-      )}
-      <Modal.Content className="ProposalModal__Form">
-        <Label>{t('modal.update_status_proposal.comments')}</Label>
-        <MarkdownTextarea
-          minHeight={150}
-          value={state.value.description}
-          onChange={(_: unknown, { value }: { value: string }) =>
-            editor.set({ description: value }, { validate: false })
-          }
-        />
-      </Modal.Content>
-      <Modal.Content className="ProposalModal__Actions">
-        <Button primary disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
-          {t(cta)}
-        </Button>
-        <Button className="cancel" onClick={props.onClose}>
-          {t('modal.update_status_proposal.reject')}
-        </Button>
+      <Modal.Content>
+        <div className="ProposalModal__Title">
+          <Header>{t('modal.update_status_proposal.title', { status })}</Header>
+          <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
+        </div>
+
+        {proposal && proposal.type === ProposalType.Grant && (
+          <div className="ProposalModal__GrantTransaction">
+            {!isOneTimePaymentProposalTier && (
+              <>
+                <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
+                <Field
+                  type="address"
+                  value={state.value.vestingAddress}
+                  onChange={(_, { value }) => editor.set({ vestingAddress: value }, { validate: false })}
+                  onBlur={() => editor.set({ vestingAddress: state.value.vestingAddress.trim() })}
+                  message={t(state.error.vestingAddress)}
+                  error={!!state.error.vestingAddress}
+                />
+              </>
+            )}
+            {isOneTimePaymentProposalTier && (
+              <>
+                <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
+                <Field
+                  type="address"
+                  value={state.value.enactingTx}
+                  onChange={(_, { value }) => editor.set({ enactingTx: value }, { validate: false })}
+                  onBlur={() => editor.set({ enactingTx: state.value.enactingTx.trim() })}
+                  message={t(state.error.enactingTx)}
+                  error={!!state.error.enactingTx}
+                />
+              </>
+            )}
+          </div>
+        )}
+        <div className="ProposalModal__Form">
+          <Label>{t('modal.update_status_proposal.comments')}</Label>
+          <MarkdownTextarea
+            minHeight={150}
+            value={state.value.description}
+            onChange={(_: unknown, { value }: { value: string }) =>
+              editor.set({ description: value }, { validate: false })
+            }
+          />
+        </div>
+        <div className="ProposalModal__Actions">
+          <Button primary fluid disabled={state.validated} loading={loading && state.validated} onClick={handleAccept}>
+            {t(cta)}
+          </Button>
+          <Button className="cancel" fluid onClick={props.onClose}>
+            {t('modal.update_status_proposal.reject')}
+          </Button>
+        </div>
       </Modal.Content>
     </Modal>
   )

@@ -1,0 +1,21 @@
+.CurrentGrantsCategoryFilters__Carousel {
+  width: 100%;
+  margin-bottom: 16px;
+}
+.CurrentGrantsCategoryFilters__CarouselCell {
+  margin-right: 8px;
+}
+.CurrentGrantsCategoryFilters__CarouselCell:last-child {
+  margin-right: 0;
+}
+
+.CurrentGrantsCategoryFilters {
+  display: flex;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .CurrentGrantsCategoryFilters__Carousel {
+    margin-bottom: 0;
+  }
+}

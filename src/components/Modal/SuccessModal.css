@@ -1,23 +1,8 @@
-.SuccessModal {
-  padding-bottom: 24px;
-}
-
-.ui.modal.SuccessModal .content {
-  width: 100%;
-  margin-bottom: 24px;
-  padding-left: 52px;
-  padding-right: 52px;
-}
-
-.SuccessModal .ProposalModal__Actions {
-  margin-top: 0 !important;
-}
-
-.ui.modal.SuccessModal .SuccessModal__Description {
+.SuccessModal .SuccessModal__Description {
   margin-bottom: 0;
 }
 
-.ui.modal.SuccessModal .SuccessModal__Banner {
+.SuccessModal__Banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,19 +45,19 @@ div.SuccessModal__Banner.CopyLink {
   margin-left: 10px;
 }
 
-.ui.modal.SuccessModal .SuccessModal__Banner .Button.JoinTheDiscussion {
+.SuccessModal .SuccessModal__Banner .Button.JoinTheDiscussion {
   background-color: #ff2d55 !important;
 }
 
-.ui.modal.SuccessModal .SuccessModal__Banner .Button.Discord {
+.SuccessModal .SuccessModal__Banner .Button.Discord {
   background-color: #5865f2 !important;
 }
 
-.ui.modal.SuccessModal .SuccessModal__Banner .Button.CopyLink {
+.SuccessModal .SuccessModal__Banner .Button.CopyLink {
   background-color: var(--background-happy-green) !important;
 }
 
 .SuccessModal__DismissButton {
   background-color: #ffffff !important;
-  border: 1px solid rgba(var(--dark-gray-rgb), 0.32) !important;
+  border: 1px solid var(--black-400) !important;
 }
