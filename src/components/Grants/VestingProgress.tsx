@@ -23,7 +23,7 @@ const VestingProgress = ({ grant }: Props) => {
   const vestedPercentage = contract ? getRoundedPercentage(contract.vestedAmount, total) : 100
   const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null
   const vestedAmountText = `${t(`general.number`, {
-    value: contract ? contract.vestedAmount : tx_amount,
+    value: contract ? contract.vestedAmount : tx_amount || 0,
   })} ${token}`
   const releasedText = contract
     ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`
