@@ -781,42 +781,42 @@ async function getGrants() {
           enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
         }
 
-        if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
-          const threshold = Time(grant.tx_date).add(1, 'month')
-          if (Time().isBefore(threshold)) {
-            const update = await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id)
-            return current.push({
-              ...newGrant,
-              update,
-              enacting_tx: grant.enacting_tx,
-              tx_amount: grant.tx_amount,
-            } as GrantWithUpdateAttributes)
-          }
+        if (grant.tx_date) {
+          Object.assign(newGrant, {
+            enacting_tx: grant.enacting_tx,
+            tx_amount: grant.tx_amount,
+          })
+        } else {
+          Object.assign(newGrant, {
+            contract: {
+              vesting_total_amount: Math.round(grant.vesting_total_amount),
+              vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
+              releasable: Math.round(grant.vesting_releasable),
+              released: Math.round(grant.vesting_released),
+              start_at: Time(grant.vesting_start_at).unix(),
+              finish_at: Time(grant.vesting_finish_at).unix(),
+            },
+          })
+        }
 
+        const oneTimePaymentThreshold = Time(grant.tx_date).add(1, 'month')
+        const isCurrentGrant =
+          grant.tier === 'Tier 1' || grant.tier === 'Tier 2'
+            ? Time().isBefore(oneTimePaymentThreshold)
+            : newGrant.contract?.vestedAmount !== newGrant.contract?.vesting_total_amount
+
+        if (!isCurrentGrant) {
           return past.push(newGrant)
         }
 
-        newGrant.contract = {
-          vesting_total_amount: Math.round(grant.vesting_total_amount),
-          vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
-          releasable: Math.round(grant.vesting_releasable),
-          released: Math.round(grant.vesting_released),
-          start_at: Time(grant.vesting_start_at).unix(),
-          finish_at: Time(grant.vesting_finish_at).unix(),
-        }
-
-        if (newGrant.contract.vestedAmount === newGrant.contract.vesting_total_amount) {
-          past.push(newGrant)
-        } else {
-          try {
-            const grantWithUpdate: GrantWithUpdateAttributes = {
-              ...newGrant,
-              update: await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
-            }
-            current.push(grantWithUpdate)
-          } catch (error) {
-            logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
-          }
+        try {
+          const update = await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id)
+          return current.push({
+            ...newGrant,
+            update,
+          } as GrantWithUpdateAttributes)
+        } catch (error) {
+          logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
         }
       } catch (error) {
         logger.error(`Failed to fetch proposal ${grant.id}`, formatError(error as Error))
