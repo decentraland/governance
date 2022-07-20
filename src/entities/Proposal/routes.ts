@@ -784,11 +784,13 @@ async function getGrants() {
         if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
           const threshold = Time(grant.tx_date).add(1, 'month')
           if (Time().isBefore(threshold)) {
+            const update = await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id)
             return current.push({
               ...newGrant,
+              update,
               enacting_tx: grant.enacting_tx,
               tx_amount: grant.tx_amount,
-            })
+            } as GrantWithUpdateAttributes)
           }
 
           return past.push(newGrant)
