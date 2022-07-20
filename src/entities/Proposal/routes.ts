@@ -765,6 +765,10 @@ async function getGrants() {
 
   await Promise.all(
     enactedGrants.map(async (grant) => {
+      if (!grant.vesting_address && !grant.enacting_tx) {
+        return
+      }
+
       try {
         const proposal = await ProposalModel.findOne(grant.id)
         const newGrant: GrantAttributes = {
