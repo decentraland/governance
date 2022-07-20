@@ -18,7 +18,7 @@
   width: 100%;
 }
 
-.GrantCard__TierSize {
+.GrantCard__SizeContainer {
   display: inline-flex;
   text-transform: uppercase;
   font-style: normal;
@@ -28,14 +28,14 @@
   align-items: center;
 }
 
-.GrantCard__Tier {
+.GrantCard__Size {
   color: var(--black-600);
   padding-right: 3px;
   margin-bottom: 0;
   font-weight: 400;
 }
 
-.GrantCard__Size {
+.GrantCard__SizeNumber {
   font-weight: 600;
 }
 

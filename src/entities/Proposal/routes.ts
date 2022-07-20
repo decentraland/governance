@@ -26,7 +26,7 @@ import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
-import { getCurrentUpdate } from '../Updates/utils'
+import { getPublicUpdates } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
@@ -737,10 +737,7 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-export async function getGrantCurrentUpdate(
-  tier: ProposalGrantTier,
-  proposalId: string
-): Promise<IndexedUpdate | null> {
+async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string): Promise<IndexedUpdate | null> {
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
     created_at: 'desc',
   } as never)
@@ -751,7 +748,7 @@ export async function getGrantCurrentUpdate(
   if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
     return { ...updates[0], index: updates.length }
   } else {
-    const currentUpdate = getCurrentUpdate(updates)
+    const currentUpdate = getPublicUpdates(updates)[0]
     if (!currentUpdate) {
       return null
     }
@@ -784,40 +781,42 @@ async function getGrants() {
           enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
         }
 
-        if (grant.tier === 'Tier 1' || grant.tier === 'Tier 2') {
-          const threshold = Time(grant.tx_date).add(1, 'month')
-          if (Time().isBefore(threshold)) {
-            return current.push({
-              ...newGrant,
-              enacting_tx: grant.enacting_tx,
-              tx_amount: grant.tx_amount,
-            })
-          }
+        if (grant.tx_date) {
+          Object.assign(newGrant, {
+            enacting_tx: grant.enacting_tx,
+            tx_amount: grant.tx_amount,
+          })
+        } else {
+          Object.assign(newGrant, {
+            contract: {
+              vesting_total_amount: Math.round(grant.vesting_total_amount),
+              vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
+              releasable: Math.round(grant.vesting_releasable),
+              released: Math.round(grant.vesting_released),
+              start_at: Time(grant.vesting_start_at).unix(),
+              finish_at: Time(grant.vesting_finish_at).unix(),
+            },
+          })
+        }
 
+        const oneTimePaymentThreshold = Time(grant.tx_date).add(1, 'month')
+        const isCurrentGrant =
+          grant.tier === 'Tier 1' || grant.tier === 'Tier 2'
+            ? Time().isBefore(oneTimePaymentThreshold)
+            : newGrant.contract?.vestedAmount !== newGrant.contract?.vesting_total_amount
+
+        if (!isCurrentGrant) {
           return past.push(newGrant)
         }
 
-        newGrant.contract = {
-          vesting_total_amount: Math.round(grant.vesting_total_amount),
-          vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
-          releasable: Math.round(grant.vesting_releasable),
-          released: Math.round(grant.vesting_released),
-          start_at: Time(grant.vesting_start_at).unix(),
-          finish_at: Time(grant.vesting_finish_at).unix(),
-        }
-
-        if (newGrant.contract.vestedAmount === newGrant.contract.vesting_total_amount) {
-          past.push(newGrant)
-        } else {
-          try {
-            const grantWithUpdate: GrantWithUpdateAttributes = {
-              ...newGrant,
-              update: await getGrantCurrentUpdate(TransparencyGrantsTiers[grant.tier], grant.id),
-            }
-            current.push(grantWithUpdate)
-          } catch (error) {
-            logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
-          }
+        try {
+          const update = await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id)
+          return current.push({
+            ...newGrant,
+            update,
+          } as GrantWithUpdateAttributes)
+        } catch (error) {
+          logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
         }
       } catch (error) {
         logger.error(`Failed to fetch proposal ${grant.id}`, formatError(error as Error))
