@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 
+import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -31,8 +32,10 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
 }
 
 const GrantCard = ({ grant }: GrantCardProps) => {
-  const { id, configuration, size, token, title, update } = grant
+  const { id, configuration, size, title, update } = grant
   const category: ProposalGrantCategory = configuration.category
+  const intl = useIntl()
+  const t = useFormatMessage()
 
   const handleClick = useCallback(() => {
     navigate(locations.proposal(id))
@@ -42,11 +45,9 @@ const GrantCard = ({ grant }: GrantCardProps) => {
     <div onClick={handleClick} className="GrantCard">
       <div>
         <div className="GrantCard__Header">
-          <div className="GrantCard__TierSize">
-            <p className="GrantCard__Tier">{`${configuration.tier}: `}</p>
-            <p className="GrantCard__Size">
-              {size} {token}
-            </p>
+          <div className="GrantCard__SizeContainer">
+            <p className="GrantCard__Size">{`${t('page.grants.past_funded.size')}: `}</p>
+            <p className="GrantCard__SizeNumber">{`$${intl.formatNumber(size)} USD`}</p>
           </div>
           <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
         </div>
