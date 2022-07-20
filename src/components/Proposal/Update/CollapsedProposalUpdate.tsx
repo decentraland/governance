@@ -12,7 +12,7 @@ import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import locations from '../../../modules/locations'
 import { formatDate } from '../../../modules/time'
-import Date from '../../Common/Date'
+import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
@@ -75,7 +75,7 @@ const CollapsedProposalUpdate = ({ proposal, update, index }: Props) => {
       {completion_date && (
         <div className="ProposalUpdate__Date">
           <span className="ProposalUpdate__DateText">
-            <Date date={completion_date}>{formattedCompletionDate}</Date>
+            <DateTooltip date={completion_date}>{formattedCompletionDate}</DateTooltip>
           </span>
           {status === UpdateStatus.Late && (
             <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>

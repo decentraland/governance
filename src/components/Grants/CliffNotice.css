@@ -1,0 +1,37 @@
+.CliffNotice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  border: 1px solid #dddce0;
+  border-radius: 8px;
+  padding: 0 16px;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+
+.CliffNotice__Left {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+}
+
+.CliffNotice__IconContainer {
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
+}
+
+.CliffNotice__Description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--black-600);
+  max-width: 570px;
+}
+
+.CliffNotice__Description span {
+  padding-right: 3px;
+}
