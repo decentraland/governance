@@ -37,8 +37,7 @@ const GrantCard = ({ grant }: GrantCardProps) => {
   const category: ProposalGrantCategory = configuration.category
   const intl = useIntl()
   const t = useFormatMessage()
-  const isOneTimePayment = ONE_TIME_PAYMENT_TIERS.includes(grant.configuration.tier as ProposalGrantTier)
-  console.log('isOneTimePayment', isOneTimePayment)
+  const isOneTimePayment = ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier as ProposalGrantTier)
   const now = Time.utc()
   const proposalInCliffPeriod =
     !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
@@ -59,10 +58,10 @@ const GrantCard = ({ grant }: GrantCardProps) => {
           <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
         </div>
         <Header className="GrantCard__Title">{title}</Header>
-        {proposalInCliffPeriod ? <CliffProgress enacted_at={grant.enacted_at} /> : <VestingProgress grant={grant} />}
+        {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       {showCliffNotice ? (
-        <CliffNotice vesting_start_date={grant.enacted_at} />
+        <CliffNotice vestingStartDate={grant.enacted_at} />
       ) : (
         <ProposalUpdate proposal={grant} update={update} expanded={false} index={update?.index} />
       )}

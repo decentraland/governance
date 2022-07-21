@@ -7,7 +7,7 @@ interface Props {
 }
 
 function InfoCircle({ className, size = '32', color }: Props) {
-  const fill = color ? `var(${color})` : `var(--black-600)`
+  const fill = color ? `var(--${color})` : `var(--black-600)`
 
   return (
     <svg

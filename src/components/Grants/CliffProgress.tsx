@@ -9,15 +9,15 @@ import '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 import './CliffProgress.css'
 
 export type Props = React.HTMLAttributes<HTMLDivElement> & {
-  enacted_at: number
+  enactedAt: number
 }
 
 const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
 
-const CliffProgress = ({ enacted_at }: Props) => {
+const CliffProgress = ({ enactedAt }: Props) => {
   const t = useFormatMessage()
   const now = Time.utc()
-  const vestingStartDate = Time.unix(enacted_at)
+  const vestingStartDate = Time.unix(enactedAt)
   const elapsedSinceVestingStarted = now.diff(vestingStartDate, 'day')
   const daysToGo = CLIFF_PERIOD_IN_DAYS - elapsedSinceVestingStarted
   const elapsedPercentage = getRoundedPercentage(elapsedSinceVestingStarted, CLIFF_PERIOD_IN_DAYS)

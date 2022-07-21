@@ -10,26 +10,24 @@ import InfoCircle from '../Icon/InfoCircle'
 import './CliffNotice.css'
 
 interface Props {
-  vesting_start_date: number
+  vestingStartDate: number
 }
 
-const CliffNotice = ({ vesting_start_date }: Props) => {
+const CliffNotice = ({ vestingStartDate }: Props) => {
   const t = useFormatMessage()
-  const cliff_ends_date = Time.unix(vesting_start_date).add(CLIFF_PERIOD_IN_DAYS, 'day')
-  const formattedCompletionDate = cliff_ends_date.format('MMMM DD, YYYY')
+  const cliffEndsDate = Time.unix(vestingStartDate).add(CLIFF_PERIOD_IN_DAYS, 'day')
+  const formattedCompletionDate = cliffEndsDate.format('MMMM DD, YYYY')
 
   return (
     <div className="CliffNotice">
-      <div className="CliffNotice__Left">
-        <div className="CliffNotice__IconContainer">
-          <InfoCircle size="16" />
-        </div>
-        <div className="CliffNotice__Description">
-          <span>{t('page.grants.cliff_notice')}</span>
-          <span>
-            <DateTooltip date={cliff_ends_date.toDate()}>{formattedCompletionDate}</DateTooltip>
-          </span>
-        </div>
+      <div className="CliffNotice__IconContainer">
+        <InfoCircle size="16" />
+      </div>
+      <div className="CliffNotice__Description">
+        <span>{t('page.grants.cliff_notice')}</span>
+        <span>
+          <DateTooltip date={cliffEndsDate.toDate()}>{formattedCompletionDate}</DateTooltip>
+        </span>
       </div>
     </div>
   )

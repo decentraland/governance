@@ -12,7 +12,7 @@ import './FinishLabel.css'
 const clock = require('../../images/icons/time.svg').default
 
 export type FinishLabelProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  date: DateTooltip
+  date: Date
 }
 
 export default React.memo(function FinishLabel({ date, ...props }: FinishLabelProps) {
