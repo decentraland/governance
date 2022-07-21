@@ -4,12 +4,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import {
-  GrantWithUpdateAttributes,
-  ONE_TIME_PAYMENT_TIERS,
-  ProposalGrantCategory,
-  ProposalGrantTier,
-} from '../../entities/Proposal/types'
+import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import { PillColor } from '../Common/Pill'
@@ -32,8 +27,10 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
   [ProposalGrantCategory.Gaming]: PillColor.Blue,
 }
 
+const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])
+
 function isProposalInCliffPeriod(grant: GrantWithUpdateAttributes) {
-  const isOneTimePayment = ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier as ProposalGrantTier)
+  const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
   const now = Time.utc()
   return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
