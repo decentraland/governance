@@ -9,7 +9,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
 import { useCoAuthorsByProposal } from '../../hooks/useCoAuthorsByProposal'
-import Date from '../Common/Date'
+import DateTooltip from '../Common/DateTooltip'
 import Username from '../User/Username'
 
 import ProposalDetailCoauthors from './ProposalDetailCoauthors'
@@ -46,13 +46,13 @@ export default React.memo(function ProposalDetailSection({ proposal, ...props }:
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_start_label')}</div>
           <div className="DetailsSection__Value">
-            <Date date={proposal.start_at}>{Time.from(proposal.start_at).format('MMM DD HH:mm')}</Date>
+            <DateTooltip date={proposal.start_at}>{Time.from(proposal.start_at).format('MMM DD HH:mm')}</DateTooltip>
           </div>
         </div>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_finish_label')}</div>
           <div className="DetailsSection__Value">
-            <Date date={proposal.finish_at}>{Time.from(proposal.finish_at).format('MMM DD HH:mm')}</Date>
+            <DateTooltip date={proposal.finish_at}>{Time.from(proposal.finish_at).format('MMM DD HH:mm')}</DateTooltip>
           </div>
         </div>
         <div className="DetailsSection__Flex">

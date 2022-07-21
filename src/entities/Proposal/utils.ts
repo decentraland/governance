@@ -25,6 +25,8 @@ export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME
 
 export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
 
+export const CLIFF_PERIOD_IN_DAYS = 29
+
 export async function asyncSome<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
   for (const item of arr) {
     if (await predicate(item)) {

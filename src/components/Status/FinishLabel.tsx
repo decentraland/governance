@@ -5,7 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import Date from '../Common/Date'
+import DateTooltip from '../Common/DateTooltip'
 
 import './FinishLabel.css'
 
@@ -28,7 +28,7 @@ export default React.memo(function FinishLabel({ date, ...props }: FinishLabelPr
     <div {...props} className={TokenList.join([`FinishLabel`])}>
       <img src={clock} width="24" height="24" />
       <span>
-        <Date date={date}>{label}</Date>
+        <DateTooltip date={date}>{label}</DateTooltip>
       </span>
     </div>
   )

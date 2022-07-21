@@ -5,7 +5,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 Time.extend(LocalizedFormat)
 
-const Date = ({ children, date }: { children: React.ReactNode; date: Date }) => {
+const DateTooltip = ({ children, date }: { children: React.ReactNode; date: Date }) => {
   return (
     <time dateTime={String(date)} title={Time(date).format('LLL')}>
       {children}
@@ -13,4 +13,4 @@ const Date = ({ children, date }: { children: React.ReactNode; date: Date }) => 
   )
 }
 
-export default Date
+export default DateTooltip

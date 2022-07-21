@@ -10,7 +10,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { UpdateStatus } from '../../entities/Updates/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { formatDate } from '../../modules/time'
-import Date from '../Common/Date'
+import DateTooltip from '../Common/DateTooltip'
 import { ContentSection } from '../Layout/ContentLayout'
 import Divider from '../Section/Divider'
 import Username from '../User/Username'
@@ -52,9 +52,9 @@ const UpdateMarkdownView = ({ update, proposalUser }: Props) => {
           <div className="UpdateDetail__Date">
             <div className="UpdateDetail__CompletionDate">
               <Paragraph>
-                <Date date={update.completion_date}>
+                <DateTooltip date={update.completion_date}>
                   {l('page.update_detail.completion_date', { date: formattedCompletionDate })}
-                </Date>
+                </DateTooltip>
               </Paragraph>
               {proposalUser && <Username address={proposalUser} linked />}
             </div>

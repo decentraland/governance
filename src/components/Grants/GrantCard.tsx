@@ -2,23 +2,24 @@ import React, { useCallback } from 'react'
 
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
+import {
+  GrantWithUpdateAttributes,
+  ONE_TIME_PAYMENT_TIERS,
+  ProposalGrantCategory,
+  ProposalGrantTier,
+} from '../../entities/Proposal/types'
+import { CLIFF_PERIOD_IN_DAYS } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
 
+import CliffNotice from './CliffNotice'
+import CliffProgress from './CliffProgress'
 import './GrantCard.css'
 import VestingProgress from './VestingProgress'
-
-export type VestingAttributes = {
-  symbol: string
-  vestedAmount: number
-  balance: number
-  released: number
-  start: number
-}
 
 export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
   grant: GrantWithUpdateAttributes
@@ -36,6 +37,11 @@ const GrantCard = ({ grant }: GrantCardProps) => {
   const category: ProposalGrantCategory = configuration.category
   const intl = useIntl()
   const t = useFormatMessage()
+  const isOneTimePayment = ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier as ProposalGrantTier)
+  const now = Time.utc()
+  const proposalInCliffPeriod =
+    !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+  const showCliffNotice = !update && proposalInCliffPeriod
 
   const handleClick = useCallback(() => {
     navigate(locations.proposal(id))
@@ -52,9 +58,13 @@ const GrantCard = ({ grant }: GrantCardProps) => {
           <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
         </div>
         <Header className="GrantCard__Title">{title}</Header>
-        <VestingProgress grant={grant} />
+        {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
-      <ProposalUpdate proposal={grant} update={update} expanded={false} index={update?.index} />
+      {showCliffNotice ? (
+        <CliffNotice vestingStartDate={grant.enacted_at} />
+      ) : (
+        <ProposalUpdate proposal={grant} update={update} expanded={false} index={update?.index} />
+      )}
     </div>
   )
 }
