@@ -8,6 +8,7 @@
     "cancel": "cancel"
   },
   "navigation": {
+    "home": "DAO Home",
     "proposals": "Proposals",
     "grants": "Grants",
     "wrapping": "Voting Power",
@@ -402,6 +403,10 @@
       "title": "Debug",
       "description": "A tab where anything is possible",
       "error_label": "There was an error."
+    },
+    "home": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse."
     },
     "welcome": {
       "title": "Welcome to the Decentraland DAO",

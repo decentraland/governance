@@ -51,8 +51,10 @@ import useProposalUpdates from '../hooks/useProposalUpdates'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
-import './index.css'
 import './proposal.css'
+import './proposals.css'
+
+// TODO: Review why proposals.css is being imported and use only proposal.css
 
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 
