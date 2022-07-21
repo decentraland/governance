@@ -7,7 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { getOnTimeThresholdDate } from '../../entities/Updates/utils'
-import Date from '../Common/Date'
+import DateTooltip from '../Common/DateTooltip'
 import Helper from '../Helper/Helper'
 
 import './ProposalVestingStatus.css'
@@ -46,13 +46,13 @@ export default function ProposalVestingStatus({
         </Button>
         {!hasSubmittedUpdate && nextUpdate?.due_date && currentUpdate?.due_date && (
           <span className="ProposalVestingStatus__DueDate">
-            <Date date={currentUpdate.due_date}>
+            <DateTooltip date={currentUpdate.due_date}>
               <Markdown>
                 {t('page.proposal_detail.grant.current_update_due_date', {
                   date: Time(currentUpdate.due_date).fromNow(true),
                 })}
               </Markdown>
-            </Date>
+            </DateTooltip>
             <Helper
               text={t('page.proposal_detail.grant.current_update_info')}
               position="bottom right"
@@ -63,13 +63,13 @@ export default function ProposalVestingStatus({
         )}
         {hasSubmittedUpdate && !!currentUpdate?.due_date && nextUpdate?.due_date && (
           <span className="ProposalVestingStatus__DueDate">
-            <Date date={nextUpdate.due_date}>
+            <DateTooltip date={nextUpdate.due_date}>
               <Markdown>
                 {t('page.proposal_detail.grant.next_update_due_date', {
                   date: Time(nextUpdate.due_date).fromNow(true),
                 })}
               </Markdown>
-            </Date>
+            </DateTooltip>
           </span>
         )}
       </div>

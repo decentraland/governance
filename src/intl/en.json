@@ -595,6 +595,9 @@
       },
       "vested": "vested",
       "transferred": "transferred",
+      "one_time_payment": "One-time payment",
+      "one_month_cliff": "1-month Cliff Period",
+      "cliff_remaining": "{count} {count, plural, one {day} other {days}} to go",
       "released": "released",
       "started_date": "Started",
       "end_date": "Ends",
@@ -607,8 +610,8 @@
         "newest": "Newest",
         "size": "Size"
       },
-      "navigate_to_proposal_label": "Navigate to proposal {title}",
-      "empty_update": "When the team publishes their first update, it will appear here."
+      "empty_update": "When the team publishes their first update, it will appear here.",
+      "cliff_notice": "No funds vested until"
     },
     "proposal_activity": {
       "title": "Decentraland DAO",
