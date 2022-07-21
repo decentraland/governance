@@ -57,11 +57,12 @@ export function url(path = '/', query: Record<string, string> | URLSearchParams 
 }
 
 export default {
+  home: () => url('/'),
   proposals: (
     options:
       | Partial<ProposalListPage & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal>
       | URLSearchParams = {}
-  ) => url('/', options),
+  ) => url('/proposals/', options),
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) =>
