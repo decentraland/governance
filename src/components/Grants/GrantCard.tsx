@@ -5,12 +5,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import {
-  GrantWithUpdateAttributes,
-  ONE_TIME_PAYMENT_TIERS,
-  ProposalGrantCategory,
-  ProposalGrantTier,
-} from '../../entities/Proposal/types'
+import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import Pill, { PillColor } from '../Common/Pill'
@@ -32,16 +27,19 @@ export const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillC
   [ProposalGrantCategory.Gaming]: PillColor.Blue,
 }
 
+const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])
+
 const GrantCard = ({ grant }: GrantCardProps) => {
   const { id, configuration, size, title, update } = grant
   const category: ProposalGrantCategory = configuration.category
   const intl = useIntl()
   const t = useFormatMessage()
-  const isOneTimePayment = ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier as ProposalGrantTier)
+
+  const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
   const now = Time.utc()
-  const proposalInCliffPeriod =
+  const showProposalInCliffPeriod =
     !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
-  const showCliffNotice = !update && proposalInCliffPeriod
+  const showCliffNotice = !update && showProposalInCliffPeriod
 
   const handleClick = useCallback(() => {
     navigate(locations.proposal(id))
@@ -58,7 +56,7 @@ const GrantCard = ({ grant }: GrantCardProps) => {
           <Pill color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>{category.split(' ')[0]}</Pill>
         </div>
         <Header className="GrantCard__Title">{title}</Header>
-        {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
+        {showProposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       {showCliffNotice ? (
         <CliffNotice vestingStartDate={grant.enacted_at} />
