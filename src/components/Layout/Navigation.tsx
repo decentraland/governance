@@ -15,6 +15,7 @@ import SearchInput from '../Search/SearchInput'
 import './Navigation.css'
 
 export enum NavigationTab {
+  Home = 'home',
   Proposals = 'proposals',
   Wrapping = 'wrapping',
   Enacted = 'enacted',
@@ -46,6 +47,9 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   return (
     <Tabs>
       <Tabs.Left>
+        <Link href={locations.home()}>
+          <Tabs.Tab active={activeTab === NavigationTab.Home}>{t('navigation.home')}</Tabs.Tab>
+        </Link>
         <Link href={locations.proposals()}>
           <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
         </Link>
