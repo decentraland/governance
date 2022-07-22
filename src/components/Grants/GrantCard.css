@@ -1,5 +1,5 @@
 .GrantCard {
-  padding: 22px;
+  padding: 22px 22px 0;
   color: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
@@ -8,6 +8,17 @@
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  background: var(--white-900);
+}
+
+.GrantCard__Slim {
+  padding-top: 16px !important;
+}
+
+.GrantCard__Expanded {
+  transition: all 0.2s ease 0s;
+  transform: scale(1.1);
+  z-index: 2;
 }
 
 .GrantCard__Header {
@@ -45,6 +56,10 @@
   line-height: 28px;
   letter-spacing: 0.3px;
   font-size: 20px;
+}
+
+.ui.header.GrantCard__SlimTitle {
+  margin-bottom: 9px;
 }
 
 .GrantCard .ProposalUpdate:last-child {

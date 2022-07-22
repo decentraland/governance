@@ -1,0 +1,50 @@
+.GrantCardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.GrantCardHeader__SizeContainer {
+  display: inline-flex;
+  text-transform: uppercase;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+  align-items: center;
+}
+
+.GrantCardHeader__SizeContainerSlim {
+  font-weight: 500 !important;
+  font-size: 11px !important;
+  color: var(--black-600);
+}
+
+.GrantCardHeader__Size {
+  color: var(--black-600);
+  padding-right: 3px;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.GrantCardHeader__SizeNumber {
+  font-weight: 600;
+}
+
+.GrantCardHeader__Username {
+  display: flex;
+  color: var(--black-600);
+  text-transform: uppercase;
+  gap: 3px;
+  align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.GrantCardHeader__Username .dcl.address {
+  color: var(--black-600);
+}
