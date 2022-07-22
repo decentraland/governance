@@ -54,7 +54,7 @@ export type SnapshotNewProposalPayload = {
 
 export type SnapshotVotePayload = {
   choice: number
-  metadata: {}
+  metadata: unknown
   proposal: string
 }
 
@@ -161,10 +161,6 @@ export class Snapshot extends API {
 
     return result?.data?.space || null
   }
-
-  // async getProposals(space: string) {
-  //   return this.fetch<Record<string, SnapshotProposal>>(`/api/${space}/proposals`)
-  // }
 
   async createProposalMessage(
     space: string,
