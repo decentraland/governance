@@ -1,6 +1,6 @@
-import { DISCOURSE_AUTH } from '../entities/Discourse/utils'
+import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { GovernanceAPI } from './GovernanceAPI'
+import { DISCOURSE_AUTH } from '../entities/Discourse/utils'
 
 export type DiscourseAuth = {
   apiKey: string
@@ -266,7 +266,7 @@ export type DiscoursePostInTopic = {
   reviewable_score_pending_count?: number
 }
 
-export class Discourse extends GovernanceAPI {
+export class Discourse extends API {
   static Url =
     process.env.GATSBY_DISCOURSE_API ||
     process.env.REACT_APP_DISCOURSE_API ||
@@ -340,9 +340,6 @@ export class Discourse extends GovernanceAPI {
   }
 
   async closeTopic({ id, ...update }: DiscourseCloseTopic, auth: DiscourseAuth) {
-    if (!update.raw) {
-    }
-
     return this.fetch<{}>(
       `/t/${id}/status.json`,
       this.options().method('PUT').header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername).json({

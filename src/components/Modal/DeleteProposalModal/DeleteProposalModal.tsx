@@ -19,18 +19,25 @@ export function DeleteProposalModal({ onClickAccept, loading, ...props }: Delete
   const t = useFormatMessage()
 
   return (
-    <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', props.className])} closeIcon={<Close />}>
-      <Modal.Content className="ProposalModal__Title">
-        <Header>{t('modal.delete_proposal.title')}</Header>
-        <Paragraph small>{t('modal.delete_proposal.description')}</Paragraph>
-      </Modal.Content>
-      <Modal.Content className="ProposalModal__Actions">
-        <Button primary onClick={onClickAccept} loading={loading}>
-          {t('modal.delete_proposal.accept')}
-        </Button>
-        <Button className="cancel" onClick={props.onClose}>
-          {t('modal.delete_proposal.reject')}
-        </Button>
+    <Modal
+      {...props}
+      size="tiny"
+      className={TokenList.join(['GovernanceActionModal', 'ProposalModal', props.className])}
+      closeIcon={<Close />}
+    >
+      <Modal.Content>
+        <div className="ProposalModal__Title">
+          <Header>{t('modal.delete_proposal.title')}</Header>
+          <Paragraph small>{t('modal.delete_proposal.description')}</Paragraph>
+        </div>
+        <div>
+          <Button fluid primary onClick={onClickAccept} loading={loading}>
+            {t('modal.delete_proposal.accept')}
+          </Button>
+          <Button fluid className="cancel" onClick={props.onClose}>
+            {t('modal.delete_proposal.reject')}
+          </Button>
+        </div>
       </Modal.Content>
     </Modal>
   )

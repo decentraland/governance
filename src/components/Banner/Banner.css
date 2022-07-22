@@ -12,16 +12,16 @@
 
 .Banner::before {
   display: block;
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--blue);
+  background-color: var(--blue-800);
   border-radius: 8px;
   padding: 20px;
   width: 100%;
   height: 100%;
-  opacity: .08;
+  opacity: 0.08;
 }
 
 .Banner .Banner__Icon {
@@ -50,7 +50,7 @@
   font-size: 15px;
 }
 
-.Banner>.dcl.close {
+.Banner > .dcl.close {
   position: absolute;
   top: 0;
   right: 0;
@@ -60,7 +60,7 @@
 }
 
 .Banner .Banner__Button {
-  background-color: #4888EE !important;
+  background-color: var(--blue-800) !important;
 }
 
 @media (max-width: 767px) {
@@ -95,7 +95,7 @@
   .Banner {
     margin-bottom: 35px;
   }
-  
+
   .OnlyDesktop .Banner {
     display: flex;
   }
@@ -120,6 +120,6 @@
 
   .Banner .Banner__Button {
     position: relative;
-    background-color: #4888EE !important;
+    background-color: var(--blue-800) !important;
   }
 }

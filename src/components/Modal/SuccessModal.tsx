@@ -45,17 +45,17 @@ export function SuccessModal({
       {...props}
       open={open}
       size="tiny"
-      className={TokenList.join(['ProposalModal', 'SuccessModal'])}
+      className={TokenList.join(['GovernanceContentModal', 'ProposalModal', 'SuccessModal'])}
       closeIcon={<Close />}
     >
-      <Modal.Content className="ProposalModal__Title">
-        <Header>{title}</Header>
-        <Paragraph small className="SuccessModal__Description">
-          {description}
-        </Paragraph>
-        <Paragraph small>{t('modal.success.sub')}</Paragraph>
-      </Modal.Content>
       <Modal.Content>
+        <div className="ProposalModal__Title">
+          <Header>{title}</Header>
+          <Paragraph small className="SuccessModal__Description">
+            {description}
+          </Paragraph>
+          <Paragraph small>{t('modal.success.sub')}</Paragraph>
+        </div>
         {!!linkToForum && (
           <div className={TokenList.join(['SuccessModal__Banner', 'JoinTheDiscussion'])}>
             <div className="Description">
@@ -114,11 +114,11 @@ export function SuccessModal({
             </Button>
           </div>
         )}
-      </Modal.Content>
-      <Modal.Content className="ProposalModal__Actions">
-        <Button className="SuccessModal__DismissButton" secondary onClick={onDismiss} loading={loading}>
-          {t('modal.success.dismiss_button_label')}
-        </Button>
+        <div className="ProposalModal__Actions">
+          <Button fluid className="SuccessModal__DismissButton" secondary onClick={onDismiss} loading={loading}>
+            {t('modal.success.dismiss_button_label')}
+          </Button>
+        </div>
       </Modal.Content>
     </Modal>
   )

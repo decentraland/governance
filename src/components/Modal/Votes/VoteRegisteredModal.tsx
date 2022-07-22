@@ -2,7 +2,6 @@ import React from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -19,18 +18,20 @@ export function VoteRegisteredModal({ onClickAccept, loading, ...props }: VoteRe
   const t = useFormatMessage()
 
   return (
-    <Modal {...props} size="tiny" className={TokenList.join(['ProposalModal', props.className])} closeIcon={<Close />}>
-      <Modal.Content className="ProposalModal__Title">
-        <Header>{t('modal.vote_registered.title')}</Header>
-        <Paragraph small>{t('modal.vote_registered.description')}</Paragraph>
-      </Modal.Content>
-      <Modal.Content className="ProposalModal__Actions">
-        <Button primary onClick={onClickAccept} loading={loading}>
-          {t('modal.vote_registered.accept')}
-        </Button>
-        <Button className="cancel" onClick={props.onClose}>
-          {t('modal.vote_registered.reject')}
-        </Button>
+    <Modal {...props} size="tiny" className="GovernanceActionModal ProposalModal" closeIcon={<Close />}>
+      <Modal.Content>
+        <div className="ProposalModal__Title">
+          <Header>{t('modal.vote_registered.title')}</Header>
+          <Paragraph small>{t('modal.vote_registered.description')}</Paragraph>
+        </div>
+        <div className="ProposalModal__Actions">
+          <Button fluid primary onClick={onClickAccept} loading={loading}>
+            {t('modal.vote_registered.accept')}
+          </Button>
+          <Button fluid className="cancel" onClick={props.onClose}>
+            {t('modal.vote_registered.reject')}
+          </Button>
+        </div>
       </Modal.Content>
     </Modal>
   )

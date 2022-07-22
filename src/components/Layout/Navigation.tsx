@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
-import useIsAdmin from '../../hooks/useIsAdmin'
+import { CoauthorStatus } from '../../entities/Coauthor/types'
+import useIsDebugAddress from '../../hooks/useIsDebugAddress'
+import useProposalsByCoAuthor from '../../hooks/useProposalsByCoAuthor'
 import locations, { ProposalActivityList } from '../../modules/locations'
+import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
 
 import './Navigation.css'
@@ -17,41 +20,58 @@ export enum NavigationTab {
   Enacted = 'enacted',
   Activity = 'activity',
   Transparency = 'transparency',
-  Admin = 'admin',
+  Grants = 'grants',
+  Debug = 'debug',
 }
 
-type NavigationProps = {
+export type NavigationProps = {
   activeTab?: NavigationTab
-  search?: boolean
 }
 
-const Navigation = (props: NavigationProps) => {
+const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
-  const { isAdmin } = useIsAdmin(user)
+  const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
+  const [activityLocation, setActivityLocation] = useState<string>(
+    locations.activity({ list: ProposalActivityList.MyProposals })
+  )
+  useEffect(() => {
+    if (pendingCoauthorRequests.length > 0) {
+      setActivityLocation(locations.activity({ list: ProposalActivityList.CoAuthoring }))
+    }
+  }, [pendingCoauthorRequests])
+
+  const { isDebugAddress } = useIsDebugAddress(user)
 
   return (
     <Tabs>
       <Tabs.Left>
         <Link href={locations.proposals()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+        </Link>
+        <Link href={locations.grants()}>
+          <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
         </Link>
         {user && (
           <Link href={locations.balance()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
+            <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
           </Link>
         )}
         <Link href={locations.transparency()}>
-          <Tabs.Tab active={props.activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
         </Link>
         {user && (
-          <Link href={locations.activity({ list: ProposalActivityList.MyProposals })}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Activity}>{t('navigation.activity')}</Tabs.Tab>
+          <Link href={activityLocation} state={activityLocation}>
+            <Tabs.Tab active={activeTab === NavigationTab.Activity}>
+              <div className="ActivityTab">
+                {t('navigation.activity')} {pendingCoauthorRequests.length > 0 && <Dot />}
+              </div>
+            </Tabs.Tab>
           </Link>
         )}
-        {user && isAdmin && (
-          <Link href={locations.admin()}>
-            <Tabs.Tab active={props.activeTab === NavigationTab.Admin}>{t('navigation.admin')}</Tabs.Tab>
+        {user && isDebugAddress && (
+          <Link href={locations.debug()}>
+            <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
           </Link>
         )}
       </Tabs.Left>

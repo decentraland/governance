@@ -1,0 +1,11 @@
+.NewBadge {
+  text-transform: uppercase;
+  font-size: 9px;
+  color: white;
+  background-color: var(--red-800);
+  border-radius: 12px;
+  padding: 0 5px;
+  height: fit-content;
+  line-height: 13px;
+  font-weight: 500;
+}

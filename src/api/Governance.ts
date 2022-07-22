@@ -1,8 +1,11 @@
+import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
+import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
+  GrantsResponse,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -20,8 +23,6 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 
-import { GovernanceAPI } from './GovernanceAPI'
-
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
   [`/proposals/draft`]: NewProposalDraft
@@ -38,6 +39,7 @@ export type GetProposalsFilter = {
   type: ProposalType
   status: ProposalStatus
   subscribed: boolean | string
+  coauthor: boolean
   search?: string | null
   timeFrame?: string | null
   order?: 'ASC' | 'DESC'
@@ -59,7 +61,7 @@ const getGovernanceApiUrl = () => {
   )
 }
 
-export class Governance extends GovernanceAPI {
+export class Governance extends API {
   static Url = getGovernanceApiUrl()
 
   static Cache = new Map<string, Governance>()
@@ -111,6 +113,12 @@ export class Governance extends GovernanceAPI {
       ...proposals,
       data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
     }
+  }
+
+  async getGrants() {
+    const proposals = await this.fetch<ApiResponse<GrantsResponse>>('/proposals/grants')
+
+    return proposals.data
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {
@@ -167,11 +175,17 @@ export class Governance extends GovernanceAPI {
     proposal_id: string,
     status: ProposalStatus,
     vesting_address: string | null,
+    enacting_tx: string | null,
     description: string | null = null
   ) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
-      this.options().method('PATCH').authorization({ sign: true }).json({ status, vesting_address, description })
+      this.options().method('PATCH').authorization({ sign: true }).json({
+        status,
+        vesting_address,
+        enacting_tx,
+        description,
+      })
     )
 
     return result.data
@@ -285,13 +299,34 @@ export class Governance extends GovernanceAPI {
     return result.data
   }
 
-  async getAdminAddresses() {
-    const result = await this.fetch<ApiResponse<string[]>>(`/admin`)
+  async getDebugAddresses() {
+    const result = await this.fetch<ApiResponse<string[]>>(`/debug`)
     return result.data
   }
 
   async getProposalComments(proposal_id: string) {
     const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${proposal_id}/comments`)
     return result.data
+  }
+
+  async getProposalsByCoAuthor(address: string, status?: CoauthorStatus) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(
+      `/coauthors/proposals/${address}${status ? `/${status}` : ''}`
+    )
+    return result.data
+  }
+
+  async getCoAuthorsByProposal(id: string, status?: CoauthorStatus) {
+    const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}${status ? `/${status}` : ''}`)
+    return result.data
+  }
+
+  async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
+    const newStatus = await this.fetch<ApiResponse<CoauthorAttributes>>(
+      `/coauthors/${proposalId}`,
+      this.options().method('PUT').authorization({ sign: true }).json({ status })
+    )
+
+    return newStatus.data
   }
 }

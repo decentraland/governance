@@ -1,5 +1,6 @@
 .VotedInitiativeList {
   margin-top: 25px;
+  margin-bottom: 10px;
 }
 
 .VotedInitiativeList__Title {
@@ -9,7 +10,7 @@
   font-size: 11px;
   line-height: 18px;
   text-transform: uppercase;
-  color: #736e7d;
+  color: var(--black-400);
 }
 
 .VotedInitiativeList__List {

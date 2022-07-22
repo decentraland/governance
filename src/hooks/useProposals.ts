@@ -11,7 +11,7 @@ export type UseProposalsFilter = Omit<GetProposalsFilter, 'subscribed' | 'limit'
 }
 
 export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
-  return useAsyncMemo(async () => {
+  const [proposals, state] = useAsyncMemo(async () => {
     if (filter.load === false) {
       return {
         ok: true,
@@ -43,6 +43,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     if (filter.order) {
       params.order = filter.order
     }
+    if (filter.coauthor) {
+      params.coauthor = filter.coauthor
+    }
     return Governance.get().getProposals({ ...params, limit, offset })
   }, [
     filter.status,
@@ -55,5 +58,11 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     filter.page,
     filter.itemsPerPage,
     filter.load,
+    filter.coauthor,
   ])
+
+  return {
+    proposals,
+    isLoadingProposals: state.loading,
+  }
 }

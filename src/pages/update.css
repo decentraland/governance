@@ -3,11 +3,11 @@
   font-weight: 600;
   font-size: 15px;
   line-height: 24px;
-  color: #736e7d;
+  color: var(--black-400);
 }
 
 .UpdateDetail__ProjectTitle a {
-  color: #736e7d !important;
+  color: var(--black-600) !important;
 }
 
 .UpdateDetail__Header .header {
@@ -20,7 +20,7 @@
   line-height: 24px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #736e7d;
+  color: var(--black-400);
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -38,7 +38,7 @@
 }
 
 .UpdateDetail__Date .dg.Paragraph {
-  color: #736e7d;
+  color: var(--black-400);
   margin-bottom: 0;
   font-size: 15px;
   line-height: 24px;

@@ -12,8 +12,9 @@ import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/util
 import express from 'express'
 import path from 'path'
 
-import admin from './entities/Admin/routes'
+import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
+import debug from './entities/Debug/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
 import sitemap from './entities/Sitemap/routes'
@@ -37,11 +38,12 @@ app.use('/api', [
   withCors(),
   withBody(),
   committee,
-  admin,
+  debug,
   proposal,
   score,
   subscription,
   updates,
+  coauthor,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

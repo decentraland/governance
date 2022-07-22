@@ -1,4 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
+
+import { IndexedUpdate } from '../Updates/types'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 
@@ -25,6 +30,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   enacted: boolean
   enacted_by: string | null
   enacted_description: string | null
+  enacting_tx: string | null
   vesting_address: string | null
   passed_by: string | null
   passed_description: string | null
@@ -134,6 +140,7 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
 export type UpdateProposalStatusProposal = {
   status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
   vesting_address: string | null
+  enacting_tx: string | null
   description: string
 }
 
@@ -150,6 +157,11 @@ export const updateProposalStatusScheme = {
       type: ['string', 'null'],
       format: 'address',
     },
+    enacting_tx: {
+      type: ['string', 'null'],
+      minLength: 66,
+      maxLength: 66,
+    },
     description: {
       type: ['string', 'null'],
     },
@@ -160,6 +172,16 @@ export type NewProposalPoll = {
   title: string
   description: string
   choices: string[]
+  coAuthors?: string[]
+}
+
+const coAuthors = {
+  type: 'array',
+  items: {
+    type: 'string',
+    minLength: 42,
+    maxLength: 42,
+  },
 }
 
 export const INVALID_PROPOSAL_POLL_OPTIONS = 'Invalid question/options'
@@ -188,6 +210,7 @@ export const newProposalPollScheme = {
       },
       minItems: 2,
     },
+    coAuthors,
   },
 }
 
@@ -199,6 +222,7 @@ export type NewProposalDraft = {
   motivation: string
   specification: string
   conclusion: string
+  coAuthors?: string[]
 }
 
 export const newProposalDraftScheme = {
@@ -241,6 +265,7 @@ export const newProposalDraftScheme = {
       minLength: 20,
       maxLength: 3500,
     },
+    coAuthors,
   },
 }
 
@@ -254,6 +279,7 @@ export type NewProposalGovernance = {
   impacts: string
   implementation_pathways: string
   conclusion: string
+  coAuthors?: string[]
 }
 
 export const newProposalGovernanceScheme = {
@@ -316,12 +342,14 @@ export const newProposalGovernanceScheme = {
       minLength: 20,
       maxLength: 3500,
     },
+    coAuthors,
   },
 }
 
 export type NewProposalBanName = {
   name: string
   description: string
+  coAuthors?: string[]
 }
 
 export const newProposalBanNameScheme = {
@@ -339,6 +367,7 @@ export const newProposalBanNameScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    coAuthors,
   },
 }
 
@@ -347,6 +376,7 @@ export type NewProposalPOI = {
   y: number
   type: PoiType
   description: string
+  coAuthors?: string[]
 }
 
 export const newProposalPOIScheme = {
@@ -373,6 +403,7 @@ export const newProposalPOIScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    coAuthors,
   },
 }
 
@@ -380,6 +411,7 @@ export type NewProposalCatalyst = {
   owner: string
   domain: string
   description: string
+  coAuthors?: string[]
 }
 
 export const newProposalCatalystScheme = {
@@ -400,9 +432,11 @@ export const newProposalCatalystScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    coAuthors,
   },
 }
 
+export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 export enum ProposalGrantCategory {
   Community = 'Community',
   ContentCreator = 'Content Creator',
@@ -503,10 +537,12 @@ export type NewProposalGrant = {
   tier: ProposalGrantTier
   size: number
   beneficiary: string
+  email: string
   description: string
   specification: string
   personnel: string
   roadmap: string
+  coAuthors?: string[]
 }
 
 export const newProposalGrantScheme = {
@@ -518,6 +554,7 @@ export const newProposalGrantScheme = {
     'category',
     'tier',
     'beneficiary',
+    'email',
     'description',
     'specification',
     'personnel',
@@ -562,6 +599,10 @@ export const newProposalGrantScheme = {
       type: 'string',
       format: 'address',
     },
+    email: {
+      type: 'string',
+      format: 'email',
+    },
     description: {
       type: 'string',
       minLength: 20,
@@ -582,11 +623,14 @@ export const newProposalGrantScheme = {
       minLength: 20,
       maxLength: 1500,
     },
+    coAuthors,
   },
 }
 
 export type NewProposalLinkedWearables = {
   name: string
+  marketplace_link: string
+  image_previews: string[]
   links: string[]
   nft_collections: string
   items: number
@@ -596,6 +640,7 @@ export type NewProposalLinkedWearables = {
   managers: string[]
   programmatically_generated: boolean
   method: string
+  coAuthors?: string[]
 }
 
 export const newProposalLinkedWearablesScheme = {
@@ -603,6 +648,8 @@ export const newProposalLinkedWearablesScheme = {
   additionalProperties: false,
   required: [
     'name',
+    'marketplace_link',
+    'image_previews',
     'links',
     'nft_collections',
     'items',
@@ -617,6 +664,17 @@ export const newProposalLinkedWearablesScheme = {
       type: 'string',
       minLength: 1,
       maxLength: 80,
+    },
+    marketplace_link: {
+      type: 'string',
+    },
+    image_previews: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+      minItems: 1,
+      maxItems: 10,
     },
     links: {
       type: 'array',
@@ -669,6 +727,7 @@ export const newProposalLinkedWearablesScheme = {
       minLength: 0,
       maxLength: 750,
     },
+    coAuthors,
   },
 }
 
@@ -682,4 +741,46 @@ export type ProposalComment = {
 export type ProposalCommentsInDiscourse = {
   totalComments: number
   comments: ProposalComment[]
+}
+
+type VestingContractData = {
+  vestedAmount: number
+  releasable: number
+  released: number
+  start_at: number
+  finish_at: number
+  vesting_total_amount: number
+}
+
+type TransparencyGrant = {
+  id: string
+  title: string
+  user: string
+  size: number
+  created_at: number
+  configuration: {
+    category: ProposalGrantCategory
+    tier: string
+  }
+}
+
+type GrantBlockchainData = {
+  contract?: VestingContractData
+  enacting_tx?: string
+  token?: string
+  enacted_at: number
+  tx_amount?: number
+  tx_date?: number
+}
+
+export type GrantAttributes = TransparencyGrant & GrantBlockchainData
+export type GrantWithUpdateAttributes = TransparencyGrant &
+  GrantBlockchainData & {
+    update: IndexedUpdate | null
+  }
+
+export type GrantsResponse = {
+  current: GrantWithUpdateAttributes[]
+  past: GrantAttributes[]
+  total: number
 }

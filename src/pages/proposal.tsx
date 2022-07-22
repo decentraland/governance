@@ -22,25 +22,27 @@ import { Personal } from 'web3x/personal'
 
 import { Governance } from '../api/Governance'
 import { Snapshot } from '../api/Snapshot'
-import CategoryLabel from '../components/Category/CategoryLabel'
+import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
-import { VotesList } from '../components/Modal/Votes/VotesList'
+import { VotesListModal } from '../components/Modal/Votes/VotesList'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
-import ProposalUpdates from '../components/Proposal/ProposalUpdates'
+import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import ProposalImagesPreview from '../components/ProposalImagesPreview/ProposalImagesPreview'
 import ForumButton from '../components/Section/ForumButton'
+import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
 import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
 import SubscribeButton from '../components/Section/SubscribeButton'
-import VestingSection from '../components/Section/VestingSection'
-import StatusLabel from '../components/Status/StatusLabel'
+import VestingContract from '../components/Section/VestingContract'
+import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import useIsCommittee from '../hooks/useIsCommittee'
@@ -131,12 +133,13 @@ export default function ProposalPage() {
   )
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(
-    async (status: ProposalStatus, vesting_address: string | null, description: string) => {
+    async (status: ProposalStatus, vesting_address: string | null, enactingTx: string | null, description: string) => {
       if (proposal && isCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
           vesting_address,
+          enactingTx,
           description
         )
         proposalState.set(updateProposal)
@@ -216,6 +219,8 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
   const showProposalUpdates =
     publicUpdates && proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+  const showImagesPreview =
+    !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
   return (
     <>
@@ -233,8 +238,8 @@ export default function ProposalPage() {
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
-            {proposal && <StatusLabel status={proposal.status} />}
-            {proposal && <CategoryLabel type={proposal.type} />}
+            {proposal && <StatusPill status={proposal.status} />}
+            {proposal && <CategoryPill type={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>
@@ -242,6 +247,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
+              {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
@@ -249,91 +255,94 @@ export default function ProposalPage() {
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
-              {!!proposal?.vesting_address && <VestingSection vestingAddress={proposal.vesting_address} />}
-              <ForumButton
-                loading={proposalState.loading}
-                disabled={!proposal}
-                href={(proposal && forumUrl(proposal)) || ''}
-              />
-              <SubscribeButton
-                loading={proposalState.loading || subscriptionsState.loading || subscribing}
-                disabled={!proposal}
-                subscribed={subscribed}
-                onClick={() => subscribe(!subscribed)}
-              />
-              {showVestingStatus && (
-                <ProposalVestingStatus
-                  nextUpdate={nextUpdate}
-                  currentUpdate={currentUpdate}
-                  pendingUpdates={pendingUpdates}
-                  onPostUpdateClick={handlePostUpdateClick}
+              {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
+              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
+              <div className="ProposalDetail__StickySidebar">
+                <ForumButton
+                  loading={proposalState.loading}
+                  disabled={!proposal}
+                  href={(proposal && forumUrl(proposal)) || ''}
                 />
-              )}
-              <ProposalResultSection
-                disabled={!proposal || !votes}
-                loading={voting || proposalState.loading || votesState.loading}
-                proposal={proposal}
-                votes={votes}
-                changingVote={options.changing}
-                onChangeVote={(_, changing) => patchOptions({ changing })}
-                onOpenVotesList={() => patchOptions({ showVotesList: true })}
-                onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
-              />
-              {proposal && <ProposalDetailSection proposal={proposal} />}
-              {(isOwner || isCommittee) && (
-                <Button
-                  basic
-                  fluid
-                  loading={deleting}
-                  disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
-                  onClick={() => patchOptions({ confirmDeletion: true })}
-                >
-                  {t('page.proposal_detail.delete')}
-                </Button>
-              )}
-              {isCommittee && proposal?.status === ProposalStatus.Passed && (
-                <Button
-                  basic
-                  loading={updatingStatus}
-                  fluid
-                  onClick={() =>
-                    patchOptions({
-                      confirmStatusUpdate: ProposalStatus.Enacted,
-                    })
-                  }
-                >
-                  {t('page.proposal_detail.enact')}
-                </Button>
-              )}
-              {isCommittee && proposal?.status === ProposalStatus.Finished && (
-                <>
+                <SubscribeButton
+                  loading={proposalState.loading || subscriptionsState.loading || subscribing}
+                  disabled={!proposal}
+                  subscribed={subscribed}
+                  onClick={() => subscribe(!subscribed)}
+                />
+                {showVestingStatus && (
+                  <ProposalVestingStatus
+                    nextUpdate={nextUpdate}
+                    currentUpdate={currentUpdate}
+                    pendingUpdates={pendingUpdates}
+                    onPostUpdateClick={handlePostUpdateClick}
+                  />
+                )}
+                <ProposalResultSection
+                  disabled={!proposal || !votes}
+                  loading={voting || proposalState.loading || votesState.loading}
+                  proposal={proposal}
+                  votes={votes}
+                  changingVote={options.changing}
+                  onChangeVote={(_, changing) => patchOptions({ changing })}
+                  onOpenVotesList={() => patchOptions({ showVotesList: true })}
+                  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
+                />
+                {proposal && <ProposalDetailSection proposal={proposal} />}
+                {(isOwner || isCommittee) && (
                   <Button
                     basic
-                    loading={updatingStatus}
                     fluid
-                    onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
+                    loading={deleting}
+                    disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
+                    onClick={() => patchOptions({ confirmDeletion: true })}
                   >
-                    {t('page.proposal_detail.pass')}
+                    {t('page.proposal_detail.delete')}
                   </Button>
+                )}
+                {isCommittee && proposal?.status === ProposalStatus.Passed && (
                   <Button
                     basic
                     loading={updatingStatus}
                     fluid
                     onClick={() =>
                       patchOptions({
-                        confirmStatusUpdate: ProposalStatus.Rejected,
+                        confirmStatusUpdate: ProposalStatus.Enacted,
                       })
                     }
                   >
-                    {t('page.proposal_detail.reject')}
+                    {t('page.proposal_detail.enact')}
                   </Button>
-                </>
-              )}
+                )}
+                {isCommittee && proposal?.status === ProposalStatus.Finished && (
+                  <>
+                    <Button
+                      basic
+                      loading={updatingStatus}
+                      fluid
+                      onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
+                    >
+                      {t('page.proposal_detail.pass')}
+                    </Button>
+                    <Button
+                      basic
+                      loading={updatingStatus}
+                      fluid
+                      onClick={() =>
+                        patchOptions({
+                          confirmStatusUpdate: ProposalStatus.Rejected,
+                        })
+                      }
+                    >
+                      {t('page.proposal_detail.reject')}
+                    </Button>
+                  </>
+                )}
+              </div>
             </Grid.Column>
           </Grid.Row>
         </Grid>
       </ContentLayout>
-      <VotesList
+      <VotesListModal
         open={options.showVotesList}
         proposal={proposal}
         votes={votes}
@@ -356,8 +365,8 @@ export default function ProposalPage() {
         proposal={proposal}
         status={options.confirmStatusUpdate || null}
         loading={updatingStatus}
-        onClickAccept={(_, status, vesting_contract, description) =>
-          updateProposalStatus(status, vesting_contract, description)
+        onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
+          updateProposalStatus(status, vesting_contract, enactingTx, description)
         }
         onClose={() => patchOptions({ confirmStatusUpdate: false })}
       />

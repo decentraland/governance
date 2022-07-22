@@ -41,11 +41,11 @@
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox label .dg.Paragraph {
   font-size: 15px;
   line-height: 18px;
-  color: #736e7d;
+  color: var(--black-400);
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {
-  border-color: rgba(115, 110, 125, 0.32);
+  border-color: var(--black-400);
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:hover:before {
@@ -65,6 +65,17 @@
   width: 80%;
   margin: auto;
   text-align: center;
+}
+
+.SectionList .overlay {
+  bottom: 32px !important;
+  right: 2px !important;
+}
+
+.SectionList .ui.button,
+.SectionList .ui.button:hover {
+  height: 42px !important;
+  background: white !important;
 }
 
 .ProgrammaticallyGeneratedRadioButtons {
