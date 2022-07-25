@@ -54,16 +54,16 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
       onMouseLeave={() => hoverable && setExpanded(false)}
       className={TokenList.join([
         'GrantCard',
-        hoverable && 'GrantCard__Slim',
+        hoverable && !expanded && 'GrantCard__Collapsed',
         hoverable && expanded && 'GrantCard__Expanded',
       ])}
     >
       <div>
-        <GrantCardHeader grant={grant} displayUser={hoverable} />
-        <GrantCardHeadline grant={grant} displayUser={hoverable} expanded={expanded} />
+        <GrantCardHeader grant={grant} displayUser={true} />
+        <GrantCardHeadline grant={grant} displayUser={true} expanded={expanded} />
         <GrantCardProgressInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />
       </div>
-      {expanded && <GrantCardUpdateInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />}
+      <GrantCardUpdateInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />
     </div>
   )
 }

@@ -8,10 +8,11 @@
 
 .GrantCardHeadline__Slim {
   max-height: 61px;
+  gap: 8px;
 }
 
 .ui.header.GrantCardHeadline__Title {
-  min-height: 52px;
+  min-height: 56px;
   margin-top: 5px;
   line-height: 28px;
   letter-spacing: 0.3px;

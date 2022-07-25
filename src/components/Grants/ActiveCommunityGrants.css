@@ -38,7 +38,15 @@
   margin-right: 0 !important;
 }
 
-.GrantCardContainer {
-  /*overflow: auto;*/
-  /*position: fixed;*/
+.HoverableCardContainer {
+  height: 191px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.HoverableCardContainer:hover {
+  overflow: visible;
+  z-index: 100;
 }
