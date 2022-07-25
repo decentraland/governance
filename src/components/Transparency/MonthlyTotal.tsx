@@ -74,6 +74,7 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
                     key={['incomeDetail', index].join('::')}
                     name={detail.name}
                     value={'$' + formatBalance(detail.value)}
+                    description={detail.description}
                   />
                 )
               })}

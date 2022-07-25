@@ -8,4 +8,15 @@
 .DetailItem .DetailItem__Value {
   text-align: right;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+.DetailItem .DetailItem__Value .DetailItemHelper {
+  display: flex;
+  margin-left: 2px;
+}
+
+.DetailItemHelper--Popup {
+  box-sizing: content-box;
 }
