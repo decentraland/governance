@@ -8,6 +8,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
 import { DelegationResult, DetailedScores } from '../../api/Snapshot'
+import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../constants'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
@@ -18,7 +19,6 @@ import VotingPowerListItem from './VotingPowerListItem'
 import { VotingPowerListModal } from './VotingPowerListModal'
 
 const DISPLAYED_DELEGATIONS = 5
-const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5'
 
 interface DelegatedToUserCardProps {
   delegation: DelegationResult
