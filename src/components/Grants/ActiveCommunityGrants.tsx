@@ -23,7 +23,7 @@ const ActiveCommunityGrants = () => {
         {!isLoadingGrants && (
           <div className="ActiveCommunityGrants__Container">
             {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant) => (
-              <div className="HoverableCardContainer" key={`ActiveCommunityGrants_${grant.id}`}>
+              <div className="HoverableCardContainer" key={`HoverableCard__${grant.id}`}>
                 <div className="HoverableCardContainer__Content">
                   <GrantCard grant={grant} hoverable={true} />
                 </div>
