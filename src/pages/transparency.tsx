@@ -21,6 +21,7 @@ import TokenBalanceCard from '../components/Token/TokenBalanceCard'
 import GrantList from '../components/Transparency/GrantList'
 import MembersSection from '../components/Transparency/MembersSection'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
+import { DOCS_URL, OPEN_CALL_FOR_DELEGATES_LINK } from '../constants'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
@@ -36,13 +37,11 @@ const viewAllProposalsIcon = require('../images/icons/open-folder.svg').default
 const documentOutline = require('../images/icons/document-outline.svg').default
 const personIcon = require('../images/icons/person-icon.svg').default
 
-const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
 const DASHBOARD_URL =
   'https://datastudio.google.com/u/3/reporting/fca13118-c18d-4e68-9582-ad46d2dd5ce9/page/p_n06szvxkrc'
 const DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo/edit'
 const ABOUT_DAO_URL = 'https://docs.decentraland.org/decentraland/how-does-the-dao-work/'
 const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curation-committee-member-nominations/2047'
-const ABOUT_DELEGATES = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
 
 export default function WrappingPage() {
   const t = useFormatMessage()
@@ -195,7 +194,7 @@ export default function WrappingPage() {
                           text={t('page.transparency.members.wearables_curator_button')}
                         />
                         <ExternalLinkWithIcon
-                          href={ABOUT_DELEGATES}
+                          href={OPEN_CALL_FOR_DELEGATES_LINK}
                           imageSrc={personIcon}
                           text={t('page.transparency.members.delegate_button')}
                         />

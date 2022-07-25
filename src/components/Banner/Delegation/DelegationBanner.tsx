@@ -2,6 +2,7 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../../constants'
 import Delegate from '../../Icon/Delegate'
 import Banner from '../Banner'
 
@@ -29,7 +30,7 @@ function DelegationBanner() {
         bannerHideKey={HIDE_DELEGATE_BANNER_KEY}
         icon={<Delegate />}
         buttonLabel={t(`page.delegate_banner.button_label`)}
-        buttonHref={process.env.GATSBY_DELEGATE_APPLICATION_URL}
+        buttonHref={OPEN_CALL_FOR_DELEGATES_LINK}
       />
     </div>
   )
