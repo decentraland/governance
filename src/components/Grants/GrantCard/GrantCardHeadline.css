@@ -4,11 +4,11 @@
   margin-bottom: 9px;
   justify-content: space-between;
   width: 100%;
+  gap: 16px;
 }
 
 .GrantCardHeadline__Slim {
   max-height: 61px;
-  gap: 8px;
 }
 
 .ui.header.GrantCardHeadline__Title {
@@ -29,4 +29,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+span.Username.GrantCardHeadline__Avatar > canvas.dcl.blockie {
+  margin-right: 0 !important;
+}
+
+.GrantCardHeadline__Avatar .dg.dcl-avatar,
+.dg.dcl-avatar.dcl-avatar--medium {
+  width: 44px;
+  margin-right: 0;
 }
