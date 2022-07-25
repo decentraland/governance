@@ -52,9 +52,6 @@ import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './proposal.css'
-import './proposals.css'
-
-// TODO: Review why proposals.css is being imported and use only proposal.css
 
 type ProposalPageOptions = {
   changing: boolean
