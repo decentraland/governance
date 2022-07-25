@@ -421,7 +421,8 @@
       },
       "active_community_grants": {
         "title": "Active Community Grants",
-        "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](/)."
+        "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](/).",
+        "view_all_grants": "View all Grants"
       }
     },
     "welcome": {
