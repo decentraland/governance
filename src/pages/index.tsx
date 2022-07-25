@@ -5,6 +5,7 @@ import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/Maintena
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import MainBanner from '../components/Home/MainBanner'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -34,7 +35,7 @@ export default function HomePage() {
       />
       <Navigation activeTab={NavigationTab.Home} />
       <Container>
-        <h1>Hello home!</h1>
+        <MainBanner />
       </Container>
     </>
   )
