@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { GrantWithUpdateAttributes } from '../../entities/Proposal/types'
-import ProposalUpdate from '../Proposal/Update/ProposalUpdate'
+import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
+import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
 
 import CliffNotice from './CliffNotice'
 import './GrantCardUpdateInfo.css'

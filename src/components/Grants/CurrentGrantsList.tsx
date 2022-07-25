@@ -8,11 +8,12 @@ import { filter, isEmpty, orderBy } from 'lodash'
 import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../entities/Proposal/types'
 import { useCurrentGrantsFilteredByCategory } from '../../hooks/useCurrentsGrantsFilteredByCategory'
 
+import GrantCard from './GrantCard/GrantCard'
+
 import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu from './CurrentGrantsSortingMenu'
-import GrantCard from './GrantCard'
 
 const CURRENT_GRANTS_PER_PAGE = 8
 

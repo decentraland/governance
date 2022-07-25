@@ -2,9 +2,9 @@ import React from 'react'
 
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
-import Pill from '../Common/Pill'
-import Username from '../User/Username'
+import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../../entities/Proposal/types'
+import Pill from '../../Common/Pill'
+import Username from '../../User/Username'
 
 import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard'
 import './GrantCardHeader.css'

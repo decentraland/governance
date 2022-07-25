@@ -5,7 +5,7 @@ import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/Maintena
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import ActiveCommunityGrants from '../components/Grants/ActiveCommunityGrants'
+import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
 import MainBanner from '../components/Home/MainBanner'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'

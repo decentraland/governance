@@ -4,9 +4,10 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container, Loader } from 'decentraland-ui'
 
 import useGrants from '../../hooks/useGrants'
+import GrantCard from '../Grants/GrantCard/GrantCard'
 
 import './ActiveCommunityGrants.css'
-import GrantCard from './GrantCard'
+import HomeSectionHeader from './HomeSectionHeader'
 
 const CURRENT_GRANTS_PER_PAGE = 4
 
@@ -17,8 +18,10 @@ const ActiveCommunityGrants = () => {
   return (
     <Container>
       <div>
-        <h2 className="ActiveCommunityGrants__Title">{t('page.home.active_community_grants.title')}</h2>
-        <div className="ActiveCommunityGrants__Description">{t('page.home.active_community_grants.description')}</div>
+        <HomeSectionHeader
+          title={t('page.home.active_community_grants.title')}
+          description={t('page.home.active_community_grants.description')}
+        />
         <Loader active={isLoadingGrants} />
         {!isLoadingGrants && (
           <div className="ActiveCommunityGrants__Container">

@@ -4,16 +4,17 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
-import { CLIFF_PERIOD_IN_DAYS } from '../../entities/Proposal/utils'
-import locations from '../../modules/locations'
-import { PillColor } from '../Common/Pill'
+import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../../entities/Proposal/types'
+import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
+import locations from '../../../modules/locations'
+import { PillColor } from '../../Common/Pill'
 
+import CliffProgress from './CliffProgress'
 import './GrantCard.css'
 import GrantCardHeader from './GrantCardHeader'
 import GrantCardHeadline from './GrantCardHeadline'
-import GrantCardProgressInfo from './GrantCardProgressInfo'
 import GrantCardUpdateInfo from './GrantCardUpdateInfo'
+import VestingProgress from './VestingProgress'
 
 export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
   grant: GrantWithUpdateAttributes
@@ -58,7 +59,7 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
       <div>
         <GrantCardHeader grant={grant} displayUser={true} />
         <GrantCardHeadline grant={grant} displayUser={true} expanded={expanded} />
-        <GrantCardProgressInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />
+        {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       <GrantCardUpdateInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />
     </div>
