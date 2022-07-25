@@ -4,10 +4,11 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import { DOCS_URL } from '../../constants'
+
 import './MainBanner.css'
 
-const DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL // TODO: Use DAO discord URL
-const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/' // TODO: This is used in transparency, where should we store this variable?
+const DAO_DISCORD_URL = 'https://discord.gg/amkcFrqPBh'
 
 const MainBanner = () => {
   const t = useFormatMessage()
@@ -18,7 +19,7 @@ const MainBanner = () => {
       <h2 className="MainBanner__Title">{t('page.home.main_banner.title')}</h2>
       <p className="MainBanner__Description">{t('page.home.main_banner.description')}</p>
       <div className="MainBanner__ButtonsContainer">
-        <Button as={Link} href={DISCORD_URL} className="MainBanner__Button MainBanner__DiscordButton">
+        <Button as={Link} href={DAO_DISCORD_URL} className="MainBanner__Button MainBanner__DiscordButton">
           {t('page.home.main_banner.discord_button')}
         </Button>
         <Button as={Link} href={DOCS_URL} className="MainBanner__Button MainBanner__DocsButton">
