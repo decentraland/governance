@@ -188,7 +188,7 @@ export class Governance extends API {
       })
     )
 
-    return result.data
+    return Governance.parseProposal(result.data)
   }
 
   async getProposalUpdate(update_id: string) {
