@@ -17,8 +17,6 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
-import './grants.css'
-
 export default function GrantsPage() {
   const t = useFormatMessage()
   const responsive = useResponsive()

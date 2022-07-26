@@ -1,0 +1,42 @@
+.GrantCardHeadline {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 9px;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+
+.GrantCardHeadline__Slim {
+  max-height: 61px;
+}
+
+.ui.header.GrantCardHeadline__Title {
+  min-height: 56px;
+  margin-top: 5px;
+  line-height: 28px;
+  letter-spacing: 0.3px;
+  font-size: 20px;
+}
+
+.ui.header.GrantCardHeadline__SlimTitle {
+  margin-bottom: 0;
+}
+
+.GrantCardHeadline__TwoLineEllipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+span.Username.GrantCardHeadline__Avatar > canvas.dcl.blockie {
+  margin-right: 0 !important;
+}
+
+.GrantCardHeadline__Avatar .dg.dcl-avatar,
+.dg.dcl-avatar.dcl-avatar--medium {
+  width: 44px;
+  margin-right: 0;
+}

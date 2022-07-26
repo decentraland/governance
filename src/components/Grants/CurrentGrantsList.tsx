@@ -1,18 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { filter, isEmpty, orderBy } from 'lodash'
 
 import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../entities/Proposal/types'
 import { useCurrentGrantsFilteredByCategory } from '../../hooks/useCurrentsGrantsFilteredByCategory'
+import FullWidthButton from '../Common/FullWidthButton'
+
+import GrantCard from './GrantCard/GrantCard'
 
 import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu from './CurrentGrantsSortingMenu'
-import GrantCard from './GrantCard'
 
 const CURRENT_GRANTS_PER_PAGE = 8
 
@@ -75,9 +76,9 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
         </Container>
       </div>
       {showLoadMoreCurrentGrantsButton && (
-        <Button primary fluid className="GrantsPage_LoadMoreButton" onClick={handleLoadMoreCurrentGrantsClick}>
+        <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
           {t('page.grants.load_more_button')}
-        </Button>
+        </FullWidthButton>
       )}
     </>
   )
