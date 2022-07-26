@@ -4,8 +4,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { GrantAttributes } from '../../entities/Proposal/types'
-import '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
+import { GrantAttributes } from '../../../entities/Proposal/types'
+import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
 import PercentageLabel from './PercentageLabel'
 import './VestingProgress.css'
