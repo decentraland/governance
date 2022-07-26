@@ -3,11 +3,13 @@
   padding: 24px 16px 30px 16px;
   background: linear-gradient(180deg, #a524b3 0%, var(--dcl-primary) 100%);
   border-radius: 8px;
+  margin-bottom: 16px;
 }
 
 @media (min-width: 768px) {
   .MainBanner {
     padding: 45px 54px;
+    margin-bottom: 34px;
   }
 }
 

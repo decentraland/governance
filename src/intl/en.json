@@ -394,6 +394,12 @@
       "description": "Now go make some noise and let the\n\ncommunity know about your progress."
     }
   },
+  "component": {
+    "grant_card": {
+      "by_user": "By",
+      "size": "Size"
+    }
+  },
   "page": {
     "404": {
       "title": "Not found",
@@ -412,6 +418,11 @@
         "description": "The  DAO is a key component of the ecosystem and it is the consensus mechanism for defining the rules of the Decentraland's virtual world. Participate in the DAO and make your voice heard.",
         "discord_button": "Join our Discord",
         "docs_button": "Read our docs"
+      },
+      "active_community_grants": {
+        "title": "Active Community Grants",
+        "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](/).",
+        "view_all_grants": "View all Grants"
       }
     },
     "welcome": {

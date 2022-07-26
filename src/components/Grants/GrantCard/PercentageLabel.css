@@ -1,18 +1,15 @@
 .PercentageLabel {
   padding: 0 5px;
   height: 14px;
-  display: inline-flex;
   color: #fff;
   border-radius: 4px;
   font-size: 11px;
-  line-height: 18px;
   align-content: center;
   position: relative;
   margin-left: 8px;
   text-transform: uppercase;
   display: block;
   font-weight: 600;
-  font-size: 11px;
   line-height: 14px;
   font-style: normal;
 }
