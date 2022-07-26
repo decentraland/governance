@@ -557,8 +557,8 @@
       }
     },
     "grants": {
-      "title": "Decentraland DAO",
-      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "title": "Decentraland DAO Community Grants",
+      "description": "Check the projects funded by the Decentraland DAO Grants program. Browse them to see their goals, progress, and how they are making an impact in our community.",
       "load_more_button": "Load more",
       "current_banner": {
         "title": "Discover the projects making the Decentraland ecosystem grow",
