@@ -81,7 +81,7 @@ const PastGrantsList = ({ grants, currentGrantsTotal, totalGrants }: Props) => {
       )}
 
       {showLoadMorePastGrantsButton && (
-        <FullWidthButton onClick={handleLoadMorePastGrantsClick} label={t('page.grants.load_more_button')} />
+        <FullWidthButton onClick={handleLoadMorePastGrantsClick}>{t('page.grants.load_more_button')}</FullWidthButton>
       )}
     </>
   )

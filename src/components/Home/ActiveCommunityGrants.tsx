@@ -43,10 +43,9 @@ const ActiveCommunityGrants = () => {
             </div>
           )}
         </div>
-        <FullWidthButton
-          onClick={handleNavigateToGrants}
-          label={t('page.home.active_community_grants.view_all_grants')}
-        />
+        <FullWidthButton onClick={handleNavigateToGrants}>
+          {t('page.home.active_community_grants.view_all_grants')}
+        </FullWidthButton>
       </Container>
     </>
   )

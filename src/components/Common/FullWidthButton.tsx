@@ -7,27 +7,25 @@ import './FullWidthButton.css'
 
 interface Props {
   onClick?: (param?: unknown) => void
-  label: React.ReactText
+  children: React.ReactNode
   className?: string
   link?: string
   newWindow?: boolean
 }
 
-const FullWidthButton = ({ label, onClick, className, link, newWindow = false }: Props) => {
+const FullWidthButton = ({ onClick, children, className, link, newWindow = false }: Props) => {
   return (
-    <>
-      <Button
-        primary
-        fluid
-        className={TokenList.join(['FullWidthButton', className])}
-        onClick={onClick}
-        target={!!newWindow && '_blank'}
-        rel={!!newWindow && 'noopener noreferrer'}
-        href={link}
-      >
-        {label}
-      </Button>
-    </>
+    <Button
+      primary
+      fluid
+      className={TokenList.join(['FullWidthButton', className])}
+      onClick={onClick}
+      target={!!newWindow && '_blank'}
+      rel={!!newWindow && 'noopener noreferrer'}
+      href={link}
+    >
+      {children}
+    </Button>
   )
 }
 

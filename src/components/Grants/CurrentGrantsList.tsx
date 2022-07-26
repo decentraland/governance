@@ -76,7 +76,9 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
         </Container>
       </div>
       {showLoadMoreCurrentGrantsButton && (
-        <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick} label={t('page.grants.load_more_button')} />
+        <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
+          {t('page.grants.load_more_button')}
+        </FullWidthButton>
       )}
     </>
   )
