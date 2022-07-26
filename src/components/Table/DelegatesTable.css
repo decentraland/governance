@@ -1,0 +1,196 @@
+.DelegatesTable__Wrapper {
+  position: relative;
+  background: var(--white-900);
+  border: 1px solid var(--black-400);
+  box-shadow: 0 1px 8px var(--black-100);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.DelegatesTable__Scroller {
+  margin-left: 262px;
+  overflow-x: scroll;
+  overflow-y: visible;
+}
+
+.DelegatesTable__Sticky {
+  width: 251px;
+  padding-right: 10px !important;
+  left: 0;
+  position: absolute;
+  top: auto;
+  text-align: left;
+}
+
+.DelegatesTable thead tr th.DelegatesTable__CandidateNameHeader {
+  text-align: left !important;
+  padding-left: 11px !important;
+  width: 262px !important;
+}
+
+.DelegatesTable tbody {
+  font-style: normal;
+  font-weight: 400 !important;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.DelegatesTable td {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.DelegatesTable__CandidateName {
+  color: var(--black-800);
+  font-weight: 600;
+}
+
+td.DelegatesTable__CandidateName > .Username {
+  margin-left: 2px;
+}
+
+thead.DelegatesTable__Header > tr > th span {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.DelegatesTable__PaddedColumn {
+  padding-left: 28px !important;
+}
+
+.DelegatesTable .DelegatesTable__Header tr th {
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  line-height: 18px !important;
+  text-transform: uppercase !important;
+  color: var(--black-600) !important;
+  padding-right: 10px !important;
+  padding-left: 10px;
+  padding-top: 8px !important;
+  padding-bottom: 8px;
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+td.DelegatesTable__CandidateName {
+  display: flex;
+  align-content: baseline;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  padding-right: 10px;
+  margin-left: 11px;
+}
+
+.DelegatesTable__ShadowBox {
+  width: 11px;
+  height: 45px;
+  background: linear-gradient(90deg, #d9d9d9, rgba(217, 217, 217, 0) 100%) !important;
+  opacity: 0.6;
+  position: absolute;
+  top: auto;
+}
+
+.DelegatesTable__ShadowBox.DelegatesTable__ShadowBoxHeader {
+  width: 11px;
+  height: 35px;
+  padding: 0 !important;
+}
+
+.DelegatesTable__DelegateRow {
+  cursor: pointer;
+}
+
+.DelegatesTable__LastVoted {
+  width: 138px;
+}
+
+@media (min-width: 768px) {
+  table.ui.very.basic.table.DelegatesTable {
+    background: var(--white-900);
+    border: 1px solid var(--black-200);
+    box-shadow: 0 1px 8px var(--black-100);
+    border-radius: 8px;
+    padding-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .DelegatesTable thead.DelegatesTable__Header tr th {
+    font-size: 13px !important;
+    padding-top: 15px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .DelegatesTable tbody td {
+    font-size: 17px !important;
+  }
+
+  .DelegatesTable td {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .DelegatesTable thead tr th.DelegatesTable__CandidateNameHeader {
+    padding-left: 18px !important;
+    width: unset !important;
+  }
+
+  td.DelegatesTable__CandidateName {
+    text-align: left !important;
+    padding-left: 18px !important;
+    margin-left: 0;
+  }
+
+  .DelegatesTable__LastVoted {
+    width: 143px;
+  }
+
+  .DelegatesTable__TimesVoted {
+    width: 115px;
+  }
+
+  .DelegatesTable__PickedBy {
+    width: 115px;
+  }
+
+  .DelegatesTable__TotalVP {
+    width: 120px;
+  }
+
+  .DelegatesTable__Arrow {
+    padding-right: 21px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  td.DelegatesTable__CandidateName {
+    min-width: 190px;
+  }
+}
+
+@media (min-width: 991px) {
+  td.DelegatesTable__CandidateName {
+    min-width: 382px;
+  }
+}
+
+@media (max-width: 425px) {
+  .DelegatesTable__Scroller {
+    margin-left: 184px;
+  }
+
+  .DelegatesTable__Sticky {
+    width: 173px;
+  }
+
+  .DelegatesTable thead tr th.DelegatesTable__CandidateNameHeader {
+    width: 184px !important;
+  }
+}
