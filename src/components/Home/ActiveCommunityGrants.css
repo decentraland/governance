@@ -17,6 +17,12 @@
   margin-bottom: 32px;
 }
 
+.ActiveCommunityGrants__LoaderContainer {
+  position: relative;
+  width: 100%;
+  height: 398px;
+}
+
 .ActiveCommunityGrants__Container {
   flex-wrap: wrap;
   margin-bottom: 24px;
