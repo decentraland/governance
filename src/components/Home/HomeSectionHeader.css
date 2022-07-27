@@ -12,8 +12,11 @@
 .HomeSectionHeader__Description {
   font-style: normal;
   font-weight: 400;
-  font-size: 15px;
-  line-height: 24px;
+}
+
+.HomeSectionHeader__Description .dg.Paragraph {
+  font-size: 15px !important;
+  line-height: 24px !important;
 }
 
 @media (min-width: 768px) {
@@ -25,7 +28,10 @@
   .HomeSectionHeader__Description {
     width: 60%;
     margin-bottom: 35px;
-    font-size: 17px;
-    line-height: 28px;
+  }
+
+  .HomeSectionHeader__Description .dg.Paragraph {
+    font-size: 17px !important;
+    line-height: 28px !important;
   }
 }
