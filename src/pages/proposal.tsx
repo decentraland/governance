@@ -39,7 +39,7 @@ import ForumButton from '../components/Section/ForumButton'
 import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
-import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
+import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions'
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
@@ -215,10 +215,10 @@ export default function ProposalPage() {
     )
   }
 
-  const showVestingStatus =
-    proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
+  const showProposalUpdatesActions =
+    proposal?.status === ProposalStatus.Passed && proposal?.type === ProposalType.Grant && isOwner
   const showProposalUpdates =
-    publicUpdates && proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+    publicUpdates && proposal?.status === ProposalStatus.Passed && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
@@ -269,8 +269,8 @@ export default function ProposalPage() {
                   subscribed={subscribed}
                   onClick={() => subscribe(!subscribed)}
                 />
-                {showVestingStatus && (
-                  <ProposalVestingStatus
+                {showProposalUpdatesActions && (
+                  <ProposalUpdatesActions
                     nextUpdate={nextUpdate}
                     currentUpdate={currentUpdate}
                     pendingUpdates={pendingUpdates}

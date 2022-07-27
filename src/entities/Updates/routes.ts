@@ -4,6 +4,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
+import { isEmpty } from 'lodash'
 
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
@@ -24,6 +25,7 @@ export default routes((route) => {
   route.get('/proposals/:update/update', handleAPI(getProposalUpdate))
   route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
   route.patch('/proposals/:proposal/update', withAuth, handleAPI(updateProposalUpdate))
+  route.get('/updates', handleAPI(getUpdates))
 })
 
 async function getProposalUpdate(req: Request<{ update: string }>) {
@@ -128,4 +130,16 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   )
 
   return true
+}
+
+/* Only used for testing purposes */
+async function getUpdates(req: Request) {
+  const { proposal_id, status } = req.query
+  const updatesQuery = {
+    ...(proposal_id && { proposal_id: String(proposal_id) }),
+    ...(status && { status: String(status) as UpdateStatus }),
+  }
+  const updates = await UpdateModel.find<UpdateAttributes>(!isEmpty(updatesQuery) ? updatesQuery : undefined)
+
+  return updates
 }
