@@ -8,6 +8,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
 import MainBanner from '../components/Home/MainBanner'
 import MetricsCards from '../components/Home/MetricsCards'
+import OpenProposals from '../components/Home/OpenProposals'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -40,6 +41,7 @@ export default function HomePage() {
         <MainBanner />
       </Container>
       <MetricsCards />
+      <OpenProposals />
       <ActiveCommunityGrants />
     </>
   )
