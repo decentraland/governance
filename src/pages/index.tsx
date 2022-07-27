@@ -7,6 +7,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
 import MainBanner from '../components/Home/MainBanner'
+import HomeCharts from '../components/HomeCharts/HomeCharts'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -37,8 +38,9 @@ export default function HomePage() {
       <Navigation activeTab={NavigationTab.Home} />
       <Container>
         <MainBanner />
+        <ActiveCommunityGrants />
+        <HomeCharts />
       </Container>
-      <ActiveCommunityGrants />
     </>
   )
 }

@@ -1,0 +1,21 @@
+.ui.card.HomeCharts {
+  width: 100%;
+}
+
+.ui.card.HomeCharts > .dcl.tabs {
+  padding: 0 18px;
+  margin: 0;
+}
+
+.ui.card.HomeCharts > .dcl.tabs .dcl.tab {
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.ui.card.HomeCharts > .dcl.tabs .Display {
+  margin: 0;
+}
+
+.ui.card.HomeCharts > canvas {
+  padding: 12px;
+}
