@@ -34,7 +34,7 @@ function createGradient(colors: string[], ctx: CanvasRenderingContext2D, area: C
   let count = colorsLength - 1
 
   while (count > 0) {
-    stops = [(1 / (colorsLength - 1)) * count, ...stops]
+    stops = [Math.round((1 / (colorsLength - 1)) * count * 100) / 100, ...stops]
     count--
   }
 
