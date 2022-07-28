@@ -1,17 +1,28 @@
+import { useMemo } from 'react'
+
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Snapshot } from '../api/Snapshot'
+import { Snapshot, SnapshotProposal } from '../api/Snapshot'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { groupProposalsByMonth, median } from '../entities/Snapshot/utils'
 
 export default function useParticipatingVP(start: Date, end: Date) {
-  const [participatingVP, state] = useAsyncMemo(
+  const [proposals, state] = useAsyncMemo(
     async () => {
       // TODO: un-hardcode snapshot space
-      return await Snapshot.get().getParticipatingVP('snapshot.dcl.eth', start, end)
+      return await Snapshot.get().getProposals('snapshot.dcl.eth', start, end, ['created', 'scores_total'])
     },
     [],
-    { initialValue: {} as Record<number, number>, callWithTruthyDeps: true }
+    { initialValue: [] as Partial<SnapshotProposal>[], callWithTruthyDeps: true }
   )
+
+  const participatingVP = useMemo(() => {
+    const proposalsGroup = groupProposalsByMonth(proposals, 'scores_total')
+    return Object.entries(proposalsGroup).reduce(
+      (acc, [key, vps]) => ({ ...acc, [key]: Math.round(median(vps)) }),
+      {} as Record<string, number>
+    )
+  }, [proposals])
   return {
     participatingVP,
     isLoadingParticipatingVP: state.loading,

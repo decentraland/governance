@@ -103,27 +103,42 @@ export const EMPTY_DELEGATION: DelegationResult = {
   hasMoreDelegatedFrom: false,
 }
 
-export type IntervalDataResponse = SnapshotQueryResponse<{ proposals: IntervalData[] }>
-export type IntervalData = {
+export type VotesDataIntervalResponse = SnapshotQueryResponse<{ votes: VotesDataInterval[] }>
+export type VotesDataInterval = {
+  voter: string
   created: number
+  vp: number
+  choice: number
+  proposal: {
+    id: string
+    choices: string[]
+  }
+}
+
+export type SnapshotProposalResponse = SnapshotQueryResponse<{ proposals: Partial<SnapshotProposal>[] }>
+export type SnapshotProposal = {
+  id: string
+  ipfs: string
+  author: string
+  created: number
+  type: string
+  title: string
+  body: string
+  choices: string[]
+  start: number
+  end: number
+  snapshot: string
+  state: string
+  link: string
+  scores: number[]
+  scores_by_strategy: number[]
+  scores_state: string
   scores_total: number
+  scores_updated: number
   votes: number
 }
 
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
-
-function median(array: number[]) {
-  if (array.length === 0) throw new Error('Median: no inputs')
-
-  array.sort((a, b) => a - b)
-  const half = Math.floor(array.length / 2)
-
-  if (array.length % 2) {
-    return array[half]
-  }
-
-  return (array[half - 1] + array[half]) / 2.0
-}
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 
@@ -364,31 +379,28 @@ export class Snapshot extends API {
     return Object.values(vp)[0]
   }
 
-  private async getDataInInterval(space: string, start: Date, end: Date, dataKey: keyof IntervalData) {
+  async getVotes(space: string, start: Date, end: Date) {
     let hasNext = true
     let skip = 0
-    const first = 1000
+    const first = 50000
     const query = `
-      query DataInInterval($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
-        proposals(
-          where:{space: $space, created_gte: $start, created_lt: $end},
-          orderBy: "created_at",
-          orderDirection: asc
-          first: $first, skip: $skip
-        ) {
-          created,
-          scores_total,
-          votes
+      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
+        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
+          voter
+          created
+          vp
+          choice
+          proposal {
+            id
+            choices
+          }
         }
       }
     `
 
-    const startTimestamp = getQueryTimestamp(new Date(start.getFullYear(), start.getMonth(), 1).getTime())
-    const endTimestamp = getQueryTimestamp(new Date(end.getFullYear(), end.getMonth(), 1).getTime())
-
-    let proposals: IntervalData[] = []
+    let votes: VotesDataInterval[] = []
     while (hasNext) {
-      const result = await this.fetch<IntervalDataResponse>(
+      const result = await this.fetch<VotesDataIntervalResponse>(
         `/graphql`,
         this.options()
           .method('POST')
@@ -396,8 +408,55 @@ export class Snapshot extends API {
             query,
             variables: {
               space,
-              start: startTimestamp,
-              end: endTimestamp,
+              start: getQueryTimestamp(start.getTime()),
+              end: getQueryTimestamp(end.getTime()),
+              first,
+              skip,
+            },
+          })
+      )
+
+      const currentVotes = result?.data?.votes || []
+      votes = [...votes, ...currentVotes]
+
+      if (currentVotes.length < first) {
+        hasNext = false
+      } else {
+        skip = votes.length
+      }
+    }
+
+    return votes
+  }
+
+  async getProposals(space: string, start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
+    let hasNext = true
+    let skip = 0
+    const first = 1000
+    const query = `
+      query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
+        proposals(
+          where:{space: $space, created_gte: $start, created_lt: $end},
+          orderBy: "created_at",
+          orderDirection: asc
+          first: $first, skip: $skip
+        ) {
+          ${fields}
+        }
+      }
+    `
+    let proposals: Partial<SnapshotProposal>[] = []
+    while (hasNext) {
+      const result = await this.fetch<SnapshotProposalResponse>(
+        `/graphql`,
+        this.options()
+          .method('POST')
+          .json({
+            query,
+            variables: {
+              space,
+              start: getQueryTimestamp(start.getTime()),
+              end: getQueryTimestamp(end.getTime()),
               first,
               skip,
             },
@@ -413,33 +472,7 @@ export class Snapshot extends API {
         skip = proposals.length
       }
     }
-
-    const data: Record<string, number[]> = {}
-
-    for (const proposal of proposals) {
-      const proposalDate = new Date(proposal.created * 1000)
-      const month = proposalDate.getMonth()
-      const year = proposalDate.getFullYear()
-      const key = `${year}/${month + 1}`
-      const intervalDataValue = proposal[dataKey]
-      data[key] = [...(data[key] || []), intervalDataValue]
-    }
-
-    return data
-  }
-
-  async getParticipatingVP(space: string, start: Date, end: Date) {
-    return Object.entries(await this.getDataInInterval(space, start, end, 'scores_total')).reduce(
-      (acc, [key, vps]) => ({ ...acc, [key]: Math.round(median(vps)) }),
-      {} as Record<string, number>
-    )
-  }
-
-  async getVotesPerProposal(space: string, start: Date, end: Date) {
-    return Object.entries(await this.getDataInInterval(space, start, end, 'votes')).reduce(
-      (acc, [key, votes]) => ({ ...acc, [key]: Math.round(median(votes)) }),
-      {} as Record<string, number>
-    )
+    return proposals
   }
 }
 

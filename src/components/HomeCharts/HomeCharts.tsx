@@ -11,53 +11,34 @@ import LineChart from '../Charts/LineChart'
 
 import './HomeCharts.css'
 
-enum ChartTypes {
+enum ChartType {
   ParticipatingVP,
   VotesPerProposal,
 }
 
-const getNewDate = (startDate: Date, days: number) => new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000)
-
 const now = new Date()
+const start = new Date(now.getFullYear() - 1, now.getMonth(), 1)
+const end = new Date(now.getFullYear(), now.getMonth(), 1)
 
 function HomeCharts() {
-  const [selectedTab, setSelectedTab] = useState(ChartTypes.ParticipatingVP)
-  const { participatingVP } = useParticipatingVP(getNewDate(now, -365), now)
-  const { votesPerProposal } = useVotesPerProposal(getNewDate(now, -365), now)
+  const [selectedTab, setSelectedTab] = useState(ChartType.ParticipatingVP)
+  const { participatingVP } = useParticipatingVP(start, end)
+  const { votesPerProposal } = useVotesPerProposal(start, end)
   const t = useFormatMessage()
-
-  const Charts: Record<ChartTypes, JSX.Element> = {
-    [ChartTypes.ParticipatingVP]: (
-      <LineChart
-        label={t('page.home.community_engagement.participating_vp')}
-        data={participatingVP}
-        unit={t('modal.votes_list.vp')}
-        colors={['#FF2D55', '#C640CD']}
-      />
-    ),
-    [ChartTypes.VotesPerProposal]: (
-      <LineChart
-        label={t('page.home.community_engagement.votes_per_proposal_title')}
-        data={votesPerProposal}
-        unit={t('page.home.community_engagement.votes_per_proposal')}
-        colors={['#FF2D55', '#FFC700']}
-      />
-    ),
-  }
 
   return (
     <Card className="HomeCharts">
       <Tabs>
         <Tabs.Left>
           <Tabs.Tab
-            active={selectedTab === ChartTypes.ParticipatingVP}
-            onClick={() => setSelectedTab(ChartTypes.ParticipatingVP)}
+            active={selectedTab === ChartType.ParticipatingVP}
+            onClick={() => setSelectedTab(ChartType.ParticipatingVP)}
           >
             {t('page.home.community_engagement.participating_vp_title')}
           </Tabs.Tab>
           <Tabs.Tab
-            active={selectedTab === ChartTypes.VotesPerProposal}
-            onClick={() => setSelectedTab(ChartTypes.VotesPerProposal)}
+            active={selectedTab === ChartType.VotesPerProposal}
+            onClick={() => setSelectedTab(ChartType.VotesPerProposal)}
           >
             {t('page.home.community_engagement.votes_per_proposal_title')}
           </Tabs.Tab>
@@ -68,7 +49,22 @@ function HomeCharts() {
           </Header>
         </Tabs.Right>
       </Tabs>
-      {Charts[selectedTab]}
+      {selectedTab === ChartType.ParticipatingVP && (
+        <LineChart
+          label={t('page.home.community_engagement.participating_vp')}
+          data={participatingVP}
+          unit={t('modal.votes_list.vp')}
+          colors={['#FF2D55', '#C640CD']}
+        />
+      )}
+      {selectedTab === ChartType.VotesPerProposal && (
+        <LineChart
+          label={t('page.home.community_engagement.votes_per_proposal_title')}
+          data={votesPerProposal}
+          unit={t('page.home.community_engagement.votes_per_proposal')}
+          colors={['#FF2D55', '#FFC700']}
+        />
+      )}
     </Card>
   )
 }
