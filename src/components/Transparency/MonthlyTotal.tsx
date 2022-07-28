@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -17,15 +18,31 @@ export type MonthlyTotalProps = React.HTMLAttributes<HTMLDivElement> & {
   invertDiffColors?: boolean
 }
 
-const RED = `Number--Red`
-const GREEN = `Number--Green`
+enum Color {
+  RED = 'Number--Red',
+  GREEN = 'Number--Green',
+}
+
+enum DetailsVisibility {
+  OVERVIEW = 'MonthlyTotal--Overview',
+  FULL = 'MonthlyTotal--Full',
+}
+
+const MAX_TAGS = 5
 
 export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDiffColors = false }: MonthlyTotalProps) {
   const t = useFormatMessage()
-  const [belowZeroColor, zeroOrOverColor] = invertDiffColors ? [GREEN, RED] : [RED, GREEN]
+  const [belowZeroColor, zeroOrOverColor] = invertDiffColors ? [Color.GREEN, Color.RED] : [Color.RED, Color.GREEN]
+  const [detailsVisibility, setDetailsVisibility] = useState(DetailsVisibility.OVERVIEW)
+
+  const handleButtonClick = () => {
+    detailsVisibility === DetailsVisibility.OVERVIEW
+      ? setDetailsVisibility(DetailsVisibility.FULL)
+      : setDetailsVisibility(DetailsVisibility.OVERVIEW)
+  }
 
   return (
-    <div className="MonthlyTotal">
+    <div className={TokenList.join(['MonthlyTotal', detailsVisibility])}>
       <Card>
         <Card.Content className="MonthlyTotal_Headers">
           <div>
@@ -48,7 +65,7 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
             </Header>
           </div>
         </Card.Content>
-        <Card.Content className="MonthlyTotal__Detail">
+        <Card.Content className={TokenList.join(['MonthlyTotal__Detail', detailsVisibility])}>
           <div className="ItemsList">
             {monthlyTotal.details &&
               monthlyTotal.details.map((detail, index) => {
@@ -57,11 +74,19 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
                     key={['incomeDetail', index].join('::')}
                     name={detail.name}
                     value={'$' + formatBalance(detail.value)}
+                    description={detail.description}
                   />
                 )
               })}
           </div>
         </Card.Content>
+        {monthlyTotal.details.length > MAX_TAGS && (
+          <Button basic onClick={handleButtonClick}>
+            {detailsVisibility === DetailsVisibility.OVERVIEW
+              ? t('page.transparency.funding.view_more', { count: monthlyTotal.details.length - MAX_TAGS })
+              : t('modal.vp_delegation.details.show_less')}
+          </Button>
+        )}
       </Card>
     </div>
   )

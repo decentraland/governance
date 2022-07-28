@@ -23,6 +23,7 @@ function Helper({ position, text, size, containerClassName, iconClassName }: Pro
       }
       on="hover"
       hoverable
+      className={(containerClassName && `${containerClassName}--Popup`) || 'Helper__Container--Popup'}
     />
   )
 }
