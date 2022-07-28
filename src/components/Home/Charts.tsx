@@ -9,7 +9,7 @@ import useParticipatingVP from '../../hooks/useParticipatingVP'
 import useVotesPerProposal from '../../hooks/useVotesPerProposal'
 import LineChart from '../Charts/LineChart'
 
-import './HomeCharts.css'
+import './Charts.css'
 
 enum ChartType {
   ParticipatingVP,
@@ -20,7 +20,7 @@ const now = new Date()
 const start = new Date(now.getFullYear() - 1, now.getMonth(), 1)
 const end = new Date(now.getFullYear(), now.getMonth(), 1)
 
-function HomeCharts() {
+function Charts() {
   const [selectedTab, setSelectedTab] = useState(ChartType.ParticipatingVP)
   const { participatingVP } = useParticipatingVP(start, end)
   const { votesPerProposal } = useVotesPerProposal(start, end)
@@ -69,4 +69,4 @@ function HomeCharts() {
   )
 }
 
-export default HomeCharts
+export default Charts
