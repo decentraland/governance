@@ -54,6 +54,8 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import './index.css'
 import './proposal.css'
 
+const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
+
 type ProposalPageOptions = {
   changing: boolean
   confirmSubscription: boolean
@@ -215,10 +217,9 @@ export default function ProposalPage() {
     )
   }
 
-  const showProposalUpdatesActions =
-    proposal?.status === ProposalStatus.Passed && proposal?.type === ProposalType.Grant && isOwner
-  const showProposalUpdates =
-    publicUpdates && proposal?.status === ProposalStatus.Passed && proposal?.type === ProposalType.Grant
+  const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
+  const showProposalUpdatesActions = isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && isOwner
+  const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
