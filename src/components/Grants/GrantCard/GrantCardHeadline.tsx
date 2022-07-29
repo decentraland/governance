@@ -28,7 +28,7 @@ const GrantCardHeadline = ({ grant, displayUser = false, expanded = false }: Gra
       >
         {title}
       </Header>
-      {displayUser && <Username className="GrantCardHeadline__Avatar" address={user} iconOnly={true} size={'medium'} />}
+      {displayUser && <Username className="GrantCardHeadline__Avatar" address={user} iconOnly size="medium" />}
     </div>
   )
 }

@@ -12,6 +12,7 @@
 .HomeSectionHeader__Description {
   font-style: normal;
   font-weight: 400;
+  margin-bottom: 16px;
 }
 
 .HomeSectionHeader__Description .dg.Paragraph {

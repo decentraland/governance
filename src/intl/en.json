@@ -422,12 +422,12 @@
       "open_proposals": {
         "title": "Open Proposals",
         "description": "Proposals are created by the community and works as the consensus mechanism used to outline policies and changes to the Decentraland ecosystem. Learn more about them [here](https://docs.decentraland.org/decentraland/what-can-you-do-with-the-dao/).",
-        "ending_soon": {
-          "title": "Ending soon"
-        },
-        "participating_vp": {
-          "title": "Participating VP"
-        },
+        "ending_soon": "Ending soon",
+        "by_user": "By ",
+        "votes": "{total} {total, plural, one {vote} other {votes}}",
+        "comments": "{total} {total, plural, one {comment} other {comments}}",
+        "date": "Ends {value}",
+        "participating_vp": "Participating VP",
         "view_all_proposals": "View all proposals"
       },
       "active_community_grants": {

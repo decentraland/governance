@@ -8,6 +8,7 @@
 .OpenProposals__ProposalsContainer .tabs {
   border-top-left-radius: 8px !important;
   border-top-right-radius: 8px !important;
+  margin-bottom: 0 !important;
 }
 
 .OpenProposals__ProposalsContainer .tabs-left {
