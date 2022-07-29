@@ -37,7 +37,7 @@ const OpenProposal = ({ proposal }: Props) => {
         <Username className="OpenProposal__Avatar" address={user} iconOnly size="medium" />
         <div>
           <h3 className="OpenProposal__Title">{title}</h3>
-          <p className="OpenProposal__Details">
+          <span className="OpenProposal__Details">
             <CategoryPill type={proposal.type} size="small" />
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}
@@ -50,7 +50,7 @@ const OpenProposal = ({ proposal }: Props) => {
               {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
             </span>
             <span className="OpenProposal__DetailsItem">{t(dateTextKey, { value: Time(finish_at).fromNow() })}</span>
-          </p>
+          </span>
         </div>
       </div>
       <div className="OpenProposal__Section OpenProposal__VotingSection">
@@ -58,8 +58,12 @@ const OpenProposal = ({ proposal }: Props) => {
         {!hasVote && (
           <>
             <div className="OpenProposal__VotingContainer">
-              <p className="OpenProposal__VotingConsensus">Consensus still not met</p>
-              <p className="OpenProposal__VotingVpNeeded">250,000 VP needed</p>
+              <p className="OpenProposal__VotingConsensus">{t('page.home.open_proposals.consensus')}</p>
+              <p className="OpenProposal__VotingVpNeeded">
+                {t('page.home.open_proposals.vp_needed', {
+                  value: t('general.number', { value: proposal?.required_to_pass }),
+                })}
+              </p>
             </div>
             <div className="OpenProposal__VoteContainer">
               <span className="OpenProposal__VoteText">Vote</span>
