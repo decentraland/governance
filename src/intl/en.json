@@ -426,7 +426,8 @@
         "by_user": "By ",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
         "comments": "{total} {total, plural, one {comment} other {comments}}",
-        "date": "Ends {value}",
+        "ends_date": "Ends {value}",
+        "ended_date": "Ended {value}",
         "participating_vp": "Participating VP",
         "view_all_proposals": "View all proposals"
       },

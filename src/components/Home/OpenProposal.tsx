@@ -1,8 +1,10 @@
 import React from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { isEmpty } from 'lodash'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import useProposalComments from '../../hooks/useProposalComments'
@@ -21,9 +23,13 @@ interface Props {
 const OpenProposal = ({ proposal }: Props) => {
   const t = useFormatMessage()
   const { title, user, finish_at } = proposal
-  const hasVote = false // TODO: Remove hardcoded value
   const { comments } = useProposalComments(proposal.id)
   const { votes } = useProposalVotes(proposal.id)
+  const [account] = useAuthContext()
+  const hasVote = account && !isEmpty(votes?.[account])
+  const dateTextKey = Time().isBefore(Time(finish_at))
+    ? 'page.home.open_proposals.ends_date'
+    : 'page.home.open_proposals.ended_date'
 
   return (
     <Link className="OpenProposal" href={locations.proposal(proposal.id)}>
@@ -41,11 +47,9 @@ const OpenProposal = ({ proposal }: Props) => {
               {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
             </span>
             <span className="OpenProposal__DetailsItem OpenProposal__DetailsOnlyDesktop">
-              {t('page.home.open_proposals.comments', { total: comments?.totalComments })}
+              {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
             </span>
-            <span className="OpenProposal__DetailsItem">
-              {t('page.home.open_proposals.date', { value: Time(finish_at).fromNow() })}
-            </span>
+            <span className="OpenProposal__DetailsItem">{t(dateTextKey, { value: Time(finish_at).fromNow() })}</span>
           </p>
         </div>
       </div>
