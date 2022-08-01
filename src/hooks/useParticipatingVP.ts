@@ -9,8 +9,7 @@ import { groupProposalsByMonth, median } from '../entities/Snapshot/utils'
 export default function useParticipatingVP(start: Date, end: Date) {
   const [proposals, state] = useAsyncMemo(
     async () => {
-      // TODO: un-hardcode snapshot space
-      return await Snapshot.get().getProposals('snapshot.dcl.eth', start, end, ['created', 'scores_total'])
+      return await Snapshot.get().getProposals(SNAPSHOT_SPACE, start, end, ['created', 'scores_total'])
     },
     [],
     { initialValue: [] as Partial<SnapshotProposal>[], callWithTruthyDeps: true }

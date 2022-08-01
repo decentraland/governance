@@ -14,8 +14,7 @@ type Voters = {
 export default function useTopVoters(start: Date, end: Date, limit: number) {
   const [votes, state] = useAsyncMemo(
     async () => {
-      // TODO: un-hardcode snapshot space
-      const votes = await Snapshot.get().getVotes('snapshot.dcl.eth', start, end)
+      const votes = await Snapshot.get().getVotes(SNAPSHOT_SPACE, start, end)
       const votesByUser = votes.reduce((acc, vote) => {
         const address = vote.voter.toLowerCase()
         acc[address] = (acc[address] || 0) + 1

@@ -54,6 +54,10 @@ function LineChart({ label, data, unit, colors }: Props) {
   const chartRef = useRef<ChartJS>(null)
 
   const YAxisFormat = (value: number) => {
+    if (value < 0) {
+      return String(value)
+    }
+
     const lookup = [
       { magnitude: 1, abv: '' },
       { magnitude: 1e3, abv: 'k' },
