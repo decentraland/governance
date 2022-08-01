@@ -7,10 +7,11 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import useTopVoters from '../../hooks/useTopVoters'
 
-import TopVoterRow from './TopVoterRow'
+import './TopVoters.css'
+import TopVotersRow from './TopVotersRow'
 
 const createRow = ({ address, votes }: { address: string; votes: number }, idx: number) => {
-  return <TopVoterRow key={idx} address={address} votes={votes} />
+  return <TopVotersRow key={idx} address={address} votes={votes} rank={idx + 1} />
 }
 
 const now = new Date()
@@ -24,8 +25,12 @@ function TopVoters() {
       <Table basic="very">
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>{t('page.home.community_engagement.top_voters')}</Table.HeaderCell>
-            <Table.HeaderCell textAlign="right">{t('page.home.community_engagement.Votes')}</Table.HeaderCell>
+            <Table.HeaderCell>
+              <Header sub>{t('page.home.community_engagement.top_voters')}</Header>
+            </Table.HeaderCell>
+            <Table.HeaderCell textAlign="center">
+              <Header sub>{t('page.home.community_engagement.Votes')}</Header>
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>{topVoters.map(createRow)}</Table.Body>

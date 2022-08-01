@@ -382,7 +382,7 @@ export class Snapshot extends API {
   async getVotes(space: string, start: Date, end: Date) {
     let hasNext = true
     let skip = 0
-    const first = 50000
+    const first = 20000
     const query = `
       query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
         votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
