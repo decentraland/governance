@@ -6,6 +6,7 @@
   padding: 0 18px;
   margin: 0;
   display: flex !important;
+  height: unset;
 }
 
 .ui.card.HomeCharts > .dcl.tabs .tabs-left {
@@ -48,7 +49,7 @@
 
   .ui.card.HomeCharts > .dcl.tabs .dcl.tab {
     font-size: 13px;
-    padding: 19px 0;
+    padding: 7px 0;
     margin-right: 32px;
   }
 
