@@ -1,3 +1,13 @@
+.TopVoters,
+.TopVoters table {
+  height: 100%;
+  width: 100% !important;
+}
+
+.TopVoters table td {
+  padding: 10px 0 !important;
+}
+
 .TopVoters thead .sub.header {
   margin: 0;
 }

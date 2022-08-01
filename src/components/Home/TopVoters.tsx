@@ -22,7 +22,7 @@ function TopVoters() {
   const { topVoters } = useTopVoters(start, now, 5)
   return (
     <Card className="TopVoters">
-      <Table basic="very">
+      <Table basic="very" unstackable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>

@@ -6,9 +6,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
-import Charts from '../components/Home/Charts'
+import CommunityEngagement from '../components/Home/CommunityEngagement'
 import MainBanner from '../components/Home/MainBanner'
-import TopVoters from '../components/Home/TopVoters'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -40,8 +39,7 @@ export default function HomePage() {
       <Container>
         <MainBanner />
         <ActiveCommunityGrants />
-        <Charts />
-        <TopVoters />
+        <CommunityEngagement />
       </Container>
     </>
   )
