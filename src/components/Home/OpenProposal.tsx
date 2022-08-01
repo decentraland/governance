@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -7,6 +7,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { isEmpty } from 'lodash'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { calculateResult } from '../../entities/Votes/utils'
 import useProposalComments from '../../hooks/useProposalComments'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import locations from '../../modules/locations'
@@ -27,9 +28,24 @@ const OpenProposal = ({ proposal }: Props) => {
   const { votes } = useProposalVotes(proposal.id)
   const [account] = useAuthContext()
   const hasVote = account && !isEmpty(votes?.[account])
-  const dateTextKey = Time().isBefore(Time(finish_at))
-    ? 'page.home.open_proposals.ends_date'
-    : 'page.home.open_proposals.ended_date'
+  const results = useMemo(
+    () => calculateResult(proposal?.snapshot_proposal?.choices || [], votes || {}),
+    [proposal?.snapshot_proposal?.choices, votes]
+  )
+  const vpInFavor = results[0].power || 0
+  const threshold = proposal?.required_to_pass || 0
+  const neededForAcceptance = threshold - vpInFavor
+  const isThresholdStillNotMet = neededForAcceptance > 0
+
+  const votingConsensusText = t(
+    `page.home.open_proposals.${isThresholdStillNotMet ? 'threshold_not_met' : 'threshold_met'}`
+  )
+  const votingNeededText = t(`page.home.open_proposals.${isThresholdStillNotMet ? 'vp_needed' : 'vp'}`, {
+    value: t('general.number', { value: isThresholdStillNotMet ? neededForAcceptance : vpInFavor }),
+  })
+  const dateText = t(`page.home.open_proposals.${Time().isBefore(Time(finish_at)) ? 'ends_date' : 'ended_date'}`, {
+    value: Time(finish_at).fromNow(),
+  })
 
   return (
     <Link className="OpenProposal" href={locations.proposal(proposal.id)}>
@@ -49,7 +65,7 @@ const OpenProposal = ({ proposal }: Props) => {
             <span className="OpenProposal__DetailsItem OpenProposal__DetailsOnlyDesktop">
               {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
             </span>
-            <span className="OpenProposal__DetailsItem">{t(dateTextKey, { value: Time(finish_at).fromNow() })}</span>
+            <span className="OpenProposal__DetailsItem">{dateText}</span>
           </span>
         </div>
       </div>
@@ -58,12 +74,8 @@ const OpenProposal = ({ proposal }: Props) => {
         {!hasVote && (
           <>
             <div className="OpenProposal__VotingContainer">
-              <p className="OpenProposal__VotingConsensus">{t('page.home.open_proposals.consensus')}</p>
-              <p className="OpenProposal__VotingVpNeeded">
-                {t('page.home.open_proposals.vp_needed', {
-                  value: t('general.number', { value: proposal?.required_to_pass }),
-                })}
-              </p>
+              <p className="OpenProposal__VotingConsensus">{votingConsensusText}</p>
+              <p className="OpenProposal__VotingVpNeeded">{votingNeededText}</p>
             </div>
             <div className="OpenProposal__VoteContainer">
               <span className="OpenProposal__VoteText">Vote</span>

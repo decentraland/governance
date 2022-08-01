@@ -428,8 +428,10 @@
         "comments": "{total} {total, plural, one {comment} other {comments}}",
         "ends_date": "Ends {value}",
         "ended_date": "Ended {value}",
-        "consensus": "Consensus still not met",
+        "threshold_not_met": "Threshold still not met",
+        "threshold_met": "Threshold met",
         "vp_needed": "{value} VP needed",
+        "vp": "{value} VP",
         "participating_vp": "Participating VP",
         "view_all_proposals": "View all proposals"
       },
