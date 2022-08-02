@@ -15,6 +15,8 @@ import {
 } from 'chart.js'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import useAbbreviatedNumber from '../../hooks/useAbbreviatedNumber'
+
 interface Props {
   label: string
   data: Record<string, number>
@@ -51,30 +53,8 @@ function createGradient(colors: string[], ctx: CanvasRenderingContext2D, area: C
 
 function LineChart({ label, data, unit, colors }: Props) {
   const intl = useIntl()
+  const YAxisFormat = useAbbreviatedNumber()
   const chartRef = useRef<ChartJS>(null)
-
-  const YAxisFormat = (value: number) => {
-    if (value < 0) {
-      return String(value)
-    }
-
-    const lookup = [
-      { magnitude: 1, abv: '' },
-      { magnitude: 1e3, abv: 'k' },
-      { magnitude: 1e6, abv: 'M' },
-      { magnitude: 1e9, abv: 'G' },
-      { magnitude: 1e12, abv: 'T' },
-      { magnitude: 1e15, abv: 'P' },
-      { magnitude: 1e18, abv: 'E' },
-    ]
-    const magnitudes = lookup.map((obj) => obj.magnitude)
-    const valueMag = 10 ** Math.floor(Math.log10(value))
-    const diffArr = magnitudes.map((x) => Math.abs(valueMag - x))
-    const minNumber = Math.min(...diffArr)
-    const idx = diffArr.findIndex((x) => x === minNumber)
-
-    return `${intl.formatNumber(value / lookup[idx].magnitude)}${lookup[idx].abv}`
-  }
 
   const configuration = useMemo(
     () => ({

@@ -40,7 +40,8 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
   const thresholdReached = threshold <= vpInFavor
   const endDate = Time.from(proposal?.finish_at)
   const timeout = useCountdown(endDate)
-  const abbreviatedThreshold = useAbbreviatedNumber(threshold)
+  const valueFormatter = useAbbreviatedNumber()
+  const abbreviatedThreshold = valueFormatter(threshold)
   const flickity = useRef<Flickity>()
 
   return (
