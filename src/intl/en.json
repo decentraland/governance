@@ -591,6 +591,7 @@
       "sorting_filters": {
         "finish_date": "Finish date",
         "amount": "Amount granted",
+        "update_timestamp": "Last updated",
         "created_at": "Newest"
       },
       "vested": "vested",
