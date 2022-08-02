@@ -39,9 +39,11 @@ const ActiveCommunityGrants = () => {
             </div>
           )}
         </div>
-        <FullWidthButton link={locations.grants()}>
-          {t('page.home.active_community_grants.view_all_grants')}
-        </FullWidthButton>
+        {!isLoadingGrants && (
+          <FullWidthButton link={locations.grants()}>
+            {t('page.home.active_community_grants.view_all_grants')}
+          </FullWidthButton>
+        )}
       </Container>
     </>
   )

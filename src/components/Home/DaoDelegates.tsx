@@ -29,11 +29,13 @@ const DaoDelegates = () => {
         <Loader active={loading} />
         {!loading && <DelegatesTable delegates={delegates} userAddress={address} />}
       </div>
-      <FullWidthButton
-        link={locations.balance(address ? { ...balanceRedirectOptions, address } : balanceRedirectOptions)}
-      >
-        {t('page.home.dao_delegates.view_all_delegates')}
-      </FullWidthButton>
+      {!loading && (
+        <FullWidthButton
+          link={locations.balance(address ? { ...balanceRedirectOptions, address } : balanceRedirectOptions)}
+        >
+          {t('page.home.dao_delegates.view_all_delegates')}
+        </FullWidthButton>
+      )}
     </Container>
   )
 }
