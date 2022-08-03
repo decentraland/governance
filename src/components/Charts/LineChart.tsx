@@ -84,6 +84,7 @@ function LineChart({ label, data, unit, colors }: Props) {
         ticks: {
           callback: (value: number | string) => YAxisFormat(Number(value)) + (unit ? ` ${unit}` : ''),
         },
+        min: 0,
       },
     },
   }
