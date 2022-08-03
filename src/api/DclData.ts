@@ -6,6 +6,7 @@ import { TokenInWallet } from '../entities/Transparency/types'
 export type Detail = {
   name: string
   value: bigint
+  description: string
 }
 
 export type MonthlyTotal = {

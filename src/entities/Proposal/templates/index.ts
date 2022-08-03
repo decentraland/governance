@@ -115,7 +115,7 @@ export type ForumTemplateProps = {
 }
 
 export const forumTitle = ({ type, configuration, snapshot_id }: ForumTemplateProps) =>
-  `[DAO: ${snapshot_id.slice(0, 7)}] ` + title({ type, configuration })
+  `[DAO:${snapshot_id.slice(snapshot_id.length - 7, snapshot_id.length)}] ` + title({ type, configuration })
 
 export const forumDescription = async ({
   type,

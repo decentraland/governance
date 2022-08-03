@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import { Loader } from 'decentraland-ui'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import useGrants from '../../hooks/useGrants'
 import locations from '../../modules/locations'

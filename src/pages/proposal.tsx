@@ -39,7 +39,7 @@ import ForumButton from '../components/Section/ForumButton'
 import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalResultSection from '../components/Section/ProposalResultSection'
-import ProposalVestingStatus from '../components/Section/ProposalVestingStatus'
+import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions'
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
@@ -55,6 +55,8 @@ import './proposal.css'
 import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
+
+const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 
 type ProposalPageOptions = {
   changing: boolean
@@ -217,10 +219,9 @@ export default function ProposalPage() {
     )
   }
 
-  const showVestingStatus =
-    proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant && isOwner
-  const showProposalUpdates =
-    publicUpdates && proposal?.status === ProposalStatus.Enacted && proposal?.type === ProposalType.Grant
+  const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
+  const showProposalUpdatesActions = isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && isOwner
+  const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
@@ -271,8 +272,8 @@ export default function ProposalPage() {
                   subscribed={subscribed}
                   onClick={() => subscribe(!subscribed)}
                 />
-                {showVestingStatus && (
-                  <ProposalVestingStatus
+                {showProposalUpdatesActions && (
+                  <ProposalUpdatesActions
                     nextUpdate={nextUpdate}
                     currentUpdate={currentUpdate}
                     pendingUpdates={pendingUpdates}

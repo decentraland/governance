@@ -1,12 +1,13 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
+import UpdateModel from '../Updates/model'
 import { getSnapshotProposalVotes, updateSnapshotProposalVotes } from '../Votes/routes'
 import { Vote } from '../Votes/types'
 import { Scores } from '../Votes/utils'
 
 import ProposalModel from './model'
 import { commentProposalUpdateInDiscourse } from './routes'
-import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus } from './types'
+import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -112,6 +113,14 @@ export async function finishProposal(context: JobContext) {
     await ProposalModel.finishProposal(
       acceptedProposals.map((proposal) => proposal.id),
       ProposalStatus.Passed
+    )
+
+    await Promise.all(
+      acceptedProposals.map(async (proposal) => {
+        if (proposal.type == ProposalType.Grant) {
+          await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
+        }
+      })
     )
   }
 
