@@ -15,7 +15,7 @@ import {
 } from 'chart.js'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import useAbbreviatedNumber from '../../hooks/useAbbreviatedNumber'
+import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 
 interface Props {
   label: string
@@ -53,7 +53,7 @@ function createGradient(colors: string[], ctx: CanvasRenderingContext2D, area: C
 
 function LineChart({ label, data, unit, colors }: Props) {
   const intl = useIntl()
-  const YAxisFormat = useAbbreviatedNumber()
+  const YAxisFormat = useAbbreviatedFormatter()
   const chartRef = useRef<ChartJS>(null)
 
   const configuration = useMemo(

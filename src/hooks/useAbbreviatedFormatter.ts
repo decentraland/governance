@@ -1,6 +1,6 @@
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-export default function useAbbreviatedNumber() {
+export default function useAbbreviatedFormatter() {
   const t = useFormatMessage()
 
   const formatter = (value: number) => {
