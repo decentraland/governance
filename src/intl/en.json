@@ -425,8 +425,8 @@
         "view_all_grants": "View all Grants"
       },
       "bottom_banner": {
-        "title": "We have so much ahead of us. The future of the metaverse is in your hands!",
-        "funds_value": "{value, number} USD",
+        "title": "We have so much ahead of us. The future of the Metaverse is in your hands!",
+        "funds_value": "{value} USD",
         "funds": "Funds distributed",
         "grants": "Grants funded",
         "discord_title": "Join our Discord Channel",

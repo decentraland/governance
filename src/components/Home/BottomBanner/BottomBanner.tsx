@@ -4,6 +4,10 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DAO_DISCORD_URL, FORUM_URL, NEWSLETTER_URL } from '../../../constants'
+import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import useAbbreviatedNumber from '../../../hooks/useAbbreviatedNumber'
+import useDclData from '../../../hooks/useDclData'
+import useProposals from '../../../hooks/useProposals'
 import Discord from '../../Icon/Discord'
 import EmailFilled from '../../Icon/EmailFilled'
 import Megaphone from '../../Icon/Megaphone'
@@ -35,15 +39,31 @@ const ACTIONS: Record<string, ActionProps> = {
 
 function BottomBanner() {
   const t = useFormatMessage()
+  const [data] = useDclData()
+  const totalFunding = useAbbreviatedNumber(data ? Number(data.funding.total) : 0)
+
+  const { proposals: grantsList } = useProposals({
+    type: ProposalType.Grant,
+    status: ProposalStatus.Enacted,
+    page: 1,
+    itemsPerPage: 1,
+  })
+
   return (
     <div className="BottomBanner">
-      <Grid>
+      <Grid stackable>
         <Grid.Row>
           <Grid.Column width={8}>
             <h2 className="BottomBanner__Title">{t('page.home.bottom_banner.title')}</h2>
             <div className="BottomBanner__Stats">
-              <Stat title="Title1" description="Desc1" />
-              <Stat title="Title2" description="Desc2" />
+              <Stat
+                title={t('page.home.bottom_banner.funds_value', { value: totalFunding })}
+                description={t('page.home.bottom_banner.funds')}
+              />
+              <Stat
+                title={grantsList ? String(grantsList.total) : '-'}
+                description={t('page.home.bottom_banner.grants')}
+              />
             </div>
           </Grid.Column>
           <Grid.Column floated="right" width={5}>
@@ -65,4 +85,4 @@ function BottomBanner() {
   )
 }
 
-export default BottomBanner
+export default React.memo(BottomBanner)
