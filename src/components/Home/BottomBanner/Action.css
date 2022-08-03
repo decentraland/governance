@@ -26,7 +26,7 @@
 }
 
 .Action .Action__Icon svg path {
-  fill: white;
+  fill: var(--white-900);
 }
 
 .Action .Action__Title {
@@ -34,7 +34,7 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: white;
+  color: var(--white-900);
 }
 
 .Action .Action__Description {
@@ -42,7 +42,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: white;
+  color: var(--white-900);
 }
 
 .Action .ui.grid .column:last-child {

@@ -28,7 +28,7 @@
   font-size: 30px;
   line-height: 36px;
   letter-spacing: -1px;
-  color: white;
+  color: var(--white-900);
   max-width: 480px;
   margin-bottom: 0;
 }

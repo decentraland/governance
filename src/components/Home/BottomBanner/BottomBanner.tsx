@@ -85,4 +85,4 @@ function BottomBanner() {
   )
 }
 
-export default React.memo(BottomBanner)
+export default BottomBanner
