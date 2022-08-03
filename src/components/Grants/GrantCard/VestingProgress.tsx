@@ -2,6 +2,7 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { GrantAttributes } from '../../../entities/Proposal/types'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
@@ -18,7 +19,6 @@ const getRoundedPercentage = (value: number, total: number) => Math.min(Math.rou
 const VestingProgress = ({ grant }: Props) => {
   const t = useFormatMessage()
   const { contract, enacting_tx, tx_amount, token, enacted_at } = grant
-
   const total = contract?.vesting_total_amount || 100
   const vestedPercentage = contract ? getRoundedPercentage(contract.vestedAmount, total) : 100
   const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null
@@ -27,7 +27,7 @@ const VestingProgress = ({ grant }: Props) => {
   })} ${token}`
   const releasedText = contract
     ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`
-    : null
+    : t('page.grants.one_time_payment')
   const enactedDate = Time.unix(enacted_at).fromNow()
 
   return (
@@ -40,12 +40,12 @@ const VestingProgress = ({ grant }: Props) => {
           </span>
           <PercentageLabel percentage={vestedPercentage} color={enacting_tx ? 'Fuchsia' : 'Yellow'} />
         </div>
-        {releasedText && (
-          <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
-            <div className="VestingProgress__ReleasedInfoLabel" />
-            <span className="VestingProgress__Ellipsis">{releasedText}</span>
-          </div>
-        )}
+        <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
+          {contract && <div className="VestingProgress__ReleasedInfoLabel" />}
+          <span className={TokenList.join(['VestingProgress__Ellipsis', !contract && 'VestingProgressBar__LightText'])}>
+            {releasedText}
+          </span>
+        </div>
       </div>
 
       <div className="VestingProgressBar">

@@ -583,7 +583,7 @@
         "update_button": "Post Update",
         "current_update_available_in": "Update available in **{date}**",
         "current_update_due_date": "Update due in **{date}**",
-        "current_update_info": "You must share a community update once every 30 days during your vesting period. Updates can be posted on the last 15 days of every 30-days period.",
+        "current_update_info": "You must share a community update once every 30 days during your Grant period. Updates can be posted on the last 15 days of every 30-days period.",
         "next_update_due_date": "Next one due in **{date}**",
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
@@ -591,8 +591,8 @@
       }
     },
     "grants": {
-      "title": "Decentraland DAO",
-      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "title": "Decentraland DAO Community Grants",
+      "description": "Check the projects funded by the Decentraland DAO Grants program. Browse them to see their goals, progress, and how they are making an impact in our community.",
       "load_more_button": "Load more",
       "current_banner": {
         "title": "Discover the projects making the Decentraland ecosystem grow",
@@ -629,7 +629,8 @@
       },
       "vested": "vested",
       "transferred": "transferred",
-      "one_month_cliff": "One month cliff",
+      "one_time_payment": "One-time payment",
+      "one_month_cliff": "1-month Cliff Period",
       "cliff_remaining": "{count} {count, plural, one {day} other {days}} to go",
       "released": "released",
       "started_date": "Started",

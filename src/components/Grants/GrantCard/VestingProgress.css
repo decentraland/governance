@@ -37,6 +37,10 @@
   margin-left: 3px;
 }
 
+.VestingProgressBar__LightText {
+  color: var(--black-600);
+}
+
 .VestingProgress__Bold {
   font-weight: 600;
   padding-right: 2px;
