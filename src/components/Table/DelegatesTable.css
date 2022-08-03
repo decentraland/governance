@@ -1,7 +1,7 @@
 .DelegatesTable__Wrapper {
   position: relative;
   background: var(--white-900);
-  border: 1px solid var(--black-400);
+  border: 1px solid var(--black-300);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
   margin-bottom: 16px;
@@ -115,7 +115,7 @@ td.DelegatesTable__CandidateName {
 @media (min-width: 768px) {
   table.ui.very.basic.table.DelegatesTable {
     background: var(--white-900);
-    border: 1px solid var(--black-200);
+    border: 1px solid var(--black-300);
     box-shadow: 0 1px 8px var(--black-100);
     border-radius: 8px;
     padding-top: 0;
