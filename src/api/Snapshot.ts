@@ -103,8 +103,8 @@ export const EMPTY_DELEGATION: DelegationResult = {
   hasMoreDelegatedFrom: false,
 }
 
-export type VotesDataIntervalResponse = SnapshotQueryResponse<{ votes: VotesDataInterval[] }>
-export type VotesDataInterval = {
+export type VoteEventResponse = SnapshotQueryResponse<{ votes: VoteEvent[] }>
+export type VoteEvent = {
   voter: string
   created: number
   vp: number
@@ -379,7 +379,7 @@ export class Snapshot extends API {
     return Object.values(vp)[0]
   }
 
-  async getVotes(space: string, start: Date, end: Date) {
+  async getVotes(start: Date, end: Date) {
     let hasNext = true
     let skip = 0
     const first = 20000
@@ -398,16 +398,16 @@ export class Snapshot extends API {
       }
     `
 
-    let votes: VotesDataInterval[] = []
+    let votes: VoteEvent[] = []
     while (hasNext) {
-      const result = await this.fetch<VotesDataIntervalResponse>(
+      const result = await this.fetch<VoteEventResponse>(
         `/graphql`,
         this.options()
           .method('POST')
           .json({
             query,
             variables: {
-              space,
+              space: SNAPSHOT_SPACE,
               start: getQueryTimestamp(start.getTime()),
               end: getQueryTimestamp(end.getTime()),
               first,
@@ -429,7 +429,7 @@ export class Snapshot extends API {
     return votes
   }
 
-  async getProposals(space: string, start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
+  async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
     let hasNext = true
     let skip = 0
     const first = 1000
@@ -454,7 +454,7 @@ export class Snapshot extends API {
           .json({
             query,
             variables: {
-              space,
+              space: SNAPSHOT_SPACE,
               start: getQueryTimestamp(start.getTime()),
               end: getQueryTimestamp(end.getTime()),
               first,

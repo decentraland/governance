@@ -26,23 +26,21 @@ interface Props {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
-function createGradient(colors: string[], ctx: CanvasRenderingContext2D, area: ChartArea) {
-  if (!colors) {
+function createGradient(colors: string[], canvas: CanvasRenderingContext2D, area: ChartArea) {
+  if (colors.length === 0) {
     throw new Error('No colors provided')
   }
 
   const colorsLength = colors.length
-  let stops: number[] = []
+  const stops: number[] = [0]
   let count = colorsLength - 1
 
   while (count > 0) {
-    stops = [Math.round((1 / (colorsLength - 1)) * count * 100) / 100, ...stops]
+    stops.push(Math.round((1 / (colorsLength - 1)) * (colorsLength - count) * 100) / 100)
     count--
   }
 
-  stops = [0, ...stops]
-
-  const gradient = ctx.createLinearGradient(0, area.bottom, 0, area.top)
+  const gradient = canvas.createLinearGradient(0, area.bottom, 0, area.top)
 
   for (const idx in colors) {
     gradient.addColorStop(stops[idx], colors[idx])
