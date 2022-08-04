@@ -6,8 +6,6 @@ import { ProposalGrantTier } from '../Proposal/types'
 import { UpdateAttributes, UpdateStatus } from './types'
 
 const UpdateCount: { [key: string]: number } = {
-  [ProposalGrantTier.Tier1]: 1,
-  [ProposalGrantTier.Tier2]: 1,
   [ProposalGrantTier.Tier3]: 3,
   [ProposalGrantTier.Tier4]: 6,
   [ProposalGrantTier.Tier5]: 6,
@@ -20,12 +18,12 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static primaryKey = 'id'
 
   static async createPendingUpdates(proposalId: string, tier: ProposalGrantTier) {
-    const updatesQuantity = UpdateCount[tier]
-    const now = new Date()
-
-    if (updatesQuantity === 1) {
+    if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
       return null
     }
+
+    const updatesQuantity = UpdateCount[tier]
+    const now = new Date()
 
     return Array.from(Array(updatesQuantity), async (_, index) => {
       const update: UpdateAttributes = {

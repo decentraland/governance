@@ -102,8 +102,6 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
-  // route.patch('/proposals/:proposal/status', withAuth, handleAPI(reactivateProposal))
-  // route.post('/proposals/votes', withAuth, handleAPI(forwardVote))
 })
 
 function formatError(err: Error) {
@@ -656,11 +654,13 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
         proposal.user,
         update.vesting_address
       )
-      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
     }
-  } else if (configuration.status === ProposalStatus.Passed) {
+  } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user
     update.passed_description = configuration.description || null
+    if (proposal.type == ProposalType.Grant) {
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
+    }
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
     update.rejected_description = configuration.description || null
