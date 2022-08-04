@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-@media screen and (min-width: 768px) {
+@media (min-width: 768px) {
   .BottomBanner {
     padding: 28px 25px 28px 44px;
   }
@@ -16,7 +16,7 @@
   padding: 14px 0 !important;
 }
 
-@media screen and (min-width: 768px) {
+@media (min-width: 768px) {
   .BottomBanner .ui.grid.stackable > .row > .column {
     padding: 14px !important;
   }
@@ -33,7 +33,7 @@
   margin-bottom: 0;
 }
 
-@media screen and (min-width: 768px) {
+@media (min-width: 768px) {
   .BottomBanner .BottomBanner__Title {
     font-size: 36px;
     line-height: 43px;
@@ -45,7 +45,7 @@
   display: none;
 }
 
-@media screen and (min-width: 768px) {
+@media (min-width: 768px) {
   .BottomBanner .BottomBanner__Stats {
     display: inline-flex;
   }
