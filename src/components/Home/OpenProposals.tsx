@@ -24,6 +24,7 @@ const OpenProposals = () => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
   const { proposals } = useProposals({
+    order: 'ASC',
     status: ProposalStatus.Active,
     page: 1,
     itemsPerPage: 5,
