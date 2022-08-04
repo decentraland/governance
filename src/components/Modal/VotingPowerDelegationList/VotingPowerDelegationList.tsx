@@ -42,7 +42,7 @@ function VotingPowerDelegationList({ vp, delegates, onDelegateClick }: VotingPow
               <Table.HeaderCell className="TotalVP" onClick={changeSort}>
                 <span>
                   {t('modal.vp_delegation.total_vp')}
-                  <Sort rotate={isDescendingSort ? 0 : 180} />
+                  <Sort descending={isDescendingSort} />
                 </span>
               </Table.HeaderCell>
               <Table.HeaderCell />

@@ -1,0 +1,32 @@
+.TopVoters,
+.TopVoters table {
+  height: 100%;
+  width: 100% !important;
+}
+
+.TopVoters table td {
+  padding: 10px 0 !important;
+}
+
+.TopVoters thead .sub.header {
+  margin: 0;
+}
+
+.TopVoters thead .sub.header:first-child {
+  padding-left: 16px;
+}
+
+.TopVoters thead .sub.header:last-child {
+  padding-right: 15px;
+}
+
+.TopVoters .TopVotersRow__User {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.TopVoters .TopVotersRow__User > .sub.header {
+  margin: 0 14px 0 0;
+}

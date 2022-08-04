@@ -1,0 +1,59 @@
+.ui.card.HomeCharts {
+  width: 100%;
+}
+
+.ui.card.HomeCharts > .dcl.tabs {
+  padding: 0 18px;
+  margin: 0;
+  display: flex !important;
+  height: unset;
+}
+
+.ui.card.HomeCharts > .dcl.tabs .tabs-left {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.ui.card.HomeCharts > .dcl.tabs .tabs-right {
+  display: none;
+}
+
+.ui.card.HomeCharts > .dcl.tabs .dcl.tab {
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 0;
+  margin: 0;
+}
+
+.ui.card.HomeCharts > .dcl.tabs .dcl.tab.active {
+  border-left: none;
+  border-bottom: 2px solid var(--primary);
+}
+
+.ui.card.HomeCharts > .dcl.tabs .Display {
+  margin: 0;
+}
+
+.ui.card.HomeCharts > canvas {
+  padding: 12px;
+}
+
+@media screen and (min-width: 768px) {
+  .ui.card.HomeCharts > .dcl.tabs .tabs-left {
+    display: unset;
+  }
+
+  .ui.card.HomeCharts > .dcl.tabs .tabs-right {
+    display: flex;
+  }
+
+  .ui.card.HomeCharts > .dcl.tabs .dcl.tab {
+    font-size: 13px;
+    padding: 7px 0;
+    margin-right: 32px;
+  }
+
+  .ui.card.HomeCharts > .dcl.tabs .dcl.tab.active {
+    border-bottom: unset;
+  }
+}

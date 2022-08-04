@@ -13,9 +13,7 @@ const HomeSectionHeader = ({ title, description }: Props) => {
   return (
     <>
       <h2 className="HomeSectionHeader__Title">{title}</h2>
-      <div className="HomeSectionHeader__Description">
-        <Markdown>{description}</Markdown>
-      </div>
+      <Markdown className="HomeSectionHeader__Description">{description}</Markdown>
     </>
   )
 }

@@ -10,25 +10,24 @@ import './GrantCardHeadline.css'
 
 export type GrantCardHeadlineProps = React.HTMLAttributes<HTMLDivElement> & {
   grant: GrantWithUpdateAttributes
-  displayUser?: boolean
+  hoverable?: boolean
   expanded?: boolean
 }
 
-const GrantCardHeadline = ({ grant, displayUser = false, expanded = false }: GrantCardHeadlineProps) => {
+const GrantCardHeadline = ({ grant, hoverable = false, expanded = false }: GrantCardHeadlineProps) => {
   const { title, user } = grant
 
   return (
-    <div className={TokenList.join(['GrantCardHeadline', displayUser && !expanded && 'GrantCardHeadline__Slim'])}>
+    <div className={TokenList.join(['GrantCardHeadline', !expanded && 'GrantCardHeadline__Slim'])}>
       <Header
         className={TokenList.join([
           'GrantCardHeadline__Title',
-          displayUser && 'GrantCardHeadline__SlimTitle',
-          !expanded && 'GrantCardHeadline__TwoLineEllipsis',
+          (!hoverable || !expanded) && 'GrantCardHeadline__TwoLineEllipsis',
         ])}
       >
         {title}
       </Header>
-      {displayUser && <Username className="GrantCardHeadline__Avatar" address={user} iconOnly size="medium" />}
+      <Username className="GrantCardHeadline__Avatar" address={user} iconOnly size="medium" />
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import useGrants from '../../hooks/useGrants'
@@ -19,7 +18,7 @@ const ActiveCommunityGrants = () => {
   const { grants, isLoadingGrants } = useGrants()
 
   return (
-    <Container>
+    <>
       <div>
         <HomeSectionHeader
           title={t('page.home.active_community_grants.title')}
@@ -45,7 +44,7 @@ const ActiveCommunityGrants = () => {
       <FullWidthButton link={locations.grants()}>
         {t('page.home.active_community_grants.view_all_grants')}
       </FullWidthButton>
-    </Container>
+    </>
   )
 }
 

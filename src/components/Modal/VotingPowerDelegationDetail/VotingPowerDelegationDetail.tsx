@@ -128,8 +128,8 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
-          <Grid columns="equal">
-            <Grid.Column width={10}>
+          <div className="CandidateDetails__Container">
+            <div>
               <CandidateDetails title={t('modal.vp_delegation.details.about_title')} content={candidate.bio} />
               <CandidateDetails
                 title={t('modal.vp_delegation.details.involvement_title')}
@@ -144,15 +144,15 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 title={t('modal.vp_delegation.details.most_important_issue_title')}
                 content={candidate.most_important_issue}
               />
-            </Grid.Column>
-            <Grid.Column>
+            </div>
+            <div>
               <CandidateDetails title={t('modal.vp_delegation.details.links_title')} links={candidate.links} />
               <CandidateDetails
                 title={t('modal.vp_delegation.details.relevant_skills_title')}
                 skills={candidate.relevant_skills}
               />
-            </Grid.Column>
-          </Grid>
+            </div>
+          </div>
           <div className={TokenList.join(['Fadeout', !showFadeout && 'Fadeout--hidden'])} />
         </div>
         <div className="ShowMore">
@@ -175,75 +175,71 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
         )}
         {!isLoading && (
           <>
-            <Grid columns={3}>
-              <Grid.Row>
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
-                    <VotingPower value={ownVotingPower} size="large" />
-                  </Stats>
-                </Grid.Column>
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_delegated_voting_power')}>
-                    <VotingPower value={delegatedVotingPower} size="large" />
-                  </Stats>
-                </Grid.Column>
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
-                    <VotingPower value={votingPower} size="large" />
-                  </Stats>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_mana')}>
-                    <VotingPower value={Math.floor(mana)} size="medium" />
-                  </Stats>
-                </Grid.Column>
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_land')}>
-                    <VotingPower value={landVotingPower} size="medium" />
-                  </Stats>
-                </Grid.Column>
-                <Grid.Column>
-                  <Stats title={t('modal.vp_delegation.details.stats_name')}>
-                    <VotingPower value={nameVotingPower} size="medium" />
-                  </Stats>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row columns="1">
-                <Grid.Column>
-                  <VotingPowerDistribution
-                    mana={mana}
-                    name={nameVotingPower}
-                    land={landVotingPower}
-                    delegated={delegatedVotingPower}
-                  />
-                </Grid.Column>
-              </Grid.Row>
+            <div className="DelegationDetails__Stats">
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
+                  <VotingPower value={ownVotingPower} size="large" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_delegated_voting_power')}>
+                  <VotingPower value={delegatedVotingPower} size="large" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
+                  <VotingPower value={votingPower} size="large" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_mana')}>
+                  <VotingPower value={Math.floor(mana)} size="medium" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_land')}>
+                  <VotingPower value={landVotingPower} size="medium" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_name')}>
+                  <VotingPower value={nameVotingPower} size="medium" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholderFullWidth">
+                <VotingPowerDistribution
+                  className="DelegationDetails__VotingPowerDistribution"
+                  mana={mana}
+                  name={nameVotingPower}
+                  land={landVotingPower}
+                  delegated={delegatedVotingPower}
+                />
+              </div>
+
               {candidateVotes && (
-                <Grid.Row>
+                <>
                   {candidateVotes.length > 0 && (
-                    <Grid.Column>
+                    <div className="DelegationDetails__StatPlaceholder">
                       <Stats title={t('modal.vp_delegation.details.stats_active_since')}>
                         <div className="VotingPowerDelegationDetail__StatsValue">
                           {Time.unix(candidateVotes[candidateVotes.length - 1].created).format('MMMM, YYYY')}
                         </div>
                       </Stats>
-                    </Grid.Column>
+                    </div>
                   )}
-                  <Grid.Column>
+                  <div className="DelegationDetails__StatPlaceholder">
                     <Stats title={t('modal.vp_delegation.details.stats_voted_on')}>
                       <div className="VotingPowerDelegationDetail__StatsValue">{candidateVotes.length}</div>
                     </Stats>
-                  </Grid.Column>
+                  </div>
                   {matchResult.percentage > 0 && (
-                    <Grid.Column>
+                    <div className="DelegationDetails__StatPlaceholder">
                       <CandidateMatch matchingVotes={matchResult} />
-                    </Grid.Column>
+                    </div>
                   )}
-                </Grid.Row>
+                </>
               )}
-            </Grid>
+            </div>
             {filteredCandidateVotes.length > 0 && (
               <VotedInitiativeList candidateVotes={filteredCandidateVotes} matches={matchResult.matches} />
             )}

@@ -7,6 +7,8 @@ import fetch from 'isomorphic-fetch'
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { Scores } from '../entities/Votes/utils'
 
+import { inBatches } from './utils'
+
 export type SnapshotQueryResponse<T> = { data: T }
 
 export type SnapshotResult = { ipfsHash: string }
@@ -102,6 +104,43 @@ export const EMPTY_DELEGATION: DelegationResult = {
   delegatedFrom: [],
   hasMoreDelegatedFrom: false,
 }
+
+export type VoteEventResponse = SnapshotQueryResponse<{ votes: VoteEvent[] }>
+export type VoteEvent = {
+  voter: string
+  created: number
+  vp: number
+  choice: number
+  proposal: {
+    id: string
+    choices: string[]
+  }
+}
+
+export type SnapshotProposalResponse = SnapshotQueryResponse<{ proposals: Partial<SnapshotProposal>[] }>
+export type SnapshotProposal = {
+  id: string
+  ipfs: string
+  author: string
+  created: number
+  type: string
+  title: string
+  body: string
+  choices: string[]
+  start: number
+  end: number
+  snapshot: string
+  state: string
+  link: string
+  scores: number[]
+  scores_by_strategy: number[]
+  scores_state: string
+  scores_total: number
+  scores_updated: number
+  votes: number
+}
+
+const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 
@@ -229,7 +268,7 @@ export class Snapshot extends API {
       if (currentVotes.length < first) {
         hasNext = false
       } else {
-        skip = currentVotes.length
+        skip = votes.length
       }
     }
 
@@ -278,7 +317,7 @@ export class Snapshot extends API {
       if (currentVotes.length < first) {
         hasNext = false
       } else {
-        skip = currentVotes.length
+        skip = votes.length
       }
     }
 
@@ -340,6 +379,121 @@ export class Snapshot extends API {
   async getVotingPower(address: string, space: string) {
     const vp = await this.getLatestScores(space, [address])
     return Object.values(vp)[0]
+  }
+
+  fetchAddressesVotesByDate = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
+    const query = `
+      query ProposalVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
+        votes (
+          where: { space: $space, voter_in: $addresses}
+          first: $first, skip: $skip
+          orderBy: "created",
+          orderDirection: desc
+        ) {
+          voter
+          created
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotVoteResponse>(
+      `/graphql`,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: { space: SNAPSHOT_SPACE, addresses: params.addresses, skip, first: batchSize },
+        })
+    )
+
+    return result?.data?.votes
+  }
+
+  async getAddressesVotesByDate(addresses: string[]) {
+    const batchSize = 5000
+    return await inBatches(this.fetchAddressesVotesByDate, { addresses }, batchSize)
+  }
+
+  fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
+    const query = `
+      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
+        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
+          voter
+          created
+          vp
+          choice
+          proposal {
+            id
+            choices
+          }
+        }
+      }
+    `
+
+    const result = await this.fetch<VoteEventResponse>(
+      `/graphql`,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: {
+            space: SNAPSHOT_SPACE,
+            start: getQueryTimestamp(params.start.getTime()),
+            end: getQueryTimestamp(params.end.getTime()),
+            first: batchSize,
+            skip,
+          },
+        })
+    )
+
+    return result?.data?.votes
+  }
+
+  async getVotes(start: Date, end: Date) {
+    const batchSize = 20000
+    return await inBatches(this.fetchVotes, { start, end }, batchSize)
+  }
+
+  fetchProposals = async (
+    params: { start: Date; end: Date; fields: (keyof SnapshotProposal)[] },
+    skip: number,
+    batchSize: number
+  ) => {
+    const query = `
+      query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
+        proposals(
+          where:{space: $space, created_gte: $start, created_lt: $end},
+          orderBy: "created_at",
+          orderDirection: asc
+          first: $first, skip: $skip
+        ) {
+          ${params.fields}
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotProposalResponse>(
+      `/graphql`,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: {
+            space: SNAPSHOT_SPACE,
+            start: getQueryTimestamp(params.start.getTime()),
+            end: getQueryTimestamp(params.end.getTime()),
+            first: batchSize,
+            skip,
+          },
+        })
+    )
+
+    return result?.data?.proposals
+  }
+
+  async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
+    const batchSize = 1000
+    return await inBatches(this.fetchProposals, { start, end, fields }, batchSize)
   }
 }
 

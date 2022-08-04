@@ -352,6 +352,7 @@
       "wait_helper": "Please wait...",
       "error_helper": "An error occurred, please try again later",
       "pick_button": "Pick somebody else",
+      "sign_in_to_delegate": "Sign In to Delegate",
       "details": {
         "about_title": "About",
         "links_title": "Links",
@@ -449,6 +450,39 @@
         "title": "Active Community Grants",
         "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](https://docs.decentraland.org/decentraland/community-grants/).",
         "view_all_grants": "View all Grants"
+      },
+      "bottom_banner": {
+        "title": "We have so much ahead of us. The future of the Metaverse is in your hands!",
+        "funds_value": "{value} USD",
+        "funds": "Funds distributed",
+        "grants": "Grants funded",
+        "discord_title": "Join our Discord Channel",
+        "discord_description": "Engage with the community",
+        "forum_title": "Debate on the forum",
+        "forum_description": "Discuss proposals and more",
+        "newsletter_title": "Subscribe to our Newsletter",
+        "newsletter_description": "A weekly DAO roundup"
+      },
+      "community_engagement": {
+        "title": "Community Engagement",
+        "description": "See the participation signal from the community and understand the basic health stats from the DAO.",
+        "participating_vp_title": "Participating VP over time",
+        "participating_vp": "Participating VP",
+        "votes_per_proposal_title": "Votes per proposal",
+        "votes_per_proposal": "Votes",
+        "display_median": "Display: median",
+        "top_voters": "Last month top voters",
+        "Votes": "Votes"
+      },
+      "dao_delegates": {
+        "title": "DAO Delegates",
+        "description": "Voting Power (VP) delegation is crucial to maximize the circulating VP usage, by assigning your VP to trusted community members who can engage in the governance process on behalf of you.",
+        "candidate_name":"Candidate Name",
+        "last_voted":  "Last Voted",
+        "times_voted": "Voted On",
+        "picked_by":  "Picked By",
+        "total_vp": "Total VP",
+        "view_all_delegates": "View all Delegates"
       }
     },
     "welcome": {

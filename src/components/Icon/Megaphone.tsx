@@ -8,7 +8,6 @@ function Megaphone({ className }: { className?: string }) {
       height="64"
       fill="none"
       viewBox="0 0 80 80"
-      opacity="0.32"
       aria-hidden="true"
       className={className}
     >

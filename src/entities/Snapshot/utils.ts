@@ -1,6 +1,7 @@
 import { Wallet } from '@ethersproject/wallet'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
-import { SnapshotVote } from '../../api/Snapshot'
+import { SnapshotProposal, SnapshotVote } from '../../api/Snapshot'
 
 export type Match = {
   proposal_id: string
@@ -44,4 +45,41 @@ export function calculateMatch(votes1: SnapshotVote[] | null, votes2: SnapshotVo
     match.voteDifference = voteDifference
   }
   return match
+}
+
+export function median(array: number[]) {
+  if (array.length === 0) throw new Error('Median: no inputs')
+
+  array.sort((a, b) => a - b)
+  const half = Math.floor(array.length / 2)
+
+  if (array.length % 2) {
+    return array[half]
+  }
+
+  return (array[half - 1] + array[half]) / 2.0
+}
+
+export function groupProposalsByMonth(proposals: Partial<SnapshotProposal>[], field: keyof SnapshotProposal) {
+  const ERROR_KEY = 'groupProposalsByMonth'
+  const data: Record<string, number[]> = {}
+
+  for (const proposal of proposals) {
+    if (proposal.created) {
+      const proposalDate = new Date(proposal.created * 1000)
+      const month = proposalDate.getMonth()
+      const year = proposalDate.getFullYear()
+      const key = `${year}/${month + 1}`
+      const value = proposal[field]
+      if (typeof value === 'number') {
+        data[key] = [...(data[key] || []), value]
+      } else {
+        logger.error(`${ERROR_KEY}: proposal field '${field}' is not a number`, { proposal, value })
+      }
+    } else {
+      logger.error(`${ERROR_KEY}: proposal has no creation date`, { proposal })
+    }
+  }
+
+  return data
 }
