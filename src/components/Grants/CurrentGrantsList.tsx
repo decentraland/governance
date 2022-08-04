@@ -11,7 +11,7 @@ import { useCurrentGrantsFilteredByCategory } from '../../hooks/useCurrentsGrant
 import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
-import CurrentGrantsSortingMenu, { SortingKeys } from './CurrentGrantsSortingMenu'
+import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
 import GrantCard from './GrantCard'
 
 const CURRENT_GRANTS_PER_PAGE = 8
@@ -19,7 +19,7 @@ const CURRENT_GRANTS_PER_PAGE = 8
 const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) => {
   const t = useFormatMessage()
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
-  const [sortingKey, setSortingKey] = useState<SortingKeys>(SortingKeys.UpdateTimestamp)
+  const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(grants, [sortingKey], ['desc']), [grants, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)

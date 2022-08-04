@@ -3,18 +3,18 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
-export enum SortingKeys {
+export enum SortingKey {
   CreatedAt = 'created_at',
   UpdateTimestamp = 'update_timestamp',
   Size = 'size',
 }
 
 interface Props {
-  sortingKey: SortingKeys
-  onSortingKeyChange: (key: SortingKeys) => void
+  sortingKey: SortingKey
+  onSortingKeyChange: (key: SortingKey) => void
 }
 
-const SortingTextKey: Record<SortingKeys, string> = {
+const SortingTextKey: Record<SortingKey, string> = {
   created_at: 'page.grants.sorting_filters.created_at',
   size: 'page.grants.sorting_filters.amount',
   update_timestamp: 'page.grants.sorting_filters.update_timestamp',
@@ -29,15 +29,15 @@ const CurrentGrantsSortingMenu = ({ sortingKey, onSortingKeyChange }: Props) => 
         <Dropdown.Menu>
           <Dropdown.Item
             text={t('page.grants.sorting_filters.amount')}
-            onClick={() => onSortingKeyChange(SortingKeys.Size)}
+            onClick={() => onSortingKeyChange(SortingKey.Size)}
           />
           <Dropdown.Item
             text={t('page.grants.sorting_filters.created_at')}
-            onClick={() => onSortingKeyChange(SortingKeys.CreatedAt)}
+            onClick={() => onSortingKeyChange(SortingKey.CreatedAt)}
           />
           <Dropdown.Item
             text={t('page.grants.sorting_filters.update_timestamp')}
-            onClick={() => onSortingKeyChange(SortingKeys.UpdateTimestamp)}
+            onClick={() => onSortingKeyChange(SortingKey.UpdateTimestamp)}
           />
         </Dropdown.Menu>
       </Dropdown>
