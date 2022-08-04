@@ -414,10 +414,7 @@ export class Snapshot extends API {
     return await inBatches(this.fetchAddressesVotesByDate, { addresses }, batchSize)
   }
 
-  async getVotes(start: Date, end: Date) {
-    let hasNext = true
-    let skip = 0
-    const first = 20000
+  fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
     const query = `
       query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
         votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
@@ -433,41 +430,35 @@ export class Snapshot extends API {
       }
     `
 
-    let votes: VoteEvent[] = []
-    while (hasNext) {
-      const result = await this.fetch<VoteEventResponse>(
-        `/graphql`,
-        this.options()
-          .method('POST')
-          .json({
-            query,
-            variables: {
-              space: SNAPSHOT_SPACE,
-              start: getQueryTimestamp(start.getTime()),
-              end: getQueryTimestamp(end.getTime()),
-              first,
-              skip,
-            },
-          })
-      )
+    const result = await this.fetch<VoteEventResponse>(
+      `/graphql`,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: {
+            space: SNAPSHOT_SPACE,
+            start: getQueryTimestamp(params.start.getTime()),
+            end: getQueryTimestamp(params.end.getTime()),
+            first: batchSize,
+            skip,
+          },
+        })
+    )
 
-      const currentVotes = result?.data?.votes || []
-      votes = [...votes, ...currentVotes]
-
-      if (currentVotes.length < first) {
-        hasNext = false
-      } else {
-        skip = votes.length
-      }
-    }
-
-    return votes
+    return result?.data?.votes
   }
 
-  async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
-    let hasNext = true
-    let skip = 0
-    const first = 1000
+  async getVotes(start: Date, end: Date) {
+    const batchSize = 20000
+    return await inBatches(this.fetchVotes, { start, end }, batchSize)
+  }
+
+  fetchProposals = async (
+    params: { start: Date; end: Date; fields: (keyof SnapshotProposal)[] },
+    skip: number,
+    batchSize: number
+  ) => {
     const query = `
       query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
         proposals(
@@ -476,38 +467,33 @@ export class Snapshot extends API {
           orderDirection: asc
           first: $first, skip: $skip
         ) {
-          ${fields}
+          ${params.fields}
         }
       }
     `
-    let proposals: Partial<SnapshotProposal>[] = []
-    while (hasNext) {
-      const result = await this.fetch<SnapshotProposalResponse>(
-        `/graphql`,
-        this.options()
-          .method('POST')
-          .json({
-            query,
-            variables: {
-              space: SNAPSHOT_SPACE,
-              start: getQueryTimestamp(start.getTime()),
-              end: getQueryTimestamp(end.getTime()),
-              first,
-              skip,
-            },
-          })
-      )
 
-      const currentProposals = result?.data?.proposals || []
-      proposals = [...proposals, ...currentProposals]
+    const result = await this.fetch<SnapshotProposalResponse>(
+      `/graphql`,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: {
+            space: SNAPSHOT_SPACE,
+            start: getQueryTimestamp(params.start.getTime()),
+            end: getQueryTimestamp(params.end.getTime()),
+            first: batchSize,
+            skip,
+          },
+        })
+    )
 
-      if (currentProposals.length < first) {
-        hasNext = false
-      } else {
-        skip = proposals.length
-      }
-    }
-    return proposals
+    return result?.data?.proposals
+  }
+
+  async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
+    const batchSize = 1000
+    return await inBatches(this.fetchProposals, { start, end, fields }, batchSize)
   }
 }
 
