@@ -1,3 +1,85 @@
+@media (max-width: 374px) {
+  .DelegationDetails__StatPlaceholderFullWidth {
+    display: none;
+  }
+}
+
+@media (max-width: 424px) {
+  .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    gap: 16px;
+    align-items: flex-start !important;
+  }
+
+  .VotingPowerDelegationDetail__Header .DelegateButton__Container .ui.tiny.sub.header {
+    margin: 0 !important;
+  }
+
+  .DelegateButton__Container > button.ui.small.primary.button {
+    min-width: 250px;
+  }
+
+  .VotingPowerDelegationDetail__Header .DelegateButton__Container {
+    margin-right: 0 !important;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .DelegationDetails__Stats {
+    row-gap: 1rem !important;
+    grid-template-columns: auto !important;
+  }
+
+  .DelegationDetails__StatPlaceholderFullWidth {
+    grid-column: 1 / span 1 !important;
+  }
+
+  .dcl.stats {
+    width: 100%;
+    margin-bottom: 0 !important;
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .DelegationDetails__StatPlaceholder .VotingPower--large {
+    font-size: 24px;
+  }
+
+  .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .CandidateDetails__Container {
+    display: flex !important;
+    flex-direction: column-reverse;
+    margin-top: 0 !important;
+  }
+
+  .CandidateDetails__Container {
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: 62.5% 35%;
+    grid-column-gap: 1rem;
+  }
+
+  .VotingPowerDelegationDetail__Content .Info {
+    max-height: 330px !important;
+  }
+
+  .dcl.stats {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+}
+
 .VotingPowerDelegationDetail__Header {
   margin-left: 25px !important;
   display: flex !important;
@@ -27,12 +109,44 @@
 }
 
 .VotingPowerDelegationDetail__Content .Info--expanded {
-  max-height: 2000px;
+  max-height: 3000px !important;
+}
+
+.CandidateDetails__Container {
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: 62.5% 35%;
+  grid-column-gap: 1rem;
+}
+
+.DelegationDetails__Stats {
+  margin-bottom: 24px;
+  display: grid;
+  justify-content: space-between;
+  row-gap: 2rem;
+  grid-template-columns: auto auto auto;
+  width: 100%;
+  justify-items: stretch;
+}
+
+.DelegationDetails__StatPlaceholder {
+  margin-right: 10px;
+}
+
+.DelegationDetails__StatPlaceholderFullWidth {
+  width: 100%;
+  grid-column: 1 / span 3;
+}
+
+.DelegationDetails__VotingPowerDistribution {
+  padding: 1rem 0;
 }
 
 .VotingPowerDelegationDetail__Content .Info > .Fadeout {
   position: sticky;
-  bottom: 0em;
+  bottom: 0;
   width: 100%;
   height: 4em;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%);

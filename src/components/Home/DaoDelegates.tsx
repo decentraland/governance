@@ -6,8 +6,6 @@ import { Container, Loader } from 'decentraland-ui'
 
 import { CANDIDATE_ADDRESSES } from '../../constants'
 import useDelegatesInfo from '../../hooks/useDelegatesInfo'
-import locations from '../../modules/locations'
-import FullWidthButton from '../Common/FullWidthButton'
 import DelegatesTable from '../Table/DelegatesTable'
 
 import HomeSectionHeader from './HomeSectionHeader'
@@ -17,7 +15,6 @@ const DaoDelegates = () => {
   const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
   const [address, authState] = useAuthContext()
   const loading = !delegates && authState.loading
-  const balanceRedirectOptions = { openDelegatesModal: 'true' }
 
   return (
     <Container>
@@ -29,13 +26,6 @@ const DaoDelegates = () => {
         <Loader active={loading} />
         {!loading && <DelegatesTable delegates={delegates} userAddress={address} />}
       </div>
-      {!loading && (
-        <FullWidthButton
-          link={locations.balance(address ? { ...balanceRedirectOptions, address } : balanceRedirectOptions)}
-        >
-          {t('page.home.dao_delegates.view_all_delegates')}
-        </FullWidthButton>
-      )}
     </Container>
   )
 }

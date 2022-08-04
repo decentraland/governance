@@ -112,7 +112,45 @@ td.DelegatesTable__CandidateName {
   width: 138px;
 }
 
+.DelegatesTable__ArrowColumn {
+  display: none;
+}
+
 @media (min-width: 768px) {
+  .DelegatesTable__Wrapper {
+    position: relative;
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .DelegatesTable__Scroller {
+    margin-left: auto;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .DelegatesTable__Sticky {
+    width: auto;
+    min-width: 200px;
+    padding-right: unset;
+    left: auto;
+    position: relative;
+    top: auto;
+    text-align: left;
+  }
+
+  .DelegatesTable__ShadowBox,
+  .DelegatesTable__ShadowBoxHeader {
+    display: none;
+  }
+
+  .DelegatesTable__PaddedColumn {
+    padding-left: unset;
+  }
+
   table.ui.very.basic.table.DelegatesTable {
     background: var(--white-900);
     border: 1px solid var(--black-300);
@@ -164,20 +202,17 @@ td.DelegatesTable__CandidateName {
     width: 120px;
   }
 
-  .DelegatesTable__Arrow {
+  .DelegatesTable__ArrowColumn {
+    display: table-cell;
     padding-right: 21px !important;
   }
-}
 
-@media (min-width: 768px) and (max-width: 991px) {
   td.DelegatesTable__CandidateName {
-    min-width: 190px;
+    min-width: 200px;
   }
-}
 
-@media (min-width: 991px) {
-  td.DelegatesTable__CandidateName {
-    min-width: 382px;
+  .DelegatesTable__UsernameArrow {
+    display: none;
   }
 }
 

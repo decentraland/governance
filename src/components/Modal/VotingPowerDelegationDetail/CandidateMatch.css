@@ -4,11 +4,14 @@
   line-height: 32px;
   letter-spacing: 0.4px;
   color: #16141a;
+  top: -16px;
+  position: relative;
 }
 
 .CandidateMatch .CandidateMatch__Info {
   display: flex;
   width: fit-content;
-  position: absolute;
-  left: 57px;
+  position: relative;
+  left: 42px;
+  top: -16px;
 }

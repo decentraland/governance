@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
 import Arrow from '../Icon/Arrow'
@@ -17,13 +19,14 @@ function valueOrHyphen<K>(value: K, formatter: (param: K) => string) {
 
 interface Props {
   delegate: Delegate
-  sticky?: boolean
   onDelegateSelected: (delegate: Delegate) => void
 }
 
-function DelegateRow({ delegate, onDelegateSelected, sticky = false }: Props) {
+function DelegateRow({ delegate, onDelegateSelected }: Props) {
   const intl = useIntl()
-  const delegateAddress: string = delegate.address.toLowerCase()
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const delegateAddress = delegate.address.toLowerCase()
   const [isFilled, setIsFilled] = useState(false)
 
   return (
@@ -33,12 +36,12 @@ function DelegateRow({ delegate, onDelegateSelected, sticky = false }: Props) {
       onMouseLeave={() => setIsFilled(false)}
       onClick={() => onDelegateSelected(delegate)}
     >
-      <Table.Cell className={TokenList.join(['DelegatesTable__CandidateName', sticky && 'DelegatesTable__Sticky'])}>
-        <Username address={delegateAddress} size={sticky ? 'tiny' : 'small'} />
-        {sticky && <Arrow filled={isFilled} />}
+      <Table.Cell className={TokenList.join(['DelegatesTable__CandidateName', 'DelegatesTable__Sticky'])}>
+        <Username address={delegateAddress} size={isMobile ? 'tiny' : 'small'} />
+        <Arrow filled={isFilled} className="DelegatesTable__UsernameArrow" />
       </Table.Cell>
-      {sticky && <Table.Cell className="DelegatesTable__ShadowBox" />}
-      <Table.Cell className={TokenList.join([sticky && 'DelegatesTable__PaddedColumn', 'DelegatesTable__LastVoted'])}>
+      <Table.Cell className="DelegatesTable__ShadowBox" />
+      <Table.Cell className="DelegatesTable__PaddedColumn DelegatesTable__LastVoted">
         {valueOrHyphen(delegate.lastVoted, (value) => Time.unix(value).fromNow())}
       </Table.Cell>
       <Table.Cell className="DelegatesTable__TimesVoted">
@@ -46,11 +49,9 @@ function DelegateRow({ delegate, onDelegateSelected, sticky = false }: Props) {
       </Table.Cell>
       <Table.Cell className="DelegatesTable__PickedBy">{intl.formatNumber(delegate.pickedBy)}</Table.Cell>
       <Table.Cell className="DelegatesTable__TotalVP">{intl.formatNumber(delegate.totalVP)}</Table.Cell>
-      {!sticky && (
-        <Table.Cell className="DelegatesTable__Arrow">
-          <Arrow filled={isFilled} />
-        </Table.Cell>
-      )}
+      <Table.Cell className="DelegatesTable__ArrowColumn">
+        <Arrow filled={isFilled} />
+      </Table.Cell>
     </Table.Row>
   )
 }
