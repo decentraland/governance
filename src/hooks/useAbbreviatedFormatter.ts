@@ -22,7 +22,9 @@ export default function useAbbreviatedFormatter() {
     const minNumber = Math.min(...diffArr)
     const idx = diffArr.findIndex((x) => x === minNumber)
 
-    return `${t('general.number', { value: sign * (value / lookup[idx].magnitude) })}${lookup[idx].abv}`
+    return `${t('general.number', { value: sign * (Math.round((value / lookup[idx].magnitude) * 100) / 100) })}${
+      lookup[idx].abv
+    }`
   }
 
   return formatter

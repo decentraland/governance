@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
@@ -10,7 +9,6 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { DclData } from '../api/DclData'
 import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
 import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
@@ -25,6 +23,7 @@ import { DOCS_URL, OPEN_CALL_FOR_DELEGATES_LINK } from '../constants'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
+import useDclData from '../hooks/useDclData'
 import locations from '../modules/locations'
 
 import './transparency.css'
@@ -45,7 +44,7 @@ const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curati
 
 export default function WrappingPage() {
   const t = useFormatMessage()
-  const [data] = useAsyncMemo(async () => DclData.get().getData())
+  const [data] = useDclData()
   const balances = useMemo(() => (data && aggregateBalances(data.balances)) || [], [data])
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })

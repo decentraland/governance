@@ -425,6 +425,18 @@
         "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](https://docs.decentraland.org/decentraland/what-can-you-do-with-the-dao/).",
         "view_all_grants": "View all Grants"
       },
+      "bottom_banner": {
+        "title": "We have so much ahead of us. The future of the Metaverse is in your hands!",
+        "funds_value": "{value} USD",
+        "funds": "Funds distributed",
+        "grants": "Grants funded",
+        "discord_title": "Join our Discord Channel",
+        "discord_description": "Engage with the community",
+        "forum_title": "Debate on the forum",
+        "forum_description": "Discuss proposals and more",
+        "newsletter_title": "Subscribe to our Newsletter",
+        "newsletter_description": "A weekly DAO roundup"
+      },
       "community_engagement": {
         "title": "Community Engagement",
         "description": "See the participation signal from the community and understand the basic health stats from the DAO.",
