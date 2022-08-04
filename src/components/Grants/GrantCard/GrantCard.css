@@ -1,5 +1,5 @@
 .GrantCard {
-  padding: 16px 22px 0;
+  padding: 12px 10px;
   color: var(--white-900);
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
@@ -9,10 +9,6 @@
   justify-content: space-between;
   cursor: pointer;
   background: var(--white-900);
-}
-
-.GrantCard__Collapsed {
-  height: 191px;
 }
 
 .GrantCard__Expanded {
@@ -61,10 +57,16 @@
   font-size: 20px;
 }
 
-.ui.header.GrantCard__SlimTitle {
-  margin-bottom: 9px;
-}
-
 .GrantCard .ProposalUpdate:last-child {
   margin-bottom: 0;
+}
+
+@media (min-width: 425px) {
+  .GrantCard {
+    padding: 16px 22px 0 !important;
+  }
+
+  .GrantCard__Collapsed {
+    height: 191px;
+  }
 }

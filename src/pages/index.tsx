@@ -7,6 +7,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
 import BottomBanner from '../components/Home/BottomBanner/BottomBanner'
+import DaoDelegates from '../components/Home/DaoDelegates'
 import MainBanner from '../components/Home/MainBanner'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -41,6 +42,7 @@ export default function HomePage() {
         <BottomBanner />
       </Container>
       <ActiveCommunityGrants />
+      <DaoDelegates />
     </>
   )
 }

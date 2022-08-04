@@ -20,8 +20,8 @@ const FullWidthButton = ({ onClick, children, className, link, newWindow = false
       fluid
       className={TokenList.join(['FullWidthButton', className])}
       onClick={onClick}
-      target={!!newWindow && '_blank'}
-      rel={!!newWindow && 'noopener noreferrer'}
+      target={newWindow ? '_blank' : ''}
+      rel={newWindow ? 'noopener noreferrer' : ''}
       href={link}
     >
       {children}
