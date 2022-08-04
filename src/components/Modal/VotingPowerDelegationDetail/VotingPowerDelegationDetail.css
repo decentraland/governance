@@ -46,10 +46,6 @@
 }
 
 @media (max-width: 768px) {
-  .DelegationDetails__StatPlaceholder .VotingPower--large {
-    font-size: 24px;
-  }
-
   .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
     padding-right: 0 !important;
     padding-left: 0 !important;
@@ -77,6 +73,12 @@
   .dcl.stats {
     width: 100%;
     margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 850px) {
+  .DelegationDetails__StatPlaceholder .VotingPower--large {
+    font-size: 24px;
   }
 }
 
@@ -207,7 +209,7 @@
   font-size: 17px;
   line-height: 32px;
   letter-spacing: 0.4px;
-  color: #16141a;
+  color: var(--black-800);
 }
 
 .VotingPowerDelegationDetail__MatchInfo {

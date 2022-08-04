@@ -110,6 +110,7 @@ td.DelegatesTable__CandidateName {
 
 .DelegatesTable__LastVoted {
   width: 138px;
+  padding-left: 0 !important;
 }
 
 .DelegatesTable__ArrowColumn {
@@ -204,7 +205,7 @@ td.DelegatesTable__CandidateName {
 
   .DelegatesTable__ArrowColumn {
     display: table-cell;
-    padding-right: 21px !important;
+    padding-right: 22px !important;
   }
 
   td.DelegatesTable__CandidateName {

@@ -3,7 +3,7 @@
   font-size: 17px;
   line-height: 32px;
   letter-spacing: 0.4px;
-  color: #16141a;
+  color: var(--black-800);
   top: -16px;
   position: relative;
 }
@@ -14,4 +14,8 @@
   position: relative;
   left: 42px;
   top: -16px;
+}
+
+.ui.right.center.popup.transition.visible.CandidateMatch__Info--Popup {
+  z-index: 3000;
 }
