@@ -1,0 +1,37 @@
+.CommunityEngagement .CommunityEngagement__Header .header {
+  margin-bottom: 4px;
+  font-size: 17px;
+}
+
+.CommunityEngagement .CommunityEngagement__Header p {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.CommunityEngagement .CommunityEngagement__Header {
+  margin: 40px 0 16px 0;
+}
+
+.CommunityEngagement > .ui.stackable.grid .row .column {
+  padding: 1rem 0 !important;
+}
+
+@media screen and (min-width: 768px) {
+  .CommunityEngagement .CommunityEngagement__Header {
+    margin: 40px 0;
+  }
+
+  .CommunityEngagement .CommunityEngagement__Header .header {
+    font-size: 20px;
+  }
+
+  .CommunityEngagement .CommunityEngagement__Header p {
+    font-size: 17px;
+    line-height: 28px;
+  }
+
+  .CommunityEngagement > .ui.stackable.grid .row .column {
+    padding: 0 1rem !important;
+  }
+}
