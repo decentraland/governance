@@ -623,7 +623,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   const user = req.auth!
   const id = req.params.proposal
   if (!isCommitee(user)) {
-    throw new RequestError('Only committed members can enact a proposal', RequestError.Forbidden)
+    throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)

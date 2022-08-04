@@ -21,22 +21,20 @@ const GrantCardHeader = ({ grant }: GrantCardHeaderProps) => {
 
   return (
     <div className="GrantCardHeader">
-      <>
-        <div className="GrantCardHeader__ConfigurationInfo">
-          <Pill size="small" color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>
-            {category.split(' ')[0]}
-          </Pill>
-          <div className="GrantCardHeader__SizeContainer GrantCardHeader__SizeContainerSlim">
-            <p className="GrantCardHeader__Size">{`${t('component.grant_card.size')}: $${intl.formatNumber(
-              size
-            )} USD`}</p>
-          </div>
+      <div className="GrantCardHeader__ConfigurationInfo">
+        <Pill size="small" color={PROPOSAL_GRANT_CATEGORY_COLORS[category]}>
+          {category.split(' ')[0]}
+        </Pill>
+        <div className="GrantCardHeader__SizeContainer GrantCardHeader__SizeContainerSlim">
+          <p className="GrantCardHeader__Size">{`${t('component.grant_card.size')}: $${intl.formatNumber(
+            size
+          )} USD`}</p>
         </div>
-        <div className="GrantCardHeader__Username">
-          {t('component.grant_card.by_user')}
-          <Username address={grant.user} addressOnly />
-        </div>
-      </>
+      </div>
+      <div className="GrantCardHeader__Username">
+        {t('component.grant_card.by_user')}
+        <Username address={grant.user} addressOnly />
+      </div>
     </div>
   )
 }
