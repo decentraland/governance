@@ -40,6 +40,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     if (filter.timeFrame) {
       params.timeFrame = filter.timeFrame
     }
+    if (filter.timeFrameKey) {
+      params.timeFrameKey = filter.timeFrameKey
+    }
     if (filter.order) {
       params.order = filter.order
     }

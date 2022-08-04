@@ -8,6 +8,8 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { DclData } from '../../api/DclData'
+import { ProposalStatus } from '../../entities/Proposal/types'
+import useProposals from '../../hooks/useProposals'
 
 import MetricsCard from './MetricsCard'
 import './MetricsCards.css'
@@ -39,12 +41,22 @@ const MetricsCards = () => {
     [data?.balances]
   )
 
+  const { proposals: activeProposals } = useProposals({
+    status: ProposalStatus.Active,
+    timeFrame: '2days',
+    timeFrameKey: 'finish_at',
+  })
+
+  const { proposals: endingSoonProposals } = useProposals({
+    status: ProposalStatus.Active,
+  })
+
   const metricsData = useMemo(
     () => [
       {
         category: t('page.home.metrics.proposals'),
-        title: t('page.home.metrics.active_proposals', { value: 48 }),
-        description: t('page.home.metrics.ending_soon', { value: 5 }),
+        title: t('page.home.metrics.active_proposals', { value: activeProposals?.total }),
+        description: t('page.home.metrics.ending_soon', { value: endingSoonProposals?.total }),
       },
       {
         category: t('page.home.metrics.participation'),
@@ -57,7 +69,7 @@ const MetricsCards = () => {
         description: t('page.home.metrics.consolidated'),
       },
     ],
-    [t, treasuryAmount]
+    [activeProposals, endingSoonProposals, t, treasuryAmount]
   )
 
   const content = metricsData.map((item) => (

@@ -3,10 +3,12 @@ import React, { useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
+import { isEmpty } from 'lodash'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'
 import locations from '../../modules/locations'
+import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
 
 import HomeSectionHeader from './HomeSectionHeader'
@@ -22,7 +24,7 @@ const OpenProposals = () => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
   const { proposals } = useProposals({
-    status: ProposalStatus.Finished, // TODO: Change to active
+    status: ProposalStatus.Active,
     page: 1,
     itemsPerPage: 5,
   })
@@ -47,6 +49,12 @@ const OpenProposals = () => {
         {activeTab === Tab.EndingSoon &&
           proposals?.data &&
           proposals.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+        {activeTab === Tab.EndingSoon && isEmpty(proposals?.data) && (
+          <Empty className="OpenProposals__ActiveEmptyContainer" description="No active proposals" />
+        )}
+        {activeTab === Tab.ParticipatingVP && (
+          <Empty className="OpenProposals__ActiveEmptyContainer" description="No proposals" />
+        )}
       </div>
       <FullWidthButton className="OpenProposals__ViewAllButton" link={locations.proposals()}>
         {t('page.home.open_proposals.view_all_proposals')}

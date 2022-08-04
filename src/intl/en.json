@@ -422,7 +422,7 @@
       "metrics": {
         "proposals": "Proposals",
         "active_proposals": "{value} active proposals",
-        "ending_soon": "{value} ending soon",
+        "ending_soon": "{value} ending in the next 48hs",
         "participation": "Participation",
         "votes_this_week": "{value} votes this week",
         "votes_last_month": "{value} votes last 30 days",

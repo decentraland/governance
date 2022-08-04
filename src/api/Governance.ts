@@ -42,6 +42,7 @@ export type GetProposalsFilter = {
   coauthor: boolean
   search?: string | null
   timeFrame?: string | null
+  timeFrameKey?: string | null
   order?: 'ASC' | 'DESC'
   limit: number
   offset: number

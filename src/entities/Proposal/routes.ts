@@ -153,6 +153,7 @@ export async function getProposals(req: WithAuth<Request>) {
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
+  const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
 
@@ -170,7 +171,7 @@ export async function getProposals(req: WithAuth<Request>) {
   }
 
   const [total, data] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed, coauthor }),
+    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, timeFrameKey, subscribed, coauthor }),
     ProposalModel.getProposalList({
       type,
       status,
@@ -179,6 +180,7 @@ export async function getProposals(req: WithAuth<Request>) {
       coauthor,
       search,
       timeFrame,
+      timeFrameKey,
       order,
       offset,
       limit,

@@ -15,6 +15,10 @@
   padding-left: 23px !important;
 }
 
+.OpenProposals__ActiveEmptyContainer {
+  padding: 50px 0;
+}
+
 .OpenProposals__ViewAllButton {
   margin-bottom: 40px;
 }

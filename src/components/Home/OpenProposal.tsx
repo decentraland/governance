@@ -35,7 +35,7 @@ const OpenProposal = ({ proposal }: Props) => {
   const vpInFavor = results[0].power || 0
   const threshold = proposal?.required_to_pass || 0
   const neededForAcceptance = threshold - vpInFavor
-  const isThresholdStillNotMet = neededForAcceptance > 0
+  const isThresholdStillNotMet = neededForAcceptance >= 0
 
   const votingConsensusText = t(
     `page.home.open_proposals.${isThresholdStillNotMet ? 'threshold_not_met' : 'threshold_met'}`
