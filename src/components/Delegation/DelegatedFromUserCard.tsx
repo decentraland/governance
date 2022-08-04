@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -23,10 +23,11 @@ interface DelegatedFromUserCardProps {
 
 const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, ownVp }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
-
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const delegationModalInitiallyOpen = params.get('openDelegatesModal') === 'true'
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
   const [delegateDelegations] = useDelegation(address)
-  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
+  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(delegationModalInitiallyOpen)
 
   return (
     <ActionableLayout

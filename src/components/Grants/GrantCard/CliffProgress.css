@@ -1,18 +1,17 @@
 .CliffProgress {
   width: 100%;
-  margin-bottom: 16px;
 }
 
 .CliffProgress__Labels {
   display: flex;
   justify-content: space-between;
-  color: #161419;
+  color: var(--black-800);
   padding-bottom: 4px;
 }
 
 .CliffProgress__CliffDuration {
   display: inline-flex;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 24px;
   padding-right: 2px;
   align-items: center;
@@ -21,7 +20,7 @@
 .CliffProgress__CliffRemaining {
   display: inline-flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 18px;
   font-style: normal;
   opacity: 0.8;
@@ -62,7 +61,7 @@
   justify-content: space-between;
   color: var(--black-600);
   padding-bottom: 4px;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 18px;
 }
 
@@ -73,4 +72,19 @@
 
 .CliffProgress__EnactedDate {
   font-weight: 600 !important;
+}
+
+@media (min-width: 425px) {
+  .CliffProgress {
+    margin-bottom: 16px;
+  }
+  .CliffProgress__CliffDuration {
+    font-size: 15px !important;
+  }
+  .CliffProgress__CliffRemaining {
+    font-size: 13px !important;
+  }
+  .CliffProgress__Dates {
+    font-size: 13px !important;
+  }
 }

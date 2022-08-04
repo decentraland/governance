@@ -16,7 +16,7 @@
   font-size: 15px;
   line-height: 26px;
   letter-spacing: -0.2px;
-  color: #16141a;
+  color: var(--black-800);
   margin: 0;
   flex: 1;
 }
@@ -39,7 +39,7 @@
   overflow: hidden;
 }
 
-.VotedInitiative__Title, 
+.VotedInitiative__Title,
 .VotedInitiative__Vote {
   overflow: hidden;
   white-space: nowrap;

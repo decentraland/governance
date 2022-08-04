@@ -49,7 +49,7 @@ const VestingProgress = ({ grant }: Props) => {
       </div>
 
       <div className="VestingProgressBar">
-        {releasedPercentage && releasedPercentage > 0 && (
+        {!!(releasedPercentage && releasedPercentage > 0) && (
           <div
             className="VestingProgressBar__Item VestingProgressBar__Released"
             style={{ width: releasedPercentage + '%' }}
