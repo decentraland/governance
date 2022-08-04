@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
@@ -18,10 +17,6 @@ const CURRENT_GRANTS_PER_PAGE = 4
 const ActiveCommunityGrants = () => {
   const t = useFormatMessage()
   const { grants, isLoadingGrants } = useGrants()
-
-  const handleNavigateToGrants = useCallback(() => {
-    navigate(locations.grants(), { replace: true })
-  }, [])
 
   return (
     <>
@@ -44,9 +39,11 @@ const ActiveCommunityGrants = () => {
             </div>
           )}
         </div>
-        <FullWidthButton onClick={handleNavigateToGrants}>
-          {t('page.home.active_community_grants.view_all_grants')}
-        </FullWidthButton>
+        {!isLoadingGrants && (
+          <FullWidthButton link={locations.grants()}>
+            {t('page.home.active_community_grants.view_all_grants')}
+          </FullWidthButton>
+        )}
       </Container>
     </>
   )

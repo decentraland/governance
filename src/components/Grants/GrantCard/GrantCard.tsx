@@ -57,8 +57,8 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
       ])}
     >
       <div>
-        <GrantCardHeader grant={grant} displayUser={true} />
-        <GrantCardHeadline grant={grant} displayUser={true} expanded={expanded} />
+        <GrantCardHeader grant={grant} />
+        <GrantCardHeadline grant={grant} expanded={expanded} hoverable={hoverable} />
         {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       <GrantCardUpdateInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />
