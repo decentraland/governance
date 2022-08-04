@@ -10,6 +10,7 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { DclData } from '../../api/DclData'
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'
+import useVotesCountByDate from '../../hooks/useVotesCountByDate'
 
 import MetricsCard from './MetricsCard'
 import './MetricsCards.css'
@@ -24,6 +25,10 @@ const flickityOptions = {
   selectedAttraction: 0.01,
   friction: 0.15,
 }
+
+const now = new Date()
+const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 7)
+const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
 
 const MetricsCards = () => {
   const responsive = useResponsive()
@@ -51,6 +56,9 @@ const MetricsCards = () => {
     status: ProposalStatus.Active,
   })
 
+  const { votesCount: votesCountThisWeek } = useVotesCountByDate(oneWeekAgo, now)
+  const { votesCount: votesCountLastMonth } = useVotesCountByDate(oneMonthAgo, now)
+
   const metricsData = useMemo(
     () => [
       {
@@ -60,8 +68,8 @@ const MetricsCards = () => {
       },
       {
         category: t('page.home.metrics.participation'),
-        title: t('page.home.metrics.votes_this_week', { value: 100 }),
-        description: t('page.home.metrics.votes_last_month', { value: 352 }),
+        title: t('page.home.metrics.votes_this_week', { value: votesCountThisWeek }),
+        description: t('page.home.metrics.votes_last_month', { value: votesCountLastMonth }),
       },
       {
         category: t('page.home.metrics.treasury'),
@@ -69,7 +77,7 @@ const MetricsCards = () => {
         description: t('page.home.metrics.consolidated'),
       },
     ],
-    [activeProposals, endingSoonProposals, t, treasuryAmount]
+    [activeProposals, endingSoonProposals, t, treasuryAmount, votesCountThisWeek, votesCountLastMonth]
   )
 
   const content = metricsData.map((item) => (
