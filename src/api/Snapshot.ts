@@ -7,6 +7,8 @@ import fetch from 'isomorphic-fetch'
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { Scores } from '../entities/Votes/utils'
 
+import { inBatches } from './utils'
+
 export type SnapshotQueryResponse<T> = { data: T }
 
 export type SnapshotResult = { ipfsHash: string }
@@ -340,6 +342,39 @@ export class Snapshot extends API {
   async getVotingPower(address: string, space: string) {
     const vp = await this.getLatestScores(space, [address])
     return Object.values(vp)[0]
+  }
+
+  fetchAddressesVotesByDate = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
+    const query = `
+      query ProposalVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
+        votes (
+          where: { space: $space, voter_in: $addresses}
+          first: $first, skip: $skip
+          orderBy: "created",
+          orderDirection: desc
+        ) {
+          voter
+          created
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotVoteResponse>(
+      `/graphql`,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: { space: SNAPSHOT_SPACE, addresses: params.addresses, skip, first: batchSize },
+        })
+    )
+
+    return result?.data?.votes
+  }
+
+  async getAddressesVotesByDate(addresses: string[]) {
+    const batchSize = 5000
+    return await inBatches(this.fetchAddressesVotesByDate, { addresses }, batchSize)
   }
 }
 

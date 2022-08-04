@@ -9,7 +9,7 @@
   margin-bottom: 1px;
 }
 
-.HomeSectionHeader__Description {
+.HomeSectionHeader__Description p.dg.Paragraph {
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
@@ -22,8 +22,8 @@
     font-size: 20px;
   }
 
-  .HomeSectionHeader__Description {
-    width: 60%;
+  .HomeSectionHeader__Description p.dg.Paragraph {
+    width: 65%;
     margin-bottom: 35px;
     font-size: 17px;
     line-height: 28px;
