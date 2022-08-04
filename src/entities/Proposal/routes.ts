@@ -770,7 +770,12 @@ async function getGrants() {
       }
 
       try {
-        const proposal = await ProposalModel.findOne(grant.id)
+        const proposal = await ProposalModel.findOne<ProposalAttributes>(grant.id)
+
+        if (!proposal) {
+          throw new Error('Proposal not found')
+        }
+
         const newGrant: GrantAttributes = {
           id: grant.id,
           size: grant.size,
