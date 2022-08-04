@@ -8,7 +8,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'flickity/css/flickity.css'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import useAbbreviatedNumber from '../../hooks/useAbbreviatedNumber'
+import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import './VotingStatusSummary.css'
@@ -40,7 +40,8 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
   const thresholdReached = threshold <= vpInFavor
   const endDate = Time.from(proposal?.finish_at)
   const timeout = useCountdown(endDate)
-  const abbreviatedThreshold = useAbbreviatedNumber(threshold)
+  const valueFormatter = useAbbreviatedFormatter()
+  const abbreviatedThreshold = valueFormatter(threshold)
   const flickity = useRef<Flickity>()
 
   return (

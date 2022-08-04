@@ -5,7 +5,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DAO_DISCORD_URL, FORUM_URL, NEWSLETTER_URL } from '../../../constants'
 import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
-import useAbbreviatedNumber from '../../../hooks/useAbbreviatedNumber'
+import useAbbreviatedFormatter from '../../../hooks/useAbbreviatedFormatter'
 import useDclData from '../../../hooks/useDclData'
 import useProposals from '../../../hooks/useProposals'
 import Discord from '../../Icon/Discord'
@@ -40,7 +40,7 @@ const ACTIONS: Record<string, ActionProps> = {
 function BottomBanner() {
   const t = useFormatMessage()
   const [data] = useDclData()
-  const totalFunding = useAbbreviatedNumber(data ? Number(data.funding.total) : 0)
+  const fundingFormatter = useAbbreviatedFormatter()
 
   const { proposals: grantsList } = useProposals({
     type: ProposalType.Grant,
@@ -57,7 +57,9 @@ function BottomBanner() {
             <h2 className="BottomBanner__Title">{t('page.home.bottom_banner.title')}</h2>
             <div className="BottomBanner__Stats">
               <Stat
-                title={t('page.home.bottom_banner.funds_value', { value: totalFunding })}
+                title={t('page.home.bottom_banner.funds_value', {
+                  value: fundingFormatter(data ? Number(data.funding.total) : 0),
+                })}
                 description={t('page.home.bottom_banner.funds')}
               />
               <Stat
