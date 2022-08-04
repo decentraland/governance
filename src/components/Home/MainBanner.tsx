@@ -4,11 +4,9 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { DOCS_URL } from '../../constants'
+import { DAO_DISCORD_URL, DOCS_URL } from '../../constants'
 
 import './MainBanner.css'
-
-const DAO_DISCORD_URL = 'https://discord.gg/amkcFrqPBh'
 
 const MainBanner = () => {
   const t = useFormatMessage()

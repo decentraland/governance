@@ -6,6 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
+import BottomBanner from '../components/Home/BottomBanner/BottomBanner'
 import CommunityEngagement from '../components/Home/CommunityEngagement'
 import DaoDelegates from '../components/Home/DaoDelegates'
 import MainBanner from '../components/Home/MainBanner'
@@ -42,6 +43,7 @@ export default function HomePage() {
         <ActiveCommunityGrants />
         <DaoDelegates />
         <CommunityEngagement />
+        <BottomBanner />
       </Container>
     </>
   )
