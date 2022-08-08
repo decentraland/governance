@@ -276,7 +276,6 @@ export default function ProposalPage() {
                   <ProposalUpdatesActions
                     nextUpdate={nextUpdate}
                     currentUpdate={currentUpdate}
-                    pendingUpdates={pendingUpdates}
                     onPostUpdateClick={handlePostUpdateClick}
                   />
                 )}
