@@ -825,6 +825,7 @@ async function getGrants() {
           return current.push({
             ...newGrant,
             update,
+            update_timestamp: update?.updated_at ? Time(update?.updated_at).unix() : 0,
           } as GrantWithUpdateAttributes)
         } catch (error) {
           logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))

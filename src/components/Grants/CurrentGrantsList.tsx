@@ -13,14 +13,14 @@ import GrantCard from './GrantCard/GrantCard'
 import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
-import CurrentGrantsSortingMenu from './CurrentGrantsSortingMenu'
+import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
 
 const CURRENT_GRANTS_PER_PAGE = 8
 
 const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) => {
   const t = useFormatMessage()
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
-  const [sortingKey, setSortingKey] = useState('created_at')
+  const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(grants, [sortingKey], ['desc']), [grants, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
   const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)
@@ -67,7 +67,7 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
             currentGrantsFilteredByCategory={currentGrantsFilteredByCategory}
             onSelectedCategoryChange={setSelectedCategory}
           />
-          <CurrentGrantsSortingMenu onSortingKeyChange={setSortingKey} />
+          <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
         </div>
         <Container className="CurrentGrants__Container">
           {filteredCurrentGrants?.map((grant) => (
