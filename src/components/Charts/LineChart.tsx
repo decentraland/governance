@@ -1,18 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Chart } from 'react-chartjs-2'
 
-import {
-  CategoryScale,
-  ChartArea,
-  ChartData,
-  Chart as ChartJS,
-  Legend,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Title,
-  Tooltip,
-} from 'chart.js'
+import { ChartArea, ChartData, Chart as ChartJS } from 'chart.js'
+import 'chart.js/auto'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
@@ -23,8 +13,6 @@ interface Props {
   unit?: string
   colors?: string[]
 }
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 function createGradient(colors: string[], canvas: CanvasRenderingContext2D, area: ChartArea) {
   if (colors.length === 0) {
