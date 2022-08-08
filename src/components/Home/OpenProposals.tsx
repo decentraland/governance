@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'
+import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
 import locations from '../../modules/locations'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
@@ -20,15 +21,21 @@ enum Tab {
   ParticipatingVP = 'participatingVp',
 }
 
+const now = new Date()
+const twoWeeksAgo = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 14)
+
 const OpenProposals = () => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
-  const { proposals } = useProposals({
+  const { proposals: endingSoonProposals } = useProposals({
     order: 'ASC',
     status: ProposalStatus.Active,
+    timeFrameKey: 'finish_at',
     page: 1,
     itemsPerPage: 5,
   })
+
+  const { proposals: proposalsByParticipatingVP } = useProposalsByParticipatingVP(twoWeeksAgo, now)
 
   return (
     <Container>
@@ -47,14 +54,23 @@ const OpenProposals = () => {
             </Tabs.Tab>
           </Tabs.Left>
         </Tabs>
-        {activeTab === Tab.EndingSoon &&
-          proposals?.data &&
-          proposals.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
-        {activeTab === Tab.EndingSoon && isEmpty(proposals?.data) && (
-          <Empty className="OpenProposals__ActiveEmptyContainer" description="No active proposals" />
+        {activeTab === Tab.EndingSoon && (
+          <>
+            {endingSoonProposals?.data &&
+              endingSoonProposals.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+            {isEmpty(endingSoonProposals?.data) && (
+              <Empty className="OpenProposals__ActiveEmptyContainer" description="No active proposals" />
+            )}
+          </>
         )}
         {activeTab === Tab.ParticipatingVP && (
-          <Empty className="OpenProposals__ActiveEmptyContainer" description="No proposals" />
+          <>
+            {proposalsByParticipatingVP?.data &&
+              proposalsByParticipatingVP.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+            {isEmpty(proposalsByParticipatingVP?.data) && (
+              <Empty className="OpenProposals__ActiveEmptyContainer" description="No proposals" />
+            )}
+          </>
         )}
       </div>
       <FullWidthButton className="OpenProposals__ViewAllButton" link={locations.proposals()}>

@@ -33,6 +33,7 @@ export type FilterProposalList = {
   timeFrame?: string
   timeFrameKey?: string
   order?: 'ASC' | 'DESC'
+  snapshotIds?: string
 }
 
 export type FilterPagination = {
@@ -192,6 +193,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
+    const sqlSnapshotIds = filter.snapshotIds ? filter.snapshotIds?.split(',').map((id) => SQL`${id}`) : null
+    const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
     const result = await this.query(SQL`
     SELECT COUNT(*) as "total"
@@ -203,6 +206,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
       )}
     WHERE "deleted" = FALSE 
+    ${conditional(!!filter.snapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
     ${conditional(
       !!filter.coauthor,
@@ -241,10 +245,11 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
 
-    console.log('t', timeFrameKey)
-
     const orderBy = filter.search ? '"rank"' : `p.${timeFrameKey}`
     const orderDirection = filter.order || 'DESC'
+
+    const sqlSnapshotIds = filter.snapshotIds?.split(',').map((id) => SQL`${id}`)
+    const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
     const proposals = await this.query(SQL`
     SELECT p.*
@@ -256,6 +261,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
         )}
     WHERE "deleted" = FALSE 
+    ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
     ${conditional(
       !!filter.coauthor,

@@ -46,6 +46,7 @@ export type GetProposalsFilter = {
   order?: 'ASC' | 'DESC'
   limit: number
   offset: number
+  snapshotIds?: string
 }
 
 const getGovernanceApiUrl = () => {

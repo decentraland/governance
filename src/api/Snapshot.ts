@@ -455,15 +455,15 @@ export class Snapshot extends API {
   }
 
   fetchProposals = async (
-    params: { start: Date; end: Date; fields: (keyof SnapshotProposal)[] },
+    params: { start: Date; end: Date; orderBy?: string; scoresState?: string; fields: (keyof SnapshotProposal)[] },
     skip: number,
     batchSize: number
   ) => {
     const query = `
-      query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
+      query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!, $scores_state: String!) {
         proposals(
-          where:{space: $space, created_gte: $start, created_lt: $end},
-          orderBy: "created_at",
+          where: { space: $space, created_gte: $start, created_lt: $end, scores_state: $scores_state },
+          orderBy: ${params.orderBy || '"created_at"'},
           orderDirection: asc
           first: $first, skip: $skip
         ) {
@@ -482,6 +482,7 @@ export class Snapshot extends API {
             space: SNAPSHOT_SPACE,
             start: getQueryTimestamp(params.start.getTime()),
             end: getQueryTimestamp(params.end.getTime()),
+            scores_state: params.scoresState || '',
             first: batchSize,
             skip,
           },
@@ -494,6 +495,14 @@ export class Snapshot extends API {
   async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
     const batchSize = 1000
     return await inBatches(this.fetchProposals, { start, end, fields }, batchSize)
+  }
+
+  async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
+    return await this.fetchProposals(
+      { start, end, fields, orderBy: '"scores_total"', scoresState: 'pending' },
+      0,
+      limit
+    )
   }
 }
 
