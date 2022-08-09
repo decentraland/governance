@@ -62,12 +62,12 @@ const DaoDelegates = () => {
       />
       <Loader active={loading} />
       {!loading && (
-        <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} full={isFullList} />
-      )}
-      {!loading && (
-        <FullWidthButton onClick={handleViewAllDelegatesClick}>
-          {t(isFullList ? 'modal.vp_delegation.details.show_less' : 'page.home.dao_delegates.view_all_delegates')}
-        </FullWidthButton>
+        <>
+          <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} full={isFullList} />
+          <FullWidthButton onClick={handleViewAllDelegatesClick}>
+            {t(isFullList ? 'modal.vp_delegation.details.show_less' : 'page.home.dao_delegates.view_all_delegates')}
+          </FullWidthButton>
+        </>
       )}
       <VotingPowerDelegationModal
         onClose={handleModalClose}
