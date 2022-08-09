@@ -67,11 +67,3 @@ export const isBetweenLateThresholdDate = (dueDate?: Date) => {
 
   return Time().isBefore(newDueDate)
 }
-
-export const getOnTimeThresholdDate = (date?: Date) => {
-  if (!date) {
-    return null
-  }
-
-  return Time(date).subtract(THRESHOLD_DAYS_TO_UPDATE, 'day')
-}
