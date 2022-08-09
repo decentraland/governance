@@ -31,10 +31,12 @@ export type FilterProposalList = {
   coauthor: boolean
   search?: string
   timeFrame?: string
+  timeFrameKey?: string
   order?: 'ASC' | 'DESC'
+  snapshotIds?: string
 }
 
-export type FilterPaginatation = {
+export type FilterPagination = {
   limit: number
   offset: number
 }
@@ -190,6 +192,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
+    const timeFrameKey = filter.timeFrameKey || 'created_at'
+    const sqlSnapshotIds = filter.snapshotIds ? filter.snapshotIds?.split(',').map((id) => SQL`${id}`) : null
+    const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
     const result = await this.query(SQL`
     SELECT COUNT(*) as "total"
@@ -201,6 +206,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
       )}
     WHERE "deleted" = FALSE 
+    ${conditional(!!filter.snapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
     ${conditional(
       !!filter.coauthor,
@@ -209,13 +215,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
-    ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} 
+    ${conditional(!!timeFrame, SQL`AND ${timeFrameKey} > ${timeFrame}`)} 
     ${conditional(!!filter.search, SQL`AND "rank" > 0`)}`)
 
     return (!!result && result[0] && Number(result[0].total)) || 0
   }
 
-  static async getProposalList(filter: Partial<FilterProposalList & FilterPaginatation> = {}) {
+  static async getProposalList(filter: Partial<FilterProposalList & FilterPagination> = {}) {
     if (filter.user && !isEthereumAddress(filter.user)) {
       return []
     }
@@ -237,9 +243,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
+    const timeFrameKey = filter.timeFrameKey || 'created_at'
 
-    const orderBy = filter.search ? '"rank"' : 'p.created_at'
+    const orderBy = filter.search ? '"rank"' : `p.${timeFrameKey}`
     const orderDirection = filter.order || 'DESC'
+
+    const sqlSnapshotIds = filter.snapshotIds?.split(',').map((id) => SQL`${id}`)
+    const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
     const proposals = await this.query(SQL`
     SELECT p.*
@@ -251,6 +261,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
         )}
     WHERE "deleted" = FALSE 
+    ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
     ${conditional(
       !!filter.coauthor,
@@ -259,7 +270,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
-    ${conditional(!!timeFrame, SQL`AND "created_at" > ${timeFrame}`)} 
+    ${conditional(!!timeFrame, SQL`AND ${timeFrameKey} > ${timeFrame}`)} 
     ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
     ORDER BY ${conditional(!!filter.coauthor, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
     ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
@@ -281,6 +292,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         return date.subtract(30, 'days').toDate()
       case 'week':
         return date.subtract(1, 'week').toDate()
+      case '2days':
+        return date.subtract(2, 'days').toDate()
       default:
         return null
     }

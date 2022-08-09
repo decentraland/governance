@@ -21,6 +21,7 @@ export default function useParticipatingVP(start: Date, end: Date) {
       {} as Record<string, number>
     )
   }, [proposals])
+
   return {
     participatingVP,
     isLoadingParticipatingVP: state.loading,

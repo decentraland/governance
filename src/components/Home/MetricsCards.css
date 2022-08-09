@@ -1,0 +1,15 @@
+.MetricsCards {
+  display: flex;
+  flex-direction: row;
+  gap: 26px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.MetricsCards__Carousel {
+  margin-bottom: 40px;
+}
+
+.MetricsCards__Carousel .flickity-slider {
+  margin: 0 16px !important;
+}

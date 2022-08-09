@@ -10,6 +10,8 @@ import BottomBanner from '../components/Home/BottomBanner/BottomBanner'
 import CommunityEngagement from '../components/Home/CommunityEngagement'
 import DaoDelegates from '../components/Home/DaoDelegates'
 import MainBanner from '../components/Home/MainBanner'
+import MetricsCards from '../components/Home/MetricsCards'
+import OpenProposals from '../components/Home/OpenProposals'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -40,6 +42,10 @@ export default function HomePage() {
       <Navigation activeTab={NavigationTab.Home} />
       <Container>
         <MainBanner />
+      </Container>
+      <MetricsCards />
+      <Container>
+        <OpenProposals />
         <ActiveCommunityGrants />
         <DaoDelegates />
         <CommunityEngagement />
