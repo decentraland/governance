@@ -29,6 +29,7 @@
   .CommunityEngagement .CommunityEngagement__Header p {
     font-size: 17px;
     line-height: 28px;
+    width: 60%;
   }
 
   .CommunityEngagement > .ui.stackable.grid .row .column {

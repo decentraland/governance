@@ -1,18 +1,22 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { CANDIDATE_ADDRESSES } from '../../../constants'
+import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
-import Candidates from '../../../modules/delegates/candidates.json'
-import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
-import VotingPowerDelegationList from '../VotingPowerDelegationList/VotingPowerDelegationList'
+import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import DelegatesTable from '../../Table/DelegatesTable'
 
 import './VotingPowerDelegationModal.css'
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
-  userVp: number
+  setSelectedCandidate: (candidate: Candidate) => void
 }
 
 export type Candidate = Delegate & {
@@ -25,38 +29,44 @@ export type Candidate = Delegate & {
   most_important_issue: string
 }
 
-function VotingPowerDelegationModal({ onClose, userVp, ...props }: VotingPowerDelegationModalProps) {
-  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
+function VotingPowerDelegationModal({ onClose, setSelectedCandidate, ...props }: VotingPowerDelegationModalProps) {
   const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
+  const [userAddress] = useAuthContext()
+  const { ownVotingPower } = useVotingPowerBalance(userAddress)
 
-  const handleOnDelegateClick = (delegate: Delegate) => {
-    const candidateInfo = Candidates.find((deleg) => deleg.address.toLowerCase() === delegate.address.toLowerCase())
-    setSelectedCandidate({ ...delegate, ...candidateInfo! })
-  }
-
-  const handleClose = useCallback(() => {
-    onClose()
-    setSelectedCandidate(null)
-  }, [onClose])
+  const t = useFormatMessage()
 
   return (
     <Modal
       {...props}
-      onClose={handleClose}
+      onClose={onClose}
       size="small"
       closeIcon={<Close />}
       className="GovernanceContentModal VotingPowerDelegationModal"
     >
-      {!selectedCandidate && (
-        <VotingPowerDelegationList delegates={delegates} vp={userVp} onDelegateClick={handleOnDelegateClick} />
-      )}
-      {selectedCandidate && (
-        <VotingPowerDelegationDetail
-          userVP={userVp}
-          candidate={selectedCandidate}
-          onBackClick={() => setSelectedCandidate(null)}
-        />
-      )}
+      <Modal.Header className="VotingPowerDelegationModal__Header">{t('modal.vp_delegation.title')}</Modal.Header>
+      <Modal.Description className="VotingPowerDelegationModal__Description">
+        <Markdown>
+          {(userAddress
+            ? t('modal.vp_delegation.description', { vp: ownVotingPower })
+            : t('modal.vp_delegation.description_generic')) +
+            ' ' +
+            t('modal.vp_delegation.read_more')}
+        </Markdown>
+      </Modal.Description>
+      <Modal.Content>
+        <DelegatesTable delegates={delegates} setSelectedCandidate={setSelectedCandidate} full />
+      </Modal.Content>
+      <Button
+        className="VotingPowerDelegationModal__PickButton"
+        fluid
+        primary
+        href={EDIT_DELEGATE_SNAPSHOT_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('modal.vp_delegation.pick_button')}
+      </Button>
     </Modal>
   )
 }
