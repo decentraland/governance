@@ -140,6 +140,11 @@ export type SnapshotProposal = {
   votes: number
 }
 
+enum SnapshotScoresState {
+  Pending = 'pending',
+  Final = 'final',
+}
+
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
@@ -455,7 +460,13 @@ export class Snapshot extends API {
   }
 
   fetchProposals = async (
-    params: { start: Date; end: Date; orderBy?: string; scoresState?: string; fields: (keyof SnapshotProposal)[] },
+    params: {
+      start: Date
+      end: Date
+      orderBy?: string
+      scoresState?: SnapshotScoresState
+      fields: (keyof SnapshotProposal)[]
+    },
     skip: number,
     batchSize: number
   ) => {
@@ -499,7 +510,7 @@ export class Snapshot extends API {
 
   async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
     return await this.fetchProposals(
-      { start, end, fields, orderBy: '"scores_total"', scoresState: 'pending' },
+      { start, end, fields, orderBy: '"scores_total"', scoresState: SnapshotScoresState.Pending },
       0,
       limit
     )

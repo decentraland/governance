@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { isEmpty } from 'lodash'
 
@@ -38,7 +37,7 @@ const OpenProposals = () => {
   const { proposals: proposalsByParticipatingVP } = useProposalsByParticipatingVP(twoWeeksAgo, now)
 
   return (
-    <Container>
+    <>
       <HomeSectionHeader
         title={t('page.home.open_proposals.title')}
         description={t('page.home.open_proposals.description')}
@@ -76,7 +75,7 @@ const OpenProposals = () => {
       <FullWidthButton className="OpenProposals__ViewAllButton" link={locations.proposals()}>
         {t('page.home.open_proposals.view_all_proposals')}
       </FullWidthButton>
-    </Container>
+    </>
   )
 }
 
