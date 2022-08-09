@@ -24,24 +24,26 @@ const ActiveCommunityGrants = () => {
           title={t('page.home.active_community_grants.title')}
           description={t('page.home.active_community_grants.description')}
         />
-        <Loader active={isLoadingGrants} />
+        {isLoadingGrants && (
+          <div className="ActiveCommunityGrants__LoaderContainer">
+            <Loader active />
+          </div>
+        )}
         {!isLoadingGrants && (
           <div className="ActiveCommunityGrants__Container">
             {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant) => (
               <div className="HoverableCardContainer" key={`HoverableCard__${grant.id}`}>
                 <div className="HoverableCardContainer__Content">
-                  <GrantCard grant={grant} hoverable={true} />
+                  <GrantCard grant={grant} hoverable />
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-      {!isLoadingGrants && (
-        <FullWidthButton link={locations.grants()}>
-          {t('page.home.active_community_grants.view_all_grants')}
-        </FullWidthButton>
-      )}
+      <FullWidthButton link={locations.grants()}>
+        {t('page.home.active_community_grants.view_all_grants')}
+      </FullWidthButton>
     </>
   )
 }

@@ -151,8 +151,10 @@ export async function getProposals(req: WithAuth<Request>) {
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
+  const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
+  const snapshotIds = query.snapshotIds && String(query.snapshotIds)
 
   let subscribed: string | undefined = undefined
   if (query.subscribed) {
@@ -168,7 +170,17 @@ export async function getProposals(req: WithAuth<Request>) {
   }
 
   const [total, data] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed, coauthor }),
+    ProposalModel.getProposalTotal({
+      type,
+      status,
+      user,
+      search,
+      timeFrame,
+      timeFrameKey,
+      subscribed,
+      coauthor,
+      snapshotIds,
+    }),
     ProposalModel.getProposalList({
       type,
       status,
@@ -177,9 +189,11 @@ export async function getProposals(req: WithAuth<Request>) {
       coauthor,
       search,
       timeFrame,
+      timeFrameKey,
       order,
       offset,
       limit,
+      snapshotIds,
     }),
   ])
 
@@ -621,7 +635,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   const user = req.auth!
   const id = req.params.proposal
   if (!isCommitee(user)) {
-    throw new RequestError('Only committed menbers can enact a proposal', RequestError.Forbidden)
+    throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)

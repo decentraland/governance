@@ -75,7 +75,7 @@ const CurrentGrantsCategoryFilters = ({ currentGrantsFilteredByCategory, onSelec
     <>
       {isMobile ? (
         <Flickity
-          className={'CurrentGrantsCategoryFilters__Carousel'}
+          className="CurrentGrantsCategoryFilters__Carousel"
           options={flickityOptions}
           flickityRef={(ref) => (flickity.current = ref)}
         >
