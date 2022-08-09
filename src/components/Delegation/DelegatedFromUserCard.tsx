@@ -101,7 +101,6 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, ownVp }: Deleg
         </Card.Content>
       </Card>
       <VotingPowerDelegationModal
-        userVP={ownVp}
         open={isDelegationModalOpen}
         setSelectedCandidate={handleSelectedCandidate}
         onClose={handleClose}

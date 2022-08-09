@@ -26,9 +26,13 @@ const DaoDelegates = () => {
   const { ownVotingPower } = useVotingPowerInformation(address)
   const loading = !delegates && authState.loading
 
-  const handleViewAllDelegatesClick = (state: boolean) => {
+  const toggleFullList = (state: boolean) => {
     setIsFullList(state)
     setIsFullListOpened(state)
+  }
+
+  const handleViewAllDelegatesClick = () => {
+    toggleFullList(true)
   }
 
   const handleSelectedCandidate = (candidate: Candidate) => {
@@ -47,7 +51,7 @@ const DaoDelegates = () => {
 
   const handleModalClose = () => {
     setSelectedCandidate(null)
-    handleViewAllDelegatesClick(false)
+    toggleFullList(false)
   }
 
   return (
@@ -61,14 +65,13 @@ const DaoDelegates = () => {
         <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} full={isFullList} />
       )}
       {!loading && (
-        <FullWidthButton onClick={() => handleViewAllDelegatesClick(true)}>
+        <FullWidthButton onClick={handleViewAllDelegatesClick}>
           {t(isFullList ? 'modal.vp_delegation.details.show_less' : 'page.home.dao_delegates.view_all_delegates')}
         </FullWidthButton>
       )}
       <VotingPowerDelegationModal
         onClose={handleModalClose}
         setSelectedCandidate={handleSelectedCandidate}
-        userVP={0}
         open={isFullListOpened}
       />
       {selectedCandidate && (

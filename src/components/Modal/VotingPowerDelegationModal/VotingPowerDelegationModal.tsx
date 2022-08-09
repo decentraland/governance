@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -9,12 +10,12 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { CANDIDATE_ADDRESSES } from '../../../constants'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
+import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
 import DelegatesTable from '../../Table/DelegatesTable'
 
 import './VotingPowerDelegationModal.css'
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
-  userVP: number
   setSelectedCandidate: (candidate: Candidate) => void
 }
 
@@ -28,13 +29,10 @@ export type Candidate = Delegate & {
   most_important_issue: string
 }
 
-function VotingPowerDelegationModal({
-  onClose,
-  userVP,
-  setSelectedCandidate,
-  ...props
-}: VotingPowerDelegationModalProps) {
+function VotingPowerDelegationModal({ onClose, setSelectedCandidate, ...props }: VotingPowerDelegationModalProps) {
   const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
+  const [userAddress] = useAuthContext()
+  const { ownVotingPower } = useVotingPowerBalance(userAddress)
 
   const t = useFormatMessage()
 
@@ -48,7 +46,13 @@ function VotingPowerDelegationModal({
     >
       <Modal.Header className="VotingPowerDelegationModal__Header">{t('modal.vp_delegation.title')}</Modal.Header>
       <Modal.Description className="VotingPowerDelegationModal__Description">
-        <Markdown>{t('modal.vp_delegation.description', { vp: userVP })}</Markdown>
+        <Markdown>
+          {(userAddress
+            ? t('modal.vp_delegation.description', { vp: ownVotingPower })
+            : t('modal.vp_delegation.description_generic')) +
+            ' ' +
+            t('modal.vp_delegation.read_more')}
+        </Markdown>
       </Modal.Description>
       <Modal.Content>
         <DelegatesTable delegates={delegates} setSelectedCandidate={setSelectedCandidate} full />
