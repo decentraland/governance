@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
-import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
 import Candidates from '../../modules/delegates/candidates.json'
 import Sort from '../Icon/Sort'
-import VotingPowerDelegationDetail from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import DelegateRow from '../Table/DelegatesTableRow'
 
@@ -22,16 +18,14 @@ type DelegateKey = keyof Delegate
 
 interface Props {
   delegates: Delegate[]
-  userAddress: string | null
+  setSelectedCandidate: (candidate: Candidate) => void
+  full?: boolean
 }
 
-const DelegatesTable = ({ delegates, userAddress }: Props) => {
+const DelegatesTable = ({ delegates, setSelectedCandidate, full }: Props) => {
   const t = useFormatMessage()
   const [sortingKey, setSortingKey] = useState<DelegateKey>(DEFAULT_SORTING_KEY)
   const { sorted: delegatesSorted, changeSort, isDescendingSort } = useSortingByKey(delegates, sortingKey)
-  const { ownVotingPower } = useVotingPowerInformation(userAddress)
-  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
-  const clearSelectedCandidate = () => setSelectedCandidate(null)
 
   const handleOnDelegateClick = (delegate: Delegate) => {
     const candidateInfo = Candidates.find((deleg) => deleg.address.toLowerCase() === delegate.address.toLowerCase())
@@ -46,6 +40,8 @@ const DelegatesTable = ({ delegates, userAddress }: Props) => {
     }
   }
 
+  const delegatesToDisplay = full ? delegates.length : DISPLAYED_CANDIDATES
+
   return (
     <>
       <div className="DelegatesTable__Wrapper">
@@ -57,7 +53,7 @@ const DelegatesTable = ({ delegates, userAddress }: Props) => {
                   {t('page.home.dao_delegates.candidate_name')}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="DelegatesTable__ShadowBox DelegatesTable__ShadowBoxHeader" />
-                <Table.HeaderCell className="DelegatesTable__PaddedColumn" onClick={() => updateSort('lastVoted')}>
+                <Table.HeaderCell onClick={() => updateSort('lastVoted')}>
                   <span>
                     {t('page.home.dao_delegates.last_voted')}
                     <Sort descending={isDescendingSort} selected={sortingKey === 'lastVoted'} />
@@ -85,7 +81,7 @@ const DelegatesTable = ({ delegates, userAddress }: Props) => {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {delegatesSorted.slice(0, DISPLAYED_CANDIDATES).map((delegate, index) => (
+              {delegatesSorted.slice(0, delegatesToDisplay).map((delegate, index) => (
                 <DelegateRow
                   key={delegate.address + 'row' + index}
                   delegate={delegate}
@@ -96,21 +92,6 @@ const DelegatesTable = ({ delegates, userAddress }: Props) => {
           </Table>
         </div>
       </div>
-      {selectedCandidate && (
-        <Modal
-          onClose={clearSelectedCandidate}
-          size="small"
-          closeIcon={<Close />}
-          className="GovernanceContentModal VotingPowerDelegationModal"
-          open={!!selectedCandidate}
-        >
-          <VotingPowerDelegationDetail
-            userVP={ownVotingPower}
-            candidate={selectedCandidate}
-            onBackClick={clearSelectedCandidate}
-          />
-        </Modal>
-      )}
     </>
   )
 }

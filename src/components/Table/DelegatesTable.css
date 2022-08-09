@@ -60,10 +60,6 @@ thead.DelegatesTable__Header > tr > th span {
   gap: 4px;
 }
 
-.DelegatesTable__PaddedColumn {
-  padding-left: 28px !important;
-}
-
 .DelegatesTable .DelegatesTable__Header tr th {
   font-style: normal !important;
   font-weight: 600 !important;
