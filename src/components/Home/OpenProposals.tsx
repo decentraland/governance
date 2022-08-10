@@ -64,9 +64,9 @@ const OpenProposals = () => {
         )}
         {activeTab === Tab.ParticipatingVP && (
           <>
-            {proposalsByParticipatingVP?.data &&
-              proposalsByParticipatingVP.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
-            {isEmpty(proposalsByParticipatingVP?.data) && (
+            {proposalsByParticipatingVP &&
+              proposalsByParticipatingVP.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+            {isEmpty(proposalsByParticipatingVP) && (
               <Empty className="OpenProposals__ActiveEmptyContainer" description="No proposals" />
             )}
           </>
