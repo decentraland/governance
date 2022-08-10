@@ -3,10 +3,9 @@ import React from 'react'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import { isEmpty } from 'lodash'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import CurrentGrantsList from '../components/Grants/CurrentGrantsList'
 import PastGrantsList from '../components/Grants/PastGrantsList'
@@ -19,8 +18,6 @@ import { isUnderMaintenance } from '../modules/maintenance'
 
 export default function GrantsPage() {
   const t = useFormatMessage()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const { grants, isLoadingGrants } = useGrants()
   const isLoading = isEmpty(grants) && isLoadingGrants
 
@@ -49,7 +46,9 @@ export default function GrantsPage() {
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
         <>
-          {isMobile && <BurgerMenuContent className="Padded" navigationOnly={true} activeTab={NavigationTab.Grants} />}
+          <Mobile>
+            <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Grants} />
+          </Mobile>
           <BurgerMenuPushableLayout>
             <Container>
               {!isEmpty(grants.current) && <CurrentGrantsList grants={grants.current} />}

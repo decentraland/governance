@@ -2,11 +2,10 @@ import React, { useMemo } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
@@ -46,8 +45,6 @@ export default function WrappingPage() {
   const t = useFormatMessage()
   const [data] = useDclData()
   const balances = useMemo(() => (data && aggregateBalances(data.balances)) || [], [data])
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
   return (
     <>
@@ -61,9 +58,9 @@ export default function WrappingPage() {
         {!data && <LoadingView withNavigation />}
         {data && (
           <>
-            {isMobile && (
-              <BurgerMenuContent className="Padded" navigationOnly={true} activeTab={NavigationTab.Transparency} />
-            )}
+            <Mobile>
+              <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Transparency} />
+            </Mobile>
             <BurgerMenuPushableLayout>
               <Container className="TransparencyContainer">
                 <Grid className="TransparencyGrid" stackable>
