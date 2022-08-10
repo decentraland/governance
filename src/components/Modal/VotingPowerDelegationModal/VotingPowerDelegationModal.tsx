@@ -17,6 +17,7 @@ import './VotingPowerDelegationModal.css'
 
 type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
   setSelectedCandidate: (candidate: Candidate) => void
+  showPickOtherDelegateButton?: boolean
 }
 
 export type Candidate = Delegate & {
@@ -29,7 +30,12 @@ export type Candidate = Delegate & {
   most_important_issue: string
 }
 
-function VotingPowerDelegationModal({ onClose, setSelectedCandidate, ...props }: VotingPowerDelegationModalProps) {
+function VotingPowerDelegationModal({
+  onClose,
+  setSelectedCandidate,
+  showPickOtherDelegateButton,
+  ...props
+}: VotingPowerDelegationModalProps) {
   const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
   const [userAddress] = useAuthContext()
   const { ownVotingPower } = useVotingPowerBalance(userAddress)
@@ -57,16 +63,18 @@ function VotingPowerDelegationModal({ onClose, setSelectedCandidate, ...props }:
       <Modal.Content>
         <DelegatesTable delegates={delegates} setSelectedCandidate={setSelectedCandidate} full />
       </Modal.Content>
-      <Button
-        className="VotingPowerDelegationModal__PickButton"
-        fluid
-        primary
-        href={EDIT_DELEGATE_SNAPSHOT_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('modal.vp_delegation.pick_button')}
-      </Button>
+      {showPickOtherDelegateButton && (
+        <Button
+          className="VotingPowerDelegationModal__PickButton"
+          fluid
+          primary
+          href={EDIT_DELEGATE_SNAPSHOT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('modal.vp_delegation.pick_button')}
+        </Button>
+      )}
     </Modal>
   )
 }

@@ -63,7 +63,7 @@ const DaoDelegates = () => {
       <Loader active={loading} />
       {!loading && (
         <>
-          <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} full={isFullList} />
+          <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} />
           <FullWidthButton onClick={handleViewAllDelegatesClick}>
             {t(isFullList ? 'modal.vp_delegation.details.show_less' : 'page.home.dao_delegates.view_all_delegates')}
           </FullWidthButton>
