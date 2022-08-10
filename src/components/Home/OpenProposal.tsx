@@ -88,9 +88,7 @@ const OpenProposal = ({ proposal }: Props) => {
         )}
       </div>
       <Mobile>
-        <div>
-          <ChevronRight color="var(--black-400)" />
-        </div>
+        <ChevronRight color="var(--black-400)" />
       </Mobile>
     </Link>
   )
