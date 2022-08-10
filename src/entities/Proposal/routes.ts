@@ -761,13 +761,15 @@ async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string)
 
   if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
     return { ...updates[0], index: updates.length }
-  } else {
-    const currentUpdate = getPublicUpdates(updates)[0]
-    if (!currentUpdate) {
-      return null
-    }
-    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) + 1 }
   }
+
+  const publicUpdates = getPublicUpdates(updates)
+  const currentUpdate = publicUpdates[0]
+  if (!currentUpdate) {
+    return null
+  }
+
+  return { ...currentUpdate, index: publicUpdates.length }
 }
 
 async function getGrants() {
