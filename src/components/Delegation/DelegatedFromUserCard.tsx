@@ -104,6 +104,7 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, ownVp }: Deleg
         open={isDelegationModalOpen}
         setSelectedCandidate={handleSelectedCandidate}
         onClose={handleClose}
+        showPickOtherDelegateButton
       />
       {selectedCandidate && (
         <Modal
