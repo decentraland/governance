@@ -4,6 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import { isEmpty } from 'lodash'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -54,7 +55,9 @@ const OpenProposal = ({ proposal }: Props) => {
         <div>
           <h3 className="OpenProposal__Title">{title}</h3>
           <span className="OpenProposal__Details">
-            <CategoryPill type={proposal.type} size="small" />
+            <Mobile>
+              <CategoryPill type={proposal.type} size="small" />
+            </Mobile>
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}
               <Username className="OpenProposal__Username" address={user} addressOnly />
@@ -84,6 +87,11 @@ const OpenProposal = ({ proposal }: Props) => {
           </>
         )}
       </div>
+      <Mobile>
+        <div>
+          <ChevronRight color="var(--black-400)" />
+        </div>
+      </Mobile>
     </Link>
   )
 }
