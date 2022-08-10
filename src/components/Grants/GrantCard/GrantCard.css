@@ -70,3 +70,14 @@
     height: 191px;
   }
 }
+
+.GrantCard__UpdateContainer {
+  display: none;
+}
+
+@media (min-width: 425px) {
+  .GrantCard__UpdateContainer {
+    display: block !important;
+    padding-bottom: 16px !important;
+  }
+}

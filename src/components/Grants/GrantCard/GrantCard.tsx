@@ -8,12 +8,12 @@ import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../../entit
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import locations from '../../../modules/locations'
 import { PillColor } from '../../Common/Pill'
+import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
 
 import CliffProgress from './CliffProgress'
 import './GrantCard.css'
 import GrantCardHeader from './GrantCardHeader'
 import GrantCardHeadline from './GrantCardHeadline'
-import GrantCardUpdateInfo from './GrantCardUpdateInfo'
 import VestingProgress from './VestingProgress'
 
 export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -61,7 +61,9 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
         <GrantCardHeadline grant={grant} expanded={expanded} hoverable={hoverable} />
         {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
-      <GrantCardUpdateInfo grant={grant} proposalInCliffPeriod={proposalInCliffPeriod} />
+      <div className="GrantCard__UpdateContainer">
+        <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
+      </div>
     </div>
   )
 }
