@@ -20,6 +20,7 @@
 @media (min-width: 991px) {
   .OpenProposal__VotingSection {
     display: flex;
+    min-width: 420px;
   }
 }
 
@@ -58,6 +59,12 @@
 @media (min-width: 768px) {
   .OpenProposal__Title {
     max-width: 420px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .OpenProposal__Title {
+    max-width: 600px;
   }
 }
 
@@ -113,9 +120,21 @@
   margin: 0;
 }
 
-.OpenProposal__VotingContainer {
-  width: 220px;
-  margin-left: 40px;
+.OpenProposal__PillContainer {
+  min-width: 148px;
+}
+
+.OpenProposal__VoteSection {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.OpenProposal__VotingContainer,
+.OpenProposal__VotingContainer--Voted {
+  width: 100%;
+  margin-left: 20px;
+  max-width: 220px;
 }
 
 .OpenProposal__VotingVpNeeded {
@@ -126,6 +145,9 @@
   text-transform: uppercase;
   color: var(--black-800);
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .OpenProposal__VoteContainer {

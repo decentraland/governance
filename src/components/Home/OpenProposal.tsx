@@ -28,7 +28,9 @@ const OpenProposal = ({ proposal }: Props) => {
   const { comments } = useProposalComments(proposal.id)
   const { votes } = useProposalVotes(proposal.id)
   const [account] = useAuthContext()
-  const hasVote = account && !isEmpty(votes?.[account])
+  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
+  const hasVote = !!account && !isEmpty(votes?.[account])
+  const vote = hasVote && !!votes?.[account].choice ? choices[votes?.[account].choice - 1] : undefined
   const results = useMemo(
     () => calculateResult(proposal?.snapshot_proposal?.choices || [], votes || {}),
     [proposal?.snapshot_proposal?.choices, votes]
@@ -73,19 +75,28 @@ const OpenProposal = ({ proposal }: Props) => {
         </div>
       </div>
       <div className="OpenProposal__Section OpenProposal__VotingSection">
-        <CategoryPill type={proposal.type} />
-        {!hasVote && (
-          <>
-            <div className="OpenProposal__VotingContainer">
-              <p className="OpenProposal__VotingConsensus">{votingConsensusText}</p>
-              <p className="OpenProposal__VotingVpNeeded">{votingNeededText}</p>
-            </div>
-            <div className="OpenProposal__VoteContainer">
-              <span className="OpenProposal__VoteText">Vote</span>
-              <ChevronRight color="var(--black-400)" />
-            </div>
-          </>
-        )}
+        <div className="OpenProposal__PillContainer">
+          <CategoryPill type={proposal.type} />
+        </div>
+        <div className="OpenProposal__VoteSection">
+          <div className={`OpenProposal__VotingContainer${hasVote ? '--Voted' : ''}`}>
+            {hasVote ? (
+              <>
+                <p className="OpenProposal__VotingConsensus">{t('page.home.open_proposals.you_voted')}</p>
+                <p className="OpenProposal__VotingVpNeeded">{vote || '-'}</p>
+              </>
+            ) : (
+              <>
+                <p className="OpenProposal__VotingConsensus">{votingConsensusText}</p>
+                <p className="OpenProposal__VotingVpNeeded">{votingNeededText}</p>
+              </>
+            )}
+          </div>
+          <div className="OpenProposal__VoteContainer">
+            {!hasVote && <span className="OpenProposal__VoteText">{t('page.home.open_proposals.vote')}</span>}
+            <ChevronRight color="var(--black-400)" />
+          </div>
+        </div>
       </div>
       <Mobile>
         <ChevronRight color="var(--black-400)" />

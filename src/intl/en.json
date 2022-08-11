@@ -446,7 +446,9 @@
         "vp_needed": "{value} VP needed",
         "vp": "{value} VP",
         "participating_vp": "Participating VP",
-        "view_all_proposals": "View all proposals"
+        "view_all_proposals": "View all proposals",
+        "you_voted": "You voted",
+        "vote": "Vote"
       },
       "active_community_grants": {
         "title": "Active Community Grants",
