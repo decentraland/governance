@@ -43,56 +43,54 @@ const DelegatesTable = ({ delegates, setSelectedCandidate, full }: Props) => {
   const delegatesToDisplay = full ? delegates.length : DISPLAYED_CANDIDATES
 
   return (
-    <>
-      <div className="DelegatesTable__Wrapper">
-        <div className="DelegatesTable__Scroller">
-          <Table unstackable basic="very" className="DelegatesTable">
-            <Table.Header className="DelegatesTable__Header">
-              <Table.Row>
-                <Table.HeaderCell className="DelegatesTable__CandidateNameHeader DelegatesTable__Sticky">
-                  {t('page.home.dao_delegates.candidate_name')}
-                </Table.HeaderCell>
-                <Table.HeaderCell className="DelegatesTable__ShadowBox DelegatesTable__ShadowBoxHeader" />
-                <Table.HeaderCell onClick={() => updateSort('lastVoted')}>
-                  <span>
-                    {t('page.home.dao_delegates.last_voted')}
-                    <Sort descending={isDescendingSort} selected={sortingKey === 'lastVoted'} />
-                  </span>
-                </Table.HeaderCell>
-                <Table.HeaderCell onClick={() => updateSort('timesVoted')}>
-                  <span>
-                    {t('page.home.dao_delegates.times_voted')}
-                    <Sort descending={isDescendingSort} selected={sortingKey === 'timesVoted'} />
-                  </span>
-                </Table.HeaderCell>
-                <Table.HeaderCell onClick={() => updateSort('pickedBy')}>
-                  <span>
-                    {t('page.home.dao_delegates.picked_by')}
-                    <Sort descending={isDescendingSort} selected={sortingKey === 'pickedBy'} />
-                  </span>
-                </Table.HeaderCell>
-                <Table.HeaderCell onClick={() => updateSort('totalVP')}>
-                  <span>
-                    {t('page.home.dao_delegates.total_vp')}
-                    <Sort descending={isDescendingSort} selected={sortingKey === 'totalVP'} />
-                  </span>
-                </Table.HeaderCell>
-                <Table.HeaderCell className="DelegatesTable__ArrowColumn" />
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {delegatesSorted.slice(0, delegatesToDisplay).map((delegate, index) => (
-                <DelegateRow
-                  key={delegate.address + 'row' + index}
-                  delegate={delegate}
-                  onDelegateSelected={handleOnDelegateClick}
-                />
-              ))}
-            </Table.Body>
-          </Table>
-        </div>
+    <div className="DelegatesTable__Wrapper">
+      <div className="DelegatesTable__Scroller">
+        <Table unstackable basic="very" className="DelegatesTable">
+          <Table.Header className="DelegatesTable__Header">
+            <Table.Row>
+              <Table.HeaderCell className="DelegatesTable__CandidateNameHeader DelegatesTable__Sticky">
+                {t('page.home.dao_delegates.candidate_name')}
+              </Table.HeaderCell>
+              <Table.HeaderCell className="DelegatesTable__ShadowBox DelegatesTable__ShadowBoxHeader" />
+              <Table.HeaderCell onClick={() => updateSort('lastVoted')}>
+                <span>
+                  {t('page.home.dao_delegates.last_voted')}
+                  <Sort descending={isDescendingSort} selected={sortingKey === 'lastVoted'} />
+                </span>
+              </Table.HeaderCell>
+              <Table.HeaderCell onClick={() => updateSort('timesVoted')}>
+                <span>
+                  {t('page.home.dao_delegates.times_voted')}
+                  <Sort descending={isDescendingSort} selected={sortingKey === 'timesVoted'} />
+                </span>
+              </Table.HeaderCell>
+              <Table.HeaderCell onClick={() => updateSort('pickedBy')}>
+                <span>
+                  {t('page.home.dao_delegates.picked_by')}
+                  <Sort descending={isDescendingSort} selected={sortingKey === 'pickedBy'} />
+                </span>
+              </Table.HeaderCell>
+              <Table.HeaderCell onClick={() => updateSort('totalVP')}>
+                <span>
+                  {t('page.home.dao_delegates.total_vp')}
+                  <Sort descending={isDescendingSort} selected={sortingKey === 'totalVP'} />
+                </span>
+              </Table.HeaderCell>
+              <Table.HeaderCell className="DelegatesTable__ArrowColumn" />
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {delegatesSorted.slice(0, delegatesToDisplay).map((delegate, index) => (
+              <DelegateRow
+                key={delegate.address + 'row' + index}
+                delegate={delegate}
+                onDelegateSelected={handleOnDelegateClick}
+              />
+            ))}
+          </Table.Body>
+        </Table>
       </div>
-    </>
+    </div>
   )
 }
 

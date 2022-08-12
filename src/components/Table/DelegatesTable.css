@@ -1,7 +1,7 @@
 .DelegatesTable__Wrapper {
   position: relative;
   background: var(--white-900);
-  border: 1px solid var(--black-300);
+  border: 1px solid var(--black-100);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
   margin-bottom: 16px;

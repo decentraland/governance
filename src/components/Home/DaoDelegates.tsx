@@ -14,6 +14,8 @@ import VotingPowerDelegationDetail from '../Modal/VotingPowerDelegationDetail/Vo
 import VotingPowerDelegationModal, { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import DelegatesTable from '../Table/DelegatesTable'
 
+import './DAODelegates.css'
+import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
 
 const DaoDelegates = () => {
@@ -60,7 +62,11 @@ const DaoDelegates = () => {
         title={t('page.home.dao_delegates.title')}
         description={t('page.home.dao_delegates.description')}
       />
-      <Loader active={loading} />
+      {loading && (
+        <div className="DAODelegates__Loader">
+          <HomeLoader>{t('page.home.dao_delegates.fetching')}</HomeLoader>
+        </div>
+      )}
       {!loading && (
         <>
           <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} />
