@@ -31,14 +31,14 @@ function TopVoters() {
               <Header sub>{t('page.home.community_engagement.top_voters')}</Header>
             </Table.HeaderCell>
             <Table.HeaderCell textAlign="center">
-              <Header sub>{t('page.home.community_engagement.Votes')}</Header>
+              <Header sub>{t('page.home.community_engagement.votes')}</Header>
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         {!isLoadingTopVoters && <Table.Body>{topVoters.map(createRow)}</Table.Body>}
         {isLoadingTopVoters && (
           <div className="TopVoters__Loader">
-            <HomeLoader>Fetching top voters...</HomeLoader>
+            <HomeLoader>{t('page.home.community_engagement.fetching_votes')}</HomeLoader>
           </div>
         )}
       </Table>
