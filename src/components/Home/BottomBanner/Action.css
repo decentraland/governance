@@ -1,8 +1,10 @@
 .Action {
-  display: block;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0px 4px 9px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 9px rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   padding: 16px;
 }
@@ -13,10 +15,15 @@
   border-radius: 30px;
   width: var(--size);
   height: var(--size);
-  padding: 5px;
+  padding: 8px;
+  margin-right: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.Action:first-child .Action__Icon {
+  padding: 5px;
 }
 
 .Action .Action__Icon svg {
@@ -34,6 +41,7 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
+
   color: var(--white-900);
 }
 

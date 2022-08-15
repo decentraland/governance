@@ -1,4 +1,7 @@
 .BottomBanner {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   background: linear-gradient(180deg, #a524b3 0%, var(--primary) 100%);
   border-radius: 8px;
   margin-top: 40px;
@@ -6,20 +9,8 @@
   width: 100%;
 }
 
-@media (min-width: 768px) {
-  .BottomBanner {
-    padding: 28px 25px 28px 44px;
-  }
-}
-
-.BottomBanner .ui.grid.stackable > .row > .column {
-  padding: 14px 0 !important;
-}
-
-@media (min-width: 768px) {
-  .BottomBanner .ui.grid.stackable > .row > .column {
-    padding: 14px !important;
-  }
+.BottomBanner__Info {
+  padding-bottom: 24px;
 }
 
 .BottomBanner .BottomBanner__Title {
@@ -33,28 +24,41 @@
   margin-bottom: 0;
 }
 
+.BottomBanner .BottomBanner__Stats {
+  display: none;
+}
+
+.BottomBanner .BottomBanner__Stats > .Stat {
+  margin-right: 74px;
+}
+
+.BottomBanner .BottomBanner__Actions .Action:not(:last-child) {
+  margin-bottom: 16px;
+}
+
 @media (min-width: 768px) {
+  .BottomBanner {
+    padding: 28px 25px 28px 44px;
+    flex-direction: row;
+  }
+
+  .BottomBanner__Info {
+    padding-bottom: 0;
+  }
+
   .BottomBanner .BottomBanner__Title {
     font-size: 36px;
     line-height: 43px;
     margin-bottom: 20px;
   }
-}
 
-.BottomBanner .BottomBanner__Stats {
-  display: none;
-}
-
-@media (min-width: 768px) {
   .BottomBanner .BottomBanner__Stats {
     display: inline-flex;
   }
 }
 
-.BottomBanner .BottomBanner__Stats > .Stat {
-  margin-right: 96px;
-}
-
-.BottomBanner .BottomBanner__Actions .Action:not(:last-child) {
-  margin-bottom: 16px;
+@media (min-width: 991px) {
+  .BottomBanner .BottomBanner__Stats > .Stat {
+    margin-right: 96px;
+  }
 }
