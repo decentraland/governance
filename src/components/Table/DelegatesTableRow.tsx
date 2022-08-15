@@ -8,6 +8,7 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
+import { abbreviateTimeDifference } from '../../modules/time'
 import Arrow from '../Icon/Arrow'
 import Username from '../User/Username'
 
@@ -42,7 +43,7 @@ function DelegateRow({ delegate, onDelegateSelected }: Props) {
       </Table.Cell>
       <Table.Cell className="DelegatesTable__ShadowBox" />
       <Table.Cell className="DelegatesTable__PaddedColumn DelegatesTable__LastVoted">
-        {valueOrHyphen(delegate.lastVoted, (value) => Time.unix(value).fromNow())}
+        {valueOrHyphen(delegate.lastVoted, (value) => abbreviateTimeDifference(Time.unix(value).fromNow()))}
       </Table.Cell>
       <Table.Cell className="DelegatesTable__TimesVoted">
         {valueOrHyphen(delegate.timesVoted, (value) => intl.formatNumber(value))}
