@@ -20,7 +20,6 @@
   line-height: 36px;
   letter-spacing: -1px;
   color: var(--white-900);
-  max-width: 480px;
   margin-bottom: 0;
 }
 
@@ -36,7 +35,7 @@
   margin-bottom: 16px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .BottomBanner {
     padding: 28px 25px 28px 44px;
     flex-direction: row;
@@ -50,6 +49,7 @@
     font-size: 36px;
     line-height: 43px;
     margin-bottom: 20px;
+    max-width: 480px;
   }
 
   .BottomBanner .BottomBanner__Stats {
@@ -57,7 +57,7 @@
   }
 }
 
-@media (min-width: 991px) {
+@media (min-width: 992px) {
   .BottomBanner .BottomBanner__Stats > .Stat {
     margin-right: 96px;
   }

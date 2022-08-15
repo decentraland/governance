@@ -13,11 +13,26 @@
   margin: 40px 0 16px 0;
 }
 
+.CommunityEngagement__Data {
+  display: flex;
+  flex-direction: column;
+}
+
+.CommunityEngagement__Data .ui.card.HomeCharts {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.CommunityEngagement__Data .ui.card.TopVoters {
+  width: 100%;
+  margin-top: 0;
+}
+
 .CommunityEngagement > .ui.stackable.grid .row .column {
   padding: 1rem 0 !important;
 }
 
-@media screen and (min-width: 768px) {
+@media (min-width: 992px) {
   .CommunityEngagement .CommunityEngagement__Header {
     margin: 40px 0;
   }
@@ -32,7 +47,20 @@
     width: 60%;
   }
 
-  .CommunityEngagement > .ui.stackable.grid .row .column {
-    padding: 0 1rem !important;
+  .CommunityEngagement__Data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 26px;
+  }
+
+  .CommunityEngagement__Data .ui.card.HomeCharts {
+    width: 68% !important;
+    margin-bottom: 0 !important;
+  }
+
+  .CommunityEngagement__Data .ui.card.TopVoters {
+    width: 30% !important;
+    margin-top: 0 !important;
   }
 }

@@ -44,7 +44,7 @@
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
   .ui.card.HomeCharts > .dcl.tabs .tabs-left {
     display: unset;
   }
