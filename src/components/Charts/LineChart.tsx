@@ -44,7 +44,11 @@ function LineChart({ label, data, unit, colors }: Props) {
 
   const configuration = useMemo(
     () => ({
-      labels: Object.keys(data).map((label) => intl.formatDate(new Date(label), { year: 'numeric', month: 'short' })),
+      labels: Object.keys(data).map((label) => {
+        const formattedLabel = label.concat('/01')
+        const date = new Date(formattedLabel)
+        return intl.formatDate(date, { year: 'numeric', month: 'short' })
+      }),
       datasets: [
         {
           label,

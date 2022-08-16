@@ -38,6 +38,12 @@
   padding: 12px;
 }
 
+@media (max-width: 425px) {
+  .ui.card.HomeCharts > .dcl.tabs {
+    padding: 0 0;
+  }
+}
+
 @media screen and (min-width: 768px) {
   .ui.card.HomeCharts > .dcl.tabs .tabs-left {
     display: unset;

@@ -60,6 +60,12 @@ export function median(array: number[]) {
   return (array[half - 1] + array[half]) / 2.0
 }
 
+function parseYearMonth(proposalDate: Date) {
+  const month = ('0' + (proposalDate.getMonth() + 1)).slice(-2)
+  const year = proposalDate.getFullYear()
+  return `${year}/${month}`
+}
+
 export function groupProposalsByMonth(proposals: Partial<SnapshotProposal>[], field: keyof SnapshotProposal) {
   const ERROR_KEY = 'groupProposalsByMonth'
   const data: Record<string, number[]> = {}
@@ -67,9 +73,7 @@ export function groupProposalsByMonth(proposals: Partial<SnapshotProposal>[], fi
   for (const proposal of proposals) {
     if (proposal.created) {
       const proposalDate = new Date(proposal.created * 1000)
-      const month = proposalDate.getMonth()
-      const year = proposalDate.getFullYear()
-      const key = `${year}/${month + 1}`
+      const key = parseYearMonth(proposalDate)
       const value = proposal[field]
       if (typeof value === 'number') {
         data[key] = [...(data[key] || []), value]
