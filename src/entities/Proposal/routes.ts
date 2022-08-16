@@ -25,7 +25,7 @@ import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse
 import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import { signMessage } from '../Snapshot/utils'
 import UpdateModel from '../Updates/model'
-import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
+import { IndexedUpdate, UpdateAttributes, UpdateStatus } from '../Updates/types'
 import { getPublicUpdates } from '../Updates/utils'
 import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
@@ -839,7 +839,10 @@ async function getGrants() {
           return current.push({
             ...newGrant,
             update,
-            update_timestamp: update?.updated_at ? Time(update?.updated_at).unix() : 0,
+            update_timestamp:
+              update?.updated_at && (update?.status === UpdateStatus.Done || update?.status === UpdateStatus.Late)
+                ? Time(update?.updated_at).unix()
+                : 0,
           } as GrantWithUpdateAttributes)
         } catch (error) {
           logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
