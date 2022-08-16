@@ -22,8 +22,8 @@ const end = new Date(now.getFullYear(), now.getMonth(), 1)
 
 function Charts() {
   const [selectedTab, setSelectedTab] = useState(ChartType.ParticipatingVP)
-  const { participatingVP } = useParticipatingVP(start, end)
-  const { votesPerProposal } = useVotesPerProposal(start, end)
+  const { participatingVP, isLoadingParticipatingVP } = useParticipatingVP(start, end)
+  const { votesPerProposal, isLoadingVotesPerProposal } = useVotesPerProposal(start, end)
   const t = useFormatMessage()
 
   return (
@@ -49,7 +49,7 @@ function Charts() {
           </Header>
         </Tabs.Right>
       </Tabs>
-      {selectedTab === ChartType.ParticipatingVP && (
+      {selectedTab === ChartType.ParticipatingVP && !isLoadingParticipatingVP && (
         <LineChart
           label={t('page.home.community_engagement.participating_vp')}
           data={participatingVP}
@@ -57,7 +57,7 @@ function Charts() {
           colors={['#FF2D55', '#C640CD']}
         />
       )}
-      {selectedTab === ChartType.VotesPerProposal && (
+      {selectedTab === ChartType.VotesPerProposal && !isLoadingVotesPerProposal && (
         <LineChart
           label={t('page.home.community_engagement.votes_per_proposal_title')}
           data={votesPerProposal}
