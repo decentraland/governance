@@ -69,7 +69,7 @@
   display: -webkit-box !important;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-  color: #16141a;
+  color: var(--black-800);
   font-size: 15px;
   line-height: 24px;
   padding-right: 0;
@@ -92,7 +92,7 @@
   line-height: 28px;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  color: #161419;
+  color: var(--black-800);
   margin-right: 0;
 }
 
@@ -147,7 +147,7 @@
   margin-left: 10px;
   border-radius: 12px;
   background: #f3f2f5;
-  color: #16141a;
+  color: var(--black-800);
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 600;

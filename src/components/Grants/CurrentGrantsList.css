@@ -30,7 +30,7 @@
   grid-row-gap: 16px;
 }
 
-@media (min-width: 991px) {
+@media (min-width: 992px) {
   .CurrentGrants__Container {
     grid-template-columns: 48.49% 48.49% !important;
     grid-column-gap: 31px;

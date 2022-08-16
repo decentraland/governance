@@ -1,16 +1,19 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { DelegationResult } from '../../api/Snapshot'
 import useDelegation from '../../hooks/useDelegation'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 import ActionableLayout from '../Layout/ActionableLayout'
-import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
+import VotingPowerDelegationDetail from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationDetail'
+import VotingPowerDelegationModal, { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import DelegatedCardProfile from './DelegatedCardProfile'
 import './DelegatedFromUserCard.css'
@@ -23,10 +26,27 @@ interface DelegatedFromUserCardProps {
 
 const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, ownVp }: DelegatedFromUserCardProps) => {
   const t = useFormatMessage()
-
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const delegationModalInitiallyOpen = params.get('openDelegatesModal') === 'true'
   const address = delegation?.delegatedTo?.length > 0 ? delegation?.delegatedTo[0].delegate : null
   const [delegateDelegations] = useDelegation(address)
-  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(false)
+  const [isDelegationModalOpen, setIsDelegationModalOpen] = useState(delegationModalInitiallyOpen)
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
+
+  const handleSelectedCandidate = (candidate: Candidate) => {
+    setSelectedCandidate(candidate)
+    setIsDelegationModalOpen(false)
+  }
+
+  const handleClose = () => {
+    setSelectedCandidate(null)
+    setIsDelegationModalOpen(false)
+  }
+
+  const handleBackClick = () => {
+    setSelectedCandidate(null)
+    setIsDelegationModalOpen(true)
+  }
 
   return (
     <ActionableLayout
@@ -81,10 +101,22 @@ const DelegatedFromUserCard = ({ isLoggedUserProfile, delegation, ownVp }: Deleg
         </Card.Content>
       </Card>
       <VotingPowerDelegationModal
-        userVp={ownVp}
         open={isDelegationModalOpen}
-        onClose={() => setIsDelegationModalOpen(false)}
+        setSelectedCandidate={handleSelectedCandidate}
+        onClose={handleClose}
+        showPickOtherDelegateButton
       />
+      {selectedCandidate && (
+        <Modal
+          onClose={handleClose}
+          size="small"
+          closeIcon={<Close />}
+          open={!!selectedCandidate}
+          className="GovernanceContentModal VotingPowerDelegationModal"
+        >
+          <VotingPowerDelegationDetail userVP={ownVp} candidate={selectedCandidate} onBackClick={handleBackClick} />
+        </Modal>
+      )}
     </ActionableLayout>
   )
 }

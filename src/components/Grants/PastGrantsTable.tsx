@@ -32,7 +32,7 @@ const PastGrantsTable = ({ sortedGrants, onSortClick, isDescendingSort }: Props)
           >
             <span>
               {t('page.grants.past_funded.start_date')}
-              <Sort rotate={isDescendingSort ? 0 : 180} />
+              <Sort descending={isDescendingSort} />
             </span>
           </Table.HeaderCell>
           <Table.HeaderCell className="PastGrantsTable__Header PastGrantsTable__HeaderCategory">
