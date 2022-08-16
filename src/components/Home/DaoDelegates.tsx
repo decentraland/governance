@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { CANDIDATE_ADDRESSES } from '../../constants'
@@ -14,7 +13,7 @@ import VotingPowerDelegationDetail from '../Modal/VotingPowerDelegationDetail/Vo
 import VotingPowerDelegationModal, { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import DelegatesTable from '../Table/DelegatesTable'
 
-import './DAODelegates.css'
+import './DaoDelegates.css'
 import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
 
@@ -63,7 +62,7 @@ const DaoDelegates = () => {
         description={t('page.home.dao_delegates.description')}
       />
       {loading && (
-        <div className="DAODelegates__Loader">
+        <div className="DaoDelegates__Loader">
           <HomeLoader>{t('page.home.dao_delegates.fetching')}</HomeLoader>
         </div>
       )}
