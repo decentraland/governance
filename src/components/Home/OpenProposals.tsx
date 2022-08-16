@@ -11,6 +11,7 @@ import locations from '../../modules/locations'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
 
+import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
 import OpenProposal from './OpenProposal'
 import './OpenProposals.css'
@@ -26,7 +27,7 @@ const twoWeeksAgo = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 1
 const OpenProposals = () => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
-  const { proposals: endingSoonProposals } = useProposals({
+  const { proposals: endingSoonProposals, isLoadingProposals } = useProposals({
     order: 'ASC',
     status: ProposalStatus.Active,
     timeFrameKey: 'finish_at',
@@ -34,7 +35,8 @@ const OpenProposals = () => {
     itemsPerPage: 5,
   })
 
-  const { proposals: proposalsByParticipatingVP } = useProposalsByParticipatingVP(twoWeeksAgo, now)
+  const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
+    useProposalsByParticipatingVP(twoWeeksAgo, now)
 
   return (
     <>
@@ -53,24 +55,32 @@ const OpenProposals = () => {
             </Tabs.Tab>
           </Tabs.Left>
         </Tabs>
-        {activeTab === Tab.EndingSoon && (
-          <>
-            {endingSoonProposals?.data &&
-              endingSoonProposals.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
-            {isEmpty(endingSoonProposals?.data) && (
-              <Empty className="OpenProposals__ActiveEmptyContainer" description="No active proposals" />
-            )}
-          </>
-        )}
-        {activeTab === Tab.ParticipatingVP && (
-          <>
-            {proposalsByParticipatingVP &&
-              proposalsByParticipatingVP.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
-            {isEmpty(proposalsByParticipatingVP) && (
-              <Empty className="OpenProposals__ActiveEmptyContainer" description="No proposals" />
-            )}
-          </>
-        )}
+        <>
+          {activeTab === Tab.EndingSoon && (
+            <>
+              {!isLoadingProposals &&
+                endingSoonProposals?.data &&
+                endingSoonProposals.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              {isLoadingProposals && (
+                <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
+              )}
+              {!isLoadingProposals && isEmpty(endingSoonProposals?.data) && (
+                <Empty className="OpenProposals__Empty" description="No active proposals" />
+              )}
+            </>
+          )}
+          {activeTab === Tab.ParticipatingVP && (
+            <>
+              {!isLoadingProposalsByParticipatingVp &&
+                proposalsByParticipatingVP &&
+                proposalsByParticipatingVP.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              {isLoadingProposalsByParticipatingVp && <HomeLoader>{t('page.home.open_proposals.loading')}</HomeLoader>}
+              {!isLoadingProposalsByParticipatingVp && isEmpty(proposalsByParticipatingVP) && (
+                <Empty className="OpenProposals__Empty" description="No proposals" />
+              )}
+            </>
+          )}
+        </>
       </div>
       <FullWidthButton className="OpenProposals__ViewAllButton" link={locations.proposals()}>
         {t('page.home.open_proposals.view_all_proposals')}

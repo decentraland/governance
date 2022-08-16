@@ -7,6 +7,7 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import useTopVoters from '../../hooks/useTopVoters'
 
+import HomeLoader from './HomeLoader'
 import './TopVoters.css'
 import TopVotersRow from './TopVotersRow'
 
@@ -19,7 +20,8 @@ const start = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
 
 function TopVoters() {
   const t = useFormatMessage()
-  const { topVoters } = useTopVoters(start, now, 5)
+  const { topVoters, isLoadingTopVoters } = useTopVoters(start, now, 5)
+
   return (
     <Card className="TopVoters">
       <Table basic="very" unstackable>
@@ -29,11 +31,16 @@ function TopVoters() {
               <Header sub>{t('page.home.community_engagement.top_voters')}</Header>
             </Table.HeaderCell>
             <Table.HeaderCell textAlign="center">
-              <Header sub>{t('page.home.community_engagement.Votes')}</Header>
+              <Header sub>{t('page.home.community_engagement.votes')}</Header>
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-        <Table.Body>{topVoters.map(createRow)}</Table.Body>
+        {!isLoadingTopVoters && <Table.Body>{topVoters.map(createRow)}</Table.Body>}
+        {isLoadingTopVoters && (
+          <div className="TopVoters__Loader">
+            <HomeLoader>{t('page.home.community_engagement.fetching_votes')}</HomeLoader>
+          </div>
+        )}
       </Table>
     </Card>
   )

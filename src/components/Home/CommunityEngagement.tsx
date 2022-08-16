@@ -10,6 +10,7 @@ import TopVoters from './TopVoters'
 
 function CommunityEngagement() {
   const t = useFormatMessage()
+
   return (
     <div className="CommunityEngagement">
       <div className="CommunityEngagement__Header">

@@ -8,12 +8,12 @@ import { Snapshot } from '../api/Snapshot'
 import useProposals from './useProposals'
 
 export default function useProposalsByParticipatingVP(start: Date, end: Date) {
-  const [snapshotProposals] = useAsyncMemo(async () => {
+  const [snapshotProposals, snapshotProposalsState] = useAsyncMemo(async () => {
     const pendingProposals = await Snapshot.get().getPendingProposals(start, end, ['id'], 5)
     return orderBy(pendingProposals, ['scores_total'], 'asc')
   })
   const snapshotIds = useMemo(() => snapshotProposals?.map((item) => item.id).join(','), [snapshotProposals])
-  const { proposals } = useProposals({ snapshotIds, load: !!snapshotIds })
+  const { proposals, isLoadingProposals } = useProposals({ snapshotIds, load: !!snapshotIds })
 
   const orderedProposals = useMemo(
     () =>
@@ -27,5 +27,6 @@ export default function useProposalsByParticipatingVP(start: Date, end: Date) {
 
   return {
     proposals: orderedProposals,
+    isLoadingProposals: snapshotProposalsState.loading || isLoadingProposals,
   }
 }

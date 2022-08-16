@@ -1,7 +1,6 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import useGrants from '../../hooks/useGrants'
 import locations from '../../modules/locations'
@@ -9,6 +8,7 @@ import FullWidthButton from '../Common/FullWidthButton'
 import GrantCard from '../Grants/GrantCard/GrantCard'
 
 import './ActiveCommunityGrants.css'
+import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
 
 const CURRENT_GRANTS_PER_PAGE = 4
@@ -26,7 +26,7 @@ const ActiveCommunityGrants = () => {
         />
         {isLoadingGrants && (
           <div className="ActiveCommunityGrants__LoaderContainer">
-            <Loader active />
+            <HomeLoader>{t('page.home.active_community_grants.fetching')}</HomeLoader>
           </div>
         )}
         {!isLoadingGrants && (

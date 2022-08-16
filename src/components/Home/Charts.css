@@ -63,3 +63,10 @@
     border-bottom: unset;
   }
 }
+
+.Charts__Loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 316px;
+}

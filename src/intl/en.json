@@ -430,11 +430,15 @@
         "votes_this_week": "{value} votes this week",
         "votes_last_month": "{value} votes last 30 days",
         "treasury": "Treasury",
-        "consolidated": "Consolidated in USD"
+        "consolidated": "Consolidated in USD",
+        "fetching_proposals_data": "FETCHING PROPOSALS DATA",
+        "fetching_participation_data": "FETCHING PARTICIPATION DATA",
+        "fetching_treasury_data": "FETCHING TREASURY DATA"
       },
       "open_proposals": {
         "title": "Open Proposals",
         "description": "Proposals are created by the community and works as the consensus mechanism used to outline policies and changes to the Decentraland ecosystem. Learn more about them [here](https://docs.decentraland.org/decentraland/what-can-you-do-with-the-dao/).",
+        "loading": "Fetching open proposals...",
         "ending_soon": "Ending soon",
         "by_user": "By ",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
@@ -453,7 +457,8 @@
       "active_community_grants": {
         "title": "Active Community Grants",
         "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](https://docs.decentraland.org/decentraland/community-grants/).",
-        "view_all_grants": "View all Grants"
+        "view_all_grants": "View all Grants",
+        "fetching": "Fetching active Community Grants..."
       },
       "bottom_banner": {
         "title": "We have so much ahead of us. The future of the Metaverse is in your hands!",
@@ -476,7 +481,9 @@
         "votes_per_proposal": "Votes",
         "display_median": "Display: median",
         "top_voters": "Last month top voters",
-        "Votes": "Votes"
+        "votes": "Votes",
+        "fetching_participation": "Fetching participation...",
+        "fetching_votes": "Fetching top voters..."
       },
       "dao_delegates": {
         "title": "DAO Delegates",
@@ -486,7 +493,8 @@
         "times_voted": "Voted On",
         "picked_by":  "Picked By",
         "total_vp": "Total VP",
-        "view_all_delegates": "View all Delegates"
+        "view_all_delegates": "View all Delegates",
+        "fetching": "Fetching DAO delegates..."
       }
     },
     "welcome": {

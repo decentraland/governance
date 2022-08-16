@@ -35,54 +35,61 @@ const MetricsCards = () => {
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const flickity = useRef<Flickity>()
   const t = useFormatMessage()
-  const [data] = useAsyncMemo(async () => DclData.get().getData())
+  const [transparencyData, transparencyState] = useAsyncMemo(async () => DclData.get().getData())
   const treasuryAmount = useMemo(
     () =>
-      data?.balances
+      transparencyData?.balances
         .reduce((acc, obj) => {
           return acc + Number(obj.amount) * obj.rate
         }, 0)
         .toFixed(2),
-    [data?.balances]
+    [transparencyData?.balances]
   )
 
-  const { proposals: activeProposals } = useProposals({
+  const { proposals: activeProposals, isLoadingProposals: isLoadingActiveProposals } = useProposals({
     status: ProposalStatus.Active,
     timeFrame: '2days',
     timeFrameKey: 'finish_at',
   })
 
-  const { proposals: endingSoonProposals } = useProposals({
+  const { proposals: endingSoonProposals, isLoadingProposals: isLoadingEndingSoonProposals } = useProposals({
     status: ProposalStatus.Active,
   })
 
-  const { votesCount: votesCountThisWeek } = useVotesCountByDate(oneWeekAgo, now)
-  const { votesCount: votesCountLastMonth } = useVotesCountByDate(oneMonthAgo, now)
-
-  const metricsData = useMemo(
-    () => [
-      {
-        category: t('page.home.metrics.proposals'),
-        title: t('page.home.metrics.active_proposals', { value: activeProposals?.total }),
-        description: t('page.home.metrics.ending_soon', { value: endingSoonProposals?.total }),
-      },
-      {
-        category: t('page.home.metrics.participation'),
-        title: t('page.home.metrics.votes_this_week', { value: votesCountThisWeek }),
-        description: t('page.home.metrics.votes_last_month', { value: votesCountLastMonth }),
-      },
-      {
-        category: t('page.home.metrics.treasury'),
-        title: `$${t('general.number', { value: treasuryAmount })}`,
-        description: t('page.home.metrics.consolidated'),
-      },
-    ],
-    [activeProposals, endingSoonProposals, t, treasuryAmount, votesCountThisWeek, votesCountLastMonth]
+  const { votesCount: votesCountThisWeek, isLoadingVotesCount: isLoadingOneWeekVotesCount } = useVotesCountByDate(
+    oneWeekAgo,
+    now
+  )
+  const { votesCount: votesCountLastMonth, isLoadingVotesCount: isLoadingOneMonthVotesCount } = useVotesCountByDate(
+    oneMonthAgo,
+    now
   )
 
-  const content = metricsData.map((item) => (
-    <MetricsCard key={item.category} category={item.category} title={item.title} description={item.description} />
-  ))
+  const content = (
+    <>
+      <MetricsCard
+        isLoading={isLoadingActiveProposals || isLoadingEndingSoonProposals}
+        loadingLabel={t('page.home.metrics.fetching_proposals_data')}
+        category={t('page.home.metrics.proposals')}
+        title={t('page.home.metrics.active_proposals', { value: activeProposals?.total })}
+        description={t('page.home.metrics.ending_soon', { value: endingSoonProposals?.total })}
+      />
+      <MetricsCard
+        isLoading={isLoadingOneMonthVotesCount || isLoadingOneWeekVotesCount}
+        loadingLabel={t('page.home.metrics.fetching_participation_data')}
+        category={t('page.home.metrics.participation')}
+        title={t('page.home.metrics.votes_this_week', { value: votesCountThisWeek })}
+        description={t('page.home.metrics.votes_last_month', { value: votesCountLastMonth })}
+      />
+      <MetricsCard
+        isLoading={transparencyState.loading}
+        loadingLabel={t('page.home.metrics.fetching_treasury_data')}
+        category={t('page.home.metrics.treasury')}
+        title={`$${t('general.number', { value: treasuryAmount })}`}
+        description={t('page.home.metrics.consolidated')}
+      />
+    </>
+  )
 
   return (
     <>
