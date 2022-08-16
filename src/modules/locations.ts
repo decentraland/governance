@@ -57,11 +57,12 @@ export function url(path = '/', query: Record<string, string> | URLSearchParams 
 }
 
 export default {
+  home: () => url('/'),
   proposals: (
     options:
       | Partial<ProposalListPage & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal>
       | URLSearchParams = {}
-  ) => url('/', options),
+  ) => url('/proposals/', options),
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
   activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) =>
@@ -69,7 +70,7 @@ export default {
   submit: (type?: ProposalType, options: { linked_proposal_id?: string; request?: PoiType } = {}) =>
     url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
-  balance: (options: Partial<{ address: string }> = {}) => url('/balance/', options),
+  balance: (options: Partial<{ address: string; openDelegatesModal?: string }> = {}) => url('/balance/', options),
   transparency: () => url('/transparency/'),
   debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),

@@ -40,11 +40,17 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     if (filter.timeFrame) {
       params.timeFrame = filter.timeFrame
     }
+    if (filter.timeFrameKey) {
+      params.timeFrameKey = filter.timeFrameKey
+    }
     if (filter.order) {
       params.order = filter.order
     }
     if (filter.coauthor) {
       params.coauthor = filter.coauthor
+    }
+    if (filter.snapshotIds) {
+      params.snapshotIds = filter.snapshotIds
     }
     return Governance.get().getProposals({ ...params, limit, offset })
   }, [
@@ -59,6 +65,7 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     filter.itemsPerPage,
     filter.load,
     filter.coauthor,
+    filter.snapshotIds,
   ])
 
   return {

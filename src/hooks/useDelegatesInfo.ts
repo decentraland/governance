@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 
+import useAddressesVotesTotals, { VoteHistory } from './useAddressesVotesTotals'
 import usePickedBy from './usePickedBy'
 import useVotingPowerBalanceList from './useVotingPowerBalanceList'
 
-export type Delegate = {
+export type Delegate = VoteHistory & {
   address: string
   pickedBy: number
   totalVP: number
@@ -14,9 +15,15 @@ function useDelegatesInfo(addresses: string[]): Delegate[] {
 
   const { votingPower } = useVotingPowerBalanceList(addresses)
   const { pickedByResults } = usePickedBy(addresses)
+  const { addressesVotesTotals } = useAddressesVotesTotals(addresses)
 
   return useMemo(
-    () => pickedByResults.map((delegate) => ({ ...delegate, totalVP: votingPower[delegate.address]?.totalVp || 0 })),
+    () =>
+      pickedByResults.map((delegate) => ({
+        ...delegate,
+        ...addressesVotesTotals[delegate.address.toLowerCase()],
+        totalVP: votingPower[delegate.address]?.totalVp || 0,
+      })),
     [pickedByResults, votingPower]
   )
 }

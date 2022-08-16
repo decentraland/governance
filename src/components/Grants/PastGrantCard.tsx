@@ -9,7 +9,8 @@ import { GrantAttributes, ProposalGrantCategory } from '../../entities/Proposal/
 import locations from '../../modules/locations'
 import Pill from '../Common/Pill'
 
-import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard'
+import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard/GrantCard'
+
 import './PastGrantCard.css'
 
 interface Props {

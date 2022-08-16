@@ -18,13 +18,14 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
 
 export type Props = {
   type: ProposalType
+  size?: 'small' | 'default'
 }
 
-const CategoryPill = ({ type }: Props) => {
+const CategoryPill = ({ type, size = 'default' }: Props) => {
   const label = type.replaceAll('_', ' ')
 
   return (
-    <Pill style="light" color={ColorsConfig[type]} className="CategoryPill">
+    <Pill style="light" color={ColorsConfig[type]} className="CategoryPill" size={size}>
       {label}
     </Pill>
   )

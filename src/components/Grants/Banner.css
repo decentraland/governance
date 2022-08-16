@@ -10,7 +10,7 @@
   gap: 50px;
 }
 
-@media (min-width: 991px) {
+@media (min-width: 992px) {
   .GrantsBanner {
     flex-direction: row;
   }
@@ -25,12 +25,12 @@
 }
 
 .GrantsBanner--current {
-  background: linear-gradient(180deg, #a524b3 0%, #ff2d55 100%);
+  background: linear-gradient(180deg, #a524b3 0%, var(--dcl-primary) 100%);
   box-shadow: 0 6px 24px rgba(253, 45, 88, 0.3);
 }
 
 .GrantsBanner--past {
-  background: linear-gradient(180deg, #ff2d55 0%, #ffc700 100%);
+  background: linear-gradient(180deg, var(--dcl-primary) 0%, #ffc700 100%);
   box-shadow: 0 6px 24px rgba(255, 53, 82, 0.3);
 }
 

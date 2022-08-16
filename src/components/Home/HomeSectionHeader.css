@@ -1,0 +1,38 @@
+.HomeSectionHeader__Title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 28px;
+  display: flex;
+  align-items: flex-end;
+  letter-spacing: 0.4px;
+  margin-bottom: 1px;
+}
+
+.HomeSectionHeader__Description p.dg.Paragraph {
+  font-style: normal;
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+.HomeSectionHeader__Description .dg.Paragraph {
+  font-size: 15px !important;
+  line-height: 24px !important;
+}
+
+@media (min-width: 768px) {
+  .HomeSectionHeader__Title {
+    margin-bottom: 4px;
+    font-size: 20px;
+  }
+
+  .HomeSectionHeader__Description p.dg.Paragraph {
+    width: 65%;
+    margin-bottom: 35px;
+  }
+
+  .HomeSectionHeader__Description .dg.Paragraph {
+    font-size: 17px !important;
+    line-height: 28px !important;
+  }
+}

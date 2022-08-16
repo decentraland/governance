@@ -1,9 +1,15 @@
-.GrantsPage_LoadMoreButton {
+.FullWidthButton {
   height: 40px !important;
   padding: 0 !important;
   background-color: transparent !important;
   border: 2px solid #f3f2f5 !important;
   color: #ff2d55 !important;
   border-radius: 8px !important;
-  margin-bottom: 32px !important;
+  margin-bottom: 40px !important;
+}
+
+a.ui.fluid.primary.button.FullWidthButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

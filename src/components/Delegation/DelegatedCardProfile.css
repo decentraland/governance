@@ -13,7 +13,7 @@
   font-size: 21px;
   line-height: 28px;
   letter-spacing: 0.315px;
-  color: #16141a;
+  color: var(--black-800);
 }
 
 .DelegatedCardProfile__DescriptionContainer {

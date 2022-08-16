@@ -1,18 +1,17 @@
 .VestingProgress {
   width: 100%;
-  margin-bottom: 16px;
 }
 
 .VestingProgress__Labels {
   display: flex;
   justify-content: space-between;
-  color: #161419;
+  color: var(--black-800);
   padding-bottom: 4px;
 }
 
 .VestingProgress__VestedInfo {
   display: inline-flex;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 24px;
   padding-right: 2px;
   align-items: center;
@@ -21,7 +20,7 @@
 .VestingProgress__ReleasedInfo {
   display: inline-flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 18px;
   font-style: normal;
   opacity: 0.8;
@@ -30,7 +29,7 @@
 .VestingProgress__ReleasedInfoLabel {
   width: 8px;
   height: 8px;
-  background: #ff2d55;
+  background: var(--dcl-primary);
   border-radius: 4px;
   margin-right: 6px;
   min-width: 8px;
@@ -63,7 +62,7 @@
   width: 100%;
   height: 6px;
   border-radius: 2px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   background: var(--black-100);
 }
 
@@ -94,9 +93,9 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  color: #161419;
+  color: var(--black-800);
   padding-bottom: 4px;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 18px;
 }
 
@@ -113,4 +112,22 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (min-width: 425px) {
+  .VestingProgress {
+    margin-bottom: 16px;
+  }
+  .VestingProgress__VestedInfo {
+    font-size: 15px !important;
+  }
+  .VestingProgress__ReleasedInfo {
+    font-size: 13px !important;
+  }
+  .VestingProgress__Dates {
+    font-size: 13px !important;
+  }
+  .VestingProgress__Bar {
+    margin-bottom: 8px;
+  }
 }

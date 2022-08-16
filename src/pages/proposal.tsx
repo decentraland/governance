@@ -48,11 +48,14 @@ import { forumUrl } from '../entities/Proposal/utils'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
+import useProposalVotes from '../hooks/useProposalVotes'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
-import './index.css'
 import './proposal.css'
+import './proposals.css'
+
+// TODO: Review why proposals.css is being imported and use only proposal.css
 
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 
@@ -83,9 +86,7 @@ export default function ProposalPage() {
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const { isCommittee } = useIsCommittee(account)
-  const [votes, votesState] = useAsyncMemo(() => Governance.get().getProposalVotes(proposal!.id), [proposal], {
-    callWithTruthyDeps: true,
-  })
+  const { votes, votesState } = useProposalVotes(proposal?.id)
   const [subscriptions, subscriptionsState] = useAsyncMemo(
     () => Governance.get().getSubscriptions(proposal!.id),
     [proposal],

@@ -10,7 +10,8 @@ import locations from '../../modules/locations'
 import Pill from '../Common/Pill'
 import ChevronRight from '../Icon/ChevronRight'
 
-import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard'
+import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard/GrantCard'
+
 import './GrantsPastItem.css'
 
 interface Props {

@@ -151,8 +151,10 @@ export async function getProposals(req: WithAuth<Request>) {
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
+  const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
+  const snapshotIds = query.snapshotIds && String(query.snapshotIds)
 
   let subscribed: string | undefined = undefined
   if (query.subscribed) {
@@ -168,7 +170,17 @@ export async function getProposals(req: WithAuth<Request>) {
   }
 
   const [total, data] = await Promise.all([
-    ProposalModel.getProposalTotal({ type, status, user, search, timeFrame, subscribed, coauthor }),
+    ProposalModel.getProposalTotal({
+      type,
+      status,
+      user,
+      search,
+      timeFrame,
+      timeFrameKey,
+      subscribed,
+      coauthor,
+      snapshotIds,
+    }),
     ProposalModel.getProposalList({
       type,
       status,
@@ -177,9 +189,11 @@ export async function getProposals(req: WithAuth<Request>) {
       coauthor,
       search,
       timeFrame,
+      timeFrameKey,
       order,
       offset,
       limit,
+      snapshotIds,
     }),
   ])
 
@@ -621,7 +635,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   const user = req.auth!
   const id = req.params.proposal
   if (!isCommitee(user)) {
-    throw new RequestError('Only committed menbers can enact a proposal', RequestError.Forbidden)
+    throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)
@@ -747,13 +761,15 @@ async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string)
 
   if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
     return { ...updates[0], index: updates.length }
-  } else {
-    const currentUpdate = getPublicUpdates(updates)[0]
-    if (!currentUpdate) {
-      return null
-    }
-    return { ...currentUpdate, index: updates.findIndex((update) => (update.id = currentUpdate.id)) + 1 }
   }
+
+  const publicUpdates = getPublicUpdates(updates)
+  const currentUpdate = publicUpdates[0]
+  if (!currentUpdate) {
+    return null
+  }
+
+  return { ...currentUpdate, index: publicUpdates.length }
 }
 
 async function getGrants() {
@@ -770,7 +786,12 @@ async function getGrants() {
       }
 
       try {
-        const proposal = await ProposalModel.findOne(grant.id)
+        const proposal = await ProposalModel.findOne<ProposalAttributes>(grant.id)
+
+        if (!proposal) {
+          throw new Error('Proposal not found')
+        }
+
         const newGrant: GrantAttributes = {
           id: grant.id,
           size: grant.size,
@@ -818,10 +839,7 @@ async function getGrants() {
           return current.push({
             ...newGrant,
             update,
-            update_timestamp:
-              update?.updated_at && (update?.status === UpdateStatus.Done || update?.status === UpdateStatus.Late)
-                ? Time(update?.updated_at).unix()
-                : 0,
+            update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
           } as GrantWithUpdateAttributes)
         } catch (error) {
           logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))

@@ -32,6 +32,18 @@ function MobileNavigation({ activeTab }: NavigationProps) {
         <Button
           className="Browse__Button"
           size="small"
+          {...getButtonProps(NavigationTab.Home, activeTab)}
+          as={Link}
+          href={locations.home()}
+          onClick={prevent(() => {
+            navigate(locations.home())
+          })}
+        >
+          {t('navigation.home')}
+        </Button>
+        <Button
+          className="Browse__Button"
+          size="small"
           {...getButtonProps(NavigationTab.Proposals, activeTab)}
           as={Link}
           href={locations.proposals()}
