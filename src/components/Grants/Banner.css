@@ -10,7 +10,7 @@
   gap: 50px;
 }
 
-@media (min-width: 991px) {
+@media (min-width: 992px) {
   .GrantsBanner {
     flex-direction: row;
   }

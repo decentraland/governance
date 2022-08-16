@@ -1,7 +1,6 @@
-.TopVoters,
-.TopVoters table {
-  height: 100%;
-  width: 100% !important;
+.ui.card.TopVoters {
+  display: flex;
+  flex-direction: row;
 }
 
 .TopVoters table td {
@@ -9,15 +8,9 @@
 }
 
 .TopVoters thead .sub.header {
-  margin: 0;
-}
-
-.TopVoters thead .sub.header:first-child {
-  padding-left: 16px;
-}
-
-.TopVoters thead .sub.header:last-child {
+  padding-left: 15px;
   padding-right: 15px;
+  margin: 0;
 }
 
 .TopVoters .TopVotersRow__User {
