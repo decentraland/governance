@@ -12,7 +12,6 @@ import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -28,6 +27,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
+import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -59,7 +59,7 @@ import './proposals.css'
 
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 
-type ProposalPageOptions = {
+export type ProposalPageOptions = {
   changing: boolean
   confirmSubscription: boolean
   confirmDeletion: boolean
@@ -259,17 +259,6 @@ export default function ProposalPage() {
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
               {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
               <div className="ProposalDetail__StickySidebar">
-                <ForumButton
-                  loading={proposalState.loading}
-                  disabled={!proposal}
-                  href={(proposal && forumUrl(proposal)) || ''}
-                />
-                <SubscribeButton
-                  loading={proposalState.loading || subscriptionsState.loading || subscribing}
-                  disabled={!proposal}
-                  subscribed={subscribed}
-                  onClick={() => subscribe(!subscribed)}
-                />
                 {showProposalUpdatesActions && (
                   <ProposalUpdatesActions
                     nextUpdate={nextUpdate}
@@ -287,60 +276,27 @@ export default function ProposalPage() {
                   onOpenVotesList={() => patchOptions({ showVotesList: true })}
                   onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
                 />
+                <ForumButton
+                  loading={proposalState.loading}
+                  disabled={!proposal}
+                  href={(proposal && forumUrl(proposal)) || ''}
+                />
+                <SubscribeButton
+                  loading={proposalState.loading || subscriptionsState.loading || subscribing}
+                  disabled={!proposal}
+                  subscribed={subscribed}
+                  onClick={() => subscribe(!subscribed)}
+                />
                 {proposal && <ProposalDetailSection proposal={proposal} />}
-                {(isOwner || isCommittee) && (
-                  <Button
-                    basic
-                    fluid
-                    loading={deleting}
-                    disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
-                    onClick={() => patchOptions({ confirmDeletion: true })}
-                  >
-                    {t('page.proposal_detail.delete')}
-                  </Button>
-                )}
-                {isCommittee &&
-                  (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted) && (
-                    <Button
-                      basic
-                      loading={updatingStatus}
-                      fluid
-                      onClick={() =>
-                        patchOptions({
-                          confirmStatusUpdate: ProposalStatus.Enacted,
-                        })
-                      }
-                    >
-                      {t(
-                        proposal?.status === ProposalStatus.Passed
-                          ? 'page.proposal_detail.enact'
-                          : 'page.proposal_detail.edit_enacted_data'
-                      )}
-                    </Button>
-                  )}
-                {isCommittee && proposal?.status === ProposalStatus.Finished && (
-                  <>
-                    <Button
-                      basic
-                      loading={updatingStatus}
-                      fluid
-                      onClick={() => patchOptions({ confirmStatusUpdate: ProposalStatus.Passed })}
-                    >
-                      {t('page.proposal_detail.pass')}
-                    </Button>
-                    <Button
-                      basic
-                      loading={updatingStatus}
-                      fluid
-                      onClick={() =>
-                        patchOptions({
-                          confirmStatusUpdate: ProposalStatus.Rejected,
-                        })
-                      }
-                    >
-                      {t('page.proposal_detail.reject')}
-                    </Button>
-                  </>
+                {proposal && (
+                  <ProposalActions
+                    isOwner={isOwner}
+                    isCommittee={isCommittee}
+                    deleting={deleting}
+                    updatingStatus={updatingStatus}
+                    proposal={proposal}
+                    patchOptions={patchOptions}
+                  />
                 )}
               </div>
             </Grid.Column>
