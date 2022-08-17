@@ -1,18 +1,18 @@
-.LayoutMainContainer .dcl.tabs {
+.Navigation .dcl.tabs {
   background: var(--background);
   display: none;
 }
 
-@media only screen and (min-width: 768px) {
-  .LayoutMainContainer .dcl.tabs {
+@media (min-width: 768px) {
+  .Navigation .dcl.tabs {
     display: flex;
   }
 
-  .LayoutMainContainer .dcl.tabs a {
+  .Navigation .dcl.tabs a {
     color: var(--text);
   }
 
-  .LayoutMainContainer .dcl.tabs .ui.container {
+  .dcl.tabs .ui.container {
     display: flex;
   }
 }
@@ -22,11 +22,11 @@
   align-items: center;
 }
 
-.dcl.tabs .ActivityTab {
+.Navigation .dcl.tabs .ActivityTab {
   display: flex;
   align-items: center;
 }
 
-.dcl.tabs .ActivityTab svg {
+.Navigation .dcl.tabs .ActivityTab svg {
   margin-left: 4px;
 }

@@ -10,7 +10,8 @@
   margin: 0 0 32px 0 !important;
 }
 
-.VotingPowerDelegationModal > .dcl.close, .ui.modal > .dcl.close {
+.VotingPowerDelegationModal > .dcl.close,
+.ui.modal > .dcl.close {
   top: 22px; /* TODO: Can this be a property to override in all modals? */
 }
 
@@ -25,10 +26,6 @@
 .VotingPowerDelegationModal .VotingPowerDelegationModal__PickButton.ui.button.primary {
   color: var(--blue-800);
   background-color: rgba(72, 136, 238, 0.1);
-}
-
-.VotingPowerDelegationModal .ui.table {
-  margin-bottom: 15px;
 }
 
 .VotingPowerDelegationModal .ui.table th {
@@ -55,7 +52,6 @@
 .VotingPowerDelegationModal .ui.table td:not(:first-child) {
   text-align: center;
 }
-
 
 .VotingPowerDelegationModal .TotalVP {
   cursor: pointer !important;
