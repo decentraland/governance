@@ -117,9 +117,6 @@ td.DelegatesTable__CandidateName {
   .DelegatesTable__Wrapper {
     position: relative;
     background: none;
-    border: none;
-    box-shadow: none;
-    margin-bottom: 0;
     margin-top: 0;
   }
 
@@ -154,7 +151,6 @@ td.DelegatesTable__CandidateName {
     box-shadow: 0 1px 8px var(--black-100);
     border-radius: 8px;
     padding-top: 0;
-    margin-bottom: 16px;
   }
 
   .DelegatesTable thead.DelegatesTable__Header tr th {
