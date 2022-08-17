@@ -33,7 +33,7 @@ function formatInfoMessageValues(values?: any) {
   if (values) {
     if (values.delegate) {
       formattedInfoValues.delegate = (
-        <Username className="DelegationsLabel__InfoMessage" address={values.delegate} addressOnly />
+        <Username className="DelegationsLabel__InfoMessage" address={values.delegate} variant="address" />
       )
     }
     if (values.own_vp) {

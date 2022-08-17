@@ -33,7 +33,7 @@ const GrantCardHeader = ({ grant }: GrantCardHeaderProps) => {
       </div>
       <div className="GrantCardHeader__Username">
         {t('component.grant_card.by_user')}
-        <Username address={grant.user} addressOnly />
+        <Username address={grant.user} variant="address" />
       </div>
     </div>
   )
