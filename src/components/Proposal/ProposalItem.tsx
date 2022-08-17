@@ -16,6 +16,7 @@ import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
 import StatusPill from '../Status/StatusPill'
+import Username from '../User/Username'
 
 import './ProposalItem.css'
 
@@ -76,6 +77,7 @@ export default function ProposalItem({
         <div className="ProposalItem__Status">
           <StatusPill status={proposal.status} />
           <CategoryPill type={proposal.type} />
+          <Username address={proposal.user} variant="avatar" />
           <FinishLabel date={proposal.finish_at} />
           {hasCoauthorRequest && <CoauthorRequestLabel />}
         </div>
