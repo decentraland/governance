@@ -47,7 +47,7 @@ if you are running this project locally you only need to check the following env
 * `GATSBY_SNAPSHOT_SPACE`: a snapshot space where the proposal will be published
 * `SNAPSHOT_PRIVATE_KEY`, `GATSBY_SNAPSHOT_ADDRESS`: a pair address/key with permissions to publish at that snapshot space
 * `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
-* `ALCHEMY_API_KEY`: an alchemy api key to check the voting power
+* `RPC_PROVIDER_URL`: the rpc provider to get the latest block
 
 ### setup the required voting power to pass
 
