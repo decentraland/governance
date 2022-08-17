@@ -1,4 +1,4 @@
-import { AlchemyProvider, Block } from '@ethersproject/providers'
+import { Block, JsonRpcProvider, getNetwork } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
@@ -446,7 +446,10 @@ export async function createProposal(
 
   let block: Block
   try {
-    const provider = new AlchemyProvider(Number(snapshotSpace.network), process.env.ALCHEMY_API_KEY)
+    const network = getNetwork(Number(snapshotSpace.network))
+    const networkName = network.name === 'homestead' ? 'mainnet' : network.name
+    const url = process.env.RPC_PROVIDER_URL + networkName
+    const provider = new JsonRpcProvider(url)
     block = await provider.getBlock('latest')
   } catch (err) {
     throw new RequestError("Couldn't get the latest block", RequestError.InternalServerError, err as Error)
