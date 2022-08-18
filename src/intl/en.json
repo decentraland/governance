@@ -516,6 +516,7 @@
       "categories": "Categories",
       "browse": "Browse",
       "no_proposals_yet": "No proposals have been sent by community members yet.",
+      "votes": "{total} {total, plural, one {vote} other {votes}}",
       "finish_label": {
         "ends": "Ends",
         "ended": "Ended"
@@ -559,8 +560,9 @@
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
-      "leading_option_label": "Leading",
-      "finished_result_label": "Result",
+      "leading_option_label": "Leading: ",
+      "finished_result_label": "Result: ",
+      "your_vote_label": "Your vote: ",
       "threshold_not_met_label": "VP threshold not met",
       "see_votes_button": "See Votes",
       "delegate_name": " is your Delegate",

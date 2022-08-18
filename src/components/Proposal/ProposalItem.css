@@ -4,8 +4,15 @@
 }
 
 .ProposalItem .ProposalItem__Title {
+  display: flex;
+  flex-direction: row;
   padding-bottom: 0;
   padding-right: 40px;
+}
+
+.ProposalItem .ProposalItem__Title .ui.header {
+  flex: 1;
+  padding-right: 15px;
 }
 
 .ProposalItem:visited .ProposalItem__Title .ui.header {
@@ -15,7 +22,8 @@
 .ProposalItem .ProposalItem__Status {
   padding-top: 8px;
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 @media (max-width: 425px) {
@@ -27,12 +35,6 @@
   }
   .ProposalItem .ProposalItem__Title .ui.header {
     font-size: 17px;
-  }
-  .ProposalItem .ProposalItem__Status .FinishLabel {
-    font-size: 12px;
-  }
-  .ProposalItem .ProposalItem__Status .FinishLabel img {
-    width: 16px;
   }
   .ActionableLayout .ActionableLayout__Content .ui.card > .content {
     padding: 12px;
@@ -67,4 +69,33 @@
 .ui.card.ProposalItem.ProposalItem.ProposalItem--coauthor:hover {
   border: 1px solid var(--yellow-800) !important;
   box-shadow: 0 2px 4px var(--yellow-100);
+}
+
+.ProposalItem__Details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ProposalItem__Stats {
+  display: flex;
+  align-items: center;
+}
+
+.ProposalItem__Stats span:after {
+  content: '·';
+  padding: 0 5px;
+}
+
+.ProposalItem__Stats span:last-child:after {
+  content: '';
+  padding: 0;
+}
+
+.ProposalItem__Votes {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 26px;
+  text-transform: uppercase;
+  color: var(--black-600);
 }
