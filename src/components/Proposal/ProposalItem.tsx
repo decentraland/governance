@@ -81,26 +81,26 @@ export default function ProposalItem({
             <CategoryPill type={proposal.type} />
             <Username address={proposal.user} variant="avatar" />
             <div className="ProposalItem__Stats">
-              <Desktop>
-                {votes && (
+              {votes && (
+                <Desktop>
                   <span className="ProposalItem__Votes">
                     {t('page.proposal_list.votes', { total: Object.keys(votes).length })}
                   </span>
-                )}
-              </Desktop>
+                </Desktop>
+              )}
               <FinishLabel date={proposal.finish_at} />
             </div>
           </div>
-          <Desktop>
-            {winner.votes > 0 && (
+          {winner.votes > 0 && (
+            <Desktop>
               <LeadingOption
                 status={proposal.status}
                 leadingOption={winner.choice}
                 metVP={winner.power >= (proposal.required_to_pass || 0)}
                 userChoice={userChoice}
               />
-            )}
-          </Desktop>
+            </Desktop>
+          )}
         </div>
       </Card.Content>
     </Card>
