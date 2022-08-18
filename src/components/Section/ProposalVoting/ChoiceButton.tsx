@@ -15,6 +15,7 @@ export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   delegate?: string
   voteCount?: number
   totalVotes?: number
+  selected: boolean
 }
 
 export default function ChoiceButton({
@@ -23,6 +24,7 @@ export default function ChoiceButton({
   delegate,
   voteCount,
   totalVotes,
+  selected,
   children,
   ...props
 }: ChoiceButtonProps) {
@@ -32,6 +34,7 @@ export default function ChoiceButton({
       {...props}
       className={TokenList.join([
         'ChoiceButton',
+        selected && 'ChoiceButton--selected',
         voted && `ChoiceButton--voted`,
         typeof color === 'string' && `ChoiceButton--${color}`,
         typeof color === 'number' && `ChoiceButton--status-${color % 8}`,
