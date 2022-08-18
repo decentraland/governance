@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
@@ -91,6 +92,9 @@ const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices
               {t('general.sign_in')}
             </Button>
           )}
+
+          <Header sub>{"What's your stance?"}</Header>
+          {/*TODO: internationalization*/}
 
           {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 

@@ -604,6 +604,7 @@
       "vote_manage": "Manage",
       "get_vp": "Get VP",
       "vote_choice": "Vote {choice}",
+      "cast_vote": "Cast Vote",
       "delegate_voted_choice": "They voted {choice}",
       "both_voted_choice": "You both voted {choice}",
       "voted_choice": "You voted {choice}",

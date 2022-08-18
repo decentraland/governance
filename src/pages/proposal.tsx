@@ -36,7 +36,7 @@ import ProposalImagesPreview from '../components/ProposalImagesPreview/ProposalI
 import ForumButton from '../components/Section/ForumButton'
 import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
-import ProposalResultSection from '../components/Section/ProposalResultSection'
+import ProposalGovernanceSection from '../components/Section/ProposalGovernanceSection'
 import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions'
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
@@ -266,7 +266,7 @@ export default function ProposalPage() {
                     onPostUpdateClick={handlePostUpdateClick}
                   />
                 )}
-                <ProposalResultSection
+                <ProposalGovernanceSection
                   disabled={!proposal || !votes}
                   loading={voting || proposalState.loading || votesState.loading}
                   proposal={proposal}

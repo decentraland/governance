@@ -1,13 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
 
 import ChoiceButton from './ChoiceButton'
+
+type SelectableChoice = {
+  currentChoice: string
+  currentChoiceIndex: number
+}
+
+const EMPTY_SELECTION: SelectableChoice = { currentChoice: '', currentChoiceIndex: -1 }
 
 interface Props {
   choices: string[]
@@ -31,10 +39,10 @@ export const ChoiceButtons = ({
   startAt,
 }: Props) => {
   const t = useFormatMessage()
+  const [selectedChoice, setSelectedChoice] = useState<SelectableChoice>(EMPTY_SELECTION)
   const now = Time.utc()
   const untilStart = useCountdown(Time.utc(startAt) || now)
   const started = untilStart.time === 0
-
   return (
     <>
       {choices.map((currentChoice, currentChoiceIndex) => {
@@ -42,10 +50,11 @@ export const ChoiceButtons = ({
         const delegateVotedCurrentChoice = delegateVote?.choice === currentChoiceIndex + 1
         return (
           <ChoiceButton
+            selected={selectedChoice.currentChoice === currentChoice}
             key={currentChoice}
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
-            onClick={(e: React.MouseEvent<unknown>) => onVote && onVote(e, currentChoice, currentChoiceIndex + 1)}
+            onClick={() => setSelectedChoice({ currentChoice, currentChoiceIndex })}
             delegate={delegateVotedCurrentChoice ? delegate! : undefined}
             voteCount={votesByChoices[currentChoiceIndex]}
             totalVotes={totalVotes}
@@ -54,6 +63,15 @@ export const ChoiceButtons = ({
           </ChoiceButton>
         )
       })}
+      <Button
+        primary
+        disabled={!selectedChoice || !started}
+        onClick={(e: React.MouseEvent<unknown>) =>
+          onVote && selectedChoice && onVote(e, selectedChoice.currentChoice, selectedChoice.currentChoiceIndex + 1)
+        }
+      >
+        {t('page.proposal_detail.cast_vote')}
+      </Button>
     </>
   )
 }
