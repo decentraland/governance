@@ -53,7 +53,7 @@ const OpenProposal = ({ proposal }: Props) => {
   return (
     <Link className="OpenProposal" href={locations.proposal(proposal.id)}>
       <div className="OpenProposal__Section">
-        <Username className="OpenProposal__Avatar" address={user} iconOnly size="medium" />
+        <Username className="OpenProposal__Avatar" address={user} variant="avatar" size="medium" />
         <div>
           <h3 className="OpenProposal__Title">{title}</h3>
           <span className="OpenProposal__Details">
@@ -62,7 +62,7 @@ const OpenProposal = ({ proposal }: Props) => {
             </Mobile>
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}
-              <Username className="OpenProposal__Username" address={user} addressOnly />
+              <Username className="OpenProposal__Username" address={user} variant="address" />
             </span>
             <span className="OpenProposal__DetailsItem OpenProposal__DetailsOnlyDesktop">
               {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}

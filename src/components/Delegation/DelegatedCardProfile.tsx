@@ -25,9 +25,9 @@ export default function DelegatedCardProfile({ address, pickedBy, votingPower }:
   return (
     <div className="DelegatedCardProfile">
       <div className="DelegatedCardProfile__Container">
-        <Username className="DelegatedCardProfile__Avatar" address={address} size={Size.Big} iconOnly />
+        <Username className="DelegatedCardProfile__Avatar" address={address} size={Size.Big} variant="avatar" />
         <span className="DelegatedCardProfile__Name">
-          <Username address={address} addressOnly />
+          <Username address={address} variant="address" />
         </span>
         {(!!votingPower || !!pickedBy) && (
           <div className="DelegatedCardProfile__DescriptionContainer">
