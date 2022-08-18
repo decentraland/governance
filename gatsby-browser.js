@@ -46,3 +46,5 @@ export const onRouteUpdate = () => {
   window.routeUpdate = window.routeUpdate === undefined ? 0 : window.routeUpdate + 1
   segment((analytics) => analytics.page())
 }
+
+eval('Math.pow = (a, b) => a ** b')
