@@ -18,17 +18,15 @@ function SubscriptionBanner({ isVisible, onAction }: SubscriptionBannerProps) {
   const t = useFormatMessage()
 
   return (
-    <div className="SubscriptionBanner__Container">
-      <Banner
-        isVisible={isVisible}
-        title={t(`page.subscription_banner.title`)}
-        description={t(`page.subscription_banner.description`)}
-        bannerHideKey={HIDE_NEWSLETTER_SUBSCRIPTION_KEY}
-        icon={<Email />}
-        buttonLabel={t(`page.subscription_banner.subscribe_button_label`)}
-        onButtonClick={onAction}
-      />
-    </div>
+    <Banner
+      isVisible={isVisible}
+      title={t(`page.subscription_banner.title`)}
+      description={t(`page.subscription_banner.description`)}
+      bannerHideKey={HIDE_NEWSLETTER_SUBSCRIPTION_KEY}
+      icon={<Email />}
+      buttonLabel={t(`page.subscription_banner.subscribe_button_label`)}
+      onButtonClick={onAction}
+    />
   )
 }
 
