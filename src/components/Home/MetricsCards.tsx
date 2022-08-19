@@ -4,6 +4,7 @@ import Flickity from 'react-flickity-component'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
@@ -26,9 +27,9 @@ const flickityOptions = {
   friction: 0.15,
 }
 
-const now = new Date()
-const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 7)
-const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
+const now = Time().toDate()
+const oneWeekAgo = Time(now).subtract(1, 'week').toDate()
+const oneMonthAgo = Time(now).subtract(1, 'month').toDate()
 
 const MetricsCards = () => {
   const responsive = useResponsive()
