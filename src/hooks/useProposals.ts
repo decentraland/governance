@@ -60,6 +60,7 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     filter.subscribed,
     filter.search,
     filter.timeFrame,
+    filter.timeFrameKey,
     filter.order,
     filter.page,
     filter.itemsPerPage,

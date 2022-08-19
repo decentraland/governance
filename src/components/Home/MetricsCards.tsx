@@ -46,13 +46,13 @@ const MetricsCards = () => {
     [transparencyData?.balances]
   )
 
-  const { proposals: activeProposals, isLoadingProposals: isLoadingActiveProposals } = useProposals({
+  const { proposals: endingSoonProposals, isLoadingProposals: isLoadingActiveProposals } = useProposals({
     status: ProposalStatus.Active,
     timeFrame: '2days',
     timeFrameKey: 'finish_at',
   })
 
-  const { proposals: endingSoonProposals, isLoadingProposals: isLoadingEndingSoonProposals } = useProposals({
+  const { proposals: activeProposals, isLoadingProposals: isLoadingEndingSoonProposals } = useProposals({
     status: ProposalStatus.Active,
   })
 
