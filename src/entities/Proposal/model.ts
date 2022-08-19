@@ -215,7 +215,11 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
-    ${conditional(!!timeFrame, SQL`AND ${timeFrameKey} > ${timeFrame}`)} 
+    ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
+    ${conditional(
+      !!timeFrame && timeFrameKey === 'finish_at',
+      SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
+    )}
     ${conditional(!!filter.search, SQL`AND "rank" > 0`)}`)
 
     return (!!result && result[0] && Number(result[0].total)) || 0
@@ -270,7 +274,11 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
     ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} 
     ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
-    ${conditional(!!timeFrame, SQL`AND ${timeFrameKey} > ${timeFrame}`)} 
+    ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
+    ${conditional(
+      !!timeFrame && timeFrameKey === 'finish_at',
+      SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
+    )}
     ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
     ORDER BY ${conditional(!!filter.coauthor, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
     ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
@@ -293,7 +301,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       case 'week':
         return date.subtract(1, 'week').toDate()
       case '2days':
-        return date.subtract(2, 'days').toDate()
+        return date.add(2, 'days').toDate()
       default:
         return null
     }
