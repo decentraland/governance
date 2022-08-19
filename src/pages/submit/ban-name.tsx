@@ -23,6 +23,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isValidName } from '../../entities/Proposal/utils'
+import usePreventNavigation from '../../hooks/usePreventNavigation'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -111,6 +112,8 @@ export default function SubmitBanName() {
         })
     }
   }, [editor, state.validated, state.value])
+
+  usePreventNavigation()
 
   if (accountState.loading) {
     return <LoadingView />

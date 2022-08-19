@@ -354,6 +354,8 @@ export class Snapshot extends API {
     const result: DetailedScores = {}
     const scores: Scores[] = await snapshot.utils.getScores(space, strategies, network, addresses, block)
 
+    console.log(space, network, addresses, block)
+
     for (const addr of addresses) {
       result[addr] = {
         ownVp: 0,
