@@ -222,3 +222,7 @@ td.DelegatesTable__CandidateName {
     width: 184px !important;
   }
 }
+
+.DelegatesTable__SortHeader {
+  cursor: pointer !important;
+}
