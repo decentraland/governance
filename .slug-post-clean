@@ -20,3 +20,7 @@
 ./node_modules/listr2
 ./node_modules/decentraland-ui
 ./node_modules/@babel
+./node_modules/swiper
+./node_modules/sharp
+./node_modules/chart.js
+./node_modules/react-chartjs-2

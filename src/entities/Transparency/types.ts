@@ -7,6 +7,7 @@ export type TokenInWallet = {
   network: string
   address: string
   timestamp: Date
+  rate: number
 }
 
 export type TokenTotal = {

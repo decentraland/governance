@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { isEmpty } from 'lodash'
@@ -10,6 +9,7 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { GrantAttributes } from '../../entities/Proposal/types'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
+import FullWidthButton from '../Common/FullWidthButton'
 
 import PastGrantCard from './PastGrantCard'
 import PastGrantsBanner from './PastGrantsBanner'
@@ -81,9 +81,7 @@ const PastGrantsList = ({ grants, currentGrantsTotal, totalGrants }: Props) => {
       )}
 
       {showLoadMorePastGrantsButton && (
-        <Button primary fluid className="GrantsPage_LoadMoreButton" onClick={handleLoadMorePastGrantsClick}>
-          {t('page.grants.load_more_button')}
-        </Button>
+        <FullWidthButton onClick={handleLoadMorePastGrantsClick}>{t('page.grants.load_more_button')}</FullWidthButton>
       )}
     </>
   )

@@ -125,7 +125,17 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
 
   await UpdateModel.update<UpdateAttributes>(
-    { health, introduction, highlights, blockers, next_steps, additional_notes, status, completion_date: now },
+    {
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+      status,
+      completion_date: now,
+      updated_at: now,
+    },
     { id }
   )
 

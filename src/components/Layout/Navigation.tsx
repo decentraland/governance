@@ -15,6 +15,7 @@ import SearchInput from '../Search/SearchInput'
 import './Navigation.css'
 
 export enum NavigationTab {
+  Home = 'home',
   Proposals = 'proposals',
   Wrapping = 'wrapping',
   Enacted = 'enacted',
@@ -44,41 +45,46 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const { isDebugAddress } = useIsDebugAddress(user)
 
   return (
-    <Tabs>
-      <Tabs.Left>
-        <Link href={locations.proposals()}>
-          <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
-        </Link>
-        <Link href={locations.grants()}>
-          <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
-        </Link>
-        {user && (
-          <Link href={locations.balance()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
+    <div className="Navigation">
+      <Tabs>
+        <Tabs.Left>
+          <Link href={locations.home()}>
+            <Tabs.Tab active={activeTab === NavigationTab.Home}>{t('navigation.home')}</Tabs.Tab>
           </Link>
-        )}
-        <Link href={locations.transparency()}>
-          <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
-        </Link>
-        {user && (
-          <Link href={activityLocation} state={activityLocation}>
-            <Tabs.Tab active={activeTab === NavigationTab.Activity}>
-              <div className="ActivityTab">
-                {t('navigation.activity')} {pendingCoauthorRequests.length > 0 && <Dot />}
-              </div>
-            </Tabs.Tab>
+          <Link href={locations.proposals()}>
+            <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
           </Link>
-        )}
-        {user && isDebugAddress && (
-          <Link href={locations.debug()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
+          <Link href={locations.grants()}>
+            <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
           </Link>
-        )}
-      </Tabs.Left>
-      <Tabs.Right>
-        <SearchInput />
-      </Tabs.Right>
-    </Tabs>
+          {user && (
+            <Link href={locations.balance()}>
+              <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
+            </Link>
+          )}
+          <Link href={locations.transparency()}>
+            <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
+          </Link>
+          {user && (
+            <Link href={activityLocation} state={activityLocation}>
+              <Tabs.Tab active={activeTab === NavigationTab.Activity}>
+                <div className="ActivityTab">
+                  {t('navigation.activity')} {pendingCoauthorRequests.length > 0 && <Dot />}
+                </div>
+              </Tabs.Tab>
+            </Link>
+          )}
+          {user && isDebugAddress && (
+            <Link href={locations.debug()}>
+              <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
+            </Link>
+          )}
+        </Tabs.Left>
+        <Tabs.Right>
+          <SearchInput />
+        </Tabs.Right>
+      </Tabs>
+    </div>
   )
 }
 

@@ -11,11 +11,12 @@ interface Props {
   name: number
   land: number
   delegated: number
+  className?: string
 }
 
 const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
 
-const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
+const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Props) => {
   const t = useFormatMessage()
   const total = mana + name + land + delegated
   const manaPercentage = getPercentage(mana, total)
@@ -24,7 +25,7 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
   const delegatedPercentage = getPercentage(delegated, total)
 
   return (
-    <>
+    <div className={className}>
       <div
         className={TokenList.join(['VotingPowerDistributionBar', total <= 0 && 'VotingPowerDistributionBar--Empty'])}
       >
@@ -95,7 +96,7 @@ const VotingPowerDistribution = ({ mana, name, land, delegated }: Props) => {
           {t('modal.vp_delegation.details.stats_bar_delegated')}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -1,12 +1,13 @@
 .CoauthorRequestLabel {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  height: 24px;
   background-color: var(--yellow-800);
   border-radius: 12px;
   font-size: 12px;
   line-height: 18px;
   text-transform: uppercase;
-  color: white;
+  color: var(--white-900);
   padding: 0 9px;
   margin-left: auto;
 }

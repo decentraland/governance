@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { Governance } from '../../api/Governance'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { forumUrl } from '../../entities/Proposal/utils'
+import useProposalComments from '../../hooks/useProposalComments'
 import Empty from '../Common/Empty'
 import Divider from '../Section/Divider'
 
@@ -24,10 +23,7 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
   const t = useFormatMessage()
-  const [comments] = useAsyncMemo(
-    async () => (proposal ? Governance.get().getProposalComments(proposal!.id) : null),
-    [proposal]
-  )
+  const { comments } = useProposalComments(proposal?.id)
   const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
   const commentsCount = useMemo(() => (renderComments ? comments!.totalComments : ''), [comments, renderComments])
   const [showAllComments, setShowAllComments] = useState(true)

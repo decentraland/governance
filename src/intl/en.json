@@ -8,6 +8,7 @@
     "cancel": "cancel"
   },
   "navigation": {
+    "home": "DAO Home",
     "proposals": "Proposals",
     "grants": "Grants",
     "wrapping": "Voting Power",
@@ -339,7 +340,9 @@
     },
     "vp_delegation": {
       "title": "Voting Power Delegation",
-      "description": "Choose who you’d like to receive the 100% of your **{vp} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates. [Read more](#)",
+      "description": "Choose who you’d like to receive the 100% of your **{vp} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates.",
+      "description_generic": "Sign in to choose who you'd like to receive your VP. You may delegate it to any user, but we'd like you to consider picking one of the following individuals who have applied to become Delegates.",
+      "read_more": "[Read more](#)",
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
       "total_vp": "Total vp",
@@ -351,6 +354,7 @@
       "wait_helper": "Please wait...",
       "error_helper": "An error occurred, please try again later",
       "pick_button": "Pick somebody else",
+      "sign_in_to_delegate": "Sign In to Delegate",
       "details": {
         "about_title": "About",
         "links_title": "Links",
@@ -393,6 +397,12 @@
       "description": "Now go make some noise and let the\n\ncommunity know about your progress."
     }
   },
+  "component": {
+    "grant_card": {
+      "by_user": "By",
+      "size": "Size"
+    }
+  },
   "page": {
     "404": {
       "title": "Not found",
@@ -402,6 +412,90 @@
       "title": "Debug",
       "description": "A tab where anything is possible",
       "error_label": "There was an error."
+    },
+    "home": {
+      "title": "Decentraland DAO",
+      "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
+      "main_banner": {
+        "title": "Get involved and shape Decentraland’s future.",
+        "description": "The  DAO is a key component of the ecosystem and it is the consensus mechanism for defining the rules of the Decentraland's virtual world. Participate in the DAO and make your voice heard.",
+        "discord_button": "Join our Discord",
+        "docs_button": "Read our docs"
+      },
+      "metrics": {
+        "proposals": "Proposals",
+        "active_proposals": "{value} active proposals",
+        "ending_soon": "{value} ending in the next 48hs",
+        "participation": "Participation",
+        "votes_this_week": "{value} votes this week",
+        "votes_last_month": "{value} votes last 30 days",
+        "treasury": "Treasury",
+        "consolidated": "Consolidated in USD",
+        "fetching_proposals_data": "FETCHING PROPOSALS DATA",
+        "fetching_participation_data": "FETCHING PARTICIPATION DATA",
+        "fetching_treasury_data": "FETCHING TREASURY DATA"
+      },
+      "open_proposals": {
+        "title": "Open Proposals",
+        "description": "Proposals are created by the community and works as the consensus mechanism used to outline policies and changes to the Decentraland ecosystem. Learn more about them [here](https://docs.decentraland.org/decentraland/what-can-you-do-with-the-dao/).",
+        "loading": "Fetching open proposals...",
+        "ending_soon": "Ending soon",
+        "by_user": "By ",
+        "votes": "{total} {total, plural, one {vote} other {votes}}",
+        "comments": "{total} {total, plural, one {comment} other {comments}}",
+        "ends_date": "Ends {value}",
+        "ended_date": "Ended {value}",
+        "threshold_not_met": "Threshold still not met",
+        "threshold_met": "Threshold met",
+        "vp_needed": "{value} VP needed",
+        "vp": "{value} VP",
+        "participating_vp": "Participating VP",
+        "view_all_proposals": "View all proposals",
+        "you_voted": "You voted",
+        "vote": "Vote"
+      },
+      "active_community_grants": {
+        "title": "Active Community Grants",
+        "description": "Grants are the mechanism that the DAO uses to fund community projects that add value to the Decentraland ecosystem with our Treasury. Read more about grants [here](https://docs.decentraland.org/decentraland/community-grants/).",
+        "view_all_grants": "View all Grants",
+        "fetching": "Fetching active Community Grants..."
+      },
+      "bottom_banner": {
+        "title": "We have so much ahead of us. The future of the Metaverse is in your hands!",
+        "funds_value": "{value} USD",
+        "funds": "Funds distributed",
+        "grants": "Grants funded",
+        "discord_title": "Join our Discord Channel",
+        "discord_description": "Engage with the community",
+        "forum_title": "Debate on the forum",
+        "forum_description": "Discuss proposals and more",
+        "newsletter_title": "Subscribe to our Newsletter",
+        "newsletter_description": "A weekly DAO roundup"
+      },
+      "community_engagement": {
+        "title": "Community Engagement",
+        "description": "See the participation signal from the community and understand the basic health stats from the DAO.",
+        "participating_vp_title": "Participating VP over time",
+        "participating_vp": "Participating VP",
+        "votes_per_proposal_title": "Votes per proposal",
+        "votes_per_proposal": "Votes",
+        "display_median": "Display: median",
+        "top_voters": "Last month top voters",
+        "votes": "Votes",
+        "fetching_participation": "Fetching participation...",
+        "fetching_votes": "Fetching top voters..."
+      },
+      "dao_delegates": {
+        "title": "DAO Delegates",
+        "description": "Voting Power (VP) delegation is crucial to maximize the circulating VP usage, by assigning your VP to trusted community members who can engage in the governance process on behalf of you.",
+        "candidate_name":"Candidate Name",
+        "last_voted":  "Last Voted",
+        "times_voted": "Voted On",
+        "picked_by":  "Picked By",
+        "total_vp": "Total VP",
+        "view_all_delegates": "View all Delegates",
+        "fetching": "Fetching DAO delegates..."
+      }
     },
     "welcome": {
       "title": "Welcome to the Decentraland DAO",
@@ -422,6 +516,7 @@
       "categories": "Categories",
       "browse": "Browse",
       "no_proposals_yet": "No proposals have been sent by community members yet.",
+      "votes": "{total} {total, plural, one {vote} other {votes}}",
       "finish_label": {
         "ends": "Ends",
         "ended": "Ended"
@@ -465,8 +560,9 @@
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
-      "leading_option_label": "Leading",
-      "finished_result_label": "Result",
+      "leading_option_label": "Leading: ",
+      "finished_result_label": "Result: ",
+      "your_vote_label": "Your vote: ",
       "threshold_not_met_label": "VP threshold not met",
       "see_votes_button": "See Votes",
       "delegate_name": " is your Delegate",
