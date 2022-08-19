@@ -37,9 +37,9 @@ function TopVoters() {
         </Table.Header>
         {!isLoadingTopVoters && <Table.Body>{topVoters.map(createRow)}</Table.Body>}
         {isLoadingTopVoters && (
-          <div className="TopVoters__Loader">
+          <Table.Row className="TopVoters__Loader">
             <HomeLoader>{t('page.home.community_engagement.fetching_votes')}</HomeLoader>
-          </div>
+          </Table.Row>
         )}
       </Table>
     </Card>
