@@ -1,7 +1,6 @@
 import React from 'react'
 
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { Desktop, Mobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
 
@@ -11,21 +10,20 @@ interface Props {
 
 function BurgerMenuPushableLayout({ children }: Props) {
   const burgerMenu = useBurgerMenu()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
-  if (isMobile) {
-    return (
-      <div
-        className="Animated"
-        style={burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : {}}
-      >
-        {children}
-      </div>
-    )
-  } else {
-    return <>{children}</>
-  }
+  return (
+    <>
+      <Mobile>
+        <div
+          className="Animated"
+          style={burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : {}}
+        >
+          {children}
+        </div>
+      </Mobile>
+      <Desktop>{children}</Desktop>
+    </>
+  )
 }
 
 export default BurgerMenuPushableLayout
