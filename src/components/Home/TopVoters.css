@@ -55,4 +55,5 @@
   position: absolute;
   top: 17px;
   left: 0;
+  border-bottom: unset !important;
 }

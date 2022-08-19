@@ -52,25 +52,25 @@ const DelegatesTable = ({ delegates, setSelectedCandidate, full }: Props) => {
                 {t('page.home.dao_delegates.candidate_name')}
               </Table.HeaderCell>
               <Table.HeaderCell className="DelegatesTable__ShadowBox DelegatesTable__ShadowBoxHeader" />
-              <Table.HeaderCell onClick={() => updateSort('lastVoted')}>
+              <Table.HeaderCell className="DelegatesTable__SortHeader" onClick={() => updateSort('lastVoted')}>
                 <span>
                   {t('page.home.dao_delegates.last_voted')}
                   <Sort descending={isDescendingSort} selected={sortingKey === 'lastVoted'} />
                 </span>
               </Table.HeaderCell>
-              <Table.HeaderCell onClick={() => updateSort('timesVoted')}>
+              <Table.HeaderCell className="DelegatesTable__SortHeader" onClick={() => updateSort('timesVoted')}>
                 <span>
                   {t('page.home.dao_delegates.times_voted')}
                   <Sort descending={isDescendingSort} selected={sortingKey === 'timesVoted'} />
                 </span>
               </Table.HeaderCell>
-              <Table.HeaderCell onClick={() => updateSort('pickedBy')}>
+              <Table.HeaderCell className="DelegatesTable__SortHeader" onClick={() => updateSort('pickedBy')}>
                 <span>
                   {t('page.home.dao_delegates.picked_by')}
                   <Sort descending={isDescendingSort} selected={sortingKey === 'pickedBy'} />
                 </span>
               </Table.HeaderCell>
-              <Table.HeaderCell onClick={() => updateSort('totalVP')}>
+              <Table.HeaderCell className="DelegatesTable__SortHeader" onClick={() => updateSort('totalVP')}>
                 <span>
                   {t('page.home.dao_delegates.total_vp')}
                   <Sort descending={isDescendingSort} selected={sortingKey === 'totalVP'} />
