@@ -37,9 +37,13 @@ function TopVoters() {
         </Table.Header>
         {!isLoadingTopVoters && <Table.Body>{topVoters.map(createRow)}</Table.Body>}
         {isLoadingTopVoters && (
-          <Table.Row className="TopVoters__Loader">
-            <HomeLoader>{t('page.home.community_engagement.fetching_votes')}</HomeLoader>
-          </Table.Row>
+          <Table.Body>
+            <Table.Row className="TopVoters__Loader">
+              <Table.Cell>
+                <HomeLoader>{t('page.home.community_engagement.fetching_votes')}</HomeLoader>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
         )}
       </Table>
     </Card>
