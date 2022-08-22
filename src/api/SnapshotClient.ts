@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
-import { Proposal } from '@snapshot-labs/snapshot.js/dist/sign/types'
+import { Proposal, ProposalType } from '@snapshot-labs/snapshot.js/dist/sign/types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import env from 'decentraland-gatsby/dist/utils/env'
@@ -10,7 +10,7 @@ import * as templates from '../entities/Proposal/templates'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { proposalUrl } from '../entities/Proposal/utils'
 
-const SNAPSHOT_PROPOSAL_TYPE = 'single-choice' // Each voter may select only one choice
+const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
 const GOVERNANCE_SNAPSHOT_NAME = 'DecentralandGovernance'
 
 export class SnapshotClient {
@@ -94,8 +94,8 @@ export class SnapshotClient {
         title: templates.snapshotTitle(snapshotTemplateProps),
         body: await templates.snapshotDescription(snapshotTemplateProps),
         choices: proposal.configuration.choices,
-        start: Number(start.getTime().toString().slice(0, -3)),
-        end: Number(end.getTime().toString().slice(0, -3)),
+        start: SnapshotClient.toSnapshotTimestamp(start.getTime()),
+        end: SnapshotClient.toSnapshotTimestamp(end.getTime()),
         snapshot: blockNumber,
         plugins: JSON.stringify({}),
         app: GOVERNANCE_SNAPSHOT_NAME,
@@ -106,5 +106,9 @@ export class SnapshotClient {
     }
 
     return JSON.stringify(msg)
+  }
+
+  private static toSnapshotTimestamp(time: number) {
+    return Number(time.toString().slice(0, -3));
   }
 }

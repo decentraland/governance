@@ -1,6 +1,6 @@
 import env, { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
-import { DiscourseAuth, DiscoursePostInTopic, DiscourseTopic } from '../../api/Discourse'
+import { DiscourseAuth, DiscoursePostInTopic, DiscourseTopic } from '../../api/DiscourseClient'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
 export const DISCOURSE_API = requiredEnv('DISCOURSE_API')
