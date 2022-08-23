@@ -14,7 +14,7 @@ import isUUID from 'validator/lib/isUUID'
 import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
 import { DiscourseClient, DiscourseComment } from '../../api/DiscourseClient'
 import { Snapshot } from '../../api/Snapshot'
-import isCommitee from '../Committee/isCommittee'
+import isCommittee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
@@ -25,7 +25,7 @@ import { getVotes } from '../Votes/routes'
 import { getUpdateMessage } from './templates/messages'
 
 import ProposalModel from './model'
-import { ProposalCreator } from './proposalCreator'
+import { ProposalCreator, ProposalInCreation } from './proposalCreator'
 import {
   GrantAttributes,
   GrantRequiredVP,
@@ -367,11 +367,8 @@ export async function createProposalLinkedWearables(req: WithAuth) {
   })
 }
 
-export async function createProposal(
-  data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>
-) {
-  const proposalCreator = new ProposalCreator()
-  return await proposalCreator.createProposal(data)
+export async function createProposal(proposalInCreation: ProposalInCreation) {
+  return await ProposalCreator.createProposal(proposalInCreation)
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {
@@ -411,7 +408,7 @@ export function commentProposalUpdateInDiscourse(id: string) {
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
-  if (!isCommitee(user)) {
+  if (!isCommittee(user)) {
     throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
   }
 
@@ -471,8 +468,7 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   const id = req.params.proposal
   const proposal = await getProposal(req)
 
-  const proposalCreator = new ProposalCreator()
-  return await proposalCreator.removeProposal(proposal, user, updated_at, id)
+  return await ProposalCreator.removeProposal(proposal, user, updated_at, id)
 }
 
 export async function proposalComments(req: Request<{ proposal: string }>) {

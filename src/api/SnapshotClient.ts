@@ -1,17 +1,26 @@
-import { Web3Provider } from '@ethersproject/providers'
+import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
-import { Proposal, ProposalType } from '@snapshot-labs/snapshot.js/dist/sign/types'
+import { CancelProposal, Proposal, ProposalType } from '@snapshot-labs/snapshot.js/dist/sign/types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
-import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import env from 'decentraland-gatsby/dist/utils/env'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import env, { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
-import * as templates from '../entities/Proposal/templates'
-import { ProposalAttributes } from '../entities/Proposal/types'
-import { proposalUrl } from '../entities/Proposal/utils'
+import { ProposalInCreation, ProposalLifespan } from '../entities/Proposal/ProposalCreator'
+import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
 
+const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
-const GOVERNANCE_SNAPSHOT_NAME = 'DecentralandGovernance'
+const GOVERNANCE_SNAPSHOT_NAME = 'decentraland-governance'
+
+export type ProposalCreationReceipt = {
+  id: string
+  ipfs: string
+  relayer: {
+    address: string
+    receipt: string
+  }
+}
 
 export class SnapshotClient {
   static Url =
@@ -22,8 +31,10 @@ export class SnapshotClient {
     'https://hub.snapshot.org/'
 
   static Cache = new Map<string, SnapshotClient>()
-  private client: Client
-  private space: string
+  private readonly client: Client
+  private readonly space: string
+  private readonly address: string
+  private readonly account: Wallet
 
   static from(baseUrl: string) {
     if (!this.Cache.has(baseUrl)) {
@@ -35,25 +46,37 @@ export class SnapshotClient {
 
   constructor(baseUrl: string) {
     this.client = new snapshot.Client712(baseUrl)
+    this.account = new Wallet(SNAPSHOT_PRIVATE_KEY)
+    this.space = SnapshotClient.getSpace()
+    this.address = SnapshotClient.getSnapshotAddress()
+  }
+
+  private static getSpace() {
     if (!process.env.GATSBY_SNAPSHOT_SPACE) {
       throw new Error('Failed to determine snapshot space. Please check GATSBY_SNAPSHOT_SPACE env is defined')
     }
-    this.space = process.env.GATSBY_SNAPSHOT_SPACE
+    return process.env.GATSBY_SNAPSHOT_SPACE
+  }
+
+  private static getSnapshotAddress() {
+    if (!SNAPSHOT_ADDRESS) {
+      throw new Error('Failed to determine snapshot address. Please check GATSBY_SNAPSHOT_ADDRESS env is defined')
+    }
+    return SNAPSHOT_ADDRESS
   }
 
   static get() {
     return this.from(env('SNAPSHOT_API', this.Url))
   }
 
-  async castVote(web3: Web3Provider, account: string, proposalSnapshotId: string, choiceNumber: number) {
+  async castVote(proposalSnapshotId: string, choiceNumber: number) {
     console.log('#CastingVote')
     console.log('proposalSnapshotId', proposalSnapshotId)
     console.log('choiceNumber', choiceNumber)
-    console.log('account', account)
     console.log('this.space', this.space)
     console.log('GOVERNANCE_SNAPSHOT_NAME', GOVERNANCE_SNAPSHOT_NAME)
     //TODO: validations
-    const receipt = await this.client.vote(web3, account, {
+    const receipt = await this.client.vote(this.account, this.address, {
       space: this.space,
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
@@ -63,52 +86,74 @@ export class SnapshotClient {
     console.log('Receipt', receipt)
   }
 
-  async createProposal(web3: Web3Provider, account: string, proposalMessage: Proposal) {
+  async createProposal(
+    proposal: ProposalInCreation,
+    proposalTitle: string,
+    proposalBody: string,
+    proposalLifespan: ProposalLifespan,
+    blockNumber: number
+  ): Promise<ProposalCreationReceipt> {
+    //TODO: validations?
     console.log('#CreatingProposal')
-    console.log('proposalMessage', proposalMessage)
-    //TODO: validations
-    const receipt = await this.client.proposal(web3, account, proposalMessage)
+    const proposalMessage = await this.createProposalMessage(
+      proposal,
+      proposalTitle,
+      proposalBody,
+      proposalLifespan,
+      blockNumber
+    )
+    console.log('ProposalMessage', proposalMessage)
+    const receipt = await this.client.proposal(this.account, this.address, proposalMessage)
     console.log('Receipt', receipt)
+    return receipt as ProposalCreationReceipt
   }
 
-  async createProposalMessage(
-    proposal: ProposalAttributes,
-    profile: Avatar,
-    start: Pick<Date, 'getTime'>,
-    end: Pick<Date, 'getTime'>,
+  private async createProposalMessage(
+    proposal: ProposalInCreation,
+    proposalTitle: string,
+    proposalBody: string,
+    proposalLifespan: ProposalLifespan,
     blockNumber: number
   ) {
-    let msg: Proposal
+    let snapshotProposal: Proposal
     try {
-      const snapshotTemplateProps: templates.SnapshotTemplateProps = {
-        user: proposal.user,
-        type: proposal.type,
-        configuration: proposal.configuration,
-        profile,
-        proposal_url: proposalUrl({ id: proposal.id }),
-      }
-
-      msg = {
+      snapshotProposal = {
         space: this.space,
         type: SNAPSHOT_PROPOSAL_TYPE,
-        title: templates.snapshotTitle(snapshotTemplateProps),
-        body: await templates.snapshotDescription(snapshotTemplateProps),
-        choices: proposal.configuration.choices,
-        start: SnapshotClient.toSnapshotTimestamp(start.getTime()),
-        end: SnapshotClient.toSnapshotTimestamp(end.getTime()),
+        title: proposalTitle,
+        body: proposalBody,
+        choices: proposal.configuration.choices as string[],
+        start: SnapshotClient.toSnapshotTimestamp(proposalLifespan.start.getTime()),
+        end: SnapshotClient.toSnapshotTimestamp(proposalLifespan.end.getTime()),
         snapshot: blockNumber,
         plugins: JSON.stringify({}),
         app: GOVERNANCE_SNAPSHOT_NAME,
-        discussion: '', //TODO: dafuq is this
+        discussion: '',
       }
     } catch (err) {
-      throw new RequestError('Error creating the snapshot message', RequestError.InternalServerError, err as Error)
+      throw new RequestError(
+        'Error building the proposal creation message',
+        RequestError.InternalServerError,
+        err as Error
+      )
     }
 
-    return JSON.stringify(msg)
+    return snapshotProposal
+  }
+
+  public async removeProposal(ipfsHash: string) {
+    const cancelProposalMessage: CancelProposal = {
+      space: this.space,
+      timestamp: SnapshotClient.toSnapshotTimestamp(Time.from().getTime()),
+      proposal: ipfsHash,
+    }
+
+    const receipt = this.client.cancelProposal(this.account, this.address, cancelProposalMessage)
+    console.log('Receipt', receipt)
+    return receipt //TODO as ProposalRemovalReceipt
   }
 
   private static toSnapshotTimestamp(time: number) {
-    return Number(time.toString().slice(0, -3));
+    return Number(time.toString().slice(0, -3))
   }
 }
