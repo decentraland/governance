@@ -1,11 +1,18 @@
+import { Proposal } from '@snapshot-labs/snapshot.js/dist/sign/types'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 
 export type HashContent = {
   address: string
-  msg: string
   sig: string
-  version: string
+  data: {
+    domain: {
+      name: string
+      version: string
+    }
+    types: { Proposal: [] }
+    message: Proposal
+  }
 }
 
 export class IPFS extends API {

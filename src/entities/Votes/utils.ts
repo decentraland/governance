@@ -173,7 +173,7 @@ export async function getProposalScores(proposal: ProposalAttributes, addresses:
   for (const addressesChunk of chunk(addresses, 500)) {
     const blockchainScores: DetailedScores = await Snapshot.get().getScores(
       proposal.snapshot_space,
-      proposal.snapshot_proposal.metadata.strategies,
+      proposal.snapshot_proposal.metadata.strategies, // TODO: change
       proposal.snapshot_network,
       addressesChunk,
       proposal.snapshot_proposal.snapshot

@@ -59,7 +59,7 @@ export class SnapshotProposalCreator {
     }
 
     const proposalTitle = templates.snapshotTitle(snapshotTemplateProps)
-    const proposalBody = JSON.stringify(await templates.snapshotDescription(snapshotTemplateProps)) //TODO: check if this stringify is necessary
+    const proposalBody = await templates.snapshotDescription(snapshotTemplateProps)
     return { proposalTitle, proposalBody }
   }
 
@@ -79,7 +79,9 @@ export class SnapshotProposalCreator {
 
   private static async getSnapshotContent(ipfsHash: string) {
     try {
-      return await IPFS.get().getHash(ipfsHash)
+      const hashContent = await IPFS.get().getHash(ipfsHash)
+      console.log('IPFS HashContent', hashContent) //TODO: remove this
+      return hashContent
     } catch (err) {
       SnapshotProposalCreator.dropSnapshotProposal(ipfsHash)
       throw new RequestError("Couldn't retrieve proposal from the IPFS", RequestError.InternalServerError, err as Error)

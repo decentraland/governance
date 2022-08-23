@@ -206,43 +206,6 @@ export class Snapshot extends API {
     return result?.data?.space || null
   }
 
-  async createProposalMessage(
-    space: string,
-    version: string,
-    network: string,
-    strategies: SnapshotStrategy[],
-    payload: SnapshotNewProposalPayload
-  ) {
-    const msg = {
-      version,
-      space,
-      type: 'proposal',
-      timestamp: Time.from().getTime().toString().slice(0, -3),
-      payload: {
-        ...payload,
-        start: Number(payload.start.getTime().toString().slice(0, -3)),
-        end: Number(payload.end.getTime().toString().slice(0, -3)),
-        metadata: { network, strategies },
-      },
-    }
-
-    return JSON.stringify(msg)
-  }
-
-  async removeProposalMessage(space: string, proposal: string) {
-    const status = await this.getStatus()
-
-    const msg: SnapshotRemoveProposalMessage = {
-      space,
-      type: 'delete-proposal',
-      version: status.version,
-      timestamp: Time.from().getTime().toString().slice(0, -3),
-      payload: { proposal },
-    }
-
-    return JSON.stringify(msg)
-  }
-
   async getProposalVotes(space: string, proposal: string) {
     let hasNext = true
     let skip = 0

@@ -129,7 +129,7 @@ export class ProposalCreator {
       status: ProposalStatus.Active,
       snapshot_id: ipfsHash,
       snapshot_space: SNAPSHOT_SPACE,
-      snapshot_proposal: JSON.stringify(JSON.parse(snapshotContent.msg).payload),
+      snapshot_proposal: JSON.stringify(snapshotContent.data.message),
       snapshot_signature: snapshotContent.sig,
       snapshot_network: String(Number(getEnvironmentChainId())),
       discourse_id: discourseProposal.id,
