@@ -22,12 +22,8 @@ export const BurgerMenuStatusContext = createContext<BurgerMenuStatusContextType
 
 const BurgerMenuStatusContextProvider = ({ children }: BurgerMenuStatusContextProps) => {
   const searchParams = useSearchParams()
-  const filtering = !!(
-    searchParams.type ||
-    searchParams.status ||
-    (searchParams.timeFrame && searchParams.timeFrame.length > 0)
-  )
-
+  const filtering =
+    !!searchParams.type || !!searchParams.status || (!!searchParams.timeFrame && searchParams.timeFrame.length > 0)
   const [status, setStatus] = useState({
     open: searchParams.searching || filtering,
     searching: searchParams.searching,
