@@ -3,7 +3,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
-import { IPFS } from '../../api/IPFS'
+import { HashContent, IPFS } from '../../api/IPFS'
 import { ProposalCreationReceipt, SnapshotClient } from '../../api/SnapshotClient'
 import { getEnvironmentChainId } from '../../modules/votes/utils'
 import { SNAPSHOT_SPACE } from '../Snapshot/constants'
@@ -33,7 +33,7 @@ export class SnapshotProposalCreator {
 
     const snapshot_url = snapshotProposalUrl({
       snapshot_space: SNAPSHOT_SPACE,
-      snapshot_id: proposalCreationReceipt.ipfs,
+      snapshot_id: proposalCreationReceipt.id,
     })
 
     logger.log('Snapshot proposal created', {
@@ -41,8 +41,8 @@ export class SnapshotProposalCreator {
       snapshot_proposal: JSON.stringify(proposalCreationReceipt),
     })
 
-    const snapshotContent = await this.getSnapshotContent(proposalCreationReceipt.ipfs)
-    return { ipfsHash: proposalCreationReceipt.ipfs, snapshot_url, snapshotContent }
+    const snapshotContent = await this.getIpfsSnapshotContent(proposalCreationReceipt.ipfs)
+    return { snapshotId: proposalCreationReceipt.id, snapshot_url, snapshotContent }
   }
 
   private static async snapshotTitleAndBody(
@@ -77,7 +77,8 @@ export class SnapshotProposalCreator {
     }
   }
 
-  private static async getSnapshotContent(ipfsHash: string) {
+  // TODO: check for backwards compatibility (changes in HashContent)
+  private static async getIpfsSnapshotContent(ipfsHash: string) {
     try {
       const hashContent = await IPFS.get().getHash(ipfsHash)
       console.log('IPFS HashContent', hashContent) //TODO: remove this
@@ -88,12 +89,12 @@ export class SnapshotProposalCreator {
     }
   }
 
-  static dropSnapshotProposal(ipfsHash: string) {
+  static dropSnapshotProposal(snapshotId: string) {
     inBackground(async () => {
-      logger.log(`Dropping snapshot proposal: ${ipfsHash}`)
-      const result = await SnapshotClient.get().removeProposal(ipfsHash)
+      logger.log(`Dropping snapshot proposal: ${snapshotId}`)
+      const result = await SnapshotClient.get().removeProposal(snapshotId)
       return {
-        proposalIpfsHash: ipfsHash,
+        proposalId: snapshotId,
         result,
       }
     })

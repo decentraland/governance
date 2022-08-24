@@ -1,15 +1,15 @@
+import { Web3Provider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
 import { CancelProposal, Proposal, ProposalType } from '@snapshot-labs/snapshot.js/dist/sign/types'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import env, { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+import env from 'decentraland-gatsby/dist/utils/env'
 
 import { ProposalInCreation, ProposalLifespan } from '../entities/Proposal/ProposalCreator'
 import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
 
-const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
 const GOVERNANCE_SNAPSHOT_NAME = 'decentraland-governance'
 
@@ -46,9 +46,16 @@ export class SnapshotClient {
 
   constructor(baseUrl: string) {
     this.client = new snapshot.Client712(baseUrl)
-    this.account = new Wallet(SNAPSHOT_PRIVATE_KEY)
+    this.account = SnapshotClient.getWallet()
     this.space = SnapshotClient.getSpace()
     this.address = SnapshotClient.getSnapshotAddress()
+  }
+
+  private static getWallet() {
+    if (!process.env.SNAPSHOT_PRIVATE_KEY) {
+      throw new Error('Failed to determine snapshot private key. Please check SNAPSHOT_PRIVATE_KEY env is defined')
+    }
+    return new Wallet(process.env.SNAPSHOT_PRIVATE_KEY)
   }
 
   private static getSpace() {
@@ -69,14 +76,14 @@ export class SnapshotClient {
     return this.from(env('SNAPSHOT_API', this.Url))
   }
 
-  async castVote(proposalSnapshotId: string, choiceNumber: number) {
+  async castVote(account: Web3Provider | Wallet, address: string, proposalSnapshotId: string, choiceNumber: number) {
     console.log('#CastingVote')
     console.log('proposalSnapshotId', proposalSnapshotId)
     console.log('choiceNumber', choiceNumber)
     console.log('this.space', this.space)
     console.log('GOVERNANCE_SNAPSHOT_NAME', GOVERNANCE_SNAPSHOT_NAME)
     //TODO: validations
-    const receipt = await this.client.vote(this.account, this.address, {
+    const receipt = await this.client.vote(account, address, {
       space: this.space,
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
@@ -84,6 +91,7 @@ export class SnapshotClient {
       app: GOVERNANCE_SNAPSHOT_NAME,
     })
     console.log('Receipt', receipt)
+    return receipt
   }
 
   async createProposal(
@@ -141,14 +149,14 @@ export class SnapshotClient {
     return snapshotProposal
   }
 
-  public async removeProposal(ipfsHash: string) {
+  public async removeProposal(snapshotId: string) {
     const cancelProposalMessage: CancelProposal = {
       space: this.space,
       timestamp: SnapshotClient.toSnapshotTimestamp(Time.from().getTime()),
-      proposal: ipfsHash,
+      proposal: snapshotId,
     }
 
-    const receipt = this.client.cancelProposal(this.account, this.address, cancelProposalMessage)
+    const receipt = await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)
     console.log('Receipt', receipt)
     return receipt //TODO as ProposalRemovalReceipt
   }

@@ -1,17 +1,17 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
-import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 
 import { DiscoursePost } from '../../api/DiscourseClient'
 import { HashContent } from '../../api/IPFS'
 import { getEnvironmentChainId } from '../../modules/votes/utils'
+import CatalystService from '../../services/CatalystService'
+import { DiscourseService } from '../../services/DiscourseService'
 import CoauthorModel from '../Coauthor/model'
 import isCommittee from '../Committee/isCommittee'
 import { SNAPSHOT_SPACE } from '../Snapshot/constants'
 import VotesModel from '../Votes/model'
 
-import { DiscourseProposalCreator } from './DiscourseProposalCreator'
 import { SnapshotProposalCreator } from './SnapshotProposalCreator'
 import ProposalModel from './model'
 import * as templates from './templates'
@@ -37,21 +37,21 @@ export class ProposalCreator {
       delete proposalInCreation.configuration.coAuthors
     }
 
-    const profile = await ProposalCreator.getProfile(proposalInCreation)
+    const profile = await CatalystService.getProfile(proposalInCreation.user)
 
-    const { ipfsHash, snapshot_url, snapshotContent } = await SnapshotProposalCreator.createProposalInSnapshot(
+    const { snapshotId, snapshot_url, snapshotContent } = await SnapshotProposalCreator.createProposalInSnapshot(
       proposalInCreation,
       proposalId,
       profile,
       proposalLifespan
     )
 
-    const discourseProposal = await DiscourseProposalCreator.createProposalInDiscourse(
+    const discourseProposal = await DiscourseService.createProposalInDiscourse(
       proposalInCreation,
       proposalId,
       profile,
       snapshot_url,
-      ipfsHash
+      snapshotId
     )
 
     const title = templates.title({ type: proposalInCreation.type, configuration: proposalInCreation.configuration })
@@ -65,7 +65,7 @@ export class ProposalCreator {
       proposalId,
       title,
       description,
-      ipfsHash,
+      snapshotId,
       snapshotContent,
       discourseProposal,
       proposalLifespan,
@@ -88,11 +88,14 @@ export class ProposalCreator {
   }
 
   static async removeProposal(proposal: ProposalAttributes, user: string, updated_at: Date, id: string) {
-    const allowToRemove = proposal.user === user || isCommittee(user)
-    if (!allowToRemove) {
-      throw new RequestError('Forbidden', RequestError.Forbidden)
-    }
+    this.validateRemoval(proposal, user)
+    await this.markAsDeleted(user, updated_at, id)
+    DiscourseService.dropDiscourseTopic(proposal.discourse_topic_id)
+    SnapshotProposalCreator.dropSnapshotProposal(proposal.snapshot_id)
+    return true
+  }
 
+  private static async markAsDeleted(user: string, updated_at: Date, id: string) {
     await ProposalModel.update<ProposalAttributes>(
       {
         deleted: true,
@@ -100,13 +103,15 @@ export class ProposalCreator {
         updated_at,
         status: ProposalStatus.Deleted,
       },
-      {
-        id,
-      }
+      { id }
     )
-    DiscourseProposalCreator.dropDiscourseTopic(proposal.discourse_topic_id)
-    SnapshotProposalCreator.dropSnapshotProposal(proposal.snapshot_id)
-    return true
+  }
+
+  private static validateRemoval(proposal: ProposalAttributes, user: string) {
+    const allowToRemove = proposal.user === user || isCommittee(user)
+    if (!allowToRemove) {
+      throw new RequestError('Forbidden', RequestError.Forbidden)
+    }
   }
 
   private static async createProposalInDb(
@@ -114,7 +119,7 @@ export class ProposalCreator {
     id: string,
     title: string,
     description: string,
-    ipfsHash: string,
+    snapshotId: string,
     snapshotContent: HashContent,
     discourseProposal: DiscoursePost,
     proposalLifespan: ProposalLifespan,
@@ -127,7 +132,7 @@ export class ProposalCreator {
       description,
       configuration: JSON.stringify(data.configuration),
       status: ProposalStatus.Active,
-      snapshot_id: ipfsHash,
+      snapshot_id: snapshotId,
       snapshot_space: SNAPSHOT_SPACE,
       snapshot_proposal: JSON.stringify(snapshotContent.data.message),
       snapshot_signature: snapshotContent.sig,
@@ -160,18 +165,10 @@ export class ProposalCreator {
         await CoauthorModel.createMultiple(id, coAuthors)
       }
     } catch (err) {
-      DiscourseProposalCreator.dropDiscourseTopic(discourseProposal.topic_id)
-      SnapshotProposalCreator.dropSnapshotProposal(ipfsHash)
+      DiscourseService.dropDiscourseTopic(discourseProposal.topic_id)
+      SnapshotProposalCreator.dropSnapshotProposal(snapshotId)
       throw err
     }
     return newProposal
-  }
-
-  private static async getProfile(data: ProposalInCreation) {
-    try {
-      return await Catalyst.get().getProfile(data.user)
-    } catch (err) {
-      throw new RequestError(`Error getting profile "${data.user}"`, RequestError.InternalServerError, err as Error)
-    }
   }
 }
