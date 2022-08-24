@@ -52,8 +52,8 @@
   color: #76b7b2;
 }
 
-.ui.button.ChoiceButton.ChoiceButton--status-3:hover,
-.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-3 {
+.ui.button.ChoiceButton.ChoiceButton--status-4:hover,
+.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-4 {
   color: #59a14f;
 }
 
