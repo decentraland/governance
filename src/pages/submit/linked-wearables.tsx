@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -27,7 +27,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
-import { asNumber, isValidImage } from '../../entities/Proposal/utils'
+import { asNumber, isValidImage, stateHasValues } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -209,6 +209,7 @@ export default function SubmitLinkedWearables() {
     smart_contract: [],
     managers: [],
   })
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
@@ -317,6 +318,8 @@ export default function SubmitLinkedWearables() {
   }
 
   useEffect(() => {
+    preventNavigation.current = stateHasValues(state.value)
+
     if (state.validated) {
       setFormDisabled(true)
       imagesValidator(state.value.image_previews).then((errors) => {
@@ -384,7 +387,7 @@ export default function SubmitLinkedWearables() {
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_linked_wearables.title') || ''}
         description={t('page.submit_linked_wearables.description') || ''}
