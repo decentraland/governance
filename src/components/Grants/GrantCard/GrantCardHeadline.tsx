@@ -27,7 +27,7 @@ const GrantCardHeadline = ({ grant, hoverable = false, expanded = false }: Grant
       >
         {title}
       </Header>
-      <Username className="GrantCardHeadline__Avatar" address={user} iconOnly size="medium" />
+      <Username className="GrantCardHeadline__Avatar" address={user} variant="avatar" size="medium" />
     </div>
   )
 }

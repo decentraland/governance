@@ -49,7 +49,7 @@ export default function ChoiceButton({
       )}
       {!!delegate && (
         <span className={'ChoiceButton__Delegate'}>
-          <Username address={delegate} iconOnly />
+          <Username address={delegate} variant="avatar" />
         </span>
       )}
       <TextWithTooltip className={'ChoiceButton__Text'}>{children}</TextWithTooltip>

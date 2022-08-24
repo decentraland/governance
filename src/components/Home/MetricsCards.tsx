@@ -4,6 +4,7 @@ import Flickity from 'react-flickity-component'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
@@ -26,9 +27,9 @@ const flickityOptions = {
   friction: 0.15,
 }
 
-const now = new Date()
-const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 7)
-const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
+const now = Time().toDate()
+const oneWeekAgo = Time(now).subtract(1, 'week').toDate()
+const oneMonthAgo = Time(now).subtract(1, 'month').toDate()
 
 const MetricsCards = () => {
   const responsive = useResponsive()
@@ -46,13 +47,13 @@ const MetricsCards = () => {
     [transparencyData?.balances]
   )
 
-  const { proposals: activeProposals, isLoadingProposals: isLoadingActiveProposals } = useProposals({
+  const { proposals: endingSoonProposals, isLoadingProposals: isLoadingEndingSoonProposals } = useProposals({
     status: ProposalStatus.Active,
     timeFrame: '2days',
     timeFrameKey: 'finish_at',
   })
 
-  const { proposals: endingSoonProposals, isLoadingProposals: isLoadingEndingSoonProposals } = useProposals({
+  const { proposals: activeProposals, isLoadingProposals: isLoadingActiveProposals } = useProposals({
     status: ProposalStatus.Active,
   })
 
@@ -65,31 +66,32 @@ const MetricsCards = () => {
     now
   )
 
-  const content = (
-    <>
-      <MetricsCard
-        isLoading={isLoadingActiveProposals || isLoadingEndingSoonProposals}
-        loadingLabel={t('page.home.metrics.fetching_proposals_data')}
-        category={t('page.home.metrics.proposals')}
-        title={t('page.home.metrics.active_proposals', { value: activeProposals?.total })}
-        description={t('page.home.metrics.ending_soon', { value: endingSoonProposals?.total })}
-      />
-      <MetricsCard
-        isLoading={isLoadingOneMonthVotesCount || isLoadingOneWeekVotesCount}
-        loadingLabel={t('page.home.metrics.fetching_participation_data')}
-        category={t('page.home.metrics.participation')}
-        title={t('page.home.metrics.votes_this_week', { value: votesCountThisWeek })}
-        description={t('page.home.metrics.votes_last_month', { value: votesCountLastMonth })}
-      />
-      <MetricsCard
-        isLoading={transparencyState.loading}
-        loadingLabel={t('page.home.metrics.fetching_treasury_data')}
-        category={t('page.home.metrics.treasury')}
-        title={`$${t('general.number', { value: treasuryAmount })}`}
-        description={t('page.home.metrics.consolidated')}
-      />
-    </>
-  )
+  const content = [
+    <MetricsCard
+      key="page.home.metrics.active_proposals"
+      isLoading={isLoadingActiveProposals || isLoadingEndingSoonProposals}
+      loadingLabel={t('page.home.metrics.fetching_proposals_data')}
+      category={t('page.home.metrics.proposals')}
+      title={t('page.home.metrics.active_proposals', { value: activeProposals?.total })}
+      description={t('page.home.metrics.ending_soon', { value: endingSoonProposals?.total })}
+    />,
+    <MetricsCard
+      key="page.home.metrics.votes_this_week"
+      isLoading={isLoadingOneMonthVotesCount || isLoadingOneWeekVotesCount}
+      loadingLabel={t('page.home.metrics.fetching_participation_data')}
+      category={t('page.home.metrics.participation')}
+      title={t('page.home.metrics.votes_this_week', { value: votesCountThisWeek })}
+      description={t('page.home.metrics.votes_last_month', { value: votesCountLastMonth })}
+    />,
+    <MetricsCard
+      key="page.home.metrics.treasury_amount"
+      isLoading={transparencyState.loading}
+      loadingLabel={t('page.home.metrics.fetching_treasury_data')}
+      category={t('page.home.metrics.treasury')}
+      title={`$${t('general.number', { value: treasuryAmount })}`}
+      description={t('page.home.metrics.consolidated')}
+    />,
+  ]
 
   return (
     <>
