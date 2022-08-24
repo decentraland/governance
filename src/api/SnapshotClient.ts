@@ -77,19 +77,15 @@ export class SnapshotClient {
   }
 
   async castVote(account: Web3Provider | Wallet, address: string, proposalSnapshotId: string, choiceNumber: number) {
-    console.log('#CastingVote')
-    console.log('proposalSnapshotId', proposalSnapshotId)
-    console.log('choiceNumber', choiceNumber)
-    console.log('this.space', this.space)
-    console.log('GOVERNANCE_SNAPSHOT_NAME', GOVERNANCE_SNAPSHOT_NAME)
     //TODO: validations
-    const receipt = await this.client.vote(account, address, {
+    const voteMessage = {
       space: this.space,
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
       app: GOVERNANCE_SNAPSHOT_NAME,
-    })
+    }
+    const receipt = await this.client.vote(account, address, voteMessage)
     console.log('Receipt', receipt)
     return receipt
   }
