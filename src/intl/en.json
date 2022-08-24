@@ -37,7 +37,8 @@
         "month": "Last Month",
         "3months": "Last 90 Days"
       }
-    }
+    },
+    "exit": "Are you sure you want to exit? You will lose the changes you have made."
   },
   "mobile_login": {
     "exclamation": "Oh oh...",

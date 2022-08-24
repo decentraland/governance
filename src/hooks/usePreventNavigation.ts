@@ -1,20 +1,21 @@
 import { useEffect, useRef } from 'react'
 
 import { globalHistory, useLocation } from '@gatsbyjs/reach-router'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
 import locations from '../modules/locations'
 
-function usePreventNavigation() {
+function usePreventNavigation(isActive: boolean) {
   const currentLocation = useLocation()
   const confirmBack = useRef(false)
+  const t = useFormatMessage()
   useEffect(() => {
     const preventNavigation = (location: string, event?: BeforeUnloadEvent) => {
       if (event) {
         event.preventDefault()
-        // event.stopImmediatePropagation()
         event.returnValue = ''
-      } else if (!window.confirm('Are you sure you want to exit?')) {
+      } else if (!window.confirm(t('navigation.exit'))) {
         navigate(`${currentLocation.pathname}`)
       } else {
         confirmBack.current = true
@@ -22,15 +23,18 @@ function usePreventNavigation() {
       }
     }
 
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => preventNavigation('', event)
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isActive) {
+        preventNavigation('', event)
+      }
+    }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
 
     const unsuscribe = globalHistory.listen(({ action, location }) => {
-      console.log(action, location)
       if (
-        action === 'POP' ||
-        (action === 'PUSH' && location.pathname === locations.proposals() && !confirmBack.current)
+        isActive &&
+        (action === 'POP' || (action === 'PUSH' && location.pathname === locations.proposals() && !confirmBack.current))
       ) {
         preventNavigation(location.pathname)
       }
@@ -40,7 +44,8 @@ function usePreventNavigation() {
       unsuscribe()
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
-  }, [currentLocation])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLocation, isActive])
 }
 
 export default usePreventNavigation
