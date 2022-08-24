@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -22,7 +22,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
-import { isValidName } from '../../entities/Proposal/utils'
+import { isValidName, stateHasValues } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -78,10 +78,13 @@ export default function SubmitBanName() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
+    preventNavigation.current = stateHasValues(state.value)
+
     if (state.validated) {
       setFormDisabled(true)
       Promise.resolve()
@@ -123,7 +126,7 @@ export default function SubmitBanName() {
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_ban_name.title') || ''}
         description={t('page.submit_ban_name.description') || ''}

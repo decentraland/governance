@@ -198,3 +198,8 @@ export const GrantDuration = {
 }
 
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
+
+export function stateHasValues(stateValue: Record<string, unknown>) {
+  const values = Object.values(stateValue)
+  return values.some((value) => !!value)
+}

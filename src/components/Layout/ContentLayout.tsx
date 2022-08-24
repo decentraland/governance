@@ -5,6 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import usePreventNavigation from '../../hooks/usePreventNavigation'
 import locations from '../../modules/locations'
 
 import './ContentLayout.css'
@@ -14,9 +15,16 @@ export type ContentLayoutProps = {
   small?: boolean
   children?: React.ReactNode
   navigateHref?: string
+  preventNavigation?: boolean
 }
 
-export default function ContentLayout({ navigateHref, className, small, children }: ContentLayoutProps) {
+export default function ContentLayout({
+  navigateHref,
+  className,
+  small,
+  preventNavigation,
+  children,
+}: ContentLayoutProps) {
   function handleBack() {
     if ((window as any).routeUpdate) {
       window.history.back()
@@ -24,6 +32,8 @@ export default function ContentLayout({ navigateHref, className, small, children
       navigate(navigateHref || locations.proposals())
     }
   }
+
+  usePreventNavigation(!!preventNavigation)
 
   return (
     <Container className={TokenList.join(['ContentLayout', className])}>

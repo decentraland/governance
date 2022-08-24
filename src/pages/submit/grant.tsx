@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -32,7 +32,7 @@ import {
   isProposalGrantTier,
   newProposalGrantScheme,
 } from '../../entities/Proposal/types'
-import { asNumber, isGrantSizeValid } from '../../entities/Proposal/utils'
+import { asNumber, isGrantSizeValid, stateHasValues } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -201,10 +201,13 @@ export default function SubmitGrant() {
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialPollState)
   const [formDisabled, setFormDisabled] = useState(false)
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
+    preventNavigation.current = stateHasValues(state.value)
+
     if (state.validated) {
       setFormDisabled(true)
       Promise.resolve()
@@ -230,7 +233,7 @@ export default function SubmitGrant() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated])
+  }, [state.validated, state.value])
 
   if (accountState.loading) {
     return <LoadingView />
@@ -241,7 +244,7 @@ export default function SubmitGrant() {
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_grant.title') || ''}
         description={t('page.submit_grant.description') || ''}
