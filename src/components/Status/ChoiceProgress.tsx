@@ -16,21 +16,22 @@ export type ChoiceProgressProps = {
   color: ChoiceColor
 }
 
-export default function ChoiceProgress(props: ChoiceProgressProps) {
+export default function ChoiceProgress({ choice, progress, power, color, votes }: ChoiceProgressProps) {
   const t = useFormatMessage()
+
   return (
     <div className="ChoiceProgress">
       <div className="ChoiceProgress__Description">
-        <TextWithTooltip className="ChoiceProgress__Choice">{props.choice}</TextWithTooltip>
-        <div className="ChoiceProgress__Stats">{props.progress}%</div>
+        <TextWithTooltip className="ChoiceProgress__Choice">{choice}</TextWithTooltip>
+        <div className="ChoiceProgress__Stats">{progress}%</div>
       </div>
-      <Progress color={props.color} progress={props.progress} />
+      <Progress color={color} progress={progress} />
       <div className="ChoiceProgress__Votes">
         <strong>
-          {t('general.number', { value: props.power })}
+          {t('general.number', { value: power })}
           {' VP '}
         </strong>
-        <span>({t('general.count_votes', { count: props.votes })})</span>
+        <span>({t('general.count_votes', { count: votes })})</span>
       </div>
     </div>
   )
