@@ -4,12 +4,12 @@
   </a>
 </p>
 <h1 align="center">
-  Decentralized Autonomous Organization
+  Decentraland DAO Governance dApp
 </h1>
 
-The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.
+The governance hub for the Decentraland ecosystem. Create and vote on proposals that help shape the future of the metaverse via the Decentraland DAO (Decentralized Autonomous Organization).
 
-![Screenshot of the governance hub for Decentraland homepage](./static/home.jpg)
+![Screenshot of the governance hub for Decentraland homepage](./static/home.png)
 
 ## Setup
 
