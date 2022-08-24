@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -15,7 +15,12 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../../api/Governance'
 import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
-import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
+import {
+  asNumber,
+  isAlreadyPointOfInterest,
+  isValidPointOfInterest,
+  stateHasValues,
+} from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import ErrorMessage from '../../Error/ErrorMessage'
@@ -122,10 +127,13 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   const [state, editor] = useEditor(edit, validate, initialPoiState)
   const [formDisabled, setFormDisabled] = useState(false)
   const action = getPoiTypeAction(poiType)
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
+    preventNavigation.current = stateHasValues(state.value)
+
     if (state.validated) {
       setFormDisabled(true)
       Promise.resolve()
@@ -177,7 +185,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t(`page.submit_poi.${action}.title`) || ''}
         description={t('page.submit_poi.description') || ''}

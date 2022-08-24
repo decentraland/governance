@@ -16,7 +16,7 @@ function usePreventNavigation(isActive: boolean) {
         event.preventDefault()
         event.returnValue = ''
       } else if (!window.confirm(t('navigation.exit'))) {
-        navigate(`${currentLocation.pathname}`)
+        navigate(`${currentLocation.pathname}${currentLocation.search}`)
       } else {
         confirmBack.current = true
         navigate(location)
@@ -36,7 +36,7 @@ function usePreventNavigation(isActive: boolean) {
         isActive &&
         (action === 'POP' || (action === 'PUSH' && location.pathname === locations.proposals() && !confirmBack.current))
       ) {
-        preventNavigation(location.pathname)
+        preventNavigation(`${location.pathname}${location.search}`)
       }
     })
 
