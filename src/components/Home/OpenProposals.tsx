@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { isEmpty } from 'lodash'
 
@@ -21,8 +22,8 @@ enum Tab {
   ParticipatingVP = 'participatingVp',
 }
 
-const now = new Date()
-const twoWeeksAgo = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 14)
+const now = Time().toDate()
+const twoWeeksAgo = Time(now).subtract(2, 'week').toDate()
 
 const OpenProposals = () => {
   const t = useFormatMessage()
