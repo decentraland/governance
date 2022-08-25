@@ -1,7 +1,6 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
-import { Snapshot, SnapshotProposal, SnapshotSpace, SnapshotStatus, SnapshotVote } from '../../api/Snapshot'
+import { Snapshot, SnapshotProposal, SnapshotVote } from '../../api/Snapshot'
 
 import { SNAPSHOT_SPACE } from './constants'
 
@@ -86,23 +85,15 @@ export function groupProposalsByMonth(proposals: Partial<SnapshotProposal>[], fi
   return data
 }
 
-// TODO: saved to use in debug page
-export async function getSnapshotStatusAndSpace() {
-  let snapshotStatus: SnapshotStatus
-  let snapshotSpace: SnapshotSpace
-  try {
-    const values = await Promise.all([await Snapshot.get().getStatus(), await Snapshot.get().getSpace(SNAPSHOT_SPACE)])
-    snapshotStatus = values[0]
-    snapshotSpace = values[1]
-    if (!snapshotSpace) {
-      throw new Error(`Couldn't find snapshot space ${SNAPSHOT_SPACE}. Snapshot status: ${snapshotStatus}`)
-    }
-  } catch (err) {
-    throw new RequestError(
-      `Error getting snapshot space "${SNAPSHOT_SPACE}"`,
-      RequestError.InternalServerError,
-      err as Error
-    )
+export async function getSnapshotStatusAndSpace(spaceName?: string) {
+  spaceName = spaceName && spaceName.length > 0 ? spaceName : SNAPSHOT_SPACE
+  const values = await Promise.all([await Snapshot.get().getStatus(), await Snapshot.get().getSpace(spaceName)])
+  const snapshotStatus = values[0]
+  const snapshotSpace = values[1]
+  if (!snapshotSpace) {
+    throw new Error(`Couldn't find snapshot space ${spaceName}. 
+      \nSnapshot response: ${JSON.stringify(snapshotSpace)}
+      \nSnapshot status: ${JSON.stringify(snapshotStatus)}`)
   }
   return { snapshotStatus, snapshotSpace }
 }
