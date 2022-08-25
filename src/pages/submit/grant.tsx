@@ -32,7 +32,7 @@ import {
   isProposalGrantTier,
   newProposalGrantScheme,
 } from '../../entities/Proposal/types'
-import { asNumber, isGrantSizeValid, stateHasValues } from '../../entities/Proposal/utils'
+import { asNumber, isGrantSizeValid, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -206,7 +206,7 @@ export default function SubmitGrant() {
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value, initialState)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)

@@ -19,7 +19,7 @@ import {
   asNumber,
   isAlreadyPointOfInterest,
   isValidPointOfInterest,
-  stateHasValues,
+  userModifiedForm,
 } from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
@@ -132,7 +132,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value, initialState)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)

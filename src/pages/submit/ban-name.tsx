@@ -22,7 +22,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
-import { isValidName, stateHasValues } from '../../entities/Proposal/utils'
+import { isValidName, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -83,7 +83,7 @@ export default function SubmitBanName() {
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value, initialState)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)

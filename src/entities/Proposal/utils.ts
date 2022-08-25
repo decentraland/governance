@@ -199,7 +199,7 @@ export const GrantDuration = {
 
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
-export function stateHasValues(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
+export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
   const isInitialState = JSON.stringify(stateValue) === JSON.stringify(initialState)
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
 }

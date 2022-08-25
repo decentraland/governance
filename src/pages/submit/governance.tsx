@@ -26,7 +26,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
-import { stateHasValues } from '../../entities/Proposal/utils'
+import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -214,7 +214,7 @@ export default function SubmitGovernanceProposal() {
   }, [preselectedLinkedProposalId])
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value, initialState)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)
