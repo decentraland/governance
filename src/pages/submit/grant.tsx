@@ -32,7 +32,7 @@ import {
   isProposalGrantTier,
   newProposalGrantScheme,
 } from '../../entities/Proposal/types'
-import { asNumber, isGrantSizeValid, stateHasValues } from '../../entities/Proposal/utils'
+import { asNumber, isGrantSizeValid, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -54,7 +54,7 @@ type GrantState = {
   coAuthors?: string[]
 }
 
-const initialPollState: GrantState = {
+const initialState: GrantState = {
   title: '',
   abstract: '',
   category: null,
@@ -199,14 +199,14 @@ const validate = createValidator<GrantState>({
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPollState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)
