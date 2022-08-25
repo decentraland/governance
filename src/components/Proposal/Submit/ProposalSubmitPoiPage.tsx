@@ -41,7 +41,7 @@ type POIState = {
 }
 
 const schema = newProposalPOIScheme.properties
-const initialPoiState: POIState = {
+const initialState: POIState = {
   x: '',
   y: '',
   description: '',
@@ -124,7 +124,7 @@ export type ProposalPoiPageProps = {
 export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPoiPageProps) {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPoiState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const action = getPoiTypeAction(poiType)
   const preventNavigation = useRef(false)
@@ -132,7 +132,7 @@ export default React.memo(function ProposalSubmitPoiPage({ poiType }: ProposalPo
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value)
+    preventNavigation.current = stateHasValues(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)

@@ -154,7 +154,7 @@ export default function SubmitDraftProposal() {
   }, [preselectedLinkedProposalId])
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value)
+    preventNavigation.current = stateHasValues(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)

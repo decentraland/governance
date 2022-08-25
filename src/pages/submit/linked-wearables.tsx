@@ -56,7 +56,7 @@ type ListSectionType = {
 
 type ListSectionValidator = (input: string) => string | undefined
 
-const initialPollState: LinkedWearablesState = {
+const initialState: LinkedWearablesState = {
   name: '',
   image_previews: {
     '0': '',
@@ -200,7 +200,7 @@ const imagesValidator = async (urls: Record<string, string>) => {
 export default function SubmitLinkedWearables() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPollState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const [formErrorKeys, setFormErrorKeys] = useState('')
   const [listSectionErrors, setListSectionErrors] = useState<Record<ListSectionType['section'], string[]>>({
@@ -318,7 +318,7 @@ export default function SubmitLinkedWearables() {
   }
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value)
+    preventNavigation.current = stateHasValues(state.value, initialState)
 
     if (state.validated) {
       setFormDisabled(true)
