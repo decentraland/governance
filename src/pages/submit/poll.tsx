@@ -25,7 +25,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
-import { stateHasValues } from '../../entities/Proposal/utils'
+import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -42,7 +42,7 @@ type PollState = {
 
 const schema = newProposalPollScheme.properties
 
-const initialPollState: PollState = {
+const initialState: PollState = {
   title: '',
   description: '',
   choices: {
@@ -97,7 +97,7 @@ const validate = createValidator<PollState>({
 export default function SubmitPoll() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPollState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(account)
   const submissionVpNotMet = useMemo(
     () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
@@ -141,7 +141,7 @@ export default function SubmitPoll() {
   }
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     if (state.validated) {
       const choices = Object.keys(state.value.choices)

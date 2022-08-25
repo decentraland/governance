@@ -24,7 +24,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalCatalystScheme } from '../../entities/Proposal/types'
-import { isValidDomainName, stateHasValues } from '../../entities/Proposal/utils'
+import { isValidDomainName, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -40,7 +40,7 @@ type CatalystState = {
 
 const schema = newProposalCatalystScheme.properties
 
-const initialPollState: CatalystState = {
+const initialState: CatalystState = {
   owner: '',
   domain: '',
   description: '',
@@ -86,7 +86,7 @@ export default function SubmitCatalyst() {
   const t = useFormatMessage()
   const [domain, setDomain] = useState('')
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPollState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const [commsStatus, commsState] = useAsyncMemo(
     async () => (domain ? Catalyst.from('https://' + domain).getCommsStatus() : null),
     [domain]
@@ -109,7 +109,7 @@ export default function SubmitCatalyst() {
   }, [domain, commsState.error, contentState.error, lambdaState.error, state.error.domain, editor])
 
   useEffect(() => {
-    preventNavigation.current = stateHasValues(state.value)
+    preventNavigation.current = userModifiedForm(state.value, initialState)
 
     const errors = [commsState.error, contentState.error, lambdaState.error].filter(Boolean)
     if (state.validated && errors.length > 0) {
