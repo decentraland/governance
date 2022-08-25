@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import { useLocation } from '@gatsbyjs/reach-router'
@@ -26,6 +26,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
+import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -162,6 +163,7 @@ export default function SubmitGovernanceProposal() {
     [votingPower]
   )
   const [state, editor] = useEditor(edit, validate, initialState)
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
@@ -212,6 +214,8 @@ export default function SubmitGovernanceProposal() {
   }, [preselectedLinkedProposalId])
 
   useEffect(() => {
+    preventNavigation.current = userModifiedForm(state.value, initialState)
+
     if (state.validated) {
       setFormDisabled(true)
       Promise.resolve()
@@ -232,7 +236,7 @@ export default function SubmitGovernanceProposal() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated])
+  }, [state.validated, state.value])
 
   if (accountState.loading) {
     return <LoadingView />
@@ -248,7 +252,7 @@ export default function SubmitGovernanceProposal() {
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_governance.title') || ''}
         description={t('page.submit_governance.description') || ''}

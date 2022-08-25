@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -27,7 +27,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
-import { asNumber, isValidImage } from '../../entities/Proposal/utils'
+import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -56,7 +56,7 @@ type ListSectionType = {
 
 type ListSectionValidator = (input: string) => string | undefined
 
-const initialPollState: LinkedWearablesState = {
+const initialState: LinkedWearablesState = {
   name: '',
   image_previews: {
     '0': '',
@@ -200,7 +200,7 @@ const imagesValidator = async (urls: Record<string, string>) => {
 export default function SubmitLinkedWearables() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPollState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const [formErrorKeys, setFormErrorKeys] = useState('')
   const [listSectionErrors, setListSectionErrors] = useState<Record<ListSectionType['section'], string[]>>({
@@ -209,6 +209,7 @@ export default function SubmitLinkedWearables() {
     smart_contract: [],
     managers: [],
   })
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
@@ -317,6 +318,8 @@ export default function SubmitLinkedWearables() {
   }
 
   useEffect(() => {
+    preventNavigation.current = userModifiedForm(state.value, initialState)
+
     if (state.validated) {
       setFormDisabled(true)
       imagesValidator(state.value.image_previews).then((errors) => {
@@ -384,7 +387,7 @@ export default function SubmitLinkedWearables() {
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_linked_wearables.title') || ''}
         description={t('page.submit_linked_wearables.description') || ''}

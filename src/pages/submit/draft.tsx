@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import { useLocation } from '@gatsbyjs/reach-router'
@@ -26,6 +26,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalDraftScheme } from '../../entities/Proposal/types'
+import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -141,6 +142,7 @@ export default function SubmitDraftProposal() {
   )
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
+  const preventNavigation = useRef(false)
 
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
@@ -152,6 +154,8 @@ export default function SubmitDraftProposal() {
   }, [preselectedLinkedProposalId])
 
   useEffect(() => {
+    preventNavigation.current = userModifiedForm(state.value, initialState)
+
     if (state.validated) {
       setFormDisabled(true)
       Promise.resolve()
@@ -172,7 +176,7 @@ export default function SubmitDraftProposal() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated])
+  }, [state.validated, state.value])
 
   if (accountState.loading) {
     return <LoadingView />
@@ -183,7 +187,7 @@ export default function SubmitDraftProposal() {
   }
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_draft.title') || ''}
         description={t('page.submit_draft.description') || ''}

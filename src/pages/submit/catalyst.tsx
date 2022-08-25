@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -24,7 +24,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalCatalystScheme } from '../../entities/Proposal/types'
-import { isValidDomainName } from '../../entities/Proposal/utils'
+import { isValidDomainName, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -40,7 +40,7 @@ type CatalystState = {
 
 const schema = newProposalCatalystScheme.properties
 
-const initialPollState: CatalystState = {
+const initialState: CatalystState = {
   owner: '',
   domain: '',
   description: '',
@@ -86,7 +86,7 @@ export default function SubmitCatalyst() {
   const t = useFormatMessage()
   const [domain, setDomain] = useState('')
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialPollState)
+  const [state, editor] = useEditor(edit, validate, initialState)
   const [commsStatus, commsState] = useAsyncMemo(
     async () => (domain ? Catalyst.from('https://' + domain).getCommsStatus() : null),
     [domain]
@@ -100,6 +100,7 @@ export default function SubmitCatalyst() {
     [domain]
   )
   const [formDisabled, setFormDisabled] = useState(false)
+  const preventNavigation = useRef(false)
 
   useEffect(() => {
     if (!state.error.domain && (commsState.error || contentState.error || lambdaState.error)) {
@@ -108,6 +109,8 @@ export default function SubmitCatalyst() {
   }, [domain, commsState.error, contentState.error, lambdaState.error, state.error.domain, editor])
 
   useEffect(() => {
+    preventNavigation.current = userModifiedForm(state.value, initialState)
+
     const errors = [commsState.error, contentState.error, lambdaState.error].filter(Boolean)
     if (state.validated && errors.length > 0) {
       editor.error({
@@ -151,7 +154,7 @@ export default function SubmitCatalyst() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, commsStatus, contentStatus, lambdaStatus])
+  }, [state.validated, state.value, commsStatus, contentStatus, lambdaStatus])
 
   if (accountState.loading) {
     return <LoadingView />
@@ -166,7 +169,7 @@ export default function SubmitCatalyst() {
   const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
 
   return (
-    <ContentLayout small>
+    <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
         title={t('page.submit_catalyst.title') || ''}
         description={t('page.submit_catalyst.description') || ''}
