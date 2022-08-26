@@ -7,12 +7,12 @@ import { HashContent } from '../../api/IPFS'
 import { getEnvironmentChainId } from '../../modules/votes/utils'
 import CatalystService from '../../services/CatalystService'
 import { DiscourseService } from '../../services/DiscourseService'
+import { SnapshotService } from '../../services/SnapshotService'
 import CoauthorModel from '../Coauthor/model'
 import isCommittee from '../Committee/isCommittee'
 import { SNAPSHOT_SPACE } from '../Snapshot/constants'
 import VotesModel from '../Votes/model'
 
-import { SnapshotProposalCreator } from './SnapshotProposalCreator'
 import ProposalModel from './model'
 import * as templates from './templates'
 import { ProposalAttributes, ProposalStatus } from './types'
@@ -39,7 +39,7 @@ export class ProposalCreator {
 
     const profile = await CatalystService.getProfile(proposalInCreation.user)
 
-    const { snapshotId, snapshot_url, snapshotContent } = await SnapshotProposalCreator.createProposalInSnapshot(
+    const { snapshotId, snapshot_url, snapshotContent } = await SnapshotService.createProposalInSnapshot(
       proposalInCreation,
       proposalId,
       profile,
@@ -91,7 +91,7 @@ export class ProposalCreator {
     this.validateRemoval(proposal, user)
     await this.markAsDeleted(user, updated_at, id)
     DiscourseService.dropDiscourseTopic(proposal.discourse_topic_id)
-    SnapshotProposalCreator.dropSnapshotProposal(proposal.snapshot_id)
+    SnapshotService.dropSnapshotProposal(proposal.snapshot_id)
     return true
   }
 
@@ -166,7 +166,7 @@ export class ProposalCreator {
       }
     } catch (err) {
       DiscourseService.dropDiscourseTopic(discourseProposal.topic_id)
-      SnapshotProposalCreator.dropSnapshotProposal(snapshotId)
+      SnapshotService.dropSnapshotProposal(snapshotId)
       throw err
     }
     return newProposal

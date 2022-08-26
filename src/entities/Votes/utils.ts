@@ -1,12 +1,14 @@
 import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
 import isUUID from 'validator/lib/isUUID'
 
-import { DetailedScores, Snapshot, SnapshotVote } from '../../api/Snapshot'
+import { SnapshotApiClient } from '../../api/SnapshotApiClient'
+import { DetailedScores, SnapshotVote } from '../../api/SnapshotGraphqlClient'
 import { ProposalAttributes } from '../Proposal/types'
 
 import { ChoiceColor, Vote } from './types'
 
 export type Scores = Record<string, number>
+const DELEGATION_STRATEGY_NAME = 'delegation'
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -168,16 +170,46 @@ function getNumber(number: number) {
   return Math.floor(number || 0)
 }
 
+async function getScores(addresses: string[], block?: string | number) {
+  addresses = addresses.map((addr) => addr.toLowerCase())
+  const { scores, strategies } = await SnapshotApiClient.get().getScores(addresses, block)
+
+  const result: DetailedScores = {}
+  for (const addr of addresses) {
+    result[addr] = {
+      ownVp: 0,
+      delegatedVp: Math.round(scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,
+      totalVp: 0,
+    }
+  }
+
+  for (const score of scores) {
+    for (const addr of Object.keys(score)) {
+      const address = addr.toLowerCase()
+      result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[addr] || 0)
+    }
+  }
+
+  for (const address of Object.keys(result)) {
+    result[address].ownVp = result[address].totalVp - result[address].delegatedVp
+  }
+
+  return result
+}
+
+export async function getLatestScores(addresses: string[]) {
+  return await getScores(addresses)
+}
+
+export async function getVotingPower(address: string) {
+  const vp = await getLatestScores([address])
+  return Object.values(vp)[0]
+}
+
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
   const results: DetailedScores = {}
   for (const addressesChunk of chunk(addresses, 500)) {
-    const blockchainScores: DetailedScores = await Snapshot.get().getScores(
-      proposal.snapshot_space,
-      proposal.snapshot_proposal.metadata.strategies, // TODO: change
-      proposal.snapshot_network,
-      addressesChunk,
-      proposal.snapshot_proposal.snapshot
-    )
+    const blockchainScores: DetailedScores = await getScores(addressesChunk, proposal.snapshot_proposal.snapshot)
 
     for (const address of Object.keys(blockchainScores)) {
       const lowercaseAddress = address.toLowerCase()

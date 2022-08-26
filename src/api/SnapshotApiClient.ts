@@ -9,6 +9,9 @@ import env from 'decentraland-gatsby/dist/utils/env'
 
 import { ProposalInCreation, ProposalLifespan } from '../entities/Proposal/ProposalCreator'
 import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
+import { getEnvironmentChainId } from '../modules/votes/utils'
+
+import { SnapshotGraphqlClient } from './SnapshotGraphqlClient'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
 const GOVERNANCE_SNAPSHOT_NAME = 'decentraland-governance'
@@ -22,7 +25,7 @@ export type SnapshotReceipt = {
   }
 }
 
-export class SnapshotClient {
+export class SnapshotApiClient {
   static Url =
     process.env.GATSBY_SNAPSHOT_API ||
     process.env.REACT_APP_SNAPSHOT_API ||
@@ -30,9 +33,9 @@ export class SnapshotClient {
     process.env.SNAPSHOT_API ||
     'https://hub.snapshot.org/'
 
-  static Cache = new Map<string, SnapshotClient>()
+  static Cache = new Map<string, SnapshotApiClient>()
   private readonly client: Client
-  private readonly space: string
+  private readonly spaceName: string
   private readonly address: string
   private readonly account: Wallet
 
@@ -46,9 +49,9 @@ export class SnapshotClient {
 
   constructor(baseUrl: string) {
     this.client = new snapshot.Client712(baseUrl)
-    this.account = SnapshotClient.getWallet()
-    this.space = SnapshotClient.getSpace()
-    this.address = SnapshotClient.getSnapshotAddress()
+    this.account = SnapshotApiClient.getWallet()
+    this.spaceName = SnapshotApiClient.getSpace()
+    this.address = SnapshotApiClient.getSnapshotAddress()
   }
 
   private static getWallet() {
@@ -74,25 +77,6 @@ export class SnapshotClient {
 
   static get() {
     return this.from(env('SNAPSHOT_API', this.Url))
-  }
-
-  async castVote(
-    account: Web3Provider | Wallet,
-    address: string,
-    proposalSnapshotId: string,
-    choiceNumber: number
-  ): Promise<SnapshotReceipt> {
-    const voteMessage = {
-      space: this.space,
-      proposal: proposalSnapshotId,
-      type: SNAPSHOT_PROPOSAL_TYPE,
-      choice: choiceNumber,
-      app: GOVERNANCE_SNAPSHOT_NAME,
-    }
-    console.log('Casting Vote', voteMessage)
-    const receipt = await this.client.vote(account, address, voteMessage)
-    console.log('Receipt', receipt)
-    return receipt as SnapshotReceipt
   }
 
   async createProposal(
@@ -125,13 +109,13 @@ export class SnapshotClient {
     let snapshotProposal: Proposal
     try {
       snapshotProposal = {
-        space: this.space,
+        space: this.spaceName,
         type: SNAPSHOT_PROPOSAL_TYPE,
         title: proposalTitle,
         body: proposalBody,
         choices: proposal.configuration.choices as string[],
-        start: SnapshotClient.toSnapshotTimestamp(proposalLifespan.start.getTime()),
-        end: SnapshotClient.toSnapshotTimestamp(proposalLifespan.end.getTime()),
+        start: SnapshotApiClient.toSnapshotTimestamp(proposalLifespan.start.getTime()),
+        end: SnapshotApiClient.toSnapshotTimestamp(proposalLifespan.end.getTime()),
         snapshot: blockNumber,
         plugins: JSON.stringify({}),
         app: GOVERNANCE_SNAPSHOT_NAME,
@@ -150,14 +134,50 @@ export class SnapshotClient {
 
   public async removeProposal(snapshotId: string) {
     const cancelProposalMessage: CancelProposal = {
-      space: this.space,
-      timestamp: SnapshotClient.toSnapshotTimestamp(Time.from().getTime()),
+      space: this.spaceName,
+      timestamp: SnapshotApiClient.toSnapshotTimestamp(Time.from().getTime()),
       proposal: snapshotId,
     }
     console.log('Removing Proposal', cancelProposalMessage)
     const receipt = await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)
     console.log('Receipt', receipt)
     return receipt as SnapshotReceipt
+  }
+
+  async castVote(
+    account: Web3Provider | Wallet,
+    address: string,
+    proposalSnapshotId: string,
+    choiceNumber: number
+  ): Promise<SnapshotReceipt> {
+    const voteMessage = {
+      space: this.spaceName,
+      proposal: proposalSnapshotId,
+      type: SNAPSHOT_PROPOSAL_TYPE,
+      choice: choiceNumber,
+      app: GOVERNANCE_SNAPSHOT_NAME,
+    }
+    console.log('Casting Vote', voteMessage)
+    const receipt = await this.client.vote(account, address, voteMessage)
+    console.log('Receipt', receipt)
+    return receipt as SnapshotReceipt
+  }
+
+  async getScores(addresses: string[], blockNumber?: number | string) {
+    addresses = addresses.map((addr) => addr.toLowerCase())
+    const snapshotSpace = await SnapshotGraphqlClient.get().getSpace(this.spaceName)
+    const network = getEnvironmentChainId()
+
+    return {
+      scores: await snapshot.utils.getScores(
+        this.spaceName,
+        snapshotSpace.strategies,
+        network.toString(),
+        addresses,
+        blockNumber
+      ),
+      strategies: snapshotSpace.strategies,
+    }
   }
 
   private static toSnapshotTimestamp(time: number) {

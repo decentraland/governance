@@ -1,6 +1,13 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
-import { Snapshot, SnapshotProposal, SnapshotVote } from '../../api/Snapshot'
+import {
+  Delegation,
+  DelegationResult,
+  EMPTY_DELEGATION,
+  SnapshotGraphqlClient,
+  SnapshotProposal,
+  SnapshotVote,
+} from '../../api/SnapshotGraphqlClient'
 
 import { SNAPSHOT_SPACE } from './constants'
 
@@ -24,8 +31,8 @@ export function calculateMatch(votes1: SnapshotVote[] | null, votes2: SnapshotVo
   let voteDifference = 0
   let proposalsInCommon = 0
   for (const vote1 of votes1) {
-    const proposalId = vote1.proposal.id
-    const vote2 = votes2.find((v) => v.proposal.id === proposalId)
+    const proposalId = vote1.proposal!.id
+    const vote2 = votes2.find((v) => v.proposal!.id === proposalId)
     if (vote2) {
       proposalsInCommon++
       if (vote1.choice === vote2.choice) {
@@ -87,7 +94,10 @@ export function groupProposalsByMonth(proposals: Partial<SnapshotProposal>[], fi
 
 export async function getSnapshotStatusAndSpace(spaceName?: string) {
   spaceName = spaceName && spaceName.length > 0 ? spaceName : SNAPSHOT_SPACE
-  const values = await Promise.all([await Snapshot.get().getStatus(), await Snapshot.get().getSpace(spaceName)])
+  const values = await Promise.all([
+    await SnapshotGraphqlClient.get().getStatus(),
+    await SnapshotGraphqlClient.get().getSpace(spaceName),
+  ])
   const snapshotStatus = values[0]
   const snapshotSpace = values[1]
   if (!snapshotSpace) {
@@ -96,4 +106,50 @@ export async function getSnapshotStatusAndSpace(spaceName?: string) {
       \nSnapshot status: ${JSON.stringify(snapshotStatus)}`)
   }
   return { snapshotStatus, snapshotSpace }
+}
+
+export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
+  if (delegations.length > 1) {
+    return delegations.filter((delegation) => delegation.space === space)
+  }
+
+  return delegations
+}
+
+export function filterDelegationFrom(delegations: Delegation[], space: string): Delegation[] {
+  if (delegations.length === 0) {
+    return []
+  }
+
+  const unique_delegations = new Map<string, Delegation>()
+
+  for (const deleg of delegations) {
+    if (unique_delegations.has(deleg.delegator)) {
+      if (unique_delegations.get(deleg.delegator)?.space !== space) {
+        unique_delegations.set(deleg.delegator, deleg)
+      }
+    } else {
+      unique_delegations.set(deleg.delegator, deleg)
+    }
+  }
+
+  return Array.from(unique_delegations.values())
+}
+
+export async function fetchAndFilterDelegates(query: string, variables: any): Promise<DelegationResult> {
+  try {
+    const delegates = await SnapshotGraphqlClient.get().fetchDelegates(query, variables)
+    if (!delegates) {
+      return EMPTY_DELEGATION
+    }
+    const filteredDelegatedFrom = filterDelegationFrom(delegates.delegatedFrom, SNAPSHOT_SPACE)
+    return {
+      delegatedTo: filterDelegationTo(delegates.delegatedTo, SNAPSHOT_SPACE),
+      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
+      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99,
+    }
+  } catch (error) {
+    console.error(error)
+    return EMPTY_DELEGATION
+  }
 }

@@ -1,8 +1,9 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { EMPTY_DELEGATION, fetchAndFilterDelegates } from '../api/Snapshot'
 
+import { EMPTY_DELEGATION } from '../api/SnapshotGraphqlClient'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { fetchAndFilterDelegates } from '../entities/Snapshot/utils'
 
 const DELEGATIONS_ON_PROPOSAL_QUERY = `
 query ($space: String!, $address: String!, $blockNumber: Int) {
@@ -20,6 +21,7 @@ query ($space: String!, $address: String!, $blockNumber: Int) {
   }
 }`
 
+// TODO: queries and variables should be encapsulated in the service or (even better) the client
 export default function useDelegationOnProposal(proposal?: ProposalAttributes | null, address?: string | null) {
   return useAsyncMemo(
     async () => {

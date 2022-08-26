@@ -1,12 +1,12 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { DetailedScores, Snapshot } from '../api/Snapshot'
-import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { DetailedScores } from '../api/SnapshotGraphqlClient'
+import { getLatestScores } from '../entities/Votes/utils'
 
 export default function useVotingPowerBalanceList(addresses: string[]) {
   const [votingPower, state] = useAsyncMemo(
     async () => {
-      return await Snapshot.get().getLatestScores(SNAPSHOT_SPACE, addresses)
+      return await getLatestScores(addresses)
     },
     [JSON.stringify(addresses)],
     { initialValue: {} as DetailedScores, callWithTruthyDeps: true }

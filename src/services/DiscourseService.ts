@@ -5,12 +5,14 @@ import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { DiscourseClient, DiscoursePost } from '../api/DiscourseClient'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../entities/Discourse/utils'
 import { ProposalInCreation } from '../entities/Proposal/ProposalCreator'
-import { SnapshotProposalCreator } from '../entities/Proposal/SnapshotProposalCreator'
 import { inBackground } from '../entities/Proposal/routes'
 import * as templates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 
+import { SnapshotService } from './SnapshotService'
+
 export class DiscourseService {
+  // TODO: Services should throw Error, RequestErros should only be known to routers
   static async createProposalInDiscourse(
     data: ProposalInCreation,
     proposalId: string,
@@ -39,7 +41,7 @@ export class DiscourseService {
         DISCOURSE_AUTH
       )
     } catch (error: any) {
-      SnapshotProposalCreator.dropSnapshotProposal(snapshotId)
+      SnapshotService.dropSnapshotProposal(snapshotId)
       throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
     }
 

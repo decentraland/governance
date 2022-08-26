@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Snapshot } from './../api/Snapshot'
+import { SnapshotGraphqlClient } from '../api/SnapshotGraphqlClient'
 
 import { useSortingByKey } from './useSortingByKey'
 
@@ -12,7 +12,7 @@ type Voters = {
 export default function useTopVoters(start: Date, end: Date, limit: number) {
   const [votes, state] = useAsyncMemo(
     async () => {
-      const votes = await Snapshot.get().getVotes(start, end)
+      const votes = await SnapshotGraphqlClient.get().getVotes(start, end)
       const votesByUser = votes.reduce((acc, vote) => {
         const address = vote.voter.toLowerCase()
         acc[address] = (acc[address] || 0) + 1

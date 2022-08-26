@@ -20,7 +20,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../api/Governance'
-import { SnapshotClient } from '../api/SnapshotClient'
+import { SnapshotApiClient } from '../api/SnapshotApiClient'
 import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -104,7 +104,7 @@ export default function ProposalPage() {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
         await retry(3, () =>
-          SnapshotClient.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
+          SnapshotApiClient.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
         )
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()

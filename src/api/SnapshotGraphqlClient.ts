@@ -1,10 +1,8 @@
-import snapshot from '@snapshot-labs/snapshot.js'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 import fetch from 'isomorphic-fetch'
 
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-import { Scores } from '../entities/Votes/utils'
 
 import { inBatches } from './utils'
 
@@ -33,38 +31,13 @@ export type SnapshotSpace = {
   strategies: SnapshotStrategy[]
 }
 
-export type SnapshotMessage<T extends string, P> = {
-  version: string
-  timestamp: string
-  space: string
-  type: T
-  payload: P
-}
-
-export type SnapshotRemoveProposalMessage = SnapshotMessage<'delete-proposal', { proposal: string }>
-export type SnapshotNewProposalPayload = {
-  name: string
-  body: string
-  end: Pick<Date, 'getTime'>
-  start: Pick<Date, 'getTime'>
-  snapshot: number
-  choices: string[]
-}
-
-export type SnapshotVotePayload = {
-  choice: number
-  metadata: unknown
-  proposal: string
-}
-
-export type SnapshotVoteMessage = SnapshotMessage<'vote', SnapshotVotePayload>
 export type SnapshotVoteResponse = SnapshotQueryResponse<{ votes: SnapshotVote[] }>
 export type SnapshotVote = {
-  id: string
+  id?: string
   voter: string
   created: number
   choice: number
-  proposal: {
+  proposal?: {
     id: string
     title: string
     choices: string[]
@@ -144,9 +117,9 @@ enum SnapshotScoresState {
 
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
-const DELEGATION_STRATEGY_NAME = 'delegation'
+const GRAPHQL = `/graphql`
 
-export class Snapshot extends API {
+export class SnapshotGraphqlClient extends API {
   static Url =
     process.env.GATSBY_SNAPSHOT_API ||
     process.env.REACT_APP_SNAPSHOT_API ||
@@ -154,7 +127,7 @@ export class Snapshot extends API {
     process.env.SNAPSHOT_API ||
     'https://hub.snapshot.org/'
 
-  static Cache = new Map<string, Snapshot>()
+  static Cache = new Map<string, SnapshotGraphqlClient>()
 
   static from(baseUrl: string) {
     if (!this.Cache.has(baseUrl)) {
@@ -192,7 +165,7 @@ export class Snapshot extends API {
     `
 
     const result = await this.fetch<SnapshotQueryResponse<{ space: SnapshotSpace }>>(
-      `/graphql`,
+      GRAPHQL,
       this.options().method('POST').json({ query, variables: { space } })
     )
 
@@ -219,7 +192,7 @@ export class Snapshot extends API {
     let votes: SnapshotVote[] = []
     while (hasNext) {
       const result = await this.fetch<SnapshotVoteResponse>(
-        `/graphql`,
+        GRAPHQL,
         this.options().method('POST').json({ query, variables: { space, proposal, skip, first } })
       )
 
@@ -236,7 +209,7 @@ export class Snapshot extends API {
     return votes
   }
 
-  async getAddressVotes(space: string, address: string) {
+  async getAddressVotes(address: string) {
     let hasNext = true
     let skip = 0
     const first = 500
@@ -268,8 +241,10 @@ export class Snapshot extends API {
     let votes: SnapshotVote[] = []
     while (hasNext) {
       const result = await this.fetch<SnapshotVoteResponse>(
-        `/graphql`,
-        this.options().method('POST').json({ query, variables: { space, address, skip, first } })
+        GRAPHQL,
+        this.options()
+          .method('POST')
+          .json({ query, variables: { space: SNAPSHOT_SPACE, address, skip, first } })
       )
 
       const currentVotes = result?.data?.votes || []
@@ -281,51 +256,7 @@ export class Snapshot extends API {
         skip = votes.length
       }
     }
-
     return votes
-  }
-
-  async getScores(
-    space: string,
-    strategies: SnapshotSpace['strategies'],
-    network: SnapshotSpace['network'],
-    addresses: string[],
-    block?: string | number
-  ) {
-    addresses = addresses.map((addr) => addr.toLowerCase())
-    const result: DetailedScores = {}
-    const scores: Scores[] = await snapshot.utils.getScores(space, strategies, network, addresses, block)
-
-    for (const addr of addresses) {
-      result[addr] = {
-        ownVp: 0,
-        delegatedVp: Math.round(scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,
-        totalVp: 0,
-      }
-    }
-
-    for (const score of scores) {
-      for (const addr of Object.keys(score)) {
-        const address = addr.toLowerCase()
-        result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[addr] || 0)
-      }
-    }
-
-    for (const address of Object.keys(result)) {
-      result[address].ownVp = result[address].totalVp - result[address].delegatedVp
-    }
-
-    return result
-  }
-
-  async getLatestScores(space: string | SnapshotSpace, addresses: string[]) {
-    const info = typeof space === 'string' ? await this.getSpace(space) : space
-    return await this.getScores(info.id, info.strategies, info.network, addresses)
-  }
-
-  async getVotingPower(address: string, space: string) {
-    const vp = await this.getLatestScores(space, [address])
-    return Object.values(vp)[0]
   }
 
   fetchAddressesVotesByDate = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
@@ -344,7 +275,7 @@ export class Snapshot extends API {
     `
 
     const result = await this.fetch<SnapshotVoteResponse>(
-      `/graphql`,
+      GRAPHQL,
       this.options()
         .method('POST')
         .json({
@@ -378,7 +309,7 @@ export class Snapshot extends API {
     `
 
     const result = await this.fetch<VoteEventResponse>(
-      `/graphql`,
+      GRAPHQL,
       this.options()
         .method('POST')
         .json({
@@ -426,7 +357,7 @@ export class Snapshot extends API {
     `
 
     const result = await this.fetch<SnapshotProposalResponse>(
-      `/graphql`,
+      GRAPHQL,
       this.options()
         .method('POST')
         .json({
@@ -453,38 +384,8 @@ export class Snapshot extends API {
   async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
     return await this.fetchProposals({ start, end, fields, scoresState: SnapshotScoresState.Pending }, 0, limit)
   }
-}
 
-export function filterDelegationTo(delegations: Delegation[], space: string): Delegation[] {
-  if (delegations.length > 1) {
-    return delegations.filter((delegation) => delegation.space === space)
-  }
-
-  return delegations
-}
-
-export function filterDelegationFrom(delegations: Delegation[], space: string): Delegation[] {
-  if (delegations.length === 0) {
-    return []
-  }
-
-  const unique_delegations = new Map<string, Delegation>()
-
-  for (const deleg of delegations) {
-    if (unique_delegations.has(deleg.delegator)) {
-      if (unique_delegations.get(deleg.delegator)?.space !== space) {
-        unique_delegations.set(deleg.delegator, deleg)
-      }
-    } else {
-      unique_delegations.set(deleg.delegator, deleg)
-    }
-  }
-
-  return Array.from(unique_delegations.values())
-}
-
-export async function fetchAndFilterDelegates(query: string, variables: any): Promise<DelegationResult> {
-  try {
+  async fetchDelegates(query: string, variables: any) {
     const request = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -494,18 +395,6 @@ export async function fetchAndFilterDelegates(query: string, variables: any): Pr
       }),
     })
     const body = await request.json()
-    const data = body.data as DelegationQueryResult
-    if (!data) {
-      return EMPTY_DELEGATION
-    }
-    const filteredDelegatedFrom = filterDelegationFrom(data.delegatedFrom, SNAPSHOT_SPACE)
-    return {
-      delegatedTo: filterDelegationTo(data.delegatedTo, SNAPSHOT_SPACE),
-      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
-      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99,
-    }
-  } catch (error) {
-    console.error(error)
-    return EMPTY_DELEGATION
+    return body.data as DelegationQueryResult
   }
 }

@@ -1,14 +1,14 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { max } from 'lodash'
 
-import { Snapshot } from '../api/Snapshot'
+import { SnapshotGraphqlClient } from '../api/SnapshotGraphqlClient'
 
 export type VoteHistory = { lastVoted: number; timesVoted: number }
 
 export default function useAddressesVotesTotals(addresses: string[]) {
   const [addressesVotesTotals, state] = useAsyncMemo(
     async () => {
-      const addressesVotesByDate = await Snapshot.get().getAddressesVotesByDate(addresses)
+      const addressesVotesByDate = await SnapshotGraphqlClient.get().getAddressesVotesByDate(addresses)
       const aggregatedVotes: Record<string, VoteHistory> = {}
       addressesVotesByDate.map((voteByDate) => {
         const voter = voteByDate.voter.toLowerCase()

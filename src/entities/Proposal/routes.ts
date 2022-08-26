@@ -13,14 +13,14 @@ import isUUID from 'validator/lib/isUUID'
 
 import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
 import { DiscourseClient, DiscourseComment } from '../../api/DiscourseClient'
-import { Snapshot } from '../../api/Snapshot'
 import isCommittee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, filterComments } from '../Discourse/utils'
-import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
+import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
 import { getPublicUpdates } from '../Updates/utils'
 import { getVotes } from '../Votes/routes'
+import { getVotingPower } from '../Votes/utils'
 
 import { getUpdateMessage } from './templates/messages'
 
@@ -501,7 +501,7 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
-  const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
+  const userVp = await getVotingPower(user)
   if (userVp.totalVp < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }

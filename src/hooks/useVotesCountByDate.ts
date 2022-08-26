@@ -1,11 +1,11 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Snapshot } from './../api/Snapshot'
+import { SnapshotGraphqlClient } from '../api/SnapshotGraphqlClient'
 
 export default function useVotesCountByDate(start: Date, end: Date) {
   const [votes, state] = useAsyncMemo(
     async () => {
-      return await Snapshot.get().getVotes(start, end)
+      return await SnapshotGraphqlClient.get().getVotes(start, end)
     },
     [start, end],
     {
