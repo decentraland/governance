@@ -1,6 +1,5 @@
 import snapshot from '@snapshot-labs/snapshot.js'
 import API from 'decentraland-gatsby/dist/utils/api/API'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 import fetch from 'isomorphic-fetch'
 
@@ -10,8 +9,6 @@ import { Scores } from '../entities/Votes/utils'
 import { inBatches } from './utils'
 
 export type SnapshotQueryResponse<T> = { data: T }
-
-export type SnapshotResult = { ipfsHash: string }
 
 export type SnapshotStatus = {
   name: string
@@ -171,10 +168,6 @@ export class Snapshot extends API {
     return this.from(env('SNAPSHOT_API', this.Url))
   }
 
-  async send(address: string, msg: string, sig: string) {
-    return this.fetch<SnapshotResult>('/api/message', this.options().method('POST').json({ address, msg, sig }))
-  }
-
   async getStatus() {
     const status = await this.fetch<SnapshotStatus>('/api/')
 
@@ -290,20 +283,6 @@ export class Snapshot extends API {
     }
 
     return votes
-  }
-
-  async createVoteMessage(space: string, proposal: string, choice: number) {
-    const status = await this.getStatus()
-
-    const msg: SnapshotVoteMessage = {
-      space,
-      type: 'vote',
-      version: status.version,
-      timestamp: Time.from().getTime().toString().slice(0, -3),
-      payload: { proposal, choice, metadata: {} },
-    }
-
-    return JSON.stringify(msg)
   }
 
   async getScores(

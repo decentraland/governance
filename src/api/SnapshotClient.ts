@@ -13,7 +13,7 @@ import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
 const GOVERNANCE_SNAPSHOT_NAME = 'decentraland-governance'
 
-export type ProposalCreationReceipt = {
+export type SnapshotReceipt = {
   id: string
   ipfs: string
   relayer: {
@@ -76,8 +76,12 @@ export class SnapshotClient {
     return this.from(env('SNAPSHOT_API', this.Url))
   }
 
-  async castVote(account: Web3Provider | Wallet, address: string, proposalSnapshotId: string, choiceNumber: number) {
-    //TODO: validations
+  async castVote(
+    account: Web3Provider | Wallet,
+    address: string,
+    proposalSnapshotId: string,
+    choiceNumber: number
+  ): Promise<SnapshotReceipt> {
     const voteMessage = {
       space: this.space,
       proposal: proposalSnapshotId,
@@ -85,9 +89,10 @@ export class SnapshotClient {
       choice: choiceNumber,
       app: GOVERNANCE_SNAPSHOT_NAME,
     }
+    console.log('Casting Vote', voteMessage)
     const receipt = await this.client.vote(account, address, voteMessage)
     console.log('Receipt', receipt)
-    return receipt
+    return receipt as SnapshotReceipt
   }
 
   async createProposal(
@@ -96,9 +101,7 @@ export class SnapshotClient {
     proposalBody: string,
     proposalLifespan: ProposalLifespan,
     blockNumber: number
-  ): Promise<ProposalCreationReceipt> {
-    //TODO: validations?
-    console.log('#CreatingProposal')
+  ): Promise<SnapshotReceipt> {
     const proposalMessage = await this.createProposalMessage(
       proposal,
       proposalTitle,
@@ -106,10 +109,10 @@ export class SnapshotClient {
       proposalLifespan,
       blockNumber
     )
-    console.log('ProposalMessage', proposalMessage)
+    console.log('Creating Proposal', proposalMessage)
     const receipt = await this.client.proposal(this.account, this.address, proposalMessage)
     console.log('Receipt', receipt)
-    return receipt as ProposalCreationReceipt
+    return receipt as SnapshotReceipt
   }
 
   private async createProposalMessage(
@@ -151,10 +154,10 @@ export class SnapshotClient {
       timestamp: SnapshotClient.toSnapshotTimestamp(Time.from().getTime()),
       proposal: snapshotId,
     }
-
+    console.log('Removing Proposal', cancelProposalMessage)
     const receipt = await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)
     console.log('Receipt', receipt)
-    return receipt //TODO as ProposalRemovalReceipt
+    return receipt as SnapshotReceipt
   }
 
   private static toSnapshotTimestamp(time: number) {

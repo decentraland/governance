@@ -24,14 +24,12 @@ export default function SnapshotStatus({ className }: Props) {
 
   async function handleFetchClick() {
     setErrorMessage('')
-    console.log('spaceName', spaceName)
     try {
       const { snapshotStatus: newStatus, snapshotSpace: newSpace } = await getSnapshotStatusAndSpace(spaceName)
       setSnapshotStatus(newStatus)
       setSnapshotSpace(newSpace)
       setErrorMessage('')
     } catch (e: any) {
-      console.log('e', e)
       setErrorMessage(e.message)
     }
   }

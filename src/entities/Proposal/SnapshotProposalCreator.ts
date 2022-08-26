@@ -3,8 +3,8 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
-import { HashContent, IPFS } from '../../api/IPFS'
-import { ProposalCreationReceipt, SnapshotClient } from '../../api/SnapshotClient'
+import { IPFS } from '../../api/IPFS'
+import { SnapshotClient, SnapshotReceipt } from '../../api/SnapshotClient'
 import { getEnvironmentChainId } from '../../modules/votes/utils'
 import { SNAPSHOT_SPACE } from '../Snapshot/constants'
 
@@ -23,7 +23,7 @@ export class SnapshotProposalCreator {
     const block: Block = await SnapshotProposalCreator.getBlockNumber()
     const { proposalTitle, proposalBody } = await this.snapshotTitleAndBody(proposalInCreation, profile, proposalId)
 
-    const proposalCreationReceipt: ProposalCreationReceipt = await SnapshotClient.get().createProposal(
+    const proposalCreationReceipt: SnapshotReceipt = await SnapshotClient.get().createProposal(
       proposalInCreation,
       proposalTitle,
       proposalBody,
@@ -41,7 +41,7 @@ export class SnapshotProposalCreator {
       snapshot_proposal: JSON.stringify(proposalCreationReceipt),
     })
 
-    const snapshotContent = await this.getIpfsSnapshotContent(proposalCreationReceipt.ipfs)
+    const snapshotContent = await this.getIpfsSnapshotContent(proposalCreationReceipt)
     return { snapshotId: proposalCreationReceipt.id, snapshot_url, snapshotContent }
   }
 
@@ -78,13 +78,13 @@ export class SnapshotProposalCreator {
   }
 
   // TODO: check for backwards compatibility (changes in HashContent)
-  private static async getIpfsSnapshotContent(ipfsHash: string) {
+  private static async getIpfsSnapshotContent(proposalCreationReceipt: SnapshotReceipt) {
     try {
-      const hashContent = await IPFS.get().getHash(ipfsHash)
-      console.log('IPFS HashContent', hashContent) //TODO: remove this
+      const hashContent = await IPFS.get().getHash(proposalCreationReceipt.ipfs)
+      console.log('IPFS HashContent', hashContent)
       return hashContent
     } catch (err) {
-      SnapshotProposalCreator.dropSnapshotProposal(ipfsHash)
+      SnapshotProposalCreator.dropSnapshotProposal(proposalCreationReceipt.id)
       throw new RequestError("Couldn't retrieve proposal from the IPFS", RequestError.InternalServerError, err as Error)
     }
   }
