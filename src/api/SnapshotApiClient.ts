@@ -94,7 +94,13 @@ export class SnapshotApiClient {
       blockNumber
     )
     console.log('Creating Proposal', proposalMessage)
-    const receipt = await this.client.proposal(this.account, this.address, proposalMessage)
+    let receipt
+    try {
+      receipt = await this.client.proposal(this.account, this.address, proposalMessage)
+    } catch (e) {
+      console.log('Creation error', e)
+      throw e
+    }
     console.log('Receipt', receipt)
     return receipt as SnapshotReceipt
   }
