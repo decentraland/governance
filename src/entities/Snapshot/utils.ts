@@ -50,14 +50,14 @@ export function calculateMatch(votes1: SnapshotVote[] | null, votes2: SnapshotVo
 export function median(array: number[]) {
   if (array.length === 0) throw new Error('Median: no inputs')
 
-  array.sort((a, b) => a - b)
-  const half = Math.floor(array.length / 2)
+  const sortedArray = [...array].sort((a, b) => a - b)
+  const half = Math.floor(sortedArray.length / 2)
 
-  if (array.length % 2) {
-    return array[half]
+  if (sortedArray.length % 2) {
+    return sortedArray[half]
   }
 
-  return (array[half - 1] + array[half]) / 2.0
+  return (sortedArray[half - 1] + sortedArray[half]) / 2.0
 }
 
 function parseYearMonth(proposalDate: Date) {
