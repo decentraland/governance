@@ -14,7 +14,7 @@ import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import DclRpcService from './DclRpcService'
 
 export class SnapshotService {
-  // TODO: Services should throw Error, RequestErros should only be known to routers
+  // TODO: Services should throw Error, RequestErrors should only be known to routers
   static async createProposalInSnapshot(
     proposalInCreation: ProposalInCreation,
     proposalId: string,

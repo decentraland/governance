@@ -12,6 +12,7 @@ import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
 import { getEnvironmentChainId } from '../modules/votes/utils'
 
 import { SnapshotGraphqlClient } from './SnapshotGraphqlClient'
+import { trimLastForwardSlash } from './utils'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
 const GOVERNANCE_SNAPSHOT_NAME = 'decentraland-governance'
@@ -31,7 +32,7 @@ export class SnapshotApiClient {
     process.env.REACT_APP_SNAPSHOT_API ||
     process.env.STORYBOOK_SNAPSHOT_API ||
     process.env.SNAPSHOT_API ||
-    'https://hub.snapshot.org/'
+    'https://hub.snapshot.org'
 
   static Cache = new Map<string, SnapshotApiClient>()
   private readonly client: Client
@@ -40,6 +41,7 @@ export class SnapshotApiClient {
   private readonly account: Wallet
 
   static from(baseUrl: string) {
+    baseUrl = trimLastForwardSlash(baseUrl)
     if (!this.Cache.has(baseUrl)) {
       this.Cache.set(baseUrl, new this(baseUrl))
     }
@@ -174,7 +176,8 @@ export class SnapshotApiClient {
     const snapshotSpace = await SnapshotGraphqlClient.get().getSpace(this.spaceName)
     const network = getEnvironmentChainId()
 
-    return {
+    console.log('Getting scores', addresses)
+    const scores = {
       scores: await snapshot.utils.getScores(
         this.spaceName,
         snapshotSpace.strategies,
@@ -184,6 +187,8 @@ export class SnapshotApiClient {
       ),
       strategies: snapshotSpace.strategies,
     }
+    console.log('Scores', scores)
+    return scores
   }
 
   private static toSnapshotTimestamp(time: number) {
