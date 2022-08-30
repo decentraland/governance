@@ -51,7 +51,7 @@ export default function useVotingPowerOnProposal(
       const addressVp = scoresAtProposalCreation[address].ownVp || 0
       return { addressVp, delegatedVp }
     },
-    [votes, address, proposal, delegators],
+    [votes, address, proposal, delegators, isLoadingDelegators],
     { initialValue: initialVotingPowerOnProposal }
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
