@@ -19,7 +19,7 @@ export async function inBatches<T, K>(
     return allResults
   } catch (error) {
     console.error(`Error while executing ${fetchFunction.name} in batches: `, error)
-    // TODO: report error to Rollbar/NewRelic
+    // TODO: report error to Rollbar
     return []
   }
 }

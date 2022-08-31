@@ -66,9 +66,6 @@ config:
   website-dao:INFURA_IPFS_PROJECT_ID: 2A4zopZLxn3MG5QOWKTdF67pRhI
   website-dao:INFURA_IPFS_PROJECT_SECRET:
     secure: v1:WXNkQeCxUagwj2ws:Hp3onkN85bdbRFVvAEHS6rxEJJ90clq+4H3+qySk8S1oNC+5J4j33Z7ZZxNhhJOP
-  website-dao:NEW_RELIC_APP_NAME: governance.staging
-  website-dao:NEW_RELIC_LICENSE_KEY:
-    secure: v1:5mwkgKc+mKLOTiwz:oSdLw6rMYh9/Y2SANZZuP94fsqVBD5Xseb417a3za9XrKDUJBJVFGJVvh3OtnPMMUf8RKcf3gUY=
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=
   website-dao:USE_PUBLIC_TLD: 'false'
