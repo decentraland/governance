@@ -4,7 +4,7 @@ import fetch from 'isomorphic-fetch'
 
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
-import { inBatches } from './utils'
+import { inBatches, trimLastForwardSlash } from './utils'
 
 export type SnapshotQueryResponse<T> = { data: T }
 
@@ -130,6 +130,7 @@ export class SnapshotGraphqlClient extends API {
   static Cache = new Map<string, SnapshotGraphqlClient>()
 
   static from(baseUrl: string) {
+    baseUrl = trimLastForwardSlash(baseUrl)
     if (!this.Cache.has(baseUrl)) {
       this.Cache.set(baseUrl, new this(baseUrl))
     }
