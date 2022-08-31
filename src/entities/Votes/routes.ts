@@ -2,7 +2,6 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { SnapshotGraphqlClient, SnapshotVote } from '../../api/SnapshotGraphqlClient'
 import ProposalModel from '../Proposal/model'
@@ -67,19 +66,6 @@ export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, 
   )
 
   return votes
-}
-
-//TODO: check where/if this was being used
-export async function getProposalVote(req: Request<{ proposal: string; address: string }>) {
-  const proposal = await getProposal(req)
-  const address = String(req.params.address).toLowerCase()
-
-  if (!isEthereumAddress(address)) {
-    return null
-  }
-
-  const latestVotes = await VotesModel.getVotes(proposal.id)
-  return latestVotes?.votes[address.toLowerCase()] || null
 }
 
 export async function getCachedVotes(req: Request) {
