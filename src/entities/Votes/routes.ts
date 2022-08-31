@@ -37,10 +37,6 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
     return latestVotes?.votes || {}
   }
 
-  //TODO: this hash might be always different. Double check!
-  console.log('snapshotVotes', snapshotVotes)
-  console.log('latestVotes', latestVotes)
-
   const hash = VotesModel.hashVotes(snapshotVotes)
   if (latestVotes.hash === hash) {
     return latestVotes.votes
