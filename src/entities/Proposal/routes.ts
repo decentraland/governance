@@ -368,7 +368,11 @@ export async function createProposalLinkedWearables(req: WithAuth) {
 }
 
 export async function createProposal(proposalInCreation: ProposalInCreation) {
-  return await ProposalCreator.createProposal(proposalInCreation)
+  try {
+    return await ProposalCreator.createProposal(proposalInCreation)
+  } catch (e: any) {
+    throw new RequestError(`Error creating proposal: "${proposalInCreation}"`, RequestError.InternalServerError, e)
+  }
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {

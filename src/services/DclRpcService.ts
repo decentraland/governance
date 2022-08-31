@@ -1,10 +1,8 @@
 import { JsonRpcProvider, getNetwork } from '@ethersproject/providers'
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { getEnvironmentChainId } from '../modules/votes/utils'
 
 export default class DclRpcService {
-  // TODO: Services should throw Error, RequestErros should only be known to routers
   static async getBlockNumber() {
     try {
       const network = getNetwork(Number(getEnvironmentChainId()))
@@ -14,8 +12,8 @@ export default class DclRpcService {
       const url = process.env.RPC_PROVIDER_URL + networkName
       const provider = new JsonRpcProvider(url)
       return await provider.getBlock('latest')
-    } catch (err) {
-      throw new RequestError("Couldn't get the latest block", RequestError.InternalServerError, err as Error)
+    } catch (err: any) {
+      throw new Error("Couldn't get the latest block: " + err.message, err)
     }
   }
 }

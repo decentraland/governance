@@ -164,10 +164,10 @@ export class ProposalCreator {
       if (coAuthors) {
         await CoauthorModel.createMultiple(id, coAuthors)
       }
-    } catch (err) {
+    } catch (err: any) {
       DiscourseService.dropDiscourseTopic(discourseProposal.topic_id)
       SnapshotService.dropSnapshotProposal(snapshotId)
-      throw err
+      throw Error("Couldn't create proposal in DB: " + err.message, err)
     }
     return newProposal
   }

@@ -1,6 +1,5 @@
 import { Block } from '@ethersproject/providers'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
 import { IPFS } from '../api/IPFS'
@@ -14,7 +13,6 @@ import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import DclRpcService from './DclRpcService'
 
 export class SnapshotService {
-  // TODO: Services should throw Error, RequestErrors should only be known to routers
   static async createProposalInSnapshot(
     proposalInCreation: ProposalInCreation,
     proposalId: string,
@@ -64,15 +62,14 @@ export class SnapshotService {
     return { proposalTitle, proposalBody }
   }
 
-  // TODO: check for backwards compatibility (changes in HashContent)
   private static async getIpfsSnapshotContent(proposalCreationReceipt: SnapshotReceipt) {
     try {
       const hashContent = await IPFS.get().getHash(proposalCreationReceipt.ipfs)
       console.log('IPFS HashContent', hashContent)
       return hashContent
-    } catch (err) {
+    } catch (err: any) {
       SnapshotService.dropSnapshotProposal(proposalCreationReceipt.id)
-      throw new RequestError("Couldn't retrieve proposal from the IPFS", RequestError.InternalServerError, err as Error)
+      throw new Error("Couldn't retrieve proposal from the IPFS: " + err.message, err)
     }
   }
 

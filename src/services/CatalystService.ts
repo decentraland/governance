@@ -1,13 +1,11 @@
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
 export default class CatalystService {
-  // TODO: Services should throw Error, RequestErros should only be known to routers
   static async getProfile(user: string) {
     try {
       return await Catalyst.get().getProfile(user)
     } catch (err) {
-      throw new RequestError(`Error getting profile "${user}"`, RequestError.InternalServerError, err as Error)
+      throw new Error(`Error getting profile "${user}"`, err as Error)
     }
   }
 }

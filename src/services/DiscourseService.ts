@@ -1,5 +1,4 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
 import { DiscourseClient, DiscoursePost } from '../api/DiscourseClient'
@@ -12,7 +11,6 @@ import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import { SnapshotService } from './SnapshotService'
 
 export class DiscourseService {
-  // TODO: Services should throw Error, RequestErros should only be known to routers
   static async createProposalInDiscourse(
     data: ProposalInCreation,
     proposalId: string,
@@ -42,7 +40,7 @@ export class DiscourseService {
       )
     } catch (error: any) {
       SnapshotService.dropSnapshotProposal(snapshotId)
-      throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
+      throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
     }
 
     logger.log('Discourse proposal created', {
