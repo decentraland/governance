@@ -24,8 +24,8 @@ import { getVotingPower } from '../Votes/utils'
 
 import { getUpdateMessage } from './templates/messages'
 
+import { ProposalCreator, ProposalInCreation } from './ProposalCreator'
 import ProposalModel from './model'
-import { ProposalCreator, ProposalInCreation } from './proposalCreator'
 import {
   GrantAttributes,
   GrantRequiredVP,
