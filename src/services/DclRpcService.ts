@@ -6,9 +6,7 @@ export default class DclRpcService {
   static async getBlockNumber() {
     try {
       const network = getNetwork(Number(getEnvironmentChainId()))
-      console.log('network', network)
       const networkName = network.name === 'homestead' ? 'mainnet' : network.name
-      console.log('networkName', networkName)
       const url = process.env.RPC_PROVIDER_URL + networkName
       const provider = new JsonRpcProvider(url)
       return await provider.getBlock('latest')

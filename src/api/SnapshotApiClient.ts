@@ -3,7 +3,6 @@ import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
 import { CancelProposal, Proposal, ProposalType } from '@snapshot-labs/snapshot.js/dist/sign/types'
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
@@ -95,16 +94,7 @@ export class SnapshotApiClient {
       proposalLifespan,
       blockNumber
     )
-    console.log('Creating Proposal', proposalMessage)
-    let receipt
-    try {
-      receipt = await this.client.proposal(this.account, this.address, proposalMessage)
-    } catch (e) {
-      console.log('Creation error', e)
-      throw e
-    }
-    console.log('Receipt', receipt)
-    return receipt as SnapshotReceipt
+    return (await this.client.proposal(this.account, this.address, proposalMessage)) as SnapshotReceipt
   }
 
   private async createProposalMessage(
@@ -130,11 +120,7 @@ export class SnapshotApiClient {
         discussion: '',
       }
     } catch (err) {
-      throw new RequestError(
-        'Error building the proposal creation message',
-        RequestError.InternalServerError,
-        err as Error
-      )
+      throw new Error('Error building the proposal creation message', err as Error)
     }
 
     return snapshotProposal
@@ -146,10 +132,7 @@ export class SnapshotApiClient {
       timestamp: SnapshotApiClient.toSnapshotTimestamp(Time.from().getTime()),
       proposal: snapshotId,
     }
-    console.log('Removing Proposal', cancelProposalMessage)
-    const receipt = await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)
-    console.log('Receipt', receipt)
-    return receipt as SnapshotReceipt
+    return (await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)) as SnapshotReceipt
   }
 
   async castVote(
@@ -165,10 +148,7 @@ export class SnapshotApiClient {
       choice: choiceNumber,
       app: GOVERNANCE_SNAPSHOT_NAME,
     }
-    console.log('Casting Vote', voteMessage)
-    const receipt = await this.client.vote(account, address, voteMessage)
-    console.log('Receipt', receipt)
-    return receipt as SnapshotReceipt
+    return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }
 
   async getScores(addresses: string[], blockNumber?: number | string) {
@@ -176,8 +156,7 @@ export class SnapshotApiClient {
     const snapshotSpace = await SnapshotGraphqlClient.get().getSpace(this.spaceName)
     const network = getEnvironmentChainId()
 
-    console.log('Getting scores', addresses)
-    const scores = {
+    return {
       scores: await snapshot.utils.getScores(
         this.spaceName,
         snapshotSpace.strategies,
@@ -187,8 +166,6 @@ export class SnapshotApiClient {
       ),
       strategies: snapshotSpace.strategies,
     }
-    console.log('Scores', scores)
-    return scores
   }
 
   private static toSnapshotTimestamp(time: number) {

@@ -64,9 +64,7 @@ export class SnapshotService {
 
   private static async getIpfsSnapshotContent(proposalCreationReceipt: SnapshotReceipt) {
     try {
-      const hashContent = await IPFS.get().getHash(proposalCreationReceipt.ipfs)
-      console.log('IPFS HashContent', hashContent)
-      return hashContent
+      return await IPFS.get().getHash(proposalCreationReceipt.ipfs)
     } catch (err: any) {
       SnapshotService.dropSnapshotProposal(proposalCreationReceipt.id)
       throw new Error("Couldn't retrieve proposal from the IPFS: " + err.message, err)
