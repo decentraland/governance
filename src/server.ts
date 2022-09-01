@@ -23,8 +23,6 @@ import subscription from './entities/Subscription/routes'
 import updates from './entities/Updates/routes'
 import score from './entities/Votes/routes'
 
-require('newrelic')
-
 const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
