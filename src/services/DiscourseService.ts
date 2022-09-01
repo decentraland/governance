@@ -1,17 +1,17 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
-import { DiscourseClient, DiscoursePost } from '../api/DiscourseClient'
+import { Discourse, DiscoursePost } from '../clients/Discourse'
 import { DISCOURSE_AUTH, DISCOURSE_CATEGORY } from '../entities/Discourse/utils'
-import { ProposalInCreation } from '../entities/Proposal/ProposalCreator'
 import { inBackground } from '../entities/Proposal/routes'
 import * as templates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 
+import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
 export class DiscourseService {
-  static async createProposalInDiscourse(
+  static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
     profile: Avatar | null,
@@ -30,7 +30,7 @@ export class DiscourseService {
         snapshot_id: snapshotId,
       }
 
-      discourseProposal = await DiscourseClient.get().createPost(
+      discourseProposal = await Discourse.get().createPost(
         {
           category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
           title: templates.forumTitle(discourseTemplateProps),
@@ -56,7 +56,7 @@ export class DiscourseService {
   static dropDiscourseTopic(topic_id: number) {
     inBackground(() => {
       logger.log('Dropping discourse topic', { topic_id: topic_id })
-      return DiscourseClient.get().removeTopic(topic_id, DISCOURSE_AUTH)
+      return Discourse.get().removeTopic(topic_id, DISCOURSE_AUTH)
     })
   }
 }

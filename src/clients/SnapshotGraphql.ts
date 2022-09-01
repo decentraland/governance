@@ -119,7 +119,7 @@ const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 
 
 const GRAPHQL = `/graphql`
 
-export class SnapshotGraphqlClient extends API {
+export class SnapshotGraphql extends API {
   static Url =
     process.env.GATSBY_SNAPSHOT_API ||
     process.env.REACT_APP_SNAPSHOT_API ||
@@ -127,7 +127,7 @@ export class SnapshotGraphqlClient extends API {
     process.env.SNAPSHOT_API ||
     'https://hub.snapshot.org/'
 
-  static Cache = new Map<string, SnapshotGraphqlClient>()
+  static Cache = new Map<string, SnapshotGraphql>()
 
   static from(baseUrl: string) {
     baseUrl = trimLastForwardSlash(baseUrl)

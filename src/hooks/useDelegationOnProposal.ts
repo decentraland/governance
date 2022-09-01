@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { EMPTY_DELEGATION } from '../api/SnapshotGraphqlClient'
+import { EMPTY_DELEGATION } from '../clients/SnapshotGraphql'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { fetchAndFilterDelegates } from '../entities/Snapshot/utils'

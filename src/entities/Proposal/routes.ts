@@ -11,8 +11,8 @@ import { Request } from 'express'
 import { filter } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 
-import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
-import { DiscourseClient, DiscourseComment } from '../../api/DiscourseClient'
+import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
+import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import isCommittee from '../Committee/isCommittee'
 import { DISCOURSE_AUTH, filterComments } from '../Discourse/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
@@ -24,7 +24,7 @@ import { getVotingPower } from '../Votes/utils'
 
 import { getUpdateMessage } from './templates/messages'
 
-import { ProposalCreator, ProposalInCreation } from './ProposalCreator'
+import { ProposalService, ProposalInCreation } from '../../services/ProposalService'
 import ProposalModel from './model'
 import {
   GrantAttributes,
@@ -369,7 +369,7 @@ export async function createProposalLinkedWearables(req: WithAuth) {
 
 export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
-    return await ProposalCreator.createProposal(proposalInCreation)
+    return await ProposalService.createProposal(proposalInCreation)
   } catch (e: any) {
     throw new RequestError(`Error creating proposal: "${proposalInCreation}"`, RequestError.InternalServerError, e)
   }
@@ -405,7 +405,7 @@ export function commentProposalUpdateInDiscourse(id: string) {
       raw: updateMessage,
       created_at: new Date().toJSON(),
     }
-    await DiscourseClient.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+    await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
   })
 }
 
@@ -472,13 +472,13 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   const id = req.params.proposal
   const proposal = await getProposal(req)
 
-  return await ProposalCreator.removeProposal(proposal, user, updated_at, id)
+  return await ProposalService.removeProposal(proposal, user, updated_at, id)
 }
 
 export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
-    const comments = await DiscourseClient.get().getTopic(proposal.discourse_topic_id)
+    const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
     return filterComments(comments)
   } catch (e) {
     logger.error('Could not get proposal comments', e as Error)

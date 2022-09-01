@@ -2,18 +2,18 @@ import { Block } from '@ethersproject/providers'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
-import { IPFS } from '../api/IPFS'
-import { SnapshotApiClient, SnapshotReceipt } from '../api/SnapshotApiClient'
-import { ProposalInCreation, ProposalLifespan } from '../entities/Proposal/ProposalCreator'
+import { IPFS } from '../clients/IPFS'
+import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { inBackground } from '../entities/Proposal/routes'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 import DclRpcService from './DclRpcService'
+import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 
 export class SnapshotService {
-  static async createProposalInSnapshot(
+  static async createProposal(
     proposalInCreation: ProposalInCreation,
     proposalId: string,
     profile: Avatar | null,
@@ -22,7 +22,7 @@ export class SnapshotService {
     const block: Block = await DclRpcService.getBlockNumber()
     const { proposalTitle, proposalBody } = await this.snapshotTitleAndBody(proposalInCreation, profile, proposalId)
 
-    const proposalCreationReceipt: SnapshotReceipt = await SnapshotApiClient.get().createProposal(
+    const proposalCreationReceipt: SnapshotReceipt = await SnapshotApi.get().createProposal(
       proposalInCreation,
       proposalTitle,
       proposalBody,
@@ -74,7 +74,7 @@ export class SnapshotService {
   static dropSnapshotProposal(snapshotId: string) {
     inBackground(async () => {
       logger.log(`Dropping snapshot proposal: ${snapshotId}`)
-      const result = await SnapshotApiClient.get().removeProposal(snapshotId)
+      const result = await SnapshotApi.get().removeProposal(snapshotId)
       return {
         proposalId: snapshotId,
         result,

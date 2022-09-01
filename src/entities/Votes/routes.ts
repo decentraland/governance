@@ -3,7 +3,7 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 
-import { SnapshotGraphqlClient, SnapshotVote } from '../../api/SnapshotGraphqlClient'
+import { SnapshotGraphql, SnapshotVote } from '../../clients/SnapshotGraphql'
 import ProposalModel from '../Proposal/model'
 import { getProposal } from '../Proposal/routes'
 import { ProposalAttributes } from '../Proposal/types'
@@ -45,7 +45,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 }
 
 export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
-  return SnapshotGraphqlClient.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
+  return SnapshotGraphql.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
 }
 
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
@@ -84,7 +84,7 @@ export async function getVotes(proposal_id: string) {
 
 async function getAddressVotes(req: Request) {
   const address = req.params.address
-  const votes = await SnapshotGraphqlClient.get().getAddressVotes(address)
+  const votes = await SnapshotGraphql.get().getAddressVotes(address)
 
   if (votes.length === 0) {
     return []

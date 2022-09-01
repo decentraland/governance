@@ -5,7 +5,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import { Member } from '../../api/DclData'
+import { Member } from '../../clients/DclData'
 
 import MemberCard from './MemberCard'
 import './MembersSection.css'

@@ -2,7 +2,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTasks from 'decentraland-gatsby/dist/hooks/useAsyncTasks'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 
 export default function useSubscriptions() {
   const [account] = useAuthContext()

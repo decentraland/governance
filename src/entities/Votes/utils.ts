@@ -1,8 +1,8 @@
 import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
 import isUUID from 'validator/lib/isUUID'
 
-import { SnapshotApiClient } from '../../api/SnapshotApiClient'
-import { DetailedScores, SnapshotVote } from '../../api/SnapshotGraphqlClient'
+import { SnapshotApi } from '../../clients/SnapshotApi'
+import { DetailedScores, SnapshotVote } from '../../clients/SnapshotGraphql'
 import { ProposalAttributes } from '../Proposal/types'
 
 import { ChoiceColor, Vote } from './types'
@@ -172,7 +172,7 @@ function getNumber(number: number) {
 
 async function getScores(addresses: string[], block?: string | number) {
   addresses = addresses.map((addr) => addr.toLowerCase())
-  const { scores, strategies } = await SnapshotApiClient.get().getScores(addresses, block)
+  const { scores, strategies } = await SnapshotApi.get().getScores(addresses, block)
 
   const result: DetailedScores = {}
   for (const addr of addresses) {

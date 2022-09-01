@@ -14,7 +14,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'

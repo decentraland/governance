@@ -6,11 +6,11 @@ import { CancelProposal, Proposal, ProposalType } from '@snapshot-labs/snapshot.
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
-import { ProposalInCreation, ProposalLifespan } from '../entities/Proposal/ProposalCreator'
+import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
 import { getEnvironmentChainId } from '../modules/votes/utils'
 
-import { SnapshotGraphqlClient } from './SnapshotGraphqlClient'
+import { SnapshotGraphql } from './SnapshotGraphql'
 import { trimLastForwardSlash } from './utils'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
@@ -25,7 +25,7 @@ export type SnapshotReceipt = {
   }
 }
 
-export class SnapshotApiClient {
+export class SnapshotApi {
   static Url =
     process.env.GATSBY_SNAPSHOT_API ||
     process.env.REACT_APP_SNAPSHOT_API ||
@@ -33,7 +33,7 @@ export class SnapshotApiClient {
     process.env.SNAPSHOT_API ||
     'https://hub.snapshot.org'
 
-  static Cache = new Map<string, SnapshotApiClient>()
+  static Cache = new Map<string, SnapshotApi>()
   private readonly client: Client
   private readonly spaceName: string
   private readonly address: string
@@ -50,9 +50,9 @@ export class SnapshotApiClient {
 
   constructor(baseUrl: string) {
     this.client = new snapshot.Client712(baseUrl)
-    this.account = SnapshotApiClient.getWallet()
-    this.spaceName = SnapshotApiClient.getSpace()
-    this.address = SnapshotApiClient.getSnapshotAddress()
+    this.account = SnapshotApi.getWallet()
+    this.spaceName = SnapshotApi.getSpace()
+    this.address = SnapshotApi.getSnapshotAddress()
   }
 
   private static getWallet() {
@@ -112,8 +112,8 @@ export class SnapshotApiClient {
         title: proposalTitle,
         body: proposalBody,
         choices: proposal.configuration.choices as string[],
-        start: SnapshotApiClient.toSnapshotTimestamp(proposalLifespan.start.getTime()),
-        end: SnapshotApiClient.toSnapshotTimestamp(proposalLifespan.end.getTime()),
+        start: SnapshotApi.toSnapshotTimestamp(proposalLifespan.start.getTime()),
+        end: SnapshotApi.toSnapshotTimestamp(proposalLifespan.end.getTime()),
         snapshot: blockNumber,
         plugins: JSON.stringify({}),
         app: GOVERNANCE_SNAPSHOT_NAME,
@@ -129,7 +129,7 @@ export class SnapshotApiClient {
   public async removeProposal(snapshotId: string) {
     const cancelProposalMessage: CancelProposal = {
       space: this.spaceName,
-      timestamp: SnapshotApiClient.toSnapshotTimestamp(Time.from().getTime()),
+      timestamp: SnapshotApi.toSnapshotTimestamp(Time.from().getTime()),
       proposal: snapshotId,
     }
     return (await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)) as SnapshotReceipt
@@ -153,7 +153,7 @@ export class SnapshotApiClient {
 
   async getScores(addresses: string[], blockNumber?: number | string) {
     addresses = addresses.map((addr) => addr.toLowerCase())
-    const snapshotSpace = await SnapshotGraphqlClient.get().getSpace(this.spaceName)
+    const snapshotSpace = await SnapshotGraphql.get().getSpace(this.spaceName)
     const network = getEnvironmentChainId()
 
     return {

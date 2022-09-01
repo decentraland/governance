@@ -2,20 +2,20 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 
-import { DiscoursePost } from '../../api/DiscourseClient'
-import { HashContent } from '../../api/IPFS'
-import { getEnvironmentChainId } from '../../modules/votes/utils'
-import CatalystService from '../../services/CatalystService'
-import { DiscourseService } from '../../services/DiscourseService'
-import { SnapshotService } from '../../services/SnapshotService'
-import CoauthorModel from '../Coauthor/model'
-import isCommittee from '../Committee/isCommittee'
-import { SNAPSHOT_SPACE } from '../Snapshot/constants'
-import VotesModel from '../Votes/model'
+import { DiscoursePost } from '../clients/Discourse'
+import { HashContent } from '../clients/IPFS'
+import CoauthorModel from '../entities/Coauthor/model'
+import isCommittee from '../entities/Committee/isCommittee'
+import ProposalModel from '../entities/Proposal/model'
+import * as templates from '../entities/Proposal/templates'
+import { ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
+import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import VotesModel from '../entities/Votes/model'
+import { getEnvironmentChainId } from '../modules/votes/utils'
 
-import ProposalModel from './model'
-import * as templates from './templates'
-import { ProposalAttributes, ProposalStatus } from './types'
+import CatalystService from './CatalystService'
+import { DiscourseService } from './DiscourseService'
+import { SnapshotService } from './SnapshotService'
 
 export type ProposalInCreation = Pick<
   ProposalAttributes,
@@ -27,7 +27,7 @@ export type ProposalLifespan = {
   end: Date
 }
 
-export class ProposalCreator {
+export class ProposalService {
   static async createProposal(proposalInCreation: ProposalInCreation) {
     const proposalId = uuid()
     const proposalLifespan = this.getLifespan(proposalInCreation)
@@ -39,14 +39,14 @@ export class ProposalCreator {
 
     const profile = await CatalystService.getProfile(proposalInCreation.user)
 
-    const { snapshotId, snapshot_url, snapshotContent } = await SnapshotService.createProposalInSnapshot(
+    const { snapshotId, snapshot_url, snapshotContent } = await SnapshotService.createProposal(
       proposalInCreation,
       proposalId,
       profile,
       proposalLifespan
     )
 
-    const discourseProposal = await DiscourseService.createProposalInDiscourse(
+    const discourseProposal = await DiscourseService.createProposal(
       proposalInCreation,
       proposalId,
       profile,
@@ -60,7 +60,7 @@ export class ProposalCreator {
       configuration: proposalInCreation.configuration,
     })
 
-    const newProposal = await ProposalCreator.createProposalInDb(
+    const newProposal = await ProposalService.saveToDb(
       proposalInCreation,
       proposalId,
       title,
@@ -114,7 +114,7 @@ export class ProposalCreator {
     }
   }
 
-  private static async createProposalInDb(
+  private static async saveToDb(
     data: ProposalInCreation,
     id: string,
     title: string,

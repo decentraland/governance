@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
 const useProposalComments = (proposalId?: ProposalAttributes['id']) => {

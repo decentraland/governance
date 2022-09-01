@@ -4,10 +4,10 @@ import {
   Delegation,
   DelegationResult,
   EMPTY_DELEGATION,
-  SnapshotGraphqlClient,
+  SnapshotGraphql,
   SnapshotProposal,
   SnapshotVote,
-} from '../../api/SnapshotGraphqlClient'
+} from '../../clients/SnapshotGraphql'
 
 import { SNAPSHOT_SPACE } from './constants'
 
@@ -95,8 +95,8 @@ export function groupProposalsByMonth(proposals: Partial<SnapshotProposal>[], fi
 export async function getSnapshotStatusAndSpace(spaceName?: string) {
   spaceName = spaceName && spaceName.length > 0 ? spaceName : SNAPSHOT_SPACE
   const values = await Promise.all([
-    await SnapshotGraphqlClient.get().getStatus(),
-    await SnapshotGraphqlClient.get().getSpace(spaceName),
+    await SnapshotGraphql.get().getStatus(),
+    await SnapshotGraphql.get().getSpace(spaceName),
   ])
   const snapshotStatus = values[0]
   const snapshotSpace = values[1]
@@ -138,7 +138,7 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
 
 export async function fetchAndFilterDelegates(query: string, variables: any): Promise<DelegationResult> {
   try {
-    const delegates = await SnapshotGraphqlClient.get().fetchDelegates(query, variables)
+    const delegates = await SnapshotGraphql.get().fetchDelegates(query, variables)
     if (!delegates) {
       return EMPTY_DELEGATION
     }

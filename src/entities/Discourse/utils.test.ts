@@ -1,4 +1,4 @@
-import { DiscoursePostInTopic, DiscourseTopic } from '../../api/DiscourseClient'
+import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
 import { ProposalCommentsInDiscourse } from '../Proposal/types'
 
 import { createWithPosts, ONE_USER_POST, SEVERAL_USERS_POST } from './__data__/discourse_samples'

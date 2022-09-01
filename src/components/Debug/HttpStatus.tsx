@@ -6,7 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { HttpStat } from '../../api/HttpStat'
+import { HttpStat } from '../../clients/HttpStat'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 

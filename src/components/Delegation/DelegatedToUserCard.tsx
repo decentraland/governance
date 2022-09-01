@@ -7,7 +7,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
-import { DelegationResult, DetailedScores } from '../../api/SnapshotGraphqlClient'
+import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphql'
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../constants'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'

@@ -266,7 +266,7 @@ export type DiscoursePostInTopic = {
   reviewable_score_pending_count?: number
 }
 
-export class DiscourseClient extends API {
+export class Discourse extends API {
   static Url =
     process.env.GATSBY_DISCOURSE_API ||
     process.env.REACT_APP_DISCOURSE_API ||
@@ -274,7 +274,7 @@ export class DiscourseClient extends API {
     process.env.DISCOURSE_API ||
     'https://meta.discourse.org/'
 
-  static Cache = new Map<string, DiscourseClient>()
+  static Cache = new Map<string, Discourse>()
 
   static from(baseUrl: string) {
     if (!this.Cache.has(baseUrl)) {
@@ -309,7 +309,7 @@ export class DiscourseClient extends API {
   }
 
   async createPost(post: DiscourseNewPost, auth: DiscourseAuth) {
-    DiscourseClient.checkCredentials(auth)
+    Discourse.checkCredentials(auth)
 
     return this.fetch<DiscoursePost>(
       `/posts.json`,
@@ -324,7 +324,7 @@ export class DiscourseClient extends API {
   }
 
   async commentOnPost(post: DiscourseComment, auth: DiscourseAuth) {
-    DiscourseClient.checkCredentials(auth)
+    Discourse.checkCredentials(auth)
 
     return this.fetch<DiscoursePost>(
       `/posts.json`,
