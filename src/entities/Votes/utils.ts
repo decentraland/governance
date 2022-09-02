@@ -170,7 +170,7 @@ function getNumber(number: number) {
   return Math.floor(number || 0)
 }
 
-async function getScores(addresses: string[], block?: string | number) {
+export async function getScores(addresses: string[], block?: string | number) {
   addresses = addresses.map((addr) => addr.toLowerCase())
   const { scores, strategies } = await SnapshotApi.get().getScores(addresses, block)
 
@@ -197,12 +197,8 @@ async function getScores(addresses: string[], block?: string | number) {
   return result
 }
 
-export async function getLatestScores(addresses: string[]) {
-  return await getScores(addresses)
-}
-
 export async function getVotingPower(address: string) {
-  const vp = await getLatestScores([address])
+  const vp = await getScores([address])
   return Object.values(vp)[0]
 }
 

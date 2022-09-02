@@ -6,15 +6,15 @@ import { CancelProposal, Proposal, ProposalType } from '@snapshot-labs/snapshot.
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
-import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
-import { SNAPSHOT_ADDRESS } from '../entities/Snapshot/constants'
+import { SNAPSHOT_ADDRESS, SNAPSHOT_PRIVATE_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { getEnvironmentChainId } from '../modules/votes/utils'
+import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 
 import { SnapshotGraphql } from './SnapshotGraphql'
 import { trimLastForwardSlash } from './utils'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
-const GOVERNANCE_SNAPSHOT_NAME = 'decentraland-governance'
+const SNAPSHOT_APP_NAME = 'decentraland-governance'
 
 export type SnapshotReceipt = {
   id: string
@@ -26,12 +26,7 @@ export type SnapshotReceipt = {
 }
 
 export class SnapshotApi {
-  static Url =
-    process.env.GATSBY_SNAPSHOT_API ||
-    process.env.REACT_APP_SNAPSHOT_API ||
-    process.env.STORYBOOK_SNAPSHOT_API ||
-    process.env.SNAPSHOT_API ||
-    'https://hub.snapshot.org'
+  static Url = process.env.GATSBY_SNAPSHOT_API || 'https://hub.snapshot.org'
 
   static Cache = new Map<string, SnapshotApi>()
   private readonly client: Client
@@ -56,17 +51,17 @@ export class SnapshotApi {
   }
 
   private static getWallet() {
-    if (!process.env.SNAPSHOT_PRIVATE_KEY) {
+    if (!SNAPSHOT_PRIVATE_KEY) {
       throw new Error('Failed to determine snapshot private key. Please check SNAPSHOT_PRIVATE_KEY env is defined')
     }
-    return new Wallet(process.env.SNAPSHOT_PRIVATE_KEY)
+    return new Wallet(SNAPSHOT_PRIVATE_KEY)
   }
 
   private static getSpace() {
-    if (!process.env.GATSBY_SNAPSHOT_SPACE) {
+    if (!SNAPSHOT_SPACE) {
       throw new Error('Failed to determine snapshot space. Please check GATSBY_SNAPSHOT_SPACE env is defined')
     }
-    return process.env.GATSBY_SNAPSHOT_SPACE
+    return SNAPSHOT_SPACE
   }
 
   private static getSnapshotAddress() {
@@ -116,7 +111,7 @@ export class SnapshotApi {
         end: SnapshotApi.toSnapshotTimestamp(proposalLifespan.end.getTime()),
         snapshot: blockNumber,
         plugins: JSON.stringify({}),
-        app: GOVERNANCE_SNAPSHOT_NAME,
+        app: SNAPSHOT_APP_NAME,
         discussion: '',
       }
     } catch (err) {
@@ -146,7 +141,7 @@ export class SnapshotApi {
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
-      app: GOVERNANCE_SNAPSHOT_NAME,
+      app: SNAPSHOT_APP_NAME,
     }
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }

@@ -20,7 +20,7 @@ export class SnapshotService {
     proposalLifespan: ProposalLifespan
   ) {
     const block: Block = await DclRpcService.getBlockNumber()
-    const { proposalTitle, proposalBody } = await this.snapshotTitleAndBody(proposalInCreation, profile, proposalId)
+    const { proposalTitle, proposalBody } = await this.getProposalTitleAndBody(proposalInCreation, profile, proposalId)
 
     const proposalCreationReceipt: SnapshotReceipt = await SnapshotApi.get().createProposal(
       proposalInCreation,
@@ -44,7 +44,7 @@ export class SnapshotService {
     return { snapshotId: proposalCreationReceipt.id, snapshot_url, snapshotContent }
   }
 
-  private static async snapshotTitleAndBody(
+  private static async getProposalTitleAndBody(
     proposalInCreation: ProposalInCreation,
     profile: Avatar | null,
     proposalId: string

@@ -8,6 +8,7 @@ import {
   SnapshotProposal,
   SnapshotVote,
 } from '../../clients/SnapshotGraphql'
+import { ProposalAttributes } from '../Proposal/types'
 
 import { SNAPSHOT_SPACE } from './constants'
 
@@ -136,7 +137,7 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
   return Array.from(unique_delegations.values())
 }
 
-export async function fetchAndFilterDelegates(query: string, variables: any): Promise<DelegationResult> {
+async function getDelegations(query: string, variables: any): Promise<DelegationResult> {
   try {
     const delegates = await SnapshotGraphql.get().fetchDelegates(query, variables)
     if (!delegates) {
@@ -152,4 +153,60 @@ export async function fetchAndFilterDelegates(query: string, variables: any): Pr
     console.error(error)
     return EMPTY_DELEGATION
   }
+}
+
+const DELEGATIONS_ON_PROPOSAL_QUERY = `
+query ($space: String!, $address: String!, $blockNumber: Int) {
+  delegatedTo: delegations(block:{number: $blockNumber},where: { space_in: ["", $space], delegator: $address }, orderBy: timestamp, orderDirection: desc) {
+    delegator
+    delegate
+    space
+    timestamp
+  },
+  delegatedFrom: delegations(block:{number: $blockNumber},where: { space_in: ["", $space], delegate: $address }, orderBy: timestamp, orderDirection: desc) {
+    delegator
+    delegate
+    space
+    timestamp
+  }
+}`
+
+export async function getDelegationsOnProposal(address?: string | null, proposal?: ProposalAttributes | null) {
+  if (!SNAPSHOT_SPACE || !address || !proposal) {
+    return EMPTY_DELEGATION
+  }
+  const variables = {
+    address: address.toLowerCase(),
+    space: SNAPSHOT_SPACE,
+    blockNumber: proposal.snapshot_proposal.snapshot,
+  }
+  return await getDelegations(DELEGATIONS_ON_PROPOSAL_QUERY, variables)
+}
+
+const LATEST_DELEGATIONS_QUERY = `
+query ($space: String!, $address: String!) {
+  delegatedTo: delegations(where: { space_in: ["", $space], delegator: $address }, orderBy: timestamp, orderDirection: desc) {
+    delegator
+    delegate
+    space
+    timestamp
+  },
+  delegatedFrom: delegations(where: { space_in: ["", $space], delegate: $address }, orderBy: timestamp, orderDirection: desc) {
+    delegator
+    delegate
+    space
+    timestamp
+  }
+}
+`
+
+export async function getLatestDelegations(address: string | null | undefined) {
+  if (!SNAPSHOT_SPACE || !address) {
+    return EMPTY_DELEGATION
+  }
+  const variables = {
+    address: address.toLowerCase(),
+    space: SNAPSHOT_SPACE,
+  }
+  return await getDelegations(LATEST_DELEGATIONS_QUERY, variables)
 }

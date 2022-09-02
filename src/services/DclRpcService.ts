@@ -1,9 +1,9 @@
-import { JsonRpcProvider, getNetwork } from '@ethersproject/providers'
+import { Block, JsonRpcProvider, getNetwork } from '@ethersproject/providers'
 
 import { getEnvironmentChainId } from '../modules/votes/utils'
 
 export default class DclRpcService {
-  static async getBlockNumber() {
+  static async getBlockNumber(): Promise<Block> {
     try {
       const network = getNetwork(Number(getEnvironmentChainId()))
       const networkName = network.name === 'homestead' ? 'mainnet' : network.name

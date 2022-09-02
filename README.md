@@ -44,10 +44,9 @@ if you are running this project locally you only need to check the following env
 
 * `CONNECTION_STRING`: make sure it is point to a valid database
 * `COMMITTEE_ADDRESSES`: list of eth addresses separated by `,` that will be able to enact finished proposals
-* `GATSBY_SNAPSHOT_SPACE`: a snapshot space where the proposal will be published
-* `SNAPSHOT_PRIVATE_KEY`, `GATSBY_SNAPSHOT_ADDRESS`: a pair address/key with permissions to publish at that snapshot space
 * `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
 * `RPC_PROVIDER_URL`: the rpc provider to get the latest block
+* Snapshot env vars: see snapshot setup
 
 ### setup the required voting power to pass
 
@@ -108,6 +107,59 @@ npm run migrate up
 ```
 
 if migrations are not running, or get stuck, please check that you are using node v12
+
+### Snapshot Setup
+
+* `GATSBY_SNAPSHOT_SPACE`: the snapshot space where the proposals will be published
+* `SNAPSHOT_PRIVATE_KEY`, `GATSBY_SNAPSHOT_ADDRESS`: a pair address/key with permissions to publish at that snapshot space
+* The configured SNAPSHOT_PROPOSAL_TYPE for the project is 'single-choice', which means each voter may select only one choice. See [available voting systems](https://docs.snapshot.org/proposals/voting-types#single-choice-voting)
+
+#### Creating a Snapshot space
+
+You are going to need to register an ENS name in the network you'll create the space in.
+For this purpose, you are going to need ETH / Rinkeby ETH / Goerli ETH. Use the faucets to get it:
+
+[Rinkeby Faucet](https://rinkebyfaucet.com/)
+
+[Goerli Faucet](https://goerlifaucet.com/)
+
+Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
+
+#### Strategy
+
+- DCL Governance uses two strategies:
+  - erc20-balance-of
+  - [delegation](https://demo.snapshot.org/#/strategy/delegation)
+
+Delegation needs to be configured like so
+
+```json
+{
+  "symbol": "VP (delegated)",
+  "strategies": [
+    {
+      "name": "erc20-balance-of",
+      "params": {
+        "symbol": "MANA",
+        "address": "0x The address of the token contract on the network you are using", 
+        "decimals": 18
+      }
+    }
+  ],
+  "delegationSpace": "yourEnsName.eth"
+}
+```
+
+If you need MANA for testing you can get it by interacting with the contract on etherscan
+
+[Rinkeby FakeMana](https://rinkeby.etherscan.io/address/0x28bce5263f5d7f4eb7e8c6d5d78275ca455bac63#writeContract)
+
+[Goerli FakeMana](https://goerli.etherscan.io/address/0xe7fdae84acaba2a5ba817b6e6d8a2d415dbfedbe)
+
+Connect you wallet and use the `setBalance` method on the `Contract -> Write Contract` section
+
+- `to (address)` is your address
+- `amount (uint256)` is whatever you want. Take into account that `1000000000000000000 = 1 MANA`
 
 ## Run Tests
 

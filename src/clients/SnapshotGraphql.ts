@@ -2,7 +2,7 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 import fetch from 'isomorphic-fetch'
 
-import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { GATSBY_SNAPSHOT_API, SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 import { inBatches, trimLastForwardSlash } from './utils'
 
@@ -120,12 +120,7 @@ const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 
 const GRAPHQL = `/graphql`
 
 export class SnapshotGraphql extends API {
-  static Url =
-    process.env.GATSBY_SNAPSHOT_API ||
-    process.env.REACT_APP_SNAPSHOT_API ||
-    process.env.STORYBOOK_SNAPSHOT_API ||
-    process.env.SNAPSHOT_API ||
-    'https://hub.snapshot.org/'
+  static Url = GATSBY_SNAPSHOT_API || 'https://hub.snapshot.org/'
 
   static Cache = new Map<string, SnapshotGraphql>()
 
