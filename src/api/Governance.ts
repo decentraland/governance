@@ -212,6 +212,7 @@ export class Governance extends API {
 
   async createProposalUpdate(update: {
     proposal_id: string
+    author: string
     health: ProjectHealth
     introduction: string
     highlights: string
@@ -229,6 +230,7 @@ export class Governance extends API {
   async updateProposalUpdate(update: {
     id: string
     proposal_id: string
+    author: string
     health: ProjectHealth
     introduction: string
     highlights: string
