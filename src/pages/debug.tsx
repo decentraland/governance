@@ -50,7 +50,7 @@ const validate = createValidator<TestState>({
   }),
 })
 
-export default function WrappingPage() {
+export default function DebugPage() {
   const t = useFormatMessage()
   const [account] = useAuthContext()
   const { isDebugAddress } = useIsDebugAddress(account)

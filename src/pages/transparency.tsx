@@ -41,7 +41,7 @@ const DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV
 const ABOUT_DAO_URL = 'https://docs.decentraland.org/decentraland/how-does-the-dao-work/'
 const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curation-committee-member-nominations/2047'
 
-export default function WrappingPage() {
+export default function TransparencyPage() {
   const t = useFormatMessage()
   const [data] = useDclData()
   const balances = useMemo(() => (data && aggregateBalances(data.balances)) || [], [data])

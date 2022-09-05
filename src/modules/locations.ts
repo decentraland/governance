@@ -71,6 +71,7 @@ export default {
     url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
   balance: (options: Partial<{ address: string; openDelegatesModal?: string }> = {}) => url('/balance/', options),
+  profile: (options: Partial<{ address: string }> = {}) => url('/profile/', options),
   transparency: () => url('/transparency/'),
   debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),
