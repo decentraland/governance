@@ -52,7 +52,7 @@
     "autoprefixer": "^10.4.4",
     "chart.js": "^3.8.2",
     "core-js": "^3.21.1",
-    "decentraland-gatsby": "^5.24.0",
+    "decentraland-gatsby": "5.31.0",
     "decentraland-ui": "^3.37.2",
     "dompurify": "^2.3.3",
     "dotenv": "^16.0.0",
