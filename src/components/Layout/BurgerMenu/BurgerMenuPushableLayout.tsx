@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Desktop, Mobile, Tablet } from 'decentraland-ui/dist/components/Media/Media'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
 
@@ -21,8 +21,7 @@ function BurgerMenuPushableLayout({ children }: Props) {
           {children}
         </div>
       </Mobile>
-      <Desktop>{children}</Desktop>
-      <Tablet>{children}</Tablet>
+      <NotMobile>{children}</NotMobile>
     </>
   )
 }
