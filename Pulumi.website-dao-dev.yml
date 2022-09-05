@@ -59,8 +59,6 @@ config:
   website-dao:GATSBY_GRANT_SIZE_TIER4: '60000'
   website-dao:GATSBY_GRANT_SIZE_TIER5: '120000'
   website-dao:GATSBY_GRANT_SIZE_TIER6: '240000'
-  website-dao:INFURA_KEYS:
-    secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
   website-dao:INFURA_IPFS_GATEWAY_API: https://dal-dao.infura-ipfs.io
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=
