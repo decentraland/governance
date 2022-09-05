@@ -44,7 +44,7 @@ export default function BalancePage() {
           description={t('page.balance.description') || ''}
           image="https://decentraland.org/images/decentraland.png"
         />
-        <Navigation activeTab={NavigationTab.Wrapping} />
+        <Navigation activeTab={NavigationTab.Balance} />
         <MaintenancePage />
       </>
     )
@@ -65,7 +65,7 @@ export default function BalancePage() {
         description={t('page.balance.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Navigation activeTab={NavigationTab.Wrapping} />
+      <Navigation activeTab={NavigationTab.Balance} />
       <Container className="VotingPowerSummary">
         <UserStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
         <Stats title={t('page.balance.total_label') || ''}>
