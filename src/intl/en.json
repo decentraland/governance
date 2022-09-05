@@ -11,7 +11,8 @@
     "home": "DAO Home",
     "proposals": "Proposals",
     "grants": "Grants",
-    "wrapping": "Voting Power",
+    "balance": "Balance",
+    "profile": "Profile",
     "activity": "Activity",
     "enacted": "Enacted",
     "transparency": "Transparency",
@@ -784,6 +785,10 @@
       "delegations_from_picked_by": "Picked by {count} {count, plural, one {other} other {others}}",
       "delegations_from_voting_power": "Delegated",
       "delegations_from_view_profile": "VIEW PROFILE"
+    },
+    "profile": {
+      "title": "profile",
+      "description": "Your profile within the DAO"
     },
     "transparency": {
       "title": "Transparency",
