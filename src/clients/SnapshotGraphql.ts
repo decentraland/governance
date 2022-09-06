@@ -1,8 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
-import fetch from 'isomorphic-fetch'
 
-import { GATSBY_SNAPSHOT_API, SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { GATSBY_SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 import { inBatches, trimLastForwardSlash } from './utils'
 
@@ -48,11 +47,6 @@ export type Delegation = {
   delegator: string
   delegate: string
   space: string
-}
-
-export type DelegationQueryResult = {
-  delegatedTo: Delegation[]
-  delegatedFrom: Delegation[]
 }
 
 export type DelegationResult = {
@@ -117,7 +111,7 @@ enum SnapshotScoresState {
 
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
-const GRAPHQL = `/graphql`
+const GRAPHQL_ENDPOINT = `/graphql`
 
 export class SnapshotGraphql extends API {
   static Url = GATSBY_SNAPSHOT_API || 'https://hub.snapshot.org/'
@@ -161,7 +155,7 @@ export class SnapshotGraphql extends API {
     `
 
     const result = await this.fetch<SnapshotQueryResponse<{ space: SnapshotSpace }>>(
-      GRAPHQL,
+      GRAPHQL_ENDPOINT,
       this.options().method('POST').json({ query, variables: { space } })
     )
 
@@ -188,7 +182,7 @@ export class SnapshotGraphql extends API {
     let votes: SnapshotVote[] = []
     while (hasNext) {
       const result = await this.fetch<SnapshotVoteResponse>(
-        GRAPHQL,
+        GRAPHQL_ENDPOINT,
         this.options().method('POST').json({ query, variables: { space, proposal, skip, first } })
       )
 
@@ -237,7 +231,7 @@ export class SnapshotGraphql extends API {
     let votes: SnapshotVote[] = []
     while (hasNext) {
       const result = await this.fetch<SnapshotVoteResponse>(
-        GRAPHQL,
+        GRAPHQL_ENDPOINT,
         this.options()
           .method('POST')
           .json({ query, variables: { space: SNAPSHOT_SPACE, address, skip, first } })
@@ -271,7 +265,7 @@ export class SnapshotGraphql extends API {
     `
 
     const result = await this.fetch<SnapshotVoteResponse>(
-      GRAPHQL,
+      GRAPHQL_ENDPOINT,
       this.options()
         .method('POST')
         .json({
@@ -305,7 +299,7 @@ export class SnapshotGraphql extends API {
     `
 
     const result = await this.fetch<VoteEventResponse>(
-      GRAPHQL,
+      GRAPHQL_ENDPOINT,
       this.options()
         .method('POST')
         .json({
@@ -353,7 +347,7 @@ export class SnapshotGraphql extends API {
     `
 
     const result = await this.fetch<SnapshotProposalResponse>(
-      GRAPHQL,
+      GRAPHQL_ENDPOINT,
       this.options()
         .method('POST')
         .json({
@@ -379,18 +373,5 @@ export class SnapshotGraphql extends API {
 
   async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
     return await this.fetchProposals({ start, end, fields, scoresState: SnapshotScoresState.Pending }, 0, limit)
-  }
-
-  async fetchDelegates(query: string, variables: any) {
-    const request = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: query,
-        variables: variables,
-      }),
-    })
-    const body = await request.json()
-    return body.data as DelegationQueryResult
   }
 }

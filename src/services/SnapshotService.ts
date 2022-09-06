@@ -1,13 +1,12 @@
-import { Block } from '@ethersproject/providers'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
 import { IPFS } from '../clients/IPFS'
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
-import { inBackground } from '../entities/Proposal/routes'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { inBackground } from '../helpers'
 
 import DclRpcService from './DclRpcService'
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
@@ -19,7 +18,7 @@ export class SnapshotService {
     profile: Avatar | null,
     proposalLifespan: ProposalLifespan
   ) {
-    const block: Block = await DclRpcService.getBlockNumber()
+    const blockNumber: number = await DclRpcService.getBlockNumber()
     const { proposalTitle, proposalBody } = await this.getProposalTitleAndBody(proposalInCreation, profile, proposalId)
 
     const proposalCreationReceipt: SnapshotReceipt = await SnapshotApi.get().createProposal(
@@ -27,21 +26,21 @@ export class SnapshotService {
       proposalTitle,
       proposalBody,
       proposalLifespan,
-      block.number
+      blockNumber
     )
 
-    const snapshot_url = snapshotProposalUrl({
+    const snapshotUrl = snapshotProposalUrl({
       snapshot_space: SNAPSHOT_SPACE,
       snapshot_id: proposalCreationReceipt.id,
     })
 
     logger.log('Snapshot proposal created', {
-      snapshot_url: snapshot_url,
+      snapshot_url: snapshotUrl,
       snapshot_proposal: JSON.stringify(proposalCreationReceipt),
     })
 
     const snapshotContent = await this.getIpfsSnapshotContent(proposalCreationReceipt)
-    return { snapshotId: proposalCreationReceipt.id, snapshot_url, snapshotContent }
+    return { snapshotId: proposalCreationReceipt.id, snapshotUrl: snapshotUrl, snapshotContent }
   }
 
   private static async getProposalTitleAndBody(

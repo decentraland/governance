@@ -103,9 +103,7 @@ export default function ProposalPage() {
       if (proposal && account && provider && votes) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
-        await retry(3, () =>
-          SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
-        )
+        await retry(3, () => SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex))
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()
       }

@@ -171,11 +171,11 @@ function getNumber(number: number) {
 }
 
 export async function getScores(addresses: string[], block?: string | number) {
-  addresses = addresses.map((addr) => addr.toLowerCase())
-  const { scores, strategies } = await SnapshotApi.get().getScores(addresses, block)
+  const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
+  const { scores, strategies } = await SnapshotApi.get().getScores(formattedAddresses, block)
 
   const result: DetailedScores = {}
-  for (const addr of addresses) {
+  for (const addr of formattedAddresses) {
     result[addr] = {
       ownVp: 0,
       delegatedVp: Math.round(scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,

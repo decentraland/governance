@@ -7,7 +7,7 @@ import { getDelegationsOnProposal } from '../entities/Snapshot/utils'
 export default function useDelegationOnProposal(proposal?: ProposalAttributes | null, address?: string | null) {
   return useAsyncMemo(
     async () => {
-      return await getDelegationsOnProposal(address, proposal)
+      return await getDelegationsOnProposal(address, proposal?.snapshot_proposal.snapshot)
     },
     [address, proposal],
     { initialValue: EMPTY_DELEGATION, callWithTruthyDeps: true }

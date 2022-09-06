@@ -39,7 +39,7 @@ export class ProposalService {
 
     const profile = await CatalystService.getProfile(proposalInCreation.user)
 
-    const { snapshotId, snapshot_url, snapshotContent } = await SnapshotService.createProposal(
+    const { snapshotId, snapshotUrl, snapshotContent } = await SnapshotService.createProposal(
       proposalInCreation,
       proposalId,
       profile,
@@ -50,7 +50,7 @@ export class ProposalService {
       proposalInCreation,
       proposalId,
       profile,
-      snapshot_url,
+      snapshotUrl,
       snapshotId
     )
 

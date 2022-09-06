@@ -147,7 +147,7 @@ export class SnapshotApi {
   }
 
   async getScores(addresses: string[], blockNumber?: number | string) {
-    addresses = addresses.map((addr) => addr.toLowerCase())
+    const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
     const snapshotSpace = await SnapshotGraphql.get().getSpace(this.spaceName)
     const network = getEnvironmentChainId()
 
@@ -156,7 +156,7 @@ export class SnapshotApi {
         this.spaceName,
         snapshotSpace.strategies,
         network.toString(),
-        addresses,
+        formattedAddresses,
         blockNumber
       ),
       strategies: snapshotSpace.strategies,

@@ -1,17 +1,10 @@
-import env, { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
-import { DiscourseAuth, DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
+import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
-export const DISCOURSE_API = requiredEnv('DISCOURSE_API')
-export const DISCOURSE_URL = env('DISCOURSE_URL', DISCOURSE_API)
-export const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
 export const DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
 export const DISCOURSE_USER = requiredEnv('DISCOURSE_USER')
-export const DISCOURSE_AUTH: DiscourseAuth = {
-  apiKey: DISCOURSE_API_KEY,
-  apiUsername: DISCOURSE_USER,
-}
 export const BASE_AVATAR_URL = requiredEnv('DISCOURSE_BASE_AVATAR_URL')
 const DEFAULT_AVATAR_SIZE = '45'
 

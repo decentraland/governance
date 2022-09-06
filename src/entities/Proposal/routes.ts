@@ -13,8 +13,10 @@ import isUUID from 'validator/lib/isUUID'
 
 import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
+import { formatError, inBackground } from '../../helpers'
+import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import isCommittee from '../Committee/isCommittee'
-import { DISCOURSE_AUTH, filterComments } from '../Discourse/utils'
+import { filterComments } from '../Discourse/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -24,7 +26,6 @@ import { getVotingPower } from '../Votes/utils'
 
 import { getUpdateMessage } from './templates/messages'
 
-import { ProposalService, ProposalInCreation } from '../../services/ProposalService'
 import ProposalModel from './model'
 import {
   GrantAttributes,
@@ -90,23 +91,6 @@ export default routes((route) => {
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
 })
-
-function formatError(err: Error) {
-  const errorObj = {
-    ...err,
-    message: err.message,
-    stack: err.stack,
-  }
-
-  return process.env.NODE_ENV !== 'production' ? err : errorObj
-}
-
-export function inBackground(fun: () => Promise<any>) {
-  Promise.resolve()
-    .then(fun)
-    .then((result) => logger.log('Completed background task', { result: JSON.stringify(result) }))
-    .catch((err) => logger.error('Error running background task', formatError(err)))
-}
 
 export async function getProposals(req: WithAuth<Request>) {
   const query = req.query
@@ -405,7 +389,7 @@ export function commentProposalUpdateInDiscourse(id: string) {
       raw: updateMessage,
       created_at: new Date().toJSON(),
     }
-    await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+    await Discourse.get().commentOnPost(discourseComment)
   })
 }
 
