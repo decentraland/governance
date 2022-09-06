@@ -6,11 +6,9 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 import { isEmpty } from 'lodash'
 
-import { CoauthorStatus } from '../Coauthor/types'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
-
-import { Governance } from './../../api/Governance'
+import { isCoauthor } from '../Proposal/utils'
 
 import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
@@ -74,11 +72,9 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const user = req.auth!
   const proposalId = req.params.proposal
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
-  const isCoauthor = await Governance.get()
-    .getCoAuthorsByProposal(proposalId, CoauthorStatus.APPROVED)
-    .then((coauthors) => !!coauthors.find((coauthor) => coauthor.address === user))
+  const isAuthorOrCoauthor = user && (proposal?.user === user || isCoauthor(proposalId, user)) && author === user
 
-  if (!proposal || !((proposal?.user === user || isCoauthor) && author === user)) {
+  if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
@@ -119,11 +115,9 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const user = req.auth
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
-  const isCoauthor = await Governance.get()
-    .getCoAuthorsByProposal(proposalId, CoauthorStatus.APPROVED)
-    .then((coauthors) => !!coauthors.find((coauthor) => coauthor.address === user))
+  const isAuthorOrCoauthor = user && (proposal?.user === user || isCoauthor(proposalId, user)) && author === user
 
-  if (!proposal || !((proposal?.user === user || isCoauthor) && author === user)) {
+  if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 

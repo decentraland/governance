@@ -19,7 +19,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   )
 
   const sql = `
-    UPDATE ${Model.tableName} SET author = (SELECT p.user FROM ${ProposalModel.tableName} as p WHERE ${Model.tableName}.proposal_id = p.id) WHERE status = 'done'
+    UPDATE ${Model.tableName} SET author = (SELECT p.user FROM ${ProposalModel.tableName} as p WHERE ${Model.tableName}.proposal_id = p.id) WHERE status = 'done' OR status = 'late'
   `
   pgm.sql(sql)
 }

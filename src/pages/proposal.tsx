@@ -46,6 +46,7 @@ import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
+import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -154,17 +155,8 @@ export default function ProposalPage() {
   )
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
-  const [isCoauthor] = useAsyncMemo(
-    async () => {
-      if (proposal && !isOwner) {
-        const coauthors = await Governance.get().getCoAuthorsByProposal(proposal.id, CoauthorStatus.APPROVED)
-        return !!coauthors.find((coauthor) => coauthor.address === account)
-      }
-
-      return false
-    },
-    [proposal, account],
-    { callWithTruthyDeps: true, initialValue: false }
+  const isCoauthor = !!useCoAuthorsByProposal(proposal).find(
+    (coauthor) => coauthor.address === account && coauthor.status === CoauthorStatus.APPROVED
   )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
