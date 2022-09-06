@@ -39,7 +39,6 @@ COPY ./gatsby-config.js     /app/gatsby-config.js
 COPY ./gatsby-node.js       /app/gatsby-node.js
 COPY ./gatsby-ssr.js        /app/gatsby-ssr.js
 COPY ./tsconfig.json        /app/tsconfig.json
-COPY ./newrelic.js          /app/newrelic.js
 
 RUN sed -i.temp '/Pulumi\.ts/d' package.json
 
@@ -67,7 +66,6 @@ COPY --from=compiler /app/lib                  /app/lib
 COPY --from=compiler /app/public               /app/public
 COPY --from=compiler /app/static               /app/static
 COPY --from=compiler /app/entrypoint.sh        /app/entrypoint.sh
-COPY --from=compiler /app/newrelic.js         /app/newrelic.js
 
 VOLUME [ "/data" ]
 

@@ -1,7 +1,7 @@
 encryptionsalt: v1:5g6OY0hHq10=:v1:2v1dmNBoUC4Ls4eB:jG0ttHuD/beq4tREu887OY++Kvz2iw==
 config:
   aws:region: us-east-1
-  website-dao:DEBUG_ADDRESSES: 0x8cff6832174091dae86f0244e3fd92d4ced2fe07,0xcD15d83f42179b9A5B515eea0975f554444a9646,0xb0F847e61C502Fb82D758C515b3F914de42831D5,0x6Cd7694d30c10bdAB1E644FC1964043a95cEEa5F,0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1
+  website-dao:DEBUG_ADDRESSES: 0x549A9021661a85B6BC51c07B3A451135848d0048,0x8cff6832174091dae86f0244e3fd92d4ced2fe07,0xcD15d83f42179b9A5B515eea0975f554444a9646,0xb0F847e61C502Fb82D758C515b3F914de42831D5,0x6Cd7694d30c10bdAB1E644FC1964043a95cEEa5F,0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1
   website-dao:RPC_PROVIDER_URL: https://rpc.decentraland.org/
   website-dao:COMMITTEE_ADDRESSES: 0x8cff6832174091dae86f0244e3fd92d4ced2fe07,0xaf592460d6a44517aba2fb0bcb02ee8f4103b502,0xfe91C0c482E09600f2d1DBCA10FD705BC6de60bc,0x511a22cdd2c4ee8357bb02df2578037ffe8a4d8d
   website-dao:CONNECTION_STRING:
@@ -38,7 +38,6 @@ config:
   website-dao:GATSBY_SNAPSHOT_SPACE: ginoct.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
   website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot-rinkeby
-  website-dao:GATSBY_IPFS_API: https://cloudflare-ipfs.com
   website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: '1000'
   website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: '2500'
   website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: '100'
@@ -60,15 +59,7 @@ config:
   website-dao:GATSBY_GRANT_SIZE_TIER4: '60000'
   website-dao:GATSBY_GRANT_SIZE_TIER5: '120000'
   website-dao:GATSBY_GRANT_SIZE_TIER6: '240000'
-  website-dao:INFURA_KEYS:
-    secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
   website-dao:INFURA_IPFS_GATEWAY_API: https://dal-dao.infura-ipfs.io
-  website-dao:INFURA_IPFS_PROJECT_ID: 2A4zopZLxn3MG5QOWKTdF67pRhI
-  website-dao:INFURA_IPFS_PROJECT_SECRET:
-    secure: v1:WXNkQeCxUagwj2ws:Hp3onkN85bdbRFVvAEHS6rxEJJ90clq+4H3+qySk8S1oNC+5J4j33Z7ZZxNhhJOP
-  website-dao:NEW_RELIC_APP_NAME: governance.staging
-  website-dao:NEW_RELIC_LICENSE_KEY:
-    secure: v1:5mwkgKc+mKLOTiwz:oSdLw6rMYh9/Y2SANZZuP94fsqVBD5Xseb417a3za9XrKDUJBJVFGJVvh3OtnPMMUf8RKcf3gUY=
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=
   website-dao:USE_PUBLIC_TLD: 'false'

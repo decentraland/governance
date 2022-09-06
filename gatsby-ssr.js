@@ -44,7 +44,7 @@ export function onPreRenderHTML({
 
   if (process.env.GATSBY_ROLLBAR_TOKEN) {
     postBodyComponents.push(
-      <Rollbar key="rollbar" src="https://decentraland.org/js/libs/rollbar.js/2.22.0/rollbar.min.js" />
+      <Rollbar key="rollbar" />
     )
   }
 
