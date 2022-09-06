@@ -127,28 +127,85 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
 
 #### Strategy
 
-- DCL Governance uses two strategies:
-  - erc20-balance-of
+- DCL Governance uses several strategies:
+  - [erc20-balance-of](https://snapshot.org/#/playground/erc20-balance-of)
+  
   - [delegation](https://demo.snapshot.org/#/strategy/delegation)
-
-Delegation needs to be configured like so
-
-```json
-{
-  "symbol": "VP (delegated)",
-  "strategies": [
-    {
-      "name": "erc20-balance-of",
-      "params": {
-        "symbol": "MANA",
-        "address": "0x The address of the token contract on the network you are using", 
-        "decimals": 18
+  ```json
+  {
+    "symbol": "VP (delegated)",
+    "strategies": [
+      {
+        "name": "erc20-balance-of",
+        "params": {
+          "symbol": "MANA",
+          "address": "0x The address of the token contract on the network you are using", 
+          "decimals": 18
+        }
       }
-    }
-  ],
-  "delegationSpace": "yourEnsName.eth"
-}
-```
+    ],
+    "delegationSpace": "yourEnsName.eth"
+  }
+  ```
+
+  - [erc721-with-multiplier](https://snapshot.org/#/playground/erc721-with-multiplier)
+  ```json
+  {
+    "symbol": "LAND",
+    "address": "0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d",
+    "multiplier": 2000
+  }
+  ```
+  
+  - [erc721-with-multiplier](https://snapshot.org/#/playground/erc721-with-multiplier)
+  ```json
+  {
+  "symbol": "NAMES",
+  "address": "0x2a187453064356c898cae034eaed119e1663acb8",
+  "multiplier": 100
+  }
+  ```
+  
+  - [decentraland-estate-size](https://snapshot.org/#/playground/decentraland-estate-size)
+  ```json
+  {
+  "symbol": "ESTATE",
+  "address": "0x959e104e1a4db6317fa58f8295f586e1a978c297",
+  "multiplier": 2000
+  }
+  ```
+  
+  -[multichain](https://snapshot.org/#/playground/multichain)
+  ```json
+  {
+    "name": "multichain",
+    "graphs": {
+      "137": "https://api.thegraph.com/subgraphs/name/decentraland/blocks-matic-mainnet"
+    },
+    "symbol": "MANA",
+    "strategies": [
+      {
+        "name": "erc20-balance-of",
+        "params": {
+          "address": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+          "decimals": 18
+        },
+        "network": "1"
+      },
+      {
+        "name": "erc20-balance-of",
+        "params": {
+          "address": "0xA1c57f48F0Deb89f569dFbE6E2B7f46D33606fD4",
+          "decimals": 18
+        },
+        "network": "137"
+      }
+    ]
+  }
+  ```
+
+  
+
 
 If you need MANA for testing you can get it by interacting with the contract on etherscan
 
@@ -156,7 +213,7 @@ If you need MANA for testing you can get it by interacting with the contract on 
 
 [Goerli FakeMana](https://goerli.etherscan.io/address/0xe7fdae84acaba2a5ba817b6e6d8a2d415dbfedbe)
 
-Connect you wallet and use the `setBalance` method on the `Contract -> Write Contract` section
+Connect your wallet and use the `setBalance` method on the `Contract -> Write Contract` section
 
 - `to (address)` is your address
 - `amount (uint256)` is whatever you want. Take into account that `1000000000000000000 = 1 MANA`
