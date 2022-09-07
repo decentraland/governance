@@ -1,0 +1,6 @@
+.UserVpStats__Container {
+  display: flex;
+  justify-content: space-between;
+  gap: 23px;
+  margin-bottom: 44px;
+}
