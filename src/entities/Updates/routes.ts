@@ -72,7 +72,8 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const user = req.auth!
   const proposalId = req.params.proposal
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
-  const isAuthorOrCoauthor = user && (proposal?.user === user || isCoauthor(proposalId, user)) && author === user
+  const isAuthorOrCoauthor =
+    user && (proposal?.user === user || (await isCoauthor(proposalId, user))) && author === user
 
   if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
@@ -115,7 +116,8 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const user = req.auth
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
-  const isAuthorOrCoauthor = user && (proposal?.user === user || isCoauthor(proposalId, user)) && author === user
+  const isAuthorOrCoauthor =
+    user && (proposal?.user === user || (await isCoauthor(proposalId, user))) && author === user
 
   if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
