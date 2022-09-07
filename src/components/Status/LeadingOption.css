@@ -19,7 +19,7 @@
 }
 
 .LeadingOption span {
-  max-width: 150px;
+  max-width: 160px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
