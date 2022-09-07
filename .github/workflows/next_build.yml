@@ -10,6 +10,7 @@ jobs:
     uses: decentraland/actions/.github/workflows/build-quay-main.yml@main
     with:
       service-name: governance
+      deployment-environment: prd
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
