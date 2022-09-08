@@ -788,7 +788,13 @@
     },
     "profile": {
       "title": "profile",
-      "description": "Your profile within the DAO"
+      "description": "Your profile within the DAO",
+      "delegators": {
+        "title": "VP Delegaotors",
+        "delegated": "Delegated {vp} VP",
+        "delegate_action": "Delegate them your VP",
+        "button": "Show all delegators"
+      }
     },
     "transparency": {
       "title": "Transparency",
