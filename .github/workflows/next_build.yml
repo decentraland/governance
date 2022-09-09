@@ -6,11 +6,69 @@ on:
       - next
 
 jobs:
-  build:
-    uses: decentraland/actions/.github/workflows/build-quay-main.yml@main
-    with:
-      service-name: governance
-      deployment-environment: dev stg prd
-    secrets:
-      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+  build-push:
+    runs-on: ubuntu-20.04
+    outputs:
+      registry-path: ${{ steps.push-to-quay.outputs.registry-path }}
+      registry-paths: ${{ steps.push-to-quay.outputs.registry-paths }}
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+      
+      - name: set up git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      - name: installing
+        run: npm ci
+
+      # TODO: Check if these are necessary
+      # - name: setup environment
+      #   run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
+
+      # - name: setup environment
+      #   run: source ./node_modules/.bin/setup-environment $PWD website-dao-prd
+
+      - name: export public env
+        run: env | grep GATSBY_ > .env
+
+      - name: build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: events
+          tags: ${{ github.sha }} latest
+          dockerfiles: |
+            ./Dockerfile
+      
+      - name: Push To quay.io
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/decentraland
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
+
+      - name: Print image url
+        run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
+    
+  deployment:
+    needs: [build-push]
+    name: "Deploy to: dev stg prd"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment
+        id: deploy
+        uses: decentraland/dcl-deploy-action@main
+        with:
+          dockerImage: "${{ needs.build-push.outputs.registry-path }}"
+          serviceName: governance
+          env: dev stg prd
+          token: ${{ secrets.GITHUB_TOKEN }}
