@@ -3,16 +3,17 @@ import React, { useMemo } from 'react'
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import DelegatorCardProfile from '../components/Delegation/DelegatorCardProfile'
+import DelegationCards from '../components/Delegation/DelegationCards'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
+import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 export default function ProfilePage() {
@@ -22,6 +23,18 @@ export default function ProfilePage() {
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
+  console.log(address)
+
+  const {
+    votingPower,
+    isLoadingVotingPower,
+    delegation,
+    delegationState,
+    scores,
+    isLoadingScores,
+    delegatedVotingPower,
+    ownVotingPower,
+  } = useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
     return (
@@ -45,6 +58,8 @@ export default function ProfilePage() {
     return <LogIn title={t('page.profile.title') || ''} description={t('page.profile.description') || ''} />
   }
 
+  const test = true
+
   return (
     <div className="BalancePage">
       <Head
@@ -54,9 +69,9 @@ export default function ProfilePage() {
       />
       <Navigation activeTab={NavigationTab.Profile} />
       <Container className="Profile__Container">
-        <Paragraph small semiBold>
-          <DelegatorCardProfile address="0x6Cd7694d30c10bdAB1E644FC1964043a95cEEa5F" vp={-33} />
-        </Paragraph>
+        <ProfileBox title={t('page.profile.delegators.title')} info={t('page.profile.delegators.helper')}>
+          <DelegationCards delegation={delegation} scores={scores} />
+        </ProfileBox>
       </Container>
     </div>
   )

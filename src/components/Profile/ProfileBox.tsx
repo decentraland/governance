@@ -20,7 +20,7 @@ export function ProfileBox({ children, title, info }: Props) {
         <span>{title}</span>
         {info && <Helper text={info} size="12" position="right center" />}
       </div>
-      <Divider className="ProfileBox__Divider" />
+      <Divider className="ProfileBox__Divider" color="var(--black-300)" />
       <div className="ProfileBox__Padded">{children}</div>
     </div>
   )

@@ -1,7 +1,4 @@
 .DelegatorCardProfile {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: space-between;
   padding: 16px;
   box-sizing: border-box;
@@ -10,10 +7,13 @@
   border-radius: 8px;
 }
 
+.DelegatorCardProfile,
 .DelegatorCardProfile__Section {
   display: flex;
   flex-direction: row;
   align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .DelegatorCardProfile__Title {

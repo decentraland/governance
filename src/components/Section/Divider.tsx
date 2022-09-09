@@ -4,10 +4,16 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './Divider.css'
 
-export default function Divider({ className, size }: { className?: string; size?: 'small' }) {
+interface Props {
+  className?: string
+  color?: string
+  size?: 'small'
+}
+
+export default function Divider({ className, size, color = 'none' }: Props) {
   return (
-    <div className={TokenList.join([size && `Divider__Container--${size}`, className])}>
-      <hr className="Divider" />
+    <div className={TokenList.join([size && `Divider__Container--${size}`, 'Divider__Container', className])}>
+      <hr className="Divider" style={{ borderTopColor: color }} />
     </div>
   )
 }
