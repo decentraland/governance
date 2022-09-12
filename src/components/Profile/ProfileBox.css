@@ -35,3 +35,8 @@
 .ProfileBox__Container .Divider__Container {
   margin: 13px 0;
 }
+
+.ProfileBox__Divider {
+  margin-bottom: 24px;
+  margin-top: 0 !important;
+}
