@@ -44,7 +44,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="BalancePage">
+    <div>
       <Head
         title={t('page.profile.title') || ''}
         description={t('page.profile.description') || ''}
