@@ -69,5 +69,5 @@ jobs:
         with:
           dockerImage: "${{ needs.build-push.outputs.registry-path }}"
           serviceName: governance
-          env: dev stg prd
+          env: dev prd
           token: ${{ secrets.GITHUB_TOKEN }}
