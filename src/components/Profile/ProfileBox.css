@@ -15,15 +15,21 @@
 .ProfileBox__Header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
-.ProfileBox__Header > span {
+.ProfileBox__Header .ProfileBox__Header--title > span {
   font-weight: 500;
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
   margin-right: 4px;
+}
+
+.ProfileBox__Header > div {
+  display: inline-flex;
+  text-transform: uppercase;
 }
 
 .ProfileBox__Divider .Divider__Container {

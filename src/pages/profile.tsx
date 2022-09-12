@@ -8,6 +8,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import DelegateVPAction from '../components/Delegation/DelegateVPAction'
 import DelegationCards from '../components/Delegation/DelegationCards'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -23,7 +24,6 @@ export default function ProfilePage() {
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
-  console.log(address)
 
   const {
     votingPower,
@@ -58,8 +58,6 @@ export default function ProfilePage() {
     return <LogIn title={t('page.profile.title') || ''} description={t('page.profile.description') || ''} />
   }
 
-  const test = true
-
   return (
     <div className="BalancePage">
       <Head
@@ -69,8 +67,16 @@ export default function ProfilePage() {
       />
       <Navigation activeTab={NavigationTab.Profile} />
       <Container className="Profile__Container">
-        <ProfileBox title={t('page.profile.delegators.title')} info={t('page.profile.delegators.helper')}>
-          <DelegationCards delegation={delegation} scores={scores} />
+        <ProfileBox
+          title={t('page.profile.delegators.title')}
+          info={t('page.profile.delegators.helper')}
+          action={!isLoggedUserProfile && address && <DelegateVPAction address={address} />}
+        >
+          <DelegationCards
+            delegation={delegation}
+            scores={scores}
+            isLoading={delegationState.loading || isLoadingScores}
+          />
         </ProfileBox>
       </Container>
     </div>
