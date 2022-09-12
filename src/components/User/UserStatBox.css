@@ -23,10 +23,11 @@
   text-transform: uppercase;
   color: var(--black-600);
   margin-right: 21px;
+  min-width: 100px;
 }
 
-.VotingPower.VotingPower--medium.UserStatBox__Value {
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 24px;
+.UserStatBox__Value {
+  font-weight: 600 !important;
+  font-size: 28px !important;
+  line-height: 24px !important;
 }

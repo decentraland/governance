@@ -1,5 +1,7 @@
 import React from 'react'
 
+import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+
 import { UserStatBox } from './UserStatBox'
 import './UserVpStats.css'
 
@@ -12,11 +14,28 @@ export default function UserVpStats({ address }: Props) {
     return null
   }
 
+  const { votingPower, ownVotingPower, delegatedVotingPower, isLoadingVotingPower } = useVotingPowerBalance(address)
+
   return (
     <div className="UserVpStats__Container">
-      <UserStatBox title={'titulito'} value={22000} info={'info text'} />
-      <UserStatBox title={'titulito'} value={1234} info={'info text'} />
-      <UserStatBox title={'titulito'} value={10} info={'info text'} />
+      <UserStatBox
+        title={'Consolidated Voting Power'}
+        value={votingPower}
+        info={'info text'}
+        loading={isLoadingVotingPower}
+      />
+      <UserStatBox
+        title={'Own Voting Power'}
+        value={ownVotingPower}
+        info={'info text'}
+        loading={isLoadingVotingPower}
+      />
+      <UserStatBox
+        title={'Delegated Voting Power'}
+        value={delegatedVotingPower}
+        info={'info text'}
+        loading={isLoadingVotingPower}
+      />
     </div>
   )
 }
