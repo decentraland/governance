@@ -15,7 +15,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Form/MarkdownField'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'

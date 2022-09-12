@@ -1,0 +1,9 @@
+.SpaceName__Section {
+  display: flex;
+}
+
+button.ui.primary.button.SpaceName__SectionButton {
+  max-height: 46px;
+  margin-top: 4px;
+  margin-left: 16px !important;
+}
