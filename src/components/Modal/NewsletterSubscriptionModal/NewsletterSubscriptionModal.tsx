@@ -13,7 +13,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEmail from 'validator/lib/isEmail'
 
-import { Decentraland } from '../../../api/Decentraland'
+import { Decentraland } from '../../../clients/Decentraland'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../Banner/Subscription/SubscriptionBanner'
 import '../ProposalModal.css'
 

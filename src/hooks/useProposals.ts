@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { GetProposalsFilter, Governance } from '../api/Governance'
+import { GetProposalsFilter, Governance } from '../clients/Governance'
 import { MAX_PROPOSAL_LIMIT } from '../entities/Proposal/utils'
 
 export type UseProposalsFilter = Omit<GetProposalsFilter, 'subscribed' | 'limit' | 'offset'> & {

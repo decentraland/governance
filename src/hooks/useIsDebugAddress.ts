@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 
 export default function useIsDebugAddress(address?: string | null) {
   const [debugAddresses] = useAsyncMemo(() => Governance.get().getDebugAddresses(), [])

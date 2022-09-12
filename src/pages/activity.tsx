@@ -12,7 +12,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 import Empty from '../components/Common/Empty'
 import Filter from '../components/Filter/Filter'
 import ActionableLayout from '../components/Layout/ActionableLayout'

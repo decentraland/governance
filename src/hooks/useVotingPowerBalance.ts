@@ -1,7 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Snapshot } from '../api/Snapshot'
-import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { getVotingPower } from '../entities/Votes/utils'
 
 export default function useVotingPowerBalance(address?: string | null) {
   const [votingPower, state] = useAsyncMemo(
@@ -9,7 +8,7 @@ export default function useVotingPowerBalance(address?: string | null) {
       if (!address) {
         return await Promise.resolve(null)
       }
-      return await Snapshot.get().getVotingPower(address, SNAPSHOT_SPACE)
+      return await getVotingPower(address)
     },
     [address],
     { callWithTruthyDeps: true }

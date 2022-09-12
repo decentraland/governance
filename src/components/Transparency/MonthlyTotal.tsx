@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { MonthlyTotal } from '../../api/DclData'
+import { MonthlyTotal } from '../../clients/DclData'
 import { formatBalance } from '../../entities/Proposal/utils'
 import { DetailItem } from '../Section/DetailItem'
 

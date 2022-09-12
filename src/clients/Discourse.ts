@@ -1,6 +1,10 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
+import Options from 'decentraland-gatsby/dist/utils/api/Options'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
-import { DISCOURSE_AUTH } from '../entities/Discourse/utils'
+import { DISCOURSE_USER } from '../entities/Discourse/utils'
+
+export const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
 
 export type DiscourseAuth = {
   apiKey: string
@@ -267,14 +271,10 @@ export type DiscoursePostInTopic = {
 }
 
 export class Discourse extends API {
-  static Url =
-    process.env.GATSBY_DISCOURSE_API ||
-    process.env.REACT_APP_DISCOURSE_API ||
-    process.env.STORYBOOK_DISCOURSE_API ||
-    process.env.DISCOURSE_API ||
-    'https://meta.discourse.org/'
+  static Url = process.env.GATSBY_DISCOURSE_API || process.env.DISCOURSE_API || 'https://meta.discourse.org/'
 
   static Cache = new Map<string, Discourse>()
+  private readonly auth: DiscourseAuth
 
   static from(baseUrl: string) {
     if (!this.Cache.has(baseUrl)) {
@@ -288,81 +288,71 @@ export class Discourse extends API {
     return this.from(this.Url)
   }
 
-  async getPost(id: number, auth?: DiscourseAuth) {
-    let options = this.options()
+  constructor(baseUrl: string) {
+    super(baseUrl)
+    this.auth = this.getCredentials()
+  }
 
-    if (auth?.apiKey && auth?.apiUsername) {
-      options = options.header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername)
+  private getCredentials() {
+    if (!DISCOURSE_API_KEY) {
+      throw new Error('Failed to determine discourse API key. Please check DISCOURSE_API_KEY env is defined')
     }
+    if (!DISCOURSE_USER) {
+      throw new Error('Failed to determine discourse user. Please check DISCOURSE_USER env is defined')
+    }
+    const DISCOURSE_AUTH: DiscourseAuth = {
+      apiKey: DISCOURSE_API_KEY,
+      apiUsername: DISCOURSE_USER,
+    }
+    return DISCOURSE_AUTH
+  }
 
+  private withAuth(options: Options) {
+    return options.header('Api-Key', this.auth.apiKey).header('Api-Username', this.auth.apiUsername)
+  }
+
+  async getPost(id: number) {
+    let options: Options = this.options()
+    options = this.withAuth(options)
     return this.fetch<DiscoursePost>(`/posts/${id}.json`, options)
   }
 
-  async getLatestPosts(auth?: DiscourseAuth) {
+  async getLatestPosts() {
     let options = this.options()
-
-    if (auth?.apiKey && auth?.apiUsername) {
-      options = options.header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername)
-    }
+    options = this.withAuth(options)
 
     return this.fetch<{ latest_posts: DiscoursePost[] }>(`/posts.json`, options)
   }
 
-  async createPost(post: DiscourseNewPost, auth: DiscourseAuth) {
-    Discourse.checkCredentials(auth)
-
-    return this.fetch<DiscoursePost>(
-      `/posts.json`,
-      this.options().method('POST').header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername).json(post)
-    )
+  async createPost(post: DiscourseNewPost) {
+    return this.fetch<DiscoursePost>(`/posts.json`, this.withAuth(this.options().method('POST').json(post)))
   }
 
-  private static checkCredentials(auth: DiscourseAuth) {
-    if (!auth.apiKey || !auth.apiUsername) {
-      throw new Error(`Invalid auth param: ${JSON.stringify(auth)}`)
-    }
+  async commentOnPost(post: DiscourseComment) {
+    return this.fetch<DiscoursePost>(`/posts.json`, this.withAuth(this.options().method('POST').json(post)))
   }
 
-  async commentOnPost(post: DiscourseComment, auth: DiscourseAuth) {
-    Discourse.checkCredentials(auth)
-
-    return this.fetch<DiscoursePost>(
-      `/posts.json`,
-      this.options().method('POST').header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername).json(post)
-    )
+  async updatePost({ id, ...update }: DiscourseUpdatePost) {
+    return this.fetch<DiscoursePost>(`/posts/${id}.json`, this.withAuth(this.options().method('PUT').json(update)))
   }
 
-  async updatePost({ id, ...update }: DiscourseUpdatePost, auth: DiscourseAuth) {
-    return this.fetch<DiscoursePost>(
-      `/posts/${id}.json`,
-      this.options().method('PUT').header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername).json(update)
-    )
-  }
-
-  async closeTopic({ id, ...update }: DiscourseCloseTopic, auth: DiscourseAuth) {
+  async closeTopic({ id }: DiscourseCloseTopic) {
     return this.fetch<{}>(
       `/t/${id}/status.json`,
-      this.options().method('PUT').header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername).json({
-        status: 'closed',
-        enabled: 'true',
-      })
+      this.withAuth(
+        this.options().method('PUT').json({
+          status: 'closed',
+          enabled: 'true',
+        })
+      )
     )
   }
 
-  async removeTopic(id: number, auth: DiscourseAuth) {
-    return this.fetch<{}>(
-      `/t/${id}.json`,
-      this.options().method('DELETE').header('Api-Key', auth.apiKey).header('Api-Username', auth.apiUsername)
-    )
+  async removeTopic(id: number) {
+    return this.fetch<{}>(`/t/${id}.json`, this.withAuth(this.options().method('DELETE')))
   }
 
   async getTopic(topic_id: number) {
-    return this.fetch<DiscourseTopic>(
-      `/t/${topic_id}.json`,
-      this.options()
-        .method('GET')
-        .header('Api-Key', DISCOURSE_AUTH.apiKey)
-        .header('Api-Username', DISCOURSE_AUTH.apiUsername)
-    )
+    return this.fetch<DiscourseTopic>(`/t/${topic_id}.json`, this.withAuth(this.options().method('GET')))
   }
 }

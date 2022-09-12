@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 
 function useProposalsByCoAuthor(coauthor?: string | null, status?: CoauthorStatus) {

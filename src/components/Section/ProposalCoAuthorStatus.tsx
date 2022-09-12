@@ -8,7 +8,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../../entities/Coauthor/types'
 import { isCoauthoringUpdatable } from '../../entities/Coauthor/utils'
 import Helper from '../Helper/Helper'
