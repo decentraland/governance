@@ -27,12 +27,11 @@ jobs:
       - name: installing
         run: npm ci
 
-      # TODO: Check if these are necessary
-      # - name: setup environment
-      #   run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
+      - name: setup environment
+        run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
 
-      # - name: setup environment
-      #   run: source ./node_modules/.bin/setup-environment $PWD website-dao-prd
+      - name: setup environment
+        run: source ./node_modules/.bin/setup-environment $PWD website-dao-prd
 
       - name: export public env
         run: env | grep GATSBY_ > .env
@@ -70,5 +69,5 @@ jobs:
         with:
           dockerImage: "${{ needs.build-push.outputs.registry-path }}"
           serviceName: governance
-          env: dev stg prd
+          env: dev prd
           token: ${{ secrets.GITHUB_TOKEN }}
