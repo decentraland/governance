@@ -9,7 +9,7 @@ import './UserStatBox.css'
 
 interface Props {
   title: string
-  value: number | bigint
+  value?: number | bigint
   info: string
   loading: boolean
 }
@@ -24,7 +24,7 @@ export function UserStatBox({ title, info, value, loading }: Props) {
       {loading ? (
         <Skeleton className="UserStatBox__Value" />
       ) : (
-        <VotingPower value={value} size="medium" className="UserStatBox__Value" />
+        <VotingPower value={value!} size="medium" className="UserStatBox__Value" />
       )}
     </div>
   )

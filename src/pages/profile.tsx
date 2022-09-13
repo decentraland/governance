@@ -12,12 +12,9 @@ import DelegationCards from '../components/Delegation/DelegationCards'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import VotingPowerDelegationHandler from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
-import VotingPowerDistribution from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
-import UserAvatar from '../components/User/UserAvatar'
 import UserVpStats from '../components/User/UserVpStats'
-import Username from '../components/User/Username'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -62,16 +59,7 @@ export default function ProfilePage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
-      <Container className="Profile__VPStats">
-        <div>
-          <Username address={userAddress} size="medium" className="Profile__Username" />
-          <UserVpStats address={userAddress} />
-          <ProfileBox title={'Voting Power distribution'} info={'some info'}>
-            <VotingPowerDistribution mana={200} name={3000} land={100} delegated={20} />
-          </ProfileBox>
-        </div>
-        <UserAvatar address={userAddress} />
-      </Container>
+      <UserVpStats address={userAddress} />
       <Container className="Profile__Container">
         <ProfileBox
           title={t('page.profile.delegators.title')}
