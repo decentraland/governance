@@ -52,7 +52,6 @@ build:code:
     - >
       if [ "$ENVIRONMENT" == 'dev' ]; then
         aws s3 rm 's3://governance-logs-d9c5f93/' --recursive
-        aws s3 rm 's3://governance-website-ea43e4a/' --recursive
         pulumi plugin install resource aws v4.36.0
         pulumi plugin install resource cloudflare v4.3.0
         dcl-lock-sync
