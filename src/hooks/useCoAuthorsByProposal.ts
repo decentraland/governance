@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes } from '../entities/Proposal/types'
 

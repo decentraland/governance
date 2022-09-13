@@ -17,7 +17,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'

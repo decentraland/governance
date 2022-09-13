@@ -13,7 +13,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { Governance } from '../../../api/Governance'
+import { Governance } from '../../../clients/Governance'
 import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
 import {
   asNumber,

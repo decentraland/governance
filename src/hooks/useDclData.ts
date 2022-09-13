@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { DclData } from '../api/DclData'
+import { DclData } from '../clients/DclData'
 
 function useDclData() {
   return useAsyncMemo(async () => DclData.get().getData())
