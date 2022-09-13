@@ -29,16 +29,7 @@ export default function ProfilePage() {
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
 
-  const {
-    votingPower,
-    isLoadingVotingPower,
-    delegation,
-    delegationState,
-    scores,
-    isLoadingScores,
-    delegatedVotingPower,
-    ownVotingPower,
-  } = useVotingPowerInformation(address)
+  const { delegation, delegationState, scores, isLoadingScores, ownVotingPower } = useVotingPowerInformation(address)
 
   const isUserDelegate = useMemo(
     () => !!delegation.delegatedFrom.find((delegation) => delegation.delegator === userAddress?.toLowerCase()),
