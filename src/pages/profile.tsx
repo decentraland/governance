@@ -1,17 +1,21 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import DelegateVPAction from '../components/Delegation/DelegateVPAction'
 import DelegationCards from '../components/Delegation/DelegationCards'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import VotingPowerDelegationDetail from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationDetail'
+import { Candidate } from '../components/Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
@@ -36,6 +40,15 @@ export default function ProfilePage() {
     ownVotingPower,
   } = useVotingPowerInformation(address)
 
+  const isUserDelegate = useMemo(
+    () => !!delegation.delegatedFrom.find((delegation) => delegation.delegator === userAddress?.toLowerCase()),
+    [delegation.delegatedFrom, userAddress]
+  )
+
+  const [isModalOpened, setIsModalOpened] = useState(false)
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
+  const closeModal = () => setIsModalOpened(false)
+
   if (isUnderMaintenance()) {
     return (
       <>
@@ -59,7 +72,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="BalancePage">
+    <div className="ProfilePage">
       <Head
         title={t('page.profile.title') || ''}
         description={t('page.profile.description') || ''}
@@ -70,7 +83,17 @@ export default function ProfilePage() {
         <ProfileBox
           title={t('page.profile.delegators.title')}
           info={t('page.profile.delegators.helper')}
-          action={!isLoggedUserProfile && address && <DelegateVPAction address={address} />}
+          action={
+            !isLoggedUserProfile &&
+            address && (
+              <DelegateVPAction
+                address={address}
+                isUserDelegate={isUserDelegate}
+                setCandidate={setSelectedCandidate}
+                openModal={() => setIsModalOpened(true)}
+              />
+            )
+          }
         >
           <DelegationCards
             delegation={delegation}
@@ -79,6 +102,17 @@ export default function ProfilePage() {
           />
         </ProfileBox>
       </Container>
+      {selectedCandidate && (
+        <Modal
+          onClose={closeModal}
+          size="small"
+          closeIcon={<Close />}
+          className="GovernanceContentModal VotingPowerDelegationModal"
+          open={isModalOpened}
+        >
+          <VotingPowerDelegationDetail userVP={ownVotingPower} candidate={selectedCandidate} onBackClick={closeModal} />
+        </Modal>
+      )}
     </div>
   )
 }
