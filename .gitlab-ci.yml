@@ -48,6 +48,19 @@ build:code:
         echo "[stack $stack] Stack created ✅";
       fi
 
+    # down dev service
+    - >
+      if [ "$ENVIRONMENT" == 'dev' ]; then
+        aws rm 's3://governance-logs-d9c5f93/' --recursive
+        aws rm 's3://governance-website-ea43e4a/' --recursive
+        pulumi plugin install resource aws v4.36.0
+        pulumi plugin install resource cloudflare v4.3.0
+        dcl-lock-sync
+        dcl-up $PULUMI_STACK
+        dcl-sync-release
+        exit
+      fi
+
     - source ./node_modules/.bin/setup-environment
 
     - env | grep GATSBY_ > .env
@@ -83,7 +96,7 @@ build:code:
     - dcl-up $PULUMI_STACK
     - dcl-sync-release
 
-    # # push static
+    # push static
     - mkdir ./public
     - docker run -v $PWD:/data --rm --entrypoint cp $(pulumi stack output serviceImage) -r '/app/public' '/data'
 
