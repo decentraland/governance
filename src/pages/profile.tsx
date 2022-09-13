@@ -90,6 +90,7 @@ export default function ProfilePage() {
             delegation={delegation}
             scores={scores}
             isLoading={delegationState.loading || isLoadingScores}
+            isUserProfile={isLoggedUserProfile}
           />
         </ProfileBox>
       </Container>

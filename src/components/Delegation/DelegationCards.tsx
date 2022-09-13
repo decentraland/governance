@@ -6,7 +6,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { DelegationResult, DetailedScores } from '../../api/Snapshot'
+import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphql'
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../constants'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
@@ -20,6 +20,7 @@ interface Props {
   delegation: DelegationResult
   scores: DetailedScores
   isLoading?: boolean
+  isUserProfile?: boolean
 }
 
 const MAX_DELEGATIONS_SHOWN = 6
@@ -29,7 +30,7 @@ function createGroups<T>(array: T[], itemsPerGroup: number) {
   return new Array(groupsAmount).fill('').map((_, i) => array.slice(i * itemsPerGroup, (i + 1) * itemsPerGroup))
 }
 
-function DelegationCards({ delegation, scores, isLoading }: Props) {
+function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props) {
   const t = useFormatMessage()
   const delegatedFrom = delegation.delegatedFrom
   const [showAllDelegations, setShowAllDelegations] = useState(false)
@@ -47,8 +48,6 @@ function DelegationCards({ delegation, scores, isLoading }: Props) {
   )
   const delegationsToShow = useMemo(() => delegationsList.slice(0, MAX_DELEGATIONS_SHOWN), [delegationsList])
   const areThereMoreDelegations = useMemo(() => delegationsList.length > MAX_DELEGATIONS_SHOWN, [delegationsList])
-
-  const [account] = useAuthContext()
 
   return (
     <div className="DelegationCards">
@@ -77,7 +76,9 @@ function DelegationCards({ delegation, scores, isLoading }: Props) {
             icon={<Scale />}
             title={
               t(
-                account ? `page.balance.delegated_to_user_empty_title` : `page.balance.delegated_to_address_empty_title`
+                isUserProfile
+                  ? `page.balance.delegated_to_user_empty_title`
+                  : `page.balance.delegated_to_address_empty_title`
               ) || ''
             }
             description={t(`page.balance.delegated_to_user_empty_description`) || ''}
