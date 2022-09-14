@@ -18,13 +18,12 @@ interface Props {
 export default function UserVpStats({ address }: Props) {
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
 
-  // TODO: refactor styles and stylesheets
   // TODO: internationalization
   return (
-    <Container className="Profile__VPStats">
+    <Container className="UserVpStats__Container">
       <div>
-        <Username address={address} size="medium" className="Profile__Username" />
-        <div className="UserVpStats__Container">
+        <Username address={address} size="medium" className="UserVpStats__Username" />
+        <div className="UserVpStats__StatBoxes">
           <UserStatBox
             title={'Consolidated Voting Power'}
             value={vpDistribution?.totalVp}
