@@ -57,6 +57,7 @@
     "dompurify": "^2.3.3",
     "dotenv": "^16.0.0",
     "eth-crypto": "1.6.0",
+    "ethers": "^5.7.1",
     "flickity": "^2.3.0",
     "gatsby": "^4.10.1",
     "gatsby-plugin-image": "^2.10.0",

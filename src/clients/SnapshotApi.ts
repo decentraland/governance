@@ -7,6 +7,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
 import { SNAPSHOT_ADDRESS, SNAPSHOT_PRIVATE_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { getEnvironmentChainId } from '../modules/votes/utils'
 import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 
@@ -147,19 +148,24 @@ export class SnapshotApi {
   }
 
   async getScores(addresses: string[], blockNumber?: number | string) {
-    const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
+    const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
     const snapshotSpace = await SnapshotGraphql.get().getSpace(this.spaceName)
     const network = getEnvironmentChainId()
 
-    return {
-      scores: await snapshot.utils.getScores(
+    try {
+      const scores = await snapshot.utils.getScores(
         this.spaceName,
         snapshotSpace.strategies,
         network.toString(),
         formattedAddresses,
         blockNumber
-      ),
-      strategies: snapshotSpace.strategies,
+      )
+      return {
+        scores: scores,
+        strategies: snapshotSpace.strategies,
+      }
+    } catch (e) {
+      throw new Error('Error fetching proposal scores', e as Error)
     }
   }
 
