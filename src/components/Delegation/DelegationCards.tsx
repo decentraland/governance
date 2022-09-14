@@ -60,7 +60,7 @@ function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props
       )}
       {!isLoading &&
         (delegationsToShow.length > 0 ? (
-          <Grid columns={3} stackable>
+          <Grid columns="equal" stackable>
             {createGroups(delegationsToShow, 3).map((delegation, idx) => (
               <Grid.Row key={`delegation-row-${idx}`}>
                 {delegation.map(({ delegator, vp }) => (

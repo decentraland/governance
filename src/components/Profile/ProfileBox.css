@@ -35,7 +35,3 @@
 .ProfileBox__Container .Divider__Container {
   margin: 13px 0;
 }
-
-.ProfileBox__Divider .Divider {
-  border-top: 1px solid var(--black-300);
-}

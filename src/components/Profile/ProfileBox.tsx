@@ -2,8 +2,8 @@ import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import Divider from '../Common/Divider'
 import Helper from '../Helper/Helper'
-import Divider from '../Section/Divider'
 
 import './ProfileBox.css'
 
