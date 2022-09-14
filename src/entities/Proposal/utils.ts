@@ -4,7 +4,7 @@ import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import { CoauthorStatus } from '../Coauthor/types'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
