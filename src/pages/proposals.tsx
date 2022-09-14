@@ -19,7 +19,7 @@ import { Pagination } from 'decentraland-ui/dist/components/Pagination/Paginatio
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'

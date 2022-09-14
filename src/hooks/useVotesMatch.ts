@@ -1,13 +1,12 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Governance } from '../api/Governance'
-import { Snapshot } from '../api/Snapshot'
-import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { Governance } from '../clients/Governance'
+import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { calculateMatch } from '../entities/Snapshot/utils'
 
 export default function useVotesMatch(userAccount: string | null, otherAccount: string | null) {
   const [userVotes, userVotesState] = useAsyncMemo(
-    async () => (userAccount ? Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, userAccount) : Promise.resolve(null)),
+    async () => (userAccount ? SnapshotGraphql.get().getAddressVotes(userAccount) : Promise.resolve(null)),
     [userAccount]
   )
   const [otherAccountVotes, otherAccountVotesState] = useAsyncMemo(

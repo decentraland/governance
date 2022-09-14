@@ -15,7 +15,7 @@ config:
   website-dao:GATSBY_DECENTRALAND_API: https://decentraland.org
   website-dao:GATSBY_VESTING_DASHBOARD_URL: https://vesting.decentraland.org/%23/
   website-dao:GATSBY_DCL_DATA_API: https://data.decentraland.vote/
-  website-dao:GATSBY_DEFAULT_CHAIN_ID: '4'
+  website-dao:GATSBY_DEFAULT_CHAIN_ID: '1'
   website-dao:GATSBY_DISCOURSE_API: https://forum.decentraland.vote
   website-dao:GATSBY_DISCOURSE_CATEGORY: '5'
   website-dao:GATSBY_DISCOURSE_USER: dao
@@ -35,9 +35,9 @@ config:
   website-dao:GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS: '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
   website-dao:GATSBY_SNAPSHOT_API: https://hub.snapshot.org/
   website-dao:GATSBY_SNAPSHOT_DURATION: '172800'
-  website-dao:GATSBY_SNAPSHOT_SPACE: ginoct.eth
+  website-dao:GATSBY_SNAPSHOT_SPACE: lemu.dcl.eth
   website-dao:GATSBY_SNAPSHOT_URL: https://snapshot.org/
-  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot-rinkeby
+  website-dao:GATSBY_SNAPSHOT_QUERY_ENDPOINT: https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot
   website-dao:GATSBY_SUBMISSION_THRESHOLD_DRAFT: '1000'
   website-dao:GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE: '2500'
   website-dao:GATSBY_SUBMISSION_THRESHOLD_POLL: '100'
@@ -59,8 +59,6 @@ config:
   website-dao:GATSBY_GRANT_SIZE_TIER4: '60000'
   website-dao:GATSBY_GRANT_SIZE_TIER5: '120000'
   website-dao:GATSBY_GRANT_SIZE_TIER6: '240000'
-  website-dao:INFURA_KEYS:
-    secure: v1:dTko8R1X274AtT84:L+hiZCo3QO3q9KzpXdzRJBuWTSR2tnXoJ6MOINZQyBuyrxclXNOJGXGRfV4pi34+
   website-dao:INFURA_IPFS_GATEWAY_API: https://dal-dao.infura-ipfs.io
   website-dao:SNAPSHOT_PRIVATE_KEY:
     secure: v1:7NFT72GUXbMf02Vk:5V+Z/QxPQkWUpMzzCwDfYiOtzsa7c16JuMymd8gL/GWfc2+cwtLWDktnzUXZK42q9zRjd7deYNTChkZpWKdlQpW6Q6tQd2j9ze4Iq2Lnk2M=

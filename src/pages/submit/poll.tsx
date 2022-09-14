@@ -17,7 +17,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { omit } from 'lodash'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'

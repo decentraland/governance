@@ -1,6 +1,6 @@
 import Loader from 'decentraland-gatsby/dist/utils/loader/Loader'
 
-import { Governance } from '../api/Governance'
+import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
 const proposals = new Loader<ProposalAttributes | null>((proposalId) => {

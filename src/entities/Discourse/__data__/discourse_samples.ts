@@ -1,4 +1,4 @@
-import { DiscoursePostInTopic } from '../../../api/Discourse'
+import { DiscoursePostInTopic } from '../../../clients/Discourse'
 
 export const ONE_USER_POST = [
   {

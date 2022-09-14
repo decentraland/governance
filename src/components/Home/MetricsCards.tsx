@@ -8,7 +8,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import { DclData } from '../../api/DclData'
+import { DclData } from '../../clients/DclData'
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'
 import useVotesCountByDate from '../../hooks/useVotesCountByDate'

@@ -23,3 +23,7 @@ export async function inBatches<T, K>(
     return []
   }
 }
+
+export function trimLastForwardSlash(url: string) {
+  return url.replace(/\/$/, '')
+}
