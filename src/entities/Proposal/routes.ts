@@ -356,7 +356,8 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
     return await ProposalService.createProposal(proposalInCreation)
   } catch (e: any) {
     throw new RequestError(
-      `Error creating proposal: ${JSON.stringify(proposalInCreation)}\n Error: ${e.message}`,
+      `Error creating proposal: ${JSON.stringify(proposalInCreation)}\n 
+      Error: ${e.message ? e.message : JSON.stringify(e)}`,
       RequestError.InternalServerError,
       e
     )

@@ -84,6 +84,7 @@ export class SnapshotApi {
       proposalLifespan,
       blockNumber
     )
+    console.log('proposalMessage', proposalMessage)
     return (await this.client.proposal(
       SnapshotApi.getWallet(),
       SnapshotApi.getSnapshotAddress(),
