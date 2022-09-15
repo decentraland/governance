@@ -63,7 +63,14 @@ export default function ProfilePage() {
           info={t('page.profile.delegators.helper')}
           action={
             !isLoggedUserProfile &&
-            address && <VotingPowerDelegationHandler userVP={ownVotingPower} candidateAddress={address} />
+            address && (
+              <VotingPowerDelegationHandler
+                basic
+                buttonText={t('page.profile.delegators.delegate_action')}
+                userVP={ownVotingPower}
+                candidateAddress={address}
+              />
+            )
           }
         >
           <DelegationCards
