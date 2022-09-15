@@ -31,9 +31,6 @@ export class SnapshotApi {
 
   static Cache = new Map<string, SnapshotApi>()
   private readonly client: Client
-  private readonly spaceName: string
-  private readonly address: string
-  private readonly account: Wallet
 
   static from(baseUrl: string) {
     baseUrl = trimLastForwardSlash(baseUrl)
@@ -46,9 +43,6 @@ export class SnapshotApi {
 
   constructor(baseUrl: string) {
     this.client = new snapshot.Client712(baseUrl)
-    this.account = SnapshotApi.getWallet()
-    this.spaceName = SnapshotApi.getSpace()
-    this.address = SnapshotApi.getSnapshotAddress()
   }
 
   private static getWallet() {
@@ -58,7 +52,7 @@ export class SnapshotApi {
     return new Wallet(SNAPSHOT_PRIVATE_KEY)
   }
 
-  private static getSpace() {
+  private static getSpaceName() {
     if (!SNAPSHOT_SPACE) {
       throw new Error('Failed to determine snapshot space. Please check GATSBY_SNAPSHOT_SPACE env is defined')
     }
@@ -90,7 +84,11 @@ export class SnapshotApi {
       proposalLifespan,
       blockNumber
     )
-    return (await this.client.proposal(this.account, this.address, proposalMessage)) as SnapshotReceipt
+    return (await this.client.proposal(
+      SnapshotApi.getWallet(),
+      SnapshotApi.getSnapshotAddress(),
+      proposalMessage
+    )) as SnapshotReceipt
   }
 
   private async createProposalMessage(
@@ -103,7 +101,7 @@ export class SnapshotApi {
     let snapshotProposal: Proposal
     try {
       snapshotProposal = {
-        space: this.spaceName,
+        space: SnapshotApi.getSpaceName(),
         type: SNAPSHOT_PROPOSAL_TYPE,
         title: proposalTitle,
         body: proposalBody,
@@ -124,11 +122,15 @@ export class SnapshotApi {
 
   public async removeProposal(snapshotId: string) {
     const cancelProposalMessage: CancelProposal = {
-      space: this.spaceName,
+      space: SnapshotApi.getSpaceName(),
       timestamp: SnapshotApi.toSnapshotTimestamp(Time.from().getTime()),
       proposal: snapshotId,
     }
-    return (await this.client.cancelProposal(this.account, this.address, cancelProposalMessage)) as SnapshotReceipt
+    return (await this.client.cancelProposal(
+      SnapshotApi.getWallet(),
+      SnapshotApi.getSnapshotAddress(),
+      cancelProposalMessage
+    )) as SnapshotReceipt
   }
 
   async castVote(
@@ -138,7 +140,7 @@ export class SnapshotApi {
     choiceNumber: number
   ): Promise<SnapshotReceipt> {
     const voteMessage = {
-      space: this.spaceName,
+      space: SnapshotApi.getSpaceName(),
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
@@ -149,12 +151,12 @@ export class SnapshotApi {
 
   async getScores(addresses: string[], blockNumber?: number | string) {
     const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
-    const snapshotSpace = await SnapshotGraphql.get().getSpace(this.spaceName)
+    const snapshotSpace = await SnapshotGraphql.get().getSpace(SnapshotApi.getSpaceName())
     const network = getEnvironmentChainId()
 
     try {
       const scores = await snapshot.utils.getScores(
-        this.spaceName,
+        SnapshotApi.getSpaceName(),
         snapshotSpace.strategies,
         network.toString(),
         formattedAddresses,
