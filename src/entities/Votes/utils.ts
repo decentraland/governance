@@ -197,11 +197,6 @@ export async function getScores(addresses: string[], block?: string | number) {
   return result
 }
 
-export async function getVotingPower(address: string) {
-  const vp = await getScores([address])
-  return Object.values(vp)[0]
-}
-
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
   const results: DetailedScores = {}
   for (const addressesChunk of chunk(addresses, 500)) {

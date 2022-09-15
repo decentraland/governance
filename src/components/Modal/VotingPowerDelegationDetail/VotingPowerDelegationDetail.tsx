@@ -18,7 +18,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { VotedProposal } from '../../../entities/Votes/types'
 import { useBalanceOf, useManaContract, useWManaContract } from '../../../hooks/useContract'
 import useVotesMatch from '../../../hooks/useVotesMatch'
-import useVotingPowerInformation from '../../../hooks/useVotingPowerInformation'
+import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
 import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
@@ -45,19 +45,6 @@ const VOTES_PER_PAGE = 10
 function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
   const { address: candidateAddress } = candidate
-  const { votingPower, isLoadingVotingPower, delegatedVotingPower, isLoadingScores, ownVotingPower } =
-    useVotingPowerInformation(candidateAddress)
-
-  const [maticMana, maticManaState] = useManaBalance(candidateAddress, ChainId.MATIC_MAINNET)
-
-  const manaContract = useManaContract()
-  const [mainnetMana, mainnetManaState] = useBalanceOf(manaContract, candidateAddress, 'ether')
-
-  const wManaContract = useWManaContract()
-  const [wMana, wManaState] = useBalanceOf(wManaContract, candidateAddress, 'ether')
-  const [land, landState] = useLandBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
-  const [ens, ensState] = useEnsBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
-  const [, estateLand, estateState] = useEstateBalance(candidateAddress, ChainId.ETHEREUM_MAINNET)
 
   const [userAddress] = useAuthContext()
   const {
@@ -68,6 +55,9 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   const [isExpanded, setIsExpanded] = useState(false)
   const [showFadeout, setShowFadeout] = useState(true)
   const [filteredCandidateVotes, setFilteredCandidateVotes] = useState<VotedProposal[]>([])
+
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(candidateAddress)
+  const isLoading = isLoadingVpDistribution || votesInformationLoading
 
   useEffect(() => {
     if (!isExpanded) {
@@ -97,21 +87,6 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   }, [candidateVotes, filteredCandidateVotes])
 
   const hasShownAllVotes = candidateVotes?.length === filteredCandidateVotes.length
-  const mana = (mainnetMana || 0) + maticMana + (wMana || 0)
-
-  const isLoading =
-    isLoadingVotingPower ||
-    isLoadingScores ||
-    mainnetManaState.loading ||
-    maticManaState.loading ||
-    wManaState.loading ||
-    landState.loading ||
-    ensState.loading ||
-    estateState.loading ||
-    votesInformationLoading
-
-  const landVotingPower = (land + estateLand) * LAND_MULTIPLIER
-  const nameVotingPower = ens * NAME_MULTIPLIER
 
   return (
     <>
@@ -173,46 +148,44 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
             </Grid.Row>
           </Grid>
         )}
-        {!isLoading && (
+        {!isLoading && vpDistribution && (
           <>
             <div className="DelegationDetails__Stats">
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
-                  <VotingPower value={ownVotingPower} size="large" />
+                  <VotingPower value={vpDistribution.ownVp} size="large" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_delegated_voting_power')}>
-                  <VotingPower value={delegatedVotingPower} size="large" />
+                  <VotingPower value={vpDistribution.delegatedVp} size="large" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
-                  <VotingPower value={votingPower} size="large" />
+                  <VotingPower value={vpDistribution.totalVp} size="large" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_mana')}>
-                  <VotingPower value={Math.floor(mana)} size="medium" />
+                  <VotingPower value={vpDistribution.manaVp} size="medium" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_land')}>
-                  <VotingPower value={landVotingPower} size="medium" />
+                  <VotingPower value={vpDistribution.landVp} size="medium" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_name')}>
-                  <VotingPower value={nameVotingPower} size="medium" />
+                  <VotingPower value={vpDistribution.namesVp} size="medium" />
                 </Stats>
               </div>
+              {/*TODO: add estate and linked wearables stats! */}
               <div className="DelegationDetails__StatPlaceholderFullWidth">
                 <VotingPowerDistribution
                   className="DelegationDetails__VotingPowerDistribution"
-                  mana={mana}
-                  name={nameVotingPower}
-                  land={landVotingPower}
-                  delegated={delegatedVotingPower}
+                  vpDistribution={vpDistribution}
                 />
               </div>
 

@@ -1,7 +1,6 @@
-
 .Progress {
   display: block;
-  background-color: #F3F2F5;
+  background-color: #f3f2f5;
   border-radius: 6px;
   min-height: 6px;
   width: 100%;
@@ -16,15 +15,15 @@
   min-height: 6px;
   width: 0;
   display: block;
-  content: "";
+  content: '';
 }
 
 .Progress.Progress--approve .Progress--bar {
-  background-color: var(--background-happy-green);
+  background-color: var(--green-800);
 }
 
 .Progress.Progress--reject .Progress--bar {
-  background-color: #FF4545;
+  background-color: #ff4545;
 }
 
 .Progress.Progress--status-0 .Progress--bar {

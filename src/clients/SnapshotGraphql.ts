@@ -109,6 +109,26 @@ enum SnapshotScoresState {
   Final = 'final',
 }
 
+export type SnapshotVpResponse = SnapshotQueryResponse<{
+  vp: {
+    vp: number
+    vp_by_strategy: number[]
+  } | null
+}>
+export type SnapshotVpDistribution = { totalVp: number; vpByStrategy: number[] }
+
+export type VpDistribution = {
+  totalVp: number
+  ownVp: number
+  wManaVp: number
+  landVp: number
+  estateVp: number
+  manaVp: number
+  namesVp: number
+  delegatedVp: number
+  linkedWearablesVp: number
+}
+
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const GRAPHQL_ENDPOINT = `/graphql`
@@ -373,5 +393,49 @@ export class SnapshotGraphql extends API {
 
   async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
     return await this.fetchProposals({ start, end, fields, scoresState: SnapshotScoresState.Pending }, 0, limit)
+  }
+
+  async getVpDistribution(address: string): Promise<VpDistribution> {
+    const query = `
+     query getVpDistribution($space: String!, $voter: String!){
+        vp (
+          voter: $voter,
+          space: $space
+        ) {
+          vp
+          vp_by_strategy
+        } 
+      }
+    `
+    const variables = {
+      space: SNAPSHOT_SPACE,
+      voter: address,
+    }
+
+    const result = await this.fetch<SnapshotVpResponse>(
+      GRAPHQL_ENDPOINT,
+      this.options().method('POST').json({
+        query,
+        variables: variables,
+      })
+    )
+
+    if (!result?.data?.vp) {
+      throw Error('Unable to fetch VP Distribution')
+    }
+
+    const vpByStrategy = result?.data?.vp.vp_by_strategy
+
+    return {
+      totalVp: Math.floor(result?.data?.vp.vp),
+      ownVp: Math.floor(result?.data?.vp.vp - vpByStrategy[5]),
+      wManaVp: Math.floor(vpByStrategy[0]),
+      landVp: Math.floor(vpByStrategy[1]),
+      estateVp: Math.floor(vpByStrategy[2]),
+      manaVp: Math.floor(vpByStrategy[3]),
+      namesVp: Math.floor(vpByStrategy[4]),
+      delegatedVp: Math.floor(vpByStrategy[5]),
+      linkedWearablesVp: Math.floor(vpByStrategy[6]),
+    }
   }
 }

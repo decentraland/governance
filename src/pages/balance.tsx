@@ -33,16 +33,8 @@ export default function BalancePage() {
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
-  const {
-    votingPower,
-    isLoadingVotingPower,
-    delegation,
-    delegationState,
-    scores,
-    isLoadingScores,
-    delegatedVotingPower,
-    ownVotingPower,
-  } = useVotingPowerInformation(address)
+  const { vpDistribution, isLoadingVpDistribution, delegation, delegationState, scores, isLoadingScores } =
+    useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
     return (
@@ -77,28 +69,30 @@ export default function BalancePage() {
       <Container className="VotingPowerSummary">
         <UserStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
         <Stats title={t('page.balance.total_label') || ''}>
-          <VotingPower value={votingPower} size="huge" />
-          <Loader size="small" className="balance" active={isLoadingVotingPower} />
+          {vpDistribution && <VotingPower value={vpDistribution.totalVp} size="huge" />}
+          <Loader size="small" className="balance" active={isLoadingVpDistribution} />
         </Stats>
       </Container>
-      <Container className="VotingPowerDetail">
-        <ManaBalanceCard address={address} />
-        <LandBalanceCard address={address} />
-        <EstateBalanceCard address={address} />
-        <NameBalanceCard address={address} />
-        <DelegatedToUserCard
-          isLoggedUserProfile={isLoggedUserProfile}
-          delegation={delegation}
-          scores={scores}
-          loading={delegationState.loading || isLoadingScores}
-          delegatedVotingPower={delegatedVotingPower}
-        />
-        <DelegatedFromUserCard
-          isLoggedUserProfile={isLoggedUserProfile}
-          delegation={delegation}
-          ownVp={ownVotingPower}
-        />
-      </Container>
+      {vpDistribution && (
+        <Container className="VotingPowerDetail">
+          <ManaBalanceCard address={address} />
+          <LandBalanceCard address={address} />
+          <EstateBalanceCard address={address} />
+          <NameBalanceCard address={address} />
+          <DelegatedToUserCard
+            isLoggedUserProfile={isLoggedUserProfile}
+            delegation={delegation}
+            scores={scores}
+            loading={delegationState.loading || isLoadingScores}
+            delegatedVotingPower={vpDistribution.delegatedVp}
+          />
+          <DelegatedFromUserCard
+            isLoggedUserProfile={isLoggedUserProfile}
+            delegation={delegation}
+            ownVp={vpDistribution.ownVp}
+          />
+        </Container>
+      )}
     </div>
   )
 }

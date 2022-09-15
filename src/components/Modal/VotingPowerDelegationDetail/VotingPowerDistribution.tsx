@@ -3,26 +3,37 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import { VpDistribution } from '../../../clients/SnapshotGraphql'
+import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
+
 import './VotingPowerDistribution.css'
 import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
 
 interface Props {
-  mana: number
-  name: number
-  land: number
-  delegated: number
+  vpDistribution?: VpDistribution | null
   className?: string
 }
 
 const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
 
-const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Props) => {
+const VotingPowerDistribution = ({ vpDistribution, className }: Props) => {
+  if (!vpDistribution) vpDistribution = EMPTY_DISTRIBUTION
+
   const t = useFormatMessage()
-  const total = mana + name + land + delegated
+  const total = vpDistribution.totalVp
+  const mana = vpDistribution.manaVp
+  const name = vpDistribution.namesVp
+  const land = vpDistribution.landVp
+  const delegated = vpDistribution.delegatedVp
+  const estate = vpDistribution.estateVp
+  const linkedWearables = vpDistribution.linkedWearablesVp
+
   const manaPercentage = getPercentage(mana, total)
   const namePercentage = getPercentage(name, total)
   const landPercentage = getPercentage(land, total)
   const delegatedPercentage = getPercentage(delegated, total)
+  const estatesPercentage = getPercentage(estate, total)
+  const linkedWearablesPercentage = getPercentage(linkedWearables, total)
 
   return (
     <div className={className}>
@@ -77,6 +88,30 @@ const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Pro
             />
           </VotingPowerDistributionPopup>
         )}
+        {estate > 0 && (
+          <VotingPowerDistributionPopup
+            amount={estate}
+            percentage={estatesPercentage}
+            label={t('modal.vp_delegation.details.stats_estate')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__Estate"
+              style={{ width: estatesPercentage }}
+            />
+          </VotingPowerDistributionPopup>
+        )}
+        {linkedWearables > 0 && (
+          <VotingPowerDistributionPopup
+            amount={linkedWearables}
+            percentage={linkedWearablesPercentage}
+            label={t('modal.vp_delegation.details.stats_linked_wearables')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__LinkedWearables"
+              style={{ width: linkedWearablesPercentage }}
+            />
+          </VotingPowerDistributionPopup>
+        )}
       </div>
       <div className="VotingPowerDistribution__Labels">
         <div className="VotingPowerDistribution__Label">
@@ -94,6 +129,14 @@ const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Pro
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Delegated" />
           {t('modal.vp_delegation.details.stats_bar_delegated')}
+        </div>
+        <div className="VotingPowerDistribution__Label">
+          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Estate" />
+          {t('modal.vp_delegation.details.stats_bar_estates')}
+        </div>
+        <div className="VotingPowerDistribution__Label">
+          <div className="VotingPowerDistribution__Color VotingPowerDistribution__LinkedWearables" />
+          {t('modal.vp_delegation.details.stats_bar_linked_wearables')}
         </div>
       </div>
     </div>
