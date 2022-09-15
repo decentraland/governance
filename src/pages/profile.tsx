@@ -27,11 +27,6 @@ export default function ProfilePage() {
 
   const { delegation, delegationState, scores, isLoadingScores, ownVotingPower } = useVotingPowerInformation(address)
 
-  const isUserDelegate = useMemo(
-    () => !!delegation.delegatedFrom.find((delegation) => delegation.delegator === userAddress?.toLowerCase()),
-    [delegation.delegatedFrom, userAddress]
-  )
-
   if (isUnderMaintenance()) {
     return (
       <>
@@ -55,7 +50,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="ProfilePage">
+    <div>
       <Head
         title={t('page.profile.title') || ''}
         description={t('page.profile.description') || ''}
