@@ -1,0 +1,73 @@
+.ProfileGrantItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #dddce0;
+}
+
+.ProfileGrantItem__Section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ProfileGrantItem:visited .ProfileGrantItem__Title {
+  color: var(--black-600);
+}
+
+.ProfileGrantItem__Avatar {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .ProfileGrantItem__Avatar {
+    display: block;
+    margin-right: 13px;
+  }
+}
+
+.ProfileGrantItem:last-child {
+  border-bottom: none;
+}
+
+.ProfileGrantItem__Title {
+  margin: 0;
+  max-width: 315px;
+  padding-right: 20px;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .ProfileGrantItem__Title {
+    max-width: 420px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .ProfileGrantItem__Title {
+    max-width: 600px;
+  }
+}
+
+.ProfileGrantItem__Details {
+  display: flex;
+  flex-direction: row;
+  color: var(--black-600);
+  text-transform: uppercase;
+  align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 26px;
+}
+
+.ProfileGrantItem__PillContainer {
+  min-width: 148px;
+}

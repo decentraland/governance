@@ -9,12 +9,15 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import { filter } from 'lodash'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
+import { Governance } from '../../clients/Governance'
 import { formatError, inBackground } from '../../helpers'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
+import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
@@ -86,6 +89,7 @@ export default routes((route) => {
   route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
   route.get('/proposals/grants', handleAPI(getGrants))
+  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -599,4 +603,56 @@ async function getGrants() {
     past,
     total: grants.length,
   }
+}
+
+async function getGrantsByUser(req: Request) {
+  const address = req.params.address
+  const isCoauthoring = req.query.coauthoring === 'true'
+  if (!isEthereumAddress(address)) {
+    throw new RequestError('Invalid address', RequestError.BadRequest)
+  }
+  let grants: Awaited<ReturnType<typeof getGrants>> = {
+    current: [],
+    past: [],
+    total: 0,
+  }
+
+  if (isCoauthoring) {
+    const [grantsResult, coauthoring] = await Promise.all([
+      getGrants(),
+      Governance.get().getProposalsByCoAuthor(address, CoauthorStatus.APPROVED),
+    ])
+    const coauthoringProposalIds = new Set(coauthoring.map((attr) => attr.proposal_id))
+
+    const filterGrants = (grants: GrantAttributes[]) => {
+      return grants.filter(
+        (grant) => coauthoringProposalIds.has(grant.id) || grant.user.toLowerCase() === address.toLowerCase()
+      )
+    }
+
+    const current = filterGrants(grantsResult.current)
+    const past = filterGrants(grantsResult.past)
+
+    grants = {
+      current,
+      past,
+      total: current.length + past.length,
+    }
+  } else {
+    const grantsResult = await getGrants()
+    const filterGrants = (grants: GrantAttributes[]) => {
+      return grants.filter((grant) => grant.user.toLowerCase() === address.toLowerCase())
+    }
+
+    const current = filterGrants(grantsResult.current)
+    const past = filterGrants(grantsResult.past)
+
+    grants = {
+      current,
+      past,
+      total: current.length + past.length,
+    }
+  }
+
+  return grants
 }

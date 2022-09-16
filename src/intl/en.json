@@ -789,6 +789,10 @@
     "profile": {
       "title": "profile",
       "description": "Your profile within the DAO",
+      "grants": {
+        "title": "Grant beneficiary",
+        "item_description": "Passed {time} ago with a budget of {amount} {token}"
+      },
       "delegators": {
         "title": "VP Delegators",
         "helper": "These are all the DAO members that delegated their VP to this user. Learn more about VP Delegation [here]",
