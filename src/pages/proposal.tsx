@@ -13,7 +13,6 @@ import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import retry from 'decentraland-gatsby/dist/utils/promise/retry'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -103,7 +102,7 @@ export default function ProposalPage() {
       if (proposal && account && provider && votes) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
-        await retry(3, () => SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex))
+        await SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()
       }
