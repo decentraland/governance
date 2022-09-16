@@ -100,7 +100,7 @@ export default function SubmitPoll() {
   const [state, editor] = useEditor(edit, validate, initialState)
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
-    () => !!vpDistribution && vpDistribution.totalVp < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
+    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
     [vpDistribution]
   )
   const [formDisabled, setFormDisabled] = useState(false)

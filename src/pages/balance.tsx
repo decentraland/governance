@@ -36,6 +36,7 @@ export default function BalancePage() {
   const { vpDistribution, isLoadingVpDistribution, delegation, delegationState, scores, isLoadingScores } =
     useVotingPowerInformation(address)
 
+  console.log('vpDistribution', vpDistribution)
   if (isUnderMaintenance()) {
     return (
       <>
@@ -69,7 +70,7 @@ export default function BalancePage() {
       <Container className="VotingPowerSummary">
         <UserStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
         <Stats title={t('page.balance.total_label') || ''}>
-          {vpDistribution && <VotingPower value={vpDistribution.totalVp} size="huge" />}
+          {vpDistribution && <VotingPower value={vpDistribution.total} size="huge" />}
           <Loader size="small" className="balance" active={isLoadingVpDistribution} />
         </Stats>
       </Container>
@@ -84,12 +85,12 @@ export default function BalancePage() {
             delegation={delegation}
             scores={scores}
             loading={delegationState.loading || isLoadingScores}
-            delegatedVotingPower={vpDistribution.delegatedVp}
+            delegatedVotingPower={vpDistribution.delegated}
           />
           <DelegatedFromUserCard
             isLoggedUserProfile={isLoggedUserProfile}
             delegation={delegation}
-            ownVp={vpDistribution.ownVp}
+            ownVp={vpDistribution.own}
           />
         </Container>
       )}

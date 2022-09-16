@@ -118,15 +118,25 @@ export type SnapshotVpResponse = SnapshotQueryResponse<{
 export type SnapshotVpDistribution = { totalVp: number; vpByStrategy: number[] }
 
 export type VpDistribution = {
-  totalVp: number
-  ownVp: number
-  wManaVp: number
-  landVp: number
-  estateVp: number
-  manaVp: number
-  namesVp: number
-  delegatedVp: number
-  linkedWearablesVp: number
+  total: number
+  own: number
+  wMana: number
+  land: number
+  estate: number
+  mana: number
+  names: number
+  delegated: number
+  linkedWearables: number
+}
+
+enum StrategyOrder {
+  WrappedMana,
+  Land,
+  Estate,
+  Mana,
+  Names,
+  Delegation,
+  LinkedWearables,
 }
 
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
@@ -427,15 +437,15 @@ export class SnapshotGraphql extends API {
     const vpByStrategy = result?.data?.vp.vp_by_strategy
 
     return {
-      totalVp: Math.floor(result?.data?.vp.vp),
-      ownVp: Math.floor(result?.data?.vp.vp - vpByStrategy[5]),
-      wManaVp: Math.floor(vpByStrategy[0]),
-      landVp: Math.floor(vpByStrategy[1]),
-      estateVp: Math.floor(vpByStrategy[2]),
-      manaVp: Math.floor(vpByStrategy[3]),
-      namesVp: Math.floor(vpByStrategy[4]),
-      delegatedVp: Math.floor(vpByStrategy[5]),
-      linkedWearablesVp: Math.floor(vpByStrategy[6]),
+      total: Math.floor(result?.data?.vp.vp),
+      own: Math.floor(result?.data?.vp.vp - vpByStrategy[5]),
+      wMana: Math.floor(vpByStrategy[StrategyOrder.WrappedMana]),
+      land: Math.floor(vpByStrategy[StrategyOrder.Land]),
+      estate: Math.floor(vpByStrategy[StrategyOrder.Estate]),
+      mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
+      names: Math.floor(vpByStrategy[StrategyOrder.Names]),
+      delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
+      linkedWearables: Math.floor(vpByStrategy[StrategyOrder.LinkedWearables]),
     }
   }
 }

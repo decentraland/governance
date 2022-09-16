@@ -88,7 +88,7 @@ const DaoDelegates = () => {
           open={!!selectedCandidate}
         >
           <VotingPowerDelegationDetail
-            userVP={vpDistribution.ownVp}
+            userVP={vpDistribution.own}
             candidate={selectedCandidate}
             onBackClick={clearSelectedCandidate}
           />

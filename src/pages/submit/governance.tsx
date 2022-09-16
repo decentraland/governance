@@ -159,7 +159,7 @@ export default function SubmitGovernanceProposal() {
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
   const submissionVpNotMet = useMemo(
-    () => !!vpDistribution && vpDistribution.totalVp < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE),
+    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE),
     [vpDistribution]
   )
   const [state, editor] = useEditor(edit, validate, initialState)

@@ -121,7 +121,7 @@ export default function SubmitDraftProposal() {
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
   const submissionVpNotMet = useMemo(
-    () => !!vpDistribution && vpDistribution.totalVp < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT),
+    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT),
     [vpDistribution]
   )
   const [preselectedProposal] = useAsyncMemo(

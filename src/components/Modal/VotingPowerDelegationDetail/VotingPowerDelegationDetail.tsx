@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { ChainId } from '@dcl/schemas'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useEnsBalance from 'decentraland-gatsby/dist/hooks/useEnsBalance'
-import useEstateBalance from 'decentraland-gatsby/dist/hooks/useEstateBalance'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useLandBalance from 'decentraland-gatsby/dist/hooks/useLandBalance'
-import useManaBalance from 'decentraland-gatsby/dist/hooks/useManaBalance'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -16,12 +11,9 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { VotedProposal } from '../../../entities/Votes/types'
-import { useBalanceOf, useManaContract, useWManaContract } from '../../../hooks/useContract'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import ChevronLeft from '../../Icon/ChevronLeft'
-import { LAND_MULTIPLIER } from '../../Token/LandBalanceCard'
-import { NAME_MULTIPLIER } from '../../Token/NameBalanceCard'
 import VotingPower from '../../Token/VotingPower'
 import Username from '../../User/Username'
 import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
@@ -153,35 +145,44 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
             <div className="DelegationDetails__Stats">
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
-                  <VotingPower value={vpDistribution.ownVp} size="large" />
+                  <VotingPower value={vpDistribution.own} size="large" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_delegated_voting_power')}>
-                  <VotingPower value={vpDistribution.delegatedVp} size="large" />
+                  <VotingPower value={vpDistribution.delegated} size="large" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_total_voting_power')}>
-                  <VotingPower value={vpDistribution.totalVp} size="large" />
+                  <VotingPower value={vpDistribution.total} size="large" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_mana')}>
-                  <VotingPower value={vpDistribution.manaVp} size="medium" />
-                </Stats>
-              </div>
-              <div className="DelegationDetails__StatPlaceholder">
-                <Stats title={t('modal.vp_delegation.details.stats_land')}>
-                  <VotingPower value={vpDistribution.landVp} size="medium" />
+                  <VotingPower value={vpDistribution.mana} size="medium" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_name')}>
-                  <VotingPower value={vpDistribution.namesVp} size="medium" />
+                  <VotingPower value={vpDistribution.names} size="medium" />
                 </Stats>
               </div>
-              {/*TODO: add estate and linked wearables stats! */}
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_linked_wearables')}>
+                  <VotingPower value={vpDistribution.linkedWearables} size="medium" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_land')}>
+                  <VotingPower value={vpDistribution.land} size="medium" />
+                </Stats>
+              </div>
+              <div className="DelegationDetails__StatPlaceholder">
+                <Stats title={t('modal.vp_delegation.details.stats_estate')}>
+                  <VotingPower value={vpDistribution.estate} size="medium" />
+                </Stats>
+              </div>
               <div className="DelegationDetails__StatPlaceholderFullWidth">
                 <VotingPowerDistribution
                   className="DelegationDetails__VotingPowerDistribution"

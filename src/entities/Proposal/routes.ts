@@ -495,7 +495,7 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
   const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
-  if (vpDistribution.totalVp < requiredVp) {
+  if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

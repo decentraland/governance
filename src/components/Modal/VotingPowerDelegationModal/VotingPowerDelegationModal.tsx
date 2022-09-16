@@ -54,7 +54,7 @@ function VotingPowerDelegationModal({
       <Modal.Description className="VotingPowerDelegationModal__Description">
         <Markdown>
           {(userAddress && vpDistribution
-            ? t('modal.vp_delegation.description', { vp: vpDistribution.ownVp })
+            ? t('modal.vp_delegation.description', { vp: vpDistribution.own })
             : t('modal.vp_delegation.description_generic')) +
             ' ' +
             t('modal.vp_delegation.read_more')}

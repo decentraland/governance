@@ -3,15 +3,15 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { SnapshotGraphql, VpDistribution } from '../clients/SnapshotGraphql'
 
 export const EMPTY_DISTRIBUTION = {
-  totalVp: 0,
-  ownVp: 0,
-  wManaVp: 0,
-  landVp: 0,
-  estateVp: 0,
-  manaVp: 0,
-  namesVp: 0,
-  delegatedVp: 0,
-  linkedWearablesVp: 0,
+  total: 0,
+  own: 0,
+  wMana: 0,
+  land: 0,
+  estate: 0,
+  mana: 0,
+  names: 0,
+  delegated: 0,
+  linkedWearables: 0,
 }
 
 export default function useVotingPowerDistribution(address?: string | null) {
