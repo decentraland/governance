@@ -150,17 +150,17 @@ export class SnapshotApi {
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }
 
-  async getScores(addresses: string[], blockNumber?: number | string) {
+  async getScores(addresses: string[], blockNumber?: number | string, space?: string, networkId?: string) {
     const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
-    const spaceName = SnapshotApi.getSpaceName()
+    const network = networkId && networkId.length > 0 ? networkId : getEnvironmentChainId().toString()
+    const spaceName = space && space.length > 0 ? space : SnapshotApi.getSpaceName()
     const snapshotSpace = await SnapshotGraphql.get().getSpace(spaceName)
-    const network = getEnvironmentChainId()
 
     try {
       const scores = await snapshot.utils.getScores(
         spaceName,
         snapshotSpace.strategies,
-        network.toString(),
+        network,
         formattedAddresses,
         blockNumber
       )
@@ -171,9 +171,7 @@ export class SnapshotApi {
     } catch (e) {
       // TODO: Remove after debugging
       logger.log(
-        `Space: ${spaceName}, Strategies: ${
-          snapshotSpace.strategies
-        }, Network: ${network.toString()}, Addresses: ${formattedAddresses}, Block: ${blockNumber}`
+        `Space: ${spaceName}, Strategies: ${snapshotSpace.strategies}, Network: ${network}, Addresses: ${formattedAddresses}, Block: ${blockNumber}`
       )
       throw new Error('Error fetching proposal scores', e as Error)
     }
