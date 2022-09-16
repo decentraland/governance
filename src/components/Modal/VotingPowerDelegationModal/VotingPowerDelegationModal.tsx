@@ -10,7 +10,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { CANDIDATE_ADDRESSES } from '../../../constants'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
-import useVotingPowerBalance from '../../../hooks/useVotingPowerBalance'
+import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import DelegatesTable from '../../Table/DelegatesTable'
 
 import './VotingPowerDelegationModal.css'
@@ -38,7 +38,7 @@ function VotingPowerDelegationModal({
 }: VotingPowerDelegationModalProps) {
   const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
   const [userAddress] = useAuthContext()
-  const { ownVotingPower } = useVotingPowerBalance(userAddress)
+  const { vpDistribution } = useVotingPowerDistribution(userAddress)
 
   const t = useFormatMessage()
 
@@ -53,8 +53,8 @@ function VotingPowerDelegationModal({
       <Modal.Header className="VotingPowerDelegationModal__Header">{t('modal.vp_delegation.title')}</Modal.Header>
       <Modal.Description className="VotingPowerDelegationModal__Description">
         <Markdown>
-          {(userAddress
-            ? t('modal.vp_delegation.description', { vp: ownVotingPower })
+          {(userAddress && vpDistribution
+            ? t('modal.vp_delegation.description', { vp: vpDistribution.own })
             : t('modal.vp_delegation.description_generic')) +
             ' ' +
             t('modal.vp_delegation.read_more')}

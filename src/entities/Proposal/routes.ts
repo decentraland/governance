@@ -13,6 +13,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import isCommittee from '../Committee/isCommittee'
@@ -22,7 +23,6 @@ import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
 import { getPublicUpdates } from '../Updates/utils'
 import { getVotes } from '../Votes/routes'
-import { getVotingPower } from '../Votes/utils'
 
 import { getUpdateMessage } from './templates/messages'
 
@@ -494,8 +494,8 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
-  const userVp = await getVotingPower(user)
-  if (userVp.totalVp < requiredVp) {
+  const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
+  if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

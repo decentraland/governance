@@ -27,7 +27,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalDraftScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -119,10 +119,10 @@ export default function SubmitDraftProposal() {
   const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(accountBalance)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
   const submissionVpNotMet = useMemo(
-    () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT),
-    [votingPower]
+    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT),
+    [vpDistribution]
   )
   const [preselectedProposal] = useAsyncMemo(
     async () => {
@@ -212,7 +212,7 @@ export default function SubmitDraftProposal() {
           error={!!state.error.linked_proposal_id}
           message={t(state.error.linked_proposal_id)}
           disabled={true}
-          loading={isLoadingVotingPower}
+          loading={isLoadingVpDistribution}
         />
       </ContentSection>
 
@@ -233,7 +233,7 @@ export default function SubmitDraftProposal() {
             })
           }
           disabled={submissionVpNotMet || formDisabled}
-          loading={isLoadingVotingPower}
+          loading={isLoadingVpDistribution}
         />
       </ContentSection>
 
@@ -378,7 +378,7 @@ export default function SubmitDraftProposal() {
         <Button
           primary
           disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || isLoadingVotingPower}
+          loading={state.validated || isLoadingVpDistribution}
           onClick={() => editor.validate()}
         >
           {t('page.submit.button_submit')}

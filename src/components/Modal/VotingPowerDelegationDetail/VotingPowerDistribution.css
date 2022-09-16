@@ -1,17 +1,25 @@
 .VotingPowerDistribution__Mana {
-  background: #ff2d55;
+  background: var(--dcl-primary);
 }
 
 .VotingPowerDistribution__Name {
-  background: var(--background-happy-green);
+  background: var(--yellow-800);
 }
 
 .VotingPowerDistribution__Land {
-  background: var(--yellow-800);
+  background: var(--green-800);
 }
 
 .VotingPowerDistribution__Delegated {
   background: var(--blue-800);
+}
+
+.VotingPowerDistribution__Estate {
+  background: var(--green-900);
+}
+
+.VotingPowerDistribution__LinkedWearables {
+  background: var(--orange-800);
 }
 
 .VotingPowerDistributionBar {
