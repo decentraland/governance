@@ -24,8 +24,8 @@ const DaoDelegates = () => {
   const [isFullListOpened, setIsFullListOpened] = useState(false)
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const [address, authState] = useAuthContext()
-  const { ownVotingPower } = useVotingPowerInformation(address)
-  const loading = !delegates && authState.loading
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerInformation(address)
+  const loading = !delegates && authState.loading && isLoadingVpDistribution
 
   const toggleFullList = (state: boolean) => {
     setIsFullList(state)
@@ -79,7 +79,7 @@ const DaoDelegates = () => {
         setSelectedCandidate={handleSelectedCandidate}
         open={isFullListOpened}
       />
-      {selectedCandidate && (
+      {selectedCandidate && vpDistribution && (
         <Modal
           onClose={handleModalClose}
           size="small"
@@ -88,7 +88,7 @@ const DaoDelegates = () => {
           open={!!selectedCandidate}
         >
           <VotingPowerDelegationDetail
-            userVP={ownVotingPower}
+            userVP={vpDistribution.own}
             candidate={selectedCandidate}
             onBackClick={clearSelectedCandidate}
           />

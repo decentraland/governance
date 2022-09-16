@@ -109,6 +109,36 @@ enum SnapshotScoresState {
   Final = 'final',
 }
 
+export type SnapshotVpResponse = SnapshotQueryResponse<{
+  vp: {
+    vp: number
+    vp_by_strategy: number[]
+  } | null
+}>
+export type SnapshotVpDistribution = { totalVp: number; vpByStrategy: number[] }
+
+export type VpDistribution = {
+  total: number
+  own: number
+  wMana: number
+  land: number
+  estate: number
+  mana: number
+  names: number
+  delegated: number
+  linkedWearables: number
+}
+
+enum StrategyOrder {
+  WrappedMana,
+  Land,
+  Estate,
+  Mana,
+  Names,
+  Delegation,
+  LinkedWearables,
+}
+
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const GRAPHQL_ENDPOINT = `/graphql`
@@ -373,5 +403,49 @@ export class SnapshotGraphql extends API {
 
   async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
     return await this.fetchProposals({ start, end, fields, scoresState: SnapshotScoresState.Pending }, 0, limit)
+  }
+
+  async getVpDistribution(address: string): Promise<VpDistribution> {
+    const query = `
+     query getVpDistribution($space: String!, $voter: String!){
+        vp (
+          voter: $voter,
+          space: $space
+        ) {
+          vp
+          vp_by_strategy
+        } 
+      }
+    `
+    const variables = {
+      space: SNAPSHOT_SPACE,
+      voter: address,
+    }
+
+    const result = await this.fetch<SnapshotVpResponse>(
+      GRAPHQL_ENDPOINT,
+      this.options().method('POST').json({
+        query,
+        variables: variables,
+      })
+    )
+
+    if (!result?.data?.vp) {
+      throw Error('Unable to fetch VP Distribution')
+    }
+
+    const vpByStrategy = result?.data?.vp.vp_by_strategy
+
+    return {
+      total: Math.floor(result?.data?.vp.vp),
+      own: Math.floor(result?.data?.vp.vp - vpByStrategy[5]),
+      wMana: Math.floor(vpByStrategy[StrategyOrder.WrappedMana]),
+      land: Math.floor(vpByStrategy[StrategyOrder.Land]),
+      estate: Math.floor(vpByStrategy[StrategyOrder.Estate]),
+      mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
+      names: Math.floor(vpByStrategy[StrategyOrder.Names]),
+      delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
+      linkedWearables: Math.floor(vpByStrategy[StrategyOrder.LinkedWearables]),
+    }
   }
 }

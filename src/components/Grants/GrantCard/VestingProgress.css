@@ -46,7 +46,7 @@
 }
 
 .VestingProgress__VestedPercentage {
-  background-color: var(--background-happy-green);
+  background-color: var(--green-800);
   font-size: 11px;
   line-height: 18px;
   border: 2px solid var(--black-100) !important;
