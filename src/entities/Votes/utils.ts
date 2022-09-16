@@ -1,4 +1,4 @@
-import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
+import { chunk } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotApi } from '../../clients/SnapshotApi'
