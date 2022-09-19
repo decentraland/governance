@@ -1,13 +1,14 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { GrantAttributes } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
 import { formatDate } from '../../../modules/time'
-import ChevronRight from '../../Icon/ChevronRight'
 import Username from '../../User/Username'
 import GrantPill from '../GrantPill'
 
@@ -19,6 +20,7 @@ interface Props {
 
 function ProfileGrantItem({ grant }: Props) {
   const t = useFormatMessage()
+  const intl = useIntl()
   const { user, title, enacted_at, token } = grant
   const enactedDate = new Date(enacted_at * 1000)
   return (
@@ -32,7 +34,13 @@ function ProfileGrantItem({ grant }: Props) {
               <GrantPill type={grant.configuration.category} />
             </Mobile>
             <span className="ProfileGrantItem__Details">
-              {t('page.profile.grants.item_description', { time: formatDate(enactedDate), amount: grant.size, token })}
+              <Markdown>
+                {t('page.profile.grants.item_description', {
+                  time: formatDate(enactedDate),
+                  amount: intl.formatNumber(grant.size),
+                  token,
+                })}
+              </Markdown>
             </span>
           </span>
         </div>
@@ -41,7 +49,7 @@ function ProfileGrantItem({ grant }: Props) {
         <GrantPill type={grant.configuration.category} />
       </div>
       <div className="statusSection">STATUS</div>
-      <ChevronRight color="var(--black-400)" />
+      <Back />
     </Link>
   )
 }

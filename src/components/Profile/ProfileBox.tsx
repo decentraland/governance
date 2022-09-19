@@ -22,7 +22,7 @@ export function ProfileBox({ children, title, info, action }: Props) {
           <span>{title}</span>
           {info && <Helper text={info} size="12" position="right center" />}
         </div>
-        <div>{action}</div>
+        <div className="ProfileBox__Header--action">{action}</div>
       </div>
       <Divider className="ProfileBox__Divider" color="var(--black-300)" />
       <div className="ProfileBox__Padded">{children}</div>

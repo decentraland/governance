@@ -791,7 +791,7 @@
       "description": "Your profile within the DAO",
       "grants": {
         "title": "Grant beneficiary",
-        "item_description": "Passed {time} ago with a budget of {amount} {token}"
+        "item_description": "Passed {time} with a budget of **{amount} {token}**"
       },
       "delegators": {
         "title": "VP Delegators",

@@ -18,6 +18,8 @@ import LogIn from '../components/User/LogIn'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
+import './profile.css'
+
 export default function ProfilePage() {
   const t = useFormatMessage()
   const location = useLocation()
@@ -51,7 +53,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div>
+    <div className="ProfilePage">
       <Head
         title={t('page.profile.title') || ''}
         description={t('page.profile.description') || ''}

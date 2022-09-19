@@ -35,3 +35,7 @@
 .ProfileBox__Container .Divider__Container {
   margin: 13px 0;
 }
+
+.ProfileBox__Container .ProfileBox__Header--action .ui.button {
+  padding: 0;
+}

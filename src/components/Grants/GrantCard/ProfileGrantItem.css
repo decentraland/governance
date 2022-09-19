@@ -4,7 +4,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #dddce0;
+  border: 1px solid var(--black-100);
+  box-shadow: 0 1px 4px var(--black-100);
+  border-radius: 8px;
+}
+
+.ProfileGrantItem:not(:last-child) {
+  margin-bottom: 13px;
 }
 
 .ProfileGrantItem__Section {
@@ -57,17 +63,25 @@
   }
 }
 
-.ProfileGrantItem__Details {
+.ProfileGrantItem__Details .dg.Paragraph {
   display: flex;
   flex-direction: row;
   color: var(--black-600);
-  text-transform: uppercase;
   align-items: center;
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 26px;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 28px;
+  letter-spacing: 0.4px;
+}
+
+.ProfileGrantItem__Details .dg.Paragraph > .dg.Bold {
+  padding-left: 4px;
 }
 
 .ProfileGrantItem__PillContainer {
   min-width: 148px;
+}
+
+.ProfileGrantItem .dcl.back {
+  transform: rotate(180deg);
 }
