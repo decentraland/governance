@@ -154,10 +154,10 @@ async function getDelegations(
   address: string | null | undefined,
   blockNumber?: string | number
 ): Promise<DelegationResult> {
-  if (!SNAPSHOT_SPACE || !address || !blockNumber) {
+  if (!SNAPSHOT_SPACE || !address) {
     return EMPTY_DELEGATION
   }
-  const variables = getFetchDelegatesVariables(address, blockNumber)
+  const variables = getFetchDelegatesVariables(address, blockNumber || 'latest')
   try {
     const delegates = await SnapshotSubgraph.get().fetchDelegates(query, variables)
     if (!delegates) {

@@ -1,11 +1,9 @@
-
-.VotingPowerDelegationDetail__Header .DelegateButton__Container {
-  margin-right: 55px;
+.DelegateButton__Container {
   display: inline-flex;
   align-items: center;
 }
 
-.VotingPowerDelegationDetail__Header .DelegateButton__Container .ui.header {
+.DelegateButton__Container .ui.header {
   margin: 0 16px 0 0 !important;
 }
 
