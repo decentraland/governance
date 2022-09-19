@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 
 import locations from '../../modules/locations'
@@ -16,6 +16,7 @@ interface Props {
 
 function DelegatorCardProfile({ address, vp }: Props) {
   const t = useFormatMessage()
+  const intl = useIntl()
 
   return (
     <Link className="DelegatorCardProfile" href={locations.profile({ address })}>
@@ -24,7 +25,9 @@ function DelegatorCardProfile({ address, vp }: Props) {
         <div>
           <Username className="DelegatorCardProfile__Title" variant="address" address={address} />
           <span className="DelegatorCardProfile__Details">
-            <span className="DelegatorCardProfile__DetailsItem">{t('page.profile.delegators.delegated', { vp })}</span>
+            <span className="DelegatorCardProfile__DetailsItem">
+              {t('page.profile.delegators.delegated', { vp: intl.formatNumber(vp) })}
+            </span>
           </span>
         </div>
       </div>
