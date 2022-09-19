@@ -1,6 +1,7 @@
 export type UpdateAttributes = {
   id: string
   proposal_id: string
+  author?: string
   health?: ProjectHealth
   introduction?: string
   highlights?: string
