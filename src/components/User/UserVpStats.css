@@ -4,6 +4,12 @@
   margin-bottom: 44px;
 }
 
+.UserVpStats__UserInfo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 span.Username.UserVpStats__Username {
   margin-bottom: 24px;
 }

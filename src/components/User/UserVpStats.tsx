@@ -22,7 +22,7 @@ export default function UserVpStats({ address }: Props) {
 
   return (
     <Container className="UserVpStats__Container">
-      <div>
+      <div className="UserVpStats__UserInfo">
         <Username address={address} size="medium" className="UserVpStats__Username" />
         <div className="UserVpStats__StatBoxes">
           <UserStatBox

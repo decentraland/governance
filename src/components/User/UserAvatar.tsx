@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react'
 
 import { WearablePreview } from 'decentraland-ui'
 
+import useProfile from '../../hooks/useProfile'
+
 import './UserAvatar.css'
 
 interface Props {
@@ -11,6 +13,7 @@ interface Props {
 export default function UserAvatar({ address }: Props) {
   const [isLoadingWearablePreview, setIsLoadingWearablePreview] = useState(true)
   const [wearablePreviewError, setWearablePreviewError] = useState(false)
+  const { hasDclProfile } = useProfile(address)
   const handleLoad = useCallback(() => {
     setIsLoadingWearablePreview(false)
     setWearablePreviewError(false)
@@ -21,7 +24,7 @@ export default function UserAvatar({ address }: Props) {
     setIsLoadingWearablePreview(false)
   }, [])
 
-  if (!address) {
+  if (!address || !hasDclProfile) {
     return null
   }
 
