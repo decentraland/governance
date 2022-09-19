@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SnapshotVote } from '../../api/Snapshot'
+import { SnapshotVote } from '../../clients/SnapshotGraphql'
 import { ProposalStatus, ProposalType } from '../Proposal/types'
 
 export type VoteAttributes = {

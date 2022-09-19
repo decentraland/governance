@@ -17,7 +17,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { omit } from 'lodash'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
-import { Governance } from '../../api/Governance'
+import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -26,7 +26,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
-import useVotingPowerBalance from '../../hooks/useVotingPowerBalance'
+import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -98,10 +98,10 @@ export default function SubmitPoll() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)
-  const { votingPower, isLoadingVotingPower } = useVotingPowerBalance(account)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
-    () => votingPower < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
-    [votingPower]
+    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
+    [vpDistribution]
   )
   const [formDisabled, setFormDisabled] = useState(false)
   const preventNavigation = useRef(false)
@@ -208,7 +208,7 @@ export default function SubmitPoll() {
               limit: schema.title.maxLength,
             })
           }
-          loading={isLoadingVotingPower}
+          loading={isLoadingVpDistribution}
           disabled={submissionVpNotMet || formDisabled}
         />
       </ContentSection>
@@ -286,7 +286,7 @@ export default function SubmitPoll() {
         <Button
           primary
           disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || isLoadingVotingPower}
+          loading={state.validated || isLoadingVpDistribution}
           onClick={() => editor.validate()}
         >
           {t('page.submit.button_submit')}

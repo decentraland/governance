@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 
+import { Web3Provider } from '@ethersproject/providers'
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
@@ -12,16 +13,13 @@ import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import retry from 'decentraland-gatsby/dist/utils/promise/retry'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
-import { Address } from 'web3x/address'
-import { Personal } from 'web3x/personal'
 
-import { Governance } from '../api/Governance'
-import { Snapshot } from '../api/Snapshot'
+import { Governance } from '../clients/Governance'
+import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -102,13 +100,9 @@ export default function ProposalPage() {
   const [voting, vote] = useAsyncTask(
     async (_: string, choiceIndex: number) => {
       if (proposal && account && provider && votes) {
-        const message = await Snapshot.get().createVoteMessage(
-          proposal.snapshot_space,
-          proposal.snapshot_id,
-          choiceIndex
-        )
-        const signature = await new Personal(provider).sign(message, Address.fromString(account), '')
-        await retry(3, () => Snapshot.get().send(account, message, signature))
+        const web3Provider = new Web3Provider(provider)
+        const [listedAccount] = await web3Provider.listAccounts()
+        await SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()
       }

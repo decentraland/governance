@@ -1,5 +1,3 @@
-import { Block, JsonRpcProvider, getNetwork } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
@@ -7,33 +5,28 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import Catalyst, { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import { filter } from 'lodash'
-import { v1 as uuid } from 'uuid'
 import isUUID from 'validator/lib/isUUID'
 
-import { DclData, TransparencyGrantsTiers } from '../../api/DclData'
-import { Discourse, DiscourseComment, DiscoursePost } from '../../api/Discourse'
-import { HashContent, IPFS } from '../../api/IPFS'
-import { Snapshot, SnapshotResult, SnapshotSpace, SnapshotStatus } from '../../api/Snapshot'
-import CoauthorModel from '../Coauthor/model'
-import isCommitee from '../Committee/isCommittee'
-import { DISCOURSE_AUTH, DISCOURSE_CATEGORY, filterComments } from '../Discourse/utils'
-import { SNAPSHOT_ADDRESS, SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
-import { signMessage } from '../Snapshot/utils'
+import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
+import { Discourse, DiscourseComment } from '../../clients/Discourse'
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { formatError, inBackground } from '../../helpers'
+import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
+import isCommittee from '../Committee/isCommittee'
+import { filterComments } from '../Discourse/utils'
+import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
-import { IndexedUpdate, UpdateAttributes, UpdateStatus } from '../Updates/types'
+import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
 import { getPublicUpdates } from '../Updates/utils'
-import VotesModel from '../Votes/model'
 import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
 
 import ProposalModel from './model'
-import * as templates from './templates'
 import {
   GrantAttributes,
   GrantRequiredVP,
@@ -69,7 +62,6 @@ import {
   GrantDuration,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
-  forumUrl,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
@@ -77,13 +69,9 @@ import {
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
-  proposalUrl,
-  snapshotProposalUrl,
 } from './utils'
 
 const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
-const SNAPSHOT_PRIVATE_KEY = requiredEnv('SNAPSHOT_PRIVATE_KEY')
-const SNAPSHOT_ACCOUNT = new Wallet(SNAPSHOT_PRIVATE_KEY)
 
 export default routes((route) => {
   const withAuth = auth()
@@ -103,46 +91,6 @@ export default routes((route) => {
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
 })
-
-function formatError(err: Error) {
-  const errorObj = {
-    ...err,
-    message: err.message,
-    stack: err.stack,
-  }
-
-  return process.env.NODE_ENV !== 'production' ? err : errorObj
-}
-
-function inBackground(fun: () => Promise<any>) {
-  Promise.resolve()
-    .then(fun)
-    .then((result) => logger.log('Completed background task', { result: JSON.stringify(result) }))
-    .catch((err) => logger.error('Error running background task', formatError(err)))
-}
-
-function dropDiscourseTopic(topic_id: number) {
-  inBackground(() => {
-    logger.log('Dropping discourse topic', { topic_id: topic_id })
-    return Discourse.get().removeTopic(topic_id, DISCOURSE_AUTH)
-  })
-}
-
-function dropSnapshotProposal(proposal_space: string, proposal_id: string) {
-  inBackground(async () => {
-    logger.log(`Dropping snapshot proposal: ${proposal_space}/${proposal_id}`)
-    const address = SNAPSHOT_ADDRESS
-    const msg = await Snapshot.get().removeProposalMessage(proposal_space, proposal_id)
-    const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
-    const result = await Snapshot.get().send(address, msg, sig)
-    return {
-      msg: JSON.parse(msg),
-      sig,
-      address,
-      result,
-    }
-  })
-}
 
 export async function getProposals(req: WithAuth<Request>) {
   const query = req.query
@@ -403,201 +351,17 @@ export async function createProposalLinkedWearables(req: WithAuth) {
   })
 }
 
-export async function createProposal(
-  data: Pick<ProposalAttributes, 'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'>
-) {
-  const id = uuid()
-  const start = Time.utc().set('seconds', 0)
-  const end = data.finish_at
-  const proposal_url = proposalUrl({ id })
-  const coAuthors =
-    data.configuration && data.configuration.coAuthors ? (data.configuration.coAuthors as string[]) : null
-
-  if (coAuthors) {
-    delete data.configuration.coAuthors
-  }
-
-  const title = templates.title({ type: data.type, configuration: data.configuration })
-  const description = await templates.description({ type: data.type, configuration: data.configuration })
-
-  let profile: Avatar | null
+export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
-    profile = await Catalyst.get().getProfile(data.user)
-  } catch (err) {
-    throw new RequestError(`Error getting profile "${data.user}"`, RequestError.InternalServerError, err as Error)
-  }
-
-  //
-  // Create proposal payload
-  //
-  let snapshotStatus: SnapshotStatus
-  let snapshotSpace: SnapshotSpace
-  try {
-    const values = await Promise.all([await Snapshot.get().getStatus(), await Snapshot.get().getSpace(SNAPSHOT_SPACE)])
-    snapshotStatus = values[0]
-    snapshotSpace = values[1]
-  } catch (err) {
+    return await ProposalService.createProposal(proposalInCreation)
+  } catch (e: any) {
     throw new RequestError(
-      `Error getting snapshot space "${SNAPSHOT_SPACE}"`,
+      `Error creating proposal: ${JSON.stringify(proposalInCreation)}\n 
+      Error: ${e.message ? e.message : JSON.stringify(e)}`,
       RequestError.InternalServerError,
-      err as Error
+      e
     )
   }
-
-  let block: Block
-  try {
-    const network = getNetwork(Number(snapshotSpace.network))
-    const networkName = network.name === 'homestead' ? 'mainnet' : network.name
-    const url = process.env.RPC_PROVIDER_URL + networkName
-    const provider = new JsonRpcProvider(url)
-    block = await provider.getBlock('latest')
-  } catch (err) {
-    throw new RequestError("Couldn't get the latest block", RequestError.InternalServerError, err as Error)
-  }
-
-  let msg: string
-  try {
-    const snapshotTemplateProps: templates.SnapshotTemplateProps = {
-      user: data.user,
-      type: data.type,
-      configuration: data.configuration,
-      profile,
-      proposal_url,
-    }
-
-    msg = await Snapshot.get().createProposalMessage(
-      SNAPSHOT_SPACE,
-      snapshotStatus.version,
-      snapshotSpace.network,
-      snapshotSpace.strategies,
-      {
-        name: templates.snapshotTitle(snapshotTemplateProps),
-        body: await templates.snapshotDescription(snapshotTemplateProps),
-        choices: data.configuration.choices,
-        snapshot: block.number,
-        end,
-        start,
-      }
-    )
-  } catch (err) {
-    throw new RequestError('Error creating the snapshot message', RequestError.InternalServerError, err as Error)
-  }
-
-  //
-  // Create proposal in Snapshot
-  //
-  let snapshotProposal: SnapshotResult
-  try {
-    const sig = await signMessage(SNAPSHOT_ACCOUNT, msg)
-    logger.log('Creating proposal in snapshot', { signed: sig, message: msg })
-    snapshotProposal = await Snapshot.get().send(SNAPSHOT_ADDRESS, msg, sig)
-  } catch (err) {
-    throw new RequestError("Couldn't create proposal in snapshot", RequestError.InternalServerError, err as Error)
-  }
-
-  const snapshot_url = snapshotProposalUrl({ snapshot_space: SNAPSHOT_SPACE, snapshot_id: snapshotProposal.ipfsHash })
-  logger.log('Snapshot proposal created', {
-    snapshot_url: snapshot_url,
-    snapshot_proposal: JSON.stringify(snapshotProposal),
-  })
-
-  //
-  // Get snapshot content
-  //
-  let snapshotContent: HashContent
-  try {
-    snapshotContent = await IPFS.get().getHash(snapshotProposal.ipfsHash)
-  } catch (err) {
-    dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError("Couldn't retrieve proposal from the IPFS", RequestError.InternalServerError, err as Error)
-  }
-
-  //
-  // Create proposal in Discourse
-  //
-  let discourseProposal: DiscoursePost
-  try {
-    const discourseTemplateProps: templates.ForumTemplateProps = {
-      type: data.type,
-      configuration: data.configuration,
-      user: data.user,
-      profile,
-      proposal_url,
-      snapshot_url,
-      snapshot_id: snapshotProposal.ipfsHash,
-    }
-
-    discourseProposal = await Discourse.get().createPost(
-      {
-        category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
-        title: templates.forumTitle(discourseTemplateProps),
-        raw: await templates.forumDescription(discourseTemplateProps),
-      },
-      DISCOURSE_AUTH
-    )
-  } catch (error: any) {
-    dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw new RequestError(`Forum error: ${error.body.errors.join(', ')}`, RequestError.InternalServerError, error)
-  }
-
-  logger.log('Discourse proposal created', {
-    forum_url: forumUrl({
-      discourse_topic_slug: discourseProposal.topic_slug,
-      discourse_topic_id: discourseProposal.topic_id,
-    }),
-    discourse_proposal: JSON.stringify(discourseProposal),
-  })
-
-  //
-  // Create proposal in DB
-  //
-
-  const newProposal: ProposalAttributes = {
-    ...data,
-    id,
-    title,
-    description,
-    configuration: JSON.stringify(data.configuration),
-    status: ProposalStatus.Active,
-    snapshot_id: snapshotProposal.ipfsHash,
-    snapshot_space: SNAPSHOT_SPACE,
-    snapshot_proposal: JSON.stringify(JSON.parse(snapshotContent.msg).payload),
-    snapshot_signature: snapshotContent.sig,
-    snapshot_network: snapshotSpace.network,
-    discourse_id: discourseProposal.id,
-    discourse_topic_id: discourseProposal.topic_id,
-    discourse_topic_slug: discourseProposal.topic_slug,
-    start_at: start.toJSON() as any,
-    finish_at: end.toJSON() as any,
-    deleted: false,
-    deleted_by: null,
-    enacted: false,
-    enacted_by: null,
-    enacted_description: null,
-    enacting_tx: null,
-    vesting_address: null,
-    passed_by: null,
-    passed_description: null,
-    rejected_by: null,
-    rejected_description: null,
-    created_at: start.toJSON() as any,
-    updated_at: start.toJSON() as any,
-    textsearch: ProposalModel.textsearch(title, description, data.user, null),
-  }
-
-  try {
-    await ProposalModel.create(newProposal)
-    await VotesModel.createEmpty(id)
-    if (coAuthors) {
-      CoauthorModel.createMultiple(id, coAuthors)
-    }
-  } catch (err) {
-    dropDiscourseTopic(discourseProposal.topic_id)
-    dropSnapshotProposal(SNAPSHOT_SPACE, snapshotProposal.ipfsHash)
-    throw err
-  }
-
-  return ProposalModel.parse(newProposal)
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {
@@ -630,14 +394,14 @@ export function commentProposalUpdateInDiscourse(id: string) {
       raw: updateMessage,
       created_at: new Date().toJSON(),
     }
-    await Discourse.get().commentOnPost(discourseComment, DISCOURSE_AUTH)
+    await Discourse.get().commentOnPost(discourseComment)
   })
 }
 
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
-  if (!isCommitee(user)) {
+  if (!isCommittee(user)) {
     throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
   }
 
@@ -697,25 +461,7 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   const id = req.params.proposal
   const proposal = await getProposal(req)
 
-  const allowToRemove = proposal.user === user || isCommitee(user)
-  if (!allowToRemove) {
-    throw new RequestError('Forbidden', RequestError.Forbidden)
-  }
-
-  await ProposalModel.update<ProposalAttributes>(
-    {
-      deleted: true,
-      deleted_by: user,
-      updated_at,
-      status: ProposalStatus.Deleted,
-    },
-    {
-      id,
-    }
-  )
-  dropDiscourseTopic(proposal.discourse_topic_id)
-  dropSnapshotProposal(proposal.snapshot_space, proposal.snapshot_id)
-  return true
+  return await ProposalService.removeProposal(proposal, user, updated_at, id)
 }
 
 export async function proposalComments(req: Request<{ proposal: string }>) {
@@ -748,8 +494,8 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
-  const userVp = await Snapshot.get().getVotingPower(user, SNAPSHOT_SPACE)
-  if (userVp.totalVp < requiredVp) {
+  const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
+  if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }

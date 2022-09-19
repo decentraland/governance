@@ -11,11 +11,11 @@ export type Delegate = VoteHistory & {
 }
 
 function useDelegatesInfo(addresses: string[]): Delegate[] {
-  addresses = addresses.map((addr) => addr.toLowerCase())
+  const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
 
-  const { votingPower } = useVotingPowerBalanceList(addresses)
-  const { pickedByResults } = usePickedBy(addresses)
-  const { addressesVotesTotals } = useAddressesVotesTotals(addresses)
+  const { votingPower } = useVotingPowerBalanceList(formattedAddresses)
+  const { pickedByResults } = usePickedBy(formattedAddresses)
+  const { addressesVotesTotals } = useAddressesVotesTotals(formattedAddresses)
 
   return useMemo(
     () =>
@@ -24,7 +24,7 @@ function useDelegatesInfo(addresses: string[]): Delegate[] {
         ...addressesVotesTotals[delegate.address.toLowerCase()],
         totalVP: votingPower[delegate.address]?.totalVp || 0,
       })),
-    [pickedByResults, votingPower]
+    [pickedByResults, votingPower, addressesVotesTotals]
   )
 }
 

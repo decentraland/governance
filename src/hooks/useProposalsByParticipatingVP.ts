@@ -3,13 +3,13 @@ import { useMemo } from 'react'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { compact, orderBy } from 'lodash'
 
-import { Snapshot } from '../api/Snapshot'
+import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 
 import useProposals from './useProposals'
 
 export default function useProposalsByParticipatingVP(start: Date, end: Date) {
   const [snapshotProposals, snapshotProposalsState] = useAsyncMemo(async () => {
-    const pendingProposals = await Snapshot.get().getPendingProposals(start, end, ['id'], 5)
+    const pendingProposals = await SnapshotGraphql.get().getPendingProposals(start, end, ['id'], 5)
     return orderBy(pendingProposals, ['scores_total'], ['desc'])
   })
   const snapshotIds = useMemo(() => snapshotProposals?.map((item) => item.id).join(','), [snapshotProposals])

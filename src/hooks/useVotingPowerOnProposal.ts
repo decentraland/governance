@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { DetailedScores } from '../api/Snapshot'
+import { DetailedScores } from '../clients/SnapshotGraphql'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
 import { Vote } from '../entities/Votes/types'
@@ -51,7 +51,7 @@ export default function useVotingPowerOnProposal(
       const addressVp = scoresAtProposalCreation[address].ownVp || 0
       return { addressVp, delegatedVp }
     },
-    [votes, address, proposal, delegators],
+    [votes, address, proposal, delegators, isLoadingDelegators],
     { initialValue: initialVotingPowerOnProposal }
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp

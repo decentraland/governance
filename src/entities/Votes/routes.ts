@@ -2,13 +2,11 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { Snapshot, SnapshotVote } from '../../api/Snapshot'
+import { SnapshotGraphql, SnapshotVote } from '../../clients/SnapshotGraphql'
 import ProposalModel from '../Proposal/model'
 import { getProposal } from '../Proposal/routes'
 import { ProposalAttributes } from '../Proposal/types'
-import { SNAPSHOT_SPACE } from '../Snapshot/constants'
 
 import VotesModel from './model'
 import { Vote, VoteAttributes } from './types'
@@ -47,7 +45,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 }
 
 export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
-  return Snapshot.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
+  return SnapshotGraphql.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
 }
 
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
@@ -70,18 +68,6 @@ export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, 
   return votes
 }
 
-export async function getProposalVote(req: Request<{ proposal: string; address: string }>) {
-  const proposal = await getProposal(req)
-  const address = String(req.params.address).toLowerCase()
-
-  if (!isEthereumAddress(address)) {
-    return null
-  }
-
-  const latestVotes = await VotesModel.getVotes(proposal.id)
-  return latestVotes?.votes[address.toLowerCase()] || null
-}
-
 export async function getCachedVotes(req: Request) {
   const list = toProposalIds(req.query.id as string[])
   const scores = await VotesModel.findAny(list)
@@ -98,19 +84,19 @@ export async function getVotes(proposal_id: string) {
 
 async function getAddressVotes(req: Request) {
   const address = req.params.address
-  const votes = await Snapshot.get().getAddressVotes(SNAPSHOT_SPACE, address)
+  const votes = await SnapshotGraphql.get().getAddressVotes(address)
 
   if (votes.length === 0) {
     return []
   }
 
-  const proposalIds = votes.map((vote) => vote.proposal.id)
+  const proposalIds = votes.map((vote) => vote.proposal!.id)
   const proposals = await ProposalModel.findFromSnapshotIds(proposalIds)
 
   const votesWithProposalData = []
 
   for (const vote of votes) {
-    const currentProposal = proposals.find((item) => item.snapshot_id === vote.proposal.id)
+    const currentProposal = proposals.find((item) => item.snapshot_id === vote.proposal!.id)
 
     votesWithProposalData.push({
       ...vote,
