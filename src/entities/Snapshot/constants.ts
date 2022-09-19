@@ -5,3 +5,4 @@ export const SNAPSHOT_URL = process.env.GATSBY_SNAPSHOT_URL || ''
 export const SNAPSHOT_QUERY_ENDPOINT = process.env.GATSBY_SNAPSHOT_QUERY_ENDPOINT || ''
 export const SNAPSHOT_PRIVATE_KEY = process.env.SNAPSHOT_PRIVATE_KEY || ''
 export const GATSBY_SNAPSHOT_API = process.env.GATSBY_SNAPSHOT_API || ''
+export const SNAPSHOT_DELEGATION_URL = `https://snapshot.org/#/delegate/${SNAPSHOT_SPACE}`

@@ -6,8 +6,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
+import Divider from '../../Common/Divider'
 import Megaphone from '../../Icon/Megaphone'
-import Divider from '../../Section/Divider'
 
 import ProposalUpdate from './ProposalUpdate'
 import './ProposalUpdates.css'

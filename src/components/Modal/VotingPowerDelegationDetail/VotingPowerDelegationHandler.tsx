@@ -13,11 +13,13 @@ import Info from '../../Icon/Info'
 import './VotingPowerDelegationHandler.css'
 
 interface Props {
+  buttonText: string
   candidateAddress: string
   userVP: number
+  basic?: boolean
 }
 
-function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
+function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, basic }: Props) {
   const t = useFormatMessage()
   const [isLoading, setLoading] = useState(false)
   const [isError, setError] = useState(false)
@@ -81,11 +83,12 @@ function VotingPowerDelegationHandler({ candidateAddress, userVP }: Props) {
             disabled={isLoading || !isContractUsable || isDelegatedGlobally}
             loading={isLoading}
             inverted={isRevocable}
-            primary
+            primary={!basic || (basic && isRevocable)}
+            basic={basic && !isRevocable}
             size="small"
             onClick={handleClick}
           >
-            {isRevocable ? t('modal.vp_delegation.revoke_delegation_button') : t('modal.vp_delegation.delegate_button')}
+            {isRevocable ? t('modal.vp_delegation.revoke_delegation_button') : buttonText}
           </Button>
         </>
       )}

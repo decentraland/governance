@@ -8,9 +8,13 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import DelegationCards from '../components/Delegation/DelegationCards'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import VotingPowerDelegationHandler from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
+import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
+import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 export default function ProfilePage() {
@@ -20,6 +24,8 @@ export default function ProfilePage() {
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
+
+  const { delegation, delegationState, scores, isLoadingScores, ownVotingPower } = useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
     return (
@@ -51,7 +57,30 @@ export default function ProfilePage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
-      <Container className="Profile__Container"></Container>
+      <Container className="Profile__Container">
+        <ProfileBox
+          title={t('page.profile.delegators.title')}
+          info={t('page.profile.delegators.helper')}
+          action={
+            !isLoggedUserProfile &&
+            address && (
+              <VotingPowerDelegationHandler
+                basic
+                buttonText={t('page.profile.delegators.delegate_action')}
+                userVP={ownVotingPower}
+                candidateAddress={address}
+              />
+            )
+          }
+        >
+          <DelegationCards
+            delegation={delegation}
+            scores={scores}
+            isLoading={delegationState.loading || isLoadingScores}
+            isUserProfile={isLoggedUserProfile}
+          />
+        </ProfileBox>
+      </Container>
     </div>
   )
 }
