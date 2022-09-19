@@ -36,7 +36,6 @@ export default function BalancePage() {
   const { vpDistribution, isLoadingVpDistribution, delegation, delegationState, scores, isLoadingScores } =
     useVotingPowerInformation(address)
 
-  console.log('vpDistribution', vpDistribution)
   if (isUnderMaintenance()) {
     return (
       <>
