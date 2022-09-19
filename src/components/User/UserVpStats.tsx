@@ -26,25 +26,25 @@ export default function UserVpStats({ address }: Props) {
         <div className="UserVpStats__StatBoxes">
           <UserStatBox
             title={'Consolidated Voting Power'}
-            value={vpDistribution?.totalVp}
+            value={vpDistribution?.total}
             info={'info text'}
             loading={isLoadingVpDistribution}
           />
           <UserStatBox
             title={'Own Voting Power'}
-            value={vpDistribution?.ownVp}
+            value={vpDistribution?.own}
             info={'info text'}
             loading={isLoadingVpDistribution}
           />
           <UserStatBox
             title={'Delegated Voting Power'}
-            value={vpDistribution?.delegatedVp}
+            value={vpDistribution?.delegated}
             info={'info text'}
             loading={isLoadingVpDistribution}
           />
         </div>
         <ProfileBox title={'Voting Power distribution'} info={'some info'}>
-          <VotingPowerDistribution vpDistribution={vpDistribution} />
+          <VotingPowerDistribution vpDistribution={vpDistribution} isLoading={isLoadingVpDistribution} />
         </ProfileBox>
       </div>
       <UserAvatar address={address} />
