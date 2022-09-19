@@ -8,7 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
-import { useCoAuthorsByProposal } from '../../hooks/useCoAuthorsByProposal'
+import useCoAuthorsByProposal from '../../hooks/useCoAuthorsByProposal'
 import DateTooltip from '../Common/DateTooltip'
 import Username from '../User/Username'
 

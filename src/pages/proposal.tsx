@@ -41,8 +41,10 @@ import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
+import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -147,6 +149,9 @@ export default function ProposalPage() {
   )
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
+  const isCoauthor = !!useCoAuthorsByProposal(proposal).find(
+    (coauthor) => coauthor.address === account && coauthor.status === CoauthorStatus.APPROVED
+  )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
     if (proposal && account && (proposal.user === account || isCommittee)) {
@@ -213,7 +218,8 @@ export default function ProposalPage() {
   }
 
   const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
-  const showProposalUpdatesActions = isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && isOwner
+  const showProposalUpdatesActions =
+    isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
