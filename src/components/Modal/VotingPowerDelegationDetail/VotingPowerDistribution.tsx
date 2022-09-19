@@ -115,29 +115,50 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Mana" />
           <HelperText
-            text={t('modal.vp_delegation.details.stats_bar_mana_info')}
             labelText={t('modal.vp_delegation.details.stats_bar_mana')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_mana_info')}
+            position="bottom center"
           />
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
-          {t('modal.vp_delegation.details.stats_bar_name')}
+          <HelperText
+            labelText={t('modal.vp_delegation.details.stats_bar_name')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_mana_info')}
+            position="bottom center"
+          />
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__LinkedWearables" />
-          {t('modal.vp_delegation.details.stats_bar_linked_wearables')}
+          <HelperText
+            labelText={t('modal.vp_delegation.details.stats_bar_linked_wearables')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_linked_wearables_info')}
+            position="bottom center"
+          />
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Land" />
-          {t('modal.vp_delegation.details.stats_bar_land')}
+          <HelperText
+            labelText={t('modal.vp_delegation.details.stats_bar_land')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_land_info')}
+            position="bottom center"
+          />
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Estate" />
-          {t('modal.vp_delegation.details.stats_bar_estates')}
+          <HelperText
+            labelText={t('modal.vp_delegation.details.stats_bar_estates')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_estates_info')}
+            position="bottom center"
+          />
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Delegated" />
-          {t('modal.vp_delegation.details.stats_bar_delegated')}
+          <HelperText
+            labelText={t('modal.vp_delegation.details.stats_bar_delegated')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_delegated_info')}
+            position="bottom center"
+          />
         </div>
       </div>
     </div>

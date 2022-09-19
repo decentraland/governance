@@ -3,3 +3,11 @@ span.HelperText__Label {
   color: var(--black-600);
   border-bottom: 1px dashed var(--black-300);
 }
+
+.HelperText__Content > p.dg.Paragraph {
+  font-style: normal;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.4px;
+  color: var(--black-200);
+}

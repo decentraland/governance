@@ -28,19 +28,19 @@ export default function UserVpStats({ address }: Props) {
           <UserStatBox
             title={t('page.profile.user_vp_stats.consolidated_vp')}
             value={vpDistribution?.total}
-            info={'info text'}
+            info={t('page.profile.user_vp_stats.consolidated_vp_info')}
             loading={isLoadingVpDistribution}
           />
           <UserStatBox
             title={t('page.profile.user_vp_stats.own_vp')}
             value={vpDistribution?.own}
-            info={'info text'}
+            info={t('page.profile.user_vp_stats.own_vp_info')}
             loading={isLoadingVpDistribution}
           />
           <UserStatBox
             title={t('page.profile.user_vp_stats.delegated_vp')}
             value={vpDistribution?.delegated}
-            info={'info text'}
+            info={t('page.profile.user_vp_stats.delegated_vp_info')}
             loading={isLoadingVpDistribution}
           />
         </div>
