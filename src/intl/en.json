@@ -383,6 +383,7 @@
         "stats_match": "Match",
         "stats_match_helper": "This indicator displays the percentage of proposals where you and this Delegate voted choosing the same outcome",
         "stats_bar_mana": "Mana VP",
+        "stats_bar_mana_info": "*MANA Voting Power* comes from holding\nDecentraland’s own token, MANA, on the\nwallet used to create this account",
         "stats_bar_land": "Land VP",
         "stats_bar_name": "Names VP",
         "stats_bar_delegated": "Delegated VP",

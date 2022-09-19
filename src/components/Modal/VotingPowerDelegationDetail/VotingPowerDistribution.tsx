@@ -6,6 +6,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { VpDistribution } from '../../../clients/SnapshotGraphql'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
+import HelperText from '../../Helper/HelperText'
 
 import './VotingPowerDistribution.css'
 import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
@@ -113,7 +114,10 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
       <div className="VotingPowerDistribution__Labels">
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Mana" />
-          {t('modal.vp_delegation.details.stats_bar_mana')}
+          <HelperText
+            text={t('modal.vp_delegation.details.stats_bar_mana_info')}
+            labelText={t('modal.vp_delegation.details.stats_bar_mana')}
+          />
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
