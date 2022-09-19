@@ -191,6 +191,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 <VotingPowerDistribution
                   className="DelegationDetails__VotingPowerDistribution"
                   vpDistribution={vpDistribution}
+                  isLoading={isLoadingVpDistribution}
                 />
               </div>
 

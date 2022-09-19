@@ -1,5 +1,6 @@
 import React from 'react'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
@@ -16,34 +17,34 @@ interface Props {
 }
 
 export default function UserVpStats({ address }: Props) {
+  const t = useFormatMessage()
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
 
-  // TODO: internationalization
   return (
     <Container className="UserVpStats__Container">
       <div>
         <Username address={address} size="medium" className="UserVpStats__Username" />
         <div className="UserVpStats__StatBoxes">
           <UserStatBox
-            title={'Consolidated Voting Power'}
+            title={t('page.profile.user_vp_stats.consolidated_vp')}
             value={vpDistribution?.total}
             info={'info text'}
             loading={isLoadingVpDistribution}
           />
           <UserStatBox
-            title={'Own Voting Power'}
+            title={t('page.profile.user_vp_stats.own_vp')}
             value={vpDistribution?.own}
             info={'info text'}
             loading={isLoadingVpDistribution}
           />
           <UserStatBox
-            title={'Delegated Voting Power'}
+            title={t('page.profile.user_vp_stats.delegated_vp')}
             value={vpDistribution?.delegated}
             info={'info text'}
             loading={isLoadingVpDistribution}
           />
         </div>
-        <ProfileBox title={'Voting Power distribution'} info={'some info'}>
+        <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')} info={'some info'}>
           <VotingPowerDistribution vpDistribution={vpDistribution} isLoading={isLoadingVpDistribution} />
         </ProfileBox>
       </div>
