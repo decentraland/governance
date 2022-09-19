@@ -287,7 +287,7 @@
     },
     "update_status_proposal": {
       "title": "Confirmation",
-      "description": "Are you sure you want to set this proposal as **{status}**? This action cannot be undone.",
+      "description": "Are you sure you want to set this proposal as **{status}**? This action may not be undone.",
       "grant_vesting_address": "Vesting Contract Address",
       "grant_enacting_tx": "Enacting Transaction Hash",
       "comments": "Comments",
@@ -623,6 +623,7 @@
       "time_left_label": "Voting ends {countdown}",
       "proposal_status": "Proposal {status}",
       "enact": "Enact proposal",
+      "edit_enacted_data": "Edit enacted data",
       "pass": "Pass proposal",
       "reject": "Reject proposal",
       "delete": "Delete proposal",

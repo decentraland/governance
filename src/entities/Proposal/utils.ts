@@ -122,6 +122,7 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
     case ProposalStatus.Finished:
       return next === ProposalStatus.Rejected || next === ProposalStatus.Passed || next === ProposalStatus.Enacted
     case ProposalStatus.Passed:
+    case ProposalStatus.Enacted:
       return next === ProposalStatus.Enacted
     default:
       return false
