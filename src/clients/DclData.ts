@@ -43,7 +43,6 @@ type Grants = {
   tier: keyof typeof TransparencyGrantsTiers
   size: number
   status: string
-  symbol: string
   title: string
   token: {
     symbol: string
