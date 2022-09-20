@@ -24,9 +24,9 @@ const VestingProgress = ({ grant }: Props) => {
   const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null
   const vestedAmountText = `${t(`general.number`, {
     value: contract ? contract.vestedAmount : tx_amount || 0,
-  })} ${token}`
+  })} ${token?.symbol}`
   const releasedText = contract
-    ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`
+    ? `${t(`general.number`, { value: contract.released })} ${token?.symbol} ${t('page.grants.released')}`
     : t('page.grants.one_time_payment')
   const enactedDate = Time.unix(enacted_at).fromNow()
 
