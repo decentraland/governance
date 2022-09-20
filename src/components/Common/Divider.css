@@ -1,21 +1,9 @@
 .Divider {
   width: 100%;
-  border: none;
+  border-top: 1px solid;
   margin: 0;
 }
 
 .Divider__Container--small {
   width: 40px;
-}
-
-.Divider--black-300 {
-  border-top: 1px solid var(--black-300);
-}
-
-.Divider--black-400 {
-  border-top: 1px solid var(--black-400);
-}
-
-.Divider--black-600 {
-  border-top: 1px solid var(--black-600);
 }

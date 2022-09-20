@@ -16,9 +16,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 13px;
 }
 
-.ProfileBox__Header .ProfileBox__Header--title > span {
+.ProfileBox__HeaderTitle > span {
   font-weight: 500;
   font-size: 13px;
   line-height: 18px;
@@ -27,16 +28,12 @@
   margin-right: 4px;
 }
 
-.ProfileBox__Header > div {
+.ProfileBox__HeaderTitle {
   display: inline-flex;
   text-transform: uppercase;
 }
 
-.ProfileBox__Container .Divider__Container {
-  margin: 13px 0;
-}
-
 .ProfileBox__Divider {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   margin-top: 0 !important;
 }
