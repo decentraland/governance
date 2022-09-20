@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { PreviewEmote } from '@dcl/schemas'
 import { WearablePreview } from 'decentraland-ui'
 
 import useProfile from '../../hooks/useProfile'
@@ -11,18 +12,31 @@ interface Props {
 }
 
 export default function UserAvatar({ address }: Props) {
-  const [isLoadingWearablePreview, setIsLoadingWearablePreview] = useState(true)
-  const [wearablePreviewError, setWearablePreviewError] = useState(false)
+  const [wearablePreviewController, setWearablePreviewController] = useState<any>()
+
   const { hasDclProfile } = useProfile(address)
   const handleLoad = useCallback(() => {
-    setIsLoadingWearablePreview(false)
-    setWearablePreviewError(false)
+    setWearablePreviewController(WearablePreview.createController('wearable-preview'))
   }, [])
+
   const handleError = useCallback((error) => {
     console.warn(error)
-    setWearablePreviewError(true)
-    setIsLoadingWearablePreview(false)
   }, [])
+
+  const previewEmote = useMemo(() => {
+    const poses = [PreviewEmote.DAB, PreviewEmote.FIST_PUMP, PreviewEmote.DANCE, PreviewEmote.HEAD_EXPLODE]
+    return poses[(Math.random() * poses.length) | 0]
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (wearablePreviewController) {
+        wearablePreviewController.emote.play()
+      }
+    }, 20000)
+
+    return () => clearInterval(interval)
+  }, [wearablePreviewController])
 
   if (!address || !hasDclProfile) {
     return null
@@ -30,7 +44,15 @@ export default function UserAvatar({ address }: Props) {
 
   return (
     <div className="UserAvatar__Container">
-      <WearablePreview profile={address} onLoad={handleLoad} onError={handleError} background={'FFFFFF'} />
+      <WearablePreview
+        id="wearable-preview"
+        profile={address}
+        onLoad={handleLoad}
+        onError={handleError}
+        background={'FFFFFF'}
+        emote={previewEmote}
+        disableAutoRotate={true}
+      />
     </div>
   )
 }
