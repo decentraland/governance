@@ -3,7 +3,7 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
+import { VpDistribution } from '../../clients/SnapshotGraphql'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
@@ -14,11 +14,12 @@ import Username from './Username'
 
 interface Props {
   address: string
+  vpDistribution: VpDistribution | null
+  isLoadingVpDistribution: boolean
 }
 
-export default function UserVpStats({ address }: Props) {
+export default function UserVpStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
-  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
 
   return (
     <Container className="UserVpStats__Container">
@@ -45,7 +46,11 @@ export default function UserVpStats({ address }: Props) {
           />
         </div>
         <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')} info={'some info'}>
-          <VotingPowerDistribution vpDistribution={vpDistribution} isLoading={isLoadingVpDistribution} />
+          <VotingPowerDistribution
+            vpDistribution={vpDistribution}
+            isLoading={isLoadingVpDistribution}
+            className="UserVpStats__VpDistribution"
+          />
         </ProfileBox>
       </div>
       <UserAvatar address={address} />

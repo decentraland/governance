@@ -27,7 +27,8 @@ export default function ProfilePage() {
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
-  const { delegation, delegationState, scores, isLoadingScores, ownVotingPower } = useVotingPowerInformation(address)
+  const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
+    useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
     return (
@@ -47,7 +48,7 @@ export default function ProfilePage() {
     return <LoadingView />
   }
 
-  if (!userAddress) {
+  if (!address) {
     return <LogIn title={t('page.profile.title') || ''} description={t('page.profile.description') || ''} />
   }
 
@@ -59,18 +60,23 @@ export default function ProfilePage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
-      <UserVpStats address={userAddress} />
+      <UserVpStats
+        address={address}
+        vpDistribution={vpDistribution}
+        isLoadingVpDistribution={isLoadingVpDistribution}
+      />
       <Container className="Profile__Container">
         <ProfileBox
           title={t('page.profile.delegators.title')}
           info={t('page.profile.delegators.helper')}
           action={
             !isLoggedUserProfile &&
+            vpDistribution &&
             address && (
               <VotingPowerDelegationHandler
                 basic
                 buttonText={t('page.profile.delegators.delegate_action')}
-                userVP={ownVotingPower}
+                userVP={vpDistribution.own}
                 candidateAddress={address}
               />
             )

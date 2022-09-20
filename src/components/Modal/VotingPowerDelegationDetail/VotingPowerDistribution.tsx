@@ -124,7 +124,7 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
           <HelperText
             labelText={t('modal.vp_delegation.details.stats_bar_name')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_mana_info')}
+            tooltipText={t('modal.vp_delegation.details.stats_bar_name_info')}
             position="bottom center"
           />
         </div>

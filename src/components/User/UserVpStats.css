@@ -30,3 +30,7 @@ span.Username.UserVpStats__Username > img.dg.dcl-avatar.dcl-avatar--medium.dcl-a
   gap: 23px;
   margin-bottom: 44px;
 }
+
+.UserVpStats__VpDistribution {
+  margin-top: 24px;
+}

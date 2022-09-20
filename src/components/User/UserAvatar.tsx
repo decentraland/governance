@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { PreviewEmote } from '@dcl/schemas'
+import { PreviewCamera, PreviewEmote } from '@dcl/schemas'
 import { WearablePreview } from 'decentraland-ui'
 
 import useProfile from '../../hooks/useProfile'
@@ -52,6 +52,7 @@ export default function UserAvatar({ address }: Props) {
         background={'FFFFFF'}
         emote={previewEmote}
         disableAutoRotate={true}
+        camera={PreviewCamera.STATIC}
       />
     </div>
   )
