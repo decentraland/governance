@@ -300,20 +300,25 @@ export default function ProposalPage() {
                     {t('page.proposal_detail.delete')}
                   </Button>
                 )}
-                {isCommittee && proposal?.status === ProposalStatus.Passed && (
-                  <Button
-                    basic
-                    loading={updatingStatus}
-                    fluid
-                    onClick={() =>
-                      patchOptions({
-                        confirmStatusUpdate: ProposalStatus.Enacted,
-                      })
-                    }
-                  >
-                    {t('page.proposal_detail.enact')}
-                  </Button>
-                )}
+                {isCommittee &&
+                  (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted) && (
+                    <Button
+                      basic
+                      loading={updatingStatus}
+                      fluid
+                      onClick={() =>
+                        patchOptions({
+                          confirmStatusUpdate: ProposalStatus.Enacted,
+                        })
+                      }
+                    >
+                      {t(
+                        proposal?.status === ProposalStatus.Passed
+                          ? 'page.proposal_detail.enact'
+                          : 'page.proposal_detail.edit_enacted_data'
+                      )}
+                    </Button>
+                  )}
                 {isCommittee && proposal?.status === ProposalStatus.Finished && (
                   <>
                     <Button
