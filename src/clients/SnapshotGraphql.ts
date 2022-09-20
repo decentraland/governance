@@ -52,7 +52,6 @@ export type Delegation = {
 export type DelegationResult = {
   delegatedTo: Delegation[]
   delegatedFrom: Delegation[]
-  hasMoreDelegatedFrom: boolean
 }
 
 type ScoreDetail = {
@@ -66,7 +65,6 @@ export type DetailedScores = Record<string, ScoreDetail>
 export const EMPTY_DELEGATION: DelegationResult = {
   delegatedTo: [],
   delegatedFrom: [],
-  hasMoreDelegatedFrom: false,
 }
 
 export type VoteEventResponse = SnapshotQueryResponse<{ votes: VoteEvent[] }>

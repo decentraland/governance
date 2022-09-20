@@ -40,7 +40,7 @@ export class SnapshotSubgraph {
     return SNAPSHOT_QUERY_ENDPOINT
   }
 
-  async fetchDelegates(query: string, variables: any) {
+  async getDelegates(query: string, variables: any) {
     const request = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },

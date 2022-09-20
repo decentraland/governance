@@ -124,30 +124,27 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
     return []
   }
 
-  const unique_delegations = new Map<string, Delegation>()
+  const uniqueDelegations = new Map<string, Delegation>()
 
   for (const deleg of delegations) {
-    if (unique_delegations.has(deleg.delegator)) {
-      if (unique_delegations.get(deleg.delegator)?.space !== space) {
-        unique_delegations.set(deleg.delegator, deleg)
+    if (uniqueDelegations.has(deleg.delegator)) {
+      if (uniqueDelegations.get(deleg.delegator)?.space !== space) {
+        uniqueDelegations.set(deleg.delegator, deleg)
       }
     } else {
-      unique_delegations.set(deleg.delegator, deleg)
+      uniqueDelegations.set(deleg.delegator, deleg)
     }
   }
 
-  return Array.from(unique_delegations.values())
+  return Array.from(uniqueDelegations.values())
 }
 
-function getFetchDelegatesVariables(address: string, blockNumber: string | number) {
-  const variables: any = {
+function getDelegatesVariables(address: string, blockNumber?: string | number) {
+  return {
     address: address.toLowerCase(),
     space: SNAPSHOT_SPACE,
+    blockNumber: blockNumber || 'latest',
   }
-  if (blockNumber) {
-    variables.blockNumber = blockNumber
-  }
-  return variables
 }
 
 async function getDelegations(
@@ -158,17 +155,15 @@ async function getDelegations(
   if (!SNAPSHOT_SPACE || !address) {
     return EMPTY_DELEGATION
   }
-  const variables = getFetchDelegatesVariables(address, blockNumber || 'latest')
+  const variables = getDelegatesVariables(address, blockNumber)
   try {
-    const delegates = await SnapshotSubgraph.get().fetchDelegates(query, variables)
+    const delegates = await SnapshotSubgraph.get().getDelegates(query, variables)
     if (!delegates) {
       return EMPTY_DELEGATION
     }
-    const filteredDelegatedFrom = filterDelegationFrom(delegates.delegatedFrom, SNAPSHOT_SPACE)
     return {
       delegatedTo: filterDelegationTo(delegates.delegatedTo, SNAPSHOT_SPACE),
-      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
-      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99,
+      delegatedFrom: filterDelegationFrom(delegates.delegatedFrom, SNAPSHOT_SPACE),
     }
   } catch (error) {
     console.error(error)
