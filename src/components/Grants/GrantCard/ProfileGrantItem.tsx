@@ -4,7 +4,6 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
-import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { GrantAttributes } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
@@ -13,6 +12,7 @@ import Username from '../../User/Username'
 import GrantPill from '../GrantPill'
 
 import './ProfileGrantItem.css'
+import VestingProgress from './VestingProgress'
 
 interface Props {
   grant: GrantAttributes
@@ -30,9 +30,6 @@ function ProfileGrantItem({ grant }: Props) {
         <div>
           <h3 className="ProfileGrantItem__Title">{title}</h3>
           <span className="ProfileGrantItem__Details">
-            <Mobile>
-              <GrantPill type={grant.configuration.category} />
-            </Mobile>
             <span className="ProfileGrantItem__Details">
               <Markdown>
                 {t('page.profile.grants.item_description', {
@@ -45,11 +42,15 @@ function ProfileGrantItem({ grant }: Props) {
           </span>
         </div>
       </div>
-      <div className="ProfileGrantItem__PillContainer">
-        <GrantPill type={grant.configuration.category} />
+      <div className="ProfileGrantItem__VestingSection">
+        <div className="ProfileGrantItem__PillContainer">
+          <GrantPill type={grant.configuration.category} />
+        </div>
+        <div className="ProfileGrantItem__VestingProgressContainer">
+          <VestingProgress grant={grant} basic />
+        </div>
+        <Back />
       </div>
-      <div className="statusSection">STATUS</div>
-      <Back />
     </Link>
   )
 }

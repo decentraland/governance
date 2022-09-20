@@ -79,7 +79,28 @@
 }
 
 .ProfileGrantItem__PillContainer {
-  min-width: 148px;
+  min-width: 100px;
+}
+
+.ProfileGrantItem__VestingSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ProfileGrantItem__VestingProgressContainer * {
+  margin: 0;
+}
+
+.ProfileGrantItem__VestingProgressContainer {
+  min-width: 80px;
+  margin-right: 20px;
+}
+
+@media (min-width: 992px) {
+  .ProfileGrantItem__VestingProgressContainer {
+    min-width: 130px;
+  }
 }
 
 .ProfileGrantItem .dcl.back {

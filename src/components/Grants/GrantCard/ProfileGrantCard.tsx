@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react'
 
-import useGrantsByUser from '../../../hooks/useGrantsByUser'
+import { GrantAttributes } from '../../../entities/Proposal/types'
+import { useSortingByKey } from '../../../hooks/useSortingByKey'
 
 import ProfileGrantItem from './ProfileGrantItem'
 
 interface Props {
-  address: string
+  grants: GrantAttributes[]
 }
 
 const MAX_GRANTS = 4
 
-function ProfileGrantCard({ address }: Props) {
-  const [grants, grantsState] = useGrantsByUser(address, true)
-  const grantsToShow = useMemo(() => [...grants.current, ...grants.past].slice(0, MAX_GRANTS), [grants])
+function ProfileGrantCard({ grants }: Props) {
+  const { sorted } = useSortingByKey(grants, 'enacted_at')
+  const grantsToShow = useMemo(() => sorted.slice(0, MAX_GRANTS), [sorted])
 
   return (
     <>

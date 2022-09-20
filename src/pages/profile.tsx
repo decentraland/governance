@@ -15,6 +15,7 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import VotingPowerDelegationHandler from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
+import useGrantsByUser from '../hooks/useGrantsByUser'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -28,7 +29,10 @@ export default function ProfilePage() {
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
 
+  const [grants] = useGrantsByUser(address!, true)
   const { delegation, delegationState, scores, isLoadingScores, ownVotingPower } = useVotingPowerInformation(address)
+
+  const areGrants = useMemo(() => grants.total > 0, [grants.total])
 
   if (isUnderMaintenance()) {
     return (
@@ -61,9 +65,11 @@ export default function ProfilePage() {
       />
       <Navigation activeTab={NavigationTab.Profile} />
       <Container className="Profile__Container">
-        <ProfileBox title={t('page.profile.grants.title')}>
-          <ProfileGrantCard address={address!} />
-        </ProfileBox>
+        {areGrants && (
+          <ProfileBox title={t('page.profile.grants.title')}>
+            <ProfileGrantCard grants={[...grants.current, ...grants.past]} />
+          </ProfileBox>
+        )}
         <ProfileBox
           title={t('page.profile.delegators.title')}
           info={t('page.profile.delegators.helper')}

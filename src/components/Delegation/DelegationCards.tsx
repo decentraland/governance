@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from 'react'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -10,6 +8,7 @@ import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../constants'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
+import SkeletonBars from '../Common/SkeletonBars'
 import Scale from '../Icon/Scale'
 
 import './DelegationCards.css'
@@ -52,13 +51,7 @@ function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props
 
   return (
     <div className="DelegationCards">
-      {isLoading && (
-        <>
-          <Skeleton height={70} />
-          <br />
-          <Skeleton height={70} />
-        </>
-      )}
+      {isLoading && <SkeletonBars amount={2} height={70} />}
       {!isLoading &&
         (delegationsToShow.length > 0 ? (
           <Grid columns={3} stackable>
