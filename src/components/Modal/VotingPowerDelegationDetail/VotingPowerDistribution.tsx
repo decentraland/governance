@@ -19,15 +19,34 @@ interface Props {
 
 const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
 
+function getVpDistributionPopup(value: number, total: number, label: string, className: string) {
+  const valuePercentage = getPercentage(value, total)
+  return (
+    <>
+      {value > 0 && (
+        <VotingPowerDistributionPopup amount={value} percentage={valuePercentage} label={label}>
+          <div
+            className={TokenList.join(['VotingPowerDistributionBar__Item', className])}
+            style={{ width: valuePercentage }}
+          />
+        </VotingPowerDistributionPopup>
+      )}
+    </>
+  )
+}
+
+function getVpDistributionLabel(labelText: string, tooltipText: string, className: string) {
+  return (
+    <div className="VotingPowerDistribution__Label">
+      <div className={TokenList.join(['VotingPowerDistribution__Color', className])} />
+      <HelperText labelText={labelText} tooltipText={tooltipText} position="bottom center" />
+    </div>
+  )
+}
+
 const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props) => {
   const t = useFormatMessage()
   const { total, mana, names, land, delegated, estate, linkedWearables } = vpDistribution || EMPTY_DISTRIBUTION
-  const manaPercentage = getPercentage(mana, total)
-  const namePercentage = getPercentage(names, total)
-  const landPercentage = getPercentage(land, total)
-  const delegatedPercentage = getPercentage(delegated, total)
-  const estatesPercentage = getPercentage(estate, total)
-  const linkedWearablesPercentage = getPercentage(linkedWearables, total)
 
   return (
     <div className={className}>
@@ -37,129 +56,75 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
         <div
           className={TokenList.join(['VotingPowerDistributionBar', total <= 0 && 'VotingPowerDistributionBar--Empty'])}
         >
-          {mana > 0 && (
-            <VotingPowerDistributionPopup
-              amount={mana}
-              percentage={manaPercentage}
-              label={t('modal.vp_delegation.details.stats_mana')}
-            >
-              <div
-                className="VotingPowerDistributionBar__Item VotingPowerDistribution__Mana"
-                style={{ width: manaPercentage }}
-              />
-            </VotingPowerDistributionPopup>
+          {getVpDistributionPopup(
+            mana,
+            total,
+            t('modal.vp_delegation.details.stats_mana'),
+            'VotingPowerDistribution__Mana'
           )}
-          {names > 0 && (
-            <VotingPowerDistributionPopup
-              amount={names}
-              percentage={namePercentage}
-              label={t('modal.vp_delegation.details.stats_name')}
-            >
-              <div
-                className="VotingPowerDistributionBar__Item VotingPowerDistribution__Name"
-                style={{ width: namePercentage }}
-              />
-            </VotingPowerDistributionPopup>
+          {getVpDistributionPopup(
+            names,
+            total,
+            t('modal.vp_delegation.details.stats_name'),
+            'VotingPowerDistribution__Name'
           )}
-          {linkedWearables > 0 && (
-            <VotingPowerDistributionPopup
-              amount={linkedWearables}
-              percentage={linkedWearablesPercentage}
-              label={t('modal.vp_delegation.details.stats_linked_wearables')}
-            >
-              <div
-                className="VotingPowerDistributionBar__Item VotingPowerDistribution__LinkedWearables"
-                style={{ width: linkedWearablesPercentage }}
-              />
-            </VotingPowerDistributionPopup>
+          {getVpDistributionPopup(
+            linkedWearables,
+            total,
+            t('modal.vp_delegation.details.stats_linked_wearables'),
+            'VotingPowerDistribution__LinkedWearables'
           )}
-          {land > 0 && (
-            <VotingPowerDistributionPopup
-              amount={land}
-              percentage={landPercentage}
-              label={t('modal.vp_delegation.details.stats_land')}
-            >
-              <div
-                className="VotingPowerDistributionBar__Item VotingPowerDistribution__Land"
-                style={{ width: landPercentage }}
-              />
-            </VotingPowerDistributionPopup>
+          {getVpDistributionPopup(
+            land,
+            total,
+            t('modal.vp_delegation.details.stats_land'),
+            'VotingPowerDistribution__Land'
           )}
-          {estate > 0 && (
-            <VotingPowerDistributionPopup
-              amount={estate}
-              percentage={estatesPercentage}
-              label={t('modal.vp_delegation.details.stats_estate')}
-            >
-              <div
-                className="VotingPowerDistributionBar__Item VotingPowerDistribution__Estate"
-                style={{ width: estatesPercentage }}
-              />
-            </VotingPowerDistributionPopup>
+          {getVpDistributionPopup(
+            estate,
+            total,
+            t('modal.vp_delegation.details.stats_estate'),
+            'VotingPowerDistribution__Estate'
           )}
-          {delegated > 0 && (
-            <VotingPowerDistributionPopup
-              amount={delegated}
-              percentage={delegatedPercentage}
-              label={t('modal.vp_delegation.details.stats_delegated')}
-            >
-              <div
-                className="VotingPowerDistributionBar__Item VotingPowerDistribution__Delegated"
-                style={{ width: delegatedPercentage }}
-              />
-            </VotingPowerDistributionPopup>
+          {getVpDistributionPopup(
+            delegated,
+            total,
+            t('modal.vp_delegation.details.stats_delegated'),
+            'VotingPowerDistribution__Delegated'
           )}
         </div>
       )}
       <div className="VotingPowerDistribution__Labels">
-        <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Mana" />
-          <HelperText
-            labelText={t('modal.vp_delegation.details.stats_bar_mana')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_mana_info')}
-            position="bottom center"
-          />
-        </div>
-        <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
-          <HelperText
-            labelText={t('modal.vp_delegation.details.stats_bar_name')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_name_info')}
-            position="bottom center"
-          />
-        </div>
-        <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__LinkedWearables" />
-          <HelperText
-            labelText={t('modal.vp_delegation.details.stats_bar_linked_wearables')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_linked_wearables_info')}
-            position="bottom center"
-          />
-        </div>
-        <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Land" />
-          <HelperText
-            labelText={t('modal.vp_delegation.details.stats_bar_land')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_land_info')}
-            position="bottom center"
-          />
-        </div>
-        <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Estate" />
-          <HelperText
-            labelText={t('modal.vp_delegation.details.stats_bar_estates')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_estates_info')}
-            position="bottom center"
-          />
-        </div>
-        <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Delegated" />
-          <HelperText
-            labelText={t('modal.vp_delegation.details.stats_bar_delegated')}
-            tooltipText={t('modal.vp_delegation.details.stats_bar_delegated_info')}
-            position="bottom center"
-          />
-        </div>
+        {getVpDistributionLabel(
+          t('modal.vp_delegation.details.stats_bar_mana'),
+          t('modal.vp_delegation.details.stats_bar_mana_info'),
+          'VotingPowerDistribution__Mana'
+        )}
+        {getVpDistributionLabel(
+          t('modal.vp_delegation.details.stats_bar_name'),
+          t('modal.vp_delegation.details.stats_bar_name_info'),
+          'VotingPowerDistribution__Name'
+        )}
+        {getVpDistributionLabel(
+          t('modal.vp_delegation.details.stats_bar_linked_wearables'),
+          t('modal.vp_delegation.details.stats_bar_linked_wearables_info'),
+          'VotingPowerDistribution__LinkedWearables'
+        )}
+        {getVpDistributionLabel(
+          t('modal.vp_delegation.details.stats_bar_land'),
+          t('modal.vp_delegation.details.stats_bar_land_info'),
+          'VotingPowerDistribution__Land'
+        )}
+        {getVpDistributionLabel(
+          t('modal.vp_delegation.details.stats_bar_estates'),
+          t('modal.vp_delegation.details.stats_bar_estates_info'),
+          'VotingPowerDistribution__Estate'
+        )}
+        {getVpDistributionLabel(
+          t('modal.vp_delegation.details.stats_bar_delegated'),
+          t('modal.vp_delegation.details.stats_bar_delegated_info'),
+          'VotingPowerDistribution__Delegated'
+        )}
       </div>
     </div>
   )

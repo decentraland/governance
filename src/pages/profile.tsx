@@ -18,8 +18,6 @@ import UserVpStats from '../components/User/UserVpStats'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
-import './profile.css'
-
 export default function ProfilePage() {
   const t = useFormatMessage()
   const location = useLocation()
