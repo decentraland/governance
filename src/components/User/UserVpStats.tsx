@@ -45,7 +45,7 @@ export default function UserVpStats({ address, vpDistribution, isLoadingVpDistri
             loading={isLoadingVpDistribution}
           />
         </div>
-        <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')} info={'some info'}>
+        <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')}>
           <VotingPowerDistribution
             vpDistribution={vpDistribution}
             isLoading={isLoadingVpDistribution}
