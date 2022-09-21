@@ -1,4 +1,4 @@
-span.HelperText__Label {
+.HelperText__Label {
   text-transform: uppercase;
   color: var(--black-600);
   border-bottom: 1px dashed var(--black-300);

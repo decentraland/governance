@@ -216,7 +216,7 @@ Connect your wallet and use the `setBalance` method on the `Contract -> Write Co
 - `amount (uint256)` is whatever you want. Take into account that `1000000000000000000 = 1 MANA`
 
 Take into account that the vp distribution response from snapshot returns an array with each VP.
-The order in which each value is returned depends on the orden in which strategies are added to the space on the [space settings](https://snapshot.org/#/snapshot.dcl.eth/settings)
+The order in which each value is returned depends on the order in which strategies are added to the space on the [space settings](https://snapshot.org/#/snapshot.dcl.eth/settings)
 
 #### Current Strategies Order
 * WMANA
