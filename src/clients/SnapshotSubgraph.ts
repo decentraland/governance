@@ -40,16 +40,37 @@ export class SnapshotSubgraph {
     return SNAPSHOT_QUERY_ENDPOINT
   }
 
-  async getDelegates(query: string, variables: any) {
-    const request = await fetch(this.queryEndpoint, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: query,
-        variables: variables,
-      }),
-    })
-    const body = await request.json()
-    return body.data as DelegationQueryResult
+  async getDelegates(
+    key: 'delegatedTo' | 'delegatedFrom',
+    query: string,
+    variables: { address: string; space: string; blockNumber?: string | number }
+  ) {
+    let hasNext = true
+    let skip = 0
+    const first = 500
+
+    let delegations: Delegation[] = []
+    while (hasNext) {
+      const result = await fetch(this.queryEndpoint, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: query,
+          variables: { ...variables, skip, first },
+        }),
+      })
+
+      const body = await result.json()
+      const currentDelegations = body?.data?.[key] || []
+      delegations = [...delegations, ...currentDelegations]
+
+      if (currentDelegations.length < first) {
+        hasNext = false
+      } else {
+        skip = delegations.length
+      }
+    }
+
+    return delegations
   }
 }

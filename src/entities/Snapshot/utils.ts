@@ -12,7 +12,7 @@ import {
 import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
 
 import { SNAPSHOT_SPACE } from './constants'
-import { DELEGATIONS_ON_PROPOSAL_QUERY, LATEST_DELEGATIONS_QUERY } from './queries'
+import { getDelegatedQuery } from './queries'
 
 export type Match = {
   proposal_id: string
@@ -143,12 +143,11 @@ function getDelegatesVariables(address: string, blockNumber?: string | number) {
   return {
     address: address.toLowerCase(),
     space: SNAPSHOT_SPACE,
-    blockNumber: blockNumber || 'latest',
+    ...(!blockNumber && { blockNumber }),
   }
 }
 
-async function getDelegations(
-  query: string,
+export async function getDelegations(
   address: string | null | undefined,
   blockNumber?: string | number
 ): Promise<DelegationResult> {
@@ -157,26 +156,29 @@ async function getDelegations(
   }
   const variables = getDelegatesVariables(address, blockNumber)
   try {
-    const delegates = await SnapshotSubgraph.get().getDelegates(query, variables)
-    if (!delegates) {
+    const delegatedTo = await SnapshotSubgraph.get().getDelegates(
+      'delegatedTo',
+      getDelegatedQuery('delegatedTo', blockNumber),
+      variables
+    )
+    const delegatedFrom = await SnapshotSubgraph.get().getDelegates(
+      'delegatedFrom',
+      getDelegatedQuery('delegatedFrom', blockNumber),
+      variables
+    )
+
+    if (!delegatedTo && !delegatedFrom) {
       return EMPTY_DELEGATION
     }
+
     return {
-      delegatedTo: filterDelegationTo(delegates.delegatedTo, SNAPSHOT_SPACE),
-      delegatedFrom: filterDelegationFrom(delegates.delegatedFrom, SNAPSHOT_SPACE),
+      delegatedTo: filterDelegationTo(delegatedTo, SNAPSHOT_SPACE),
+      delegatedFrom: filterDelegationFrom(delegatedFrom, SNAPSHOT_SPACE),
     }
   } catch (error) {
     console.error(error)
     return EMPTY_DELEGATION
   }
-}
-
-export async function getDelegationsOnProposal(address?: string | null, blockNumber?: string | number) {
-  return await getDelegations(DELEGATIONS_ON_PROPOSAL_QUERY, address, blockNumber)
-}
-
-export async function getLatestDelegations(address: string | null | undefined) {
-  return await getDelegations(LATEST_DELEGATIONS_QUERY, address)
 }
 
 export function getChecksumAddress(address: string) {
