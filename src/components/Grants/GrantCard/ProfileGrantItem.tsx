@@ -6,12 +6,15 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 
 import { GrantAttributes } from '../../../entities/Proposal/types'
+import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
 import locations from '../../../modules/locations'
 import { formatDate } from '../../../modules/time'
 import Username from '../../User/Username'
 import GrantPill from '../GrantPill'
 
+import CliffProgress from './CliffProgress'
 import './ProfileGrantItem.css'
+import ProgressBarTooltip from './ProgressBarTooltip'
 import VestingProgress from './VestingProgress'
 
 interface Props {
@@ -23,6 +26,7 @@ function ProfileGrantItem({ grant }: Props) {
   const intl = useIntl()
   const { user, title, enacted_at, token } = grant
   const enactedDate = new Date(enacted_at * 1000)
+  const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
   return (
     <Link className="ProfileGrantItem" href={locations.proposal(grant.id)}>
       <div className="ProfileGrantItem__Section">
@@ -47,7 +51,15 @@ function ProfileGrantItem({ grant }: Props) {
           <GrantPill type={grant.configuration.category} />
         </div>
         <div className="ProfileGrantItem__VestingProgressContainer">
-          <VestingProgress grant={grant} basic />
+          <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
+            <div>
+              {proposalInCliffPeriod ? (
+                <CliffProgress enactedAt={grant.enacted_at} basic />
+              ) : (
+                <VestingProgress grant={grant} basic />
+              )}
+            </div>
+          </ProgressBarTooltip>
         </div>
         <Back />
       </div>

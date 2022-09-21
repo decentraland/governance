@@ -796,7 +796,12 @@
       "description": "Your profile within the DAO",
       "grants": {
         "title": "Grant beneficiary",
-        "item_description": "Passed {time} with a budget of **{amount} {token}**"
+        "item_description": "Passed {time} with a budget of **{amount} {token}**",
+        "cliff_period": "Cliff period: {count} {count, plural, one {day} other {days}} to go",
+        "one_time_tx": "One-time payment {time}",
+        "vested": "{amount} {token} vested",
+        "released": "{amount} {token} released",
+        "all_released": "All funds successfully released"
       },
       "delegators": {
         "title": "VP Delegators",

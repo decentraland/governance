@@ -89,7 +89,7 @@
 }
 
 .ProfileGrantItem__VestingProgressContainer * {
-  margin: 0;
+  margin: 0 !important;
 }
 
 .ProfileGrantItem__VestingProgressContainer {

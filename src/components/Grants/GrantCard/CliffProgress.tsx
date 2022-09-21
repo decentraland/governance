@@ -10,11 +10,12 @@ import './CliffProgress.css'
 
 export type Props = React.HTMLAttributes<HTMLDivElement> & {
   enactedAt: number
+  basic?: boolean
 }
 
 const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
 
-const CliffProgress = ({ enactedAt }: Props) => {
+const CliffProgress = ({ enactedAt, basic }: Props) => {
   const t = useFormatMessage()
   const now = Time.utc()
   const vestingStartDate = Time.unix(enactedAt)
@@ -25,14 +26,16 @@ const CliffProgress = ({ enactedAt }: Props) => {
 
   return (
     <div className="CliffProgress">
-      <div className="CliffProgress__Labels">
-        <div className="CliffProgress__CliffDuration">
-          <span className="CliffProgress__Bold">{t('page.grants.one_month_cliff')}</span>
+      {!basic && (
+        <div className="CliffProgress__Labels">
+          <div className="CliffProgress__CliffDuration">
+            <span className="CliffProgress__Bold">{t('page.grants.one_month_cliff')}</span>
+          </div>
+          <div className="CliffProgress__CliffRemaining">
+            <span>{t('page.grants.cliff_remaining', { count: daysToGo })}</span>
+          </div>
         </div>
-        <div className="CliffProgress__CliffRemaining">
-          <span>{t('page.grants.cliff_remaining', { count: daysToGo })}</span>
-        </div>
-      </div>
+      )}
 
       <div className="CliffProgressBar">
         {elapsedPercentage > 0 && (
@@ -43,12 +46,14 @@ const CliffProgress = ({ enactedAt }: Props) => {
         )}
       </div>
 
-      <div className="CliffProgress__Dates">
-        <div className="CliffProgress__EnactedAt">
-          <span>{t('page.grants.started_date')}</span>
-          <span className="CliffProgress__EnactedDate">{enactedDate}</span>
+      {!basic && (
+        <div className="CliffProgress__Dates">
+          <div className="CliffProgress__EnactedAt">
+            <span>{t('page.grants.started_date')}</span>
+            <span className="CliffProgress__EnactedDate">{enactedDate}</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
