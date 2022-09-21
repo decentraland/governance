@@ -8,6 +8,7 @@ import { isEmpty } from 'lodash'
 
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
+import { isCoauthor } from '../Proposal/utils'
 
 import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
@@ -66,13 +67,15 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
 }
 
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+  const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
 
   const user = req.auth!
   const proposalId = req.params.proposal
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
+  const isAuthorOrCoauthor =
+    user && (proposal?.user === user || (await isCoauthor(proposalId, user))) && author === user
 
-  if (proposal?.user !== user) {
+  if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
@@ -87,6 +90,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
   return await UpdateModel.createUpdate({
     proposal_id: proposal.id,
+    author,
     health,
     introduction,
     highlights,
@@ -97,8 +101,9 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+  const { id, author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
   const update = await UpdateModel.findOne(id)
+  const proposalId = req.params.proposal
 
   if (!update) {
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
@@ -111,7 +116,10 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const user = req.auth
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
-  if (proposal?.user !== user) {
+  const isAuthorOrCoauthor =
+    user && (proposal?.user === user || (await isCoauthor(proposalId, user))) && author === user
+
+  if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
@@ -126,6 +134,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
   await UpdateModel.update<UpdateAttributes>(
     {
+      author,
       health,
       introduction,
       highlights,

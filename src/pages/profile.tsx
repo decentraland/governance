@@ -30,7 +30,7 @@ export default function ProfilePage() {
   const isLoggedUserProfile = userAddress === address
 
   const [grants] = useGrantsByUser(address!, true)
-  const { delegation, delegationState, scores, isLoadingScores, ownVotingPower } = useVotingPowerInformation(address)
+  const { delegation, delegationState, scores, isLoadingScores, vpDistribution } = useVotingPowerInformation(address)
 
   const areGrants = useMemo(() => grants.total > 0, [grants.total])
 
@@ -75,11 +75,12 @@ export default function ProfilePage() {
           info={t('page.profile.delegators.helper')}
           action={
             !isLoggedUserProfile &&
-            address && (
+            address &&
+            vpDistribution && (
               <VotingPowerDelegationHandler
                 basic
                 buttonText={t('page.profile.delegators.delegate_action')}
-                userVP={ownVotingPower}
+                userVP={vpDistribution.own}
                 candidateAddress={address}
               />
             )

@@ -1,11 +1,12 @@
 :root {
   --yellow-100: #ffd89f;
   --yellow-200: #fef7d2;
-  --yellow-800: #ffb03f;
+  --yellow-800: #ffc95b;
   --fuchsia-200: #ffe4ff;
   --fuchsia-800: #ff5afe;
   --green-200: #e1f3d6;
   --green-800: #44b600;
+  --green-900: #328500;
   --red-200: #f9d6dc;
   --red-800: #d80027;
   --blue-200: #e2ecfc;
@@ -31,7 +32,6 @@
   --background-grant: var(--purple-800);
   --background-poll: var(--orange-800);
   --background-remove-poi: #ff247c;
-  --background-happy-green: var(--green-800);
   --background-linked-wearables: var(--yellow-800);
   --background-popup: #5c5c6e;
 

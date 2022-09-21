@@ -387,12 +387,12 @@ export const newProposalPOIScheme = {
     x: {
       type: 'integer',
       minimum: -150,
-      maximum: 150,
+      maximum: 163,
     },
     y: {
       type: 'integer',
       minimum: -150,
-      maximum: 150,
+      maximum: 159,
     },
     type: {
       type: 'string',

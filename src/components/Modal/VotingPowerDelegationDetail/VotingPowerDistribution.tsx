@@ -3,26 +3,28 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import { VpDistribution } from '../../../clients/SnapshotGraphql'
+
 import './VotingPowerDistribution.css'
 import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
 
 interface Props {
-  mana: number
-  name: number
-  land: number
-  delegated: number
+  vpDistribution: VpDistribution
   className?: string
 }
 
 const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
 
-const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Props) => {
+const VotingPowerDistribution = ({ vpDistribution, className }: Props) => {
   const t = useFormatMessage()
-  const total = mana + name + land + delegated
+  const { total, mana, names, land, delegated, estate, linkedWearables } = vpDistribution
+
   const manaPercentage = getPercentage(mana, total)
-  const namePercentage = getPercentage(name, total)
+  const namePercentage = getPercentage(names, total)
   const landPercentage = getPercentage(land, total)
   const delegatedPercentage = getPercentage(delegated, total)
+  const estatesPercentage = getPercentage(estate, total)
+  const linkedWearablesPercentage = getPercentage(linkedWearables, total)
 
   return (
     <div className={className}>
@@ -41,15 +43,27 @@ const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Pro
             />
           </VotingPowerDistributionPopup>
         )}
-        {name > 0 && (
+        {names > 0 && (
           <VotingPowerDistributionPopup
-            amount={name}
+            amount={names}
             percentage={namePercentage}
             label={t('modal.vp_delegation.details.stats_name')}
           >
             <div
               className="VotingPowerDistributionBar__Item VotingPowerDistribution__Name"
               style={{ width: namePercentage }}
+            />
+          </VotingPowerDistributionPopup>
+        )}
+        {linkedWearables > 0 && (
+          <VotingPowerDistributionPopup
+            amount={linkedWearables}
+            percentage={linkedWearablesPercentage}
+            label={t('modal.vp_delegation.details.stats_linked_wearables')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__LinkedWearables"
+              style={{ width: linkedWearablesPercentage }}
             />
           </VotingPowerDistributionPopup>
         )}
@@ -62,6 +76,18 @@ const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Pro
             <div
               className="VotingPowerDistributionBar__Item VotingPowerDistribution__Land"
               style={{ width: landPercentage }}
+            />
+          </VotingPowerDistributionPopup>
+        )}
+        {estate > 0 && (
+          <VotingPowerDistributionPopup
+            amount={estate}
+            percentage={estatesPercentage}
+            label={t('modal.vp_delegation.details.stats_estate')}
+          >
+            <div
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__Estate"
+              style={{ width: estatesPercentage }}
             />
           </VotingPowerDistributionPopup>
         )}
@@ -84,12 +110,20 @@ const VotingPowerDistribution = ({ mana, name, land, delegated, className }: Pro
           {t('modal.vp_delegation.details.stats_bar_mana')}
         </div>
         <div className="VotingPowerDistribution__Label">
+          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
+          {t('modal.vp_delegation.details.stats_bar_name')}
+        </div>
+        <div className="VotingPowerDistribution__Label">
+          <div className="VotingPowerDistribution__Color VotingPowerDistribution__LinkedWearables" />
+          {t('modal.vp_delegation.details.stats_bar_linked_wearables')}
+        </div>
+        <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Land" />
           {t('modal.vp_delegation.details.stats_bar_land')}
         </div>
         <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Name" />
-          {t('modal.vp_delegation.details.stats_bar_name')}
+          <div className="VotingPowerDistribution__Color VotingPowerDistribution__Estate" />
+          {t('modal.vp_delegation.details.stats_bar_estates')}
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Delegated" />

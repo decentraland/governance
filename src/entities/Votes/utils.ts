@@ -1,4 +1,4 @@
-import chunk from 'decentraland-gatsby/dist/utils/array/chunk'
+import { chunk } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotApi } from '../../clients/SnapshotApi'
@@ -170,9 +170,9 @@ function getNumber(number: number) {
   return Math.floor(number || 0)
 }
 
-export async function getScores(addresses: string[], block?: string | number) {
+export async function getScores(addresses: string[], block?: string | number, space?: string, networkId?: string) {
   const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
-  const { scores, strategies } = await SnapshotApi.get().getScores(formattedAddresses, block)
+  const { scores, strategies } = await SnapshotApi.get().getScores(formattedAddresses, block, space, networkId)
 
   const result: DetailedScores = {}
   for (const addr of formattedAddresses) {
@@ -197,15 +197,15 @@ export async function getScores(addresses: string[], block?: string | number) {
   return result
 }
 
-export async function getVotingPower(address: string) {
-  const vp = await getScores([address])
-  return Object.values(vp)[0]
-}
-
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
   const results: DetailedScores = {}
   for (const addressesChunk of chunk(addresses, 500)) {
-    const blockchainScores: DetailedScores = await getScores(addressesChunk, proposal.snapshot_proposal.snapshot)
+    const blockchainScores: DetailedScores = await getScores(
+      addressesChunk,
+      proposal.snapshot_proposal.snapshot,
+      proposal.snapshot_space,
+      proposal.snapshot_network
+    )
 
     for (const address of Object.keys(blockchainScores)) {
       const lowercaseAddress = address.toLowerCase()

@@ -21,10 +21,10 @@ import './UpdateMarkdownView.css'
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id' | 'created_at' | 'updated_at'>
   profile?: Profile | null
-  proposalUser?: string
+  author?: string
 }
 
-const UpdateMarkdownView = ({ update, proposalUser }: Props) => {
+const UpdateMarkdownView = ({ update, author }: Props) => {
   const l = useFormatMessage()
   const formattedCompletionDate = update?.completion_date ? formatDate(update.completion_date) : ''
   const formattedDueDate = Time.utc(update?.completion_date).from(Time.utc(update?.due_date), true)
@@ -46,7 +46,7 @@ const UpdateMarkdownView = ({ update, proposalUser }: Props) => {
           <Markdown>{update?.additional_notes}</Markdown>
         </>
       )}
-      {proposalUser && update.completion_date && (
+      {author && update.completion_date && (
         <>
           <Divider size="small" />
           <div className="UpdateDetail__Date">
@@ -56,7 +56,7 @@ const UpdateMarkdownView = ({ update, proposalUser }: Props) => {
                   {l('page.update_detail.completion_date', { date: formattedCompletionDate })}
                 </DateTooltip>
               </Paragraph>
-              {proposalUser && <Username address={proposalUser} linked />}
+              {author && <Username address={author} linked />}
             </div>
             {update?.status === UpdateStatus.Late && (
               <Markdown>{l('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown>

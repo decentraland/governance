@@ -13,7 +13,6 @@ import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import retry from 'decentraland-gatsby/dist/utils/promise/retry'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -42,8 +41,10 @@ import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
+import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -103,7 +104,7 @@ export default function ProposalPage() {
       if (proposal && account && provider && votes) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
-        await retry(3, () => SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex))
+        await SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()
       }
@@ -148,6 +149,9 @@ export default function ProposalPage() {
   )
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
+  const isCoauthor = !!useCoAuthorsByProposal(proposal).find(
+    (coauthor) => coauthor.address === account && coauthor.status === CoauthorStatus.APPROVED
+  )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
     if (proposal && account && (proposal.user === account || isCommittee)) {
@@ -214,7 +218,8 @@ export default function ProposalPage() {
   }
 
   const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
-  const showProposalUpdatesActions = isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && isOwner
+  const showProposalUpdatesActions =
+    isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
@@ -295,20 +300,25 @@ export default function ProposalPage() {
                     {t('page.proposal_detail.delete')}
                   </Button>
                 )}
-                {isCommittee && proposal?.status === ProposalStatus.Passed && (
-                  <Button
-                    basic
-                    loading={updatingStatus}
-                    fluid
-                    onClick={() =>
-                      patchOptions({
-                        confirmStatusUpdate: ProposalStatus.Enacted,
-                      })
-                    }
-                  >
-                    {t('page.proposal_detail.enact')}
-                  </Button>
-                )}
+                {isCommittee &&
+                  (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted) && (
+                    <Button
+                      basic
+                      loading={updatingStatus}
+                      fluid
+                      onClick={() =>
+                        patchOptions({
+                          confirmStatusUpdate: ProposalStatus.Enacted,
+                        })
+                      }
+                    >
+                      {t(
+                        proposal?.status === ProposalStatus.Passed
+                          ? 'page.proposal_detail.enact'
+                          : 'page.proposal_detail.edit_enacted_data'
+                      )}
+                    </Button>
+                  )}
                 {isCommittee && proposal?.status === ProposalStatus.Finished && (
                   <>
                     <Button

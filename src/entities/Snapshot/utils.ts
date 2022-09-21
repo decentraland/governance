@@ -1,4 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { ethers } from 'ethers'
 
 import {
   Delegation,
@@ -181,4 +182,8 @@ export async function getDelegationsOnProposal(address?: string | null, blockNum
 
 export async function getLatestDelegations(address: string | null | undefined) {
   return await getDelegations(LATEST_DELEGATIONS_QUERY, address)
+}
+
+export function getChecksumAddress(address: string) {
+  return ethers.utils.getAddress(address.toLowerCase())
 }

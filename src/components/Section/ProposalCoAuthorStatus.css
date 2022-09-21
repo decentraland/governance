@@ -16,7 +16,7 @@
 }
 
 .CoAuthorStatus.DetailsSection .DetailsSection__Actions .button.primary {
-  background-color: var(--background-happy-green);
+  background-color: var(--green-800);
 }
 
 .CoAuthorStatus.DetailsSection .Title {

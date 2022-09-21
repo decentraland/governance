@@ -15,6 +15,7 @@ import isUUID from 'validator/lib/isUUID'
 import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { Governance } from '../../clients/Governance'
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import { CoauthorStatus } from '../Coauthor/types'
@@ -25,7 +26,6 @@ import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
 import { getPublicUpdates } from '../Updates/utils'
 import { getVotes } from '../Votes/routes'
-import { getVotingPower } from '../Votes/utils'
 
 import { getUpdateMessage } from './templates/messages'
 
@@ -359,7 +359,12 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
     return await ProposalService.createProposal(proposalInCreation)
   } catch (e: any) {
-    throw new RequestError(`Error creating proposal: "${proposalInCreation}"`, RequestError.InternalServerError, e)
+    throw new RequestError(
+      `Error creating proposal: ${JSON.stringify(proposalInCreation)}\n 
+      Error: ${e.message ? e.message : JSON.stringify(e)}`,
+      RequestError.InternalServerError,
+      e
+    )
   }
 }
 
@@ -493,8 +498,8 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
   const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
-  const userVp = await getVotingPower(user)
-  if (userVp.totalVp < requiredVp) {
+  const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
+  if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }
