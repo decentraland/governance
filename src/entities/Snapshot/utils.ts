@@ -143,7 +143,7 @@ function getDelegatesVariables(address: string, blockNumber?: string | number) {
   return {
     address: address.toLowerCase(),
     space: SNAPSHOT_SPACE,
-    ...(!blockNumber && { blockNumber }),
+    ...(!!blockNumber && { blockNumber }),
   }
 }
 
