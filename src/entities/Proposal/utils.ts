@@ -4,6 +4,8 @@ import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
+import { Governance } from '../../clients/Governance'
+import { CoauthorStatus } from '../Coauthor/types'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
@@ -122,6 +124,7 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
     case ProposalStatus.Finished:
       return next === ProposalStatus.Rejected || next === ProposalStatus.Passed || next === ProposalStatus.Enacted
     case ProposalStatus.Passed:
+    case ProposalStatus.Enacted:
       return next === ProposalStatus.Enacted
     default:
       return false
@@ -202,4 +205,10 @@ export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPA
 export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
   const isInitialState = JSON.stringify(stateValue) === JSON.stringify(initialState)
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
+}
+
+export const isCoauthor = async (proposalId: string, address: string): Promise<boolean> => {
+  return await Governance.get()
+    .getCoAuthorsByProposal(proposalId, CoauthorStatus.APPROVED)
+    .then((coauthors) => !!coauthors.find((coauthor) => coauthor.address === address))
 }

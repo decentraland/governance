@@ -7,13 +7,14 @@ import { Governance } from '../clients/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
-export function useCoAuthorsByProposal(proposal: ProposalAttributes) {
+function useCoAuthorsByProposal(proposal: ProposalAttributes | null) {
   const [account] = useAuthContext()
-  const [allCoauthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposal.id), [proposal.id], {
+  const [allCoauthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposal!.id), [proposal], {
     initialValue: [] as CoauthorAttributes[],
+    callWithTruthyDeps: true,
   })
   return useMemo(() => {
-    if (proposal.user.toLowerCase() === account?.toLowerCase()) {
+    if (proposal && proposal.user.toLowerCase() === account?.toLowerCase()) {
       return allCoauthors
     }
 
@@ -21,5 +22,7 @@ export function useCoAuthorsByProposal(proposal: ProposalAttributes) {
       (coauthor) =>
         coauthor.status === CoauthorStatus.APPROVED || coauthor.address.toLowerCase() === account?.toLowerCase()
     )
-  }, [allCoauthors, account, proposal.user])
+  }, [allCoauthors, account, proposal])
 }
+
+export default useCoAuthorsByProposal

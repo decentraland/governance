@@ -387,12 +387,12 @@ export const newProposalPOIScheme = {
     x: {
       type: 'integer',
       minimum: -150,
-      maximum: 150,
+      maximum: 163,
     },
     y: {
       type: 'integer',
       minimum: -150,
-      maximum: 150,
+      maximum: 159,
     },
     type: {
       type: 'string',
@@ -767,7 +767,10 @@ type TransparencyGrant = {
 type GrantBlockchainData = {
   contract?: VestingContractData
   enacting_tx?: string
-  token?: string
+  token?: {
+    symbol: string
+    decimals: number
+  }
   enacted_at: number
   tx_amount?: number
   tx_date?: number

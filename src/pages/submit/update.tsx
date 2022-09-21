@@ -173,6 +173,7 @@ export default function Update() {
 
       const newUpdate = {
         proposal_id: proposalId,
+        author: account!,
         id: updateId,
         health: projectHealth,
         introduction: state.value.introduction,

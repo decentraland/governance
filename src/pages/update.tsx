@@ -48,7 +48,7 @@ export default function UpdateDetail() {
         </span>
         <Header size="huge">{t('page.update_detail.title', { index })}</Header>
       </ContentSection>
-      {update && <UpdateMarkdownView update={update} proposalUser={proposal?.user} />}
+      {update && <UpdateMarkdownView update={update} author={update.author} />}
     </ContentLayout>
   )
 }
