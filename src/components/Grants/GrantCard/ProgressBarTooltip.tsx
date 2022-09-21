@@ -25,8 +25,6 @@ function ProgressBarTooltip({ grant, isInCliff, children }: Props) {
 
   let textToShow = ''
 
-  console.log('test')
-
   if (isInCliff) {
     const now = Time.utc()
     const vestingStartDate = Time.unix(enacted_at)

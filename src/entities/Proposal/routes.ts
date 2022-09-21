@@ -610,54 +610,34 @@ async function getGrants() {
   }
 }
 
-async function getGrantsByUser(req: Request) {
+async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   const address = req.params.address
   const isCoauthoring = req.query.coauthoring === 'true'
   if (!isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }
-  let grants: Awaited<ReturnType<typeof getGrants>> = {
-    current: [],
-    past: [],
-    total: 0,
-  }
+
+  let coauthoringProposalIds = new Set<string>()
 
   if (isCoauthoring) {
-    const [grantsResult, coauthoring] = await Promise.all([
-      getGrants(),
-      Governance.get().getProposalsByCoAuthor(address, CoauthorStatus.APPROVED),
-    ])
-    const coauthoringProposalIds = new Set(coauthoring.map((attr) => attr.proposal_id))
-
-    const filterGrants = (grants: GrantAttributes[]) => {
-      return grants.filter(
-        (grant) => coauthoringProposalIds.has(grant.id) || grant.user.toLowerCase() === address.toLowerCase()
-      )
-    }
-
-    const current = filterGrants(grantsResult.current)
-    const past = filterGrants(grantsResult.past)
-
-    grants = {
-      current,
-      past,
-      total: current.length + past.length,
-    }
-  } else {
-    const grantsResult = await getGrants()
-    const filterGrants = (grants: GrantAttributes[]) => {
-      return grants.filter((grant) => grant.user.toLowerCase() === address.toLowerCase())
-    }
-
-    const current = filterGrants(grantsResult.current)
-    const past = filterGrants(grantsResult.past)
-
-    grants = {
-      current,
-      past,
-      total: current.length + past.length,
-    }
+    const coauthoring = await Governance.get().getProposalsByCoAuthor(address, CoauthorStatus.APPROVED)
+    coauthoringProposalIds = new Set(coauthoring.map((attr) => attr.proposal_id))
   }
 
-  return grants
+  const grantsResult = await getGrants()
+
+  const filterGrants = (grants: GrantAttributes[]) => {
+    return grants.filter(
+      (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
+    )
+  }
+
+  const current = filterGrants(grantsResult.current)
+  const past = filterGrants(grantsResult.past)
+
+  return {
+    current,
+    past,
+    total: current.length + past.length,
+  }
 }
