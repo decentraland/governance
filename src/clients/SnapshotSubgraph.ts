@@ -4,7 +4,7 @@ import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import { PICKED_BY_QUERY } from '../entities/Snapshot/queries'
 
 import { Delegation } from './SnapshotGraphql'
-import { trimLastForwardSlash } from './utils'
+import { inBatches, trimLastForwardSlash } from './utils'
 
 export type DelegationQueryResult = {
   delegatedTo: Delegation[]
@@ -51,31 +51,23 @@ export class SnapshotSubgraph {
     query: string,
     variables: { address: string; space: string; blockNumber?: string | number }
   ) {
-    let hasNext = true
-    let skip = 0
-    const first = 500
+    const delegations: Delegation[] = await inBatches(
+      async (vars, skip, first) => {
+        const response = await fetch(this.queryEndpoint, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query,
+            variables: { ...vars, skip, first },
+          }),
+        })
 
-    let delegations: Delegation[] = []
-    while (hasNext) {
-      const response = await fetch(this.queryEndpoint, {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: query,
-          variables: { ...variables, skip, first },
-        }),
-      })
-
-      const body = await response.json()
-      const currentDelegations = body?.data?.[key] || []
-      delegations = [...delegations, ...currentDelegations]
-
-      if (currentDelegations.length < first) {
-        hasNext = false
-      } else {
-        skip = delegations.length
-      }
-    }
+        const body = await response.json()
+        return body?.data?.[key] || []
+      },
+      { ...variables },
+      500
+    )
 
     return delegations
   }
@@ -87,31 +79,23 @@ export class SnapshotSubgraph {
       return []
     }
 
-    let hasNext = true
-    let skip = 0
-    const first = 500
+    const delegations: Delegation[] = await inBatches(
+      async (vars, skip, batchSize) => {
+        const response = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: PICKED_BY_QUERY,
+            variables: { ...vars, skip, first: batchSize },
+          }),
+        })
 
-    let delegations: Delegation[] = []
-    while (hasNext) {
-      const response = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: PICKED_BY_QUERY,
-          variables: { ...variables, skip, first },
-        }),
-      })
-
-      const body = await response.json()
-      const currentDelegations = body?.data?.delegatedFrom || []
-      delegations = [...delegations, ...currentDelegations]
-
-      if (currentDelegations.length < first) {
-        hasNext = false
-      } else {
-        skip = delegations.length
-      }
-    }
+        const body = await response.json()
+        return body?.data?.delegatedFrom || []
+      },
+      { address, space },
+      500
+    )
 
     const pickedBy = new Map<string, Set<string>>()
 
