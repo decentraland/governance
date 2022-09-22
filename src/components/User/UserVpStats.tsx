@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { VpDistribution } from '../../clients/SnapshotGraphql'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
-import UserAvatar from './UserAvatar'
 import { UserStatBox } from './UserStatBox'
 import './UserVpStats.css'
 import Username from './Username'
@@ -17,6 +17,8 @@ interface Props {
   vpDistribution: VpDistribution | null
   isLoadingVpDistribution: boolean
 }
+
+const UserAvatar = React.lazy(() => import('./UserAvatar'))
 
 export default function UserVpStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
@@ -53,7 +55,9 @@ export default function UserVpStats({ address, vpDistribution, isLoadingVpDistri
           />
         </ProfileBox>
       </div>
-      <UserAvatar address={address} />
+      <Suspense fallback={<Loader active={true} size="small" />}>
+        <UserAvatar address={address} />
+      </Suspense>
     </Container>
   )
 }

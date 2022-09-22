@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { PreviewCamera, PreviewEmote } from '@dcl/schemas'
-import { WearablePreview } from 'decentraland-ui'
+import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 
 import useProfile from '../../hooks/useProfile'
 
@@ -25,7 +25,7 @@ export default function UserAvatar({ address }: Props) {
 
   const previewEmote = useMemo(() => {
     const poses = [PreviewEmote.DAB, PreviewEmote.FIST_PUMP, PreviewEmote.DANCE, PreviewEmote.HEAD_EXPLODE]
-    return poses[Math.random() * poses.length || 0]
+    return poses[(Math.random() * poses.length) | 0]
   }, [])
 
   useEffect(() => {
