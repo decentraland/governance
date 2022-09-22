@@ -4,9 +4,10 @@ import fetch from 'isomorphic-fetch'
 import { SNAPSHOT_QUERY_ENDPOINT, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 const QUERY = `
-query ($space: String!, $address: [Bytes!]) {
+query PickedBy($space: String!, $address: [Bytes!], $first: Int!, $skip: Int!) {
   delegatedFrom: delegations(
-    where: {space_in: ["", $space], delegate_in: $address}
+    where: {space_in: ["", $space], delegate_in: $address},
+    first: $first, skip: $skip,
     orderBy: delegate
     orderDirection: desc
   ) {
@@ -17,6 +18,7 @@ query ($space: String!, $address: [Bytes!]) {
   }
 }
 `
+
 type DelegationQueryResult = {
   delegator: string
   delegate: string
@@ -37,26 +39,40 @@ function usePickedBy(addresses: string[]) {
       }
 
       try {
-        const request = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: QUERY,
-            variables: { address: addresses, space: SNAPSHOT_SPACE },
-          }),
-        })
+        let hasNext = true
+        let skip = 0
+        const first = 500
 
-        const body = await request.json()
-        const queryResult = body.data.delegatedFrom as DelegationQueryResult[]
+        let delegations: DelegationQueryResult[] = []
+        while (hasNext) {
+          const response = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query: QUERY,
+              variables: { address: addresses, space: SNAPSHOT_SPACE, skip, first },
+            }),
+          })
+
+          const body = await response.json()
+          const currentDelegations = body?.data?.delegatedFrom || []
+          delegations = [...delegations, ...currentDelegations]
+
+          if (currentDelegations.length < first) {
+            hasNext = false
+          } else {
+            skip = delegations.length
+          }
+        }
 
         const pickedBy = new Map<string, Set<string>>()
 
         for (const addr of addresses) {
-          const delegations = queryResult.filter((deleg) => deleg.delegate === addr)
+          const filteredDelegations = delegations.filter((deleg) => deleg.delegate === addr)
           pickedBy.set(addr, new Set())
 
-          if (delegations.length > 0) {
-            for (const deleg of delegations) {
+          if (filteredDelegations.length > 0) {
+            for (const deleg of filteredDelegations) {
               pickedBy.get(deleg.delegate)?.add(deleg.delegator)
             }
           }

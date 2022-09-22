@@ -51,7 +51,7 @@ export class SnapshotSubgraph {
 
     let delegations: Delegation[] = []
     while (hasNext) {
-      const result = await fetch(this.queryEndpoint, {
+      const response = await fetch(this.queryEndpoint, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -60,7 +60,7 @@ export class SnapshotSubgraph {
         }),
       })
 
-      const body = await result.json()
+      const body = await response.json()
       const currentDelegations = body?.data?.[key] || []
       delegations = [...delegations, ...currentDelegations]
 
