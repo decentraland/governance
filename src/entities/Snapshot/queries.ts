@@ -19,3 +19,19 @@ query ($space: String!, $address: String!, $first: Int!, $skip: Int!, $blockNumb
     timestamp
   }
 }`
+
+export const PICKED_BY_QUERY = `
+query PickedBy($space: String!, $address: [Bytes!], $first: Int!, $skip: Int!) {
+  delegatedFrom: delegations(
+    where: {space_in: ["", $space], delegate_in: $address},
+    first: $first, skip: $skip,
+    orderBy: delegate
+    orderDirection: desc
+  ) {
+    delegator
+    delegate
+    space
+    timestamp
+  }
+}
+`
