@@ -11,7 +11,7 @@ interface Props {
 
 const MAX_GRANTS = 4
 
-function ProfileGrantCard({ grants }: Props) {
+function ProfileGrantList({ grants }: Props) {
   const { sorted } = useSortingByKey(grants, 'enacted_at')
   const grantsToShow = useMemo(() => sorted.slice(0, MAX_GRANTS), [sorted])
 
@@ -24,4 +24,4 @@ function ProfileGrantCard({ grants }: Props) {
   )
 }
 
-export default ProfileGrantCard
+export default ProfileGrantList

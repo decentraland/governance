@@ -54,7 +54,7 @@ function ProfileGrantItem({ grant }: Props) {
           <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
             <div>
               {proposalInCliffPeriod ? (
-                <CliffProgress enactedAt={grant.enacted_at} basic />
+                <CliffProgress enactedAt={enacted_at} basic />
               ) : (
                 <VestingProgress grant={grant} basic />
               )}

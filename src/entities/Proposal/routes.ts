@@ -621,7 +621,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   if (isCoauthoring) {
     const coauthoring = await Governance.get().getProposalsByCoAuthor(address, CoauthorStatus.APPROVED)
-    coauthoringProposalIds = new Set(coauthoring.map((attr) => attr.proposal_id))
+    coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
   }
 
   const grantsResult = await getGrants()

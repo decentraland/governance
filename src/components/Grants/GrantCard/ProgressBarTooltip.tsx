@@ -19,9 +19,9 @@ function ProgressBarTooltip({ grant, isInCliff, children }: Props) {
   const intl = useIntl()
 
   const { contract, tx_amount, token, enacted_at } = grant
-  const isOTP = !contract
+  const isOneTimePayment = !contract
   const vestedAmount = (contract ? contract.vestedAmount : tx_amount) || 0
-  const releasedAmount = !isOTP ? contract.released : 0
+  const releasedAmount = !isOneTimePayment ? contract.released : 0
 
   let textToShow = ''
 
@@ -32,7 +32,7 @@ function ProgressBarTooltip({ grant, isInCliff, children }: Props) {
     const daysToGo = CLIFF_PERIOD_IN_DAYS - elapsedSinceVestingStarted
 
     textToShow = t('page.profile.grants.cliff_period', { count: daysToGo })
-  } else if (isOTP) {
+  } else if (isOneTimePayment) {
     textToShow = t('page.profile.grants.one_time_tx', { time: formatDate(new Date(enacted_at * 1000)) })
   } else if (releasedAmount > 0) {
     textToShow = t('page.profile.grants.released', { amount: intl.formatNumber(releasedAmount), token })

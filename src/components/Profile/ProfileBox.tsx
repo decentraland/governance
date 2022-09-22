@@ -18,11 +18,11 @@ export function ProfileBox({ children, title, info, action }: Props) {
   return (
     <div className="ProfileBox__Container">
       <div className={TokenList.join(['ProfileBox__Header', 'ProfileBox__Padded'])}>
-        <div className="ProfileBox__Header--title">
+        <div className="ProfileBox__HeaderTitle">
           <span>{title}</span>
           {info && <Helper text={info} size="12" position="right center" />}
         </div>
-        <div className="ProfileBox__Header--action">{action}</div>
+        <div className="ProfileBox__HeaderAction">{action}</div>
       </div>
       <Divider className="ProfileBox__Divider" color="var(--black-300)" />
       <div className="ProfileBox__Padded">{children}</div>

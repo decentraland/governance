@@ -18,7 +18,7 @@
   justify-content: space-between;
 }
 
-.ProfileBox__Header .ProfileBox__Header--title > span {
+.ProfileBox__Header .ProfileBox__HeaderTitle > span {
   font-weight: 500;
   font-size: 13px;
   line-height: 18px;
@@ -36,6 +36,6 @@
   margin: 13px 0;
 }
 
-.ProfileBox__Container .ProfileBox__Header--action .ui.button {
+.ProfileBox__Container .ProfileBox__HeaderAction .ui.button {
   padding: 0;
 }
