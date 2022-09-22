@@ -6,42 +6,15 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { VpDistribution } from '../../../clients/SnapshotGraphql'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
-import HelperText from '../../Helper/HelperText'
 
 import './VotingPowerDistribution.css'
-import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
+import VotingPowerDistributionBarWithPopup from './VotingPowerDistributionBarWithPopup'
+import VotingPowerDistributionLabel from './VotingPowerDistributionLabel'
 
 interface Props {
   vpDistribution: VpDistribution | null
   isLoading: boolean
   className?: string
-}
-
-const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
-
-function getVpDistributionPopup(value: number, total: number, label: string, className: string) {
-  const valuePercentage = getPercentage(value, total)
-  return (
-    <>
-      {value > 0 && (
-        <VotingPowerDistributionPopup amount={value} percentage={valuePercentage} label={label}>
-          <div
-            className={TokenList.join(['VotingPowerDistributionBar__Item', className])}
-            style={{ width: valuePercentage }}
-          />
-        </VotingPowerDistributionPopup>
-      )}
-    </>
-  )
-}
-
-function getVpDistributionLabel(labelText: string, tooltipText: string, className: string) {
-  return (
-    <div className="VotingPowerDistribution__Label">
-      <div className={TokenList.join(['VotingPowerDistribution__Color', className])} />
-      <HelperText labelText={labelText} tooltipText={tooltipText} position="bottom center" />
-    </div>
-  )
 }
 
 const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props) => {
@@ -56,75 +29,75 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
         <div
           className={TokenList.join(['VotingPowerDistributionBar', total <= 0 && 'VotingPowerDistributionBar--Empty'])}
         >
-          {getVpDistributionPopup(
-            mana,
-            total,
-            t('modal.vp_delegation.details.stats_mana'),
-            'VotingPowerDistribution__Mana'
-          )}
-          {getVpDistributionPopup(
-            names,
-            total,
-            t('modal.vp_delegation.details.stats_name'),
-            'VotingPowerDistribution__Name'
-          )}
-          {getVpDistributionPopup(
-            linkedWearables,
-            total,
-            t('modal.vp_delegation.details.stats_linked_wearables'),
-            'VotingPowerDistribution__LinkedWearables'
-          )}
-          {getVpDistributionPopup(
-            land,
-            total,
-            t('modal.vp_delegation.details.stats_land'),
-            'VotingPowerDistribution__Land'
-          )}
-          {getVpDistributionPopup(
-            estate,
-            total,
-            t('modal.vp_delegation.details.stats_estate'),
-            'VotingPowerDistribution__Estate'
-          )}
-          {getVpDistributionPopup(
-            delegated,
-            total,
-            t('modal.vp_delegation.details.stats_delegated'),
-            'VotingPowerDistribution__Delegated'
-          )}
+          <VotingPowerDistributionBarWithPopup
+            value={mana}
+            total={total}
+            label={t('modal.vp_delegation.details.stats_mana')}
+            className={'VotingPowerDistribution__Mana'}
+          />
+          <VotingPowerDistributionBarWithPopup
+            value={names}
+            total={total}
+            label={t('modal.vp_delegation.details.stats_name')}
+            className={'VotingPowerDistribution__Name'}
+          />
+          <VotingPowerDistributionBarWithPopup
+            value={linkedWearables}
+            total={total}
+            label={t('modal.vp_delegation.details.stats_linked_wearables')}
+            className={'VotingPowerDistribution__LinkedWearables'}
+          />
+          <VotingPowerDistributionBarWithPopup
+            value={land}
+            total={total}
+            label={t('modal.vp_delegation.details.stats_land')}
+            className={'VotingPowerDistribution__Land'}
+          />
+          <VotingPowerDistributionBarWithPopup
+            value={estate}
+            total={total}
+            label={t('modal.vp_delegation.details.stats_estate')}
+            className={'VotingPowerDistribution__Estate'}
+          />
+          <VotingPowerDistributionBarWithPopup
+            value={delegated}
+            total={total}
+            label={t('modal.vp_delegation.details.stats_delegated')}
+            className={'VotingPowerDistribution__Delegated'}
+          />
         </div>
       )}
       <div className="VotingPowerDistribution__Labels">
-        {getVpDistributionLabel(
-          t('modal.vp_delegation.details.stats_bar_mana'),
-          t('modal.vp_delegation.details.stats_bar_mana_info'),
-          'VotingPowerDistribution__Mana'
-        )}
-        {getVpDistributionLabel(
-          t('modal.vp_delegation.details.stats_bar_name'),
-          t('modal.vp_delegation.details.stats_bar_name_info'),
-          'VotingPowerDistribution__Name'
-        )}
-        {getVpDistributionLabel(
-          t('modal.vp_delegation.details.stats_bar_linked_wearables'),
-          t('modal.vp_delegation.details.stats_bar_linked_wearables_info'),
-          'VotingPowerDistribution__LinkedWearables'
-        )}
-        {getVpDistributionLabel(
-          t('modal.vp_delegation.details.stats_bar_land'),
-          t('modal.vp_delegation.details.stats_bar_land_info'),
-          'VotingPowerDistribution__Land'
-        )}
-        {getVpDistributionLabel(
-          t('modal.vp_delegation.details.stats_bar_estates'),
-          t('modal.vp_delegation.details.stats_bar_estates_info'),
-          'VotingPowerDistribution__Estate'
-        )}
-        {getVpDistributionLabel(
-          t('modal.vp_delegation.details.stats_bar_delegated'),
-          t('modal.vp_delegation.details.stats_bar_delegated_info'),
-          'VotingPowerDistribution__Delegated'
-        )}
+        <VotingPowerDistributionLabel
+          labelText={t('modal.vp_delegation.details.stats_bar_mana')}
+          tooltipText={t('modal.vp_delegation.details.stats_bar_mana_info')}
+          className={'VotingPowerDistribution__Mana'}
+        />
+        <VotingPowerDistributionLabel
+          labelText={t('modal.vp_delegation.details.stats_bar_name')}
+          tooltipText={t('modal.vp_delegation.details.stats_bar_name_info')}
+          className={'VotingPowerDistribution__Name'}
+        />
+        <VotingPowerDistributionLabel
+          labelText={t('modal.vp_delegation.details.stats_bar_linked_wearables')}
+          tooltipText={t('modal.vp_delegation.details.stats_bar_linked_wearables_info')}
+          className={'VotingPowerDistribution__LinkedWearables'}
+        />
+        <VotingPowerDistributionLabel
+          labelText={t('modal.vp_delegation.details.stats_bar_land')}
+          tooltipText={t('modal.vp_delegation.details.stats_bar_land_info')}
+          className={'VotingPowerDistribution__Land'}
+        />
+        <VotingPowerDistributionLabel
+          labelText={t('modal.vp_delegation.details.stats_bar_estates')}
+          tooltipText={t('modal.vp_delegation.details.stats_bar_estates_info')}
+          className={'VotingPowerDistribution__Estate'}
+        />
+        <VotingPowerDistributionLabel
+          labelText={t('modal.vp_delegation.details.stats_bar_delegated')}
+          tooltipText={t('modal.vp_delegation.details.stats_bar_delegated_info')}
+          className={'VotingPowerDistribution__Delegated'}
+        />
       </div>
     </div>
   )
