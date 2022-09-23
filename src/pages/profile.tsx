@@ -29,7 +29,7 @@ export default function ProfilePage() {
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
 
-  const grants = useGrantsByUser(address!, true)
+  const grants = useGrantsByUser(address, true)
   const { delegation, delegationState, scores, isLoadingScores, vpDistribution } = useVotingPowerInformation(address)
 
   const hasGrants = grants.length > 0
@@ -52,7 +52,7 @@ export default function ProfilePage() {
     return <LoadingView />
   }
 
-  if (!userAddress) {
+  if (!address) {
     return <LogIn title={t('page.profile.title') || ''} description={t('page.profile.description') || ''} />
   }
 

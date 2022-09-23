@@ -94,7 +94,8 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
       )}
       {!userAddress && (
         <Button
-          primary
+          primary={!basic}
+          basic={basic}
           size="small"
           loading={accountState.loading}
           disabled={accountState.loading}
