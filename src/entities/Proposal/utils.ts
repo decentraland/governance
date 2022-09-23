@@ -92,7 +92,6 @@ export async function isValidPointOfInterest(x: number, y: number) {
 
   switch (tile?.type) {
     case 'road':
-    case 'plaza':
       return false
     default:
       return true
