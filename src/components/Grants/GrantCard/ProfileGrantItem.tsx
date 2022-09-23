@@ -39,7 +39,7 @@ function ProfileGrantItem({ grant }: Props) {
                 {t('page.profile.grants.item_description', {
                   time: formatDate(enactedDate),
                   amount: intl.formatNumber(grant.size),
-                  token,
+                  token: token?.symbol,
                 })}
               </Markdown>
             </span>
