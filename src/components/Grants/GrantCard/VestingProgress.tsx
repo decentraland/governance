@@ -12,11 +12,12 @@ import './VestingProgress.css'
 
 export type Props = React.HTMLAttributes<HTMLDivElement> & {
   grant: GrantAttributes
+  basic?: boolean
 }
 
 const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
 
-const VestingProgress = ({ grant }: Props) => {
+const VestingProgress = ({ grant, basic }: Props) => {
   const t = useFormatMessage()
   const { contract, enacting_tx, tx_amount, token, enacted_at } = grant
   const total = contract?.vesting_total_amount || 100
@@ -32,21 +33,25 @@ const VestingProgress = ({ grant }: Props) => {
 
   return (
     <div className="VestingProgress">
-      <div className="VestingProgress__Labels">
-        <div className="VestingProgress__VestedInfo">
-          <span className="VestingProgress__Bold VestingProgress__Ellipsis">{vestedAmountText}</span>
-          <span className="VestingProgress__Ellipsis">
-            {enacting_tx ? t('page.grants.transferred') : t('page.grants.vested')}
-          </span>
-          <PercentageLabel percentage={vestedPercentage} color={enacting_tx ? 'Fuchsia' : 'Yellow'} />
+      {!basic && (
+        <div className="VestingProgress__Labels">
+          <div className="VestingProgress__VestedInfo">
+            <span className="VestingProgress__Bold VestingProgress__Ellipsis">{vestedAmountText}</span>
+            <span className="VestingProgress__Ellipsis">
+              {enacting_tx ? t('page.grants.transferred') : t('page.grants.vested')}
+            </span>
+            <PercentageLabel percentage={vestedPercentage} color={enacting_tx ? 'Fuchsia' : 'Yellow'} />
+          </div>
+          <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
+            {contract && <div className="VestingProgress__ReleasedInfoLabel" />}
+            <span
+              className={TokenList.join(['VestingProgress__Ellipsis', !contract && 'VestingProgressBar__LightText'])}
+            >
+              {releasedText}
+            </span>
+          </div>
         </div>
-        <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
-          {contract && <div className="VestingProgress__ReleasedInfoLabel" />}
-          <span className={TokenList.join(['VestingProgress__Ellipsis', !contract && 'VestingProgressBar__LightText'])}>
-            {releasedText}
-          </span>
-        </div>
-      </div>
+      )}
 
       <div className="VestingProgressBar">
         {!!(releasedPercentage && releasedPercentage > 0) && (
@@ -64,18 +69,20 @@ const VestingProgress = ({ grant }: Props) => {
         {enacting_tx && <div className="VestingProgressBar__Item VestingProgressBar__Transferred" />}
       </div>
 
-      <div className="VestingProgress__Dates">
-        <div className="VestingProgress__VestedAt">
-          <span>{enacting_tx ? t('page.grants.transaction_date') : t('page.grants.started_date')}</span>
-          <span className="VestingProgress__VestedDate">{enactedDate}</span>
-        </div>
-        {contract?.finish_at && (
+      {!basic && (
+        <div className="VestingProgress__Dates">
           <div className="VestingProgress__VestedAt">
-            <span>{t('page.grants.end_date')}</span>
-            <span className="VestingProgress__VestedDate">{Time.unix(contract.finish_at).fromNow()}</span>
+            <span>{enacting_tx ? t('page.grants.transaction_date') : t('page.grants.started_date')}</span>
+            <span className="VestingProgress__VestedDate">{enactedDate}</span>
           </div>
-        )}
-      </div>
+          {contract?.finish_at && (
+            <div className="VestingProgress__VestedAt">
+              <span>{t('page.grants.end_date')}</span>
+              <span className="VestingProgress__VestedDate">{Time.unix(contract.finish_at).fromNow()}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

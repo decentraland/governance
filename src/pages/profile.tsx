@@ -9,14 +9,18 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import DelegationCards from '../components/Delegation/DelegationCards'
+import ProfileGrantList from '../components/Grants/GrantCard/ProfileGrantList'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import VotingPowerDelegationHandler from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
 import UserVpStats from '../components/User/UserVpStats'
+import useGrantsByUser from '../hooks/useGrantsByUser'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
+
+import './profile.css'
 
 export default function ProfilePage() {
   const t = useFormatMessage()
@@ -25,8 +29,12 @@ export default function ProfilePage() {
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
   const isLoggedUserProfile = userAddress === address
+
+  const grants = useGrantsByUser(address, true)
   const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
+
+  const hasGrants = grants.length > 0
 
   if (isUnderMaintenance()) {
     return (
@@ -51,7 +59,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div>
+    <div className="ProfilePage">
       <Head
         title={t('page.profile.title') || ''}
         description={t('page.profile.description') || ''}
@@ -64,13 +72,18 @@ export default function ProfilePage() {
         isLoadingVpDistribution={isLoadingVpDistribution}
       />
       <Container className="Profile__Container">
+        {hasGrants && (
+          <ProfileBox title={t('page.profile.grants.title')}>
+            <ProfileGrantList grants={grants} />
+          </ProfileBox>
+        )}
         <ProfileBox
           title={t('page.profile.delegators.title')}
           info={t('page.profile.delegators.helper')}
           action={
             !isLoggedUserProfile &&
-            vpDistribution &&
-            address && (
+            address &&
+            vpDistribution && (
               <VotingPowerDelegationHandler
                 basic
                 buttonText={t('page.profile.delegators.delegate_action')}

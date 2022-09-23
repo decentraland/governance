@@ -37,3 +37,7 @@
   margin-bottom: 12px;
   margin-top: 0 !important;
 }
+
+.ProfileBox__Container .ProfileBox__HeaderAction .ui.button {
+  padding: 0;
+}

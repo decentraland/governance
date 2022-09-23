@@ -1,0 +1,3 @@
+.SkeletonBar:not(:last-child) {
+  margin-bottom: 14px;
+}

@@ -7,10 +7,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { GrantAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
-import Pill from '../Common/Pill'
 
-import { PROPOSAL_GRANT_CATEGORY_COLORS } from './GrantCard/GrantCard'
-
+import GrantPill from './GrantPill'
 import './PastGrantCard.css'
 
 interface Props {
@@ -20,8 +18,6 @@ interface Props {
 const PastGrantCard = ({ grant }: Props) => {
   const t = useFormatMessage()
   const { id, title, configuration, enacted_at, size } = grant
-  const category = configuration.category.split(' ')[0]
-  const pillColor = PROPOSAL_GRANT_CATEGORY_COLORS[configuration.category as ProposalGrantCategory]
   const handleClick = useCallback(() => navigate(locations.proposal(id)), [id])
 
   return (
@@ -34,9 +30,7 @@ const PastGrantCard = ({ grant }: Props) => {
               <p className="PastGrantCard__Size">{`$${size} USD`}</p>
             </div>
           </div>
-          <Pill size="small" color={pillColor}>
-            {category}
-          </Pill>
+          <GrantPill type={configuration.category as ProposalGrantCategory} />
         </div>
         <Header className="PastGrantCard__Title">{title}</Header>
         <div className="PastGrantCard__Dates">

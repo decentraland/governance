@@ -1,6 +1,7 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
@@ -10,6 +11,7 @@ import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/con
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 import {
+  GrantAttributes,
   ProposalAttributes,
   ProposalGrantTier,
   ProposalGrantTierValues,
@@ -211,4 +213,12 @@ export const isCoauthor = async (proposalId: string, address: string): Promise<b
   return await Governance.get()
     .getCoAuthorsByProposal(proposalId, CoauthorStatus.APPROVED)
     .then((coauthors) => !!coauthors.find((coauthor) => coauthor.address === address))
+}
+
+const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])
+
+export function isProposalInCliffPeriod(grant: GrantAttributes) {
+  const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
+  const now = Time.utc()
+  return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
