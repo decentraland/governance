@@ -1,7 +1,7 @@
 .Divider {
   width: 100%;
-  border: none;
-  border-top: 1px solid var(--black-400);
+  border-top: 1px solid;
+  margin: 0;
 }
 
 .Divider__Container--small {

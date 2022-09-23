@@ -204,9 +204,6 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
   }
   ```
 
-  
-
-
 If you need MANA for testing you can get it by interacting with the contract on etherscan
 
 [Rinkeby FakeMana](https://rinkeby.etherscan.io/address/0x28bce5263f5d7f4eb7e8c6d5d78275ca455bac63#writeContract)
@@ -217,6 +214,18 @@ Connect your wallet and use the `setBalance` method on the `Contract -> Write Co
 
 - `to (address)` is your address
 - `amount (uint256)` is whatever you want. Take into account that `1000000000000000000 = 1 MANA`
+
+Take into account that the voting power distribution response from snapshot returns an array with each voting power.
+The order in which each value is returned depends on the order in which strategies are added to the space on the [space settings](https://snapshot.org/#/snapshot.dcl.eth/settings)
+
+#### Current Strategies Order
+* WMANA
+* LAND
+* ESTATE
+* MANA
+* NAMES
+* DELEGATED
+* WEARABLE
 
 ## Run Tests
 

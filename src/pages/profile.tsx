@@ -15,6 +15,7 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import VotingPowerDelegationHandler from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 import { ProfileBox } from '../components/Profile/ProfileBox'
 import LogIn from '../components/User/LogIn'
+import UserVpStats from '../components/User/UserVpStats'
 import useGrantsByUser from '../hooks/useGrantsByUser'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -30,7 +31,8 @@ export default function ProfilePage() {
   const isLoggedUserProfile = userAddress === address
 
   const grants = useGrantsByUser(address, true)
-  const { delegation, delegationState, scores, isLoadingScores, vpDistribution } = useVotingPowerInformation(address)
+  const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
+    useVotingPowerInformation(address)
 
   const hasGrants = grants.length > 0
 
@@ -64,6 +66,11 @@ export default function ProfilePage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
+      <UserVpStats
+        address={address}
+        vpDistribution={vpDistribution}
+        isLoadingVpDistribution={isLoadingVpDistribution}
+      />
       <Container className="Profile__Container">
         {hasGrants && (
           <ProfileBox title={t('page.profile.grants.title')}>

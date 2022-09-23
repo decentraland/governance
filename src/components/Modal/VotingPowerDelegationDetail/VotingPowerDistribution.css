@@ -28,7 +28,12 @@
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 2px;
-  margin-bottom: 9px;
+  margin-bottom: 16px;
+}
+
+.VotingPowerDistributionBar__Loading {
+  height: 8px;
+  border: 0;
 }
 
 .VotingPowerDistributionBar--Empty {
@@ -36,32 +41,7 @@
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-.VotingPowerDistributionBar__Item {
-  height: 6px;
-  min-width: 6px;
-  margin: 1px;
-  border-radius: 2px;
-}
-
 .VotingPowerDistribution__Labels {
   display: flex;
   gap: 24px;
-}
-
-.VotingPowerDistribution__Label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: var(--black-400);
-}
-
-.VotingPowerDistribution__Color {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  margin-right: 6px;
 }
