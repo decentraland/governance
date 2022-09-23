@@ -12,13 +12,14 @@ interface Props {
   info?: string
   action?: React.ReactNode
   children: React.ReactNode
+  className?: string
 }
 
-export function ProfileBox({ children, title, info, action }: Props) {
+export function ProfileBox({ children, title, info, action, className }: Props) {
   return (
-    <div className="ProfileBox__Container">
+    <div className={TokenList.join(['ProfileBox__Container', className])}>
       <div className={TokenList.join(['ProfileBox__Header', 'ProfileBox__Padded'])}>
-        <div className="ProfileBox__Header--title">
+        <div className="ProfileBox__HeaderTitle">
           <span>{title}</span>
           {info && <Helper text={info} size="12" position="right center" />}
         </div>

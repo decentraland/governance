@@ -1,0 +1,33 @@
+.UserStatBox__Container {
+  width: 100%;
+  min-width: 273px;
+  background: var(--white-900);
+  border: 1px solid var(--black-100);
+  box-shadow: 0 1px 8px var(--black-100);
+  border-radius: 8px;
+  height: 89px;
+  padding: 16px 16px 20px;
+}
+
+.UserStatBox__Header {
+  display: flex;
+  margin-bottom: 5px;
+  justify-content: space-between;
+}
+
+.UserStatBox__Title {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-600);
+  margin-right: 21px;
+  min-width: 100px;
+}
+
+.UserStatBox__Value {
+  font-weight: 600 !important;
+  font-size: 28px !important;
+  line-height: 24px !important;
+}

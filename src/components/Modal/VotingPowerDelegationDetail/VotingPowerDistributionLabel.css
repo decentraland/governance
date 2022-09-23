@@ -1,0 +1,17 @@
+.VotingPowerDistributionLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-400);
+}
+
+.VotingPowerDistributionLabel__Circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
