@@ -253,7 +253,9 @@ export default function ProposalPage() {
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
-              {showProposalUpdates && <ProposalUpdates proposal={proposal} updates={publicUpdates} />}
+              {showProposalUpdates && (
+                <ProposalUpdates proposal={proposal} updates={publicUpdates} isCoauthor={isCoauthor} />
+              )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 

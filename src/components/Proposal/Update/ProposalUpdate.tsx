@@ -17,6 +17,7 @@ interface Props {
   update: UpdateAttributes | null
   expanded: boolean
   index?: number
+  isCoauthor?: boolean
 }
 
 export const getStatusIcon = (
@@ -38,7 +39,7 @@ export const getStatusIcon = (
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, index }: Props) => {
+const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor }: Props) => {
   if (!update) {
     return <EmptyProposalUpdate />
   }
@@ -47,7 +48,7 @@ const ProposalUpdate = ({ proposal, update, expanded, index }: Props) => {
     return <ExpandedProposalUpdate update={update} index={index} />
   }
 
-  return <CollapsedProposalUpdate proposal={proposal} update={update} index={index} />
+  return <CollapsedProposalUpdate proposal={proposal} update={update} index={index} isCoauthor={isCoauthor} />
 }
 
 export default ProposalUpdate

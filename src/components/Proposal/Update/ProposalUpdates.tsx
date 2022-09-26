@@ -12,13 +12,13 @@ import Divider from '../../Section/Divider'
 import ProposalUpdate from './ProposalUpdate'
 import './ProposalUpdates.css'
 
-export default function ProposalUpdates({
-  proposal,
-  updates,
-}: {
+interface Props {
   proposal: ProposalAttributes | null
   updates?: UpdateAttributes[] | null
-}) {
+  isCoauthor: boolean
+}
+
+export default function ProposalUpdates({ proposal, updates, isCoauthor }: Props) {
   const t = useFormatMessage()
 
   if (!updates || !proposal) {
@@ -50,6 +50,7 @@ export default function ProposalUpdates({
               proposal={proposal}
               update={item}
               expanded={index === 0}
+              isCoauthor={isCoauthor}
             />
           ))}
       </div>
