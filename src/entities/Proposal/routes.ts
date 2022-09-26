@@ -14,10 +14,10 @@ import isUUID from 'validator/lib/isUUID'
 
 import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
-import { Governance } from '../../clients/Governance'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
+import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
@@ -620,7 +620,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   let coauthoringProposalIds = new Set<string>()
 
   if (isCoauthoring) {
-    const coauthoring = await Governance.get().getProposalsByCoAuthor(address, CoauthorStatus.APPROVED)
+    const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
     coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
   }
 

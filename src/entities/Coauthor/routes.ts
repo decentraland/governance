@@ -21,7 +21,7 @@ export default routes((route) => {
   route.put('/coauthors/:proposal', withAuth, handleAPI(updateStatus))
 })
 
-async function filterCoauthorRequests(requests: CoauthorAttributes[]) {
+export async function filterCoauthorRequests(requests: CoauthorAttributes[]) {
   const filteredRequests: CoauthorAttributes[] = []
   for (const request of requests) {
     if (request.status === CoauthorStatus.PENDING) {
