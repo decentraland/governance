@@ -126,7 +126,7 @@ export type VpDistribution = {
   mana: number
   names: number
   delegated: number
-  linkedWearables: number
+  l1Wearables: number
 }
 
 enum StrategyOrder {
@@ -136,7 +136,7 @@ enum StrategyOrder {
   Mana,
   Names,
   Delegation,
-  LinkedWearables,
+  L1Wearables,
 }
 
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
@@ -445,7 +445,7 @@ export class SnapshotGraphql extends API {
       mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
       names: Math.floor(vpByStrategy[StrategyOrder.Names]),
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
-      linkedWearables: Math.floor(vpByStrategy[StrategyOrder.LinkedWearables]),
+      l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
     }
   }
 }
