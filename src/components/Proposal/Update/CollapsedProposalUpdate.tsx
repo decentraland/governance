@@ -21,21 +21,22 @@ interface Props {
   proposal: ProposalAttributes | GrantAttributes
   update: UpdateAttributes
   index?: number
+  isCoauthor?: boolean
 }
 
-const CollapsedProposalUpdate = ({ proposal, update, index }: Props) => {
+const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor }: Props) => {
   const t = useFormatMessage()
   const [account] = useAuthContext()
 
   const { introduction, status, health, completion_date, due_date } = update
   const UpdateIcon = getStatusIcon(health, completion_date)
 
-  const isOwner = account && proposal.user === account
-  const missedUpdateText = isOwner
+  const isAllowedToPostUpdate = account && (proposal.user === account || isCoauthor)
+  const missedUpdateText = isAllowedToPostUpdate
     ? t('page.proposal_detail.grant.update_missed_owner')
     : t('page.proposal_detail.grant.update_missed')
   const formattedCompletionDate = completion_date ? formatDate(completion_date) : ''
-  const showPostUpdateButton = !completion_date && isOwner && isBetweenLateThresholdDate(due_date)
+  const showPostUpdateButton = !completion_date && isAllowedToPostUpdate && isBetweenLateThresholdDate(due_date)
 
   const handleClick = useCallback(() => {
     if (!completion_date) {

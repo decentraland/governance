@@ -6,9 +6,10 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 import { isEmpty } from 'lodash'
 
+import CoauthorModel from '../Coauthor/model'
+import { CoauthorStatus } from '../Coauthor/types'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
-import { isCoauthor } from '../Proposal/utils'
 
 import UpdateModel from './model'
 import { UpdateAttributes, UpdateStatus } from './types'
@@ -19,6 +20,12 @@ import {
   getPublicUpdates,
   isBetweenLateThresholdDate,
 } from './utils'
+
+// TODO: Move to backend-only Coauthors utils or service
+const isCoauthor = async (proposalId: string, address: string): Promise<boolean> => {
+  const coauthors = await CoauthorModel.findCoauthors(proposalId, CoauthorStatus.APPROVED)
+  return !!coauthors.find((coauthor) => coauthor.address.toLowerCase() === address.toLowerCase())
+}
 
 export default routes((route) => {
   const withAuth = auth()
