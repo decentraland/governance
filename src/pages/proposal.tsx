@@ -150,7 +150,8 @@ export default function ProposalPage() {
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
   const isCoauthor = !!useCoAuthorsByProposal(proposal).find(
-    (coauthor) => coauthor.address === account && coauthor.status === CoauthorStatus.APPROVED
+    (coauthor) =>
+      coauthor.address?.toLowerCase() === account?.toLowerCase() && coauthor.status === CoauthorStatus.APPROVED
   )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
