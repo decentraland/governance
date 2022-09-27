@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
@@ -41,13 +41,9 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
   const [expanded, setExpanded] = useState(!hoverable)
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
 
-  const handleClick = useCallback(() => {
-    navigate(locations.proposal(id))
-  }, [id])
-
   return (
-    <div
-      onClick={handleClick}
+    <Link
+      href={locations.proposal(id)}
       onMouseEnter={() => hoverable && setExpanded(true)}
       onMouseLeave={() => hoverable && setExpanded(false)}
       className={TokenList.join([
@@ -64,7 +60,7 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
       <div className="GrantCard__UpdateContainer">
         <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
       </div>
-    </div>
+    </Link>
   )
 }
 
