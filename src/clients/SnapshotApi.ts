@@ -12,7 +12,7 @@ import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { getEnvironmentChainId } from '../modules/votes/utils'
 import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 
-import { SnapshotGraphql } from './SnapshotGraphql'
+import { SnapshotGraphql, SnapshotStrategy } from './SnapshotGraphql'
 import { trimLastForwardSlash } from './utils'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
@@ -150,28 +150,29 @@ export class SnapshotApi {
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }
 
-  async getScores(addresses: string[], blockNumber?: number | string, space?: string, networkId?: string) {
+  async getScores(
+    addresses: string[],
+    blockNumber?: number | string,
+    space?: string,
+    networkId?: string,
+    proposalStrategies?: SnapshotStrategy[]
+  ) {
     const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
     const network = networkId && networkId.length > 0 ? networkId : getEnvironmentChainId().toString()
     const spaceName = space && space.length > 0 ? space : SnapshotApi.getSpaceName()
-    const snapshotSpace = await SnapshotGraphql.get().getSpace(spaceName)
+    const strategies = proposalStrategies || (await SnapshotGraphql.get().getSpace(spaceName)).strategies
 
     try {
-      const scores = await snapshot.utils.getScores(
-        spaceName,
-        snapshotSpace.strategies,
-        network,
-        formattedAddresses,
-        blockNumber
-      )
+      const scores = await snapshot.utils.getScores(spaceName, strategies, network, formattedAddresses, blockNumber)
       return {
         scores: scores,
-        strategies: snapshotSpace.strategies,
+        strategies: strategies,
       }
     } catch (e) {
-      // TODO: Remove after debugging
       logger.log(
-        `Space: ${spaceName}, Strategies: ${snapshotSpace.strategies}, Network: ${network}, Addresses: ${formattedAddresses}, Block: ${blockNumber}`
+        `Space: ${spaceName}, Strategies: ${JSON.stringify(
+          strategies
+        )}, Network: ${network}, Addresses: ${formattedAddresses}, Block: ${blockNumber}`
       )
       throw new Error('Error fetching proposal scores', e as Error)
     }

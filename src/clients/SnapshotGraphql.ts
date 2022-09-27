@@ -104,6 +104,11 @@ export type SnapshotProposal = {
   votes: number
 }
 
+export type SnapshotProposalMetadata = {
+  space: SnapshotSpace
+  strategies: SnapshotStrategy[]
+}
+
 enum SnapshotScoresState {
   Pending = 'pending',
   Final = 'final',
@@ -447,5 +452,31 @@ export class SnapshotGraphql extends API {
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
       linkedWearables: Math.floor(vpByStrategy[StrategyOrder.LinkedWearables]),
     }
+  }
+
+  async getProposalSpaceAndStrategies(proposalSnapshotId: string) {
+    const query = `
+      query Proposal($proposal_snapshot_id: String!) {
+        proposal(id: $proposal_snapshot_id){
+          space {
+            id
+            network
+          }
+          strategies {
+            name
+            params
+          }
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotQueryResponse<{ proposal: SnapshotProposalMetadata }>>(
+      GRAPHQL_ENDPOINT,
+      this.options()
+        .method('POST')
+        .json({ query, variables: { proposal_snapshot_id: proposalSnapshotId } })
+    )
+
+    return result?.data?.proposal
   }
 }
