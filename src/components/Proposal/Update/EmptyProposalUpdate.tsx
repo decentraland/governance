@@ -11,7 +11,7 @@ const EmptyProposalUpdate = () => {
   const t = useFormatMessage()
 
   return (
-    <div role="button" className={TokenList.join(['ProposalUpdate', 'ProposalUpdate--pending'])}>
+    <div className={TokenList.join(['ProposalUpdate', 'ProposalUpdate--pending'])}>
       <div className="ProposalUpdate__Left">
         <div className="ProposalUpdate__IconContainer">
           <QuestionCircleIcon size="16" className="EmptyProposalUpdate__Icon" />
