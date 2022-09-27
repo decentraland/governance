@@ -17,14 +17,14 @@ const getPercentage = (value: number, total: number): string => `${((value * 100
 
 const VotingPowerDistribution = ({ vpDistribution, className }: Props) => {
   const t = useFormatMessage()
-  const { total, mana, names, land, delegated, estate, linkedWearables } = vpDistribution
+  const { total, mana, names, land, delegated, estate, l1Wearables } = vpDistribution
 
   const manaPercentage = getPercentage(mana, total)
   const namePercentage = getPercentage(names, total)
   const landPercentage = getPercentage(land, total)
   const delegatedPercentage = getPercentage(delegated, total)
   const estatesPercentage = getPercentage(estate, total)
-  const linkedWearablesPercentage = getPercentage(linkedWearables, total)
+  const l1WearablesPercentage = getPercentage(l1Wearables, total)
 
   return (
     <div className={className}>
@@ -55,15 +55,15 @@ const VotingPowerDistribution = ({ vpDistribution, className }: Props) => {
             />
           </VotingPowerDistributionPopup>
         )}
-        {linkedWearables > 0 && (
+        {l1Wearables > 0 && (
           <VotingPowerDistributionPopup
-            amount={linkedWearables}
-            percentage={linkedWearablesPercentage}
-            label={t('modal.vp_delegation.details.stats_linked_wearables')}
+            amount={l1Wearables}
+            percentage={l1WearablesPercentage}
+            label={t('modal.vp_delegation.details.stats_l1_wearables')}
           >
             <div
-              className="VotingPowerDistributionBar__Item VotingPowerDistribution__LinkedWearables"
-              style={{ width: linkedWearablesPercentage }}
+              className="VotingPowerDistributionBar__Item VotingPowerDistribution__L1Wearables"
+              style={{ width: l1WearablesPercentage }}
             />
           </VotingPowerDistributionPopup>
         )}
@@ -114,8 +114,8 @@ const VotingPowerDistribution = ({ vpDistribution, className }: Props) => {
           {t('modal.vp_delegation.details.stats_bar_name')}
         </div>
         <div className="VotingPowerDistribution__Label">
-          <div className="VotingPowerDistribution__Color VotingPowerDistribution__LinkedWearables" />
-          {t('modal.vp_delegation.details.stats_bar_linked_wearables')}
+          <div className="VotingPowerDistribution__Color VotingPowerDistribution__L1Wearables" />
+          {t('modal.vp_delegation.details.stats_bar_l1_wearables')}
         </div>
         <div className="VotingPowerDistribution__Label">
           <div className="VotingPowerDistribution__Color VotingPowerDistribution__Land" />

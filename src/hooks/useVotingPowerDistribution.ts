@@ -11,7 +11,7 @@ export const EMPTY_DISTRIBUTION = {
   mana: 0,
   names: 0,
   delegated: 0,
-  linkedWearables: 0,
+  l1Wearables: 0,
 }
 
 export default function useVotingPowerDistribution(address?: string | null) {
