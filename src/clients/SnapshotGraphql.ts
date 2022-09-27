@@ -52,7 +52,6 @@ export type Delegation = {
 export type DelegationResult = {
   delegatedTo: Delegation[]
   delegatedFrom: Delegation[]
-  hasMoreDelegatedFrom: boolean
 }
 
 type ScoreDetail = {
@@ -66,7 +65,6 @@ export type DetailedScores = Record<string, ScoreDetail>
 export const EMPTY_DELEGATION: DelegationResult = {
   delegatedTo: [],
   delegatedFrom: [],
-  hasMoreDelegatedFrom: false,
 }
 
 export type VoteEventResponse = SnapshotQueryResponse<{ votes: VoteEvent[] }>
@@ -104,6 +102,11 @@ export type SnapshotProposal = {
   votes: number
 }
 
+export type SnapshotProposalMetadata = {
+  space: SnapshotSpace
+  strategies: SnapshotStrategy[]
+}
+
 enum SnapshotScoresState {
   Pending = 'pending',
   Final = 'final',
@@ -126,7 +129,7 @@ export type VpDistribution = {
   mana: number
   names: number
   delegated: number
-  linkedWearables: number
+  l1Wearables: number
 }
 
 enum StrategyOrder {
@@ -136,7 +139,7 @@ enum StrategyOrder {
   Mana,
   Names,
   Delegation,
-  LinkedWearables,
+  L1Wearables,
 }
 
 const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
@@ -445,7 +448,33 @@ export class SnapshotGraphql extends API {
       mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
       names: Math.floor(vpByStrategy[StrategyOrder.Names]),
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
-      linkedWearables: Math.floor(vpByStrategy[StrategyOrder.LinkedWearables]),
+      l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
     }
+  }
+
+  async getProposalSpaceAndStrategies(proposalSnapshotId: string) {
+    const query = `
+      query Proposal($proposal_snapshot_id: String!) {
+        proposal(id: $proposal_snapshot_id){
+          space {
+            id
+            network
+          }
+          strategies {
+            name
+            params
+          }
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotQueryResponse<{ proposal: SnapshotProposalMetadata }>>(
+      GRAPHQL_ENDPOINT,
+      this.options()
+        .method('POST')
+        .json({ query, variables: { proposal_snapshot_id: proposalSnapshotId } })
+    )
+
+    return result?.data?.proposal
   }
 }
