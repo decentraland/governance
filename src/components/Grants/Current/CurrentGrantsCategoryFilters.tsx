@@ -9,10 +9,10 @@ import {
   GrantWithUpdateAttributes,
   PROPOSAL_GRANT_CATEGORY_ALL,
   ProposalGrantCategory,
-} from '../../entities/Proposal/types'
+} from '../../../entities/Proposal/types'
+import FilterButton from '../FilterButton'
 
 import './CurrentGrantsCategoryFilters.css'
-import FilterButton from './FilterButton'
 
 export type GrantCategoryFilter = ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL
 const GRANTS_CATEGORY_FILTERS: GrantCategoryFilter[] = [

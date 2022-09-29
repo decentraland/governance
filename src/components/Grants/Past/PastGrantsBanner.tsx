@@ -3,10 +3,9 @@ import React, { useMemo } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { isEmpty } from 'lodash'
 
-import { GrantAttributes } from '../../entities/Proposal/types'
-import { numberFormat } from '../../modules/intl'
-
-import Banner, { BannerType } from './Banner'
+import { GrantAttributes } from '../../../entities/Proposal/types'
+import { numberFormat } from '../../../modules/intl'
+import Banner, { BannerType } from '../Banner'
 
 const getBannerStats = (grants: GrantAttributes[], currentGrantsTotal: number, totalGrants: number) => {
   if (isEmpty(grants)) {

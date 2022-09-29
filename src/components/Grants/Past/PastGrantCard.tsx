@@ -5,10 +5,10 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { GrantAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
-import locations from '../../modules/locations'
+import { GrantAttributes, ProposalGrantCategory } from '../../../entities/Proposal/types'
+import locations from '../../../modules/locations'
+import GrantPill from '../GrantPill'
 
-import GrantPill from './GrantPill'
 import './PastGrantCard.css'
 
 interface Props {
