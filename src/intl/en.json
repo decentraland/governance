@@ -811,7 +811,7 @@
         "vp_distribution": "Voting Power Distribution"
       },
       "user_voting_stats": {
-        "participation_label": "30 Day Voting Activity",
+        "participation_label": "30 Day Participation",
         "participation_percentage_label":  "{percentage} of current initiatives",
         "participation_total_label": "Voted on {count} proposals",
         "personal_match_label":  "Personal Match",
