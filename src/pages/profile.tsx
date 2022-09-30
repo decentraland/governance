@@ -14,7 +14,7 @@ import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import LogIn from '../components/User/LogIn'
 import UserVotingStats from '../components/User/UserVotingStats'
 import UserVpStats from '../components/User/UserVpStats'
-import useNameOrAddress from '../hooks/useNameOrAddress'
+import useProfile from '../hooks/useProfile'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -26,7 +26,7 @@ export default function ProfilePage() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
-  const displayedAddress = useNameOrAddress(address)
+  const { displayableAddress } = useProfile(address)
   const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
 
@@ -55,7 +55,7 @@ export default function ProfilePage() {
   return (
     <div className="ProfilePage">
       <Head
-        title={t('page.profile.title', { address: displayedAddress })}
+        title={t('page.profile.title', { address: displayableAddress })}
         description={t('page.profile.description')}
         image="https://decentraland.org/images/decentraland.png"
       />
