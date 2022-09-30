@@ -5,36 +5,37 @@ import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFor
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 
-import { GrantAttributes } from '../../../entities/Proposal/types'
-import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
-import locations from '../../../modules/locations'
-import { formatDate } from '../../../modules/time'
-import Username from '../../User/Username'
-import GrantPill from '../GrantPill'
+import { GrantAttributes } from '../../entities/Proposal/types'
+import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
+import locations from '../../modules/locations'
+import { formatDate } from '../../modules/time'
+import Username from '../User/Username'
 
-import CliffProgress from './CliffProgress'
-import './ProfileGrantItem.css'
-import ProgressBarTooltip from './ProgressBarTooltip'
-import VestingProgress from './VestingProgress'
+import CliffProgress from './GrantCard/CliffProgress'
+import ProgressBarTooltip from './GrantCard/ProgressBarTooltip'
+import VestingProgress from './GrantCard/VestingProgress'
+
+import './GrantBeneficiaryItem.css'
+import GrantPill from './GrantPill'
 
 interface Props {
   grant: GrantAttributes
 }
 
-function ProfileGrantItem({ grant }: Props) {
+function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
   const { user, title, enacted_at, token } = grant
   const enactedDate = new Date(enacted_at * 1000)
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
   return (
-    <Link className="ProfileGrantItem" href={locations.proposal(grant.id)}>
-      <div className="ProfileGrantItem__Section">
-        <Username className="ProfileGrantItem__Avatar" address={user} variant="avatar" size="medium" />
+    <Link className="GrantBeneficiaryItem" href={locations.proposal(grant.id)}>
+      <div className="GrantBeneficiaryItem__Section">
+        <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="medium" />
         <div>
-          <h3 className="ProfileGrantItem__Title">{title}</h3>
-          <span className="ProfileGrantItem__Details">
-            <span className="ProfileGrantItem__Details">
+          <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
+          <span className="GrantBeneficiaryItem__Details">
+            <span className="GrantBeneficiaryItem__Details">
               <Markdown>
                 {t('page.profile.grants.item_description', {
                   time: formatDate(enactedDate),
@@ -46,11 +47,11 @@ function ProfileGrantItem({ grant }: Props) {
           </span>
         </div>
       </div>
-      <div className="ProfileGrantItem__VestingSection">
-        <div className="ProfileGrantItem__PillContainer">
+      <div className="GrantBeneficiaryItem__VestingSection">
+        <div className="GrantBeneficiaryItem__PillContainer">
           <GrantPill type={grant.configuration.category} />
         </div>
-        <div className="ProfileGrantItem__VestingProgressContainer">
+        <div className="GrantBeneficiaryItem__VestingProgressContainer">
           <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
             <div>
               {proposalInCliffPeriod ? (
@@ -67,4 +68,4 @@ function ProfileGrantItem({ grant }: Props) {
   )
 }
 
-export default ProfileGrantItem
+export default GrantBeneficiaryItem

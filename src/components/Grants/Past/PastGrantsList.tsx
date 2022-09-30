@@ -7,9 +7,9 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { isEmpty } from 'lodash'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import { GrantAttributes } from '../../entities/Proposal/types'
-import { useSortingByKey } from '../../hooks/useSortingByKey'
-import FullWidthButton from '../Common/FullWidthButton'
+import { GrantAttributes } from '../../../entities/Proposal/types'
+import { useSortingByKey } from '../../../hooks/useSortingByKey'
+import FullWidthButton from '../../Common/FullWidthButton'
 
 import PastGrantCard from './PastGrantCard'
 import PastGrantsBanner from './PastGrantsBanner'

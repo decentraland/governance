@@ -3,6 +3,7 @@ import React, { Suspense } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { VpDistribution } from '../../clients/SnapshotGraphql'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
@@ -55,9 +56,11 @@ export default function UserVpStats({ address, vpDistribution, isLoadingVpDistri
           />
         </ProfileBox>
       </div>
-      <Suspense fallback={<Loader active={true} size="small" />}>
-        <UserAvatar address={address} />
-      </Suspense>
+      <Desktop>
+        <Suspense fallback={<Loader active={true} size="small" />}>
+          <UserAvatar address={address} />
+        </Suspense>
+      </Desktop>
     </Container>
   )
 }

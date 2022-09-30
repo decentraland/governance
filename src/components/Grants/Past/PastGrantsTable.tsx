@@ -3,10 +3,10 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
-import { GrantAttributes } from '../../entities/Proposal/types'
-import Sort from '../Icon/Sort'
+import { GrantAttributes } from '../../../entities/Proposal/types'
+import Sort from '../../Icon/Sort'
+import GrantsPastItem from '../GrantsPastItem'
 
-import GrantsPastItem from './GrantsPastItem'
 import './PastGrantsTable.css'
 
 interface Props {

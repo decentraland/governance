@@ -4,11 +4,10 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { filter, isEmpty, orderBy } from 'lodash'
 
-import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../entities/Proposal/types'
-import { useCurrentGrantsFilteredByCategory } from '../../hooks/useCurrentsGrantsFilteredByCategory'
-import FullWidthButton from '../Common/FullWidthButton'
-
-import GrantCard from './GrantCard/GrantCard'
+import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
+import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGrantsFilteredByCategory'
+import FullWidthButton from '../../Common/FullWidthButton'
+import GrantCard from '../GrantCard/GrantCard'
 
 import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
