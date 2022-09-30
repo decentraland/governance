@@ -810,6 +810,19 @@
         "delegated_vp_info": "Voting Power that results from the delegation of VP by other users onto this account",
         "vp_distribution": "Voting Power Distribution"
       },
+      "user_voting_stats": {
+        "participation_label": "30 Day Participation",
+        "participation_percentage_label":  "Voted on {percentage}% of proposals",
+        "participation_total_label": "{count} proposals",
+        "personal_match_label":  "Personal Match",
+        "personal_match_info":  "Personal match shows the alignment you have with this profile in terms of voting decisions.",
+        "personal_match_percentage_label":  "You're {percentage}% aligned",
+        "personal_match_conclusion": "You've voted rather similarly",
+        "outcome_match_label": "Outcome Match",
+        "outcome_match_info": "When a vote coincides with the outcome, it's considered to be a \"match\". Outcome match is the result of the amount of matches over the total amount of initiatives the account has voted on.",
+        "outcome_percentage_label":  "{percentage}% match",
+        "outcome_match_conclusion": "Their vote tends to match outcome"
+      },
       "grants": {
         "title": "Grant beneficiary",
         "info": "Grants that this account has authored or co-authored and have been approved and funded by the Decentraland DAO.",
@@ -822,7 +835,7 @@
       },
       "delegators": {
         "title": "VP Delegators",
-        "helper": "These are all the DAO members that delegated their VP to this user. Learn more about VP Delegation [here]",
+        "helper": "These are all the DAO members that delegated their VP to this user. Learn more about VP Delegation [here](https://docs.decentraland.org/player/general/dao/overview/how-does-the-dao-work/)",
         "delegated": "Delegated {vp} VP",
         "delegate_action": "Delegate them your VP",
         "button": "Show all delegators"

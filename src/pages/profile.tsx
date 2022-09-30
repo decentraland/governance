@@ -5,17 +5,14 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import DelegationCards from '../components/Delegation/DelegationCards'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import VotingPowerDelegationHandler from '../components/Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
-import { ProfileBox } from '../components/Profile/ProfileBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import LogIn from '../components/User/LogIn'
+import UserVotingStats from '../components/User/UserVotingStats'
 import UserVpStats from '../components/User/UserVpStats'
 import useNameOrAddress from '../hooks/useNameOrAddress'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
@@ -29,7 +26,6 @@ export default function ProfilePage() {
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [userAddress, authState] = useAuthContext()
   const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
-  const isLoggedUserProfile = userAddress === address
   const displayedAddress = useNameOrAddress(address)
   const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
@@ -69,8 +65,16 @@ export default function ProfilePage() {
         vpDistribution={vpDistribution}
         isLoadingVpDistribution={isLoadingVpDistribution}
       />
+      <UserVotingStats address={address} />
       <GrantBeneficiaryBox address={address} />
-      <VpDelegatorsBox address={address} />
+      <VpDelegatorsBox
+        address={address}
+        delegation={delegation}
+        delegationState={delegationState}
+        scores={scores}
+        isLoadingScores={isLoadingScores}
+        vpDistribution={vpDistribution}
+      />
     </div>
   )
 }
