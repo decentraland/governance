@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 
 import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 
-import { Delegation } from './SnapshotGraphql'
+import { Delegation } from './SnapshotGraphqlTypes'
 import { trimLastForwardSlash } from './utils'
 
 export type DelegationQueryResult = {

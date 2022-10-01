@@ -1,7 +1,10 @@
 import React from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+
+import useVotingStats from '../../hooks/useVotingStats'
 
 import { UserStatBox } from './UserStatBox'
 import './UserVotingStats.css'
@@ -13,23 +16,20 @@ interface Props {
 export default function UserVotingStats({ address }: Props) {
   const t = useFormatMessage()
 
-  const isLoading = false
-  const participationPercentage = 75
-  const participationTotal = 67
-  const personalMatchPercentage = 45
-  const outcomeMatchPercentage = 95
+  const { participationPercentage, participationTotal, personalMatchPercentage, outcomeMatchPercentage, isLoading } =
+    useVotingStats(address)
 
   return (
     <Container className="UserVotingStats__Container">
       <UserStatBox title={t('page.profile.user_voting_stats.participation_label')} loading={isLoading}>
         <div className="UserVotingStats__Data">
           <span className="UserVotingStats__MainData">
+            {t('page.profile.user_voting_stats.participation_total_label', { count: participationTotal })}
+          </span>
+          <span className="UserVotingStats__Sub">
             {t('page.profile.user_voting_stats.participation_percentage_label', {
               percentage: participationPercentage,
             })}
-          </span>
-          <span className="UserVotingStats__Sub">
-            {t('page.profile.user_voting_stats.participation_total_label', { count: participationTotal })}
           </span>
         </div>
       </UserStatBox>

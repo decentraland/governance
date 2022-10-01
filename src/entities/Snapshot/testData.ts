@@ -1,4 +1,4 @@
-import { SnapshotVote } from '../../clients/SnapshotGraphql'
+import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 
 export const VOTES_1: SnapshotVote[] = [
   {

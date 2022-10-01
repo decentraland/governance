@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphql'
+import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphqlTypes'
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../constants'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
 import Empty from '../Common/Empty'

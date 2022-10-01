@@ -4,7 +4,7 @@ import Skeleton from 'react-loading-skeleton'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { VpDistribution } from '../../../clients/SnapshotGraphql'
+import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
 
 import './VotingPowerDistribution.css'

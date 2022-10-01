@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { SnapshotGraphql, SnapshotProposal } from '../clients/SnapshotGraphql'
+import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { SnapshotProposal } from '../clients/SnapshotGraphqlTypes'
 import { groupProposalsByMonth, median } from '../entities/Snapshot/utils'
 
 export default function useParticipatingVP(start: Date, end: Date) {

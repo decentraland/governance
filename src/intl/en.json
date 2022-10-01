@@ -811,9 +811,9 @@
         "vp_distribution": "Voting Power Distribution"
       },
       "user_voting_stats": {
-        "participation_label": "30 Day Participation",
-        "participation_percentage_label":  "Voted on {percentage}% of proposals",
-        "participation_total_label": "{count} proposals",
+        "participation_label": "30 Day Voting Activity",
+        "participation_percentage_label":  "{percentage} of current initiatives",
+        "participation_total_label": "Voted on {count} proposals",
         "personal_match_label":  "Personal Match",
         "personal_match_info":  "Personal match shows the alignment you have with this profile in terms of voting decisions.",
         "personal_match_percentage_label":  "You're {percentage}% aligned",

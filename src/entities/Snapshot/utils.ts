@@ -1,14 +1,14 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import {
   Delegation,
   DelegationResult,
   EMPTY_DELEGATION,
-  SnapshotGraphql,
   SnapshotProposal,
   SnapshotVote,
-} from '../../clients/SnapshotGraphql'
+} from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
 
 import { SNAPSHOT_SPACE } from './constants'
@@ -52,6 +52,34 @@ export function calculateMatch(votes1: SnapshotVote[] | null, votes2: SnapshotVo
     match.voteDifference = voteDifference
   }
   return match
+}
+
+export type OutcomeMatch = {
+  outcomeMatch: number
+  totalProposals: number
+}
+
+export function outcomeMatch(votes: SnapshotVote[]): OutcomeMatch {
+  let matchCounter = 0
+  let closedProposalsCounter = 0
+  for (const vote of votes) {
+    if (vote.proposal?.state === 'closed' && vote.proposal?.scores && vote.proposal?.scores.length > 0) {
+      closedProposalsCounter++
+      const scores = vote.proposal.scores
+      const winnerChoiceScore = Math.max(...scores)
+      const winnerChoiceIndex = scores.indexOf(winnerChoiceScore)
+      const resultIsNotATie = scores.filter((score) => score === winnerChoiceScore).length === 1
+      if (resultIsNotATie) {
+        if (vote.choice === winnerChoiceIndex + 1) {
+          matchCounter++
+        }
+      }
+    }
+  }
+  console.log('matchCounter', matchCounter)
+  console.log('closedProposalsCounter', closedProposalsCounter)
+  const outcomeMatch = Math.floor((matchCounter * 100) / closedProposalsCounter) || 0
+  return { outcomeMatch: outcomeMatch, totalProposals: closedProposalsCounter }
 }
 
 export function median(array: number[]) {

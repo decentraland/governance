@@ -5,7 +5,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
-import { VpDistribution } from '../../clients/SnapshotGraphql'
+import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
