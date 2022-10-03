@@ -8,7 +8,7 @@ import { config } from '../../config'
 import { GOVERNANCE_API } from '../../constants'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
+import { GRANT_SIZE_MINIMUM, MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 import {
   ProposalAttributes,
   ProposalGrantTier,
@@ -113,7 +113,7 @@ export function isGrantSizeValid(tier: string | null, size: string | number): bo
 
   const sizeNumber = asNumber(size)
   const upperTierLimit = values[tierIndex]
-  const lowerTierLimit = tierIndex === 0 ? asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
+  const lowerTierLimit = tierIndex === 0 ? asNumber(GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
 
   return sizeNumber > lowerTierLimit && sizeNumber <= upperTierLimit
 }
