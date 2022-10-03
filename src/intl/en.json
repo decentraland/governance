@@ -820,6 +820,7 @@
         "personal_match_conclusion_<50": "You hardly agree with this user",
         "personal_match_conclusion_50-80": "You could have some interesting conversations with this user",
         "personal_match_conclusion_>80":  "You think rather similar with this user",
+        "personal_match_conclusion_same_user": "You are aligned with yourself ✨",
         "outcome_match_label": "Outcome Match",
         "outcome_match_info": "When a vote coincides with the outcome, it's considered to be a \"match\". Outcome match is the result of the amount of matches over the total amount of initiatives the account has voted on.",
         "outcome_percentage_label":  "{percentage}% match",

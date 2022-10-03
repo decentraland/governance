@@ -76,8 +76,6 @@ export function outcomeMatch(votes: SnapshotVote[]): OutcomeMatch {
       }
     }
   }
-  console.log('matchCounter', matchCounter)
-  console.log('closedProposalsCounter', closedProposalsCounter)
   const outcomeMatch = Math.floor((matchCounter * 100) / closedProposalsCounter) || 0
   return { outcomeMatch: outcomeMatch, totalProposals: closedProposalsCounter }
 }
