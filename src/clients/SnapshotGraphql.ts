@@ -18,7 +18,7 @@ import {
 } from './SnapshotGraphqlTypes'
 import { inBatches, trimLastForwardSlash } from './utils'
 
-const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
+export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const GRAPHQL_ENDPOINT = `/graphql`
 

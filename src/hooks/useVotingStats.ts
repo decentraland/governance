@@ -1,17 +1,47 @@
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { SnapshotGraphql, getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getPercentage } from '../helpers'
 
+function sortAddressesVotes(votes: SnapshotVote[], comparingAgainstUser: boolean, userAddress: string | null) {
+  const addressVotes: SnapshotVote[] = []
+  const userVotes: SnapshotVote[] = []
+  votes.forEach((vote) => {
+    if (comparingAgainstUser && getChecksumAddress(vote.voter!) === getChecksumAddress(userAddress!)) {
+      userVotes.push(vote)
+    } else {
+      addressVotes.push(vote)
+    }
+  })
+  return { addressVotes, userVotes }
+}
+
+function getOutcomeMatchPercentage(addressVotes: SnapshotVote[]) {
+  return (addressVotes && addressVotes.length > 0 && outcomeMatch(addressVotes).outcomeMatch) || 0
+}
+
+function getParticipation(
+  last30DaysProposals: Partial<SnapshotProposal>[],
+  addressVotes: SnapshotVote[],
+  aMonthAgo: Date
+) {
+  const totalProposalsLast30Days = last30DaysProposals.length
+  const proposalsVotedLast30Days = addressVotes.filter(
+    (vote) => vote.created > getQueryTimestamp(aMonthAgo.getTime())
+  ).length
+  const participationPercentage = getPercentage(proposalsVotedLast30Days, totalProposalsLast30Days, 0)
+  return { participationTotal: totalProposalsLast30Days, participationPercentage }
+}
+
 export default function useVotingStats(address: string) {
   const [userAddress] = useAuthContext()
-  const comparingAgainstUser = userAddress && !(userAddress === address)
-
+  const comparingAgainstUser = !!userAddress && userAddress.length > 0 && !(userAddress === address)
   const now = new Date()
   const aMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
+
   const [last30DaysProposals, proposalsState] = useAsyncMemo(
     async () => {
       return await SnapshotGraphql.get().getProposals(aMonthAgo, now, ['id', 'choices', 'scores'])
@@ -29,26 +59,16 @@ export default function useVotingStats(address: string) {
     [address],
     { initialValue: [] as SnapshotVote[], callWithTruthyDeps: true }
   )
+  const { addressVotes, userVotes } = sortAddressesVotes(votes, comparingAgainstUser, userAddress)
 
-  const addressVotes: SnapshotVote[] = []
-  const userVotes: SnapshotVote[] = []
-  votes.forEach((vote) => {
-    if (comparingAgainstUser && getChecksumAddress(vote.voter!) === getChecksumAddress(userAddress)) {
-      userVotes.push(vote)
-    } else {
-      addressVotes.push(vote)
-    }
-  })
-
-  const totalProposals = last30DaysProposals.length
+  const { participationTotal, participationPercentage } = getParticipation(last30DaysProposals, addressVotes, aMonthAgo)
   const matchResult = calculateMatch(addressVotes, userVotes)
-  const outcomeMatchPercentage = addressVotes && addressVotes.length > 0 && outcomeMatch(addressVotes).outcomeMatch
 
   return {
-    participationPercentage: getPercentage(addressVotes.length, totalProposals, 0),
-    participationTotal: totalProposals,
+    participationPercentage,
+    participationTotal,
     personalMatchPercentage: comparingAgainstUser ? matchResult.percentage : 100,
-    outcomeMatchPercentage: 0 || outcomeMatchPercentage,
+    outcomeMatchPercentage: getOutcomeMatchPercentage(addressVotes),
     isLoading: proposalsState.loading || votesState.loading,
   }
 }
