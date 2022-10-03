@@ -4,6 +4,7 @@ import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
+import { GOVERNANCE_API } from '../../constants'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
@@ -161,7 +162,7 @@ export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id'
 }
 
 export function governanceUrl(pathname = '') {
-  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  const target = new URL(GOVERNANCE_API)
   target.pathname = pathname
   target.search = ''
   target.hash = ''
@@ -170,7 +171,7 @@ export function governanceUrl(pathname = '') {
 
 export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   const params = new URLSearchParams({ id: proposal.id })
-  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  const target = new URL(GOVERNANCE_API)
   target.pathname = '/proposal/'
   target.search = '?' + params.toString()
   return target.toString()
@@ -178,7 +179,7 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
 
 export function getUpdateUrl(updateId: string, proposalId: string) {
   const params = new URLSearchParams({ id: updateId, proposalId })
-  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  const target = new URL(GOVERNANCE_API)
   target.pathname = '/update/'
   target.search = '?' + params.toString()
   return target.toString()
