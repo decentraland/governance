@@ -9,7 +9,6 @@ import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
-import { UserStatBox } from './UserStatBox'
 import { UserVpBox } from './UserVpBox'
 import './UserVpStats.css'
 import Username from './Username'

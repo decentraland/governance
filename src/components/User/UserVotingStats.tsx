@@ -4,7 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import { getChecksumAddress } from '../../entities/Snapshot/utils'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import useVotingStats from '../../hooks/useVotingStats'
 
 import { UserStatBox } from './UserStatBox'
@@ -36,8 +36,7 @@ function getOutcomeMatchConclusion(outcomeMatchPercentage: number) {
 export default function UserVotingStats({ address }: Props) {
   const t = useFormatMessage()
   const [userAddress] = useAuthContext()
-  const sameUser =
-    !!userAddress && userAddress.length > 0 && getChecksumAddress(userAddress) === getChecksumAddress(address)
+  const sameUser = isSameAddress(userAddress, address)
 
   const { participationPercentage, participationTotal, personalMatchPercentage, outcomeMatchPercentage, isLoading } =
     useVotingStats(address, !sameUser ? userAddress : null)

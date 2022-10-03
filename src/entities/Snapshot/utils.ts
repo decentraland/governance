@@ -69,10 +69,8 @@ export function outcomeMatch(votes: SnapshotVote[]): OutcomeMatch {
       const winnerChoiceScore = Math.max(...scores)
       const winnerChoiceIndex = scores.indexOf(winnerChoiceScore)
       const resultIsNotATie = scores.filter((score) => score === winnerChoiceScore).length === 1
-      if (resultIsNotATie) {
-        if (vote.choice === winnerChoiceIndex + 1) {
-          matchCounter++
-        }
+      if (resultIsNotATie && vote.choice === winnerChoiceIndex + 1) {
+        matchCounter++
       }
     }
   }
@@ -212,4 +210,14 @@ export async function getLatestDelegations(address: string | null | undefined) {
 
 export function getChecksumAddress(address: string) {
   return ethers.utils.getAddress(address.toLowerCase())
+}
+
+export function isSameAddress(userAddress: string | null, address: string | null) {
+  return (
+    !!userAddress &&
+    userAddress.length > 0 &&
+    !!address &&
+    address.length > 0 &&
+    getChecksumAddress(userAddress) === getChecksumAddress(address)
+  )
 }
