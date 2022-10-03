@@ -817,11 +817,15 @@
         "personal_match_label":  "Personal Match",
         "personal_match_info":  "Personal match shows the alignment you have with this profile in terms of voting decisions.",
         "personal_match_percentage_label":  "You're {percentage}% aligned",
-        "personal_match_conclusion": "You've voted rather similarly",
+        "personal_match_conclusion_<50": "You hardly agree with this user",
+        "personal_match_conclusion_50-80": "You could have some interesting conversations with this user",
+        "personal_match_conclusion_>80":  "You think rather similar with this user",
         "outcome_match_label": "Outcome Match",
         "outcome_match_info": "When a vote coincides with the outcome, it's considered to be a \"match\". Outcome match is the result of the amount of matches over the total amount of initiatives the account has voted on.",
         "outcome_percentage_label":  "{percentage}% match",
-        "outcome_match_conclusion": "Their vote tends to match outcome"
+        "outcome_match_conclusion_<50": "This user is not a people pleaser",
+        "outcome_match_conclusion_50-80": "This user has it's own voice regardless what the community thinks",
+        "outcome_match_conclusion_>80":  "This user is aligned with the general community sentiment"
       },
       "grants": {
         "title": "Grant beneficiary",

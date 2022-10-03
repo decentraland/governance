@@ -13,6 +13,22 @@ interface Props {
   address: string
 }
 
+function getPersonalMatchConclusion(personalMatchPercentage: number) {
+  return personalMatchPercentage < 50
+    ? 'page.profile.user_voting_stats.personal_match_conclusion_<50'
+    : personalMatchPercentage <= 80
+    ? 'page.profile.user_voting_stats.personal_match_conclusion_50-80'
+    : 'page.profile.user_voting_stats.personal_match_conclusion_>80'
+}
+
+function getOutcomeMatchConclusion(outcomeMatchPercentage: number) {
+  return outcomeMatchPercentage < 50
+    ? 'page.profile.user_voting_stats.outcome_match_conclusion_<50'
+    : outcomeMatchPercentage <= 80
+    ? 'page.profile.user_voting_stats.outcome_match_conclusion_50-80'
+    : 'page.profile.user_voting_stats.outcome_match_conclusion_>80'
+}
+
 export default function UserVotingStats({ address }: Props) {
   const t = useFormatMessage()
 
@@ -44,7 +60,7 @@ export default function UserVotingStats({ address }: Props) {
               percentage: personalMatchPercentage,
             })}
           </span>
-          <span className="UserVotingStats__Sub">{t('page.profile.user_voting_stats.personal_match_conclusion')}</span>
+          <span className="UserVotingStats__Sub">{t(getPersonalMatchConclusion(personalMatchPercentage))}</span>
         </div>
       </UserStatBox>
       <UserStatBox
@@ -56,7 +72,7 @@ export default function UserVotingStats({ address }: Props) {
           <span className="UserVotingStats__MainData">
             {t('page.profile.user_voting_stats.outcome_percentage_label', { percentage: outcomeMatchPercentage })}
           </span>
-          <span className="UserVotingStats__Sub">{t('page.profile.user_voting_stats.outcome_match_conclusion')}</span>
+          <span className="UserVotingStats__Sub">{t(getOutcomeMatchConclusion(outcomeMatchPercentage))}</span>
         </div>
       </UserStatBox>
     </Container>
