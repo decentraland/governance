@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { SnapshotGraphql, getQueryTimestamp } from '../clients/SnapshotGraphql'
@@ -51,10 +53,13 @@ export default function useVotingStats(address: string, userAddress: string | nu
     [address],
     { initialValue: [] as SnapshotVote[], callWithTruthyDeps: true }
   )
-  const { addressVotes, userVotes } = sortAddressesVotes(votes, userAddress)
+  const { addressVotes, userVotes } = useMemo(() => sortAddressesVotes(votes, userAddress), [votes, userAddress])
 
-  const { participationTotal, participationPercentage } = getParticipation(last30DaysProposals, addressVotes, aMonthAgo)
-  const matchResult = calculateMatch(addressVotes, userVotes)
+  const { participationTotal, participationPercentage } = useMemo(
+    () => getParticipation(last30DaysProposals, addressVotes, aMonthAgo),
+    [addressVotes]
+  )
+  const matchResult = useMemo(() => calculateMatch(addressVotes, userVotes), [addressVotes, userVotes])
 
   return {
     participationPercentage,
