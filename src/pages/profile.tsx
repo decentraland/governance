@@ -5,8 +5,11 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
+import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
@@ -53,28 +56,35 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="ProfilePage">
-      <Head
-        title={t('page.profile.title', { address: displayableAddress })}
-        description={t('page.profile.description')}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <Navigation activeTab={NavigationTab.Profile} />
-      <UserVpStats
-        address={address}
-        vpDistribution={vpDistribution}
-        isLoadingVpDistribution={isLoadingVpDistribution}
-      />
-      <UserVotingStats address={address} />
-      <GrantBeneficiaryBox address={address} />
-      <VpDelegatorsBox
-        address={address}
-        delegation={delegation}
-        delegationState={delegationState}
-        scores={scores}
-        isLoadingScores={isLoadingScores}
-        vpDistribution={vpDistribution}
-      />
-    </div>
+    <>
+      <Mobile>
+        <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Profile} />
+      </Mobile>
+      <BurgerMenuPushableLayout>
+        <div className="ProfilePage">
+          <Head
+            title={t('page.profile.title', { address: displayableAddress })}
+            description={t('page.profile.description')}
+            image="https://decentraland.org/images/decentraland.png"
+          />
+          <Navigation activeTab={NavigationTab.Profile} />
+          <UserVpStats
+            address={address}
+            vpDistribution={vpDistribution}
+            isLoadingVpDistribution={isLoadingVpDistribution}
+          />
+          <UserVotingStats address={address} />
+          <GrantBeneficiaryBox address={address} />
+          <VpDelegatorsBox
+            address={address}
+            delegation={delegation}
+            delegationState={delegationState}
+            scores={scores}
+            isLoadingScores={isLoadingScores}
+            vpDistribution={vpDistribution}
+          />
+        </div>
+      </BurgerMenuPushableLayout>
+    </>
   )
 }
