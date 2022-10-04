@@ -43,5 +43,8 @@
 
 .VotingPowerDistribution__Labels {
   display: flex;
-  gap: 24px;
+}
+
+.VotingPowerDistribution__Labels :last-child {
+  margin-right: 0;
 }
