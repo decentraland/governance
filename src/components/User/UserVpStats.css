@@ -32,3 +32,7 @@
 .UserVpStats__VpDistribution {
   margin-top: 24px;
 }
+
+.UserVpStats__Carousel .flickity-slider {
+  margin: 0 16px !important;
+}
