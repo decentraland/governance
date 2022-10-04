@@ -15,8 +15,7 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import LogIn from '../components/User/LogIn'
-import UserVotingStats from '../components/User/UserVotingStats'
-import UserVpStats from '../components/User/UserVpStats'
+import UserStats from '../components/User/UserStats'
 import useProfile from '../hooks/useProfile'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -68,12 +67,11 @@ export default function ProfilePage() {
             image="https://decentraland.org/images/decentraland.png"
           />
           <Navigation activeTab={NavigationTab.Profile} />
-          <UserVpStats
+          <UserStats
             address={address}
             vpDistribution={vpDistribution}
             isLoadingVpDistribution={isLoadingVpDistribution}
           />
-          <UserVotingStats address={address} />
           <GrantBeneficiaryBox address={address} />
           <VpDelegatorsBox
             address={address}
