@@ -22,10 +22,7 @@
   letter-spacing: 0.4px;
 }
 
-.UserVpStats__StatBoxes {
-  display: flex;
-  justify-content: space-between;
-  gap: 23px;
+.UserVpStats__Slider {
   margin-bottom: 44px;
 }
 
@@ -35,4 +32,16 @@
 
 .UserVpStats__Carousel .flickity-slider {
   margin: 0 16px !important;
+}
+
+@media (min-width: 768px) {
+  .UserVpStats__StatBoxes {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 44px;
+  }
+
+  .UserVpStats__StatBoxes :last-child {
+    margin-right: 0;
+  }
 }

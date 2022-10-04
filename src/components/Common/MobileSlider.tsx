@@ -1,13 +1,15 @@
 import React, { useRef } from 'react'
-import Flickity from 'react-flickity-component'
+import Flickity, { FlickityOptions } from 'react-flickity-component'
 
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import './MobileSlider.css'
 
-const flickityOptions = {
+const flickityOptions: FlickityOptions = {
   cellAlign: 'left',
   accessibility: true,
   pageDots: false,
@@ -21,16 +23,15 @@ const flickityOptions = {
 interface Props {
   children: React.ReactNode
   className?: string
+  containerClassName?: string
 }
 
-export default function MobileSlider({ children, className }: Props) {
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+export default function MobileSlider({ children, className, containerClassName }: Props) {
   const flickity = useRef<Flickity>()
 
   return (
     <>
-      {isMobile ? (
+      <Mobile>
         <Flickity
           className={TokenList.join(['MobileSlider', className])}
           options={flickityOptions}
@@ -38,9 +39,10 @@ export default function MobileSlider({ children, className }: Props) {
         >
           {children}
         </Flickity>
-      ) : (
-        children
-      )}
+      </Mobile>
+      <NotMobile>
+        <div className={containerClassName}>{children}</div>
+      </NotMobile>
     </>
   )
 }
