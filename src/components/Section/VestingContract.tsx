@@ -4,12 +4,13 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import { env } from '../../modules/env'
 import Pill from '../Common/Pill'
 
 import './DetailsSection.css'
 import './VestingContract.css'
 
-const VESTING_DASHBOARD_URL = process.env.GATSBY_VESTING_DASHBOARD_URL
+const VESTING_DASHBOARD_URL = env('GATSBY_VESTING_DASHBOARD_URL')
 
 interface Props {
   vestingAddress: string

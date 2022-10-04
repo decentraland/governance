@@ -57,7 +57,7 @@ jobs:
     
   deployment:
     needs: [build-push]
-    name: "Deploy to: dev stg prd"
+    name: "Deploy to: dev prd"
     runs-on: ubuntu-latest
     steps:
       - name: Trigger deployment

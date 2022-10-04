@@ -6,6 +6,7 @@ import numeral from 'numeral'
 
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
+import { DISCOURSE_API } from '../Discourse/utils'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 
 import {
@@ -35,7 +36,7 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 export const DEFAULT_CHOICES = ['yes', 'no']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
-export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
+export const JOIN_DISCORD_URL = env('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 
 export const CLIFF_PERIOD_IN_DAYS = 29
 
@@ -168,7 +169,7 @@ export function snapshotProposalUrl(proposal: Pick<ProposalAttributes, 'snapshot
 }
 
 export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id' | 'discourse_topic_slug'>) {
-  const target = new URL(process.env.GATSBY_DISCOURSE_API || '')
+  const target = new URL(DISCOURSE_API || '')
   target.pathname = `/t/${proposal.discourse_topic_slug}/${proposal.discourse_topic_id}`
   return target.toString()
 }

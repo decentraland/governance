@@ -18,13 +18,14 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import { toWei } from 'web3x/utils/units'
 
 import { useBalanceOf, useManaContract, useWManaContract } from '../../hooks/useContract'
+import { env } from '../../modules/env'
 import ActionableLayout from '../Layout/ActionableLayout'
 
 import './ManaBalanceCard.css'
 import VotingPower from './VotingPower'
 
 const UNWRAPPING_TRANSACTION_ID = `unwrapping`
-const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || '#'
+const BUY_MANA_URL = env('GATSBY_BUY_MANA_URL') || '#'
 
 interface Props {
   address: string | null
@@ -124,7 +125,7 @@ const ManaBalanceCard = ({ address }: Props) => {
             {userAddress === address && (
               <Button
                 basic
-                loading={unwrapping || (unwrappingTransaction?.status && isPending(unwrappingTransaction?.status!))}
+                loading={unwrapping || (unwrappingTransaction?.status && isPending(unwrappingTransaction?.status))}
                 onClick={() => unwrap()}
                 className="ManaBalanceCard__WrappedManaButton"
               >
