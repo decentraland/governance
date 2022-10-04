@@ -2,7 +2,7 @@ import Candidates from './modules/delegates/candidates.json'
 import { env } from './modules/env'
 
 export const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
-export const FORUM_URL = env('GATSBY_DISCOURSE_API', '')
+export const FORUM_URL = env('GATSBY_DISCOURSE_API', '') || ''
 export const GOVERNANCE_API = env('GATSBY_GOVERNANCE_API', 'https://governance.decentraland.org/api') || ''
 export const DAO_DISCORD_URL = 'https://discord.gg/amkcFrqPBh'
 export const NEWSLETTER_URL = 'https://mailchi.mp/decentraland.org/decentraland-dao-weekly-newsletter'
