@@ -32,7 +32,6 @@ RUN npm ci
 
 COPY ./src                                    /app/src
 COPY ./static                                 /app/static
-COPY ./.env                                   /app/.env.production
 COPY ./entrypoint.sh                          /app/entrypoint.sh
 COPY ./gatsby-browser.js                      /app/gatsby-browser.js
 COPY ./gatsby-config.js                       /app/gatsby-config.js
