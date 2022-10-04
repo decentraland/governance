@@ -43,7 +43,7 @@ export default function UserVotingStats({ address }: Props) {
     useVotingStats(address, !sameUser ? userAddress : null)
 
   return (
-    <MobileSlider className={'UserVotingStats__Slider'} containerClassName="UserVotingStats__Container">
+    <MobileSlider containerClassName="UserStats__StatBoxes" className="UserStats__Slider">
       <UserStatBox title={t('page.profile.user_voting_stats.participation_label')} loading={isLoading}>
         <div className="UserVotingStats__Data">
           <span className="UserVotingStats__MainData">

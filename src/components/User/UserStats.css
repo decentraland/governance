@@ -1,7 +1,6 @@
 .ui.container.UserStats__Container {
   display: flex;
   gap: 41px;
-  margin-bottom: 44px;
 }
 
 .UserStats__UserInfo {
@@ -11,17 +10,46 @@
 }
 
 .UserStats__Username {
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .UserStats__Username > span {
   font-weight: 600;
-  font-size: 40px !important;
+  font-size: 24px !important;
   line-height: 48px;
   letter-spacing: 0.4px;
 }
 
 .UserStats__VpDistribution {
   margin-top: 24px;
+}
+
+.UserStats__Slider {
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .UserStats__Username {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .UserStats__Username > span {
+    font-size: 40px !important;
+  }
+
+  .UserStats__StatBoxes {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 44px;
+  }
+
+  .UserStats__StatBoxes :last-child {
+    margin-right: 0;
+  }
+
+  .UserStats__VpDistributionContainer {
+    margin-bottom: 44px;
+  }
 }

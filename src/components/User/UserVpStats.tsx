@@ -17,7 +17,7 @@ export default function UserVpStats({ vpDistribution, isLoadingVpDistribution }:
   const t = useFormatMessage()
 
   return (
-    <MobileSlider containerClassName="UserVpStats__StatBoxes" className={'UserVpStats__Slider'}>
+    <MobileSlider containerClassName="UserStats__StatBoxes" className="UserStats__Slider">
       <UserVpBox
         title={t('page.profile.user_vp_stats.consolidated_vp')}
         value={vpDistribution?.total}

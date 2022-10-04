@@ -3,7 +3,7 @@ import React, { Suspense } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
@@ -28,7 +28,12 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
   return (
     <Container className="UserStats__Container">
       <div className="UserStats__UserInfo">
-        <Username address={address} size="medium" className="UserStats__Username" />
+        <Mobile>
+          <Username address={address} size="small" className="UserStats__Username" />
+        </Mobile>
+        <NotMobile>
+          <Username address={address} size="medium" className="UserStats__Username" />
+        </NotMobile>
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
         <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')}>
           <VotingPowerDistribution

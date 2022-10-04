@@ -5,8 +5,8 @@
   border: 1px solid var(--black-100);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
-  min-height: 89px;
-  padding: 16px 16px 20px;
+  min-height: 85px;
+  padding: 16px 16px;
   margin-right: 16px;
 }
 
@@ -23,8 +23,12 @@
   line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
-  margin-right: 21px;
   min-width: 100px;
+}
+
+.UserStatBox__Info {
+  height: 14px;
+  width: 14px;
 }
 
 @media (min-width: 768px) {
