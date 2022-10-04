@@ -4,8 +4,8 @@ import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
-import { config } from '../../config'
 import { GOVERNANCE_API } from '../../constants'
+import { env } from '../../modules/env'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 
 import { GRANT_SIZE_MINIMUM, MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
@@ -146,7 +146,7 @@ export function asNumber(value: string | number): number {
 }
 
 export function snapshotUrl(hash: string) {
-  const snapshotUrl = config.get('GATSBY_SNAPSHOT_URL', '')
+  const snapshotUrl = env('GATSBY_SNAPSHOT_URL', '') || ''
   const target = new URL(snapshotUrl)
   target.pathname = ''
   target.hash = hash
