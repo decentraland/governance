@@ -1,6 +1,7 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { SnapshotGraphql, VpDistribution } from '../clients/SnapshotGraphql'
+import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { VpDistribution } from '../clients/SnapshotGraphqlTypes'
 
 export const EMPTY_DISTRIBUTION = {
   total: 0,

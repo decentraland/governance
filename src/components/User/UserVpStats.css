@@ -10,20 +10,18 @@
   width: 100%;
 }
 
-span.Username.UserVpStats__Username {
+.UserVpStats__Username {
+  gap: 12px;
   margin-bottom: 24px;
 }
 
-span.Username.UserVpStats__Username > span {
+.UserVpStats__Username > span {
   font-weight: 600;
   font-size: 40px !important;
   line-height: 48px;
   letter-spacing: 0.4px;
 }
 
-span.Username.UserVpStats__Username > img.dg.dcl-avatar.dcl-avatar--medium.dcl-avatar--5 {
-  margin-right: 12px;
-}
 .UserVpStats__StatBoxes {
   display: flex;
   justify-content: space-between;

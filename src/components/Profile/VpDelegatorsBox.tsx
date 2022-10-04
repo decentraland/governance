@@ -1,9 +1,11 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { AsyncStateResultState } from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import { DelegationResult, DetailedScores, VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
 import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
@@ -12,14 +14,24 @@ import { ProfileBox } from './ProfileBox'
 
 interface Props {
   address: string | null
+  delegation: DelegationResult
+  delegationState: AsyncStateResultState<DelegationResult, DelegationResult>
+  scores: DetailedScores
+  isLoadingScores: boolean
+  vpDistribution: VpDistribution | null
 }
 
-export default function VpDelegatorsBox({ address }: Props) {
+export default function VpDelegatorsBox({
+  address,
+  delegation,
+  delegationState,
+  scores,
+  isLoadingScores,
+  vpDistribution,
+}: Props) {
   const t = useFormatMessage()
-  const [userAddress, authState] = useAuthContext()
+  const [userAddress] = useAuthContext()
   const isLoggedUserProfile = userAddress === address
-  const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
-    useVotingPowerInformation(address)
 
   return (
     <Container>

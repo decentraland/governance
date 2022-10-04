@@ -8,7 +8,7 @@ export type VoteHistory = { lastVoted: number; timesVoted: number }
 export default function useAddressesVotesTotals(addresses: string[]) {
   const [addressesVotesTotals, state] = useAsyncMemo(
     async () => {
-      const addressesVotesByDate = await SnapshotGraphql.get().getAddressesVotesByDate(addresses)
+      const addressesVotesByDate = await SnapshotGraphql.get().getAddressesVotes(addresses)
       const aggregatedVotes: Record<string, VoteHistory> = {}
       addressesVotesByDate.map((voteByDate) => {
         const voter = voteByDate.voter.toLowerCase()

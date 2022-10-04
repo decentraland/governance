@@ -5,11 +5,11 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
-import { VpDistribution } from '../../clients/SnapshotGraphql'
+import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
-import { UserStatBox } from './UserStatBox'
+import { UserVpBox } from './UserVpBox'
 import './UserVpStats.css'
 import Username from './Username'
 
@@ -29,19 +29,19 @@ export default function UserVpStats({ address, vpDistribution, isLoadingVpDistri
       <div className="UserVpStats__UserInfo">
         <Username address={address} size="medium" className="UserVpStats__Username" />
         <div className="UserVpStats__StatBoxes">
-          <UserStatBox
+          <UserVpBox
             title={t('page.profile.user_vp_stats.consolidated_vp')}
             value={vpDistribution?.total}
             info={t('page.profile.user_vp_stats.consolidated_vp_info')}
             loading={isLoadingVpDistribution}
           />
-          <UserStatBox
+          <UserVpBox
             title={t('page.profile.user_vp_stats.own_vp')}
             value={vpDistribution?.own}
             info={t('page.profile.user_vp_stats.own_vp_info')}
             loading={isLoadingVpDistribution}
           />
-          <UserStatBox
+          <UserVpBox
             title={t('page.profile.user_vp_stats.delegated_vp')}
             value={vpDistribution?.delegated}
             info={t('page.profile.user_vp_stats.delegated_vp_info')}

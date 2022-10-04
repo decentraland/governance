@@ -2,10 +2,10 @@ import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import { getPercentage } from '../../../helpers'
+
 import './VotingPowerDistributionBarWithPopup.css'
 import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
-
-const getPercentage = (value: number, total: number): string => `${((value * 100) / total).toFixed(2)}%`
 
 interface Props {
   value: number

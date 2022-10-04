@@ -7,7 +7,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { DelegationResult } from '../../clients/SnapshotGraphql'
+import { DelegationResult } from '../../clients/SnapshotGraphqlTypes'
 import useDelegation from '../../hooks/useDelegation'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'

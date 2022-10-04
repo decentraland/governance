@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { DetailedScores } from '../clients/SnapshotGraphql'
+import { DetailedScores } from '../clients/SnapshotGraphqlTypes'
 import { getScores } from '../entities/Votes/utils'
 
 export default function useVotingPowerBalanceList(addresses: string[]) {

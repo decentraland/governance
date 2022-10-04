@@ -1,4 +1,4 @@
-import { Delegation } from '../clients/SnapshotGraphql'
+import { Delegation } from '../clients/SnapshotGraphqlTypes'
 import { filterDelegationFrom, filterDelegationTo } from '../entities/Snapshot/utils'
 
 const DCL_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || 'dcl_space'
