@@ -1,8 +1,17 @@
-.ui.container.UserVotingStats__Container {
-  display: flex;
+.UserVotingStats__Container {
   margin-bottom: 44px;
-  justify-content: space-between;
-  gap: 23px;
+}
+
+@media (min-width: 768px) {
+  .UserVotingStats__Container {
+    display: flex;
+    justify-content: space-between;
+    gap: 23px;
+  }
+
+  .UserVotingStats__Container :last-child {
+    margin-right: 0;
+  }
 }
 
 .UserVotingStats__Data {
