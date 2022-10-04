@@ -17,5 +17,7 @@ export function formatError(err: Error) {
   return process.env.NODE_ENV !== 'production' ? err : errorObj
 }
 
-export const getPercentage = (value: number, total: number, decimals = 2): string =>
-  `${((value * 100) / total).toFixed(decimals)}%`
+export const getPercentage = (value: number, total: number, decimals = 2): string => {
+  const definitelyANumber = value > 0 && total > 0 ? ((value * 100) / total).toFixed(decimals) : 0
+  return `${definitelyANumber}%`
+}

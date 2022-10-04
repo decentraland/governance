@@ -25,7 +25,7 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
     return (
       <div className={className}>
         <Skeleton className={TokenList.join(['VotingPowerDistributionBar', 'VotingPowerDistributionBar__Loading'])} />
-        <VotingPowerDistributionLabels />
+        <VotingPowerDistributionLabels vpDistribution={vpDistribution} />
       </div>
     )
   }
@@ -72,7 +72,7 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
           className={'VotingPowerDistribution__Delegated'}
         />
       </div>
-      <VotingPowerDistributionLabels />
+      <VotingPowerDistributionLabels vpDistribution={vpDistribution} />
     </div>
   )
 }
