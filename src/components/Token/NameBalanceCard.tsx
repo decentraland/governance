@@ -10,12 +10,13 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
+import { env } from '../../modules/env'
 import ActionableLayout from '../Layout/ActionableLayout'
 
 import VotingPower from './VotingPower'
 
 export const NAME_MULTIPLIER = 100
-const BUY_NAME_URL = process.env.GATSBY_BUY_NAME_URL || '#'
+const BUY_NAME_URL = env('GATSBY_BUY_NAME_URL') || '#'
 
 interface Props {
   address: string | null
