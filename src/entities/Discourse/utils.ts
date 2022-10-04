@@ -1,10 +1,10 @@
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
+import { env } from '../../modules/env'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
-export const DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
-export const DISCOURSE_USER = requiredEnv('DISCOURSE_USER')
+export const DISCOURSE_USER = env('GATSBY_DISCOURSE_USER') || ''
 export const BASE_AVATAR_URL = requiredEnv('DISCOURSE_BASE_AVATAR_URL')
 const DEFAULT_AVATAR_SIZE = '45'
 

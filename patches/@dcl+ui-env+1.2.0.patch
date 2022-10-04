@@ -1,0 +1,144 @@
+diff --git a/node_modules/@dcl/ui-env/dist/env.js b/node_modules/@dcl/ui-env/dist/env.js
+index 3998c59..ea3a7ae 100644
+--- a/node_modules/@dcl/ui-env/dist/env.js
++++ b/node_modules/@dcl/ui-env/dist/env.js
+@@ -1,80 +1,96 @@
+-"use strict";
+-Object.defineProperty(exports, "__esModule", { value: true });
+-exports.getEnv = exports.getDefaultEnv = exports.parseEnvVar = exports.isEnv = exports.getEnvList = exports.Env = void 0;
+-const location_1 = require("./location");
+-var Env;
+-(function (Env) {
+-    Env["DEVELOPMENT"] = "dev";
+-    Env["STAGING"] = "stg";
+-    Env["PRODUCTION"] = "prod";
+-})(Env = exports.Env || (exports.Env = {}));
++'use strict'
++Object.defineProperty(exports, '__esModule', { value: true })
++exports.getEnv =
++  exports.getDefaultEnv =
++  exports.parseEnvVar =
++  exports.isEnv =
++  exports.getEnvList =
++  exports.Env =
++    void 0
++const location_1 = require('./location')
++var Env
++;(function (Env) {
++  Env['DEVELOPMENT'] = 'dev'
++  Env['STAGING'] = 'stg'
++  Env['PRODUCTION'] = 'prod'
++})((Env = exports.Env || (exports.Env = {})))
+ /**
+  * Returns an array with all the possible envs
+  */
+ function getEnvList() {
+-    return Object.values(Env);
++  return Object.values(Env)
+ }
+-exports.getEnvList = getEnvList;
++exports.getEnvList = getEnvList
+ /**
+  * Helper to detect if a string value is an Env
+  * @param value
+  * @returns boolean
+  */
+ function isEnv(value) {
+-    return getEnvList().includes(value);
++  return getEnvList().includes(value)
+ }
+-exports.isEnv = isEnv;
++exports.isEnv = isEnv
+ /**
+  * Helper to convert a string value into an Env type or throw if not valid
+  * @param envVar - An environment variable to be parsed
+  * @returns - The same envVar value as Env
+  */
+ function parseEnvVar(envVar) {
+-    if (isEnv(envVar)) {
+-        return envVar;
+-    }
+-    else {
+-        throw new Error(`Invalid value for DCL_DEFAULT_ENV. Found "${envVar}", possible values are ${getEnvList()
+-            .map((env) => `"${env}"`)
+-            .join(', ')}.`);
+-    }
++  if (isEnv(envVar)) {
++    return envVar
++  } else {
++    throw new Error(
++      `Invalid value for DCL_DEFAULT_ENV. Found "${envVar}", possible values are ${getEnvList()
++        .map((env) => `"${env}"`)
++        .join(', ')}.`
++    )
++  }
+ }
+-exports.parseEnvVar = parseEnvVar;
++exports.parseEnvVar = parseEnvVar
+ /**
+  * Return the default Env
+  * @param envVars - Process environment vars
+  * @returns Env
+  */
+ function getDefaultEnv(envVars = {}) {
+-    const { DCL_DEFAULT_ENV, REACT_APP_DCL_DEFAULT_ENV } = envVars;
+-    if (DCL_DEFAULT_ENV &&
+-        REACT_APP_DCL_DEFAULT_ENV &&
+-        DCL_DEFAULT_ENV !== REACT_APP_DCL_DEFAULT_ENV) {
+-        throw new Error('You have defined both DCL_DEFAULT_ENV and REACT_APP_DCL_DEFAULT_ENV with different values');
+-    }
+-    if (DCL_DEFAULT_ENV) {
+-        return parseEnvVar(DCL_DEFAULT_ENV);
+-    }
+-    if (REACT_APP_DCL_DEFAULT_ENV) {
+-        return parseEnvVar(REACT_APP_DCL_DEFAULT_ENV);
+-    }
+-    return Env.PRODUCTION;
++  const { DCL_DEFAULT_ENV, REACT_APP_DCL_DEFAULT_ENV } = envVars
++  if (
++    DCL_DEFAULT_ENV &&
++    REACT_APP_DCL_DEFAULT_ENV &&
++    DCL_DEFAULT_ENV !== REACT_APP_DCL_DEFAULT_ENV
++  ) {
++    throw new Error(
++      'You have defined both DCL_DEFAULT_ENV and REACT_APP_DCL_DEFAULT_ENV with different values'
++    )
++  }
++  if (DCL_DEFAULT_ENV) {
++    return parseEnvVar(DCL_DEFAULT_ENV)
++  }
++  if (REACT_APP_DCL_DEFAULT_ENV) {
++    return parseEnvVar(REACT_APP_DCL_DEFAULT_ENV)
++  }
++  return Env.PRODUCTION
+ }
+-exports.getDefaultEnv = getDefaultEnv;
++exports.getDefaultEnv = getDefaultEnv
+ /**
+  * Returns the Env to be used
+  * @returns Env
+  */
+ function getEnv() {
+-    const envFromQueryParam = (0, location_1.getEnvFromQueryParam)(window.location);
++  const isBrowser = typeof window !== 'undefined'
++  if (isBrowser) {
++    const envFromQueryParam = (0, location_1.getEnvFromQueryParam)(
++      window.location
++    )
+     if (envFromQueryParam) {
+-        return envFromQueryParam;
++      return envFromQueryParam
+     }
+-    const envFromTLD = (0, location_1.getEnvFromTLD)(window.location);
++    const envFromTLD = (0, location_1.getEnvFromTLD)(window.location)
+     if (envFromTLD) {
+-        return envFromTLD;
++      return envFromTLD
+     }
+-    return getDefaultEnv(process.env);
++  }
++  return getDefaultEnv(process.env)
+ }
+-exports.getEnv = getEnv;
++exports.getEnv = getEnv
+ //# sourceMappingURL=env.js.map
