@@ -18,10 +18,6 @@ function sortAddressesVotes(votes: SnapshotVote[], userAddress: string | null) {
   return { addressVotes, userVotes }
 }
 
-function getOutcomeMatchPercentage(addressVotes: SnapshotVote[]) {
-  return (addressVotes && addressVotes.length > 0 && outcomeMatch(addressVotes).outcomeMatch) || 0
-}
-
 function getParticipation(
   last30DaysProposals: Partial<SnapshotProposal>[],
   addressVotes: SnapshotVote[],
@@ -64,7 +60,7 @@ export default function useVotingStats(address: string, userAddress: string | nu
     participationPercentage,
     participationTotal,
     personalMatchPercentage: userAddress ? matchResult.percentage : 100,
-    outcomeMatchPercentage: getOutcomeMatchPercentage(addressVotes),
+    outcomeMatchPercentage: outcomeMatch(addressVotes).outcomeMatch,
     isLoading: proposalsState.loading || votesState.loading,
   }
 }

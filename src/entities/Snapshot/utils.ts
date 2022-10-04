@@ -60,6 +60,7 @@ export type OutcomeMatch = {
 }
 
 export function outcomeMatch(votes: SnapshotVote[]): OutcomeMatch {
+  if (!(votes && votes.length > 0)) return { outcomeMatch: 0, totalProposals: 0 }
   let matchCounter = 0
   let closedProposalsCounter = 0
   for (const vote of votes) {
