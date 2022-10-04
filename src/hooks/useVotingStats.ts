@@ -33,8 +33,8 @@ function getParticipation(
 }
 
 export default function useVotingStats(address: string, userAddress: string | null) {
-  const now = new Date()
-  const aMonthAgo = useMemo(() => new Date(now.getFullYear(), now.getMonth() - 1, now.getDay()), [])
+  const now = useMemo(() => new Date(), [])
+  const aMonthAgo = useMemo(() => new Date(now.getFullYear(), now.getMonth() - 1, now.getDay()), [now])
 
   const [last30DaysProposals, proposalsState] = useAsyncMemo(
     async () => {
