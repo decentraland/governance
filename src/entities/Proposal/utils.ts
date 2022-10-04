@@ -8,7 +8,17 @@ import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
 import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 
-import { GRANT_SIZE_MINIMUM, MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
+import {
+  DURATION_GRANT_TIER1,
+  DURATION_GRANT_TIER2,
+  DURATION_GRANT_TIER3,
+  DURATION_GRANT_TIER4,
+  DURATION_GRANT_TIER5,
+  DURATION_GRANT_TIER6,
+  GRANT_SIZE_MINIMUM,
+  MAX_NAME_SIZE,
+  MIN_NAME_SIZE,
+} from './constants'
 import {
   ProposalAttributes,
   ProposalGrantTier,
@@ -192,12 +202,12 @@ function grantDuration(value: string | undefined | null) {
 }
 
 export const GrantDuration = {
-  [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),
-  [ProposalGrantTier.Tier2]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER2),
-  [ProposalGrantTier.Tier3]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER3),
-  [ProposalGrantTier.Tier4]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER4),
-  [ProposalGrantTier.Tier5]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER5),
-  [ProposalGrantTier.Tier6]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER6),
+  [ProposalGrantTier.Tier1]: grantDuration(DURATION_GRANT_TIER1),
+  [ProposalGrantTier.Tier2]: grantDuration(DURATION_GRANT_TIER2),
+  [ProposalGrantTier.Tier3]: grantDuration(DURATION_GRANT_TIER3),
+  [ProposalGrantTier.Tier4]: grantDuration(DURATION_GRANT_TIER4),
+  [ProposalGrantTier.Tier5]: grantDuration(DURATION_GRANT_TIER5),
+  [ProposalGrantTier.Tier6]: grantDuration(DURATION_GRANT_TIER6),
 }
 
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
