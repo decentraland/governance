@@ -68,18 +68,6 @@ function MobileNavigation({ activeTab }: NavigationProps) {
         <Button
           className="Browse__Button"
           size="small"
-          {...getButtonProps(NavigationTab.Profile, activeTab)}
-          as={Link}
-          href={locations.profile()}
-          onClick={prevent(() => {
-            navigate(locations.profile())
-          })}
-        >
-          {t('navigation.profile')}
-        </Button>
-        <Button
-          className="Browse__Button"
-          size="small"
           {...getButtonProps(NavigationTab.Transparency, activeTab)}
           as={Link}
           href={locations.transparency()}

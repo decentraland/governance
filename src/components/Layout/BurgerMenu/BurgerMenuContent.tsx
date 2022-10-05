@@ -26,13 +26,13 @@ export type BurgerMenuContentProps = NavigationProps & {
 
 const filtersInitialStatus = { categoryOpen: true, statusOpen: false, timeFrameOpen: false }
 
-const OPEN_BURGER_HEIGHT = 772
+const OPEN_BURGER_HEIGHT = 740
 const SEARCH_TITLE_HEIGHT = 32
 const CATEGORY_FILTER_HEIGHT = 407
 const STATUS_FILTER_HEIGHT = 290
 const TIMEFRAME_FILTER_HEIGHT = 212
 const CLOSED_FILTER_HEIGHT = 56
-const MOBILE_NAVIGATION_HEIGHT = 252
+const MOBILE_NAVIGATION_HEIGHT = 220
 
 function BurgerMenuContent({ navigationOnly, activeTab, className }: BurgerMenuContentProps) {
   const [footer, setFooter] = useState<Element | null>(null)
