@@ -1109,6 +1109,14 @@
       "publish_update": "Publish update",
       "preview_update": "Preview update",
       "edit_update": "Edit update"
+    },
+    "delegation": {
+      "delegated_to_user_empty_title": "No VP delegated to you",
+      "delegated_to_address_empty_title": "No VP delegated to them",
+      "delegated_to_user_empty_description": "Sound candidates may be chosen by the community to vote in their name",
+      "delegated_to_user_empty_link": "Become a Delegate",
+      "delegated_voting_power_list_title": "Delegated Voting Power",
+      "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice."
     }
   },
   "delegation": {
