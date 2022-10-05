@@ -1,11 +1,8 @@
 import React, { useRef } from 'react'
 import Flickity, { FlickityOptions } from 'react-flickity-component'
 
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import './MobileSlider.css'
 

@@ -3,7 +3,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px 10px;
   border: 1px solid var(--black-100);
   box-shadow: 0 1px 4px var(--black-100);
   border-radius: 8px;
@@ -42,18 +42,39 @@
   margin: 0;
   max-width: 315px;
   padding-right: 20px;
-  font-weight: 500;
-  font-size: 17px;
+  font-size: 15px;
   line-height: 26px;
+  font-weight: 500;
   letter-spacing: -0.2px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
+.GrantBeneficiaryItem__Details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
+}
+
+.GrantBeneficiaryItem__GrantInfo {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 768px) {
+  .GrantBeneficiaryItem {
+    padding: 16px;
+  }
+
   .GrantBeneficiaryItem__Title {
+    font-size: 17px;
     max-width: 420px;
+  }
+
+  .GrantBeneficiaryItem__Details .dg.Paragraph > .dg.Bold {
+    color: var(--black-600);
   }
 }
 
@@ -69,13 +90,15 @@
   color: var(--black-600);
   align-items: center;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 28px;
   letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
 
 .GrantBeneficiaryItem__Details .dg.Paragraph > .dg.Bold {
   padding-left: 4px;
+  color: var(--black-700);
 }
 
 .GrantBeneficiaryItem__PillContainer {

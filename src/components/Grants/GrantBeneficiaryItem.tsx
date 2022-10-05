@@ -4,11 +4,12 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { GrantAttributes } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
-import { formatDate } from '../../modules/time'
+import { abbreviateTimeDifference, formatDate } from '../../modules/time'
 import Username from '../User/Username'
 
 import CliffProgress from './GrantCard/CliffProgress'
@@ -30,11 +31,11 @@ function GrantBeneficiaryItem({ grant }: Props) {
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
   return (
     <Link className="GrantBeneficiaryItem" href={locations.proposal(grant.id)}>
-      <div className="GrantBeneficiaryItem__Section">
-        <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="medium" />
-        <div>
-          <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
-          <span className="GrantBeneficiaryItem__Details">
+      <NotMobile>
+        <div className="GrantBeneficiaryItem__Section">
+          <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="medium" />
+          <div>
+            <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
             <span className="GrantBeneficiaryItem__Details">
               <Markdown>
                 {t('page.profile.grants.item_description', {
@@ -44,26 +45,46 @@ function GrantBeneficiaryItem({ grant }: Props) {
                 })}
               </Markdown>
             </span>
-          </span>
+          </div>
         </div>
-      </div>
-      <div className="GrantBeneficiaryItem__VestingSection">
-        <div className="GrantBeneficiaryItem__PillContainer">
-          <GrantPill type={grant.configuration.category} />
+        <div className="GrantBeneficiaryItem__VestingSection">
+          <div className="GrantBeneficiaryItem__PillContainer">
+            <GrantPill type={grant.configuration.category} />
+          </div>
+          <div className="GrantBeneficiaryItem__VestingProgressContainer">
+            <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
+              <div>
+                {proposalInCliffPeriod ? (
+                  <CliffProgress enactedAt={enacted_at} basic />
+                ) : (
+                  <VestingProgress grant={grant} basic />
+                )}
+              </div>
+            </ProgressBarTooltip>
+          </div>
+          <Back />
         </div>
-        <div className="GrantBeneficiaryItem__VestingProgressContainer">
-          <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
-            <div>
-              {proposalInCliffPeriod ? (
-                <CliffProgress enactedAt={enacted_at} basic />
-              ) : (
-                <VestingProgress grant={grant} basic />
-              )}
-            </div>
-          </ProgressBarTooltip>
+      </NotMobile>
+      <Mobile>
+        <div className="GrantBeneficiaryItem__Section">
+          <div className="GrantBeneficiaryItem__GrantInfo">
+            <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
+            <span className="GrantBeneficiaryItem__Details">
+              <GrantPill type={grant.configuration.category} />
+              <span>
+                <Markdown>
+                  {t('page.profile.grants.item_short_description', {
+                    time: abbreviateTimeDifference(formatDate(enactedDate)),
+                    amount: intl.formatNumber(grant.size),
+                    token: token?.symbol,
+                  })}
+                </Markdown>
+              </span>
+            </span>
+          </div>
+          <Back />
         </div>
-        <Back />
-      </div>
+      </Mobile>
     </Link>
   )
 }
