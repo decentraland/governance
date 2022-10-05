@@ -24,6 +24,7 @@ const UserAvatar = React.lazy(() => import('./UserAvatar'))
 
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
+  const { total } = vpDistribution || { total: 0 }
 
   return (
     <Container className="UserStats__Container">
@@ -35,13 +36,15 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
           <Username address={address} size="medium" className="UserStats__Username" />
         </NotMobile>
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
-        <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')}>
-          <VotingPowerDistribution
-            vpDistribution={vpDistribution}
-            isLoading={isLoadingVpDistribution}
-            className="UserStats__VpDistribution"
-          />
-        </ProfileBox>
+        {total > 0 && (
+          <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')}>
+            <VotingPowerDistribution
+              vpDistribution={vpDistribution}
+              isLoading={isLoadingVpDistribution}
+              className="UserStats__VpDistribution"
+            />
+          </ProfileBox>
+        )}
         <UserVotingStats address={address} />
       </div>
       <NotMobile>

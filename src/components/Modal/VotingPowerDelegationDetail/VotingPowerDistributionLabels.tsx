@@ -13,66 +13,43 @@ interface Props {
   vpDistribution: VpDistribution | null
 }
 
+interface LabelProps {
+  value: number
+  typeSnakeCase: string
+  typePascaleCase: string
+}
+
 const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
   const t = useFormatMessage()
   const { total, mana, names, land, delegated, estate, linkedWearables } = vpDistribution || EMPTY_DISTRIBUTION
 
+  const DISTRIBUTION_PROPS: LabelProps[] = [
+    { value: mana, typeSnakeCase: 'mana', typePascaleCase: 'Mana' },
+    { value: names, typeSnakeCase: 'name', typePascaleCase: 'Name' },
+    { value: linkedWearables, typeSnakeCase: 'linked_wearables', typePascaleCase: 'LinkedWearables' },
+    { value: land, typeSnakeCase: 'land', typePascaleCase: 'Land' },
+    { value: estate, typeSnakeCase: 'estates', typePascaleCase: 'Estate' },
+    { value: delegated, typeSnakeCase: 'delegated', typePascaleCase: 'Delegated' },
+  ]
+
   return (
     <MobileSlider containerClassName="VotingPowerDistribution__Labels">
-      <VotingPowerDistributionLabel
-        labelText={t('modal.vp_delegation.details.stats_bar_mana')}
-        tooltipText={t('modal.vp_delegation.details.stats_bar_mana_info')}
-        subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
-          amount: mana,
-          percentage: getPercentage(mana, total, 0),
-        })}
-        className={'VotingPowerDistribution__Mana'}
-      />
-      <VotingPowerDistributionLabel
-        labelText={t('modal.vp_delegation.details.stats_bar_name')}
-        tooltipText={t('modal.vp_delegation.details.stats_bar_name_info')}
-        subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
-          amount: names,
-          percentage: getPercentage(names, total, 0),
-        })}
-        className={'VotingPowerDistribution__Name'}
-      />
-      <VotingPowerDistributionLabel
-        labelText={t('modal.vp_delegation.details.stats_bar_linked_wearables')}
-        tooltipText={t('modal.vp_delegation.details.stats_bar_linked_wearables_info')}
-        subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
-          amount: linkedWearables,
-          percentage: getPercentage(linkedWearables, total, 0),
-        })}
-        className={'VotingPowerDistribution__LinkedWearables'}
-      />
-      <VotingPowerDistributionLabel
-        labelText={t('modal.vp_delegation.details.stats_bar_land')}
-        tooltipText={t('modal.vp_delegation.details.stats_bar_land_info')}
-        subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
-          amount: land,
-          percentage: getPercentage(land, total, 0),
-        })}
-        className={'VotingPowerDistribution__Land'}
-      />
-      <VotingPowerDistributionLabel
-        labelText={t('modal.vp_delegation.details.stats_bar_estates')}
-        tooltipText={t('modal.vp_delegation.details.stats_bar_estates_info')}
-        subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
-          amount: estate,
-          percentage: getPercentage(estate, total, 0),
-        })}
-        className={'VotingPowerDistribution__Estate'}
-      />
-      <VotingPowerDistributionLabel
-        labelText={t('modal.vp_delegation.details.stats_bar_delegated')}
-        tooltipText={t('modal.vp_delegation.details.stats_bar_delegated_info')}
-        subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
-          amount: delegated,
-          percentage: getPercentage(delegated, total, 0),
-        })}
-        className={'VotingPowerDistribution__Delegated'}
-      />
+      {DISTRIBUTION_PROPS.map(({ value, typeSnakeCase, typePascaleCase }) => (
+        <>
+          {value > 0 && (
+            <VotingPowerDistributionLabel
+              key={typeSnakeCase}
+              labelText={t(`modal.vp_delegation.details.stats_bar_${typeSnakeCase}`)}
+              tooltipText={t(`modal.vp_delegation.details.stats_bar_${typeSnakeCase}_info`)}
+              subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
+                amount: value,
+                percentage: getPercentage(value, total, 0),
+              })}
+              className={`VotingPowerDistribution__${typePascaleCase}`}
+            />
+          )}
+        </>
+      ))}
     </MobileSlider>
   )
 }
