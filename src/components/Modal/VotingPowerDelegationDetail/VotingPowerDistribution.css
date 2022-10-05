@@ -45,6 +45,6 @@
   display: flex;
 }
 
-.VotingPowerDistribution__Labels :last-child {
+.VotingPowerDistribution__Labels:last-child {
   margin-right: 0;
 }

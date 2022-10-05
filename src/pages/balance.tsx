@@ -20,7 +20,6 @@ import ManaBalanceCard from '../components/Token/ManaBalanceCard'
 import NameBalanceCard from '../components/Token/NameBalanceCard'
 import VotingPower from '../components/Token/VotingPower'
 import LogIn from '../components/User/LogIn'
-import UserBalanceStats from '../components/User/UserBalanceStats'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -67,7 +66,6 @@ export default function BalancePage() {
       />
       <Navigation activeTab={NavigationTab.Balance} />
       <Container className="VotingPowerSummary">
-        <UserBalanceStats size="huge" className="VotingPowerProfile" address={address || userAddress} />
         <Stats title={t('page.balance.total_label') || ''}>
           {vpDistribution && <VotingPower value={vpDistribution.total} size="huge" />}
           <Loader size="small" className="balance" active={isLoadingVpDistribution} />

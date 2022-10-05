@@ -6,7 +6,6 @@ import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import MobileSlider from '../Common/MobileSlider'
 
 import { UserVpBox } from './UserVpBox'
-import './UserVpStats.css'
 
 interface Props {
   vpDistribution: VpDistribution | null

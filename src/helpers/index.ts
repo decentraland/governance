@@ -18,6 +18,6 @@ export function formatError(err: Error) {
 }
 
 export const getPercentage = (value: number, total: number, decimals = 2): string => {
-  const definitelyANumber = value > 0 && total > 0 ? ((value * 100) / total).toFixed(decimals) : 0
-  return `${definitelyANumber}%`
+  const formattedNumber = value > 0 && total > 0 ? ((value * 100) / total).toFixed(decimals) : 0
+  return `${formattedNumber}%`
 }

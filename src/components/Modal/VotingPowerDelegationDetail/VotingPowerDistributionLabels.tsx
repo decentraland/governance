@@ -15,8 +15,8 @@ interface Props {
 
 interface LabelProps {
   value: number
-  typeSnakeCase: string
-  typePascaleCase: string
+  intlKey: string
+  cssClassName: string
 }
 
 const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
@@ -24,28 +24,28 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
   const { total, mana, names, land, delegated, estate, linkedWearables } = vpDistribution || EMPTY_DISTRIBUTION
 
   const DISTRIBUTION_PROPS: LabelProps[] = [
-    { value: mana, typeSnakeCase: 'mana', typePascaleCase: 'Mana' },
-    { value: names, typeSnakeCase: 'name', typePascaleCase: 'Name' },
-    { value: linkedWearables, typeSnakeCase: 'linked_wearables', typePascaleCase: 'LinkedWearables' },
-    { value: land, typeSnakeCase: 'land', typePascaleCase: 'Land' },
-    { value: estate, typeSnakeCase: 'estates', typePascaleCase: 'Estate' },
-    { value: delegated, typeSnakeCase: 'delegated', typePascaleCase: 'Delegated' },
+    { value: mana, intlKey: 'mana', cssClassName: 'Mana' },
+    { value: names, intlKey: 'name', cssClassName: 'Name' },
+    { value: linkedWearables, intlKey: 'linked_wearables', cssClassName: 'LinkedWearables' },
+    { value: land, intlKey: 'land', cssClassName: 'Land' },
+    { value: estate, intlKey: 'estates', cssClassName: 'Estate' },
+    { value: delegated, intlKey: 'delegated', cssClassName: 'Delegated' },
   ]
 
   return (
     <MobileSlider containerClassName="VotingPowerDistribution__Labels">
-      {DISTRIBUTION_PROPS.map(({ value, typeSnakeCase, typePascaleCase }) => (
+      {DISTRIBUTION_PROPS.map(({ value, intlKey, cssClassName }) => (
         <>
           {value > 0 && (
             <VotingPowerDistributionLabel
-              key={typeSnakeCase}
-              labelText={t(`modal.vp_delegation.details.stats_bar_${typeSnakeCase}`)}
-              tooltipText={t(`modal.vp_delegation.details.stats_bar_${typeSnakeCase}_info`)}
+              key={intlKey}
+              labelText={t(`modal.vp_delegation.details.stats_bar_${intlKey}`)}
+              tooltipText={t(`modal.vp_delegation.details.stats_bar_${intlKey}_info`)}
               subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
                 amount: value,
                 percentage: getPercentage(value, total, 0),
               })}
-              className={`VotingPowerDistribution__${typePascaleCase}`}
+              className={`VotingPowerDistribution__${cssClassName}`}
             />
           )}
         </>
