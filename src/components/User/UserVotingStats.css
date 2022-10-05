@@ -1,10 +1,3 @@
-.ui.container.UserVotingStats__Container {
-  display: flex;
-  margin-bottom: 44px;
-  justify-content: space-between;
-  gap: 23px;
-}
-
 .UserVotingStats__Data {
   display: flex;
   flex-direction: column;

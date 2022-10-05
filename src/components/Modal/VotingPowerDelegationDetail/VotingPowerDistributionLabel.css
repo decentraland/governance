@@ -6,6 +6,7 @@
   font-size: 11px;
   line-height: 18px;
   text-transform: uppercase;
+  margin-right: 24px;
   color: var(--black-400);
 }
 
@@ -14,4 +15,34 @@
   height: 8px;
   border-radius: 6px;
   margin-right: 6px;
+}
+
+.VotingPowerDistributionLabel__Mobile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.VotingPowerDistributionLabel__Mobile > .VotingPowerDistributionLabel__Circle {
+  margin-right: 10px !important;
+}
+
+.VotingPowerDistributionLabel__FullLabel {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.VotingPowerDistributionLabel__Title {
+  color: var(--black-700);
+}
+
+.VotingPowerDistributionLabel__Subtitle {
+  color: var(--black-600);
 }

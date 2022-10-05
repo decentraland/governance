@@ -6,6 +6,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useVotingStats from '../../hooks/useVotingStats'
+import MobileSlider from '../Common/MobileSlider'
 
 import { UserStatBox } from './UserStatBox'
 import './UserVotingStats.css'
@@ -42,7 +43,7 @@ export default function UserVotingStats({ address }: Props) {
     useVotingStats(address, !sameUser ? userAddress : null)
 
   return (
-    <Container className="UserVotingStats__Container">
+    <MobileSlider containerClassName="UserStats__StatBoxes" className="UserStats__Slider">
       <UserStatBox title={t('page.profile.user_voting_stats.participation_label')} loading={isLoading}>
         <div className="UserVotingStats__Data">
           <span className="UserVotingStats__MainData">
@@ -87,6 +88,6 @@ export default function UserVotingStats({ address }: Props) {
           <span className="UserVotingStats__Sub">{t(getOutcomeMatchConclusion(outcomeMatchPercentage))}</span>
         </div>
       </UserStatBox>
-    </Container>
+    </MobileSlider>
   )
 }

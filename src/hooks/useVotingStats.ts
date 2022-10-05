@@ -33,8 +33,8 @@ function getParticipation(
 }
 
 export default function useVotingStats(address: string, userAddress: string | null) {
-  const now = new Date()
-  const aMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
+  const now = useMemo(() => new Date(), [])
+  const aMonthAgo = useMemo(() => new Date(now.getFullYear(), now.getMonth() - 1, now.getDay()), [now])
 
   const [last30DaysProposals, proposalsState] = useAsyncMemo(
     async () => {
@@ -53,12 +53,14 @@ export default function useVotingStats(address: string, userAddress: string | nu
     [address],
     { initialValue: [] as SnapshotVote[], callWithTruthyDeps: true }
   )
+
   const { addressVotes, userVotes } = useMemo(() => sortAddressesVotes(votes, userAddress), [votes, userAddress])
 
   const { participationTotal, participationPercentage } = useMemo(
     () => getParticipation(last30DaysProposals, addressVotes, aMonthAgo),
-    [addressVotes]
+    [last30DaysProposals, addressVotes, aMonthAgo]
   )
+
   const matchResult = useMemo(() => calculateMatch(addressVotes, userVotes), [addressVotes, userVotes])
 
   return {

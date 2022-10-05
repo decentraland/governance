@@ -10,11 +10,12 @@ interface Props {
   value?: number | bigint
   info?: string
   loading: boolean
+  className?: string
 }
 
-export function UserVpBox({ title, info, value, loading }: Props) {
+export function UserVpBox({ title, info, value, loading, className }: Props) {
   return (
-    <UserStatBox title={title} loading={loading} info={info}>
+    <UserStatBox title={title} loading={loading} info={info} className={className}>
       <VotingPower value={value!} size="medium" className="UserVpBox__VotingPower" />
     </UserStatBox>
   )
