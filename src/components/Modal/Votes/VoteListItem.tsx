@@ -26,7 +26,7 @@ export function VoteListItem({ address, vote, choices }: VoteListItemModalProps)
   })
   return (
     <Grid.Row
-      onClick={() => navigate(locations.balance({ address }))}
+      onClick={() => navigate(locations.profile({ address }))}
       key={address}
       className="VoteList_Item VotesList_Divider_Line"
     >
