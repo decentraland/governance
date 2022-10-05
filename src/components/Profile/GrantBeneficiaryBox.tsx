@@ -6,6 +6,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import useGrantsByUser from '../../hooks/useGrantsByUser'
 import GrantBeneficiaryList from '../Grants/GrantBeneficiaryList'
 
+import './GrantBeneficiaryBox.css'
 import { ProfileBox } from './ProfileBox'
 
 interface Props {
@@ -20,7 +21,7 @@ export default function GrantBeneficiaryBox({ address }: Props) {
   if (!hasGrants) return null
 
   return (
-    <Container>
+    <Container className="GrantBeneficiaryBox">
       <ProfileBox title={t('page.profile.grants.title')} info={t('page.profile.grants.info')}>
         <GrantBeneficiaryList grants={grants} />
       </ProfileBox>
