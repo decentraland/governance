@@ -6,8 +6,14 @@
 
 .HelperText__Content > p.dg.Paragraph {
   font-style: normal;
+  font-weight: normal;
+  font-stretch: normal;
   font-size: 13px;
   line-height: 18px;
   letter-spacing: 0.4px;
   color: var(--black-200);
+}
+
+.HelperText__Content > p.dg.Paragraph > a.dg.Link.Link--pointer {
+  color: var(--blue-600);
 }
