@@ -55,7 +55,7 @@ const VotingSectionFooter = ({
       </div>
       <div className={'VotingSectionFooter__Actions'}>
         {showVotingPowerInfo && !hasEnoughToVote && (
-          <Link href={locations.balance()}>{t('page.proposal_detail.get_vp')}</Link>
+          <Link href={locations.profile()}>{t('page.proposal_detail.get_vp')}</Link>
         )}
         {hasEnoughToVote && (
           <ChangeVoteButton
