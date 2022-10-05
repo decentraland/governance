@@ -1,3 +1,7 @@
 .DelegationCards .FullWidthButton {
   margin: 16px 0 0 0 !important;
 }
+
+.DelegationsCards__EmptyContainer {
+  padding: 30px 0;
+}

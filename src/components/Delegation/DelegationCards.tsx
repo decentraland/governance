@@ -63,6 +63,7 @@ function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props
           </Grid>
         ) : (
           <Empty
+            className="DelegationsCards__EmptyContainer"
             icon={<Scale />}
             title={
               t(
