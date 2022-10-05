@@ -67,12 +67,12 @@ function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props
             title={
               t(
                 isUserProfile
-                  ? `page.balance.delegated_to_user_empty_title`
-                  : `page.balance.delegated_to_address_empty_title`
+                  ? `delegation.delegated_to_user_empty_title`
+                  : `delegation.delegated_to_address_empty_title`
               ) || ''
             }
-            description={t(`page.balance.delegated_to_user_empty_description`) || ''}
-            linkText={t('page.balance.delegated_to_user_empty_link')}
+            description={t(`delegation.delegated_to_user_empty_description`) || ''}
+            linkText={t('delegation.delegated_to_user_empty_link')}
             linkHref={OPEN_CALL_FOR_DELEGATES_LINK}
           />
         ))}

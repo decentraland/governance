@@ -19,10 +19,10 @@ export function VotingPowerListModal({ delegations, ...props }: VotingPowerListM
   return (
     <Modal {...props} size="tiny" className="GovernanceContentModal VotingPowerListModal" closeIcon={<Close />}>
       <Modal.Header className="VotingPowerListModal__Header">
-        {t('page.balance.delegated_voting_power_list_title')}
+        {t('delegation.delegated_voting_power_list_title')}
       </Modal.Header>
       <Modal.Description className="VotingPowerListModal__Description">
-        <Markdown>{t('page.balance.delegated_voting_power_list_description')}</Markdown>
+        <Markdown>{t('delegation.delegated_voting_power_list_description')}</Markdown>
       </Modal.Description>
       <Modal.Content>
         <div className="VotingPowerListModal_Items">
