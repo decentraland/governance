@@ -29,6 +29,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
   const { user, title, enacted_at, token } = grant
   const enactedDate = new Date(enacted_at * 1000)
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
+
   return (
     <Link className="GrantBeneficiaryItem" href={locations.proposal(grant.id)}>
       <NotMobile>

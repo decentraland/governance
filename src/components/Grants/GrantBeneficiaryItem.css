@@ -14,9 +14,17 @@
 }
 
 .GrantBeneficiaryItem__Section {
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 992px) {
+  .GrantBeneficiaryItem__Section {
+    justify-content: unset;
+  }
 }
 
 .GrantBeneficiaryItem:visited .GrantBeneficiaryItem__Title {
@@ -40,7 +48,6 @@
 
 .GrantBeneficiaryItem__Title {
   margin: 0;
-  max-width: 315px;
   padding-right: 20px;
   font-size: 15px;
   line-height: 26px;
@@ -61,6 +68,7 @@
 .GrantBeneficiaryItem__GrantInfo {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
