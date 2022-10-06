@@ -6,6 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { DelegationResult, DetailedScores, VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
@@ -30,7 +31,7 @@ export default function VpDelegatorsBox({
 }: Props) {
   const t = useFormatMessage()
   const [userAddress] = useAuthContext()
-  const isLoggedUserProfile = userAddress?.toLowerCase() === address?.toLowerCase()
+  const isLoggedUserProfile = isSameAddress(userAddress, address)
 
   return (
     <Container>

@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { AsyncStateResultState } from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -16,15 +15,15 @@ import './VpDelegationBox.css'
 
 interface Props {
   delegation: DelegationResult
-  delegationState: AsyncStateResultState<DelegationResult, DelegationResult>
+  isLoadingDelegations: boolean
   ownVp: number | undefined
   isLoadingOwnVp: boolean
 }
 
-function VpDelegationBox({ delegation, delegationState, ownVp, isLoadingOwnVp }: Props) {
+function VpDelegationBox({ delegation, isLoadingDelegations, ownVp, isLoadingOwnVp }: Props) {
   const t = useFormatMessage()
 
-  const isLoading = delegationState.loading || isLoadingOwnVp
+  const isLoading = isLoadingDelegations || isLoadingOwnVp
   const { delegatedTo } = delegation
 
   return (
