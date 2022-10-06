@@ -79,9 +79,12 @@ function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props
         ))}
 
       {thereAreMoreDelegations && (
-        <FullWidthButton onClick={() => setShowAllDelegations(true)}>
-          {t('page.profile.delegators.button')}
-        </FullWidthButton>
+        <>
+          <br />
+          <FullWidthButton onClick={() => setShowAllDelegations(true)}>
+            {t('page.profile.delegators.button')}
+          </FullWidthButton>
+        </>
       )}
       <VotingPowerListModal
         open={showAllDelegations}
