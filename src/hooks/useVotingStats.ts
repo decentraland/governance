@@ -25,11 +25,18 @@ function getParticipation(
   addressVotes: SnapshotVote[],
   aMonthAgo: Date
 ) {
-  const proposalsVotedLast30Days = addressVotes.filter(
-    (vote) => vote.created > getQueryTimestamp(aMonthAgo.getTime())
-  ).length
-  const participationPercentage = getPercentage(proposalsVotedLast30Days, last30DaysProposals.length, 0)
-  return { participationTotal: proposalsVotedLast30Days, participationPercentage }
+  const queryTimestamp = getQueryTimestamp(aMonthAgo.getTime())
+  const proposalsVotedInTheLast30Days: Set<string> = new Set()
+  addressVotes.forEach((vote) => {
+    const voteMatchesAProposal = last30DaysProposals.find((proposal) => proposal.id === vote.proposal?.id)
+    const voteMatchesTimeframe = vote.created > queryTimestamp
+    if (voteMatchesTimeframe && voteMatchesAProposal && vote.proposal?.id) {
+      proposalsVotedInTheLast30Days.add(vote.proposal?.id)
+    }
+  })
+
+  const participationPercentage = getPercentage(proposalsVotedInTheLast30Days.size, last30DaysProposals.length, 0)
+  return { participationTotal: proposalsVotedInTheLast30Days.size, participationPercentage }
 }
 
 export default function useVotingStats(address: string, userAddress: string | null) {

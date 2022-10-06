@@ -35,10 +35,9 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
   return (
     <MobileSlider containerClassName="VotingPowerDistribution__Labels">
       {DISTRIBUTION_PROPS.map(({ value, intlKey, cssClassName }) => (
-        <>
+        <div key={intlKey}>
           {value > 0 && (
             <VotingPowerDistributionLabel
-              key={intlKey}
               labelText={t(`modal.vp_delegation.details.stats_bar_${intlKey}`)}
               tooltipText={t(`modal.vp_delegation.details.stats_bar_${intlKey}_info`)}
               subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
@@ -48,7 +47,7 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
               className={`VotingPowerDistribution__${cssClassName}`}
             />
           )}
-        </>
+        </div>
       ))}
     </MobileSlider>
   )
