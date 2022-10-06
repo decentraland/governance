@@ -6,7 +6,7 @@ import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 
-import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { SNAPSHOT_DELEGATE_CONTRACT_ADDRESS, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import DelegateABI from '../modules/contracts/abi/Delegate.abi.json'
 
 export enum DelegateContractStatusCode {
@@ -18,7 +18,7 @@ export enum DelegateContractStatusCode {
 const enc = new TextEncoder()
 const spaceId = hexlify(enc.encode(SNAPSHOT_SPACE))
 const fullSpaceId = spaceId.concat(new Array(66 - spaceId.length + 1).join('0'))
-const DELEGATE_CONTRACT_ADDRESS = process.env.GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
+const DELEGATE_CONTRACT_ADDRESS = SNAPSHOT_DELEGATE_CONTRACT_ADDRESS
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const GLOBAL_SPACE_ID = '0x0000000000000000000000000000000000000000000000000000000000000000'
 

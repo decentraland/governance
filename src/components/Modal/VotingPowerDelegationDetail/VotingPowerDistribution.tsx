@@ -19,7 +19,7 @@ interface Props {
 
 const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props) => {
   const t = useFormatMessage()
-  const { total, mana, names, land, delegated, estate, linkedWearables } = vpDistribution || EMPTY_DISTRIBUTION
+  const { total, mana, names, land, delegated, estate, l1Wearables } = vpDistribution || EMPTY_DISTRIBUTION
 
   if (isLoading) {
     return (
@@ -48,10 +48,10 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
           className={'VotingPowerDistribution__Name'}
         />
         <VotingPowerDistributionBarWithPopup
-          value={linkedWearables}
+          value={l1Wearables}
           total={total}
-          label={t('modal.vp_delegation.details.stats_linked_wearables')}
-          className={'VotingPowerDistribution__LinkedWearables'}
+          label={t('modal.vp_delegation.details.stats_l1_wearables')}
+          className={'VotingPowerDistribution__L1Wearables'}
         />
         <VotingPowerDistributionBarWithPopup
           value={land}

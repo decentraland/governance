@@ -5,11 +5,22 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
-import { Governance } from '../../clients/Governance'
-import { CoauthorStatus } from '../Coauthor/types'
-import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
+import { GOVERNANCE_API } from '../../constants'
+import { env } from '../../modules/env'
+import { DISCOURSE_API } from '../Discourse/utils'
+import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
 
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
+import {
+  DURATION_GRANT_TIER1,
+  DURATION_GRANT_TIER2,
+  DURATION_GRANT_TIER3,
+  DURATION_GRANT_TIER4,
+  DURATION_GRANT_TIER5,
+  DURATION_GRANT_TIER6,
+  GRANT_SIZE_MINIMUM,
+  MAX_NAME_SIZE,
+  MIN_NAME_SIZE,
+} from './constants'
 import {
   GrantAttributes,
   ProposalAttributes,
@@ -27,7 +38,7 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 export const DEFAULT_CHOICES = ['yes', 'no']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
-export const JOIN_DISCORD_URL = process.env.GATSBY_JOIN_DISCORD_URL || 'https://dcl.gg/discord'
+export const JOIN_DISCORD_URL = env('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 
 export const CLIFF_PERIOD_IN_DAYS = 29
 
@@ -94,7 +105,6 @@ export async function isValidPointOfInterest(x: number, y: number) {
 
   switch (tile?.type) {
     case 'road':
-    case 'plaza':
       return false
     default:
       return true
@@ -116,7 +126,7 @@ export function isGrantSizeValid(tier: string | null, size: string | number): bo
 
   const sizeNumber = asNumber(size)
   const upperTierLimit = values[tierIndex]
-  const lowerTierLimit = tierIndex === 0 ? asNumber(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
+  const lowerTierLimit = tierIndex === 0 ? asNumber(GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
 
   return sizeNumber > lowerTierLimit && sizeNumber <= upperTierLimit
 }
@@ -149,7 +159,8 @@ export function asNumber(value: string | number): number {
 }
 
 export function snapshotUrl(hash: string) {
-  const target = new URL(SNAPSHOT_URL)
+  const snapshotUrl = env('GATSBY_SNAPSHOT_URL', '') || ''
+  const target = new URL(snapshotUrl)
   target.pathname = ''
   target.hash = hash
   return target.toString()
@@ -160,13 +171,13 @@ export function snapshotProposalUrl(proposal: Pick<ProposalAttributes, 'snapshot
 }
 
 export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id' | 'discourse_topic_slug'>) {
-  const target = new URL(process.env.GATSBY_DISCOURSE_API || '')
+  const target = new URL(DISCOURSE_API || '')
   target.pathname = `/t/${proposal.discourse_topic_slug}/${proposal.discourse_topic_id}`
   return target.toString()
 }
 
 export function governanceUrl(pathname = '') {
-  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  const target = new URL(GOVERNANCE_API)
   target.pathname = pathname
   target.search = ''
   target.hash = ''
@@ -175,7 +186,7 @@ export function governanceUrl(pathname = '') {
 
 export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   const params = new URLSearchParams({ id: proposal.id })
-  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  const target = new URL(GOVERNANCE_API)
   target.pathname = '/proposal/'
   target.search = '?' + params.toString()
   return target.toString()
@@ -183,7 +194,7 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
 
 export function getUpdateUrl(updateId: string, proposalId: string) {
   const params = new URLSearchParams({ id: updateId, proposalId })
-  const target = new URL(process.env.GATSBY_GOVERNANCE_API || '')
+  const target = new URL(GOVERNANCE_API)
   target.pathname = '/update/'
   target.search = '?' + params.toString()
   return target.toString()
@@ -194,12 +205,12 @@ function grantDuration(value: string | undefined | null) {
 }
 
 export const GrantDuration = {
-  [ProposalGrantTier.Tier1]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER1),
-  [ProposalGrantTier.Tier2]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER2),
-  [ProposalGrantTier.Tier3]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER3),
-  [ProposalGrantTier.Tier4]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER4),
-  [ProposalGrantTier.Tier5]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER5),
-  [ProposalGrantTier.Tier6]: grantDuration(process.env.GATSBY_DURATION_GRANT_TIER6),
+  [ProposalGrantTier.Tier1]: grantDuration(DURATION_GRANT_TIER1),
+  [ProposalGrantTier.Tier2]: grantDuration(DURATION_GRANT_TIER2),
+  [ProposalGrantTier.Tier3]: grantDuration(DURATION_GRANT_TIER3),
+  [ProposalGrantTier.Tier4]: grantDuration(DURATION_GRANT_TIER4),
+  [ProposalGrantTier.Tier5]: grantDuration(DURATION_GRANT_TIER5),
+  [ProposalGrantTier.Tier6]: grantDuration(DURATION_GRANT_TIER6),
 }
 
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
@@ -207,12 +218,6 @@ export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPA
 export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
   const isInitialState = JSON.stringify(stateValue) === JSON.stringify(initialState)
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
-}
-
-export const isCoauthor = async (proposalId: string, address: string): Promise<boolean> => {
-  return await Governance.get()
-    .getCoAuthorsByProposal(proposalId, CoauthorStatus.APPROVED)
-    .then((coauthors) => !!coauthors.find((coauthor) => coauthor.address === address))
 }
 
 const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])

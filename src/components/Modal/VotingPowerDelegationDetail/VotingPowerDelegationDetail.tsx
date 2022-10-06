@@ -173,8 +173,8 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">
-                <Stats title={t('modal.vp_delegation.details.stats_linked_wearables')}>
-                  <VotingPower value={vpDistribution.linkedWearables} size="medium" />
+                <Stats title={t('modal.vp_delegation.details.stats_l1_wearables')}>
+                  <VotingPower value={vpDistribution.l1Wearables} size="medium" />
                 </Stats>
               </div>
               <div className="DelegationDetails__StatPlaceholder">

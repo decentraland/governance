@@ -12,7 +12,7 @@ import {
 import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
 
 import { SNAPSHOT_SPACE } from './constants'
-import { DELEGATIONS_ON_PROPOSAL_QUERY, LATEST_DELEGATIONS_QUERY } from './queries'
+import { getDelegatedQuery } from './queries'
 
 export type Match = {
   proposal_id: string
@@ -149,64 +149,61 @@ export function filterDelegationFrom(delegations: Delegation[], space: string): 
     return []
   }
 
-  const unique_delegations = new Map<string, Delegation>()
+  const uniqueDelegations = new Map<string, Delegation>()
 
   for (const deleg of delegations) {
-    if (unique_delegations.has(deleg.delegator)) {
-      if (unique_delegations.get(deleg.delegator)?.space !== space) {
-        unique_delegations.set(deleg.delegator, deleg)
+    if (uniqueDelegations.has(deleg.delegator)) {
+      if (uniqueDelegations.get(deleg.delegator)?.space !== space) {
+        uniqueDelegations.set(deleg.delegator, deleg)
       }
     } else {
-      unique_delegations.set(deleg.delegator, deleg)
+      uniqueDelegations.set(deleg.delegator, deleg)
     }
   }
 
-  return Array.from(unique_delegations.values())
+  return Array.from(uniqueDelegations.values())
 }
 
-function getFetchDelegatesVariables(address: string, blockNumber: string | number) {
-  const variables: any = {
+function getDelegatesVariables(address: string, blockNumber?: string | number) {
+  return {
     address: address.toLowerCase(),
     space: SNAPSHOT_SPACE,
+    ...(!!blockNumber && { blockNumber }),
   }
-  if (blockNumber) {
-    variables.blockNumber = blockNumber
-  }
-  return variables
 }
 
-async function getDelegations(
-  query: string,
+export async function getDelegations(
   address: string | null | undefined,
   blockNumber?: string | number
 ): Promise<DelegationResult> {
   if (!SNAPSHOT_SPACE || !address) {
     return EMPTY_DELEGATION
   }
-  const variables = getFetchDelegatesVariables(address, blockNumber || 'latest')
+  const variables = getDelegatesVariables(address, blockNumber)
   try {
-    const delegates = await SnapshotSubgraph.get().fetchDelegates(query, variables)
-    if (!delegates) {
+    const delegatedTo = await SnapshotSubgraph.get().getDelegates(
+      'delegatedTo',
+      getDelegatedQuery('delegatedTo', blockNumber),
+      variables
+    )
+    const delegatedFrom = await SnapshotSubgraph.get().getDelegates(
+      'delegatedFrom',
+      getDelegatedQuery('delegatedFrom', blockNumber),
+      variables
+    )
+
+    if (!delegatedTo && !delegatedFrom) {
       return EMPTY_DELEGATION
     }
-    const filteredDelegatedFrom = filterDelegationFrom(delegates.delegatedFrom, SNAPSHOT_SPACE)
+
     return {
-      delegatedTo: filterDelegationTo(delegates.delegatedTo, SNAPSHOT_SPACE),
-      delegatedFrom: filteredDelegatedFrom.slice(0, 99),
-      hasMoreDelegatedFrom: filteredDelegatedFrom.length > 99,
+      delegatedTo: filterDelegationTo(delegatedTo, SNAPSHOT_SPACE),
+      delegatedFrom: filterDelegationFrom(delegatedFrom, SNAPSHOT_SPACE),
     }
   } catch (error) {
     console.error(error)
     return EMPTY_DELEGATION
   }
-}
-
-export async function getDelegationsOnProposal(address?: string | null, blockNumber?: string | number) {
-  return await getDelegations(DELEGATIONS_ON_PROPOSAL_QUERY, address, blockNumber)
-}
-
-export async function getLatestDelegations(address: string | null | undefined) {
-  return await getDelegations(LATEST_DELEGATIONS_QUERY, address)
 }
 
 export function getChecksumAddress(address: string) {

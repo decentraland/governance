@@ -42,12 +42,10 @@ export type Delegation = {
 export type DelegationResult = {
   delegatedTo: Delegation[]
   delegatedFrom: Delegation[]
-  hasMoreDelegatedFrom: boolean
 }
 export const EMPTY_DELEGATION: DelegationResult = {
   delegatedTo: [],
   delegatedFrom: [],
-  hasMoreDelegatedFrom: false,
 }
 export type ScoreDetail = {
   ownVp: number
@@ -98,7 +96,7 @@ export type VpDistribution = {
   mana: number
   names: number
   delegated: number
-  linkedWearables: number
+  l1Wearables: number
 }
 
 export enum StrategyOrder {
@@ -108,5 +106,5 @@ export enum StrategyOrder {
   Mana,
   Names,
   Delegation,
-  LinkedWearables,
+  L1Wearables,
 }

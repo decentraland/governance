@@ -33,9 +33,6 @@ jobs:
       - name: setup environment
         run: source ./node_modules/.bin/setup-environment $PWD website-dao-prd
 
-      - name: export public env
-        run: env | grep GATSBY_ > .env
-
       - name: build image
         id: build-image
         uses: redhat-actions/buildah-build@v2
@@ -60,7 +57,7 @@ jobs:
     
   deployment:
     needs: [build-push]
-    name: "Deploy to: dev stg prd"
+    name: "Deploy to: dev prd"
     runs-on: ubuntu-latest
     steps:
       - name: Trigger deployment

@@ -24,6 +24,7 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
+import { SUBMISSION_THRESHOLD_POLL } from '../../entities/Proposal/constants'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
@@ -100,7 +101,7 @@ export default function SubmitPoll() {
   const [state, editor] = useEditor(edit, validate, initialState)
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
-    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_POLL),
+    () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_POLL),
     [vpDistribution]
   )
   const [formDisabled, setFormDisabled] = useState(false)

@@ -2,7 +2,8 @@ import { chunk } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotApi } from '../../clients/SnapshotApi'
-import { DetailedScores, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { DetailedScores, SnapshotStrategy, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../Proposal/types'
 
 import { ChoiceColor, Vote } from './types'
@@ -170,9 +171,21 @@ function getNumber(number: number) {
   return Math.floor(number || 0)
 }
 
-export async function getScores(addresses: string[], block?: string | number, space?: string, networkId?: string) {
+export async function getScores(
+  addresses: string[],
+  block?: string | number,
+  space?: string,
+  networkId?: string,
+  proposalStrategies?: SnapshotStrategy[]
+) {
   const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
-  const { scores, strategies } = await SnapshotApi.get().getScores(formattedAddresses, block, space, networkId)
+  const { scores, strategies } = await SnapshotApi.get().getScores(
+    formattedAddresses,
+    block,
+    space,
+    networkId,
+    proposalStrategies
+  )
 
   const result: DetailedScores = {}
   for (const addr of formattedAddresses) {
@@ -199,12 +212,14 @@ export async function getScores(addresses: string[], block?: string | number, sp
 
 export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
   const results: DetailedScores = {}
+  const spaceAndStrategies = await SnapshotGraphql.get().getProposalSpaceAndStrategies(proposal.snapshot_id)
   for (const addressesChunk of chunk(addresses, 500)) {
     const blockchainScores: DetailedScores = await getScores(
       addressesChunk,
       proposal.snapshot_proposal.snapshot,
       proposal.snapshot_space,
-      proposal.snapshot_network
+      proposal.snapshot_network,
+      spaceAndStrategies.strategies
     )
 
     for (const address of Object.keys(blockchainScores)) {

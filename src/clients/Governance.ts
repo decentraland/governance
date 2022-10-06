@@ -3,6 +3,7 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 
+import { GOVERNANCE_API } from '../constants'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
   GrantsResponse,
@@ -54,13 +55,7 @@ const getGovernanceApiUrl = () => {
     return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
   }
 
-  return (
-    process.env.GATSBY_GOVERNANCE_API ||
-    process.env.REACT_APP_GOVERNANCE_API ||
-    process.env.STORYBOOK_GOVERNANCE_API ||
-    process.env.GOVERNANCE_API ||
-    'https://governance.decentraland.org/api'
-  )
+  return GOVERNANCE_API
 }
 
 export class Governance extends API {

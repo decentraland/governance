@@ -25,6 +25,7 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
+import { SUBMISSION_THRESHOLD_DRAFT } from '../../entities/Proposal/constants'
 import { newProposalDraftScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
@@ -121,7 +122,7 @@ export default function SubmitDraftProposal() {
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
   const submissionVpNotMet = useMemo(
-    () => !!vpDistribution && vpDistribution.total < Number(process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT),
+    () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_DRAFT),
     [vpDistribution]
   )
   const [preselectedProposal] = useAsyncMemo(

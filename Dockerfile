@@ -23,22 +23,22 @@ RUN apk add --no-cache --virtual native-deps \
 RUN apk add --no-cache tini
 
 WORKDIR /app
-COPY ./package-lock.json /app/package-lock.json
-COPY ./package.json      /app/package.json
+COPY ./package-lock.json                      /app/package-lock.json
+COPY ./package.json                           /app/package.json
+COPY ./patches/@dcl+ui-env+1.2.0.patch        /app/patches/@dcl+ui-env+1.2.0.patch
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
 RUN npm ci
 
-COPY ./src                  /app/src
-COPY ./static               /app/static
-COPY ./.env                 /app/.env.production
-COPY ./entrypoint.sh        /app/entrypoint.sh
-COPY ./gatsby-browser.js    /app/gatsby-browser.js
-COPY ./gatsby-config.js     /app/gatsby-config.js
-COPY ./gatsby-node.js       /app/gatsby-node.js
-COPY ./gatsby-ssr.js        /app/gatsby-ssr.js
-COPY ./tsconfig.json        /app/tsconfig.json
+COPY ./src                                    /app/src
+COPY ./static                                 /app/static
+COPY ./entrypoint.sh                          /app/entrypoint.sh
+COPY ./gatsby-browser.js                      /app/gatsby-browser.js
+COPY ./gatsby-config.js                       /app/gatsby-config.js
+COPY ./gatsby-node.js                         /app/gatsby-node.js
+COPY ./gatsby-ssr.js                          /app/gatsby-ssr.js
+COPY ./tsconfig.json                          /app/tsconfig.json
 
 RUN sed -i.temp '/Pulumi\.ts/d' package.json
 

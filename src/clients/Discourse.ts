@@ -2,7 +2,7 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import Options from 'decentraland-gatsby/dist/utils/api/Options'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
-import { DISCOURSE_USER } from '../entities/Discourse/utils'
+import { DISCOURSE_API, DISCOURSE_USER } from '../entities/Discourse/utils'
 
 export const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
 
@@ -271,7 +271,7 @@ export type DiscoursePostInTopic = {
 }
 
 export class Discourse extends API {
-  static Url = process.env.GATSBY_DISCOURSE_API || process.env.DISCOURSE_API || 'https://meta.discourse.org/'
+  static Url = DISCOURSE_API || 'https://meta.discourse.org/'
 
   static Cache = new Map<string, Discourse>()
   private readonly auth: DiscourseAuth
@@ -337,7 +337,7 @@ export class Discourse extends API {
   }
 
   async closeTopic({ id }: DiscourseCloseTopic) {
-    return this.fetch<{}>(
+    return this.fetch<Record<string, unknown>>(
       `/t/${id}/status.json`,
       this.withAuth(
         this.options().method('PUT').json({
@@ -349,7 +349,7 @@ export class Discourse extends API {
   }
 
   async removeTopic(id: number) {
-    return this.fetch<{}>(`/t/${id}.json`, this.withAuth(this.options().method('DELETE')))
+    return this.fetch<Record<string, unknown>>(`/t/${id}.json`, this.withAuth(this.options().method('DELETE')))
   }
 
   async getTopic(topic_id: number) {

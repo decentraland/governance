@@ -4,19 +4,22 @@ import { DelegationsLabelProps } from '../../components/Section/ProposalVoting/D
 import { VotedChoice } from '../../components/Section/ProposalVoting/VotedChoiceButton'
 import { Vote } from '../../entities/Votes/types'
 import { Scores } from '../../entities/Votes/utils'
+import { env } from '../env'
 
 import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 import { VotedChoiceBuilder } from './helpers/VotedChoiceBuilder'
 
+const DEFAULT_CHAIN_ID = process.env.GATSBY_DEFAULT_CHAIN_ID || env('GATSBY_DEFAULT_CHAIN_ID')
+
 export function getEnvironmentChainId() {
-  const CHAIN_ID = Number(process.env.GATSBY_DEFAULT_CHAIN_ID)
+  const CHAIN_ID = Number(DEFAULT_CHAIN_ID)
   switch (CHAIN_ID) {
     case ChainId.ETHEREUM_MAINNET.valueOf():
       return ChainId.ETHEREUM_MAINNET
     case ChainId.ETHEREUM_RINKEBY:
       return ChainId.ETHEREUM_RINKEBY
     default:
-      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Rinkeby: ${process.env.GATSBY_DEFAULT_CHAIN_ID}`)
+      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Rinkeby: ${DEFAULT_CHAIN_ID}`)
   }
 }
 

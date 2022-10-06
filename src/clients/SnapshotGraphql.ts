@@ -1,7 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 
-import { GATSBY_SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 import {
   SnapshotProposal,
@@ -10,6 +10,7 @@ import {
   SnapshotScoresState,
   SnapshotSpace,
   SnapshotStatus,
+  SnapshotStrategy,
   SnapshotVote,
   SnapshotVoteResponse,
   SnapshotVpResponse,
@@ -20,10 +21,15 @@ import { inBatches, trimLastForwardSlash } from './utils'
 
 export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
+type SnapshotProposalMetadata = {
+  space: SnapshotSpace
+  strategies: SnapshotStrategy[]
+}
+
 const GRAPHQL_ENDPOINT = `/graphql`
 
 export class SnapshotGraphql extends API {
-  static Url = GATSBY_SNAPSHOT_API || 'https://hub.snapshot.org/'
+  static Url = SNAPSHOT_API || 'https://hub.snapshot.org/'
 
   static Cache = new Map<string, SnapshotGraphql>()
 
@@ -334,7 +340,33 @@ export class SnapshotGraphql extends API {
       mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
       names: Math.floor(vpByStrategy[StrategyOrder.Names]),
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
-      linkedWearables: Math.floor(vpByStrategy[StrategyOrder.LinkedWearables]),
+      l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
     }
+  }
+
+  async getProposalSpaceAndStrategies(proposalSnapshotId: string) {
+    const query = `
+      query Proposal($proposal_snapshot_id: String!) {
+        proposal(id: $proposal_snapshot_id){
+          space {
+            id
+            network
+          }
+          strategies {
+            name
+            params
+          }
+        }
+      }
+    `
+
+    const result = await this.fetch<SnapshotQueryResponse<{ proposal: SnapshotProposalMetadata }>>(
+      GRAPHQL_ENDPOINT,
+      this.options()
+        .method('POST')
+        .json({ query, variables: { proposal_snapshot_id: proposalSnapshotId } })
+    )
+
+    return result?.data?.proposal
   }
 }
