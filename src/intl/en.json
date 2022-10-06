@@ -757,21 +757,21 @@
       },
       "user_voting_stats": {
         "participation_label": "30 Day Participation",
-        "participation_percentage_label":  "{percentage} of current initiatives",
+        "participation_percentage_label": "{percentage} of current initiatives",
         "participation_total_label": "Voted on {count} proposals",
-        "personal_match_label":  "Personal Match",
-        "personal_match_info":  "Personal match shows the alignment you have with this profile in terms of voting decisions.",
-        "personal_match_percentage_label":  "You're {percentage}% aligned",
+        "personal_match_label": "Personal Match",
+        "personal_match_info": "Personal match shows the alignment you have with this profile in terms of voting decisions.",
+        "personal_match_percentage_label": "You're {percentage}% aligned",
         "personal_match_conclusion_<50": "You hardly agree with them",
         "personal_match_conclusion_50-80": "Conversations to be had",
-        "personal_match_conclusion_>80":  "You think rather similar",
+        "personal_match_conclusion_>80": "You think rather similar",
         "personal_match_conclusion_same_user": "You are aligned with yourself ✨",
         "outcome_match_label": "Outcome Match",
         "outcome_match_info": "When a vote coincides with the outcome, it's considered to be a \"match\". Outcome match is the result of the amount of matches over the total amount of initiatives the account has voted on.",
-        "outcome_percentage_label":  "{percentage}% match",
+        "outcome_percentage_label": "{percentage}% match",
         "outcome_match_conclusion_<50": "This user is not a people pleaser",
         "outcome_match_conclusion_50-80": "They have a voice of their own",
-        "outcome_match_conclusion_>80":  "Aligned with the community"
+        "outcome_match_conclusion_>80": "Aligned with the community"
       },
       "grants": {
         "title": "Grant beneficiary",
@@ -783,6 +783,10 @@
         "vested": "{amount} {token} vested",
         "released": "{amount} {token} released",
         "all_released": "All funds successfully released"
+      },
+      "delegation": {
+        "title": "Delegated VP to",
+        "info": "..."
       },
       "delegators": {
         "title": "VP Delegators",
@@ -1083,6 +1087,8 @@
     "delegated_to_user_empty_description": "Sound candidates may be chosen by the community to vote in their name",
     "delegated_to_user_empty_link": "Become a Delegate",
     "delegated_voting_power_list_title": "Delegated Voting Power",
-    "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice."
+    "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice.",
+    "delegation_empty_title": "VP not delegated",
+    "delegation_address_empty": "This address has not delegated its voting power"
   }
 }

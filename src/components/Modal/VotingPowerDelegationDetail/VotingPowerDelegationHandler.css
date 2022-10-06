@@ -1,6 +1,6 @@
 .DelegateButton__Container {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
 }
 
 .DelegateButton__Container .ui.header {

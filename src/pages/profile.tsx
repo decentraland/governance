@@ -13,6 +13,7 @@ import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenu
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
+import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
@@ -73,6 +74,12 @@ export default function ProfilePage() {
             isLoadingVpDistribution={isLoadingVpDistribution}
           />
           <GrantBeneficiaryBox address={address} />
+          <VpDelegationBox
+            delegation={delegation}
+            delegationState={delegationState}
+            ownVp={vpDistribution?.own}
+            isLoadingOwnVp={isLoadingVpDistribution}
+          />
           <VpDelegatorsBox
             address={address}
             delegation={delegation}

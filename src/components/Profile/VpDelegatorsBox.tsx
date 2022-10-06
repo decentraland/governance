@@ -30,7 +30,7 @@ export default function VpDelegatorsBox({
 }: Props) {
   const t = useFormatMessage()
   const [userAddress] = useAuthContext()
-  const isLoggedUserProfile = userAddress === address
+  const isLoggedUserProfile = userAddress?.toLowerCase() === address?.toLowerCase()
 
   return (
     <Container>
