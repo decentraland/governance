@@ -1,0 +1,20 @@
+.ChevronRightCircleOutline__FixedSize {
+  min-width: 32px;
+  max-width: 32px;
+}
+
+g.ChevronRightCircleOutline__Circle {
+  opacity: 0.25;
+}
+
+g.ChevronRightCircleOutline__Circle:hover {
+  opacity: 0.5;
+}
+
+.svg-fill-white {
+  fill: var(--white-900);
+}
+
+.svg-stroke-black {
+  stroke: var(--black-800);
+}

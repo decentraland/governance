@@ -3,7 +3,6 @@ import React from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { TransparencyGrantsTiers } from '../../clients/DclData'
@@ -11,6 +10,7 @@ import { GrantAttributes } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import { abbreviateTimeDifference, formatDate } from '../../modules/time'
+import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 
 import CliffProgress from './GrantCard/CliffProgress'
@@ -66,7 +66,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
               </div>
             </ProgressBarTooltip>
           </div>
-          <Back />
+          <ChevronRightCircleOutline />
         </div>
       </NotMobile>
       <Mobile>
@@ -86,7 +86,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
               </span>
             </span>
           </div>
-          <Back />
+          <ChevronRightCircleOutline />
         </div>
       </Mobile>
     </Link>

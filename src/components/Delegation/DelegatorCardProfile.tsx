@@ -2,9 +2,9 @@ import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Back } from 'decentraland-ui/dist/components/Back/Back'
 
 import locations from '../../modules/locations'
+import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 
 import './DelegatorCardProfile.css'
@@ -31,7 +31,7 @@ function DelegatorCardProfile({ address, vp }: Props) {
           </span>
         </div>
       </div>
-      <Back />
+      <ChevronRightCircleOutline />
     </Link>
   )
 }
