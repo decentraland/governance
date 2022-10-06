@@ -786,7 +786,7 @@
       },
       "delegation": {
         "title": "Delegated VP to",
-        "info": "..."
+        "helper": "This is the DAO member this user delegated their VP to. Learn more about VP delegation [here](https://docs.decentraland.org/player/general/dao/overview/how-does-the-dao-work/)"
       },
       "delegators": {
         "title": "VP Delegators",

@@ -28,7 +28,7 @@ function VpDelegationBox({ delegation, isLoadingDelegations, ownVp, isLoadingOwn
 
   return (
     <Container className="VpDelegationBox">
-      <ProfileBox title={t('page.profile.delegation.title')} info={t('page.profile.delegation.info')}>
+      <ProfileBox title={t('page.profile.delegation.title')} info={t('page.profile.delegation.helper')}>
         {isLoading && <SkeletonBars amount={1} height={70} />}
         {!isLoading && (
           <>
