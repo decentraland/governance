@@ -6,6 +6,7 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
+import { TransparencyGrantsTiers } from '../../clients/DclData'
 import { GrantAttributes } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
@@ -26,9 +27,11 @@ interface Props {
 function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
-  const { user, title, enacted_at, token } = grant
+  const { user, title, enacted_at, token, configuration } = grant
   const enactedDate = new Date(enacted_at * 1000)
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
+
+  const isInMana = Object.keys(TransparencyGrantsTiers).slice(0, 3).includes(configuration.tier)
 
   return (
     <Link className="GrantBeneficiaryItem" href={locations.proposal(grant.id)}>
@@ -42,7 +45,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
                 {t('page.profile.grants.item_description', {
                   time: formatDate(enactedDate),
                   amount: intl.formatNumber(grant.size),
-                  token: token?.symbol,
+                  token: isInMana ? 'USD' : token?.symbol,
                 })}
               </Markdown>
             </span>
