@@ -2,7 +2,6 @@ import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useVotingStats from '../../hooks/useVotingStats'
