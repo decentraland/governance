@@ -3,12 +3,13 @@ function writeEnv() {
     const fs = require('fs')
     const data = fs.readFileSync('./src/config/env/heroku.json')
     const json = JSON.parse(data)
+    const outputPath = './.env.production'
     let file = ''
     Object.keys(json).forEach((item) => (file += `${item}=${json[item]}\n`))
-    fs.writeFileSync('./.env.production', file)
-    console.log('Finished writing heroku.json to ./env.production. Have a nice day 🌞!')
+    fs.writeFileSync(outputPath, file)
+    console.log(`Finished writing heroku.json to ${outputPath}. Have a nice day 🌞!`)
   } catch (error) {
-    console.log('Error writing heroku.json to ./env.production 😱', error)
+    console.log(`Error writing heroku.json to ${outputPath} 😱`, error)
   }
 }
 

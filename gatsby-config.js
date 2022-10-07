@@ -1,9 +1,15 @@
 /* eslint-disable */
 const { default: developMiddleware } = require('decentraland-gatsby/dist/utils/development/developMiddleware')
 
-require('dotenv').config({
-  path: `.env.${process.env.NODE_ENV}`,
-})
+if (process.env.HEROKU === 'true') {
+  require('dotenv').config({
+    path: `.env.heroku`,
+  })
+} else {
+  require('dotenv').config({
+    path: `.env.${process.env.NODE_ENV}`,
+  })
+}
 
 module.exports = {
   flags: {
