@@ -65,6 +65,6 @@ jobs:
         uses: decentraland/dcl-deploy-action@main
         with:
           dockerImage: "${{ needs.build-push.outputs.registry-path }}"
-          serviceName: governance
-          env: dev prd
+          serviceName: governance2
+          env: dev
           token: ${{ secrets.GITHUB_TOKEN }}
