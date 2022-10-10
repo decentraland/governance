@@ -51,7 +51,7 @@ build:code:
     # down dev service
     - pulumi plugin install resource aws v4.36.0
     - pulumi plugin install resource cloudflare v4.3.0
-    - aws ecr delete-repository --repository-name governance --force
+    - aws ecr delete-repository --repository-name governance-937641f --force
     # - aws s3 rm s3://governance-logs-41ee124 --recursive
     # - aws s3 rm s3://governance-website-725da66 --recursive
     - dcl-lock-sync
