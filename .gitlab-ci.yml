@@ -52,8 +52,8 @@ build:code:
     - pulumi plugin install resource aws v4.36.0
     - pulumi plugin install resource cloudflare v4.3.0
     # - aws ecr batch-delete-image --repository-name governance-937641f --image-ids imageTag=precise
-    - aws s3 rm s3://governance-logs-41ee124 --recursive
-    - aws s3 rm s3://governance-website-725da66 --recursive
+    # - aws s3 rm s3://governance-logs-41ee124 --recursive
+    # - aws s3 rm s3://governance-website-725da66 --recursive
     - dcl-lock-sync
     - dcl-up $PULUMI_STACK
     - dcl-sync-release
