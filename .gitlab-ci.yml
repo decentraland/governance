@@ -51,7 +51,8 @@ build:code:
     # down dev service
     - pulumi plugin install resource aws v4.36.0
     - pulumi plugin install resource cloudflare v4.3.0
-    # - aws ecr batch-delete-image --repository-name governance-937641f --image-ids imageTag=precise
+    - aws ecr batch-delete-image --repository-name governance-937641f --image-ids imageTag=f745f3b98fb97957e08732e22ab7a093303bd3c4 imageTag=429e740408993b3b67f2a512b043d628b3abf0e7 imageTag=22af6a30af6645b69f603176c8a60141d9dc2298 imageTag=7f8ce8c416134fbe10180fdbf756b10b4578590a imageTag=db031dfe443e37b22c76cc53ef713a193d6beaa6 imageTag=397ca32aa156da61ffb326680202ebe4732221d3 imageTag=a21421cadf3918cebd90495e05908c0fb9241f23 imageTag=750f9cf0cae360f0a2663609eca8cfdd829c7152 imageTag=16c7b513c2bd72e3ad4cab439b49133d63c5eec9 imageTag=5359dbb71efa6e0f65d21fa1973f66a94bbeca09 imageTag=26d89a2bd911942592d23f51a0f2c5cab06b6cb1 imageTag=d59a0ac8d7bd577cd2bb1d175641adbd2d805520 imageTag=8e282be503c3388778f949cce4cafd6da2ea3b79 imageTag=a7c23d4b9192bf884bce2d70df8cdc9e747b5733 imageTag=31d818a22515f09fa0747a0c580a2dda3a1b297f imageTag=d3afe6736c3aed1bc748bdfbe7d835866cdff566 imageTag=b12f5894bbc89fa1640636c107f8cf4813446ae7 imageTag=4a8b2bb4130817119ec097b556acf471a39c5fab imageTag=3d7e105b96e31b03ecbe79188b77620052bd364e imageTag=90ae3181983bcd3985e182e07f6e26ebd54dcc4e imageTag=6b44b2347c1616e581ab882d69e7138ee474c9f2 imageTag=08192ceaf5464a6c2383571945f7de7c30fb8a64 imageTag=0cbb17760fbd5c35e6018ea922a760f68080e7e9
+    - aws ecr delete-repository --repository-name governance -f
     # - aws s3 rm s3://governance-logs-41ee124 --recursive
     # - aws s3 rm s3://governance-website-725da66 --recursive
     - dcl-lock-sync
