@@ -19,7 +19,8 @@ export = async function main() {
     contentRoutingRules: {
       '/en/*': '/$1'
     },
-    serviceSource: '.',
+    // serviceSource: '.',
+    serviceImage: process.env["CI_REGISTRY_IMAGE"],
     servicePaths: [
       '/',
       '/proposal/',
