@@ -8,9 +8,9 @@ import { useSortingByKey } from '../../hooks/useSortingByKey'
 import Candidates from '../../modules/delegates/candidates.json'
 import Sort from '../Icon/Sort'
 import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
-import DelegateRow from '../Table/DelegatesTableRow'
 
 import './DelegatesTable.css'
+import DelegateRow from './DelegatesTableRow'
 
 const DISPLAYED_CANDIDATES = 9
 const DEFAULT_SORTING_KEY: DelegateKey = 'lastVoted'

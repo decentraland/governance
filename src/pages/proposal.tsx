@@ -27,6 +27,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
+import { VotingModal } from '../components/Modal/Votes/VotingModal'
 import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -58,6 +59,9 @@ import './proposals.css'
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
+const EMPTY_CHOICE_SELECTION = { choice: undefined, choiceIndex: undefined }
+
+export type SelectedChoice = { choice?: string; choiceIndex?: number }
 
 export type ProposalPageOptions = {
   changing: boolean
@@ -67,6 +71,8 @@ export type ProposalPageOptions = {
   showVotesList: boolean
   showProposalSuccessModal: boolean
   showUpdateSuccessModal: boolean
+  showVotingModal: boolean
+  selectedChoice: SelectedChoice
 }
 
 export default function ProposalPage() {
@@ -81,6 +87,8 @@ export default function ProposalPage() {
     showVotesList: false,
     showProposalSuccessModal: false,
     showUpdateSuccessModal: false,
+    showVotingModal: false,
+    selectedChoice: EMPTY_CHOICE_SELECTION,
   })
   const patchOptionsRef = useRef(patchOptions)
   const [account, { provider }] = useAuthContext()
@@ -99,8 +107,8 @@ export default function ProposalPage() {
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
   )
-  const [voting, vote] = useAsyncTask(
-    async (_: string, choiceIndex: number) => {
+  const [castingVote, castVote] = useAsyncTask(
+    async (choiceIndex: number, voterSentiment: any) => {
       if (proposal && account && provider && votes) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
@@ -268,13 +276,18 @@ export default function ProposalPage() {
                 )}
                 <ProposalGovernanceSection
                   disabled={!proposal || !votes}
-                  loading={voting || proposalState.loading || votesState.loading}
+                  loading={castingVote || proposalState.loading || votesState.loading}
                   proposal={proposal}
                   votes={votes}
                   changingVote={options.changing}
                   onChangeVote={(_, changing) => patchOptions({ changing })}
                   onOpenVotesList={() => patchOptions({ showVotesList: true })}
-                  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
+                  onVote={(_, choice, choiceIndex) =>
+                    patchOptions({
+                      selectedChoice: { choice, choiceIndex },
+                      showVotingModal: true,
+                    })
+                  }
                 />
                 <ForumButton
                   loading={proposalState.loading}
@@ -303,6 +316,17 @@ export default function ProposalPage() {
           </Grid.Row>
         </Grid>
       </ContentLayout>
+
+      {proposal && (
+        <VotingModal
+          open={options.showVotingModal}
+          proposal={proposal}
+          onClose={() => patchOptions({ showVotingModal: false })}
+          selectedChoice={options.selectedChoice}
+          onCastVote={castVote}
+          castingVote={castingVote}
+        />
+      )}
       <VotesListModal
         open={options.showVotesList}
         proposal={proposal}

@@ -97,3 +97,7 @@ export function getPartyVotes(
 
   return { votesByChoices, totalVotes }
 }
+
+export function formatChoice(choice: string) {
+  return choice.charAt(0).toUpperCase() + choice.slice(1)
+}

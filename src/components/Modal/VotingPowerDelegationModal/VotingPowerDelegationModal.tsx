@@ -11,7 +11,7 @@ import { CANDIDATE_ADDRESSES } from '../../../constants'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import DelegatesTable from '../../Table/DelegatesTable'
+import DelegatesTable from '../../Delegation/DelegatesTable'
 
 import './VotingPowerDelegationModal.css'
 

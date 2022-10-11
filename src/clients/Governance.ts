@@ -21,6 +21,7 @@ import {
   ProposalType,
 } from '../entities/Proposal/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
+import { SurveyTopicAttributes } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 
@@ -352,5 +353,14 @@ export class Governance extends API {
     )
 
     return response.data
+  }
+
+  async getSurveyTopics(proposalId: string) {
+    const result = await this.fetch<ApiResponse<SurveyTopicAttributes[]>>(
+      `/surveyTopics/${proposalId}`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
   }
 }

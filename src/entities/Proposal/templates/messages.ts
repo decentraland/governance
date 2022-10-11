@@ -1,3 +1,4 @@
+import { formatChoice } from '../../../modules/votes/utils'
 import { Vote } from '../../Votes/types'
 import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'
@@ -98,8 +99,4 @@ function getVotingResultsMessage(
     } votes)\n`
   })
   return votingResults
-}
-
-export function formatChoice(choice: string) {
-  return choice.charAt(0).toUpperCase() + choice.slice(1)
 }
