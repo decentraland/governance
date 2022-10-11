@@ -7,7 +7,7 @@ import numeral from 'numeral'
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
 import { DISCOURSE_API } from '../Discourse/utils'
-import { SNAPSHOT_DURATION, SNAPSHOT_SPACE } from '../Snapshot/constants'
+import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
 import {
   DURATION_GRANT_TIER1,
@@ -157,8 +157,7 @@ export function asNumber(value: string | number): number {
 }
 
 export function snapshotUrl(hash: string) {
-  const snapshotUrl = env('GATSBY_SNAPSHOT_URL', '') || ''
-  const target = new URL(snapshotUrl)
+  const target = new URL(SNAPSHOT_URL)
   target.pathname = ''
   target.hash = hash
   return target.toString()
