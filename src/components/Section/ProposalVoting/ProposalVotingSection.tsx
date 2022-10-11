@@ -26,7 +26,7 @@ interface Props {
   changingVote?: boolean
   choices: string[]
   finished: boolean
-  onVote?: (e: React.MouseEvent<unknown, MouseEvent>, choice: string, choiceIndex: number) => void
+  onVote: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
 }
 

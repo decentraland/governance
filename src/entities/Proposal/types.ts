@@ -460,6 +460,7 @@ export const newProposalCatalystScheme = {
 }
 
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
+
 export enum ProposalGrantCategory {
   Community = 'Community',
   ContentCreator = 'Content Creator',

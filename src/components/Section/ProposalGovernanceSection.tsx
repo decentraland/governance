@@ -19,7 +19,7 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   changingVote?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
   onOpenVotesList?: () => void
-  onVote?: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
+  onVote: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
 }
 
 const EMPTY_CHOICES: string[] = []
