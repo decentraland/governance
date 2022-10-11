@@ -49,6 +49,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
+  static async getProposal(id: string) {
+    if (!isUUID(id || '')) {
+      throw new Error(`Not found proposal: "${id}"`)
+    }
+
+    const proposal = await this.findOne<ProposalAttributes>({ id, deleted: false })
+    if (!proposal) {
+      throw new Error(`Not found proposal: "${id}"`)
+    }
+
+    return this.parse(proposal)
+  }
+
   static parse(proposal: ProposalAttributes): ProposalAttributes {
     return {
       ...proposal,
