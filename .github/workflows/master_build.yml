@@ -27,12 +27,6 @@ jobs:
       - name: installing
         run: npm ci
 
-      - name: setup environment
-        run: source ./node_modules/.bin/setup-environment $PWD website-dao-dev
-
-      - name: setup environment
-        run: source ./node_modules/.bin/setup-environment $PWD website-dao-prd
-
       - name: build image
         id: build-image
         uses: redhat-actions/buildah-build@v2
