@@ -10,7 +10,6 @@ import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import { filter, isNil } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import isUUID from 'validator/lib/isUUID'
 
 import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
@@ -371,17 +370,11 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {
-  const id = req.params.proposal
-  if (!isUUID(id || '')) {
-    throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
+  try {
+    return ProposalModel.getProposal(req.params.proposal)
+  } catch (e: any) {
+    throw new RequestError(e.message, RequestError.NotFound)
   }
-
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
-  if (!proposal) {
-    throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
-  }
-
-  return ProposalModel.parse(proposal)
 }
 
 const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
