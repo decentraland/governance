@@ -33,6 +33,7 @@ export default routes((route) => {
   route.get('/proposals/:update/update', handleAPI(getProposalUpdate))
   route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
   route.patch('/proposals/:proposal/update', withAuth, handleAPI(updateProposalUpdate))
+  route.delete('/proposals/:proposal/update', withAuth, handleAPI(deleteProposalUpdate))
   route.get('/updates', handleAPI(getUpdates))
 })
 
@@ -154,6 +155,34 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     },
     { id }
   )
+
+  return true
+}
+
+async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
+  const { id } = req.body
+  const update = await UpdateModel.findOne(id)
+  const proposalId = req.params.proposal
+
+  if (!update) {
+    throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
+  }
+
+  if (!update?.completion_date) {
+    throw new RequestError(`Update is not completed: "${update.id}"`, RequestError.BadRequest)
+  }
+
+  const user = req.auth
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
+
+  const isAuthorOrCoauthor =
+    user && (proposal?.user === user || (await isCoauthor(proposalId, user))) && update.author === user
+
+  if (!proposal || !isAuthorOrCoauthor) {
+    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
+  }
+
+  await UpdateModel.delete<UpdateAttributes>({ id })
 
   return true
 }

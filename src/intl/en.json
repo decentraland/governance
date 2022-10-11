@@ -407,6 +407,12 @@
     "update_success": {
       "title": "Thanks for sharing your Grant Update",
       "description": "Now go make some noise and let the\n\ncommunity know about your progress."
+    },
+    "delete_update": {
+      "title": "Delete Confirmation",
+      "description": "Are you sure you want to delete this update? This action cannot be undone.",
+      "accept": "Delete",
+      "reject": "Cancel"
     }
   },
   "component": {
@@ -844,7 +850,8 @@
       "next_steps": "Next steps",
       "additional_notes": "Additional notes and links",
       "completion_date": "Posted {date} by",
-      "due_date": "Update shared **{date} late**, after it was due."
+      "due_date": "Update shared **{date} late**, after it was due.",
+      "delete_update": "Delete update"
     },
     "submit": {
       "title": "Submit Proposal",

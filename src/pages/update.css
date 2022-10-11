@@ -55,3 +55,7 @@
   flex-direction: row;
   align-items: center;
 }
+
+.UpdateDetail__DeleteUpdate {
+  padding: 0 !important;
+}
