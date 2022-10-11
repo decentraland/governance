@@ -5,12 +5,12 @@ export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   const sql = `
-    INSERT INTO survey_topics (topic_id, title) VALUES ('1','Budget');
-    INSERT INTO survey_topics (topic_id, title) VALUES ('2','Beneficiary');
-    INSERT INTO survey_topics (topic_id, title) VALUES ('3','Specification');
-    INSERT INTO survey_topics (topic_id, title) VALUES ('4','Personnel');
-    INSERT INTO survey_topics (topic_id, title) VALUES ('5','Roadmap');
-    INSERT INTO survey_topics (topic_id, title) VALUES ('6','Value Proposition');
+    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '1','Budget');
+    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '2','Beneficiary');
+    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '3','Specification');
+    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '4','Personnel');
+    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '5','Roadmap');
+    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '6','Value Proposition');
   `
 
   pgm.sql(sql)
