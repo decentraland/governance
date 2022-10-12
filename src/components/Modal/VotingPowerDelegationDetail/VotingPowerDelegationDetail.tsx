@@ -91,7 +91,11 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
           </Button>
           <Username address={candidate.address} size="small" />
         </div>
-        <VotingPowerDelegationHandler userVP={userVP} candidateAddress={candidateAddress} />
+        <VotingPowerDelegationHandler
+          buttonText={t('modal.vp_delegation.delegate_button')}
+          userVP={userVP}
+          candidateAddress={candidateAddress}
+        />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
         <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
@@ -187,6 +191,7 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
                 <VotingPowerDistribution
                   className="DelegationDetails__VotingPowerDistribution"
                   vpDistribution={vpDistribution}
+                  isLoading={isLoadingVpDistribution}
                 />
               </div>
 

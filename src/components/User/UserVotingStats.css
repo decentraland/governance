@@ -1,0 +1,20 @@
+.UserVotingStats__Data {
+  display: flex;
+  flex-direction: column;
+}
+
+.UserVotingStats__MainData {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--black-800);
+  margin-bottom: 4px;
+}
+
+.UserVotingStats__Sub {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}

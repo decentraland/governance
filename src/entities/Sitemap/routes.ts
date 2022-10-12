@@ -1,8 +1,9 @@
-import { handleRaw } from "decentraland-gatsby/dist/entities/Route/handle"
-import routes from "decentraland-gatsby/dist/entities/Route/routes"
+import { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import ProposalModel from "../Proposal/model"
-import { governanceUrl, proposalUrl, SITEMAP_ITEMS_PER_PAGE } from "../Proposal/utils"
+
+import ProposalModel from '../Proposal/model'
+import { SITEMAP_ITEMS_PER_PAGE, governanceUrl, proposalUrl } from '../Proposal/utils'
 
 export default routes((router) => {
   router.get('/sitemap.xml', handleRaw(getIndexSitemap, 'application/xml'))
@@ -24,24 +25,22 @@ export async function getIndexSitemap() {
   const pages = Math.ceil(proposals / SITEMAP_ITEMS_PER_PAGE)
 
   return [
-    `<?xml version="1.0" encoding="UTF-8"?>` +
-    `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    `<?xml version="1.0" encoding="UTF-8"?>` + `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
     `<sitemap><loc>${governanceUrl('/sitemap.static.xml')}</loc></sitemap>`,
     ...Array.from(
-        Array(pages),
-        (_, i) => `<sitemap><loc>${governanceUrl(`/sitemap.proposals.xml`)}?page=${i}</loc></sitemap>`
+      Array(pages),
+      (_, i) => `<sitemap><loc>${governanceUrl(`/sitemap.proposals.xml`)}?page=${i}</loc></sitemap>`
     ),
-    '</sitemapindex>'
+    '</sitemapindex>',
   ].join('')
 }
 
 export async function getStaticSitemap() {
   return [
-    `<?xml version="1.0" encoding="UTF-8"?>` +
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    `<?xml version="1.0" encoding="UTF-8"?>` + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     `<url><loc>${governanceUrl('/')}</loc></url>`,
     `<url><loc>${governanceUrl('/?view=enacted')}</loc></url>`,
-    `<url><loc>${governanceUrl('/balance/')}</loc></url>`,
+    `<url><loc>${governanceUrl('/profile/')}</loc></url>`,
     `<url><loc>${governanceUrl('/activity/')}</loc></url>`,
     `<url><loc>${governanceUrl('/transparency/')}</loc></url>`,
     `<url><loc>${governanceUrl('/submit/')}</loc></url>`,
@@ -56,12 +55,8 @@ export async function getStaticSitemap() {
 }
 
 export async function getProposalsSitemap(req: Request) {
-
   const page = Number(req.query.page)
-  if (
-    !Number.isFinite(page) ||
-    String(page | 0) !== req.query.page
-  ) {
+  if (!Number.isFinite(page) || String(page | 0) !== req.query.page) {
     return [
       '<?xml version="1.0" encoding="UTF-8"?>',
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -71,9 +66,8 @@ export async function getProposalsSitemap(req: Request) {
 
   const proposals = await ProposalModel.getSitemapProposals(page)
   return [
-    `<?xml version="1.0" encoding="UTF-8"?>` +
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...proposals.map(event => `<url><loc>${proposalUrl(event)}</loc></url>`,),
+    `<?xml version="1.0" encoding="UTF-8"?>` + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...proposals.map((event) => `<url><loc>${proposalUrl(event)}</loc></url>`),
     '</urlset>',
   ].join('')
 }

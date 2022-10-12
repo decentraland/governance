@@ -1,46 +1,55 @@
-.dcl.stats.UserStats {
-  position: relative;
+.ui.container.UserStats__Container {
+  display: flex;
+  gap: 41px;
 }
 
-.dcl.stats.UserStats.disabled {
-  opacity: .8;
+.UserStats__UserInfo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.dcl.stats.UserStats .ui.loader {
-  bottom: 0;
-  right: 0;
-  top: auto;
-  left: auto;
+.UserStats__Username {
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.dcl.stats.UserStats.without-sub .ui.loader {
-  transform: translate(0,0);
-}
-
-.dcl.stats.UserStats .ui.header.UserStatsHeader {
-  text-overflow: ellipsis;
-  /* white-space: nowrap; */
-  word-break: break-all;
-  overflow: hidden;
-}
-
-.dcl.stats.UserStats .ui.header.UserStatsHeader,
-.dcl.stats.UserStats .ui.header .dcl.address {
-  margin-bottom: 0;
-  padding-bottom: 4px;
-}
-
-.dcl.stats.UserStats .ui.header.medium.UserStatsHeader,
-.dcl.stats.UserStats .ui.header.medium .dcl.address {
-  font-size: 21px;
-  line-height: 30px;
-  font-weight: normal;
-}
-
-.dcl.stats.UserStats .ui.header.huge.UserStatsHeader,
-.dcl.stats.UserStats .ui.header.huge .dcl.address {
-  font-size: 48px;
-  line-height: 48px;
+.UserStats__Username > span {
   font-weight: 600;
+  font-size: 24px !important;
+  line-height: 48px;
+  letter-spacing: 0.4px;
+}
 
+.UserStats__VpDistribution {
+  margin-top: 24px;
+}
+
+.UserStats__Slider {
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .UserStats__Username {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .UserStats__Username > span {
+    font-size: 40px !important;
+  }
+
+  .UserStats__StatBoxes {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 44px;
+  }
+
+  .UserStats__StatBoxes :last-child {
+    margin-right: 0;
+  }
+
+  .UserStats__VpDistributionContainer {
+    margin-bottom: 44px;
+  }
 }

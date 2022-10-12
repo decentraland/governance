@@ -3,146 +3,28 @@ import env from 'decentraland-gatsby/dist/utils/env'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
+import {
+  SnapshotProposal,
+  SnapshotProposalResponse,
+  SnapshotQueryResponse,
+  SnapshotScoresState,
+  SnapshotSpace,
+  SnapshotStatus,
+  SnapshotStrategy,
+  SnapshotVote,
+  SnapshotVoteResponse,
+  SnapshotVpResponse,
+  StrategyOrder,
+  VpDistribution,
+} from './SnapshotGraphqlTypes'
 import { inBatches, trimLastForwardSlash } from './utils'
 
-export type SnapshotQueryResponse<T> = { data: T }
+export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
-export type SnapshotStatus = {
-  name: string
-  network: string
-  version: string
-  tag: string
-  relayer: string
-}
-
-export type SnapshotStrategy = {
-  name: string
-  params: {
-    symbol: string
-    address: string
-    decimals: number
-  }
-}
-
-export type SnapshotSpace = {
-  id: string
-  network: string
-  strategies: SnapshotStrategy[]
-}
-
-export type SnapshotVoteResponse = SnapshotQueryResponse<{ votes: SnapshotVote[] }>
-export type SnapshotVote = {
-  id?: string
-  voter: string
-  created: number
-  choice: number
-  proposal?: {
-    id: string
-    title: string
-    choices: string[]
-  }
-}
-
-export type Delegation = {
-  delegator: string
-  delegate: string
-  space: string
-}
-
-export type DelegationResult = {
-  delegatedTo: Delegation[]
-  delegatedFrom: Delegation[]
-}
-
-type ScoreDetail = {
-  ownVp: number
-  delegatedVp: number
-  totalVp: number
-}
-
-export type DetailedScores = Record<string, ScoreDetail>
-
-export const EMPTY_DELEGATION: DelegationResult = {
-  delegatedTo: [],
-  delegatedFrom: [],
-}
-
-export type VoteEventResponse = SnapshotQueryResponse<{ votes: VoteEvent[] }>
-export type VoteEvent = {
-  voter: string
-  created: number
-  vp: number
-  choice: number
-  proposal: {
-    id: string
-    choices: string[]
-  }
-}
-
-export type SnapshotProposalResponse = SnapshotQueryResponse<{ proposals: Partial<SnapshotProposal>[] }>
-export type SnapshotProposal = {
-  id: string
-  ipfs: string
-  author: string
-  created: number
-  type: string
-  title: string
-  body: string
-  choices: string[]
-  start: number
-  end: number
-  snapshot: string
-  state: string
-  link: string
-  scores: number[]
-  scores_by_strategy: number[]
-  scores_state: string
-  scores_total: number
-  scores_updated: number
-  votes: number
-}
-
-export type SnapshotProposalMetadata = {
+type SnapshotProposalMetadata = {
   space: SnapshotSpace
   strategies: SnapshotStrategy[]
 }
-
-enum SnapshotScoresState {
-  Pending = 'pending',
-  Final = 'final',
-}
-
-export type SnapshotVpResponse = SnapshotQueryResponse<{
-  vp: {
-    vp: number
-    vp_by_strategy: number[]
-  } | null
-}>
-export type SnapshotVpDistribution = { totalVp: number; vpByStrategy: number[] }
-
-export type VpDistribution = {
-  total: number
-  own: number
-  wMana: number
-  land: number
-  estate: number
-  mana: number
-  names: number
-  delegated: number
-  l1Wearables: number
-}
-
-enum StrategyOrder {
-  WrappedMana,
-  Land,
-  Estate,
-  Mana,
-  Names,
-  Delegation,
-  L1Wearables,
-}
-
-const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const GRAPHQL_ENDPOINT = `/graphql`
 
@@ -256,6 +138,8 @@ export class SnapshotGraphql extends API {
             id
             title
             choices
+            scores
+            state
           }
         }
       }
@@ -282,7 +166,7 @@ export class SnapshotGraphql extends API {
     return votes
   }
 
-  fetchAddressesVotesByDate = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
+  fetchAddressesVotes = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
     const query = `
       query ProposalVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
         votes (
@@ -293,6 +177,14 @@ export class SnapshotGraphql extends API {
         ) {
           voter
           created
+          choice
+          proposal {
+            id
+            title
+            choices
+            scores
+            state
+          }
         }
       }
     `
@@ -310,9 +202,9 @@ export class SnapshotGraphql extends API {
     return result?.data?.votes
   }
 
-  async getAddressesVotesByDate(addresses: string[]) {
+  async getAddressesVotes(addresses: string[]) {
     const batchSize = 5000
-    return await inBatches(this.fetchAddressesVotesByDate, { addresses }, batchSize)
+    return await inBatches(this.fetchAddressesVotes, { addresses }, batchSize)
   }
 
   fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
@@ -331,7 +223,7 @@ export class SnapshotGraphql extends API {
       }
     `
 
-    const result = await this.fetch<VoteEventResponse>(
+    const result = await this.fetch<SnapshotVoteResponse>(
       GRAPHQL_ENDPOINT,
       this.options()
         .method('POST')

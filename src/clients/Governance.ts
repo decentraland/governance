@@ -118,6 +118,14 @@ export class Governance extends API {
     return proposals.data
   }
 
+  async getGrantsByUser(user: string, coauthoring?: boolean) {
+    const grants = await this.fetch<ApiResponse<GrantsResponse>>(
+      `/proposals/grants/${user}?coauthoring=${!!coauthoring}`
+    )
+
+    return grants.data
+  }
+
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {
     const newProposal = await this.fetch<ApiResponse<ProposalAttributes>>(
       path,

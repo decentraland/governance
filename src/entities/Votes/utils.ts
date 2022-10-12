@@ -2,7 +2,8 @@ import { chunk } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotApi } from '../../clients/SnapshotApi'
-import { DetailedScores, SnapshotGraphql, SnapshotStrategy, SnapshotVote } from '../../clients/SnapshotGraphql'
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { DetailedScores, SnapshotStrategy, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../Proposal/types'
 
 import { ChoiceColor, Vote } from './types'

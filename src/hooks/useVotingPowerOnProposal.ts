@@ -1,6 +1,6 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { DetailedScores } from '../clients/SnapshotGraphql'
+import { DetailedScores } from '../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
 import { Vote } from '../entities/Votes/types'

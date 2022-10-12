@@ -1,6 +1,7 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
@@ -21,6 +22,7 @@ import {
   MIN_NAME_SIZE,
 } from './constants'
 import {
+  GrantAttributes,
   ProposalAttributes,
   ProposalGrantTier,
   ProposalGrantTierValues,
@@ -215,4 +217,12 @@ export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPA
 export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
   const isInitialState = JSON.stringify(stateValue) === JSON.stringify(initialState)
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
+}
+
+const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])
+
+export function isProposalInCliffPeriod(grant: GrantAttributes) {
+  const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
+  const now = Time.utc()
+  return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
