@@ -1,14 +1,14 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import {
   Delegation,
   DelegationResult,
   EMPTY_DELEGATION,
-  SnapshotGraphql,
   SnapshotProposal,
   SnapshotVote,
-} from '../../clients/SnapshotGraphql'
+} from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
 
 import { SNAPSHOT_SPACE } from './constants'
@@ -52,6 +52,31 @@ export function calculateMatch(votes1: SnapshotVote[] | null, votes2: SnapshotVo
     match.voteDifference = voteDifference
   }
   return match
+}
+
+export type OutcomeMatch = {
+  outcomeMatch: number
+  totalProposals: number
+}
+
+export function outcomeMatch(votes: SnapshotVote[]): OutcomeMatch {
+  if (!(votes && votes.length > 0)) return { outcomeMatch: 0, totalProposals: 0 }
+  let matchCounter = 0
+  let closedProposalsCounter = 0
+  for (const vote of votes) {
+    if (vote.proposal?.state === 'closed' && vote.proposal?.scores && vote.proposal?.scores.length > 0) {
+      closedProposalsCounter++
+      const scores = vote.proposal.scores
+      const winnerChoiceScore = Math.max(...scores)
+      const winnerChoiceIndex = scores.indexOf(winnerChoiceScore)
+      const resultIsNotATie = scores.filter((score) => score === winnerChoiceScore).length === 1
+      if (resultIsNotATie && vote.choice === winnerChoiceIndex + 1) {
+        matchCounter++
+      }
+    }
+  }
+  const outcomeMatch = Math.floor((matchCounter * 100) / closedProposalsCounter) || 0
+  return { outcomeMatch: outcomeMatch, totalProposals: closedProposalsCounter }
 }
 
 export function median(array: number[]) {
@@ -183,4 +208,14 @@ export async function getDelegations(
 
 export function getChecksumAddress(address: string) {
   return ethers.utils.getAddress(address.toLowerCase())
+}
+
+export function isSameAddress(userAddress: string | null, address: string | null) {
+  return (
+    !!userAddress &&
+    userAddress.length > 0 &&
+    !!address &&
+    address.length > 0 &&
+    getChecksumAddress(userAddress) === getChecksumAddress(address)
+  )
 }

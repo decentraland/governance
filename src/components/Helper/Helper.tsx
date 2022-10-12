@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import Info from '../Icon/Info'
@@ -14,7 +15,7 @@ type Props = Pick<PopupProps, 'position'> & {
 function Helper({ position, text, size, containerClassName, iconClassName }: Props) {
   return (
     <Popup
-      content={<span>{text}</span>}
+      content={<Markdown className="HelperText__Content">{text}</Markdown>}
       position={position}
       trigger={
         <div className={containerClassName || 'Helper__Container'}>

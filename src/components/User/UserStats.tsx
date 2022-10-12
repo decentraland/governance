@@ -1,48 +1,57 @@
-import { Size } from 'decentraland-gatsby/dist/components/Props/types'
-import React from 'react'
+import React, { Suspense } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import profiles, { Profile } from 'decentraland-gatsby/dist/utils/loader/profile'
-import { Header, HeaderProps } from 'decentraland-ui/dist/components/Header/Header'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+
+import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
+import { ProfileBox } from '../Profile/ProfileBox'
 
 import './UserStats.css'
+import UserVotingStats from './UserVotingStats'
+import UserVpStats from './UserVpStats'
 import Username from './Username'
 
-export type UserStatsProps = {
-  size?: HeaderProps['size']
-  to?: string
-  className?: string
-  address?: string
-  disabled?: boolean
-  sub?: boolean
+interface Props {
+  address: string
+  vpDistribution: VpDistribution | null
+  isLoadingVpDistribution: boolean
 }
 
-export default React.memo(function UserStats(props: UserStatsProps) {
-  const [profile, profileState] = useAsyncMemo<Profile>(() => profiles.load(props.address || ''), [props.address])
-  const isProfile = !!profile && !profile.isDefaultProfile
+const UserAvatar = React.lazy(() => import('./UserAvatar'))
 
-  if (!props.address) {
-    return null
-  }
+export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
+  const t = useFormatMessage()
+  const { total } = vpDistribution || { total: 0 }
 
   return (
-    <span
-      className={TokenList.join([
-        'dcl stats',
-        'UserStats',
-        props.disabled && 'disabled',
-        props.sub === false ? 'without-sub' : 'with-sub',
-        props.className,
-      ])}
-    >
-      {props.sub !== false && <Header sub>{isProfile ? 'PROFILE' : 'ADDRESS'}</Header>}
-      <Header size={props.size} className="UserStatsHeader" as={props.to ? Link : undefined} href={props.to}>
-        <Username address={props.address} size={Size.Large} />
-      </Header>
-      <Loader size="small" active={profileState.loading} />
-    </span>
+    <Container className="UserStats__Container">
+      <div className="UserStats__UserInfo">
+        <Mobile>
+          <Username address={address} size="small" className="UserStats__Username" />
+        </Mobile>
+        <NotMobile>
+          <Username address={address} size="medium" className="UserStats__Username" />
+        </NotMobile>
+        <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
+        {total > 0 && (
+          <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')}>
+            <VotingPowerDistribution
+              vpDistribution={vpDistribution}
+              isLoading={isLoadingVpDistribution}
+              className="UserStats__VpDistribution"
+            />
+          </ProfileBox>
+        )}
+        <UserVotingStats address={address} />
+      </div>
+      <NotMobile>
+        <Suspense fallback={<Loader active={true} size="small" />}>
+          <UserAvatar address={address} />
+        </Suspense>
+      </NotMobile>
+    </Container>
   )
-})
+}

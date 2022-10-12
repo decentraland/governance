@@ -20,7 +20,9 @@
     "version": "tsc -p .",
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",
     "heroku": "./node_modules/node-pg-migrate/bin/node-pg-migrate -m lib/migrations -d CONNECTION_STRING up && NODE_ENV=production node lib/server.js",
-    "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\""
+    "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
+    "postinstall": "patch-package",
+    "heroku-prebuild": "node ./heroku-setup.js"
   },
   "jest": {
     "preset": "ts-jest",
@@ -46,6 +48,7 @@
   },
   "homepage": "https://github.com/decentraland/snapshot#readme",
   "dependencies": {
+    "@dcl/ui-env": "1.2.1",
     "@gatsbyjs/reach-router": "^1.3.6",
     "@jparnaudo/react-crypto-icons": "^1.0.5",
     "@snapshot-labs/snapshot.js": "0.4.28",
@@ -75,11 +78,13 @@
     "markdown-escape": "^1.1.0",
     "node-pg-migrate": "^6.2.1",
     "numeral": "^2.0.6",
+    "patch-package": "^6.4.7",
     "pg": "^8.7.3",
     "pg-tsquery": "^8.3.0",
     "postcss": "^8.4.12",
     "react-chartjs-2": "^4.3.1",
     "react-flickity-component": "^3.6.2",
+    "react-loading-skeleton": "^3.1.0",
     "react-select": "^5.3.2",
     "remark-parse": "^9.0.0",
     "remark-stringify": "^9.0.1",

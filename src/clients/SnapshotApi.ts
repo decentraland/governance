@@ -12,7 +12,8 @@ import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { getEnvironmentChainId } from '../modules/votes/utils'
 import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 
-import { SnapshotGraphql, SnapshotStrategy } from './SnapshotGraphql'
+import { SnapshotGraphql } from './SnapshotGraphql'
+import { SnapshotStrategy } from './SnapshotGraphqlTypes'
 import { trimLastForwardSlash } from './utils'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice

@@ -5,7 +5,31 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { IndexedUpdate } from '../Updates/types'
 
-import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
+import {
+  GRANT_SIZE_MINIMUM,
+  GRANT_SIZE_TIER1,
+  GRANT_SIZE_TIER2,
+  GRANT_SIZE_TIER3,
+  GRANT_SIZE_TIER4,
+  GRANT_SIZE_TIER5,
+  GRANT_SIZE_TIER6,
+  MAX_NAME_SIZE,
+  MIN_NAME_SIZE,
+  VOTING_POWER_TO_PASS_BAN_NAME,
+  VOTING_POWER_TO_PASS_CATALYST,
+  VOTING_POWER_TO_PASS_DRAFT,
+  VOTING_POWER_TO_PASS_GOVERNANCE,
+  VOTING_POWER_TO_PASS_GRANT,
+  VOTING_POWER_TO_PASS_GRANT_TIER1,
+  VOTING_POWER_TO_PASS_GRANT_TIER2,
+  VOTING_POWER_TO_PASS_GRANT_TIER3,
+  VOTING_POWER_TO_PASS_GRANT_TIER4,
+  VOTING_POWER_TO_PASS_GRANT_TIER5,
+  VOTING_POWER_TO_PASS_GRANT_TIER6,
+  VOTING_POWER_TO_PASS_LINKED_WEARABLES,
+  VOTING_POWER_TO_PASS_POI,
+  VOTING_POWER_TO_PASS_POLL,
+} from './constants'
 
 export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   id: string
@@ -466,12 +490,12 @@ export enum ProposalGrantTier {
 }
 
 export const ProposalGrantTierValues = {
-  [ProposalGrantTier.Tier1]: Number(process.env.GATSBY_GRANT_SIZE_TIER1 || 0),
-  [ProposalGrantTier.Tier2]: Number(process.env.GATSBY_GRANT_SIZE_TIER2 || 0),
-  [ProposalGrantTier.Tier3]: Number(process.env.GATSBY_GRANT_SIZE_TIER3 || 0),
-  [ProposalGrantTier.Tier4]: Number(process.env.GATSBY_GRANT_SIZE_TIER4 || 0),
-  [ProposalGrantTier.Tier5]: Number(process.env.GATSBY_GRANT_SIZE_TIER5 || 0),
-  [ProposalGrantTier.Tier6]: Number(process.env.GATSBY_GRANT_SIZE_TIER6 || 0),
+  [ProposalGrantTier.Tier1]: Number(GRANT_SIZE_TIER1 || 0),
+  [ProposalGrantTier.Tier2]: Number(GRANT_SIZE_TIER2 || 0),
+  [ProposalGrantTier.Tier3]: Number(GRANT_SIZE_TIER3 || 0),
+  [ProposalGrantTier.Tier4]: Number(GRANT_SIZE_TIER4 || 0),
+  [ProposalGrantTier.Tier5]: Number(GRANT_SIZE_TIER5 || 0),
+  [ProposalGrantTier.Tier6]: Number(GRANT_SIZE_TIER6 || 0),
 }
 
 export function isProposalGrantTier(value: string | null | undefined): boolean {
@@ -493,39 +517,39 @@ export function toProposalGrantTier(value: string | null | undefined): ProposalG
 }
 
 export const ProposalRequiredVP = {
-  [ProposalType.LinkedWearables]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
-  [ProposalType.Grant]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT, 0),
-  [ProposalType.Catalyst]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_CATALYST, 0),
-  [ProposalType.BanName]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_BAN_NAME, 0),
-  [ProposalType.POI]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POI, 0),
-  [ProposalType.Poll]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_POLL, 0),
-  [ProposalType.Draft]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_DRAFT, 0),
-  [ProposalType.Governance]: requiredVotingPower(process.env.GATSBY_VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
+  [ProposalType.Grant]: requiredVotingPower(VOTING_POWER_TO_PASS_GRANT, 0),
+  [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),
+  [ProposalType.BanName]: requiredVotingPower(VOTING_POWER_TO_PASS_BAN_NAME, 0),
+  [ProposalType.POI]: requiredVotingPower(VOTING_POWER_TO_PASS_POI, 0),
+  [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
+  [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
+  [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
 }
 
 export const GrantRequiredVP = {
   [ProposalGrantTier.Tier1]: requiredVotingPower(
-    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER1,
+    VOTING_POWER_TO_PASS_GRANT_TIER1,
     ProposalRequiredVP[ProposalType.Grant]
   ),
   [ProposalGrantTier.Tier2]: requiredVotingPower(
-    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER2,
+    VOTING_POWER_TO_PASS_GRANT_TIER2,
     ProposalRequiredVP[ProposalType.Grant]
   ),
   [ProposalGrantTier.Tier3]: requiredVotingPower(
-    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER3,
+    VOTING_POWER_TO_PASS_GRANT_TIER3,
     ProposalRequiredVP[ProposalType.Grant]
   ),
   [ProposalGrantTier.Tier4]: requiredVotingPower(
-    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER4,
+    VOTING_POWER_TO_PASS_GRANT_TIER4,
     ProposalRequiredVP[ProposalType.Grant]
   ),
   [ProposalGrantTier.Tier5]: requiredVotingPower(
-    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER5,
+    VOTING_POWER_TO_PASS_GRANT_TIER5,
     ProposalRequiredVP[ProposalType.Grant]
   ),
   [ProposalGrantTier.Tier6]: requiredVotingPower(
-    process.env.GATSBY_VOTING_POWER_TO_PASS_GRANT_TIER6,
+    VOTING_POWER_TO_PASS_GRANT_TIER6,
     ProposalRequiredVP[ProposalType.Grant]
   ),
 }
@@ -593,7 +617,7 @@ export const newProposalGrantScheme = {
     },
     size: {
       type: 'integer',
-      minimum: Number(process.env.GATSBY_GRANT_SIZE_MINIMUM || 0),
+      minimum: Number(GRANT_SIZE_MINIMUM || 0),
     },
     beneficiary: {
       type: 'string',

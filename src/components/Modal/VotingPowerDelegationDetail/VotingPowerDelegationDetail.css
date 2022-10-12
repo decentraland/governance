@@ -97,6 +97,10 @@
   margin-right: 0 !important;
 }
 
+.VotingPowerDelegationDetail__Header .DelegateButton__Container {
+  margin-right: 55px;
+}
+
 .VotingPowerDelegationDetail__CandidateName {
   display: inline-flex;
   margin-left: -7px;

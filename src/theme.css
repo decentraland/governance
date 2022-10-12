@@ -10,6 +10,7 @@
   --red-200: #f9d6dc;
   --red-800: #d80027;
   --blue-200: #e2ecfc;
+  --blue-600: #89baff;
   --blue-800: #4888ee;
   --gray: #a19ea8; /* TODO: Sync with Figma color styles */
   --white-900: #ffffff;
@@ -20,6 +21,7 @@
   --black-300: #dddce0;
   --black-400: #b9b7be;
   --black-600: #736e7d;
+  --black-700: #37333d;
   --black-800: #16141a;
   --purple-200: #e0dcf3;
   --purple-800: #3c24b3;

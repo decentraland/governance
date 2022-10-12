@@ -14,7 +14,7 @@ const FILTER_SHAPE_TRANSFORMS = [
 const CROSS_SHAPE_TRANSFORMS = ['rotate(45deg)', 'translateX(0) translateX(200%)', 'rotate(-45deg)']
 const BURGER_SHAPE_TRANSFORMS = ['rotate(0)', 'translateX(0)', 'rotate(0)']
 
-const BURGER_MENU_LOCATIONS = ['/', '/proposals/', '/transparency/', '/grants/']
+const BURGER_MENU_LOCATIONS = ['/', '/proposals/', '/transparency/', '/grants/', '/profile/']
 
 function BurgerMenu() {
   const location = useLocation()

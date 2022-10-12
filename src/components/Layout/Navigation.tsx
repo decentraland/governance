@@ -17,7 +17,7 @@ import './Navigation.css'
 export enum NavigationTab {
   Home = 'home',
   Proposals = 'proposals',
-  Wrapping = 'wrapping',
+  Profile = 'profile',
   Enacted = 'enacted',
   Activity = 'activity',
   Transparency = 'transparency',
@@ -58,8 +58,8 @@ const Navigation = ({ activeTab }: NavigationProps) => {
             <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
           </Link>
           {user && (
-            <Link href={locations.balance()}>
-              <Tabs.Tab active={activeTab === NavigationTab.Wrapping}>{t('navigation.wrapping')}</Tabs.Tab>
+            <Link href={locations.profile()}>
+              <Tabs.Tab active={activeTab === NavigationTab.Profile}>{t('navigation.profile')}</Tabs.Tab>
             </Link>
           )}
           <Link href={locations.transparency()}>

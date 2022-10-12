@@ -1,7 +1,8 @@
-import { Delegation } from '../clients/SnapshotGraphql'
+import { Delegation } from '../clients/SnapshotGraphqlTypes'
+import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { filterDelegationFrom, filterDelegationTo } from '../entities/Snapshot/utils'
 
-const DCL_SPACE = process.env.GATSBY_SNAPSHOT_SPACE || 'dcl_space'
+const DCL_SPACE = SNAPSHOT_SPACE || 'dcl_space'
 const DELEGATE_ADDR = '0x6cd7694d30c10bdab1e644fc1964043a95ceea5f'
 const DELEGATORS_ADDRS = [
   '0x549a9021661a85b6bc51c07b3a451135848d0050',

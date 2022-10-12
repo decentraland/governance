@@ -29,6 +29,6 @@ jobs:
         uses: decentraland/dcl-deploy-action@main
         with:
           dockerImage: 'quay.io/decentraland/governance:${{ inputs.tag }}'
-          serviceName: 'governance'
+          serviceName: 'governance2'
           env: ${{ inputs.deployment-environment }}
           token: ${{ secrets.GITHUB_TOKEN }}

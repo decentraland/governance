@@ -92,7 +92,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
   return (
     <>
       {linked ? (
-        <Link className={TokenList.join(['Username', className])} href={locations.balance({ address })}>
+        <Link className={TokenList.join(['Username', className])} href={locations.profile({ address })}>
           {userElement}
         </Link>
       ) : (
