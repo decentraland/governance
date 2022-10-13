@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AddReaction({ className, size = '32' }: { size?: string; className?: string }) {
+function AddReaction({ className }: { className?: string }) {
   return (
     <svg
       width="26"

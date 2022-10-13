@@ -41,7 +41,7 @@
 
 #slide {
   position: absolute;
-  right: -50px;
+  right: -63px;
   opacity: 100;
   transition: 1s;
 }
@@ -51,9 +51,18 @@
   right: 10px;
 }
 
-/*. SentimentSurveyRow__Margin {*/
-/*  background: white;*/
-/*  z-index: 1;*/
-/*  position: absolute;*/
-/*  width: 20px;*/
-/*}*/
+.SentimentSurveyRow__Reactions {
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  gap: 16px;
+}
+
+.SentimentSurveyRow__Reactions > div {
+  cursor: pointer;
+  height: 24px;
+}
+
+.SentimentSurveyRow__PickedReaction {
+  padding-right: 20px;
+}
