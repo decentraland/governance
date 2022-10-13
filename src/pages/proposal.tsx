@@ -27,7 +27,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import { VotingModal } from '../components/Modal/Votes/VotingModal'
+import { Survey, VotingModal } from '../components/Modal/Votes/VotingModal'
 import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -108,14 +108,16 @@ export default function ProposalPage() {
     [account, subscriptions]
   )
   const [castingVote, castVote] = useAsyncTask(
-    async (choiceIndex: number, voterSentiment: any) => {
-      if (proposal && account && provider && votes) {
-        const web3Provider = new Web3Provider(provider)
-        const [listedAccount] = await web3Provider.listAccounts()
-        await SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
-        patchOptions({ changing: false, confirmSubscription: !votes[account] })
-        votesState.reload()
-      }
+    async (choiceIndex: number, survey: Survey) => {
+      console.log('choiceIndex', choiceIndex)
+      console.log('survey', survey)
+      // if (proposal && account && provider && votes) {
+      //   const web3Provider = new Web3Provider(provider)
+      //   const [listedAccount] = await web3Provider.listAccounts()
+      //   await SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
+      //   patchOptions({ changing: false, confirmSubscription: !votes[account] })
+      //   votesState.reload()
+      // }
     },
     [proposal, account, provider, votes]
   )

@@ -14,36 +14,33 @@ import './SentimentSurveyRow.css'
 
 interface Props {
   topic: Topic
-  onReactionPicked: (topic: Topic, reaction: Reaction) => void
+  onReactionPicked: (topic: Topic, reaction: ReactionType) => void
   onReactionUnpicked: (topic: Topic) => void
 }
 
 export enum ReactionType {
-  HAPPY,
-  INDIFFERENT,
-  ANGRY,
+  HAPPY = 'happy',
+  INDIFFERENT = 'indifferent',
+  ANGRY = 'angry',
+  EMPTY = 'empty',
 }
 
-export type Reaction = {
-  type: ReactionType
-  icon: JSX.Element
-  label: string
-}
+type ReactionView = { reaction: ReactionType; label: string; icon: JSX.Element }
 
-const reactions: Reaction[] = [
-  { type: ReactionType.HAPPY, icon: <PartyEmoji />, label: 'happy' },
-  { type: ReactionType.INDIFFERENT, icon: <PokerFaceEmoji />, label: 'indifferent' },
-  { type: ReactionType.ANGRY, icon: <AngryEmoji />, label: 'angry' },
+const reactionViews: ReactionView[] = [
+  { reaction: ReactionType.HAPPY, label: 'happy', icon: <PartyEmoji /> },
+  { reaction: ReactionType.INDIFFERENT, label: 'indifferent', icon: <PokerFaceEmoji /> },
+  { reaction: ReactionType.ANGRY, label: 'angry', icon: <AngryEmoji /> },
 ]
 
 const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Props) => {
   const t = useFormatMessage()
   const [showAddReaction, setShowAddReaction] = useState(false)
   const [showReactions, setShowReactions] = useState(false)
-  const [pickedReaction, setPickedReaction] = useState<Reaction | null>()
+  const [pickedReaction, setPickedReaction] = useState<ReactionType | null>()
   const reactionPicked = pickedReaction != null
 
-  const pickReaction = useCallback((reaction: Reaction) => {
+  const pickReaction = useCallback((reaction: ReactionType) => {
     setShowReactions(false)
     setPickedReaction(reaction)
     onReactionPicked(topic, reaction)
@@ -75,10 +72,10 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
 
       {showReactions && (
         <div className="SentimentSurveyRow__Reactions">
-          {reactions.map((reaction, index) => {
+          {reactionViews.map((reactionView, index) => {
             return (
-              <div key={`Reaction__${index}`} onClick={() => pickReaction(reaction)}>
-                {reaction.icon}
+              <div key={`Reaction__${index}`} onClick={() => pickReaction(reactionView.reaction)}>
+                {reactionView.icon}
               </div>
             )
           })}
@@ -90,11 +87,11 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
 
       {reactionPicked && (
         <div className="SentimentSurveyRow__Reactions SentimentSurveyRow__PickedReaction">
-          {reactions.map((reaction, index) => {
+          {reactionViews.map((reactionView, index) => {
             return (
-              pickedReaction.type === reaction.type && (
+              pickedReaction === reactionView.reaction && (
                 <div key={`Reaction__${index}`} onClick={() => changeReaction()}>
-                  {reaction.icon}
+                  {reactionView.icon}
                 </div>
               )
             )
