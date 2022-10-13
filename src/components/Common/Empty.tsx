@@ -24,7 +24,7 @@ export default function Empty({ icon, title, description, className, linkText, l
     <div className={TokenList.join(['Empty', className])}>
       {icon ? icon : <Watermelon />}
       {!!title && <Header>{title}</Header>}
-      {!!description && <Markdown className="Empty__Description" children={description} />}
+      {!!description && <Markdown className="Empty__Description">{description}</Markdown>}
       {!!linkText && (onLinkClick || linkHref) && (
         <Link href={linkHref} onClick={onLinkClick}>
           {linkText}

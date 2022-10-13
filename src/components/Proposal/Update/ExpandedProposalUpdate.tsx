@@ -23,9 +23,14 @@ const ExpandedProposalUpdate = ({ update, index }: Props) => {
   const { introduction, status, health, completion_date } = update
   const UpdateIcon = getStatusIcon(health, completion_date)
 
-  const handleClick = useCallback(() => {
-    navigate(locations.update(update.id))
-  }, [update.id])
+  const handleClick = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      navigate(locations.update(update.id))
+    },
+    [update.id]
+  )
 
   if (!completion_date) {
     return null

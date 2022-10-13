@@ -38,13 +38,18 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor }: Props)
   const formattedCompletionDate = completion_date ? formatDate(completion_date) : ''
   const showPostUpdateButton = !completion_date && isAllowedToPostUpdate && isBetweenLateThresholdDate(due_date)
 
-  const handleClick = useCallback(() => {
-    if (!completion_date) {
-      return
-    }
+  const handleClick = useCallback(
+    (e) => {
+      if (!completion_date) {
+        return
+      }
 
-    navigate(locations.update(update.id))
-  }, [completion_date, update.id])
+      e.preventDefault()
+      e.stopPropagation()
+      navigate(locations.update(update.id))
+    },
+    [completion_date, update.id]
+  )
 
   const handlePostUpdateClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
