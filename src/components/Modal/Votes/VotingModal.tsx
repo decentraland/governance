@@ -10,26 +10,24 @@ import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { SelectedChoice } from '../../../pages/proposal'
 import SentimentSurvey from '../../Proposal/SentimentSurvey'
+import { ReactionType } from '../../Proposal/SentimentSurveyRow'
 import '../ProposalModal.css'
 
 import './VotingModal.css'
 
-export type Feedback = {
-  topic_id: string
-  reaction_id: string
-}
+export type Feedback = Record<string, ReactionType | null>
 
 interface VotingModalProps {
   open: boolean
   proposal: ProposalAttributes
   selectedChoice: SelectedChoice
-  onCastVote: (choiceIndex: number, feedback: Feedback[]) => void
+  onCastVote: (choiceIndex: number, feedback: Feedback) => void
   onClose: () => void
   castingVote: boolean
 }
 
 export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVote, castingVote }: VotingModalProps) {
-  const feedback = useMemo(() => [], [])
+  const feedback = {}
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
@@ -39,7 +37,7 @@ export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVot
     <Modal size="tiny" className="VotingModal ProposalModal" open={open} closeIcon={<Close />} onClose={onClose}>
       <Modal.Content>
         <div className="ProposalModal__Title">
-          <Header>{'We’d appreciate some extra feedback'}</Header>
+          <Header>{"We'd appreciate some extra feedback"}</Header>
           <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
         </div>
         <SentimentSurvey proposal={proposal} />
