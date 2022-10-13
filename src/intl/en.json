@@ -265,6 +265,19 @@
     "linked_wearables_title": "Linked Wearables Registry",
     "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
   },
+  "survey": {
+    "survey_topics": {
+      "budget": "Budget",
+      "beneficiary": "Beneficiary",
+      "specification": "Specification",
+      "personnel": "Personnel",
+      "roadmap": "Roadmap",
+      "value_proposition": "Value Proposition"
+    },
+    "reactions": {
+      "add_reaction": "Add reaction"
+    }
+  },
   "status": {
     "all": "All outcomes",
     "pending": "Pending outcomes",

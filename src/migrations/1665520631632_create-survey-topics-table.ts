@@ -16,7 +16,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true,
     },
-    title: {
+    label: {
       type: 'TEXT',
       notNull: true,
     },

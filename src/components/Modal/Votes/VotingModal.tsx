@@ -12,6 +12,8 @@ import { SelectedChoice } from '../../../pages/proposal'
 import SentimentSurvey from '../../Proposal/SentimentSurvey'
 import '../ProposalModal.css'
 
+import './VotingModal.css'
+
 export type Feedback = {
   topic_id: string
   reaction_id: string
@@ -41,8 +43,14 @@ export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVot
           <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
         </div>
         <SentimentSurvey proposal={proposal} />
-        <div className="ProposalModal__Actions">
-          <Button fluid primary onClick={() => onCastVote(selectedChoice.choiceIndex!, feedback)} loading={castingVote}>
+        <div className="VotingModal__Actions">
+          <Button
+            fluid
+            primary
+            onClick={() => onCastVote(selectedChoice.choiceIndex!, feedback)}
+            loading={castingVote}
+            className="VotingModal__CastVote"
+          >
             {'Cast Vote'}
           </Button>
         </div>

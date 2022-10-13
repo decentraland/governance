@@ -5,12 +5,12 @@ export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   const sql = `
-    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '1','Budget');
-    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '2','Beneficiary');
-    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '3','Specification');
-    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '4','Personnel');
-    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '5','Roadmap');
-    INSERT INTO survey_topics (id, topic_id, title) VALUES (gen_random_uuid(), '6','Value Proposition');
+    INSERT INTO survey_topics (id, topic_id, label) VALUES (gen_random_uuid(), '1','budget');
+    INSERT INTO survey_topics (id, topic_id, label) VALUES (gen_random_uuid(), '2','beneficiary');
+    INSERT INTO survey_topics (id, topic_id, label) VALUES (gen_random_uuid(), '3','specification');
+    INSERT INTO survey_topics (id, topic_id, label) VALUES (gen_random_uuid(), '4','personnel');
+    INSERT INTO survey_topics (id, topic_id, label) VALUES (gen_random_uuid(), '5','roadmap');
+    INSERT INTO survey_topics (id, topic_id, label) VALUES (gen_random_uuid(), '6','value_proposition');
   `
 
   pgm.sql(sql)

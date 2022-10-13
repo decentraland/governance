@@ -356,9 +356,9 @@ export class Governance extends API {
   }
 
   async getSurveyTopics(proposalId: string) {
-    const result = await this.fetch<ApiResponse<SurveyTopicAttributes[]>>(
-      `/surveyTopics/${proposalId}`,
-      this.options().method('GET').authorization({ sign: true })
+    const result = await this.fetch<ApiResponse<Pick<SurveyTopicAttributes, 'topic_id' | 'label'>[]>>(
+      `/proposals/${proposalId}/survey-topics`,
+      this.options().method('GET')
     )
 
     return result.data
