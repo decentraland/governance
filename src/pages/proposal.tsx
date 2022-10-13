@@ -258,7 +258,7 @@ export default function ProposalPage() {
                   proposal={proposal}
                   updates={publicUpdates}
                   isCoauthor={isCoauthor}
-                  onUpdateDelete={refetchUpdates}
+                  onUpdateDeleted={refetchUpdates}
                 />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />

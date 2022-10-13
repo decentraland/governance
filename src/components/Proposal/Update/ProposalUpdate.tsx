@@ -23,7 +23,7 @@ interface Props {
   expanded: boolean
   index?: number
   isCoauthor?: boolean
-  onUpdateDelete?: () => void
+  onUpdateDeleted?: () => void
 }
 
 export const getStatusIcon = (
@@ -45,7 +45,7 @@ export const getStatusIcon = (
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor, onUpdateDelete }: Props) => {
+const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor, onUpdateDeleted }: Props) => {
   const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
   const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
   const [account] = useAuthContext()
@@ -58,8 +58,8 @@ const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor, onUpdat
     try {
       setIsDeletingUpdate(true)
       await Governance.get().deleteProposalUpdate(update)
-      if (onUpdateDelete) {
-        onUpdateDelete()
+      if (onUpdateDeleted) {
+        onUpdateDeleted()
       }
     } catch (error) {
       console.log('Update delete failed', error)

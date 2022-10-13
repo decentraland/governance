@@ -16,10 +16,10 @@ interface Props {
   proposal: ProposalAttributes | null
   updates?: UpdateAttributes[] | null
   isCoauthor: boolean
-  onUpdateDelete: () => void
+  onUpdateDeleted: () => void
 }
 
-export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdateDelete }: Props) {
+export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdateDeleted }: Props) {
   const t = useFormatMessage()
 
   if (!updates || !proposal) {
@@ -52,7 +52,7 @@ export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdat
               update={item}
               expanded={index === 0}
               isCoauthor={isCoauthor}
-              onUpdateDelete={onUpdateDelete}
+              onUpdateDeleted={onUpdateDeleted}
             />
           ))}
       </div>
