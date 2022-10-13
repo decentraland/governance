@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -9,25 +9,30 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { SelectedChoice } from '../../../pages/proposal'
-import SentimentSurvey from '../../Proposal/SentimentSurvey'
+import SentimentSurvey, { Topic } from '../../Proposal/SentimentSurvey'
 import { ReactionType } from '../../Proposal/SentimentSurveyRow'
 import '../ProposalModal.css'
 
 import './VotingModal.css'
 
-export type Feedback = Record<string, ReactionType | null>
+export type TopicFeedback = {
+  topic: Topic
+  reaction: ReactionType
+}
+
+export type Survey = Record<string, TopicFeedback>
 
 interface VotingModalProps {
   open: boolean
   proposal: ProposalAttributes
   selectedChoice: SelectedChoice
-  onCastVote: (choiceIndex: number, feedback: Feedback) => void
+  onCastVote: (choiceIndex: number, survey: Survey) => void
   onClose: () => void
   castingVote: boolean
 }
 
 export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVote, castingVote }: VotingModalProps) {
-  const feedback = {}
+  const [survey, setSurvey] = useState<Survey>({})
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
@@ -40,12 +45,12 @@ export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVot
           <Header>{"We'd appreciate some extra feedback"}</Header>
           <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
         </div>
-        <SentimentSurvey proposal={proposal} />
+        <SentimentSurvey proposal={proposal} setSurvey={setSurvey} />
         <div className="VotingModal__Actions">
           <Button
             fluid
             primary
-            onClick={() => onCastVote(selectedChoice.choiceIndex!, feedback)}
+            onClick={() => onCastVote(selectedChoice.choiceIndex!, survey)}
             loading={castingVote}
             className="VotingModal__CastVote"
           >
