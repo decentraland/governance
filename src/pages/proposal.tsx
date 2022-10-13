@@ -93,7 +93,7 @@ export default function ProposalPage() {
     { callWithTruthyDeps: true }
   )
 
-  const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate } = useProposalUpdates(proposal?.id)
+  const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
 
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
@@ -254,7 +254,12 @@ export default function ProposalPage() {
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
-                <ProposalUpdates proposal={proposal} updates={publicUpdates} isCoauthor={isCoauthor} />
+                <ProposalUpdates
+                  proposal={proposal}
+                  updates={publicUpdates}
+                  isCoauthor={isCoauthor}
+                  onUpdateDelete={refetchUpdates}
+                />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>

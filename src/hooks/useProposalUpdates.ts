@@ -13,5 +13,6 @@ export default function useProposalUpdates(proposalId?: string | null) {
     nextUpdate: updates?.nextUpdate,
     currentUpdate: updates?.currentUpdate,
     state,
+    refetchUpdates: state.reload,
   }
 }
