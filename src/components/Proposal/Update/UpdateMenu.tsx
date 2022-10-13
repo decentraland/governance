@@ -12,7 +12,7 @@ interface Props {
 
 const UpdateMenu = ({ onDeleteClick }: Props) => {
   return (
-    <Dropdown className="UpdateMenu" icon={<DotsMenu />}>
+    <Dropdown className="UpdateMenu" icon={<DotsMenu />} direction="left">
       <Dropdown.Menu>
         <Dropdown.Item text="Delete" onClick={onDeleteClick} />
       </Dropdown.Menu>
