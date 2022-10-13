@@ -212,3 +212,7 @@ export function isProposalInCliffPeriod(grant: GrantAttributes) {
 export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
+
+export function getProposalCategory(proposal: ProposalAttributes<any>): string | null {
+  return proposal.type === ProposalType.Grant ? proposal.configuration.category : null
+}

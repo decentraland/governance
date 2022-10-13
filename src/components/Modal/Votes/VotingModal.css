@@ -1,0 +1,9 @@
+.VotingModal__Actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.VotingModal__CastVote {
+  max-width: 193px;
+}

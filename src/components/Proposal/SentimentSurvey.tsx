@@ -6,24 +6,31 @@ import { Loader } from 'decentraland-ui'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import useSurveyTopics from '../../hooks/useSurveyTopics'
 
+import './SentimentSurvey.css'
+import SentimentSurveyRow from './SentimentSurveyRow'
+
 interface Props {
   proposal: ProposalAttributes
 }
 
-// export type Reaction = {
-//   id: string
-//   name: string
-//   icon: string
-//   label_id: string
-// }
-
 const SentimentSurvey = ({ proposal }: Props) => {
+  const t = useFormatMessage()
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal.id)
 
   return (
-    <div>
-      <Loader active={isLoadingSurveyTopics} />
-      {!isLoadingSurveyTopics && surveyTopics}
+    <div className="SentimentSurvey">
+      {isLoadingSurveyTopics && <Loader active={isLoadingSurveyTopics} />}
+      {!isLoadingSurveyTopics && (
+        <>
+          <div className="SentimentSurvey__Header">
+            <span>{'Topics'}</span>
+            <span>{'Reaction'}</span>
+          </div>
+          {surveyTopics?.map((topic, index) => (
+            <SentimentSurveyRow key={`SentimentSurveyRow_${index}`} topic={topic} />
+          ))}
+        </>
+      )}
     </div>
   )
 }
