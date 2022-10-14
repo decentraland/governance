@@ -182,7 +182,24 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
-  await UpdateModel.delete<UpdateAttributes>({ id })
+  if (!update.due_date) {
+    await UpdateModel.delete<UpdateAttributes>({ id })
+  } else {
+    await UpdateModel.update<UpdateAttributes>(
+      {
+        status: UpdateStatus.Pending,
+        author: undefined,
+        health: undefined,
+        introduction: undefined,
+        highlights: undefined,
+        blockers: undefined,
+        next_steps: undefined,
+        additional_notes: undefined,
+        completion_date: undefined,
+      },
+      { id: update.id }
+    )
+  }
 
   return true
 }
