@@ -1,10 +1,10 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
+import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
 import { DISCOURSE_API } from '../Discourse/utils'
@@ -73,18 +73,7 @@ export function isValidDomainName(domain: string) {
 }
 
 export async function isValidImage(imageUrl: string) {
-  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
-  return new Promise<boolean>((resolve) => {
-    fetch(imageUrl)
-      .then((response) => {
-        const mime = response.headers.get('content-type')
-        resolve(!!mime && allowedImageTypes.has(mime))
-      })
-      .catch((error) => {
-        logger.error('Fetching image error', error)
-        resolve(false)
-      })
-  })
+  return await Governance.get().checkImage(imageUrl)
 }
 
 export async function isAlreadyBannedName(name: string) {
