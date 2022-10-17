@@ -94,6 +94,7 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
+  route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
 export async function getProposals(req: WithAuth<Request>) {
@@ -640,4 +641,21 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
     past,
     total: current.length + past.length,
   }
+}
+
+async function checkImage(req: Request) {
+  const imageUrl = req.query.url as string
+  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
+
+  return new Promise<boolean>((resolve) => {
+    fetch(imageUrl)
+      .then((response) => {
+        const mime = response.headers.get('content-type')
+        resolve(!!mime && allowedImageTypes.has(mime))
+      })
+      .catch((error) => {
+        logger.error('Fetching image error', error)
+        resolve(false)
+      })
+  })
 }

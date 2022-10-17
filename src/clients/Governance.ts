@@ -336,4 +336,13 @@ export class Governance extends API {
 
     return newStatus.data
   }
+
+  async checkImage(imageUrl: string) {
+    const response = await this.fetch<ApiResponse<boolean>>(
+      `/proposals/linked-wearables/image?url=${imageUrl}`,
+      this.options().method('GET')
+    )
+
+    return response.data
+  }
 }
