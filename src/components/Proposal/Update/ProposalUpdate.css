@@ -158,3 +158,7 @@
   fill: var(--black-600);
   opacity: 0.8;
 }
+
+.ProposalUpdate__Menu {
+  padding: 0 5px 0 10px;
+}

@@ -248,6 +248,14 @@ export class Governance extends API {
     return result.data
   }
 
+  async deleteProposalUpdate(update: { id: string; proposal_id: string }) {
+    const result = await this.fetch<ApiResponse<UpdateAttributes>>(
+      `/proposals/${update.proposal_id}/update`,
+      this.options().method('DELETE').authorization({ sign: true }).json(update)
+    )
+    return result.data
+  }
+
   async getProposalVotes(proposal_id: string) {
     const result = await this.fetch<ApiResponse<Record<string, Vote>>>(`/proposals/${proposal_id}/votes`)
     return result.data

@@ -12,13 +12,16 @@ import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
+import UpdateMenu from './UpdateMenu'
 
 interface Props {
   update: UpdateAttributes
   index?: number
+  onDeleteUpdateClick: () => void
+  showMenu?: boolean
 }
 
-const ExpandedProposalUpdate = ({ update, index }: Props) => {
+const ExpandedProposalUpdate = ({ update, index, onDeleteUpdateClick, showMenu }: Props) => {
   const t = useFormatMessage()
   const { introduction, status, health, completion_date } = update
   const UpdateIcon = getStatusIcon(health, completion_date)
@@ -55,6 +58,11 @@ const ExpandedProposalUpdate = ({ update, index }: Props) => {
           <span className="ProposalUpdate__DateText">
             <DateTooltip date={completion_date}>{formatDate(completion_date)}</DateTooltip>
           </span>
+          {showMenu && (
+            <div className="ProposalUpdate__Menu">
+              <UpdateMenu onDeleteClick={onDeleteUpdateClick} />
+            </div>
+          )}
           {status === UpdateStatus.Late && (
             <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
           )}

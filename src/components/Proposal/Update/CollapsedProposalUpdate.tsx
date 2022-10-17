@@ -16,15 +16,17 @@ import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
+import UpdateMenu from './UpdateMenu'
 
 interface Props {
   proposal: ProposalAttributes | GrantAttributes
   update: UpdateAttributes
   index?: number
   isCoauthor?: boolean
+  onDeleteUpdateClick: () => void
 }
 
-const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor }: Props) => {
+const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onDeleteUpdateClick }: Props) => {
   const t = useFormatMessage()
   const [account] = useAuthContext()
 
@@ -85,6 +87,11 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor }: Props)
           </span>
           {status === UpdateStatus.Late && (
             <span className="ProposalUpdate__Late">{t('page.proposal_detail.grant.update_late')}</span>
+          )}
+          {isAllowedToPostUpdate && (
+            <div className="ProposalUpdate__Menu">
+              <UpdateMenu onDeleteClick={onDeleteUpdateClick} />
+            </div>
           )}
           <div>
             <Icon name="chevron right" />

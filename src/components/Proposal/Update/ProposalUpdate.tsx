@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+
+import { Governance } from '../../../clients/Governance'
 import { GrantAttributes, ProposalAttributes } from '../../../entities/Proposal/types'
+import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
 import CancelIcon from '../../Icon/Cancel'
 import CheckCircleIcon from '../../Icon/CheckCircle'
 import QuestionCircleIcon from '../../Icon/QuestionCircle'
 import WarningIcon from '../../Icon/Warning'
+import { DeleteUpdateModal } from '../../Modal/DeleteUpdateModal/DeleteUpdateModal'
 
 import CollapsedProposalUpdate from './CollapsedProposalUpdate'
 import EmptyProposalUpdate from './EmptyProposalUpdate'
@@ -18,6 +23,7 @@ interface Props {
   expanded: boolean
   index?: number
   isCoauthor?: boolean
+  onUpdateDeleted?: () => void
 }
 
 export const getStatusIcon = (
@@ -39,16 +45,54 @@ export const getStatusIcon = (
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor }: Props) => {
+const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor, onUpdateDeleted }: Props) => {
+  const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
+  const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
+  const [account] = useAuthContext()
+
   if (!update) {
     return <EmptyProposalUpdate />
   }
 
-  if (expanded && update.completion_date) {
-    return <ExpandedProposalUpdate update={update} index={index} />
+  const handleDeleteUpdateClick = async () => {
+    try {
+      setIsDeletingUpdate(true)
+      await Governance.get().deleteProposalUpdate(update)
+      if (onUpdateDeleted) {
+        onUpdateDeleted()
+      }
+    } catch (error) {
+      console.log('Update delete failed', error)
+      setIsDeletingUpdate(false)
+    }
   }
 
-  return <CollapsedProposalUpdate proposal={proposal} update={update} index={index} isCoauthor={isCoauthor} />
+  return (
+    <>
+      {expanded && update?.completion_date ? (
+        <ExpandedProposalUpdate
+          update={update}
+          index={index}
+          showMenu={isSameAddress(proposal?.user, account) || isCoauthor}
+          onDeleteUpdateClick={() => setIsDeleteUpdateModalOpen(true)}
+        />
+      ) : (
+        <CollapsedProposalUpdate
+          onDeleteUpdateClick={() => setIsDeleteUpdateModalOpen(true)}
+          proposal={proposal}
+          update={update}
+          index={index}
+          isCoauthor={isCoauthor}
+        />
+      )}
+      <DeleteUpdateModal
+        loading={isDeletingUpdate}
+        open={isDeleteUpdateModalOpen}
+        onClickAccept={handleDeleteUpdateClick}
+        onClose={() => setIsDeleteUpdateModalOpen(false)}
+      />
+    </>
+  )
 }
 
 export default ProposalUpdate
