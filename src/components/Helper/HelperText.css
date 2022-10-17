@@ -17,3 +17,7 @@
 .HelperText__Content > p.dg.Paragraph > a.dg.Link.Link--pointer {
   color: var(--blue-600);
 }
+
+.ui.bottom.center.popup.transition.visible.Helper__Container--Popup {
+  z-index: 3000;
+}

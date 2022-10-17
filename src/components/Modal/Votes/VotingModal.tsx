@@ -20,7 +20,7 @@ export type TopicFeedback = {
   reaction: ReactionType
 }
 
-export type Survey = Record<string, TopicFeedback>
+export type Survey = TopicFeedback[]
 
 interface VotingModalProps {
   open: boolean
@@ -32,7 +32,7 @@ interface VotingModalProps {
 }
 
 export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVote, castingVote }: VotingModalProps) {
-  const [survey, setSurvey] = useState<Survey>({})
+  const [survey, setSurvey] = useState<Survey>([])
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
