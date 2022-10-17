@@ -4,7 +4,7 @@ import manager from 'decentraland-gatsby/dist/entities/Job/index'
 import { jobInitializer } from 'decentraland-gatsby/dist/entities/Job/utils'
 import metrics from 'decentraland-gatsby/dist/entities/Prometheus/routes'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
-import handle from 'decentraland-gatsby/dist/entities/Route/handle'
+import handle, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
 import { withBody, withCors, withDDosProtection, withLogs } from 'decentraland-gatsby/dist/entities/Route/middleware'
 import { filesystem, status } from 'decentraland-gatsby/dist/entities/Route/routes'
 import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/handler'
@@ -58,6 +58,17 @@ app.get(
 
 app.use(sitemap)
 app.use('/', social)
+
+// Balance to profile redirect to preserve previous URL
+app.get(
+  '/balance',
+  handleRaw(async (req, res) => {
+    const address = req.query.address
+    const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
+    const addressParam = address ? `?address=${address}` : ''
+    return res.redirect(`${websiteUrl}/profile/${addressParam}`)
+  })
+)
 
 if (process.env.HEROKU === 'true') {
   app.use(express.static('public'))
