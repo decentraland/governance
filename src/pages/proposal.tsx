@@ -109,15 +109,19 @@ export default function ProposalPage() {
   )
   const [castingVote, castVote] = useAsyncTask(
     async (choiceIndex: number, survey: Survey) => {
-      console.log('choiceIndex', choiceIndex)
-      console.log('survey', survey)
-      // if (proposal && account && provider && votes) {
-      //   const web3Provider = new Web3Provider(provider)
-      //   const [listedAccount] = await web3Provider.listAccounts()
-      //   await SnapshotApi.get().castVote(web3Provider, listedAccount, proposal.snapshot_id, choiceIndex)
-      //   patchOptions({ changing: false, confirmSubscription: !votes[account] })
-      //   votesState.reload()
-      // }
+      if (proposal && account && provider && votes) {
+        const web3Provider = new Web3Provider(provider)
+        const [listedAccount] = await web3Provider.listAccounts()
+        await SnapshotApi.get().castVote(
+          web3Provider,
+          listedAccount,
+          proposal.snapshot_id,
+          choiceIndex,
+          JSON.stringify(survey)
+        )
+        patchOptions({ changing: false, confirmSubscription: !votes[account] })
+        votesState.reload()
+      }
     },
     [proposal, account, provider, votes]
   )

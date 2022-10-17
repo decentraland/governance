@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui'
@@ -6,7 +6,7 @@ import { Loader } from 'decentraland-ui'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { SurveyTopicAttributes } from '../../entities/SurveyTopic/types'
 import useSurveyTopics from '../../hooks/useSurveyTopics'
-import { Survey } from '../Modal/Votes/VotingModal'
+import { Survey, TopicFeedback } from '../Modal/Votes/VotingModal'
 
 import './SentimentSurvey.css'
 import SentimentSurveyRow, { ReactionType } from './SentimentSurveyRow'
@@ -22,17 +22,27 @@ const SentimentSurvey = ({ proposal, setSurvey }: Props) => {
   const t = useFormatMessage()
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal.id)
 
+  useEffect(() => {
+    const newSurvey: TopicFeedback[] = []
+    surveyTopics?.forEach((topic) => {
+      newSurvey.push({ topic, reaction: ReactionType.EMPTY })
+    })
+    setSurvey(newSurvey)
+  }, [surveyTopics, setSurvey])
+
   const addToSurvey = (topic: Topic, reaction: ReactionType) => {
     setSurvey((prev) => {
-      prev[topic.topic_id] = { topic, reaction }
-      return prev
+      const newSurvey = prev.filter((feedback) => feedback.topic.topic_id !== topic.topic_id)
+      newSurvey.push({ topic, reaction })
+      return newSurvey
     })
   }
 
   const removeFromSurvey = (topic: Topic) => {
     setSurvey((prev) => {
-      prev[topic.topic_id] = { topic, reaction: ReactionType.EMPTY }
-      return prev
+      const newSurvey = prev.filter((feedback) => feedback.topic.topic_id !== topic.topic_id)
+      newSurvey.push({ topic, reaction: ReactionType.EMPTY })
+      return newSurvey
     })
   }
 

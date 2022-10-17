@@ -2,7 +2,10 @@ import React, { useCallback, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
+import Helper from '../Helper/Helper'
+import IconHelper from '../Helper/IconHelper'
 import AddReaction from '../Icon/AddReaction'
 import AngryEmoji from '../Icon/AngryEmoji'
 import GreyX from '../Icon/GreyX'
@@ -75,7 +78,7 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
           {reactionViews.map((reactionView, index) => {
             return (
               <div key={`Reaction__${index}`} onClick={() => pickReaction(reactionView.reaction)}>
-                {reactionView.icon}
+                <IconHelper text={reactionView.label} icon={reactionView.icon} position={'bottom center'} />
               </div>
             )
           })}

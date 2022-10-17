@@ -139,13 +139,15 @@ export class SnapshotApi {
     account: Web3Provider | Wallet,
     address: string,
     proposalSnapshotId: string,
-    choiceNumber: number
+    choiceNumber: number,
+    comment: string
   ): Promise<SnapshotReceipt> {
     const voteMessage = {
       space: SnapshotApi.getSpaceName(),
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
+      reason: comment,
       app: SNAPSHOT_APP_NAME,
     }
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
