@@ -175,8 +175,7 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const user = req.auth
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
-  const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await isCoauthor(proposalId, user))) && update.author === user
+  const isAuthorOrCoauthor = user && (proposal?.user === user || (await isCoauthor(proposalId, user)))
 
   if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
