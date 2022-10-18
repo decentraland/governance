@@ -1,0 +1,101 @@
+.ProfileProposalItem {
+  width: 100% !important;
+  position: relative;
+}
+
+.ProfileProposalItem .ProfileProposalItem__Title {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 0;
+  padding-right: 40px;
+}
+
+.ProfileProposalItem .ProfileProposalItem__Title .ui.header {
+  flex: 1;
+  padding-right: 15px;
+}
+
+.ProfileProposalItem:visited .ProfileProposalItem__Title .ui.header {
+  color: var(--black-600);
+}
+
+.ProfileProposalItem .ProfileProposalItem__Status {
+  padding-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 425px) {
+  .ProfileProposalItem .ProfileProposalItem__Status {
+    flex-direction: row;
+  }
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    padding-right: 0;
+  }
+  .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
+    font-size: 17px;
+  }
+  /* .ActionableLayout .ActionableLayout__Content .ui.card > .content {
+    padding: 12px;
+  }
+  .dg.Paragraph.Paragraph--small {
+    font-size: 14px;
+  } */
+}
+
+.ProfileProposalItem .ProfileProposalItem__Title .ui.header:first-child {
+  margin-bottom: 0;
+}
+
+/* .ProfileProposalItem .ProfileProposalItem__Title .ui.button {
+  position: absolute;
+  padding: 16px 20px;
+  top: 0;
+  right: 0;
+  display: none;
+} */
+
+/* .ProfileProposalItem .ProfileProposalItem__Title .ui.loading.loading.loading.loading.button {
+  position: absolute;
+}
+
+.ProfileProposalItem:hover .ProfileProposalItem__Title .ui.button,
+.ProfileProposalItem.ProfileProposalItem--subscribed .ProfileProposalItem__Title .ui.button {
+  display: block;
+} */
+
+/* .ui.card.ProfileProposalItem.ProfileProposalItem.ProfileProposalItem--coauthor,
+.ui.card.ProfileProposalItem.ProfileProposalItem.ProfileProposalItem--coauthor:hover {
+  border: 1px solid var(--yellow-800) !important;
+  box-shadow: 0 2px 4px var(--yellow-100);
+} */
+
+.ProfileProposalItem__Details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ProfileProposalItem__Stats {
+  display: flex;
+  align-items: center;
+}
+
+.ProfileProposalItem__Stats span:after {
+  content: '·';
+  padding: 0 5px;
+}
+
+.ProfileProposalItem__Stats span:last-child:after {
+  content: '';
+  padding: 0;
+}
+
+/* .ProfileProposalItem__Votes {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 26px;
+  text-transform: uppercase;
+  color: var(--black-600);
+} */

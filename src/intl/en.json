@@ -800,6 +800,11 @@
         "delegated": "Delegated {vp} VP",
         "delegate_action": "Delegate them your VP",
         "button": "Show all delegators"
+      },
+      "voted_proposals": {
+        "title": "Proposals voted on",
+        "helper": "...",
+        "button": "View more proposals"
       }
     },
     "transparency": {
