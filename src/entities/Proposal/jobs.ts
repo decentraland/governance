@@ -9,9 +9,9 @@ import { commentProposalUpdateInDiscourse } from './routes'
 import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 const enum ProposalOutcome {
-  REJECTED,
-  ACCEPTED,
-  FINISHED,
+  REJECTED = 'REJECTED',
+  ACCEPTED = 'ACCEPTED',
+  FINISHED = 'FINISHED',
 }
 
 export async function activateProposals(context: JobContext) {
