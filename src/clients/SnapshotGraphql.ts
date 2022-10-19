@@ -72,10 +72,7 @@ export class SnapshotGraphql extends API {
     return result?.data?.space || null
   }
 
-  async getProposalVotes(space: string, proposal: string) {
-    let hasNext = true
-    let skip = 0
-    const first = 500
+  fetchProposalVotes = async (params: { proposal: string }, skip: number, batchSize: number) => {
     const query = `
       query ProposalVotes($space: String!, $proposal: String!, $first: Int!, $skip: Int!) {
         votes (
@@ -85,28 +82,27 @@ export class SnapshotGraphql extends API {
           voter
           created
           choice
+          vp_by_strategy
         }
       }
     `
 
-    let votes: SnapshotVote[] = []
-    while (hasNext) {
-      const result = await this.fetch<SnapshotVoteResponse>(
-        GRAPHQL_ENDPOINT,
-        this.options().method('POST').json({ query, variables: { space, proposal, skip, first } })
-      )
+    const result = await this.fetch<SnapshotVoteResponse>(
+      GRAPHQL_ENDPOINT,
+      this.options()
+        .method('POST')
+        .json({
+          query,
+          variables: { space: SNAPSHOT_SPACE, proposal: params.proposal, skip, first: batchSize },
+        })
+    )
 
-      const currentVotes = result?.data?.votes || []
-      votes = [...votes, ...currentVotes]
+    return result?.data?.votes
+  }
 
-      if (currentVotes.length < first) {
-        hasNext = false
-      } else {
-        skip = votes.length
-      }
-    }
-
-    return votes
+  async getProposalVotes(proposal: string) {
+    const batchSize = 5000
+    return await inBatches(this.fetchProposalVotes, { proposal }, batchSize)
   }
 
   async getProposalScores(proposalId: string) {
@@ -134,7 +130,7 @@ export class SnapshotGraphql extends API {
 
   fetchAddressesVotes = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
     const query = `
-      query ProposalVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
+      query AddressesVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
         votes (
           where: { space: $space, voter_in: $addresses}
           first: $first, skip: $skip
