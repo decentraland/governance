@@ -1,13 +1,18 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import UpdateModel from '../Updates/model'
-import { getSnapshotProposalVotes, updateSnapshotProposalVotes } from '../Votes/routes'
-import { Vote } from '../Votes/types'
 import { Scores } from '../Votes/utils'
 
 import ProposalModel from './model'
 import { commentProposalUpdateInDiscourse } from './routes'
 import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus, ProposalType } from './types'
+
+const enum ProposalOutcome {
+  REJECTED = 'REJECTED',
+  ACCEPTED = 'ACCEPTED',
+  FINISHED = 'FINISHED',
+}
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -24,8 +29,62 @@ function sameOptions(options: string[], expected: string[]) {
   return options.every((option, i) => option === expected[i])
 }
 
+function calculateWinnerChoice(result: Scores) {
+  const winnerChoice = Object.keys(result).reduce((winner, choice) => {
+    if (!winner || result[winner] < result[choice]) {
+      return choice
+    }
+    return winner
+  })
+  const winnerVotingPower = result[winnerChoice]
+  return { winnerChoice, winnerVotingPower }
+}
+
+async function getVotingResults(proposal: ProposalAttributes<any>, choices: string[]) {
+  const snapshotScores = await SnapshotGraphql.get().getProposalScores(proposal.snapshot_id)
+  const result: Scores = {}
+  for (const choice of choices) {
+    result[choice] = snapshotScores[choices.indexOf(choice)]
+  }
+  return result
+}
+
+async function calculateOutcome(proposal: ProposalAttributes, context: JobContext<{}>) {
+  try {
+    const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
+    const results = await getVotingResults(proposal, choices)
+    const { winnerChoice, winnerVotingPower } = calculateWinnerChoice(results)
+
+    const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
+    const isYesNo = sameOptions(choices, ['yes', 'no'])
+    const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
+    const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
+
+    const minimumVotingPowerRequired = proposal.required_to_pass || 0
+    if (winnerVotingPower === 0 || winnerVotingPower < minimumVotingPowerRequired) {
+      return ProposalOutcome.REJECTED
+    } else if (winnerChoice === invalidOption) {
+      return ProposalOutcome.REJECTED
+    } else if (isYesNo || isAcceptReject || isForAgainst) {
+      if (
+        (isYesNo && results['yes'] > results['no']) ||
+        (isAcceptReject && results['accept'] > results['reject']) ||
+        (isForAgainst && results['for'] > results['against'])
+      ) {
+        return ProposalOutcome.ACCEPTED
+      } else {
+        return ProposalOutcome.REJECTED
+      }
+    } else {
+      return ProposalOutcome.FINISHED
+    }
+  } catch (e) {
+    context.error(`Unable to calculate outcome for ${proposal.snapshot_id}`, e as Error)
+  }
+}
+
 export async function finishProposal(context: JobContext) {
-  const pendingProposals = await ProposalModel.getFinishedProposal()
+  const pendingProposals = await ProposalModel.getFinishedProposals()
   if (pendingProposals.length === 0) {
     context.log(`No finished proposals...`)
     return
@@ -37,66 +96,16 @@ export async function finishProposal(context: JobContext) {
   const rejectedProposals: ProposalAttributes[] = []
 
   for (const proposal of pendingProposals) {
-    const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
-    const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
-    const isYesNo = sameOptions(choices, ['yes', 'no'])
-    const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
-    const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
-    const snapshotVotes = await getSnapshotProposalVotes(proposal)
-    const votes: Record<string, Vote> = await updateSnapshotProposalVotes(proposal, snapshotVotes)
-    const voters = Object.keys(votes)
-
-    const result: Scores = {}
-    for (const choice of choices) {
-      result[choice] = 0
-    }
-
-    for (const voter of voters) {
-      const vote = votes[voter]
-      const choice = vote.choice - 1
-      result[choices[choice]] = result[choices[choice]] + vote.vp
-    }
-
-    const winnerChoice = Object.keys(result).reduce((winner, choice) => {
-      if (!winner || result[winner] < result[choice]) {
-        return choice
-      }
-
-      return winner
-    })
-
-    const winnerVotingPower = Object.keys(result).reduce((winner, choice) => {
-      if (!winner || winner < result[choice]) {
-        return result[choice]
-      }
-
-      return winner
-    }, 0)
-
-    // reject empty proposals or proposals without the minimum vp required
-    const minimumVotingPowerRequired = proposal.required_to_pass || 0
-    if (winnerVotingPower === 0 || winnerVotingPower < minimumVotingPowerRequired) {
-      rejectedProposals.push(proposal)
-
-      // reject if the invalid option won
-    } else if (winnerChoice === invalidOption) {
-      rejectedProposals.push(proposal)
-
-      // reject/pass boolean proposals
-    } else if (isYesNo || isAcceptReject || isForAgainst) {
-      if (
-        (isYesNo && result['yes'] > result['no']) ||
-        (isAcceptReject && result['accept'] > result['reject']) ||
-        (isForAgainst && result['for'] > result['against'])
-      ) {
-        acceptedProposals.push(proposal)
-      } else {
+    const outcome = await calculateOutcome(proposal, context)
+    switch (outcome) {
+      case ProposalOutcome.REJECTED:
         rejectedProposals.push(proposal)
-      }
-
-      // Finish otherwise
-    } else {
-      finishedProposals.push(proposal)
+        break
+      case ProposalOutcome.ACCEPTED:
+        acceptedProposals.push(proposal)
+        break
+      case ProposalOutcome.FINISHED:
+        finishedProposals.push(proposal)
     }
   }
 
