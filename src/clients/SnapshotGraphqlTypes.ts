@@ -21,7 +21,7 @@ export type SnapshotSpace = {
 }
 export type SnapshotVoteResponse = SnapshotQueryResponse<{ votes: SnapshotVote[] }>
 export type SnapshotVote = {
-  id?: string
+  id: string
   voter: string
   created: number
   vp?: number

@@ -9,7 +9,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import { Vote } from '../../entities/Votes/types'
+import { Vote, VotedProposal } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
 import CategoryPill from '../Category/CategoryPill'
@@ -19,13 +19,17 @@ import LeadingOption from '../Status/LeadingOption'
 import StatusPill from '../Status/StatusPill'
 import Username from '../User/Username'
 
+import './ProfileProposalItem.css'
+
 interface Props {
-  proposal: ProposalAttributes
+  votedProposal: VotedProposal
 }
 
-function ProfileProposalItem({ proposal }: Props) {
+function ProfileProposalItem({ votedProposal }: Props) {
+  const { proposal } = votedProposal
+  console.log('proposal', proposal)
   return (
-    <Card as={Link} href={locations.proposal(proposal.id)} className="ProfileProposalItem">
+    <Card as={Link} href={locations.proposal(proposal.proposal_id)} className="ProfileProposalItem">
       <Card.Content>
         <div className="ProfileProposalItem__Title">
           <Header>{proposal.title}</Header>
@@ -34,7 +38,7 @@ function ProfileProposalItem({ proposal }: Props) {
           <div className="ProfileProposalItem__Details">
             <StatusPill status={proposal.status} />
             <CategoryPill type={proposal.type} />
-            <Username address={proposal.user} variant="avatar" />
+            <Username address={proposal.author} variant="avatar" />
             <div className="ProfileProposalItem__Stats">
               {/* {votes && (
                 <Desktop>
@@ -43,7 +47,7 @@ function ProfileProposalItem({ proposal }: Props) {
                   </span>
                 </Desktop>
               )} */}
-              <FinishLabel date={proposal.finish_at} />
+              {/* <FinishLabel date={proposal.finish_at} /> */}
             </div>
           </div>
           {/* {winner.votes > 0 && (

@@ -89,7 +89,7 @@ export default function ProfilePage() {
             isLoadingScores={isLoadingScores}
             vpDistribution={vpDistribution}
           />
-          <VotedProposalsBox />
+          <VotedProposalsBox address={address} />
         </div>
       </BurgerMenuPushableLayout>
     </>
