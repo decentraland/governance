@@ -60,15 +60,11 @@ async function calculateOutcome(proposal: ProposalAttributes, context: JobContex
     const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
     const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
 
-    // reject empty proposal or proposal without the minimum vp required
     const minimumVotingPowerRequired = proposal.required_to_pass || 0
     if (winnerVotingPower === 0 || winnerVotingPower < minimumVotingPowerRequired) {
       return ProposalOutcome.REJECTED
-
-      // reject if the invalid option won
     } else if (winnerChoice === invalidOption) {
       return ProposalOutcome.REJECTED
-      // reject/pass boolean proposal
     } else if (isYesNo || isAcceptReject || isForAgainst) {
       if (
         (isYesNo && results['yes'] > results['no']) ||
@@ -79,7 +75,6 @@ async function calculateOutcome(proposal: ProposalAttributes, context: JobContex
       } else {
         return ProposalOutcome.REJECTED
       }
-      // Finish otherwise
     } else {
       return ProposalOutcome.FINISHED
     }
