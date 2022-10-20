@@ -46,9 +46,13 @@ export class ProposalService {
       proposalLifespan
     )
 
-    const discourseProposal = process.env.HEROKU
-      ? ({ id: '1564', topic_id: '803', topic_slug: 'dao-57eaead-testgrant' } as unknown as DiscoursePost)
-      : await DiscourseService.createProposal(proposalInCreation, proposalId, profile, snapshotUrl, snapshotId)
+    const discourseProposal = await DiscourseService.createProposal(
+      proposalInCreation,
+      proposalId,
+      profile,
+      snapshotUrl,
+      snapshotId
+    )
 
     const title = templates.title({ type: proposalInCreation.type, configuration: proposalInCreation.configuration })
     const description = await templates.description({
