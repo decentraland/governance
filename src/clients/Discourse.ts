@@ -285,6 +285,7 @@ export class Discourse extends API {
   }
 
   static get() {
+    console.log('DISCOURSE_API get()', this.Url)
     return this.from(this.Url)
   }
 

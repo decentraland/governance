@@ -22,7 +22,9 @@ export class DiscourseService {
   ) {
     try {
       const discoursePost = await this.getDiscoursePost(data, profile, proposalId, snapshotUrl, snapshotId)
+      console.log('DISCOURSE_POST', discoursePost)
       const discourseProposal = await Discourse.get().createPost(discoursePost)
+      console.log('DISCOURSE_PROPOSAL', discourseProposal)
       this.logProposalCreation(discourseProposal)
       return discourseProposal
     } catch (error: any) {
