@@ -32,7 +32,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 
   let snapshotVotes: SnapshotVote[]
   try {
-    snapshotVotes = await getSnapshotProposalVotes(proposal)
+    snapshotVotes = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
   } catch (err) {
     return latestVotes?.votes || {}
   }
@@ -43,10 +43,6 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
   }
 
   return updateSnapshotProposalVotes(proposal, snapshotVotes)
-}
-
-export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
-  return SnapshotGraphql.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
 }
 
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {

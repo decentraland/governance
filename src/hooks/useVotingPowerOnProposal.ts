@@ -1,26 +1,12 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { DetailedScores } from '../clients/SnapshotGraphqlTypes'
+import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
 import { Vote } from '../entities/Votes/types'
-import { getProposalScores } from '../entities/Votes/utils'
 
-function getDelegatedVotingPowerOnProposal(
-  scoresAtProposalCreation: DetailedScores,
-  delegators: string[] | null,
-  votes?: Record<string, Vote> | null
-) {
-  let delegatedVotingPower = 0
-  if (scoresAtProposalCreation && !!delegators) {
-    for (const delegator of delegators) {
-      if (votes && !votes[delegator]) {
-        delegatedVotingPower += scoresAtProposalCreation[delegator].ownVp || 0
-      }
-    }
-  }
-  return delegatedVotingPower
-}
+import useVotingPowerDistribution from './useVotingPowerDistribution'
 
 interface CurrentVPOnProposal {
   addressVp: number
@@ -39,16 +25,15 @@ export default function useVotingPowerOnProposal(
   votes?: Record<string, Vote> | null,
   proposal?: ProposalAttributes | null
 ) {
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address, proposal?.snapshot_id)
   const [vpOnProposal, vpOnProposalState] = useAsyncMemo(
     async () => {
-      if (!address || !proposal || isLoadingDelegators) {
+      if (!address || !proposal || isLoadingDelegators || isLoadingVpDistribution || !vpDistribution) {
         return initialVotingPowerOnProposal
       }
-      const addresses = delegators ? [address, ...delegators] : [address]
-      const scoresAtProposalCreation: DetailedScores = await getProposalScores(proposal, addresses)
-
-      const delegatedVp = getDelegatedVotingPowerOnProposal(scoresAtProposalCreation, delegators, votes)
-      const addressVp = scoresAtProposalCreation[address].ownVp || 0
+      const votes: SnapshotVote[] = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
+      const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
+      const addressVp = vpDistribution.own || 0
       return { addressVp, delegatedVp }
     },
     [votes, address, proposal, delegators, isLoadingDelegators],
@@ -57,4 +42,38 @@ export default function useVotingPowerOnProposal(
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !vpOnProposalState.loading
   return { totalVpOnProposal, ...vpOnProposal, hasEnoughToVote, vpOnProposalState }
+}
+
+function getVoteDelegatableVp(vote: SnapshotVote) {
+  if (!vote.vp_by_strategy) {
+    throw new Error(`Missing vp by strategy info on vote ${vote}`)
+  } else {
+    return (
+      vote.vp_by_strategy[StrategyOrder.Land] +
+      vote.vp_by_strategy[StrategyOrder.Estate] +
+      vote.vp_by_strategy[StrategyOrder.Mana] +
+      vote.vp_by_strategy[StrategyOrder.Names] +
+      vote.vp_by_strategy[StrategyOrder.L1Wearables] +
+      vote.vp_by_strategy[StrategyOrder.WrappedMana]
+    )
+  }
+}
+
+function getDelegatedVotingPowerOnProposal(
+  vpDistribution: VpDistribution,
+  delegators: string[] | null,
+  votes: SnapshotVote[]
+) {
+  let delegatedVotingPower = 0
+  if (votes && !!delegators && vpDistribution) {
+    delegatedVotingPower = vpDistribution.delegated
+    for (const vote of votes) {
+      if (delegators.find((delegator) => delegator === vote.voter)) {
+        //TODO CHECKsum addresses?
+        const voterDelegatedVp = getVoteDelegatableVp(vote)
+        delegatedVotingPower -= voterDelegatedVp
+      }
+    }
+  }
+  return delegatedVotingPower
 }

@@ -15,11 +15,11 @@ export const EMPTY_DISTRIBUTION = {
   l1Wearables: 0,
 }
 
-export default function useVotingPowerDistribution(address?: string | null) {
+export default function useVotingPowerDistribution(address?: string | null, proposalSnapshotId?: string) {
   const [vpDistribution, state] = useAsyncMemo<VpDistribution>(
     async () => {
       if (!address) return EMPTY_DISTRIBUTION
-      return await SnapshotGraphql.get().getVpDistribution(address)
+      return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
     },
     [address],
     { callWithTruthyDeps: true, initialValue: EMPTY_DISTRIBUTION }

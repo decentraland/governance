@@ -100,9 +100,9 @@ export class SnapshotGraphql extends API {
     return result?.data?.votes
   }
 
-  async getProposalVotes(proposal: string) {
+  async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
     const batchSize = 5000
-    return await inBatches(this.fetchProposalVotes, { proposal }, batchSize)
+    return await inBatches(this.fetchProposalVotes, { proposal: proposalId }, batchSize)
   }
 
   async getProposalScores(proposalId: string) {
@@ -267,12 +267,13 @@ export class SnapshotGraphql extends API {
     return await this.fetchProposals({ start, end, fields, scoresState: SnapshotScoresState.Pending }, 0, limit)
   }
 
-  async getVpDistribution(address: string): Promise<VpDistribution> {
+  async getVpDistribution(address: string, proposalId?: string): Promise<VpDistribution> {
     const query = `
-     query getVpDistribution($space: String!, $voter: String!){
+     query getVpDistribution($space: String!, $voter: String!, $proposal: String){
         vp (
           voter: $voter,
-          space: $space
+          space: $space,
+          proposal: $proposal
         ) {
           vp
           vp_by_strategy
@@ -282,6 +283,7 @@ export class SnapshotGraphql extends API {
     const variables = {
       space: SNAPSHOT_SPACE,
       voter: address,
+      proposal: proposalId ? proposalId : '',
     }
 
     const result = await this.fetch<SnapshotVpResponse>(
