@@ -36,45 +36,20 @@
   .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
     font-size: 17px;
   }
-  /* .ActionableLayout .ActionableLayout__Content .ui.card > .content {
-    padding: 12px;
-  }
-  .dg.Paragraph.Paragraph--small {
-    font-size: 14px;
-  } */
 }
 
 .ProfileProposalItem .ProfileProposalItem__Title .ui.header:first-child {
   margin-bottom: 0;
 }
 
-/* .ProfileProposalItem .ProfileProposalItem__Title .ui.button {
-  position: absolute;
-  padding: 16px 20px;
-  top: 0;
-  right: 0;
-  display: none;
-} */
-
-/* .ProfileProposalItem .ProfileProposalItem__Title .ui.loading.loading.loading.loading.button {
-  position: absolute;
-}
-
-.ProfileProposalItem:hover .ProfileProposalItem__Title .ui.button,
-.ProfileProposalItem.ProfileProposalItem--subscribed .ProfileProposalItem__Title .ui.button {
-  display: block;
-} */
-
-/* .ui.card.ProfileProposalItem.ProfileProposalItem.ProfileProposalItem--coauthor,
-.ui.card.ProfileProposalItem.ProfileProposalItem.ProfileProposalItem--coauthor:hover {
-  border: 1px solid var(--yellow-800) !important;
-  box-shadow: 0 2px 4px var(--yellow-100);
-} */
-
 .ProfileProposalItem__Details {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.ProfileProposalItem__Details .ui.header {
+  margin: 0;
 }
 
 .ProfileProposalItem__Stats {
@@ -91,11 +66,3 @@
   content: '';
   padding: 0;
 }
-
-/* .ProfileProposalItem__Votes {
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 26px;
-  text-transform: uppercase;
-  color: var(--black-600);
-} */

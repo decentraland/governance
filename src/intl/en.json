@@ -804,7 +804,8 @@
       "voted_proposals": {
         "title": "Proposals voted on",
         "helper": "...",
-        "button": "View more proposals"
+        "button": "View more proposals",
+        "vote": "They voted \"{vote}\""
       }
     },
     "transparency": {

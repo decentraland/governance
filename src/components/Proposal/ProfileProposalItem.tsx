@@ -26,8 +26,11 @@ interface Props {
 }
 
 function ProfileProposalItem({ votedProposal }: Props) {
+  const t = useFormatMessage()
   const { proposal } = votedProposal
-  console.log('proposal', proposal)
+  console.log('votedProposal', votedProposal)
+  const choiceIdx = votedProposal.choice - 1
+  const { choices } = proposal
   return (
     <Card as={Link} href={locations.proposal(proposal.proposal_id)} className="ProfileProposalItem">
       <Card.Content>
@@ -38,7 +41,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
           <div className="ProfileProposalItem__Details">
             <StatusPill status={proposal.status} />
             <CategoryPill type={proposal.type} />
-            <Username address={proposal.author} variant="avatar" />
+            <Header sub>{t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })}</Header>
             <div className="ProfileProposalItem__Stats">
               {/* {votes && (
                 <Desktop>
