@@ -46,7 +46,12 @@ function file(
       }
 
       const [data, etag] = await reader
-      return res.set('etag', JSON.stringify(etag)).type(extname(path)).status(status).send(data)
+      return res
+        .set('cache-control', 'private,no-store,max-age=0')
+        .set('etag', JSON.stringify(etag))
+        .type(extname(path))
+        .status(status)
+        .send(data)
     },
     { defaultHeaders: DEFAULT_API_HEADERS, api: true, ...options }
   )
