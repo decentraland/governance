@@ -6,11 +6,10 @@ import metrics from 'decentraland-gatsby/dist/entities/Prometheus/routes'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handle, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
 import { withBody, withCors, withDDosProtection, withLogs } from 'decentraland-gatsby/dist/entities/Route/middleware'
-import { filesystem, status } from 'decentraland-gatsby/dist/entities/Route/routes'
+import { status } from 'decentraland-gatsby/dist/entities/Route/routes'
 import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/handler'
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
-import path from 'path'
 
 import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
@@ -22,6 +21,7 @@ import social from './entities/Social/routes'
 import subscription from './entities/Subscription/routes'
 import updates from './entities/Updates/routes'
 import score from './entities/Votes/routes'
+import filesystem from './modules/filesystem'
 
 const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
