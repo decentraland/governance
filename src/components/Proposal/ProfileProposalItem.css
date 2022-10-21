@@ -2,17 +2,36 @@
   width: 100% !important;
   position: relative;
 }
+.ProfileProposalItem > .content {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.ProfileProposalItem > .content::after {
+  content: none !important;
+}
 
 .ProfileProposalItem .ProfileProposalItem__Title {
   display: flex;
   flex-direction: row;
   padding-bottom: 0;
-  padding-right: 40px;
+  width: 580px;
+}
+
+@media (max-width: 768px) {
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    width: unset;
+  }
 }
 
 .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
   flex: 1;
   padding-right: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ProfileProposalItem:visited .ProfileProposalItem__Title .ui.header {

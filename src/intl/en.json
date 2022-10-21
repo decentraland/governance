@@ -805,7 +805,10 @@
         "title": "Proposals voted on",
         "helper": "...",
         "button": "View more proposals",
-        "vote": "They voted \"{vote}\""
+        "vote": "They voted \"{vote}\"",
+        "stance_shared": "Stance shared",
+        "stance_differs": "Stance differs"
+
       }
     },
     "transparency": {

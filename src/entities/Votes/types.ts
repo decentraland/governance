@@ -22,6 +22,8 @@ export type VotedProposal = SnapshotVote & {
     type: ProposalType
     status: ProposalStatus
     author: string
+    finish_at: number
+    scores: number[]
   }
 }
 

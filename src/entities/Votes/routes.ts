@@ -114,6 +114,7 @@ async function getAddressVotes(req: Request) {
         status: currentProposal?.status,
         type: currentProposal?.type,
         author: currentProposal?.user,
+        finish_at: currentProposal?.finish_at?.getTime(),
       },
     })
   }
