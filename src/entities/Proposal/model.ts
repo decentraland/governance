@@ -137,7 +137,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
-  static async getFinishedProposal() {
+  static async getFinishedProposals() {
     const query = SQL`
         SELECT *
         FROM ${table(ProposalModel)}

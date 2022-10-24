@@ -4,6 +4,8 @@ import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { DISCOURSE_API, DISCOURSE_USER } from '../entities/Discourse/utils'
 
+import { trimLastForwardSlash } from './utils'
+
 export const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
 
 export type DiscourseAuth = {
@@ -277,6 +279,7 @@ export class Discourse extends API {
   private readonly auth: DiscourseAuth
 
   static from(baseUrl: string) {
+    baseUrl = trimLastForwardSlash(baseUrl)
     if (!this.Cache.has(baseUrl)) {
       this.Cache.set(baseUrl, new this(baseUrl))
     }
@@ -304,10 +307,12 @@ export class Discourse extends API {
       apiKey: DISCOURSE_API_KEY,
       apiUsername: DISCOURSE_USER,
     }
+    console.log('DISCOURSE_AUTH', DISCOURSE_AUTH)
     return DISCOURSE_AUTH
   }
 
   private withAuth(options: Options) {
+    console.log('this.auth', this.auth)
     return options.header('Api-Key', this.auth.apiKey).header('Api-Username', this.auth.apiUsername)
   }
 

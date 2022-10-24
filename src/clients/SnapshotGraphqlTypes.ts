@@ -53,7 +53,9 @@ export type ScoreDetail = {
   totalVp: number
 }
 export type DetailedScores = Record<string, ScoreDetail>
-export type SnapshotProposalResponse = SnapshotQueryResponse<{ proposals: Partial<SnapshotProposal>[] }>
+export type SnapshotProposalsResponse = SnapshotQueryResponse<{ proposals: Partial<SnapshotProposal>[] }>
+export type SnapshotProposalResponse = SnapshotQueryResponse<{ proposal: Partial<SnapshotProposal> }>
+
 export type SnapshotProposal = {
   id: string
   ipfs: string
@@ -74,6 +76,8 @@ export type SnapshotProposal = {
   scores_total: number
   scores_updated: number
   votes: number
+  space?: SnapshotSpace
+  strategies?: SnapshotStrategy[]
 }
 
 export enum SnapshotScoresState {

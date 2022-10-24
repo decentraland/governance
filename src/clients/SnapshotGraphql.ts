@@ -6,11 +6,11 @@ import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import {
   SnapshotProposal,
   SnapshotProposalResponse,
+  SnapshotProposalsResponse,
   SnapshotQueryResponse,
   SnapshotScoresState,
   SnapshotSpace,
   SnapshotStatus,
-  SnapshotStrategy,
   SnapshotVote,
   SnapshotVoteResponse,
   SnapshotVpResponse,
@@ -20,11 +20,6 @@ import {
 import { inBatches, trimLastForwardSlash } from './utils'
 
 export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
-
-type SnapshotProposalMetadata = {
-  space: SnapshotSpace
-  strategies: SnapshotStrategy[]
-}
 
 const GRAPHQL_ENDPOINT = `/graphql`
 
@@ -112,6 +107,29 @@ export class SnapshotGraphql extends API {
     }
 
     return votes
+  }
+
+  async getProposalScores(proposalId: string) {
+    const query = `
+      query ProposalScores($proposal: String!) {
+        proposal (
+          id: $proposal 
+        ) {
+          scores
+        }
+      }
+    `
+    try {
+      const response = await this.fetch<SnapshotProposalResponse>(
+        GRAPHQL_ENDPOINT,
+        this.options()
+          .method('POST')
+          .json({ query, variables: { proposal: proposalId } })
+      )
+      return response?.data.proposal.scores || []
+    } catch (e) {
+      throw Error(`Unable to fetch proposal scores for ${proposalId}`, e as Error)
+    }
   }
 
   fetchAddressesVotes = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
@@ -224,7 +242,7 @@ export class SnapshotGraphql extends API {
       }
     `
 
-    const result = await this.fetch<SnapshotProposalResponse>(
+    const result = await this.fetch<SnapshotProposalsResponse>(
       GRAPHQL_ENDPOINT,
       this.options()
         .method('POST')
@@ -313,7 +331,9 @@ export class SnapshotGraphql extends API {
       }
     `
 
-    const result = await this.fetch<SnapshotQueryResponse<{ proposal: SnapshotProposalMetadata }>>(
+    const result = await this.fetch<
+      SnapshotQueryResponse<{ proposal: Pick<SnapshotProposal, 'space' | 'strategies'> }>
+    >(
       GRAPHQL_ENDPOINT,
       this.options()
         .method('POST')
