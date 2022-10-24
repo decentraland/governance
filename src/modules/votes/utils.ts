@@ -16,10 +16,10 @@ export function getEnvironmentChainId() {
   switch (CHAIN_ID) {
     case ChainId.ETHEREUM_MAINNET.valueOf():
       return ChainId.ETHEREUM_MAINNET
-    case ChainId.ETHEREUM_RINKEBY:
-      return ChainId.ETHEREUM_RINKEBY
+    case ChainId.ETHEREUM_GOERLI:
+      return ChainId.ETHEREUM_GOERLI
     default:
-      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Rinkeby: ${DEFAULT_CHAIN_ID}`)
+      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Goerli: ${DEFAULT_CHAIN_ID}`)
   }
 }
 
