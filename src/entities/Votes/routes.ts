@@ -11,7 +11,7 @@ import { ProposalAttributes } from '../Proposal/types'
 
 import VotesModel from './model'
 import { Vote, VoteAttributes } from './types'
-import { createVotes, getProposalScores, toProposalIds } from './utils'
+import { createVotes, toProposalIds } from './utils'
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
@@ -48,11 +48,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
   const now = new Date()
   const hash = VotesModel.hashVotes(snapshotVotes)
-  const balance = await getProposalScores(
-    proposal,
-    snapshotVotes.map((vote) => vote.voter)
-  )
-  const votes = createVotes(snapshotVotes, balance)
+  const votes = createVotes(snapshotVotes)
   await VotesModel.update<VoteAttributes>(
     {
       hash,

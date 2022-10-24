@@ -82,6 +82,7 @@ export class SnapshotGraphql extends API {
           voter
           created
           choice
+          vp
           vp_by_strategy
         }
       }
@@ -311,33 +312,5 @@ export class SnapshotGraphql extends API {
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
       l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
     }
-  }
-
-  async getProposalSpaceAndStrategies(proposalSnapshotId: string) {
-    const query = `
-      query Proposal($proposal_snapshot_id: String!) {
-        proposal(id: $proposal_snapshot_id){
-          space {
-            id
-            network
-          }
-          strategies {
-            name
-            params
-          }
-        }
-      }
-    `
-
-    const result = await this.fetch<
-      SnapshotQueryResponse<{ proposal: Pick<SnapshotProposal, 'space' | 'strategies'> }>
-    >(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({ query, variables: { proposal_snapshot_id: proposalSnapshotId } })
-    )
-
-    return result?.data?.proposal
   }
 }

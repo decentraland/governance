@@ -1,10 +1,7 @@
-import { chunk } from 'lodash'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotApi } from '../../clients/SnapshotApi'
-import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { DetailedScores, SnapshotStrategy, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
-import { ProposalAttributes } from '../Proposal/types'
 
 import { ChoiceColor, Vote } from './types'
 
@@ -21,15 +18,12 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
   return list.filter((id) => isUUID(String(id)))
 }
 
-export function createVotes(votes: SnapshotVote[], balances: DetailedScores) {
-  const balance = new Map(
-    Object.keys(balances).map((address) => [address.toLowerCase(), balances[address] || 0] as const)
-  )
+export function createVotes(votes: SnapshotVote[]) {
   return votes.reduce((result, vote) => {
     const address = vote.voter.toLowerCase()
     result[address] = {
       choice: vote.choice,
-      vp: balance.get(address)?.totalVp || 0,
+      vp: getFloorOrZero(vote.vp),
       timestamp: Number(vote.created),
     }
     return result
@@ -167,7 +161,7 @@ export function abbreviateNumber(vp: number) {
   return scaled.toFixed(1) + suffix
 }
 
-function getNumber(number: number) {
+function getFloorOrZero(number?: number) {
   return Math.floor(number || 0)
 }
 
@@ -208,30 +202,4 @@ export async function getScores(
   }
 
   return result
-}
-
-export async function getProposalScores(proposal: ProposalAttributes, addresses: string[]) {
-  const results: DetailedScores = {}
-  const spaceAndStrategies = await SnapshotGraphql.get().getProposalSpaceAndStrategies(proposal.snapshot_id)
-  for (const addressesChunk of chunk(addresses, 500)) {
-    const blockchainScores: DetailedScores = await getScores(
-      addressesChunk,
-      proposal.snapshot_proposal.snapshot,
-      proposal.snapshot_space,
-      proposal.snapshot_network,
-      spaceAndStrategies.strategies
-    )
-
-    for (const address of Object.keys(blockchainScores)) {
-      const lowercaseAddress = address.toLowerCase()
-      if (!results[lowercaseAddress]) {
-        results[lowercaseAddress] = { totalVp: 0, delegatedVp: 0, ownVp: 0 }
-      }
-      results[lowercaseAddress].totalVp += getNumber(blockchainScores[address].totalVp)
-      results[lowercaseAddress].delegatedVp += getNumber(blockchainScores[address].delegatedVp)
-      results[lowercaseAddress].ownVp += getNumber(blockchainScores[address].ownVp)
-    }
-  }
-
-  return results
 }
