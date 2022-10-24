@@ -5,6 +5,7 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { VotedProposal } from '../../entities/Votes/types'
 import locations from '../../modules/locations'
@@ -29,6 +30,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
   })
   const maxScore = Math.max(...scores)
   const resultMatches = maxScore === scores[choiceIdx]
+
   return (
     <Card as={Link} href={locations.proposal(proposal.proposal_id)} className="ProfileProposalItem">
       <Card.Content>
@@ -36,18 +38,27 @@ function ProfileProposalItem({ votedProposal }: Props) {
           <div className="ProfileProposalItem__Title">
             <Header>{proposal.title}</Header>
           </div>
+          <Mobile>
+            <div>
+              <ResultStance resultMatches={resultMatches} />
+            </div>
+          </Mobile>
           <div className="ProfileProposalItem__Status">
             <div className="ProfileProposalItem__Details">
               <StatusPill status={proposal.status} />
-              <CategoryPill type={proposal.type} />
-              <Header sub>
-                {t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })} · {dateText}
-              </Header>
+              {proposal.type && <CategoryPill type={proposal.type} />}
+              <NotMobile>
+                <Header sub>
+                  <span>{t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })}</span> · {dateText}
+                </Header>
+              </NotMobile>
             </div>
           </div>
         </div>
         <div>
-          <ResultStance resultMatches={resultMatches} />
+          <NotMobile>
+            <ResultStance resultMatches={resultMatches} />
+          </NotMobile>
         </div>
         <div>
           <ChevronRightCircleOutline />

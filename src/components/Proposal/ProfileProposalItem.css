@@ -17,21 +17,29 @@
   display: flex;
   flex-direction: row;
   padding-bottom: 0;
-  width: 580px;
-}
-
-@media (max-width: 768px) {
-  .ProfileProposalItem .ProfileProposalItem__Title {
-    width: unset;
-  }
 }
 
 .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
   flex: 1;
   padding-right: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    width: 420px;
+  }
+
+  .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 992px) {
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    width: 580px;
+  }
 }
 
 .ProfileProposalItem:visited .ProfileProposalItem__Title .ui.header {
@@ -69,6 +77,13 @@
 
 .ProfileProposalItem__Details .ui.header {
   margin: 0;
+  max-width: 150px;
+}
+
+@media (min-width: 992px) {
+  .ProfileProposalItem__Details .ui.header {
+    max-width: 420px;
+  }
 }
 
 .ProfileProposalItem__Stats {
