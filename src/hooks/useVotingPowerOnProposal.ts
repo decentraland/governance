@@ -67,9 +67,11 @@ function getDelegatedVotingPowerOnProposal(
   let delegatedVotingPower = 0
   if (votes && !!delegators && vpDistribution) {
     delegatedVotingPower = vpDistribution.delegated
+    //TODO checksum addresses?
+    console.log('delegators', delegators)
+    console.log('votes', votes)
     for (const vote of votes) {
       if (delegators.find((delegator) => delegator === vote.voter)) {
-        //TODO CHECKsum addresses?
         const voterDelegatedVp = getVoteDelegatableVp(vote)
         delegatedVotingPower -= voterDelegatedVp
       }
