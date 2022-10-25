@@ -29,7 +29,9 @@ function ProfileProposalItem({ votedProposal }: Props) {
     value: Time(finish_at).fromNow(),
   })
   const maxScore = Math.max(...scores)
-  const resultMatches = maxScore === scores[choiceIdx]
+  const winningChoice = scores.indexOf(maxScore)
+
+  const isMatch = winningChoice === choiceIdx
 
   return (
     <Card as={Link} href={locations.proposal(proposal.proposal_id)} className="ProfileProposalItem">
@@ -40,7 +42,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
           </div>
           <Mobile>
             <div>
-              <ResultStance resultMatches={resultMatches} />
+              <ResultStance isMatch={isMatch} />
             </div>
           </Mobile>
           <div className="ProfileProposalItem__Status">
@@ -57,7 +59,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
         </div>
         <div>
           <NotMobile>
-            <ResultStance resultMatches={resultMatches} />
+            <ResultStance isMatch={isMatch} />
           </NotMobile>
         </div>
         <div>

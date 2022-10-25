@@ -9,13 +9,13 @@ import CheckCircle from '../Icon/CheckCircle'
 import './ResultStance.css'
 
 interface Props {
-  resultMatches: boolean
+  isMatch: boolean
 }
 
-function ResultStance({ resultMatches }: Props) {
+function ResultStance({ isMatch }: Props) {
   const t = useFormatMessage()
-  const text = t(`page.profile.voted_proposals.${resultMatches ? 'stance_shared' : 'stance_differs'}`)
-  const icon = useMemo(() => (resultMatches ? <CheckCircle size="16" /> : <Cancel size="16" />), [resultMatches])
+  const text = t(`page.profile.voted_proposals.${isMatch ? 'stance_shared' : 'stance_differs'}`)
+  const icon = useMemo(() => (isMatch ? <CheckCircle size="16" /> : <Cancel size="16" />), [isMatch])
   return (
     <div className="ResultStance">
       {icon}
