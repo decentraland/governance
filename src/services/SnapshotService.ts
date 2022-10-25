@@ -2,7 +2,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import retry from 'decentraland-gatsby/dist/utils/promise/retry'
 
-import { IPFS } from '../clients/IPFS'
+import { InfuraIPFS } from '../clients/InfuraIPFS'
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
@@ -41,6 +41,9 @@ export class SnapshotService {
     })
 
     const snapshotContent = await this.getIpfsSnapshotContent(proposalCreationReceipt)
+    logger.log('Snapshot IPFS content obtained', {
+      content: snapshotContent,
+    })
     return { snapshotId: proposalCreationReceipt.id, snapshotUrl: snapshotUrl, snapshotContent }
   }
 
@@ -64,7 +67,7 @@ export class SnapshotService {
 
   private static async getIpfsSnapshotContent(proposalCreationReceipt: SnapshotReceipt) {
     try {
-      return await retry(3, () => IPFS.get().getHash(proposalCreationReceipt.ipfs))
+      return await retry(3, () => InfuraIPFS.cat(proposalCreationReceipt.ipfs))
     } catch (err: any) {
       SnapshotService.dropSnapshotProposal(proposalCreationReceipt.id)
       throw new Error("Couldn't retrieve proposal from the IPFS: " + err.message, err)

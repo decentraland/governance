@@ -307,7 +307,6 @@ export class Discourse extends API {
       apiKey: DISCOURSE_API_KEY,
       apiUsername: DISCOURSE_USER,
     }
-    console.log('DISCOURSE_AUTH', DISCOURSE_AUTH)
     return DISCOURSE_AUTH
   }
 
