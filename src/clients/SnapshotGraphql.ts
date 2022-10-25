@@ -5,6 +5,7 @@ import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 import {
   SnapshotProposal,
+  SnapshotProposalContent,
   SnapshotProposalResponse,
   SnapshotProposalsResponse,
   SnapshotQueryResponse,
@@ -385,6 +386,43 @@ export class SnapshotGraphql extends API {
       this.options()
         .method('POST')
         .json({ query, variables: { proposal_snapshot_id: proposalSnapshotId } })
+    )
+
+    return result?.data?.proposal
+  }
+
+  async getProposalContent(proposalSnapshotId: string) {
+    const query = `
+      query Proposal($id: String!) {
+        proposal(id: $id){
+          space {
+            id
+          }
+          type
+          title
+          body
+          choices
+          start
+          end
+          snapshot
+          plugins
+          app
+          discussion
+          author
+          created
+        }
+      }
+    `
+
+    const result = await this.fetch<
+      SnapshotQueryResponse<{
+        proposal: SnapshotProposalContent
+      }>
+    >(
+      GRAPHQL_ENDPOINT,
+      this.options()
+        .method('POST')
+        .json({ query, variables: { id: proposalSnapshotId } })
     )
 
     return result?.data?.proposal

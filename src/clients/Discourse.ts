@@ -307,12 +307,10 @@ export class Discourse extends API {
       apiKey: DISCOURSE_API_KEY,
       apiUsername: DISCOURSE_USER,
     }
-    console.log('DISCOURSE_AUTH', DISCOURSE_AUTH)
     return DISCOURSE_AUTH
   }
 
   private withAuth(options: Options) {
-    console.log('this.auth', this.auth)
     return options.header('Api-Key', this.auth.apiKey).header('Api-Username', this.auth.apiUsername)
   }
 

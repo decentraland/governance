@@ -76,9 +76,24 @@ export type SnapshotProposal = {
   scores_total: number
   scores_updated: number
   votes: number
-  space?: SnapshotSpace
+  space: SnapshotSpace
   strategies?: SnapshotStrategy[]
+  discussion: string
+  plugins: any
 }
+
+export type SnapshotProposalContent = Omit<
+  SnapshotProposal,
+  | 'scores'
+  | 'scores_by_strategy'
+  | 'scores_state'
+  | 'scores_total'
+  | 'scores_updated'
+  | 'votes'
+  | 'strategies'
+  | 'state'
+  | 'link'
+>
 
 export enum SnapshotScoresState {
   Pending = 'pending',
