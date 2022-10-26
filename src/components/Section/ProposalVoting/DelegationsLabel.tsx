@@ -2,8 +2,9 @@ import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import Helper from '../../Helper/Helper'
+import Info from '../../Icon/Info'
 import VotingPower from '../../Token/VotingPower'
 import Username from '../../User/Username'
 
@@ -64,12 +65,17 @@ const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: Deleg
       </span>
 
       {infoMessage && (
-        <Helper
-          text={t(infoMessage.id, formattedInfoValues)}
+        <Popup
+          content={t(infoMessage.id, formattedInfoValues)}
           position="left center"
-          size="14"
-          containerClassName="DelegationsLabel__HelperContainer"
-          iconClassName="DelegationsLabel__HelperIcon"
+          trigger={
+            <div className={'DelegationsLabel__HelperContainer'}>
+              <Info className={'DelegationsLabel__HelperIcon'} size={'14'} />
+            </div>
+          }
+          on="hover"
+          hoverable
+          className={`DelegationsLabel__HelperContainer--Popup`}
         />
       )}
     </div>
