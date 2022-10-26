@@ -1,0 +1,102 @@
+.ProfileProposalItem {
+  width: 100% !important;
+  position: relative;
+}
+.ProfileProposalItem > .content {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.ProfileProposalItem > .content::after {
+  content: none !important;
+}
+
+.ProfileProposalItem .ProfileProposalItem__Title {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 0;
+}
+
+.ProfileProposalItem .ProfileProposalItem__Title .ui.header {
+  flex: 1;
+  padding-right: 15px;
+}
+
+@media (min-width: 768px) {
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    width: 420px;
+  }
+
+  .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 992px) {
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    width: 580px;
+  }
+}
+
+.ProfileProposalItem:visited .ProfileProposalItem__Title .ui.header {
+  color: var(--black-600);
+}
+
+.ProfileProposalItem .ProfileProposalItem__Status {
+  padding-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 425px) {
+  .ProfileProposalItem .ProfileProposalItem__Status {
+    flex-direction: row;
+  }
+  .ProfileProposalItem .ProfileProposalItem__Title {
+    padding-right: 0;
+  }
+  .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
+    font-size: 17px;
+  }
+}
+
+.ProfileProposalItem .ProfileProposalItem__Title .ui.header:first-child {
+  margin-bottom: 0;
+}
+
+.ProfileProposalItem__Details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ProfileProposalItem__Details .ui.header {
+  margin: 0;
+  max-width: 150px;
+}
+
+@media (min-width: 992px) {
+  .ProfileProposalItem__Details .ui.header {
+    max-width: 420px;
+  }
+}
+
+.ProfileProposalItem__Stats {
+  display: flex;
+  align-items: center;
+}
+
+.ProfileProposalItem__Stats span:after {
+  content: '·';
+  padding: 0 5px;
+}
+
+.ProfileProposalItem__Stats span:last-child:after {
+  content: '';
+  padding: 0;
+}

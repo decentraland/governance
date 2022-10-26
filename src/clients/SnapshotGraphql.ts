@@ -132,58 +132,6 @@ export class SnapshotGraphql extends API {
     }
   }
 
-  async getAddressVotes(address: string) {
-    let hasNext = true
-    let skip = 0
-    const first = 500
-    const query = `
-      query Votes($space: String!, $address: String!, $first: Int!, $skip: Int!) {
-        votes (
-          first: $first,
-          skip: $skip,
-          where: {
-            space: $space,
-            voter: $address
-          },
-          orderBy: "created",
-          orderDirection: desc
-        ) {
-          id
-          voter
-          created
-          choice
-          proposal {
-            id
-            title
-            choices
-            scores
-            state
-          }
-        }
-      }
-    `
-
-    let votes: SnapshotVote[] = []
-    while (hasNext) {
-      const result = await this.fetch<SnapshotVoteResponse>(
-        GRAPHQL_ENDPOINT,
-        this.options()
-          .method('POST')
-          .json({ query, variables: { space: SNAPSHOT_SPACE, address, skip, first } })
-      )
-
-      const currentVotes = result?.data?.votes || []
-      votes = [...votes, ...currentVotes]
-
-      if (currentVotes.length < first) {
-        hasNext = false
-      } else {
-        skip = votes.length
-      }
-    }
-    return votes
-  }
-
   fetchAddressesVotes = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
     const query = `
       query ProposalVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
@@ -193,6 +141,7 @@ export class SnapshotGraphql extends API {
           orderBy: "created",
           orderDirection: desc
         ) {
+          id
           voter
           created
           choice
@@ -223,6 +172,10 @@ export class SnapshotGraphql extends API {
   async getAddressesVotes(addresses: string[]) {
     const batchSize = 5000
     return await inBatches(this.fetchAddressesVotes, { addresses }, batchSize)
+  }
+
+  async getAddressesVotesInBatches(addresses: string[], first: number, skip: number) {
+    return await this.fetchAddressesVotes({ addresses }, skip, first)
   }
 
   fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {

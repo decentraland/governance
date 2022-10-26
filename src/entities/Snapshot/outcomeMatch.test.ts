@@ -12,6 +12,7 @@ const ACTIVE_PROPOSAL = {
   choices: ['yes', 'no'],
   score: [300, 0],
   state: 'active',
+  author: '0x0000000000000000000000000000000000000000',
 }
 
 const VOTE_0_ACTIVE_PROPOSAL = {

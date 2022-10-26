@@ -49,7 +49,7 @@ async function getVotingResults(proposal: ProposalAttributes<any>, choices: stri
   return result
 }
 
-async function calculateOutcome(proposal: ProposalAttributes, context: JobContext<{}>) {
+async function calculateOutcome(proposal: ProposalAttributes, context: JobContext<Record<string, unknown>>) {
   try {
     const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
     const results = await getVotingResults(proposal, choices)
