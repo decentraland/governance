@@ -7,6 +7,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
+import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../modules/locations'
 
@@ -58,13 +59,14 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
   const blockieScale = getBlockieScale(size)
   const isAddressVariant = variant === UsernameVariant.Address
   const isAvatarVariant = variant === UsernameVariant.Avatar
+  const checksumAddress = address ? getChecksumAddress(address) : ''
 
   const userElement = (
     <>
       {isAddressVariant && (
         <>
           {profileHasName && profile!.name}
-          {!profileHasName && <Address value={address || ''} className={className} strong={strong} />}
+          {!profileHasName && <Address value={checksumAddress} className={className} strong={strong} />}
         </>
       )}
 
@@ -74,14 +76,14 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
             <>
               <Avatar size={size || 'mini'} address={address} />
               {profileHasName && !isAvatarVariant && <span>{profile!.name}</span>}
-              {!profileHasName && !isAvatarVariant && <Address value={address || ''} strong={strong} />}
+              {!profileHasName && !isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
             </>
           )}
 
           {(!hasDclProfile || !profile) && (
             <>
-              <Blockie scale={blockieScale} seed={address || ''} />
-              {!isAvatarVariant && <Address value={address || ''} strong={strong} />}
+              <Blockie scale={blockieScale} seed={checksumAddress} />
+              {!isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
             </>
           )}
         </>
@@ -92,7 +94,10 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
   return (
     <>
       {linked ? (
-        <Link className={TokenList.join(['Username', className])} href={locations.profile({ address })}>
+        <Link
+          className={TokenList.join(['Username', className])}
+          href={locations.profile({ address: checksumAddress })}
+        >
           {userElement}
         </Link>
       ) : (
