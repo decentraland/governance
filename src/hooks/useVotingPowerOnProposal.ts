@@ -3,6 +3,7 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../entities/Proposal/types'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
 import { Vote } from '../entities/Votes/types'
 
@@ -67,11 +68,8 @@ function getDelegatedVotingPowerOnProposal(
   let delegatedVotingPower = 0
   if (votes && !!delegators && vpDistribution) {
     delegatedVotingPower = vpDistribution.delegated
-    //TODO checksum addresses?
-    console.log('delegators', delegators)
-    console.log('votes', votes)
     for (const vote of votes) {
-      if (delegators.find((delegator) => delegator === vote.voter)) {
+      if (delegators.find((delegator) => isSameAddress(delegator, vote.voter))) {
         const voterDelegatedVp = getVoteDelegatableVp(vote)
         delegatedVotingPower -= voterDelegatedVp
       }

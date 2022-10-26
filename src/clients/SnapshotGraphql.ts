@@ -72,7 +72,7 @@ export class SnapshotGraphql extends API {
     return result?.data?.space || null
   }
 
-  fetchProposalVotes = async (params: { proposal: string }, skip: number, batchSize: number) => {
+  fetchProposalVotes = async (proposal: string, skip: number, batchSize: number) => {
     const query = `
       query ProposalVotes($space: String!, $proposal: String!, $first: Int!, $skip: Int!) {
         votes (
@@ -94,7 +94,7 @@ export class SnapshotGraphql extends API {
         .method('POST')
         .json({
           query,
-          variables: { space: SNAPSHOT_SPACE, proposal: params.proposal, skip, first: batchSize },
+          variables: { space: SNAPSHOT_SPACE, proposal: proposal, skip, first: batchSize },
         })
     )
 
@@ -103,7 +103,7 @@ export class SnapshotGraphql extends API {
 
   async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
     const batchSize = 5000
-    return await inBatches(this.fetchProposalVotes, { proposal: proposalId }, batchSize)
+    return await inBatches(this.fetchProposalVotes, proposalId, batchSize)
   }
 
   async getProposalScores(proposalId: string) {
@@ -284,7 +284,7 @@ export class SnapshotGraphql extends API {
     const variables = {
       space: SNAPSHOT_SPACE,
       voter: address,
-      proposal: proposalId ? proposalId : '',
+      proposal: proposalId || '',
     }
 
     const result = await this.fetch<SnapshotVpResponse>(
