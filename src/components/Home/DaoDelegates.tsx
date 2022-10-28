@@ -7,7 +7,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { CANDIDATE_ADDRESSES } from '../../constants'
 import useDelegatesInfo from '../../hooks/useDelegatesInfo'
-import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
+import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import FullWidthButton from '../Common/FullWidthButton'
 import VotingPowerDelegationDetail from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 import VotingPowerDelegationModal, { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
@@ -24,7 +24,7 @@ const DaoDelegates = () => {
   const [isFullListOpened, setIsFullListOpened] = useState(false)
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const [address, authState] = useAuthContext()
-  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerInformation(address)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
   const loading = !delegates && authState.loading && isLoadingVpDistribution
 
   const toggleFullList = (state: boolean) => {
