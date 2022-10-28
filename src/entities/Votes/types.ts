@@ -17,10 +17,14 @@ export type Vote = {
 }
 
 export type VotedProposal = SnapshotVote & {
+  id: string
   proposal: {
     proposal_id: string
     type: ProposalType
     status: ProposalStatus
+    author: string
+    finish_at: number
+    scores: number[]
   }
 }
 

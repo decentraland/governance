@@ -6,7 +6,7 @@ import { calculateMatch } from '../entities/Snapshot/utils'
 
 export default function useVotesMatch(userAccount: string | null, otherAccount: string | null) {
   const [userVotes, userVotesState] = useAsyncMemo(
-    async () => (userAccount ? SnapshotGraphql.get().getAddressVotes(userAccount) : Promise.resolve(null)),
+    async () => (userAccount ? SnapshotGraphql.get().getAddressesVotes([userAccount]) : Promise.resolve(null)),
     [userAccount]
   )
   const [otherAccountVotes, otherAccountVotesState] = useAsyncMemo(

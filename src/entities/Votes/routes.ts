@@ -85,7 +85,14 @@ export async function getVotes(proposal_id: string) {
 
 async function getAddressVotes(req: Request) {
   const address = req.params.address
-  const votes = await SnapshotGraphql.get().getAddressVotes(address)
+  const first = Number(req.query.first)
+  const skip = Number(req.query.skip)
+
+  const isParamMissing = isNaN(first) || isNaN(skip)
+
+  const votes = isParamMissing
+    ? await SnapshotGraphql.get().getAddressesVotes([address])
+    : await SnapshotGraphql.get().getAddressesVotesInBatches([address], first, skip)
 
   if (votes.length === 0) {
     return []
@@ -106,6 +113,8 @@ async function getAddressVotes(req: Request) {
         proposal_id: currentProposal?.id,
         status: currentProposal?.status,
         type: currentProposal?.type,
+        author: currentProposal?.user,
+        finish_at: currentProposal?.finish_at?.getTime(),
       },
     })
   }

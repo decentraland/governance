@@ -82,6 +82,7 @@
     "pg": "^8.7.3",
     "pg-tsquery": "^8.3.0",
     "postcss": "^8.4.12",
+    "radash": "^8.0.3-alpha.1",
     "react-chartjs-2": "^4.3.1",
     "react-flickity-component": "^3.6.2",
     "react-loading-skeleton": "^3.1.0",

@@ -1,0 +1,14 @@
+.ResultStance {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+}
+
+.ResultStance > .ResultStance__Text {
+  margin-left: 5px;
+}
+
+.ResultStance > .ResultStance__Text > .ui.header {
+  margin: 0;
+}
