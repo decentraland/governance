@@ -20,13 +20,15 @@ export default routes((route) => {
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
+  const refresh = req.query.refresh === 'true'
+
   const proposal = await getProposal(req)
   let latestVotes = await VotesModel.getVotes(proposal.id)
   if (!latestVotes) {
     latestVotes = await VotesModel.createEmpty(proposal.id)
   }
 
-  if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now()) {
+  if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now() && !refresh) {
     return latestVotes.votes
   }
 
