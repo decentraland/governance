@@ -135,7 +135,6 @@ export class ProposalService {
       snapshot_id: snapshotId,
       snapshot_space: SNAPSHOT_SPACE,
       snapshot_proposal: JSON.stringify(snapshotContent),
-      snapshot_signature: 'snapshotContent.sig', // TODO: Where should we get this value?
       snapshot_network: String(Number(getEnvironmentChainId())),
       discourse_id: discourseProposal.id,
       discourse_topic_id: discourseProposal.topic_id,
