@@ -126,18 +126,32 @@ const validate = createValidator<updateFormState>({
   }),
 })
 
-export default function Update() {
+interface Props {
+  isEdit?: boolean
+}
+
+export default function Update({ isEdit }: Props) {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const proposalId = params.get('proposalId') || ''
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
   const [projectHealth, setProjectHealth] = useState(initialState.health)
   const { update, state: updateState } = useProposalUpdate(updateId)
+  const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update])
+
+  useEffect(() => {
+    if (isEdit && !!update) {
+      const { health, introduction, highlights, blockers, next_steps, additional_notes } = update
+      if (health && introduction && highlights && blockers && next_steps && additional_notes) {
+        setProjectHealth(health)
+        editor.set({ introduction, highlights, blockers, nextSteps: next_steps, additionalNotes: additional_notes })
+      }
+    }
+  }, [isEdit, update])
 
   const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
     value: state.value[fieldName],
@@ -166,6 +180,7 @@ export default function Update() {
   useEffect(() => {
     const submitUpdate = async () => {
       if (!proposalId) {
+        console.log('No proposal ID')
         return
       }
 
@@ -184,8 +199,10 @@ export default function Update() {
         status: UpdateStatus.Pending,
       }
 
+      console.log(newUpdate)
+
       try {
-        if (updateId) {
+        if (isEdit && updateId) {
           await Governance.get().updateProposalUpdate(newUpdate)
         } else {
           await Governance.get().createProposalUpdate(newUpdate)
@@ -202,13 +219,20 @@ export default function Update() {
     if (state.validated) {
       submitUpdate()
     }
-  }, [state.validated])
+  }, [state.validated, isEdit])
 
   if (accountState.loading || updateState.loading) {
     return <LoadingView />
   }
 
-  if (updateId && (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)) {
+  const isDisabled =
+    !isEdit &&
+    updateId &&
+    (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)
+
+  const isUserEnabledToEdit = isEdit && update?.author === account
+
+  if (isDisabled || !isUserEnabledToEdit) {
     return (
       <ContentLayout>
         <NotFound />
@@ -314,7 +338,7 @@ export default function Update() {
       {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
       <ContentSection className="UpdateSubmit__Actions">
         <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
-          {t('page.proposal_update.publish_update')}
+          {isEdit ? t('modal.edit_update.accept') : t('page.proposal_update.publish_update')}
         </Button>
         <Button basic disabled={state.validated} onClick={() => setPreviewMode((prev) => !prev)}>
           {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}

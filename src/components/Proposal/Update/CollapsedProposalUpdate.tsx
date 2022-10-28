@@ -23,10 +23,11 @@ interface Props {
   update: UpdateAttributes
   index?: number
   isCoauthor?: boolean
+  onEditClick: () => void
   onDeleteUpdateClick: () => void
 }
 
-const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onDeleteUpdateClick }: Props) => {
+const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditClick, onDeleteUpdateClick }: Props) => {
   const t = useFormatMessage()
   const [account] = useAuthContext()
 
@@ -90,7 +91,7 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onDelete
           )}
           {isAllowedToPostUpdate && (
             <div className="ProposalUpdate__Menu">
-              <UpdateMenu onDeleteClick={onDeleteUpdateClick} />
+              <UpdateMenu onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
             </div>
           )}
           <div>

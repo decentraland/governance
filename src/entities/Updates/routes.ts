@@ -117,9 +117,11 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  if (update?.completion_date) {
-    throw new RequestError(`Update already completed: "${update.id}"`, RequestError.BadRequest)
+  if (!update?.completion_date) {
+    throw new RequestError(`Update not completed: "${update.id}"`, RequestError.BadRequest)
   }
+
+  const { completion_date } = update
 
   const user = req.auth
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
@@ -150,7 +152,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       next_steps,
       additional_notes,
       status,
-      completion_date: now,
+      completion_date,
       updated_at: now,
     },
     { id }

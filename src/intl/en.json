@@ -413,6 +413,10 @@
       "description": "Are you sure you want to delete this update? This action cannot be undone.",
       "accept": "Delete",
       "reject": "Cancel"
+    },
+    "edit_update": {
+      "accept": "Save",
+      "action": "Edit"
     }
   },
   "component": {
