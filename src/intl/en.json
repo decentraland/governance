@@ -804,6 +804,14 @@
         "delegated": "Delegated {vp} VP",
         "delegate_action": "Delegate them your VP",
         "button": "Show all delegators"
+      },
+      "voted_proposals": {
+        "title": "Proposals voted on",
+        "button": "View more proposals",
+        "vote": "They voted \"{vote}\"",
+        "stance_shared": "Stance shared",
+        "stance_differs": "Stance differs"
+
       }
     },
     "transparency": {

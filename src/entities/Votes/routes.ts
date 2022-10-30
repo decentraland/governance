@@ -11,7 +11,7 @@ import { ProposalAttributes } from '../Proposal/types'
 
 import VotesModel from './model'
 import { Vote, VoteAttributes } from './types'
-import { createVotes, getProposalScores, toProposalIds } from './utils'
+import { createVotes, toProposalIds } from './utils'
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
@@ -20,19 +20,21 @@ export default routes((route) => {
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
+  const refresh = req.query.refresh === 'true'
+
   const proposal = await getProposal(req)
   let latestVotes = await VotesModel.getVotes(proposal.id)
   if (!latestVotes) {
     latestVotes = await VotesModel.createEmpty(proposal.id)
   }
 
-  if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now()) {
+  if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now() && !refresh) {
     return latestVotes.votes
   }
 
   let snapshotVotes: SnapshotVote[]
   try {
-    snapshotVotes = await getSnapshotProposalVotes(proposal)
+    snapshotVotes = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
   } catch (err) {
     return latestVotes?.votes || {}
   }
@@ -45,18 +47,10 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
   return updateSnapshotProposalVotes(proposal, snapshotVotes)
 }
 
-export async function getSnapshotProposalVotes(proposal: ProposalAttributes) {
-  return SnapshotGraphql.get().getProposalVotes(proposal.snapshot_space, proposal.snapshot_id)
-}
-
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
   const now = new Date()
   const hash = VotesModel.hashVotes(snapshotVotes)
-  const balance = await getProposalScores(
-    proposal,
-    snapshotVotes.map((vote) => vote.voter)
-  )
-  const votes = createVotes(snapshotVotes, balance)
+  const votes = createVotes(snapshotVotes)
   await VotesModel.update<VoteAttributes>(
     {
       hash,
@@ -85,7 +79,14 @@ export async function getVotes(proposal_id: string) {
 
 async function getAddressVotes(req: Request) {
   const address = req.params.address
-  const votes = await SnapshotGraphql.get().getAddressVotes(address)
+  const first = Number(req.query.first)
+  const skip = Number(req.query.skip)
+
+  const isParamMissing = isNaN(first) || isNaN(skip)
+
+  const votes = isParamMissing
+    ? await SnapshotGraphql.get().getAddressesVotes([address])
+    : await SnapshotGraphql.get().getAddressesVotesInBatches([address], first, skip)
 
   if (votes.length === 0) {
     return []
@@ -106,6 +107,8 @@ async function getAddressVotes(req: Request) {
         proposal_id: currentProposal?.id,
         status: currentProposal?.status,
         type: currentProposal?.type,
+        author: currentProposal?.user,
+        finish_at: currentProposal?.finish_at?.getTime(),
       },
     })
   }

@@ -275,8 +275,8 @@ export class Governance extends API {
     return result.data
   }
 
-  async getAddressVotes(address: string) {
-    const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}`)
+  async getAddressVotes(address: string, first?: number, skip?: number) {
+    const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)
     return result.data
   }
 

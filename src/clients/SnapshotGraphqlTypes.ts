@@ -25,6 +25,7 @@ export type SnapshotVote = {
   voter: string
   created: number
   vp?: number
+  vp_by_strategy?: number[]
   choice: number
   proposal?: {
     id: string
