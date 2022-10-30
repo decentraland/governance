@@ -50,7 +50,8 @@
   margin-left: 5px;
 }
 
-.UpdateDetail__CompletionDate {
+.UpdateDetail__CompletionDate,
+.UpdateDetail__LastEdit {
   display: flex;
   flex-direction: row;
   align-items: center;
