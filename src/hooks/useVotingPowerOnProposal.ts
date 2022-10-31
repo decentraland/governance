@@ -37,12 +37,17 @@ export default function useVotingPowerOnProposal(
       const addressVp = vpDistribution.own || 0
       return { addressVp, delegatedVp }
     },
-    [votes, address, proposal, delegators, isLoadingDelegators],
-    { initialValue: initialVotingPowerOnProposal }
+    [votes, address, proposal, vpDistribution, delegators],
+    { initialValue: initialVotingPowerOnProposal, callWithTruthyDeps: true }
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !vpOnProposalState.loading
-  return { totalVpOnProposal, ...vpOnProposal, hasEnoughToVote, vpOnProposalState }
+  return {
+    totalVpOnProposal,
+    ...vpOnProposal,
+    hasEnoughToVote,
+    isLoadingVp: isLoadingVpDistribution || vpOnProposalState.loading,
+  }
 }
 
 function getVoteDelegatableVp(vote: SnapshotVote) {

@@ -44,7 +44,7 @@ const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices
     addressVp: ownVotingPower,
     totalVpOnProposal,
     hasEnoughToVote,
-    vpOnProposalState,
+    isLoadingVp,
   } = useVotingPowerOnProposal(account, delegators, delegationState.loading, votes, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
@@ -69,8 +69,7 @@ const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices
     [delegators, votes, choices]
   )
 
-  const proposalVotingSectionLoading =
-    loading || accountState.loading || delegationState.loading || vpOnProposalState.loading
+  const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
 
   return (
     <div className="DetailsSection__Content OnlyDesktop">
