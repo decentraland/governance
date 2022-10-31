@@ -141,9 +141,6 @@ export async function finishProposal(context: JobContext) {
     )
   }
 
-  //
-  // Update proposal in Discourse
-  //
   const proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
   for (const proposal of proposals) {

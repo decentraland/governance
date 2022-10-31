@@ -3,7 +3,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 
 import { DiscoursePost } from '../clients/Discourse'
-import { HashContent } from '../clients/IPFS'
+import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
 import CoauthorModel from '../entities/Coauthor/model'
 import isCommittee from '../entities/Committee/isCommittee'
 import ProposalModel from '../entities/Proposal/model'
@@ -120,7 +120,7 @@ export class ProposalService {
     title: string,
     description: string,
     snapshotId: string,
-    snapshotContent: HashContent,
+    snapshotContent: SnapshotProposalContent,
     discourseProposal: DiscoursePost,
     proposalLifespan: ProposalLifespan,
     coAuthors: string[] | null
@@ -134,8 +134,7 @@ export class ProposalService {
       status: ProposalStatus.Active,
       snapshot_id: snapshotId,
       snapshot_space: SNAPSHOT_SPACE,
-      snapshot_proposal: JSON.stringify(snapshotContent.data.message),
-      snapshot_signature: snapshotContent.sig,
+      snapshot_proposal: JSON.stringify(snapshotContent),
       snapshot_network: String(Number(getEnvironmentChainId())),
       discourse_id: discourseProposal.id,
       discourse_topic_id: discourseProposal.topic_id,

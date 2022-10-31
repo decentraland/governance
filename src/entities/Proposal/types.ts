@@ -36,7 +36,6 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   snapshot_id: string
   snapshot_space: string
   snapshot_proposal: any
-  snapshot_signature: string
   snapshot_network: string
   discourse_id: number
   discourse_topic_id: number

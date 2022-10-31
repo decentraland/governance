@@ -43,7 +43,6 @@ export function initProposalAttributes(
     snapshot_id: 'snapshot test id',
     snapshot_space: 'snapshot test space',
     snapshot_proposal: null,
-    snapshot_signature: 'snapshot signature',
     snapshot_network: 'snapshot network',
     discourse_id: 333,
     discourse_topic_id: 444,
