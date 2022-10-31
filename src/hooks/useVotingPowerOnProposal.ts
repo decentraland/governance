@@ -65,9 +65,8 @@ function getDelegatedVotingPowerOnProposal(
   delegators: string[] | null,
   votes: SnapshotVote[]
 ) {
-  let delegatedVotingPower = 0
-  if (votes && !!delegators && vpDistribution) {
-    delegatedVotingPower = vpDistribution.delegated
+  let delegatedVotingPower = vpDistribution.delegated
+  if (votes && !!delegators) {
     for (const vote of votes) {
       if (delegators.find((delegator) => isSameAddress(delegator, vote.voter))) {
         const voterDelegatedVp = getVoteDelegatableVp(vote)
