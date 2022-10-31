@@ -131,6 +131,8 @@ interface Props {
   isEdit?: boolean
 }
 
+const NOW = new Date()
+
 export default function Update({ isEdit }: Props) {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -149,9 +151,11 @@ export default function Update({ isEdit }: Props) {
   useEffect(() => {
     if (isEdit && !!update) {
       const { health, introduction, highlights, blockers, next_steps, additional_notes } = update
-      if (health && introduction && highlights && blockers && next_steps && additional_notes) {
+      if (health && introduction && highlights && blockers && next_steps) {
         setProjectHealth(health)
         editor.set({ introduction, highlights, blockers, nextSteps: next_steps, additionalNotes: additional_notes })
+      } else {
+        console.error('Update is missing required fields', JSON.stringify(update))
       }
     }
   }, [isEdit, update])
@@ -178,6 +182,8 @@ export default function Update({ isEdit }: Props) {
     next_steps: state.value.nextSteps,
     additional_notes: state.value.additionalNotes,
     status: UpdateStatus.Pending,
+    created_at: NOW,
+    updated_at: NOW,
   }
 
   useEffect(() => {
@@ -239,9 +245,9 @@ export default function Update({ isEdit }: Props) {
     updateId &&
     (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)
 
-  const isUserEnabledToEdit = isEdit && update?.author === account
+  const isUserEnabledToEdit = update?.author === account
 
-  if (isDisabled || !isUserEnabledToEdit) {
+  if (isDisabled || (isEdit && !isUserEnabledToEdit)) {
     return (
       <ContentLayout>
         <NotFound />
@@ -249,8 +255,8 @@ export default function Update({ isEdit }: Props) {
     )
   }
 
-  const title = isEdit ? t('page.proposal_update.edit_title') : t('page.proposal_update.title')
-  const description = isEdit ? t('page.proposal_update.edit_description') : t('page.proposal_update.description')
+  const title = t('page.proposal_update.title')
+  const description = t('page.proposal_update.description')
 
   if (!account) {
     return (
@@ -348,7 +354,7 @@ export default function Update({ isEdit }: Props) {
       {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
       <ContentSection className="UpdateSubmit__Actions">
         <Button primary disabled={isLoading} loading={isLoading} onClick={() => editor.validate()}>
-          {isEdit ? t('modal.edit_update.accept') : t('page.proposal_update.publish_update')}
+          {t('page.proposal_update.publish_update')}
         </Button>
         <Button basic disabled={isLoading} onClick={() => setPreviewMode((prev) => !prev)}>
           {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}

@@ -19,7 +19,7 @@ import ProjectHealthStatus from './ProjectHealthStatus'
 import './UpdateMarkdownView.css'
 
 interface Props {
-  update: Omit<UpdateAttributes, 'id' | 'proposal_id' | 'created_at'>
+  update: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   profile?: Profile | null
   author?: string
 }
@@ -59,7 +59,7 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
               </Paragraph>
               {author && <Username address={author} linked />}
             </div>
-            {update.updated_at && (
+            {update.updated_at !== update.created_at && (
               <div className="UpdateDetail__LastEdit">
                 <Paragraph>
                   <DateTooltip date={update.updated_at}>

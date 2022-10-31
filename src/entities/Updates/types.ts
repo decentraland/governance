@@ -12,7 +12,7 @@ export type UpdateAttributes = {
   due_date?: Date
   completion_date?: Date
   created_at: Date
-  updated_at?: Date
+  updated_at: Date
 }
 
 export type IndexedUpdate = UpdateAttributes & {

@@ -2,8 +2,8 @@ import React from 'react'
 
 import Update from '../submit/update'
 
-function update() {
+function UpdateEditPage() {
   return <Update isEdit />
 }
 
-export default update
+export default UpdateEditPage

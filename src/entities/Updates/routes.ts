@@ -117,10 +117,6 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  if (!update?.completion_date) {
-    throw new RequestError(`Update not completed: "${update.id}"`, RequestError.BadRequest)
-  }
-
   const { completion_date } = update
 
   const user = req.auth
@@ -152,7 +148,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       next_steps,
       additional_notes,
       status,
-      completion_date,
+      completion_date: completion_date ? completion_date : now,
       updated_at: now,
     },
     { id }
