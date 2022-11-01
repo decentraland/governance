@@ -4,19 +4,16 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import { SurveyTopicAttributes } from '../../entities/SurveyTopic/types'
+import { ReactionType, Survey, Topic, TopicFeedback } from '../../entities/SurveyTopic/types'
 import useSurveyTopics from '../../hooks/useSurveyTopics'
-import { Survey, TopicFeedback } from '../Modal/Votes/VotingModal'
 
 import './SentimentSurvey.css'
-import SentimentSurveyRow, { ReactionType } from './SentimentSurveyRow'
+import SentimentSurveyRow from './SentimentSurveyRow'
 
 interface Props {
   proposal: ProposalAttributes
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>
 }
-
-export type Topic = Pick<SurveyTopicAttributes, 'topic_id' | 'label'>
 
 const SentimentSurvey = ({ proposal, setSurvey }: Props) => {
   const t = useFormatMessage()

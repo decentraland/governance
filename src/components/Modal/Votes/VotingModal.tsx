@@ -7,20 +7,13 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { Survey } from '../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { SelectedChoice } from '../../../pages/proposal'
-import SentimentSurvey, { Topic } from '../../Proposal/SentimentSurvey'
-import { ReactionType } from '../../Proposal/SentimentSurveyRow'
+import SentimentSurvey from '../../Proposal/SentimentSurvey'
 import '../ProposalModal.css'
 
 import './VotingModal.css'
-
-export type TopicFeedback = {
-  topic: Topic
-  reaction: ReactionType
-}
-
-export type Survey = TopicFeedback[]
 
 interface VotingModalProps {
   open: boolean

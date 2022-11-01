@@ -27,7 +27,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import { Survey, VotingModal } from '../components/Modal/Votes/VotingModal'
+import { VotingModal } from '../components/Modal/Votes/VotingModal'
 import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -45,6 +45,8 @@ import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
+import { SurveyParser } from '../entities/SurveyTopic/parser'
+import { Survey } from '../entities/SurveyTopic/types'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
@@ -117,7 +119,7 @@ export default function ProposalPage() {
           listedAccount,
           proposal.snapshot_id,
           choiceIndex,
-          JSON.stringify(survey)
+          SurveyParser.encode(survey)
         )
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()
