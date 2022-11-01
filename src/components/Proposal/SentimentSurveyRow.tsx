@@ -2,9 +2,8 @@ import React, { useCallback, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import Helper from '../Helper/Helper'
+import { ReactionType, Topic } from '../../entities/SurveyTopic/types'
 import IconHelper from '../Helper/IconHelper'
 import AddReaction from '../Icon/AddReaction'
 import AngryEmoji from '../Icon/AngryEmoji'
@@ -12,20 +11,12 @@ import GreyX from '../Icon/GreyX'
 import PartyEmoji from '../Icon/PartyEmoji'
 import PokerFaceEmoji from '../Icon/PokerFaceEmoji'
 
-import { Topic } from './SentimentSurvey'
 import './SentimentSurveyRow.css'
 
 interface Props {
   topic: Topic
   onReactionPicked: (topic: Topic, reaction: ReactionType) => void
   onReactionUnpicked: (topic: Topic) => void
-}
-
-export enum ReactionType {
-  HAPPY = 'happy',
-  INDIFFERENT = 'indifferent',
-  ANGRY = 'angry',
-  EMPTY = 'empty',
 }
 
 type ReactionView = { reaction: ReactionType; label: string; icon: JSX.Element }
@@ -43,11 +34,14 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
   const [pickedReaction, setPickedReaction] = useState<ReactionType | null>()
   const reactionPicked = pickedReaction != null
 
-  const pickReaction = useCallback((reaction: ReactionType) => {
-    setShowReactions(false)
-    setPickedReaction(reaction)
-    onReactionPicked(topic, reaction)
-  }, [])
+  const pickReaction = useCallback(
+    (reaction: ReactionType) => {
+      setShowReactions(false)
+      setPickedReaction(reaction)
+      onReactionPicked(topic, reaction)
+    },
+    [onReactionPicked, topic]
+  )
 
   const changeReaction = useCallback(() => {
     setPickedReaction(null)
