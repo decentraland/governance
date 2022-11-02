@@ -806,8 +806,8 @@
         "button": "View more proposals",
         "vote": "They voted \"{vote}\"",
         "stance_shared": "Stance shared",
-        "stance_differs": "Stance differs"
-
+        "stance_differs": "Stance differs",
+        "empty": "This account hasn't voted on any proposal"
       }
     },
     "transparency": {
