@@ -103,14 +103,16 @@ export type DiscourseComment = {
   created_at: string
 }
 
+type DiscoursePostStream = {
+  stream: number[]
+  posts: DiscoursePostInTopic[]
+}
+
 export type DiscourseTopic = {
   chunk_size: number
   deleted_by: null
   slow_mode_enabled_until: null
-  post_stream: {
-    stream: number[]
-    posts: DiscoursePostInTopic[]
-  }
+  post_stream: DiscoursePostStream
   timeline_lookup: number[][]
   bookmarks: any[]
   fancy_title: string
@@ -357,5 +359,17 @@ export class Discourse extends API {
 
   async getTopic(topic_id: number) {
     return this.fetch<DiscourseTopic>(`/t/${topic_id}.json`, this.withAuth(this.options().method('GET')))
+  }
+
+  async getPosts(topic_id: number, postIds: number[]) {
+    let query = '?'
+    postIds.forEach((id, index) => {
+      if (index > 0) query = query.concat('&')
+      query = query.concat('post_ids[]=' + id)
+    })
+    return this.fetch<Pick<DiscourseTopic, 'post_stream' | 'id'>>(
+      `/t/${topic_id}/posts.json` + query,
+      this.withAuth(this.options().method('GET'))
+    )
   }
 }

@@ -1,4 +1,4 @@
-import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
+import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { env } from '../../modules/env'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
@@ -16,8 +16,7 @@ function setAvatarUrl(post: DiscoursePostInTopic) {
   return defaultSizeUrl.includes('letter') ? defaultSizeUrl : BASE_AVATAR_URL + defaultSizeUrl
 }
 
-export function filterComments(comments: DiscourseTopic): ProposalCommentsInDiscourse {
-  const posts = comments.post_stream.posts
+export function filterComments(posts: DiscoursePostInTopic[]): ProposalCommentsInDiscourse {
   const userPosts = posts.filter(
     (post) => ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase())
   )
