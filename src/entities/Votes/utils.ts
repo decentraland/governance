@@ -25,6 +25,7 @@ export function createVotes(votes: SnapshotVote[]) {
       choice: vote.choice,
       vp: getFloorOrZero(vote.vp),
       timestamp: Number(vote.created),
+      reason: vote.reason || '',
     }
     return result
   }, {} as Record<string, Vote>)

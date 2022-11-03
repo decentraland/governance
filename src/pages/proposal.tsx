@@ -32,6 +32,7 @@ import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
+import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import ProposalImagesPreview from '../components/ProposalImagesPreview/ProposalImagesPreview'
 import ForumButton from '../components/Section/ForumButton'
@@ -269,6 +270,7 @@ export default function ProposalPage() {
                 />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
+              {!votesState.loading && votes && Object.keys(votes).length > 0 && <SurveyResults votes={votes} />}
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">

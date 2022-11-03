@@ -10,7 +10,7 @@ import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Survey } from '../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { SelectedChoice } from '../../../pages/proposal'
-import SentimentSurvey from '../../Proposal/SentimentSurvey'
+import SentimentSurvey from '../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../ProposalModal.css'
 
 import './VotingModal.css'

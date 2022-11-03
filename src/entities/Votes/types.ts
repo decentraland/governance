@@ -14,6 +14,7 @@ export type Vote = {
   timestamp: number
   choice: number
   vp: number
+  reason?: string
 }
 
 export type VotedProposal = SnapshotVote & {
