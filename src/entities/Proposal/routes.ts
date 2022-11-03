@@ -16,6 +16,7 @@ import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
+import { DiscourseService } from '../../services/DiscourseService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
@@ -472,10 +473,13 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
 export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
-    const comments = await Discourse.get().getTopic(proposal.discourse_topic_id)
-    return filterComments(comments)
+    const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
+    return filterComments(allComments)
   } catch (e) {
-    logger.error('Could not get proposal comments', e as Error)
+    console.error(
+      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id} `,
+      e as Error
+    )
     return []
   }
 }
