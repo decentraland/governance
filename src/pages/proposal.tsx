@@ -45,8 +45,8 @@ import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
-import { SurveyParser } from '../entities/SurveyTopic/parser'
 import { Survey } from '../entities/SurveyTopic/types'
+import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
@@ -119,7 +119,7 @@ export default function ProposalPage() {
           listedAccount,
           proposal.snapshot_id,
           choiceIndex,
-          SurveyParser.encode(survey)
+          SurveyEncoder.encode(survey)
         )
         patchOptions({ changing: false, confirmSubscription: !votes[account] })
         votesState.reload()
