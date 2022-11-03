@@ -19,6 +19,7 @@ import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Form/MarkdownField'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
 import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
@@ -126,18 +127,38 @@ const validate = createValidator<updateFormState>({
   }),
 })
 
-export default function Update() {
+interface Props {
+  isEdit?: boolean
+}
+
+const NOW = new Date()
+
+export default function Update({ isEdit }: Props) {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const proposalId = params.get('proposalId') || ''
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
   const [projectHealth, setProjectHealth] = useState(initialState.health)
   const { update, state: updateState } = useProposalUpdate(updateId)
+  const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update])
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isEditAccepted, setIsEditAccepted] = useState(false)
+
+  useEffect(() => {
+    if (isEdit && !!update) {
+      const { health, introduction, highlights, blockers, next_steps, additional_notes } = update
+      if (health && introduction && highlights && blockers && next_steps) {
+        setProjectHealth(health)
+        editor.set({ introduction, highlights, blockers, nextSteps: next_steps, additionalNotes: additional_notes })
+      } else {
+        console.error('Update is missing required fields', JSON.stringify(update))
+      }
+    }
+  }, [isEdit, update])
 
   const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
     value: state.value[fieldName],
@@ -161,11 +182,14 @@ export default function Update() {
     next_steps: state.value.nextSteps,
     additional_notes: state.value.additionalNotes,
     status: UpdateStatus.Pending,
+    created_at: NOW,
+    updated_at: NOW,
   }
 
   useEffect(() => {
     const submitUpdate = async () => {
       if (!proposalId) {
+        console.log('No proposal ID')
         return
       }
 
@@ -185,12 +209,20 @@ export default function Update() {
       }
 
       try {
-        if (updateId) {
-          await Governance.get().updateProposalUpdate(newUpdate)
+        if (isEdit && updateId) {
+          if (!isEditAccepted) {
+            setIsEditModalOpen(true)
+          } else {
+            await Governance.get().updateProposalUpdate(newUpdate)
+            setIsEditModalOpen(false)
+          }
         } else {
           await Governance.get().createProposalUpdate(newUpdate)
         }
-        navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
+
+        if (!isEdit || isEditAccepted) {
+          navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
+        }
       } catch (err) {
         if (err instanceof Error) {
           editor.error({ '*': err.message })
@@ -202,13 +234,20 @@ export default function Update() {
     if (state.validated) {
       submitUpdate()
     }
-  }, [state.validated])
+  }, [state.validated, isEdit, isEditAccepted])
 
   if (accountState.loading || updateState.loading) {
     return <LoadingView />
   }
 
-  if (updateId && (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)) {
+  const isDisabled =
+    !isEdit &&
+    updateId &&
+    (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)
+
+  const isUserEnabledToEdit = update?.author === account
+
+  if (isDisabled || (isEdit && !isUserEnabledToEdit)) {
     return (
       <ContentLayout>
         <NotFound />
@@ -216,32 +255,33 @@ export default function Update() {
     )
   }
 
+  const title = t('page.proposal_update.title')
+  const description = t('page.proposal_update.description')
+
   if (!account) {
     return (
       <Container>
-        <Head
-          title={t('page.proposal_update.title') || ''}
-          description={t('page.proposal_update.description') || ''}
-          image="https://decentraland.org/images/decentraland.png"
-        />
+        <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
         <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
       </Container>
     )
   }
 
+  const isLoading = isEdit ? isEditAccepted && state.validated : state.validated
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false)
+    setFormDisabled(false)
+  }
+
   return (
     <ContentLayout small>
-      <Head
-        title={t('page.proposal_update.title') || ''}
-        description={t('page.proposal_update.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
       <Helmet title="Publish Update" />
       <ContentSection>
-        <Header size="huge">{t('page.proposal_update.title')}</Header>
+        <Header size="huge">{title}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{t('page.proposal_update.description')}</Paragraph>
+        <Paragraph small>{description}</Paragraph>
       </ContentSection>
       {!isPreviewMode && (
         <>
@@ -313,10 +353,10 @@ export default function Update() {
       )}
       {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
       <ContentSection className="UpdateSubmit__Actions">
-        <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
+        <Button primary disabled={isLoading} loading={isLoading} onClick={() => editor.validate()}>
           {t('page.proposal_update.publish_update')}
         </Button>
-        <Button basic disabled={state.validated} onClick={() => setPreviewMode((prev) => !prev)}>
+        <Button basic disabled={isLoading} onClick={() => setPreviewMode((prev) => !prev)}>
           {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}
         </Button>
       </ContentSection>
@@ -326,6 +366,13 @@ export default function Update() {
             {t(state.error['*']) || state.error['*']}
           </Paragraph>
         </ContentSection>
+      )}
+      {isEdit && (
+        <EditUpdateModal
+          onClickAccept={() => setIsEditAccepted(true)}
+          open={isEditModalOpen}
+          onClose={handleEditModalClose}
+        />
       )}
     </ContentLayout>
   )

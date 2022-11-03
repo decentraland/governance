@@ -76,4 +76,7 @@ export default {
   welcome: () => url('/welcome/', {}),
   update: (id: string) => url('/update/', { id }),
   grants: () => url('/grants/', {}),
+  edit: {
+    update: (id: string) => url('edit/update/', { id }),
+  },
 }

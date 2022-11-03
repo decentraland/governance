@@ -17,11 +17,12 @@ import UpdateMenu from './UpdateMenu'
 interface Props {
   update: UpdateAttributes
   index?: number
+  onEditClick: () => void
   onDeleteUpdateClick: () => void
   showMenu?: boolean
 }
 
-const ExpandedProposalUpdate = ({ update, index, onDeleteUpdateClick, showMenu }: Props) => {
+const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClick, showMenu }: Props) => {
   const t = useFormatMessage()
   const { introduction, status, health, completion_date } = update
   const UpdateIcon = getStatusIcon(health, completion_date)
@@ -60,7 +61,7 @@ const ExpandedProposalUpdate = ({ update, index, onDeleteUpdateClick, showMenu }
           </span>
           {showMenu && (
             <div className="ProposalUpdate__Menu">
-              <UpdateMenu onDeleteClick={onDeleteUpdateClick} />
+              <UpdateMenu onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
             </div>
           )}
           {status === UpdateStatus.Late && (

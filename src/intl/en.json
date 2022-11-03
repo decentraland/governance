@@ -413,6 +413,13 @@
       "description": "Are you sure you want to delete this update? This action cannot be undone.",
       "accept": "Delete",
       "reject": "Cancel"
+    },
+    "edit_update": {
+      "title": "Are you sure you want to edit this update?",
+      "description": "Saving this update will update any previously published content with this new edit.",
+      "accept": "Save",
+      "reject": "Cancel",
+      "action": "Edit"
     }
   },
   "component": {
@@ -506,10 +513,10 @@
       "dao_delegates": {
         "title": "DAO Delegates",
         "description": "Voting Power (VP) delegation is crucial to maximize the circulating VP usage, by assigning your VP to trusted community members who can engage in the governance process on behalf of you.",
-        "candidate_name":"Candidate Name",
-        "last_voted":  "Last Voted",
+        "candidate_name": "Candidate Name",
+        "last_voted": "Last Voted",
         "times_voted": "Voted On",
-        "picked_by":  "Picked By",
+        "picked_by": "Picked By",
         "total_vp": "Total VP",
         "view_all_delegates": "View all Delegates",
         "fetching": "Fetching DAO delegates..."
@@ -763,7 +770,7 @@
       },
       "user_voting_stats": {
         "participation_label": "30 Day Participation",
-        "participation_percentage_label":  "{percentage} participation rate",
+        "participation_percentage_label": "{percentage} participation rate",
         "participation_total_label": "Voted on {count} proposals",
         "personal_match_label": "Personal Match",
         "personal_match_info": "Personal match shows the alignment you have with this profile in terms of voting decisions.",
@@ -858,6 +865,7 @@
       "next_steps": "Next steps",
       "additional_notes": "Additional notes and links",
       "completion_date": "Posted {date} by",
+      "edit_date": "Update last edited **{date}**",
       "due_date": "Update shared **{date} late**, after it was due.",
       "delete_update": "Delete update"
     },
