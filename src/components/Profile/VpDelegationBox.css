@@ -6,6 +6,10 @@
   padding: 12px 12px 0 !important;
 }
 
+.VotedProposalsBox .Empty {
+  margin-top: 24px;
+}
+
 @media (min-width: 768px) {
   .ui.container.VpDelegationBox {
     margin-bottom: 44px;
