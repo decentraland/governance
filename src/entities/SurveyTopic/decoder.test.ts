@@ -1,7 +1,7 @@
 import { def, get } from 'bdd-lazy-var/getter'
 
+import { SurveyDecoder } from './decoder'
 import SurveyTopicModel from './model'
-import { SurveyParser } from './parser'
 import { ReactionType, Topic, TopicFeedback } from './types'
 
 const TOPIC_1: Topic = { topic_id: 'topic id 1', label: 'topic label 1' }
@@ -12,7 +12,7 @@ const SENTIMENT_SURVEY: TopicFeedback[] = [
   { topic: TOPIC_2, reaction: ReactionType.HAPPY },
 ]
 
-describe('SurveyParser', () => {
+describe('SurveyDecoder', () => {
   beforeAll(() => {
     jest.spyOn(SurveyTopicModel, 'findOne').mockImplementation((query) => {
       switch (query.id) {
@@ -26,28 +26,8 @@ describe('SurveyParser', () => {
     })
   })
 
-  describe('encode', () => {
-    def('encodedSurvey', () => SurveyParser.encode(get.survey))
-
-    describe('and empty survey', () => {
-      def('survey', () => [])
-
-      it('should be encoded into an empty array', () => {
-        expect(get.encodedSurvey).toBe('')
-      })
-    })
-
-    describe('a survey with different topic feedbacks', () => {
-      def('survey', () => SENTIMENT_SURVEY)
-
-      it('should be encoded into an empty string', () => {
-        expect(get.encodedSurvey).toBe('topic id 1:indifferent|topic id 2:happy')
-      })
-    })
-  })
-
   describe('decode', () => {
-    def('decodedSurvey', async () => await SurveyParser.decode(get.encodedSurvey))
+    def('decodedSurvey', async () => await SurveyDecoder.decode(get.encodedSurvey))
 
     describe('and empty survey', () => {
       def('encodedSurvey', () => '')

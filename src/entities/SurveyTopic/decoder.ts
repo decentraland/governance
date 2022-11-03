@@ -1,21 +1,8 @@
 import SurveyTopicModel from './model'
 import { ReactionType, Survey, SurveyTopicAttributes, TopicFeedback } from './types'
+import { TOPIC_REACTION_CONCAT, TOPIC_SEPARATOR } from './utils'
 
-const TOPIC_REACTION_CONCAT = ':'
-const TOPIC_SEPARATOR = '|'
-
-export class SurveyParser {
-  static encode(survey: Survey): string {
-    if (!survey || survey.length < 1) return ''
-
-    let encoded = ''
-    survey.forEach((topicFeedback, index) => {
-      if (index > 0) encoded = encoded.concat(TOPIC_SEPARATOR)
-      encoded = encoded.concat(topicFeedback.topic.topic_id + TOPIC_REACTION_CONCAT + topicFeedback.reaction)
-    })
-    return encoded
-  }
-
+export class SurveyDecoder {
   static async decode(encodedSurvey: string): Promise<Survey> {
     if (!encodedSurvey || encodedSurvey.length < 1) return []
     let buffer = encodedSurvey
@@ -25,7 +12,7 @@ export class SurveyParser {
       const separatorPos = buffer.indexOf(TOPIC_SEPARATOR)
       if (separatorPos === -1) lastTopic = true
       const topicFeedback = buffer.substring(0, lastTopic ? buffer.length : separatorPos)
-      survey.push(await SurveyParser.parseTopic(topicFeedback))
+      survey.push(await SurveyDecoder.parseTopic(topicFeedback))
       buffer = buffer.substring(separatorPos + 1, buffer.length)
     }
 
