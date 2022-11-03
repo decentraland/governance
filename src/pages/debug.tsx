@@ -28,6 +28,7 @@ export default function DebugPage() {
       <Header size="huge">{t('page.debug.title')}</Header>
       <HttpStatus className="DebugPage__Section" />
       <SnapshotStatus className="DebugPage__Section" />
+      <div>Version: {process.env.GATSBY_VERSION_NUMBER}</div>
     </Container>
   )
 }

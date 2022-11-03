@@ -35,6 +35,8 @@ jobs:
           tags: ${{ github.sha }} latest
           dockerfiles: |
             ./Dockerfile
+          build-args: |
+            version_number=${{ github.sha }}
       
       - name: Push To quay.io
         id: push-to-quay

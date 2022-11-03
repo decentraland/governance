@@ -37,12 +37,17 @@ export default function useVotingPowerOnProposal(
       const addressVp = vpDistribution.own || 0
       return { addressVp, delegatedVp }
     },
-    [votes, address, proposal, delegators, isLoadingDelegators],
-    { initialValue: initialVotingPowerOnProposal }
+    [votes, address, proposal, vpDistribution, delegators],
+    { initialValue: initialVotingPowerOnProposal, callWithTruthyDeps: true }
   )
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !vpOnProposalState.loading
-  return { totalVpOnProposal, ...vpOnProposal, hasEnoughToVote, vpOnProposalState }
+  return {
+    totalVpOnProposal,
+    ...vpOnProposal,
+    hasEnoughToVote,
+    isLoadingVp: isLoadingVpDistribution || vpOnProposalState.loading,
+  }
 }
 
 function getVoteDelegatableVp(vote: SnapshotVote) {
@@ -65,9 +70,8 @@ function getDelegatedVotingPowerOnProposal(
   delegators: string[] | null,
   votes: SnapshotVote[]
 ) {
-  let delegatedVotingPower = 0
-  if (votes && !!delegators && vpDistribution) {
-    delegatedVotingPower = vpDistribution.delegated
+  let delegatedVotingPower = vpDistribution.delegated
+  if (votes && !!delegators) {
     for (const vote of votes) {
       if (delegators.find((delegator) => isSameAddress(delegator, vote.voter))) {
         const voterDelegatedVp = getVoteDelegatableVp(vote)
