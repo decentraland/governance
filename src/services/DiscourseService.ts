@@ -2,7 +2,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
-import { Discourse, DiscoursePost } from '../clients/Discourse'
+import { Discourse, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
 import * as templates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import { inBackground } from '../helpers'
@@ -70,5 +70,31 @@ export class DiscourseService {
       logger.log('Dropping discourse topic', { topic_id: topic_id })
       return Discourse.get().removeTopic(topic_id)
     })
+  }
+
+  static async fetchAllComments(discourseTopicId: number) {
+    const DISCOURSE_BATCH_SIZE = 20
+    const topic = await Discourse.get().getTopic(discourseTopicId)
+    let allComments: DiscoursePostInTopic[] = topic.post_stream.posts //first 20
+    let skip = DISCOURSE_BATCH_SIZE - 1
+    if (topic.post_stream.stream.length > DISCOURSE_BATCH_SIZE) {
+      let hasNext = true
+      try {
+        while (hasNext) {
+          const postIds = topic.post_stream.stream.slice(skip, skip + DISCOURSE_BATCH_SIZE)
+          const newPostsResponse = await Discourse.get().getPosts(discourseTopicId, postIds)
+          const newComments = newPostsResponse.post_stream.posts
+          allComments = [...allComments, ...newComments]
+          if (newComments.length < DISCOURSE_BATCH_SIZE) {
+            hasNext = false
+          } else {
+            skip = allComments.length
+          }
+        }
+      } catch (error) {
+        console.error(`Error while fetching discourse posts in batches: `, error)
+      }
+    }
+    return allComments
   }
 }

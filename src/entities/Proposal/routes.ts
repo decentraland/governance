@@ -16,7 +16,7 @@ import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
-import { fetchAllComments } from '../../modules/discourse/utils'
+import { DiscourseService } from '../../services/DiscourseService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
@@ -473,7 +473,7 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
 export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
-    const allComments = await fetchAllComments(proposal.discourse_topic_id)
+    const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
     return filterComments(allComments)
   } catch (e) {
     console.error(
