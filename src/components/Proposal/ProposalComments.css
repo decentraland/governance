@@ -7,6 +7,10 @@
   pointer-events: none;
 }
 
+.ui.active.loader.ProposalComments__Loader {
+  top: 25%;
+}
+
 .ProposalComments .ProposalComments__Header {
   display: flex;
   justify-content: space-between;

@@ -50,7 +50,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
           <Divider />
           {isLoadingComments && (
             <div className="ProposalComments__Header">
-              <Loader active={true} />
+              <Loader className="ProposalComments__Loader" active={true} />
             </div>
           )}
           {!isLoadingComments && (
