@@ -5,7 +5,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import Cancel from '../Icon/Cancel'
 import CheckCircle from '../Icon/CheckCircle'
-import Minus from '../Icon/Minus'
+import Pending from '../Icon/Pending'
 
 import './ResultStance.css'
 
@@ -30,7 +30,7 @@ const StanceConfig: Record<Stance, { icon: React.ReactNode; text: string }> = {
     text: 'page.profile.voted_proposals.stance_differs',
   },
   [Stance.PENDING]: {
-    icon: <Minus size="16" />,
+    icon: <Pending size="16" />,
     text: 'page.profile.voted_proposals.stance_pending',
   },
 }
