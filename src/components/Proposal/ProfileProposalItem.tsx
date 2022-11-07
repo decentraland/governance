@@ -33,6 +33,8 @@ function ProfileProposalItem({ votedProposal }: Props) {
 
   const isMatch = winningChoice === choiceIdx
 
+  const isProposalActive = Time().isBefore(Time(finish_at))
+
   return (
     <Card as={Link} href={locations.proposal(proposal.proposal_id)} className="ProfileProposalItem">
       <Card.Content>
@@ -42,7 +44,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
           </div>
           <Mobile>
             <div>
-              <ResultStance isMatch={isMatch} />
+              <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
             </div>
           </Mobile>
           <div className="ProfileProposalItem__Status">
@@ -59,7 +61,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
         </div>
         <div>
           <NotMobile>
-            <ResultStance isMatch={isMatch} />
+            <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
           </NotMobile>
         </div>
         <div>
