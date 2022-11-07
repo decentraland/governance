@@ -790,10 +790,7 @@ type TransparencyGrant = {
 type GrantBlockchainData = {
   contract?: VestingContractData
   enacting_tx?: string
-  token?: {
-    symbol: string
-    decimals: number
-  }
+  token?: string
   enacted_at: number
   tx_amount?: number
   tx_date?: number

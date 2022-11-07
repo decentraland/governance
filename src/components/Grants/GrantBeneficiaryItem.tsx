@@ -45,7 +45,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
                 {t('page.profile.grants.item_description', {
                   time: formatDate(enactedDate),
                   amount: intl.formatNumber(grant.size),
-                  token: isInMana ? 'USD' : token?.symbol,
+                  token: isInMana ? 'USD' : token,
                 })}
               </Markdown>
             </span>
@@ -80,7 +80,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
                   {t('page.profile.grants.item_short_description', {
                     time: abbreviateTimeDifference(formatDate(enactedDate)),
                     amount: intl.formatNumber(grant.size),
-                    token: token?.symbol,
+                    token: token,
                   })}
                 </Markdown>
               </span>
