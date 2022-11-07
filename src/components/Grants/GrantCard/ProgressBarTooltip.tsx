@@ -35,9 +35,9 @@ function ProgressBarTooltip({ grant, isInCliff, children }: Props) {
   } else if (isOneTimePayment) {
     textToShow = t('page.profile.grants.one_time_tx', { time: formatDate(new Date(enacted_at * 1000)) })
   } else if (releasedAmount > 0) {
-    textToShow = t('page.profile.grants.released', { amount: intl.formatNumber(releasedAmount), token: token?.symbol })
+    textToShow = t('page.profile.grants.released', { amount: intl.formatNumber(releasedAmount), token: token })
   } else {
-    textToShow = t('page.profile.grants.vested', { amount: intl.formatNumber(vestedAmount), token: token?.symbol })
+    textToShow = t('page.profile.grants.vested', { amount: intl.formatNumber(vestedAmount), token: token })
   }
 
   return <Popup content={textToShow} position="top center" trigger={children} on="hover" />

@@ -1,7 +1,8 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { ProposalGrantCategory, ProposalGrantTier } from '../entities/Proposal/types'
+import { ProposalGrantCategory, ProposalGrantTier, ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
+import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
 
 export type Detail = {
   name: string
@@ -39,26 +40,45 @@ export type TransparencyData = {
 
 type Grants = {
   id: string
+  snapshot_id: string
+  user: string
+  type: string
+  title: string
+  start_at: number
+  finish_at: number
+  required_to_pass: number
+  status: ProposalStatus
+  configuration: any
+  discourse_topic_id: number
+  scores_total: number
+  votes: number
+  manaVP: number
+  landVP: number
+  namesVP: number
+  delegatedVP: number
+  vesting_address: null | string
+  enacting_tx: null | string
   category: ProposalGrantCategory
   tier: keyof typeof TransparencyGrantsTiers
   size: number
-  status: string
-  title: string
-  token: {
-    symbol: string
-    decimals: number
-  }
-  user: string
-  vesting_address: string
-  vesting_released: number
-  vesting_releasable: number
-  vesting_start_at: string
-  vesting_finish_at: number
-  vesting_token_contract_balance: number
-  vesting_total_amount: number
-  enacting_tx: string
-  tx_amount: number
-  tx_date: string
+  beneficiary: string
+  token?: string
+  tx_date?: number
+  tx_amount?: number
+  done_updates?: number
+  late_updates?: number
+  missed_updates?: number
+  pending_updates?: number
+  update_status?: UpdateStatus
+  health?: ProjectHealth
+  last_update?: number
+  vesting_released?: number
+  vesting_releasable?: number
+  vesting_start_at?: number
+  vesting_finish_at?: number
+  vesting_token_contract_balance?: number
+  vesting_total_amount?: number
+  next_update?: number
 }[]
 
 export const TransparencyGrantsTiers = {

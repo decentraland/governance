@@ -570,12 +570,18 @@ async function getGrants() {
             tx_amount: grant.tx_amount,
           })
         } else {
+          const { vesting_total_amount, vesting_released, vesting_releasable } = grant
+
+          if (!vesting_total_amount || !vesting_released || !vesting_releasable) {
+            throw new Error('Missing vesting data')
+          }
+
           Object.assign(newGrant, {
             contract: {
-              vesting_total_amount: Math.round(grant.vesting_total_amount),
-              vestedAmount: Math.round(grant.vesting_released + grant.vesting_releasable),
-              releasable: Math.round(grant.vesting_releasable),
-              released: Math.round(grant.vesting_released),
+              vesting_total_amount: Math.round(vesting_total_amount),
+              vestedAmount: Math.round(vesting_released + vesting_releasable),
+              releasable: Math.round(vesting_releasable),
+              released: Math.round(vesting_released),
               start_at: Time(grant.vesting_start_at).unix(),
               finish_at: Time(grant.vesting_finish_at).unix(),
             },
