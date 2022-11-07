@@ -1,0 +1,54 @@
+.SurveyTopicResult {
+  height: 48px;
+  background: var(--white-900);
+  border: 1px solid rgba(115, 110, 125, 0.24);
+  box-shadow: 0 1px 8px rgba(115, 110, 125, 0.15);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 9px 9px 9px 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.SurveyTopicResult__Header {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  margin-top: 2px;
+}
+
+.SurveyTopicResult__ReactionContainer {
+  background: #f4f4f5;
+  border-radius: 7px;
+  width: 143px;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 4px;
+  padding-left: 8px;
+  padding-right: 8px;
+  align-items: center;
+}
+
+.ReactionCounter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ReactionCounter > .IconHelper__Container {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.ReactionCount {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}

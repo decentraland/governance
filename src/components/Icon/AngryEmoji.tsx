@@ -1,11 +1,16 @@
 import React from 'react'
 
-function AngryEmoji({ className }: { className?: string }) {
+type Props = {
+  className?: string
+  size?: number
+}
+
+function AngryEmoji({ className, size }: Props) {
   return (
     <svg
+      width={size || '24'}
+      height={size || '24'}
       className={className}
-      width="23"
-      height="24"
       viewBox="0 0 23 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
