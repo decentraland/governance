@@ -1,0 +1,10 @@
+.SurveyResults {
+  margin-top: 16px;
+}
+
+.SurveyResults__Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 16px;
+}

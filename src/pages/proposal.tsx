@@ -270,7 +270,9 @@ export default function ProposalPage() {
                 />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
-              {!votesState.loading && votes && Object.keys(votes).length > 0 && <SurveyResults votes={votes} />}
+              {proposal && !votesState.loading && votes && Object.keys(votes).length > 0 && (
+                <SurveyResults votes={votes} proposalId={proposal?.id} />
+              )}
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">

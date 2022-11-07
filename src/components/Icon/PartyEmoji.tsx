@@ -1,10 +1,15 @@
 import React from 'react'
 
-function PartyEmoji({ className }: { className?: string }) {
+type Props = {
+  className?: string
+  size?: number
+}
+
+function PartyEmoji({ className, size }: Props) {
   return (
     <svg
-      width="23"
-      height="24"
+      width={size || '24'}
+      height={size || '24'}
       className={className}
       viewBox="0 0 23 24"
       fill="none"

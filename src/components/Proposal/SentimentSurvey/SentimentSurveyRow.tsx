@@ -19,12 +19,12 @@ interface Props {
   onReactionUnpicked: (topic: Topic) => void
 }
 
-type ReactionView = { reaction: ReactionType; label: string; icon: JSX.Element }
+type ReactionView = { reaction: ReactionType; label: string; icon: (size?: number) => JSX.Element }
 
-const reactionViews: ReactionView[] = [
-  { reaction: ReactionType.HAPPY, label: 'happy', icon: <PartyEmoji /> },
-  { reaction: ReactionType.INDIFFERENT, label: 'indifferent', icon: <PokerFaceEmoji /> },
-  { reaction: ReactionType.ANGRY, label: 'angry', icon: <AngryEmoji /> },
+export const REACTIONS_VIEW: ReactionView[] = [
+  { reaction: ReactionType.HAPPY, label: 'happy', icon: (size) => <PartyEmoji size={size} /> },
+  { reaction: ReactionType.INDIFFERENT, label: 'indifferent', icon: (size) => <PokerFaceEmoji size={size} /> },
+  { reaction: ReactionType.ANGRY, label: 'angry', icon: (size) => <AngryEmoji size={size} /> },
 ]
 
 const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Props) => {
@@ -69,10 +69,10 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
 
       {showReactions && (
         <div className="SentimentSurveyRow__Reactions">
-          {reactionViews.map((reactionView, index) => {
+          {REACTIONS_VIEW.map((reactionView, index) => {
             return (
               <div key={`Reaction__${index}`} onClick={() => pickReaction(reactionView.reaction)}>
-                <IconHelper text={reactionView.label} icon={reactionView.icon} position={'bottom center'} />
+                <IconHelper text={reactionView.label} icon={reactionView.icon()} position={'bottom center'} />
               </div>
             )
           })}
@@ -84,7 +84,7 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
 
       {reactionPicked && (
         <div className="SentimentSurveyRow__Reactions SentimentSurveyRow__PickedReaction">
-          {reactionViews.map((reactionView, index) => {
+          {REACTIONS_VIEW.map((reactionView, index) => {
             return (
               pickedReaction === reactionView.reaction && (
                 <div key={`Reaction__${index}`} onClick={() => changeReaction()}>
