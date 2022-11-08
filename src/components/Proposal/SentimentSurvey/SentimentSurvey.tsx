@@ -1,24 +1,19 @@
 import React, { useEffect } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { ReactionType, Survey, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
-import useSurveyTopics from '../../../hooks/useSurveyTopics'
+import { ReactionType, Survey, SurveyTopicAttributes, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
 
 import './SentimentSurvey.css'
 import SentimentSurveyRow from './SentimentSurveyRow'
 
 interface Props {
-  proposal: ProposalAttributes
+  surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
+  isLoadingSurveyTopics: boolean
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>
 }
 
-const SentimentSurvey = ({ proposal, setSurvey }: Props) => {
-  const t = useFormatMessage()
-  const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal.id)
-
+const SentimentSurvey = ({ surveyTopics, isLoadingSurveyTopics, setSurvey }: Props) => {
   useEffect(() => {
     const newSurvey: TopicFeedback[] = []
     surveyTopics?.forEach((topic) => {

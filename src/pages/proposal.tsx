@@ -53,6 +53,7 @@ import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
+import useSurveyTopics from '../hooks/useSurveyTopics'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -98,6 +99,7 @@ export default function ProposalPage() {
   const [proposal, proposalState] = useProposal(params.get('id'))
   const { isCommittee } = useIsCommittee(account)
   const { votes, votesState } = useProposalVotes(proposal?.id)
+  const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
   const [subscriptions, subscriptionsState] = useAsyncMemo(
     () => Governance.get().getSubscriptions(proposal!.id),
     [proposal],
@@ -270,8 +272,13 @@ export default function ProposalPage() {
                 />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
-              {proposal && !votesState.loading && votes && Object.keys(votes).length > 0 && (
-                <SurveyResults votes={votes} proposalId={proposal?.id} />
+              {proposal && (
+                <SurveyResults
+                  votes={votes}
+                  isLoadingVotes={votesState.loading}
+                  surveyTopics={surveyTopics}
+                  isLoadingSurveyTopics={isLoadingSurveyTopics}
+                />
               )}
             </Grid.Column>
 
@@ -332,7 +339,8 @@ export default function ProposalPage() {
       {proposal && (
         <VotingModal
           open={options.showVotingModal}
-          proposal={proposal}
+          surveyTopics={surveyTopics}
+          isLoadingSurveyTopics={isLoadingSurveyTopics}
           onClose={() => patchOptions({ showVotingModal: false })}
           selectedChoice={options.selectedChoice}
           onCastVote={castVote}

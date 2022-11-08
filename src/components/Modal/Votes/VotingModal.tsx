@@ -6,8 +6,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Survey } from '../../../entities/SurveyTopic/types'
+import { Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { SelectedChoice } from '../../../pages/proposal'
 import SentimentSurvey from '../../Proposal/SentimentSurvey/SentimentSurvey'
@@ -17,14 +16,23 @@ import './VotingModal.css'
 
 interface VotingModalProps {
   open: boolean
-  proposal: ProposalAttributes
+  surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
+  isLoadingSurveyTopics: boolean
   selectedChoice: SelectedChoice
   onCastVote: (choiceIndex: number, survey: Survey) => void
   onClose: () => void
   castingVote: boolean
 }
 
-export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVote, castingVote }: VotingModalProps) {
+export function VotingModal({
+  open,
+  onClose,
+  surveyTopics,
+  isLoadingSurveyTopics,
+  selectedChoice,
+  onCastVote,
+  castingVote,
+}: VotingModalProps) {
   const [survey, setSurvey] = useState<Survey>([])
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
@@ -38,7 +46,11 @@ export function VotingModal({ open, onClose, proposal, selectedChoice, onCastVot
           <Header>{"We'd appreciate some extra feedback"}</Header>
           <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
         </div>
-        <SentimentSurvey proposal={proposal} setSurvey={setSurvey} />
+        <SentimentSurvey
+          surveyTopics={surveyTopics}
+          isLoadingSurveyTopics={isLoadingSurveyTopics}
+          setSurvey={setSurvey}
+        />
         <div className="VotingModal__Actions">
           <Button
             fluid
