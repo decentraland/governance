@@ -5,22 +5,51 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import Cancel from '../Icon/Cancel'
 import CheckCircle from '../Icon/CheckCircle'
+import Pending from '../Icon/Pending'
 
 import './ResultStance.css'
 
 interface Props {
   isMatch: boolean
+  isProposalActive: boolean
 }
 
-function ResultStance({ isMatch }: Props) {
+enum Stance {
+  MATCH,
+  DIFFERS,
+  PENDING,
+}
+
+const StanceConfig: Record<Stance, { icon: React.ReactNode; text: string }> = {
+  [Stance.MATCH]: {
+    icon: <CheckCircle size="16" />,
+    text: 'page.profile.voted_proposals.stance_shared',
+  },
+  [Stance.DIFFERS]: {
+    icon: <Cancel size="16" />,
+    text: 'page.profile.voted_proposals.stance_differs',
+  },
+  [Stance.PENDING]: {
+    icon: <Pending size="16" />,
+    text: 'page.profile.voted_proposals.stance_pending',
+  },
+}
+
+function ResultStance({ isMatch, isProposalActive }: Props) {
   const t = useFormatMessage()
-  const text = t(`page.profile.voted_proposals.${isMatch ? 'stance_shared' : 'stance_differs'}`)
-  const icon = useMemo(() => (isMatch ? <CheckCircle size="16" /> : <Cancel size="16" />), [isMatch])
+  const stance = useMemo(() => {
+    if (isProposalActive) {
+      return Stance.PENDING
+    }
+    return isMatch ? Stance.MATCH : Stance.DIFFERS
+  }, [isMatch, isProposalActive])
+
+  const { icon, text } = StanceConfig[stance]
   return (
     <div className="ResultStance">
       {icon}
       <div className="ResultStance__Text">
-        <Header sub>{text}</Header>
+        <Header sub>{t(text)}</Header>
       </div>
     </div>
   )
