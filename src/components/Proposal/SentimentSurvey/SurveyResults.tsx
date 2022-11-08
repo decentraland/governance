@@ -6,15 +6,16 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { SurveyDecoder } from '../../../entities/SurveyTopic/decoder'
 import { ReactionType, Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
-import useSurveyTopics from '../../../hooks/useSurveyTopics'
 import Divider from '../../Common/Divider'
 
 import './SurveyResults.css'
 import SurveyTopicResult from './SurveyTopicResult'
 
 interface Props {
-  votes: Record<string, Vote>
-  proposalId: string
+  votes: Record<string, Vote> | null
+  isLoadingVotes: boolean
+  surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
+  isLoadingSurveyTopics: boolean
 }
 
 function initializeReactionCounters() {
@@ -37,7 +38,7 @@ function initializeTopicResults(surveyTopics: Pick<SurveyTopicAttributes, 'topic
 
 function getResults(
   surveyTopics: Pick<SurveyTopicAttributes, 'topic_id' | 'label'>[] | null,
-  votes: Record<string, Vote>
+  votes: Record<string, Vote> | null
 ) {
   if (!surveyTopics || !votes) return {}
   const decoder = new SurveyDecoder(surveyTopics)
@@ -53,12 +54,11 @@ function getResults(
   return topicsResults
 }
 
-const SurveyResults = ({ votes, proposalId }: Props) => {
-  const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposalId)
+const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTopics }: Props) => {
   const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
   const topicLabels = Object.keys(topicResults)
-  const thereAreVotes = votes && Object.keys(votes).length > 0
-  const thereAreSurveyTopics = surveyTopics && surveyTopics?.length > 0
+  const thereAreVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
+  const thereAreSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
 
   if (!thereAreVotes || !thereAreSurveyTopics) {
     return null
