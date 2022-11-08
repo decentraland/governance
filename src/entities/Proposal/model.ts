@@ -42,6 +42,7 @@ export type FilterPagination = {
 }
 
 const VALID_TIMEFRAME_KEYS = ['created_at', 'finish_at']
+const VALID_ORDER_DIRECTION = ['ASC', 'DESC']
 
 export default class ProposalModel extends Model<ProposalAttributes> {
   static tableName = 'proposals'
@@ -254,13 +255,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
+    const orderDirection = filter.order || 'DESC'
 
-    if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey)) {
+    if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey) || !VALID_ORDER_DIRECTION.includes(orderDirection)) {
       return []
     }
 
     const orderBy = filter.search ? '"rank"' : `p.${timeFrameKey}`
-    const orderDirection = filter.order || 'DESC'
 
     const sqlSnapshotIds = filter.snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
