@@ -7,6 +7,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { Survey } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../hooks/useVotesMatch'
@@ -26,7 +27,7 @@ interface Props {
   changingVote?: boolean
   choices: string[]
   finished: boolean
-  onVote: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
+  onVote: (choice: string, choiceIndex: number) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
 }
 

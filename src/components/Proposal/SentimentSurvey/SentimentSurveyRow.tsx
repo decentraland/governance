@@ -48,7 +48,7 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
     onReactionUnpicked(topic)
     setShowReactions(true)
     setShowAddReaction(true)
-  }, [])
+  }, [onReactionUnpicked, topic])
 
   return (
     <div
@@ -88,7 +88,7 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
             return (
               pickedReaction === reactionView.reaction && (
                 <div key={`Reaction__${index}`} onClick={() => changeReaction()}>
-                  {reactionView.icon}
+                  {reactionView.icon()}
                 </div>
               )
             )

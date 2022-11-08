@@ -5,6 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import { Survey } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
 
@@ -24,7 +25,7 @@ interface Props {
   delegateVote?: Vote | null
   votesByChoices: Scores
   totalVotes: number
-  onVote: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
+  onVote: (choice: string, choiceIndex: number) => void
   startAt?: Date
 }
 
@@ -66,8 +67,8 @@ export const ChoiceButtons = ({
       <Button
         primary
         disabled={!selectedChoice || !started}
-        onClick={(e: React.MouseEvent<unknown>) =>
-          onVote && selectedChoice && onVote(e, selectedChoice.currentChoice, selectedChoice.currentChoiceIndex + 1)
+        onClick={() =>
+          onVote && selectedChoice && onVote(selectedChoice.currentChoice, selectedChoice.currentChoiceIndex + 1)
         }
       >
         {t('page.proposal_detail.cast_vote')}
