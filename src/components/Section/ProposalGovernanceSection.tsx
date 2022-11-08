@@ -38,7 +38,7 @@ export default function ProposalGovernanceSection({
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
-  const finished = false //finishAt.isBefore(now) //TODO: leave this as it was!
+  const finished = finishAt.isBefore(now)
 
   //TODO: DetailsSection should be called ProposalSidebar section or smth
   return (
