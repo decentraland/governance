@@ -1,6 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { DiscordService } from '../../services/DiscordService'
 import UpdateModel from '../Updates/model'
 import { Scores } from '../Votes/utils'
 
@@ -115,6 +116,10 @@ export async function finishProposal(context: JobContext) {
       finishedProposals.map((proposal) => proposal.id),
       ProposalStatus.Finished
     )
+
+    finishedProposals.map((proposal) =>
+      DiscordService.finishProposal(proposal.id, proposal.title, ProposalOutcome.FINISHED)
+    )
   }
 
   if (acceptedProposals.length > 0) {
@@ -122,6 +127,10 @@ export async function finishProposal(context: JobContext) {
     await ProposalModel.finishProposal(
       acceptedProposals.map((proposal) => proposal.id),
       ProposalStatus.Passed
+    )
+
+    acceptedProposals.map((proposal) =>
+      DiscordService.finishProposal(proposal.id, proposal.title, ProposalOutcome.ACCEPTED)
     )
 
     await Promise.all(
@@ -138,6 +147,9 @@ export async function finishProposal(context: JobContext) {
     await ProposalModel.finishProposal(
       rejectedProposals.map((proposal) => proposal.id),
       ProposalStatus.Rejected
+    )
+    rejectedProposals.map((proposal) =>
+      DiscordService.finishProposal(proposal.id, proposal.title, ProposalOutcome.FINISHED)
     )
   }
 

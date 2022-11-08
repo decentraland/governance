@@ -36,4 +36,10 @@ export class DiscordService {
     // TODO: set final message
     this.channel.send(`New update in proposal: ${proposalTitle}, ${updateId}. By ${user}`)
   }
+
+  // TODO: Type outcome
+  static async finishProposal(id: string, title: string, outcome: string) {
+    // TODO: set final message
+    this.channel.send(`Proposal ${id} ${title} has ended with outcome ${outcome}`)
+  }
 }
