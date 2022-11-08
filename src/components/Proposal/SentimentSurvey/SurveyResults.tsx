@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -55,7 +55,7 @@ function getResults(
 
 const SurveyResults = ({ votes, proposalId }: Props) => {
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposalId)
-  const topicResults = getResults(surveyTopics, votes)
+  const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
   const topicLabels = Object.keys(topicResults)
   const thereAreVotes = votes && Object.keys(votes).length > 0
   const thereAreSurveyTopics = surveyTopics && surveyTopics?.length > 0
