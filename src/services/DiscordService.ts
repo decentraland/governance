@@ -14,7 +14,7 @@ export class DiscordService {
     client.login(TOKEN)
   }
 
-  static async newProposal(title: string, type: string, user: string) {
+  private static get channel() {
     if (!CHANNEL_ID) {
       throw new Error('Discord channel ID not set')
     }
@@ -24,7 +24,16 @@ export class DiscordService {
       throw new Error(`Discord channel type is not GuildText ${ChannelType.GuildText}`)
     }
 
+    return channel
+  }
+
+  static async newProposal(title: string, type: string, proposalId: string, user: string) {
     // TODO: set final message
-    channel.send(`New ${type} proposal created: ${title}. By ${user}`)
+    this.channel.send(`New ${type} proposal created: ${title}, ${proposalId}. By ${user}`)
+  }
+
+  static async newUpdate(proposalTitle: string, updateId: string, user: string) {
+    // TODO: set final message
+    this.channel.send(`New update in proposal: ${proposalTitle}, ${updateId}. By ${user}`)
   }
 }
