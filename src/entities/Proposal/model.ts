@@ -41,6 +41,8 @@ export type FilterPagination = {
   offset: number
 }
 
+const VALID_TIMEFRAME_KEYS = ['created_at', 'finish_at']
+
 export default class ProposalModel extends Model<ProposalAttributes> {
   static tableName = 'proposals'
   static withTimestamps = false
@@ -196,6 +198,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sqlSnapshotIds = filter.snapshotIds ? filter.snapshotIds?.split(',').map((id) => SQL`${id}`) : null
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
+    if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey)) {
+      return 0
+    }
+
     const result = await this.query(SQL`
     SELECT COUNT(*) as "total"
     FROM ${table(ProposalModel)} p
@@ -248,6 +254,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
+
+    if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey)) {
+      return []
+    }
 
     const orderBy = filter.search ? '"rank"' : `p.${timeFrameKey}`
     const orderDirection = filter.order || 'DESC'
