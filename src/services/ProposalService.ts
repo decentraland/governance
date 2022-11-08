@@ -14,6 +14,7 @@ import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../modules/votes/utils'
 
 import CatalystService from './CatalystService'
+import { DiscordService } from './DiscordService'
 import { DiscourseService } from './DiscourseService'
 import { SnapshotService } from './SnapshotService'
 
@@ -71,6 +72,8 @@ export class ProposalService {
       proposalLifespan,
       coAuthors
     )
+
+    DiscordService.newProposal(title, proposalInCreation.type, proposalInCreation.user)
 
     return ProposalModel.parse(newProposal)
   }

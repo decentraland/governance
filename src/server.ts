@@ -22,6 +22,7 @@ import subscription from './entities/Subscription/routes'
 import updates from './entities/Updates/routes'
 import score from './entities/Votes/routes'
 import filesystem from './modules/filesystem'
+import { DiscordService } from './services/DiscordService'
 
 const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
@@ -88,3 +89,5 @@ void initializeServices([
   process.env.JOBS !== 'false' && jobInitializer(jobs),
   process.env.HTTP !== 'false' && serverInitializer(app, process.env.PORT || 4000, process.env.HOST),
 ])
+
+DiscordService.init()

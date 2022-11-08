@@ -57,6 +57,7 @@
     "core-js": "^3.21.1",
     "decentraland-gatsby": "5.44.0",
     "decentraland-ui": "^3.37.2",
+    "discord.js": "^14.6.0",
     "dompurify": "^2.3.3",
     "dotenv": "^16.0.0",
     "eth-crypto": "1.6.0",
