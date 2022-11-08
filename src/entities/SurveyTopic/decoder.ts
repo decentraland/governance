@@ -17,30 +17,47 @@ export class SurveyDecoder {
       const separatorPos = buffer.indexOf(TOPIC_SEPARATOR)
       if (separatorPos === -1) lastTopic = true
       const topicFeedback = buffer.substring(0, lastTopic ? buffer.length : separatorPos)
-      survey.push(this.parseTopic(topicFeedback))
+      const parsedTopic: TopicFeedback | null = this.parseTopicFeedback(topicFeedback)
+      if (parsedTopic) survey.push(parsedTopic)
       buffer = buffer.substring(separatorPos + 1, buffer.length)
     }
 
     return survey
   }
 
-  private parseTopic(topicFeedback: string): TopicFeedback {
-    const topicId = topicFeedback.substring(0, topicFeedback.indexOf(TOPIC_REACTION_CONCAT))
-    const reaction = topicFeedback.substring(topicFeedback.indexOf(TOPIC_REACTION_CONCAT) + 1, topicFeedback.length)
+  private parseTopicFeedback(topicFeedback: string): TopicFeedback | null {
+    const topic = this.parseTopic(topicFeedback)
+    const parsedReaction = this.parseReaction(topicFeedback)
 
-    const topic = this.topics.find((topic) => topic.topic_id === topicId)
-    if (!topic) {
-      throw new Error(`Unable to parse topic feedback ${topicFeedback}`)
+    if (!topic || !parsedReaction) {
+      return null
     }
+
     return {
-      topic: { topic_id: topic.topic_id, label: topic.label },
-      reaction: SurveyDecoder.getReaction(reaction),
+      topic,
+      reaction: parsedReaction,
     }
   }
 
-  private static getReaction(reaction: string) {
+  private parseReaction(topicFeedback: string): ReactionType | null {
+    const reaction =
+      topicFeedback.substring(topicFeedback.indexOf(TOPIC_REACTION_CONCAT) + 1, topicFeedback.length) || ''
+    return SurveyDecoder.getReaction(reaction)
+  }
+
+  private parseTopic(topicFeedback: string): Pick<SurveyTopicAttributes, 'topic_id' | 'label'> | undefined {
+    const topicId = topicFeedback.substring(0, topicFeedback.indexOf(TOPIC_REACTION_CONCAT))
+    const topic = this.topics.find((topic) => topic.topic_id === topicId)
+    if (!topic) console.log(`Unable to parse topic feedback ${topicFeedback}`) // TODO: report error
+    return topic
+  }
+
+  private static getReaction(reaction: string): ReactionType | null {
     if (SurveyDecoder.isReactionType(reaction)) return reaction as ReactionType
-    else throw new Error(`Unable to parse reaction ${reaction}`)
+    else {
+      console.log(`Unable to parse reaction ${reaction}`) // TODO: report error
+      return null
+    }
   }
 
   private static isReactionType(value: string | null | undefined): boolean {

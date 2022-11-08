@@ -19,7 +19,7 @@ interface VotingModalProps {
   surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
   isLoadingSurveyTopics: boolean
   selectedChoice: SelectedChoice
-  onCastVote: (choiceIndex: number, survey: Survey) => void
+  onCastVote: (choice: string, choiceIndex: number, survey?: Survey) => void
   onClose: () => void
   castingVote: boolean
 }
@@ -55,7 +55,7 @@ export function VotingModal({
           <Button
             fluid
             primary
-            onClick={() => onCastVote(selectedChoice.choiceIndex!, survey)}
+            onClick={() => onCastVote(selectedChoice.choice!, selectedChoice.choiceIndex!, survey)}
             loading={castingVote}
             className="VotingModal__CastVote"
           >

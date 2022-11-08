@@ -140,7 +140,7 @@ export class SnapshotApi {
     address: string,
     proposalSnapshotId: string,
     choiceNumber: number,
-    comment: string
+    comment?: string
   ): Promise<SnapshotReceipt> {
     const voteMessage = {
       space: SnapshotApi.getSpaceName(),

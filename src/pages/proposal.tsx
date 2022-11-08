@@ -113,7 +113,7 @@ export default function ProposalPage() {
     [account, subscriptions]
   )
   const [castingVote, castVote] = useAsyncTask(
-    async (choiceIndex: number, survey: Survey) => {
+    async (choice: string, choiceIndex: number, survey?: Survey) => {
       if (proposal && account && provider && votes) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
@@ -235,6 +235,19 @@ export default function ProposalPage() {
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
+  const getVotingMethod = () => {
+    return (choice: string, choiceIndex: number) => {
+      if (!isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0) {
+        patchOptions({
+          selectedChoice: { choice, choiceIndex },
+          showVotingModal: true,
+        })
+      } else {
+        castVote(choice, choiceIndex)
+      }
+    }
+  }
+
   return (
     <>
       <Head
@@ -301,12 +314,7 @@ export default function ProposalPage() {
                   changingVote={options.changing}
                   onChangeVote={(_, changing) => patchOptions({ changing })}
                   onOpenVotesList={() => patchOptions({ showVotesList: true })}
-                  onVote={(_, choice, choiceIndex) =>
-                    patchOptions({
-                      selectedChoice: { choice, choiceIndex },
-                      showVotingModal: true,
-                    })
-                  }
+                  onVote={getVotingMethod()}
                 />
                 <ForumButton
                   loading={proposalState.loading}
