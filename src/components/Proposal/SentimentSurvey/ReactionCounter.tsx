@@ -25,7 +25,7 @@ const ReactionCounter = ({ reactionType, count, drawPipe }: Props) => {
         <IconHelper text={reactionView.label} icon={reactionView.icon(16)} position={'bottom center'} />
         <span className="ReactionCount"> {count}</span>
       </div>
-      {!!drawPipe && <Pipe />}
+      {drawPipe && <Pipe />}
     </>
   )
 }

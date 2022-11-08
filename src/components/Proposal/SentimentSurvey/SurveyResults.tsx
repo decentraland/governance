@@ -57,6 +57,13 @@ const SurveyResults = ({ votes, proposalId }: Props) => {
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposalId)
   const topicResults = getResults(surveyTopics, votes)
   const topicLabels = Object.keys(topicResults)
+  const thereAreVotes = votes && Object.keys(votes).length > 0
+  const thereAreSurveyTopics = surveyTopics && surveyTopics?.length > 0
+
+  if (!thereAreVotes || !thereAreSurveyTopics) {
+    return null
+  }
+
   return (
     <div className="SurveyResults">
       <Divider />
