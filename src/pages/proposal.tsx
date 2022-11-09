@@ -76,6 +76,7 @@ export type ProposalPageOptions = {
   showProposalSuccessModal: boolean
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
+  showVotingModalError: boolean
   selectedChoice: SelectedChoice
 }
 
@@ -92,6 +93,7 @@ export default function ProposalPage() {
     showProposalSuccessModal: false,
     showUpdateSuccessModal: false,
     showVotingModal: false,
+    showVotingModalError: false,
     selectedChoice: EMPTY_CHOICE_SELECTION,
   })
   const patchOptionsRef = useRef(patchOptions)
@@ -117,19 +119,32 @@ export default function ProposalPage() {
       if (proposal && account && provider && votes) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
-        await SnapshotApi.get().castVote(
-          web3Provider,
-          listedAccount,
-          proposal.snapshot_id,
-          choiceIndex,
-          SurveyEncoder.encode(survey)
-        )
-        patchOptions({
-          changing: false,
-          showVotingModal: false,
-          confirmSubscription: !votes[account],
-        })
-        votesState.reload()
+
+        Promise.resolve()
+          .then(async () => {
+            await SnapshotApi.get().castVote(
+              web3Provider,
+              listedAccount,
+              proposal.snapshot_id,
+              choiceIndex,
+              SurveyEncoder.encode(survey)
+            )
+          })
+          .then(() => {
+            patchOptions({
+              changing: false,
+              showVotingModal: false,
+              showVotingModalError: false,
+              confirmSubscription: !votes[account],
+            })
+            votesState.reload()
+          })
+          .catch((err) => {
+            console.error(err, { ...err }) //TODO report error
+            patchOptions({
+              showVotingModalError: true,
+            })
+          })
       }
     },
     [proposal, account, provider, votes]
@@ -357,6 +372,8 @@ export default function ProposalPage() {
           selectedChoice={options.selectedChoice}
           onCastVote={castVote}
           castingVote={castingVote}
+          showError={options.showVotingModalError}
+          onRetry={() => patchOptions({ showVotingModalError: false })}
         />
       )}
       <VotesListModal
