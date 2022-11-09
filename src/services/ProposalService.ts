@@ -73,7 +73,14 @@ export class ProposalService {
       coAuthors
     )
 
-    DiscordService.newProposal(title, proposalInCreation.type, newProposal.id, proposalInCreation.user)
+    DiscordService.newProposal(
+      newProposal.id,
+      title,
+      proposalInCreation.type,
+      description,
+      snapshotContent.choices,
+      proposalInCreation.user
+    )
 
     return ProposalModel.parse(newProposal)
   }
