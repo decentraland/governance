@@ -79,6 +79,7 @@ app.use(
       'strict-transport-security': 'max-age=15552000; includeSubDomains; preload',
       'referrer-policy': 'strict-origin-when-cross-origin',
       'x-xss-protection': '1; mode=block',
+      ...(process.env.HEROKU === 'true' && { 'X-Robots-Tag': 'noindex' }),
     },
   })
 )
