@@ -124,7 +124,11 @@ export default function ProposalPage() {
           choiceIndex,
           SurveyEncoder.encode(survey)
         )
-        patchOptions({ changing: false, confirmSubscription: !votes[account] })
+        patchOptions({
+          changing: false,
+          showVotingModal: false,
+          confirmSubscription: !votes[account],
+        })
         votesState.reload()
       }
     },
