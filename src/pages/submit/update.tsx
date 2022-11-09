@@ -209,12 +209,14 @@ export default function Update({ isEdit }: Props) {
       }
 
       try {
-        if (isEdit && updateId) {
-          if (!isEditAccepted) {
+        if (updateId) {
+          if (isEdit && !isEditAccepted) {
             setIsEditModalOpen(true)
           } else {
             await Governance.get().updateProposalUpdate(newUpdate)
-            setIsEditModalOpen(false)
+            if (isEdit) {
+              setIsEditModalOpen(false)
+            }
           }
         } else {
           await Governance.get().createProposalUpdate(newUpdate)
