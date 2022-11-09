@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -22,7 +23,11 @@ interface VotingModalProps {
   onCastVote: (choice: string, choiceIndex: number, survey?: Survey) => void
   onClose: () => void
   castingVote: boolean
+  showError: boolean
+  onRetry: () => void
 }
+
+const SECONDS_FOR_RETRY = 5
 
 export function VotingModal({
   open,
@@ -32,8 +37,25 @@ export function VotingModal({
   selectedChoice,
   onCastVote,
   castingVote,
+  showError,
+  onRetry,
 }: VotingModalProps) {
   const [survey, setSurvey] = useState<Survey>([])
+  const [timeLeft, setTimeLeft] = useState(SECONDS_FOR_RETRY)
+
+  useEffect(() => {
+    if (showError) {
+      const timer = setTimeout(() => {
+        setTimeLeft((timeLeft) => timeLeft - 1)
+      }, 1000)
+
+      if (timeLeft === 0) {
+        setTimeLeft(SECONDS_FOR_RETRY)
+        onRetry()
+      }
+      return () => clearTimeout(timer)
+    }
+  }, [showError, timeLeft, onRetry])
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
@@ -52,14 +74,20 @@ export function VotingModal({
           setSurvey={setSurvey}
         />
         <div className="VotingModal__Actions">
+          <div
+            className={TokenList.join(['VotingModal__ErrorNotice', !showError && 'VotingModal__ErrorNotice--hidden'])}
+          >
+            {'Vote Failed'}
+          </div>
           <Button
             fluid
             primary
             onClick={() => onCastVote(selectedChoice.choice!, selectedChoice.choiceIndex!, survey)}
             loading={castingVote}
+            disabled={showError}
             className="VotingModal__CastVote"
           >
-            {'Cast Vote'}
+            {showError ? `Retry in ${timeLeft}...` : 'Cast Vote'}
           </Button>
         </div>
       </Modal.Content>

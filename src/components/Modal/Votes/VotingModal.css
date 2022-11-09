@@ -1,7 +1,27 @@
+.VotingModal .content {
+  margin-bottom: 32px !important;
+  margin-left: 42px !important;
+  margin-right: 42px !important;
+}
+
 .VotingModal__Actions {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.VotingModal__ErrorNotice {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  color: #d80027;
+  margin-left: 22px;
+}
+
+.VotingModal__ErrorNotice--hidden {
+  opacity: 0;
 }
 
 .VotingModal__CastVote {
