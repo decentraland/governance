@@ -15,7 +15,7 @@ export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
   delegate?: string
   voteCount?: number
   totalVotes?: number
-  selected: boolean
+  selected?: boolean
 }
 
 export default function ChoiceButton({
