@@ -218,9 +218,7 @@ export default function Update({ isEdit }: Props) {
           await Governance.get().createProposalUpdate(newUpdate)
         }
 
-        if (!isEdit || isEditAccepted) {
-          navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
-        }
+        navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
       } catch (err) {
         if (err instanceof Error) {
           editor.error({ '*': err.message })
