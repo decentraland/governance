@@ -209,20 +209,16 @@ export default function Update({ isEdit }: Props) {
       }
 
       try {
-        if (isEdit && updateId) {
-          if (!isEditAccepted) {
-            setIsEditModalOpen(true)
-          } else {
-            await Governance.get().updateProposalUpdate(newUpdate)
+        if (updateId) {
+          await Governance.get().updateProposalUpdate(newUpdate)
+          if (isEdit) {
             setIsEditModalOpen(false)
           }
         } else {
           await Governance.get().createProposalUpdate(newUpdate)
         }
 
-        if (!isEdit || isEditAccepted) {
-          navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
-        }
+        navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
       } catch (err) {
         if (err instanceof Error) {
           editor.error({ '*': err.message })
@@ -232,7 +228,11 @@ export default function Update({ isEdit }: Props) {
     }
 
     if (state.validated) {
-      submitUpdate()
+      if (isEdit && !isEditAccepted) {
+        setIsEditModalOpen(true)
+      } else {
+        submitUpdate()
+      }
     }
   }, [state.validated, isEdit, isEditAccepted])
 
