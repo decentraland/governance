@@ -210,13 +210,9 @@ export default function Update({ isEdit }: Props) {
 
       try {
         if (updateId) {
-          if (isEdit && !isEditAccepted) {
-            setIsEditModalOpen(true)
-          } else {
-            await Governance.get().updateProposalUpdate(newUpdate)
-            if (isEdit) {
-              setIsEditModalOpen(false)
-            }
+          await Governance.get().updateProposalUpdate(newUpdate)
+          if (isEdit) {
+            setIsEditModalOpen(false)
           }
         } else {
           await Governance.get().createProposalUpdate(newUpdate)
@@ -234,7 +230,11 @@ export default function Update({ isEdit }: Props) {
     }
 
     if (state.validated) {
-      submitUpdate()
+      if (isEdit && !isEditAccepted) {
+        setIsEditModalOpen(true)
+      } else {
+        submitUpdate()
+      }
     }
   }, [state.validated, isEdit, isEditAccepted])
 
