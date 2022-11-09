@@ -148,7 +148,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       next_steps,
       additional_notes,
       status,
-      completion_date: completion_date ? completion_date : now,
+      completion_date: completion_date || now,
       updated_at: now,
     },
     { id }
