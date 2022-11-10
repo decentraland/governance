@@ -29,12 +29,12 @@ const flickityOptions = {
 
 export type VotingStatusSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
-  votes: ChoiceProgressProps[]
+  partialResults: ChoiceProgressProps[]
 }
 
-export default function VotingStatusSummary({ proposal, votes }: VotingStatusSummaryProps) {
+export default function VotingStatusSummary({ proposal, partialResults }: VotingStatusSummaryProps) {
   const t = useFormatMessage()
-  const vpInFavor = votes[0].power || 0
+  const vpInFavor = partialResults[0].power || 0
   const threshold = proposal?.required_to_pass || 0
   const neededForAcceptance = threshold - vpInFavor
   const thresholdReached = threshold <= vpInFavor
