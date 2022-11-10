@@ -30,6 +30,7 @@ interface Props {
   onVote: (selectedChoice: SelectedChoice) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   selectedChoice: SelectedChoice
+  castingVote: boolean
   patchOptions: (newState: Partial<ProposalPageOptions>) => void
   showError: boolean
   onRetry: () => void
@@ -44,6 +45,7 @@ const ProposalVotingSection = ({
   onVote,
   onChangeVote,
   selectedChoice,
+  castingVote,
   patchOptions,
   showError,
   onRetry,
@@ -125,6 +127,7 @@ const ProposalVotingSection = ({
               totalVotes={totalVotes}
               onVote={onVote}
               selectedChoice={selectedChoice}
+              castingVote={castingVote}
               patchOptions={patchOptions}
               startAt={proposal?.start_at}
               showError={showError}

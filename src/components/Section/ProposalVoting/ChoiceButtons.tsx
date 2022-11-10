@@ -21,6 +21,7 @@ interface Props {
   totalVotes: number
   onVote: (selectedChoice: SelectedChoice) => void
   selectedChoice: SelectedChoice
+  castingVote: boolean
   patchOptions: (newState: Partial<ProposalPageOptions>) => void
   startAt?: Date
   showError: boolean
@@ -36,6 +37,7 @@ export const ChoiceButtons = ({
   totalVotes,
   onVote,
   selectedChoice,
+  castingVote,
   patchOptions,
   startAt,
   showError,
@@ -86,6 +88,7 @@ export const ChoiceButtons = ({
       <Button
         primary
         disabled={!selectedChoice || !started || showError}
+        loading={castingVote}
         onClick={() => onVote && selectedChoice && onVote(selectedChoice)}
       >
         {showError ? `Retry in ${timeLeft}...` : t('page.proposal_detail.cast_vote')}
