@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { Loader } from 'decentraland-ui'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ReactionType, Survey, SurveyTopicAttributes, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
 
