@@ -45,7 +45,7 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
   const flickity = useRef<Flickity>()
 
   return (
-    <>
+    <div className="DetailsSection__Content">
       {timeout.time > 0 && !thresholdReached && (
         <Flickity
           className={'VotingStatusSummary__Carousel'}
@@ -90,6 +90,6 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }

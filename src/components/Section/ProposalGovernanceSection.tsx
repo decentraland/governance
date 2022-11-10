@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalAttributes } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
+import { calculateResult } from '../../entities/Votes/utils'
 import { ProposalPageOptions, SelectedChoice } from '../../pages/proposal'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
 import './DetailsSection.css'
 import ProposalResultsSection from './ProposalResultsSection'
+import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
@@ -50,6 +52,13 @@ export default function ProposalGovernanceSection({
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
+  const showVotingStatusSummary = !!(
+    proposal &&
+    proposal?.required_to_pass != null &&
+    proposal?.required_to_pass >= 0 &&
+    !(proposal.status === ProposalStatus.Passed)
+  )
+  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
 
   //TODO: DetailsSection should be called ProposalSidebar section or smth
   return (
@@ -63,6 +72,7 @@ export default function ProposalGovernanceSection({
         props.className,
       ])}
     >
+      {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} votes={results} />}
       {!finished && (
         <ProposalVotingSection
           proposal={proposal}
@@ -80,7 +90,6 @@ export default function ProposalGovernanceSection({
           onRetry={onRetry}
         />
       )}
-      <ProposalResultsSection proposal={proposal} votes={votes} loading={loading} onOpenVotesList={onOpenVotesList} />
     </div>
   )
 }
