@@ -7,12 +7,12 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Survey } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
+import { ProposalPageOptions, SelectedChoice } from '../../../pages/proposal'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -27,11 +27,27 @@ interface Props {
   changingVote?: boolean
   choices: string[]
   finished: boolean
-  onVote: (choice: string, choiceIndex: number) => void
+  onVote: (selectedChoice: SelectedChoice) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
+  selectedChoice: SelectedChoice
+  patchOptions: (newState: Partial<ProposalPageOptions>) => void
+  showError: boolean
+  onRetry: () => void
 }
 
-const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices, onVote, onChangeVote }: Props) => {
+const ProposalVotingSection = ({
+  proposal,
+  votes,
+  loading,
+  changingVote,
+  choices,
+  onVote,
+  onChangeVote,
+  selectedChoice,
+  patchOptions,
+  showError,
+  onRetry,
+}: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
@@ -108,7 +124,11 @@ const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices
               delegateVote={delegateVote}
               totalVotes={totalVotes}
               onVote={onVote}
+              selectedChoice={selectedChoice}
+              patchOptions={patchOptions}
               startAt={proposal?.start_at}
+              showError={showError}
+              onRetry={onRetry}
             />
           )}
 

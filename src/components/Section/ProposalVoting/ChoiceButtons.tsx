@@ -1,22 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { Survey } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
+import { ProposalPageOptions, SelectedChoice } from '../../../pages/proposal'
+import { SECONDS_FOR_VOTING_RETRY } from '../../Modal/Votes/VotingModal'
 
 import ChoiceButton from './ChoiceButton'
-
-type SelectableChoice = {
-  currentChoice: string
-  currentChoiceIndex: number
-}
-
-const EMPTY_SELECTION: SelectableChoice = { currentChoice: '', currentChoiceIndex: -1 }
 
 interface Props {
   choices: string[]
@@ -25,8 +19,12 @@ interface Props {
   delegateVote?: Vote | null
   votesByChoices: Scores
   totalVotes: number
-  onVote: (choice: string, choiceIndex: number) => void
+  onVote: (selectedChoice: SelectedChoice) => void
+  selectedChoice: SelectedChoice
+  patchOptions: (newState: Partial<ProposalPageOptions>) => void
   startAt?: Date
+  showError: boolean
+  onRetry: () => void
 }
 
 export const ChoiceButtons = ({
@@ -37,10 +35,29 @@ export const ChoiceButtons = ({
   votesByChoices,
   totalVotes,
   onVote,
+  selectedChoice,
+  patchOptions,
   startAt,
+  showError,
+  onRetry,
 }: Props) => {
   const t = useFormatMessage()
-  const [selectedChoice, setSelectedChoice] = useState<SelectableChoice>(EMPTY_SELECTION)
+  const [timeLeft, setTimeLeft] = useState(SECONDS_FOR_VOTING_RETRY)
+
+  useEffect(() => {
+    if (showError) {
+      const timer = setTimeout(() => {
+        setTimeLeft((timeLeft) => timeLeft - 1)
+      }, 1000)
+
+      if (timeLeft === 0) {
+        setTimeLeft(SECONDS_FOR_VOTING_RETRY)
+        onRetry()
+      }
+      return () => clearTimeout(timer)
+    }
+  }, [showError, timeLeft, onRetry])
+
   const now = Time.utc()
   const untilStart = useCountdown(Time.utc(startAt) || now)
   const started = untilStart.time === 0
@@ -51,11 +68,13 @@ export const ChoiceButtons = ({
         const delegateVotedCurrentChoice = delegateVote?.choice === currentChoiceIndex + 1
         return (
           <ChoiceButton
-            selected={selectedChoice.currentChoice === currentChoice}
+            selected={selectedChoice.choice === currentChoice}
             key={currentChoice}
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
-            onClick={() => setSelectedChoice({ currentChoice, currentChoiceIndex })}
+            onClick={() => {
+              patchOptions({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
+            }}
             delegate={delegateVotedCurrentChoice ? delegate! : undefined}
             voteCount={votesByChoices[currentChoiceIndex]}
             totalVotes={totalVotes}
@@ -66,12 +85,10 @@ export const ChoiceButtons = ({
       })}
       <Button
         primary
-        disabled={!selectedChoice || !started}
-        onClick={() =>
-          onVote && selectedChoice && onVote(selectedChoice.currentChoice, selectedChoice.currentChoiceIndex + 1)
-        }
+        disabled={!selectedChoice || !started || showError}
+        onClick={() => onVote && selectedChoice && onVote(selectedChoice)}
       >
-        {t('page.proposal_detail.cast_vote')}
+        {showError ? `Retry in ${timeLeft}...` : t('page.proposal_detail.cast_vote')}
       </Button>
     </>
   )

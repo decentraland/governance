@@ -76,7 +76,7 @@ export type ProposalPageOptions = {
   showProposalSuccessModal: boolean
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
-  showVotingModalError: boolean
+  showVotingError: boolean
   selectedChoice: SelectedChoice
 }
 
@@ -93,7 +93,7 @@ export default function ProposalPage() {
     showProposalSuccessModal: false,
     showUpdateSuccessModal: false,
     showVotingModal: false,
-    showVotingModalError: false,
+    showVotingError: false,
     selectedChoice: EMPTY_CHOICE_SELECTION,
   })
   const patchOptionsRef = useRef(patchOptions)
@@ -115,8 +115,8 @@ export default function ProposalPage() {
     [account, subscriptions]
   )
   const [castingVote, castVote] = useAsyncTask(
-    async (choice: string, choiceIndex: number, survey?: Survey) => {
-      if (proposal && account && provider && votes) {
+    async (selectedChoice: SelectedChoice, survey?: Survey) => {
+      if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
 
@@ -126,7 +126,7 @@ export default function ProposalPage() {
               web3Provider,
               listedAccount,
               proposal.snapshot_id,
-              choiceIndex,
+              selectedChoice.choiceIndex!,
               SurveyEncoder.encode(survey)
             )
           })
@@ -134,7 +134,7 @@ export default function ProposalPage() {
             patchOptions({
               changing: false,
               showVotingModal: false,
-              showVotingModalError: false,
+              showVotingError: false,
               confirmSubscription: !votes[account],
             })
             votesState.reload()
@@ -142,7 +142,8 @@ export default function ProposalPage() {
           .catch((err) => {
             console.error(err, { ...err }) //TODO report error
             patchOptions({
-              showVotingModalError: true,
+              changing: false,
+              showVotingError: true,
             })
           })
       }
@@ -255,14 +256,14 @@ export default function ProposalPage() {
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
 
   const getVotingMethod = () => {
-    return (choice: string, choiceIndex: number) => {
+    return (selectedChoice: SelectedChoice) => {
       if (!isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0) {
         patchOptions({
-          selectedChoice: { choice, choiceIndex },
+          selectedChoice: selectedChoice,
           showVotingModal: true,
         })
       } else {
-        castVote(choice, choiceIndex)
+        castVote(selectedChoice)
       }
     }
   }
@@ -331,9 +332,13 @@ export default function ProposalPage() {
                   proposal={proposal}
                   votes={votes}
                   changingVote={options.changing}
+                  selectedChoice={options.selectedChoice}
                   onChangeVote={(_, changing) => patchOptions({ changing })}
                   onOpenVotesList={() => patchOptions({ showVotesList: true })}
                   onVote={getVotingMethod()}
+                  patchOptions={patchOptions}
+                  showError={options.showVotingError}
+                  onRetry={() => patchOptions({ showVotingError: false })}
                 />
                 <ForumButton
                   loading={proposalState.loading}
@@ -372,8 +377,8 @@ export default function ProposalPage() {
           selectedChoice={options.selectedChoice}
           onCastVote={castVote}
           castingVote={castingVote}
-          showError={options.showVotingModalError}
-          onRetry={() => patchOptions({ showVotingModalError: false })}
+          showError={options.showVotingError}
+          onRetry={() => patchOptions({ showVotingError: false })}
         />
       )}
       <VotesListModal
