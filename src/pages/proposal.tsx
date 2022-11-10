@@ -330,7 +330,7 @@ export default function ProposalPage() {
                 )}
                 <ProposalGovernanceSection
                   disabled={!proposal || !votes}
-                  loading={castingVote || proposalState.loading || votesState.loading}
+                  loading={proposalState.loading || votesState.loading}
                   proposal={proposal}
                   votes={votes}
                   changingVote={options.changing}
