@@ -40,6 +40,7 @@ import ForumButton from '../components/Section/ForumButton'
 import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Section/ProposalDetailSection'
 import ProposalGovernanceSection from '../components/Section/ProposalGovernanceSection'
+import ProposalResults from '../components/Section/ProposalResults'
 import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions'
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
@@ -49,6 +50,7 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
+import { calculateResult } from '../entities/Votes/utils'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
@@ -81,6 +83,8 @@ export type ProposalPageOptions = {
   selectedChoice: SelectedChoice
 }
 
+const EMPTY_CHOICES: string[] = []
+
 export default function ProposalPage() {
   const t = useFormatMessage()
   const location = useLocation()
@@ -108,6 +112,8 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
+  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
+  const partialResults = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
 
@@ -306,7 +312,6 @@ export default function ProposalPage() {
                   onUpdateDeleted={refetchUpdates}
                 />
               )}
-              <ProposalComments proposal={proposal} loading={proposalState.loading} />
               {proposal && (
                 <SurveyResults
                   votes={votes}
@@ -315,6 +320,14 @@ export default function ProposalPage() {
                   isLoadingSurveyTopics={isLoadingSurveyTopics}
                 />
               )}
+              <ProposalResults
+                proposal={proposal}
+                votes={votes}
+                partialResults={partialResults}
+                loading={proposalState.loading || votesState.loading}
+                onOpenVotesList={() => patchOptions({ showVotesList: true })}
+              />
+              <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
@@ -333,11 +346,12 @@ export default function ProposalPage() {
                   loading={proposalState.loading || votesState.loading}
                   proposal={proposal}
                   votes={votes}
+                  partialResults={partialResults}
+                  choices={choices}
                   changingVote={options.changing}
                   selectedChoice={options.selectedChoice}
                   castingVote={castingVote}
                   onChangeVote={(_, changing) => patchOptions({ changing })}
-                  onOpenVotesList={() => patchOptions({ showVotesList: true })}
                   onVote={getVotingMethod()}
                   patchOptions={patchOptions}
                   showError={options.showVotingError}

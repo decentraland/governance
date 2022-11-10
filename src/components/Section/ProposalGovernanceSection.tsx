@@ -1,27 +1,27 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
-import { calculateResult } from '../../entities/Votes/utils'
 import { ProposalPageOptions, SelectedChoice } from '../../pages/proposal'
+import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
 import './DetailsSection.css'
-import ProposalResultsSection from './ProposalResultsSection'
 import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
+  partialResults: ChoiceProgressProps[]
+  choices: string[]
   loading?: boolean
   disabled?: boolean
   changingVote?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
-  onOpenVotesList?: () => void
   onVote: (selectedChoice: SelectedChoice) => void
   selectedChoice: SelectedChoice
   castingVote: boolean
@@ -30,25 +30,23 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   onRetry: () => void
 }
 
-const EMPTY_CHOICES: string[] = []
-
 export default function ProposalGovernanceSection({
   proposal,
   loading,
   disabled,
   votes,
+  partialResults,
+  choices,
   changingVote,
   onChangeVote,
   onVote,
   selectedChoice,
   castingVote,
   patchOptions,
-  onOpenVotesList,
   showError,
   onRetry,
   ...props
 }: ProposalGovernanceSectionProps) {
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
@@ -58,7 +56,6 @@ export default function ProposalGovernanceSection({
     proposal?.required_to_pass >= 0 &&
     !(proposal.status === ProposalStatus.Passed)
   )
-  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
 
   //TODO: DetailsSection should be called ProposalSidebar section or smth
   return (
@@ -72,7 +69,7 @@ export default function ProposalGovernanceSection({
         props.className,
       ])}
     >
-      {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} votes={results} />}
+      {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} partialResults={partialResults} />}
       {!finished && (
         <ProposalVotingSection
           proposal={proposal}

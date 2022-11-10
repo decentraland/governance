@@ -1,0 +1,29 @@
+.ProposalResults {
+  margin-top: 36px;
+}
+
+.ProposalResults__Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 36px;
+  margin-bottom: 24px;
+}
+
+.ProposalResults__Content {
+  width: 100%;
+}
+.ProposalResults__ChoicesProgress {
+  width: 50%;
+}
+
+.ProposalResults__CallToAction > p.dg.Paragraph,
+.ProposalResults__CallToAction > p.dg.Paragraph > span {
+  font-style: normal;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.ProposalResults__CallToAction > p.dg.Paragraph > span {
+  font-weight: 500;
+}

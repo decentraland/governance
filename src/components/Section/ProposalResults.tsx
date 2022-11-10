@@ -11,12 +11,13 @@ import { isEmpty } from 'lodash'
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
+import Divider from '../Common/Divider'
 import Lock from '../Icon/Lock'
 import ChoiceProgress, { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
-import './ProposalResultsSection.css'
+import './ProposalResults.css'
 import VotingStatusSummary from './VotingStatusSummary'
 
 export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
@@ -28,7 +29,7 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   onOpenVotesList?: () => void
 }
 
-export default function ProposalResultsSection({
+export default function ProposalResults({
   proposal,
   loading,
   votes,
@@ -42,33 +43,35 @@ export default function ProposalResultsSection({
 
   //TODO: DetailsSection should be called ProposalSidebar section or smth
   return (
-    <div className="DetailsSection__Content">
+    <div className="ProposalResults">
+      <Divider />
       <Loader active={loading} />
-      <div className="DetailsSection__Flex_Header_Labels">
-        <Header sub className="ProposalResultsSection__Header">
-          {t('page.proposal_detail.result_label')}
-          <Lock />
-        </Header>
+      <div className="ProposalResults__Header">
+        <Header>Proposal Results</Header>
         {showSeeVotesButton && <Anchor onClick={onOpenVotesList}>{t('page.proposal_detail.see_votes_button')}</Anchor>}
       </div>
-      {userHasVoted &&
-        partialResults.map((result) => {
-          return (
-            <ChoiceProgress
-              key={result.choice}
-              color={result.color}
-              choice={result.choice}
-              votes={result.votes}
-              power={result.power}
-              progress={result.progress}
-            />
-          )
-        })}
-      {!userHasVoted && (
-        <Markdown className="ProposalResultsSection__CallToAction">
-          **Cast your vote** to view partial voting results for this proposal.
-        </Markdown>
-      )}
+      <div className="ProposalResults__Content">
+        <div className="ProposalResults__ChoicesProgress">
+          {userHasVoted &&
+            partialResults.map((result) => {
+              return (
+                <ChoiceProgress
+                  key={result.choice}
+                  color={result.color}
+                  choice={result.choice}
+                  votes={result.votes}
+                  power={result.power}
+                  progress={result.progress}
+                />
+              )
+            })}
+          {!userHasVoted && (
+            <Markdown className="ProposalResults__CallToAction">
+              **Cast your vote** to view partial voting results for this proposal.
+            </Markdown>
+          )}
+        </div>
+      </div>
       <ProposalPromotionSection proposal={proposal} loading={loading} />
     </div>
   )
