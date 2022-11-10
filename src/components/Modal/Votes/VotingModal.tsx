@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -20,14 +21,14 @@ interface VotingModalProps {
   surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
   isLoadingSurveyTopics: boolean
   selectedChoice: SelectedChoice
-  onCastVote: (choice: string, choiceIndex: number, survey?: Survey) => void
+  onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
   onClose: () => void
   castingVote: boolean
   showError: boolean
   onRetry: () => void
 }
 
-const SECONDS_FOR_RETRY = 5
+export const SECONDS_FOR_VOTING_RETRY = 5
 
 export function VotingModal({
   open,
@@ -40,8 +41,9 @@ export function VotingModal({
   showError,
   onRetry,
 }: VotingModalProps) {
+  const t = useFormatMessage()
   const [survey, setSurvey] = useState<Survey>([])
-  const [timeLeft, setTimeLeft] = useState(SECONDS_FOR_RETRY)
+  const [timeLeft, setTimeLeft] = useState(SECONDS_FOR_VOTING_RETRY)
 
   useEffect(() => {
     if (showError) {
@@ -50,7 +52,7 @@ export function VotingModal({
       }, 1000)
 
       if (timeLeft === 0) {
-        setTimeLeft(SECONDS_FOR_RETRY)
+        setTimeLeft(SECONDS_FOR_VOTING_RETRY)
         onRetry()
       }
       return () => clearTimeout(timer)
@@ -82,12 +84,12 @@ export function VotingModal({
           <Button
             fluid
             primary
-            onClick={() => onCastVote(selectedChoice.choice!, selectedChoice.choiceIndex!, survey)}
+            onClick={() => onCastVote(selectedChoice, survey)}
             loading={castingVote}
             disabled={showError}
             className="VotingModal__CastVote"
           >
-            {showError ? `Retry in ${timeLeft}...` : 'Cast Vote'}
+            {showError ? `Retry in ${timeLeft}...` : t('page.proposal_detail.cast_vote')}
           </Button>
         </div>
       </Modal.Content>

@@ -5,6 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
+import { ProposalPageOptions, SelectedChoice } from '../../pages/proposal'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
@@ -19,7 +20,11 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   changingVote?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
   onOpenVotesList?: () => void
-  onVote: (choice: string, choiceIndex: number) => void
+  onVote: (selectedChoice: SelectedChoice) => void
+  selectedChoice: SelectedChoice
+  patchOptions: (newState: Partial<ProposalPageOptions>) => void
+  showError: boolean
+  onRetry: () => void
 }
 
 const EMPTY_CHOICES: string[] = []
@@ -32,7 +37,11 @@ export default function ProposalGovernanceSection({
   changingVote,
   onChangeVote,
   onVote,
+  selectedChoice,
+  patchOptions,
   onOpenVotesList,
+  showError,
+  onRetry,
   ...props
 }: ProposalGovernanceSectionProps) {
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
@@ -61,7 +70,11 @@ export default function ProposalGovernanceSection({
           choices={choices}
           finished={finished}
           onVote={onVote}
+          selectedChoice={selectedChoice}
+          patchOptions={patchOptions}
           onChangeVote={onChangeVote}
+          showError={showError}
+          onRetry={onRetry}
         />
       )}
       <ProposalResultsSection proposal={proposal} votes={votes} loading={loading} onOpenVotesList={onOpenVotesList} />
