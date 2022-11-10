@@ -12,7 +12,7 @@ import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/type
 import { Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import Lock from '../Icon/Lock'
-import ChoiceProgress from '../Status/ChoiceProgress'
+import ChoiceProgress, { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
@@ -23,25 +23,21 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   proposal?: ProposalAttributes | null
   userHasVoted?: boolean
   votes?: Record<string, Vote> | null
+  partialResults: ChoiceProgressProps[]
   loading?: boolean
   onOpenVotesList?: () => void
 }
-
-const EMPTY_CHOICES: string[] = []
 
 export default function ProposalResultsSection({
   proposal,
   loading,
   votes,
+  partialResults,
   onOpenVotesList,
 }: ProposalGovernanceSectionProps) {
   const t = useFormatMessage()
   const [account] = useAuthContext()
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
-  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
   const userHasVoted = !!account && !isEmpty(votes?.[account])
-  const showVotingStatusSummary =
-    proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
   const showSeeVotesButton = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
 
   //TODO: DetailsSection should be called ProposalSidebar section or smth
@@ -56,7 +52,7 @@ export default function ProposalResultsSection({
         {showSeeVotesButton && <Anchor onClick={onOpenVotesList}>{t('page.proposal_detail.see_votes_button')}</Anchor>}
       </div>
       {userHasVoted &&
-        results.map((result) => {
+        partialResults.map((result) => {
           return (
             <ChoiceProgress
               key={result.choice}
@@ -74,7 +70,6 @@ export default function ProposalResultsSection({
         </Markdown>
       )}
       <ProposalPromotionSection proposal={proposal} loading={loading} />
-      {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} votes={results} />}
     </div>
   )
 }

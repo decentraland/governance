@@ -7,7 +7,7 @@
   border-radius: 5px;
   cursor: pointer;
 }
-.VotingStatusSummary__CarouselCell:first-child  {
+.VotingStatusSummary__CarouselCell:first-child {
   margin-right: 8px;
 }
 
@@ -24,7 +24,6 @@
 .VotingStatusSummary__Container {
   background: var(--secondary);
   border-radius: 6px;
-  margin-top: 24px;
   padding: 8px 11px;
 }
 
