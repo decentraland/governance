@@ -119,36 +119,32 @@ export default function ProposalPage() {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
-
-        Promise.resolve()
-          .then(async () => {
-            await SnapshotApi.get().castVote(
-              web3Provider,
-              listedAccount,
-              proposal.snapshot_id,
-              selectedChoice.choiceIndex!,
-              SurveyEncoder.encode(survey)
-            )
+        try {
+          await SnapshotApi.get().castVote(
+            web3Provider,
+            listedAccount,
+            proposal.snapshot_id,
+            selectedChoice.choiceIndex!,
+            SurveyEncoder.encode(survey)
+          )
+          patchOptions({
+            changing: false,
+            showVotingModal: false,
+            showVotingError: false,
+            confirmSubscription: !votes![account!],
           })
-          .then(() => {
-            patchOptions({
-              changing: false,
-              showVotingModal: false,
-              showVotingError: false,
-              confirmSubscription: !votes[account],
-            })
-            votesState.reload()
+          votesState.reload()
+        } catch (err) {
+          // TODO: chequear que el usuario no haya rechazado la tx
+          console.error(err, { ...(err as Error) }) //TODO report error
+          patchOptions({
+            changing: false,
+            showVotingError: true,
           })
-          .catch((err) => {
-            console.error(err, { ...err }) //TODO report error
-            patchOptions({
-              changing: false,
-              showVotingError: true,
-            })
-          })
+        }
       }
     },
-    [proposal, account, provider, votes]
+    [proposal, account, provider, votes, options.selectedChoice]
   )
 
   const [subscribing, subscribe] = useAsyncTask<[subscribe?: boolean | undefined]>(
@@ -333,6 +329,7 @@ export default function ProposalPage() {
                   votes={votes}
                   changingVote={options.changing}
                   selectedChoice={options.selectedChoice}
+                  castingVote={castingVote}
                   onChangeVote={(_, changing) => patchOptions({ changing })}
                   onOpenVotesList={() => patchOptions({ showVotesList: true })}
                   onVote={getVotingMethod()}

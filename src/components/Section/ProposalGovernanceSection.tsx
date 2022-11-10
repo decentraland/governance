@@ -22,6 +22,7 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   onOpenVotesList?: () => void
   onVote: (selectedChoice: SelectedChoice) => void
   selectedChoice: SelectedChoice
+  castingVote: boolean
   patchOptions: (newState: Partial<ProposalPageOptions>) => void
   showError: boolean
   onRetry: () => void
@@ -38,6 +39,7 @@ export default function ProposalGovernanceSection({
   onChangeVote,
   onVote,
   selectedChoice,
+  castingVote,
   patchOptions,
   onOpenVotesList,
   showError,
@@ -71,6 +73,7 @@ export default function ProposalGovernanceSection({
           finished={finished}
           onVote={onVote}
           selectedChoice={selectedChoice}
+          castingVote={castingVote}
           patchOptions={patchOptions}
           onChangeVote={onChangeVote}
           showError={showError}
