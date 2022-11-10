@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 
+import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -135,12 +136,17 @@ export default function ProposalPage() {
           })
           votesState.reload()
         } catch (err) {
-          // TODO: chequear que el usuario no haya rechazado la tx
           console.error(err, { ...(err as Error) }) //TODO report error
-          patchOptions({
-            changing: false,
-            showVotingError: true,
-          })
+          if ((err as any).code === ErrorCode.ACTION_REJECTED) {
+            patchOptions({
+              changing: false,
+            })
+          } else {
+            patchOptions({
+              changing: false,
+              showVotingError: true,
+            })
+          }
         }
       }
     },
