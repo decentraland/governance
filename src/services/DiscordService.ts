@@ -47,7 +47,21 @@ export class DiscordService {
 
     const hasAvatar = !!profile && !!profile.avatar
 
-    const embedChoices = choices.map((choice) => ({ name: choice, value: '', inline: true }))
+    const embedChoices = choices.map((choice, idx) => ({
+      name: `Option #${idx + 1}`,
+      value: `${choice[0].toUpperCase()}${choice.slice(1)}`,
+    }))
+
+    let embedDescription = ''
+
+    if (proposalType !== ProposalType.Poll) {
+      embedDescription = description.split('\n')[0]
+    } else {
+      embedDescription = description.substring(0, 140)
+      if (description.length > 140) {
+        embedDescription += '...'
+      }
+    }
 
     const embed = new EmbedBuilder()
       .setColor(0x0099ff)
@@ -58,21 +72,18 @@ export class DiscordService {
         iconURL: hasAvatar ? profile.avatar?.snapshots.face256 : DEFAULT_AVATAR,
         url: `https://localhost:8000/profile/?address=${user}`,
       })
-      .setDescription('Decentraland DAO')
+      .setDescription('A new proposal has been created')
       .setThumbnail('https://decentraland.org/images/decentraland.png')
       .addFields(
         {
           name: proposalType.toUpperCase().replaceAll('_', ' '),
-          value: description.split('\n')[0],
+          value: embedDescription,
         },
         { name: '\u200B', value: '\u200B' },
-        { name: 'Inline field title', value: 'Some value here', inline: true },
-        { name: 'Inline field title', value: 'Some value here', inline: true }
+        ...embedChoices
       )
-      .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
-      .setImage('https://i.imgur.com/AfFp7pu.png')
       .setTimestamp()
-      .setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' })
+      .setFooter({ text: 'Decentraland DAO', iconURL: 'https://decentraland.org/images/decentraland.png' })
 
     return embed
   }
