@@ -150,6 +150,7 @@ export class SnapshotApi {
       reason: comment,
       app: SNAPSHOT_APP_NAME,
     }
+    throw new Error('testing voting error')
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }
 
