@@ -27,3 +27,7 @@ export async function inBatches<T, K>(
 export function trimLastForwardSlash(url: string) {
   return url.replace(/\/$/, '')
 }
+
+export function capitalizeFirstLetter(string: string) {
+  return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
+}

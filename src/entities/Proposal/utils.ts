@@ -27,6 +27,7 @@ import {
   ProposalGrantTier,
   ProposalGrantTierValues,
   ProposalStatus,
+  ProposalType,
   toProposalGrantTier,
 } from './types'
 
@@ -214,4 +215,8 @@ export function isProposalInCliffPeriod(grant: GrantAttributes) {
   const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
   const now = Time.utc()
   return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+}
+
+export function isGovernanceProcessProposal(type: ProposalType) {
+  return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
