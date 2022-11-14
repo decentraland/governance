@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
@@ -28,7 +28,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import { VotingModal } from '../components/Modal/Votes/VotingModal'
+import { SECONDS_FOR_VOTING_RETRY, VotingModal } from '../components/Modal/Votes/VotingModal'
 import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -65,13 +65,14 @@ import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
-const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
-const EMPTY_CHOICE_SELECTION = { choice: undefined, choiceIndex: undefined }
-
 export type SelectedChoice = { choice?: string; choiceIndex?: number }
+const EMPTY_CHOICE_SELECTION: SelectedChoice = { choice: undefined, choiceIndex: undefined }
+const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
+const EMPTY_CHOICES: string[] = []
+const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 
-export type ProposalPageOptions = {
-  changing: boolean
+export type ProposalPageContext = {
+  changingVote: boolean
   confirmSubscription: boolean
   confirmDeletion: boolean
   confirmStatusUpdate: ProposalStatus | false
@@ -80,17 +81,17 @@ export type ProposalPageOptions = {
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
   showVotingError: boolean
+  showSnapshotRedirect: boolean
+  retryTimer: number
   selectedChoice: SelectedChoice
 }
-
-const EMPTY_CHOICES: string[] = []
 
 export default function ProposalPage() {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [options, patchOptions] = usePatchState<ProposalPageOptions>({
-    changing: false,
+  const [proposalContext, updateContext] = usePatchState<ProposalPageContext>({
+    changingVote: false,
     confirmSubscription: false,
     confirmDeletion: false,
     confirmStatusUpdate: false,
@@ -99,9 +100,12 @@ export default function ProposalPage() {
     showUpdateSuccessModal: false,
     showVotingModal: false,
     showVotingError: false,
+    showSnapshotRedirect: false,
+    retryTimer: SECONDS_FOR_VOTING_RETRY,
     selectedChoice: EMPTY_CHOICE_SELECTION,
   })
-  const patchOptionsRef = useRef(patchOptions)
+  const [errorCounter, setErrorCounter] = useState(0)
+  const updateContextRef = useRef(updateContext)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const { isCommittee } = useIsCommittee(account)
@@ -121,6 +125,7 @@ export default function ProposalPage() {
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
   )
+
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedChoice, survey?: Survey) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
@@ -134,8 +139,8 @@ export default function ProposalPage() {
             selectedChoice.choiceIndex!,
             SurveyEncoder.encode(survey)
           )
-          patchOptions({
-            changing: false,
+          updateContext({
+            changingVote: false,
             showVotingModal: false,
             showVotingError: false,
             confirmSubscription: !votes![account!],
@@ -144,19 +149,21 @@ export default function ProposalPage() {
         } catch (err) {
           console.error(err, { ...(err as Error) }) //TODO report error
           if ((err as any).code === ErrorCode.ACTION_REJECTED) {
-            patchOptions({
-              changing: false,
+            updateContext({
+              changingVote: false,
             })
           } else {
-            patchOptions({
-              changing: false,
+            updateContext({
+              changingVote: false,
               showVotingError: true,
+              showSnapshotRedirect: errorCounter + 1 >= MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT,
             })
+            setErrorCounter((prev) => prev + 1)
           }
         }
       }
     },
-    [proposal, account, provider, votes, options.selectedChoice]
+    [proposal, account, provider, votes, proposalContext.selectedChoice]
   )
 
   const [subscribing, subscribe] = useAsyncTask<[subscribe?: boolean | undefined]>(
@@ -172,7 +179,7 @@ export default function ProposalPage() {
           )
         }
 
-        patchOptions({ confirmSubscription: false })
+        updateContext({ confirmSubscription: false })
       }
     },
     [proposal, subscriptionsState]
@@ -189,10 +196,10 @@ export default function ProposalPage() {
           description
         )
         proposalState.set(updateProposal)
-        patchOptions({ confirmStatusUpdate: false })
+        updateContext({ confirmStatusUpdate: false })
       }
     },
-    [proposal, account, isCommittee, proposalState, patchOptions]
+    [proposal, account, isCommittee, proposalState, updateContext]
   )
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
@@ -209,20 +216,33 @@ export default function ProposalPage() {
   }, [proposal, account, isCommittee])
 
   useEffect(() => {
-    patchOptionsRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
+    updateContextRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
   }, [params])
 
   useEffect(() => {
-    patchOptionsRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
+    updateContextRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
   }, [params])
 
+  useEffect(() => {
+    if (proposalContext.showVotingError) {
+      const timer = setTimeout(() => {
+        updateContext({ retryTimer: proposalContext.retryTimer - 1 })
+      }, 1000)
+
+      if (proposalContext.retryTimer <= 0) {
+        updateContext({ retryTimer: SECONDS_FOR_VOTING_RETRY, showVotingError: false })
+      }
+      return () => clearTimeout(timer)
+    }
+  }, [proposalContext.showVotingError, proposalContext.retryTimer])
+
   const closeProposalSuccessModal = () => {
-    patchOptions({ showProposalSuccessModal: false })
+    updateContext({ showProposalSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
   const closeUpdateSuccessModal = () => {
-    patchOptions({ showUpdateSuccessModal: false })
+    updateContext({ showUpdateSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
@@ -262,11 +282,12 @@ export default function ProposalPage() {
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const showSurvey = !isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0
 
   const getVotingMethod = () => {
     return (selectedChoice: SelectedChoice) => {
-      if (!isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0) {
-        patchOptions({
+      if (showSurvey) {
+        updateContext({
           selectedChoice: selectedChoice,
           showVotingModal: true,
         })
@@ -325,7 +346,7 @@ export default function ProposalPage() {
                 votes={votes}
                 partialResults={partialResults}
                 loading={proposalState.loading || votesState.loading}
-                onOpenVotesList={() => patchOptions({ showVotesList: true })}
+                onOpenVotesList={() => updateContext({ showVotesList: true })}
               />
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
@@ -348,14 +369,11 @@ export default function ProposalPage() {
                   votes={votes}
                   partialResults={partialResults}
                   choices={choices}
-                  changingVote={options.changing}
-                  selectedChoice={options.selectedChoice}
                   castingVote={castingVote}
-                  onChangeVote={(_, changing) => patchOptions({ changing })}
+                  onChangeVote={(_, changing) => updateContext({ changingVote: changing })}
                   onVote={getVotingMethod()}
-                  patchOptions={patchOptions}
-                  showError={options.showVotingError}
-                  onRetry={() => patchOptions({ showVotingError: false })}
+                  updateContext={updateContext}
+                  proposalContext={proposalContext}
                 />
                 <ForumButton
                   loading={proposalState.loading}
@@ -376,7 +394,7 @@ export default function ProposalPage() {
                     deleting={deleting}
                     updatingStatus={updatingStatus}
                     proposal={proposal}
-                    patchOptions={patchOptions}
+                    updateContext={updateContext}
                   />
                 )}
               </div>
@@ -385,56 +403,54 @@ export default function ProposalPage() {
         </Grid>
       </ContentLayout>
 
-      {proposal && (
+      {proposal && showSurvey && (
         <VotingModal
-          open={options.showVotingModal}
+          open={proposalContext.showVotingModal}
           surveyTopics={surveyTopics}
           isLoadingSurveyTopics={isLoadingSurveyTopics}
-          onClose={() => patchOptions({ showVotingModal: false })}
-          selectedChoice={options.selectedChoice}
+          onClose={() => updateContext({ showVotingModal: false })}
           onCastVote={castVote}
           castingVote={castingVote}
-          showError={options.showVotingError}
-          onRetry={() => patchOptions({ showVotingError: false })}
+          proposalContext={proposalContext}
         />
       )}
       <VotesListModal
-        open={options.showVotesList}
+        open={proposalContext.showVotesList}
         proposal={proposal}
         votes={votes}
-        onClose={() => patchOptions({ showVotesList: false })}
+        onClose={() => updateContext({ showVotesList: false })}
       />
       <VoteRegisteredModal
         loading={subscribing}
-        open={options.confirmSubscription}
+        open={proposalContext.confirmSubscription}
         onClickAccept={() => subscribe()}
-        onClose={() => patchOptions({ confirmSubscription: false })}
+        onClose={() => updateContext({ confirmSubscription: false })}
       />
       <DeleteProposalModal
         loading={deleting}
-        open={options.confirmDeletion}
+        open={proposalContext.confirmDeletion}
         onClickAccept={() => deleteProposal()}
-        onClose={() => patchOptions({ confirmDeletion: false })}
+        onClose={() => updateContext({ confirmDeletion: false })}
       />
       <UpdateProposalStatusModal
-        open={!!options.confirmStatusUpdate}
+        open={!!proposalContext.confirmStatusUpdate}
         proposal={proposal}
-        status={options.confirmStatusUpdate || null}
+        status={proposalContext.confirmStatusUpdate || null}
         loading={updatingStatus}
         onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
           updateProposalStatus(status, vesting_contract, enactingTx, description)
         }
-        onClose={() => patchOptions({ confirmStatusUpdate: false })}
+        onClose={() => updateContext({ confirmStatusUpdate: false })}
       />
       <ProposalSuccessModal
-        open={options.showProposalSuccessModal}
+        open={proposalContext.showProposalSuccessModal}
         onDismiss={closeProposalSuccessModal}
         onClose={closeProposalSuccessModal}
         proposal={proposal}
         loading={proposalState.loading}
       />
       <UpdateSuccessModal
-        open={options.showUpdateSuccessModal}
+        open={proposalContext.showUpdateSuccessModal}
         onDismiss={closeUpdateSuccessModal}
         onClose={closeUpdateSuccessModal}
         proposalId={proposal?.id}

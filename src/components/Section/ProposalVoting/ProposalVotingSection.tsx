@@ -12,7 +12,7 @@ import useDelegationOnProposal from '../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
-import { ProposalPageOptions, SelectedChoice } from '../../../pages/proposal'
+import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -24,31 +24,25 @@ interface Props {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   loading?: boolean
-  changingVote?: boolean
   choices: string[]
   finished: boolean
   onVote: (selectedChoice: SelectedChoice) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
-  selectedChoice: SelectedChoice
   castingVote: boolean
-  patchOptions: (newState: Partial<ProposalPageOptions>) => void
-  showError: boolean
-  onRetry: () => void
+  proposalContext: ProposalPageContext
+  updateContext: (newState: Partial<ProposalPageContext>) => void
 }
 
 const ProposalVotingSection = ({
   proposal,
   votes,
   loading,
-  changingVote,
   choices,
   onVote,
   onChangeVote,
-  selectedChoice,
   castingVote,
-  patchOptions,
-  showError,
-  onRetry,
+  proposalContext,
+  updateContext,
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -112,43 +106,50 @@ const ProposalVotingSection = ({
             </Button>
           )}
 
-          <Header sub>{"What's your stance?"}</Header>
-          {/*TODO: internationalization*/}
+          {!proposalContext.showSnapshotRedirect && (
+            <>
+              <Header sub>{'Get Involved'}</Header>
+              {/*TODO: internationalization*/}
 
-          {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
+              {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-          {(showChoiceButtons || changingVote) && (
-            <ChoiceButtons
-              choices={choices}
-              vote={vote}
-              votesByChoices={votesByChoices}
-              delegate={delegate}
-              delegateVote={delegateVote}
-              totalVotes={totalVotes}
-              onVote={onVote}
-              selectedChoice={selectedChoice}
-              castingVote={castingVote}
-              patchOptions={patchOptions}
-              startAt={proposal?.start_at}
-              showError={showError}
-              onRetry={onRetry}
-            />
+              {(showChoiceButtons || proposalContext.changingVote) && (
+                <ChoiceButtons
+                  choices={choices}
+                  vote={vote}
+                  votesByChoices={votesByChoices}
+                  delegate={delegate}
+                  delegateVote={delegateVote}
+                  totalVotes={totalVotes}
+                  onVote={onVote}
+                  proposalContext={proposalContext}
+                  castingVote={castingVote}
+                  updateContext={updateContext}
+                  startAt={proposal?.start_at}
+                />
+              )}
+
+              {votedChoice && !proposalContext.changingVote && <VotedChoiceButton {...votedChoice} />}
+
+              <VotingSectionFooter
+                vote={vote}
+                delegateVote={delegateVote}
+                startAt={proposal?.start_at}
+                finishAt={proposal?.finish_at}
+                account={account}
+                changingVote={proposalContext.changingVote}
+                onChangeVote={onChangeVote}
+                delegators={delegators}
+                totalVpOnProposal={totalVpOnProposal}
+                hasEnoughToVote={hasEnoughToVote}
+              />
+            </>
           )}
-
-          {votedChoice && !changingVote && <VotedChoiceButton {...votedChoice} />}
-
-          <VotingSectionFooter
-            vote={vote}
-            delegateVote={delegateVote}
-            startAt={proposal?.start_at}
-            finishAt={proposal?.finish_at}
-            account={account}
-            changingVote={changingVote}
-            onChangeVote={onChangeVote}
-            delegators={delegators}
-            totalVpOnProposal={totalVpOnProposal}
-            hasEnoughToVote={hasEnoughToVote}
-          />
+          {proposalContext.showSnapshotRedirect && (
+            <>
+              <span>SNAPSHOT REDIRECT MOFO</span>
+            </>
+          )}
         </>
       )}
     </div>

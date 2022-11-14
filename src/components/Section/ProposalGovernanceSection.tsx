@@ -5,7 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
-import { ProposalPageOptions, SelectedChoice } from '../../pages/proposal'
+import { ProposalPageContext, SelectedChoice } from '../../pages/proposal'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
@@ -20,14 +20,11 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   choices: string[]
   loading?: boolean
   disabled?: boolean
-  changingVote?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
   onVote: (selectedChoice: SelectedChoice) => void
-  selectedChoice: SelectedChoice
   castingVote: boolean
-  patchOptions: (newState: Partial<ProposalPageOptions>) => void
-  showError: boolean
-  onRetry: () => void
+  proposalContext: ProposalPageContext
+  updateContext: (newState: Partial<ProposalPageContext>) => void
 }
 
 export default function ProposalGovernanceSection({
@@ -37,14 +34,11 @@ export default function ProposalGovernanceSection({
   votes,
   partialResults,
   choices,
-  changingVote,
   onChangeVote,
   onVote,
-  selectedChoice,
   castingVote,
-  patchOptions,
-  showError,
-  onRetry,
+  proposalContext,
+  updateContext,
   ...props
 }: ProposalGovernanceSectionProps) {
   const now = Time.utc()
@@ -75,16 +69,13 @@ export default function ProposalGovernanceSection({
           proposal={proposal}
           votes={votes}
           loading={loading}
-          changingVote={changingVote}
           choices={choices}
           finished={finished}
           onVote={onVote}
-          selectedChoice={selectedChoice}
           castingVote={castingVote}
-          patchOptions={patchOptions}
+          proposalContext={proposalContext}
+          updateContext={updateContext}
           onChangeVote={onChangeVote}
-          showError={showError}
-          onRetry={onRetry}
         />
       )}
     </div>

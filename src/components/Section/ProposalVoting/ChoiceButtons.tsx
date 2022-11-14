@@ -7,7 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
-import { ProposalPageOptions, SelectedChoice } from '../../../pages/proposal'
+import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
 import { SECONDS_FOR_VOTING_RETRY } from '../../Modal/Votes/VotingModal'
 
 import ChoiceButton from './ChoiceButton'
@@ -20,12 +20,10 @@ interface Props {
   votesByChoices: Scores
   totalVotes: number
   onVote: (selectedChoice: SelectedChoice) => void
-  selectedChoice: SelectedChoice
   castingVote: boolean
-  patchOptions: (newState: Partial<ProposalPageOptions>) => void
+  proposalContext: ProposalPageContext
+  updateContext: (newState: Partial<ProposalPageContext>) => void
   startAt?: Date
-  showError: boolean
-  onRetry: () => void
 }
 
 export const ChoiceButtons = ({
@@ -36,33 +34,17 @@ export const ChoiceButtons = ({
   votesByChoices,
   totalVotes,
   onVote,
-  selectedChoice,
   castingVote,
-  patchOptions,
+  proposalContext,
+  updateContext,
   startAt,
-  showError,
-  onRetry,
 }: Props) => {
   const t = useFormatMessage()
-  const [timeLeft, setTimeLeft] = useState(SECONDS_FOR_VOTING_RETRY)
-
-  useEffect(() => {
-    if (showError) {
-      const timer = setTimeout(() => {
-        setTimeLeft((timeLeft) => timeLeft - 1)
-      }, 1000)
-
-      if (timeLeft === 0) {
-        setTimeLeft(SECONDS_FOR_VOTING_RETRY)
-        onRetry()
-      }
-      return () => clearTimeout(timer)
-    }
-  }, [showError, timeLeft, onRetry])
-
+  const { selectedChoice, retryTimer, showVotingError } = proposalContext
   const now = Time.utc()
   const untilStart = useCountdown(Time.utc(startAt) || now)
   const started = untilStart.time === 0
+  const selectionPending = !(selectedChoice && !!selectedChoice.choice)
   return (
     <>
       {choices.map((currentChoice, currentChoiceIndex) => {
@@ -75,7 +57,7 @@ export const ChoiceButtons = ({
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
             onClick={() => {
-              patchOptions({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
+              updateContext({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
             }}
             delegate={delegateVotedCurrentChoice ? delegate! : undefined}
             voteCount={votesByChoices[currentChoiceIndex]}
@@ -87,11 +69,11 @@ export const ChoiceButtons = ({
       })}
       <Button
         primary
-        disabled={!selectedChoice || !started || showError}
+        disabled={selectionPending || !started || showVotingError}
         loading={castingVote}
         onClick={() => onVote && selectedChoice && onVote(selectedChoice)}
       >
-        {showError ? `Retry in ${timeLeft}...` : t('page.proposal_detail.cast_vote')}
+        {showVotingError ? `Retry in ${retryTimer}...` : t('page.proposal_detail.cast_vote')}
       </Button>
     </>
   )
