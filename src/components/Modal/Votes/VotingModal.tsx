@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -11,6 +13,8 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
+import OpenExternalLink from '../../Icon/OpenExternalLink'
+import VotingDisabled from '../../Icon/VotingDisabled'
 import SentimentSurvey from '../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../ProposalModal.css'
 
@@ -82,7 +86,28 @@ export function VotingModal({
       )}
       {showSnapshotRedirect && (
         <Modal.Content>
-          <span>SNAPSHOT REDIRECT MOFO</span>
+          <div className="VoteOnSnapshot__Content">
+            <VotingDisabled className="VoteOnSnapshot__Icon" />
+            <span className="VoteOnSnapshot__Header">Voting not available</span>
+            <div className="VoteOnSnapshot__Description">
+              {"It looks like we're having issues casting your vote from the Governance dApp."}
+            </div>
+            <Markdown className="VoteOnSnapshot__Suggestion">
+              {'You can try voting directly on **Snapshot** - the system we use for decision-making.'}
+            </Markdown>
+          </div>
+          <div className="VoteOnSnapshot__Actions">
+            <Button
+              fluid
+              primary
+              // onClick={() => onVoteOnSnapshot(selectedChoice)}
+              className="VoteOnSnapshot__Button"
+            >
+              {'Vote On Snapshot'}
+              <OpenExternalLink className="VoteOnSnapshot__ButtonIcon" />
+            </Button>
+            <Link className="VoteOnSnapshot__FeedbackLink">{'What about my extra feedback?'}</Link>
+          </div>
         </Modal.Content>
       )}
     </Modal>
