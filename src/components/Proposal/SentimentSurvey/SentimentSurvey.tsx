@@ -2,25 +2,30 @@ import React, { useEffect } from 'react'
 
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ReactionType, Survey, SurveyTopicAttributes, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
+import { ReactionType, Survey, SurveyTopicAttributes, Topic } from '../../../entities/SurveyTopic/types'
 
 import './SentimentSurvey.css'
 import SentimentSurveyRow from './SentimentSurveyRow'
 
 interface Props {
+  survey: Survey
   surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
   isLoadingSurveyTopics: boolean
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>
 }
 
-const SentimentSurvey = ({ surveyTopics, isLoadingSurveyTopics, setSurvey }: Props) => {
+const SentimentSurvey = ({ survey, surveyTopics, isLoadingSurveyTopics, setSurvey }: Props) => {
   useEffect(() => {
-    const newSurvey: TopicFeedback[] = []
-    surveyTopics?.forEach((topic) => {
-      newSurvey.push({ topic, reaction: ReactionType.EMPTY })
-    })
-    setSurvey(newSurvey)
-  }, [surveyTopics, setSurvey])
+    if (!isLoadingSurveyTopics) {
+      if (survey.length === 0) {
+        const newSurvey: Survey = []
+        surveyTopics?.forEach((topic) => {
+          newSurvey.push({ topic, reaction: ReactionType.EMPTY })
+        })
+        setSurvey(newSurvey)
+      }
+    }
+  }, [survey, isLoadingSurveyTopics, surveyTopics, setSurvey])
 
   const addToSurvey = (topic: Topic, reaction: ReactionType) => {
     setSurvey((prev) => {
@@ -51,6 +56,7 @@ const SentimentSurvey = ({ surveyTopics, isLoadingSurveyTopics, setSurvey }: Pro
             <SentimentSurveyRow
               key={`SentimentSurveyRow_${index}`}
               topic={topic}
+              reaction={survey.find((feedback) => feedback.topic.topic_id === topic.topic_id)?.reaction}
               onReactionPicked={addToSurvey}
               onReactionUnpicked={removeFromSurvey}
             />

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -15,6 +15,7 @@ import './SentimentSurveyRow.css'
 
 interface Props {
   topic: Topic
+  reaction?: ReactionType | null
   onReactionPicked: (topic: Topic, reaction: ReactionType) => void
   onReactionUnpicked: (topic: Topic) => void
 }
@@ -27,7 +28,7 @@ export const REACTIONS_VIEW: ReactionView[] = [
   { reaction: ReactionType.ANGRY, label: 'angry', icon: (size) => <AngryEmoji size={size} /> },
 ]
 
-const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Props) => {
+const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpicked }: Props) => {
   const t = useFormatMessage()
   const [showAddReaction, setShowAddReaction] = useState(false)
   const [showReactions, setShowReactions] = useState(false)
@@ -49,6 +50,13 @@ const SentimentSurveyRow = ({ topic, onReactionPicked, onReactionUnpicked }: Pro
     setShowReactions(true)
     setShowAddReaction(true)
   }, [onReactionUnpicked, topic])
+
+  useEffect(() => {
+    if (reaction && reaction !== ReactionType.EMPTY) {
+      setShowReactions(false)
+      setPickedReaction(reaction)
+    }
+  }, [reaction])
 
   return (
     <div

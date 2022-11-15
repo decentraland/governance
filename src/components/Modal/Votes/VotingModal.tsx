@@ -74,7 +74,6 @@ export function VotingModal({
           setSurvey={setSurvey}
           isLoadingSurveyTopics={isLoadingSurveyTopics}
           surveyTopics={surveyTopics}
-          proposalContext={proposalContext}
         />
       )}
     </Modal>

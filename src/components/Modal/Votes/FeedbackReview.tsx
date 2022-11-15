@@ -24,17 +24,9 @@ interface Props {
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>
   surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
   isLoadingSurveyTopics: boolean
-  proposalContext: ProposalPageContext
 }
 
-export function FeedbackReview({
-  proposal,
-  survey,
-  setSurvey,
-  surveyTopics,
-  isLoadingSurveyTopics,
-  proposalContext,
-}: Props) {
+export function FeedbackReview({ proposal, survey, setSurvey, surveyTopics, isLoadingSurveyTopics }: Props) {
   const t = useFormatMessage()
   const [copied, state] = useClipboardCopy(Time.Second)
 
@@ -48,6 +40,7 @@ export function FeedbackReview({
         <Header>{'Please review your extra feedback'}</Header>
       </div>
       <SentimentSurvey
+        survey={survey}
         surveyTopics={surveyTopics}
         isLoadingSurveyTopics={isLoadingSurveyTopics}
         setSurvey={setSurvey}
@@ -69,7 +62,7 @@ export function FeedbackReview({
       </div>
       <Markdown className="FeedbackReview__Explanation">
         {
-          'Once you’re done, **copy the message** to the clipboard and **paste it on Snapshot as a comment** before voting'
+          'Once you’re done, **copy the message** to the clipboard and **paste it on Snapshot as a comment** when voting'
         }
       </Markdown>
     </Modal.Content>
