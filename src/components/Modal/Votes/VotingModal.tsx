@@ -10,6 +10,8 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import { Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
@@ -21,7 +23,7 @@ import '../ProposalModal.css'
 import './VotingModal.css'
 
 interface VotingModalProps {
-  open: boolean
+  proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
   surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
   isLoadingSurveyTopics: boolean
   onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
@@ -30,10 +32,8 @@ interface VotingModalProps {
   proposalContext: ProposalPageContext
 }
 
-export const SECONDS_FOR_VOTING_RETRY = 5
-
 export function VotingModal({
-  open,
+  proposal,
   onClose,
   surveyTopics,
   isLoadingSurveyTopics,
@@ -44,13 +44,20 @@ export function VotingModal({
   const t = useFormatMessage()
   const [survey, setSurvey] = useState<Survey>([])
   const { selectedChoice, showVotingError, showSnapshotRedirect, retryTimer } = proposalContext
+  // const showFeedbackReview = true
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
   }
 
   return (
-    <Modal size="tiny" className="VotingModal ProposalModal" open={open} closeIcon={<Close />} onClose={onClose}>
+    <Modal
+      size="tiny"
+      className="VotingModal ProposalModal"
+      open={proposalContext.showVotingModal}
+      closeIcon={<Close />}
+      onClose={onClose}
+    >
       {!showSnapshotRedirect && (
         <Modal.Content>
           <div className="ProposalModal__Title">
@@ -100,9 +107,12 @@ export function VotingModal({
             <Button
               fluid
               primary
-              // onClick={() => onVoteOnSnapshot(selectedChoice)}
+              href={snapshotProposalUrl(proposal)}
+              target="_blank"
+              rel="noopener noreferrer"
               className="VoteOnSnapshot__Button"
             >
+              <div className="VoteOnSnapshot__Hidden" />
               {'Vote On Snapshot'}
               <OpenExternalLink className="VoteOnSnapshot__ButtonIcon" />
             </Button>
@@ -110,6 +120,9 @@ export function VotingModal({
           </div>
         </Modal.Content>
       )}
+      {/*{showFeedbackReview && (*/}
+
+      {/*)}*/}
     </Modal>
   )
 }

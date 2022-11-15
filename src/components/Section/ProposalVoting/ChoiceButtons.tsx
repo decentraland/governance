@@ -8,7 +8,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
 import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
-import { SECONDS_FOR_VOTING_RETRY } from '../../Modal/Votes/VotingModal'
 
 import ChoiceButton from './ChoiceButton'
 

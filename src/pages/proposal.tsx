@@ -28,7 +28,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import { SECONDS_FOR_VOTING_RETRY, VotingModal } from '../components/Modal/Votes/VotingModal'
+import { VotingModal } from '../components/Modal/Votes/VotingModal'
 import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -70,6 +70,7 @@ const EMPTY_CHOICE_SELECTION: SelectedChoice = { choice: undefined, choiceIndex:
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 const EMPTY_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
+const SECONDS_FOR_VOTING_RETRY = 5
 
 export type ProposalPageContext = {
   changingVote: boolean
@@ -405,10 +406,10 @@ export default function ProposalPage() {
 
       {proposal && showSurvey && (
         <VotingModal
-          open={proposalContext.showVotingModal}
+          proposal={proposal}
           surveyTopics={surveyTopics}
           isLoadingSurveyTopics={isLoadingSurveyTopics}
-          onClose={() => updateContext({ showVotingModal: false })}
+          onClose={() => updateContext({ showVotingModal: false, showSnapshotRedirect: false })}
           onCastVote={castVote}
           castingVote={castingVote}
           proposalContext={proposalContext}
