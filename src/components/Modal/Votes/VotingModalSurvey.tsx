@@ -48,6 +48,7 @@ export function VotingModalSurvey({
         <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
       </div>
       <SentimentSurvey
+        survey={survey}
         surveyTopics={surveyTopics}
         isLoadingSurveyTopics={isLoadingSurveyTopics}
         setSurvey={setSurvey}
