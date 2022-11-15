@@ -16,3 +16,11 @@
   width: 100%;
   font-size: 13px;
 }
+
+.VotingSectionFooter__VotingFailedMessage {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--red-800);
+}
