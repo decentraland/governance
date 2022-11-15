@@ -181,14 +181,6 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   return target.toString()
 }
 
-export function getUpdateUrl(updateId: string, proposalId: string) {
-  const params = new URLSearchParams({ id: updateId, proposalId })
-  const target = new URL(GOVERNANCE_API)
-  target.pathname = '/update/'
-  target.search = '?' + params.toString()
-  return target.toString()
-}
-
 function grantDuration(value: string | undefined | null) {
   return Number(value || SNAPSHOT_DURATION)
 }

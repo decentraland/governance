@@ -2,8 +2,12 @@ import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { ChannelType, Client, EmbedBuilder, GatewayIntentBits } from 'discord.js'
 
 import { capitalizeFirstLetter } from '../clients/utils'
+import { profileUrl } from '../entities/Profile/utils'
 import { ProposalType } from '../entities/Proposal/types'
-import { isGovernanceProcessProposal } from '../entities/Proposal/utils'
+import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
+import UpdateModel from '../entities/Updates/model'
+import { UpdateAttributes } from '../entities/Updates/types'
+import { getPublicUpdates, updateUrl } from '../entities/Updates/utils'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
@@ -11,6 +15,8 @@ const TOKEN = process.env.DISCORD_TOKEN
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
+const BLANK = '\u200B'
+const PREVIEW_MAX_LENGTH = 140
 
 type Field = {
   name: string
@@ -20,11 +26,10 @@ type Field = {
 enum MessageColors {
   NEW_PROPOSAL = 0x0099ff,
   FINISH_PROPOSAL = 0x8142f5,
-  NEW_UPDATE = 0xff0000,
+  NEW_UPDATE = 0x00ff80,
 }
 
 type EmbedMessageProps = {
-  proposalId: string
   title: string
   proposalType?: ProposalType
   description?: string
@@ -32,6 +37,7 @@ type EmbedMessageProps = {
   user?: string
   action: string
   color: MessageColors
+  url: string
 }
 
 function getChoices(choices: string[]): Field[] {
@@ -39,6 +45,10 @@ function getChoices(choices: string[]): Field[] {
     name: `Option #${idx + 1}`,
     value: capitalizeFirstLetter(choice),
   }))
+}
+
+function shortText(text: string) {
+  return text.length > PREVIEW_MAX_LENGTH ? text.slice(0, PREVIEW_MAX_LENGTH) + '...' : text
 }
 
 export class DiscordService {
@@ -64,7 +74,6 @@ export class DiscordService {
   }
 
   private static async formatMessage({
-    proposalId,
     title,
     proposalType,
     description,
@@ -72,20 +81,14 @@ export class DiscordService {
     user,
     action,
     color,
+    url,
   }: EmbedMessageProps) {
     const fields: Field[] = []
 
     if (!!proposalType && !!description) {
-      let embedDescription = ''
-
-      if (!isGovernanceProcessProposal(proposalType)) {
-        embedDescription = description.split('\n')[0]
-      } else {
-        embedDescription = description.substring(0, 140)
-        if (description.length > 140) {
-          embedDescription += '...'
-        }
-      }
+      const embedDescription = !isGovernanceProcessProposal(proposalType)
+        ? description.split('\n')[0]
+        : shortText(description)
 
       fields.push({
         name: proposalType.toUpperCase().replaceAll('_', ' '),
@@ -94,13 +97,13 @@ export class DiscordService {
     }
 
     if (choices.length > 0) {
-      fields.push({ name: '\u200B', value: '\u200B' }, ...choices)
+      fields.push({ name: BLANK, value: BLANK }, ...choices)
     }
 
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle(title)
-      .setURL(`https://localhost:8000/proposal/?id=${proposalId}`)
+      .setURL(url)
       .setDescription(action)
       .setThumbnail('https://decentraland.org/images/decentraland.png')
       .addFields(...fields)
@@ -118,7 +121,7 @@ export class DiscordService {
       embed.setAuthor({
         name: displayableUser,
         iconURL: hasAvatar ? profile.avatar?.snapshots.face256 : DEFAULT_AVATAR,
-        url: `https://localhost:8000/profile/?address=${user}`,
+        url: profileUrl(user),
       })
     }
 
@@ -136,7 +139,7 @@ export class DiscordService {
     const action = 'A new proposal has been created'
     const embedChoices = getChoices(choices)
     const message = await this.formatMessage({
-      proposalId,
+      url: proposalUrl({ id: proposalId }),
       title,
       proposalType: type,
       description,
@@ -148,16 +151,40 @@ export class DiscordService {
     this.channel.send({ embeds: [message] })
   }
 
-  static async newUpdate(proposalTitle: string, updateId: string, user: string) {
-    // TODO: set final message
-    this.channel.send(`New update in proposal: ${proposalTitle}, ${updateId}. By ${user}`)
+  static async newUpdate(proposalId: string, proposalTitle: string, updateId: string, user: string) {
+    const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
+    const updateIdx = Number(publicUpdates.findIndex((item) => item.id === updateId))
+    const updateNumber = publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
+
+    const { health, introduction, highlights, blockers, next_steps } = publicUpdates[updateIdx]
+
+    if (!health || !introduction || !highlights || !blockers || !next_steps) {
+      throw new Error('Missing update fields for Discord message')
+    }
+
+    const action = 'A new update has been created'
+    const title = `Update #${updateNumber}: ${proposalTitle}`
+    const message = await this.formatMessage({
+      url: updateUrl(updateId, proposalId),
+      title,
+      choices: [
+        { name: 'Project Health', value: shortText(health) },
+        { name: 'Introduction', value: shortText(introduction) },
+        { name: 'Highlights', value: shortText(highlights) },
+        { name: 'Blockers', value: shortText(blockers) },
+        { name: 'Next Steps', value: shortText(next_steps) },
+      ],
+      user,
+      action,
+      color: MessageColors.NEW_UPDATE,
+    })
+    this.channel.send({ embeds: [message] })
   }
 
-  // TODO: Type outcome
   static async finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
     const action = `Proposal has ended with outcome ${outcome}`
     const message = await this.formatMessage({
-      proposalId: id,
+      url: proposalUrl({ id }),
       title,
       choices: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
       action,

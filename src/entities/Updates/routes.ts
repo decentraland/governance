@@ -108,7 +108,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     additional_notes,
   })
 
-  DiscordService.newUpdate(proposal.title, update.id, user)
+  DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
   return update
 }
@@ -160,7 +160,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   )
 
   if (!completion_date) {
-    DiscordService.newUpdate(proposal.title, update.id, user)
+    DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
   }
 
   return true
