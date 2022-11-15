@@ -9,7 +9,8 @@ import { Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/typ
 import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
 import '../ProposalModal.css'
 
-import { VoteOnSnapshot } from './VoteOnSnapshot'
+import { FeedbackReview } from './FeedbackReview'
+import { SnapshotRedirect } from './SnapshotRedirect'
 import './VotingModal.css'
 import { VotingModalSurvey } from './VotingModalSurvey'
 
@@ -34,8 +35,8 @@ export function VotingModal({
 }: VotingModalProps) {
   const t = useFormatMessage()
   const [survey, setSurvey] = useState<Survey>([])
-  const { selectedChoice, showVotingError, showSnapshotRedirect, retryTimer } = proposalContext
-  // const showFeedbackReview = true
+  const { selectedChoice, showSnapshotRedirect } = proposalContext
+  const [showFeedbackReview, setShowFeedbackReview] = useState(false)
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
@@ -47,9 +48,12 @@ export function VotingModal({
       className="VotingModal ProposalModal"
       open={proposalContext.showVotingModal}
       closeIcon={<Close />}
-      onClose={onClose}
+      onClose={() => {
+        setShowFeedbackReview(false)
+        onClose()
+      }}
     >
-      {!showSnapshotRedirect && (
+      {!showSnapshotRedirect && !showFeedbackReview && (
         <VotingModalSurvey
           survey={survey}
           setSurvey={setSurvey}
@@ -60,10 +64,19 @@ export function VotingModal({
           proposalContext={proposalContext}
         />
       )}
-      {showSnapshotRedirect && <VoteOnSnapshot proposal={proposal} />}
-      {/*{showFeedbackReview && (*/}
-
-      {/*)}*/}
+      {showSnapshotRedirect && !showFeedbackReview && (
+        <SnapshotRedirect proposal={proposal} onReviewFeedback={() => setShowFeedbackReview(true)} />
+      )}
+      {showFeedbackReview && (
+        <FeedbackReview
+          proposal={proposal}
+          survey={survey}
+          setSurvey={setSurvey}
+          isLoadingSurveyTopics={isLoadingSurveyTopics}
+          surveyTopics={surveyTopics}
+          proposalContext={proposalContext}
+        />
+      )}
     </Modal>
   )
 }

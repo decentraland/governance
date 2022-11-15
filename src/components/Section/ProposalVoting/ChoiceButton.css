@@ -13,7 +13,7 @@
 }
 
 .ui.button.ChoiceButton.ChoiceButton--selected {
-  border: 2px solid #736e7d;
+  border: 2px solid var(--black-600);
   border-radius: 6px;
 }
 

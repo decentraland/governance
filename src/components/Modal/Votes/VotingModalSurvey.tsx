@@ -7,7 +7,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../modules/votes/utils'
 import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
