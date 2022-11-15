@@ -16,7 +16,7 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 24px;
-  color: #d80027;
+  color: var(--red-800);
   margin-left: 22px;
 }
 
@@ -77,21 +77,15 @@
   padding-right: 57px;
 }
 
-.VoteOnSnapshot__Button:hover {
-  transform: none !important;
-}
-
 .VoteOnSnapshot__Button {
-  gap: 18px;
-  display: flex;
-  justify-content: center;
+  display: flex !important;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
 }
 
-.VoteOnSnapshot__ButtonIcon {
-  position: absolute !important;
-  right: 140px !important;
+.VoteOnSnapshot__Hidden {
+  opacity: 0;
 }
 
 .VoteOnSnapshot__FeedbackLink {
