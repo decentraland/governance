@@ -11,39 +11,43 @@ import OpenExternalLink from '../../Icon/OpenExternalLink'
 import VotingDisabled from '../../Icon/VotingDisabled'
 import '../ProposalModal.css'
 
+import './SnapshotRedirect.css'
 import './VotingModal.css'
 
 interface Props {
   proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
+  onReviewFeedback: () => void
 }
 
-export function VoteOnSnapshot({ proposal }: Props) {
+export function SnapshotRedirect({ proposal, onReviewFeedback }: Props) {
   return (
     <Modal.Content>
-      <div className="VoteOnSnapshot__Content">
-        <VotingDisabled className="VoteOnSnapshot__Icon" />
-        <span className="VoteOnSnapshot__Header">Voting not available</span>
-        <div className="VoteOnSnapshot__Description">
+      <div className="SnapshotRedirect__Content">
+        <VotingDisabled className="SnapshotRedirect__Icon" />
+        <span className="SnapshotRedirect__Header">Voting not available</span>
+        <div className="SnapshotRedirect__Description">
           {"It looks like we're having issues casting your vote from the Governance dApp."}
         </div>
-        <Markdown className="VoteOnSnapshot__Suggestion">
+        <Markdown className="SnapshotRedirect__Suggestion">
           {'You can try voting directly on **Snapshot** - the system we use for decision-making.'}
         </Markdown>
       </div>
-      <div className="VoteOnSnapshot__Actions">
+      <div className="SnapshotRedirect__Actions">
         <Button
           fluid
           primary
           href={snapshotProposalUrl(proposal)}
           target="_blank"
           rel="noopener noreferrer"
-          className="VoteOnSnapshot__Button"
+          className="SnapshotRedirect__Button"
         >
-          <div className="VoteOnSnapshot__Hidden" />
+          <div className="SnapshotRedirect__Hidden" />
           {'Vote On Snapshot'}
-          <OpenExternalLink className="VoteOnSnapshot__ButtonIcon" />
+          <OpenExternalLink className="SnapshotRedirect__ButtonIcon" />
         </Button>
-        <Link className="VoteOnSnapshot__FeedbackLink">{'What about my extra feedback?'}</Link>
+        <Link className="SnapshotRedirect__FeedbackLink" onClick={onReviewFeedback}>
+          {'What about my extra feedback?'}
+        </Link>
       </div>
     </Modal.Content>
   )

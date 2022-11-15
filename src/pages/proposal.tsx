@@ -409,7 +409,10 @@ export default function ProposalPage() {
           proposal={proposal}
           surveyTopics={surveyTopics}
           isLoadingSurveyTopics={isLoadingSurveyTopics}
-          onClose={() => updateContext({ showVotingModal: false, showSnapshotRedirect: false })}
+          onClose={() => {
+            setErrorCounter(0)
+            updateContext({ showVotingModal: false, showSnapshotRedirect: false })
+          }}
           onCastVote={castVote}
           castingVote={castingVote}
           proposalContext={proposalContext}

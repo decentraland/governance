@@ -30,7 +30,7 @@
   line-height: 18px;
   text-align: center;
   text-transform: uppercase;
-  color: #736e7d;
+  color: var(--black-600);
   position: relative;
   opacity: 0;
 }
