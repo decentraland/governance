@@ -11,7 +11,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import { Survey, SurveyTopicAttributes } from '../../../entities/SurveyTopic/types'
-import { ProposalPageContext } from '../../../pages/proposal'
+import { SurveyEncoder } from '../../../entities/SurveyTopic/utils'
 import SentimentSurvey from '../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../ProposalModal.css'
 
@@ -31,7 +31,7 @@ export function FeedbackReview({ proposal, survey, setSurvey, surveyTopics, isLo
   const [copied, state] = useClipboardCopy(Time.Second)
 
   const handleCopy = useCallback(() => {
-    state.copy('errorMessage')
+    state.copy(SurveyEncoder.encode(survey))
   }, [state])
 
   return (
