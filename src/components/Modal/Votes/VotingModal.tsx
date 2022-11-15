@@ -21,6 +21,7 @@ import SentimentSurvey from '../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../ProposalModal.css'
 
 import './VotingModal.css'
+import { VotingModalSurvey } from './VotingModalSurvey'
 
 interface VotingModalProps {
   proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
@@ -59,37 +60,15 @@ export function VotingModal({
       onClose={onClose}
     >
       {!showSnapshotRedirect && (
-        <Modal.Content>
-          <div className="ProposalModal__Title">
-            <Header>{"We'd appreciate some extra feedback"}</Header>
-            <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
-          </div>
-          <SentimentSurvey
-            surveyTopics={surveyTopics}
-            isLoadingSurveyTopics={isLoadingSurveyTopics}
-            setSurvey={setSurvey}
-          />
-          <div className="VotingModal__Actions">
-            <div
-              className={TokenList.join([
-                'VotingModal__ErrorNotice',
-                !showVotingError && 'VotingModal__ErrorNotice--hidden',
-              ])}
-            >
-              {'Failed to cast vote'}
-            </div>
-            <Button
-              fluid
-              primary
-              onClick={() => onCastVote(selectedChoice, survey)}
-              loading={castingVote}
-              disabled={showVotingError}
-              className="VotingModal__CastVote"
-            >
-              {showVotingError ? `Retry in ${retryTimer}...` : t('page.proposal_detail.cast_vote')}
-            </Button>
-          </div>
-        </Modal.Content>
+        <VotingModalSurvey
+          survey={survey}
+          setSurvey={setSurvey}
+          isLoadingSurveyTopics={isLoadingSurveyTopics}
+          surveyTopics={surveyTopics}
+          castingVote={castingVote}
+          onCastVote={onCastVote}
+          proposalContext={proposalContext}
+        />
       )}
       {showSnapshotRedirect && (
         <Modal.Content>
