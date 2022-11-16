@@ -2,14 +2,12 @@ import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
-import OpenExternalLink from '../../Icon/OpenExternalLink'
-import VotingDisabled from '../../Icon/VotingDisabled'
-import '../ProposalModal.css'
+import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
+import VotingDisabled from '../../../Icon/VotingDisabled'
+import '../../ProposalModal.css'
 
 import './SnapshotRedirect.css'
 import './VotingModal.css'
@@ -33,18 +31,7 @@ export function SnapshotRedirect({ proposal, onReviewFeedback }: Props) {
         </Markdown>
       </div>
       <div className="SnapshotRedirect__Actions">
-        <Button
-          fluid
-          primary
-          href={snapshotProposalUrl(proposal)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="SnapshotRedirect__Button"
-        >
-          <div className="SnapshotRedirect__Hidden" />
-          {'Vote On Snapshot'}
-          <OpenExternalLink className="SnapshotRedirect__ButtonIcon" />
-        </Button>
+        <SnapshotRedirectButton proposal={proposal} />
         <Link className="SnapshotRedirect__FeedbackLink" onClick={onReviewFeedback}>
           {'What about my extra feedback?'}
         </Link>
