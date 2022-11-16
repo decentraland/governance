@@ -1,0 +1,25 @@
+.VotingResultsInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.VotingResultsInfo__Container {
+  background: var(--secondary);
+  border-radius: 6px;
+  padding: 8px 11px;
+}
+
+.VotingResultsInfo__Title {
+  color: var(--text);
+  line-height: 24px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.VotingResultsInfo__Subtitle {
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0.8;
+}

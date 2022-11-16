@@ -11,10 +11,19 @@
 }
 
 .ProposalResults__Content {
+  display: flex;
   width: 100%;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  gap: 24px;
 }
+
 .ProposalResults__ChoicesProgress {
-  width: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .ProposalResults__CallToAction > p.dg.Paragraph,

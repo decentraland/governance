@@ -11,11 +11,11 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
-import './VotingStatusSummary.css'
+import './ProposalThresholdsSummary.css'
 
 const flickityOptions = {
   initialIndex: 0,
-  cellSelector: '.VotingStatusSummary__CarouselCell',
+  cellSelector: '.ProposalThresholdsSummary__CarouselCell',
   cellAlign: 'center',
   contain: true,
   accessibility: true,
@@ -27,12 +27,12 @@ const flickityOptions = {
   setGallerySize: true,
 }
 
-export type VotingStatusSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+export type ProposalThresholdsSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   partialResults: ChoiceProgressProps[]
 }
 
-export default function VotingStatusSummary({ proposal, partialResults }: VotingStatusSummaryProps) {
+export default function ProposalThresholdsSummary({ proposal, partialResults }: ProposalThresholdsSummaryProps) {
   const t = useFormatMessage()
   const vpInFavor = partialResults[0].power || 0
   const threshold = proposal?.required_to_pass || 0
@@ -48,44 +48,46 @@ export default function VotingStatusSummary({ proposal, partialResults }: Voting
     <div className="DetailsSection__Content">
       {timeout.time > 0 && !thresholdReached && (
         <Flickity
-          className={'VotingStatusSummary__Carousel'}
+          className={'ProposalThresholdsSummary__Carousel'}
           options={flickityOptions}
           flickityRef={(ref) => (flickity.current = ref)}
         >
           <div
-            className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
+            className="ProposalThresholdsSummary__CarouselCell ProposalThresholdsSummary__Container"
             onClick={() => flickity.current?.next()}
           >
-            <div className="VotingStatusSummary__Subtitle">{t('page.proposal_detail.required_vp')}</div>
-            <div className="VotingStatusSummary__Title">{t('general.number', { value: threshold })} VP</div>
+            <div className="ProposalThresholdsSummary__Subtitle">{t('page.proposal_detail.required_vp')}</div>
+            <div className="ProposalThresholdsSummary__Title">{t('general.number', { value: threshold })} VP</div>
           </div>
           <div
-            className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
+            className="ProposalThresholdsSummary__CarouselCell ProposalThresholdsSummary__Container"
             onClick={() => flickity.current?.previous()}
           >
-            <div className="VotingStatusSummary__Subtitle">{t('page.proposal_detail.needed_for_acceptance')}</div>
-            <div className="VotingStatusSummary__Title">{t('general.number', { value: neededForAcceptance })} VP</div>
+            <div className="ProposalThresholdsSummary__Subtitle">{t('page.proposal_detail.needed_for_acceptance')}</div>
+            <div className="ProposalThresholdsSummary__Title">
+              {t('general.number', { value: neededForAcceptance })} VP
+            </div>
           </div>
         </Flickity>
       )}
       {timeout.time > 0 && thresholdReached && (
-        <div className="VotingStatusSummary__Container">
-          <div className="VotingStatusSummary__Subtitle">
+        <div className="ProposalThresholdsSummary__Container">
+          <div className="ProposalThresholdsSummary__Subtitle">
             {thresholdReached && t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
           </div>
-          <div className="VotingStatusSummary__Title">
+          <div className="ProposalThresholdsSummary__Title">
             <Bold>{t('page.proposal_detail.time_left_label', { countdown: endDate.fromNow() })}</Bold>
           </div>
         </div>
       )}
       {timeout.time <= 0 && (
-        <div className="VotingStatusSummary__Container">
-          <div className="VotingStatusSummary__Subtitle">
+        <div className="ProposalThresholdsSummary__Container">
+          <div className="ProposalThresholdsSummary__Subtitle">
             {thresholdReached
               ? t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })
               : t('page.proposal_detail.threshold_not_reached', { threshold: abbreviatedThreshold })}
           </div>
-          <div className="VotingStatusSummary__Title">
+          <div className="ProposalThresholdsSummary__Title">
             <Bold>{t('page.proposal_detail.proposal_status', { status: proposal?.status })}</Bold>
           </div>
         </div>

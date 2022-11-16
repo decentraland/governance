@@ -11,7 +11,8 @@ import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
 import './DetailsSection.css'
-import VotingStatusSummary from './VotingStatusSummary'
+import { ProposalPromotionSection } from './ProposalPromotionSection'
+import ProposalThresholdsSummary from './ProposalThresholdsSummary'
 
 export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
@@ -44,7 +45,7 @@ export default function ProposalGovernanceSection({
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
-  const showVotingStatusSummary = !!(
+  const showProposalThresholdsSummary = !!(
     proposal &&
     proposal?.required_to_pass != null &&
     proposal?.required_to_pass >= 0 &&
@@ -63,7 +64,10 @@ export default function ProposalGovernanceSection({
         props.className,
       ])}
     >
-      {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} partialResults={partialResults} />}
+      <ProposalPromotionSection proposal={proposal} loading={loading} />
+      {showProposalThresholdsSummary && (
+        <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
+      )}
       {!finished && (
         <ProposalVotingSection
           proposal={proposal}
