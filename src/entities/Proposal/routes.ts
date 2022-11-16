@@ -8,7 +8,7 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
-import { filter } from 'lodash'
+import { filter, isNil } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
@@ -572,7 +572,7 @@ async function getGrants() {
         } else {
           const { vesting_total_amount, vesting_released, vesting_releasable } = grant
 
-          if (!vesting_total_amount || !vesting_released || !vesting_releasable) {
+          if (isNil(vesting_total_amount) || isNil(vesting_released) || isNil(vesting_releasable)) {
             throw new Error('Missing vesting data')
           }
 
