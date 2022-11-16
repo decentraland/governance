@@ -17,6 +17,7 @@ import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
 import './ProposalVotingSection.css'
+import SidebarSnapshotRedirect from './SidebarSnapshotRedirect'
 import VotedChoiceButton from './VotedChoiceButton'
 import VotingSectionFooter from './VotingSectionFooter'
 
@@ -109,7 +110,6 @@ const ProposalVotingSection = ({
           {!proposalContext.showSnapshotRedirect && (
             <>
               <Header sub>{'Get Involved'}</Header>
-              {/*TODO: internationalization*/}
 
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
@@ -145,11 +145,7 @@ const ProposalVotingSection = ({
               />
             </>
           )}
-          {proposalContext.showSnapshotRedirect && (
-            <>
-              <span>SNAPSHOT REDIRECT MOFO</span>
-            </>
-          )}
+          {proposal && proposalContext.showSnapshotRedirect && <SidebarSnapshotRedirect proposal={proposal} />}
         </>
       )}
     </div>

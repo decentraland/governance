@@ -28,7 +28,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import { VotingModal } from '../components/Modal/Votes/VotingModal'
+import { VotingModal } from '../components/Modal/Votes/VotingModal/VotingModal'
 import ProposalActions from '../components/Proposal/ProposalActions'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'

@@ -47,17 +47,6 @@
   padding-right: 57px;
 }
 
-.SnapshotRedirect__Button {
-  display: flex !important;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.SnapshotRedirect__Hidden {
-  opacity: 0;
-}
-
 .SnapshotRedirect__FeedbackLink {
   font-size: 15px;
   font-weight: 400;
