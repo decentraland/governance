@@ -335,20 +335,22 @@ export default function ProposalPage() {
                 />
               )}
               {proposal && (
-                <SurveyResults
-                  votes={votes}
-                  isLoadingVotes={votesState.loading}
-                  surveyTopics={surveyTopics}
-                  isLoadingSurveyTopics={isLoadingSurveyTopics}
-                />
+                <>
+                  <SurveyResults
+                    votes={votes}
+                    isLoadingVotes={votesState.loading}
+                    surveyTopics={surveyTopics}
+                    isLoadingSurveyTopics={isLoadingSurveyTopics}
+                  />
+                  <ProposalResults
+                    proposal={proposal}
+                    votes={votes}
+                    partialResults={partialResults}
+                    loading={proposalState.loading || votesState.loading}
+                    onOpenVotesList={() => updateContext({ showVotesList: true })}
+                  />
+                </>
               )}
-              <ProposalResults
-                proposal={proposal}
-                votes={votes}
-                partialResults={partialResults}
-                loading={proposalState.loading || votesState.loading}
-                onOpenVotesList={() => updateContext({ showVotesList: true })}
-              />
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
 

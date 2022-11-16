@@ -11,11 +11,11 @@ import Divider from '../Common/Divider'
 import ChoiceProgress, { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import './DetailsSection.css'
-import { ProposalPromotionSection } from './ProposalPromotionSection'
 import './ProposalResults.css'
+import VotingResultsInfo from './VotingResultsInfo'
 
 export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  proposal?: ProposalAttributes | null
+  proposal: ProposalAttributes
   userHasVoted?: boolean
   votes?: Record<string, Vote> | null
   partialResults: ChoiceProgressProps[]
@@ -56,8 +56,8 @@ export default function ProposalResults({
             )
           })}
         </div>
+        <VotingResultsInfo partialResults={partialResults} proposal={proposal} />
       </div>
-      <ProposalPromotionSection proposal={proposal} loading={loading} />
     </div>
   )
 }

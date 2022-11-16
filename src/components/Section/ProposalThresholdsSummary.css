@@ -1,40 +1,40 @@
-.VotingStatusSummary__Carousel {
+.ProposalThresholdsSummary__Carousel {
   width: 100%;
   padding-bottom: 8px;
 }
-.VotingStatusSummary__CarouselCell {
+.ProposalThresholdsSummary__CarouselCell {
   width: 100%;
   border-radius: 5px;
   cursor: pointer;
 }
-.VotingStatusSummary__CarouselCell:first-child {
+.ProposalThresholdsSummary__CarouselCell:first-child {
   margin-right: 8px;
 }
 
-.VotingStatusSummary__Carousel .flickity-page-dots {
+.ProposalThresholdsSummary__Carousel .flickity-page-dots {
   bottom: -16px;
   margin: 8px 0;
 }
-.VotingStatusSummary__Carousel .flickity-page-dots .dot {
+.ProposalThresholdsSummary__Carousel .flickity-page-dots .dot {
   width: 4px;
   height: 4px;
   margin: 0 4px;
 }
 
-.VotingStatusSummary__Container {
+.ProposalThresholdsSummary__Container {
   background: var(--secondary);
   border-radius: 6px;
   padding: 8px 11px;
 }
 
-.VotingStatusSummary__Title {
+.ProposalThresholdsSummary__Title {
   color: var(--text);
   line-height: 24px;
   font-size: 15px;
   font-weight: 500;
 }
 
-.VotingStatusSummary__Subtitle {
+.ProposalThresholdsSummary__Subtitle {
   font-size: 13px;
   color: var(--text);
   opacity: 0.8;
