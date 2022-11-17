@@ -140,17 +140,16 @@ export class SnapshotApi {
     address: string,
     proposalSnapshotId: string,
     choiceNumber: number,
-    comment?: string
+    reason?: string
   ): Promise<SnapshotReceipt> {
     const voteMessage = {
       space: SnapshotApi.getSpaceName(),
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
-      reason: comment,
+      reason: reason,
       app: SNAPSHOT_APP_NAME,
     }
-    throw new Error('testing voting error')
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }
 
