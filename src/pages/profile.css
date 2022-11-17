@@ -1,9 +1,11 @@
-.ProfilePage .ProfileBox__Container:not(:last-child) {
-  margin-bottom: 24px;
+.ProfilePage__Container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 @media (min-width: 768px) {
-  .ProfilePage .ProfileBox__Container:not(:last-child) {
-    margin-bottom: 44px;
+  .ProfilePage__Container {
+    gap: 44px;
   }
 }

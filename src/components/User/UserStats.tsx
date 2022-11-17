@@ -37,7 +37,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
         </NotMobile>
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
         {total > 0 && (
-          <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')}>
+          <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
             <VotingPowerDistribution
               vpDistribution={vpDistribution}
               isLoading={isLoadingVpDistribution}

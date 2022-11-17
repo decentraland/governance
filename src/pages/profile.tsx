@@ -62,18 +62,18 @@ export default function ProfilePage() {
         <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Profile} />
       </Mobile>
       <BurgerMenuPushableLayout>
-        <div className="ProfilePage">
-          <Head
-            title={t('page.profile.title', { address: displayableAddress })}
-            description={t('page.profile.description')}
-            image="https://decentraland.org/images/decentraland.png"
-          />
-          <Navigation activeTab={NavigationTab.Profile} />
-          <UserStats
-            address={address}
-            vpDistribution={vpDistribution}
-            isLoadingVpDistribution={isLoadingVpDistribution}
-          />
+        <Head
+          title={t('page.profile.title', { address: displayableAddress })}
+          description={t('page.profile.description')}
+          image="https://decentraland.org/images/decentraland.png"
+        />
+        <Navigation activeTab={NavigationTab.Profile} />
+        <UserStats
+          address={address}
+          vpDistribution={vpDistribution}
+          isLoadingVpDistribution={isLoadingVpDistribution}
+        />
+        <div className="ProfilePage__Container">
           <GrantBeneficiaryBox address={address} />
           <VpDelegationBox
             delegation={delegation}
