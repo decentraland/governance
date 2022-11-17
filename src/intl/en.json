@@ -439,7 +439,8 @@
     "grant_card": {
       "by_user": "By",
       "size": "Size"
-    }
+    },
+    "snapshot_redirect_button_label": "Vote on Snapshot"
   },
   "page": {
     "404": {

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const SnapshotRedirectButton = ({ proposal, inverted }: Props) => {
+  const t = useFormatMessage()
   return (
     <Button
       fluid
@@ -25,7 +27,7 @@ const SnapshotRedirectButton = ({ proposal, inverted }: Props) => {
       className="SnapshotRedirectButton"
     >
       <div className="SnapshotRedirectButton__Hidden" />
-      {'Vote On Snapshot'}
+      {t('component.snapshot_redirect_button_label')}
       <OpenExternalLink
         className="SnapshotRedirect__ButtonIcon"
         color={inverted ? 'var(--dcl-primary)' : 'var(--white-900)'}
