@@ -7,7 +7,7 @@ import { ReactionType, Topic } from '../../../entities/SurveyTopic/types'
 import IconHelper from '../../Helper/IconHelper'
 import AddReaction from '../../Icon/AddReaction'
 import AngryEmoji from '../../Icon/AngryEmoji'
-import GreyX from '../../Icon/GreyX'
+import Cross from '../../Icon/Cross'
 import PartyEmoji from '../../Icon/PartyEmoji'
 import PokerFaceEmoji from '../../Icon/PokerFaceEmoji'
 
@@ -85,7 +85,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
             )
           })}
           <div onClick={() => setShowReactions(false)}>
-            <GreyX />
+            <Cross />
           </div>
         </div>
       )}
