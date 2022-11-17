@@ -26,6 +26,7 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   castingVote: boolean
   proposalContext: ProposalPageContext
   updateContext: (newState: Partial<ProposalPageContext>) => void
+  handleScrollTo: () => void
 }
 
 export default function ProposalGovernanceSection({
@@ -40,6 +41,7 @@ export default function ProposalGovernanceSection({
   castingVote,
   proposalContext,
   updateContext,
+  handleScrollTo,
   ...props
 }: ProposalGovernanceSectionProps) {
   const now = Time.utc()
@@ -80,6 +82,7 @@ export default function ProposalGovernanceSection({
           proposalContext={proposalContext}
           updateContext={updateContext}
           onChangeVote={onChangeVote}
+          handleScrollTo={handleScrollTo}
         />
       )}
     </div>

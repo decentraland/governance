@@ -127,6 +127,12 @@ export default function ProposalPage() {
     [account, subscriptions]
   )
 
+  const proposalResults = useRef<HTMLDivElement>(null)
+
+  const handleScrollClick = () => {
+    proposalResults.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedChoice, survey?: Survey) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
@@ -348,6 +354,7 @@ export default function ProposalPage() {
                     partialResults={partialResults}
                     loading={proposalState.loading || votesState.loading}
                     onOpenVotesList={() => updateContext({ showVotesList: true })}
+                    elementRef={proposalResults}
                   />
                 </>
               )}
@@ -377,6 +384,7 @@ export default function ProposalPage() {
                   onVote={getVotingMethod()}
                   updateContext={updateContext}
                   proposalContext={proposalContext}
+                  handleScrollTo={handleScrollClick}
                 />
                 <ForumButton
                   loading={proposalState.loading}

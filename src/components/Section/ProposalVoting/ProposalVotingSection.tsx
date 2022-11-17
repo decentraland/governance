@@ -32,6 +32,7 @@ interface Props {
   castingVote: boolean
   proposalContext: ProposalPageContext
   updateContext: (newState: Partial<ProposalPageContext>) => void
+  handleScrollTo: () => void
 }
 
 const ProposalVotingSection = ({
@@ -44,6 +45,7 @@ const ProposalVotingSection = ({
   castingVote,
   proposalContext,
   updateContext,
+  handleScrollTo,
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -109,7 +111,12 @@ const ProposalVotingSection = ({
 
           {!proposalContext.showSnapshotRedirect && (
             <>
-              <Header sub>{'Get Involved'}</Header>
+              <div className="DetailsSection__Header">
+                <Header sub>{'Get Involved'}</Header>
+                <Button basic onClick={handleScrollTo}>
+                  {'Show results'}
+                </Button>
+              </div>
 
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
