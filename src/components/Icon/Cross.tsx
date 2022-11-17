@@ -1,6 +1,6 @@
 import React from 'react'
 
-function GreyX({ className }: { className?: string }) {
+function Cross({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -20,4 +20,4 @@ function GreyX({ className }: { className?: string }) {
   )
 }
 
-export default GreyX
+export default Cross
