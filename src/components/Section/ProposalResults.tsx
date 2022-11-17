@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 
 import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -21,6 +21,7 @@ export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivEl
   partialResults: ChoiceProgressProps[]
   loading?: boolean
   onOpenVotesList?: () => void
+  elementRef: React.RefObject<HTMLDivElement>
 }
 
 export default function ProposalResults({
@@ -29,12 +30,13 @@ export default function ProposalResults({
   votes,
   partialResults,
   onOpenVotesList,
+  elementRef,
 }: ProposalGovernanceSectionProps) {
   const t = useFormatMessage()
   const showSeeVotesButton = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
 
   return (
-    <div className="ProposalResults">
+    <div className="ProposalResults" ref={elementRef}>
       <Divider />
       <Loader active={loading} />
       <div className="ProposalResults__Header">

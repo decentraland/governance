@@ -1,3 +1,23 @@
 .ProposalVotingSection__Loader {
-	margin-top: 16px;
+  margin-top: 16px;
+}
+
+.DetailsSection__Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.DetailsSection__Header .ui.sub.header {
+  margin: 0;
+}
+
+.DetailsSection__Header .ui.button {
+  text-transform: none;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 0;
+  margin: 0;
+  width: auto;
 }
