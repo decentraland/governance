@@ -62,7 +62,7 @@ export function VotingModalSurvey({
             !showVotingError && 'VotingModal__ErrorNotice--hidden',
           ])}
         >
-          {t('modal.voting_modal_survey.voting_failed')}
+          {t('page.proposal_detail.voting_section.voting_failed')}
         </div>
         <Button
           fluid

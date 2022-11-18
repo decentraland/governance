@@ -82,7 +82,9 @@ const VotingSectionFooter = ({
         </>
       )}
       {proposalContext.showVotingError && (
-        <span className="VotingSectionFooter__VotingFailedMessage">{'Failed to cast vote'}</span>
+        <span className="VotingSectionFooter__VotingFailedMessage">
+          {t('page.proposal_detail.voting_section.voting_failed')}
+        </span>
       )}
     </div>
   )

@@ -448,8 +448,7 @@
     },
     "voting_modal_survey": {
       "title": "We'd appreciate some extra feedback",
-      "selected_choice": "You're about to vote {choice}",
-      "voting_failed": "Failed to cast vote",
+      "selected_choice": "You're about to vote {choice}"
     }
   },
   "component": {
@@ -628,7 +627,8 @@
       "threshold_not_met_label": "VP threshold not met",
       "voting_section": {
         "title": "Get Involved",
-        "show_results": "Show results"
+        "show_results": "Show results",
+        "voting_failed": "Failed to cast vote"
       },
       "see_votes_button": "See Votes",
       "delegate_name": " is your Delegate",
