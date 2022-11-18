@@ -628,7 +628,11 @@
       "voting_section": {
         "title": "Get Involved",
         "show_results": "Show results",
-        "voting_failed": "Failed to cast vote"
+        "voting_failed": "Failed to cast vote",
+        "voting_open": "Open for votes",
+        "voting_closed": "Voting closed",
+        "voting_finished": "Voting finished {timeElapsed}",
+        "vote_count": "{voteCount} total votes"
       },
       "see_votes_button": "See Votes",
       "delegate_name": " is your Delegate",
