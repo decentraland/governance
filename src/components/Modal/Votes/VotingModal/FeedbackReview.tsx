@@ -37,7 +37,7 @@ export function FeedbackReview({ proposal, survey, setSurvey, surveyTopics, isLo
   return (
     <Modal.Content>
       <div className="ProposalModal__Title">
-        <Header>{'Please review your extra feedback'}</Header>
+        <Header>{t('survey.feedback_review.title')}</Header>
       </div>
       <SentimentSurvey
         survey={survey}
@@ -47,7 +47,7 @@ export function FeedbackReview({ proposal, survey, setSurvey, surveyTopics, isLo
       />
       <div className="FeedbackReview__Actions">
         <Button className="FeedbackReview__CopyContent" primary size="small" onClick={handleCopy}>
-          <span>{copied ? 'Content Copied' : 'Copy Content'}</span>
+          <span>{t(`survey.feedback_review.${copied ? 'content_copied' : 'copy_content'}`)}</span>
         </Button>
         <Button
           fluid
@@ -57,14 +57,10 @@ export function FeedbackReview({ proposal, survey, setSurvey, surveyTopics, isLo
           rel="noopener noreferrer"
           className="FeedbackReview__OpenSnapshot"
         >
-          {'Open Snapshot'}
+          {t('survey.feedback_review.open_snapshot')}
         </Button>
       </div>
-      <Markdown className="FeedbackReview__Explanation">
-        {
-          'Once you’re done, **copy the message** to the clipboard and **paste it on Snapshot as a comment** when voting'
-        }
-      </Markdown>
+      <Markdown className="FeedbackReview__Explanation">{t('survey.feedback_review.explanation')}</Markdown>
     </Modal.Content>
   )
 }
