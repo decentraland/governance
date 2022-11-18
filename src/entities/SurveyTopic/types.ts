@@ -1,7 +1,8 @@
 export enum ReactionType {
-  HAPPY = 'happy',
-  INDIFFERENT = 'indifferent',
-  ANGRY = 'angry',
+  LOVE = 'love',
+  LIKE = 'like',
+  NEUTRAL = 'neutral',
+  CONCERNED = 'concerned',
   EMPTY = 'empty',
 }
 

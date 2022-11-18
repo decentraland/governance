@@ -440,7 +440,13 @@
       "by_user": "By",
       "size": "Size"
     },
-    "snapshot_redirect_button_label": "Vote on Snapshot"
+    "snapshot_redirect_button_label": "Vote on Snapshot",
+    "reaction_icon": {
+      "love": "Love this!",
+      "like": "Like!",
+      "neutral": "Neutral",
+      "concerned": "Concerned"
+    }
   },
   "page": {
     "404": {

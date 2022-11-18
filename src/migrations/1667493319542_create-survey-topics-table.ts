@@ -13,7 +13,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true,
     },
     topic_id: {
-      type: 'TEXT',
+      type: 'VARCHAR(5)',
       notNull: true,
     },
     label: {

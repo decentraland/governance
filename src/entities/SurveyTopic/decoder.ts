@@ -1,5 +1,5 @@
 import { ReactionType, Survey, SurveyTopicAttributes, TopicFeedback } from './types'
-import { TOPIC_REACTION_CONCAT, TOPIC_SEPARATOR } from './utils'
+import { REACTIONS_VIEW, TOPIC_REACTION_CONCAT, TOPIC_SEPARATOR } from './utils'
 
 export class SurveyDecoder {
   private topics: Pick<SurveyTopicAttributes, 'topic_id' | 'label'>[]
@@ -53,7 +53,8 @@ export class SurveyDecoder {
   }
 
   private static getReaction(reaction: string): ReactionType | null {
-    if (SurveyDecoder.isReactionType(reaction)) return reaction as ReactionType
+    const foundReaction = REACTIONS_VIEW.find((reactionView) => reactionView.icon === reaction)?.reaction || null
+    if (foundReaction && SurveyDecoder.isReactionType(foundReaction)) return foundReaction as ReactionType
     else {
       console.log(`Unable to parse reaction ${reaction}`) // TODO: report error
       return null
@@ -63,9 +64,10 @@ export class SurveyDecoder {
   private static isReactionType(value: string | null | undefined): boolean {
     switch (value) {
       case ReactionType.EMPTY:
-      case ReactionType.HAPPY:
-      case ReactionType.INDIFFERENT:
-      case ReactionType.ANGRY:
+      case ReactionType.LOVE:
+      case ReactionType.LIKE:
+      case ReactionType.NEUTRAL:
+      case ReactionType.CONCERNED:
         return true
       default:
         return false

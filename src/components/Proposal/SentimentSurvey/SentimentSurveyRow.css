@@ -41,13 +41,13 @@
 
 #slide {
   position: absolute;
-  right: -63px;
+  right: -60px;
   opacity: 100;
-  transition: 1s;
+  transition: 0.2s;
 }
 
 .SentimentSurveyRow:hover #slide {
-  transition: 0.5s;
+  transition: 0.2s;
   right: 10px;
 }
 
@@ -56,6 +56,8 @@
   align-items: center;
   text-transform: uppercase;
   gap: 16px;
+  font-size: 23px;
+  line-height: 24px;
 }
 
 .SentimentSurveyRow__Reactions > div {

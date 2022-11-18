@@ -3,22 +3,33 @@ import { def, get } from 'bdd-lazy-var/getter'
 import { ReactionType, Topic, TopicFeedback } from './types'
 import { MAX_CHARS_IN_SNAPSHOT_REASON, SurveyEncoder } from './utils'
 
-const TOPIC_1: Topic = { topic_id: 'topic id 1', label: 'topic label 1' }
-const TOPIC_2: Topic = { topic_id: 'topic id 2', label: 'topic label 2' }
+const TOPIC_1: Topic = { topic_id: '12345', label: 'budget' }
+const TOPIC_2: Topic = { topic_id: '22222', label: 'beneficiary' }
 
-const TOPIC_3: Topic = { topic_id: '33333333333333333333', label: '20 chars topic' }
+const TOPIC_3: Topic = { topic_id: '33333', label: 'topic with long label' }
 
 const SENTIMENT_SURVEY: TopicFeedback[] = [
-  { topic: TOPIC_1, reaction: ReactionType.INDIFFERENT },
-  { topic: TOPIC_2, reaction: ReactionType.HAPPY },
+  { topic: TOPIC_1, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_2, reaction: ReactionType.LOVE },
 ]
 
 const LONG_SURVEY: TopicFeedback[] = [
-  { topic: TOPIC_3, reaction: ReactionType.INDIFFERENT },
-  { topic: TOPIC_3, reaction: ReactionType.INDIFFERENT },
-  { topic: TOPIC_3, reaction: ReactionType.INDIFFERENT },
-  { topic: TOPIC_3, reaction: ReactionType.INDIFFERENT },
-  { topic: TOPIC_3, reaction: ReactionType.INDIFFERENT },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_3, reaction: ReactionType.NEUTRAL },
+  { topic: TOPIC_2, reaction: ReactionType.LIKE },
+  { topic: TOPIC_1, reaction: ReactionType.LOVE },
 ]
 
 describe('SurveyEncoder', () => {
@@ -36,8 +47,8 @@ describe('SurveyEncoder', () => {
     describe('a survey with different topic feedbacks', () => {
       def('survey', () => SENTIMENT_SURVEY)
 
-      it('should be encoded into an empty string', () => {
-        expect(get.encodedSurvey).toBe('topic id 1:indifferent|topic id 2:happy')
+      it('should be encoded into string', () => {
+        expect(get.encodedSurvey).toBe('12345:😐,22222:🥰')
       })
     })
     describe('for a long survey that encodes into more than 140 chars', () => {
@@ -45,7 +56,7 @@ describe('SurveyEncoder', () => {
 
       it('returns a trimmed survey with 140 chars or less', () => {
         expect(get.encodedSurvey).toBe(
-          '33333333333333333333:indifferent|33333333333333333333:indifferent|33333333333333333333:indifferent|33333333333333333333:indifferent'
+          '33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,33333:😐,22222:😊'
         )
         expect(get.encodedSurvey.length).toBeLessThanOrEqual(MAX_CHARS_IN_SNAPSHOT_REASON)
       })
