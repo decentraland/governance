@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 
 import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -14,12 +14,11 @@ import './DetailsSection.css'
 import './ProposalResults.css'
 import VotingResultsInfo from './VotingResultsInfo'
 
-export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+export type ProposalResultsProps = {
   proposal: ProposalAttributes
-  userHasVoted?: boolean
+  loading?: boolean
   votes?: Record<string, Vote> | null
   partialResults: ChoiceProgressProps[]
-  loading?: boolean
   onOpenVotesList?: () => void
   elementRef: React.RefObject<HTMLDivElement>
 }
@@ -31,7 +30,7 @@ export default function ProposalResults({
   partialResults,
   onOpenVotesList,
   elementRef,
-}: ProposalGovernanceSectionProps) {
+}: ProposalResultsProps) {
   const t = useFormatMessage()
   const showSeeVotesButton = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
 
@@ -40,7 +39,7 @@ export default function ProposalResults({
       <Divider />
       <Loader active={loading} />
       <div className="ProposalResults__Header">
-        <Header>Proposal Results</Header>
+        <Header>{t('page.proposal_detail.results_header')}</Header>
         {showSeeVotesButton && <Anchor onClick={onOpenVotesList}>{t('page.proposal_detail.see_votes_button')}</Anchor>}
       </div>
       <div className="ProposalResults__Content">
