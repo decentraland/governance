@@ -285,6 +285,9 @@
       "copy_content": "Copy Content",
       "open_snapshot": "Open Snapshot",
       "explanation": "Once you’re done, **copy the message** to the clipboard and **paste it on Snapshot as a comment** when voting"
+    },
+    "results": {
+      "title": "Voter Sentiment"
     }
   },
   "status": {

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
@@ -55,6 +56,7 @@ function getResults(
 }
 
 const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTopics }: Props) => {
+  const t = useFormatMessage()
   const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
   const topicLabels = Object.keys(topicResults)
   const thereAreVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
@@ -71,7 +73,7 @@ const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTop
       {!isLoadingSurveyTopics && (
         <div>
           <div className="SurveyResults__Header">
-            <Header>Voter Sentiment</Header>
+            <Header>{t('survey.results.title')}</Header>
           </div>
           {topicLabels.map((label: string, index: any) => {
             return (
