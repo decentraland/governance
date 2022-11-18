@@ -7,7 +7,7 @@ import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 type Props = Pick<PopupProps, 'position'> & {
   text: string
   containerClassName?: string
-  icon: JSX.Element
+  icon: string
 }
 
 function IconHelper({ position, text, containerClassName, icon }: Props) {
