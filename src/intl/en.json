@@ -266,6 +266,8 @@
     "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
   },
   "survey": {
+    "topics_title": "Topics",
+    "reactions_title": "Reaction",
     "survey_topics": {
       "budget": "Budget",
       "beneficiary": "Beneficiary",

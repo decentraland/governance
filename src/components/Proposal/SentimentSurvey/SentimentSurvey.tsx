@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ReactionType, Survey, SurveyTopicAttributes, Topic } from '../../../entities/SurveyTopic/types'
@@ -15,6 +16,8 @@ interface Props {
 }
 
 const SentimentSurvey = ({ survey, surveyTopics, isLoadingSurveyTopics, setSurvey }: Props) => {
+  const t = useFormatMessage()
+
   useEffect(() => {
     if (!isLoadingSurveyTopics) {
       if (survey.length === 0) {
@@ -49,8 +52,8 @@ const SentimentSurvey = ({ survey, surveyTopics, isLoadingSurveyTopics, setSurve
       {!isLoadingSurveyTopics && (
         <>
           <div className="SentimentSurvey__Header">
-            <span>{'Topics'}</span>
-            <span>{'Reaction'}</span>
+            <span>{t('survey.topics_title')}</span>
+            <span>{t('survey.reactions_title')}</span>
           </div>
           {surveyTopics?.map((topic, index) => (
             <SentimentSurveyRow
