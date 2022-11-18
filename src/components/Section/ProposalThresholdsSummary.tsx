@@ -27,7 +27,7 @@ const flickityOptions = {
   setGallerySize: true,
 }
 
-export type ProposalThresholdsSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+type ProposalThresholdsSummaryProps = {
   proposal?: ProposalAttributes | null
   partialResults: ChoiceProgressProps[]
 }
