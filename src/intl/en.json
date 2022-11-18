@@ -679,6 +679,12 @@
       "pass": "Pass proposal",
       "reject": "Reject proposal",
       "delete": "Delete proposal",
+      "snapshot_redirect": {
+        "voting_not_available": "Voting not available",
+        "description": "It looks like we're having issues casting your vote from the Governance dApp.",
+        "suggestion": "You can try voting directly on **Snapshot** - the system we use for decision-making.",
+        "extra_feedback": "What about my extra feedback?"
+      },
       "promotion": {
         "opportunity_label": "opportunity",
         "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
