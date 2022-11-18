@@ -17,12 +17,12 @@ import './ProposalComments.css'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 
-export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   loading?: boolean
 }
 
-export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalGovernanceSectionProps) {
+export default React.memo(function ProposalComments({ proposal, loading, ...props }: Props) {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposal?.id)
   const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
