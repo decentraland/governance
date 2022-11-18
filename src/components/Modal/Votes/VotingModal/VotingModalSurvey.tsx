@@ -73,7 +73,7 @@ export function VotingModalSurvey({
           className="VotingModal__CastVote"
         >
           {showVotingError
-            ? t('modal.voting_modal_survey.retry', { timer: retryTimer })
+            ? t('page.proposal_detail.retry', { timer: retryTimer })
             : t('page.proposal_detail.cast_vote')}
         </Button>
       </div>

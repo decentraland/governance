@@ -450,7 +450,6 @@
       "title": "We'd appreciate some extra feedback",
       "selected_choice": "You're about to vote {choice}",
       "voting_failed": "Failed to cast vote",
-      "retry": "Retry in {timer}..."
     }
   },
   "component": {
@@ -643,6 +642,7 @@
       "get_vp": "Get VP",
       "vote_choice": "Vote {choice}",
       "cast_vote": "Cast Vote",
+      "retry": "Retry in {timer}...",
       "delegate_voted_choice": "They voted {choice}",
       "both_voted_choice": "You both voted {choice}",
       "voted_choice": "You voted {choice}",

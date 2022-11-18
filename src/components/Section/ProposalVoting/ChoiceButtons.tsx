@@ -44,6 +44,13 @@ export const ChoiceButtons = ({
   const untilStart = useCountdown(Time.utc(startAt) || now)
   const started = untilStart.time === 0
   const selectionPending = !(selectedChoice && !!selectedChoice.choice)
+
+  const handleChoiceClick = (currentChoice: string, currentChoiceIndex: number) => {
+    return () => {
+      updateContext({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
+    }
+  }
+
   return (
     <>
       {choices.map((currentChoice, currentChoiceIndex) => {
@@ -55,9 +62,7 @@ export const ChoiceButtons = ({
             key={currentChoice}
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
-            onClick={() => {
-              updateContext({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
-            }}
+            onClick={handleChoiceClick(currentChoice, currentChoiceIndex)}
             delegate={delegateVotedCurrentChoice ? delegate! : undefined}
             voteCount={votesByChoices[currentChoiceIndex]}
             totalVotes={totalVotes}
@@ -72,7 +77,7 @@ export const ChoiceButtons = ({
         loading={castingVote}
         onClick={() => onVote && selectedChoice && onVote(selectedChoice)}
       >
-        {showVotingError ? `Retry in ${retryTimer}...` : t('page.proposal_detail.cast_vote')}
+        {showVotingError ? t('page.proposal_detail.retry', { timer: retryTimer }) : t('page.proposal_detail.cast_vote')}
       </Button>
     </>
   )
