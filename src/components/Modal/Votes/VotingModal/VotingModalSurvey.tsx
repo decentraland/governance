@@ -44,8 +44,10 @@ export function VotingModalSurvey({
   return (
     <Modal.Content>
       <div className="ProposalModal__Title">
-        <Header>{"We'd appreciate some extra feedback"}</Header>
-        <Paragraph small>{`You're about to vote "${formatChoice(selectedChoice.choice)}"`}</Paragraph>
+        <Header>{t('modal.voting_modal_survey.title')}</Header>
+        <Paragraph small>
+          {t('modal.voting_modal_survey.selected_choice', { choice: formatChoice(selectedChoice.choice) })}
+        </Paragraph>
       </div>
       <SentimentSurvey
         survey={survey}
@@ -60,7 +62,7 @@ export function VotingModalSurvey({
             !showVotingError && 'VotingModal__ErrorNotice--hidden',
           ])}
         >
-          {'Failed to cast vote'}
+          {t('modal.voting_modal_survey.voting_failed')}
         </div>
         <Button
           fluid
@@ -70,7 +72,9 @@ export function VotingModalSurvey({
           disabled={showVotingError}
           className="VotingModal__CastVote"
         >
-          {showVotingError ? `Retry in ${retryTimer}...` : t('page.proposal_detail.cast_vote')}
+          {showVotingError
+            ? t('modal.voting_modal_survey.retry', { timer: retryTimer })
+            : t('page.proposal_detail.cast_vote')}
         </Button>
       </div>
     </Modal.Content>
