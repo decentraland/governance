@@ -14,7 +14,7 @@ import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
 import ProposalThresholdsSummary from './ProposalThresholdsSummary'
 
-export type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   partialResults: ChoiceProgressProps[]
@@ -54,7 +54,6 @@ export default function ProposalGovernanceSection({
     !(proposal.status === ProposalStatus.Passed)
   )
 
-  //TODO: DetailsSection should be called ProposalSidebar section or smth
   return (
     <div
       {...props}

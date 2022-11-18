@@ -690,6 +690,7 @@
       "pass": "Pass proposal",
       "reject": "Reject proposal",
       "delete": "Delete proposal",
+      "results_header": "Proposal Results",
       "snapshot_redirect": {
         "voting_not_available": "Voting not available",
         "description": "It looks like we're having issues casting your vote from the Governance dApp.",
