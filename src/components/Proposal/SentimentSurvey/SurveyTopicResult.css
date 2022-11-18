@@ -1,8 +1,8 @@
 .SurveyTopicResult {
   height: 48px;
   background: var(--white-900);
-  border: 1px solid rgba(115, 110, 125, 0.24);
-  box-shadow: 0 1px 8px rgba(115, 110, 125, 0.15);
+  border: 1px solid var(--black-100);
+  box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
   margin-bottom: 8px;
   padding: 9px 9px 9px 16px;
@@ -19,7 +19,7 @@
 }
 
 .SurveyTopicResult__ReactionContainer {
-  background: #f4f4f5;
+  background: var(--black-200);
   border-radius: 7px;
   height: 30px;
   display: flex;
@@ -27,6 +27,7 @@
   padding-left: 8px;
   padding-right: 8px;
   align-items: center;
+  min-width: 215px;
 }
 
 .ReactionCounter {
