@@ -626,6 +626,10 @@
       "finished_result_label": "Result: ",
       "your_vote_label": "Your vote: ",
       "threshold_not_met_label": "VP threshold not met",
+      "voting_section": {
+        "title": "Get Involved",
+        "show_results": "Show results"
+      },
       "see_votes_button": "See Votes",
       "delegate_name": " is your Delegate",
       "delegate_not_voted": "**Your Delegate** still hasn't voted",

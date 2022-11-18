@@ -112,9 +112,9 @@ const ProposalVotingSection = ({
           {!proposalContext.showSnapshotRedirect && (
             <>
               <div className="DetailsSection__Header">
-                <Header sub>{'Get Involved'}</Header>
+                <Header sub>{t('page.proposal_detail.voting_section.title')}</Header>
                 <Button basic onClick={handleScrollTo}>
-                  {'Show results'}
+                  {t('page.proposal_detail.voting_section.show_results')}
                 </Button>
               </div>
 
