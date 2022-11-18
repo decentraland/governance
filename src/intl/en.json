@@ -276,6 +276,13 @@
     },
     "reactions": {
       "add_reaction": "Add reaction"
+    },
+    "feedback_review": {
+      "title": "Please review your extra feedback",
+      "content_copied":"Content Copied",
+      "copy_content": "Copy Content",
+      "open_snapshot": "Open Snapshot",
+      "explanation": "Once you’re done, **copy the message** to the clipboard and **paste it on Snapshot as a comment** when voting"
     }
   },
   "status": {
