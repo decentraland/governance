@@ -14,7 +14,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -24,7 +24,6 @@ import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
 import ActionableLayout from '../components/Layout/ActionableLayout'
-import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
 import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -161,9 +160,6 @@ export default function ProposalsPage() {
           <Grid stackable>
             <Grid.Row>
               <Grid.Column tablet="4">
-                <Mobile>
-                  <BurgerMenuContent activeTab={NavigationTab.Proposals} />
-                </Mobile>
                 <NotMobile>
                   <div>
                     <CategoryFilter />
@@ -172,7 +168,7 @@ export default function ProposalsPage() {
                   </div>
                 </NotMobile>
               </Grid.Column>
-              <BurgerMenuPushableLayout>
+              <BurgerMenuPushableLayout activeTab={NavigationTab.Proposals}>
                 <Grid.Column tablet="12" className="ProposalsTable">
                   {isMobile && proposals && <SearchTitle />}
                   <ActionableLayout

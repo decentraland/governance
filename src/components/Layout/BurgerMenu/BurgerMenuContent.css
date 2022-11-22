@@ -1,8 +1,10 @@
 .BurgerMenuContent.Animated {
   position: absolute;
   width: 100%;
+  top: 15px;
 }
 
-.BurgerMenuContent.Padded {
+.BurgerMenuContent--Padded {
+  top: 0;
   padding: 0 16px;
 }

@@ -90,7 +90,7 @@ function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps
 
   return (
     <div
-      className={TokenList.join(['BurgerMenuContent', 'Animated', navigationOnly && 'Padded'])}
+      className={TokenList.join(['BurgerMenuContent', 'Animated', navigationOnly && 'BurgerMenuContent--Padded'])}
       style={(!open && { transform: 'translateY(-200%)' }) || {}}
     >
       {navigationOnly ? (
