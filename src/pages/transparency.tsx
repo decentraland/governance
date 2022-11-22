@@ -7,7 +7,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
@@ -55,7 +55,7 @@ export default function TransparencyPage() {
       <div className="TransparencyMobile">
         {!data && <LoadingView withNavigation />}
         {data && (
-          <BurgerMenuPushableLayout navigationOnly activeTab={NavigationTab.Transparency}>
+          <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Transparency}>
             <Container className="TransparencyContainer">
               <Grid className="TransparencyGrid" stackable>
                 <Grid.Row columns={2}>
@@ -211,7 +211,7 @@ export default function TransparencyPage() {
                 </Grid.Row>
               </Grid>
             </Container>
-          </BurgerMenuPushableLayout>
+          </BurgerMenuLayout>
         )}
       </div>
     </>

@@ -7,7 +7,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
@@ -55,7 +55,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <BurgerMenuPushableLayout navigationOnly activeTab={NavigationTab.Profile}>
+    <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Profile}>
       <Head
         title={t('page.profile.title', { address: displayableAddress })}
         description={t('page.profile.description')}
@@ -81,6 +81,6 @@ export default function ProfilePage() {
         />
         <VotedProposalsBox address={address} />
       </div>
-    </BurgerMenuPushableLayout>
+    </BurgerMenuLayout>
   )
 }

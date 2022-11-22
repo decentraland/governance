@@ -24,7 +24,7 @@ import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
 import ActionableLayout from '../components/Layout/ActionableLayout'
-import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalItem from '../components/Proposal/ProposalItem'
@@ -168,7 +168,7 @@ export default function ProposalsPage() {
                   </div>
                 </NotMobile>
               </Grid.Column>
-              <BurgerMenuPushableLayout activeTab={NavigationTab.Proposals}>
+              <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
                 <Grid.Column tablet="12" className="ProposalsTable">
                   {isMobile && proposals && <SearchTitle />}
                   <ActionableLayout
@@ -236,7 +236,7 @@ export default function ProposalsPage() {
                     )}
                   </ActionableLayout>
                 </Grid.Column>
-              </BurgerMenuPushableLayout>
+              </BurgerMenuLayout>
             </Grid.Row>
           </Grid>
         </Container>

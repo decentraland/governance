@@ -13,7 +13,7 @@ interface Props {
   activeTab: NavigationProps['activeTab']
 }
 
-function BurgerMenuPushableLayout({ children, navigationOnly, activeTab }: Props) {
+function BurgerMenuLayout({ children, navigationOnly, activeTab }: Props) {
   const burgerMenu = useBurgerMenu()
 
   return (
@@ -34,4 +34,4 @@ function BurgerMenuPushableLayout({ children, navigationOnly, activeTab }: Props
   )
 }
 
-export default BurgerMenuPushableLayout
+export default BurgerMenuLayout
