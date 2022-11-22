@@ -28,10 +28,7 @@ const SnapshotRedirectButton = ({ proposal, inverted }: Props) => {
     >
       <div className="SnapshotRedirectButton__Hidden" />
       {t('component.snapshot_redirect_button_label')}
-      <OpenExternalLink
-        className="SnapshotRedirect__ButtonIcon"
-        color={inverted ? 'var(--dcl-primary)' : 'var(--white-900)'}
-      />
+      <OpenExternalLink color={inverted ? 'var(--dcl-primary)' : 'var(--white-900)'} />
     </Button>
   )
 }

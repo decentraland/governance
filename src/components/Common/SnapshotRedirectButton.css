@@ -8,5 +8,6 @@
 }
 
 .SnapshotRedirectButton__Hidden {
+  width: 12px;
   opacity: 0;
 }
