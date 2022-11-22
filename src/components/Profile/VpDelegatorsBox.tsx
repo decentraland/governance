@@ -11,7 +11,6 @@ import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
 import { ProfileBox } from './ProfileBox'
-import './VpDelegatorsBox.css'
 
 interface Props {
   address: string | null
@@ -35,7 +34,7 @@ export default function VpDelegatorsBox({
   const isLoggedUserProfile = isSameAddress(userAddress, address)
 
   return (
-    <Container className="VpDelegatorsBox">
+    <Container>
       <ProfileBox
         title={t('page.profile.delegators.title')}
         info={t('page.profile.delegators.helper')}

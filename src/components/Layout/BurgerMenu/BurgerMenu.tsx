@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react'
 
-import { useLocation } from '@gatsbyjs/reach-router'
-
 import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
 
 import './BurgerMenu.css'
@@ -14,13 +12,9 @@ const FILTER_SHAPE_TRANSFORMS = [
 const CROSS_SHAPE_TRANSFORMS = ['rotate(45deg)', 'translateX(0) translateX(200%)', 'rotate(-45deg)']
 const BURGER_SHAPE_TRANSFORMS = ['rotate(0)', 'translateX(0)', 'rotate(0)']
 
-const BURGER_MENU_LOCATIONS = ['/', '/proposals/', '/transparency/', '/grants/', '/profile/']
-
 function BurgerMenu() {
-  const location = useLocation()
   const { status, setStatus } = useBurgerMenu()
   const { open, searching, filtering } = status
-  const showBurgerMenu = BURGER_MENU_LOCATIONS.some((burgerLocation) => burgerLocation === location.pathname)
 
   const handleClick = () => {
     if (!searching) {
@@ -42,10 +36,6 @@ function BurgerMenu() {
     else if (open || filtering) return CROSS_SHAPE_TRANSFORMS
     else return BURGER_SHAPE_TRANSFORMS
   }, [open, searching, filtering])
-
-  if (!showBurgerMenu) {
-    return null
-  }
 
   return (
     <div onClick={handleClick} className="BurgerMenu">

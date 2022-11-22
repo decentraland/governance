@@ -29,6 +29,10 @@
   margin-bottom: 24px;
 }
 
+.UserStats__VpDistributionBox {
+  margin-bottom: 24px;
+}
+
 @media (min-width: 768px) {
   .UserStats__Username {
     gap: 12px;
@@ -49,7 +53,7 @@
     margin-right: 0;
   }
 
-  .UserStats__VpDistributionContainer {
+  .UserStats__VpDistributionBox {
     margin-bottom: 44px;
   }
 }

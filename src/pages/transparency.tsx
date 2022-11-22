@@ -5,11 +5,9 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import BurgerMenuContent from '../components/Layout/BurgerMenu/BurgerMenuContent'
-import BurgerMenuPushableLayout from '../components/Layout/BurgerMenu/BurgerMenuPushableLayout'
+import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ExternalLinkWithIcon from '../components/Section/ExternalLinkWithIcon'
@@ -57,168 +55,163 @@ export default function TransparencyPage() {
       <div className="TransparencyMobile">
         {!data && <LoadingView withNavigation />}
         {data && (
-          <>
-            <Mobile>
-              <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Transparency} />
-            </Mobile>
-            <BurgerMenuPushableLayout>
-              <Container className="TransparencyContainer">
-                <Grid className="TransparencyGrid" stackable>
-                  <Grid.Row columns={2}>
-                    <Grid.Column tablet="4">
-                      <div>
-                        <Header>{t('page.transparency.mission.title')}</Header>
-                        <p>{t('page.transparency.mission.description')}</p>
-                        <ExternalLinkWithIcon
-                          href={JOIN_DISCORD_URL}
-                          imageSrc={discordIcon}
-                          text={t('page.transparency.mission.join_discord_button')}
-                        />
-                        <ExternalLinkWithIcon
-                          href={DOCS_URL}
-                          imageSrc={docsIcon}
-                          text={t('page.transparency.mission.docs_button')}
-                        />
-                        <ExternalLinkWithIcon
-                          href={DASHBOARD_URL}
-                          imageSrc={dashboardIcon}
-                          text={t('page.transparency.mission.dashboard_button')}
-                        />
-                        <ExternalLinkWithIcon
-                          href={DATA_SHEET_URL}
-                          imageSrc={dataSheetIcon}
-                          text={t('page.transparency.mission.data_source_button')}
-                        />
-                      </div>
-                    </Grid.Column>
+          <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Transparency}>
+            <Container className="TransparencyContainer">
+              <Grid className="TransparencyGrid" stackable>
+                <Grid.Row columns={2}>
+                  <Grid.Column tablet="4">
+                    <div>
+                      <Header>{t('page.transparency.mission.title')}</Header>
+                      <p>{t('page.transparency.mission.description')}</p>
+                      <ExternalLinkWithIcon
+                        href={JOIN_DISCORD_URL}
+                        imageSrc={discordIcon}
+                        text={t('page.transparency.mission.join_discord_button')}
+                      />
+                      <ExternalLinkWithIcon
+                        href={DOCS_URL}
+                        imageSrc={docsIcon}
+                        text={t('page.transparency.mission.docs_button')}
+                      />
+                      <ExternalLinkWithIcon
+                        href={DASHBOARD_URL}
+                        imageSrc={dashboardIcon}
+                        text={t('page.transparency.mission.dashboard_button')}
+                      />
+                      <ExternalLinkWithIcon
+                        href={DATA_SHEET_URL}
+                        imageSrc={dataSheetIcon}
+                        text={t('page.transparency.mission.data_source_button')}
+                      />
+                    </div>
+                  </Grid.Column>
 
-                    <Grid.Column tablet="12">
-                      <div className="TransparencySection">
-                        <Card className="TransparencyCard">
-                          <Card.Content>
-                            <Header>{t('page.transparency.mission.balance_title')}</Header>
-                            <div className="TokenContainer">
-                              {balances &&
-                                balances.map((tokenBalance, index) => {
-                                  return (
-                                    <TokenBalanceCard
-                                      aggregatedTokenBalance={tokenBalance}
-                                      key={['tokenBalance', index].join('::')}
-                                    />
-                                  )
-                                })}
+                  <Grid.Column tablet="12">
+                    <div className="TransparencySection">
+                      <Card className="TransparencyCard">
+                        <Card.Content>
+                          <Header>{t('page.transparency.mission.balance_title')}</Header>
+                          <div className="TokenContainer">
+                            {balances &&
+                              balances.map((tokenBalance, index) => {
+                                return (
+                                  <TokenBalanceCard
+                                    aggregatedTokenBalance={tokenBalance}
+                                    key={['tokenBalance', index].join('::')}
+                                  />
+                                )
+                              })}
+                          </div>
+                        </Card.Content>
+                      </Card>
+                    </div>
+                    <Grid.Row columns={2} divided={true} className="MonthlyTotals">
+                      <MonthlyTotal
+                        title={t('page.transparency.mission.monthly_income') || ''}
+                        monthlyTotal={data.income}
+                      />
+                      <MonthlyTotal
+                        title={t('page.transparency.mission.monthly_expenses') || ''}
+                        monthlyTotal={data.expenses}
+                        invertDiffColors={true}
+                      />
+                    </Grid.Row>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Container>
+
+            <Container className="TransparencyContainer">
+              <Grid className="TransparencyGrid Funding" stackable>
+                <Grid.Row columns={2}>
+                  <Grid.Column tablet="4">
+                    <div>
+                      <Header>{t('page.transparency.funding.title')}</Header>
+                      <p>{t('page.transparency.funding.description')}</p>
+                      <LinkWithIcon
+                        href={locations.proposals()}
+                        imageSrc={viewAllProposalsIcon}
+                        text={t('page.transparency.funding.view_all_button')}
+                      />
+                    </div>
+                  </Grid.Column>
+
+                  <Grid.Column tablet="12">
+                    <div className="TransparencySection">
+                      <Card className="TransparencyCard">
+                        <Card.Content>
+                          <Header className="FundingHeader">{t('page.transparency.funding.total_title')}</Header>
+                          <div className="FundingProgress">
+                            <div className="FundingProgress__Description">
+                              <Header size="huge" className="FundingProgress__Total">
+                                {'$' + formatBalance(data.funding.total)}
+                                <Header size="small">USD</Header>
+                              </Header>
                             </div>
-                          </Card.Content>
-                        </Card>
-                      </div>
-                      <Grid.Row columns={2} divided={true} className="MonthlyTotals">
-                        <MonthlyTotal
-                          title={t('page.transparency.mission.monthly_income') || ''}
-                          monthlyTotal={data.income}
+                          </div>
+                        </Card.Content>
+                        <GrantList
+                          status={ProposalStatus.Enacted}
+                          title={t('page.transparency.funding.proposals_funded_label') || ''}
                         />
-                        <MonthlyTotal
-                          title={t('page.transparency.mission.monthly_expenses') || ''}
-                          monthlyTotal={data.expenses}
-                          invertDiffColors={true}
+                        <GrantList
+                          status={ProposalStatus.Active}
+                          title={t('page.transparency.funding.active_grants_label') || ''}
                         />
-                      </Grid.Row>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-              </Container>
+                      </Card>
+                    </div>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Container>
 
-              <Container className="TransparencyContainer">
-                <Grid className="TransparencyGrid Funding" stackable>
-                  <Grid.Row columns={2}>
-                    <Grid.Column tablet="4">
-                      <div>
-                        <Header>{t('page.transparency.funding.title')}</Header>
-                        <p>{t('page.transparency.funding.description')}</p>
-                        <LinkWithIcon
-                          href={locations.proposals()}
-                          imageSrc={viewAllProposalsIcon}
-                          text={t('page.transparency.funding.view_all_button')}
-                        />
-                      </div>
-                    </Grid.Column>
+            <Container className="TransparencyContainer">
+              <Grid className="TransparencyGrid" stackable>
+                <Grid.Row columns={2}>
+                  <Grid.Column tablet="4">
+                    <div>
+                      <Header>{t('page.transparency.members.title')}</Header>
+                      <p>{t('page.transparency.members.description')}</p>
 
-                    <Grid.Column tablet="12">
-                      <div className="TransparencySection">
-                        <Card className="TransparencyCard">
-                          <Card.Content>
-                            <Header className="FundingHeader">{t('page.transparency.funding.total_title')}</Header>
-                            <div className="FundingProgress">
-                              <div className="FundingProgress__Description">
-                                <Header size="huge" className="FundingProgress__Total">
-                                  {'$' + formatBalance(data.funding.total)}
-                                  <Header size="small">USD</Header>
-                                </Header>
-                              </div>
-                            </div>
-                          </Card.Content>
-                          <GrantList
-                            status={ProposalStatus.Enacted}
-                            title={t('page.transparency.funding.proposals_funded_label') || ''}
-                          />
-                          <GrantList
-                            status={ProposalStatus.Active}
-                            title={t('page.transparency.funding.active_grants_label') || ''}
-                          />
-                        </Card>
-                      </div>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-              </Container>
+                      <ExternalLinkWithIcon
+                        href={ABOUT_DAO_URL}
+                        imageSrc={documentOutline}
+                        text={t('page.transparency.members.about_dao_button')}
+                      />
+                      <ExternalLinkWithIcon
+                        href={WEARABLE_CURATORS_URL}
+                        imageSrc={personIcon}
+                        text={t('page.transparency.members.wearables_curator_button')}
+                      />
+                      <ExternalLinkWithIcon
+                        href={OPEN_CALL_FOR_DELEGATES_LINK}
+                        imageSrc={personIcon}
+                        text={t('page.transparency.members.delegate_button')}
+                      />
+                    </div>
+                  </Grid.Column>
 
-              <Container className="TransparencyContainer">
-                <Grid className="TransparencyGrid" stackable>
-                  <Grid.Row columns={2}>
-                    <Grid.Column tablet="4">
-                      <div>
-                        <Header>{t('page.transparency.members.title')}</Header>
-                        <p>{t('page.transparency.members.description')}</p>
-
-                        <ExternalLinkWithIcon
-                          href={ABOUT_DAO_URL}
-                          imageSrc={documentOutline}
-                          text={t('page.transparency.members.about_dao_button')}
-                        />
-                        <ExternalLinkWithIcon
-                          href={WEARABLE_CURATORS_URL}
-                          imageSrc={personIcon}
-                          text={t('page.transparency.members.wearables_curator_button')}
-                        />
-                        <ExternalLinkWithIcon
-                          href={OPEN_CALL_FOR_DELEGATES_LINK}
-                          imageSrc={personIcon}
-                          text={t('page.transparency.members.delegate_button')}
-                        />
-                      </div>
-                    </Grid.Column>
-
-                    <Grid.Column tablet="12">
-                      <div className="TransparencySection">
-                        <Card className="TransparencyCard">
-                          {data &&
-                            data.teams.map((team, index) => {
-                              return (
-                                <MembersSection
-                                  key={[team.name.trim(), index].join('::')}
-                                  title={team.name}
-                                  description={team.description}
-                                  members={team.members}
-                                />
-                              )
-                            })}
-                        </Card>
-                      </div>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-              </Container>
-            </BurgerMenuPushableLayout>
-          </>
+                  <Grid.Column tablet="12">
+                    <div className="TransparencySection">
+                      <Card className="TransparencyCard">
+                        {data &&
+                          data.teams.map((team, index) => {
+                            return (
+                              <MembersSection
+                                key={[team.name.trim(), index].join('::')}
+                                title={team.name}
+                                description={team.description}
+                                members={team.members}
+                              />
+                            )
+                          })}
+                      </Card>
+                    </div>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Container>
+          </BurgerMenuLayout>
         )}
       </div>
     </>
