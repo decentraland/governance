@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ReactionType } from '../../../entities/SurveyTopic/types'
+import Pipe from '../../Common/Pipe'
 
 import ReactionCounter from './ReactionCounter'
 import './SurveyTopicResult.css'
@@ -20,12 +21,13 @@ const SurveyTopicResult = ({ topicLabel, topicResult }: Props) => {
       <span className="SurveyTopicResult__Header">{t(`survey.survey_topics.${topicLabel}`)}</span>
       <div className="SurveyTopicResult__ReactionContainer">
         {reactions.map((reactionType, index) => (
-          <ReactionCounter
-            key={`ReactionCounter__${index}`}
-            reactionType={reactionType as ReactionType}
-            count={topicResult[reactionType as ReactionType]}
-            drawPipe={index < reactions.length - 1}
-          />
+          <Fragment key={`ReactionCounter__${index}`}>
+            <ReactionCounter
+              reactionType={reactionType as ReactionType}
+              count={topicResult[reactionType as ReactionType]}
+            />
+            {index < reactions.length - 1 && <Pipe />}
+          </Fragment>
         ))}
       </div>
     </div>
