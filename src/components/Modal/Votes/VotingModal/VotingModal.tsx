@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
@@ -33,7 +32,6 @@ export function VotingModal({
   castingVote,
   proposalContext,
 }: VotingModalProps) {
-  const t = useFormatMessage()
   const [survey, setSurvey] = useState<Survey>([])
   const { selectedChoice, showSnapshotRedirect } = proposalContext
   const [showFeedbackReview, setShowFeedbackReview] = useState(false)

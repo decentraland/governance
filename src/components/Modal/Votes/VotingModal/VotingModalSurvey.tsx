@@ -37,16 +37,12 @@ export function VotingModalSurvey({
   const t = useFormatMessage()
   const { selectedChoice, showVotingError, retryTimer } = proposalContext
 
-  if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
-    return null
-  }
-
   return (
     <Modal.Content>
       <div className="ProposalModal__Title">
         <Header>{t('modal.voting_modal_survey.title')}</Header>
         <Paragraph small>
-          {t('modal.voting_modal_survey.selected_choice', { choice: formatChoice(selectedChoice.choice) })}
+          {t('modal.voting_modal_survey.selected_choice', { choice: formatChoice(selectedChoice.choice!) })}
         </Paragraph>
       </div>
       <SentimentSurvey

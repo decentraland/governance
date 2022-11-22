@@ -11,7 +11,7 @@ type Props = Pick<PopupProps, 'position'> & {
 }
 
 function IconHelper({ position, text, containerClassName, icon }: Props) {
-  const useContainerClassName = containerClassName && containerClassName.length > 0
+  const hasContainerClassName = containerClassName && containerClassName.length > 0
   return (
     <Popup
       content={<Markdown className="HelperText__Content">{text}</Markdown>}
@@ -20,8 +20,8 @@ function IconHelper({ position, text, containerClassName, icon }: Props) {
       on="hover"
       hoverable
       className={TokenList.join([
-        useContainerClassName && `${containerClassName}--Popup`,
-        !useContainerClassName && 'Helper__Container--Popup',
+        hasContainerClassName && `${containerClassName}--Popup`,
+        !hasContainerClassName && 'Helper__Container--Popup',
       ])}
     />
   )
