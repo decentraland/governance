@@ -20,15 +20,18 @@ const SurveyTopicResult = ({ topicLabel, topicResult }: Props) => {
     <div className="SurveyTopicResult">
       <span className="SurveyTopicResult__Header">{t(`survey.survey_topics.${topicLabel}`)}</span>
       <div className="SurveyTopicResult__ReactionContainer">
-        {reactions.map((reactionType, index) => (
-          <Fragment key={`ReactionCounter__${index}`}>
-            <ReactionCounter
-              reactionType={reactionType as ReactionType}
-              count={topicResult[reactionType as ReactionType]}
-            />
-            {index < reactions.length - 1 && <Pipe />}
-          </Fragment>
-        ))}
+        {reactions.map((reactionType, index) => {
+          const isTheLastReaction = index === reactions.length - 1
+          return (
+            <Fragment key={`ReactionCounter__${index}`}>
+              <ReactionCounter
+                reactionType={reactionType as ReactionType}
+                count={topicResult[reactionType as ReactionType]}
+              />
+              {!isTheLastReaction && <Pipe />}
+            </Fragment>
+          )
+        })}
       </div>
     </div>
   )
