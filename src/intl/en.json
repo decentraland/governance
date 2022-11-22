@@ -632,6 +632,7 @@
         "voting_open": "Open for votes",
         "voting_closed": "Voting closed",
         "voting_finished": "Voting finished {timeElapsed}",
+        "vote_count_title": "Voting Activity",
         "vote_count": "{voteCount} total votes"
       },
       "see_votes_button": "See Votes",
