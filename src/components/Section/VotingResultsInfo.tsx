@@ -44,14 +44,13 @@ export default function VotingResultsInfo({ proposal, partialResults }: VotingRe
       )}
       {timeout.time <= 0 && (
         <div className="VotingResultsInfo__Container">
-          <div className="VotingResultsInfo__Subtitle">{}</div>
           <div className="VotingResultsInfo__Title">
             <Bold>{t('page.proposal_detail.voting_section.voting_finished', { timeElapsed: endDate.fromNow() })}</Bold>
           </div>
         </div>
       )}
       <div className="VotingResultsInfo__Container">
-        <div className="VotingResultsInfo__Subtitle">{'Voting activity'}</div>
+        <div className="VotingResultsInfo__Subtitle">{t('page.proposal_detail.voting_section.vote_count_title')}</div>
         <div className="VotingResultsInfo__Title">
           <Bold>{t('page.proposal_detail.voting_section.vote_count', { voteCount: voteCount })}</Bold>
         </div>

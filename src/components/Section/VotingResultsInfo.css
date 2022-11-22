@@ -9,6 +9,10 @@
   background: var(--secondary);
   border-radius: 6px;
   padding: 8px 11px;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .VotingResultsInfo__Title {
