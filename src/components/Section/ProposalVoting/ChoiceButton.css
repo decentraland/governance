@@ -1,6 +1,6 @@
 .ui.button.ChoiceButton {
   background: var(--background);
-  border: 1px solid rgba(115, 110, 125, 0.32);
+  border: 1px solid var(--black-300);
   position: relative;
   display: flex;
   align-items: center;
