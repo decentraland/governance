@@ -47,7 +47,7 @@ export default function GrantsPage() {
       {!isLoading && (
         <>
           <Mobile>
-            <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Grants} />
+            <BurgerMenuContent navigationOnly activeTab={NavigationTab.Grants} />
           </Mobile>
           <BurgerMenuPushableLayout>
             <Container>

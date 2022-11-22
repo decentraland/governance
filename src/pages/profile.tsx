@@ -59,7 +59,7 @@ export default function ProfilePage() {
   return (
     <>
       <Mobile>
-        <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Profile} />
+        <BurgerMenuContent navigationOnly activeTab={NavigationTab.Profile} />
       </Mobile>
       <BurgerMenuPushableLayout>
         <Head

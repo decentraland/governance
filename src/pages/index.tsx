@@ -44,7 +44,7 @@ export default function HomePage() {
       />
       <Navigation activeTab={NavigationTab.Home} />
       <Mobile>
-        <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Home} />
+        <BurgerMenuContent navigationOnly activeTab={NavigationTab.Home} />
       </Mobile>
       <BurgerMenuPushableLayout>
         <Container>

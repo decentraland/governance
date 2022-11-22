@@ -59,7 +59,7 @@ export default function TransparencyPage() {
         {data && (
           <>
             <Mobile>
-              <BurgerMenuContent className="Padded" navigationOnly activeTab={NavigationTab.Transparency} />
+              <BurgerMenuContent navigationOnly activeTab={NavigationTab.Transparency} />
             </Mobile>
             <BurgerMenuPushableLayout>
               <Container className="TransparencyContainer">
