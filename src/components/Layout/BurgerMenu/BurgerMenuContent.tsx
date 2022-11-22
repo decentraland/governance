@@ -31,7 +31,7 @@ const CATEGORY_FILTER_HEIGHT = 407
 const STATUS_FILTER_HEIGHT = 290
 const TIMEFRAME_FILTER_HEIGHT = 212
 const CLOSED_FILTER_HEIGHT = 56
-const MOBILE_NAVIGATION_HEIGHT = 220
+const MOBILE_NAVIGATION_HEIGHT = 180
 
 function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps) {
   const [footer, setFooter] = useState<Element | null>(null)

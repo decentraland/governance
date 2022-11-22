@@ -20,11 +20,9 @@ function BurgerMenuLayout({ children, navigationOnly, activeTab }: Props) {
     <>
       <Mobile>
         <BurgerMenuContent navigationOnly={navigationOnly} activeTab={activeTab} />
-      </Mobile>
-      <Mobile>
         <div
           className="Animated"
-          style={burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : {}}
+          style={burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : undefined}
         >
           {children}
         </div>
