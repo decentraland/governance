@@ -109,7 +109,7 @@ const ProposalVotingSection = ({
             </Button>
           )}
 
-          {!proposalContext.showSnapshotRedirect && (
+          {proposal && account && !proposalContext.showSnapshotRedirect && (
             <>
               <div className="DetailsSection__Header">
                 <Header sub>{t('page.proposal_detail.voting_section.title')}</Header>
@@ -152,7 +152,9 @@ const ProposalVotingSection = ({
               />
             </>
           )}
-          {proposal && proposalContext.showSnapshotRedirect && <SidebarSnapshotRedirect proposal={proposal} />}
+          {proposal && account && proposalContext.showSnapshotRedirect && (
+            <SidebarSnapshotRedirect proposal={proposal} />
+          )}
         </>
       )}
     </div>
