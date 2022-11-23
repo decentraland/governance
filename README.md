@@ -15,8 +15,8 @@ The governance hub for the Decentraland ecosystem. Create and vote on proposals 
 
 Before you start make sure you have installed:
 
-- [NodeJS](https://nodejs.dev/) that includes `npm`
 - [Homebrew](https://brew.sh/)
+- [Postgres](https://www.postgresql.org/download/macosx/#:~:text=10.11%20%2D%2010.13-,Postgres.app,-Postgres.app%20is)
 
 ### Node version
 
@@ -24,11 +24,13 @@ use node >= `16`
 
 If you are starting from scratch and you don't have Node installed in your computer, we recommend using a Node version manager like [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm instead of the Node installer.
 
-`nvm install node` will install the latest version of node and npm.
+`nvm install v16.14.2` will install node version 16 and the corresponding npm version.
 
 **NOTE**
 
 If you are using WSL (Windows Subsystem for Linux) as your development environment, clone the repository into the WSL filesystem. If you clone it inside the Windows filesystem, the project will not work.
+
+Run `npm install` to install all the dependencies needed to run the project
 
 ### environment setup
 
@@ -63,30 +65,14 @@ The minimum amount of voting power require to pass a proposal of each type it's 
 
 ### database setup
 
-check if you have postgres installed
+Make sure you have postgres running.
 
+To create the db, run in the terminal
 ```bash
-brew list
-```
+createdb -U >USER< snapshot
+````
 
-if you don't, install it (don't forget to `brew update`)
-
-```bash
-brew install postgres
-```
-
-start postgresql
-
-```bash
-brew services start postgresql
-```
-
-you can run this to check if everything is ok 
-```bash
-createdb `whoami` 
-``` 
-
-inside psql run `create database snapshot`
+the `default user` is postgres and the `default password` is postgres as well
 
 use your `user:pwd` for the connection string, it should look like this:
 
@@ -258,6 +244,10 @@ the app should be running at https://localhost:8000/
 ## Clear 
 To clear cache and update localization and internationalization renders, run
 
+```bash
+npm run clean
+```
+or
 ```bash
 rm -r .cache
 ```
