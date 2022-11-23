@@ -28,6 +28,7 @@
   padding-right: 8px;
   align-items: center;
   min-width: 215px;
+  justify-content: space-evenly;
 }
 
 .ReactionCounter {
