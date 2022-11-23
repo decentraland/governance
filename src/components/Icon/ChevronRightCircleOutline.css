@@ -7,10 +7,6 @@ g.ChevronRightCircleOutline__Circle {
   opacity: 0.25;
 }
 
-g.ChevronRightCircleOutline__Circle:hover {
-  opacity: 0.5;
-}
-
 .svg-fill-white {
   fill: var(--white-900);
 }

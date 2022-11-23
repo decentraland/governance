@@ -15,6 +15,7 @@
 }
 
 .Pill--small {
+  padding: 0 6px;
   height: 19px;
   font-size: 10px;
   line-height: 13px;

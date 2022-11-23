@@ -2,14 +2,19 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  text-align: start;
   min-width: 159px;
 }
 
-.ResultStance > .ResultStance__Text {
-  margin-left: 5px;
+.ResultStance__Icon {
+  align-self: center;
 }
 
-.ResultStance > .ResultStance__Text > .ui.header {
-  margin: 0;
+.ResultStance__Text {
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 28px;
+  color: var(--black-600);
+  text-transform: uppercase;
 }

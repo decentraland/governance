@@ -1,9 +1,9 @@
 import React from 'react'
 
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
 import { ProposalType } from '../../entities/Proposal/types'
 import Pill, { PillColor } from '../Common/Pill'
-
-import './CategoryPill.css'
 
 const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.POI]: PillColor.Green,
@@ -17,15 +17,16 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
 }
 
 export type Props = {
+  className?: string
   type: ProposalType
   size?: 'small' | 'default'
 }
 
-const CategoryPill = ({ type, size = 'default' }: Props) => {
+const CategoryPill = ({ className, type, size = 'default' }: Props) => {
   const label = type.replaceAll('_', ' ')
 
   return (
-    <Pill style="light" color={ColorsConfig[type]} className="CategoryPill" size={size}>
+    <Pill style="light" color={ColorsConfig[type]} className={TokenList.join(['CategoryPill', className])} size={size}>
       {label}
     </Pill>
   )

@@ -1,9 +1,0 @@
-.ui.container.GrantBeneficiaryBox {
-  margin-bottom: 24px;
-}
-
-@media (min-width: 768px) {
-  .ui.container.GrantBeneficiaryBox {
-    margin-bottom: 44px;
-  }
-}

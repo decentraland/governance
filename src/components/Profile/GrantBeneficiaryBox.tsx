@@ -6,7 +6,6 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import useGrantsByUser from '../../hooks/useGrantsByUser'
 import GrantBeneficiaryList from '../Grants/GrantBeneficiaryList'
 
-import './GrantBeneficiaryBox.css'
 import { ProfileBox } from './ProfileBox'
 
 interface Props {

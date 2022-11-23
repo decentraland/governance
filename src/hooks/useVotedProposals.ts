@@ -10,7 +10,6 @@ const INITIAL_VALUE = [] as VotedProposal[]
 
 function useVotedProposals(address: string, first?: number) {
   const [skip, setSkip] = useState(0)
-  const [areMoreProposals, setAreMoreProposals] = useState(false)
   const [responseVotes, state] = useAsyncMemo(
     async () => {
       if (!isEthereumAddress(address)) {
@@ -28,13 +27,14 @@ function useVotedProposals(address: string, first?: number) {
     }
   }, [responseVotes])
 
-  useEffect(() => {
-    setAreMoreProposals(responseVotes.length === first)
-  }, [responseVotes, first])
-
   const handleViewMore = () => setSkip((prev) => (first ? prev + first : prev))
 
-  return { votes, isLoading: state.loading, handleViewMore, areMoreProposals }
+  return {
+    votes,
+    isLoading: state.loading,
+    handleViewMore,
+    hasMoreProposals: responseVotes.length === first,
+  }
 }
 
 export default useVotedProposals

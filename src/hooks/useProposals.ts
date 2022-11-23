@@ -52,6 +52,7 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     if (filter.snapshotIds) {
       params.snapshotIds = filter.snapshotIds
     }
+
     return Governance.get().getProposals({ ...params, limit, offset })
   }, [
     filter.status,

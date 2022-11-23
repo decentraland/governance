@@ -32,6 +32,7 @@ a.ui.card:hover,
 
 .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
   flex: 1;
+  font-size: 15px;
   padding-right: 15px;
 }
 
@@ -61,7 +62,6 @@ a.ui.card:hover,
   padding-top: 8px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
 }
 
 @media (max-width: 425px) {
@@ -70,9 +70,6 @@ a.ui.card:hover,
   }
   .ProfileProposalItem .ProfileProposalItem__Title {
     padding-right: 0;
-  }
-  .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
-    font-size: 17px;
   }
 }
 
@@ -84,17 +81,11 @@ a.ui.card:hover,
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-.ProfileProposalItem__Details .ui.header {
-  margin: 0;
-  max-width: 150px;
-}
-
-@media (min-width: 992px) {
-  .ProfileProposalItem__Details .ui.header {
-    max-width: 420px;
-  }
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--black-600);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
 
 .ProfileProposalItem__Stats {
@@ -110,4 +101,8 @@ a.ui.card:hover,
 .ProfileProposalItem__Stats span:last-child:after {
   content: '';
   padding: 0;
+}
+
+.ProfileProposalItem__StatusPill {
+  margin-right: 8px;
 }
