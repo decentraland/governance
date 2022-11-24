@@ -8,9 +8,6 @@ export const REACTIONS_VIEW: ReactionView[] = [
   { reaction: ReactionType.CONCERNED, icon: '🤨' },
   { reaction: ReactionType.EMPTY, icon: '-' },
 ]
-export const TOPIC_REACTION_CONCAT = ':'
-export const TOPIC_SEPARATOR = ','
-export const MAX_CHARS_IN_SNAPSHOT_REASON = 140
 
 export class SurveyEncoder {
   static encode(survey?: Survey | null): string {
