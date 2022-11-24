@@ -50,8 +50,10 @@ function ProfileProposalItem({ votedProposal }: Props) {
             {proposal.type && <CategoryPill type={proposal.type} />}
             <NotMobile>
               <div className="ProfileProposalItem__Stats">
-                <span className="ProfileProposalItem__Details">
-                  {t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })}
+                <span className="ProfileProposalItem__Details ">
+                  <span className="ProfileProposalItem__Choice">
+                    {t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })}
+                  </span>
                 </span>
                 <span className="ProfileProposalItem__Details">{dateText}</span>
               </div>

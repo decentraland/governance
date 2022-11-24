@@ -58,8 +58,8 @@ a.ui.card:hover,
   color: var(--black-600);
 }
 
-.ProfileProposalItem .ProfileProposalItem__Status {
-  padding-top: 8px;
+.ProfileProposalItem__Status {
+  padding-top: 6px;
   display: flex;
   flex-direction: row;
 }
@@ -73,7 +73,7 @@ a.ui.card:hover,
   }
 }
 
-.ProfileProposalItem .ProfileProposalItem__Title .ui.header:first-child {
+.ProfileProposalItem__Title .ui.header:first-child {
   margin-bottom: 0;
 }
 
@@ -86,6 +86,20 @@ a.ui.card:hover,
   color: var(--black-600);
   letter-spacing: 0.4px;
   text-transform: uppercase;
+}
+
+.ProfileProposalItem__Choice {
+  max-width: 150px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 992px) {
+  .ProfileProposalItem__Choice {
+    max-width: 300px;
+  }
 }
 
 .ProfileProposalItem__Stats {

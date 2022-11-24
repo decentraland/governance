@@ -42,7 +42,7 @@ a.ui.card:hover,
 
 @media (min-width: 768px) {
   .ProposalCreatedItem__Title {
-    width: 420px;
+    width: 375px;
   }
 
   .ProposalCreatedItem__Title .ui.header {
@@ -80,7 +80,7 @@ a.ui.card:hover,
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-top: 8px;
+  padding-top: 6px;
 }
 
 .ProposalCreatedItem__Stats {
@@ -113,6 +113,17 @@ a.ui.card:hover,
   gap: 32px;
 }
 
+.ProposalCreatedItem__CategoryPillContainer {
+  min-width: 110px;
+}
+
 .ProposalCreatedItem__CategoryPill {
   margin-right: 8px;
+}
+
+.ProposalCreatedItem__VoteText {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
 }

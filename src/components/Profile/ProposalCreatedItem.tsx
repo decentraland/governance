@@ -7,8 +7,10 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
-import { ProposalAttributes } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import useProposalVotes from '../../hooks/useProposalVotes'
 import locations from '../../modules/locations'
+import { abbreviateTimeDifference } from '../../modules/time'
 import CategoryPill from '../Category/CategoryPill'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import StatusPill from '../Status/StatusPill'
@@ -26,6 +28,8 @@ function ProposalCreatedItem({ proposal }: Props) {
     value: Time(finish_at).fromNow(),
   })
 
+  const { votes } = useProposalVotes(proposal.id)
+
   return (
     <Card as={Link} href={locations.proposal(id)} className="ProposalCreatedItem">
       <Card.Content>
@@ -39,13 +43,27 @@ function ProposalCreatedItem({ proposal }: Props) {
               {type && <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" type={type} />}
             </Mobile>
             <div className="ProposalCreatedItem__Stats">
-              <span className="ProposalCreatedItem__Details">32 Votes</span>
-              <span className="ProposalCreatedItem__Details">{dateText}</span>
+              <span className="ProposalCreatedItem__Details">
+                {t('page.profile.created_proposals.votes', { total: Object.keys(votes || {}).length })}
+              </span>
+              <span className="ProposalCreatedItem__Details">
+                <Mobile>{abbreviateTimeDifference(dateText)}</Mobile>
+                <NotMobile>{dateText}</NotMobile>
+              </span>
             </div>
           </div>
         </div>
         <div className="ProposalCreatedItem__CategorySection">
-          <NotMobile>{type && <CategoryPill size="small" type={type} />}</NotMobile>
+          <NotMobile>
+            {type && (
+              <div className="ProposalCreatedItem__CategoryPillContainer">
+                <CategoryPill size="small" type={type} />
+              </div>
+            )}
+            {proposal.status === ProposalStatus.Active && (
+              <span className="ProposalCreatedItem__VoteText">{t('page.home.open_proposals.vote')}</span>
+            )}
+          </NotMobile>
           <ChevronRightCircleOutline size={24} />
         </div>
       </Card.Content>
