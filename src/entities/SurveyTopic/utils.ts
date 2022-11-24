@@ -9,15 +9,17 @@ export const REACTIONS_VIEW: ReactionView[] = [
   { reaction: ReactionType.EMPTY, icon: '-' },
 ]
 
+export const SURVEY_KEY = 'survey'
+
 export class SurveyEncoder {
   static encode(survey?: Survey | null): string {
-    if (!survey || survey.length < 1) return ''
+    if (!survey || survey.length < 1) return '{}'
 
     try {
-      return JSON.stringify(survey)
+      return `{"${SURVEY_KEY}": ${JSON.stringify(survey)}}`
     } catch (e) {
       console.log(`Unable to encode survey Survey: ${survey}`)
-      return ''
+      return '{}'
     }
   }
 }

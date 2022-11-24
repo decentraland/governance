@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
-import { CancelProposal, Proposal, ProposalType } from '@snapshot-labs/snapshot.js/dist/sign/types'
+import { CancelProposal, Proposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/dist/sign/types'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
@@ -140,14 +140,14 @@ export class SnapshotApi {
     address: string,
     proposalSnapshotId: string,
     choiceNumber: number,
-    reason?: string
+    metadata?: string
   ): Promise<SnapshotReceipt> {
-    const voteMessage = {
+    const voteMessage: Vote = {
       space: SnapshotApi.getSpaceName(),
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
-      reason: reason,
+      metadata: metadata,
       app: SNAPSHOT_APP_NAME,
     }
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt

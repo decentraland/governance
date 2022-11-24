@@ -39,7 +39,7 @@ function initializeTopicResults(surveyTopics: Topic[]) {
 
 function getResults(surveyTopics: Topic[] | null, votes: Record<string, Vote> | null) {
   if (!surveyTopics || !votes) return {}
-  const decoder = new SurveyDecoder(surveyTopics)
+  const decoder = new SurveyDecoder()
   const topicsResults = initializeTopicResults(surveyTopics)
   Object.keys(votes).map((key) => {
     const survey: Survey = decoder.decode(votes[key].reason)

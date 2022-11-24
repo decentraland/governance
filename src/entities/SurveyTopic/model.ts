@@ -16,7 +16,7 @@ export default class SurveyTopicModel extends Model<SurveyTopicAttributes> {
   static async getSurveyTopic(proposal: ProposalAttributes): Promise<Topic[]> {
     const proposalCategory = getProposalCategory(proposal)
     return await this.query(SQL`
-    SELECT s.topic_id, s.label
+    SELECT s.topic_id
     FROM ${table(SurveyTopicModel)} s
         INNER JOIN ${table(ProposalSurveyTopicModel)} ps ON ps."topic_id" = s."topic_id"
         WHERE ps."proposal_type" = ${proposal.type}
