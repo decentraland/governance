@@ -13,12 +13,9 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true,
     },
     topic_id: {
-      type: 'VARCHAR(5)',
-      notNull: true,
-    },
-    label: {
       type: 'TEXT',
       notNull: true,
+      unique: true,
     },
     created_at: {
       type: 'TIMESTAMP',
