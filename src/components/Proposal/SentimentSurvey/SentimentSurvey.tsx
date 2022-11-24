@@ -10,7 +10,7 @@ import SentimentSurveyRow from './SentimentSurveyRow'
 
 interface Props {
   survey: Survey
-  surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
+  surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>
 }

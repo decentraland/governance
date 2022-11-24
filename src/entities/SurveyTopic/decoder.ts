@@ -1,10 +1,10 @@
-import { ReactionType, Survey, SurveyTopicAttributes, TopicFeedback } from './types'
+import { ReactionType, Survey, SurveyTopicAttributes, Topic, TopicFeedback } from './types'
 import { REACTIONS_VIEW, TOPIC_REACTION_CONCAT, TOPIC_SEPARATOR } from './utils'
 
 export class SurveyDecoder {
-  private topics: Pick<SurveyTopicAttributes, 'topic_id' | 'label'>[]
+  private topics: Topic[]
 
-  constructor(topics: Pick<SurveyTopicAttributes, 'topic_id' | 'label'>[]) {
+  constructor(topics: Topic[]) {
     this.topics = topics
   }
 
@@ -45,7 +45,7 @@ export class SurveyDecoder {
     return SurveyDecoder.getReaction(reaction)
   }
 
-  private parseTopic(topicFeedback: string): Pick<SurveyTopicAttributes, 'topic_id' | 'label'> | undefined {
+  private parseTopic(topicFeedback: string): Topic | undefined {
     const topicId = topicFeedback.substring(0, topicFeedback.indexOf(TOPIC_REACTION_CONCAT))
     const topic = this.topics.find((topic) => topic.topic_id === topicId)
     if (!topic) console.log(`Unable to parse topic feedback ${topicFeedback}`) // TODO: report error
