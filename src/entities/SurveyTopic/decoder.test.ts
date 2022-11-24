@@ -2,6 +2,7 @@ import { def, get } from 'bdd-lazy-var/getter'
 
 import { SurveyDecoder } from './decoder'
 import { ReactionType, Topic, TopicFeedback } from './types'
+import { SURVEY_KEY } from './utils'
 
 const TOPIC_1: Topic = { topic_id: '12345' }
 const TOPIC_2: Topic = { topic_id: '22222' }
@@ -29,7 +30,7 @@ describe('SurveyDecoder', () => {
       def(
         'encodedSurvey',
         () =>
-          '[{"topic":{"topic_id":"12345"},"reaction":"neutral"},{"topic":{"topic_id":"22222"},"reaction":"love"},{"topic":{"topic_id":"33333"},"reaction":"empty"}]'
+          `{"${SURVEY_KEY}": [{"topic":{"topic_id":"12345"},"reaction":"neutral"},{"topic":{"topic_id":"22222"},"reaction":"love"},{"topic":{"topic_id":"33333"},"reaction":"empty"}]}`
       )
 
       it('should be encoded into a sentiment survey', () => {
@@ -41,7 +42,7 @@ describe('SurveyDecoder', () => {
       def(
         'encodedSurvey',
         () =>
-          '[{"topic":{"topic_id":"unknown"},"reaction":"unknown"},{"topic":{"topic_id":"whatevs"},"reaction":"whatevs"}]'
+          `{"${SURVEY_KEY}": [{"topic":{"topic_id":"unknown"},"reaction":"unknown"},{"topic":{"topic_id":"whatevs"},"reaction":"whatevs"}]}`
       )
 
       it('returns a parsed survey', async () => {
@@ -63,7 +64,7 @@ describe('SurveyDecoder', () => {
     })
 
     describe('a survey with no topics or reactions', () => {
-      def('encodedSurvey', () => '[asd, asdasd, 🙂]')
+      def('encodedSurvey', () => `{"${SURVEY_KEY}": [asd, asdasd, 🙂]}`)
 
       it('should return an empty survey', async () => {
         expect(get.decodedSurvey).toEqual([])
