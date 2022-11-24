@@ -16,7 +16,7 @@ The governance hub for the Decentraland ecosystem. Create and vote on proposals 
 Before you start make sure you have installed:
 
 - [Homebrew](https://brew.sh/)
-- [Postgres](https://www.postgresql.org/download/macosx/#:~:text=10.11%20%2D%2010.13-,Postgres.app,-Postgres.app%20is)
+- [Postgres](https://www.postgresql.org/download/)
 
 ### Node version
 
@@ -49,6 +49,8 @@ if you are running this project locally you only need to check the following env
 * `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
 * `RPC_PROVIDER_URL`: the rpc provider to get the latest block
 * Snapshot env vars: see snapshot setup
+
+These environment variables are used by the application backend. The environment variables for the frontend are located in `src/config/env`.
 
 ### setup the required voting power to pass
 
