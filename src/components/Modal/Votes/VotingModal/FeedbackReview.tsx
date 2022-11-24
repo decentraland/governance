@@ -10,7 +10,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../../entities/Proposal/utils'
-import { Survey, SurveyTopicAttributes } from '../../../../entities/SurveyTopic/types'
+import { Survey, SurveyTopicAttributes, Topic } from '../../../../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../../../../entities/SurveyTopic/utils'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
@@ -22,7 +22,7 @@ interface Props {
   proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
   survey: Survey
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>
-  surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
+  surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
 }
 

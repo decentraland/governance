@@ -6,16 +6,14 @@ import { ProposalAttributes } from '../Proposal/types'
 import { getProposalCategory } from '../Proposal/utils'
 import ProposalSurveyTopicModel from '../ProposalSurveyTopics/model'
 
-import { SurveyTopicAttributes } from './types'
+import { SurveyTopicAttributes, Topic } from './types'
 
 export default class SurveyTopicModel extends Model<SurveyTopicAttributes> {
   static tableName = 'survey_topics'
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async getSurveyTopic(
-    proposal: ProposalAttributes
-  ): Promise<Pick<SurveyTopicAttributes, 'topic_id' | 'label'>[]> {
+  static async getSurveyTopic(proposal: ProposalAttributes): Promise<Topic[]> {
     const proposalCategory = getProposalCategory(proposal)
     return await this.query(SQL`
     SELECT s.topic_id, s.label

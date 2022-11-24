@@ -4,7 +4,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
-import { Survey, SurveyTopicAttributes } from '../../../../entities/SurveyTopic/types'
+import { Survey, Topic } from '../../../../entities/SurveyTopic/types'
 import { ProposalPageContext, SelectedChoice } from '../../../../pages/proposal'
 import '../../ProposalModal.css'
 
@@ -15,7 +15,7 @@ import { VotingModalSurvey } from './VotingModalSurvey'
 
 interface VotingModalProps {
   proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
-  surveyTopics: Pick<SurveyTopicAttributes, 'label' | 'topic_id'>[] | null
+  surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
   onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
   onClose: () => void

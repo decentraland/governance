@@ -9,16 +9,16 @@ import ReactionCounter from './ReactionCounter'
 import './SurveyTopicResult.css'
 
 interface Props {
-  topicLabel: string
+  topicId: string
   topicResult: Record<ReactionType, number>
 }
 
-const SurveyTopicResult = ({ topicLabel, topicResult }: Props) => {
+const SurveyTopicResult = ({ topicId, topicResult }: Props) => {
   const t = useFormatMessage()
   const reactions = Object.keys(topicResult)
   return (
     <div className="SurveyTopicResult">
-      <span className="SurveyTopicResult__Header">{t(`survey.survey_topics.${topicLabel}`)}</span>
+      <span className="SurveyTopicResult__Header">{t(`survey.survey_topics.${topicId}`)}</span>
       <div className="SurveyTopicResult__ReactionContainer">
         {reactions.map((reactionType, index) => {
           const isTheLastReaction = index === reactions.length - 1

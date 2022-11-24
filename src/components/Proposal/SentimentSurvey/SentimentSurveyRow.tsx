@@ -54,7 +54,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
       onMouseEnter={() => !reactionPicked && setShowAddReaction(true)}
       onMouseLeave={() => setShowAddReaction(false)}
     >
-      {t(`survey.survey_topics.${topic.label}`)}
+      {t(`survey.survey_topics.${topic.topic_id}`)}
 
       {!showReactions && !reactionPicked && (
         <div id="slide" className="SentimentSurveyRow__AddReaction" onClick={() => setShowReactions(true)}>
