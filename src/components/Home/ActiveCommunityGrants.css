@@ -1,3 +1,7 @@
+.ActiveCommunityGrants {
+  margin-bottom: 25px;
+}
+
 .ActiveCommunityGrants__LoaderContainer {
   display: flex;
   align-items: center;
