@@ -1,5 +1,6 @@
 import React from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
@@ -46,6 +47,8 @@ const VotingSectionFooter = ({
   const showVotingPowerInfo = started && account
   const hasDelegators = !!delegators && delegators.length > 0
 
+  const [userAddress] = useAuthContext()
+
   return (
     <div className={'VotingSectionFooter'}>
       <div className={'VotingSectionFooter__VP'}>
@@ -54,8 +57,8 @@ const VotingSectionFooter = ({
         )}
       </div>
       <div className={'VotingSectionFooter__Actions'}>
-        {showVotingPowerInfo && !hasEnoughToVote && (
-          <Link href={locations.profile()}>{t('page.proposal_detail.get_vp')}</Link>
+        {showVotingPowerInfo && userAddress && !hasEnoughToVote && (
+          <Link href={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
         )}
         {hasEnoughToVote && (
           <ChangeVoteButton
