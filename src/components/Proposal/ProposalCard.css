@@ -43,6 +43,7 @@
 .ProposalCard__Info {
   display: flex;
   flex-direction: row;
+  gap: 7px;
 }
 
 .ProposalCard .ProposalCard__StatusLabel {

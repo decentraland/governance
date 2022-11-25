@@ -24,6 +24,7 @@
 }
 
 .ProposalUpdate--missed {
+  cursor: default !important;
   border: 1px solid #f3b3be;
 }
 

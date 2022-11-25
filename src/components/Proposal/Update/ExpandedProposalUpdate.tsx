@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
@@ -27,23 +27,13 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
   const { introduction, status, health, completion_date } = update
   const UpdateIcon = getStatusIcon(health, completion_date)
 
-  const handleClick = useCallback(
-    (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      navigate(locations.update(update.id))
-    },
-    [update.id]
-  )
-
   if (!completion_date) {
     return null
   }
 
   return (
-    <div
-      role="button"
-      onClick={handleClick}
+    <Link
+      href={locations.update(update.id)}
       className={TokenList.join(['ProposalUpdate', 'ProposalUpdate--expanded', `ProposalUpdate--${status}`])}
     >
       <div className="ProposalUpdate__Heading">
@@ -76,7 +66,7 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
         {t('page.proposal_detail.grant.update_keep_reading')}
         <Icon name="chevron right" />
       </div>
-    </div>
+    </Link>
   )
 }
 
