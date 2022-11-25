@@ -816,6 +816,12 @@
         "stance_differs": "Stance differs",
         "stance_pending": "Voting in progress",
         "empty": "This account hasn't voted on any proposal"
+      },
+      "created_proposals": {
+        "title": "Proposals created",
+        "button": "View more proposals",
+        "votes": "{total} votes",
+        "empty": "This account hasn't created any proposal"
       }
     },
     "transparency": {
