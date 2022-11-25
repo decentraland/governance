@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
@@ -26,6 +25,7 @@ import Empty from '../components/Common/Empty'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
+import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
@@ -94,29 +94,23 @@ export default function ProposalsPage() {
 
   if (isUnderMaintenance()) {
     return (
-      <>
-        <Head
-          title={
-            (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.title')) ||
-            (type === ProposalType.POI && t('page.proposal_poi_list.title')) ||
-            (type === ProposalType.BanName && t('page.proposal_ban_name_list.title')) ||
-            (type === ProposalType.Poll && t('page.proposal_poll_list.title')) ||
-            t('page.proposal_list.title') ||
-            ''
-          }
-          description={
-            (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.description')) ||
-            (type === ProposalType.POI && t('page.proposal_poi_list.description')) ||
-            (type === ProposalType.BanName && t('page.proposal_ban_name_list.description')) ||
-            (type === ProposalType.Poll && t('page.proposal_poll_list.description')) ||
-            t('page.proposal_list.description') ||
-            ''
-          }
-          image="https://decentraland.org/images/decentraland.png"
-        />
-        <Navigation activeTab={NavigationTab.Proposals} />
-        <MaintenancePage />
-      </>
+      <MaintenanceLayout
+        title={
+          (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.title')) ||
+          (type === ProposalType.POI && t('page.proposal_poi_list.title')) ||
+          (type === ProposalType.BanName && t('page.proposal_ban_name_list.title')) ||
+          (type === ProposalType.Poll && t('page.proposal_poll_list.title')) ||
+          t('page.proposal_list.title')
+        }
+        description={
+          (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.description')) ||
+          (type === ProposalType.POI && t('page.proposal_poi_list.description')) ||
+          (type === ProposalType.BanName && t('page.proposal_ban_name_list.description')) ||
+          (type === ProposalType.Poll && t('page.proposal_poll_list.description')) ||
+          t('page.proposal_list.description')
+        }
+        activeTab={NavigationTab.Proposals}
+      />
     )
   }
 
