@@ -5,6 +5,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
@@ -27,7 +28,15 @@ export default function ProfilePage() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [userAddress, authState] = useAuthContext()
-  const address = isEthereumAddress(params.get('address') || '') ? params.get('address') : userAddress
+
+  const paramAddress = params.get('address')
+  const isParamEthAddress = isEthereumAddress(paramAddress || '')
+  const address = isParamEthAddress ? paramAddress : userAddress
+
+  if (!isParamEthAddress) {
+    navigate(`/profile/?address=${address}`, { replace: true })
+  }
+
   const { displayableAddress } = useProfile(address)
   const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
