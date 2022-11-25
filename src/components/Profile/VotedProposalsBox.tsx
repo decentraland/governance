@@ -11,6 +11,7 @@ import Watermelon from '../Icon/Watermelon'
 import ProfileProposalItem from '../Proposal/ProfileProposalItem'
 
 import { ProfileBox } from './ProfileBox'
+import './VotedProposalsBox.css'
 
 interface Props {
   address: string
@@ -33,7 +34,11 @@ function VotedProposalsBox({ address }: Props) {
               return <ProfileProposalItem key={vote.id} votedProposal={vote} />
             })
           ) : (
-            <Empty icon={<Watermelon />} description={t('page.profile.voted_proposals.empty')} />
+            <Empty
+              className="VotedProposalsBox__Empty"
+              icon={<Watermelon />}
+              description={t('page.profile.voted_proposals.empty')}
+            />
           ))}
         {hasMoreProposals && (
           <FullWidthButton onClick={handleViewMore}>{t('page.profile.voted_proposals.button')}</FullWidthButton>

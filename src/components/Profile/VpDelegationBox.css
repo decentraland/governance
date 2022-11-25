@@ -1,8 +1,3 @@
 .VpDelegationBox .ui.stackable.three.column.grid > .column {
   padding: 12px 12px 0 !important;
 }
-
-/* TODO: Move this to VotedProposalsBox.css */
-.VotedProposalsBox .Empty {
-  margin-top: 24px;
-}

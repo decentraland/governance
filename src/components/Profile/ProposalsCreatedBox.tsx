@@ -11,6 +11,7 @@ import Watermelon from '../Icon/Watermelon'
 
 import { ProfileBox } from './ProfileBox'
 import ProposalCreatedItem from './ProposalCreatedItem'
+import './ProposalsCreatedBox.css'
 
 interface Props {
   address: string
@@ -32,14 +33,18 @@ function ProposalsCreatedBox({ address }: Props) {
   })
 
   return (
-    <Container className="ProposalsCreatedBox">
+    <Container>
       <ProfileBox title={t('page.profile.created_proposals.title')}>
-        {isLoading && <SkeletonBars amount={proposals.length || 3} height={89} />}
+        {isLoading && <SkeletonBars amount={proposals.length || PROPOSALS_PER_PAGE} height={89} />}
         {!isLoading &&
           (proposals && proposals.length > 0 ? (
             proposals.map((proposal) => <ProposalCreatedItem key={proposal.id} proposal={proposal} />)
           ) : (
-            <Empty icon={<Watermelon />} description={t('page.profile.created_proposals.empty')} />
+            <Empty
+              className="ProposalsCreatedBox__Empty"
+              icon={<Watermelon />}
+              description={t('page.profile.created_proposals.empty')}
+            />
           ))}
         {hasMoreProposals && (
           <FullWidthButton onClick={loadMore}>{t('page.profile.created_proposals.button')}</FullWidthButton>
