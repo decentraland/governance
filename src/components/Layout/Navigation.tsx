@@ -58,7 +58,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
             <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
           </Link>
           {user && (
-            <Link href={locations.profile()}>
+            <Link href={locations.profile({ address: user })}>
               <Tabs.Tab active={activeTab === NavigationTab.Profile}>{t('navigation.profile')}</Tabs.Tab>
             </Link>
           )}

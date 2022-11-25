@@ -30,11 +30,11 @@ export default function ProfilePage() {
   const [userAddress, authState] = useAuthContext()
 
   const paramAddress = params.get('address')
-  const isParamEthAddress = isEthereumAddress(paramAddress || '')
-  const address = isParamEthAddress ? paramAddress : userAddress
+  const hasAddress = isEthereumAddress(paramAddress || '')
+  const address = hasAddress ? paramAddress : userAddress
 
-  if (!isParamEthAddress) {
-    navigate(`/profile/?address=${address}`, { replace: true })
+  if (!hasAddress) {
+    navigate(`/profile/?address=${userAddress}`, { replace: true })
   }
 
   const { displayableAddress } = useProfile(address)
