@@ -20,16 +20,14 @@ const ReactionCounter = ({ reactionType, count }: Props) => {
   }
 
   return (
-    <>
-      <div className="ReactionCounter">
-        <IconHelper
-          text={t(`component.reaction_icon.${reactionView.reaction}`)}
-          icon={reactionView.icon}
-          position={'bottom center'}
-        />
-        <span className="ReactionCount"> {count}</span>
-      </div>
-    </>
+    <div className="ReactionCounter">
+      <IconHelper
+        text={t(`component.reaction_icon.${reactionView.reaction}`)}
+        icon={reactionView.icon}
+        position={'bottom center'}
+      />
+      <span className="ReactionCount"> {count}</span>
+    </div>
   )
 }
 
