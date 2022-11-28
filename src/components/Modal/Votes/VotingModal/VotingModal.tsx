@@ -8,7 +8,6 @@ import { Survey, Topic } from '../../../../entities/SurveyTopic/types'
 import { ProposalPageContext, SelectedChoice } from '../../../../pages/proposal'
 import '../../ProposalModal.css'
 
-import { FeedbackReview } from './FeedbackReview'
 import { SnapshotRedirect } from './SnapshotRedirect'
 import './VotingModal.css'
 import { VotingModalSurvey } from './VotingModalSurvey'
@@ -34,7 +33,6 @@ export function VotingModal({
 }: VotingModalProps) {
   const [survey, setSurvey] = useState<Survey>([])
   const { selectedChoice, showSnapshotRedirect } = proposalContext
-  const [showFeedbackReview, setShowFeedbackReview] = useState(false)
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
@@ -47,11 +45,10 @@ export function VotingModal({
       open={proposalContext.showVotingModal}
       closeIcon={<Close />}
       onClose={() => {
-        setShowFeedbackReview(false)
         onClose()
       }}
     >
-      {!showSnapshotRedirect && !showFeedbackReview && (
+      {!showSnapshotRedirect && (
         <VotingModalSurvey
           survey={survey}
           setSurvey={setSurvey}
@@ -62,18 +59,7 @@ export function VotingModal({
           proposalContext={proposalContext}
         />
       )}
-      {showSnapshotRedirect && !showFeedbackReview && (
-        <SnapshotRedirect proposal={proposal} onReviewFeedback={() => setShowFeedbackReview(true)} />
-      )}
-      {showFeedbackReview && (
-        <FeedbackReview
-          proposal={proposal}
-          survey={survey}
-          setSurvey={setSurvey}
-          isLoadingSurveyTopics={isLoadingSurveyTopics}
-          surveyTopics={surveyTopics}
-        />
-      )}
+      {showSnapshotRedirect && <SnapshotRedirect proposal={proposal} />}
     </Modal>
   )
 }
