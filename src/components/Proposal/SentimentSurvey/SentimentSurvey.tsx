@@ -19,14 +19,12 @@ const SentimentSurvey = ({ survey, surveyTopics, isLoadingSurveyTopics, setSurve
   const t = useFormatMessage()
 
   useEffect(() => {
-    if (!isLoadingSurveyTopics) {
-      if (survey.length === 0) {
-        const newSurvey: Survey = []
-        surveyTopics?.forEach((topic) => {
-          newSurvey.push({ topic, reaction: ReactionType.EMPTY })
-        })
-        setSurvey(newSurvey)
-      }
+    if (!isLoadingSurveyTopics && survey.length === 0) {
+      const newSurvey: Survey = []
+      surveyTopics?.forEach((topic) => {
+        newSurvey.push({ topic, reaction: ReactionType.EMPTY })
+      })
+      setSurvey(newSurvey)
     }
   }, [survey, isLoadingSurveyTopics, surveyTopics, setSurvey])
 
