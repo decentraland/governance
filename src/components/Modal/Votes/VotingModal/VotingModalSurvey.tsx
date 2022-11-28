@@ -9,7 +9,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { Survey, Topic } from '../../../../entities/SurveyTopic/types'
 import { formatChoice } from '../../../../modules/votes/utils'
-import { ProposalPageContext, SelectedChoice } from '../../../../pages/proposal'
+import { ProposalPageState, SelectedChoice } from '../../../../pages/proposal'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
 
@@ -22,7 +22,7 @@ interface VotingModalSurveyProps {
   isLoadingSurveyTopics: boolean
   onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
   castingVote: boolean
-  proposalContext: ProposalPageContext
+  proposalPageState: ProposalPageState
 }
 
 export function VotingModalSurvey({
@@ -32,10 +32,10 @@ export function VotingModalSurvey({
   isLoadingSurveyTopics,
   onCastVote,
   castingVote,
-  proposalContext,
+  proposalPageState,
 }: VotingModalSurveyProps) {
   const t = useFormatMessage()
-  const { selectedChoice, showVotingError, retryTimer } = proposalContext
+  const { selectedChoice, showVotingError, retryTimer } = proposalPageState
 
   return (
     <Modal.Content>

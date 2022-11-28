@@ -5,7 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
-import { ProposalPageContext, SelectedChoice } from '../../pages/proposal'
+import { ProposalPageState, SelectedChoice } from '../../pages/proposal'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
@@ -24,8 +24,8 @@ type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>,
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
   onVote: (selectedChoice: SelectedChoice) => void
   castingVote: boolean
-  proposalContext: ProposalPageContext
-  updateContext: (newState: Partial<ProposalPageContext>) => void
+  proposalPageState: ProposalPageState
+  updatePageState: (newState: Partial<ProposalPageState>) => void
   handleScrollTo: () => void
 }
 
@@ -39,8 +39,8 @@ export default function ProposalGovernanceSection({
   onChangeVote,
   onVote,
   castingVote,
-  proposalContext,
-  updateContext,
+  proposalPageState,
+  updatePageState,
   handleScrollTo,
   ...props
 }: ProposalGovernanceSectionProps) {
@@ -78,8 +78,8 @@ export default function ProposalGovernanceSection({
           finished={finished}
           onVote={onVote}
           castingVote={castingVote}
-          proposalContext={proposalContext}
-          updateContext={updateContext}
+          proposalPageState={proposalPageState}
+          updatePageState={updatePageState}
           onChangeVote={onChangeVote}
           handleScrollTo={handleScrollTo}
         />

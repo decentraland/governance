@@ -5,7 +5,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { ProposalStatus } from '../../entities/Proposal/types'
-import { ProposalPageContext } from '../../pages/proposal'
+import { ProposalPageState } from '../../pages/proposal'
 
 type ProposalActionsProps = {
   isOwner: boolean
@@ -13,7 +13,7 @@ type ProposalActionsProps = {
   deleting: boolean
   updatingStatus: boolean
   proposal: ProposalAttributes | null
-  updateContext: (newState: Partial<ProposalPageContext>) => void
+  updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
 export default function ProposalActions({
@@ -22,7 +22,7 @@ export default function ProposalActions({
   isCommittee,
   deleting,
   updatingStatus,
-  updateContext,
+  updatePageState,
 }: ProposalActionsProps) {
   const t = useFormatMessage()
 
@@ -34,7 +34,7 @@ export default function ProposalActions({
           fluid
           loading={deleting}
           disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
-          onClick={() => updateContext({ confirmDeletion: true })}
+          onClick={() => updatePageState({ confirmDeletion: true })}
         >
           {t('page.proposal_detail.delete')}
         </Button>
@@ -45,7 +45,7 @@ export default function ProposalActions({
           loading={updatingStatus}
           fluid
           onClick={() =>
-            updateContext({
+            updatePageState({
               confirmStatusUpdate: ProposalStatus.Enacted,
             })
           }
@@ -63,7 +63,7 @@ export default function ProposalActions({
             basic
             loading={updatingStatus}
             fluid
-            onClick={() => updateContext({ confirmStatusUpdate: ProposalStatus.Passed })}
+            onClick={() => updatePageState({ confirmStatusUpdate: ProposalStatus.Passed })}
           >
             {t('page.proposal_detail.pass')}
           </Button>
@@ -72,7 +72,7 @@ export default function ProposalActions({
             loading={updatingStatus}
             fluid
             onClick={() =>
-              updateContext({
+              updatePageState({
                 confirmStatusUpdate: ProposalStatus.Rejected,
               })
             }

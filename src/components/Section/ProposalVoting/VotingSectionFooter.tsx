@@ -8,7 +8,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Vote } from '../../../entities/Votes/types'
 import locations from '../../../modules/locations'
-import { ProposalPageContext } from '../../../pages/proposal'
+import { ProposalPageState } from '../../../pages/proposal'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'
@@ -20,7 +20,7 @@ interface VotingSectionFooterProps {
   startAt?: Date
   finishAt?: Date
   account: string | null
-  proposalContext: ProposalPageContext
+  proposalPageState: ProposalPageState
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   delegators: string[] | null
   totalVpOnProposal: number
@@ -33,7 +33,7 @@ const VotingSectionFooter = ({
   startAt,
   finishAt,
   account,
-  proposalContext,
+  proposalPageState,
   onChangeVote,
   delegators,
   totalVpOnProposal,
@@ -52,7 +52,7 @@ const VotingSectionFooter = ({
 
   return (
     <div className={'VotingSectionFooter'}>
-      {!proposalContext.showVotingError && (
+      {!proposalPageState.showVotingError && (
         <>
           <div className={'VotingSectionFooter__VP'}>
             {showVotingPowerInfo && (
@@ -74,14 +74,14 @@ const VotingSectionFooter = ({
                 hasDelegators={hasDelegators}
                 started={started}
                 finished={finished}
-                changingVote={proposalContext.changingVote}
+                changingVote={proposalPageState.changingVote}
                 onChangeVote={onChangeVote}
               />
             )}
           </div>
         </>
       )}
-      {proposalContext.showVotingError && (
+      {proposalPageState.showVotingError && (
         <span className="VotingSectionFooter__VotingFailedMessage">
           {t('page.proposal_detail.voting_section.voting_failed')}
         </span>

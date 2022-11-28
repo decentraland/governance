@@ -5,7 +5,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { Survey, Topic } from '../../../../entities/SurveyTopic/types'
-import { ProposalPageContext, SelectedChoice } from '../../../../pages/proposal'
+import { ProposalPageState, SelectedChoice } from '../../../../pages/proposal'
 import '../../ProposalModal.css'
 
 import { SnapshotRedirect } from './SnapshotRedirect'
@@ -19,7 +19,7 @@ interface VotingModalProps {
   onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
   onClose: () => void
   castingVote: boolean
-  proposalContext: ProposalPageContext
+  proposalPageState: ProposalPageState
 }
 
 export function VotingModal({
@@ -29,10 +29,10 @@ export function VotingModal({
   isLoadingSurveyTopics,
   onCastVote,
   castingVote,
-  proposalContext,
+  proposalPageState,
 }: VotingModalProps) {
   const [survey, setSurvey] = useState<Survey>([])
-  const { selectedChoice, showSnapshotRedirect } = proposalContext
+  const { selectedChoice, showSnapshotRedirect } = proposalPageState
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
     return null
@@ -42,7 +42,7 @@ export function VotingModal({
     <Modal
       size="tiny"
       className="VotingModal ProposalModal"
-      open={proposalContext.showVotingModal}
+      open={proposalPageState.showVotingModal}
       closeIcon={<Close />}
       onClose={() => {
         onClose()
@@ -56,7 +56,7 @@ export function VotingModal({
           surveyTopics={surveyTopics}
           castingVote={castingVote}
           onCastVote={onCastVote}
-          proposalContext={proposalContext}
+          proposalPageState={proposalPageState}
         />
       )}
       {showSnapshotRedirect && <SnapshotRedirect proposal={proposal} />}
