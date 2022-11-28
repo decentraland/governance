@@ -27,7 +27,7 @@ export type SnapshotVote = {
   vp?: number
   vp_by_strategy?: number[]
   choice: number
-  reason?: string
+  metadata?: Record<string, unknown>
   proposal?: {
     id: string
     title: string

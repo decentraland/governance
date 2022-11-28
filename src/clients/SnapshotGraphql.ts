@@ -85,7 +85,7 @@ export class SnapshotGraphql extends API {
           voter
           created
           choice
-          reason
+          metadata
           vp
           vp_by_strategy
         }

@@ -14,8 +14,7 @@ export type Vote = {
   timestamp: number
   choice: number
   vp: number
-  reason?: string
-}
+} & Pick<SnapshotVote, 'metadata'>
 
 export type VotedProposal = SnapshotVote & {
   id: string
