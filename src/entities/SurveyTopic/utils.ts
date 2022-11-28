@@ -16,7 +16,7 @@ export class SurveyEncoder {
       const encodedSurvey: Record<string, unknown> = { survey: survey }
       return JSON.stringify(encodedSurvey)
     } catch (e) {
-      console.log(`Unable to encode survey Survey: ${survey}`)
+      console.log(`Unable to encode survey: ${survey}`)
       return '{"survey":[]}'
     }
   }
