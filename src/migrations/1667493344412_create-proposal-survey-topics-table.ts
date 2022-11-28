@@ -3,6 +3,7 @@ import { ColumnDefinitions, MigrationBuilder } from 'node-pg-migrate'
 
 import { ProposalType } from '../entities/Proposal/types'
 import Model from '../entities/ProposalSurveyTopics/model'
+import { ProposalSurveyTopicAttributes } from '../entities/ProposalSurveyTopics/type'
 import SurveyTopicModel from '../entities/SurveyTopic/model'
 
 export const shorthands: ColumnDefinitions | undefined = undefined
@@ -41,13 +42,11 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
   })
 
-  pgm.addConstraint(Model.tableName, 'fk_topic', `FOREIGN KEY(topic_id) REFERENCES survey_topics(topic_id)`)
-
-  // pgm.addConstraint(
-  //   Model.tableName,
-  //   'fk_topic',
-  //   `FOREIGN KEY(${Model.topic_id}) REFERENCES ${SurveyTopicModel.tableName}(${SurveyTopicModel.topic_id})`
-  // )
+  pgm.addConstraint(
+    Model.tableName,
+    'fk_topic',
+    `FOREIGN KEY(topic_id) REFERENCES ${SurveyTopicModel.tableName}(topic_id)`
+  )
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
