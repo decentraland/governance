@@ -12,7 +12,7 @@ import useDelegationOnProposal from '../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
-import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
+import { ProposalPageState, SelectedChoice } from '../../../pages/proposal'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -30,8 +30,8 @@ interface Props {
   onVote: (selectedChoice: SelectedChoice) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   castingVote: boolean
-  proposalContext: ProposalPageContext
-  updateContext: (newState: Partial<ProposalPageContext>) => void
+  proposalPageState: ProposalPageState
+  updatePageState: (newState: Partial<ProposalPageState>) => void
   handleScrollTo: () => void
 }
 
@@ -43,8 +43,8 @@ const ProposalVotingSection = ({
   onVote,
   onChangeVote,
   castingVote,
-  proposalContext,
-  updateContext,
+  proposalPageState,
+  updatePageState,
   handleScrollTo,
 }: Props) => {
   const t = useFormatMessage()
@@ -109,7 +109,7 @@ const ProposalVotingSection = ({
             </Button>
           )}
 
-          {proposal && account && !proposalContext.showSnapshotRedirect && (
+          {proposal && account && !proposalPageState.showSnapshotRedirect && (
             <>
               <div className="DetailsSection__Header">
                 <Header sub>{t('page.proposal_detail.voting_section.title')}</Header>
@@ -120,7 +120,7 @@ const ProposalVotingSection = ({
 
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-              {(showChoiceButtons || proposalContext.changingVote) && (
+              {(showChoiceButtons || proposalPageState.changingVote) && (
                 <ChoiceButtons
                   choices={choices}
                   vote={vote}
@@ -129,14 +129,14 @@ const ProposalVotingSection = ({
                   delegateVote={delegateVote}
                   totalVotes={totalVotes}
                   onVote={onVote}
-                  proposalContext={proposalContext}
+                  proposalPageState={proposalPageState}
                   castingVote={castingVote}
-                  updateContext={updateContext}
+                  updatePageState={updatePageState}
                   startAt={proposal?.start_at}
                 />
               )}
 
-              {votedChoice && !proposalContext.changingVote && <VotedChoiceButton {...votedChoice} />}
+              {votedChoice && !proposalPageState.changingVote && <VotedChoiceButton {...votedChoice} />}
 
               <VotingSectionFooter
                 vote={vote}
@@ -144,7 +144,7 @@ const ProposalVotingSection = ({
                 startAt={proposal?.start_at}
                 finishAt={proposal?.finish_at}
                 account={account}
-                proposalContext={proposalContext}
+                proposalPageState={proposalPageState}
                 onChangeVote={onChangeVote}
                 delegators={delegators}
                 totalVpOnProposal={totalVpOnProposal}
@@ -152,7 +152,7 @@ const ProposalVotingSection = ({
               />
             </>
           )}
-          {proposal && account && proposalContext.showSnapshotRedirect && (
+          {proposal && account && proposalPageState.showSnapshotRedirect && (
             <SidebarSnapshotRedirect proposal={proposal} />
           )}
         </>

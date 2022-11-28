@@ -72,7 +72,7 @@ const EMPTY_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
 
-export type ProposalPageContext = {
+export type ProposalPageState = {
   changingVote: boolean
   confirmSubscription: boolean
   confirmDeletion: boolean
@@ -91,7 +91,7 @@ export default function ProposalPage() {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const [proposalContext, updateContext] = usePatchState<ProposalPageContext>({
+  const [proposalPageState, updatePageState] = usePatchState<ProposalPageState>({
     changingVote: false,
     confirmSubscription: false,
     confirmDeletion: false,
@@ -106,7 +106,7 @@ export default function ProposalPage() {
     selectedChoice: EMPTY_CHOICE_SELECTION,
   })
   const [errorCounter, setErrorCounter] = useState(0)
-  const updateContextRef = useRef(updateContext)
+  const updatePageStateRef = useRef(updatePageState)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const { isCommittee } = useIsCommittee(account)
@@ -146,7 +146,7 @@ export default function ProposalPage() {
             selectedChoice.choiceIndex!,
             SurveyEncoder.encode(survey)
           )
-          updateContext({
+          updatePageState({
             changingVote: false,
             showVotingModal: false,
             showVotingError: false,
@@ -156,11 +156,11 @@ export default function ProposalPage() {
         } catch (err) {
           console.error(err, { ...(err as Error) }) //TODO report error
           if ((err as any).code === ErrorCode.ACTION_REJECTED) {
-            updateContext({
+            updatePageState({
               changingVote: false,
             })
           } else {
-            updateContext({
+            updatePageState({
               changingVote: false,
               showVotingError: true,
               showSnapshotRedirect: errorCounter + 1 >= MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT,
@@ -170,7 +170,7 @@ export default function ProposalPage() {
         }
       }
     },
-    [proposal, account, provider, votes, proposalContext.selectedChoice]
+    [proposal, account, provider, votes, proposalPageState.selectedChoice]
   )
 
   const [subscribing, subscribe] = useAsyncTask<[subscribe?: boolean | undefined]>(
@@ -186,7 +186,7 @@ export default function ProposalPage() {
           )
         }
 
-        updateContext({ confirmSubscription: false })
+        updatePageState({ confirmSubscription: false })
       }
     },
     [proposal, subscriptionsState]
@@ -203,10 +203,10 @@ export default function ProposalPage() {
           description
         )
         proposalState.set(updateProposal)
-        updateContext({ confirmStatusUpdate: false })
+        updatePageState({ confirmStatusUpdate: false })
       }
     },
-    [proposal, account, isCommittee, proposalState, updateContext]
+    [proposal, account, isCommittee, proposalState, updatePageState]
   )
 
   const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
@@ -223,33 +223,33 @@ export default function ProposalPage() {
   }, [proposal, account, isCommittee])
 
   useEffect(() => {
-    updateContextRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
+    updatePageStateRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
   }, [params])
 
   useEffect(() => {
-    updateContextRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
+    updatePageStateRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
   }, [params])
 
   useEffect(() => {
-    if (proposalContext.showVotingError) {
+    if (proposalPageState.showVotingError) {
       const timer = setTimeout(() => {
-        updateContext({ retryTimer: proposalContext.retryTimer - 1 })
+        updatePageState({ retryTimer: proposalPageState.retryTimer - 1 })
       }, 1000)
 
-      if (proposalContext.retryTimer <= 0) {
-        updateContext({ retryTimer: SECONDS_FOR_VOTING_RETRY, showVotingError: false })
+      if (proposalPageState.retryTimer <= 0) {
+        updatePageState({ retryTimer: SECONDS_FOR_VOTING_RETRY, showVotingError: false })
       }
       return () => clearTimeout(timer)
     }
-  }, [proposalContext.showVotingError, proposalContext.retryTimer])
+  }, [proposalPageState.showVotingError, proposalPageState.retryTimer])
 
   const closeProposalSuccessModal = () => {
-    updateContext({ showProposalSuccessModal: false })
+    updatePageState({ showProposalSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
   const closeUpdateSuccessModal = () => {
-    updateContext({ showUpdateSuccessModal: false })
+    updatePageState({ showUpdateSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
@@ -294,7 +294,7 @@ export default function ProposalPage() {
   const getVotingMethod = () => {
     return (selectedChoice: SelectedChoice) => {
       if (showSurvey) {
-        updateContext({
+        updatePageState({
           selectedChoice: selectedChoice,
           showVotingModal: true,
         })
@@ -353,7 +353,7 @@ export default function ProposalPage() {
                     votes={votes}
                     partialResults={partialResults}
                     loading={proposalState.loading || votesState.loading}
-                    onOpenVotesList={() => updateContext({ showVotesList: true })}
+                    onOpenVotesList={() => updatePageState({ showVotesList: true })}
                     elementRef={proposalResults}
                   />
                 </>
@@ -380,10 +380,10 @@ export default function ProposalPage() {
                   partialResults={partialResults}
                   choices={choices}
                   castingVote={castingVote}
-                  onChangeVote={(_, changing) => updateContext({ changingVote: changing })}
+                  onChangeVote={(_, changing) => updatePageState({ changingVote: changing })}
                   onVote={getVotingMethod()}
-                  updateContext={updateContext}
-                  proposalContext={proposalContext}
+                  updatePageState={updatePageState}
+                  proposalPageState={proposalPageState}
                   handleScrollTo={handleScrollClick}
                 />
                 <ForumButton
@@ -405,7 +405,7 @@ export default function ProposalPage() {
                     deleting={deleting}
                     updatingStatus={updatingStatus}
                     proposal={proposal}
-                    updateContext={updateContext}
+                    updatePageState={updatePageState}
                   />
                 )}
               </div>
@@ -421,50 +421,50 @@ export default function ProposalPage() {
           isLoadingSurveyTopics={isLoadingSurveyTopics}
           onClose={() => {
             setErrorCounter(0)
-            updateContext({ showVotingModal: false, showSnapshotRedirect: false })
+            updatePageState({ showVotingModal: false, showSnapshotRedirect: false })
           }}
           onCastVote={castVote}
           castingVote={castingVote}
-          proposalContext={proposalContext}
+          proposalPageState={proposalPageState}
         />
       )}
       <VotesListModal
-        open={proposalContext.showVotesList}
+        open={proposalPageState.showVotesList}
         proposal={proposal}
         votes={votes}
-        onClose={() => updateContext({ showVotesList: false })}
+        onClose={() => updatePageState({ showVotesList: false })}
       />
       <VoteRegisteredModal
         loading={subscribing}
-        open={proposalContext.confirmSubscription}
+        open={proposalPageState.confirmSubscription}
         onClickAccept={() => subscribe()}
-        onClose={() => updateContext({ confirmSubscription: false })}
+        onClose={() => updatePageState({ confirmSubscription: false })}
       />
       <DeleteProposalModal
         loading={deleting}
-        open={proposalContext.confirmDeletion}
+        open={proposalPageState.confirmDeletion}
         onClickAccept={() => deleteProposal()}
-        onClose={() => updateContext({ confirmDeletion: false })}
+        onClose={() => updatePageState({ confirmDeletion: false })}
       />
       <UpdateProposalStatusModal
-        open={!!proposalContext.confirmStatusUpdate}
+        open={!!proposalPageState.confirmStatusUpdate}
         proposal={proposal}
-        status={proposalContext.confirmStatusUpdate || null}
+        status={proposalPageState.confirmStatusUpdate || null}
         loading={updatingStatus}
         onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
           updateProposalStatus(status, vesting_contract, enactingTx, description)
         }
-        onClose={() => updateContext({ confirmStatusUpdate: false })}
+        onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />
       <ProposalSuccessModal
-        open={proposalContext.showProposalSuccessModal}
+        open={proposalPageState.showProposalSuccessModal}
         onDismiss={closeProposalSuccessModal}
         onClose={closeProposalSuccessModal}
         proposal={proposal}
         loading={proposalState.loading}
       />
       <UpdateSuccessModal
-        open={proposalContext.showUpdateSuccessModal}
+        open={proposalPageState.showUpdateSuccessModal}
         onDismiss={closeUpdateSuccessModal}
         onClose={closeUpdateSuccessModal}
         proposalId={proposal?.id}

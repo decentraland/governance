@@ -7,7 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
-import { ProposalPageContext, SelectedChoice } from '../../../pages/proposal'
+import { ProposalPageState, SelectedChoice } from '../../../pages/proposal'
 
 import ChoiceButton from './ChoiceButton'
 
@@ -20,8 +20,8 @@ interface Props {
   totalVotes: number
   onVote: (selectedChoice: SelectedChoice) => void
   castingVote: boolean
-  proposalContext: ProposalPageContext
-  updateContext: (newState: Partial<ProposalPageContext>) => void
+  proposalPageState: ProposalPageState
+  updatePageState: (newState: Partial<ProposalPageState>) => void
   startAt?: Date
 }
 
@@ -34,12 +34,12 @@ export const ChoiceButtons = ({
   totalVotes,
   onVote,
   castingVote,
-  proposalContext,
-  updateContext,
+  proposalPageState,
+  updatePageState,
   startAt,
 }: Props) => {
   const t = useFormatMessage()
-  const { selectedChoice, retryTimer, showVotingError } = proposalContext
+  const { selectedChoice, retryTimer, showVotingError } = proposalPageState
   const now = Time.utc()
   const untilStart = useCountdown(Time.utc(startAt) || now)
   const started = untilStart.time === 0
@@ -47,7 +47,7 @@ export const ChoiceButtons = ({
 
   const handleChoiceClick = (currentChoice: string, currentChoiceIndex: number) => {
     return () => {
-      updateContext({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
+      updatePageState({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
     }
   }
 
