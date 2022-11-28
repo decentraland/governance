@@ -703,8 +703,7 @@
       "snapshot_redirect": {
         "voting_not_available": "Voting not available",
         "description": "It looks like we're having issues casting your vote from the Governance dApp.",
-        "suggestion": "You can try voting directly on **Snapshot** - the system we use for decision-making.",
-        "extra_feedback": "What about my extra feedback?"
+        "suggestion": "You can try voting directly on **Snapshot** - the system we use for decision-making."
       },
       "promotion": {
         "opportunity_label": "opportunity",

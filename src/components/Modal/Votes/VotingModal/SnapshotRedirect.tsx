@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -15,10 +14,9 @@ import './VotingModal.css'
 
 interface Props {
   proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
-  onReviewFeedback: () => void
 }
 
-export function SnapshotRedirect({ proposal, onReviewFeedback }: Props) {
+export function SnapshotRedirect({ proposal }: Props) {
   const t = useFormatMessage()
   return (
     <Modal.Content>
@@ -34,9 +32,6 @@ export function SnapshotRedirect({ proposal, onReviewFeedback }: Props) {
       </div>
       <div className="SnapshotRedirect__Actions">
         <SnapshotRedirectButton proposal={proposal} />
-        <Link className="SnapshotRedirect__FeedbackLink" onClick={onReviewFeedback}>
-          {t('page.proposal_detail.snapshot_redirect.extra_feedback')}
-        </Link>
       </div>
     </Modal.Content>
   )
