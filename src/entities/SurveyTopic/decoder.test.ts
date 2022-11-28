@@ -1,8 +1,7 @@
 import { def, get } from 'bdd-lazy-var/getter'
 
-import { SurveyDecoder } from './decoder'
+import { decodeSurvey } from './decoder'
 import { ReactionType, Topic, TopicFeedback } from './types'
-import { SURVEY_KEY } from './utils'
 
 const TOPIC_1: Topic = { topic_id: '12345' }
 const TOPIC_2: Topic = { topic_id: '22222' }
@@ -14,69 +13,163 @@ const SENTIMENT_SURVEY: TopicFeedback[] = [
   { topic: TOPIC_3, reaction: ReactionType.EMPTY },
 ]
 
-describe('SurveyDecoder', () => {
-  describe('decode', () => {
-    def('decodedSurvey', () => new SurveyDecoder().decode(get.encodedSurvey))
+describe('decode', () => {
+  def('decodedSurvey', () => decodeSurvey(get.encodedSurvey))
 
-    describe('and empty survey', () => {
-      def('encodedSurvey', () => '')
+  describe('and empty survey', () => {
+    def('encodedSurvey', () => '')
 
-      it('should be encoded into an empty array', () => {
-        expect(get.decodedSurvey).toEqual([])
-      })
+    it('should be encoded into an empty array', () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
+
+  describe('a survey with different topic feedbacks', () => {
+    def('encodedSurvey', () => {
+      return {
+        survey: [
+          { topic: { topic_id: '12345' }, reaction: 'neutral' },
+          { topic: { topic_id: '22222' }, reaction: 'love' },
+          { topic: { topic_id: '33333' }, reaction: 'empty' },
+        ],
+      }
     })
 
-    describe('a survey with different topic feedbacks', () => {
-      def(
-        'encodedSurvey',
-        () =>
-          `{"${SURVEY_KEY}": [{"topic":{"topic_id":"12345"},"reaction":"neutral"},{"topic":{"topic_id":"22222"},"reaction":"love"},{"topic":{"topic_id":"33333"},"reaction":"empty"}]}`
-      )
+    it('should be encoded into a sentiment survey', () => {
+      expect(get.decodedSurvey).toEqual(SENTIMENT_SURVEY)
+    })
+  })
 
-      it('should be encoded into a sentiment survey', () => {
-        expect(get.decodedSurvey).toEqual(SENTIMENT_SURVEY)
-      })
+  describe('a survey with unknown topics and valid reactions', () => {
+    def('encodedSurvey', () => {
+      return {
+        survey: [
+          { topic: { topic_id: 'unknown' }, reaction: 'love' },
+          { topic: { topic_id: 'whatevs' }, reaction: 'concerned' },
+        ],
+      }
     })
 
-    describe('a survey with unknown topics and reactions', () => {
-      def(
-        'encodedSurvey',
-        () =>
-          `{"${SURVEY_KEY}": [{"topic":{"topic_id":"unknown"},"reaction":"unknown"},{"topic":{"topic_id":"whatevs"},"reaction":"whatevs"}]}`
-      )
-
-      it('returns a parsed survey', async () => {
-        expect(get.decodedSurvey).toEqual([
-          {
-            reaction: 'unknown',
-            topic: {
-              topic_id: 'unknown',
-            },
+    it('returns a parsed survey', async () => {
+      expect(get.decodedSurvey).toEqual([
+        {
+          reaction: 'love',
+          topic: {
+            topic_id: 'unknown',
           },
-          {
-            reaction: 'whatevs',
-            topic: {
-              topic_id: 'whatevs',
-            },
+        },
+        {
+          reaction: 'concerned',
+          topic: {
+            topic_id: 'whatevs',
           },
-        ])
-      })
+        },
+      ])
+    })
+  })
+
+  describe('a survey with unknown topics and invalid reactions', () => {
+    def('encodedSurvey', () => {
+      return {
+        survey: [
+          { topic: { topic_id: 'unknown' }, reaction: 'luv' },
+          { topic: { topic_id: 'whatevs' }, reaction: 'conzerned' },
+        ],
+      }
     })
 
-    describe('a survey with no topics or reactions', () => {
-      def('encodedSurvey', () => `{"${SURVEY_KEY}": [asd, asdasd, 🙂]}`)
+    it('returns an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
 
-      it('should return an empty survey', async () => {
-        expect(get.decodedSurvey).toEqual([])
-      })
+  describe('a survey with no topics or reactions', () => {
+    def('encodedSurvey', () => {
+      return { survey: ['asd', 'asdasd', '🙂', {}, null] }
     })
 
-    describe('a survey with a different format', () => {
-      def('encodedSurvey', () => '[{"topic":{"label":"something"},"reaction": {}}}]')
+    it('should return an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
 
-      it('should return an empty survey', async () => {
-        expect(get.decodedSurvey).toEqual([])
-      })
+  describe('a survey with a different format', () => {
+    def('encodedSurvey', () => {
+      return [{ topic: { label: 'something' }, reaction: {} }]
+    })
+    it('should return an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
+
+  describe('a survey with a wrong topic format', () => {
+    def('encodedSurvey', () => {
+      return { survey: [{ topic: { label: 'something' }, reaction: {} }] }
+    })
+    it('should return an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
+
+  describe('a survey with an empty reaction', () => {
+    def('encodedSurvey', () => {
+      return { survey: [{ topic: { topic_id: '1234' }, reaction: {} }] }
+    })
+    it('should return an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
+
+  describe('a survey with an invalid reaction', () => {
+    def('encodedSurvey', () => {
+      return { survey: [{ topic: { topic_id: '1234' }, reaction: 'lov' }] }
+    })
+    it('should return an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
+
+  describe('a survey encoded as a string', () => {
+    def('encodedSurvey', () => {
+      return `{"survey":[{ topic: { topic_id: '12345' }, reaction: 'neutral' }, { topic: { topic_id: '22222' }, reaction: 'love' }, { topic: { topic_id: '33333' }, reaction: 'empty' }]}`
+    })
+
+    it('should return an empty survey', async () => {
+      expect(get.decodedSurvey).toEqual([])
+    })
+  })
+
+  describe('a survey with a mixture of valid and invalid data', () => {
+    def('encodedSurvey', () => {
+      return {
+        survey: [
+          { topic: { topic_id: 'unknown' }, reaction: 'luv' },
+          { topic: { topic_id: 'whatevs' }, reaction: 'conzerned' },
+          { topic: { topic_id: '12345' }, reaction: 'love' },
+          { topic: { something_wrong: '12345' }, reaction: 'love' },
+          [],
+          "I'm a string",
+          {},
+          { topic: { topic_id: '55555' }, reaction: 'empty' },
+        ],
+      }
+    })
+
+    it('returns a survey with correct topic format and valid reactions', async () => {
+      expect(get.decodedSurvey).toEqual([
+        {
+          reaction: 'love',
+          topic: {
+            topic_id: '12345',
+          },
+        },
+        {
+          reaction: 'empty',
+          topic: {
+            topic_id: '55555',
+          },
+        },
+      ])
     })
   })
 })

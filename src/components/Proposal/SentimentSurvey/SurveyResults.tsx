@@ -4,8 +4,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { SurveyDecoder } from '../../../entities/SurveyTopic/decoder'
-import { ReactionType, Survey, SurveyTopicAttributes, Topic } from '../../../entities/SurveyTopic/types'
+import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
+import { ReactionType, Survey, Topic } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import Divider from '../../Common/Divider'
 
@@ -39,10 +39,9 @@ function initializeTopicResults(surveyTopics: Topic[]) {
 
 function getResults(surveyTopics: Topic[] | null, votes: Record<string, Vote> | null) {
   if (!surveyTopics || !votes) return {}
-  const decoder = new SurveyDecoder()
   const topicsResults = initializeTopicResults(surveyTopics)
   Object.keys(votes).map((key) => {
-    const survey: Survey = decoder.decode(votes[key].reason)
+    const survey: Survey = decodeSurvey(votes[key].metadata)
     survey.map((topicFeedback) => {
       if (topicFeedback.reaction != ReactionType.EMPTY) {
         topicsResults[topicFeedback.topic.topic_id][topicFeedback.reaction] += 1
