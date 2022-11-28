@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -10,8 +9,10 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
+import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
+import ProposalsCreatedBox from '../components/Profile/ProposalsCreatedBox'
 import VotedProposalsBox from '../components/Profile/VotedProposalsBox'
 import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
@@ -43,15 +44,11 @@ export default function ProfilePage() {
 
   if (isUnderMaintenance()) {
     return (
-      <>
-        <Head
-          title={t('page.profile.empty_title') || ''}
-          description={t('page.profile.description') || ''}
-          image="https://decentraland.org/images/decentraland.png"
-        />
-        <Navigation activeTab={NavigationTab.Profile} />
-        <MaintenancePage />
-      </>
+      <MaintenanceLayout
+        title={t('page.profile.empty_title')}
+        description={t('page.profile.description')}
+        activeTab={NavigationTab.Profile}
+      />
     )
   }
 
@@ -74,6 +71,7 @@ export default function ProfilePage() {
       <UserStats address={address} vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
       <div className="ProfilePage__Container">
         <GrantBeneficiaryBox address={address} />
+        <ProposalsCreatedBox address={address} />
         <VpDelegationBox
           delegation={delegation}
           isLoadingDelegations={delegationState.loading}

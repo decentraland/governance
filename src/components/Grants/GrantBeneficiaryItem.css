@@ -55,7 +55,6 @@
 .GrantBeneficiaryItem__GrantInfo {
   display: flex;
   flex-direction: column;
-  max-width: 293px;
   overflow: hidden;
 }
 
@@ -77,7 +76,7 @@
 }
 
 .GrantBeneficiaryItem__PillContainer {
-  min-width: 100px;
+  min-width: 110px;
 }
 
 .GrantBeneficiaryItem__VestingSection {
@@ -91,8 +90,8 @@
 }
 
 .GrantBeneficiaryItem__VestingProgressContainer {
-  min-width: 80px;
-  margin-right: 20px;
+  min-width: 93px;
+  margin-right: 32px;
 }
 
 .GrantBeneficiaryItem .dcl.back {
@@ -117,8 +116,7 @@
   }
 
   .GrantBeneficiaryItem__Title {
-    font-size: 17px;
-    max-width: 420px;
+    max-width: 380px;
   }
 
   .GrantBeneficiaryItem__Details .dg.Paragraph > .dg.Bold {
@@ -141,7 +139,7 @@
   }
 
   .GrantBeneficiaryItem__VestingProgressContainer {
-    min-width: 130px;
+    min-width: 93px;
   }
 }
 

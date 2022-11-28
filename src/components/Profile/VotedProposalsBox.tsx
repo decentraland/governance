@@ -22,7 +22,7 @@ const PROPOSALS_PER_PAGE = 5
 function VotedProposalsBox({ address }: Props) {
   const t = useFormatMessage()
 
-  const { votes, isLoading, handleViewMore, areMoreProposals } = useVotedProposals(address, PROPOSALS_PER_PAGE)
+  const { votes, isLoading, handleViewMore, hasMoreProposals } = useVotedProposals(address, PROPOSALS_PER_PAGE)
 
   return (
     <Container className="VotedProposalsBox">
@@ -34,9 +34,13 @@ function VotedProposalsBox({ address }: Props) {
               return <ProfileProposalItem key={vote.id} votedProposal={vote} />
             })
           ) : (
-            <Empty icon={<Watermelon />} description={t('page.profile.voted_proposals.empty')} />
+            <Empty
+              className="VotedProposalsBox__Empty"
+              icon={<Watermelon />}
+              description={t('page.profile.voted_proposals.empty')}
+            />
           ))}
-        {areMoreProposals && (
+        {hasMoreProposals && (
           <FullWidthButton onClick={handleViewMore}>{t('page.profile.voted_proposals.button')}</FullWidthButton>
         )}
       </ProfileBox>

@@ -4,7 +4,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -22,6 +21,7 @@ import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
+import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
@@ -205,16 +205,7 @@ export default function ProposalPage() {
 
   if (isUnderMaintenance()) {
     return (
-      <>
-        <Head
-          title={t('page.proposal_detail.title') || ''}
-          description={t('page.proposal_detail.description') || ''}
-          image="https://decentraland.org/images/decentraland.png"
-        />
-        <ContentLayout className="ProposalDetailPage">
-          <MaintenancePage />
-        </ContentLayout>
-      </>
+      <MaintenanceLayout title={t('page.proposal_detail.title')} description={t('page.proposal_detail.description')} />
     )
   }
 

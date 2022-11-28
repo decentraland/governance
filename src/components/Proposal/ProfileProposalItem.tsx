@@ -30,9 +30,7 @@ function ProfileProposalItem({ votedProposal }: Props) {
   })
   const maxScore = Math.max(...scores)
   const winningChoice = scores.indexOf(maxScore)
-
   const isMatch = winningChoice === choiceIdx
-
   const isProposalActive = Time().isBefore(Time(finish_at))
 
   return (
@@ -48,25 +46,24 @@ function ProfileProposalItem({ votedProposal }: Props) {
             </div>
           </Mobile>
           <div className="ProfileProposalItem__Status">
-            <div className="ProfileProposalItem__Details">
-              <StatusPill status={proposal.status} />
-              {proposal.type && <CategoryPill type={proposal.type} />}
-              <NotMobile>
-                <Header sub>
-                  <span>{t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })}</span> · {dateText}
-                </Header>
-              </NotMobile>
-            </div>
+            <StatusPill className="ProfileProposalItem__StatusPill" size="small" status={proposal.status} />
+            {proposal.type && <CategoryPill type={proposal.type} />}
+            <NotMobile>
+              <div className="ProfileProposalItem__Stats">
+                <span className="ProfileProposalItem__Details ">
+                  <span className="ProfileProposalItem__Choice">
+                    {t('page.profile.voted_proposals.vote', { vote: choices[choiceIdx] })}
+                  </span>
+                </span>
+                <span className="ProfileProposalItem__Details">{dateText}</span>
+              </div>
+            </NotMobile>
           </div>
         </div>
-        <div>
-          <NotMobile>
-            <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
-          </NotMobile>
-        </div>
-        <div>
-          <ChevronRightCircleOutline />
-        </div>
+        <NotMobile>
+          <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
+        </NotMobile>
+        <ChevronRightCircleOutline size={24} />
       </Card.Content>
     </Card>
   )

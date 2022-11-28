@@ -1,0 +1,129 @@
+.ProposalCreatedItem {
+  width: 100% !important;
+  position: relative;
+  border: 1px solid var(--black-100) !important;
+}
+
+.ProposalCreatedItem__StatusPill {
+  margin-right: 8px;
+}
+
+.ProposalCreatedItem .ui.cards a.card:hover,
+.ui.link.card:hover,
+.ui.link.cards .card:hover,
+a.ui.card:hover,
+.ui.cards > .ui.card.link:hover,
+.ui.card.link:hover {
+  border: 1px solid var(--black-100) !important;
+}
+
+.ProposalCreatedItem .content {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.ProposalCreatedItem > .content::after {
+  content: none !important;
+}
+
+.ProposalCreatedItem__Title {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 0;
+}
+
+.ProposalCreatedItem__Title .ui.header {
+  flex: 1;
+  font-size: 15px;
+  padding-right: 15px;
+}
+
+@media (min-width: 768px) {
+  .ProposalCreatedItem__Title {
+    width: 375px;
+  }
+
+  .ProposalCreatedItem__Title .ui.header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 992px) {
+  .ProposalCreatedItem__Title {
+    width: 580px;
+  }
+}
+
+.ProposalCreatedItem:visited .ProposalCreatedItem__Title .ui.header {
+  color: var(--black-600);
+}
+
+@media (max-width: 425px) {
+  .ProposalCreatedItem__Title {
+    padding-right: 0;
+  }
+
+  .ProposalCreatedItem__Title .ui.header {
+    font-size: 17px;
+  }
+}
+
+.ProposalCreatedItem__Title .ui.header:first-child {
+  margin-bottom: 0;
+}
+
+.ProposalCreatedItem__Status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.ProposalCreatedItem__Stats {
+  display: flex;
+  align-items: center;
+}
+
+.ProposalCreatedItem__Stats span:after {
+  content: '·';
+  padding: 0 5px;
+}
+
+.ProposalCreatedItem__Stats span:last-child:after {
+  content: '';
+  padding: 0;
+}
+
+.ProposalCreatedItem__Details {
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--black-600);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.ProposalCreatedItem__CategorySection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+}
+
+.ProposalCreatedItem__CategoryPillContainer {
+  min-width: 110px;
+}
+
+.ProposalCreatedItem__CategoryPill {
+  margin-right: 8px;
+}
+
+.ProposalCreatedItem__VoteText {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+}

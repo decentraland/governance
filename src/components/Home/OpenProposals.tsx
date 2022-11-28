@@ -40,7 +40,7 @@ const OpenProposals = () => {
     useProposalsByParticipatingVP(twoWeeksAgo, now)
 
   return (
-    <>
+    <div className="OpenProposals">
       <HomeSectionHeader
         title={t('page.home.open_proposals.title')}
         description={t('page.home.open_proposals.description')}
@@ -84,7 +84,7 @@ const OpenProposals = () => {
       <FullWidthButton className="OpenProposals__ViewAllButton" link={locations.proposals()}>
         {t('page.home.open_proposals.view_all_proposals')}
       </FullWidthButton>
-    </>
+    </div>
   )
 }
 

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
@@ -41,19 +41,6 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditCl
   const formattedCompletionDate = completion_date ? formatDate(completion_date) : ''
   const showPostUpdateButton = !completion_date && isAllowedToPostUpdate && isBetweenLateThresholdDate(due_date)
 
-  const handleClick = useCallback(
-    (e) => {
-      if (!completion_date) {
-        return
-      }
-
-      e.preventDefault()
-      e.stopPropagation()
-      navigate(locations.update(update.id))
-    },
-    [completion_date, update.id]
-  )
-
   const handlePostUpdateClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
@@ -63,9 +50,8 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditCl
   )
 
   return (
-    <div
-      role="button"
-      onClick={handleClick}
+    <Link
+      href={completion_date ? locations.update(update.id) : undefined}
       className={TokenList.join([
         'ProposalUpdate',
         status === UpdateStatus.Pending && 'ProposalUpdate--pending',
@@ -104,7 +90,7 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditCl
           {t('page.proposal_detail.grant.update_button')}
         </Button>
       )}
-    </div>
+    </Link>
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import Cancel from '../Icon/Cancel'
 import CheckCircle from '../Icon/CheckCircle'
@@ -48,9 +47,7 @@ function ResultStance({ isMatch, isProposalActive }: Props) {
   return (
     <div className="ResultStance">
       {icon}
-      <div className="ResultStance__Text">
-        <Header sub>{t(text)}</Header>
-      </div>
+      <span className="ResultStance__Text">{t(text)}</span>
     </div>
   )
 }

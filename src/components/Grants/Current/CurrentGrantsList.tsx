@@ -58,27 +58,29 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
 
   return (
     <>
-      <CurrentGrantsBanner grants={grants} />
-      <div>
-        <h2 className="CurrentGrants__Title">{t('page.grants.currently_funded')}</h2>
-        <div className="CurrentGrants__Filters">
-          <CurrentGrantsCategoryFilters
-            currentGrantsFilteredByCategory={currentGrantsFilteredByCategory}
-            onSelectedCategoryChange={setSelectedCategory}
-          />
-          <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
+      <div className="CurrentGrantsList">
+        <CurrentGrantsBanner grants={grants} />
+        <div>
+          <h2 className="CurrentGrants__Title">{t('page.grants.currently_funded')}</h2>
+          <div className="CurrentGrants__Filters">
+            <CurrentGrantsCategoryFilters
+              currentGrantsFilteredByCategory={currentGrantsFilteredByCategory}
+              onSelectedCategoryChange={setSelectedCategory}
+            />
+            <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
+          </div>
+          <Container className="CurrentGrants__Container">
+            {filteredCurrentGrants?.map((grant) => (
+              <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
+            ))}
+          </Container>
         </div>
-        <Container className="CurrentGrants__Container">
-          {filteredCurrentGrants?.map((grant) => (
-            <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
-          ))}
-        </Container>
+        {showLoadMoreCurrentGrantsButton && (
+          <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
+            {t('page.grants.load_more_button')}
+          </FullWidthButton>
+        )}
       </div>
-      {showLoadMoreCurrentGrantsButton && (
-        <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
-          {t('page.grants.load_more_button')}
-        </FullWidthButton>
-      )}
     </>
   )
 }

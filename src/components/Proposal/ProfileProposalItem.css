@@ -32,6 +32,7 @@ a.ui.card:hover,
 
 .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
   flex: 1;
+  font-size: 15px;
   padding-right: 15px;
 }
 
@@ -57,11 +58,10 @@ a.ui.card:hover,
   color: var(--black-600);
 }
 
-.ProfileProposalItem .ProfileProposalItem__Status {
-  padding-top: 8px;
+.ProfileProposalItem__Status {
+  padding-top: 6px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
 }
 
 @media (max-width: 425px) {
@@ -71,12 +71,9 @@ a.ui.card:hover,
   .ProfileProposalItem .ProfileProposalItem__Title {
     padding-right: 0;
   }
-  .ProfileProposalItem .ProfileProposalItem__Title .ui.header {
-    font-size: 17px;
-  }
 }
 
-.ProfileProposalItem .ProfileProposalItem__Title .ui.header:first-child {
+.ProfileProposalItem__Title .ui.header:first-child {
   margin-bottom: 0;
 }
 
@@ -84,16 +81,24 @@ a.ui.card:hover,
   display: flex;
   flex-direction: row;
   align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--black-600);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
 
-.ProfileProposalItem__Details .ui.header {
-  margin: 0;
+.ProfileProposalItem__Choice {
   max-width: 150px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (min-width: 992px) {
-  .ProfileProposalItem__Details .ui.header {
-    max-width: 420px;
+  .ProfileProposalItem__Choice {
+    max-width: 300px;
   }
 }
 
@@ -110,4 +115,8 @@ a.ui.card:hover,
 .ProfileProposalItem__Stats span:last-child:after {
   content: '';
   padding: 0;
+}
+
+.ProfileProposalItem__StatusPill {
+  margin-right: 8px;
 }

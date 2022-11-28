@@ -18,33 +18,31 @@ const ActiveCommunityGrants = () => {
   const { grants, isLoadingGrants } = useGrants()
 
   return (
-    <>
-      <div>
-        <HomeSectionHeader
-          title={t('page.home.active_community_grants.title')}
-          description={t('page.home.active_community_grants.description')}
-        />
-        {isLoadingGrants && (
-          <div className="ActiveCommunityGrants__LoaderContainer">
-            <HomeLoader>{t('page.home.active_community_grants.fetching')}</HomeLoader>
-          </div>
-        )}
-        {!isLoadingGrants && (
-          <div className="ActiveCommunityGrants__Container">
-            {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant) => (
-              <div className="HoverableCardContainer" key={`HoverableCard__${grant.id}`}>
-                <div className="HoverableCardContainer__Content">
-                  <GrantCard grant={grant} hoverable />
-                </div>
+    <div className="ActiveCommunityGrants">
+      <HomeSectionHeader
+        title={t('page.home.active_community_grants.title')}
+        description={t('page.home.active_community_grants.description')}
+      />
+      {isLoadingGrants && (
+        <div className="ActiveCommunityGrants__LoaderContainer">
+          <HomeLoader>{t('page.home.active_community_grants.fetching')}</HomeLoader>
+        </div>
+      )}
+      {!isLoadingGrants && (
+        <div className="ActiveCommunityGrants__Container">
+          {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant) => (
+            <div className="HoverableCardContainer" key={`HoverableCard__${grant.id}`}>
+              <div className="HoverableCardContainer__Content">
+                <GrantCard grant={grant} hoverable />
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
       <FullWidthButton link={locations.grants()}>
         {t('page.home.active_community_grants.view_all_grants')}
       </FullWidthButton>
-    </>
+    </div>
   )
 }
 

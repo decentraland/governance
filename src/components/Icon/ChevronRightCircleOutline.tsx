@@ -6,16 +6,17 @@ import './ChevronRightCircleOutline.css'
 
 interface Props {
   resizable?: boolean
+  size?: number
 }
 
-function ChevronRightCircleOutline({ resizable }: Props) {
+function ChevronRightCircleOutline({ resizable, size = 32 }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       x="0"
       y="0"
-      width="32"
-      height="32"
+      width={size}
+      height={size}
       viewBox="0 0 100 100"
       preserveAspectRatio="xMidYMid meet"
       className={TokenList.join([!resizable && 'ChevronRightCircleOutline__FixedSize'])}

@@ -66,7 +66,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
               </div>
             </ProgressBarTooltip>
           </div>
-          <ChevronRightCircleOutline />
+          <ChevronRightCircleOutline size={24} />
         </div>
       </NotMobile>
       <Mobile>
@@ -86,7 +86,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
               </span>
             </span>
           </div>
-          <ChevronRightCircleOutline />
+          <ChevronRightCircleOutline size={24} />
         </div>
       </Mobile>
     </Link>

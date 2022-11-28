@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -16,6 +15,7 @@ import { Governance } from '../clients/Governance'
 import Empty from '../components/Common/Empty'
 import Filter from '../components/Filter/Filter'
 import ActionableLayout from '../components/Layout/ActionableLayout'
+import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalCard from '../components/Proposal/ProposalCard'
 import StatusMenu from '../components/Status/StatusMenu'
@@ -139,15 +139,11 @@ export default function ActivityPage() {
 
   if (isUnderMaintenance()) {
     return (
-      <>
-        <Head
-          title={t('page.proposal_activity.title') || ''}
-          description={t('page.proposal_activity.description') || ''}
-          image="https://decentraland.org/images/decentraland.png"
-        />
-        <Navigation activeTab={NavigationTab.Activity} />
-        <MaintenancePage />
-      </>
+      <MaintenanceLayout
+        title={t('page.proposal_activity.title')}
+        description={t('page.proposal_activity.description')}
+        activeTab={NavigationTab.Activity}
+      />
     )
   }
 
