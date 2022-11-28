@@ -512,7 +512,7 @@
       },
       "dao_delegates": {
         "title": "DAO Delegates",
-        "description": "Voting Power (VP) delegation is crucial to maximize the circulating VP usage, by assigning your VP to trusted community members who can engage in the governance process on behalf of you.",
+        "description": "Voting Power (VP) delegation is crucial to maximize the circulating VP usage, by assigning your VP to recognized community members who can engage in the governance process on behalf of you.",
         "candidate_name": "Candidate Name",
         "last_voted": "Last Voted",
         "times_voted": "Voted On",
