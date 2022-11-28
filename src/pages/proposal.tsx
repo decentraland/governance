@@ -291,16 +291,14 @@ export default function ProposalPage() {
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showSurvey = !isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0
 
-  const getVotingMethod = () => {
-    return (selectedChoice: SelectedChoice) => {
-      if (showSurvey) {
-        updatePageState({
-          selectedChoice: selectedChoice,
-          showVotingModal: true,
-        })
-      } else {
-        castVote(selectedChoice)
-      }
+  const handleVoteClick = (selectedChoice: SelectedChoice) => {
+    if (showSurvey) {
+      updatePageState({
+        selectedChoice: selectedChoice,
+        showVotingModal: true,
+      })
+    } else {
+      castVote(selectedChoice)
     }
   }
 
@@ -381,7 +379,7 @@ export default function ProposalPage() {
                   choices={choices}
                   castingVote={castingVote}
                   onChangeVote={(_, changing) => updatePageState({ changingVote: changing })}
-                  onVote={getVotingMethod()}
+                  onVote={handleVoteClick}
                   updatePageState={updatePageState}
                   proposalPageState={proposalPageState}
                   handleScrollTo={handleScrollClick}
