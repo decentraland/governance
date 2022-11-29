@@ -10,7 +10,7 @@
   position: relative;
 }
 
-.SentimentSurveyRow__Expanded {
+.SentimentSurveyRow:hover {
   background: var(--white-900);
   border: 1px solid var(--black-100);
   box-shadow: 0 0 15px var(--black-400);
@@ -35,7 +35,7 @@
   opacity: 0;
 }
 
-.SentimentSurveyRow__AddReactionLabel {
+.SentimentSurveyRow:hover .SentimentSurveyRow__AddReactionLabel {
   opacity: 1 !important;
 }
 
