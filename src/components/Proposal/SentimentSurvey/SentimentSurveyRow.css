@@ -65,6 +65,11 @@
   height: 24px;
 }
 
+.SentimentSurveyRow__Cross {
+  display: flex;
+  align-items: center;
+}
+
 .SentimentSurveyRow__PickedReaction {
   padding-right: 20px;
 }
