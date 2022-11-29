@@ -114,15 +114,16 @@ export async function finishProposal(context: JobContext) {
 
   for (const proposal of pendingProposals) {
     const outcome = await calculateOutcome(proposal, context)
+    const proposalWithWinnerChoice = { proposal, winnerChoice: outcome?.winnerChoice || '' }
     switch (outcome?.status) {
       case ProposalOutcome.REJECTED:
-        rejectedProposals.push({ proposal, winnerChoice: outcome.winnerChoice })
+        rejectedProposals.push(proposalWithWinnerChoice)
         break
       case ProposalOutcome.ACCEPTED:
-        acceptedProposals.push({ proposal, winnerChoice: outcome.winnerChoice })
+        acceptedProposals.push(proposalWithWinnerChoice)
         break
       case ProposalOutcome.FINISHED:
-        finishedProposals.push({ proposal, winnerChoice: outcome.winnerChoice })
+        finishedProposals.push(proposalWithWinnerChoice)
     }
   }
 

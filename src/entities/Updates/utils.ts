@@ -70,10 +70,15 @@ export const isBetweenLateThresholdDate = (dueDate?: Date) => {
   return Time().isBefore(newDueDate)
 }
 
-export function updateUrl(updateId: string, proposalId: string) {
+export function getUpdateUrl(updateId: string, proposalId: string) {
   const params = new URLSearchParams({ id: updateId, proposalId })
   const target = new URL(GOVERNANCE_API)
   target.pathname = '/update/'
   target.search = '?' + params.toString()
   return target.toString()
+}
+
+export function getUpdateNumber(publicUpdates: UpdateAttributes[], updateId: string) {
+  const updateIdx = Number(publicUpdates.findIndex((item) => item.id === updateId))
+  return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
 }

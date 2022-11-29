@@ -2,18 +2,19 @@ import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { ChannelType, Client, EmbedBuilder, GatewayIntentBits } from 'discord.js'
 
 import { capitalizeFirstLetter } from '../clients/utils'
-import { profileUrl } from '../entities/Profile/utils'
+import { getProfileUrl } from '../entities/Profile/utils'
 import { ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
-import { getPublicUpdates, updateUrl } from '../entities/Updates/utils'
+import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
+const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
 const BLANK = '\u200B'
 const PREVIEW_MAX_LENGTH = 140
@@ -33,7 +34,7 @@ type EmbedMessageProps = {
   title: string
   proposalType?: ProposalType
   description?: string
-  choices: Field[]
+  fields: Field[]
   user?: string
   action: string
   color: MessageColors
@@ -77,7 +78,7 @@ export class DiscordService {
     title,
     proposalType,
     description,
-    choices,
+    fields: choices,
     user,
     action,
     color,
@@ -105,10 +106,10 @@ export class DiscordService {
       .setTitle(title)
       .setURL(url)
       .setDescription(action)
-      .setThumbnail('https://decentraland.org/images/decentraland.png')
+      .setThumbnail(DCL_LOGO)
       .addFields(...fields)
       .setTimestamp()
-      .setFooter({ text: 'Decentraland DAO', iconURL: 'https://decentraland.org/images/decentraland.png' })
+      .setFooter({ text: 'Decentraland DAO', iconURL: DCL_LOGO })
 
     if (user) {
       const profile = await profiles.load(user)
@@ -121,7 +122,7 @@ export class DiscordService {
       embed.setAuthor({
         name: displayableUser,
         iconURL: hasAvatar ? profile.avatar?.snapshots.face256 : DEFAULT_AVATAR,
-        url: profileUrl(user),
+        url: getProfileUrl(user),
       })
     }
 
@@ -143,7 +144,7 @@ export class DiscordService {
       title,
       proposalType: type,
       description,
-      choices: embedChoices,
+      fields: embedChoices,
       user,
       action,
       color: MessageColors.NEW_PROPOSAL,
@@ -153,8 +154,12 @@ export class DiscordService {
 
   static async newUpdate(proposalId: string, proposalTitle: string, updateId: string, user: string) {
     const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
-    const updateIdx = Number(publicUpdates.findIndex((item) => item.id === updateId))
-    const updateNumber = publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
+    const updateNumber = getUpdateNumber(publicUpdates, updateId)
+    const updateIdx = publicUpdates.length - updateNumber
+
+    if (isNaN(updateNumber)) {
+      throw new Error(`Discord service: Update with id ${updateId} not found`)
+    }
 
     const { health, introduction, highlights, blockers, next_steps } = publicUpdates[updateIdx]
 
@@ -165,9 +170,9 @@ export class DiscordService {
     const action = 'A new update has been created'
     const title = `Update #${updateNumber}: ${proposalTitle}`
     const message = await this.formatMessage({
-      url: updateUrl(updateId, proposalId),
+      url: getUpdateUrl(updateId, proposalId),
       title,
-      choices: [
+      fields: [
         { name: 'Project Health', value: shortText(health) },
         { name: 'Introduction', value: shortText(introduction) },
         { name: 'Highlights', value: shortText(highlights) },
@@ -186,7 +191,7 @@ export class DiscordService {
     const message = await this.formatMessage({
       url: proposalUrl({ id }),
       title,
-      choices: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
+      fields: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
       action,
       color: MessageColors.FINISH_PROPOSAL,
     })

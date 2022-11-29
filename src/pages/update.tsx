@@ -9,6 +9,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
+import { getUpdateNumber } from '../entities/Updates/utils'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -37,7 +38,7 @@ export default function UpdateDetail() {
     return <LoadingView />
   }
 
-  const index = publicUpdates && publicUpdates.length - Number(publicUpdates?.findIndex((item) => item.id === updateId))
+  const index = publicUpdates && updateId && getUpdateNumber(publicUpdates, updateId)
   const proposalHref = locations.proposal(update.proposal_id)
 
   return (
