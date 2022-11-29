@@ -269,12 +269,13 @@
     "topics_title": "Topics",
     "reactions_title": "Reaction",
     "survey_topics": {
-      "budget": "Budget",
-      "beneficiary": "Beneficiary",
-      "specification": "Specification",
+      "idea": "Idea",
       "personnel": "Personnel",
-      "roadmap": "Roadmap",
-      "value_proposition": "Value Proposition"
+      "budget": "Budget",
+      "roadmap": "Roadmap Proposal",
+      "potential_impact": "Potential Impact",
+      "test_topic_1": "Test Topic 1",
+      "test_topic_2": "Test Topic 2"
     },
     "reactions": {
       "add_reaction": "Add reaction"
