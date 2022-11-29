@@ -80,7 +80,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
               )
             }
           })}
-          <div onClick={() => setShowReactions(false)}>
+          <div className="SentimentSurveyRow__Cross" onClick={() => setShowReactions(false)}>
             <Cross />
           </div>
         </div>
