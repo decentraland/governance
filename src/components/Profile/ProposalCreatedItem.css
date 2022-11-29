@@ -106,11 +106,23 @@ a.ui.card:hover,
   text-transform: uppercase;
 }
 
+.ProposalCreatedItem__CategorySectionContainer {
+  display: flex;
+  align-items: center;
+}
+
 .ProposalCreatedItem__CategorySection {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 32px;
+}
+
+@media (min-width: 992px) {
+  .ProposalCreatedItem__CategorySection {
+    width: 267px;
+  }
 }
 
 .ProposalCreatedItem__CategoryPillContainer {

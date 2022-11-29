@@ -9,7 +9,7 @@ interface Props {
   size?: number
 }
 
-function ChevronRightCircleOutline({ resizable, size = 32 }: Props) {
+function ChevronRightCircleOutline({ resizable, size = 24 }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -120,3 +120,22 @@ a.ui.card:hover,
 .ProfileProposalItem__StatusPill {
   margin-right: 8px;
 }
+
+.ProfileProposalItem__ResultSectionContainer {
+  display: flex;
+  align-items: center;
+}
+
+.ProfileProposalItem__ResultSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+@media (min-width: 992px) {
+  .ProfileProposalItem__ResultSection {
+    width: 267px;
+  }
+}

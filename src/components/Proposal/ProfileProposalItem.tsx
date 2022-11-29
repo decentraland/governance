@@ -40,11 +40,6 @@ function ProfileProposalItem({ votedProposal }: Props) {
           <div className="ProfileProposalItem__Title">
             <Header>{proposal.title}</Header>
           </div>
-          <Mobile>
-            <div>
-              <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
-            </div>
-          </Mobile>
           <div className="ProfileProposalItem__Status">
             <StatusPill className="ProfileProposalItem__StatusPill" size="small" status={proposal.status} />
             {proposal.type && <CategoryPill type={proposal.type} />}
@@ -60,10 +55,17 @@ function ProfileProposalItem({ votedProposal }: Props) {
             </NotMobile>
           </div>
         </div>
-        <NotMobile>
-          <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
-        </NotMobile>
-        <ChevronRightCircleOutline size={24} />
+        <div className="ProfileProposalItem__ResultSectionContainer">
+          <NotMobile>
+            <div className="ProfileProposalItem__ResultSection">
+              <ResultStance isMatch={isMatch} isProposalActive={isProposalActive} />
+              <ChevronRightCircleOutline />
+            </div>
+          </NotMobile>
+          <Mobile>
+            <ChevronRightCircleOutline />
+          </Mobile>
+        </div>
       </Card.Content>
     </Card>
   )
