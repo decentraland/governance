@@ -5,12 +5,14 @@ export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   const sql = `
-    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'budget', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
-    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'beneficiary', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
-    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'specification', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
+    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'idea', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
     INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'personnel', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
+    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'budget', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
     INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'roadmap', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
-    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'value_proposition', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
+    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type, proposal_sub_types) VALUES (gen_random_uuid(), 'potential_impact', 'grant', '["Community", "Content Creator", "Platform Contributor", "Gaming"]');
+    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type) VALUES (gen_random_uuid(), 'idea', 'poi');
+    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type) VALUES (gen_random_uuid(), 'test_topic_1', 'poi');
+    INSERT INTO proposal_survey_topics (id, topic_id, proposal_type) VALUES (gen_random_uuid(), 'test_topic_2', 'poi');
   `
 
   pgm.sql(sql)
