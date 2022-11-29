@@ -5,7 +5,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
-import { ReactionType, Survey, Topic } from '../../../entities/SurveyTopic/types'
+import { ReactionType, Topic } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import Divider from '../../Common/Divider'
 
@@ -41,7 +41,7 @@ function getResults(surveyTopics: Topic[] | null, votes: Record<string, Vote> | 
   if (!surveyTopics || !votes) return {}
   const topicsResults = initializeTopicResults(surveyTopics)
   Object.keys(votes).map((key) => {
-    const survey: Survey = decodeSurvey(votes[key].metadata)
+    const survey = decodeSurvey(votes[key].metadata)
     survey.map((topicFeedback) => {
       if (topicFeedback.reaction != ReactionType.EMPTY) {
         topicsResults[topicFeedback.topic.topic_id][topicFeedback.reaction] += 1

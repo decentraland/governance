@@ -13,10 +13,10 @@ export class SurveyEncoder {
   static encode(survey?: Survey | null): string {
     if (!survey || survey.length < 1) survey = []
     try {
-      const encodedSurvey: Record<string, unknown> = { survey: survey }
+      const encodedSurvey: Record<string, unknown> = { survey }
       return JSON.stringify(encodedSurvey)
     } catch (e) {
-      console.log(`Unable to encode survey: ${survey}`)
+      console.log(`Unable to encode survey: ${survey}`) //TODO: report error
       return '{"survey":[]}'
     }
   }
