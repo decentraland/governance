@@ -37,7 +37,7 @@ function initializeTopicResults(surveyTopics: Topic[]) {
   return topicsResults
 }
 
-function topicIsAvailable(availableTopics: Topic[], topicFeedback: TopicFeedback) {
+function isTopicAvailable(availableTopics: Topic[], topicFeedback: TopicFeedback) {
   return availableTopics.find((topic) => topic.topic_id === topicFeedback.topic.topic_id)
 }
 
@@ -47,7 +47,7 @@ function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote>
   Object.keys(votes).map((key) => {
     const survey = decodeSurvey(votes[key].metadata)
     survey.map((topicFeedback) => {
-      if (topicIsAvailable(availableTopics, topicFeedback) && topicFeedback.reaction != ReactionType.EMPTY) {
+      if (isTopicAvailable(availableTopics, topicFeedback) && topicFeedback.reaction != ReactionType.EMPTY) {
         topicsResults[topicFeedback.topic.topic_id][topicFeedback.reaction] += 1
       }
     })
