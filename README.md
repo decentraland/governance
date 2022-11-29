@@ -30,7 +30,7 @@ If you are starting from scratch and you don't have Node installed in your compu
 
 If you are using WSL (Windows Subsystem for Linux) as your development environment, clone the repository into the WSL filesystem. If you clone it inside the Windows filesystem, the project will not work.
 
-Run `npm install` to install all the dependencies needed to run the project
+Run `npm install` to install all the dependencies needed to run the project.
 
 ### environment setup
 
@@ -74,9 +74,9 @@ To create the db, run in the terminal
 createdb -U >USER< snapshot
 ````
 
-the `default user` is postgres and the `default password` is postgres as well
+The `default user` is postgres and the `default password` is postgres as well.
 
-use your `user:pwd` for the connection string, it should look like this:
+Use your `user:pwd` for the connection string, it should look like this:
 
 ```bash
 postgres://usr:pwd@localhost:5432/snapshot
