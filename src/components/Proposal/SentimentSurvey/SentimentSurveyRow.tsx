@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ReactionType, Topic } from '../../../entities/SurveyTopic/types'
 import { REACTIONS_VIEW } from '../../../entities/SurveyTopic/utils'
@@ -20,7 +19,6 @@ interface Props {
 
 const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpicked }: Props) => {
   const t = useFormatMessage()
-  const [showAddReaction, setShowAddReaction] = useState(false)
   const [showReactions, setShowReactions] = useState(false)
   const [pickedReaction, setPickedReaction] = useState<ReactionType | null>()
   const reactionPicked = pickedReaction != null
@@ -38,7 +36,6 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
     setPickedReaction(null)
     onReactionUnpicked(topic)
     setShowReactions(true)
-    setShowAddReaction(true)
   }, [onReactionUnpicked, topic])
 
   useEffect(() => {
@@ -49,19 +46,13 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
   }, [reaction])
 
   return (
-    <div
-      className={TokenList.join(['SentimentSurveyRow', showAddReaction && 'SentimentSurveyRow__Expanded'])}
-      onMouseEnter={() => !reactionPicked && setShowAddReaction(true)}
-      onMouseLeave={() => setShowAddReaction(false)}
-    >
+    <div className="SentimentSurveyRow">
       {t(`survey.survey_topics.${topic.topic_id}`)}
 
       {!showReactions && !reactionPicked && (
         <div id="slide" className="SentimentSurveyRow__AddReaction" onClick={() => setShowReactions(true)}>
           <AddReaction />
-          <span className={TokenList.join([showAddReaction && 'SentimentSurveyRow__AddReactionLabel'])}>
-            {t(`survey.reactions.add_reaction`)}
-          </span>
+          <span className="SentimentSurveyRow__AddReactionLabel">{t(`survey.reactions.add_reaction`)}</span>
         </div>
       )}
 
