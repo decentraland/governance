@@ -28,6 +28,10 @@ function isReactionType(value: string | null | undefined): boolean {
   }
 }
 
+function isUnique(decodedSurvey: TopicFeedback[], topicFeedback: TopicFeedback) {
+  return !decodedSurvey.find((topic) => topic.topic.topic_id === topicFeedback.topic.topic_id)
+}
+
 export function decodeSurvey(encodedSurvey?: Record<string, unknown>): Survey {
   const decodedSurvey: Survey = []
   if (!encodedSurvey || Object.keys(encodedSurvey).length === 0) return decodedSurvey
@@ -38,7 +42,11 @@ export function decodeSurvey(encodedSurvey?: Record<string, unknown>): Survey {
       arraySurvey.forEach((rawTopicFeedback) => {
         if (isValidTopicFeedback(rawTopicFeedback)) {
           const topicFeedback = rawTopicFeedback as TopicFeedback
-          if (isValidTopic(topicFeedback.topic) && isReactionType(topicFeedback.reaction))
+          if (
+            isValidTopic(topicFeedback.topic) &&
+            isReactionType(topicFeedback.reaction) &&
+            isUnique(decodedSurvey, topicFeedback)
+          )
             decodedSurvey.push(topicFeedback)
         }
       })
