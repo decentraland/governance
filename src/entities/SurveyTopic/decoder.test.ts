@@ -139,6 +139,28 @@ describe('decode', () => {
     })
   })
 
+  describe('a survey with repeated topic ids', () => {
+    def('encodedSurvey', () => {
+      return {
+        survey: [
+          { topic: { topic_id: '12345' }, reaction: 'neutral' },
+          { topic: { topic_id: '22222' }, reaction: 'love' },
+          { topic: { topic_id: '22222' }, reaction: 'love' },
+          { topic: { topic_id: '33333' }, reaction: 'concerned' },
+          { topic: { topic_id: '33333' }, reaction: 'empty' },
+        ],
+      }
+    })
+
+    it('returns the first appearance of each repeated topic', async () => {
+      expect(get.decodedSurvey).toEqual([
+        { topic: { topic_id: '12345' }, reaction: 'neutral' },
+        { topic: { topic_id: '22222' }, reaction: 'love' },
+        { topic: { topic_id: '33333' }, reaction: 'concerned' },
+      ])
+    })
+  })
+
   describe('a survey with a mixture of valid and invalid data', () => {
     def('encodedSurvey', () => {
       return {
