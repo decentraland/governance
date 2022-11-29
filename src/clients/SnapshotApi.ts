@@ -147,7 +147,7 @@ export class SnapshotApi {
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
-      metadata: metadata,
+      metadata,
       app: SNAPSHOT_APP_NAME,
     }
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
