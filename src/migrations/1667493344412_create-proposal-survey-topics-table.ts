@@ -3,7 +3,7 @@ import { ColumnDefinitions, MigrationBuilder } from 'node-pg-migrate'
 
 import { ProposalType } from '../entities/Proposal/types'
 import Model from '../entities/ProposalSurveyTopics/model'
-import { ProposalSurveyTopicAttributes } from '../entities/ProposalSurveyTopics/type'
+import { ProposalSurveyTopicAttributes } from '../entities/ProposalSurveyTopics/types'
 import SurveyTopicModel from '../entities/SurveyTopic/model'
 
 export const shorthands: ColumnDefinitions | undefined = undefined
