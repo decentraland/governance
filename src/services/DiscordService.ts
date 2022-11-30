@@ -48,7 +48,7 @@ function getChoices(choices: string[]): Field[] {
   }))
 }
 
-function shortText(text: string) {
+function getPreviewText(text: string) {
   return text.length > PREVIEW_MAX_LENGTH ? text.slice(0, PREVIEW_MAX_LENGTH) + '...' : text
 }
 
@@ -89,7 +89,7 @@ export class DiscordService {
     if (!!proposalType && !!description) {
       const embedDescription = !isGovernanceProcessProposal(proposalType)
         ? description.split('\n')[0]
-        : shortText(description)
+        : getPreviewText(description)
 
       fields.push({
         name: proposalType.toUpperCase().replaceAll('_', ' '),
@@ -112,18 +112,27 @@ export class DiscordService {
       .setFooter({ text: 'Decentraland DAO', iconURL: DCL_LOGO })
 
     if (user) {
-      const profile = await profiles.load(user)
-      const hasDclProfile = !!profile && !profile.isDefaultProfile
-      const profileHasName = hasDclProfile && !!profile.name && profile.name.length > 0
-      const displayableUser = profileHasName ? profile.name! : user
+      try {
+        const profile = await profiles.load(user)
+        const hasDclProfile = !!profile && !profile.isDefaultProfile
+        const profileHasName = hasDclProfile && !!profile.name && profile.name.length > 0
+        const displayableUser = profileHasName ? profile.name! : user
 
-      const hasAvatar = !!profile && !!profile.avatar
+        const hasAvatar = !!profile && !!profile.avatar
 
-      embed.setAuthor({
-        name: displayableUser,
-        iconURL: hasAvatar ? profile.avatar?.snapshots.face256 : DEFAULT_AVATAR,
-        url: getProfileUrl(user),
-      })
+        embed.setAuthor({
+          name: displayableUser,
+          iconURL: hasAvatar ? profile.avatar?.snapshots.face256 : DEFAULT_AVATAR,
+          url: getProfileUrl(user),
+        })
+      } catch (error) {
+        console.error(`Error loading profile for user ${user}`, error)
+        embed.setAuthor({
+          name: user,
+          iconURL: DEFAULT_AVATAR,
+          url: getProfileUrl(user),
+        })
+      }
     }
 
     return embed
@@ -137,64 +146,76 @@ export class DiscordService {
     choices: string[],
     user: string
   ) {
-    const action = 'A new proposal has been created'
-    const embedChoices = getChoices(choices)
-    const message = await this.formatMessage({
-      url: proposalUrl({ id: proposalId }),
-      title,
-      proposalType: type,
-      description,
-      fields: embedChoices,
-      user,
-      action,
-      color: MessageColors.NEW_PROPOSAL,
-    })
-    this.channel.send({ embeds: [message] })
+    try {
+      const action = 'A new proposal has been created'
+      const embedChoices = getChoices(choices)
+      const message = await this.formatMessage({
+        url: proposalUrl({ id: proposalId }),
+        title,
+        proposalType: type,
+        description,
+        fields: embedChoices,
+        user,
+        action,
+        color: MessageColors.NEW_PROPOSAL,
+      })
+      this.channel.send({ embeds: [message] })
+    } catch (error) {
+      console.error(`Error sending new proposal message to Discord`, error)
+    }
   }
 
   static async newUpdate(proposalId: string, proposalTitle: string, updateId: string, user: string) {
-    const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
-    const updateNumber = getUpdateNumber(publicUpdates, updateId)
-    const updateIdx = publicUpdates.length - updateNumber
+    try {
+      const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
+      const updateNumber = getUpdateNumber(publicUpdates, updateId)
+      const updateIdx = publicUpdates.length - updateNumber
 
-    if (isNaN(updateNumber)) {
-      throw new Error(`Discord service: Update with id ${updateId} not found`)
+      if (isNaN(updateNumber)) {
+        throw new Error(`Update with id ${updateId} not found`)
+      }
+
+      const { health, introduction, highlights, blockers, next_steps } = publicUpdates[updateIdx]
+
+      if (!health || !introduction || !highlights || !blockers || !next_steps) {
+        throw new Error('Missing update fields for Discord message')
+      }
+
+      const action = 'A new update has been created'
+      const title = `Update #${updateNumber}: ${proposalTitle}`
+      const message = await this.formatMessage({
+        url: getUpdateUrl(updateId, proposalId),
+        title,
+        fields: [
+          { name: 'Project Health', value: getPreviewText(health) },
+          { name: 'Introduction', value: getPreviewText(introduction) },
+          { name: 'Highlights', value: getPreviewText(highlights) },
+          { name: 'Blockers', value: getPreviewText(blockers) },
+          { name: 'Next Steps', value: getPreviewText(next_steps) },
+        ],
+        user,
+        action,
+        color: MessageColors.NEW_UPDATE,
+      })
+      this.channel.send({ embeds: [message] })
+    } catch (error) {
+      console.error(`Error sending new update message to Discord`, error)
     }
-
-    const { health, introduction, highlights, blockers, next_steps } = publicUpdates[updateIdx]
-
-    if (!health || !introduction || !highlights || !blockers || !next_steps) {
-      throw new Error('Missing update fields for Discord message')
-    }
-
-    const action = 'A new update has been created'
-    const title = `Update #${updateNumber}: ${proposalTitle}`
-    const message = await this.formatMessage({
-      url: getUpdateUrl(updateId, proposalId),
-      title,
-      fields: [
-        { name: 'Project Health', value: shortText(health) },
-        { name: 'Introduction', value: shortText(introduction) },
-        { name: 'Highlights', value: shortText(highlights) },
-        { name: 'Blockers', value: shortText(blockers) },
-        { name: 'Next Steps', value: shortText(next_steps) },
-      ],
-      user,
-      action,
-      color: MessageColors.NEW_UPDATE,
-    })
-    this.channel.send({ embeds: [message] })
   }
 
   static async finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
-    const action = `Proposal has ended with outcome ${outcome}`
-    const message = await this.formatMessage({
-      url: proposalUrl({ id }),
-      title,
-      fields: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
-      action,
-      color: MessageColors.FINISH_PROPOSAL,
-    })
-    this.channel.send({ embeds: [message] })
+    try {
+      const action = `Proposal has ended with outcome ${outcome}`
+      const message = await this.formatMessage({
+        url: proposalUrl({ id }),
+        title,
+        fields: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
+        action,
+        color: MessageColors.FINISH_PROPOSAL,
+      })
+      this.channel.send({ embeds: [message] })
+    } catch (error) {
+      console.error(`Error sending finish proposal message to Discord`, error)
+    }
   }
 }

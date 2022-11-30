@@ -38,7 +38,7 @@ export default function UpdateDetail() {
     return <LoadingView />
   }
 
-  const index = publicUpdates && updateId && getUpdateNumber(publicUpdates, updateId)
+  const index = (!!publicUpdates && !!updateId && getUpdateNumber(publicUpdates, updateId)) || NaN
   const proposalHref = locations.proposal(update.proposal_id)
 
   return (
