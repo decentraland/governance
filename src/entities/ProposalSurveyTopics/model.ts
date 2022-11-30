@@ -1,6 +1,6 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 
-import { ProposalSurveyTopicAttributes } from './type'
+import { ProposalSurveyTopicAttributes } from './types'
 
 export default class ProposalSurveyTopicModel extends Model<ProposalSurveyTopicAttributes> {
   static tableName = 'proposal_survey_topics'
