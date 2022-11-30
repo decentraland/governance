@@ -47,7 +47,7 @@ function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote>
   Object.keys(votes).map((key) => {
     const survey = decodeSurvey(votes[key].metadata)
     survey.map((topicFeedback) => {
-      if (isTopicAvailable(availableTopics, topicFeedback) && topicFeedback.reaction != Reaction.EMPTY) {
+      if (isTopicAvailable(availableTopics, topicFeedback) && topicFeedback.reaction !== Reaction.EMPTY) {
         topicsResults[topicFeedback.topic_id][topicFeedback.reaction] += 1
       }
     })
@@ -59,10 +59,10 @@ const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTop
   const t = useFormatMessage()
   const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
   const topicIds = Object.keys(topicResults)
-  const thereAreVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
-  const thereAreSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
+  const hasVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
+  const hasSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
 
-  if (!thereAreVotes || !thereAreSurveyTopics) {
+  if (!hasVotes || !hasSurveyTopics) {
     return null
   }
 
@@ -75,7 +75,7 @@ const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTop
           <div className="SurveyResults__Header">
             <Header>{t('survey.results.title')}</Header>
           </div>
-          {topicIds.map((topicId: string, index: any) => {
+          {topicIds.map((topicId: string, index: number) => {
             return (
               <SurveyTopicResult
                 key={`SurveyTopicResult__${index}`}
