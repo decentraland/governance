@@ -26,9 +26,14 @@ export default function ProposalActions({
 }: ProposalActionsProps) {
   const t = useFormatMessage()
 
+  const showDeleteButton = isOwner || isCommittee
+  const showEnactButton =
+    isCommittee && (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted)
+  const showStatusUpdateButton = isCommittee && proposal?.status === ProposalStatus.Finished
+
   return (
     <>
-      {(isOwner || isCommittee) && (
+      {showDeleteButton && (
         <Button
           basic
           fluid
@@ -39,7 +44,7 @@ export default function ProposalActions({
           {t('page.proposal_detail.delete')}
         </Button>
       )}
-      {isCommittee && (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted) && (
+      {showEnactButton && (
         <Button
           basic
           loading={updatingStatus}
@@ -57,7 +62,7 @@ export default function ProposalActions({
           )}
         </Button>
       )}
-      {isCommittee && proposal?.status === ProposalStatus.Finished && (
+      {showStatusUpdateButton && (
         <>
           <Button
             basic
