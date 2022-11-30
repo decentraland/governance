@@ -14,7 +14,7 @@ import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
 import ProposalThresholdsSummary from './ProposalThresholdsSummary'
 
-type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+type ProposalGovernanceSectionProps = {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   partialResults: ChoiceProgressProps[]
@@ -42,7 +42,6 @@ export default function ProposalGovernanceSection({
   proposalPageState,
   updatePageState,
   handleScrollTo,
-  ...props
 }: ProposalGovernanceSectionProps) {
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
@@ -56,13 +55,11 @@ export default function ProposalGovernanceSection({
 
   return (
     <div
-      {...props}
       className={TokenList.join([
         'DetailsSection',
         disabled && 'DetailsSection--disabled',
         loading && 'DetailsSection--loading',
         'ResultSection',
-        props.className,
       ])}
     >
       <ProposalPromotionSection proposal={proposal} loading={loading} />
