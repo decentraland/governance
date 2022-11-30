@@ -267,22 +267,6 @@ export default function ProposalPage() {
     )
   }, [currentUpdate?.id, pendingUpdates, proposal])
 
-  if (proposalState.error) {
-    return (
-      <>
-        <ContentLayout className="ProposalDetailPage">
-          <NotFound />
-        </ContentLayout>
-      </>
-    )
-  }
-
-  if (isUnderMaintenance()) {
-    return (
-      <MaintenanceLayout title={t('page.proposal_detail.title')} description={t('page.proposal_detail.description')} />
-    )
-  }
-
   const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
   const showProposalUpdatesActions =
     isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
@@ -300,6 +284,22 @@ export default function ProposalPage() {
     } else {
       castVote(selectedChoice)
     }
+  }
+
+  if (proposalState.error) {
+    return (
+      <>
+        <ContentLayout className="ProposalDetailPage">
+          <NotFound />
+        </ContentLayout>
+      </>
+    )
+  }
+
+  if (isUnderMaintenance()) {
+    return (
+      <MaintenanceLayout title={t('page.proposal_detail.title')} description={t('page.proposal_detail.description')} />
+    )
   }
 
   return (
