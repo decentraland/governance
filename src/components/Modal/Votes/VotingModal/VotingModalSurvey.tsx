@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -16,8 +16,6 @@ import '../../ProposalModal.css'
 import './VotingModal.css'
 
 interface VotingModalSurveyProps {
-  survey: Survey
-  setSurvey: React.Dispatch<React.SetStateAction<Survey>>
   surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
   onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
@@ -26,14 +24,13 @@ interface VotingModalSurveyProps {
 }
 
 export function VotingModalSurvey({
-  survey,
-  setSurvey,
   surveyTopics,
   isLoadingSurveyTopics,
   onCastVote,
   castingVote,
   proposalPageState,
 }: VotingModalSurveyProps) {
+  const [survey, setSurvey] = useState<Survey>([])
   const t = useFormatMessage()
   const { selectedChoice, showVotingError, retryTimer } = proposalPageState
 

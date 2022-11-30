@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -31,7 +31,6 @@ export function VotingModal({
   castingVote,
   proposalPageState,
 }: VotingModalProps) {
-  const [survey, setSurvey] = useState<Survey>([])
   const { selectedChoice, showSnapshotRedirect } = proposalPageState
 
   if (!selectedChoice.choiceIndex || !selectedChoice.choice) {
@@ -48,8 +47,6 @@ export function VotingModal({
     >
       {!showSnapshotRedirect && (
         <VotingModalSurvey
-          survey={survey}
-          setSurvey={setSurvey}
           isLoadingSurveyTopics={isLoadingSurveyTopics}
           surveyTopics={surveyTopics}
           castingVote={castingVote}
