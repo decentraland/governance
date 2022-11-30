@@ -10,8 +10,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'budget');
     INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'roadmap');
     INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'potential_impact');
-    INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'test_topic_1');
-    INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'test_topic_2');
   `
 
   pgm.sql(sql)
