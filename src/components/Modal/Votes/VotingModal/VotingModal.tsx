@@ -44,9 +44,7 @@ export function VotingModal({
       className="VotingModal ProposalModal"
       open={proposalPageState.showVotingModal}
       closeIcon={<Close />}
-      onClose={() => {
-        onClose()
-      }}
+      onClose={onClose}
     >
       {!showSnapshotRedirect && (
         <VotingModalSurvey
