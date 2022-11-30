@@ -66,7 +66,7 @@ import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
-const EMPTY_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
+const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 const EMPTY_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
@@ -103,7 +103,7 @@ export default function ProposalPage() {
     showVotingError: false,
     showSnapshotRedirect: false,
     retryTimer: SECONDS_FOR_VOTING_RETRY,
-    selectedChoice: EMPTY_CHOICE_SELECTION,
+    selectedChoice: EMPTY_VOTE_CHOICE_SELECTION,
   })
   const [errorCounter, setErrorCounter] = useState(0)
   const updatePageStateRef = useRef(updatePageState)
