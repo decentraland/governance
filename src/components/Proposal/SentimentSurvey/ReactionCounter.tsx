@@ -13,8 +13,8 @@ interface Props {
 
 const ReactionCounter = ({ reactionType, count }: Props) => {
   const t = useFormatMessage()
-  const reactionView = REACTION_LIST.find((reactionIcon) => reactionIcon.reaction === reactionType)
-  if (!reactionView) {
+  const reactionWithIcon = REACTION_LIST.find((reactionIcon) => reactionIcon.reaction === reactionType)
+  if (!reactionWithIcon) {
     console.log(`Missing icon for reaction type ${reactionType}`)
     return null
   }
@@ -22,8 +22,8 @@ const ReactionCounter = ({ reactionType, count }: Props) => {
   return (
     <div className="ReactionCounter">
       <IconHelper
-        text={t(`component.reaction_icon.${reactionView.reaction}`)}
-        icon={reactionView.icon}
+        text={t(`component.reaction_icon.${reactionWithIcon.reaction}`)}
+        icon={reactionWithIcon.icon}
         position={'bottom center'}
       />
       <span className="ReactionCount"> {count}</span>

@@ -58,13 +58,13 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
 
       {showReactions && (
         <div className="SentimentSurveyRow__Reactions">
-          {REACTION_LIST.map((reactionView, index) => {
-            if (reactionView.reaction !== Reaction.EMPTY) {
+          {REACTION_LIST.map((reactionWithIcon, index) => {
+            if (reactionWithIcon.reaction !== Reaction.EMPTY) {
               return (
-                <div key={`Reaction__${index}`} onClick={() => pickReaction(reactionView.reaction)}>
+                <div key={`Reaction__${index}`} onClick={() => pickReaction(reactionWithIcon.reaction)}>
                   <IconHelper
-                    text={t(`component.reaction_icon.${reactionView.reaction}`)}
-                    icon={reactionView.icon}
+                    text={t(`component.reaction_icon.${reactionWithIcon.reaction}`)}
+                    icon={reactionWithIcon.icon}
                     position={'bottom center'}
                   />
                 </div>
@@ -79,12 +79,12 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
 
       {hasPickedReaction && (
         <div className="SentimentSurveyRow__Reactions SentimentSurveyRow__PickedReaction">
-          {REACTION_LIST.map((reactionView, index) => {
-            if (reactionView.reaction !== Reaction.EMPTY) {
+          {REACTION_LIST.map((reactionWithIcon, index) => {
+            if (reactionWithIcon.reaction !== Reaction.EMPTY) {
               return (
-                pickedReaction === reactionView.reaction && (
+                pickedReaction === reactionWithIcon.reaction && (
                   <div key={`Reaction__${index}`} onClick={() => changeReaction()}>
-                    {reactionView.icon}
+                    {reactionWithIcon.icon}
                   </div>
                 )
               )
