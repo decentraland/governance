@@ -181,6 +181,14 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   return target.toString()
 }
 
+export function getUpdateUrl(updateId: string, proposalId: string) {
+  const params = new URLSearchParams({ id: updateId, proposalId })
+  const target = new URL(GOVERNANCE_API)
+  target.pathname = '/update/'
+  target.search = '?' + params.toString()
+  return target.toString()
+}
+
 function grantDuration(value: string | undefined | null) {
   return Number(value || SNAPSHOT_DURATION)
 }
@@ -213,6 +221,6 @@ export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
 
-export function getProposalCategory(proposal: ProposalAttributes<any>): string | null {
-  return proposal.type === ProposalType.Grant ? proposal.configuration.category : null
+export function getProposalCategory(proposalType: ProposalType, proposalConfiguration: any): string | null {
+  return proposalType === ProposalType.Grant ? proposalConfiguration.category : null
 }
