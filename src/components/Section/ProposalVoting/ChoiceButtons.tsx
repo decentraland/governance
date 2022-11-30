@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { Vote } from '../../../entities/Votes/types'
+import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
 import { Scores } from '../../../entities/Votes/utils'
-import { ProposalPageState, SelectedChoice } from '../../../pages/proposal'
+import { ProposalPageState } from '../../../pages/proposal'
 
 import ChoiceButton from './ChoiceButton'
 
@@ -18,7 +18,7 @@ interface Props {
   delegateVote?: Vote | null
   votesByChoices: Scores
   totalVotes: number
-  onVote: (selectedChoice: SelectedChoice) => void
+  onVote: (selectedChoice: SelectedVoteChoice) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
