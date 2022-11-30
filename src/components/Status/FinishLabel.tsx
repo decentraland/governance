@@ -15,12 +15,12 @@ export type FinishLabelProps = {
 export default React.memo(function FinishLabel({ date }: FinishLabelProps) {
   const time = useMemo(() => Time.from(date), [date])
   const timeout = useCountdown(date)
+  const isCountdownRunning = timeout.time > 0
   const t = useFormatMessage()
 
-  const label =
-    timeout.time > 0
-      ? `${t('page.proposal_list.finish_label.ends')} ${time.fromNow()}`
-      : `${t('page.proposal_list.finish_label.ended')} ${time.format('MMM DD, YYYY')}`
+  const label = isCountdownRunning
+    ? `${t('page.proposal_list.finish_label.ends')} ${time.fromNow()}`
+    : `${t('page.proposal_list.finish_label.ended')} ${time.format('MMM DD, YYYY')}`
 
   return (
     <span className="FinishLabel">
