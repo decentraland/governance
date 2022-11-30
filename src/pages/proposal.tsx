@@ -68,7 +68,7 @@ import './proposals.css'
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
-const EMPTY_CHOICES: string[] = []
+const EMPTY_VOTE_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
 
@@ -117,7 +117,7 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
+  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
