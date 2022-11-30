@@ -40,13 +40,14 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
   const thresholdReached = threshold <= vpInFavor
   const endDate = Time.from(proposal?.finish_at)
   const timeout = useCountdown(endDate)
+  const isCountdownRunning = timeout.time > 0
   const valueFormatter = useAbbreviatedFormatter()
   const abbreviatedThreshold = valueFormatter(threshold)
   const flickity = useRef<Flickity>()
 
   return (
     <div className="DetailsSection__Content">
-      {timeout.time > 0 && !thresholdReached && (
+      {isCountdownRunning && !thresholdReached && (
         <Flickity
           className={'ProposalThresholdsSummary__Carousel'}
           options={flickityOptions}
@@ -70,7 +71,7 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
           </div>
         </Flickity>
       )}
-      {timeout.time > 0 && thresholdReached && (
+      {isCountdownRunning && thresholdReached && (
         <div className="ProposalThresholdsSummary__Container">
           <div className="ProposalThresholdsSummary__Subtitle">
             {thresholdReached && t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
@@ -80,7 +81,7 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
           </div>
         </div>
       )}
-      {timeout.time <= 0 && (
+      {!isCountdownRunning && (
         <div className="ProposalThresholdsSummary__Container">
           <div className="ProposalThresholdsSummary__Subtitle">
             {thresholdReached

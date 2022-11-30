@@ -20,6 +20,7 @@ export default function VotingResultsInfo({ proposal, partialResults }: VotingRe
   const t = useFormatMessage()
   const endDate = Time.from(proposal?.finish_at)
   const timeout = useCountdown(endDate)
+  const isCountdownRunning = timeout.time > 0
 
   const voteCount = useMemo(
     () => partialResults.reduce((sum, choiceProgress) => sum + choiceProgress.votes, 0),
@@ -28,21 +29,21 @@ export default function VotingResultsInfo({ proposal, partialResults }: VotingRe
 
   return (
     <div className="VotingResultsInfo">
-      {timeout.time > 0 && (
+      {isCountdownRunning && (
         <div className="VotingResultsInfo__Container">
           <div className="VotingResultsInfo__Subtitle">
-            {t(`page.proposal_detail.voting_section.${timeout.time > 0 ? 'voting_open' : 'voting_closed'}`)}
+            {t(`page.proposal_detail.voting_section.${isCountdownRunning ? 'voting_open' : 'voting_closed'}`)}
           </div>
           <div className="VotingResultsInfo__Title">
             <Bold>
-              {timeout.time > 0
+              {isCountdownRunning
                 ? t('page.proposal_detail.time_left_label', { countdown: endDate.fromNow() })
                 : t('page.proposal_detail.voting_section.voting_finished', { timeElapsed: endDate.fromNow() })}
             </Bold>
           </div>
         </div>
       )}
-      {timeout.time <= 0 && (
+      {!isCountdownRunning && (
         <div className="VotingResultsInfo__Container">
           <div className="VotingResultsInfo__Title">
             <Bold>{t('page.proposal_detail.voting_section.voting_finished', { timeElapsed: endDate.fromNow() })}</Bold>
