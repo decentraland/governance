@@ -1,4 +1,4 @@
-import { ReactionType, Survey, TopicFeedback } from './types'
+import { Reaction, Survey, TopicFeedback } from './types'
 
 const has = <K extends string>(key: K, x: object): x is { [key in K]: unknown } => key in x
 
@@ -6,22 +6,22 @@ function isValidTopicFeedback(rawTopicFeedback: never) {
   return (
     typeof rawTopicFeedback === 'object' &&
     rawTopicFeedback !== null &&
-    has('topic', rawTopicFeedback) &&
+    has('topic_id', rawTopicFeedback) &&
     has('reaction', rawTopicFeedback)
   )
 }
 
-function isValidTopic(rawTopic: unknown) {
-  return typeof rawTopic === 'object' && rawTopic !== null && has('topic_id', rawTopic)
+function isValidTopicId(rawTopic: unknown) {
+  return rawTopic !== null && typeof rawTopic === 'string' && rawTopic.length > 0
 }
 
 function isReactionType(value: string | null | undefined): boolean {
   switch (value) {
-    case ReactionType.EMPTY:
-    case ReactionType.LOVE:
-    case ReactionType.LIKE:
-    case ReactionType.CONCERNED:
-    case ReactionType.NEUTRAL:
+    case Reaction.EMPTY:
+    case Reaction.LOVE:
+    case Reaction.LIKE:
+    case Reaction.CONCERNED:
+    case Reaction.NEUTRAL:
       return true
     default:
       return false
@@ -29,7 +29,7 @@ function isReactionType(value: string | null | undefined): boolean {
 }
 
 function isUnique(decodedSurvey: TopicFeedback[], topicFeedback: TopicFeedback) {
-  return !decodedSurvey.find((topic) => topic.topic.topic_id === topicFeedback.topic.topic_id)
+  return !decodedSurvey.find((topic) => topic.topic_id === topicFeedback.topic_id)
 }
 
 export function decodeSurvey(encodedSurvey?: Record<string, unknown>): Survey {
@@ -43,7 +43,7 @@ export function decodeSurvey(encodedSurvey?: Record<string, unknown>): Survey {
         if (isValidTopicFeedback(rawTopicFeedback)) {
           const topicFeedback = rawTopicFeedback as TopicFeedback
           if (
-            isValidTopic(topicFeedback.topic) &&
+            isValidTopicId(topicFeedback.topic_id) &&
             isReactionType(topicFeedback.reaction) &&
             isUnique(decodedSurvey, topicFeedback)
           )

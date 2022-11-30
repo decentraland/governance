@@ -5,7 +5,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
-import { ReactionType, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
+import { Reaction, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
 import Divider from '../../Common/Divider'
 
@@ -21,8 +21,8 @@ interface Props {
 
 function initializeReactionCounters() {
   const reactionsCounters: Record<any, number> = {}
-  for (const reactionType of Object.values(ReactionType)) {
-    if (reactionType != ReactionType.EMPTY) {
+  for (const reactionType of Object.values(Reaction)) {
+    if (reactionType != Reaction.EMPTY) {
       reactionsCounters[reactionType] = 0
     }
   }
@@ -38,7 +38,7 @@ function initializeTopicResults(surveyTopics: Topic[]) {
 }
 
 function isTopicAvailable(availableTopics: Topic[], topicFeedback: TopicFeedback) {
-  return availableTopics.find((topic) => topic.topic_id === topicFeedback.topic.topic_id)
+  return availableTopics.find((topic) => topic.topic_id === topicFeedback.topic_id)
 }
 
 function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote> | null) {
@@ -47,8 +47,8 @@ function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote>
   Object.keys(votes).map((key) => {
     const survey = decodeSurvey(votes[key].metadata)
     survey.map((topicFeedback) => {
-      if (isTopicAvailable(availableTopics, topicFeedback) && topicFeedback.reaction != ReactionType.EMPTY) {
-        topicsResults[topicFeedback.topic.topic_id][topicFeedback.reaction] += 1
+      if (isTopicAvailable(availableTopics, topicFeedback) && topicFeedback.reaction != Reaction.EMPTY) {
+        topicsResults[topicFeedback.topic_id][topicFeedback.reaction] += 1
       }
     })
   })
