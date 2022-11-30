@@ -8,8 +8,9 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { Survey, Topic } from '../../../../entities/SurveyTopic/types'
+import { SelectedVoteChoice } from '../../../../entities/Votes/types'
 import { formatChoice } from '../../../../modules/votes/utils'
-import { ProposalPageState, SelectedChoice } from '../../../../pages/proposal'
+import { ProposalPageState } from '../../../../pages/proposal'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
 
@@ -18,7 +19,7 @@ import './VotingModal.css'
 interface VotingModalSurveyProps {
   surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
-  onCastVote: (selectedChoice: SelectedChoice, survey?: Survey) => void
+  onCastVote: (selectedChoice: SelectedVoteChoice, survey?: Survey) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
 }

@@ -4,8 +4,8 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
-import { Vote } from '../../entities/Votes/types'
-import { ProposalPageState, SelectedChoice } from '../../pages/proposal'
+import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
+import { ProposalPageState } from '../../pages/proposal'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
@@ -22,7 +22,7 @@ type ProposalGovernanceSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>,
   loading?: boolean
   disabled?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
-  onVote: (selectedChoice: SelectedChoice) => void
+  onVote: (selectedChoice: SelectedVoteChoice) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void

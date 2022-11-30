@@ -50,6 +50,7 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
+import { SelectedVoteChoice } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
@@ -65,8 +66,7 @@ import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
-export type SelectedChoice = { choice?: string; choiceIndex?: number }
-const EMPTY_CHOICE_SELECTION: SelectedChoice = { choice: undefined, choiceIndex: undefined }
+const EMPTY_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 const EMPTY_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
@@ -84,7 +84,7 @@ export type ProposalPageState = {
   showVotingError: boolean
   showSnapshotRedirect: boolean
   retryTimer: number
-  selectedChoice: SelectedChoice
+  selectedChoice: SelectedVoteChoice
 }
 
 export default function ProposalPage() {
@@ -134,7 +134,7 @@ export default function ProposalPage() {
   }
 
   const [castingVote, castVote] = useAsyncTask(
-    async (selectedChoice: SelectedChoice, survey?: Survey) => {
+    async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
@@ -291,7 +291,7 @@ export default function ProposalPage() {
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showSurvey = !isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0
 
-  const handleVoteClick = (selectedChoice: SelectedChoice) => {
+  const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
     if (showSurvey) {
       updatePageState({
         selectedChoice: selectedChoice,

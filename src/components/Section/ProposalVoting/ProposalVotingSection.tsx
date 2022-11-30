@@ -7,12 +7,12 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Vote } from '../../../entities/Votes/types'
+import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../modules/votes/utils'
-import { ProposalPageState, SelectedChoice } from '../../../pages/proposal'
+import { ProposalPageState } from '../../../pages/proposal'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -27,7 +27,7 @@ interface Props {
   loading?: boolean
   choices: string[]
   finished: boolean
-  onVote: (selectedChoice: SelectedChoice) => void
+  onVote: (selectedChoice: SelectedVoteChoice) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
