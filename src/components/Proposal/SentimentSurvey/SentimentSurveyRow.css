@@ -22,6 +22,10 @@
   align-items: center;
   text-transform: uppercase;
   cursor: pointer;
+  position: absolute;
+  right: -60px;
+  opacity: 100;
+  transition: 0.2s;
 }
 
 .SentimentSurveyRow__AddReaction > span {
@@ -39,14 +43,7 @@
   opacity: 1 !important;
 }
 
-#slide {
-  position: absolute;
-  right: -60px;
-  opacity: 100;
-  transition: 0.2s;
-}
-
-.SentimentSurveyRow:hover #slide {
+.SentimentSurveyRow:hover .SentimentSurveyRow__AddReaction {
   transition: 0.2s;
   right: 10px;
 }
