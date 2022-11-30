@@ -217,6 +217,6 @@ export function isProposalInCliffPeriod(grant: GrantAttributes) {
   return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
 
-export function getProposalCategory(proposal: ProposalAttributes<any>): string | null {
-  return proposal.type === ProposalType.Grant ? proposal.configuration.category : null
+export function getProposalCategory(proposalType: ProposalType, proposalConfiguration: any): string | null {
+  return proposalType === ProposalType.Grant ? proposalConfiguration.category : null
 }
