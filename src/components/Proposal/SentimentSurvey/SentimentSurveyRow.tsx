@@ -21,7 +21,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
   const t = useFormatMessage()
   const [showReactions, setShowReactions] = useState(false)
   const [pickedReaction, setPickedReaction] = useState<Reaction | null>()
-  const reactionPicked = pickedReaction != null
+  const hasPickedReaction = pickedReaction != null
 
   const pickReaction = useCallback(
     (reaction: Reaction) => {
@@ -49,7 +49,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
     <div className="SentimentSurveyRow">
       {t(`survey.survey_topics.${topic.topic_id}`)}
 
-      {!showReactions && !reactionPicked && (
+      {!showReactions && !hasPickedReaction && (
         <div id="slide" className="SentimentSurveyRow__AddReaction" onClick={() => setShowReactions(true)}>
           <AddReaction />
           <span className="SentimentSurveyRow__AddReactionLabel">{t(`survey.reactions.add_reaction`)}</span>
@@ -77,7 +77,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
         </div>
       )}
 
-      {reactionPicked && (
+      {hasPickedReaction && (
         <div className="SentimentSurveyRow__Reactions SentimentSurveyRow__PickedReaction">
           {REACTION_LIST.map((reactionView, index) => {
             if (reactionView.reaction !== Reaction.EMPTY) {
