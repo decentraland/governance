@@ -1,16 +1,16 @@
 import { def, get } from 'bdd-lazy-var/getter'
 
 import { decodeSurvey } from './decoder'
-import { ReactionType, Topic, TopicFeedback } from './types'
+import { Reaction, Topic, TopicFeedback } from './types'
 
 const TOPIC_1: Topic = { topic_id: '12345' }
 const TOPIC_2: Topic = { topic_id: '22222' }
 const TOPIC_3: Topic = { topic_id: '33333' }
 
 const SENTIMENT_SURVEY: TopicFeedback[] = [
-  { topic: TOPIC_1, reaction: ReactionType.NEUTRAL },
-  { topic: TOPIC_2, reaction: ReactionType.LOVE },
-  { topic: TOPIC_3, reaction: ReactionType.EMPTY },
+  { ...TOPIC_1, reaction: Reaction.NEUTRAL },
+  { ...TOPIC_2, reaction: Reaction.LOVE },
+  { ...TOPIC_3, reaction: Reaction.EMPTY },
 ]
 
 describe('decode', () => {
@@ -28,9 +28,9 @@ describe('decode', () => {
     def('encodedSurvey', () => {
       return {
         survey: [
-          { topic: { topic_id: '12345' }, reaction: 'neutral' },
-          { topic: { topic_id: '22222' }, reaction: 'love' },
-          { topic: { topic_id: '33333' }, reaction: 'empty' },
+          { topic_id: '12345', reaction: 'neutral' },
+          { topic_id: '22222', reaction: 'love' },
+          { topic_id: '33333', reaction: 'empty' },
         ],
       }
     })
@@ -44,8 +44,8 @@ describe('decode', () => {
     def('encodedSurvey', () => {
       return {
         survey: [
-          { topic: { topic_id: 'unknown' }, reaction: 'love' },
-          { topic: { topic_id: 'whatevs' }, reaction: 'concerned' },
+          { topic_id: 'unknown', reaction: 'love' },
+          { topic_id: 'whatevs', reaction: 'concerned' },
         ],
       }
     })
@@ -54,15 +54,11 @@ describe('decode', () => {
       expect(get.decodedSurvey).toEqual([
         {
           reaction: 'love',
-          topic: {
-            topic_id: 'unknown',
-          },
+          topic_id: 'unknown',
         },
         {
           reaction: 'concerned',
-          topic: {
-            topic_id: 'whatevs',
-          },
+          topic_id: 'whatevs',
         },
       ])
     })
@@ -72,8 +68,8 @@ describe('decode', () => {
     def('encodedSurvey', () => {
       return {
         survey: [
-          { topic: { topic_id: 'unknown' }, reaction: 'luv' },
-          { topic: { topic_id: 'whatevs' }, reaction: 'conzerned' },
+          { topic_id: 'unknown', reaction: 'luv' },
+          { topic_id: 'whatevs', reaction: 'conzerned' },
         ],
       }
     })
@@ -104,7 +100,7 @@ describe('decode', () => {
 
   describe('a survey with a wrong topic format', () => {
     def('encodedSurvey', () => {
-      return { survey: [{ topic: { label: 'something' }, reaction: {} }] }
+      return { survey: [{ topic: { topic_id: 'something' }, reaction: {} }] }
     })
     it('should return an empty survey', async () => {
       expect(get.decodedSurvey).toEqual([])
@@ -113,7 +109,7 @@ describe('decode', () => {
 
   describe('a survey with an empty reaction', () => {
     def('encodedSurvey', () => {
-      return { survey: [{ topic: { topic_id: '1234' }, reaction: {} }] }
+      return { survey: [{ topic_id: '1234', reaction: {} }] }
     })
     it('should return an empty survey', async () => {
       expect(get.decodedSurvey).toEqual([])
@@ -122,7 +118,7 @@ describe('decode', () => {
 
   describe('a survey with an invalid reaction', () => {
     def('encodedSurvey', () => {
-      return { survey: [{ topic: { topic_id: '1234' }, reaction: 'lov' }] }
+      return { survey: [{ topic_id: '1234', reaction: 'lov' }] }
     })
     it('should return an empty survey', async () => {
       expect(get.decodedSurvey).toEqual([])
@@ -131,7 +127,7 @@ describe('decode', () => {
 
   describe('a survey encoded as a string', () => {
     def('encodedSurvey', () => {
-      return `{"survey":[{ topic: { topic_id: '12345' }, reaction: 'neutral' }, { topic: { topic_id: '22222' }, reaction: 'love' }, { topic: { topic_id: '33333' }, reaction: 'empty' }]}`
+      return `{"survey":[{ topic_id: '12345', reaction: 'neutral' }, { topic_id: '22222' , reaction: 'love' }, { topic_id: '33333', reaction: 'empty' }]}`
     })
 
     it('should return an empty survey', async () => {
@@ -143,20 +139,20 @@ describe('decode', () => {
     def('encodedSurvey', () => {
       return {
         survey: [
-          { topic: { topic_id: '12345' }, reaction: 'neutral' },
-          { topic: { topic_id: '22222' }, reaction: 'love' },
-          { topic: { topic_id: '22222' }, reaction: 'love' },
-          { topic: { topic_id: '33333' }, reaction: 'concerned' },
-          { topic: { topic_id: '33333' }, reaction: 'empty' },
+          { topic_id: '12345', reaction: 'neutral' },
+          { topic_id: '22222', reaction: 'love' },
+          { topic_id: '22222', reaction: 'love' },
+          { topic_id: '33333', reaction: 'concerned' },
+          { topic_id: '33333', reaction: 'empty' },
         ],
       }
     })
 
     it('returns the first appearance of each repeated topic', async () => {
       expect(get.decodedSurvey).toEqual([
-        { topic: { topic_id: '12345' }, reaction: 'neutral' },
-        { topic: { topic_id: '22222' }, reaction: 'love' },
-        { topic: { topic_id: '33333' }, reaction: 'concerned' },
+        { topic_id: '12345', reaction: 'neutral' },
+        { topic_id: '22222', reaction: 'love' },
+        { topic_id: '33333', reaction: 'concerned' },
       ])
     })
   })
@@ -165,14 +161,15 @@ describe('decode', () => {
     def('encodedSurvey', () => {
       return {
         survey: [
-          { topic: { topic_id: 'unknown' }, reaction: 'luv' },
-          { topic: { topic_id: 'whatevs' }, reaction: 'conzerned' },
-          { topic: { topic_id: '12345' }, reaction: 'love' },
-          { topic: { something_wrong: '12345' }, reaction: 'love' },
+          { topic_id: 'unknown', reaction: 'luv' },
+          { topic_id: 'whatevs', reaction: 'conzerned' },
+          { topic_id: '12345', reaction: 'love' },
+          { something_wrong: '12345', reaction: 'love' },
+          { topic_id: { something_wrong: '12345' }, reaction: 'love' },
           [],
           "I'm a string",
           {},
-          { topic: { topic_id: '55555' }, reaction: 'empty' },
+          { topic_id: '55555', reaction: 'empty' },
         ],
       }
     })
@@ -181,15 +178,11 @@ describe('decode', () => {
       expect(get.decodedSurvey).toEqual([
         {
           reaction: 'love',
-          topic: {
-            topic_id: '12345',
-          },
+          topic_id: '12345',
         },
         {
           reaction: 'empty',
-          topic: {
-            topic_id: '55555',
-          },
+          topic_id: '55555',
         },
       ])
     })

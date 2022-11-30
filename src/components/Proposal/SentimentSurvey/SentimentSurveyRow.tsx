@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { ReactionType, Topic } from '../../../entities/SurveyTopic/types'
-import { REACTIONS_VIEW } from '../../../entities/SurveyTopic/utils'
+import { Reaction, Topic } from '../../../entities/SurveyTopic/types'
+import { REACTION_LIST } from '../../../entities/SurveyTopic/utils'
 import IconHelper from '../../Helper/IconHelper'
 import AddReaction from '../../Icon/AddReaction'
 import Cross from '../../Icon/Cross'
@@ -12,19 +12,19 @@ import './SentimentSurveyRow.css'
 
 interface Props {
   topic: Topic
-  reaction?: ReactionType | null
-  onReactionPicked: (topic: Topic, reaction: ReactionType) => void
+  reaction?: Reaction | null
+  onReactionPicked: (topic: Topic, reaction: Reaction) => void
   onReactionUnpicked: (topic: Topic) => void
 }
 
 const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpicked }: Props) => {
   const t = useFormatMessage()
   const [showReactions, setShowReactions] = useState(false)
-  const [pickedReaction, setPickedReaction] = useState<ReactionType | null>()
+  const [pickedReaction, setPickedReaction] = useState<Reaction | null>()
   const reactionPicked = pickedReaction != null
 
   const pickReaction = useCallback(
-    (reaction: ReactionType) => {
+    (reaction: Reaction) => {
       setShowReactions(false)
       setPickedReaction(reaction)
       onReactionPicked(topic, reaction)
@@ -39,7 +39,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
   }, [onReactionUnpicked, topic])
 
   useEffect(() => {
-    if (reaction && reaction !== ReactionType.EMPTY) {
+    if (reaction && reaction !== Reaction.EMPTY) {
       setShowReactions(false)
       setPickedReaction(reaction)
     }
@@ -58,8 +58,8 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
 
       {showReactions && (
         <div className="SentimentSurveyRow__Reactions">
-          {REACTIONS_VIEW.map((reactionView, index) => {
-            if (reactionView.reaction !== ReactionType.EMPTY) {
+          {REACTION_LIST.map((reactionView, index) => {
+            if (reactionView.reaction !== Reaction.EMPTY) {
               return (
                 <div key={`Reaction__${index}`} onClick={() => pickReaction(reactionView.reaction)}>
                   <IconHelper
@@ -79,8 +79,8 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
 
       {reactionPicked && (
         <div className="SentimentSurveyRow__Reactions SentimentSurveyRow__PickedReaction">
-          {REACTIONS_VIEW.map((reactionView, index) => {
-            if (reactionView.reaction !== ReactionType.EMPTY) {
+          {REACTION_LIST.map((reactionView, index) => {
+            if (reactionView.reaction !== Reaction.EMPTY) {
               return (
                 pickedReaction === reactionView.reaction && (
                   <div key={`Reaction__${index}`} onClick={() => changeReaction()}>

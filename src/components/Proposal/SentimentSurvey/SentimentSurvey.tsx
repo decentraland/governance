@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ReactionType, Survey, SurveyTopicAttributes, Topic } from '../../../entities/SurveyTopic/types'
+import { Reaction, Survey, Topic } from '../../../entities/SurveyTopic/types'
 
 import './SentimentSurvey.css'
 import SentimentSurveyRow from './SentimentSurveyRow'
@@ -22,24 +22,24 @@ const SentimentSurvey = ({ survey, surveyTopics, isLoadingSurveyTopics, setSurve
     if (!isLoadingSurveyTopics && survey.length === 0) {
       const newSurvey: Survey = []
       surveyTopics?.forEach((topic) => {
-        newSurvey.push({ topic, reaction: ReactionType.EMPTY })
+        newSurvey.push({ ...topic, reaction: Reaction.EMPTY })
       })
       setSurvey(newSurvey)
     }
   }, [survey, isLoadingSurveyTopics, surveyTopics, setSurvey])
 
-  const addToSurvey = (topic: Topic, reaction: ReactionType) => {
+  const addToSurvey = (topic: Topic, reaction: Reaction) => {
     setSurvey((prev) => {
-      const newSurvey = prev.filter((feedback) => feedback.topic.topic_id !== topic.topic_id)
-      newSurvey.push({ topic, reaction })
+      const newSurvey = prev.filter((feedback) => feedback.topic_id !== topic.topic_id)
+      newSurvey.push({ ...topic, reaction })
       return newSurvey
     })
   }
 
   const removeFromSurvey = (topic: Topic) => {
     setSurvey((prev) => {
-      const newSurvey = prev.filter((feedback) => feedback.topic.topic_id !== topic.topic_id)
-      newSurvey.push({ topic, reaction: ReactionType.EMPTY })
+      const newSurvey = prev.filter((feedback) => feedback.topic_id !== topic.topic_id)
+      newSurvey.push({ ...topic, reaction: Reaction.EMPTY })
       return newSurvey
     })
   }
@@ -57,7 +57,7 @@ const SentimentSurvey = ({ survey, surveyTopics, isLoadingSurveyTopics, setSurve
             <SentimentSurveyRow
               key={`SentimentSurveyRow_${index}`}
               topic={topic}
-              reaction={survey.find((feedback) => feedback.topic.topic_id === topic.topic_id)?.reaction}
+              reaction={survey.find((feedback) => feedback.topic_id === topic.topic_id)?.reaction}
               onReactionPicked={addToSurvey}
               onReactionUnpicked={removeFromSurvey}
             />

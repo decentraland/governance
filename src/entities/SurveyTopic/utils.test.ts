@@ -1,6 +1,6 @@
 import { def, get } from 'bdd-lazy-var/getter'
 
-import { ReactionType, Topic, TopicFeedback } from './types'
+import { Reaction, Topic, TopicFeedback } from './types'
 import { SurveyEncoder } from './utils'
 
 const TOPIC_1: Topic = { topic_id: '12345' }
@@ -8,9 +8,9 @@ const TOPIC_2: Topic = { topic_id: '22222' }
 const TOPIC_3: Topic = { topic_id: '33333' }
 
 const SENTIMENT_SURVEY: TopicFeedback[] = [
-  { topic: TOPIC_1, reaction: ReactionType.NEUTRAL },
-  { topic: TOPIC_2, reaction: ReactionType.LOVE },
-  { topic: TOPIC_3, reaction: ReactionType.EMPTY },
+  { ...TOPIC_1, reaction: Reaction.NEUTRAL },
+  { ...TOPIC_2, reaction: Reaction.LOVE },
+  { ...TOPIC_3, reaction: Reaction.EMPTY },
 ]
 
 describe('SurveyEncoder', () => {
@@ -30,7 +30,7 @@ describe('SurveyEncoder', () => {
 
       it('should be an object containing the survey array', () => {
         expect(get.encodedSurvey).toBe(
-          `{"survey":[{"topic":{"topic_id":"12345"},"reaction":"neutral"},{"topic":{"topic_id":"22222"},"reaction":"love"},{"topic":{"topic_id":"33333"},"reaction":"empty"}]}`
+          `{"survey":[{"topic_id":"12345","reaction":"neutral"},{"topic_id":"22222","reaction":"love"},{"topic_id":"33333","reaction":"empty"}]}`
         )
       })
     })

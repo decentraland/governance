@@ -1,12 +1,12 @@
-import { ReactionType, Survey } from './types'
+import { Reaction, Survey } from './types'
 
-type ReactionView = { reaction: ReactionType; icon: string }
-export const REACTIONS_VIEW: ReactionView[] = [
-  { reaction: ReactionType.LOVE, icon: '🥰' },
-  { reaction: ReactionType.LIKE, icon: '😊' },
-  { reaction: ReactionType.NEUTRAL, icon: '😐' },
-  { reaction: ReactionType.CONCERNED, icon: '🤨' },
-  { reaction: ReactionType.EMPTY, icon: '-' },
+type ReactionWithIcon = { reaction: Reaction; icon: string }
+export const REACTION_LIST: ReactionWithIcon[] = [
+  { reaction: Reaction.LOVE, icon: '🥰' },
+  { reaction: Reaction.LIKE, icon: '😊' },
+  { reaction: Reaction.NEUTRAL, icon: '😐' },
+  { reaction: Reaction.CONCERNED, icon: '🤨' },
+  { reaction: Reaction.EMPTY, icon: '-' },
 ]
 
 export class SurveyEncoder {

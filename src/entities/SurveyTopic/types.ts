@@ -1,4 +1,4 @@
-export enum ReactionType {
+export enum Reaction {
   LOVE = 'love',
   LIKE = 'like',
   NEUTRAL = 'neutral',
@@ -13,9 +13,8 @@ export type SurveyTopicAttributes = {
   updated_at: Date
 }
 
-export type TopicFeedback = {
-  topic: Topic
-  reaction: ReactionType
+export type TopicFeedback = Topic & {
+  reaction: Reaction
 }
 
 export type Survey = TopicFeedback[]
