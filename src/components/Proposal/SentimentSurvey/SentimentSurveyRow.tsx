@@ -21,7 +21,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
   const t = useFormatMessage()
   const [showReactions, setShowReactions] = useState(false)
   const [pickedReaction, setPickedReaction] = useState<Reaction | null>()
-  const hasPickedReaction = pickedReaction != null
+  const hasPickedReaction = pickedReaction !== null
 
   const pickReaction = useCallback(
     (reaction: Reaction) => {
@@ -83,7 +83,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
             if (reactionWithIcon.reaction !== Reaction.EMPTY) {
               return (
                 pickedReaction === reactionWithIcon.reaction && (
-                  <div key={`Reaction__${index}`} onClick={() => changeReaction()}>
+                  <div key={`Reaction__${index}`} onClick={changeReaction}>
                     {reactionWithIcon.icon}
                   </div>
                 )
