@@ -44,6 +44,7 @@ export function toProposalActivityList(list: string | null | undefined): Proposa
   }
 }
 
+// TODO: Check if this is still necessary without activity page
 export type ProposalActivityFilter = {
   list: ProposalActivityList
 }
@@ -65,8 +66,6 @@ export default {
   ) => url('/proposals/', options),
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
-  activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) =>
-    url('/activity/', options),
   submit: (type?: ProposalType, options: { linked_proposal_id?: string; request?: PoiType } = {}) =>
     url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
