@@ -78,7 +78,8 @@ export function getUpdateUrl(updateId: string, proposalId: string) {
   return target.toString()
 }
 
-export function getUpdateNumber(publicUpdates: UpdateAttributes[], updateId: string) {
+export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updateId?: string | null) {
+  if (!publicUpdates || !updateId) return NaN
   const updateIdx = Number(publicUpdates.findIndex((item) => item.id === updateId))
   return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
 }

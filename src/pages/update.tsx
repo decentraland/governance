@@ -26,7 +26,9 @@ export default function UpdateDetail() {
   const [proposal, proposalState] = useProposal(update?.proposal_id)
   const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
-  if (updateState.error || proposalState.error || updatesState.error) {
+  const index = getUpdateNumber(publicUpdates, updateId)
+
+  if (updateState.error || proposalState.error || updatesState.error || isNaN(index)) {
     return (
       <ContentLayout>
         <NotFound />
@@ -38,7 +40,6 @@ export default function UpdateDetail() {
     return <LoadingView />
   }
 
-  const index = (!!publicUpdates && !!updateId && getUpdateNumber(publicUpdates, updateId)) || NaN
   const proposalHref = locations.proposal(update.proposal_id)
 
   return (

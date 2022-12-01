@@ -8,6 +8,7 @@ import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/u
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
+import { inBackground } from '../helpers'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
@@ -138,7 +139,7 @@ export class DiscordService {
     return embed
   }
 
-  static async newProposal(
+  static newProposal(
     proposalId: string,
     title: string,
     type: ProposalType,
@@ -146,9 +147,9 @@ export class DiscordService {
     choices: string[],
     user: string
   ) {
-    try {
-      const action = 'A new proposal has been created'
-      const embedChoices = getChoices(choices)
+    const action = 'A new proposal has been created'
+    const embedChoices = getChoices(choices)
+    inBackground(async () => {
       const message = await this.formatMessage({
         url: proposalUrl({ id: proposalId }),
         title,
@@ -159,52 +160,56 @@ export class DiscordService {
         action,
         color: MessageColors.NEW_PROPOSAL,
       })
-      this.channel.send({ embeds: [message] })
-    } catch (error) {
-      console.error(`Error sending new proposal message to Discord`, error)
-    }
+      try {
+        this.channel.send({ embeds: [message] })
+      } catch (error) {
+        throw new Error(`[Error sending message to Discord - New proposal] ID ${proposalId}, Error: ${error}`)
+      }
+    })
   }
 
-  static async newUpdate(proposalId: string, proposalTitle: string, updateId: string, user: string) {
-    try {
-      const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
-      const updateNumber = getUpdateNumber(publicUpdates, updateId)
-      const updateIdx = publicUpdates.length - updateNumber
+  static newUpdate(proposalId: string, proposalTitle: string, updateId: string, user: string) {
+    inBackground(async () => {
+      try {
+        const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
+        const updateNumber = getUpdateNumber(publicUpdates, updateId)
+        const updateIdx = publicUpdates.length - updateNumber
 
-      if (isNaN(updateNumber)) {
-        throw new Error(`Update with id ${updateId} not found`)
+        if (isNaN(updateNumber)) {
+          throw new Error(`Update with id ${updateId} not found`)
+        }
+
+        const { health, introduction, highlights, blockers, next_steps } = publicUpdates[updateIdx]
+
+        if (!health || !introduction || !highlights || !blockers || !next_steps) {
+          throw new Error('Missing update fields for Discord message')
+        }
+
+        const action = 'A new update has been created'
+        const title = `Update #${updateNumber}: ${proposalTitle}`
+        const message = await this.formatMessage({
+          url: getUpdateUrl(updateId, proposalId),
+          title,
+          fields: [
+            { name: 'Project Health', value: getPreviewText(health) },
+            { name: 'Introduction', value: getPreviewText(introduction) },
+            { name: 'Highlights', value: getPreviewText(highlights) },
+            { name: 'Blockers', value: getPreviewText(blockers) },
+            { name: 'Next Steps', value: getPreviewText(next_steps) },
+          ],
+          user,
+          action,
+          color: MessageColors.NEW_UPDATE,
+        })
+        this.channel.send({ embeds: [message] })
+      } catch (error) {
+        throw new Error(`[Error sending message to Discord - New update] ID ${updateId}, Error: ${error}`)
       }
-
-      const { health, introduction, highlights, blockers, next_steps } = publicUpdates[updateIdx]
-
-      if (!health || !introduction || !highlights || !blockers || !next_steps) {
-        throw new Error('Missing update fields for Discord message')
-      }
-
-      const action = 'A new update has been created'
-      const title = `Update #${updateNumber}: ${proposalTitle}`
-      const message = await this.formatMessage({
-        url: getUpdateUrl(updateId, proposalId),
-        title,
-        fields: [
-          { name: 'Project Health', value: getPreviewText(health) },
-          { name: 'Introduction', value: getPreviewText(introduction) },
-          { name: 'Highlights', value: getPreviewText(highlights) },
-          { name: 'Blockers', value: getPreviewText(blockers) },
-          { name: 'Next Steps', value: getPreviewText(next_steps) },
-        ],
-        user,
-        action,
-        color: MessageColors.NEW_UPDATE,
-      })
-      this.channel.send({ embeds: [message] })
-    } catch (error) {
-      console.error(`Error sending new update message to Discord`, error)
-    }
+    })
   }
 
-  static async finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
-    try {
+  static finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
+    inBackground(async () => {
       const action = `Proposal has ended with outcome ${outcome}`
       const message = await this.formatMessage({
         url: proposalUrl({ id }),
@@ -213,9 +218,11 @@ export class DiscordService {
         action,
         color: MessageColors.FINISH_PROPOSAL,
       })
-      this.channel.send({ embeds: [message] })
-    } catch (error) {
-      console.error(`Error sending finish proposal message to Discord`, error)
-    }
+      try {
+        this.channel.send({ embeds: [message] })
+      } catch (error) {
+        throw new Error(`[Error sending message to Discord - Finish proposal] ID ${id}, Error: ${error}`)
+      }
+    })
   }
 }
