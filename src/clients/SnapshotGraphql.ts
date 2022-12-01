@@ -23,6 +23,7 @@ import { inBatches, trimLastForwardSlash } from './utils'
 export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const GRAPHQL_ENDPOINT = `/graphql`
+const BATCH_SIZE = 1000
 
 export class SnapshotGraphql extends API {
   static Url = SNAPSHOT_API || 'https://hub.snapshot.org/'
@@ -103,8 +104,7 @@ export class SnapshotGraphql extends API {
   }
 
   async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
-    const batchSize = 5000
-    return await inBatches(this.fetchProposalVotes, proposalId, batchSize)
+    return await inBatches(this.fetchProposalVotes, proposalId, BATCH_SIZE)
   }
 
   async getProposalScores(proposalId: string) {
@@ -168,8 +168,7 @@ export class SnapshotGraphql extends API {
   }
 
   async getAddressesVotes(addresses: string[]) {
-    const batchSize = 5000
-    return await inBatches(this.fetchAddressesVotes, { addresses }, batchSize)
+    return await inBatches(this.fetchAddressesVotes, { addresses }, BATCH_SIZE)
   }
 
   async getAddressesVotesInBatches(addresses: string[], first: number, skip: number) {
@@ -212,8 +211,7 @@ export class SnapshotGraphql extends API {
   }
 
   async getVotes(start: Date, end: Date) {
-    const batchSize = 20000
-    return await inBatches(this.fetchVotes, { start, end }, batchSize)
+    return await inBatches(this.fetchVotes, { start, end }, BATCH_SIZE)
   }
 
   fetchProposals = async (
@@ -261,8 +259,7 @@ export class SnapshotGraphql extends API {
   }
 
   async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
-    const batchSize = 1000
-    return await inBatches(this.fetchProposals, { start, end, fields }, batchSize)
+    return await inBatches(this.fetchProposals, { start, end, fields }, BATCH_SIZE)
   }
 
   async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit = 1000) {
