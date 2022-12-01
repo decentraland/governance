@@ -4,8 +4,9 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
+import { isProposalStatusWithUpdates } from '../../../entities/Updates/utils'
 import Divider from '../../Common/Divider'
 import Megaphone from '../../Icon/Megaphone'
 
@@ -15,14 +16,16 @@ import './ProposalUpdates.css'
 interface Props {
   proposal: ProposalAttributes | null
   updates?: UpdateAttributes[] | null
-  isCoauthor: boolean
   onUpdateDeleted: () => void
 }
 
-export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdateDeleted }: Props) {
+export default function ProposalUpdates({ proposal, updates, onUpdateDeleted }: Props) {
   const t = useFormatMessage()
 
-  if (!updates || !proposal) {
+  const showProposalUpdates =
+    updates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
+
+  if (!updates || !proposal || !showProposalUpdates) {
     return null
   }
 
@@ -51,7 +54,6 @@ export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdat
               proposal={proposal}
               update={item}
               expanded={index === 0}
-              isCoauthor={isCoauthor}
               onUpdateDeleted={onUpdateDeleted}
             />
           ))}

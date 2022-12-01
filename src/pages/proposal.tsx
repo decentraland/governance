@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
@@ -45,14 +45,12 @@ import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions
 import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
-import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { forumUrl } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { SelectedVoteChoice } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
-import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -67,7 +65,6 @@ import './proposals.css'
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
-const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 const EMPTY_VOTE_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
@@ -209,12 +206,6 @@ export default function ProposalPage() {
     [proposal, account, isCommittee, proposalState, updatePageState]
   )
 
-  const isOwner = useMemo(() => !!(proposal && account && proposal.user === account), [proposal, account])
-  const isCoauthor = !!useCoAuthorsByProposal(proposal).find(
-    (coauthor) =>
-      coauthor.address?.toLowerCase() === account?.toLowerCase() && coauthor.status === CoauthorStatus.APPROVED
-  )
-
   const [deleting, deleteProposal] = useAsyncTask(async () => {
     if (proposal && account && (proposal.user === account || isCommittee)) {
       await Governance.get().deleteProposal(proposal.id)
@@ -253,24 +244,6 @@ export default function ProposalPage() {
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  const handlePostUpdateClick = useCallback(() => {
-    if (proposal === null) {
-      return
-    }
-
-    const hasPendingUpdates = pendingUpdates && pendingUpdates.length > 0
-    navigate(
-      locations.submitUpdate({
-        ...(hasPendingUpdates && { id: currentUpdate?.id }),
-        proposalId: proposal.id,
-      })
-    )
-  }, [currentUpdate?.id, pendingUpdates, proposal])
-
-  const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
-  const showProposalUpdatesActions =
-    isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
-  const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showSurvey = !isLoadingSurveyTopics && surveyTopics && surveyTopics.length > 0
@@ -330,14 +303,7 @@ export default function ProposalPage() {
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
-              {showProposalUpdates && (
-                <ProposalUpdates
-                  proposal={proposal}
-                  updates={publicUpdates}
-                  isCoauthor={isCoauthor}
-                  onUpdateDeleted={refetchUpdates}
-                />
-              )}
+              <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateDeleted={refetchUpdates} />
               {proposal && (
                 <>
                   <ProposalResults
@@ -363,13 +329,12 @@ export default function ProposalPage() {
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
               {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
               <div className="ProposalDetail__StickySidebar">
-                {showProposalUpdatesActions && (
-                  <ProposalUpdatesActions
-                    nextUpdate={nextUpdate}
-                    currentUpdate={currentUpdate}
-                    onPostUpdateClick={handlePostUpdateClick}
-                  />
-                )}
+                <ProposalUpdatesActions
+                  nextUpdate={nextUpdate}
+                  currentUpdate={currentUpdate}
+                  pendingUpdates={pendingUpdates}
+                  proposal={proposal}
+                />
                 <ProposalGovernanceSection
                   disabled={!proposal || !votes}
                   loading={proposalState.loading || votesState.loading}
@@ -396,16 +361,13 @@ export default function ProposalPage() {
                   onClick={() => subscribe(!subscribed)}
                 />
                 {proposal && <ProposalDetailSection proposal={proposal} />}
-                {proposal && (
-                  <ProposalActions
-                    isOwner={isOwner}
-                    isCommittee={isCommittee}
-                    deleting={deleting}
-                    updatingStatus={updatingStatus}
-                    proposal={proposal}
-                    updatePageState={updatePageState}
-                  />
-                )}
+                <ProposalActions
+                  isCommittee={isCommittee}
+                  deleting={deleting}
+                  updatingStatus={updatingStatus}
+                  proposal={proposal}
+                  updatePageState={updatePageState}
+                />
               </div>
             </Grid.Column>
           </Grid.Row>
