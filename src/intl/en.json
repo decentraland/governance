@@ -820,7 +820,7 @@
       "created_proposals": {
         "title": "Proposals created",
         "button": "View more proposals",
-        "votes": "{total} votes",
+        "votes": "{total} {total, plural, one {vote} other {votes}}",
         "empty": "This account hasn't created any proposal"
       }
     },

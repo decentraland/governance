@@ -53,18 +53,23 @@ function ProposalCreatedItem({ proposal }: Props) {
             </div>
           </div>
         </div>
-        <div className="ProposalCreatedItem__CategorySection">
+        <div className="ProposalCreatedItem__CategorySectionContainer">
           <NotMobile>
-            {type && (
-              <div className="ProposalCreatedItem__CategoryPillContainer">
-                <CategoryPill size="small" type={type} />
-              </div>
-            )}
-            {proposal.status === ProposalStatus.Active && (
-              <span className="ProposalCreatedItem__VoteText">{t('page.home.open_proposals.vote')}</span>
-            )}
+            <div className="ProposalCreatedItem__CategorySection">
+              {type && (
+                <div className="ProposalCreatedItem__CategoryPillContainer">
+                  <CategoryPill size="small" type={type} />
+                </div>
+              )}
+              {proposal.status === ProposalStatus.Active && (
+                <span className="ProposalCreatedItem__VoteText">{t('page.home.open_proposals.vote')}</span>
+              )}
+              <ChevronRightCircleOutline />
+            </div>
           </NotMobile>
-          <ChevronRightCircleOutline size={24} />
+          <Mobile>
+            <ChevronRightCircleOutline />
+          </Mobile>
         </div>
       </Card.Content>
     </Card>

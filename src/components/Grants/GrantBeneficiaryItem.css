@@ -1,12 +1,27 @@
 .GrantBeneficiaryItem {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px 10px;
-  border: 1px solid var(--black-100);
-  box-shadow: 0 1px 4px var(--black-100);
-  border-radius: 8px;
+  width: 100% !important;
+  position: relative;
+  border: 1px solid var(--black-100) !important;
+}
+
+.GrantBeneficiaryItem .ui.cards a.card:hover,
+.ui.link.card:hover,
+.ui.link.cards .card:hover,
+a.ui.card:hover,
+.ui.cards > .ui.card.link:hover,
+.ui.card.link:hover {
+  border: 1px solid var(--black-100) !important;
+}
+
+.GrantBeneficiaryItem .content {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.GrantBeneficiaryItem > .content::after {
+  content: none !important;
 }
 
 .GrantBeneficiaryItem:not(:last-child) {
@@ -14,11 +29,10 @@
 }
 
 .GrantBeneficiaryItem__Section {
-  width: 100%;
   display: flex;
+  width: 100%;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
 }
 
 .GrantBeneficiaryItem:visited .GrantBeneficiaryItem__Title {
@@ -43,6 +57,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  max-width: 280px;
 }
 
 .GrantBeneficiaryItem__Details {
@@ -76,7 +91,7 @@
 }
 
 .GrantBeneficiaryItem__PillContainer {
-  min-width: 110px;
+  min-width: 80px;
 }
 
 .GrantBeneficiaryItem__VestingSection {
@@ -91,7 +106,6 @@
 
 .GrantBeneficiaryItem__VestingProgressContainer {
   min-width: 93px;
-  margin-right: 32px;
 }
 
 .GrantBeneficiaryItem .dcl.back {
@@ -135,6 +149,7 @@
   }
 
   .GrantBeneficiaryItem__Section {
+    width: unset;
     justify-content: unset;
   }
 
@@ -146,5 +161,19 @@
 @media (min-width: 1200px) {
   .GrantBeneficiaryItem__Title {
     max-width: 600px;
+  }
+}
+
+.GrantBeneficiaryItem__CategorySection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+@media (min-width: 992px) {
+  .GrantBeneficiaryItem__CategorySection {
+    width: 267px;
   }
 }
