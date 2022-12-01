@@ -41,8 +41,8 @@ function ProfileProposalItem({ votedProposal }: Props) {
             <Header>{proposal.title}</Header>
           </div>
           <div className="ProfileProposalItem__Status">
-            <StatusPill className="ProfileProposalItem__StatusPill" size="small" status={proposal.status} />
-            {proposal.type && <CategoryPill type={proposal.type} />}
+            <StatusPill className="ProfileProposalItem__Pill" size="small" status={proposal.status} />
+            {proposal.type && <CategoryPill className="ProfileProposalItem__Pill" size="small" type={proposal.type} />}
             <NotMobile>
               <div className="ProfileProposalItem__Stats">
                 <span className="ProfileProposalItem__Details ">
