@@ -5,9 +5,9 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { Governance } from '../clients/Governance'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { ProposalAttributes } from '../entities/Proposal/types'
+import { GrantAttributes, ProposalAttributes } from '../entities/Proposal/types'
 
-function useCoAuthorsByProposal(proposal: ProposalAttributes | null) {
+function useCoAuthorsByProposal(proposal: ProposalAttributes | GrantAttributes | null) {
   const [account] = useAuthContext()
   const [allCoauthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposal!.id), [proposal], {
     initialValue: [] as CoauthorAttributes[],

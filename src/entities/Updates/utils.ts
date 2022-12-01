@@ -1,6 +1,13 @@
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+import { ProposalStatus } from '../Proposal/types'
+
 import { UpdateAttributes, UpdateStatus } from './types'
+
+const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
+export function isProposalStatusWithUpdates(proposalStatus?: ProposalStatus) {
+  return PROPOSAL_STATUS_WITH_UPDATES.has(proposalStatus as ProposalStatus)
+}
 
 export const getPublicUpdates = (updates: UpdateAttributes[]): UpdateAttributes[] => {
   const now = new Date()

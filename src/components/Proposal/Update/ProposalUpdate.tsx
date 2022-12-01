@@ -7,6 +7,7 @@ import { Governance } from '../../../clients/Governance'
 import { GrantAttributes, ProposalAttributes } from '../../../entities/Proposal/types'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
+import useIsProposalCoAuthor from '../../../hooks/useIsProposalCoAuthor'
 import locations from '../../../modules/locations'
 import CancelIcon from '../../Icon/Cancel'
 import CheckCircleIcon from '../../Icon/CheckCircle'
@@ -24,7 +25,6 @@ interface Props {
   update: UpdateAttributes | null
   expanded: boolean
   index?: number
-  isCoauthor?: boolean
   onUpdateDeleted?: () => void
 }
 
@@ -47,10 +47,11 @@ export const getStatusIcon = (
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor, onUpdateDeleted }: Props) => {
+const ProposalUpdate = ({ proposal, update, expanded, index, onUpdateDeleted }: Props) => {
   const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
   const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
   const [account] = useAuthContext()
+  const { isCoauthor } = useIsProposalCoAuthor(proposal)
 
   if (!update) {
     return <EmptyProposalUpdate />
