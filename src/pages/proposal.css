@@ -58,8 +58,3 @@
     padding: 1rem 0 !important;
   }
 }
-
-.ProposalDetail__StickySidebar {
-  position: sticky;
-  top: 16px;
-}
