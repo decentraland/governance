@@ -5,7 +5,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import { Container } from 'decentraland-ui'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
