@@ -21,7 +21,7 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
   const t = useFormatMessage()
   const [showReactions, setShowReactions] = useState(false)
   const [pickedReaction, setPickedReaction] = useState<Reaction | null>()
-  const hasPickedReaction = pickedReaction !== null
+  const hasPickedReaction = !!pickedReaction
 
   const pickReaction = useCallback(
     (reaction: Reaction) => {
