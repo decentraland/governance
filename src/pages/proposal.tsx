@@ -340,12 +340,6 @@ export default function ProposalPage() {
               )}
               {proposal && (
                 <>
-                  <SurveyResults
-                    votes={votes}
-                    isLoadingVotes={votesState.loading}
-                    surveyTopics={surveyTopics}
-                    isLoadingSurveyTopics={isLoadingSurveyTopics}
-                  />
                   <ProposalResults
                     proposal={proposal}
                     votes={votes}
@@ -353,6 +347,12 @@ export default function ProposalPage() {
                     loading={proposalState.loading || votesState.loading}
                     onOpenVotesList={() => updatePageState({ showVotesList: true })}
                     elementRef={proposalResults}
+                  />
+                  <SurveyResults
+                    votes={votes}
+                    isLoadingVotes={votesState.loading}
+                    surveyTopics={surveyTopics}
+                    isLoadingSurveyTopics={isLoadingSurveyTopics}
                   />
                 </>
               )}
