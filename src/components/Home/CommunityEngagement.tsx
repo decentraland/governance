@@ -11,7 +11,7 @@ function CommunityEngagement() {
   const t = useFormatMessage()
 
   return (
-    <div className="CommunityEngagement">
+    <div id="engagement" className="CommunityEngagement">
       <div className="CommunityEngagement__Header">
         <Header>{t('page.home.community_engagement.title')}</Header>
         <p>{t('page.home.community_engagement.description')}</p>

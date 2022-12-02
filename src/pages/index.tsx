@@ -16,6 +16,8 @@ import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
+import './index.css'
+
 export default function HomePage() {
   const t = useFormatMessage()
 
