@@ -162,6 +162,7 @@ export class DiscordService {
       })
       try {
         this.channel.send({ embeds: [message] })
+        return { action, proposalId }
       } catch (error) {
         throw new Error(`[Error sending message to Discord - New proposal] ID ${proposalId}, Error: ${error}`)
       }
@@ -202,6 +203,7 @@ export class DiscordService {
           color: MessageColors.NEW_UPDATE,
         })
         this.channel.send({ embeds: [message] })
+        return { action, updateId }
       } catch (error) {
         throw new Error(`[Error sending message to Discord - New update] ID ${updateId}, Error: ${error}`)
       }
@@ -220,6 +222,7 @@ export class DiscordService {
       })
       try {
         this.channel.send({ embeds: [message] })
+        return { action, proposalId: id }
       } catch (error) {
         throw new Error(`[Error sending message to Discord - Finish proposal] ID ${id}, Error: ${error}`)
       }
