@@ -821,6 +821,11 @@
         "button": "View more proposals",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
         "empty": "This account hasn't created any proposal"
+      },
+      "activity": {
+        "my_proposals": "My proposals",
+        "watchlist": "Watchlist",
+        "coauthoring": "Co-authoring"
       }
     },
     "transparency": {

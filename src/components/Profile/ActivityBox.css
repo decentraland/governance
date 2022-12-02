@@ -1,0 +1,55 @@
+.ActivityBox {
+  border: 1px solid var(--black-100);
+  box-shadow: 0px 1px 8px var(--black-100);
+  border-radius: 8px;
+}
+
+.ActivityBox .dcl.tabs {
+  display: flex !important;
+  padding: 0 18px;
+  margin: 0;
+  height: unset;
+}
+
+.ActivityBox .dcl.tabs .tabs-left {
+  display: flex;
+}
+
+.ActivityBox .dcl.tabs .tabs-right {
+  display: none;
+}
+
+.ActivityBox .dcl.tabs .dcl.tab.active {
+  border-left: none;
+  border-bottom: 2px solid var(--primary);
+  color: var(--black-800) !important;
+  font-weight: 500 !important;
+}
+
+.ActivityBox .tab {
+  padding: 7px 0;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 18px;
+  text-transform: uppercase !important;
+  color: var(--black-600) !important;
+  margin-bottom: 0;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .ActivityBox .tab {
+    text-transform: none;
+    padding: 15px 0;
+    font-size: 15px;
+    line-height: 18px;
+  }
+
+  .ActivityBox .dcl.tabs .dcl.tab.active {
+    border-bottom: unset;
+  }
+}
+
+.ActivityBox__Content {
+  padding: 16px;
+}

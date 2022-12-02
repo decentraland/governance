@@ -5,12 +5,14 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Container } from 'decentraland-ui'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import ActivityBox from '../components/Profile/ActivityBox'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
 import ProposalsCreatedBox from '../components/Profile/ProposalsCreatedBox'
 import VotedProposalsBox from '../components/Profile/VotedProposalsBox'
@@ -18,6 +20,7 @@ import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import useProfile from '../hooks/useProfile'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -60,6 +63,8 @@ export default function ProfilePage() {
     return <LogIn title={t('page.profile.empty_title')} description={t('page.profile.description')} />
   }
 
+  const isLoggedUserProfile = isSameAddress(userAddress, address)
+
   return (
     <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Profile}>
       <Head
@@ -71,7 +76,13 @@ export default function ProfilePage() {
       <UserStats address={address} vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
       <div className="ProfilePage__Container">
         <GrantBeneficiaryBox address={address} />
-        <ProposalsCreatedBox address={address} />
+        {isLoggedUserProfile ? (
+          <Container>
+            <ActivityBox />
+          </Container>
+        ) : (
+          <ProposalsCreatedBox address={address} />
+        )}
         <VpDelegationBox
           delegation={delegation}
           isLoadingDelegations={delegationState.loading}
