@@ -1,29 +1,25 @@
 import React from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import useIsCommittee from '../../hooks/useIsCommittee'
 import useIsProposalOwner from '../../hooks/useIsProposalOwner'
 import { ProposalPageState } from '../../pages/proposal'
 
 type ProposalActionsProps = {
-  isCommittee: boolean
   deleting: boolean
   updatingStatus: boolean
   proposal: ProposalAttributes | null
   updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
-export default function ProposalActions({
-  proposal,
-  isCommittee,
-  deleting,
-  updatingStatus,
-  updatePageState,
-}: ProposalActionsProps) {
+export default function ProposalActions({ proposal, deleting, updatingStatus, updatePageState }: ProposalActionsProps) {
   const t = useFormatMessage()
-
+  const [account] = useAuthContext()
+  const { isCommittee } = useIsCommittee(account)
   const { isOwner } = useIsProposalOwner(proposal)
 
   if (!proposal) return null
