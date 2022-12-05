@@ -15,8 +15,14 @@
   width: 100%;
   justify-content: space-between;
   flex-wrap: nowrap;
-  flex-direction: row;
+  flex-direction: column;
   gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .ProposalResults__Content {
+    flex-direction: row;
+  }
 }
 
 .ProposalResults__ChoicesProgress {
