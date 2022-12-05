@@ -1,21 +1,19 @@
 .SurveyTopicResult {
-  height: 48px;
-  background: var(--white-900);
-  border: 1px solid var(--black-100);
-  box-shadow: 0 1px 8px var(--black-100);
-  border-radius: 8px;
-  margin-bottom: 8px;
-  padding: 9px 9px 9px 16px;
+  height: 30px;
+  margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
 }
 
 .SurveyTopicResult__Header {
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 15px;
   line-height: 24px;
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .SurveyTopicResult__ReactionContainer {
@@ -27,7 +25,7 @@
   padding-left: 8px;
   padding-right: 8px;
   align-items: center;
-  min-width: 215px;
+  min-width: 208px;
   justify-content: space-evenly;
 }
 
@@ -41,7 +39,7 @@
 .ReactionCounter > .IconHelper__Container {
   font-weight: 400;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 25px;
   margin-top: 0;
   margin-bottom: 3px;
 }
@@ -49,8 +47,33 @@
 .ReactionCount {
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
+}
+
+@media (min-width: 768px) {
+  .SurveyTopicResult {
+    height: 48px;
+    margin-bottom: 8px;
+    background: var(--white-900);
+    border: 1px solid var(--black-100);
+    box-shadow: 0 1px 8px var(--black-100);
+    border-radius: 8px;
+    padding: 9px 9px 9px 16px;
+  }
+
+  .SurveyTopicResult__Header {
+    font-weight: 600;
+  }
+
+  .ReactionCount {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .SurveyTopicResult__ReactionContainer {
+    min-width: 215px;
+  }
 }
