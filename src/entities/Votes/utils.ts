@@ -183,8 +183,8 @@ export async function getScores(
   )
 
   const result: DetailedScores = {}
+  const delegationScores = scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)] || {}
   for (const addr of formattedAddresses) {
-    const delegationScores = scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)] || {}
     result[addr] = {
       ownVp: 0,
       delegatedVp:
