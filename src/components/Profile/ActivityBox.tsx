@@ -23,13 +23,13 @@ const ActivityBox = () => {
       <Tabs>
         <Tabs.Left>
           <Tabs.Tab onClick={() => setActiveTab(Tab.MyProposals)} active={activeTab === Tab.MyProposals}>
-            {t('page.profile.activity.my_proposals')}
+            {t('page.profile.activity.my_proposals.title')}
           </Tabs.Tab>
           <Tabs.Tab onClick={() => setActiveTab(Tab.Watchlist)} active={activeTab === Tab.Watchlist}>
-            {t('page.profile.activity.watchlist')}
+            {t('page.profile.activity.watchlist.title')}
           </Tabs.Tab>
           <Tabs.Tab onClick={() => setActiveTab(Tab.CoAuthoring)} active={activeTab === Tab.CoAuthoring}>
-            {t('page.profile.activity.coauthoring')}
+            {t('page.profile.activity.coauthoring.title')}
           </Tabs.Tab>
         </Tabs.Left>
       </Tabs>

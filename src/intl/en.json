@@ -823,9 +823,19 @@
         "empty": "This account hasn't created any proposal"
       },
       "activity": {
-        "my_proposals": "My proposals",
-        "watchlist": "Watchlist",
-        "coauthoring": "Co-authoring"
+        "my_proposals": {
+          "title": "My proposals",
+          "empty": "You haven't submitted any proposal yet"
+        },
+        "watchlist": {
+          "title": "Watchlist",
+          "empty": "You haven't subscribed to any proposal yet"
+        },
+        "coauthoring": {
+          "title": "Co-authoring",
+          "empty": "You haven't co-authored any proposal yet"
+        },
+        "button": "View more proposals"
       }
     },
     "transparency": {
