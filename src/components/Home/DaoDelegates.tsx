@@ -25,7 +25,7 @@ const DaoDelegates = () => {
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const [address, authState] = useAuthContext()
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
-  const loading = !delegates && authState.loading && isLoadingVpDistribution
+  const isLoading = !delegates || authState.loading || isLoadingVpDistribution
 
   const toggleFullList = (state: boolean) => {
     setIsFullList(state)
@@ -61,12 +61,12 @@ const DaoDelegates = () => {
         title={t('page.home.dao_delegates.title')}
         description={t('page.home.dao_delegates.description')}
       />
-      {loading && (
+      {isLoading && (
         <div className="DaoDelegates__Loader">
           <HomeLoader>{t('page.home.dao_delegates.fetching')}</HomeLoader>
         </div>
       )}
-      {!loading && (
+      {!isLoading && (
         <>
           <DelegatesTable delegates={delegates} setSelectedCandidate={handleSelectedCandidate} />
           <FullWidthButton onClick={handleViewAllDelegatesClick}>
