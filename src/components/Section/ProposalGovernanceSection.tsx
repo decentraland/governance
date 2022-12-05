@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
 import { ProposalPageState } from '../../pages/proposal'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
@@ -29,6 +29,8 @@ type ProposalGovernanceSectionProps = {
   handleScrollTo: () => void
 }
 
+const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft]
+
 export default function ProposalGovernanceSection({
   proposal,
   loading,
@@ -46,6 +48,10 @@ export default function ProposalGovernanceSection({
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
+  const showPromotionSection = useMemo(
+    () => proposal && proposal.status === ProposalStatus.Passed && PROMOTABLE_PROPOSALS.includes(proposal.type),
+    [proposal]
+  )
   const showProposalThresholdsSummary = !!(
     proposal &&
     proposal?.required_to_pass != null &&
@@ -53,16 +59,17 @@ export default function ProposalGovernanceSection({
     !(proposal.status === ProposalStatus.Passed)
   )
 
+  if (!showPromotionSection && !showProposalThresholdsSummary && !!finished) return null
+
   return (
     <div
       className={TokenList.join([
         'DetailsSection',
         disabled && 'DetailsSection--disabled',
         loading && 'DetailsSection--loading',
-        'ResultSection',
       ])}
     >
-      <ProposalPromotionSection proposal={proposal} loading={loading} />
+      {showPromotionSection && <ProposalPromotionSection proposal={proposal} loading={loading} />}
       {showProposalThresholdsSummary && (
         <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
       )}
