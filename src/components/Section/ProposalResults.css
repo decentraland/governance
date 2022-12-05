@@ -10,6 +10,10 @@
   margin-bottom: 24px;
 }
 
+.ProposalResults__Header .ui.header {
+  font-size: 17px;
+}
+
 .ProposalResults__Content {
   display: flex;
   width: 100%;
@@ -22,6 +26,10 @@
 @media (min-width: 768px) {
   .ProposalResults__Content {
     flex-direction: row;
+  }
+
+  .ProposalResults__Header .ui.header {
+    font-size: 20px;
   }
 }
 
