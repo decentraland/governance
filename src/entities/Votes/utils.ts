@@ -2,6 +2,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotApi } from '../../clients/SnapshotApi'
 import { DetailedScores, SnapshotStrategy, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { isSameAddress } from '../Snapshot/utils'
 
 import { ChoiceColor, Vote } from './types'
 
@@ -183,9 +184,11 @@ export async function getScores(
 
   const result: DetailedScores = {}
   for (const addr of formattedAddresses) {
+    const delegationScores = scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)] || {}
     result[addr] = {
       ownVp: 0,
-      delegatedVp: Math.round(scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)][addr]) || 0,
+      delegatedVp:
+        Math.round(delegationScores[Object.keys(delegationScores).find((key) => isSameAddress(key, addr)) || '']) || 0,
       totalVp: 0,
     }
   }
