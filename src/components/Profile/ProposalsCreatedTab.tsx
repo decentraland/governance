@@ -11,13 +11,19 @@ import Watermelon from '../Icon/Watermelon'
 
 import ProposalCreatedItem from './ProposalCreatedItem'
 
-const MyProposalsTab = () => {
+interface Props {
+  address?: string
+}
+
+const ProposalsCreatedTab = ({ address }: Props) => {
   const [account] = useAuthContext()
   const t = useFormatMessage()
 
+  const hasAccountOrAddress = !!account || !!address
+
   const { proposals, hasMoreProposals, loadMore, isLoadingProposals } = usePaginatedProposals({
-    load: !!account,
-    ...(!!account && { user: account }),
+    load: hasAccountOrAddress,
+    ...(hasAccountOrAddress && { user: account || address }),
   })
 
   return (
@@ -37,4 +43,4 @@ const MyProposalsTab = () => {
   )
 }
 
-export default MyProposalsTab
+export default ProposalsCreatedTab

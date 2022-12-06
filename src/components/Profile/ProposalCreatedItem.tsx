@@ -15,13 +15,16 @@ import CategoryPill from '../Category/CategoryPill'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import StatusPill from '../Status/StatusPill'
 
+import CoAuthorPill from './CoAuthorPill'
 import './ProposalCreatedItem.css'
 
 interface Props {
   proposal: ProposalAttributes
+  showCoauthoring?: boolean
+  hasCoauthorRequests?: boolean
 }
 
-function ProposalCreatedItem({ proposal }: Props) {
+function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }: Props) {
   const t = useFormatMessage()
   const { finish_at, title, status, type, id } = proposal
   const dateText = t(`page.home.open_proposals.${Time().isBefore(Time(finish_at)) ? 'ends_date' : 'ended_date'}`, {
@@ -39,6 +42,9 @@ function ProposalCreatedItem({ proposal }: Props) {
           </div>
           <div className="ProposalCreatedItem__Status">
             <StatusPill className="ProposalCreatedItem__StatusPill" size="small" status={status} />
+            {showCoauthoring && (
+              <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
+            )}
             <Mobile>
               {type && <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" type={type} />}
             </Mobile>

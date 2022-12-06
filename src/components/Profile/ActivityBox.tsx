@@ -7,7 +7,7 @@ import BoxTabsContainer from '../Common/BoxTabsContainer'
 import BoxTabsContentContainer from '../Common/BoxTabsContentContainer'
 
 import CoAuthoringTab from './CoAuthoringTab'
-import MyProposalsTab from './MyProposalsTab'
+import ProposalsCreatedTab from './ProposalsCreatedTab'
 import WatchlistTab from './WatchlistTab'
 
 enum Tab {
@@ -36,7 +36,7 @@ const ActivityBox = () => {
         </BoxTabs.Left>
       </BoxTabs>
       <BoxTabsContentContainer>
-        {activeTab === Tab.MyProposals && <MyProposalsTab />}
+        {activeTab === Tab.MyProposals && <ProposalsCreatedTab />}
         {activeTab === Tab.Watchlist && <WatchlistTab />}
         {activeTab === Tab.CoAuthoring && <CoAuthoringTab />}
       </BoxTabsContentContainer>
