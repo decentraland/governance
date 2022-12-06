@@ -1,6 +1,7 @@
 .DelegationCards {
   padding-top: 12px;
 }
+
 .DelegationCards > .ui.stackable.three.column.grid > .column {
   padding: 0 0 12px 0 !important;
 }

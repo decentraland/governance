@@ -11,7 +11,6 @@ import DelegatorCardProfile from '../Delegation/DelegatorCardProfile'
 import Scale from '../Icon/Scale'
 
 import { ProfileBox } from './ProfileBox'
-import './VpDelegationBox.css'
 
 interface Props {
   delegation: DelegationResult
@@ -27,7 +26,7 @@ function VpDelegationBox({ delegation, isLoadingDelegations, ownVp, isLoadingOwn
   const { delegatedTo } = delegation
 
   return (
-    <Container className="VpDelegationBox">
+    <Container>
       <ProfileBox title={t('page.profile.delegation.title')} info={t('page.profile.delegation.helper')}>
         {isLoading && <SkeletonBars amount={1} height={70} />}
         {!isLoading && (

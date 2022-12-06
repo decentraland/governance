@@ -11,6 +11,7 @@ import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
 import { ProfileBox } from './ProfileBox'
+import './VpDelegatorsBox.css'
 
 interface Props {
   address: string | null
@@ -36,6 +37,7 @@ export default function VpDelegatorsBox({
   return (
     <Container>
       <ProfileBox
+        className="VpDelegatorsBox"
         title={t('page.profile.delegators.title')}
         info={t('page.profile.delegators.helper')}
         action={
