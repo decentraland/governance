@@ -19,12 +19,16 @@ const ProposalsCreatedTab = ({ address }: Props) => {
   const [account] = useAuthContext()
   const t = useFormatMessage()
 
-  const hasAccountOrAddress = !!account || !!address
+  const user = address || account || undefined
 
   const { proposals, hasMoreProposals, loadMore, isLoadingProposals } = usePaginatedProposals({
-    load: hasAccountOrAddress,
-    ...(hasAccountOrAddress && { user: account || address }),
+    load: !!user,
+    ...(!!user && { user: user?.toLowerCase() }),
   })
+
+  const emptyDescriptionKey = address
+    ? 'page.profile.created_proposals.empty'
+    : 'page.profile.activity.my_proposals.empty'
 
   return (
     <>
@@ -32,11 +36,7 @@ const ProposalsCreatedTab = ({ address }: Props) => {
       {!isLoadingProposals && proposals.length > 0 ? (
         proposals.map((proposal) => <ProposalCreatedItem key={proposal.id} proposal={proposal} />)
       ) : (
-        <Empty
-          className="ProposalsCreatedBox__Empty"
-          icon={<Watermelon />}
-          description={t('page.profile.activity.my_proposals.empty')}
-        />
+        <Empty className="ProposalsCreatedBox__Empty" icon={<Watermelon />} description={t(emptyDescriptionKey)} />
       )}
       {hasMoreProposals && <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>}
     </>

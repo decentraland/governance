@@ -3,9 +3,8 @@ import React from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { CoauthorStatus } from '../../entities/Coauthor/types'
+import { CoauthorAttributes } from '../../entities/Coauthor/types'
 import usePaginatedProposals from '../../hooks/usePaginatedProposals'
-import useProposalsByCoAuthor from '../../hooks/useProposalsByCoAuthor'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
 import SkeletonBars from '../Common/SkeletonBars'
@@ -15,9 +14,10 @@ import ProposalCreatedItem from './ProposalCreatedItem'
 
 interface Props {
   address?: string
+  pendingCoauthorRequests?: CoauthorAttributes[]
 }
 
-const CoAuthoringTab = ({ address }: Props) => {
+const CoAuthoringTab = ({ address, pendingCoauthorRequests }: Props) => {
   const [account] = useAuthContext()
   const t = useFormatMessage()
 
@@ -26,8 +26,6 @@ const CoAuthoringTab = ({ address }: Props) => {
     ...((!!account || !!address) && { user: account || address }),
     coauthor: true,
   })
-
-  const [pendingCoauthorRequests] = useProposalsByCoAuthor(account, CoauthorStatus.PENDING)
 
   return (
     <>
@@ -38,7 +36,7 @@ const CoAuthoringTab = ({ address }: Props) => {
             key={proposal.id}
             proposal={proposal}
             showCoauthoring
-            hasCoauthorRequests={!!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)}
+            hasCoauthorRequests={!!pendingCoauthorRequests?.find((req) => req.proposal_id === proposal.id)}
           />
         ))
       ) : (

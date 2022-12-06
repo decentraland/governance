@@ -21,6 +21,8 @@
 }
 
 .BoxTabs .tab {
+  display: flex;
+  align-items: center;
   padding: 7px 0;
   font-size: 13px !important;
   font-weight: 500 !important;
