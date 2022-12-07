@@ -4,6 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantAttributes, ProposalAttributes } from '../entities/Proposal/types'
+import { isSameAddress } from '../entities/Snapshot/utils'
 
 import useCoAuthorsByProposal from './useCoAuthorsByProposal'
 
@@ -13,8 +14,7 @@ export default function useIsProposalCoAuthor(proposal: ProposalAttributes | Gra
   const isCoauthor = useMemo(
     () =>
       !!coauthorsByProposal.find(
-        (coauthor) =>
-          coauthor.address?.toLowerCase() === account?.toLowerCase() && coauthor.status === CoauthorStatus.APPROVED
+        (coauthor) => isSameAddress(coauthor.address, account) && coauthor.status === CoauthorStatus.APPROVED
       ),
     [coauthorsByProposal, account]
   )

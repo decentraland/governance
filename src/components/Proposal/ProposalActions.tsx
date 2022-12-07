@@ -12,7 +12,7 @@ import { ProposalPageState } from '../../pages/proposal'
 type ProposalActionsProps = {
   deleting: boolean
   updatingStatus: boolean
-  proposal: ProposalAttributes | null
+  proposal: ProposalAttributes
   updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
