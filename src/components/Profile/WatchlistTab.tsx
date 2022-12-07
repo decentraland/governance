@@ -27,7 +27,7 @@ const WatchlistTab = () => {
         proposals.map((proposal) => <ProposalCreatedItem key={proposal.id} proposal={proposal} />)
       ) : (
         <Empty
-          className="ProposalsCreatedBox__Empty"
+          className="ActivityBox__Empty"
           icon={<Watermelon />}
           description={t('page.profile.activity.watchlist.empty')}
         />

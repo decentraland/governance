@@ -4,6 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { CoauthorAttributes } from '../../entities/Coauthor/types'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import usePaginatedProposals from '../../hooks/usePaginatedProposals'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
@@ -21,7 +22,8 @@ const CoAuthoringTab = ({ address, pendingCoauthorRequests }: Props) => {
   const [account] = useAuthContext()
   const t = useFormatMessage()
 
-  const user = address || account || undefined
+  const isLoggedUserProfile = isSameAddress(account, address || '')
+  const user = isLoggedUserProfile ? account : address
 
   const { proposals, hasMoreProposals, loadMore, isLoadingProposals } = usePaginatedProposals({
     load: !!user,
@@ -43,12 +45,12 @@ const CoAuthoringTab = ({ address, pendingCoauthorRequests }: Props) => {
         ))
       ) : (
         <Empty
-          className="ProposalsCreatedBox__Empty"
+          className="ActivityBox__Empty"
           icon={<Watermelon />}
           description={
-            address
-              ? t('page.profile.activity.coauthoring.empty')
-              : t('page.profile.activity.coauthoring.empty_logged_user')
+            isLoggedUserProfile
+              ? t('page.profile.activity.coauthoring.empty_logged_user')
+              : t('page.profile.activity.coauthoring.empty')
           }
         />
       )}
