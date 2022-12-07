@@ -27,28 +27,6 @@ export type ProposalsTypeFilter = {
   type: ProposalType
 }
 
-export enum ProposalActivityList {
-  MyProposals = 'proposals',
-  Watchlist = 'watchlist',
-  CoAuthoring = 'coauthoring',
-}
-
-export function toProposalActivityList(list: string | null | undefined): ProposalActivityList | null {
-  switch (list) {
-    case ProposalActivityList.MyProposals:
-    case ProposalActivityList.Watchlist:
-    case ProposalActivityList.CoAuthoring:
-      return list
-    default:
-      return null
-  }
-}
-
-// TODO: Check if this is still necessary without activity page
-export type ProposalActivityFilter = {
-  list: ProposalActivityList
-}
-
 export type ProposalsModal = {
   modal: 'new'
 }

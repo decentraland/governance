@@ -21,9 +21,11 @@ const CoAuthoringTab = ({ address, pendingCoauthorRequests }: Props) => {
   const [account] = useAuthContext()
   const t = useFormatMessage()
 
+  const user = address || account || undefined
+
   const { proposals, hasMoreProposals, loadMore, isLoadingProposals } = usePaginatedProposals({
-    load: !!account,
-    ...((!!account || !!address) && { user: account || address }),
+    load: !!user,
+    ...(!!user && { user: user?.toLowerCase() }),
     coauthor: true,
   })
 
@@ -50,7 +52,9 @@ const CoAuthoringTab = ({ address, pendingCoauthorRequests }: Props) => {
           }
         />
       )}
-      {hasMoreProposals && <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>}
+      {!isLoadingProposals && hasMoreProposals && (
+        <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>
+      )}
     </>
   )
 }

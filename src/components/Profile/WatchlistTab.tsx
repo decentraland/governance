@@ -32,7 +32,9 @@ const WatchlistTab = () => {
           description={t('page.profile.activity.watchlist.empty')}
         />
       )}
-      {hasMoreProposals && <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>}
+      {!isLoadingProposals && hasMoreProposals && (
+        <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>
+      )}
     </>
   )
 }
