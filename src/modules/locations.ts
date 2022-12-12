@@ -27,27 +27,6 @@ export type ProposalsTypeFilter = {
   type: ProposalType
 }
 
-export enum ProposalActivityList {
-  MyProposals = 'proposals',
-  Watchlist = 'watchlist',
-  CoAuthoring = 'coauthoring',
-}
-
-export function toProposalActivityList(list: string | null | undefined): ProposalActivityList | null {
-  switch (list) {
-    case ProposalActivityList.MyProposals:
-    case ProposalActivityList.Watchlist:
-    case ProposalActivityList.CoAuthoring:
-      return list
-    default:
-      return null
-  }
-}
-
-export type ProposalActivityFilter = {
-  list: ProposalActivityList
-}
-
 export type ProposalsModal = {
   modal: 'new'
 }
@@ -65,8 +44,6 @@ export default {
   ) => url('/proposals/', options),
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
-  activity: (options: Partial<ProposalsStatusFilter & ProposalActivityFilter> | URLSearchParams = {}) =>
-    url('/activity/', options),
   submit: (type?: ProposalType, options: { linked_proposal_id?: string; request?: PoiType } = {}) =>
     url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),

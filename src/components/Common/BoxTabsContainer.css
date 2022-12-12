@@ -1,0 +1,5 @@
+.BoxTabsContainer {
+  border: 1px solid var(--black-100);
+  box-shadow: 0px 1px 8px var(--black-100);
+  border-radius: 8px;
+}

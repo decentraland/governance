@@ -21,12 +21,3 @@
   display: flex;
   align-items: center;
 }
-
-.Navigation .dcl.tabs .ActivityTab {
-  display: flex;
-  align-items: center;
-}
-
-.Navigation .dcl.tabs .ActivityTab svg {
-  margin-left: 4px;
-}

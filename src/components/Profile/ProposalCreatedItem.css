@@ -8,6 +8,10 @@
   margin-right: 8px;
 }
 
+.ProposalCreatedItem__CoAuthorPill {
+  margin-right: 8px;
+}
+
 .ProposalCreatedItem .ui.cards a.card:hover,
 .ui.link.card:hover,
 .ui.link.cards .card:hover,

@@ -12,7 +12,6 @@
     "proposals": "Proposals",
     "grants": "Grants",
     "profile": "Profile",
-    "activity": "Activity",
     "enacted": "Enacted",
     "transparency": "Transparency",
     "debug": "Debug",
@@ -822,6 +821,24 @@
         "button": "View more proposals",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
         "empty": "This account hasn't created any proposal"
+      },
+      "activity": {
+        "my_proposals": {
+          "title": "My proposals",
+          "empty": "You haven't submitted any proposal yet"
+        },
+        "watchlist": {
+          "title": "Watchlist",
+          "empty": "You haven't subscribed to any proposal yet"
+        },
+        "coauthoring": {
+          "title": "Co-authoring",
+          "empty": "User hasn't co-authored any proposal yet",
+          "empty_logged_user": "You haven't co-authored any proposal yet",
+          "pending_request_label": "Pending request",
+          "label": "Co-authoring"
+        },
+        "button": "View more proposals"
       }
     },
     "transparency": {

@@ -4,10 +4,16 @@ import { ProposalAttributes } from '../entities/Proposal/types'
 
 import useProposals, { UseProposalsFilter } from './useProposals'
 
+const DEFAULT_ITEMS_PER_PAGE = 5
+
 export default function usePaginatedProposals(filter: Partial<UseProposalsFilter> = {}) {
   const [page, setPage] = useState(1)
   const [paginatedProposals, setPaginatedProposals] = useState<ProposalAttributes[]>([])
-  const { proposals, isLoadingProposals } = useProposals({ ...filter, page })
+  const { proposals, isLoadingProposals } = useProposals({
+    itemsPerPage: filter.itemsPerPage || DEFAULT_ITEMS_PER_PAGE,
+    ...filter,
+    page,
+  })
 
   useEffect(() => {
     if (proposals) {

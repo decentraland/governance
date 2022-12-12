@@ -3,20 +3,18 @@
   border: 1px solid var(--black-100);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
-  padding-top: 14px;
-  padding-bottom: 24px;
 }
 
 .ProfileBox__Padded {
-  padding-right: 16px;
-  padding-left: 16px;
+  padding: 16px;
 }
 
 .ProfileBox__Header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 13px;
+  padding-top: 14px;
+  padding-bottom: 13px;
 }
 
 .ProfileBox__HeaderTitle > span {
@@ -34,7 +32,6 @@
 }
 
 .ProfileBox__Divider {
-  margin-bottom: 12px;
   margin-top: 0 !important;
 }
 
