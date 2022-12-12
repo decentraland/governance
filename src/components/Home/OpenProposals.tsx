@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'

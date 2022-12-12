@@ -5,7 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { calculateResult } from '../../entities/Votes/utils'
