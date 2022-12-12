@@ -1,6 +1,6 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
-import { uniqBy } from 'lodash'
+import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
