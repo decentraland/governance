@@ -1,3 +1,5 @@
+const SNAPSHOT_SKIP_LIMIT = 5000
+
 export async function inBatches<T, K>(
   fetchFunction: (params: T, skip: number, batchSize: number) => Promise<K[]>,
   params: T,
@@ -14,6 +16,9 @@ export async function inBatches<T, K>(
         hasNext = false
       } else {
         skip = allResults.length
+        if (skip > SNAPSHOT_SKIP_LIMIT) {
+          throw new Error(`${fetchFunction.name} has exceeded Snapshot skip limit`)
+        }
       }
     }
     return allResults

@@ -1,5 +1,6 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
+import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
@@ -130,7 +131,64 @@ export class SnapshotGraphql extends API {
     }
   }
 
-  fetchAddressesVotes = async (params: { addresses: string[] }, skip: number, batchSize: number) => {
+  async getAddressesVotes(addresses: string[]) {
+    const query = `
+      query AddressesVotes($space: String!, $addresses: [String]!, $created: Int!, $first: Int!) {
+        votes (
+          where: { space: $space, voter_in: $addresses, created_gt: $created },
+          first: $first,
+          orderBy: "created",
+          orderDirection: asc
+        ) {
+          id
+          voter
+          created
+          choice
+          proposal {
+            id
+            title
+            choices
+            scores
+            state
+          }
+        }
+      }
+    `
+
+    let allResults: SnapshotVote[] = []
+    let hasNext = true
+    let created = 0
+
+    try {
+      while (hasNext) {
+        const result = await this.fetch<SnapshotVoteResponse>(
+          GRAPHQL_ENDPOINT,
+          this.options()
+            .method('POST')
+            .json({
+              query,
+              variables: { space: SNAPSHOT_SPACE, addresses: addresses, first: 1000, created },
+            })
+        )
+
+        const results = result?.data?.votes
+        if (results && results.length > 0) {
+          allResults = [...allResults, ...results]
+          created = results[results.length - 1].created
+        } else {
+          hasNext = false
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching addresses votes`, error)
+      // TODO: report error to Rollbar
+      return []
+    }
+
+    return allResults
+  }
+
+  async getAddressesVotesInBatches(addresses: string[], first: number, skip: number) {
     const query = `
       query AddressesVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
         votes (
@@ -160,19 +218,11 @@ export class SnapshotGraphql extends API {
         .method('POST')
         .json({
           query,
-          variables: { space: SNAPSHOT_SPACE, addresses: params.addresses, skip, first: batchSize },
+          variables: { space: SNAPSHOT_SPACE, addresses: addresses, skip, first },
         })
     )
 
     return result?.data?.votes
-  }
-
-  async getAddressesVotes(addresses: string[]) {
-    return await inBatches(this.fetchAddressesVotes, { addresses }, BATCH_SIZE)
-  }
-
-  async getAddressesVotesInBatches(addresses: string[], first: number, skip: number) {
-    return await this.fetchAddressesVotes({ addresses }, skip, first)
   }
 
   fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
@@ -211,7 +261,63 @@ export class SnapshotGraphql extends API {
   }
 
   async getVotes(start: Date, end: Date) {
-    return await inBatches(this.fetchVotes, { start, end }, BATCH_SIZE)
+    const query = `
+      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!) {
+        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first) {
+          id
+          voter
+          created
+          vp
+          choice
+          proposal {
+            id
+            choices
+          }
+        }
+      }
+    `
+
+    let allResults: SnapshotVote[] = []
+    let hasNext = true
+    let created = getQueryTimestamp(start.getTime())
+    const batchSize = 1000
+
+    try {
+      while (hasNext) {
+        const result = await this.fetch<SnapshotVoteResponse>(
+          GRAPHQL_ENDPOINT,
+          this.options()
+            .method('POST')
+            .json({
+              query,
+              variables: {
+                space: SNAPSHOT_SPACE,
+                first: batchSize,
+                start: created,
+                end: getQueryTimestamp(end.getTime()),
+              },
+            })
+        )
+
+        const results = result?.data?.votes
+        if (results && results.length > 0) {
+          allResults = [...allResults, ...results]
+          created = results[results.length - 1].created
+
+          if (results.length < batchSize) {
+            hasNext = false
+          }
+        } else {
+          hasNext = false
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching votes`)
+      // TODO: report error to Rollbar
+      return []
+    }
+
+    return uniqBy(allResults, 'id')
   }
 
   fetchProposals = async (
