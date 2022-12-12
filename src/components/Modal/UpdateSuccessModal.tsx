@@ -2,7 +2,7 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { getUpdateUrl } from '../../entities/Proposal/utils'
+import { getUpdateUrl } from '../../entities/Updates/utils'
 
 import { SuccessModal, SuccessModalProps } from './SuccessModal'
 

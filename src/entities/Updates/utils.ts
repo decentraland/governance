@@ -1,5 +1,7 @@
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+import { GOVERNANCE_API } from '../../constants'
+
 import { UpdateAttributes, UpdateStatus } from './types'
 
 export const getPublicUpdates = (updates: UpdateAttributes[]): UpdateAttributes[] => {
@@ -66,4 +68,18 @@ export const isBetweenLateThresholdDate = (dueDate?: Date) => {
   const newDueDate = Time(dueDate).add(THRESHOLD_DAYS_TO_UPDATE, 'day')
 
   return Time().isBefore(newDueDate)
+}
+
+export function getUpdateUrl(updateId: string, proposalId: string) {
+  const params = new URLSearchParams({ id: updateId, proposalId })
+  const target = new URL(GOVERNANCE_API)
+  target.pathname = '/update/'
+  target.search = '?' + params.toString()
+  return target.toString()
+}
+
+export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updateId?: string | null) {
+  if (!publicUpdates || !updateId) return NaN
+  const updateIdx = Number(publicUpdates.findIndex((item) => item.id === updateId))
+  return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
 }

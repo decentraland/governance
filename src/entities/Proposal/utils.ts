@@ -27,6 +27,7 @@ import {
   ProposalGrantTier,
   ProposalGrantTierValues,
   ProposalStatus,
+  ProposalType,
   toProposalGrantTier,
 } from './types'
 
@@ -180,14 +181,6 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   return target.toString()
 }
 
-export function getUpdateUrl(updateId: string, proposalId: string) {
-  const params = new URLSearchParams({ id: updateId, proposalId })
-  const target = new URL(GOVERNANCE_API)
-  target.pathname = '/update/'
-  target.search = '?' + params.toString()
-  return target.toString()
-}
-
 function grantDuration(value: string | undefined | null) {
   return Number(value || SNAPSHOT_DURATION)
 }
@@ -214,4 +207,8 @@ export function isProposalInCliffPeriod(grant: GrantAttributes) {
   const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
   const now = Time.utc()
   return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+}
+
+export function isGovernanceProcessProposal(type: ProposalType) {
+  return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }

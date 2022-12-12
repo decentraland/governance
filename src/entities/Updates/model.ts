@@ -44,7 +44,7 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   ) {
     const now = new Date()
 
-    await this.create({
+    return await this.create({
       id: uuid(),
       status: UpdateStatus.Done,
       due_date: undefined,

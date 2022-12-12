@@ -1,6 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { DiscordService } from '../../services/DiscordService'
 import UpdateModel from '../Updates/model'
 import { Scores } from '../Votes/utils'
 
@@ -13,6 +14,13 @@ const enum ProposalOutcome {
   ACCEPTED = 'ACCEPTED',
   FINISHED = 'FINISHED',
 }
+
+type Outcome = {
+  winnerChoice: string
+  outcomeStatus?: ProposalOutcome
+}
+
+type ProposalWithWinnerChoice = ProposalAttributes & Outcome
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -55,6 +63,10 @@ async function calculateOutcome(proposal: ProposalAttributes, context: JobContex
     const results = await getVotingResults(proposal, choices)
     const { winnerChoice, winnerVotingPower } = calculateWinnerChoice(results)
 
+    const outcome: Outcome = {
+      winnerChoice,
+    }
+
     const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
     const isYesNo = sameOptions(choices, ['yes', 'no'])
     const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
@@ -62,22 +74,24 @@ async function calculateOutcome(proposal: ProposalAttributes, context: JobContex
 
     const minimumVotingPowerRequired = proposal.required_to_pass || 0
     if (winnerVotingPower === 0 || winnerVotingPower < minimumVotingPowerRequired) {
-      return ProposalOutcome.REJECTED
+      outcome.outcomeStatus = ProposalOutcome.REJECTED
     } else if (winnerChoice === invalidOption) {
-      return ProposalOutcome.REJECTED
+      outcome.outcomeStatus = ProposalOutcome.REJECTED
     } else if (isYesNo || isAcceptReject || isForAgainst) {
       if (
         (isYesNo && results['yes'] > results['no']) ||
         (isAcceptReject && results['accept'] > results['reject']) ||
         (isForAgainst && results['for'] > results['against'])
       ) {
-        return ProposalOutcome.ACCEPTED
+        outcome.outcomeStatus = ProposalOutcome.ACCEPTED
       } else {
-        return ProposalOutcome.REJECTED
+        outcome.outcomeStatus = ProposalOutcome.REJECTED
       }
     } else {
-      return ProposalOutcome.FINISHED
+      outcome.outcomeStatus = ProposalOutcome.FINISHED
     }
+
+    return outcome
   } catch (e) {
     context.error(`Unable to calculate outcome for ${proposal.snapshot_id}`, e as Error)
   }
@@ -91,28 +105,35 @@ export async function finishProposal(context: JobContext) {
   }
 
   context.log(`Updating ${pendingProposals.length} proposals...`)
-  const finishedProposals: ProposalAttributes[] = []
-  const acceptedProposals: ProposalAttributes[] = []
-  const rejectedProposals: ProposalAttributes[] = []
+  const finishedProposals: ProposalWithWinnerChoice[] = []
+  const acceptedProposals: ProposalWithWinnerChoice[] = []
+  const rejectedProposals: ProposalWithWinnerChoice[] = []
 
   for (const proposal of pendingProposals) {
     const outcome = await calculateOutcome(proposal, context)
-    switch (outcome) {
+
+    if (!outcome) {
+      console.error(`Unable to calculate outcome for ${proposal.id}`)
+      continue
+    }
+
+    const proposalWithWinnerChoice = { ...proposal, ...outcome }
+    switch (outcome.outcomeStatus) {
       case ProposalOutcome.REJECTED:
-        rejectedProposals.push(proposal)
+        rejectedProposals.push(proposalWithWinnerChoice)
         break
       case ProposalOutcome.ACCEPTED:
-        acceptedProposals.push(proposal)
+        acceptedProposals.push(proposalWithWinnerChoice)
         break
       case ProposalOutcome.FINISHED:
-        finishedProposals.push(proposal)
+        finishedProposals.push(proposalWithWinnerChoice)
     }
   }
 
   if (finishedProposals.length > 0) {
     context.log(`Finishing ${finishedProposals.length} proposals...`)
     await ProposalModel.finishProposal(
-      finishedProposals.map((proposal) => proposal.id),
+      finishedProposals.map(({ id }) => id),
       ProposalStatus.Finished
     )
   }
@@ -120,14 +141,14 @@ export async function finishProposal(context: JobContext) {
   if (acceptedProposals.length > 0) {
     context.log(`Accepting ${acceptedProposals.length} proposals...`)
     await ProposalModel.finishProposal(
-      acceptedProposals.map((proposal) => proposal.id),
+      acceptedProposals.map(({ id }) => id),
       ProposalStatus.Passed
     )
 
     await Promise.all(
-      acceptedProposals.map(async (proposal) => {
-        if (proposal.type == ProposalType.Grant) {
-          await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
+      acceptedProposals.map(async ({ id, type, configuration }) => {
+        if (type == ProposalType.Grant) {
+          await UpdateModel.createPendingUpdates(id, configuration.tier)
         }
       })
     )
@@ -136,14 +157,22 @@ export async function finishProposal(context: JobContext) {
   if (rejectedProposals.length > 0) {
     context.log(`Rejecting ${rejectedProposals.length} proposals...`)
     await ProposalModel.finishProposal(
-      rejectedProposals.map((proposal) => proposal.id),
+      rejectedProposals.map(({ id }) => id),
       ProposalStatus.Rejected
     )
   }
 
-  const proposals: ProposalAttributes[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
+  const proposals: ProposalWithWinnerChoice[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
-  for (const proposal of proposals) {
-    commentProposalUpdateInDiscourse(proposal.id)
+  for (const { id, title, winnerChoice, outcomeStatus } of proposals) {
+    commentProposalUpdateInDiscourse(id)
+    if (outcomeStatus) {
+      DiscordService.finishProposal(
+        id,
+        title,
+        outcomeStatus,
+        outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
+      )
+    }
   }
 }

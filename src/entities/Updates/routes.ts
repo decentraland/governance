@@ -6,6 +6,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 import isEmpty from 'lodash/isEmpty'
 
+import { DiscordService } from '../../services/DiscordService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import ProposalModel from '../Proposal/model'
@@ -96,7 +97,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
   }
 
-  return await UpdateModel.createUpdate({
+  const update = await UpdateModel.createUpdate({
     proposal_id: proposal.id,
     author,
     health,
@@ -106,6 +107,10 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     next_steps,
     additional_notes,
   })
+
+  DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+
+  return update
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
@@ -153,6 +158,10 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     },
     { id }
   )
+
+  if (!completion_date) {
+    DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+  }
 
   return true
 }
