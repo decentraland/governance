@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { filter, isEmpty, orderBy } from 'lodash'
+import filter from 'lodash/filter'
+import isEmpty from 'lodash/isEmpty'
+import orderBy from 'lodash/orderBy'
 
 import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGrantsFilteredByCategory'

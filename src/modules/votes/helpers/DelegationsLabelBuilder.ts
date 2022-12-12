@@ -1,5 +1,5 @@
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { intersection } from 'lodash'
+import intersection from 'lodash/intersection'
 
 import { DelegationsLabelProps } from '../../../components/Section/ProposalVoting/DelegationsLabel'
 import { Vote } from '../../../entities/Votes/types'

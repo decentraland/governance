@@ -4,7 +4,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { GrantAttributes } from '../../../entities/Proposal/types'

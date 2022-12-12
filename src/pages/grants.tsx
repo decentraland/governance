@@ -3,7 +3,7 @@ import React from 'react'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 import CurrentGrantsList from '../components/Grants/Current/CurrentGrantsList'
 import PastGrantsList from '../components/Grants/Past/PastGrantsList'

@@ -4,7 +4,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'

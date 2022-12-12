@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 import { GrantAttributes } from '../../../entities/Proposal/types'
 import { numberFormat } from '../../../modules/intl'
