@@ -300,7 +300,7 @@ export class SnapshotGraphql extends API {
         )
 
         const results = result?.data?.votes
-        if (results) {
+        if (results && results.length > 0) {
           allResults = [...allResults, ...results]
           created = results[results.length - 1].created
 
