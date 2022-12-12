@@ -8,6 +8,12 @@
     {
       "url": "heroku/nodejs"
     },
-    {"url": "https://github.com/moravcik/heroku-buildpack-post-build-clean.git"}
-  ]
+    { "url": "https://github.com/moravcik/heroku-buildpack-post-build-clean.git" }
+  ],
+  "addons": ["heroku-postgresql:standard-0"],
+  "environments": {
+    "review": {
+      "addons": ["heroku-postgresql:mini"]
+    }
+  }
 }

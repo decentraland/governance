@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { compact, orderBy } from 'lodash'
+import compact from 'lodash/compact'
+import orderBy from 'lodash/orderBy'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 

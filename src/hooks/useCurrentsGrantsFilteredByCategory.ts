@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { filter } from 'lodash'
+import filter from 'lodash/filter'
 
 import {
   GrantWithUpdateAttributes,

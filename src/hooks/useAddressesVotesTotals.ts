@@ -1,5 +1,5 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import { max } from 'lodash'
+import max from 'lodash/max'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 
