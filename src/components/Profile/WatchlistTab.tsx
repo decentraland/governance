@@ -23,14 +23,18 @@ const WatchlistTab = () => {
   return (
     <>
       {isLoadingProposals && <SkeletonBars amount={proposals.length || 5} height={89} />}
-      {!isLoadingProposals && proposals.length > 0 ? (
-        proposals.map((proposal) => <ProposalCreatedItem key={proposal.id} proposal={proposal} />)
-      ) : (
-        <Empty
-          className="ActivityBox__Empty"
-          icon={<Watermelon />}
-          description={t('page.profile.activity.watchlist.empty')}
-        />
+      {!isLoadingProposals && (
+        <>
+          {proposals.length > 0 ? (
+            proposals.map((proposal) => <ProposalCreatedItem key={proposal.id} proposal={proposal} />)
+          ) : (
+            <Empty
+              className="ActivityBox__Empty"
+              icon={<Watermelon />}
+              description={t('page.profile.activity.watchlist.empty')}
+            />
+          )}
+        </>
       )}
       {!isLoadingProposals && hasMoreProposals && (
         <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>

@@ -34,25 +34,29 @@ const CoAuthoringTab = ({ address, pendingCoauthorRequests }: Props) => {
   return (
     <>
       {isLoadingProposals && <SkeletonBars amount={proposals.length || 5} height={89} />}
-      {!isLoadingProposals && proposals.length > 0 ? (
-        proposals.map((proposal) => (
-          <ProposalCreatedItem
-            key={proposal.id}
-            proposal={proposal}
-            showCoauthoring
-            hasCoauthorRequests={!!pendingCoauthorRequests?.find((req) => req.proposal_id === proposal.id)}
-          />
-        ))
-      ) : (
-        <Empty
-          className="ActivityBox__Empty"
-          icon={<Watermelon />}
-          description={
-            isLoggedUserProfile
-              ? t('page.profile.activity.coauthoring.empty_logged_user')
-              : t('page.profile.activity.coauthoring.empty')
-          }
-        />
+      {!isLoadingProposals && (
+        <>
+          {proposals.length > 0 ? (
+            proposals.map((proposal) => (
+              <ProposalCreatedItem
+                key={proposal.id}
+                proposal={proposal}
+                showCoauthoring
+                hasCoauthorRequests={!!pendingCoauthorRequests?.find((req) => req.proposal_id === proposal.id)}
+              />
+            ))
+          ) : (
+            <Empty
+              className="ActivityBox__Empty"
+              icon={<Watermelon />}
+              description={
+                isLoggedUserProfile
+                  ? t('page.profile.activity.coauthoring.empty_logged_user')
+                  : t('page.profile.activity.coauthoring.empty')
+              }
+            />
+          )}
+        </>
       )}
       {!isLoadingProposals && hasMoreProposals && (
         <FullWidthButton onClick={loadMore}>{t('page.profile.activity.button')}</FullWidthButton>
