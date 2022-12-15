@@ -21,7 +21,7 @@ const ProposalsCreatedTab = ({ address }: Props) => {
   const t = useFormatMessage()
 
   const isLoggedUserAddress = isSameAddress(account, address || '')
-  const user = isLoggedUserAddress ? address : account
+  const user = isLoggedUserAddress ? account : address
 
   const { proposals, hasMoreProposals, loadMore, isLoadingProposals } = usePaginatedProposals({
     load: !!user,
