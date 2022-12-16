@@ -68,8 +68,8 @@ export class DiscordService {
     }
 
     const channel = client.channels.cache.get(CHANNEL_ID)
-    if (channel?.type !== ChannelType.GuildText) {
-      throw new Error(`Discord channel type is not GuildText ${ChannelType.GuildText}`)
+    if (channel?.type !== ChannelType.GuildText && channel?.type !== ChannelType.GuildAnnouncement) {
+      throw new Error(`Discord channel type is not supported: ${channel?.type}`)
     }
 
     return channel
