@@ -14,7 +14,7 @@ import { inBackground } from '../helpers'
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
 
-const DISCORD_SERVICE_ENABLED = false
+const DISCORD_SERVICE_ENABLED = true
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
@@ -170,7 +170,7 @@ export class DiscordService {
           color: MessageColors.NEW_PROPOSAL,
         })
         try {
-          this.channel.send({ embeds: [message] })
+          await this.channel.send({ embeds: [message] })
           return { action, proposalId }
         } catch (error) {
           throw new Error(`[Error sending message to Discord - New proposal] ID ${proposalId}, Error: ${error}`)
@@ -213,7 +213,7 @@ export class DiscordService {
             action,
             color: MessageColors.NEW_UPDATE,
           })
-          this.channel.send({ embeds: [message] })
+          await this.channel.send({ embeds: [message] })
           return { action, updateId }
         } catch (error) {
           throw new Error(`[Error sending message to Discord - New update] ID ${updateId}, Error: ${error}`)
@@ -234,7 +234,7 @@ export class DiscordService {
           color: MessageColors.FINISH_PROPOSAL,
         })
         try {
-          this.channel.send({ embeds: [message] })
+          await this.channel.send({ embeds: [message] })
           return { action, proposalId: id }
         } catch (error) {
           throw new Error(`[Error sending message to Discord - Finish proposal] ID ${id}, Error: ${error}`)
