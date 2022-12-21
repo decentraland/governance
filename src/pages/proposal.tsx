@@ -45,6 +45,8 @@ import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
 import useIsCommittee from '../hooks/useIsCommittee'
+import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
+import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
@@ -100,6 +102,8 @@ export default function ProposalPage() {
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
   const { isCommittee } = useIsCommittee(account)
+  const { isCoauthor } = useIsProposalCoAuthor(proposal)
+  const { isOwner } = useIsProposalOwner(proposal)
   const { votes, votesState } = useProposalVotes(proposal?.id)
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
   const [subscriptions, subscriptionsState] = useAsyncMemo(
@@ -282,7 +286,12 @@ export default function ProposalPage() {
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
-                <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateDeleted={refetchUpdates} />
+                <ProposalUpdates
+                  proposal={proposal}
+                  updates={publicUpdates}
+                  onUpdateDeleted={refetchUpdates}
+                  isCoauthor={isCoauthor}
+                />
               )}
               {proposal && (
                 <>
@@ -328,6 +337,8 @@ export default function ProposalPage() {
                 choices={choices}
                 votes={votes}
                 votesLoading={votesState.loading}
+                isCoauthor={isCoauthor}
+                isOwner={isOwner}
               />
             </Grid.Column>
           </Grid.Row>

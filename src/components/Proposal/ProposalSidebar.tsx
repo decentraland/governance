@@ -2,11 +2,12 @@ import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
-import { ProposalAttributes } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../../entities/Proposal/types'
 import { forumUrl } from '../../entities/Proposal/utils'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
 import { Survey } from '../../entities/SurveyTopic/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
+import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
 import { ProposalPageState } from '../../pages/proposal'
 import ForumButton from '../Section/ForumButton'
@@ -43,6 +44,8 @@ type ProposalSidebarProps = {
   votes: Record<string, Vote> | null
   votesLoading: boolean
   choices: string[]
+  isOwner: boolean
+  isCoauthor: boolean
 }
 
 export default function ProposalSidebar({
@@ -67,6 +70,8 @@ export default function ProposalSidebar({
   votes,
   votesLoading,
   choices,
+  isOwner,
+  isCoauthor,
 }: ProposalSidebarProps) {
   const [account] = useAuthContext()
   const subscribed = useMemo(
@@ -84,18 +89,22 @@ export default function ProposalSidebar({
       castVote(selectedChoice)
     }
   }
+  const showProposalUpdatesActions =
+    isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
 
   return (
     <>
       {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
       {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
       <div className="ProposalSidebar">
-        <ProposalUpdatesActions
-          nextUpdate={nextUpdate}
-          currentUpdate={currentUpdate}
-          pendingUpdates={pendingUpdates}
-          proposal={proposal}
-        />
+        {showProposalUpdatesActions && (
+          <ProposalUpdatesActions
+            nextUpdate={nextUpdate}
+            currentUpdate={currentUpdate}
+            pendingUpdates={pendingUpdates}
+            proposal={proposal}
+          />
+        )}
         <ProposalGovernanceSection
           disabled={!proposal || !votes}
           loading={proposalLoading || votesLoading}

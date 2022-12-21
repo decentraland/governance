@@ -6,11 +6,8 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { ProposalAttributes, ProposalType } from '../../entities/Proposal/types'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
-import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
-import useIsProposalCoAuthor from '../../hooks/useIsProposalCoAuthor'
-import useIsProposalOwner from '../../hooks/useIsProposalOwner'
 import locations from '../../modules/locations'
 import DateTooltip from '../Common/DateTooltip'
 import Helper from '../Helper/Helper'
@@ -33,11 +30,6 @@ export default function ProposalUpdatesActions({
   const t = useFormatMessage()
   const hasSubmittedUpdate = !!currentUpdate?.completion_date
 
-  const { isOwner } = useIsProposalOwner(proposal)
-  const { isCoauthor } = useIsProposalCoAuthor(proposal)
-  const showProposalUpdatesActions =
-    isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
-
   const onPostUpdateClick = useCallback(() => {
     if (proposal === null) {
       return
@@ -51,8 +43,6 @@ export default function ProposalUpdatesActions({
       })
     )
   }, [currentUpdate?.id, pendingUpdates, proposal])
-
-  if (!showProposalUpdatesActions) return null
 
   return (
     <div className="DetailsSection">
