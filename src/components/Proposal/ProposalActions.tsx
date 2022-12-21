@@ -22,8 +22,6 @@ export default function ProposalActions({ proposal, deleting, updatingStatus, up
   const { isCommittee } = useIsCommittee(account)
   const { isOwner } = useIsProposalOwner(proposal)
 
-  if (!proposal) return null
-
   const showDeleteButton = isOwner || isCommittee
   const showEnactButton =
     isCommittee && (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted)

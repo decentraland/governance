@@ -41,6 +41,7 @@ import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
+import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
 import useIsCommittee from '../hooks/useIsCommittee'
@@ -108,8 +109,9 @@ export default function ProposalPage() {
   )
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
-
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
+  const showProposalUpdates =
+    publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
 
   const proposalResults = useRef<HTMLDivElement>(null)
 
@@ -279,7 +281,9 @@ export default function ProposalPage() {
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
-              <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateDeleted={refetchUpdates} />
+              {showProposalUpdates && (
+                <ProposalUpdates proposal={proposal} updates={publicUpdates} onUpdateDeleted={refetchUpdates} />
+              )}
               {proposal && (
                 <>
                   <ProposalResults

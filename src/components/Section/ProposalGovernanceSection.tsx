@@ -54,7 +54,7 @@ export default function ProposalGovernanceSection({
   )
   const showProposalThresholdsSummary = !!(
     proposal &&
-    proposal?.required_to_pass != null &&
+    proposal?.required_to_pass !== null &&
     proposal?.required_to_pass >= 0 &&
     !(proposal.status === ProposalStatus.Passed)
   )
