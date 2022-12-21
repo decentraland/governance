@@ -97,7 +97,7 @@ export default function ProposalSidebar({
       {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
       {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
       <div className="ProposalSidebar">
-        {showProposalUpdatesActions && (
+        {showProposalUpdatesActions && proposal && (
           <ProposalUpdatesActions
             nextUpdate={nextUpdate}
             currentUpdate={currentUpdate}

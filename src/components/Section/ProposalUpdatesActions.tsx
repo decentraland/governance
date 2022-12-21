@@ -18,7 +18,7 @@ type ProposalUpdatesActionsProps = {
   nextUpdate?: UpdateAttributes | null
   currentUpdate?: UpdateAttributes | null
   pendingUpdates?: UpdateAttributes[]
-  proposal: ProposalAttributes | null
+  proposal: ProposalAttributes
 }
 
 export default function ProposalUpdatesActions({
@@ -31,10 +31,6 @@ export default function ProposalUpdatesActions({
   const hasSubmittedUpdate = !!currentUpdate?.completion_date
 
   const onPostUpdateClick = useCallback(() => {
-    if (proposal === null) {
-      return
-    }
-
     const hasPendingUpdates = pendingUpdates && pendingUpdates.length > 0
     navigate(
       locations.submitUpdate({
