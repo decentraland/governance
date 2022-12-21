@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, conditional, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { ProposalAttributes, ProposalType } from '../Proposal/types'
+import { ProposalAttributes, ProposalType, isProposalType } from '../Proposal/types'
 import { getProposalCategory } from '../Proposal/utils'
 import ProposalSurveyTopicModel from '../ProposalSurveyTopics/model'
 
@@ -16,6 +16,7 @@ export default class SurveyTopicModel extends Model<SurveyTopicAttributes> {
     proposalType: ProposalType,
     proposalConfiguration: Pick<ProposalAttributes, 'configuration'>
   ): Promise<Topic[]> {
+    if (!isProposalType(proposalType)) return []
     const proposalCategory = getProposalCategory(proposalType, proposalConfiguration)
     return await this.query(SQL`
     SELECT s.topic_id
