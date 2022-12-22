@@ -21,7 +21,7 @@ interface LabelProps {
 
 const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
   const t = useFormatMessage()
-  const { total, mana, names, land, delegated, estate, l1Wearables } = vpDistribution || EMPTY_DISTRIBUTION
+  const { total, mana, names, land, delegated, estate, l1Wearables, rental } = vpDistribution || EMPTY_DISTRIBUTION
 
   const DISTRIBUTION_PROPS: LabelProps[] = [
     { value: mana, intlKey: 'mana', cssClassName: 'Mana' },
@@ -30,6 +30,7 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
     { value: land, intlKey: 'land', cssClassName: 'Land' },
     { value: estate, intlKey: 'estates', cssClassName: 'Estate' },
     { value: delegated, intlKey: 'delegated', cssClassName: 'Delegated' },
+    { value: rental, intlKey: 'rental', cssClassName: 'Rental' },
   ]
 
   return (

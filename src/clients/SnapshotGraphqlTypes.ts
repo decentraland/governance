@@ -117,6 +117,7 @@ export type VpDistribution = {
   names: number
   delegated: number
   l1Wearables: number
+  rental: number
 }
 
 export enum StrategyOrder {
@@ -127,4 +128,5 @@ export enum StrategyOrder {
   Names,
   Delegation,
   L1Wearables,
+  Rental,
 }
