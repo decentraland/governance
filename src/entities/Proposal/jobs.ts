@@ -164,14 +164,15 @@ export async function finishProposal(context: JobContext) {
 
   const proposals: ProposalWithWinnerChoice[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
-  for (const { id, title, winnerChoice, outcomeStatus } of proposals) {
+  for (const { id, title, winnerChoice, outcomeStatus, configuration, type } of proposals) {
     commentProposalUpdateInDiscourse(id)
     if (outcomeStatus) {
       DiscordService.finishProposal(
         id,
         title,
         outcomeStatus,
-        outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
+        outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined,
+        type === ProposalType.Grant ? { tier: configuration.tier, size: configuration.size } : undefined
       )
     }
   }

@@ -1,19 +1,20 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { ChannelType, Client, EmbedBuilder, GatewayIntentBits } from 'discord.js'
+import snakeCase from 'lodash/snakeCase'
 
 import { capitalizeFirstLetter } from '../clients/utils'
 import { getProfileUrl } from '../entities/Profile/utils'
-import { ProposalType } from '../entities/Proposal/types'
+import { ProposalGrantTier, ProposalType, isProposalGrantTier } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
 import { inBackground } from '../helpers'
 
-const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
+const NOTIFICATIONS_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
-
+const GUILD_ID = process.env.DISCORD_GUILD_ID || '894658869391933540'
 const DISCORD_SERVICE_ENABLED = true
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
@@ -45,6 +46,20 @@ type EmbedMessageProps = {
   url: string
 }
 
+type Grant = {
+  tier: ProposalGrantTier
+  size: number
+}
+
+const DISCORD_GRANT_TIERS_1_2_3_CATEGORY_CHANNEL_ID =
+  process.env.DISCORD_GRANT_TIERS_1_2_3_CATEGORY_CHANNEL_ID || '933621102641577994'
+const DISCORD_GRANT_TIER_4_CATEGORY_CHANNEL_ID =
+  process.env.DISCORD_GRANT_TIER_4_CATEGORY_CHANNEL_ID || '1053734578390564985'
+const DISCORD_GRANT_TIER_5_CATEGORY_CHANNEL_ID =
+  process.env.DISCORD_GRANT_TIER_5_CATEGORY_CHANNEL_ID || '1053734798763503686'
+const DISCORD_GRANT_TIER_6_CATEGORY_CHANNEL_ID =
+  process.env.DISCORD_GRANT_TIER_6_CATEGORY_CHANNEL_ID || '1053734836688388136'
+
 function getChoices(choices: string[]): Field[] {
   return choices.map((choice, idx) => ({
     name: `Option #${idx + 1}`,
@@ -54,6 +69,38 @@ function getChoices(choices: string[]): Field[] {
 
 function getPreviewText(text: string) {
   return text.length > PREVIEW_MAX_LENGTH ? text.slice(0, PREVIEW_MAX_LENGTH) + '...' : text
+}
+
+function getCategoryChannelIdFromTier(tier: ProposalGrantTier) {
+  switch (tier) {
+    case ProposalGrantTier.Tier1:
+    case ProposalGrantTier.Tier2:
+    case ProposalGrantTier.Tier3:
+      return DISCORD_GRANT_TIERS_1_2_3_CATEGORY_CHANNEL_ID
+    case ProposalGrantTier.Tier4:
+      return DISCORD_GRANT_TIER_4_CATEGORY_CHANNEL_ID
+    case ProposalGrantTier.Tier5:
+      return DISCORD_GRANT_TIER_5_CATEGORY_CHANNEL_ID
+    case ProposalGrantTier.Tier6:
+      return DISCORD_GRANT_TIER_6_CATEGORY_CHANNEL_ID
+  }
+}
+
+function getTierNumber(tier: ProposalGrantTier) {
+  switch (tier) {
+    case ProposalGrantTier.Tier1:
+      return '1'
+    case ProposalGrantTier.Tier2:
+      return '2'
+    case ProposalGrantTier.Tier3:
+      return '3'
+    case ProposalGrantTier.Tier4:
+      return '4'
+    case ProposalGrantTier.Tier5:
+      return '5'
+    case ProposalGrantTier.Tier6:
+      return '6'
+  }
 }
 
 export class DiscordService {
@@ -71,11 +118,11 @@ export class DiscordService {
   }
 
   private static get channel() {
-    if (!CHANNEL_ID) {
+    if (!NOTIFICATIONS_CHANNEL_ID) {
       throw new Error('Discord channel ID not set')
     }
 
-    const channel = client.channels.cache.get(CHANNEL_ID)
+    const channel = client.channels.cache.get(NOTIFICATIONS_CHANNEL_ID)
     if (channel?.type !== ChannelType.GuildText && channel?.type !== ChannelType.GuildAnnouncement) {
       throw new Error(`Discord channel type is not supported: ${channel?.type}`)
     }
@@ -222,7 +269,7 @@ export class DiscordService {
     }
   }
 
-  static finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
+  static finishProposal(id: string, title: string, outcome: string, winnerChoice?: string, grant?: Grant) {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
         const action = `Proposal has ended with outcome ${outcome}`
@@ -240,6 +287,42 @@ export class DiscordService {
           throw new Error(`[Error sending message to Discord - Finish proposal] ID ${id}, Error: ${error}`)
         }
       })
+
+      if (grant?.tier && isProposalGrantTier(grant.tier)) {
+        inBackground(async () => {
+          try {
+            const { tier, size } = grant
+            const guild = await client.guilds.fetch(GUILD_ID)
+            const name = snakeCase(title).slice(0, 25)
+
+            const parent = client.channels.cache.find(
+              (channel) =>
+                channel.type === ChannelType.GuildCategory && channel.id === getCategoryChannelIdFromTier(tier)
+            )
+
+            if (!parent) {
+              throw new Error(`Parent channel not found for ${tier}`)
+            }
+
+            const channel = await guild.channels.create({
+              name,
+              parent: parent.id,
+              type: ChannelType.GuildText,
+            })
+
+            // TODO: Update duration with correct amount
+            const tierText = `Tier (Amount): ${getTierNumber(tier)} (${size})`
+            // TODO const duration = getTierDuration(tier)
+            const duration = ''
+
+            await channel.send(
+              `Hi team! Congrats for your Grant! In this new dedicated Discord channel you can post everything you consider necessary to share about your granted project. The Grant Support Squad will schedule a meeting with you soon to talk about your project.\nSome information that could be useful:\nName: ${title}\n${tierText}\nDuration: ${duration}\nProposal Link: https://governance.decentraland.org/proposal/?id=${id}`
+            )
+          } catch (error) {
+            throw new Error(`[Error creating channel in Discord server] ID ${id}, Error: ${error}`)
+          }
+        })
+      }
     }
   }
 }
