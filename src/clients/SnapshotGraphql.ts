@@ -415,6 +415,7 @@ export class SnapshotGraphql extends API {
       names: Math.floor(vpByStrategy[StrategyOrder.Names]),
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
       l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
+      rental: Math.floor(vpByStrategy[StrategyOrder.Rental]),
     }
   }
 

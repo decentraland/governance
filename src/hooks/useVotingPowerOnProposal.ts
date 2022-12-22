@@ -60,7 +60,8 @@ function getVoteDelegatableVp(vote: SnapshotVote) {
       vote.vp_by_strategy[StrategyOrder.Mana] +
       vote.vp_by_strategy[StrategyOrder.Names] +
       vote.vp_by_strategy[StrategyOrder.L1Wearables] +
-      vote.vp_by_strategy[StrategyOrder.WrappedMana]
+      vote.vp_by_strategy[StrategyOrder.WrappedMana] +
+      vote.vp_by_strategy[StrategyOrder.Rental]
     )
   }
 }

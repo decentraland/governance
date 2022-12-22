@@ -22,6 +22,10 @@
   background: var(--orange-800);
 }
 
+.VotingPowerDistribution__Rental {
+  background: var(--purple-800);
+}
+
 .VotingPowerDistributionBar {
   display: flex;
   flex-direction: row;
