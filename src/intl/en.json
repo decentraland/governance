@@ -444,7 +444,8 @@
         "title": "Get involved and shape Decentraland’s future.",
         "description": "The  DAO is a key component of the ecosystem and it is the consensus mechanism for defining the rules of the Decentraland's virtual world. Participate in the DAO and make your voice heard.",
         "discord_button": "Join our Discord",
-        "docs_button": "Read our docs"
+        "docs_button": "Read our docs",
+        "close_button_label": "Dismiss banner"
       },
       "metrics": {
         "proposals": "Proposals",

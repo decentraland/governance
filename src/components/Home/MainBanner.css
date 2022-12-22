@@ -111,3 +111,13 @@
   color: var(--white-900) !important;
   background: transparent !important;
 }
+
+.MainBanner__CloseButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}

@@ -5,10 +5,15 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { DAO_DISCORD_URL, DOCS_URL } from '../../constants'
+import CloseCircle from '../Icon/CloseCircle'
 
 import './MainBanner.css'
 
-const MainBanner = () => {
+interface Props {
+  onCloseClick: () => void
+}
+
+const MainBanner = ({ onCloseClick }: Props) => {
   const t = useFormatMessage()
 
   return (
@@ -24,6 +29,13 @@ const MainBanner = () => {
           {t('page.home.main_banner.docs_button')}
         </Button>
       </div>
+      <button
+        aria-label={t('page.home.main_banner.close_button_label')}
+        className="MainBanner__CloseButton"
+        onClick={onCloseClick}
+      >
+        <CloseCircle />
+      </button>
     </div>
   )
 }
