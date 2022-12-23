@@ -31,8 +31,5 @@ export function onPreRenderHTML(
     return <link rel="stylesheet" id={component.props.id} href={component.props['data-href']} />
   })
 
-  const postBodyComponents = [...getPostBodyComponents()]
-
   replaceHeadComponents(headComponents)
-  replacePostBodyComponents(postBodyComponents)
 }
