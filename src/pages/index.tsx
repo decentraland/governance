@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -18,21 +18,8 @@ import { isUnderMaintenance } from '../modules/maintenance'
 
 import './index.css'
 
-const HIDE_HOME_BANNER_KEY = 'org.decentraland.governance.home_banner.hide'
-
-const shouldShowMainBanner = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(HIDE_HOME_BANNER_KEY) !== 'true'
-  }
-}
-
 export default function HomePage() {
   const t = useFormatMessage()
-  const [showMainBanner, setShowMainBanner] = useState(false)
-
-  useEffect(() => {
-    setShowMainBanner(!!shouldShowMainBanner())
-  }, [])
 
   if (isUnderMaintenance()) {
     return (
@@ -44,11 +31,6 @@ export default function HomePage() {
     )
   }
 
-  const handleCloseMainBannerClick = () => {
-    localStorage.setItem(HIDE_HOME_BANNER_KEY, 'true')
-    setShowMainBanner(false)
-  }
-
   return (
     <>
       <Head
@@ -58,11 +40,9 @@ export default function HomePage() {
       />
       <Navigation activeTab={NavigationTab.Home} />
       <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Home}>
-        {showMainBanner && (
-          <Container>
-            <MainBanner onCloseClick={handleCloseMainBannerClick} />
-          </Container>
-        )}
+        <Container>
+          <MainBanner />
+        </Container>
         <MetricsCards />
         <Container>
           <OpenProposals />
