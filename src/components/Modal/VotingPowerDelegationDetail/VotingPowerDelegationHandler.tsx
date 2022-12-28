@@ -47,6 +47,7 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
       }
     } finally {
       setLoading(false)
+      location.reload()
     }
   }
 
