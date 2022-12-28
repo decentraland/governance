@@ -73,6 +73,7 @@ export default function ProfilePage() {
         <GrantBeneficiaryBox address={address} />
         <ActivityBox address={address} />
         <VpDelegationBox
+          address={address}
           delegation={delegation}
           isLoadingDelegations={delegationState.loading}
           ownVp={vpDistribution?.own}
