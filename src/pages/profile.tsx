@@ -18,7 +18,9 @@ import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import useProfile from '../hooks/useProfile'
+import { EMPTY_DISTRIBUTION } from '../hooks/useVotingPowerDistribution'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { isUnderMaintenance } from '../modules/maintenance'
 
@@ -37,10 +39,12 @@ export default function ProfilePage() {
   if (!hasAddress) {
     navigate(`/profile/?address=${userAddress}`, { replace: true })
   }
-
   const { displayableAddress } = useProfile(address)
+  const isLoggedUserProfile = isSameAddress(userAddress, address)
   const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
+  const { vpDistribution: loggedUserVpDistribution, isLoadingVpDistribution: isLoadingLoggedUserVp } =
+    useVotingPowerInformation(userAddress)
 
   if (isUnderMaintenance()) {
     return (
@@ -85,7 +89,9 @@ export default function ProfilePage() {
           delegationState={delegationState}
           scores={scores}
           isLoadingScores={isLoadingScores}
-          vpDistribution={vpDistribution}
+          loggedUserVpDistribution={loggedUserVpDistribution}
+          isLoadingVpDistribution={isLoadingLoggedUserVp}
+          isLoggedUserProfile={isLoggedUserProfile}
         />
         <VotedProposalsBox address={address} />
       </div>

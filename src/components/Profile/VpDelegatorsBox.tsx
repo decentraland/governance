@@ -19,7 +19,9 @@ interface Props {
   delegationState: AsyncStateResultState<DelegationResult, DelegationResult>
   scores: DetailedScores
   isLoadingScores: boolean
-  vpDistribution: VpDistribution | null
+  loggedUserVpDistribution: VpDistribution | null
+  isLoadingVpDistribution: boolean
+  isLoggedUserProfile: boolean
 }
 
 export default function VpDelegatorsBox({
@@ -28,11 +30,11 @@ export default function VpDelegatorsBox({
   delegationState,
   scores,
   isLoadingScores,
-  vpDistribution,
+  loggedUserVpDistribution,
+  isLoadingVpDistribution,
+  isLoggedUserProfile,
 }: Props) {
   const t = useFormatMessage()
-  const [userAddress] = useAuthContext()
-  const isLoggedUserProfile = isSameAddress(userAddress, address)
 
   return (
     <Container>
@@ -43,11 +45,12 @@ export default function VpDelegatorsBox({
         action={
           !isLoggedUserProfile &&
           address &&
-          vpDistribution && (
+          !isLoadingVpDistribution &&
+          loggedUserVpDistribution && (
             <VotingPowerDelegationHandler
               basic
               buttonText={t('page.profile.delegators.delegate_action')}
-              userVP={vpDistribution.own}
+              userVP={loggedUserVpDistribution.own}
               candidateAddress={address}
             />
           )
