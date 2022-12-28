@@ -25,6 +25,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
+import { GRANT_PROPOSAL_SUBMIT_ENABLED } from '../../entities/Proposal/constants'
 import {
   ProposalGrantCategory,
   ProposalGrantTier,
@@ -197,6 +198,10 @@ const validate = createValidator<GrantState>({
 })
 
 export default function SubmitGrant() {
+  if (!GRANT_PROPOSAL_SUBMIT_ENABLED) {
+    navigate(locations.submit())
+  }
+
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)
