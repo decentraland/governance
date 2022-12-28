@@ -27,14 +27,15 @@
   --purple-800: #3c24b3;
   --dcl-primary: #ff2d55;
 
-  --background-catalyst: var(--blue-800);
-  --background-poi: var(--green-800);
-  --background-ban-name: var(--fuchsia-800);
-  --background-grant: var(--purple-800);
-  --background-poll: var(--orange-800);
-  --background-remove-poi: #ff247c;
-  --background-linked-wearables: var(--yellow-800);
+  --background-catalyst: rgba(72, 136, 238, 0.08);
+  --background-poi: rgba(68, 182, 0, 0.08);
+  --background-ban-name: rgba(255, 90, 254, 0.08);
+  --background-grant: rgba(60, 36, 179, 0.08);
+  --background-poll: rgba(255, 116, 57, 0.08);
+  --background-remove-poi: #fff1f4;
+  --background-linked-wearables: #feefd2;
   --background-popup: #5c5c6e;
+  --background-disabled: #f9f8f9;
 
   --dao-footer-height: 156px;
   --dao-header-height: 64px;

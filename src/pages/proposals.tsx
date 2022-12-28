@@ -191,7 +191,7 @@ export default function ProposalsPage() {
                     }
                   >
                     <Loader active={!proposals || isLoadingProposals} />
-                    {type && !searching && <CategoryBanner type={type} active />}
+                    {type && !searching && <CategoryBanner type={type} />}
                     {proposals && proposals.data.length === 0 && (
                       <Empty
                         description={

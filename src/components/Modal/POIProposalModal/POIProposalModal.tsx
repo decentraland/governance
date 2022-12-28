@@ -23,15 +23,10 @@ export function POIProposalModal({ ...props }) {
         </div>
       </Modal.Content>
       <div className="ProposalModel__Actions">
-        <CategoryBanner
-          type={PoiType.AddPOI}
-          href={locations.submit(ProposalType.POI, { request: PoiType.AddPOI })}
-          active
-        />
+        <CategoryBanner type={PoiType.AddPOI} href={locations.submit(ProposalType.POI, { request: PoiType.AddPOI })} />
         <CategoryBanner
           type={PoiType.RemovePOI}
           href={locations.submit(ProposalType.POI, { request: PoiType.RemovePOI })}
-          active
         />
       </div>
     </Modal>
