@@ -1,12 +1,12 @@
 import React from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { AsyncStateResultState } from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import { DelegationResult, DetailedScores, VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphqlTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
 import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
@@ -15,26 +15,27 @@ import './VpDelegatorsBox.css'
 
 interface Props {
   address: string | null
+  userAddress: string | null
   delegation: DelegationResult
   delegationState: AsyncStateResultState<DelegationResult, DelegationResult>
   scores: DetailedScores
   isLoadingScores: boolean
-  loggedUserVpDistribution: VpDistribution | null
-  isLoadingVpDistribution: boolean
-  isLoggedUserProfile: boolean
 }
 
 export default function VpDelegatorsBox({
   address,
+  userAddress,
   delegation,
   delegationState,
   scores,
   isLoadingScores,
-  loggedUserVpDistribution,
-  isLoadingVpDistribution,
-  isLoggedUserProfile,
 }: Props) {
   const t = useFormatMessage()
+  const isLoggedUserProfile = isSameAddress(userAddress, address)
+  const { vpDistribution: loggedUserVpDistribution, isLoadingVpDistribution } = useVotingPowerInformation(
+    !isLoggedUserProfile ? userAddress : undefined
+  )
+  const displayDelegateAction = !isLoggedUserProfile && address && !isLoadingVpDistribution && loggedUserVpDistribution
 
   return (
     <Container>
@@ -43,10 +44,7 @@ export default function VpDelegatorsBox({
         title={t('page.profile.delegators.title')}
         info={t('page.profile.delegators.helper')}
         action={
-          !isLoggedUserProfile &&
-          address &&
-          !isLoadingVpDistribution &&
-          loggedUserVpDistribution && (
+          displayDelegateAction && (
             <VotingPowerDelegationHandler
               basic
               buttonText={t('page.profile.delegators.delegate_action')}
