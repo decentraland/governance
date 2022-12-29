@@ -25,7 +25,6 @@ import LoadingView from '../../components/Layout/LoadingView'
 import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
-import { GRANT_PROPOSAL_SUBMIT_ENABLED } from '../../entities/Proposal/constants'
 import {
   ProposalGrantCategory,
   ProposalGrantTier,
@@ -33,7 +32,12 @@ import {
   isProposalGrantTier,
   newProposalGrantScheme,
 } from '../../entities/Proposal/types'
-import { asNumber, isGrantSizeValid, userModifiedForm } from '../../entities/Proposal/utils'
+import {
+  asNumber,
+  isGrantProposalSubmitEnabled,
+  isGrantSizeValid,
+  userModifiedForm,
+} from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -197,8 +201,10 @@ const validate = createValidator<GrantState>({
   }),
 })
 
+const NOW = Date.now()
+
 export default function SubmitGrant() {
-  if (!GRANT_PROPOSAL_SUBMIT_ENABLED) {
+  if (!isGrantProposalSubmitEnabled(NOW)) {
     navigate(locations.submit())
   }
 

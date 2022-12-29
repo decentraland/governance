@@ -8,8 +8,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import { POIProposalModal } from '../../components/Modal/POIProposalModal/POIProposalModal'
-import { GRANT_PROPOSAL_SUBMIT_ENABLED } from '../../entities/Proposal/constants'
 import { ProposalType } from '../../entities/Proposal/types'
+import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 
 import './submit.css'
@@ -41,7 +41,7 @@ export default function NewProposalPage() {
           <CategoryBanner
             type={ProposalType.Grant}
             href={locations.submit(ProposalType.Grant)}
-            active={GRANT_PROPOSAL_SUBMIT_ENABLED}
+            active={isGrantProposalSubmitEnabled(Date.now())}
           />
         </ContentSection>
         <ContentSection>
