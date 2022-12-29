@@ -214,7 +214,7 @@ export function isGovernanceProcessProposal(type: ProposalType) {
 }
 
 export function isGrantProposalSubmitEnabled(now: number) {
-  const DISABLE_START_DATE = Time('2023-01-01').utc().add(8, 'hour')
+  const DISABLE_START_DATE = Time.utc('2023-01-01').add(8, 'hour')
   if (Time(now).isAfter(DISABLE_START_DATE)) {
     return false
   }
