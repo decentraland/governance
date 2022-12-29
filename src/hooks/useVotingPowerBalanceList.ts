@@ -6,6 +6,7 @@ import { getScores } from '../entities/Votes/utils'
 export default function useVotingPowerBalanceList(addresses: string[]) {
   const [votingPower, state] = useAsyncMemo(
     async () => {
+      if (addresses.length < 1) return {}
       return await getScores(addresses)
     },
     [JSON.stringify(addresses)],

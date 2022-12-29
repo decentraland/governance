@@ -7,6 +7,7 @@ import { getDelegations } from '../entities/Snapshot/utils'
 export default function useDelegation(address?: string | null) {
   return useAsyncMemo(
     async () => {
+      if (!address) return EMPTY_DELEGATION
       return await getDelegations(address)
     },
     [SNAPSHOT_SPACE, address],
