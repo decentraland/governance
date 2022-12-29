@@ -17,10 +17,15 @@
   justify-content: flex-start;
 }
 
-.ProposalComment .ProposalComment__Cooked {
+.ProposalComment__Cooked {
   width: auto;
   height: auto;
   max-width: 100%;
+}
+
+.ProposalComment__Cooked img {
+  max-width: 100%;
+  height: auto;
 }
 
 .ProposalComment__Cooked__Img {
