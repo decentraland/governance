@@ -16,7 +16,7 @@ import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistributio
 import ChevronLeft from '../../Icon/ChevronLeft'
 import VotingPower from '../../Token/VotingPower'
 import Username from '../../User/Username'
-import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
+import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 
 import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
@@ -83,7 +83,10 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   return (
     <>
       <Modal.Header
-        className={TokenList.join(['VotingPowerDelegationModal__Header', 'VotingPowerDelegationDetail__Header'])}
+        className={TokenList.join([
+          'VotingPowerDelegationCandidatesList__Header',
+          'VotingPowerDelegationDetail__Header',
+        ])}
       >
         <div className="VotingPowerDelegationDetail__CandidateName">
           <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>

@@ -5,7 +5,7 @@
 }
 
 @media (max-width: 424px) {
-  .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
+  .header.VotingPowerDelegationCandidatesList__Header.VotingPowerDelegationDetail__Header {
     display: flex;
     flex-direction: column;
     padding: 0 !important;
@@ -46,7 +46,7 @@
 }
 
 @media (max-width: 768px) {
-  .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
+  .header.VotingPowerDelegationCandidatesList__Header.VotingPowerDelegationDetail__Header {
     padding-right: 0 !important;
     padding-left: 0 !important;
   }
