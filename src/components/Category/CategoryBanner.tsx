@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -22,35 +23,39 @@ export const categoryIcons = {
   [ProposalType.LinkedWearables]: require('../../images/icons/linked-wearables.svg').default,
 }
 
-export type CategoryBannerProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick'> & {
   active?: boolean
   isNew?: boolean
   type: ProposalType | PoiType
 }
 
-export default React.memo(function CategoryBanner({ active, isNew, type, ...props }: CategoryBannerProps) {
+export default function CategoryBanner({ active = true, isNew, type, onClick, href }: Props) {
   const t = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (props.onClick) {
-      props.onClick(e)
+    if (!active) {
+      return
+    }
+
+    if (onClick) {
+      onClick(e)
     }
 
     if (!e.defaultPrevented) {
       e.preventDefault()
 
-      if (props.href) {
-        navigate(props.href)
+      if (href) {
+        navigate(href)
       }
     }
   }
 
   return (
     <a
-      {...props}
+      href={active ? href : undefined}
       onClick={handleClick}
       className={TokenList.join([`CategoryBanner`, `CategoryBanner--${type}`, active && `CategoryBanner--active`])}
     >
-      <div className="CategoryBanner__Icon">
+      <div className={TokenList.join(['CategoryBanner__Icon', !active && 'CategoryBanner__Icon--inactive'])}>
         <img src={categoryIcons[type]} width="48" height="48" />
       </div>
       <div>
@@ -58,10 +63,12 @@ export default React.memo(function CategoryBanner({ active, isNew, type, ...prop
           <Paragraph small semiBold>
             {t(`category.${type}_title`)}
           </Paragraph>
-          {isNew && <span className="NewBadge">{t(`category.new`)}</span>}
+          {isNew && <span className="CategoryBanner__Badge NewBadge">{t(`category.new`)}</span>}
+          {!active && <span className="CategoryBanner__Badge CategoryBanner__PausedBadge">{t(`category.paused`)}</span>}
         </div>
         <Paragraph tiny>{t(`category.${type}_description`)}</Paragraph>
+        {!active && <Markdown className="CategoryBanner__PausedText">{t(`category.${type}_paused`)}</Markdown>}
       </div>
     </a>
   )
-})
+}

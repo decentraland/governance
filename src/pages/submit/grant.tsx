@@ -32,7 +32,12 @@ import {
   isProposalGrantTier,
   newProposalGrantScheme,
 } from '../../entities/Proposal/types'
-import { asNumber, isGrantSizeValid, userModifiedForm } from '../../entities/Proposal/utils'
+import {
+  asNumber,
+  isGrantProposalSubmitEnabled,
+  isGrantSizeValid,
+  userModifiedForm,
+} from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -196,7 +201,13 @@ const validate = createValidator<GrantState>({
   }),
 })
 
+const NOW = Date.now()
+
 export default function SubmitGrant() {
+  if (!isGrantProposalSubmitEnabled(NOW)) {
+    navigate(locations.submit())
+  }
+
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)

@@ -234,6 +234,7 @@
   },
   "category": {
     "new": "New",
+    "paused": "Paused",
     "poi": "POI",
     "catalyst": "Catalyst",
     "ban_name": "Ban Name",
@@ -255,6 +256,7 @@
     "ban_name_description": "Ban an offensive name from Decentraland",
     "grant_title": "Grant Request",
     "grant_description": "Request funding from the DAO for a project or contribution",
+    "grant_paused": "The Decentraland DAO Grants Program has been put on hold by community decision until February 28th, 2023. Please read [this governance proposal](https://governance.decentraland.org/proposal/?id=9f3b0be0-7e94-11ed-8750-cd1748a98b11) to learn more or visit the [DAO Discord Server](https://discord.gg/amkcFrqPBh) to engage with members of the community.",
     "poll_title": "Pre-Proposal Poll",
     "poll_description": "Ask community members for their opinion on an issue or topic",
     "draft_title": "Draft Proposal",

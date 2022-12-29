@@ -8,7 +8,8 @@ import CoauthorModel from '../entities/Coauthor/model'
 import isCommittee from '../entities/Committee/isCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import * as templates from '../entities/Proposal/templates'
-import { ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../modules/votes/utils'
@@ -30,6 +31,10 @@ export type ProposalLifespan = {
 
 export class ProposalService {
   static async createProposal(proposalInCreation: ProposalInCreation) {
+    if (proposalInCreation.type === ProposalType.Grant && !isGrantProposalSubmitEnabled(Date.now())) {
+      throw new Error('Decentraland DAO Grants Program has been put on hold')
+    }
+
     const proposalId = uuid()
     const proposalLifespan = this.getLifespan(proposalInCreation)
     const coAuthors = this.getCoAuthors(proposalInCreation)
