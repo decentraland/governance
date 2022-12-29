@@ -81,6 +81,7 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
               ))}
           </Header>
           <Button
+            className="RevokeDelegationButton"
             disabled={isLoading || !isContractUsable || isDelegatedGlobally}
             loading={isLoading}
             inverted={isRevocable}

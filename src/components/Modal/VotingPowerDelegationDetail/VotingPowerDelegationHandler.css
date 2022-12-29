@@ -24,3 +24,7 @@
 .GlobalDelegationPopUp {
   box-sizing: content-box !important;
 }
+
+.RevokeDelegationButton {
+  border: none !important;
+}
