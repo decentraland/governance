@@ -3,7 +3,6 @@
  *
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
-
 import React from 'react'
 import 'core-js/features/set-immediate'
 import 'semantic-ui-css/semantic.min.css'
@@ -19,10 +18,15 @@ import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Navbar from './src/components/Layout/Navbar'
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
+import Segment from "decentraland-gatsby/dist/components/Development/Segment";
+import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar";
+import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants";
 
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>
     <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
+    {ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
+    {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
   </AuthProvider>
 )
 
