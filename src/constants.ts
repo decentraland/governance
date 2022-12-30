@@ -9,4 +9,4 @@ export const NEWSLETTER_URL = 'https://mailchi.mp/decentraland.org/decentraland-
 export const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
 export const CANDIDATE_ADDRESSES = Candidates.map((delegate) => delegate.address)
 export const ROLLBAR_TOKEN = env('GATSBY_ROLLBAR_TOKEN')
-export const SEGMENT_KEY = env('GATSBY_SEGMENT_KEY') || 'asdkey'
+export const SEGMENT_KEY = env('GATSBY_SEGMENT_KEY')
