@@ -20,12 +20,13 @@ import Navbar from './src/components/Layout/Navbar'
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment";
 import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar";
+import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants";
 
 export const wrapRootElement = ({ element }) => (
   <AuthProvider>
     <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
-    {process.env.GATSBY_SEGMENT_KEY && <Segment key="segment"/>}
-    {process.env.GATSBY_ROLLBAR_TOKEN && <Rollbar key="rollbar" />}
+    {ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
+    {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
   </AuthProvider>
 )
 
