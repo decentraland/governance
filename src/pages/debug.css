@@ -5,3 +5,20 @@
 .DebugPage__Section {
   padding-bottom: 32px;
 }
+
+.SpaceName__Section {
+  display: flex;
+}
+
+button.ui.primary.button.Debug__SectionButton {
+  max-height: 46px;
+  margin-top: 4px;
+  margin-left: 16px !important;
+}
+
+.EnvName__Section {
+  display: flex;
+  height: 50px;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}

@@ -5,6 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import EnvStatus from '../components/Debug/EnvStatus'
 import HttpStatus from '../components/Debug/HttpStatus'
 import SnapshotStatus from '../components/Debug/SnapshotStatus'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -28,6 +29,7 @@ export default function DebugPage() {
       <Header size="huge">{t('page.debug.title')}</Header>
       <HttpStatus className="DebugPage__Section" />
       <SnapshotStatus className="DebugPage__Section" />
+      <EnvStatus className="DebugPage__Section" />
       <div>Version: {process.env.GATSBY_VERSION_NUMBER}</div>
     </Container>
   )
