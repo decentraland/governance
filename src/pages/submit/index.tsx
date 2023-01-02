@@ -14,6 +14,9 @@ import locations from '../../modules/locations'
 
 import './submit.css'
 
+const NOW = Date.now()
+const IS_GRANT_SUBMIT_ENABLED = isGrantProposalSubmitEnabled(NOW)
+
 export default function NewProposalPage() {
   const t = useFormatMessage()
   const [showPOIProposalModal, setShowPOIProposalModal] = useState(false)
@@ -41,7 +44,7 @@ export default function NewProposalPage() {
           <CategoryBanner
             type={ProposalType.Grant}
             href={locations.submit(ProposalType.Grant)}
-            active={isGrantProposalSubmitEnabled(Date.now())}
+            active={IS_GRANT_SUBMIT_ENABLED}
           />
         </ContentSection>
         <ContentSection>
