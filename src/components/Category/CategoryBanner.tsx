@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -51,7 +52,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
   }
 
   return (
-    <a
+    <Link
       href={href}
       onClick={handleClick}
       className={TokenList.join([`CategoryBanner`, `CategoryBanner--${type}`, active && `CategoryBanner--active`])}
@@ -70,6 +71,6 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
         <Paragraph tiny>{t(`category.${type}_description`)}</Paragraph>
         {!active && <Markdown className="CategoryBanner__PausedText">{t(`category.${type}_paused`)}</Markdown>}
       </div>
-    </a>
+    </Link>
   )
 }
