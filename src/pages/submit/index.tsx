@@ -43,7 +43,7 @@ export default function NewProposalPage() {
           <CategoryBanner type={ProposalType.LinkedWearables} href={locations.submit(ProposalType.LinkedWearables)} />
           <CategoryBanner
             type={ProposalType.Grant}
-            href={IS_GRANT_SUBMIT_ENABLED ? locations.submit(ProposalType.Grant) : undefined}
+            href={locations.submit(ProposalType.Grant)}
             active={IS_GRANT_SUBMIT_ENABLED}
           />
         </ContentSection>

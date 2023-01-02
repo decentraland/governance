@@ -31,7 +31,12 @@ type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onCli
 
 export default function CategoryBanner({ active = true, isNew, type, onClick, href }: Props) {
   const t = useFormatMessage()
+
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (!e.defaultPrevented) {
+      e.preventDefault()
+    }
+
     if (!active) {
       return
     }
@@ -40,18 +45,14 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
       onClick(e)
     }
 
-    if (!e.defaultPrevented) {
-      e.preventDefault()
-
-      if (href) {
-        navigate(href)
-      }
+    if (href) {
+      navigate(href)
     }
   }
 
   return (
     <a
-      href={active ? href : undefined}
+      href={href}
       onClick={handleClick}
       className={TokenList.join([`CategoryBanner`, `CategoryBanner--${type}`, active && `CategoryBanner--active`])}
     >
