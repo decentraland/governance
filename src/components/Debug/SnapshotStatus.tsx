@@ -10,8 +10,6 @@ import ErrorMessage from '../Error/ErrorMessage'
 import MarkdownField from '../Form/MarkdownField'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import './SnapshotStatus.css'
-
 interface Props {
   className?: string
 }
@@ -40,7 +38,7 @@ export default function SnapshotStatus({ className }: Props) {
         <Label>{'Space Name'}</Label>
         <div className="SpaceName__Section">
           <Field value={spaceName} onChange={(_, { value }) => setSpaceName(value)} />
-          <Button className="SpaceName__SectionButton" primary disabled={!spaceName} onClick={() => handleFetchClick()}>
+          <Button className="Debug__SectionButton" primary disabled={!spaceName} onClick={() => handleFetchClick()}>
             {'Fetch Status & Space'}
           </Button>
         </div>
@@ -50,6 +48,7 @@ export default function SnapshotStatus({ className }: Props) {
         label="Snapshot Status"
         readOnly={true}
         minHeight={77}
+        maxHeight={77}
         value={JSON.stringify(snapshotStatus)}
         preview={true}
       />
@@ -58,6 +57,7 @@ export default function SnapshotStatus({ className }: Props) {
         label="Snapshot Space"
         readOnly={true}
         minHeight={77}
+        maxHeight={77}
         value={JSON.stringify(snapshotSpace)}
         preview={true}
       />
