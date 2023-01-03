@@ -1,0 +1,248 @@
+openapi: '3.0.0'
+info:
+  title: Decentraland Governance API
+  version: '1.0.0'
+servers:
+  - url: localhost:4000/api
+tags:
+  - name: Proposals
+    description: Everything about DAO proposal
+  - name: Coauthor
+    description: Everything about proposal coauthors
+paths:
+  /proposals:
+    get:
+      tags:
+        - Proposals
+      summary: Get proposals filtered by the given query params
+      parameters:
+        - name: user
+          $ref: '#/components/parameters/user'
+        - name: type
+          $ref: '#/components/parameters/proposalType'
+        - name: status
+          $ref: '#/components/parameters/proposalStatus'
+        - name: subscribed
+          $ref: '#/components/parameters/isSubscribed'
+        - name: coauthor
+          $ref: '#/components/parameters/isCoauthor'
+        - name: search
+          $ref: '#/components/parameters/search'
+        - name: timeFrame
+          $ref: '#/components/parameters/timeFrame'
+        - name: timeFrameKey
+          $ref: '#/components/parameters/timeFrameKey'
+        - name: order
+          $ref: '#/components/parameters/order'
+        - name: limit
+          $ref: '#/components/parameters/limit'
+        - name: offset
+          $ref: '#/components/parameters/offset'
+        - name: snapshotIds
+          $ref: '#/components/parameters/snapshotIds'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /coauthors/{proposal}:
+    get:
+      tags:
+        - Coauthor
+      summary: Get the coauthors of the given proposal ID
+      parameters:
+        - name: proposal
+          $ref: '#/components/parameters/proposalId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+    # put:
+    #   tags:
+    #     - Coauthor
+    #   summary: Update de coauthor status of the given proposal ID (Auth required)
+    #   security:
+    #     - ApiKeyAuth: []
+    #   parameters:
+    #     - name: proposal
+    #       $ref: '#/components/parameters/proposalId'
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           type: object
+    #           properties:
+    #             status:
+    #               $ref: '#/components/parameters/coauthorStatus'
+    #           example:
+    #             status: APPROVED
+    #   responses:
+    #     '200':
+    #       $ref: '#/components/responses/200'
+            
+  /coauthors/{proposal}/{status}:
+    get:
+      tags:
+        - Coauthor
+      summary: Get the coauthors of the given proposal ID filtered by the given request status
+      parameters:
+        - name: proposal
+          $ref: '#/components/parameters/proposalId'
+        - name: status
+          $ref: '#/components/parameters/coauthorStatus'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /coauthors/proposals/{address}:
+    get:
+      tags:
+        - Coauthor
+      summary: Get the proposals in which the given address is a co-author
+      parameters:
+        - name: address
+          $ref: '#/components/parameters/address'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /coauthors/proposals/{address}/{status}:
+    get:
+      tags:
+        - Coauthor
+      summary: Get the proposals in which the given address is a co-author by request status
+      parameters:
+        - name: address
+          $ref: '#/components/parameters/address'
+        - name: status
+          $ref: '#/components/parameters/coauthorStatus'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+
+############# COMPONENTS #############
+
+components:
+## Schemas
+  schemas:
+    coauthorStatus:
+      type: string
+      pattern: '(APPROVED|REJECTED|PENDING)'
+    ethAddress:
+      type: string
+      pattern: '^0x[a-fA-F0-9]{40}$'
+    proposalType:
+      type: string
+      pattern: '(poi|catalyst|ban_name|grant|linked_wearables|poll|draft|governance)'
+    proposalStatus:
+      type: string
+      pattern: '(pending|active|finished|rejected|passed|enacted|deleted)'
+    order:
+      type: string
+      pattern: '(ASC|DESC)'
+    limitOffset:
+      type: integer
+      minimum: 0
+## Parameters
+  parameters:
+    user:
+      name: user
+      in: query
+      description: User eth address
+      schema:
+        $ref: '#/components/schemas/ethAddress'
+    proposalType:
+      name: type
+      in: query
+      description: Proposal type
+      example: poi
+      schema:
+        $ref: '#/components/schemas/proposalType'
+    proposalStatus:
+      name: status
+      in: query
+      description: Proposal status
+      example: enacted
+      schema:
+        $ref: '#/components/schemas/proposalStatus'
+    isSubscribed:
+      name: subscribed
+      in: query
+      description: is user subscribed to the proposals
+      schema:
+        type: boolean
+    isCoauthor:
+      name: coauthor
+      in: query
+      description: is user coauthoring the proposals
+      schema:
+        type: boolean
+    search:
+      name: search
+      in: query
+      description: text included within the proposals
+      schema:
+        type: string
+    timeFrame:
+      name: timeFrame
+      in: query
+      example: 2days
+      schema:
+        type: string
+    timeFrameKey:
+      name: timeFrameKey
+      in: query
+      example: finish_at
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: ascending or descending
+      example: ASC
+      schema:
+        $ref: '#/components/schemas/order'
+    limit:
+      name: limit
+      in: query
+      schema:
+        $ref: '#/components/schemas/limitOffset'
+    offset:
+      name: offset
+      in: query
+      schema:
+        $ref: '#/components/schemas/limitOffset'
+    snapshotIds:
+      name: snapshotIds
+      in: query
+      description: snapshot proposal IDs
+      schema:
+        type: string
+
+    address:
+      name: address
+      in: path
+      description: User eth address
+      required: true
+      schema:
+        $ref: '#/components/schemas/ethAddress'
+    proposalId:
+      name: proposal
+      in: path
+      description: Proposal ID
+      required: true
+      schema:
+        type: string
+    coauthorStatus:
+      name: status
+      in: path
+      description: Request status
+      required: true
+      schema:
+        $ref: '#/components/schemas/coauthorStatus'
+## Responses
+  responses:
+    '200':
+      description: successful operation
+## Security
+  # securitySchemes:
+  #   ApiKeyAuth:
+  #     type: apiKey
+  #     in: header
+  #     name: auth

@@ -15,7 +15,7 @@
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
-    "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/clients --watch src/services --watch src/server.ts -e ts,json --exec 'ts-node -r dotenv/config' src/server",
+    "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/clients --watch src/services --watch src/server.ts --watch src/docs/api.yaml -e ts,json --exec 'ts-node -r dotenv/config' src/server",
     "clean": "gatsby clean",
     "version": "tsc -p .",
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",
@@ -93,8 +93,10 @@
     "rollbar": "^2.26.1",
     "sharp": "^0.30.6",
     "slug": "^4.0.4",
+    "swagger-ui-express": "^4.6.0",
     "swiper": "^8.3.0",
-    "unified": "9.2.2"
+    "unified": "9.2.2",
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
@@ -109,6 +111,7 @@
     "@types/reach__router": "^1.3.10",
     "@types/react-chartjs-2": "^2.5.7",
     "@types/slug": "^0.9.1",
+    "@types/swagger-ui-express": "^4.1.3",
     "@types/swiper": "^6.0.0",
     "@types/validator": "^13.6.6",
     "@typescript-eslint/eslint-plugin": "^5.25.0",

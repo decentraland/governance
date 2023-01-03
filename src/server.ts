@@ -10,6 +10,9 @@ import { status } from 'decentraland-gatsby/dist/entities/Route/routes'
 import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/handler'
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
+import { readFileSync } from 'fs'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yaml'
 
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import budget from './entities/Budget/routes'
@@ -31,6 +34,11 @@ const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@daily', updateGovernanceBudgets)
+
+const file = readFileSync('src/docs/api.yaml', 'utf8')
+const swaggerDocument = YAML.parse(file)
+
+swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
 
 const app = express()
 app.set('x-powered-by', false)
@@ -76,6 +84,8 @@ app.get(
     return res.redirect(`${websiteUrl}/profile/${addressParam}`)
   })
 )
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(
   filesystem('public', '404.html', {
