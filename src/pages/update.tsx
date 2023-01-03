@@ -45,7 +45,7 @@ export default function UpdateDetail() {
   return (
     <>
       <Head
-        title={t('page.update_detail.project_title', { title: proposal?.title })}
+        title={t('page.update_detail.page_title', { title: proposal?.title, index })}
         description={update?.introduction}
         image="https://decentraland.org/images/decentraland.png"
       />

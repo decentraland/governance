@@ -875,6 +875,7 @@
       }
     },
     "update_detail": {
+      "page_title": "{title} - Project Update #{index}",
       "project_title": "Project update for {title}",
       "title": "Update #{index}",
       "on_track_title": "Project Health: On Track",
