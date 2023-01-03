@@ -30,7 +30,7 @@ type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   active?: boolean
   isNew?: boolean
   type: ProposalType | PoiType
-  onClick: () => void
+  onClick?: () => void
 }
 
 export default function CategoryBanner({ active = true, isNew, type, onClick, href }: Props) {
