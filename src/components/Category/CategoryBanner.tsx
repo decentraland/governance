@@ -34,8 +34,6 @@ type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
 }
 
 export default function CategoryBanner({ active = true, isNew, type, onClick, href }: Props) {
-  console.log(active, isNew, type, onClick, href)
-
   const t = useFormatMessage()
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLDivElement>) {
