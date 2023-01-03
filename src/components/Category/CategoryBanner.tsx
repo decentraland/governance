@@ -11,6 +11,8 @@ import { PoiType, ProposalType } from '../../entities/Proposal/types'
 
 import './CategoryBanner.css'
 
+const Box = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />
+
 export const categoryIcons = {
   [ProposalType.Catalyst]: require('../../images/icons/catalyst.svg').default,
   [ProposalType.POI]: require('../../images/icons/poi.svg').default,
@@ -24,16 +26,19 @@ export const categoryIcons = {
   [ProposalType.LinkedWearables]: require('../../images/icons/linked-wearables.svg').default,
 }
 
-type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick'> & {
+type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   active?: boolean
   isNew?: boolean
   type: ProposalType | PoiType
+  onClick: () => void
 }
 
 export default function CategoryBanner({ active = true, isNew, type, onClick, href }: Props) {
+  console.log(active, isNew, type, onClick, href)
+
   const t = useFormatMessage()
 
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  function handleClick(e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLDivElement>) {
     if (!e.defaultPrevented) {
       e.preventDefault()
     }
@@ -43,7 +48,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
     }
 
     if (onClick) {
-      onClick(e)
+      onClick()
     }
 
     if (href) {
@@ -51,8 +56,10 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
     }
   }
 
+  const Component = active ? Link : Box
+
   return (
-    <Link
+    <Component
       href={href}
       onClick={handleClick}
       className={TokenList.join([`CategoryBanner`, `CategoryBanner--${type}`, active && `CategoryBanner--active`])}
@@ -71,6 +78,6 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
         <Paragraph tiny>{t(`category.${type}_description`)}</Paragraph>
         {!active && <Markdown className="CategoryBanner__PausedText">{t(`category.${type}_paused`)}</Markdown>}
       </div>
-    </Link>
+    </Component>
   )
 }
