@@ -91,6 +91,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
     </>
   )
 
+  console.log('className', className)
   return (
     <>
       {linked ? (

@@ -51,6 +51,7 @@ const VotingPowerDelegationModal = ({
             userVP={vpDistribution.own}
             candidate={selectedCandidate}
             onBackClick={() => setSelectedCandidate(null)}
+            onUserProfileClick={handleModalClose}
           />
         </Modal>
       )}

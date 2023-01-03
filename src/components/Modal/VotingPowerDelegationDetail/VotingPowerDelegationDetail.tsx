@@ -29,12 +29,18 @@ type VotingPowerDelegationDetailProps = {
   candidate: Candidate
   userVP: number
   onBackClick: () => void
+  onUserProfileClick: () => void
 }
 
 let timeout: ReturnType<typeof setTimeout>
 const VOTES_PER_PAGE = 10
 
-function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({
+  candidate,
+  userVP,
+  onBackClick,
+  onUserProfileClick,
+}: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
   const { address: candidateAddress } = candidate
 
@@ -92,7 +98,9 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
           <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
             <ChevronLeft />
           </Button>
-          <Username address={candidate.address} size="small" linked />
+          <div onClick={onUserProfileClick}>
+            <Username address={candidate.address} size="small" linked />
+          </div>
         </div>
         <VotingPowerDelegationHandler
           buttonText={t('modal.vp_delegation.delegate_button')}
