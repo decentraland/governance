@@ -341,7 +341,7 @@
     "vp_delegation": {
       "title": "Voting Power Delegation",
       "description": "Choose who you’d like to receive the 100% of your **{vp} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates.",
-      "description_generic": "Sign in to choose who you'd like to receive your VP. You may delegate it to any user, but we'd like you to consider picking one of the following individuals who have applied to become Delegates.",
+      "description_generic": "Sign in to choose who you'd like to receive your VP. You may delegate it to any user, but we'd like you to consider picking one of the following individuals who have applied to become Delegates. ",
       "read_more": "[Read more](#)",
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
@@ -1134,10 +1134,11 @@
     }
   },
   "delegation": {
-    "delegated_to_user_empty_title": "No VP delegated to you",
-    "delegated_to_address_empty_title": "No VP delegated to them",
-    "delegated_to_user_empty_description": "Sound candidates may be chosen by the community to vote in their name",
-    "delegated_to_user_empty_link": "Become a Delegate",
+    "delegated_to_user_empty_title": "No delegations",
+    "delegated_to_address_empty_title": "VP not delegated",
+    "delegated_to_user_empty_description": "You haven't been delegated any VP",
+    "delegated_to_address_empty_description": "This account hasn't been delegated any VP",
+    "delegated_to_address_empty_action": "Delegate them your VP",
     "delegated_voting_power_list_title": "Delegated Voting Power",
     "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice.",
     "delegation_empty_title": "VP not delegated",

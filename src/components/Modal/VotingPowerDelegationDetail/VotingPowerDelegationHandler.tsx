@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
@@ -17,9 +18,10 @@ interface Props {
   candidateAddress: string
   userVP: number
   basic?: boolean
+  vertical?: boolean
 }
 
-function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, basic }: Props) {
+function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, basic, vertical }: Props) {
   const t = useFormatMessage()
   const [isLoading, setLoading] = useState(false)
   const [isError, setError] = useState(false)
@@ -52,7 +54,7 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
   }
 
   return (
-    <span className="DelegateButton__Container">
+    <span className={TokenList.join(['DelegateButton__Container', vertical && 'DelegateButton__VerticalDisplay'])}>
       {userAddress && (
         <>
           <Header sub size="tiny">

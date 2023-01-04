@@ -15,7 +15,7 @@ import DelegatesTable from '../../Table/DelegatesTable'
 
 import './VotingPowerDelegationCandidatesList.css'
 
-type VotingPowerDelegationCandidatesListProps = Omit<ModalProps, 'children'> & {
+type Props = Omit<ModalProps, 'children'> & {
   setSelectedCandidate: (candidate: Candidate) => void
   showPickOtherDelegateButton?: boolean
 }
@@ -35,7 +35,7 @@ function VotingPowerDelegationCandidatesList({
   setSelectedCandidate,
   showPickOtherDelegateButton,
   ...props
-}: VotingPowerDelegationCandidatesListProps) {
+}: Props) {
   const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
   const [userAddress] = useAuthContext()
   const { vpDistribution } = useVotingPowerDistribution(userAddress)
@@ -57,9 +57,7 @@ function VotingPowerDelegationCandidatesList({
         <Markdown>
           {(userAddress && vpDistribution
             ? t('modal.vp_delegation.description', { vp: vpDistribution.own })
-            : t('modal.vp_delegation.description_generic')) +
-            ' ' +
-            t('modal.vp_delegation.read_more')}
+            : t('modal.vp_delegation.description_generic')) + t('modal.vp_delegation.read_more')}
         </Markdown>
       </Modal.Description>
       <Modal.Content>

@@ -10,6 +10,10 @@ import Watermelon from '../Icon/Watermelon'
 
 import './Empty.css'
 
+export enum ActionType {
+  BUTTON,
+  LINK,
+}
 interface Props {
   title?: string | null
   description?: string | null
@@ -18,7 +22,8 @@ interface Props {
   className?: string
   onLinkClick?: () => void
   icon?: React.ReactNode
-  asButton?: boolean
+  actionType?: ActionType
+  children?: React.ReactNode
 }
 
 export default function Empty({
@@ -29,24 +34,26 @@ export default function Empty({
   linkText,
   linkHref,
   onLinkClick,
-  asButton,
+  actionType = ActionType.LINK,
+  children,
 }: Props) {
-  const showClickableAction = !!linkText && (onLinkClick || linkHref)
+  const showAction = !!linkText && (onLinkClick || linkHref)
   return (
     <div className={TokenList.join(['Empty', className])}>
       {icon ? icon : <Watermelon />}
       {!!title && <Header>{title}</Header>}
       {!!description && <Markdown>{description}</Markdown>}
-      {showClickableAction && !asButton && (
+      {showAction && actionType === ActionType.LINK && (
         <Link className="Empty__Action" href={linkHref} onClick={onLinkClick}>
           {linkText}
         </Link>
       )}
-      {showClickableAction && !!asButton && (
+      {showAction && actionType === ActionType.BUTTON && (
         <Button primary className="Empty__Action" href={linkHref} onClick={onLinkClick}>
           {linkText}
         </Button>
       )}
+      {children}
     </div>
   )
 }

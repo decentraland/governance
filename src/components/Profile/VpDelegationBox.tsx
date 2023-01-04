@@ -9,7 +9,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { DelegationResult } from '../../clients/SnapshotGraphqlTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import Empty from '../Common/Empty'
+import Empty, { ActionType } from '../Common/Empty'
 import SkeletonBars from '../Common/SkeletonBars'
 import DelegatorCardProfile from '../Delegation/DelegatorCardProfile'
 import Scale from '../Icon/Scale'
@@ -68,7 +68,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegations, ownVp, isL
                 description={t('delegation.delegation_address_empty') || ''}
                 linkText={t('delegation.choose_delegate')}
                 onLinkClick={() => setOpenDelegationModal(true)}
-                asButton
+                actionType={ActionType.BUTTON}
               />
             ) : (
               <Empty

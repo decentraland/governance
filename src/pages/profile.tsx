@@ -79,7 +79,7 @@ export default function ProfilePage() {
           isLoadingOwnVp={isLoadingVpDistribution}
         />
         <VpDelegatorsBox
-          address={address}
+          profileAddress={address}
           userAddress={userAddress}
           delegation={delegation}
           delegationState={delegationState}
