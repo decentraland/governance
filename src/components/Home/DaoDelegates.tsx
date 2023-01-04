@@ -58,7 +58,8 @@ const DaoDelegates = () => {
           vpDistribution={vpDistribution}
           openDelegationModal={openDelegationModal}
           setOpenDelegationModal={setOpenDelegationModal}
-          displayedCandidate={selectedCandidate}
+          selectedCandidate={selectedCandidate}
+          setSelectedCandidate={setSelectedCandidate}
         />
       )}
     </div>

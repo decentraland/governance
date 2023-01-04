@@ -12,21 +12,17 @@ type Props = {
   vpDistribution: VpDistribution
   openDelegationModal: boolean
   setOpenDelegationModal: React.Dispatch<any>
-  displayedCandidate?: Candidate | null
+  selectedCandidate?: Candidate | null
+  setSelectedCandidate: React.Dispatch<React.SetStateAction<Candidate | null>>
 }
 
 const VotingPowerDelegationModal = ({
   vpDistribution,
   openDelegationModal,
   setOpenDelegationModal,
-  displayedCandidate,
+  selectedCandidate,
+  setSelectedCandidate,
 }: Props) => {
-  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
-
-  useEffect(() => {
-    setSelectedCandidate(displayedCandidate || null)
-  }, [displayedCandidate])
-
   const handleModalClose = () => {
     setSelectedCandidate(null)
     setOpenDelegationModal(false)

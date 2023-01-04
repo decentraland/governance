@@ -13,6 +13,7 @@ import Empty, { ActionType } from '../Common/Empty'
 import SkeletonBars from '../Common/SkeletonBars'
 import DelegatorCardProfile from '../Delegation/DelegatorCardProfile'
 import Scale from '../Icon/Scale'
+import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 
 import { ProfileBox } from './ProfileBox'
@@ -33,6 +34,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegations, ownVp, isL
   const { delegatedTo } = delegation
   const [openDelegationModal, setOpenDelegationModal] = useState(false)
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
 
   const profileHasADelegation = delegatedTo.length > 0 && ownVp
   return (
@@ -86,6 +88,8 @@ function VpDelegationBox({ address, delegation, isLoadingDelegations, ownVp, isL
           vpDistribution={vpDistribution}
           openDelegationModal={openDelegationModal}
           setOpenDelegationModal={setOpenDelegationModal}
+          selectedCandidate={selectedCandidate}
+          setSelectedCandidate={setSelectedCandidate}
         />
       )}
     </Container>
