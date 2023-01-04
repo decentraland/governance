@@ -9,7 +9,7 @@ import FullWidthButton from '../Common/FullWidthButton'
 import SkeletonBars from '../Common/SkeletonBars'
 
 import { DelegatedToAddressEmptyCard } from './DelegatedToAddressEmptyCard'
-import { DelegatedToUserEmptyCard } from './DelegatedToUserEmpty'
+import { DelegatedToUserEmptyCard } from './DelegatedToUserEmptyCard'
 import './DelegationCards.css'
 import DelegatorCardProfile from './DelegatorCardProfile'
 import { VotingPowerListModal } from './VotingPowerListModal'

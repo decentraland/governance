@@ -7,7 +7,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphqlTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
-import DelegationCards from '../Delegation/DelegatedToUserEmpty'
+import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
 import { ProfileBox } from './ProfileBox'
