@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { AsyncStateResultState } from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -35,7 +35,17 @@ export default function VpDelegatorsBox({
   const { vpDistribution: loggedUserVpDistribution, isLoadingVpDistribution } = useVotingPowerInformation(
     !isLoggedUserProfile ? userAddress : undefined
   )
-  const displayDelegateAction = !isLoggedUserProfile && address && !isLoadingVpDistribution && loggedUserVpDistribution
+  const { delegatedFrom } = delegation
+  const userHasDelegatedToThisProfile = useMemo(
+    () => delegatedFrom.some((delegation) => isSameAddress(delegation.delegator, userAddress)),
+    [delegatedFrom, userAddress]
+  )
+  const displayDelegateAction =
+    !isLoggedUserProfile &&
+    address &&
+    !isLoadingVpDistribution &&
+    loggedUserVpDistribution &&
+    !userHasDelegatedToThisProfile
 
   return (
     <Container>
