@@ -45,10 +45,10 @@ export default function VpDelegatorsBox({
   const displayDelegateAction =
     !isLoggedUserProfile &&
     profileAddress &&
+    userHasDelegatedToThisProfile &&
+    accountHasDelegations &&
     !isLoadingVpDistribution &&
-    loggedUserVpDistribution &&
-    !userHasDelegatedToThisProfile &&
-    accountHasDelegations
+    loggedUserVpDistribution
 
   return (
     <Container>
