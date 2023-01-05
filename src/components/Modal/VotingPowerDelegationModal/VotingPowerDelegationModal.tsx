@@ -14,6 +14,7 @@ type Props = {
   setOpenDelegationModal: React.Dispatch<any>
   selectedCandidate?: Candidate | null
   setSelectedCandidate: React.Dispatch<React.SetStateAction<Candidate | null>>
+  showPickOtherDelegateButton?: boolean
 }
 
 const VotingPowerDelegationModal = ({
@@ -22,6 +23,7 @@ const VotingPowerDelegationModal = ({
   setOpenDelegationModal,
   selectedCandidate,
   setSelectedCandidate,
+  showPickOtherDelegateButton,
 }: Props) => {
   const handleModalClose = () => {
     setSelectedCandidate(null)
@@ -34,6 +36,7 @@ const VotingPowerDelegationModal = ({
         onClose={handleModalClose}
         setSelectedCandidate={setSelectedCandidate}
         open={openDelegationModal && !selectedCandidate}
+        showPickOtherDelegateButton={showPickOtherDelegateButton}
       />
       {selectedCandidate && vpDistribution && (
         <Modal

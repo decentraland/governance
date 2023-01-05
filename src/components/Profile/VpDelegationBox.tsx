@@ -90,6 +90,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegations, ownVp, isL
           setOpenDelegationModal={setOpenDelegationModal}
           selectedCandidate={selectedCandidate}
           setSelectedCandidate={setSelectedCandidate}
+          showPickOtherDelegateButton
         />
       )}
     </Container>
