@@ -16,7 +16,7 @@ import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistributio
 import ChevronLeft from '../../Icon/ChevronLeft'
 import VotingPower from '../../Token/VotingPower'
 import Username from '../../User/Username'
-import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationModal'
+import { Candidate } from '../VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 
 import CandidateDetails from './CandidateDetails'
 import CandidateMatch from './CandidateMatch'
@@ -29,12 +29,18 @@ type VotingPowerDelegationDetailProps = {
   candidate: Candidate
   userVP: number
   onBackClick: () => void
+  onUserProfileClick: () => void
 }
 
 let timeout: ReturnType<typeof setTimeout>
 const VOTES_PER_PAGE = 10
 
-function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingPowerDelegationDetailProps) {
+function VotingPowerDelegationDetail({
+  candidate,
+  userVP,
+  onBackClick,
+  onUserProfileClick,
+}: VotingPowerDelegationDetailProps) {
   const t = useFormatMessage()
   const { address: candidateAddress } = candidate
 
@@ -83,13 +89,18 @@ function VotingPowerDelegationDetail({ candidate, userVP, onBackClick }: VotingP
   return (
     <>
       <Modal.Header
-        className={TokenList.join(['VotingPowerDelegationModal__Header', 'VotingPowerDelegationDetail__Header'])}
+        className={TokenList.join([
+          'VotingPowerDelegationCandidatesList__Header',
+          'VotingPowerDelegationDetail__Header',
+        ])}
       >
         <div className="VotingPowerDelegationDetail__CandidateName">
           <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
             <ChevronLeft />
           </Button>
-          <Username address={candidate.address} size="small" linked />
+          <div onClick={onUserProfileClick}>
+            <Username address={candidate.address} size="small" linked />
+          </div>
         </div>
         <VotingPowerDelegationHandler
           buttonText={t('modal.vp_delegation.delegate_button')}

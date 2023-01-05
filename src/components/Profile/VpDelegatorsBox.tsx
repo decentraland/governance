@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { AsyncStateResultState } from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import { DelegationResult, DetailedScores, VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphqlTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
 import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
@@ -14,25 +14,31 @@ import { ProfileBox } from './ProfileBox'
 import './VpDelegatorsBox.css'
 
 interface Props {
-  address: string | null
+  profileAddress: string | null
+  userAddress: string | null
   delegation: DelegationResult
   delegationState: AsyncStateResultState<DelegationResult, DelegationResult>
   scores: DetailedScores
   isLoadingScores: boolean
-  vpDistribution: VpDistribution | null
 }
 
 export default function VpDelegatorsBox({
-  address,
+  profileAddress,
+  userAddress,
   delegation,
   delegationState,
   scores,
   isLoadingScores,
-  vpDistribution,
 }: Props) {
   const t = useFormatMessage()
-  const [userAddress] = useAuthContext()
-  const isLoggedUserProfile = isSameAddress(userAddress, address)
+  const isLoggedUserProfile = isSameAddress(userAddress, profileAddress)
+  const { vpDistribution: loggedUserVpDistribution, isLoadingVpDistribution: isLoadingUserVpDistribution } =
+    useVotingPowerInformation(!isLoggedUserProfile ? userAddress : undefined)
+  const { delegatedFrom } = delegation
+  const accountHasDelegations = delegatedFrom.length > 0
+
+  const displayDelegateAction =
+    !isLoggedUserProfile && !isLoadingUserVpDistribution && profileAddress && accountHasDelegations
 
   return (
     <Container>
@@ -41,24 +47,26 @@ export default function VpDelegatorsBox({
         title={t('page.profile.delegators.title')}
         info={t('page.profile.delegators.helper')}
         action={
-          !isLoggedUserProfile &&
-          address &&
-          vpDistribution && (
+          displayDelegateAction && (
             <VotingPowerDelegationHandler
               basic
               buttonText={t('page.profile.delegators.delegate_action')}
-              userVP={vpDistribution.own}
-              candidateAddress={address}
+              userVP={loggedUserVpDistribution?.own}
+              candidateAddress={profileAddress}
             />
           )
         }
       >
-        <DelegationCards
-          delegation={delegation}
-          scores={scores}
-          isLoading={delegationState.loading || isLoadingScores}
-          isUserProfile={isLoggedUserProfile}
-        />
+        {loggedUserVpDistribution && profileAddress && (
+          <DelegationCards
+            delegation={delegation}
+            scores={scores}
+            isLoading={delegationState.loading || isLoadingScores}
+            isUserProfile={isLoggedUserProfile}
+            loggedUserVpDistribution={loggedUserVpDistribution}
+            profileAddress={profileAddress}
+          />
+        )}
       </ProfileBox>
     </Container>
   )

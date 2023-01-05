@@ -3,14 +3,13 @@ import React, { useMemo, useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphqlTypes'
-import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../constants'
+import { DelegationResult, DetailedScores, VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
-import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
 import SkeletonBars from '../Common/SkeletonBars'
-import Scale from '../Icon/Scale'
 
+import { DelegatedToAddressEmptyCard } from './DelegatedToAddressEmptyCard'
+import { DelegatedToUserEmptyCard } from './DelegatedToUserEmptyCard'
 import './DelegationCards.css'
 import DelegatorCardProfile from './DelegatorCardProfile'
 import { VotingPowerListModal } from './VotingPowerListModal'
@@ -20,11 +19,20 @@ interface Props {
   scores: DetailedScores
   isLoading?: boolean
   isUserProfile?: boolean
+  loggedUserVpDistribution: VpDistribution
+  profileAddress: string
 }
 
 const MAX_DELEGATIONS_SHOWN = 6
 
-function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props) {
+function DelegationCards({
+  delegation,
+  scores,
+  isLoading,
+  isUserProfile,
+  loggedUserVpDistribution,
+  profileAddress,
+}: Props) {
   const t = useFormatMessage()
   const delegatedFrom = delegation.delegatedFrom
   const [showAllDelegations, setShowAllDelegations] = useState(false)
@@ -61,21 +69,10 @@ function DelegationCards({ delegation, scores, isLoading, isUserProfile }: Props
               </Grid.Column>
             ))}
           </Grid>
+        ) : isUserProfile ? (
+          <DelegatedToUserEmptyCard />
         ) : (
-          <Empty
-            className="DelegationsCards__EmptyContainer"
-            icon={<Scale />}
-            title={
-              t(
-                isUserProfile
-                  ? `delegation.delegated_to_user_empty_title`
-                  : `delegation.delegated_to_address_empty_title`
-              ) || ''
-            }
-            description={t(`delegation.delegated_to_user_empty_description`) || ''}
-            linkText={t('delegation.delegated_to_user_empty_link')}
-            linkHref={OPEN_CALL_FOR_DELEGATES_LINK}
-          />
+          <DelegatedToAddressEmptyCard userVp={loggedUserVpDistribution.own} profileAddress={profileAddress} />
         ))}
 
       {thereAreMoreDelegations && (

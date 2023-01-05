@@ -1,0 +1,82 @@
+.VotingPowerDelegationCandidatesList__Header {
+  min-height: 36px !important;
+  margin: 0 0 10px 0 !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 36px !important;
+}
+
+.VotingPowerDelegationCandidatesList__Description {
+  margin: 0 0 32px 0 !important;
+}
+
+.VotingPowerDelegationCandidatesList > .dcl.close,
+.ui.modal > .dcl.close {
+  top: 22px; /* TODO: Can this be a property to override in all modals? */
+}
+
+.VotingPowerDelegationCandidatesList .description .dg.Paragraph {
+  font-size: 15px;
+}
+
+.VotingPowerDelegationCandidatesList .description .dg.Paragraph .dg.Link {
+  color: var(--blue-800);
+}
+
+.VotingPowerDelegationCandidatesList .VotingPowerDelegationCandidatesList__PickButton.ui.button.primary {
+  color: var(--blue-800);
+  background-color: rgba(72, 136, 238, 0.1);
+}
+
+.VotingPowerDelegationCandidatesList .ui.table th {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.VotingPowerDelegationCandidatesList .ui.table td {
+  padding: 10px 0;
+}
+
+.VotingPowerDelegationCandidatesList .ui.table td .Username {
+  font-weight: 500;
+}
+
+.VotingPowerDelegationCandidatesList .ui.table tbody tr:hover {
+  box-shadow: 0px 3px 15px var(--black-400);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.VotingPowerDelegationCandidatesList .ui.table th:not(:first-child),
+.VotingPowerDelegationCandidatesList .ui.table td:not(:first-child) {
+  text-align: center;
+}
+
+.VotingPowerDelegationCandidatesList .TotalVP {
+  cursor: pointer !important;
+}
+
+.VotingPowerDelegationCandidatesList .TotalVP > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VotingPowerDelegationCandidatesList .TotalVP > span svg {
+  margin-left: 5px;
+}
+
+.VotingPowerDelegationCandidatesList .dg.dcl-avatar {
+  margin-right: 11px;
+}
+
+.VotingPowerDelegationCandidatesList .dcl.blockie {
+  margin-right: 11px;
+}
+
+/* Animation */
+.VotingPowerDelegationCandidatesList .TotalVP > span svg,
+.VotingPowerDelegationCandidatesList .ui.table tbody tr:hover {
+  transition: all 0.3s linear;
+}

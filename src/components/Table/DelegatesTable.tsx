@@ -7,7 +7,7 @@ import { Delegate } from '../../hooks/useDelegatesInfo'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
 import Candidates from '../../modules/delegates/candidates.json'
 import Sort from '../Icon/Sort'
-import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
+import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 import DelegateRow from '../Table/DelegatesTableRow'
 
 import './DelegatesTable.css'

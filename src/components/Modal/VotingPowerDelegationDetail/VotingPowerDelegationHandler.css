@@ -3,6 +3,13 @@
   align-items: baseline;
 }
 
+.DelegateButton__VerticalDisplay {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
 .DelegateButton__Container .ui.header {
   margin: 0 16px 0 0 !important;
 }
@@ -23,4 +30,8 @@
 
 .GlobalDelegationPopUp {
   box-sizing: content-box !important;
+}
+
+.RevokeDelegationButton {
+  border: none !important;
 }
