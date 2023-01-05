@@ -32,23 +32,13 @@ export default function VpDelegatorsBox({
 }: Props) {
   const t = useFormatMessage()
   const isLoggedUserProfile = isSameAddress(userAddress, profileAddress)
-  const { vpDistribution: loggedUserVpDistribution, isLoadingVpDistribution } = useVotingPowerInformation(
-    !isLoggedUserProfile ? userAddress : undefined
-  )
+  const { vpDistribution: loggedUserVpDistribution, isLoadingVpDistribution: isLoadingUserVpDistribution } =
+    useVotingPowerInformation(!isLoggedUserProfile ? userAddress : undefined)
   const { delegatedFrom } = delegation
-  const userHasDelegatedToThisProfile = useMemo(
-    () => delegatedFrom.some((delegation) => isSameAddress(delegation.delegator, userAddress)),
-    [delegatedFrom, userAddress]
-  )
   const accountHasDelegations = delegatedFrom.length > 0
 
   const displayDelegateAction =
-    !isLoggedUserProfile &&
-    profileAddress &&
-    userHasDelegatedToThisProfile &&
-    accountHasDelegations &&
-    !isLoadingVpDistribution &&
-    loggedUserVpDistribution
+    !isLoggedUserProfile && !isLoadingUserVpDistribution && profileAddress && accountHasDelegations
 
   return (
     <Container>
@@ -61,7 +51,7 @@ export default function VpDelegatorsBox({
             <VotingPowerDelegationHandler
               basic
               buttonText={t('page.profile.delegators.delegate_action')}
-              userVP={loggedUserVpDistribution.own}
+              userVP={loggedUserVpDistribution?.own}
               candidateAddress={profileAddress}
             />
           )

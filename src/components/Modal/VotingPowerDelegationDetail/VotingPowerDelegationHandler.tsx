@@ -16,7 +16,7 @@ import './VotingPowerDelegationHandler.css'
 interface Props {
   buttonText: string
   candidateAddress: string
-  userVP: number
+  userVP?: number
   basic?: boolean
   vertical?: boolean
 }
