@@ -43,6 +43,40 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+  /proposals/grants:
+    get:
+      tags:
+        - Proposals
+      summary: Get active and past enacted grants, as well as the total number of submitted grants requests
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /proposals/grants/{address}:
+    get:
+      tags:
+        - Proposals
+      summary: Get active and past enacted grants from the given address
+      parameters:
+        - name: address
+          $ref: '#/components/parameters/address'
+        - name: coauthoring
+          $ref: '#/components/parameters/isCoauthor'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /proposals/{proposal}:
+    get:
+      tags:
+        - Proposals
+      summary: Get the proposal from the give ID
+      parameters:
+        - name: proposalId
+          $ref: '#/components/parameters/proposalId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '404':
+          $ref: '#/components/responses/404'
   /coauthors/{proposal}:
     get:
       tags:
@@ -240,6 +274,8 @@ components:
   responses:
     '200':
       description: successful operation
+    '404':
+      description: not found
 ## Security
   # securitySchemes:
   #   ApiKeyAuth:
