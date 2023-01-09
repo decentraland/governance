@@ -17,12 +17,12 @@ import './ProposalComments.css'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 
-export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  proposal?: ProposalAttributes | null
-  loading?: boolean
+type ProposalComments = {
+  proposal: ProposalAttributes | null
+  loading: boolean
 }
 
-export default React.memo(function ProposalComments({ proposal, loading, ...props }: ProposalResultSectionProps) {
+export default React.memo(function ProposalComments({ proposal, loading }: ProposalComments) {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposal?.id)
   const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
@@ -69,14 +69,7 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
                   </Button>
                 )}
               </div>
-              <div
-                {...props}
-                className={TokenList.join([
-                  'ProposalComments',
-                  loading && 'ProposalComments--loading',
-                  props.className,
-                ])}
-              >
+              <div className={TokenList.join(['ProposalComments', loading && 'ProposalComments--loading'])}>
                 <div className="ProposalComments__Content">
                   {!renderComments && (
                     <div className="ProposalComments__NoComments">
@@ -91,9 +84,9 @@ export default React.memo(function ProposalComments({ proposal, loading, ...prop
                     renderedComments.map((comment, index) => (
                       <ProposalComment
                         key={'comment_' + index}
-                        avatar_url={comment.avatar_url}
+                        avatarUrl={comment.avatar_url}
                         user={comment.username}
-                        created_at={comment.created_at}
+                        createdAt={comment.created_at}
                         cooked={comment.cooked}
                       />
                     ))}

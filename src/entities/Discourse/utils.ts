@@ -1,4 +1,5 @@
 import { DiscoursePostInTopic } from '../../clients/Discourse'
+import { FORUM_URL } from '../../constants'
 import { env } from '../../modules/env'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
@@ -9,6 +10,10 @@ const DEFAULT_AVATAR_SIZE = '45'
 
 function getDefaultAvatarSizeUrl(avatar_url: string) {
   return avatar_url.replace('{size}', DEFAULT_AVATAR_SIZE)
+}
+
+export function getUserProfileUrl(user: string) {
+  return `${FORUM_URL}u/${user}`
 }
 
 function setAvatarUrl(post: DiscoursePostInTopic) {
