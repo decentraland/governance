@@ -24,7 +24,7 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked }: 
       }
 
       const hrefAttribute = node.getAttribute('href')
-      if (node.nodeName === 'A' && hrefAttribute?.includes('/u/')) {
+      if (node.nodeName === 'A' && hrefAttribute?.includes('/u/') && node.className === 'mention') {
         const newHref = getUserProfileUrl(hrefAttribute?.split('/u/')[1])
         node.setAttribute('href', newHref)
         node.setAttribute('target', '_blank')
