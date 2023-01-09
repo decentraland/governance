@@ -22,6 +22,14 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked }
       if (node.nodeName && node.nodeName === 'IMG' && node.getAttribute('alt') === 'image') {
         node.className = 'ProposalComment__Cooked__Img'
       }
+
+      const hrefAttribute = node.getAttribute('href')
+      if (node.nodeName === 'A' && hrefAttribute?.includes('/u/')) {
+        const newHref = `${FORUM_URL}u/${hrefAttribute?.split('/u/')[1] || ''}`
+        node.setAttribute('href', newHref)
+        node.setAttribute('target', '_blank')
+        node.setAttribute('rel', 'noopener noreferrer')
+      }
     })
 
     const clean = DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
