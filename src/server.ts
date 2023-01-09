@@ -35,7 +35,7 @@ jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@daily', updateGovernanceBudgets)
 
-const file = readFileSync('src/docs/api.yaml', 'utf8')
+const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
 
 swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
