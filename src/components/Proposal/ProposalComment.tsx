@@ -5,18 +5,18 @@ import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import DOMPurify from 'dompurify'
 
-import { FORUM_URL } from '../../constants'
+import { getUserProfileUrl } from '../../entities/Discourse/utils'
 
 import './ProposalComment.css'
 
-export type ProposalCommentProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  user?: string | null
-  avatar_url: string
-  created_at: string
+type Props = {
+  user: string
+  avatarUrl: string
+  createdAt: string
   cooked: string | undefined
 }
 
-export default function ProposalComment({ user, avatar_url, created_at, cooked }: ProposalCommentProps) {
+export default function ProposalComment({ user, avatarUrl, createdAt, cooked }: Props) {
   const createMarkup = (html: any) => {
     DOMPurify.addHook('afterSanitizeAttributes', function (node) {
       if (node.nodeName && node.nodeName === 'IMG' && node.getAttribute('alt') === 'image') {
@@ -25,7 +25,7 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked }
 
       const hrefAttribute = node.getAttribute('href')
       if (node.nodeName === 'A' && hrefAttribute?.includes('/u/')) {
-        const newHref = `${FORUM_URL}u/${hrefAttribute?.split('/u/')[1] || ''}`
+        const newHref = getUserProfileUrl(hrefAttribute?.split('/u/')[1])
         node.setAttribute('href', newHref)
         node.setAttribute('target', '_blank')
         node.setAttribute('rel', 'noopener noreferrer')
@@ -36,13 +36,13 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked }
     return { __html: clean }
   }
 
-  const discourseUserUrl = `${FORUM_URL}u/${user}`
+  const discourseUserUrl = getUserProfileUrl(user)
 
   return (
     <div className="ProposalComment">
       <div className="ProposalComment__ProfileImage">
         <a href={discourseUserUrl} target="_blank" rel="noopener noreferrer">
-          <Avatar size="medium" src={avatar_url} />
+          <Avatar size="medium" src={avatarUrl} />
         </a>
       </div>
       <div className="ProposalComment__Content">
@@ -51,7 +51,7 @@ export default function ProposalComment({ user, avatar_url, created_at, cooked }
             <Paragraph bold>{user}</Paragraph>
           </a>
           <span>
-            <Paragraph secondary>{Time.from(created_at).fromNow()}</Paragraph>
+            <Paragraph secondary>{Time.from(createdAt).fromNow()}</Paragraph>
           </span>
         </div>
         <div className="ProposalComment__Cooked" dangerouslySetInnerHTML={createMarkup(cooked)} />

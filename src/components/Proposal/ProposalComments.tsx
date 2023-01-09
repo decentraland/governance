@@ -84,9 +84,9 @@ export default React.memo(function ProposalComments({ proposal, loading }: Propo
                     renderedComments.map((comment, index) => (
                       <ProposalComment
                         key={'comment_' + index}
-                        avatar_url={comment.avatar_url}
+                        avatarUrl={comment.avatar_url}
                         user={comment.username}
-                        created_at={comment.created_at}
+                        createdAt={comment.created_at}
                         cooked={comment.cooked}
                       />
                     ))}
