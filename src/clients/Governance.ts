@@ -6,12 +6,12 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import { GOVERNANCE_API } from '../constants'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
+  GrantProposalInCreation,
   GrantsResponse,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
-  NewProposalGrant,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
@@ -31,7 +31,7 @@ type NewProposalMap = {
   [`/proposals/ban-name`]: NewProposalBanName
   [`/proposals/poi`]: NewProposalPOI
   [`/proposals/catalyst`]: NewProposalCatalyst
-  [`/proposals/grant`]: NewProposalGrant
+  [`/proposals/grant`]: GrantProposalInCreation
   [`/proposals/linked-wearables`]: NewProposalLinkedWearables
 }
 
@@ -159,7 +159,7 @@ export class Governance extends API {
     return this.createProposal(`/proposals/catalyst`, proposal)
   }
 
-  async createProposalGrant(proposal: NewProposalGrant) {
+  async createProposalGrant(proposal: GrantProposalInCreation) {
     return this.createProposal(`/proposals/grant`, proposal)
   }
 

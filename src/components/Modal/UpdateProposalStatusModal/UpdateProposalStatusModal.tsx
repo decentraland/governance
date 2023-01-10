@@ -13,7 +13,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { ProposalAttributes, ProposalGrantTier, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { GrantTier } from '../../../entities/Grant/GrantTier'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import '../ProposalModal.css'
 
@@ -81,9 +82,8 @@ export function UpdateProposalStatusModal({
 }: UpdateProposalStatusModalProps) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, initialPollState)
-  const isOneTimePaymentProposalTier =
-    proposal &&
-    (proposal.configuration.tier === ProposalGrantTier.Tier1 || proposal.configuration.tier === ProposalGrantTier.Tier2)
+  const grantTier = new GrantTier(proposal?.configuration.tier)
+  const isOneTimePaymentProposalTier = grantTier.isOneTimePaymentTier()
 
   function handleAccept(e: React.MouseEvent<unknown>) {
     editor.validate()

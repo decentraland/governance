@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmpty from 'lodash/isEmpty'
 
+import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
 import { numberFormat } from '../../../modules/intl'
 import Banner, { BannerType } from '../Banner'
@@ -13,7 +14,8 @@ const getBannerStats = (grants: GrantWithUpdateAttributes[]) => {
   }
 
   const releasedValues = grants.map((item) => {
-    if (item.configuration.tier === 'Tier 1' || item.configuration.tier === 'Tier 2') {
+    const grantTier = new GrantTier(item.configuration.tier)
+    if (grantTier.isOneTimePaymentTier()) {
       return item.size
     }
 
@@ -37,7 +39,7 @@ const getBannerStats = (grants: GrantWithUpdateAttributes[]) => {
 
 const CurrentGrantsBanner = ({ grants }: { grants: GrantWithUpdateAttributes[] }) => {
   const t = useFormatMessage()
-  const bannerStats = useMemo(() => getBannerStats(grants), [])
+  const bannerStats = useMemo(() => getBannerStats(grants), [grants])
   const bannerItems = useMemo(
     () => [
       {
@@ -61,14 +63,12 @@ const CurrentGrantsBanner = ({ grants }: { grants: GrantWithUpdateAttributes[] }
   )
 
   return (
-    <>
-      <Banner
-        type={BannerType.Current}
-        title={t('page.grants.current_banner.title')}
-        description={t('page.grants.current_banner.description')}
-        items={bannerItems}
-      />
-    </>
+    <Banner
+      type={BannerType.Current}
+      title={t('page.grants.current_banner.title')}
+      description={t('page.grants.current_banner.description')}
+      items={bannerItems}
+    />
   )
 }
 

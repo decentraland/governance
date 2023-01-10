@@ -23,6 +23,9 @@ import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
+import { GrantTier } from '../Grant/GrantTier'
+import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
+import { GrantTierType } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -34,20 +37,18 @@ import { getUpdateMessage } from './templates/messages'
 import ProposalModel from './model'
 import {
   GrantAttributes,
-  GrantRequiredVP,
+  GrantProposalInCreation,
   GrantWithUpdateAttributes,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
-  NewProposalGrant,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
-  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -64,13 +65,11 @@ import {
 } from './types'
 import {
   DEFAULT_CHOICES,
-  GrantDuration,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  isGrantSizeValid,
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
@@ -322,19 +321,22 @@ const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
 
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
-  const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
+  const configuration = validate<GrantProposalInCreation>(newProposalGrantValidator, req.body || {})
 
-  if (!isGrantSizeValid(configuration.tier, configuration.size)) {
+  // There is no configuration.tier, we should get the tier from the budget input
+  const grantTier = GrantTier.getTierFromBudget(configuration.size)
+  if (!grantTier.isSizeValid(configuration.size)) {
     throw new RequestError('Grant size is not valid for the selected tier')
   }
 
   return createProposal({
     user,
     type: ProposalType.Grant,
-    required_to_pass: GrantRequiredVP[configuration.tier],
-    finish_at: proposalDuration(GrantDuration[configuration.tier]),
+    required_to_pass: grantTier.getVPThreshold(configuration.size),
+    finish_at: proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS),
     configuration: {
       ...configuration,
+      tier: grantTier.type,
       choices: DEFAULT_CHOICES,
     },
   })
@@ -445,7 +447,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.passed_by = user
     update.passed_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.projectDuration)
     }
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
@@ -510,7 +512,7 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string): Promise<IndexedUpdate | null> {
+async function getGrantLatestUpdate(tier: GrantTierType, proposalId: string): Promise<IndexedUpdate | null> {
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
     created_at: 'desc',
   } as never)
@@ -518,7 +520,8 @@ async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string)
     return null
   }
 
-  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
+  const grantTier = new GrantTier(tier)
+  if (grantTier.isOneTimePaymentTier()) {
     return { ...updates[0], index: updates.length }
   }
 
@@ -589,12 +592,7 @@ async function getGrants() {
           })
         }
 
-        const oneTimePaymentThreshold = Time(grant.tx_date).add(1, 'month')
-        const isCurrentGrant =
-          grant.tier === 'Tier 1' || grant.tier === 'Tier 2'
-            ? Time().isBefore(oneTimePaymentThreshold)
-            : newGrant.contract?.vestedAmount !== newGrant.contract?.vesting_total_amount
-
+        const isCurrentGrant = newGrant.contract?.vestedAmount !== newGrant.contract?.vesting_total_amount
         if (!isCurrentGrant) {
           return past.push(newGrant)
         }
