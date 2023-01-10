@@ -187,11 +187,11 @@ export default function ProposalPage() {
     const hasPendingUpdates = pendingUpdates && pendingUpdates.length > 0
     navigate(
       locations.submitUpdate({
-        ...(hasPendingUpdates && { id: currentUpdate?.id }),
+        ...(hasPendingUpdates && currentUpdate && { id: currentUpdate?.id }),
         proposalId: proposal.id,
       })
     )
-  }, [currentUpdate?.id, pendingUpdates, proposal])
+  }, [pendingUpdates, currentUpdate, proposal])
 
   if (proposalState.error) {
     return (
