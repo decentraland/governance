@@ -334,7 +334,7 @@ export async function createProposalGrant(req: WithAuth) {
     finish_at: proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS),
     configuration: {
       ...configuration,
-      // TODO: Should we keep storing the tier in snapshot?
+      // TODO: Should we keep storing the tier in the db?
       tier: GrantTier.getTypeFromBudget(configuration.size),
       choices: DEFAULT_CHOICES,
     },

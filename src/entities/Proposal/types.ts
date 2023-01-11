@@ -14,7 +14,6 @@ import {
   VOTING_POWER_TO_PASS_CATALYST,
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
-  VOTING_POWER_TO_PASS_GRANT,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
@@ -458,13 +457,13 @@ export enum ProposalGrantCategory {
 
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
-  [ProposalType.Grant]: requiredVotingPower(VOTING_POWER_TO_PASS_GRANT, 0),
   [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),
   [ProposalType.BanName]: requiredVotingPower(VOTING_POWER_TO_PASS_BAN_NAME, 0),
   [ProposalType.POI]: requiredVotingPower(VOTING_POWER_TO_PASS_POI, 0),
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Grant]: 0, // TODO: Remove this and fix type in test
 }
 
 export type GrantProposalInCreation = {
