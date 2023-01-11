@@ -264,7 +264,14 @@
     "governance_title": "Governance Proposal",
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "linked_wearables_title": "Linked Wearables Registry",
-    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
+    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland",
+    "core_units_title": "Core Units",
+    "platform_title": "Platform",
+    "documentation_title": "Documentation",
+    "in_world_content_title": "In-World Content",
+    "social_media_content_title": "Social Media Content",
+    "sponsorship_title": "Sponsorship",
+    "accelerator_title": "Accelerator"
   },
   "status": {
     "all": "All outcomes",

@@ -109,6 +109,16 @@ export enum PoiType {
   RemovePOI = 'remove_poi',
 }
 
+export enum GrantType {
+  CoreUnits = 'core_units',
+  Platform = 'platform',
+  Documentation = 'documentation',
+  InWorldContent = 'in_world_content',
+  SocialMediaContent = 'social_media_content',
+  Sponsorship = 'sponsorship',
+  Accelerator = 'accelerator',
+}
+
 export function isProposalType(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
