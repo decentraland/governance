@@ -8,11 +8,10 @@ import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
 import { DISCOURSE_API } from '../Discourse/utils'
-import { GrantTier } from '../Grant/GrantTier'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
-import { GrantAttributes, ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import { ProposalAttributes, ProposalStatus, ProposalType, TransparencyGrant } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
@@ -156,10 +155,9 @@ export function userModifiedForm(stateValue: Record<string, unknown>, initialSta
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
 }
 
-export function isProposalInCliffPeriod(grant: GrantAttributes) {
-  const grantTier = new GrantTier(grant.configuration.tier)
+export function isProposalInCliffPeriod(grant: TransparencyGrant) {
   const now = Time.utc()
-  return !grantTier.isOneTimePaymentTier() && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+  return Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
 
 export function isGovernanceProcessProposal(type: ProposalType) {

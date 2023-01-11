@@ -25,8 +25,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
-import { GrantTier } from '../../entities/Grant/GrantTier'
-import { isProposalGrantCategory } from '../../entities/Grant/utils'
+import { isProposalGrantCategory, isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory, newProposalGrantScheme } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
@@ -39,7 +38,6 @@ type GrantState = {
   title: string
   abstract: string
   category: string | null
-  tier: string | null
   size: string | number
   beneficiary: string
   email: string
@@ -54,7 +52,6 @@ const initialState: GrantState = {
   title: '',
   abstract: '',
   category: null,
-  tier: null,
   size: '',
   beneficiary: '',
   email: '',
@@ -101,7 +98,7 @@ const validate = createValidator<GrantState>({
       assert(!state.size || Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
       assert(!state.size || asNumber(state.size) > schema.size.minimum, 'error.grant.size_too_low') ||
       assert(
-        !state.size || (!!state.tier && new GrantTier(state.tier).isSizeValid(Number(state.size))),
+        !state.size || (!!state.size && isValidGrantBudget(Number(state.size))),
         'error.grant.size_tier_invalid'
       ) ||
       undefined,
@@ -147,10 +144,7 @@ const validate = createValidator<GrantState>({
       assert(state.size !== '', 'error.grant.size_empty') ||
       assert(Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
       assert(asNumber(state.size) >= schema.size.minimum, 'error.grant.size_too_low') ||
-      assert(
-        !!state.tier && new GrantTier(state.tier).isSizeValid(Number(state.size)),
-        'error.grant.size_tier_invalid'
-      ),
+      assert(!!state.size && isValidGrantBudget(Number(state.size)), 'error.grant.size_tier_invalid'),
     abstract:
       assert(state.abstract.length > 0, 'error.grant.abstract_empty') ||
       assert(state.abstract.length >= schema.abstract.minLength, 'error.grant.abstract_too_short') ||

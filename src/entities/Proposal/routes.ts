@@ -13,7 +13,7 @@ import isNil from 'lodash/isNil'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
+import { DclData } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
@@ -25,7 +25,7 @@ import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
-import { GrantTierType } from '../Grant/types'
+import { isValidGrantBudget } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -36,7 +36,6 @@ import { getUpdateMessage } from './templates/messages'
 
 import ProposalModel from './model'
 import {
-  GrantAttributes,
   GrantProposalInCreation,
   GrantWithUpdateAttributes,
   INVALID_PROPOSAL_POLL_OPTIONS,
@@ -52,6 +51,7 @@ import {
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
+  TransparencyGrant,
   UpdateProposalStatusProposal,
   newProposalBanNameScheme,
   newProposalCatalystScheme,
@@ -323,20 +323,19 @@ export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<GrantProposalInCreation>(newProposalGrantValidator, req.body || {})
 
-  // There is no configuration.tier, we should get the tier from the budget input
-  const grantTier = GrantTier.getTierFromBudget(configuration.size)
-  if (!grantTier.isSizeValid(configuration.size)) {
+  if (!isValidGrantBudget(configuration.size)) {
     throw new RequestError('Grant size is not valid for the selected tier')
   }
 
   return createProposal({
     user,
     type: ProposalType.Grant,
-    required_to_pass: grantTier.getVPThreshold(configuration.size),
+    required_to_pass: GrantTier.getVPThreshold(configuration.size),
     finish_at: proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS),
     configuration: {
       ...configuration,
-      tier: grantTier.type,
+      // TODO: Should we keep storing the tier in snapshot?
+      tier: GrantTier.getTypeFromBudget(configuration.size),
       choices: DEFAULT_CHOICES,
     },
   })
@@ -512,17 +511,12 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-async function getGrantLatestUpdate(tier: GrantTierType, proposalId: string): Promise<IndexedUpdate | null> {
+async function getGrantLatestUpdate(proposalId: string): Promise<IndexedUpdate | null> {
   const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
     created_at: 'desc',
   } as never)
   if (!updates || updates.length === 0) {
     return null
-  }
-
-  const grantTier = new GrantTier(tier)
-  if (grantTier.isOneTimePaymentTier()) {
-    return { ...updates[0], index: updates.length }
   }
 
   const publicUpdates = getPublicUpdates(updates)
@@ -538,8 +532,8 @@ async function getGrants() {
   const grants = await DclData.get().getGrants()
   const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
 
-  const current: GrantAttributes[] = []
-  const past: GrantAttributes[] = []
+  const current: TransparencyGrant[] = []
+  const past: TransparencyGrant[] = []
 
   await Promise.all(
     enactedGrants.map(async (grant) => {
@@ -554,7 +548,7 @@ async function getGrants() {
           throw new Error('Proposal not found')
         }
 
-        const newGrant: GrantAttributes = {
+        const newGrant: TransparencyGrant = {
           id: grant.id,
           size: grant.size,
           configuration: {
@@ -598,7 +592,7 @@ async function getGrants() {
         }
 
         try {
-          const update = await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id)
+          const update = await getGrantLatestUpdate(grant.id)
           return current.push({
             ...newGrant,
             update,
@@ -636,7 +630,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   const grantsResult = await getGrants()
 
-  const filterGrants = (grants: GrantAttributes[]) => {
+  const filterGrants = (grants: TransparencyGrant[]) => {
     return grants.filter(
       (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
     )

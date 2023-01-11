@@ -491,7 +491,6 @@ export const newProposalGrantScheme = {
     'title',
     'abstract',
     'category',
-    'tier',
     'beneficiary',
     'email',
     'description',
@@ -680,7 +679,7 @@ type VestingContractData = {
   vesting_total_amount: number
 }
 
-type TransparencyGrant = {
+export type TransparencyGrant = {
   id: string
   title: string
   user: string
@@ -690,9 +689,6 @@ type TransparencyGrant = {
     category: ProposalGrantCategory
     tier: string
   }
-}
-
-type GrantBlockchainData = {
   contract?: VestingContractData
   enacting_tx?: string
   token?: string
@@ -701,14 +697,12 @@ type GrantBlockchainData = {
   tx_date?: number
 }
 
-export type GrantAttributes = TransparencyGrant & GrantBlockchainData
-export type GrantWithUpdateAttributes = TransparencyGrant &
-  GrantBlockchainData & {
-    update: IndexedUpdate | null
-  }
+export type GrantWithUpdateAttributes = TransparencyGrant & {
+  update: IndexedUpdate | null
+}
 
 export type GrantsResponse = {
   current: GrantWithUpdateAttributes[]
-  past: GrantAttributes[]
+  past: TransparencyGrant[]
   total: number
 }

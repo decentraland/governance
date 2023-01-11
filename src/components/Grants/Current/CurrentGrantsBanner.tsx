@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmpty from 'lodash/isEmpty'
 
-import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
 import { numberFormat } from '../../../modules/intl'
 import Banner, { BannerType } from '../Banner'
@@ -14,11 +13,6 @@ const getBannerStats = (grants: GrantWithUpdateAttributes[]) => {
   }
 
   const releasedValues = grants.map((item) => {
-    const grantTier = new GrantTier(item.configuration.tier)
-    if (grantTier.isOneTimePaymentTier()) {
-      return item.size
-    }
-
     const releasedPercentage = ((item.contract?.released || 0) * 100) / (item.contract?.vesting_total_amount || 0)
 
     return ((item.size || 0) * releasedPercentage) / 100

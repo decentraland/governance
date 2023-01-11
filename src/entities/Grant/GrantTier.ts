@@ -1,52 +1,32 @@
-import { TIERS } from './constants'
 import { GrantTierType } from './types'
+import { isValidGrantBudget } from './utils'
 
-enum TransparencyOneTimePaymentTier {
+export enum TransparencyOneTimePaymentTier {
   Tier1 = 'Tier 1',
   Tier2 = 'Tier 2',
 }
 
 export class GrantTier {
-  public type: GrantTierType
-  private min: number
-  private max: number
-
-  constructor(tier: string) {
-    const currentTier = TIERS.find((_tier) => _tier.type === tier)
-
-    if (!currentTier) {
-      throw new Error('Invalid tier')
+  static getTypeFromBudget(budget: number) {
+    if (!isValidGrantBudget(budget)) {
+      throw new Error('Grant budget is not valid')
     }
 
-    this.type = currentTier?.type
-    this.min = currentTier.min
-    this.max = currentTier.max
+    return budget > 0 && budget <= 20000 ? GrantTierType.LowerTier : GrantTierType.HigherTier
   }
 
-  static getTierFromBudget(budget: number) {
-    const THE_TIER = GrantTierType.LowerTier // TODO: Calculate tier from budget
-    return new GrantTier(THE_TIER)
-  }
-
-  getVPThreshold(proposalBudget: number) {
-    if (this.type === GrantTierType.HigherTier) {
-      return 1200000 + proposalBudget * 40
+  static getVPThreshold(budget: number) {
+    const type = GrantTier.getTypeFromBudget(budget)
+    switch (type) {
+      case GrantTierType.HigherTier:
+        return 1200000 + budget * 40
+      case GrantTierType.LowerTier:
+      default:
+        return 2000000
     }
-
-    // lower_tier
-    return 2000000
   }
 
-  isSizeValid(size: number) {
-    if (size >= this.min && size < this.max) {
-      return true
-    }
-
-    return false
-  }
-
-  isOneTimePaymentTier() {
-    const type = this.type as GrantTierType | TransparencyOneTimePaymentTier
+  static isOneTimePaymentTier(type: GrantTierType | TransparencyOneTimePaymentTier) {
     switch (type) {
       case GrantTierType.Tier1:
       case GrantTierType.Tier2:

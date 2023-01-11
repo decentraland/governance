@@ -82,8 +82,7 @@ export function UpdateProposalStatusModal({
 }: UpdateProposalStatusModalProps) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, initialPollState)
-  const grantTier = new GrantTier(proposal?.configuration.tier)
-  const isOneTimePaymentProposalTier = grantTier.isOneTimePaymentTier()
+  const isOneTimePaymentProposalTier = GrantTier.isOneTimePaymentTier(proposal?.configuration.tier)
 
   function handleAccept(e: React.MouseEvent<unknown>) {
     editor.validate()
