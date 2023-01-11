@@ -13,7 +13,7 @@ function getDefaultAvatarSizeUrl(avatar_url: string) {
 }
 
 export function getUserProfileUrl(user: string) {
-  return `${FORUM_URL}u/${user}`
+  return `${FORUM_URL}/u/${user}`
 }
 
 function setAvatarUrl(post: DiscoursePostInTopic) {
