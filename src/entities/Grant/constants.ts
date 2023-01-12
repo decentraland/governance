@@ -1,7 +1,7 @@
 import { GrantTierAttributes, GrantTierStatus, GrantTierType } from './types'
 
 export const GRANT_PROPOSAL_DURATION_IN_SECONDS = 1209600
-export const GRANT_PROPOSAL_MIN_BUDGET = 0
+export const GRANT_PROPOSAL_MIN_BUDGET = 100
 export const GRANT_PROPOSAL_MAX_BUDGET = 240000
 
 export const TIERS: GrantTierAttributes[] = [
