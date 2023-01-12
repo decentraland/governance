@@ -2,8 +2,9 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import toSnakeCase from 'lodash/snakeCase'
 
-import { GrantType, ProposalType } from '../../entities/Proposal/types'
+import { NewGrantCategory, ProposalType } from '../../entities/Proposal/types'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'
@@ -14,10 +15,10 @@ export type FilterProps = {
 }
 
 function getValues<T extends object>(e: T): Array<T[keyof T]> {
-  return (Object.keys(e) as (keyof T)[]).map((k) => e[k])
+  return Object.values(e)
 }
 
-function handleTypeFilter(type: ProposalType | GrantType | null, params: URLSearchParams) {
+function handleTypeFilter(type: ProposalType | NewGrantCategory | null, params: URLSearchParams) {
   const newParams = new URLSearchParams(params)
   type ? newParams.set('type', type) : newParams.delete('type')
   newParams.delete('page')
@@ -28,7 +29,7 @@ function handleTypeFilter(type: ProposalType | GrantType | null, params: URLSear
 export default React.memo(function CategoryFilter({
   filterType,
   onChange,
-}: FilterProps & { filterType: typeof ProposalType | typeof GrantType }) {
+}: FilterProps & { filterType: typeof ProposalType | typeof NewGrantCategory }) {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])

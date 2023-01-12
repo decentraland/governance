@@ -7,6 +7,7 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import {
   GrantWithUpdateAttributes,
+  OldGrantCategory,
   PROPOSAL_GRANT_CATEGORY_ALL,
   ProposalGrantCategory,
 } from '../../../entities/Proposal/types'
@@ -17,10 +18,10 @@ import './CurrentGrantsCategoryFilters.css'
 export type GrantCategoryFilter = ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL
 const GRANTS_CATEGORY_FILTERS: GrantCategoryFilter[] = [
   PROPOSAL_GRANT_CATEGORY_ALL,
-  ProposalGrantCategory.Community,
-  ProposalGrantCategory.Gaming,
-  ProposalGrantCategory.ContentCreator,
-  ProposalGrantCategory.PlatformContributor,
+  OldGrantCategory.Community,
+  OldGrantCategory.Gaming,
+  OldGrantCategory.ContentCreator,
+  OldGrantCategory.PlatformContributor,
 ]
 
 interface Props {

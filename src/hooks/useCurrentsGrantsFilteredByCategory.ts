@@ -2,32 +2,25 @@ import { useMemo } from 'react'
 
 import filter from 'lodash/filter'
 
-import {
-  GrantWithUpdateAttributes,
-  PROPOSAL_GRANT_CATEGORY_ALL,
-  ProposalGrantCategory,
-} from '../entities/Proposal/types'
+import { GrantWithUpdateAttributes, OldGrantCategory, PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
 
 export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdateAttributes[]) {
   // TODO: Add new category filters
   return useMemo(
     () => ({
       [PROPOSAL_GRANT_CATEGORY_ALL]: grants,
-      [ProposalGrantCategory.Community]: filter(
+      [OldGrantCategory.Community]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Community
+        (item) => item.configuration.category === OldGrantCategory.Community
       ),
-      [ProposalGrantCategory.Gaming]: filter(
+      [OldGrantCategory.Gaming]: filter(grants, (item) => item.configuration.category === OldGrantCategory.Gaming),
+      [OldGrantCategory.PlatformContributor]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Gaming
+        (item) => item.configuration.category === OldGrantCategory.PlatformContributor
       ),
-      [ProposalGrantCategory.PlatformContributor]: filter(
+      [OldGrantCategory.ContentCreator]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.PlatformContributor
-      ),
-      [ProposalGrantCategory.ContentCreator]: filter(
-        grants,
-        (item) => item.configuration.category === ProposalGrantCategory.ContentCreator
+        (item) => item.configuration.category === OldGrantCategory.ContentCreator
       ),
     }),
     [grants]

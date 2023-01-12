@@ -6,8 +6,8 @@ import VotesModel from '../../Votes/model'
 import ProposalModel from '../model'
 import {
   INVALID_PROPOSAL_POLL_OPTIONS,
+  OldGrantCategory,
   ProposalAttributes,
-  ProposalGrantCategory,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -285,7 +285,7 @@ describe('getUpdateMessage', () => {
           return {
             title: 'Grant Title',
             abstract: 'Grant Abstract',
-            category: ProposalGrantCategory.Community,
+            category: OldGrantCategory.Community,
             tier: GrantTierType.Tier1,
             size: 1000,
             beneficiary: 'Grant Beneficiary',

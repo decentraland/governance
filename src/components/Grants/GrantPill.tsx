@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ProposalGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../entities/Proposal/types'
 import Pill, { PillColor } from '../Common/Pill'
 
 interface Props {
@@ -8,19 +8,19 @@ interface Props {
 }
 
 const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> = {
-  [ProposalGrantCategory.Community]: PillColor.Green,
-  [ProposalGrantCategory.ContentCreator]: PillColor.Orange,
-  [ProposalGrantCategory.PlatformContributor]: PillColor.Purple,
-  [ProposalGrantCategory.Gaming]: PillColor.Blue,
+  [OldGrantCategory.Community]: PillColor.Green,
+  [OldGrantCategory.ContentCreator]: PillColor.Orange,
+  [OldGrantCategory.PlatformContributor]: PillColor.Purple,
+  [OldGrantCategory.Gaming]: PillColor.Blue,
 
   // TODO: Review new colors
-  [ProposalGrantCategory.Accelerator]: PillColor.Gray,
-  [ProposalGrantCategory.CoreUnit]: PillColor.Gray,
-  [ProposalGrantCategory.Documentation]: PillColor.Gray,
-  [ProposalGrantCategory.InWorldContent]: PillColor.Gray,
-  [ProposalGrantCategory.Platform]: PillColor.Gray,
-  [ProposalGrantCategory.SocialMediaContent]: PillColor.Gray,
-  [ProposalGrantCategory.Sponsorship]: PillColor.Gray,
+  [NewGrantCategory.Accelerator]: PillColor.Gray,
+  [NewGrantCategory.CoreUnit]: PillColor.Gray,
+  [NewGrantCategory.Documentation]: PillColor.Gray,
+  [NewGrantCategory.InWorldContent]: PillColor.Gray,
+  [NewGrantCategory.Platform]: PillColor.Gray,
+  [NewGrantCategory.SocialMediaContent]: PillColor.Gray,
+  [NewGrantCategory.Sponsorship]: PillColor.Gray,
 }
 
 function GrantPill({ type }: Props) {

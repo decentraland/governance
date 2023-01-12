@@ -97,16 +97,6 @@ export enum PoiType {
   RemovePOI = 'remove_poi',
 }
 
-export enum GrantType {
-  CoreUnits = 'core_units',
-  Platform = 'platform',
-  Documentation = 'documentation',
-  InWorldContent = 'in_world_content',
-  SocialMediaContent = 'social_media_content',
-  Sponsorship = 'sponsorship',
-  Accelerator = 'accelerator',
-}
-
 export function isProposalType(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
@@ -458,14 +448,15 @@ export const newProposalCatalystScheme = {
 }
 
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
-export enum ProposalGrantCategory {
-  // OLD
+
+export enum OldGrantCategory {
   Community = 'Community',
   ContentCreator = 'Content Creator',
   Gaming = 'Gaming',
   PlatformContributor = 'Platform Contributor',
+}
 
-  // NEW
+export enum NewGrantCategory {
   Accelerator = 'Accelerator',
   CoreUnit = 'Core Unit',
   Documentation = 'Documentation',
@@ -474,6 +465,8 @@ export enum ProposalGrantCategory {
   SocialMediaContent = 'Social Media Content',
   Sponsorship = 'Sponsorship',
 }
+
+export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
@@ -503,14 +496,14 @@ export type GrantProposalInCreation = {
 
 export type GrantProposalConfiguration = GrantProposalInCreation & { tier: GrantTierType }
 
-export const VALID_CATEGORIES = [
-  ProposalGrantCategory.Accelerator,
-  ProposalGrantCategory.CoreUnit,
-  ProposalGrantCategory.Documentation,
-  ProposalGrantCategory.InWorldContent,
-  ProposalGrantCategory.Platform,
-  ProposalGrantCategory.SocialMediaContent,
-  ProposalGrantCategory.Sponsorship,
+export const VALID_CATEGORIES: ProposalGrantCategory[] = [
+  NewGrantCategory.Accelerator,
+  NewGrantCategory.CoreUnit,
+  NewGrantCategory.Documentation,
+  NewGrantCategory.InWorldContent,
+  NewGrantCategory.Platform,
+  NewGrantCategory.SocialMediaContent,
+  NewGrantCategory.Sponsorship,
 ]
 
 export const newProposalGrantScheme = {
