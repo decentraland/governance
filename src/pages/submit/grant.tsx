@@ -12,6 +12,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
+import RequestGrantSectionFocused from '../../components/Icon/RequestGrantSectionFocused'
 import RequestGrantSectionOk from '../../components/Icon/RequestGrantSectionOk'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
@@ -103,7 +104,26 @@ export default function SubmitGrant() {
         <div className="RequestGrantSection__Head">
           <div className="RequestGrantSection__Header">
             <RequestGrantSectionOk className={'RequestGrantSection__FixedSizeIcon'} />
-            <div>{'Funding'}</div>
+            <div className="RequestGrantSection__HeaderTitle">{'Funding'}</div>
+            <div className="RequestGrantSection__HorizontalLine" />
+          </div>
+          <div className="RequestGrantSection__Content">
+            <ContentSection className="GrantSize">
+              <Label>{t('page.submit_grant.size_label')}</Label>
+              <Paragraph tiny secondary className="details">
+                {t('page.submit_grant.size_detail')}
+              </Paragraph>
+              <Field type="number" />
+            </ContentSection>
+          </div>
+        </div>
+      </Container>
+
+      <Container className="ContentLayout__Container RequestGrantSection__Container">
+        <div className="RequestGrantSection__Head">
+          <div className="RequestGrantSection__Header">
+            <RequestGrantSectionFocused className={'RequestGrantSection__FixedSizeIcon'} />
+            <div className="RequestGrantSection__HeaderTitle">{'General Information'}</div>
             <div className="RequestGrantSection__HorizontalLine" />
           </div>
           <div className="RequestGrantSection__Content">
