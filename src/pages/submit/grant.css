@@ -1,15 +1,15 @@
-.RequestGrant__Head {
+.GrantRequest__Head {
   display: flex;
   justify-content: space-between;
   padding-bottom: 8px;
   position: sticky;
 }
-.RequestGrant__Head > .ui.button.basic {
+.GrantRequest__Head > .ui.button.basic {
   margin: 0 !important;
   padding: 0 !important;
 }
 
-.RequestGrant__Header {
+.GrantRequest__Header {
   display: flex;
   gap: 24px;
   align-items: center;
@@ -20,51 +20,9 @@
   text-align: left;
 }
 
-.RequestGrant__HeaderDescription p.dg.Paragraph {
+.GrantRequest__HeaderDescription p.dg.Paragraph {
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
   text-align: left;
-}
-
-.RequestGrantSection__Container {
-  margin-bottom: 50px;
-}
-
-.RequestGrantSection__Head {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-}
-
-.RequestGrantSection__Header {
-  width: 100%;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 16px;
-}
-
-.RequestGrantSection__HeaderTitle {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 42px;
-  letter-spacing: 0.4px;
-  text-align: left;
-}
-
-.RequestGrantSection__HorizontalLine {
-  flex-grow: 100;
-  border: 1px solid rgba(115, 110, 125, 0.24);
-}
-
-.RequestGrantSection__FixedSizeIcon {
-  min-width: 34px;
-  max-width: 34px;
-}
-
-.RequestGrantSection__Content {
-  display: flex;
-  margin-left: 58px;
 }
