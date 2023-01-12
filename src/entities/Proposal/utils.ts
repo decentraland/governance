@@ -8,28 +8,10 @@ import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
 import { DISCOURSE_API } from '../Discourse/utils'
-import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
+import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
-import {
-  DURATION_GRANT_TIER1,
-  DURATION_GRANT_TIER2,
-  DURATION_GRANT_TIER3,
-  DURATION_GRANT_TIER4,
-  DURATION_GRANT_TIER5,
-  DURATION_GRANT_TIER6,
-  GRANT_SIZE_MINIMUM,
-  MAX_NAME_SIZE,
-  MIN_NAME_SIZE,
-} from './constants'
-import {
-  GrantAttributes,
-  ProposalAttributes,
-  ProposalGrantTier,
-  ProposalGrantTierValues,
-  ProposalStatus,
-  ProposalType,
-  toProposalGrantTier,
-} from './types'
+import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
+import { ProposalAttributes, ProposalStatus, ProposalType, TransparencyGrant } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MIN_PROPOSAL_LIMIT = 0
@@ -106,21 +88,6 @@ export async function isAlreadyACatalyst(domain: string) {
   return !!servers.find((server) => server.baseUrl === 'https://' + domain)
 }
 
-export function isGrantSizeValid(tier: string | null, size: string | number): boolean {
-  const tierIndex = Object.values(ProposalGrantTier).indexOf(toProposalGrantTier(tier)!)
-  const values = Object.values(ProposalGrantTierValues)
-
-  if (tierIndex < 0 || tierIndex >= values.length) {
-    return false
-  }
-
-  const sizeNumber = asNumber(size)
-  const upperTierLimit = values[tierIndex]
-  const lowerTierLimit = tierIndex === 0 ? asNumber(GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
-
-  return sizeNumber > lowerTierLimit && sizeNumber <= upperTierLimit
-}
-
 export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
   switch (current) {
     case ProposalStatus.Finished:
@@ -181,19 +148,6 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   return target.toString()
 }
 
-function grantDuration(value: string | undefined | null) {
-  return Number(value || SNAPSHOT_DURATION)
-}
-
-export const GrantDuration = {
-  [ProposalGrantTier.Tier1]: grantDuration(DURATION_GRANT_TIER1),
-  [ProposalGrantTier.Tier2]: grantDuration(DURATION_GRANT_TIER2),
-  [ProposalGrantTier.Tier3]: grantDuration(DURATION_GRANT_TIER3),
-  [ProposalGrantTier.Tier4]: grantDuration(DURATION_GRANT_TIER4),
-  [ProposalGrantTier.Tier5]: grantDuration(DURATION_GRANT_TIER5),
-  [ProposalGrantTier.Tier6]: grantDuration(DURATION_GRANT_TIER6),
-}
-
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
 export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
@@ -201,12 +155,9 @@ export function userModifiedForm(stateValue: Record<string, unknown>, initialSta
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
 }
 
-const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])
-
-export function isProposalInCliffPeriod(grant: GrantAttributes) {
-  const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
+export function isProposalInCliffPeriod(grant: TransparencyGrant) {
   const now = Time.utc()
-  return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+  return Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
 
 export function isGovernanceProcessProposal(type: ProposalType) {

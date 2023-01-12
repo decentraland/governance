@@ -1,11 +1,11 @@
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
 import {
+  GrantProposalConfiguration,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
-  NewProposalGrant,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
@@ -26,7 +26,7 @@ type NewConfiguration =
   | NewProposalLinkedWearables
   | NewProposalBanName
   | NewProposalCatalyst
-  | NewProposalGrant
+  | GrantProposalConfiguration
   | NewProposalPOI
   | NewProposalPoll
   | NewProposalDraft
@@ -41,7 +41,7 @@ export const title = ({ type, configuration }: { type: ProposalType; configurati
     case ProposalType.Catalyst:
       return catalyst.title(configuration as any)
     case ProposalType.Grant:
-      return grant.title(configuration as any)
+      return grant.title(configuration as GrantProposalConfiguration)
     case ProposalType.Poll:
       return poll.title(configuration as any)
     case ProposalType.Draft:
@@ -62,7 +62,7 @@ export const description = async ({ type, configuration }: { type: ProposalType;
     case ProposalType.Catalyst:
       return catalyst.description(configuration as any)
     case ProposalType.Grant:
-      return grant.description(configuration as any)
+      return grant.description(configuration as GrantProposalConfiguration)
     case ProposalType.Poll:
       return poll.description(configuration as any)
     case ProposalType.Draft:

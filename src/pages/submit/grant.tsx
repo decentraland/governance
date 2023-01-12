@@ -25,19 +25,9 @@ import LoadingView from '../../components/Layout/LoadingView'
 import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
-import {
-  ProposalGrantCategory,
-  ProposalGrantTier,
-  isProposalGrantCategory,
-  isProposalGrantTier,
-  newProposalGrantScheme,
-} from '../../entities/Proposal/types'
-import {
-  asNumber,
-  isGrantProposalSubmitEnabled,
-  isGrantSizeValid,
-  userModifiedForm,
-} from '../../entities/Proposal/utils'
+import { isProposalGrantCategory, isValidGrantBudget } from '../../entities/Grant/utils'
+import { ProposalGrantCategory, VALID_CATEGORIES, newProposalGrantScheme } from '../../entities/Proposal/types'
+import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -48,7 +38,6 @@ type GrantState = {
   title: string
   abstract: string
   category: string | null
-  tier: string | null
   size: string | number
   beneficiary: string
   email: string
@@ -63,7 +52,6 @@ const initialState: GrantState = {
   title: '',
   abstract: '',
   category: null,
-  tier: null,
   size: '',
   beneficiary: '',
   email: '',
@@ -73,33 +61,7 @@ const initialState: GrantState = {
   roadmap: '',
 }
 
-const categories = [
-  {
-    key: ProposalGrantCategory.Community,
-    text: ProposalGrantCategory.Community,
-    value: ProposalGrantCategory.Community,
-  },
-  {
-    key: ProposalGrantCategory.ContentCreator,
-    text: ProposalGrantCategory.ContentCreator,
-    value: ProposalGrantCategory.ContentCreator,
-  },
-  { key: ProposalGrantCategory.Gaming, text: ProposalGrantCategory.Gaming, value: ProposalGrantCategory.Gaming },
-  {
-    key: ProposalGrantCategory.PlatformContributor,
-    text: ProposalGrantCategory.PlatformContributor,
-    value: ProposalGrantCategory.PlatformContributor,
-  },
-]
-
-const tiers = [
-  { key: ProposalGrantTier.Tier1, text: ProposalGrantTier.Tier1, value: ProposalGrantTier.Tier1 },
-  { key: ProposalGrantTier.Tier2, text: ProposalGrantTier.Tier2, value: ProposalGrantTier.Tier2 },
-  { key: ProposalGrantTier.Tier3, text: ProposalGrantTier.Tier3, value: ProposalGrantTier.Tier3 },
-  { key: ProposalGrantTier.Tier4, text: ProposalGrantTier.Tier4, value: ProposalGrantTier.Tier4 },
-  { key: ProposalGrantTier.Tier5, text: ProposalGrantTier.Tier5, value: ProposalGrantTier.Tier5 },
-  { key: ProposalGrantTier.Tier6, text: ProposalGrantTier.Tier6, value: ProposalGrantTier.Tier6 },
-]
+const categories = VALID_CATEGORIES.map((category) => ({ key: category, text: category, value: category }))
 
 const schema = newProposalGrantScheme.properties
 const edit = (state: GrantState, props: Partial<GrantState>) => {
@@ -114,15 +76,12 @@ const validate = createValidator<GrantState>({
     category:
       assert(!state.category || isProposalGrantCategory(state.category), 'error.grant.category_invalid') || undefined,
   }),
-  tier: (state) => ({
-    tier: assert(!state.tier || isProposalGrantTier(state.tier), 'error.grant.tier_invalid') || undefined,
-  }),
   size: (state) => ({
     size:
       assert(!state.size || Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
       assert(!state.size || asNumber(state.size) > schema.size.minimum, 'error.grant.size_too_low') ||
       assert(
-        !state.size || (!!state.tier && isGrantSizeValid(state.tier, state.size)),
+        !state.size || (!!state.size && isValidGrantBudget(Number(state.size))),
         'error.grant.size_tier_invalid'
       ) ||
       undefined,
@@ -160,9 +119,6 @@ const validate = createValidator<GrantState>({
     category:
       assert(!!state.category, 'error.grant.category_empty') ||
       assert(isProposalGrantCategory(state.category), 'error.grant.category_invalid'),
-    tier:
-      assert(!!state.tier, 'error.grant.tier_empty') ||
-      assert(isProposalGrantTier(state.tier), 'error.grant.tier_invalid'),
     title:
       assert(state.title.length > 0, 'error.grant.title_empty') ||
       assert(state.title.length >= schema.title.minLength, 'error.grant.title_too_short') ||
@@ -171,7 +127,7 @@ const validate = createValidator<GrantState>({
       assert(state.size !== '', 'error.grant.size_empty') ||
       assert(Number.isFinite(asNumber(state.size)), 'error.grant.size_invalid') ||
       assert(asNumber(state.size) >= schema.size.minimum, 'error.grant.size_too_low') ||
-      assert(isGrantSizeValid(state.tier, state.size), 'error.grant.size_tier_invalid'),
+      assert(!!state.size && isValidGrantBudget(Number(state.size)), 'error.grant.size_tier_invalid'),
     abstract:
       assert(state.abstract.length > 0, 'error.grant.abstract_empty') ||
       assert(state.abstract.length >= schema.abstract.minLength, 'error.grant.abstract_too_short') ||
@@ -201,13 +157,7 @@ const validate = createValidator<GrantState>({
   }),
 })
 
-const NOW = Date.now()
-
 export default function SubmitGrant() {
-  if (!isGrantProposalSubmitEnabled(NOW)) {
-    navigate(locations.submit())
-  }
-
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [state, editor] = useEditor(edit, validate, initialState)
@@ -225,11 +175,9 @@ export default function SubmitGrant() {
         .then(async () => {
           const size = asNumber(state.value.size)
           const category = state.value.category as ProposalGrantCategory
-          const tier = state.value.tier as ProposalGrantTier
           return Governance.get().createProposalGrant({
             ...state.value,
             category,
-            tier,
             size,
           })
         })
@@ -277,18 +225,6 @@ export default function SubmitGrant() {
           options={categories}
           error={!!state.error.category}
           message={t(state.error.category)}
-          disabled={formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>{t('page.submit_grant.tier_label')}</Label>
-        <SelectField
-          value={state.value.tier || undefined}
-          placeholder={t('page.submit_grant.tier_placeholder') || undefined}
-          onChange={(_, { value }) => editor.set({ tier: String(value) })}
-          options={tiers}
-          error={!!state.error.tier}
-          message={t(state.error.tier)}
           disabled={formDisabled}
         />
       </ContentSection>

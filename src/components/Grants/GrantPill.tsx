@@ -12,6 +12,15 @@ const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> =
   [ProposalGrantCategory.ContentCreator]: PillColor.Orange,
   [ProposalGrantCategory.PlatformContributor]: PillColor.Purple,
   [ProposalGrantCategory.Gaming]: PillColor.Blue,
+
+  // TODO: Review new colors
+  [ProposalGrantCategory.Accelerator]: PillColor.Gray,
+  [ProposalGrantCategory.CoreUnit]: PillColor.Gray,
+  [ProposalGrantCategory.Documentation]: PillColor.Gray,
+  [ProposalGrantCategory.InWorldContent]: PillColor.Gray,
+  [ProposalGrantCategory.Platform]: PillColor.Gray,
+  [ProposalGrantCategory.SocialMediaContent]: PillColor.Gray,
+  [ProposalGrantCategory.Sponsorship]: PillColor.Gray,
 }
 
 function GrantPill({ type }: Props) {

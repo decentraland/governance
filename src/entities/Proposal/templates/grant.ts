@@ -1,11 +1,11 @@
-import { NewProposalGrant } from '../types'
+import { GrantProposalConfiguration } from '../types'
 import { formatBalance } from '../utils'
 
 import { formatMarkdown, template } from './utils'
 
-export const title = (proposal: NewProposalGrant) => proposal.title.split('\n')[0]
+export const title = (proposal: GrantProposalConfiguration) => proposal.title.split('\n')[0]
 
-export const description = (proposal: NewProposalGrant) => template`
+export const description = (proposal: GrantProposalConfiguration) => template`
 Should the following ${proposal.tier} grant in the ${proposal.category} category be approved?
 
 ## Abstract

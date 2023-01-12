@@ -1,8 +1,5 @@
-import { calculateResult, calculateResultWinner} from './utils'
-import {
-  YES_NO_CHOICES,
-  VOTES_RESULTS,
-} from './utils.testData'
+import { calculateResult, calculateResultWinner } from './utils'
+import { VOTES_RESULTS, YES_NO_CHOICES } from './utils.testData'
 
 describe('entities/Votes/utils', () => {
   test('calculateResult', () => {
@@ -34,5 +31,3 @@ describe('entities/Votes/utils', () => {
     })
   })
 })
-
-

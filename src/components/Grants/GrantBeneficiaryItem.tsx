@@ -7,7 +7,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { TransparencyGrantsTiers } from '../../clients/DclData'
-import { GrantAttributes } from '../../entities/Proposal/types'
+import { TransparencyGrant } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import { abbreviateTimeDifference, formatDate } from '../../modules/time'
@@ -22,7 +22,7 @@ import './GrantBeneficiaryItem.css'
 import GrantPill from './GrantPill'
 
 interface Props {
-  grant: GrantAttributes
+  grant: TransparencyGrant
 }
 
 function GrantBeneficiaryItem({ grant }: Props) {
@@ -31,7 +31,6 @@ function GrantBeneficiaryItem({ grant }: Props) {
   const { user, title, enacted_at, token, configuration } = grant
   const enactedDate = new Date(enacted_at * 1000)
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
-
   const isInMana = Object.keys(TransparencyGrantsTiers).slice(0, 3).includes(configuration.tier)
 
   return (
