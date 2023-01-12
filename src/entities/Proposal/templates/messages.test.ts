@@ -1,13 +1,13 @@
 import { def, get } from 'bdd-lazy-var/getter'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+import { GrantTierType } from '../../Grant/types'
 import VotesModel from '../../Votes/model'
 import ProposalModel from '../model'
 import {
   INVALID_PROPOSAL_POLL_OPTIONS,
   ProposalAttributes,
   ProposalGrantCategory,
-  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -286,7 +286,7 @@ describe('getUpdateMessage', () => {
             title: 'Grant Title',
             abstract: 'Grant Abstract',
             category: ProposalGrantCategory.Community,
-            tier: ProposalGrantTier.Tier1,
+            tier: GrantTierType.Tier1,
             size: 1000,
             beneficiary: 'Grant Beneficiary',
             description: 'Grant Description',

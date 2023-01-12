@@ -2,7 +2,7 @@ import React from 'react'
 
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { GrantWithUpdateAttributes, ProposalGrantCategory } from '../../../entities/Proposal/types'
+import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
 import Username from '../../User/Username'
 import GrantPill from '../GrantPill'
 
@@ -14,14 +14,13 @@ export type GrantCardHeaderProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const GrantCardHeader = ({ grant }: GrantCardHeaderProps) => {
   const { configuration, size } = grant
-  const category: ProposalGrantCategory = configuration.category
   const intl = useIntl()
   const t = useFormatMessage()
 
   return (
     <div className="GrantCardHeader">
       <div className="GrantCardHeader__ConfigurationInfo">
-        <GrantPill type={category} />
+        <GrantPill type={configuration.category} />
         <div className="GrantCardHeader__SizeContainer GrantCardHeader__SizeContainerSlim">
           <p className="GrantCardHeader__Size">{`${t('component.grant_card.size')}: $${intl.formatNumber(
             size

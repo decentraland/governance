@@ -3,29 +3,17 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import { GrantTierType } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
   GRANT_SIZE_MINIMUM,
-  GRANT_SIZE_TIER1,
-  GRANT_SIZE_TIER2,
-  GRANT_SIZE_TIER3,
-  GRANT_SIZE_TIER4,
-  GRANT_SIZE_TIER5,
-  GRANT_SIZE_TIER6,
   MAX_NAME_SIZE,
   MIN_NAME_SIZE,
   VOTING_POWER_TO_PASS_BAN_NAME,
   VOTING_POWER_TO_PASS_CATALYST,
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
-  VOTING_POWER_TO_PASS_GRANT,
-  VOTING_POWER_TO_PASS_GRANT_TIER1,
-  VOTING_POWER_TO_PASS_GRANT_TIER2,
-  VOTING_POWER_TO_PASS_GRANT_TIER3,
-  VOTING_POWER_TO_PASS_GRANT_TIER4,
-  VOTING_POWER_TO_PASS_GRANT_TIER5,
-  VOTING_POWER_TO_PASS_GRANT_TIER6,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
@@ -461,103 +449,37 @@ export const newProposalCatalystScheme = {
 
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 export enum ProposalGrantCategory {
+  // OLD
   Community = 'Community',
   ContentCreator = 'Content Creator',
-  PlatformContributor = 'Platform Contributor',
   Gaming = 'Gaming',
-}
+  PlatformContributor = 'Platform Contributor',
 
-export function isProposalGrantCategory(value: string | null | undefined): boolean {
-  switch (value) {
-    case ProposalGrantCategory.Community:
-    case ProposalGrantCategory.ContentCreator:
-    case ProposalGrantCategory.PlatformContributor:
-    case ProposalGrantCategory.Gaming:
-      return true
-    default:
-      return false
-  }
-}
-
-export enum ProposalGrantTier {
-  Tier1 = 'Tier 1: up to $1,500 USD in MANA, one-time payment',
-  Tier2 = 'Tier 2: up to $3,000 USD in MANA, one-time payment',
-  Tier3 = 'Tier 3: up to $5,000 USD in MANA, 3 months vesting (1 month cliff)',
-  Tier4 = 'Tier 4: up to $60,000 USD, 6 months vesting (1 month cliff)',
-  Tier5 = 'Tier 5: up to $120,000 USD, 6 months vesting (1 month cliff)',
-  Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
-}
-
-export const ProposalGrantTierValues = {
-  [ProposalGrantTier.Tier1]: Number(GRANT_SIZE_TIER1 || 0),
-  [ProposalGrantTier.Tier2]: Number(GRANT_SIZE_TIER2 || 0),
-  [ProposalGrantTier.Tier3]: Number(GRANT_SIZE_TIER3 || 0),
-  [ProposalGrantTier.Tier4]: Number(GRANT_SIZE_TIER4 || 0),
-  [ProposalGrantTier.Tier5]: Number(GRANT_SIZE_TIER5 || 0),
-  [ProposalGrantTier.Tier6]: Number(GRANT_SIZE_TIER6 || 0),
-}
-
-export function isProposalGrantTier(value: string | null | undefined): boolean {
-  switch (value) {
-    case ProposalGrantTier.Tier1:
-    case ProposalGrantTier.Tier2:
-    case ProposalGrantTier.Tier3:
-    case ProposalGrantTier.Tier4:
-    case ProposalGrantTier.Tier5:
-    case ProposalGrantTier.Tier6:
-      return true
-    default:
-      return false
-  }
-}
-
-export function toProposalGrantTier(value: string | null | undefined): ProposalGrantTier | null {
-  return isProposalGrantTier(value) ? (value as ProposalGrantTier) : null
+  // NEW
+  Accelerator = 'Accelerator',
+  CoreUnit = 'Core Unit',
+  Documentation = 'Documentation',
+  InWorldContent = 'In-World Content',
+  Platform = 'Platform',
+  SocialMediaContent = 'Social Media Content',
+  Sponsorship = 'Sponsorship',
 }
 
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
-  [ProposalType.Grant]: requiredVotingPower(VOTING_POWER_TO_PASS_GRANT, 0),
   [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),
   [ProposalType.BanName]: requiredVotingPower(VOTING_POWER_TO_PASS_BAN_NAME, 0),
   [ProposalType.POI]: requiredVotingPower(VOTING_POWER_TO_PASS_POI, 0),
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Grant]: 0, // TODO: Remove this and fix type in test
 }
 
-export const GrantRequiredVP = {
-  [ProposalGrantTier.Tier1]: requiredVotingPower(
-    VOTING_POWER_TO_PASS_GRANT_TIER1,
-    ProposalRequiredVP[ProposalType.Grant]
-  ),
-  [ProposalGrantTier.Tier2]: requiredVotingPower(
-    VOTING_POWER_TO_PASS_GRANT_TIER2,
-    ProposalRequiredVP[ProposalType.Grant]
-  ),
-  [ProposalGrantTier.Tier3]: requiredVotingPower(
-    VOTING_POWER_TO_PASS_GRANT_TIER3,
-    ProposalRequiredVP[ProposalType.Grant]
-  ),
-  [ProposalGrantTier.Tier4]: requiredVotingPower(
-    VOTING_POWER_TO_PASS_GRANT_TIER4,
-    ProposalRequiredVP[ProposalType.Grant]
-  ),
-  [ProposalGrantTier.Tier5]: requiredVotingPower(
-    VOTING_POWER_TO_PASS_GRANT_TIER5,
-    ProposalRequiredVP[ProposalType.Grant]
-  ),
-  [ProposalGrantTier.Tier6]: requiredVotingPower(
-    VOTING_POWER_TO_PASS_GRANT_TIER6,
-    ProposalRequiredVP[ProposalType.Grant]
-  ),
-}
-
-export type NewProposalGrant = {
+export type GrantProposalInCreation = {
   title: string
   abstract: string
   category: ProposalGrantCategory
-  tier: ProposalGrantTier
   size: number
   beneficiary: string
   email: string
@@ -566,7 +488,20 @@ export type NewProposalGrant = {
   personnel: string
   roadmap: string
   coAuthors?: string[]
+  // projectDuration: number
 }
+
+export type GrantProposalConfiguration = GrantProposalInCreation & { tier: GrantTierType }
+
+export const VALID_CATEGORIES = [
+  ProposalGrantCategory.Accelerator,
+  ProposalGrantCategory.CoreUnit,
+  ProposalGrantCategory.Documentation,
+  ProposalGrantCategory.InWorldContent,
+  ProposalGrantCategory.Platform,
+  ProposalGrantCategory.SocialMediaContent,
+  ProposalGrantCategory.Sponsorship,
+]
 
 export const newProposalGrantScheme = {
   type: 'object',
@@ -575,7 +510,6 @@ export const newProposalGrantScheme = {
     'title',
     'abstract',
     'category',
-    'tier',
     'beneficiary',
     'email',
     'description',
@@ -596,23 +530,7 @@ export const newProposalGrantScheme = {
     },
     category: {
       type: 'string',
-      enum: [
-        ProposalGrantCategory.Community,
-        ProposalGrantCategory.ContentCreator,
-        ProposalGrantCategory.PlatformContributor,
-        ProposalGrantCategory.Gaming,
-      ],
-    },
-    tier: {
-      type: 'string',
-      enum: [
-        ProposalGrantTier.Tier1,
-        ProposalGrantTier.Tier2,
-        ProposalGrantTier.Tier3,
-        ProposalGrantTier.Tier4,
-        ProposalGrantTier.Tier5,
-        ProposalGrantTier.Tier6,
-      ],
+      enum: VALID_CATEGORIES,
     },
     size: {
       type: 'integer',
@@ -775,7 +693,7 @@ type VestingContractData = {
   vesting_total_amount: number
 }
 
-type TransparencyGrant = {
+export type TransparencyGrant = {
   id: string
   title: string
   user: string
@@ -785,9 +703,6 @@ type TransparencyGrant = {
     category: ProposalGrantCategory
     tier: string
   }
-}
-
-type GrantBlockchainData = {
   contract?: VestingContractData
   enacting_tx?: string
   token?: string
@@ -796,14 +711,12 @@ type GrantBlockchainData = {
   tx_date?: number
 }
 
-export type GrantAttributes = TransparencyGrant & GrantBlockchainData
-export type GrantWithUpdateAttributes = TransparencyGrant &
-  GrantBlockchainData & {
-    update: IndexedUpdate | null
-  }
+export type GrantWithUpdateAttributes = TransparencyGrant & {
+  update: IndexedUpdate | null
+}
 
 export type GrantsResponse = {
   current: GrantWithUpdateAttributes[]
-  past: GrantAttributes[]
+  past: TransparencyGrant[]
   total: number
 }

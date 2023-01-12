@@ -1,28 +1,15 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { v1 as uuid } from 'uuid'
 
-import { ProposalGrantTier } from '../Proposal/types'
-
 import { UpdateAttributes, UpdateStatus } from './types'
-
-const UpdateCount: { [key: string]: number } = {
-  [ProposalGrantTier.Tier3]: 3,
-  [ProposalGrantTier.Tier4]: 6,
-  [ProposalGrantTier.Tier5]: 6,
-  [ProposalGrantTier.Tier6]: 6,
-}
 
 export default class UpdateModel extends Model<UpdateAttributes> {
   static tableName = 'proposal_updates'
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createPendingUpdates(proposalId: string, tier: ProposalGrantTier) {
-    if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
-      return null
-    }
-
-    const updatesQuantity = UpdateCount[tier]
+  static async createPendingUpdates(proposalId: string, duration: string) {
+    const updatesQuantity = duration // TODO: Validate duration is between 1-12?
     const now = new Date()
 
     return Array.from(Array(updatesQuantity), async (_, index) => {

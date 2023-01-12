@@ -9,6 +9,7 @@ import {
 } from '../entities/Proposal/types'
 
 export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdateAttributes[]) {
+  // TODO: Add new category filters
   return useMemo(
     () => ({
       [PROPOSAL_GRANT_CATEGORY_ALL]: grants,

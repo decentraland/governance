@@ -148,7 +148,7 @@ export async function finishProposal(context: JobContext) {
     await Promise.all(
       acceptedProposals.map(async ({ id, type, configuration }) => {
         if (type == ProposalType.Grant) {
-          await UpdateModel.createPendingUpdates(id, configuration.tier)
+          await UpdateModel.createPendingUpdates(id, configuration.projectDuration)
         }
       })
     )
