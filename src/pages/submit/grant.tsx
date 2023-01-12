@@ -26,7 +26,7 @@ import NewBadge from '../../components/Proposal/NewBadge/NewBadge'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { isProposalGrantCategory, isValidGrantBudget } from '../../entities/Grant/utils'
-import { ProposalGrantCategory, newProposalGrantScheme } from '../../entities/Proposal/types'
+import { ProposalGrantCategory, VALID_CATEGORIES, newProposalGrantScheme } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -61,24 +61,7 @@ const initialState: GrantState = {
   roadmap: '',
 }
 
-const categories = [
-  {
-    key: ProposalGrantCategory.Community,
-    text: ProposalGrantCategory.Community,
-    value: ProposalGrantCategory.Community,
-  },
-  {
-    key: ProposalGrantCategory.ContentCreator,
-    text: ProposalGrantCategory.ContentCreator,
-    value: ProposalGrantCategory.ContentCreator,
-  },
-  { key: ProposalGrantCategory.Gaming, text: ProposalGrantCategory.Gaming, value: ProposalGrantCategory.Gaming },
-  {
-    key: ProposalGrantCategory.PlatformContributor,
-    text: ProposalGrantCategory.PlatformContributor,
-    value: ProposalGrantCategory.PlatformContributor,
-  },
-]
+const categories = VALID_CATEGORIES.map((category) => ({ key: category, text: category, value: category }))
 
 const schema = newProposalGrantScheme.properties
 const edit = (state: GrantState, props: Partial<GrantState>) => {

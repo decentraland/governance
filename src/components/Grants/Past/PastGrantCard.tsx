@@ -5,7 +5,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { ProposalGrantCategory, TransparencyGrant } from '../../../entities/Proposal/types'
+import { TransparencyGrant } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
 import GrantPill from '../GrantPill'
 
@@ -29,7 +29,7 @@ const PastGrantCard = ({ grant }: Props) => {
               <p className="PastGrantCard__Size">{`$${size} USD`}</p>
             </div>
           </div>
-          <GrantPill type={configuration.category as ProposalGrantCategory} />
+          <GrantPill type={configuration.category} />
         </div>
         <Header className="PastGrantCard__Title">{title}</Header>
         <div className="PastGrantCard__Dates">

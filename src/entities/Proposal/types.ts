@@ -449,10 +449,20 @@ export const newProposalCatalystScheme = {
 
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 export enum ProposalGrantCategory {
+  // OLD
   Community = 'Community',
   ContentCreator = 'Content Creator',
-  PlatformContributor = 'Platform Contributor',
   Gaming = 'Gaming',
+  PlatformContributor = 'Platform Contributor',
+
+  // NEW
+  Accelerator = 'Accelerator',
+  CoreUnit = 'Core Unit',
+  Documentation = 'Documentation',
+  InWorldContent = 'In-World Content',
+  Platform = 'Platform',
+  SocialMediaContent = 'Social Media Content',
+  Sponsorship = 'Sponsorship',
 }
 
 export const ProposalRequiredVP = {
@@ -483,6 +493,16 @@ export type GrantProposalInCreation = {
 
 export type GrantProposalConfiguration = GrantProposalInCreation & { tier: GrantTierType }
 
+export const VALID_CATEGORIES = [
+  ProposalGrantCategory.Accelerator,
+  ProposalGrantCategory.CoreUnit,
+  ProposalGrantCategory.Documentation,
+  ProposalGrantCategory.InWorldContent,
+  ProposalGrantCategory.Platform,
+  ProposalGrantCategory.SocialMediaContent,
+  ProposalGrantCategory.Sponsorship,
+]
+
 export const newProposalGrantScheme = {
   type: 'object',
   additionalProperties: false,
@@ -510,12 +530,7 @@ export const newProposalGrantScheme = {
     },
     category: {
       type: 'string',
-      enum: [
-        ProposalGrantCategory.Community,
-        ProposalGrantCategory.ContentCreator,
-        ProposalGrantCategory.PlatformContributor,
-        ProposalGrantCategory.Gaming,
-      ],
+      enum: VALID_CATEGORIES,
     },
     size: {
       type: 'integer',

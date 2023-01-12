@@ -142,16 +142,3 @@ describe('entities/GrantTier', () => {
     })
   })
 })
-
-// describe('getVPThreshold', () => {
-//   test('lowerTier', () => {
-//     def('tierType', () => TIERS[0].type)
-//     const budget = 10000
-//     expect(get.grantType.getVPThreshold(budget)).toEqual(2000000)
-//   })
-//   test('higherTier', () => {
-//     def('tierType', () => TIERS[1].type)
-//     const budget = 10000
-//     expect(get.grantType.getVPThreshold(budget)).toEqual(2000000)
-//   })
-// })
