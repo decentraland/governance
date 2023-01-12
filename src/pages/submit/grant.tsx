@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Helmet from 'react-helmet'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
@@ -7,61 +7,69 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import GrantRequestSection from '../../components/GrantRequest/GrantRequestSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
-import RequestGrantSectionFocused from '../../components/Icon/RequestGrantSectionFocused'
-import RequestGrantSectionOk from '../../components/Icon/RequestGrantSectionOk'
+import GrantRequestSectionFocused from '../../components/Icon/GrantRequestSection/GrantRequestSectionFocused'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { VALID_CATEGORIES, newProposalGrantScheme } from '../../entities/Proposal/types'
+import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/constants'
+import { userModifiedForm } from '../../entities/Proposal/utils'
+import usePreventNavigation from '../../hooks/usePreventNavigation'
 
 import './grant.css'
 import './submit.css'
 
-type GrantState = {
+export type GrantRequestFundingState = {
+  funding: string | number
+}
+
+export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: '' }
+
+export type GrantRequestState = {
   title: string
-  abstract: string
-  category: string | null
-  size: string | number
-  beneficiary: string
-  email: string
-  description: string
-  specification: string
-  personnel: string
-  roadmap: string
-  coAuthors?: string[]
-}
+} & GrantRequestFundingState
 
-const initialState: GrantState = {
+const initialState: GrantRequestState = {
   title: '',
-  abstract: '',
-  category: null,
-  size: '',
-  beneficiary: '',
-  email: '',
-  description: '',
-  specification: '',
-  personnel: '',
-  roadmap: '',
+  ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
 }
 
-const categories = VALID_CATEGORIES.map((category) => ({ key: category, text: category, value: category }))
-
-const schema = newProposalGrantScheme.properties
-const edit = (state: GrantState, props: Partial<GrantState>) => {
-  return {
-    ...state,
-    ...props,
-  }
+export const GrantRequestScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['title', 'funding'],
+  properties: {
+    title: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    funding: {
+      type: 'integer',
+      minimum: Number(GRANT_PROPOSAL_MIN_BUDGET || 0),
+      maximum: Number(GRANT_PROPOSAL_MAX_BUDGET || 0),
+    },
+  },
 }
 
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
+  const [grantRequest, patchGrantRequest] = usePatchState<GrantRequestState>(initialState)
+  const preventNavigation = useRef(false)
+
+  console.log('grantRequest', grantRequest)
+  useEffect(() => {
+    preventNavigation.current = userModifiedForm(grantRequest, initialState)
+  }, [grantRequest])
+
+  usePreventNavigation(!!preventNavigation)
 
   if (accountState.loading) {
     return <LoadingView />
@@ -73,15 +81,15 @@ export default function SubmitGrant() {
 
   return (
     <div>
-      <Container className="ContentLayout__Container">
-        <div className="RequestGrant__Head">
+      <Container className="ContentLayout__Container" preventNavigation={preventNavigation.current}>
+        <div className="GrantRequest__Head">
           <Head
             title={t('page.submit_grant.title') || ''}
             description={t('page.submit_grant.description') || ''}
             image="https://decentraland.org/images/decentraland.png"
           />
           <Helmet title={t('page.submit_grant.title') || ''} />
-          <div className="RequestGrant__Header">
+          <div className="GrantRequest__Header">
             <DecentralandLogo />
             <div>{t('page.submit_grant.title')}</div>
           </div>
@@ -90,9 +98,9 @@ export default function SubmitGrant() {
           </Button>
         </div>
       </Container>
-      <Container className="ContentLayout__Container RequestGrantSection__Container">
+      <Container className="ContentLayout__Container GrantRequestSection__Container">
         <ContentSection>
-          <Markdown className="RequestGrant__HeaderDescription">
+          <Markdown className="GrantRequest__HeaderDescription">
             {
               'Decentraland Grants allow MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO, and there are no constraints on the content or features that may be funded (within the bounds of Decentraland’s [Content Policy]()).'
             }
@@ -100,33 +108,20 @@ export default function SubmitGrant() {
         </ContentSection>
       </Container>
 
-      <Container className="ContentLayout__Container RequestGrantSection__Container">
-        <div className="RequestGrantSection__Head">
-          <div className="RequestGrantSection__Header">
-            <RequestGrantSectionOk className={'RequestGrantSection__FixedSizeIcon'} />
-            <div className="RequestGrantSection__HeaderTitle">{'Funding'}</div>
-            <div className="RequestGrantSection__HorizontalLine" />
-          </div>
-          <div className="RequestGrantSection__Content">
-            <ContentSection className="GrantSize">
-              <Label>{t('page.submit_grant.size_label')}</Label>
-              <Paragraph tiny secondary className="details">
-                {t('page.submit_grant.size_detail')}
-              </Paragraph>
-              <Field type="number" />
-            </ContentSection>
-          </div>
-        </div>
-      </Container>
+      <GrantRequestSection
+        sectionTitle={'Funding'}
+        sectionNumber={1}
+        onValid={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })}
+      />
 
-      <Container className="ContentLayout__Container RequestGrantSection__Container">
-        <div className="RequestGrantSection__Head">
-          <div className="RequestGrantSection__Header">
-            <RequestGrantSectionFocused className={'RequestGrantSection__FixedSizeIcon'} />
-            <div className="RequestGrantSection__HeaderTitle">{'General Information'}</div>
-            <div className="RequestGrantSection__HorizontalLine" />
+      <Container className="ContentLayout__Container GrantRequestSection__Container">
+        <div className="GrantRequestSection__Head">
+          <div className="GrantRequestSection__Header">
+            <GrantRequestSectionFocused sectionNumber={2} />
+            <div className="GrantRequestSection__HeaderTitle">{'General Information'}</div>
+            <div className="GrantRequestSection__HorizontalLine" />
           </div>
-          <div className="RequestGrantSection__Content">
+          <div className="GrantRequestSection__Content">
             <ContentSection className="GrantSize">
               <Label>{t('page.submit_grant.size_label')}</Label>
               <Paragraph tiny secondary className="details">
