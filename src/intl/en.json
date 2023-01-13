@@ -182,6 +182,7 @@
       "size_empty": "Grant size is empty",
       "size_invalid": "Grant size is not a valid number",
       "size_too_low": "Grant size is too low",
+      "size_too_big": "Grant size is too big",
       "size_tier_invalid": "Grant size is not valid for the selected tier"
     },
     "linked_wearables": {
