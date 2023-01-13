@@ -8,16 +8,17 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
-import {
-  GrantRequestFundingState,
-  GrantRequestScheme,
-} from '../../pages/submit/grant'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 
-const schema = GrantRequestScheme.properties
+const schema = GrantRequestFundingSchema
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: String(schema.funding) }
+
+export type GrantRequestFundingState = {
+  funding: string | number
+}
 
 const validate = createValidator<GrantRequestFundingState>({
   funding: (state) => ({

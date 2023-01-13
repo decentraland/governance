@@ -1,61 +1,41 @@
 import React, { useEffect, useRef } from 'react'
 import Helmet from 'react-helmet'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import GrantRequestFundingSection, {
+  GrantRequestFundingState,
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
 } from '../../components/GrantRequest/GrantRequestFundingSection'
+import GrantRequestGeneralInfoSection, {
+  GrantRequestGeneralInfoState,
+  INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
+} from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
-import GrantRequestSectionFocused from '../../components/Icon/GrantRequestSection/GrantRequestSectionFocused'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/constants'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 
 import './grant.css'
 import './submit.css'
 
-export type GrantRequestFundingState = {
-  funding: string | number
-}
-
 export type GrantRequestState = {
   title: string
-} & GrantRequestFundingState
+} & GrantRequestFundingState &
+  GrantRequestGeneralInfoState
 
 const initialState: GrantRequestState = {
   title: '',
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
-}
-
-export const GrantRequestScheme = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['title', 'funding'],
-  properties: {
-    title: {
-      type: 'string',
-      minLength: 1,
-      maxLength: 80,
-    },
-    funding: {
-      type: 'integer',
-      minimum: Number(GRANT_PROPOSAL_MIN_BUDGET || 0),
-      maximum: Number(GRANT_PROPOSAL_MAX_BUDGET || 0),
-    },
-  },
+  ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 }
 
 export default function SubmitGrant() {
@@ -109,24 +89,9 @@ export default function SubmitGrant() {
 
       <GrantRequestFundingSection onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })} />
 
-      <Container className="ContentLayout__Container GrantRequestSection__Container">
-        <div className="GrantRequestSection__Head">
-          <div className="GrantRequestSection__Header">
-            <GrantRequestSectionFocused sectionNumber={2} />
-            <div className="GrantRequestSection__HeaderTitle">{'General Information'}</div>
-            <div className="GrantRequestSection__HorizontalLine" />
-          </div>
-          <div className="GrantRequestSection__Content">
-            <ContentSection className="GrantSize">
-              <Label>{t('page.submit_grant.size_label')}</Label>
-              <Paragraph tiny secondary className="details">
-                {t('page.submit_grant.size_detail')}
-              </Paragraph>
-              <Field type="number" />
-            </ContentSection>
-          </div>
-        </div>
-      </Container>
+      <GrantRequestGeneralInfoSection
+        onValidation={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
+      />
     </div>
   )
 }
