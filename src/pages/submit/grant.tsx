@@ -13,7 +13,6 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import GrantRequestFundingSection from '../../components/GrantRequest/GrantRequestFundingSection'
-import GrantRequestSection from '../../components/GrantRequest/GrantRequestSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import GrantRequestSectionFocused from '../../components/Icon/GrantRequestSection/GrantRequestSectionFocused'
 import { ContentSection } from '../../components/Layout/ContentLayout'
