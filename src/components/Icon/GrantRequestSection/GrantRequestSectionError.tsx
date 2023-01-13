@@ -1,6 +1,10 @@
 import React from 'react'
 
-function GrantRequestSectionError() {
+import { GrantRequestSectionIconProps, getNumberIcon } from './GrantRequestSectionFocused'
+
+function GrantRequestSectionError({ sectionNumber }: GrantRequestSectionIconProps) {
+  const icon = getNumberIcon(sectionNumber)
+
   return (
     <svg
       width="34"
@@ -11,10 +15,7 @@ function GrantRequestSectionError() {
       className="GrantRequestSection__FixedSizeIcon"
     >
       <circle cx="16" cy="21" r="15.5" stroke="#736E7D" strokeOpacity="0.32" />
-      <path
-        d="M15.4497 26H17.3027V15.4312H15.4351L12.6738 17.3721V19.1079L15.4058 17.2329H15.4497V26Z"
-        fill="#D2D0D5"
-      />
+      {icon}
       <circle cx="27" cy="32" r="6" fill="#D80027" stroke="white" strokeWidth="2" />
     </svg>
   )

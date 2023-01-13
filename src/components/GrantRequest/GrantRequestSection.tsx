@@ -24,12 +24,12 @@ function getSectionIcon(focused: boolean, formEdited: boolean, sectionNumber: nu
     return <GrantRequestSectionFocused sectionNumber={sectionNumber} />
   } else {
     if (!formEdited) {
-      return <GrantRequestSectionUnfocused />
+      return <GrantRequestSectionUnfocused sectionNumber={sectionNumber} />
     } else {
       if (validated) {
-        return <GrantRequestSectionOk />
+        return <GrantRequestSectionOk sectionNumber={sectionNumber} />
       } else {
-        return <GrantRequestSectionError />
+        return <GrantRequestSectionError sectionNumber={sectionNumber} />
       }
     }
   }
