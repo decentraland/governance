@@ -12,7 +12,9 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import GrantRequestSection from '../../components/GrantRequest/GrantRequestSection'
+import GrantRequestFundingSection, {
+  INITIAL_GRANT_REQUEST_FUNDING_STATE,
+} from '../../components/GrantRequest/GrantRequestFundingSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import GrantRequestSectionFocused from '../../components/Icon/GrantRequestSection/GrantRequestSectionFocused'
 import { ContentSection } from '../../components/Layout/ContentLayout'
@@ -28,8 +30,6 @@ import './submit.css'
 export type GrantRequestFundingState = {
   funding: string | number
 }
-
-export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: '' }
 
 export type GrantRequestState = {
   title: string
@@ -64,7 +64,6 @@ export default function SubmitGrant() {
   const [grantRequest, patchGrantRequest] = usePatchState<GrantRequestState>(initialState)
   const preventNavigation = useRef(false)
 
-  console.log('grantRequest', grantRequest)
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
   }, [grantRequest])
@@ -108,11 +107,7 @@ export default function SubmitGrant() {
         </ContentSection>
       </Container>
 
-      <GrantRequestSection
-        sectionTitle={'Funding'}
-        sectionNumber={1}
-        onValid={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })}
-      />
+      <GrantRequestFundingSection onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })} />
 
       <Container className="ContentLayout__Container GrantRequestSection__Container">
         <div className="GrantRequestSection__Head">

@@ -8,24 +8,22 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
+import {
+  GrantRequestFundingState,
+  GrantRequestScheme,
+} from '../../pages/submit/grant'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 
-const schema = GrantRequestFundingSchema
-export type GrantRequestFundingState = {
-  funding: string | number
-}
-
+const schema = GrantRequestScheme.properties
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: String(schema.funding) }
 
 const validate = createValidator<GrantRequestFundingState>({
   funding: (state) => ({
     funding:
       assert(!state.funding || Number.isFinite(asNumber(state.funding)), 'error.grant.size_invalid') ||
-      assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.size_too_low') ||
-      assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.size_too_big') ||
+      assert(!state.funding || asNumber(state.funding) > schema.funding.minimum, 'error.grant.size_too_low') ||
       assert(
         !state.funding || (!!state.funding && isValidGrantBudget(Number(state.funding))),
         'error.grant.size_tier_invalid'
