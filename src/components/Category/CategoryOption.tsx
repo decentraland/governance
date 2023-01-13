@@ -5,17 +5,15 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalType } from '../../entities/Proposal/types'
-
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
 
 export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean
-  type: ProposalType | 'all'
+  type: string
 }
 
-const icons = {
+const icons: Record<string, any> = {
   all: require('../../images/icons/all.svg').default,
   ...categoryIcons,
 }

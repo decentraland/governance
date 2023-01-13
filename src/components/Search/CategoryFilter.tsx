@@ -18,7 +18,7 @@ function getValues<T extends object>(e: T): Array<T[keyof T]> {
   return Object.values(e)
 }
 
-function handleTypeFilter(type: ProposalType | NewGrantCategory | null, params: URLSearchParams) {
+function handleTypeFilter(type: string | null, params: URLSearchParams) {
   const newParams = new URLSearchParams(params)
   type ? newParams.set('type', type) : newParams.delete('type')
   newParams.delete('page')
@@ -45,12 +45,13 @@ export default React.memo(function CategoryFilter({
         className={'CategoryFilter__CategoryOption'}
       />
       {filters.map((value, index) => {
+        const label = toSnakeCase(value)
         return (
           <CategoryOption
             key={'category_filter' + index}
-            type={value}
-            href={handleTypeFilter(value, params)}
-            active={type === value}
+            type={label}
+            href={handleTypeFilter(label, params)}
+            active={type === label}
             className={'CategoryFilter__CategoryOption'}
           />
         )
