@@ -8,17 +8,18 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
-import {
-  GrantRequestFundingState,
-  GrantRequestScheme,
-  INITIAL_GRANT_REQUEST_FUNDING_STATE,
-} from '../../pages/submit/grant'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 
-const schema = GrantRequestScheme.properties
+export type GrantRequestFundingState = {
+  funding: string | number
+}
 
+export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: '' }
+
+const schema = GrantRequestFundingSchema
 const validate = createValidator<GrantRequestFundingState>({
   funding: (state) => ({
     funding:
@@ -82,7 +83,7 @@ export default function GrantRequestFundingSection({ onValid }: Props) {
             }
             onAction={() => null}
             message={t(state.error.funding)}
-            disabled={false}
+            disabled={false} //TODO receive property from parent on submit
           />
         </ContentSection>
       </div>
