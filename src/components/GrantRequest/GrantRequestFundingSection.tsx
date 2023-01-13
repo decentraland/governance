@@ -24,7 +24,8 @@ const validate = createValidator<GrantRequestFundingState>({
   funding: (state) => ({
     funding:
       assert(!state.funding || Number.isFinite(asNumber(state.funding)), 'error.grant.size_invalid') ||
-      assert(!state.funding || asNumber(state.funding) > schema.funding.minimum, 'error.grant.size_too_low') ||
+      assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.size_too_low') ||
+      assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.size_too_big') ||
       assert(
         !state.funding || (!!state.funding && isValidGrantBudget(Number(state.funding))),
         'error.grant.size_tier_invalid'
