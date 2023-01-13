@@ -4,7 +4,8 @@ interface Props {
   sectionNumber: number
 }
 
-function getIcon(sectionNumber: number) {
+// TODO: export numbers so they can be used in other icons. Number enum maybe, with colors
+function getNumberIcon(sectionNumber: number) {
   switch (sectionNumber) {
     case 1:
       return (
@@ -25,7 +26,7 @@ function getIcon(sectionNumber: number) {
   }
 }
 function GrantRequestSectionFocused({ sectionNumber }: Props) {
-  const icon = getIcon(sectionNumber)
+  const icon = getNumberIcon(sectionNumber)
 
   return (
     <svg

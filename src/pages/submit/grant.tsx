@@ -12,6 +12,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import GrantRequestFundingSection from '../../components/GrantRequest/GrantRequestFundingSection'
 import GrantRequestSection from '../../components/GrantRequest/GrantRequestSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import GrantRequestSectionFocused from '../../components/Icon/GrantRequestSection/GrantRequestSectionFocused'
@@ -108,11 +109,7 @@ export default function SubmitGrant() {
         </ContentSection>
       </Container>
 
-      <GrantRequestSection
-        sectionTitle={'Funding'}
-        sectionNumber={1}
-        onValid={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })}
-      />
+      <GrantRequestFundingSection onValid={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })} />
 
       <Container className="ContentLayout__Container GrantRequestSection__Container">
         <div className="GrantRequestSection__Head">
