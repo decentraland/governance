@@ -46,7 +46,6 @@ export default function SubmitGrant() {
   const [grantRequest, patchGrantRequest] = usePatchState<GrantRequestState>(initialState)
   const preventNavigation = useRef(false)
 
-  console.log('grantRequest', grantRequest)
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
   }, [grantRequest])

@@ -14,6 +14,7 @@ import { ContentSection } from '../Layout/ContentLayout'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 
+
 const schema = GrantRequestFundingSchema
 export type GrantRequestFundingState = {
   funding: string | number
