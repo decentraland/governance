@@ -14,7 +14,8 @@ export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
 }
 
 const icons: Record<string, any> = {
-  all: require('../../images/icons/all.svg').default,
+  all_proposals: require('../../images/icons/all.svg').default,
+  all_grants: require('../../images/icons/all.svg').default,
   ...categoryIcons,
 }
 

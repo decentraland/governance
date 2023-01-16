@@ -5,6 +5,11 @@
   justify-content: space-between;
 }
 
+.GrantsBannerItem--noUrl {
+  cursor: default;
+  pointer-events: none;
+}
+
 .GrantsBannerItem__Title {
   font-style: normal;
   font-weight: 600;

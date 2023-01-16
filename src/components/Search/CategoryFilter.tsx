@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, ProposalType } from '../../entities/Proposal/types'
@@ -34,12 +35,13 @@ export default React.memo(function CategoryFilter({
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const filters = getValues(filterType)
-  const type = filters.find((filter) => filter === params.get('type'))
+  const type = params.get('type')
+  const isProposalsFilter = isEqual(filterType, ProposalType)
 
   return (
     <CollapsibleFilter title={t('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
       <CategoryOption
-        type={'all'}
+        type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
         href={handleTypeFilter(null, params)}
         active={!type}
         className={'CategoryFilter__CategoryOption'}

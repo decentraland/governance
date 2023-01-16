@@ -11,7 +11,6 @@ import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGr
 import FullWidthButton from '../../Common/FullWidthButton'
 import GrantCard from '../GrantCard/GrantCard'
 
-import CurrentGrantsBanner from './CurrentGrantsBanner'
 import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
@@ -61,7 +60,6 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
   return (
     <>
       <div className="CurrentGrantsList">
-        <CurrentGrantsBanner grants={grants} />
         <div>
           <h2 className="CurrentGrants__Title">{t('page.grants.currently_funded')}</h2>
           <div className="CurrentGrants__Filters">

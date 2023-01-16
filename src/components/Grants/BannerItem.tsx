@@ -1,22 +1,39 @@
 import React from 'react'
 
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import ChevronRight from '../Icon/ChevronRight'
+
 import './BannerItem.css'
 
 interface Props {
   title: string
   description: string
+  url?: string
   showDivider: boolean
 }
 
-const BannerItem = ({ title, description, showDivider }: Props) => {
+const BannerItem = ({ title, description, url, showDivider }: Props) => {
   return (
     <>
-      <div className="GrantsBannerItem">
-        <div>
-          <h3 className="GrantsBannerItem__Title">{title}</h3>
-          <p className="GrantsBannerItem__Description">{description}</p>
+      <a
+        href={url || ''}
+        target="_blank"
+        className={TokenList.join([!url && 'GrantsBannerItem--noUrl'])}
+        rel="noreferrer"
+      >
+        <div className="GrantsBannerItem">
+          <div>
+            <h3 className="GrantsBannerItem__Title">{title}</h3>
+            <p className="GrantsBannerItem__Description">{description}</p>
+          </div>
+          {url && (
+            <div>
+              <ChevronRight />
+            </div>
+          )}
         </div>
-      </div>
+      </a>
       {showDivider && <div className="GrantsBanner__ItemsDivider" />}
     </>
   )
