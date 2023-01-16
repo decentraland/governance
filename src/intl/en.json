@@ -153,6 +153,12 @@
       "server_invalid_status": "Error fetching catalyst statuses"
     },
     "grant": {
+      "funding": {
+        "invalid": "Funding is invalid",
+        "too_low": "Funding is too low. Minimum is 100 USD",
+        "too_big": "Funding is too big. Maximum is 240000 USD",
+        "over_budget": "Funding is over budget"
+      },
       "abstract_empty": "Abstract is empty",
       "abstract_too_large": "Abstract is too large",
       "abstract_too_short": "Abstract is too short",
@@ -1034,6 +1040,23 @@
     },
     "submit_grant": {
       "title": "Request a Grant",
+      "funding_section": {
+        "title": "Funding",
+        "project_category_title": "Project Category",
+        "project_category_action": "Change",
+        "category_budget_title": "Category Budget",
+        "category_budget_info": "Missing Copy",
+        "category_budget_total": "Category total for q: ${value, number}",
+        "expected_funding": "Expected Funding",
+        "expected_funding_sub": "More about our [Funding Tiers](https://governance.decentraland.org/proposal/?id=853092a0-7b70-11ed-ad27-015f26e7c35c)",
+        "project_duration_title": "Expected Project Duration",
+        "pass_threshold_title": "Pass Threshold",
+        "pass_threshold": "{value, number} VP in 14 days",
+        "pass_threshold_sub": "Accumulated VP needed for this proposal to pass",
+        "payout_strategy_title": "Payout Strategy",
+        "payout_strategy_payments": "{value, number} Monthly Payments",
+        "payout_strategy_sub": "Executed 7 days after the proposal has passed"
+      },
       "description": "Decentraland Grants allow the DAO’s MANA to fund the creation of features or content for the Decentraland platform. Either individuals or teams may apply within one of five categories, and there are six levels of funding for each category. Before submitting your grant proposal, please review the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/) here.\n\nAside from the requirements listed in the Grants Framework and Decentraland’s [Content Policy](https://decentraland.org/content), [Terms of Use](https://decentraland.org/terms), and [Code of Ethics](https://decentraland.org/ethics), there are no constraints on the content or features that may be funded.",
       "category_label": "Category",
       "category_placeholder": "Select a category",

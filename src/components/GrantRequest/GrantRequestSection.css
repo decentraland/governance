@@ -41,13 +41,13 @@
   margin-left: 58px;
 }
 
-.FundingBoxes {
+.GrantRequestSection__Row {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.FundingBox {
+.GrantRequestSectionCard {
   border: 1px solid rgba(115, 110, 125, 0.24);
   box-shadow: 0 1px 8px rgba(115, 110, 125, 0.15);
   border-radius: 8px;
@@ -57,17 +57,17 @@
   min-height: 104px;
 }
 
-.FundingBox__Header {
+.GrantRequestSectionCard__Header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 8px;
 }
-.FundingBox__Header > button.ui.basic.button {
+.GrantRequestSectionCard__Header > button.ui.basic.button {
   padding-top: 0;
 }
 
-.FundingBox__HeaderTitle {
+.GrantRequestSectionCard__HeaderTitle {
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
@@ -76,11 +76,11 @@
   color: var(--black-600);
 }
 
-.FundingBox__Header > button.ui.basic.button {
-  padding-bottom: 0px;
+.GrantRequestSectionCard__Header > button.ui.basic.button {
+  padding-bottom: 0;
 }
 
-.FundingBox__ContentTitle {
+.GrantRequestSectionCard__ContentTitle {
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -91,10 +91,11 @@
   line-height: 24px;
 }
 
-.FundingBox__AlignBaseline {
+.GrantRequestSectionCard__AlignBaseline {
   align-items: baseline;
 }
-.FundingBox__SubTitle {
+
+.GrantRequestSectionCard__SubTitle {
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
@@ -103,18 +104,13 @@
   color: var(--black-600);
 }
 
-.CategoryBudget {
-  display: flex;
-  gap: 8px;
-}
-
-.FundingBox__Number {
+.GrantRequestSectionCard__Number {
   font-weight: 600;
   font-size: 20px;
   line-height: 24px;
 }
 
-.FundingBox__Percentage {
+.GrantRequestSectionCard__Percentage {
   font-weight: 600;
   font-size: 15px;
   line-height: 22px;
@@ -122,7 +118,7 @@
   opacity: 0.5;
 }
 
-.FundingBox__CapsSubTitle {
+.GrantRequestSectionCard__CapsSubTitle {
   font-weight: 600;
   font-size: 12px;
   line-height: 18px;
@@ -130,7 +126,27 @@
   color: var(--black-600);
 }
 
-.FundingBox__Empty {
+.GrantRequestSectionCard__Empty {
   min-width: 348px;
   height: 24px;
+}
+
+.GrantRequestSection__InputTitle {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__InputSubtitle > p.dg.Paragraph {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__InputLabel {
+  padding-right: 20px;
 }

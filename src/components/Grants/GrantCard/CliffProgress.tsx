@@ -4,6 +4,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
+import { getRoundedPercentage } from '../../../helpers'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
 import './CliffProgress.css'
@@ -12,8 +13,6 @@ export type Props = React.HTMLAttributes<HTMLDivElement> & {
   enactedAt: number
   basic?: boolean
 }
-
-const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
 
 const CliffProgress = ({ enactedAt, basic }: Props) => {
   const t = useFormatMessage()
