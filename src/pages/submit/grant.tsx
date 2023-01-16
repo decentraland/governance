@@ -17,10 +17,12 @@ import GrantRequestGeneralInfoSection, {
   GrantRequestGeneralInfoState,
   INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
+import CategorySelector from '../../components/Grants/CategorySelector'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
+import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 
@@ -59,6 +61,8 @@ export default function SubmitGrant() {
     return <LogIn title={t('page.submit_grant.title') || ''} description={t('page.submit_grant.description') || ''} />
   }
 
+  const isCategorySelected = grantRequest.category !== null
+
   return (
     <div>
       <Container className="ContentLayout__Container" preventNavigation={preventNavigation.current}>
@@ -88,11 +92,20 @@ export default function SubmitGrant() {
         </ContentSection>
       </Container>
 
-      <GrantRequestFundingSection onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })} />
+      {!isCategorySelected && (
+        <CategorySelector onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })} />
+      )}
+      {isCategorySelected && (
+        <>
+          <GrantRequestFundingSection
+            onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })}
+          />
 
-      <GrantRequestGeneralInfoSection
-        onValidation={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
-      />
+          <GrantRequestGeneralInfoSection
+            onValidation={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
+          />
+        </>
+      )}
     </div>
   )
 }
