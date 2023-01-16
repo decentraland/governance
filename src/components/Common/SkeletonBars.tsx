@@ -9,10 +9,20 @@ import './SkeletonBars.css'
 interface Props {
   height: number
   amount: number
+  width?: string | number
+  enableAnimation?: boolean
 }
 
-function SkeletonBars({ amount, height }: Props) {
-  const bars = times(amount, (i) => <Skeleton className="SkeletonBar" key={`item-${i}`} height={height} />)
+function SkeletonBars({ amount, height, width, enableAnimation }: Props) {
+  const bars = times(amount, (i) => (
+    <Skeleton
+      className="SkeletonBar"
+      key={`item-${i}`}
+      height={height}
+      width={width}
+      enableAnimation={enableAnimation}
+    />
+  ))
   return <>{bars}</>
 }
 

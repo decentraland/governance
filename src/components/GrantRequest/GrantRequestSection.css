@@ -76,8 +76,13 @@
   color: var(--black-600);
 }
 
+.FundingBox__Header > button.ui.basic.button {
+  padding-bottom: 0px;
+}
+
 .FundingBox__ContentTitle {
   display: flex;
+  align-items: flex-end;
   gap: 8px;
   margin-bottom: 8px;
   font-style: normal;
@@ -86,7 +91,10 @@
   line-height: 24px;
 }
 
-.FundingBox__CategorySubTitle {
+.FundingBox__AlignBaseline {
+  align-items: baseline;
+}
+.FundingBox__SubTitle {
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
@@ -100,13 +108,13 @@
   gap: 8px;
 }
 
-.CategoryBudget__Number {
+.FundingBox__Number {
   font-weight: 600;
   font-size: 20px;
   line-height: 24px;
 }
 
-.CategoryBudget__Percentage {
+.FundingBox__Percentage {
   font-weight: 600;
   font-size: 15px;
   line-height: 22px;
@@ -114,10 +122,15 @@
   opacity: 0.5;
 }
 
-.FundingBox__BudgetSubTitle {
+.FundingBox__CapsSubTitle {
   font-weight: 600;
   font-size: 12px;
   line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
+}
+
+.FundingBox__Empty {
+  min-width: 348px;
+  height: 24px;
 }

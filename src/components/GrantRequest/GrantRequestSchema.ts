@@ -1,4 +1,9 @@
-import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/constants'
+import {
+  GRANT_PROPOSAL_MAX_BUDGET,
+  GRANT_PROPOSAL_MAX_PROJECT_DURATION,
+  GRANT_PROPOSAL_MIN_BUDGET,
+  GRANT_PROPOSAL_MIN_PROJECT_DURATION,
+} from '../../entities/Grant/constants'
 
 export const GrantRequestGeneralInfoSchema = {
   description: { type: 'string', minLength: 20, maxLength: 3500 },
@@ -10,12 +15,17 @@ export const GrantRequestFundingSchema = {
     minimum: Number(GRANT_PROPOSAL_MIN_BUDGET || 0),
     maximum: Number(GRANT_PROPOSAL_MAX_BUDGET || 0),
   },
+  projectDuration: {
+    type: 'integer',
+    minimum: GRANT_PROPOSAL_MIN_PROJECT_DURATION,
+    maximum: GRANT_PROPOSAL_MAX_PROJECT_DURATION,
+  },
 }
 
 export const GrantRequestSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['title', 'funding', 'description'],
+  required: ['title', 'funding', 'projectDuration', 'description'],
   properties: {
     title: {
       type: 'string',
