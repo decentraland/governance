@@ -28,6 +28,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
+import MarvinVideo from '../components/Proposal/MarvinVideo'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -347,6 +348,7 @@ export default function ProposalPage() {
           </Grid.Row>
         </Grid>
       </ContentLayout>
+      {proposal && <MarvinVideo proposalId={proposal?.id} />}
       <VotesListModal
         open={options.showVotesList}
         proposal={proposal}

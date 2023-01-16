@@ -1,0 +1,10 @@
+.MarvinVideo {
+  left: 10px;
+  bottom: 10px;
+  position: sticky;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid lightgray;
+  cursor: pointer;
+  box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.75);
+}
