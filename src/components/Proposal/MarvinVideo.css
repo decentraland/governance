@@ -1,4 +1,5 @@
 .MarvinVideo {
+  display: none;
   left: 10px;
   bottom: 10px;
   position: sticky;
@@ -7,4 +8,10 @@
   border: 1px solid lightgray;
   cursor: pointer;
   box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.75);
+}
+
+@media (min-width: 768px) {
+  .MarvinVideo {
+    display: block;
+  }
 }
