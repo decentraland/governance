@@ -1,7 +1,13 @@
 .CategorySelector {
   display: grid;
   gap: 30px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 768px) {
+  .CategorySelector {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .CategorySelector__Item {
