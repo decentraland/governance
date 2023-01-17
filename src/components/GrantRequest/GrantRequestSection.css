@@ -48,6 +48,12 @@
   gap: 32px;
 }
 
+.GrantRequestSection__InputContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .GrantRequestSection__InputTitle {
   font-style: normal;
   font-weight: 600;

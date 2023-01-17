@@ -1,0 +1,27 @@
+.GrantRequestDesiredFunding__InputContainer {
+  display: inline-flex;
+  border: 1px solid rgba(115, 110, 125, 0.32);
+  border-radius: 6px;
+}
+
+.GrantRequestDesiredFunding__Currency {
+  padding: 9px;
+  background: rgba(115, 110, 125, 0.1); /* TODO: Add color to theme */
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}
+
+.GrantRequestDesiredFunding__Input {
+  padding: 9px 11px;
+  min-width: 130px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}

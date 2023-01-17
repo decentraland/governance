@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo } from 'react'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 import { snakeCase } from 'lodash'
 
@@ -19,6 +17,7 @@ import Helper from '../Helper/Helper'
 import Lock from '../Icon/Lock'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import GrantRequestDesiredFunding from './GrantRequestDesiredFunding'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
@@ -179,42 +178,38 @@ export default function GrantRequestFundingSection({
             subtitleVariant="uppercase"
           />
         </div>
-        <div>
-          <Label className="GrantRequestSection__InputTitle">
-            {t('page.submit_grant.funding_section.expected_funding')}
-          </Label>
-          <Markdown className="GrantRequestSection__InputSubtitle">
-            {t('page.submit_grant.funding_section.expected_funding_sub')}
-          </Markdown>
-          <Field
-            type="number"
-            value={state.value.funding}
-            onChange={(_, { value }) =>
-              editor.set({ funding: value, projectDuration: updateProjectDuration(value, state.value.projectDuration) })
-            }
-            onBlur={() => editor.set({ funding: state.value.funding })}
-            error={!!state.error.funding}
-            onAction={() => null}
-            action={<Label className="GrantRequestSection__InputLabel">{'USD'}</Label>}
-            message={t(state.error.funding)}
-            disabled={isFormDisabled}
-          />
-        </div>
-        <div>
-          <Label className="GrantRequestSection__InputTitle">
-            {t('page.submit_grant.funding_section.project_duration_title')}
-          </Label>
-          <SelectField
-            className="ProjectDuration"
-            value={state.value.projectDuration || undefined}
-            placeholder={String(state.value.projectDuration) || undefined}
-            onChange={(_, { value }) => editor.set({ projectDuration: Number(value) })}
-            options={availableDurations}
-            error={!!state.error.projectDuration}
-            message={t(state.error.projectDuration)}
-            disabled={!state.value.funding || !!state.error.funding || isFormDisabled}
-            loading={false}
-          />
+        <div className="GrantRequestSection__Row">
+          <div className="GrantRequestSection__InputContainer">
+            <Label className="GrantRequestSection__InputTitle">
+              {t('page.submit_grant.funding_section.project_duration_title')}
+            </Label>
+            <SelectField
+              className="ProjectDuration"
+              value={state.value.projectDuration || undefined}
+              placeholder={String(state.value.projectDuration) || undefined}
+              onChange={(_, { value }) => editor.set({ projectDuration: Number(value) })}
+              options={availableDurations}
+              error={!!state.error.projectDuration}
+              message={t(state.error.projectDuration)}
+              disabled={!state.value.funding || !!state.error.funding || isFormDisabled}
+              loading={false}
+            />
+          </div>
+          <div className="GrantRequestSection__InputContainer">
+            <GrantRequestDesiredFunding
+              value={state.value.funding}
+              onChange={({ currentTarget }) =>
+                editor.set({
+                  funding: currentTarget.value,
+                  projectDuration: updateProjectDuration(currentTarget.value, state.value.projectDuration),
+                })
+              }
+              onBlur={() => editor.set({ funding: state.value.funding })}
+              error={state.error.funding || ''}
+              // message={t(state.error.funding)}
+              disabled={isFormDisabled}
+            />
+          </div>
         </div>
         <div className="GrantRequestSection__Row">
           <GrantRequestSectionCard
