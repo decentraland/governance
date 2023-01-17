@@ -1042,6 +1042,7 @@
     },
     "submit_grant": {
       "title": "Request a Grant",
+      "cancel": "Cancel",
       "funding_section": {
         "title": "Funding",
         "project_category_title": "Project Category",

@@ -1,8 +1,8 @@
 import {
   GRANT_PROPOSAL_MAX_BUDGET,
-  GRANT_PROPOSAL_MAX_PROJECT_DURATION,
   GRANT_PROPOSAL_MIN_BUDGET,
-  GRANT_PROPOSAL_MIN_PROJECT_DURATION,
+  MAX_PROJECT_DURATION,
+  MIN_PROJECT_DURATION,
 } from '../../entities/Grant/constants'
 
 export const GrantRequestGeneralInfoSchema = {
@@ -22,8 +22,8 @@ export const GrantRequestFundingSchema = {
   },
   projectDuration: {
     type: 'integer',
-    minimum: GRANT_PROPOSAL_MIN_PROJECT_DURATION,
-    maximum: GRANT_PROPOSAL_MAX_PROJECT_DURATION,
+    minimum: MIN_PROJECT_DURATION,
+    maximum: MAX_PROJECT_DURATION,
   },
 }
 

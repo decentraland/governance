@@ -110,7 +110,7 @@ export default function SubmitGrant() {
             <DecentralandLogo />
             <div>{t('page.submit_grant.title')}</div>
           </div>
-          <Button basic>{'Cancel'}</Button>
+          <Button basic>{t('page.submit_grant.cancel')}</Button>
         </div>
       </Container>
       <Container className="ContentLayout__Container GrantRequestSection__Container">
