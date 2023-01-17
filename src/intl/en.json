@@ -1049,7 +1049,7 @@
         "project_category_action": "Change",
         "category_budget_title": "Category Budget",
         "category_budget_info": "Missing Copy",
-        "category_budget_total": "Category total for q: ${value, number}",
+        "category_budget_total": "Category total for Q: ${value, number}",
         "expected_funding": "Expected Funding",
         "expected_funding_sub": "More about our [Funding Tiers](https://governance.decentraland.org/proposal/?id=853092a0-7b70-11ed-ad27-015f26e7c35c)",
         "project_duration_title": "Expected Project Duration",

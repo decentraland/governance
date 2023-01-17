@@ -137,6 +137,7 @@ export default function SubmitGrant() {
         <>
           <GrantRequestFundingSection
             grantCategory={grantRequest.category}
+            onCategoryChange={() => patchGrantRequest({ category: null })}
             onValidation={(data, sectionValid) => {
               patchGrantRequest({ ...data })
               patchValidationState({ fundingSectionValid: sectionValid })
