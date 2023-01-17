@@ -15,8 +15,8 @@ import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getPercentage } from '../../helpers'
+import CategoryItem from '../Grants/CategoryItem'
 import Helper from '../Helper/Helper'
-import InWorldContent from '../Icon/Grants/InWorldContent'
 import Lock from '../Icon/Lock'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -27,13 +27,11 @@ const schema = GrantRequestFundingSchema
 export type GrantRequestFunding = {
   funding: string | number
   projectDuration: number
-  category: ProposalGrantCategory | null
 }
 
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   funding: '',
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
-  category: null,
 }
 const QUARTERLY_TOTAL_FOR_CATEGORY = 2500000
 const AVAILABLE_CATEGORY_BUDGET = 100000
@@ -78,6 +76,7 @@ const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) =
 }
 
 interface Props {
+  grantCategory: ProposalGrantCategory | null
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
@@ -112,7 +111,7 @@ function updateProjectDuration(rawFunding: string, previousDuration: number | un
   return previousDurationIsBetweenNewLimits ? previousDuration : availableDurations[0]
 }
 
-export default function GrantRequestFundingSection({ onValidation, isFormDisabled }: Props) {
+export default function GrantRequestFundingSection({ onValidation, isFormDisabled, grantCategory }: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_FUNDING_STATE)
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
@@ -127,6 +126,7 @@ export default function GrantRequestFundingSection({ onValidation, isFormDisable
   }, [state.value.funding])
 
   const passThreshold = useMemo(() => {
+    //TODO: use grantCategory
     if (isValidBudgetForCategory(Number(state.value.funding))) {
       return GrantTier.getVPThreshold(Number(state.value.funding))
     } else return undefined
@@ -147,14 +147,17 @@ export default function GrantRequestFundingSection({ onValidation, isFormDisable
               <div className="GrantRequestSectionCard__HeaderTitle">
                 {t('page.submit_grant.funding_section.project_category_title')}
               </div>
+              {/*//TODO: set category null*/}
               <Button basic>{t('page.submit_grant.funding_section.project_category_action')}</Button>
             </div>
             <div>
               <div className="GrantRequestSectionCard__ContentTitle">
-                <InWorldContent />
-                <div>{'In-world Content'}</div>
+                <CategoryItem
+                  key={grantCategory}
+                  category={grantCategory || ProposalGrantCategory.Gaming}
+                  onCategoryClick={() => {}}
+                />
               </div>
-              <div className="GrantRequestSectionCard__SubTitle">{'New experiences to improve user retention'}</div>
             </div>
           </div>
           <div className="GrantRequestSectionCard">

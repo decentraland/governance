@@ -32,11 +32,13 @@ import './submit.css'
 
 export type GrantRequest = {
   title: string
+  category: ProposalGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo
 
 const initialState: GrantRequest = {
   title: '',
+  category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 }
@@ -60,6 +62,7 @@ export default function SubmitGrant() {
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
 
+  console.log('grantRequest', grantRequest)
   const submit = () => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
@@ -124,11 +127,16 @@ export default function SubmitGrant() {
       </Container>
 
       {!isCategorySelected && (
-        <CategorySelector onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })} />
+        <Container className="ContentLayout__Container GrantRequestSection__Container">
+          <CategorySelector
+            onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })}
+          />
+        </Container>
       )}
       {isCategorySelected && (
         <>
           <GrantRequestFundingSection
+            grantCategory={grantRequest.category}
             onValidation={(data, sectionValid) => {
               patchGrantRequest({ ...data })
               patchValidationState({ fundingSectionValid: sectionValid })
