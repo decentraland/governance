@@ -10,6 +10,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
+import { MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
@@ -32,12 +33,13 @@ export type GrantRequestFundingState = {
 
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = {
   funding: String(schema.funding),
-  projectDuration: 0,
+  projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
   category: null,
 }
 const QUARTERLY_TOTAL_FOR_CATEGORY = 2500000
 const AVAILABLE_CATEGORY_BUDGET = 100000
 
+// TODO: this could be in a GrantCategory class/service/whatevs
 const isValidBudgetForCategory = (budget: number | string | undefined) => {
   return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= AVAILABLE_CATEGORY_BUDGET
 }
@@ -81,8 +83,7 @@ interface Props {
 }
 
 function getAvailableProjectDurations(funding: number) {
-  const min = funding > 20000 ? 3 : 1
-  const max = funding > 20000 ? 12 : 6
+  const { min, max } = GrantTier.getProjectDurationsLimits(funding)
 
   const availableDurations = []
   for (let i = min; i <= max; i++) {
