@@ -88,10 +88,10 @@ export default function SubmitGrant() {
         </ContentSection>
       </Container>
 
-      <GrantRequestFundingSection onValid={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })} />
+      <GrantRequestFundingSection onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })} />
 
       <GrantRequestGeneralInfoSection
-        onValid={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
+        onValidation={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
       />
     </div>
   )

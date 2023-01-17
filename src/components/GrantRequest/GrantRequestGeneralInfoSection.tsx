@@ -35,17 +35,17 @@ const edit = (state: GrantRequestGeneralInfoState, props: Partial<GrantRequestGe
 }
 
 interface Props {
-  onValid: (data: GrantRequestGeneralInfoState) => void
+  onValidation: (data: GrantRequestGeneralInfoState) => void
 }
 
-export default function GrantRequestGeneralInfoSection({ onValid }: Props) {
+export default function GrantRequestGeneralInfoSection({ onValidation }: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
-  const formEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
+  const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
 
   useEffect(() => {
     if (state.validated) {
-      onValid({ ...state.value })
+      onValidation({ ...state.value })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
@@ -54,7 +54,7 @@ export default function GrantRequestGeneralInfoSection({ onValid }: Props) {
     <GrantRequestSection
       onBlur={() => editor.validate()}
       validated={state.validated}
-      formEdited={formEdited}
+      isFormEdited={isFormEdited}
       sectionTitle={'General Information'}
       sectionNumber={2}
     >

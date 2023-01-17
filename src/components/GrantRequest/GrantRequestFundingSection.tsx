@@ -13,13 +13,13 @@ import { ContentSection } from '../Layout/ContentLayout'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 
+const schema = GrantRequestFundingSchema
 export type GrantRequestFundingState = {
   funding: string | number
 }
 
-export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: '' }
+export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: String(schema.funding) }
 
-const schema = GrantRequestFundingSchema
 const validate = createValidator<GrantRequestFundingState>({
   funding: (state) => ({
     funding:
@@ -42,17 +42,17 @@ const edit = (state: GrantRequestFundingState, props: Partial<GrantRequestFundin
 }
 
 interface Props {
-  onValid: (data: GrantRequestFundingState) => void
+  onValidation: (data: GrantRequestFundingState) => void
 }
 
-export default function GrantRequestFundingSection({ onValid }: Props) {
+export default function GrantRequestFundingSection({ onValidation }: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_FUNDING_STATE)
-  const formEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
+  const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
 
   useEffect(() => {
     if (state.validated) {
-      onValid({ ...state.value })
+      onValidation({ ...state.value })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
@@ -61,7 +61,7 @@ export default function GrantRequestFundingSection({ onValid }: Props) {
     <GrantRequestSection
       onBlur={() => editor.validate()}
       validated={state.validated}
-      formEdited={formEdited}
+      isFormEdited={isFormEdited}
       sectionTitle={'Funding'}
       sectionNumber={1}
     >

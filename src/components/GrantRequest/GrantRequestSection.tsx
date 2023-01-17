@@ -3,43 +3,23 @@ import React, { useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import GrantRequestSectionError from '../Icon/GrantRequestSection/GrantRequestSectionError'
-import GrantRequestSectionFocused from '../Icon/GrantRequestSection/GrantRequestSectionFocused'
-import GrantRequestSectionOk from '../Icon/GrantRequestSection/GrantRequestSectionOk'
-import GrantRequestSectionUnfocused from '../Icon/GrantRequestSection/GrantRequestSectionUnfocused'
-
 import './GrantRequestSection.css'
+import SectionIcon from './SectionIcon'
 
 export type Props = {
   sectionTitle: string
   sectionNumber: number
   validated: boolean
-  formEdited: boolean
+  isFormEdited: boolean
   onBlur: () => void
   children: React.ReactNode
-}
-
-function getSectionIcon(focused: boolean, formEdited: boolean, sectionNumber: number, validated: boolean) {
-  if (focused) {
-    return <GrantRequestSectionFocused sectionNumber={sectionNumber} />
-  } else {
-    if (!formEdited) {
-      return <GrantRequestSectionUnfocused sectionNumber={sectionNumber} />
-    } else {
-      if (validated) {
-        return <GrantRequestSectionOk sectionNumber={sectionNumber} />
-      } else {
-        return <GrantRequestSectionError sectionNumber={sectionNumber} />
-      }
-    }
-  }
 }
 
 export default function GrantRequestSection({
   sectionTitle,
   sectionNumber,
   validated,
-  formEdited,
+  isFormEdited,
   onBlur,
   children,
 }: Props) {
@@ -57,7 +37,12 @@ export default function GrantRequestSection({
     >
       <div className="GrantRequestSection__Head">
         <div className="GrantRequestSection__Header">
-          {getSectionIcon(focused, formEdited, sectionNumber, validated)}
+          <SectionIcon
+            focused={focused}
+            isFormEdited={isFormEdited}
+            sectionNumber={sectionNumber}
+            validated={validated}
+          />
           <div className="GrantRequestSection__HeaderTitle">{sectionTitle}</div>
           <div className="GrantRequestSection__HorizontalLine" />
         </div>

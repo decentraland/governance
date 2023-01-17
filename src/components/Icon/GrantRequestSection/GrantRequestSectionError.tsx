@@ -1,10 +1,9 @@
 import React from 'react'
 
-import { GrantRequestSectionIconProps, getNumberIcon } from './GrantRequestSectionFocused'
+import { GrantRequestSectionIconProps } from './GrantRequestSectionFocused'
+import NumberIcon from './NumberIcon'
 
 function GrantRequestSectionError({ sectionNumber }: GrantRequestSectionIconProps) {
-  const icon = getNumberIcon(sectionNumber)
-
   return (
     <svg
       width="34"
@@ -15,7 +14,7 @@ function GrantRequestSectionError({ sectionNumber }: GrantRequestSectionIconProp
       className="GrantRequestSection__FixedSizeIcon"
     >
       <circle cx="16" cy="21" r="15.5" stroke="#736E7D" strokeOpacity="0.32" />
-      {icon}
+      <NumberIcon sectionNumber={sectionNumber} />
       <circle cx="27" cy="32" r="6" fill="#D80027" stroke="white" strokeWidth="2" />
     </svg>
   )
