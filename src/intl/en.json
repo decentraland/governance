@@ -182,6 +182,7 @@
       "size_empty": "Grant size is empty",
       "size_invalid": "Grant size is not a valid number",
       "size_too_low": "Grant size is too low",
+      "size_too_big": "Grant size is too big",
       "size_tier_invalid": "Grant size is not valid for the selected tier"
     },
     "linked_wearables": {
@@ -1032,7 +1033,7 @@
       "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
     },
     "submit_grant": {
-      "title": "Request a grant",
+      "title": "Request a Grant",
       "description": "Decentraland Grants allow the DAO’s MANA to fund the creation of features or content for the Decentraland platform. Either individuals or teams may apply within one of five categories, and there are six levels of funding for each category. Before submitting your grant proposal, please review the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/) here.\n\nAside from the requirements listed in the Grants Framework and Decentraland’s [Content Policy](https://decentraland.org/content), [Terms of Use](https://decentraland.org/terms), and [Code of Ethics](https://decentraland.org/ethics), there are no constraints on the content or features that may be funded.",
       "category_label": "Category",
       "category_placeholder": "Select a category",

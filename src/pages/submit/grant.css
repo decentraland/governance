@@ -1,8 +1,28 @@
-.EmailLabel {
-  display: inline-flex;
-  align-items: center;
+.GrantRequest__Head {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  position: sticky;
+}
+.GrantRequest__Head > .ui.button.basic {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.EmailLabel .NewBadge {
-  margin-left: 5px;
+.GrantRequest__Header {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 42px;
+  letter-spacing: 0.4px;
+  text-align: left;
+}
+
+.GrantRequest__HeaderDescription p.dg.Paragraph {
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  text-align: left;
 }

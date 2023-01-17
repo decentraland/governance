@@ -5,8 +5,8 @@ export const GRANT_PROPOSAL_MIN_BUDGET = 100
 export const GRANT_PROPOSAL_MAX_BUDGET = 240000
 
 export const TIERS: GrantTierAttributes[] = [
-  { type: GrantTierType.LowerTier, status: GrantTierStatus.Active, min: GRANT_PROPOSAL_MIN_BUDGET, max: 25000 },
-  { type: GrantTierType.HigherTier, status: GrantTierStatus.Active, min: 25001, max: GRANT_PROPOSAL_MAX_BUDGET },
+  { type: GrantTierType.LowerTier, status: GrantTierStatus.Active, min: GRANT_PROPOSAL_MIN_BUDGET, max: 20000 },
+  { type: GrantTierType.HigherTier, status: GrantTierStatus.Active, min: 20000, max: GRANT_PROPOSAL_MAX_BUDGET },
   {
     type: GrantTierType.Tier1,
     status: GrantTierStatus.Inactive,

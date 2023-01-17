@@ -1,0 +1,41 @@
+.GrantRequestSection__Container {
+  margin-bottom: 50px;
+}
+
+.GrantRequestSection__Head {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.GrantRequestSection__Header {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.GrantRequestSection__HeaderTitle {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 42px;
+  letter-spacing: 0.4px;
+  text-align: left;
+}
+
+.GrantRequestSection__HorizontalLine {
+  flex-grow: 100;
+  border: 1px solid rgba(115, 110, 125, 0.24);
+}
+
+.GrantRequestSection__FixedSizeIcon {
+  min-width: 34px;
+  max-width: 34px;
+}
+
+.GrantRequestSection__Content {
+  display: flex;
+  margin-left: 58px;
+}
