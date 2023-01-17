@@ -1,3 +1,11 @@
+import {
+  GRANT_PROPOSAL_MIN_BUDGET,
+  MAX_HIGH_TIER_PROJECT_DURATION,
+  MAX_LOWER_TIER_GRANT_FUNDING,
+  MAX_LOW_TIER_PROJECT_DURATION,
+  MIN_HIGH_TIER_PROJECT_DURATION,
+  MIN_LOW_TIER_PROJECT_DURATION,
+} from './constants'
 import { GrantTierType } from './types'
 import { isValidGrantBudget } from './utils'
 
@@ -12,7 +20,9 @@ export class GrantTier {
       throw new Error('Grant budget is not valid')
     }
 
-    return budget > 0 && budget <= 20000 ? GrantTierType.LowerTier : GrantTierType.HigherTier
+    return budget > GRANT_PROPOSAL_MIN_BUDGET && budget <= MAX_LOWER_TIER_GRANT_FUNDING
+      ? GrantTierType.LowerTier
+      : GrantTierType.HigherTier
   }
 
   static getVPThreshold(budget: number) {
@@ -23,6 +33,17 @@ export class GrantTier {
       case GrantTierType.LowerTier:
       default:
         return 2000000
+    }
+  }
+
+  static getProjectDurationsLimits(budget: number): { min: number; max: number } {
+    const type = GrantTier.getTypeFromBudget(budget)
+    switch (type) {
+      case GrantTierType.HigherTier:
+        return { min: MIN_HIGH_TIER_PROJECT_DURATION, max: MAX_HIGH_TIER_PROJECT_DURATION }
+      case GrantTierType.LowerTier:
+      default:
+        return { min: MIN_LOW_TIER_PROJECT_DURATION, max: MAX_LOW_TIER_PROJECT_DURATION }
     }
   }
 
