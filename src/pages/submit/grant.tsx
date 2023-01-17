@@ -50,6 +50,25 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
 }
 
+// function onSubmit () => {
+//   if (allSectionsValid) {
+//     setIsFormDisabled(true)
+//     Promise.resolve()
+//       .then(async () => {
+//         return Governance.get().createProposalGrant(grantRequest)
+//       })
+//       .then((proposal) => {
+//         // loader.proposals.set(proposal.id, proposal)
+//         // navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+//       })
+//       .catch((err) => {
+//         console.error(err, { ...err })
+//         // editor.error({ '*': err.body?.error || err.message })
+//         setIsFormDisabled(false)
+//       })
+//   }
+// }
+
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()

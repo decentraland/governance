@@ -150,3 +150,23 @@
 .GrantRequestSection__InputLabel {
   padding-right: 20px;
 }
+
+.GrantRequestSection__MarkdownField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+}
+
+.GrantRequestSection__Label {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__Sublabel {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--black-600);
+}

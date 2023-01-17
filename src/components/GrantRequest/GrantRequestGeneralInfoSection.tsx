@@ -2,12 +2,10 @@ import React, { useEffect } from 'react'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { userModifiedForm } from '../../entities/Proposal/utils'
-import MarkdownNotice from '../Form/MarkdownNotice'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import { GrantRequestGeneralInfoSchema } from './GrantRequestSchema'
@@ -24,7 +22,28 @@ const schema = GrantRequestGeneralInfoSchema
 const validate = createValidator<GrantRequestGeneralInfo>({
   description: (state) => ({
     description:
-      assert(state.description.length <= schema.description.maxLength, 'error.grant.description_too_large') ||
+      assert(
+        state.description.length <= schema.description.maxLength,
+        'error.grant.general_info.description_too_large'
+      ) ||
+      assert(state.description.length > 0, 'error.grant.general_info.description_empty') ||
+      assert(
+        state.description.length > schema.description.minLength,
+        'error.grant.general_info.description_too_short'
+      ) ||
+      undefined,
+  }),
+  specification: (state) => ({
+    specification:
+      assert(
+        state.specification.length <= schema.specification.maxLength,
+        'error.grant.general_info.specification_too_large'
+      ) ||
+      assert(state.specification.length > 0, 'error.grant.general_info.specification_empty') ||
+      assert(
+        state.specification.length > schema.specification.minLength,
+        'error.grant.general_info.specification_too_short'
+      ) ||
       undefined,
   }),
 })
@@ -60,15 +79,14 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
       sectionNumber={2}
     >
       <div className="GrantRequestSection__Content">
-        <ContentSection>
-          <Label>
-            {t('page.submit_grant.description_label')}
-            <MarkdownNotice />
-          </Label>
+        <ContentSection className="GrantRequestSection__MarkdownField">
+          <Label className="GrantRequestSection__Label">{t('page.submit_grant.general_info.description_label')}</Label>
+          <span className="GrantRequestSection__Sublabel">
+            {t('page.submit_grant.general_info.description_detail')}
+          </span>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.description}
-            placeholder={t('page.submit_grant.description_placeholder')}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
             onBlur={() => editor.set({ description: state.value.description.trim() })}
             error={!!state.error.description}
@@ -83,18 +101,16 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             disabled={isFormDisabled}
           />
         </ContentSection>
-        <ContentSection>
-          <Label>
-            {t('page.submit_grant.specification_label')}
-            <MarkdownNotice />
+        <ContentSection className="GrantRequestSection__MarkdownField">
+          <Label className="GrantRequestSection__Label">
+            {t('page.submit_grant.general_info.specification_label')}
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_grant.specification_detail')}
-          </Paragraph>
+          <span className="GrantRequestSection__Sublabel">
+            {t('page.submit_grant.general_info.specification_detail')}
+          </span>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.specification}
-            placeholder={t('page.submit_grant.specification_placeholder')}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
             onBlur={() => editor.set({ specification: state.value.specification.trim() })}
             error={!!state.error.specification}
