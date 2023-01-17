@@ -2,14 +2,21 @@
   margin-bottom: 25px;
 }
 
+.CurrentGrants__TitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
 .CurrentGrants__Title {
   font-style: normal;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
-  margin-bottom: 16px;
+  margin-bottom: 13px;
 }
 
 .CurrentGrants__Filters {

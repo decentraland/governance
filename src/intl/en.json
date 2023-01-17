@@ -715,7 +715,12 @@
         "approved_rate_title": "{value}% Approval",
         "approved_rate_description": "Rate of approved Grant proposals"
       },
-      "currently_funded": "Currently being funded",
+      "in_progress": "Grants in progress",
+      "budget_banner": {
+        "budget_label": "Quarterly budget",
+        "progress_label": "Initiatives in progress",
+        "spent_label": "Quarterly spend: "
+      },
       "category_filters": {
         "all": "All",
         "community": "Community",

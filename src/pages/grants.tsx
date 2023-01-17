@@ -9,7 +9,6 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import CurrentGrantsBanner from '../components/Grants/Current/CurrentGrantsBanner'
 import CurrentGrantsList from '../components/Grants/Current/CurrentGrantsList'
-import PastGrantsList from '../components/Grants/Past/PastGrantsList'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
@@ -22,6 +21,7 @@ import { isUnderMaintenance } from '../modules/maintenance'
 export default function GrantsPage() {
   const t = useFormatMessage()
   const { grants, isLoadingGrants } = useGrants()
+  // console.log('grants', grants.current.length)
   const isLoading = isEmpty(grants) && isLoadingGrants
 
   if (isUnderMaintenance()) {
@@ -60,13 +60,6 @@ export default function GrantsPage() {
               <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
                 <Grid.Column tablet="12">
                   {!isEmpty(grants.current) && <CurrentGrantsList grants={grants.current} />}
-                  {!isEmpty(grants.past) && (
-                    <PastGrantsList
-                      grants={grants.past}
-                      currentGrantsTotal={grants.current.length}
-                      totalGrants={grants.total}
-                    />
-                  )}
                 </Grid.Column>
               </BurgerMenuLayout>
             </Grid.Row>

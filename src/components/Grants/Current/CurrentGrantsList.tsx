@@ -11,7 +11,8 @@ import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGr
 import FullWidthButton from '../../Common/FullWidthButton'
 import GrantCard from '../GrantCard/GrantCard'
 
-import CurrentGrantsCategoryFilters, { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
+import BudgetBanner from './BudgetBanner'
+import { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
 
@@ -60,21 +61,20 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
   return (
     <>
       <div className="CurrentGrantsList">
-        <div>
-          <h2 className="CurrentGrants__Title">{t('page.grants.currently_funded')}</h2>
+        <div className="CurrentGrants__TitleContainer">
+          <div>
+            <h2 className="CurrentGrants__Title">{t('page.grants.in_progress')}</h2>
+          </div>
           <div className="CurrentGrants__Filters">
-            <CurrentGrantsCategoryFilters
-              currentGrantsFilteredByCategory={currentGrantsFilteredByCategory}
-              onSelectedCategoryChange={setSelectedCategory}
-            />
             <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
           </div>
-          <Container className="CurrentGrants__Container">
-            {filteredCurrentGrants?.map((grant) => (
-              <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
-            ))}
-          </Container>
         </div>
+        <BudgetBanner />
+        <Container className="CurrentGrants__Container">
+          {filteredCurrentGrants?.map((grant) => (
+            <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
+          ))}
+        </Container>
         {showLoadMoreCurrentGrantsButton && (
           <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
             {t('page.grants.load_more_button')}
