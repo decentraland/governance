@@ -21,3 +21,5 @@ export const getPercentage = (value: number, total: number, decimals = 2): strin
   const formattedNumber = value > 0 && total > 0 ? ((value * 100) / total).toFixed(decimals) : 0
   return `${formattedNumber}%`
 }
+
+export const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)

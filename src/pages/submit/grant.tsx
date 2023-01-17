@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -9,12 +9,13 @@ import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import { Governance } from '../../clients/Governance'
 import GrantRequestFundingSection, {
-  GrantRequestFundingState,
+  GrantRequestFunding,
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
 } from '../../components/GrantRequest/GrantRequestFundingSection'
 import GrantRequestGeneralInfoSection, {
-  GrantRequestGeneralInfoState,
+  GrantRequestGeneralInfo,
   INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
 import CategorySelector from '../../components/Grants/CategorySelector'
@@ -29,24 +30,59 @@ import usePreventNavigation from '../../hooks/usePreventNavigation'
 import './grant.css'
 import './submit.css'
 
-export type GrantRequestState = {
+export type GrantRequest = {
   title: string
-} & GrantRequestFundingState &
-  GrantRequestGeneralInfoState
+  category: ProposalGrantCategory | null
+} & GrantRequestFunding &
+  GrantRequestGeneralInfo
 
-const initialState: GrantRequestState = {
+const initialState: GrantRequest = {
   title: '',
+  category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
+}
+
+export type GrantRequestValidationState = {
+  fundingSectionValid: boolean
+  generalInformationSectionValid: boolean
+}
+
+const initialValidationState: GrantRequestValidationState = {
+  fundingSectionValid: false,
+  generalInformationSectionValid: false,
 }
 
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [grantRequest, patchGrantRequest] = usePatchState<GrantRequestState>(initialState)
+  const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
+  const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
   const preventNavigation = useRef(false)
+  const [isFormDisabled, setIsFormDisabled] = useState(false)
+  const allSectionsValid = Object.values(validationState).every((prop) => prop)
 
   console.log('grantRequest', grantRequest)
+  const submit = () => {
+    if (allSectionsValid) {
+      setIsFormDisabled(true)
+      Promise.resolve()
+        .then(async () => {
+          return Governance.get().createProposalGrant(grantRequest)
+        })
+        .then((proposal) => {
+          // loader.proposals.set(proposal.id, proposal)
+          // navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+        })
+        .catch((err) => {
+          console.error(err, { ...err })
+          // editor.error({ '*': err.body?.error || err.message })
+          setIsFormDisabled(false)
+        })
+    }
+    setIsFormDisabled(false)
+  }
+
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
   }, [grantRequest])
@@ -77,9 +113,7 @@ export default function SubmitGrant() {
             <DecentralandLogo />
             <div>{t('page.submit_grant.title')}</div>
           </div>
-          <Button basic className="cancel">
-            {'Cancel'}
-          </Button>
+          <Button basic>{t('page.submit_grant.cancel')}</Button>
         </div>
       </Container>
       <Container className="ContentLayout__Container GrantRequestSection__Container">
@@ -93,17 +127,38 @@ export default function SubmitGrant() {
       </Container>
 
       {!isCategorySelected && (
-        <CategorySelector onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })} />
+        <Container className="ContentLayout__Container GrantRequestSection__Container">
+          <CategorySelector
+            onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })}
+          />
+        </Container>
       )}
       {isCategorySelected && (
         <>
           <GrantRequestFundingSection
-            onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })}
+            grantCategory={grantRequest.category}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ fundingSectionValid: sectionValid })
+            }}
+            isFormDisabled={isFormDisabled}
           />
 
           <GrantRequestGeneralInfoSection
-            onValidation={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ generalInformationSectionValid: sectionValid })
+            }}
+            isFormDisabled={isFormDisabled}
           />
+
+          <Container className="ContentLayout__Container">
+            <ContentSection className="GrantRequestSection__Content">
+              <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
+                {t('page.submit.button_submit')}
+              </Button>
+            </ContentSection>
+          </Container>
         </>
       )}
     </div>

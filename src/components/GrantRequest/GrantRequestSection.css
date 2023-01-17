@@ -37,5 +37,136 @@
 
 .GrantRequestSection__Content {
   display: flex;
+  flex-direction: column;
   margin-left: 58px;
+}
+
+.GrantRequestSection__Row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.GrantRequestSectionCard {
+  border: 1px solid rgba(115, 110, 125, 0.24);
+  box-shadow: 0 1px 8px rgba(115, 110, 125, 0.15);
+  border-radius: 8px;
+  padding: 12px 16px 20px;
+  margin-bottom: 33px;
+  min-width: 382px;
+  min-height: 104px;
+}
+
+.GrantRequestSectionCard__Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.GrantRequestSectionCard__Header > button.ui.basic.button {
+  padding-top: 0;
+}
+
+.GrantRequestSectionCard__HeaderTitle {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}
+
+.GrantRequestSectionCard__Header > button.ui.basic.button {
+  padding-bottom: 0;
+}
+
+.GrantRequestSectionCard__ContentTitle {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.GrantRequestSectionCard__AlignBaseline {
+  align-items: baseline;
+}
+
+.GrantRequestSectionCard__SubTitle {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}
+
+.GrantRequestSectionCard__Number {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.GrantRequestSectionCard__Percentage {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--black-600);
+  opacity: 0.5;
+}
+
+.GrantRequestSectionCard__CapsSubTitle {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}
+
+.GrantRequestSectionCard__Empty {
+  min-width: 348px;
+  height: 24px;
+}
+
+.GrantRequestSection__InputTitle {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__InputSubtitle > p.dg.Paragraph {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__InputLabel {
+  padding-right: 20px;
+}
+
+.GrantRequestSection__MarkdownField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+}
+
+.GrantRequestSection__Label {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__Sublabel {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--black-600);
 }

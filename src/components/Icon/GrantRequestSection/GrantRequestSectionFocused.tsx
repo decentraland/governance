@@ -17,7 +17,7 @@ function GrantRequestSectionFocused({ sectionNumber }: GrantRequestSectionIconPr
       className="GrantRequestSection__FixedSizeIcon"
     >
       <circle cx="16" cy="21" r="16" fill="#16141A" />
-      <NumberIcon sectionNumber={sectionNumber} color={'white'} />
+      <NumberIcon sectionNumber={sectionNumber} color={'var(--white-900)'} />
     </svg>
   )
 }

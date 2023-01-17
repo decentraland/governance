@@ -141,4 +141,22 @@ describe('entities/GrantTier', () => {
       })
     })
   })
+
+  describe('Project duration limits', () => {
+    def('projectDurationLimits', () => GrantTier.getProjectDurationsLimits(get.budget))
+    describe('for a lower tier type', () => {
+      def('budget', () => 15000)
+      it('should return 1 and 6 months', () => {
+        expect(get.projectDurationLimits.min).toBe(1)
+        expect(get.projectDurationLimits.max).toBe(6)
+      })
+    })
+    describe('for a higher tier type', () => {
+      def('budget', () => 50000)
+      it('should return 3 and 12 months', () => {
+        expect(get.projectDurationLimits.min).toBe(3)
+        expect(get.projectDurationLimits.max).toBe(12)
+      })
+    })
+  })
 })
