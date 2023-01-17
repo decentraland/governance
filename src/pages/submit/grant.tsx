@@ -9,6 +9,7 @@ import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import { Governance } from '../../clients/Governance'
 import GrantRequestFundingSection, {
   GrantRequestFunding,
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
@@ -50,25 +51,6 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
 }
 
-// function onSubmit () => {
-//   if (allSectionsValid) {
-//     setIsFormDisabled(true)
-//     Promise.resolve()
-//       .then(async () => {
-//         return Governance.get().createProposalGrant(grantRequest)
-//       })
-//       .then((proposal) => {
-//         // loader.proposals.set(proposal.id, proposal)
-//         // navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-//       })
-//       .catch((err) => {
-//         console.error(err, { ...err })
-//         // editor.error({ '*': err.body?.error || err.message })
-//         setIsFormDisabled(false)
-//       })
-//   }
-// }
-
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -77,6 +59,26 @@ export default function SubmitGrant() {
   const preventNavigation = useRef(false)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
+
+  const submit = () => {
+    if (allSectionsValid) {
+      setIsFormDisabled(true)
+      Promise.resolve()
+        .then(async () => {
+          return Governance.get().createProposalGrant(grantRequest)
+        })
+        .then((proposal) => {
+          // loader.proposals.set(proposal.id, proposal)
+          // navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+        })
+        .catch((err) => {
+          console.error(err, { ...err })
+          // editor.error({ '*': err.body?.error || err.message })
+          setIsFormDisabled(false)
+        })
+    }
+    setIsFormDisabled(false)
+  }
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -141,6 +143,14 @@ export default function SubmitGrant() {
             }}
             isFormDisabled={isFormDisabled}
           />
+
+          <Container className="ContentLayout__Container">
+            <ContentSection className="GrantRequestSection__Content">
+              <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
+                {t('page.submit.button_submit')}
+              </Button>
+            </ContentSection>
+          </Container>
         </>
       )}
     </div>
