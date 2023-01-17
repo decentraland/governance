@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -10,11 +10,11 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import GrantRequestFundingSection, {
-  GrantRequestFundingState,
+  GrantRequestFunding,
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
 } from '../../components/GrantRequest/GrantRequestFundingSection'
 import GrantRequestGeneralInfoSection, {
-  GrantRequestGeneralInfoState,
+  GrantRequestGeneralInfo,
   INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
 import CategorySelector from '../../components/Grants/CategorySelector'
@@ -29,22 +29,35 @@ import usePreventNavigation from '../../hooks/usePreventNavigation'
 import './grant.css'
 import './submit.css'
 
-export type GrantRequestState = {
+export type GrantRequest = {
   title: string
-} & GrantRequestFundingState &
-  GrantRequestGeneralInfoState
+} & GrantRequestFunding &
+  GrantRequestGeneralInfo
 
-const initialState: GrantRequestState = {
+const initialState: GrantRequest = {
   title: '',
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 }
 
+export type GrantRequestValidationState = {
+  fundingSectionValid: boolean
+  generalInformationSectionValid: boolean
+}
+
+const initialValidationState: GrantRequestValidationState = {
+  fundingSectionValid: false,
+  generalInformationSectionValid: false,
+}
+
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [grantRequest, patchGrantRequest] = usePatchState<GrantRequestState>(initialState)
+  const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
+  const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
   const preventNavigation = useRef(false)
+  const [isFormDisabled, setIsFormDisabled] = useState(false)
+  const allSectionsValid = Object.values(validationState).every((prop) => prop)
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -95,11 +108,19 @@ export default function SubmitGrant() {
       {isCategorySelected && (
         <>
           <GrantRequestFundingSection
-            onValidation={(data: GrantRequestFundingState) => patchGrantRequest({ ...data })}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ fundingSectionValid: sectionValid })
+            }}
+            isFormDisabled={isFormDisabled}
           />
 
           <GrantRequestGeneralInfoSection
-            onValidation={(data: GrantRequestGeneralInfoState) => patchGrantRequest({ ...data })}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ generalInformationSectionValid: sectionValid })
+            }}
+            isFormDisabled={isFormDisabled}
           />
         </>
       )}

@@ -23,6 +23,7 @@ import {
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
+import { GrantRequest } from '../pages/submit/grant'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -159,8 +160,9 @@ export class Governance extends API {
     return this.createProposal(`/proposals/catalyst`, proposal)
   }
 
-  async createProposalGrant(proposal: GrantProposalInCreation) {
-    return this.createProposal(`/proposals/grant`, proposal)
+  async createProposalGrant(proposal: GrantRequest) {
+    // return this.createProposal(`/proposals/grant`, proposal)
+    console.log('creatingProposal', proposal)
   }
 
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {

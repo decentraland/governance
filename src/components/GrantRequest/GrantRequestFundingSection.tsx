@@ -10,7 +10,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
-import { MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
+import { GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
@@ -23,16 +23,15 @@ import { ContentSection } from '../Layout/ContentLayout'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 
-
 const schema = GrantRequestFundingSchema
-export type GrantRequestFundingState = {
+export type GrantRequestFunding = {
   funding: string | number
   projectDuration: number
   category: ProposalGrantCategory | null
 }
 
-export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = {
-  funding: String(schema.funding),
+export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
+  funding: '',
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
   category: null,
 }
@@ -44,7 +43,7 @@ const isValidBudgetForCategory = (budget: number | string | undefined) => {
   return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= AVAILABLE_CATEGORY_BUDGET
 }
 
-const validate = createValidator<GrantRequestFundingState>({
+const validate = createValidator<GrantRequestFunding>({
   funding: (state) => ({
     funding:
       assert(!state.funding || Number.isFinite(asNumber(state.funding)), 'error.grant.funding.invalid') ||
@@ -71,7 +70,7 @@ const validate = createValidator<GrantRequestFundingState>({
   }),
 })
 
-const edit = (state: GrantRequestFundingState, props: Partial<GrantRequestFundingState>) => {
+const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) => {
   return {
     ...state,
     ...props,
@@ -79,10 +78,12 @@ const edit = (state: GrantRequestFundingState, props: Partial<GrantRequestFundin
 }
 
 interface Props {
-  onValidation: (data: GrantRequestFundingState) => void
+  onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
+  isFormDisabled: boolean
 }
 
-function getAvailableProjectDurations(funding: number) {
+function getAvailableProjectDurations(rawFunding: number | string | undefined) {
+  const funding = isValidGrantBudget(Number(rawFunding)) ? Number(rawFunding) : GRANT_PROPOSAL_MIN_BUDGET
   const { min, max } = GrantTier.getProjectDurationsLimits(funding)
 
   const availableDurations = []
@@ -103,8 +104,7 @@ function getProjectDurationOptions(funding: number) {
 }
 
 function updateProjectDuration(rawFunding: string, previousDuration: number | undefined) {
-  const projectFunding = Number(rawFunding) || 0
-  const availableDurations = getAvailableProjectDurations(projectFunding)
+  const availableDurations = getAvailableProjectDurations(rawFunding)
   const previousDurationIsBetweenNewLimits =
     previousDuration &&
     previousDuration > availableDurations[0] &&
@@ -112,20 +112,18 @@ function updateProjectDuration(rawFunding: string, previousDuration: number | un
   return previousDurationIsBetweenNewLimits ? previousDuration : availableDurations[0]
 }
 
-export default function GrantRequestFundingSection({ onValidation }: Props) {
+export default function GrantRequestFundingSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_FUNDING_STATE)
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
 
   useEffect(() => {
-    if (state.validated) {
-      onValidation({ ...state.value }) //TODO: this should also send state.validated to parent
-    }
+    onValidation({ ...state.value }, state.validated) //TODO: this should also send state.validated to parent
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
 
   const availableDurations = useMemo(() => {
-    return getProjectDurationOptions(Number(state.value.funding) || 0)
+    return getProjectDurationOptions(Number(state.value.funding) || GRANT_PROPOSAL_MIN_BUDGET)
   }, [state.value.funding])
 
   const passThreshold = useMemo(() => {
@@ -205,7 +203,7 @@ export default function GrantRequestFundingSection({ onValidation }: Props) {
             onAction={() => null}
             action={<Label className="GrantRequestSection__InputLabel">{'USD'}</Label>}
             message={t(state.error.funding)}
-            disabled={false} //TODO receive property from parent on submit
+            disabled={isFormDisabled}
           />
         </div>
         <div>
@@ -220,7 +218,7 @@ export default function GrantRequestFundingSection({ onValidation }: Props) {
             options={availableDurations}
             error={!!state.error.projectDuration}
             message={t(state.error.projectDuration)}
-            disabled={!state.value.funding || !!state.error.funding}
+            disabled={!state.value.funding || !!state.error.funding || isFormDisabled}
             loading={false}
           />
         </div>

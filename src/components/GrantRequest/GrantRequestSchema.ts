@@ -7,6 +7,11 @@ import {
 
 export const GrantRequestGeneralInfoSchema = {
   description: { type: 'string', minLength: 20, maxLength: 3500 },
+  specification: {
+    type: 'string',
+    minLength: 20,
+    maxLength: 3500,
+  },
 }
 
 export const GrantRequestFundingSchema = {
@@ -25,7 +30,7 @@ export const GrantRequestFundingSchema = {
 export const GrantRequestSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['title', 'funding', 'projectDuration', 'description'],
+  required: ['title', 'funding', 'projectDuration', 'description', 'specification'],
   properties: {
     title: {
       type: 'string',

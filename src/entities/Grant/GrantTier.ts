@@ -20,7 +20,7 @@ export class GrantTier {
       throw new Error('Grant budget is not valid')
     }
 
-    return budget > GRANT_PROPOSAL_MIN_BUDGET && budget <= MAX_LOWER_TIER_GRANT_FUNDING
+    return budget >= GRANT_PROPOSAL_MIN_BUDGET && budget <= MAX_LOWER_TIER_GRANT_FUNDING
       ? GrantTierType.LowerTier
       : GrantTierType.HigherTier
   }
