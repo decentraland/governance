@@ -7,6 +7,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { isValidGrantBudget } from '../../entities/Grant/utils'
+import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -16,9 +17,13 @@ import GrantRequestSection from './GrantRequestSection'
 const schema = GrantRequestFundingSchema
 export type GrantRequestFundingState = {
   funding: string | number
+  category: ProposalGrantCategory | null
 }
 
-export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = { funding: String(schema.funding) }
+export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFundingState = {
+  funding: String(schema.funding),
+  category: null,
+}
 
 const validate = createValidator<GrantRequestFundingState>({
   funding: (state) => ({
