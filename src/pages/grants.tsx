@@ -11,6 +11,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import CurrentGrantsBanner from '../components/Grants/Current/CurrentGrantsBanner'
 import CurrentGrantsList from '../components/Grants/Current/CurrentGrantsList'
+import RequestBanner from '../components/Grants/RequestBanner'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
@@ -62,10 +63,9 @@ export default function GrantsPage() {
             <Grid.Row>
               <Grid.Column tablet="4">
                 <NotMobile>
-                  <div>
-                    <CategoryFilter filterType={NewGrantCategory} startOpen />
-                    <CategoryFilter filterType={OldGrantCategory} />
-                  </div>
+                  <CategoryFilter filterType={NewGrantCategory} startOpen />
+                  <CategoryFilter filterType={OldGrantCategory} />
+                  <RequestBanner />
                 </NotMobile>
               </Grid.Column>
               <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
