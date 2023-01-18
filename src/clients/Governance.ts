@@ -6,7 +6,6 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import { GOVERNANCE_API } from '../constants'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import {
-  GrantProposalInCreation,
   GrantsResponse,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -32,7 +31,7 @@ type NewProposalMap = {
   [`/proposals/ban-name`]: NewProposalBanName
   [`/proposals/poi`]: NewProposalPOI
   [`/proposals/catalyst`]: NewProposalCatalyst
-  [`/proposals/grant`]: GrantProposalInCreation
+  [`/proposals/grant`]: GrantRequest
   [`/proposals/linked-wearables`]: NewProposalLinkedWearables
 }
 
@@ -161,8 +160,7 @@ export class Governance extends API {
   }
 
   async createProposalGrant(proposal: GrantRequest) {
-    // return this.createProposal(`/proposals/grant`, proposal)
-    console.log('creatingProposal', proposal)
+    return this.createProposal(`/proposals/grant`, proposal)
   }
 
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {

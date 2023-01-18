@@ -6,6 +6,7 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
@@ -26,6 +27,8 @@ import LogIn from '../../components/User/LogIn'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
+import loader from '../../modules/loader'
+import locations from '../../modules/locations'
 
 import './grant.css'
 import './submit.css'
@@ -53,6 +56,8 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
 }
 
+const HAS_STICKY_NAVBAR_FEATURE = false // TODO: Implement this
+
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -62,7 +67,6 @@ export default function SubmitGrant() {
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
 
-  console.log('grantRequest', grantRequest)
   const submit = () => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
@@ -71,8 +75,8 @@ export default function SubmitGrant() {
           return Governance.get().createProposalGrant(grantRequest)
         })
         .then((proposal) => {
-          // loader.proposals.set(proposal.id, proposal)
-          // navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+          loader.proposals.set(proposal.id, proposal)
+          navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
         })
         .catch((err) => {
           console.error(err, { ...err })
@@ -110,10 +114,10 @@ export default function SubmitGrant() {
           />
           <Helmet title={t('page.submit_grant.title') || ''} />
           <div className="GrantRequest__Header">
-            <DecentralandLogo />
+            {HAS_STICKY_NAVBAR_FEATURE && <DecentralandLogo />}
             <div>{t('page.submit_grant.title')}</div>
           </div>
-          <Button basic>{t('page.submit_grant.cancel')}</Button>
+          {HAS_STICKY_NAVBAR_FEATURE && <Button basic>{t('page.submit_grant.cancel')}</Button>}
         </div>
       </Container>
       <Container className="ContentLayout__Container GrantRequestSection__Container">
@@ -133,6 +137,7 @@ export default function SubmitGrant() {
           />
         </Container>
       )}
+
       {isCategorySelected && (
         <>
           <GrantRequestFundingSection
@@ -155,9 +160,11 @@ export default function SubmitGrant() {
 
           <Container className="ContentLayout__Container">
             <ContentSection className="GrantRequestSection__Content">
-              <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
-                {t('page.submit.button_submit')}
-              </Button>
+              <div>
+                <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
+                  {t('page.submit.button_submit')}
+                </Button>
+              </div>
             </ContentSection>
           </Container>
         </>
