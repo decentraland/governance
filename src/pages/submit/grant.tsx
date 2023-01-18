@@ -122,11 +122,7 @@ export default function SubmitGrant() {
       </Container>
       <Container className="ContentLayout__Container GrantRequestSection__Container">
         <ContentSection>
-          <Markdown className="GrantRequest__HeaderDescription">
-            {
-              'Decentraland Grants allow MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO, and there are no constraints on the content or features that may be funded (within the bounds of Decentraland’s [Content Policy]()).'
-            }
-          </Markdown>
+          <Markdown className="GrantRequest__HeaderDescription">{t('page.submit_grant.description')}</Markdown>
         </ContentSection>
       </Container>
 
