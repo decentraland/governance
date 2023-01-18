@@ -156,7 +156,7 @@ export default function ProposalsPage() {
               <Grid.Column tablet="4">
                 <NotMobile>
                   <div>
-                    <CategoryFilter filterType={ProposalType} />
+                    <CategoryFilter filterType={ProposalType} startOpen />
                     <StatusFilter />
                     <TimeFrameFilter />
                   </div>

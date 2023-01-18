@@ -28,6 +28,7 @@
         "ASC": "Oldest"
       },
       "category_filter_title": "Filter by Category",
+      "legacy_filter_title": "Filter by Legacy Grants",
       "status_filter_title": "Filter by Status",
       "timeframe_filter": {
         "title": "Filter by TimeFrame",
@@ -281,7 +282,11 @@
     "in_world_content_title": "In-World Content",
     "social_media_content_title": "Social Media Content",
     "sponsorship_title": "Sponsorship",
-    "accelerator_title": "Accelerator"
+    "accelerator_title": "Accelerator",
+    "community_title": "Community",
+    "content_creator_title": "Content Creator",
+    "gaming_title": "Gaming",
+    "platform_contributor_title": "Platform Contributor"
   },
   "status": {
     "all": "All outcomes",

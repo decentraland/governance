@@ -12,7 +12,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { GrantTier } from '../../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
-import { ProposalGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getPercentage } from '../../helpers'
 import CategoryItem from '../Grants/CategoryItem'
@@ -76,7 +76,7 @@ const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) =
 }
 
 interface Props {
-  grantCategory: ProposalGrantCategory | null
+  grantCategory: NewGrantCategory | null
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
@@ -154,8 +154,8 @@ export default function GrantRequestFundingSection({ onValidation, isFormDisable
               <div className="GrantRequestSectionCard__ContentTitle">
                 <CategoryItem
                   key={grantCategory}
-                  category={grantCategory || ProposalGrantCategory.Gaming}
-                  onCategoryClick={() => {}}
+                  category={grantCategory || NewGrantCategory.Platform}
+                  onCategoryClick={() => ({})}
                 />
               </div>
             </div>

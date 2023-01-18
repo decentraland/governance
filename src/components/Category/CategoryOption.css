@@ -11,7 +11,8 @@
   display: flex;
 }
 
-.CategoryOption img {
+.CategoryOption img,
+.CategoryOption svg {
   margin-right: 8px;
 }
 

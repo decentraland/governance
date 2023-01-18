@@ -23,7 +23,7 @@ import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { ProposalGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory, ProposalGrantCategory } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 
@@ -32,7 +32,7 @@ import './submit.css'
 
 export type GrantRequest = {
   title: string
-  category: ProposalGrantCategory | null
+  category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo
 
@@ -128,9 +128,7 @@ export default function SubmitGrant() {
 
       {!isCategorySelected && (
         <Container className="ContentLayout__Container GrantRequestSection__Container">
-          <CategorySelector
-            onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })}
-          />
+          <CategorySelector onCategoryClick={(value: NewGrantCategory) => patchGrantRequest({ category: value })} />
         </Container>
       )}
       {isCategorySelected && (

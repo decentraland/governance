@@ -496,16 +496,6 @@ export type GrantProposalInCreation = {
 
 export type GrantProposalConfiguration = GrantProposalInCreation & { tier: GrantTierType }
 
-export const VALID_CATEGORIES: ProposalGrantCategory[] = [
-  NewGrantCategory.Accelerator,
-  NewGrantCategory.CoreUnit,
-  NewGrantCategory.Documentation,
-  NewGrantCategory.InWorldContent,
-  NewGrantCategory.Platform,
-  NewGrantCategory.SocialMediaContent,
-  NewGrantCategory.Sponsorship,
-]
-
 export const newProposalGrantScheme = {
   type: 'object',
   additionalProperties: false,
@@ -533,7 +523,7 @@ export const newProposalGrantScheme = {
     },
     category: {
       type: 'string',
-      enum: VALID_CATEGORIES,
+      enum: Object.values(NewGrantCategory),
     },
     size: {
       type: 'integer',

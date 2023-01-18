@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
+import { useLocation } from '@gatsbyjs/reach-router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
+import toSnakeCase from 'lodash/snakeCase'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import CurrentGrantsBanner from '../components/Grants/Current/CurrentGrantsBanner'
@@ -14,15 +16,23 @@ import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import CategoryFilter from '../components/Search/CategoryFilter'
-import { NewGrantCategory } from '../entities/Proposal/types'
+import { GrantWithUpdateAttributes, NewGrantCategory, OldGrantCategory } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
+
+function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: string | null) {
+  return type ? grants.filter((grant) => toSnakeCase(grant.configuration.category) === type) : grants
+}
 
 export default function GrantsPage() {
   const t = useFormatMessage()
   const { grants, isLoadingGrants } = useGrants()
-  // console.log('grants', grants.current.length)
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
   const isLoading = isEmpty(grants) && isLoadingGrants
+  const type = params.get('type')
+
+  const displayableGrants = useMemo(() => filterDisplayableGrants(grants.current, type), [grants, type])
 
   if (isUnderMaintenance()) {
     return (
@@ -53,13 +63,14 @@ export default function GrantsPage() {
               <Grid.Column tablet="4">
                 <NotMobile>
                   <div>
-                    <CategoryFilter filterType={NewGrantCategory} />
+                    <CategoryFilter filterType={NewGrantCategory} startOpen />
+                    <CategoryFilter filterType={OldGrantCategory} />
                   </div>
                 </NotMobile>
               </Grid.Column>
               <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
                 <Grid.Column tablet="12">
-                  {!isEmpty(grants.current) && <CurrentGrantsList grants={grants.current} />}
+                  <CurrentGrantsList grants={displayableGrants} />
                 </Grid.Column>
               </BurgerMenuLayout>
             </Grid.Row>

@@ -5,14 +5,14 @@ import {
   CategoryIconVariant,
   getCategoryIconPrimaryColor,
   getCategoryIconSecondaryColor,
-} from '../../helpers/styles'
+} from '../../../helpers/styles'
 
 function Accelerator({ variant = CategoryIconVariant.Normal, size = 42 }: CategoryIconProps) {
   const primaryColor = getCategoryIconPrimaryColor('green', variant)
   const secondaryColor = getCategoryIconSecondaryColor('green', variant)
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 52 52">
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="-5 -5 52 52">
       <path
         fill={secondaryColor}
         fillRule="evenodd"

@@ -29,6 +29,8 @@ const CurrentGrantsList = ({ grants }: { grants: GrantWithUpdateAttributes[] }) 
   useEffect(() => {
     if (!isEmpty(grants)) {
       setFilteredCurrentGrants(sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE))
+    } else {
+      setFilteredCurrentGrants([])
     }
   }, [grants, sortedCurrentGrants])
 

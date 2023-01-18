@@ -1,18 +1,18 @@
 import React from 'react'
 
-import { ProposalGrantCategory, VALID_CATEGORIES } from '../../entities/Proposal/types'
+import { NewGrantCategory } from '../../entities/Proposal/types'
 
 import CategoryItem from './CategoryItem'
 import './CategorySelector.css'
 
 interface Props {
-  onCategoryClick: (value: ProposalGrantCategory) => void
+  onCategoryClick: (value: NewGrantCategory) => void
 }
 
 const CategorySelector = ({ onCategoryClick }: Props) => {
   return (
     <div className="CategorySelector">
-      {VALID_CATEGORIES.map((category) => {
+      {Object.values(NewGrantCategory).map((category) => {
         return <CategoryItem key={category} category={category} onCategoryClick={onCategoryClick} />
       })}
     </div>

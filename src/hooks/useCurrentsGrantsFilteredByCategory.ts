@@ -2,7 +2,12 @@ import { useMemo } from 'react'
 
 import filter from 'lodash/filter'
 
-import { GrantWithUpdateAttributes, OldGrantCategory, PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
+import {
+  GrantWithUpdateAttributes,
+  NewGrantCategory,
+  OldGrantCategory,
+  PROPOSAL_GRANT_CATEGORY_ALL,
+} from '../entities/Proposal/types'
 
 export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdateAttributes[]) {
   // TODO: Check this
@@ -22,33 +27,27 @@ export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdateAttrib
         grants,
         (item) => item.configuration.category === OldGrantCategory.ContentCreator
       ),
-      [ProposalGrantCategory.Accelerator]: filter(
+      [NewGrantCategory.Accelerator]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Accelerator
+        (item) => item.configuration.category === NewGrantCategory.Accelerator
       ),
-      [ProposalGrantCategory.CoreUnit]: filter(
+      [NewGrantCategory.CoreUnit]: filter(grants, (item) => item.configuration.category === NewGrantCategory.CoreUnit),
+      [NewGrantCategory.Documentation]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.CoreUnit
+        (item) => item.configuration.category === NewGrantCategory.Documentation
       ),
-      [ProposalGrantCategory.Documentation]: filter(
+      [NewGrantCategory.InWorldContent]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Documentation
+        (item) => item.configuration.category === NewGrantCategory.InWorldContent
       ),
-      [ProposalGrantCategory.InWorldContent]: filter(
+      [NewGrantCategory.Platform]: filter(grants, (item) => item.configuration.category === NewGrantCategory.Platform),
+      [NewGrantCategory.SocialMediaContent]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.InWorldContent
+        (item) => item.configuration.category === NewGrantCategory.SocialMediaContent
       ),
-      [ProposalGrantCategory.Platform]: filter(
+      [NewGrantCategory.Sponsorship]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Platform
-      ),
-      [ProposalGrantCategory.SocialMediaContent]: filter(
-        grants,
-        (item) => item.configuration.category === ProposalGrantCategory.SocialMediaContent
-      ),
-      [ProposalGrantCategory.Sponsorship]: filter(
-        grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Sponsorship
+        (item) => item.configuration.category === NewGrantCategory.Sponsorship
       ),
     }),
     [grants]
