@@ -1,12 +1,12 @@
 import React from 'react'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/constants'
 
-import './GrantRequestDesiredFunding.css'
+import './DesiredFundingInput.css'
+import Label from './Label'
 
 interface Props {
   disabled: boolean
@@ -16,19 +16,17 @@ interface Props {
   error: string // TODO: Show errors in the UI
 }
 
-const GrantRequestDesiredFunding = ({ disabled, value, onChange, onBlur }: Props) => {
+const DesiredFundingInput = ({ disabled, value, onChange, onBlur }: Props) => {
   const t = useFormatMessage()
 
   return (
-    <div>
-      <Label className="GrantRequestSection__InputTitle">
-        {t('page.submit_grant.funding_section.desired_funding')}
-      </Label>
+    <div className="DesiredFundingInput">
+      <Label>{t('page.submit_grant.funding_section.desired_funding')}</Label>
       <div>
-        <div className="GrantRequestDesiredFunding__InputContainer">
-          <div className="GrantRequestDesiredFunding__Currency">USD</div>
+        <div className="DesiredFundingInput__InputContainer">
+          <div className="DesiredFundingInput__Description">USD</div>
           <input
-            className="GrantRequestDesiredFunding__Input"
+            className="DesiredFundingInput__Input"
             type="number"
             value={value}
             onChange={onChange}
@@ -47,4 +45,4 @@ const GrantRequestDesiredFunding = ({ disabled, value, onChange, onBlur }: Props
   )
 }
 
-export default GrantRequestDesiredFunding
+export default DesiredFundingInput

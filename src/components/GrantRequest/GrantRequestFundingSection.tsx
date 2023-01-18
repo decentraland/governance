@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo } from 'react'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 import { snakeCase } from 'lodash'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
@@ -17,10 +15,11 @@ import Helper from '../Helper/Helper'
 import Lock from '../Icon/Lock'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import GrantRequestDesiredFunding from './GrantRequestDesiredFunding'
+import DesiredFundingInput from './DesiredFundingInput'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
+import ProjectDurationInput from './ProjectDurationInput'
 
 const schema = GrantRequestFundingSchema
 export type GrantRequestFunding = {
@@ -97,7 +96,7 @@ function getProjectDurationOptions(funding: number) {
   const availableDurations = getAvailableProjectDurations(funding)
   for (const i in availableDurations) {
     const duration = availableDurations[i]
-    projectDurationOptions.push({ key: duration, text: duration, value: duration })
+    projectDurationOptions.push(duration)
   }
   return projectDurationOptions
 }
@@ -180,23 +179,14 @@ export default function GrantRequestFundingSection({
         </div>
         <div className="GrantRequestSection__Row">
           <div className="GrantRequestSection__InputContainer">
-            <Label className="GrantRequestSection__InputTitle">
-              {t('page.submit_grant.funding_section.project_duration_title')}
-            </Label>
-            <SelectField
-              className="ProjectDuration"
-              value={state.value.projectDuration || undefined}
-              placeholder={String(state.value.projectDuration) || undefined}
-              onChange={(_, { value }) => editor.set({ projectDuration: Number(value) })}
+            <ProjectDurationInput
+              value={state.value.projectDuration}
               options={availableDurations}
-              error={!!state.error.projectDuration}
-              message={t(state.error.projectDuration)}
-              disabled={!state.value.funding || !!state.error.funding || isFormDisabled}
-              loading={false}
+              onChange={(value) => editor.set({ projectDuration: Number(value) })}
             />
           </div>
           <div className="GrantRequestSection__InputContainer">
-            <GrantRequestDesiredFunding
+            <DesiredFundingInput
               value={state.value.funding}
               onChange={({ currentTarget }) =>
                 editor.set({

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -10,6 +9,7 @@ import { ContentSection } from '../Layout/ContentLayout'
 
 import { GrantRequestGeneralInfoSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
+import Label from './Label'
 
 export type GrantRequestGeneralInfo = {
   description: string
@@ -80,7 +80,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
     >
       <div className="GrantRequestSection__Content">
         <ContentSection className="GrantRequestSection__MarkdownField">
-          <Label className="GrantRequestSection__Label">{t('page.submit_grant.general_info.description_label')}</Label>
+          <Label>{t('page.submit_grant.general_info.description_label')}</Label>
           <span className="GrantRequestSection__Sublabel">
             {t('page.submit_grant.general_info.description_detail')}
           </span>
@@ -102,9 +102,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__MarkdownField">
-          <Label className="GrantRequestSection__Label">
-            {t('page.submit_grant.general_info.specification_label')}
-          </Label>
+          <Label>{t('page.submit_grant.general_info.specification_label')}</Label>
           <span className="GrantRequestSection__Sublabel">
             {t('page.submit_grant.general_info.specification_detail')}
           </span>
