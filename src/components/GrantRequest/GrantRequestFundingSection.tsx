@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { snakeCase } from 'lodash'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
-import { GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
+import { BUDGET, GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
@@ -31,12 +31,12 @@ export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   funding: '',
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
 }
-const QUARTERLY_TOTAL_FOR_CATEGORY = 2500000
+
 const AVAILABLE_CATEGORY_BUDGET = 100000
 
 // TODO: this could be in a GrantCategory class/service/whatevs
-const isValidBudgetForCategory = (budget: number | string | undefined) => {
-  return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= AVAILABLE_CATEGORY_BUDGET
+const isValidBudgetForCategory = (category: ProposalGrantCategory, budget: number | string | undefined) => {
+  return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= BUDGET.categories[category].total
 }
 
 const validate = createValidator<GrantRequestFunding>({
@@ -129,12 +129,13 @@ export default function GrantRequestFundingSection({
     return getProjectDurationOptions(Number(state.value.funding) || GRANT_PROPOSAL_MIN_BUDGET)
   }, [state.value.funding])
 
-  const passThreshold = useMemo(() => {
-    //TODO: use grantCategory
-    if (isValidBudgetForCategory(Number(state.value.funding))) {
-      return GrantTier.getVPThreshold(Number(state.value.funding))
-    } else return undefined
-  }, [state.value.funding])
+  const passThreshold =
+    grantCategory && isValidBudgetForCategory(grantCategory, Number(state.value.funding))
+      ? GrantTier.getVPThreshold(Number(state.value.funding))
+      : undefined
+
+  const totalCategoryBudget = grantCategory ? BUDGET.categories[grantCategory].total : 0
+  const availableCategoryBudget = grantCategory ? BUDGET.categories[grantCategory].available : 0
 
   return (
     <GrantRequestSection
@@ -168,11 +169,11 @@ export default function GrantRequestFundingSection({
               />
             }
             title={`$${t('general.number', {
-              value: AVAILABLE_CATEGORY_BUDGET,
+              value: availableCategoryBudget,
             })}`}
-            titleExtra={`(${getPercentage(AVAILABLE_CATEGORY_BUDGET, QUARTERLY_TOTAL_FOR_CATEGORY, 0)})`}
+            titleExtra={`(${getPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
             subtitle={t('page.submit_grant.funding_section.category_budget_total', {
-              value: QUARTERLY_TOTAL_FOR_CATEGORY,
+              value: totalCategoryBudget,
             })}
             subtitleVariant="uppercase"
           />
@@ -206,7 +207,7 @@ export default function GrantRequestFundingSection({
             category={t('page.submit_grant.funding_section.pass_threshold_title')}
             helper={<Lock />}
             title={
-              isValidBudgetForCategory(state.value.funding)
+              grantCategory && isValidBudgetForCategory(grantCategory, state.value.funding)
                 ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
                 : null
             }
@@ -216,7 +217,7 @@ export default function GrantRequestFundingSection({
             category={t('page.submit_grant.funding_section.payout_strategy_title')}
             helper={<Lock />}
             title={
-              isValidBudgetForCategory(state.value.funding)
+              grantCategory && isValidBudgetForCategory(grantCategory, state.value.funding)
                 ? t('page.submit_grant.funding_section.payout_strategy_payments', {
                     value: state.value.projectDuration,
                   })
