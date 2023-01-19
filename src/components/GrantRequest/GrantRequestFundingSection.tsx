@@ -19,6 +19,7 @@ import DesiredFundingInput from './DesiredFundingInput'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
+import Label from './Label'
 import ProjectDurationInput from './ProjectDurationInput'
 
 const schema = GrantRequestFundingSchema
@@ -32,7 +33,7 @@ export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
 }
 
-const AVAILABLE_CATEGORY_BUDGET = 100000
+const AVAILABLE_CATEGORY_BUDGET = 100000 // TODO: Remove this
 
 // TODO: this could be in a GrantCategory class/service/whatevs
 const isValidBudgetForCategory = (category: ProposalGrantCategory, budget: number | string | undefined) => {
@@ -46,7 +47,7 @@ const validate = createValidator<GrantRequestFunding>({
       assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
       assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
       assert(
-        !state.funding || (!!state.funding && state.funding <= AVAILABLE_CATEGORY_BUDGET),
+        !state.funding || (!!state.funding && state.funding <= AVAILABLE_CATEGORY_BUDGET), // TODO: This validation needs to be done dynamically
         'error.grant.funding.over_budget'
       ) ||
       undefined,
@@ -197,7 +198,6 @@ export default function GrantRequestFundingSection({
               }
               onBlur={() => editor.set({ funding: state.value.funding })}
               error={state.error.funding || ''}
-              // message={t(state.error.funding)}
               disabled={isFormDisabled}
             />
           </div>
@@ -225,6 +225,9 @@ export default function GrantRequestFundingSection({
             }
             subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
           />
+        </div>
+        <div className="GrantRequestSection__Row">
+          <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
         </div>
       </ContentSection>
     </GrantRequestSection>

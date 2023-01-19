@@ -1059,7 +1059,10 @@
         "pass_threshold_sub": "Accumulated VP needed for this proposal to pass",
         "payout_strategy_title": "Payout Strategy",
         "payout_strategy_payments": "{value, number} Monthly Payments",
-        "payout_strategy_sub": "Executed 7 days after the proposal has passed"
+        "payout_strategy_sub": "Executed 7 days after the proposal has passed",
+        "funding_time_title": "What time of the month would you like for the funding to happen?",
+        "funding_time_first_day": "1st day of month",
+        "funding_time_fifteenth_day": "15th day of month"
       },
       "general_info": {
         "description": "Decentraland Grants allow the DAO’s MANA to fund the creation of features or content for the Decentraland platform. Either individuals or teams may apply within one of five categories, and there are six levels of funding for each category. Before submitting your grant proposal, please review the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/) here.\n\nAside from the requirements listed in the Grants Framework and Decentraland’s [Content Policy](https://decentraland.org/content), [Terms of Use](https://decentraland.org/terms), and [Code of Ethics](https://decentraland.org/ethics), there are no constraints on the content or features that may be funded.",
