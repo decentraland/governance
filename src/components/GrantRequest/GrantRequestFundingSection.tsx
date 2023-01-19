@@ -1,27 +1,26 @@
 import React, { useEffect, useMemo } from 'react'
-import Skeleton from 'react-loading-skeleton'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
+import { snakeCase } from 'lodash'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
-import { GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
+import { BUDGET, GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getPercentage } from '../../helpers'
-import CategoryItem from '../Grants/CategoryItem'
 import Helper from '../Helper/Helper'
 import Lock from '../Icon/Lock'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import DesiredFundingInput from './DesiredFundingInput'
 import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
+import { GrantRequestSectionCard } from './GrantRequestSectionCard'
+import Label from './Label'
+import ProjectDurationInput from './ProjectDurationInput'
 
 const schema = GrantRequestFundingSchema
 export type GrantRequestFunding = {
@@ -33,12 +32,12 @@ export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   funding: '',
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
 }
-const QUARTERLY_TOTAL_FOR_CATEGORY = 2500000
-const AVAILABLE_CATEGORY_BUDGET = 100000
+
+const AVAILABLE_CATEGORY_BUDGET = 100000 // TODO: Remove this
 
 // TODO: this could be in a GrantCategory class/service/whatevs
-const isValidBudgetForCategory = (budget: number | string | undefined) => {
-  return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= AVAILABLE_CATEGORY_BUDGET
+const isValidBudgetForCategory = (category: ProposalGrantCategory, budget: number | string | undefined) => {
+  return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= BUDGET.categories[category].total
 }
 
 const validate = createValidator<GrantRequestFunding>({
@@ -48,7 +47,7 @@ const validate = createValidator<GrantRequestFunding>({
       assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
       assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
       assert(
-        !state.funding || (!!state.funding && state.funding <= AVAILABLE_CATEGORY_BUDGET),
+        !state.funding || (!!state.funding && state.funding <= AVAILABLE_CATEGORY_BUDGET), // TODO: This validation needs to be done dynamically
         'error.grant.funding.over_budget'
       ) ||
       undefined,
@@ -78,6 +77,7 @@ const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) =
 interface Props {
   grantCategory: ProposalGrantCategory | null
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
+  onCategoryChange: () => void
   isFormDisabled: boolean
 }
 
@@ -97,7 +97,7 @@ function getProjectDurationOptions(funding: number) {
   const availableDurations = getAvailableProjectDurations(funding)
   for (const i in availableDurations) {
     const duration = availableDurations[i]
-    projectDurationOptions.push({ key: duration, text: duration, value: duration })
+    projectDurationOptions.push(duration)
   }
   return projectDurationOptions
 }
@@ -111,7 +111,12 @@ function updateProjectDuration(rawFunding: string, previousDuration: number | un
   return previousDurationIsBetweenNewLimits ? previousDuration : availableDurations[0]
 }
 
-export default function GrantRequestFundingSection({ onValidation, isFormDisabled, grantCategory }: Props) {
+export default function GrantRequestFundingSection({
+  onValidation,
+  isFormDisabled,
+  grantCategory,
+  onCategoryChange,
+}: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_FUNDING_STATE)
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
@@ -125,12 +130,13 @@ export default function GrantRequestFundingSection({ onValidation, isFormDisable
     return getProjectDurationOptions(Number(state.value.funding) || GRANT_PROPOSAL_MIN_BUDGET)
   }, [state.value.funding])
 
-  const passThreshold = useMemo(() => {
-    //TODO: use grantCategory
-    if (isValidBudgetForCategory(Number(state.value.funding))) {
-      return GrantTier.getVPThreshold(Number(state.value.funding))
-    } else return undefined
-  }, [state.value.funding])
+  const passThreshold =
+    grantCategory && isValidBudgetForCategory(grantCategory, Number(state.value.funding))
+      ? GrantTier.getVPThreshold(Number(state.value.funding))
+      : undefined
+
+  const totalCategoryBudget = grantCategory ? BUDGET.categories[grantCategory].total : 0
+  const availableCategoryBudget = grantCategory ? BUDGET.categories[grantCategory].available : 0
 
   return (
     <GrantRequestSection
@@ -142,138 +148,86 @@ export default function GrantRequestFundingSection({ onValidation, isFormDisable
     >
       <ContentSection className="GrantRequestSection__Content">
         <div className="GrantRequestSection__Row">
-          <div className="GrantRequestSectionCard">
-            <div className="GrantRequestSectionCard__Header">
-              <div className="GrantRequestSectionCard__HeaderTitle">
-                {t('page.submit_grant.funding_section.project_category_title')}
-              </div>
-              {/*//TODO: set category null*/}
-              <Button basic>{t('page.submit_grant.funding_section.project_category_action')}</Button>
-            </div>
-            <div>
-              <div className="GrantRequestSectionCard__ContentTitle">
-                <CategoryItem
-                  key={grantCategory}
-                  category={grantCategory || ProposalGrantCategory.Gaming}
-                  onCategoryClick={() => {}}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="GrantRequestSectionCard">
-            <div className="GrantRequestSectionCard__Header">
-              <div className="GrantRequestSectionCard__HeaderTitle">
-                {t('page.submit_grant.funding_section.category_budget_title')}
-              </div>
+          {grantCategory && (
+            <GrantRequestSectionCard
+              category={t('page.submit_grant.funding_section.project_category_title')}
+              helper={
+                <Button basic onClick={onCategoryChange}>
+                  {t('page.submit_grant.funding_section.project_category_action')}
+                </Button>
+              }
+              title={grantCategory}
+              subtitle={t(`page.submit_grant.${snakeCase(grantCategory || undefined)}_description`)}
+            />
+          )}
+          <GrantRequestSectionCard
+            category={t('page.submit_grant.funding_section.category_budget_title')}
+            helper={
               <Helper
                 text={t('page.submit_grant.funding_section.category_budget_info')}
                 size="12"
                 position="right center"
               />
-            </div>
-            <div>
-              <div className="GrantRequestSectionCard__ContentTitle GrantRequestSectionCard__AlignBaseline">
-                <div className="GrantRequestSectionCard__Number">{`$${t('general.number', {
-                  value: AVAILABLE_CATEGORY_BUDGET,
-                })}`}</div>
-                <div className="GrantRequestSectionCard__Percentage">{`(${getPercentage(
-                  AVAILABLE_CATEGORY_BUDGET,
-                  QUARTERLY_TOTAL_FOR_CATEGORY,
-                  0
-                )})`}</div>
-              </div>
-              <div className="GrantRequestSectionCard__CapsSubTitle">
-                {t('page.submit_grant.funding_section.category_budget_total', { value: QUARTERLY_TOTAL_FOR_CATEGORY })}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <Label className="GrantRequestSection__InputTitle">
-            {t('page.submit_grant.funding_section.expected_funding')}
-          </Label>
-          <Markdown className="GrantRequestSection__InputSubtitle">
-            {t('page.submit_grant.funding_section.expected_funding_sub')}
-          </Markdown>
-          <Field
-            type="number"
-            value={state.value.funding}
-            onChange={(_, { value }) =>
-              editor.set({ funding: value, projectDuration: updateProjectDuration(value, state.value.projectDuration) })
             }
-            onBlur={() => editor.set({ funding: state.value.funding })}
-            error={!!state.error.funding}
-            onAction={() => null}
-            action={<Label className="GrantRequestSection__InputLabel">{'USD'}</Label>}
-            message={t(state.error.funding)}
-            disabled={isFormDisabled}
-          />
-        </div>
-        <div>
-          <Label className="GrantRequestSection__InputTitle">
-            {t('page.submit_grant.funding_section.project_duration_title')}
-          </Label>
-          <SelectField
-            className="ProjectDuration"
-            value={state.value.projectDuration || undefined}
-            placeholder={String(state.value.projectDuration) || undefined}
-            onChange={(_, { value }) => editor.set({ projectDuration: Number(value) })}
-            options={availableDurations}
-            error={!!state.error.projectDuration}
-            message={t(state.error.projectDuration)}
-            disabled={!state.value.funding || !!state.error.funding || isFormDisabled}
-            loading={false}
+            title={`$${t('general.number', {
+              value: availableCategoryBudget,
+            })}`}
+            titleExtra={`(${getPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
+            subtitle={t('page.submit_grant.funding_section.category_budget_total', {
+              value: totalCategoryBudget,
+            })}
+            subtitleVariant="uppercase"
           />
         </div>
         <div className="GrantRequestSection__Row">
-          <div className="GrantRequestSectionCard">
-            <div className="GrantRequestSectionCard__Header">
-              <div className="GrantRequestSectionCard__HeaderTitle">
-                {t('page.submit_grant.funding_section.pass_threshold_title')}
-              </div>
-              <Lock />
-            </div>
-            <div>
-              <div className="GrantRequestSectionCard__ContentTitle">
-                {!isValidBudgetForCategory(state.value.funding) && (
-                  <Skeleton className="GrantRequestSectionCard__Empty" enableAnimation={false} />
-                )}
-                {isValidBudgetForCategory(state.value.funding) && (
-                  <div className="GrantRequestSectionCard__Number">
-                    {t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })}
-                  </div>
-                )}
-              </div>
-              <div className="GrantRequestSectionCard__SubTitle">
-                {t('page.submit_grant.funding_section.pass_threshold_sub')}
-              </div>
-            </div>
+          <div className="GrantRequestSection__InputContainer">
+            <ProjectDurationInput
+              value={state.value.projectDuration}
+              options={availableDurations}
+              onChange={(value) => editor.set({ projectDuration: Number(value) })}
+            />
           </div>
-          <div className="GrantRequestSectionCard">
-            <div className="GrantRequestSectionCard__Header">
-              <div className="GrantRequestSectionCard__HeaderTitle">
-                {t('page.submit_grant.funding_section.payout_strategy_title')}
-              </div>
-              <Lock />
-            </div>
-            <div>
-              <div className="GrantRequestSectionCard__ContentTitle">
-                {!isValidBudgetForCategory(state.value.funding) && (
-                  <Skeleton className="GrantRequestSectionCard__Empty" enableAnimation={false} />
-                )}
-                {isValidBudgetForCategory(state.value.funding) && (
-                  <div className="GrantRequestSectionCard__Number">
-                    {t('page.submit_grant.funding_section.payout_strategy_payments', {
-                      value: state.value.projectDuration,
-                    })}
-                  </div>
-                )}
-              </div>
-              <div className="GrantRequestSectionCard__SubTitle">
-                {t('page.submit_grant.funding_section.payout_strategy_sub')}
-              </div>
-            </div>
+          <div className="GrantRequestSection__InputContainer">
+            <DesiredFundingInput
+              value={state.value.funding}
+              onChange={({ currentTarget }) =>
+                editor.set({
+                  funding: currentTarget.value,
+                  projectDuration: updateProjectDuration(currentTarget.value, state.value.projectDuration),
+                })
+              }
+              onBlur={() => editor.set({ funding: state.value.funding })}
+              error={state.error.funding || ''}
+              disabled={isFormDisabled}
+            />
           </div>
+        </div>
+        <div className="GrantRequestSection__Row">
+          <GrantRequestSectionCard
+            category={t('page.submit_grant.funding_section.pass_threshold_title')}
+            helper={<Lock />}
+            title={
+              grantCategory && isValidBudgetForCategory(grantCategory, state.value.funding)
+                ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
+                : null
+            }
+            subtitle={t('page.submit_grant.funding_section.pass_threshold_sub')}
+          />
+          <GrantRequestSectionCard
+            category={t('page.submit_grant.funding_section.payout_strategy_title')}
+            helper={<Lock />}
+            title={
+              grantCategory && isValidBudgetForCategory(grantCategory, state.value.funding)
+                ? t('page.submit_grant.funding_section.payout_strategy_payments', {
+                    value: state.value.projectDuration,
+                  })
+                : null
+            }
+            subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
+          />
+        </div>
+        <div className="GrantRequestSection__Row">
+          <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
         </div>
       </ContentSection>
     </GrantRequestSection>
