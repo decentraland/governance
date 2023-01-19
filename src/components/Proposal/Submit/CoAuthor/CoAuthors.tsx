@@ -24,7 +24,6 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
     <div className="Co-author">
       <div className="Title__Container">
         <div className="Label">{t('page.submit.co_author_label')}</div>
-        <NewBadge />
         <sup className="Optional">{t('page.submit.optional_tooltip')}</sup>
       </div>
       <Paragraph tiny secondary className="details">

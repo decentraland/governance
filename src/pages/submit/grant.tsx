@@ -25,7 +25,7 @@ import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
-import { userModifiedForm } from '../../entities/Proposal/utils'
+import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -34,13 +34,11 @@ import './grant.css'
 import './submit.css'
 
 export type GrantRequest = {
-  title: string
   category: ProposalGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo
 
 const initialState: GrantRequest = {
-  title: '',
   category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
@@ -72,7 +70,11 @@ export default function SubmitGrant() {
       setIsFormDisabled(true)
       Promise.resolve()
         .then(async () => {
-          return Governance.get().createProposalGrant(grantRequest)
+          const funding = asNumber(grantRequest.funding)
+          return Governance.get().createProposalGrant({
+            ...grantRequest,
+            funding,
+          })
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)

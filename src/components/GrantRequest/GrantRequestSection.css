@@ -66,15 +66,33 @@
   padding-right: 20px;
 }
 
-.GrantRequestSection__MarkdownField {
+.GrantRequestSection__Field {
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
 }
 
-.GrantRequestSection__Sublabel {
+.GrantRequestSection__Sublabel,
+.Co-author > .dg.Paragraph.details {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
+  color: var(--black-600);
+}
+
+p.EmailNote {
+  font-size: 10px;
+  font-weight: 300;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.Co-author > .Title__Container > .Label {
+  display: block;
+  margin-bottom: 8px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
   color: var(--black-600);
 }

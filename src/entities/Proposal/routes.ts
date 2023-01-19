@@ -25,6 +25,7 @@ import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
+import { GrantRequestSchema } from '../Grant/types'
 import { isValidGrantBudget } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
@@ -57,7 +58,6 @@ import {
   newProposalCatalystScheme,
   newProposalDraftScheme,
   newProposalGovernanceScheme,
-  newProposalGrantScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
   newProposalPollScheme,
@@ -317,7 +317,7 @@ export async function createProposalCatalyst(req: WithAuth) {
   })
 }
 
-const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
+const newProposalGrantValidator = schema.compile(GrantRequestSchema)
 
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!

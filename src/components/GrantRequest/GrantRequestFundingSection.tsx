@@ -6,7 +6,12 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { snakeCase } from 'lodash'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
-import { BUDGET, GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
+import { BUDGET } from '../../entities/Grant/constants'
+import {
+  GRANT_PROPOSAL_MIN_BUDGET,
+  GrantRequestFundingSchema,
+  MIN_LOW_TIER_PROJECT_DURATION,
+} from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
@@ -16,7 +21,6 @@ import Lock from '../Icon/Lock'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import DesiredFundingInput from './DesiredFundingInput'
-import { GrantRequestFundingSchema } from './GrantRequestSchema'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
 import Label from './Label'
