@@ -20,3 +20,29 @@ export enum GrantTierType {
   LowerTier = 'Lower Tier',
   HigherTier = 'Higher Tier',
 }
+
+export enum OldGrantCategory {
+  Community = 'Community',
+  ContentCreator = 'Content Creator',
+  Gaming = 'Gaming',
+  PlatformContributor = 'Platform Contributor',
+}
+
+export enum NewGrantCategory {
+  Accelerator = 'Accelerator',
+  CoreUnit = 'Core Unit',
+  Documentation = 'Documentation',
+  InWorldContent = 'In-World Content',
+  Platform = 'Platform',
+  SocialMediaContent = 'Social Media Content',
+  Sponsorship = 'Sponsorship',
+}
+
+export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
+
+export enum GrantStatus {
+  InProgress = 'In Progress',
+  Finished = 'Finished',
+  Paused = 'Paused',
+  Revoked = 'Revoked',
+}

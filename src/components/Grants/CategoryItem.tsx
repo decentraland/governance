@@ -4,8 +4,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { snakeCase } from 'lodash'
 
+import { NewGrantCategory } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
-import { NewGrantCategory } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 
 interface Props {

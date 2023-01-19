@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { GrantTierType } from '../Grant/types'
+import { GrantTierType, NewGrantCategory, ProposalGrantCategory } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
@@ -448,25 +448,6 @@ export const newProposalCatalystScheme = {
 }
 
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
-
-export enum OldGrantCategory {
-  Community = 'Community',
-  ContentCreator = 'Content Creator',
-  Gaming = 'Gaming',
-  PlatformContributor = 'Platform Contributor',
-}
-
-export enum NewGrantCategory {
-  Accelerator = 'Accelerator',
-  CoreUnit = 'Core Unit',
-  Documentation = 'Documentation',
-  InWorldContent = 'In-World Content',
-  Platform = 'Platform',
-  SocialMediaContent = 'Social Media Content',
-  Sponsorship = 'Sponsorship',
-}
-
-export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),

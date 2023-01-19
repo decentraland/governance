@@ -10,7 +10,7 @@ import { FilterProps } from './CategoryFilter'
 import CollapsibleFilter from './CollapsibleFilter'
 import FilterLabel from './FilterLabel'
 
-export default React.memo(function StatusFilter({ onChange }: FilterProps) {
+export default React.memo(function StatusFilter({ onChange, startOpen }: FilterProps) {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
@@ -24,7 +24,11 @@ export default React.memo(function StatusFilter({ onChange }: FilterProps) {
   }
 
   return (
-    <CollapsibleFilter title={t('navigation.search.status_filter_title') || ''} startOpen={false} onChange={onChange}>
+    <CollapsibleFilter
+      title={t('navigation.search.status_filter_title') || ''}
+      startOpen={startOpen}
+      onChange={onChange}
+    >
       <FilterLabel label={t(`status.all`) || ''} href={handleStatusFilter(null)} active={!status} />
       {(Object.keys(ProposalStatus) as Array<keyof typeof ProposalStatus>).map((key, index) => {
         const proposalStatus = ProposalStatus[key]

@@ -23,7 +23,7 @@ import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { NewGrantCategory, ProposalGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 

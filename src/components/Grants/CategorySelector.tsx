@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { NewGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory } from '../../entities/Grant/types'
 
 import CategoryItem from './CategoryItem'
 import './CategorySelector.css'

@@ -6,8 +6,8 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import toSnakeCase from 'lodash/snakeCase'
 
+import { NewGrantCategory } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
-import { NewGrantCategory } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 
 import { categoryIcons } from './CategoryBanner'

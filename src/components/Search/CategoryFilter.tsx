@@ -5,7 +5,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory, OldGrantCategory, ProposalType } from '../../entities/Proposal/types'
+import { NewGrantCategory, OldGrantCategory } from '../../entities/Grant/types'
+import { ProposalType } from '../../entities/Proposal/types'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'

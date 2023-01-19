@@ -5,12 +5,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import {
-  GrantWithUpdateAttributes,
-  OldGrantCategory,
-  PROPOSAL_GRANT_CATEGORY_ALL,
-  ProposalGrantCategory,
-} from '../../../entities/Proposal/types'
+import { OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
+import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import FilterButton from '../FilterButton'
 
 import './CurrentGrantsCategoryFilters.css'

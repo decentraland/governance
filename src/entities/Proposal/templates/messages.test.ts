@@ -1,12 +1,11 @@
 import { def, get } from 'bdd-lazy-var/getter'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
-import { GrantTierType } from '../../Grant/types'
+import { GrantTierType, OldGrantCategory } from '../../Grant/types'
 import VotesModel from '../../Votes/model'
 import ProposalModel from '../model'
 import {
   INVALID_PROPOSAL_POLL_OPTIONS,
-  OldGrantCategory,
   ProposalAttributes,
   ProposalRequiredVP,
   ProposalStatus,

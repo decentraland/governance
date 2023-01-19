@@ -5,11 +5,9 @@ import InWorldContent from '../../components/Icon/Grants/InWorldContent'
 import Platform from '../../components/Icon/Grants/Platform'
 import SocialMediaContent from '../../components/Icon/Grants/SocialMediaContent'
 import Sponsorship from '../../components/Icon/Grants/Sponsorship'
-import { ProposalGrantCategory } from '../Proposal/types'
-
-import { NewGrantCategory, OldGrantCategory } from './../Proposal/types'
 
 import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from './constants'
+import { NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from './types'
 
 export const isValidGrantBudget = (size: number) => {
   if (size < GRANT_PROPOSAL_MIN_BUDGET || size > GRANT_PROPOSAL_MAX_BUDGET) {

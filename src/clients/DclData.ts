@@ -1,7 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { GrantTierType } from '../entities/Grant/types'
-import { ProposalGrantCategory, ProposalStatus } from '../entities/Proposal/types'
+import { GrantTierType, ProposalGrantCategory } from '../entities/Grant/types'
+import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
 

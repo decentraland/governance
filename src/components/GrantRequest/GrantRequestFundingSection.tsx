@@ -11,8 +11,8 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_MIN_BUDGET, MIN_LOW_TIER_PROJECT_DURATION } from '../../entities/Grant/constants'
+import { NewGrantCategory } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
-import { NewGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getPercentage } from '../../helpers'
 import CategoryItem from '../Grants/CategoryItem'
