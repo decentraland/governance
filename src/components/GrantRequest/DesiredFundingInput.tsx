@@ -3,7 +3,7 @@ import React from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/constants'
+import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/types'
 
 import './DesiredFundingInput.css'
 import Label from './Label'

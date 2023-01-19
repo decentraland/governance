@@ -1,6 +1,6 @@
 import { ProposalGrantCategory, VALID_CATEGORIES } from '../Proposal/types'
 
-import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from './constants'
+import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from './types'
 
 export const isValidGrantBudget = (size: number) => {
   if (size < GRANT_PROPOSAL_MIN_BUDGET || size > GRANT_PROPOSAL_MAX_BUDGET) {

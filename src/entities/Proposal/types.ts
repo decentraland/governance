@@ -503,13 +503,14 @@ export const VALID_CATEGORIES = [
   ProposalGrantCategory.Sponsorship,
 ]
 
-export const newProposalGrantScheme = {
+export const GrantRequestScheme = {
   type: 'object',
   additionalProperties: false,
   required: [
     'title',
-    'abstract',
     'category',
+    'funding',
+    'abstract',
     'beneficiary',
     'email',
     'description',
