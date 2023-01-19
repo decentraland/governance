@@ -1,6 +1,6 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { GrantTierType, ProposalGrantCategory } from '../entities/Grant/types'
+import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
@@ -79,6 +79,7 @@ type Grants = {
   vesting_finish_at?: number
   vesting_token_contract_balance?: number
   vesting_total_amount?: number
+  vesting_status?: GrantStatus
   next_update?: number
 }[]
 

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { GrantTierType, NewGrantCategory, ProposalGrantCategory } from '../Grant/types'
+import { GrantStatus, GrantTierType, NewGrantCategory, ProposalGrantCategory } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
@@ -677,6 +677,7 @@ export type TransparencyGrant = {
     category: ProposalGrantCategory
     tier: string
   }
+  status?: GrantStatus
   contract?: VestingContractData
   enacting_tx?: string
   token?: string

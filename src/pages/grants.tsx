@@ -17,13 +17,19 @@ import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import CategoryFilter from '../components/Search/CategoryFilter'
-import { NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
+import StatusFilter from '../components/Search/StatusFilter'
+import { GrantStatus, NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
 import { GrantWithUpdateAttributes } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
-function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: string | null) {
-  return type ? grants.filter((grant) => toSnakeCase(grant.configuration.category) === type) : grants
+function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: string | null, status: string | null) {
+  const filteredByType = type ? grants.filter((grant) => toSnakeCase(grant.configuration.category) === type) : grants
+  const filteredByStatus = status
+    ? filteredByType.filter((grant) => toSnakeCase(grant.status) === status)
+    : filteredByType
+
+  return filteredByStatus
 }
 
 export default function GrantsPage() {
@@ -33,8 +39,9 @@ export default function GrantsPage() {
   const params = new URLSearchParams(location.search)
   const isLoading = isEmpty(grants) && isLoadingGrants
   const type = params.get('type')
+  const status = params.get('status')
 
-  const displayableGrants = useMemo(() => filterDisplayableGrants(grants.current, type), [grants, type])
+  const displayableGrants = useMemo(() => filterDisplayableGrants(grants.current, type, status), [grants, type, status])
 
   if (isUnderMaintenance()) {
     return (
@@ -66,6 +73,7 @@ export default function GrantsPage() {
                 <NotMobile>
                   <CategoryFilter filterType={NewGrantCategory} startOpen />
                   <CategoryFilter filterType={OldGrantCategory} />
+                  <StatusFilter statusType={GrantStatus} startOpen />
                   <RequestBanner />
                 </NotMobile>
               </Grid.Column>

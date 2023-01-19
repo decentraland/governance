@@ -34,7 +34,7 @@ import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
-import { ProposalType } from '../entities/Proposal/types'
+import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
@@ -157,7 +157,7 @@ export default function ProposalsPage() {
                 <NotMobile>
                   <div>
                     <CategoryFilter filterType={ProposalType} startOpen />
-                    <StatusFilter />
+                    <StatusFilter statusType={ProposalStatus} />
                     <TimeFrameFilter />
                   </div>
                 </NotMobile>

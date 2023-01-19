@@ -555,6 +555,7 @@ async function getGrants() {
             category: grant.category,
             tier: grant.tier,
           },
+          status: grant.vesting_status,
           user: grant.user,
           title: grant.title,
           token: grant.token,

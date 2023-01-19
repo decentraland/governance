@@ -297,6 +297,12 @@
     "passed": "Passed outcomes",
     "enacted": "Enacted outcomes"
   },
+  "grant_status": {
+    "in_progress": "In progress",
+    "finished": "Finished",
+    "paused": "Paused",
+    "revoked": "Revoked"
+  },
   "modal": {
     "new_proposal": {
       "title": "New Proposal",

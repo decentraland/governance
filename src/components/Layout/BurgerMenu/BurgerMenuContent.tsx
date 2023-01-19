@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalType } from '../../../entities/Proposal/types'
+import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
 import CategoryList from '../../Category/CategoryList'
 import CategoryFilter from '../../Search/CategoryFilter'
@@ -108,7 +108,10 @@ function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps
                 onChange={(open) => handleFilterStatusChange({ ...filterStatus, categoryOpen: open })}
                 filterType={ProposalType}
               />
-              <StatusFilter onChange={(open) => handleFilterStatusChange({ ...filterStatus, statusOpen: open })} />
+              <StatusFilter
+                onChange={(open) => handleFilterStatusChange({ ...filterStatus, statusOpen: open })}
+                statusType={ProposalStatus}
+              />
               <TimeFrameFilter
                 onChange={(open) => handleFilterStatusChange({ ...filterStatus, timeFrameOpen: open })}
               />
