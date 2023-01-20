@@ -1,3 +1,5 @@
+import toSnakeCase from 'lodash/snakeCase'
+
 import Accelerator from '../../components/Icon/Grants/Accelerator'
 import CoreUnit from '../../components/Icon/Grants/CoreUnit'
 import Documentation from '../../components/Icon/Grants/Documentation'
@@ -7,7 +9,7 @@ import SocialMediaContent from '../../components/Icon/Grants/SocialMediaContent'
 import Sponsorship from '../../components/Icon/Grants/Sponsorship'
 
 import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from './constants'
-import { NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from './types'
+import { GrantStatus, NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from './types'
 
 export const isValidGrantBudget = (size: number) => {
   if (size < GRANT_PROPOSAL_MIN_BUDGET || size > GRANT_PROPOSAL_MAX_BUDGET) {
@@ -41,4 +43,18 @@ export function getNewGrantsCategoryIcon(category: NewGrantCategory) {
     default:
       return Sponsorship
   }
+}
+
+export function toProposalGrantCategory(category?: string | null): ProposalGrantCategory | null {
+  const categories = [...Object.values(NewGrantCategory), ...Object.values(OldGrantCategory)]
+  const idx = categories.map(toSnakeCase).indexOf(toSnakeCase(category || undefined))
+
+  return idx !== -1 ? categories[idx] : null
+}
+
+export function toGrantStatus(status?: string | null): GrantStatus | null {
+  const statuses = Object.values(GrantStatus)
+  const idx = statuses.map(toSnakeCase).indexOf(toSnakeCase(status || undefined))
+
+  return idx !== -1 ? statuses[idx] : null
 }

@@ -275,7 +275,6 @@
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "linked_wearables_title": "Linked Wearables Registry",
     "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland",
-    "all_grants_title": "All grants",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",
     "documentation_title": "Documentation",
@@ -740,7 +739,7 @@
         "approved_rate_title": "{value}% Approval",
         "approved_rate_description": "Rate of approved Grant proposals"
       },
-      "in_progress": "Grants in progress",
+      "grants_category_title": "{category}{status} Grants",
       "budget_banner": {
         "budget_label": "Quarterly budget",
         "progress_label": "Initiatives in progress",

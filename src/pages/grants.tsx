@@ -19,6 +19,7 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import CategoryFilter from '../components/Search/CategoryFilter'
 import StatusFilter from '../components/Search/StatusFilter'
 import { GrantStatus, NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
+import { toGrantStatus, toProposalGrantCategory } from '../entities/Grant/utils'
 import { GrantWithUpdateAttributes } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -79,7 +80,11 @@ export default function GrantsPage() {
               </Grid.Column>
               <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
                 <Grid.Column tablet="12">
-                  <CurrentGrantsList grants={displayableGrants} />
+                  <CurrentGrantsList
+                    grants={displayableGrants}
+                    category={toProposalGrantCategory(type)}
+                    status={toGrantStatus(status)}
+                  />
                 </Grid.Column>
               </BurgerMenuLayout>
             </Grid.Row>
