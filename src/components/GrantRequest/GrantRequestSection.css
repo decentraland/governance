@@ -52,7 +52,7 @@
 }
 
 .GrantRequestSection__Checkbox:hover {
-  background-color: #f5f5f6;
+  background-color: var(--black-200);
   border-radius: 6px;
   transition: background-color 0.3s ease;
   width: 100%;
