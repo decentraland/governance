@@ -180,6 +180,12 @@
         "roadmap_too_large": "Roadmap is too large",
         "roadmap_too_short": "Roadmap is too short"
       },
+      "final_consent": {
+        "grants_framework": "Grants Framework must be read and understood",
+        "content_policy": "You need to agree with the Content Policy",
+        "terms_of_use": "You need to agree with the Terms of Use",
+        "code_of_ethics": "You need to agree with the Code of Ethics"
+      },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
       "title_too_short": "Title is too short"
