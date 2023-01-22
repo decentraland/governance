@@ -38,7 +38,7 @@ export default function GrantRequestFinalConsentSection({ onValidation, isFormDi
   useEffect(() => {
     onValidation(acceptedAllTerms)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, acceptedAllTerms])
+  }, [acceptedAllTerms])
 
   return (
     <GrantRequestSection
