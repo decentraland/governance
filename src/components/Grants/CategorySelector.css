@@ -1,11 +1,12 @@
-.CategorySelector {
+.CategorySelector__ItemsContainer {
   display: grid;
   gap: 30px;
   grid-template-columns: repeat(1, 1fr);
+  margin-bottom: 32px;
 }
 
 @media (min-width: 768px) {
-  .CategorySelector {
+  .CategorySelector__ItemsContainer {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -31,6 +32,21 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 24px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}
+
+.CategorySelector__Description {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+}
+
+.CategorySelector__Documentation p.dg.Paragraph {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
 }
