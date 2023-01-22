@@ -11,7 +11,7 @@ export type Props = {
   sectionNumber: number
   validated: boolean
   isFormEdited: boolean
-  onBlur: () => void
+  onBlur?: () => void
   children: React.ReactNode
 }
 
@@ -31,7 +31,7 @@ export default function GrantRequestSection({
       className="ContentLayout__Container GrantRequestSection__Container"
       onFocus={() => setFocused(true)}
       onBlur={() => {
-        onBlur()
+        onBlur && onBlur()
         setFocused(false)
       }}
     >

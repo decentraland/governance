@@ -180,6 +180,12 @@
         "roadmap_too_large": "Roadmap is too large",
         "roadmap_too_short": "Roadmap is too short"
       },
+      "final_consent": {
+        "grants_framework": "Grants Framework must be read and understood",
+        "content_policy": "You need to agree with the Content Policy",
+        "terms_of_use": "You need to agree with the Terms of Use",
+        "code_of_ethics": "You need to agree with the Code of Ethics"
+      },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
       "title_too_short": "Title is too short"
@@ -1084,6 +1090,14 @@
         "email_placeholder": "Enter your email address",
         "email_error_message": "Please enter a valid email",
         "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
+      },
+      "final_consent": {
+        "title": "Final Consent",
+        "subtitle": "Review and check the following",
+        "grants_framework_label": "I’ve read and understood the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/)",
+        "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy]()",
+        "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use]() and agree with them",
+        "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics]() and hereby commit to honoring it"
       },
       "category_label": "Category",
       "category_placeholder": "Select a category",
