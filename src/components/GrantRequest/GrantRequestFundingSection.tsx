@@ -47,7 +47,7 @@ const isValidBudgetForCategory = (budget: number | string | undefined, total: nu
 const validate = createValidator<GrantRequestFunding>({
   funding: (state) => ({
     funding:
-      assert(!state.funding || Number.isFinite(asNumber(state.funding)), 'error.grant.funding.invalid') ||
+      assert(Number.isFinite(asNumber(state.funding)), 'error.grant.funding.invalid') ||
       assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
       assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
       assert(
@@ -126,7 +126,7 @@ export default function GrantRequestFundingSection({
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
 
   useEffect(() => {
-    onValidation({ ...state.value }, state.validated) //TODO: this should also send state.validated to parent
+    onValidation({ ...state.value }, state.validated)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
 

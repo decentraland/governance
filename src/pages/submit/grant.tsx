@@ -11,6 +11,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { Governance } from '../../clients/Governance'
+import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
   GrantRequestFunding,
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
@@ -47,11 +48,13 @@ const initialState: GrantRequest = {
 export type GrantRequestValidationState = {
   fundingSectionValid: boolean
   generalInformationSectionValid: boolean
+  finalConsentSectionValid: boolean
 }
 
 const initialValidationState: GrantRequestValidationState = {
   fundingSectionValid: false,
   generalInformationSectionValid: false,
+  finalConsentSectionValid: false,
 }
 
 const HAS_STICKY_NAVBAR_FEATURE = false // TODO: Implement this
@@ -64,6 +67,7 @@ export default function SubmitGrant() {
   const preventNavigation = useRef(false)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
+  const isCategorySelected = grantRequest.category !== null
 
   const submit = () => {
     if (allSectionsValid) {
@@ -102,8 +106,6 @@ export default function SubmitGrant() {
   if (!account) {
     return <LogIn title={t('page.submit_grant.title') || ''} description={t('page.submit_grant.description') || ''} />
   }
-
-  const isCategorySelected = grantRequest.category !== null
 
   return (
     <div>
@@ -153,6 +155,11 @@ export default function SubmitGrant() {
               patchGrantRequest({ ...data })
               patchValidationState({ generalInformationSectionValid: sectionValid })
             }}
+            isFormDisabled={isFormDisabled}
+          />
+
+          <GrantRequestFinalConsentSection
+            onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
             isFormDisabled={isFormDisabled}
           />
 

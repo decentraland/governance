@@ -1085,6 +1085,14 @@
         "email_error_message": "Please enter a valid email",
         "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
       },
+      "final_consent": {
+        "title": "Final Consent",
+        "subtitle": "Review and check the following",
+        "grants_framework_label": "I’ve read and understood the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/)",
+        "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy]()",
+        "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use]() and agree with them",
+        "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics]() and hereby commit to honoring it"
+      },
       "category_label": "Category",
       "category_placeholder": "Select a category",
       "accelerator_description": "A private company or for-profit initiative in need of funding",
