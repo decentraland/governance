@@ -64,12 +64,14 @@ export default function SubmitGrant() {
   const [account, accountState] = useAuthContext()
   const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
   const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
-  const preventNavigation = useRef(false)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const isCategorySelected = grantRequest.category !== null
+  const preventNavigation = useRef(false)
 
   const submit = () => {
+    preventNavigation.current = userModifiedForm(grantRequest, initialState)
+
     if (allSectionsValid) {
       setIsFormDisabled(true)
       Promise.resolve()
@@ -90,14 +92,7 @@ export default function SubmitGrant() {
           setIsFormDisabled(false)
         })
     }
-    setIsFormDisabled(false)
   }
-
-  useEffect(() => {
-    preventNavigation.current = userModifiedForm(grantRequest, initialState)
-  }, [grantRequest])
-
-  usePreventNavigation(!!preventNavigation)
 
   if (accountState.loading) {
     return <LoadingView />
