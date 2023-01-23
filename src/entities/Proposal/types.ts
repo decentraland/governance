@@ -3,11 +3,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import { GrantRequestGeneralInfo } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
 import { GrantTierType } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
-  GRANT_SIZE_MINIMUM,
   MAX_NAME_SIZE,
   MIN_NAME_SIZE,
   VOTING_POWER_TO_PASS_BAN_NAME,
@@ -476,22 +476,13 @@ export const ProposalRequiredVP = {
   [ProposalType.Grant]: 0, // TODO: Remove this and fix type in test
 }
 
-export type GrantProposalInCreation = {
-  title: string
-  abstract: string
-  category: ProposalGrantCategory
+export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
+  category: ProposalGrantCategory | null
   size: number
-  beneficiary: string
-  email: string
-  description: string
-  specification: string
-  personnel: string
-  roadmap: string
-  coAuthors?: string[]
-  // projectDuration: number
+  projectDuration?: number // Old grants may not have this field
+  tier: GrantTierType
+  choices: string[]
 }
-
-export type GrantProposalConfiguration = GrantProposalInCreation & { tier: GrantTierType }
 
 export const VALID_CATEGORIES = [
   ProposalGrantCategory.Accelerator,
