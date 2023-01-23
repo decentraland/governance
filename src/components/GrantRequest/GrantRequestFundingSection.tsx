@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import { snakeCase } from 'lodash'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
@@ -141,6 +142,8 @@ export default function GrantRequestFundingSection({
       ? GrantTier.getVPThreshold(Number(state.value.funding))
       : undefined
 
+  const [vestingStartDate, setVestingStartDate] = useState('1st')
+
   return (
     <GrantRequestSection
       onBlur={() => editor.validate()}
@@ -229,8 +232,30 @@ export default function GrantRequestFundingSection({
             subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
           />
         </div>
-        <div className="GrantRequestSection__Row">
+        <div>
           <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
+          <ContentSection className="GrantRequestSection__Checkbox" onClick={() => setVestingStartDate('1st')}>
+            <Radio
+              name="vestingStartDate"
+              id="1st"
+              value="1st"
+              checked={vestingStartDate === '1st'}
+              type="radio"
+              disabled={isFormDisabled}
+            />
+            {t('page.submit_grant.funding_section.funding_time_first_day')}
+          </ContentSection>
+          <ContentSection className="GrantRequestSection__Checkbox" onClick={() => setVestingStartDate('15th')}>
+            <Radio
+              name="vestingStartDate"
+              id="15th"
+              value="15th"
+              type="radio"
+              checked={vestingStartDate === '15th'}
+              disabled={isFormDisabled}
+            />
+            {t('page.submit_grant.funding_section.funding_time_fifteenth_day')}
+          </ContentSection>
         </div>
       </ContentSection>
     </GrantRequestSection>
