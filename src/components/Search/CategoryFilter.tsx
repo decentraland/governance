@@ -5,6 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
+import { handleUrlFilters } from '../../clients/utils'
 import { NewGrantCategory, OldGrantCategory } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'
 import CategoryOption from '../Category/CategoryOption'
@@ -19,17 +20,7 @@ export type FilterProps = {
   startOpen?: boolean
 }
 
-function getValues<T extends object>(e: T): Array<T[keyof T]> {
-  return Object.values(e)
-}
-
-function handleTypeFilter(type: string | null, params: URLSearchParams) {
-  const newParams = new URLSearchParams(params)
-  type ? newParams.set('type', type) : newParams.delete('type')
-  newParams.delete('page')
-  const stringParams = newParams.toString()
-  return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
-}
+const FILTER_KEY = 'type'
 
 export default React.memo(function CategoryFilter({
   filterType,
@@ -39,8 +30,8 @@ export default React.memo(function CategoryFilter({
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const filters = getValues(filterType)
-  const type = params.get('type')
+  const filters: string[] = Object.values(filterType)
+  const type = params.get(FILTER_KEY)
   const isProposalsFilter = isEqual(filterType, ProposalType)
   const isLegacyGrantsFilter = isEqual(filterType, OldGrantCategory)
 
@@ -55,7 +46,7 @@ export default React.memo(function CategoryFilter({
       {!isLegacyGrantsFilter && (
         <CategoryOption
           type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
-          href={handleTypeFilter(null, params)}
+          href={handleUrlFilters(FILTER_KEY, null, params)}
           active={!type}
           className={'CategoryFilter__CategoryOption'}
         />
@@ -66,7 +57,7 @@ export default React.memo(function CategoryFilter({
           <CategoryOption
             key={'category_filter' + index}
             type={label}
-            href={handleTypeFilter(label, params)}
+            href={handleUrlFilters(FILTER_KEY, label, params)}
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
           />

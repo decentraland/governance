@@ -58,6 +58,6 @@ div.SuccessModal__Banner.CopyLink {
 }
 
 .SuccessModal__DismissButton {
-  background-color: #ffffff !important;
+  background-color: var(--white-900) !important;
   border: 1px solid var(--black-400) !important;
 }

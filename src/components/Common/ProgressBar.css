@@ -6,7 +6,7 @@
   position: relative;
 }
 
-.ProgressStatus {
+.ProgressBar__Status {
   height: inherit;
   position: absolute;
   border-radius: inherit;

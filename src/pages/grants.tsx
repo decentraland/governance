@@ -25,12 +25,13 @@ import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: string | null, status: string | null) {
-  const filteredByType = type ? grants.filter((grant) => toSnakeCase(grant.configuration.category) === type) : grants
-  const filteredByStatus = status
-    ? filteredByType.filter((grant) => toSnakeCase(grant.status) === status)
-    : filteredByType
-
-  return filteredByStatus
+  return status || type
+    ? grants.filter(
+        (grant) =>
+          (type ? toSnakeCase(grant.configuration.category) === type : true) &&
+          (status ? toSnakeCase(grant.status) === status : true)
+      )
+    : grants
 }
 
 export default function GrantsPage() {

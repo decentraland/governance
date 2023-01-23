@@ -25,7 +25,8 @@ interface Props {
   status: GrantStatus | null
 }
 
-const CATEGORY_KEYS: Record<ProposalGrantCategory, string> = {
+const CATEGORY_KEYS: Record<GrantCategoryFilter, string> = {
+  [PROPOSAL_GRANT_CATEGORY_ALL]: 'page.grants.category_filters.all',
   [NewGrantCategory.Accelerator]: 'category.accelerator_title',
   [NewGrantCategory.CoreUnit]: 'category.core_unit_title',
   [NewGrantCategory.Documentation]: 'category.documentation_title',
@@ -96,11 +97,8 @@ const CurrentGrantsList = ({ grants, category, status }: Props) => {
           <div>
             <h2 className="CurrentGrants__Title">
               {t('page.grants.grants_category_title', {
-                category:
-                  selectedCategory !== PROPOSAL_GRANT_CATEGORY_ALL
-                    ? t(CATEGORY_KEYS[selectedCategory])
-                    : t('page.grants.category_filters.all'),
-                status: status ? t(GRANTS_STATUS_KEYS[status]) : '',
+                status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
+                category: t(CATEGORY_KEYS[selectedCategory]),
               })}
             </h2>
           </div>

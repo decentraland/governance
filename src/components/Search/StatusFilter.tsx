@@ -5,6 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
+import { handleUrlFilters } from '../../clients/utils'
 import { GrantStatus } from '../../entities/Grant/types'
 import { ProposalStatus } from '../../entities/Proposal/types'
 
@@ -14,6 +15,8 @@ import FilterLabel from './FilterLabel'
 
 type StatusType = typeof ProposalStatus | typeof GrantStatus
 
+const FILTER_KEY = 'status'
+
 export default React.memo(function StatusFilter({
   onChange,
   startOpen,
@@ -22,19 +25,11 @@ export default React.memo(function StatusFilter({
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const status = params.get('status')
-
-  function handleStatusFilter(status: string | null) {
-    const newParams = new URLSearchParams(params)
-    status ? newParams.set('status', status) : newParams.delete('status')
-    newParams.delete('page')
-    const stringParams = newParams.toString()
-    return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
-  }
+  const status = params.get(FILTER_KEY)
 
   return (
     <CollapsibleFilter title={t('navigation.search.status_filter_title')} startOpen={startOpen} onChange={onChange}>
-      <FilterLabel label={t(`status.all`)} href={handleStatusFilter(null)} active={!status} />
+      <FilterLabel label={t(`status.all`)} href={handleUrlFilters(FILTER_KEY, null, params)} active={!status} />
       {Object.values(statusType).map((value, index) => {
         const label = toSnakeCase(value)
         if (![ProposalStatus.Deleted, ProposalStatus.Pending].includes(value)) {
@@ -42,7 +37,7 @@ export default React.memo(function StatusFilter({
             <FilterLabel
               key={'status_filter' + index}
               label={t(`${isEqual(statusType, GrantStatus) ? 'grant_' : ''}status.${label}`)}
-              href={handleStatusFilter(label)}
+              href={handleUrlFilters(FILTER_KEY, label, params)}
               active={status === label}
             />
           )

@@ -1,6 +1,6 @@
 .BudgetBanner {
   box-sizing: border-box;
-  background: linear-gradient(89.29deg, #f6f5f8 0%, rgba(246, 245, 248, 0) 100%);
+  background: var(--background-banner-gradient);
   border: 1px solid #e8e8e8;
   border-radius: 6px;
   margin-top: 13px;
@@ -10,21 +10,21 @@
   padding: 21px 25px;
 }
 
-.ProgressContainer {
+.BudgetBanner__ProgressContainer {
   width: 40%;
 }
 
-.ProgressContainer .ProgressBar__Container {
+.BudgetBanner__ProgressContainer .ProgressBar__Container {
   margin-bottom: 8px;
 }
 
-.ProgressContainer__Label {
+.BudgetBanner__ProgressLabel {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.ProgressContainer__Label div {
+.BudgetBanner__ProgressLabel div {
   font-style: normal;
   font-weight: 400;
   font-size: 11px;
@@ -33,7 +33,7 @@
   color: var(--black-600);
 }
 
-.ProgressContainer__Label .Amount,
-.ProgressContainer__Label .Percentage {
+.BudgetBanner__ProgressLabel .BudgetBanner__Amount,
+.BudgetBanner__ProgressLabel .BudgetBanner__Percentage {
   font-weight: 600;
 }

@@ -20,7 +20,7 @@ const BannerItem = ({ title, description, url, showDivider }: Props) => {
         href={url || ''}
         target="_blank"
         className={TokenList.join([!url && 'GrantsBannerItem--noUrl'])}
-        rel="noreferrer"
+        rel="noopener noreferrer"
       >
         <div className="GrantsBannerItem">
           <div>

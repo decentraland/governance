@@ -39,7 +39,7 @@
   font-size: 28px;
   line-height: 33px;
   letter-spacing: -1px;
-  color: #ffffff;
+  color: var(--white-900);
 }
 
 .GrantsBanner__Description {
@@ -48,7 +48,7 @@
   font-size: 20px;
   line-height: 28px;
   letter-spacing: 0.3px;
-  color: #ffffff;
+  color: var(--white-900);
 }
 
 .GrantsBanner__Items {

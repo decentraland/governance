@@ -39,7 +39,7 @@
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Block .ui.header,
 .TokensPerWalletPopup .TokensPerWalletPopup__Block .dg.Paragraph {
-  color: #ffffff;
+  color: var(--white-900);
 }
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Balance {
@@ -50,7 +50,7 @@
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Balance .ui.header {
   margin-right: 8px;
-  color: #ffffff;
+  color: var(--white-900);
 }
 
 .TokensPerWalletPopup .TokensPerWalletPopup__RightBlock {
@@ -67,7 +67,7 @@
 .TokensPerWalletPopup .ui.header.sub {
   margin-top: 0;
   margin-bottom: 0;
-  color: #ffffff;
+  color: var(--white-900);
   font-size: 10px;
   line-height: 10px;
   font-weight: normal;

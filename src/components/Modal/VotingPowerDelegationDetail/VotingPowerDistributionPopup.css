@@ -13,7 +13,7 @@
   font-size: 10px;
   line-height: 18px;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--white-900);
 }
 
 .VotingPowerDistributionPopup__Percentage {
@@ -21,11 +21,11 @@
   font-size: 10px;
   line-height: 18px;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--white-900);
   opacity: 0.5;
 }
 
 .VotingPowerDistributionPopup .VotingPower {
   font-size: 17px;
-  color: #ffffff;
+  color: var(--white-900);
 }

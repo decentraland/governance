@@ -9,7 +9,7 @@ interface Props {
 
 function BudgetBannerItem({ value, label }: Props) {
   return (
-    <div className="BudgetBannerItem">
+    <div>
       <div className="BudgetBannerItem__Value">{value}</div>
       <div className="BudgetBannerItem__Label">{label}</div>
     </div>

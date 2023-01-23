@@ -1,5 +1,5 @@
 .RequestBanner {
-  background: linear-gradient(89.29deg, #f6f5f8 0%, rgba(246, 245, 248, 0) 100%);
+  background: var(--background-banner-gradient);
   border: 1px solid #e8e8e8;
   filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.08));
   border-radius: 6px;
@@ -26,7 +26,7 @@
 }
 
 .ui.fluid.button.RequestBanner__Button {
-  background: #ffffff;
+  background: var(--white-900);
   border: 1px solid var(--black-400);
   border-radius: 6px;
   padding: 9px;

@@ -13,7 +13,7 @@ function ProgressBar({ percentage, height, background }: Props) {
 
   return (
     <div className="ProgressBar__Container" style={{ height }}>
-      <div className="ProgressStatus" style={{ width, background }}></div>
+      <div className="ProgressBar__Status" style={{ width, background }}></div>
     </div>
   )
 }
