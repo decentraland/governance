@@ -1,0 +1,41 @@
+.GrantRequestSection__Checkbox {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-left: -11px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  padding-left: 11px;
+}
+
+.GrantRequestSection__Checkbox:hover {
+  background-color: var(--black-200);
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.GrantRequestSection__Checkbox > .ui.radio.checkbox input.hidden ~ label:before {
+  border: 1px solid var(--secondary-text);
+}
+
+.GrantRequestSection__Checkbox > .ui.radio.checkbox > label:before {
+  background: var(--white-900) !important;
+}
+
+.GrantRequestSection__Checkbox > .ui.radio.checkbox.checked > label:before {
+  background: var(--dcl-primary) !important;
+  border: 0 !important;
+}
+
+.GrantRequestSection__Checkbox > p.dg.Paragraph {
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  font-weight: 400;
+  text-align: left;
+}
+
+.GrantRequestSection__Checkbox > a.dg.Link.Link--pointer {
+  font-weight: 500;
+}

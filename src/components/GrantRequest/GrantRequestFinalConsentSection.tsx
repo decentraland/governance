@@ -7,6 +7,7 @@ import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import './GrantRequestFinalConsentSection.css'
 import GrantRequestSection from './GrantRequestSection'
 import Label from './Label'
 
