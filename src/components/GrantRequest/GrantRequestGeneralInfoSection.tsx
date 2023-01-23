@@ -296,7 +296,10 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection onBlur={() => onValidation({ ...state.value }, state.validated)}>
           <CoAuthors
-            setCoAuthors={(addresses?: string[]) => editor.set({ coAuthors: addresses })}
+            setCoAuthors={(addresses?: string[]) => {
+              editor.set({ coAuthors: addresses })
+              editor.validate()
+            }}
             isDisabled={isFormDisabled}
           />
         </ContentSection>

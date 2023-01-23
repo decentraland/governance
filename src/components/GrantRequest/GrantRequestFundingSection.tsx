@@ -184,13 +184,6 @@ export default function GrantRequestFundingSection({
         </div>
         <div className="GrantRequestSection__Row">
           <div className="GrantRequestSection__InputContainer">
-            <ProjectDurationInput
-              value={state.value.projectDuration}
-              options={availableDurations}
-              onChange={(value) => editor.set({ projectDuration: Number(value) })}
-            />
-          </div>
-          <div className="GrantRequestSection__InputContainer">
             <DesiredFundingInput
               value={state.value.funding}
               onChange={({ currentTarget }) =>
@@ -202,6 +195,13 @@ export default function GrantRequestFundingSection({
               onBlur={() => editor.set({ funding: state.value.funding })}
               error={state.error.funding || ''}
               disabled={isFormDisabled}
+            />
+          </div>
+          <div className="GrantRequestSection__InputContainer">
+            <ProjectDurationInput
+              value={state.value.projectDuration}
+              options={availableDurations}
+              onChange={(value) => editor.set({ projectDuration: Number(value) })}
             />
           </div>
         </div>
