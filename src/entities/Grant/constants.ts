@@ -1,16 +1,13 @@
-import { GrantTierAttributes, GrantTierStatus, GrantTierType } from './types'
+import {
+  GRANT_PROPOSAL_MAX_BUDGET,
+  GRANT_PROPOSAL_MIN_BUDGET,
+  GrantTierAttributes,
+  GrantTierStatus,
+  GrantTierType,
+} from './types'
 
 export const GRANT_PROPOSAL_DURATION_IN_SECONDS = 1209600
-export const GRANT_PROPOSAL_MIN_BUDGET = 100
-export const GRANT_PROPOSAL_MAX_BUDGET = 240000
 export const MAX_LOWER_TIER_GRANT_FUNDING = 20000
-
-export const MIN_PROJECT_DURATION = 1
-export const MAX_PROJECT_DURATION = 12
-export const MIN_LOW_TIER_PROJECT_DURATION = MIN_PROJECT_DURATION
-export const MAX_LOW_TIER_PROJECT_DURATION = 6
-export const MIN_HIGH_TIER_PROJECT_DURATION = 3
-export const MAX_HIGH_TIER_PROJECT_DURATION = MAX_PROJECT_DURATION
 
 export const TIERS: GrantTierAttributes[] = [
   {

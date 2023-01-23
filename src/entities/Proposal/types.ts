@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { GrantStatus, GrantTierType, NewGrantCategory, ProposalGrantCategory } from '../Grant/types'
+import { GrantRequestGeneralInfo } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
+import { GrantStatus, GrantTierType, ProposalGrantCategory, VALID_CATEGORIES } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
@@ -459,23 +460,13 @@ export const ProposalRequiredVP = {
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
   [ProposalType.Grant]: 0, // TODO: Remove this and fix type in test
 }
-
-export type GrantProposalInCreation = {
-  title: string
-  abstract: string
-  category: ProposalGrantCategory
+export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
+  category: ProposalGrantCategory | null
   size: number
-  beneficiary: string
-  email: string
-  description: string
-  specification: string
-  personnel: string
-  roadmap: string
-  coAuthors?: string[]
-  // projectDuration: number
+  projectDuration?: number // Old grants may not have this field
+  tier: GrantTierType
+  choices: string[]
 }
-
-export type GrantProposalConfiguration = GrantProposalInCreation & { tier: GrantTierType }
 
 export const newProposalGrantScheme = {
   type: 'object',
@@ -504,7 +495,7 @@ export const newProposalGrantScheme = {
     },
     category: {
       type: 'string',
-      enum: Object.values(NewGrantCategory),
+      enum: VALID_CATEGORIES,
     },
     size: {
       type: 'integer',

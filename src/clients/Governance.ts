@@ -2,11 +2,12 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+import { snakeCase } from 'lodash'
 
 import { GOVERNANCE_API } from '../constants'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { ProposalGrantCategory } from '../entities/Grant/types'
 import {
-  GrantProposalInCreation,
   GrantsResponse,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -32,7 +33,7 @@ type NewProposalMap = {
   [`/proposals/ban-name`]: NewProposalBanName
   [`/proposals/poi`]: NewProposalPOI
   [`/proposals/catalyst`]: NewProposalCatalyst
-  [`/proposals/grant`]: GrantProposalInCreation
+  [`/proposals/grant`]: GrantRequest
   [`/proposals/linked-wearables`]: NewProposalLinkedWearables
 }
 
@@ -161,8 +162,7 @@ export class Governance extends API {
   }
 
   async createProposalGrant(proposal: GrantRequest) {
-    // return this.createProposal(`/proposals/grant`, proposal)
-    console.log('creatingProposal', proposal)
+    return this.createProposal(`/proposals/grant`, proposal)
   }
 
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {
@@ -353,6 +353,14 @@ export class Governance extends API {
       this.options().method('GET')
     )
 
+    return response.data
+  }
+
+  async getCategoryBudget(category: ProposalGrantCategory) {
+    const response = await this.fetch<ApiResponse<{ total: number; available: number; allocated: number }>>(
+      `/budget/${snakeCase(category)}`,
+      this.options().method('GET')
+    )
     return response.data
   }
 }

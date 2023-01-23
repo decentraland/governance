@@ -1,12 +1,12 @@
+import { MAX_LOWER_TIER_GRANT_FUNDING } from './constants'
 import {
   GRANT_PROPOSAL_MIN_BUDGET,
+  GrantTierType,
   MAX_HIGH_TIER_PROJECT_DURATION,
-  MAX_LOWER_TIER_GRANT_FUNDING,
   MAX_LOW_TIER_PROJECT_DURATION,
   MIN_HIGH_TIER_PROJECT_DURATION,
   MIN_LOW_TIER_PROJECT_DURATION,
-} from './constants'
-import { GrantTierType } from './types'
+} from './types'
 import { isValidGrantBudget } from './utils'
 
 export enum TransparencyOneTimePaymentTier {

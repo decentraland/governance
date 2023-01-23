@@ -17,6 +17,7 @@ import { DclData } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
+import { GrantRequest } from '../../pages/submit/grant'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
@@ -25,6 +26,7 @@ import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
+import { GrantRequestSchema } from '../Grant/types'
 import { isValidGrantBudget } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
@@ -36,7 +38,7 @@ import { getUpdateMessage } from './templates/messages'
 
 import ProposalModel from './model'
 import {
-  GrantProposalInCreation,
+  GrantProposalConfiguration,
   GrantWithUpdateAttributes,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -57,7 +59,6 @@ import {
   newProposalCatalystScheme,
   newProposalDraftScheme,
   newProposalGovernanceScheme,
-  newProposalGrantScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
   newProposalPollScheme,
@@ -317,27 +318,31 @@ export async function createProposalCatalyst(req: WithAuth) {
   })
 }
 
-const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
+const newProposalGrantValidator = schema.compile(GrantRequestSchema)
 
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
-  const configuration = validate<GrantProposalInCreation>(newProposalGrantValidator, req.body || {})
+  const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
 
-  if (!isValidGrantBudget(configuration.size)) {
+  const grantSize = Number(grantRequest.funding || 0)
+
+  if (!isValidGrantBudget(grantSize)) {
     throw new RequestError('Grant size is not valid for the selected tier')
+  }
+
+  const grantConfiguration: GrantProposalConfiguration = {
+    ...grantRequest,
+    size: grantSize,
+    tier: GrantTier.getTypeFromBudget(grantSize),
+    choices: DEFAULT_CHOICES,
   }
 
   return createProposal({
     user,
     type: ProposalType.Grant,
-    required_to_pass: GrantTier.getVPThreshold(configuration.size),
+    required_to_pass: GrantTier.getVPThreshold(grantSize),
     finish_at: proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS),
-    configuration: {
-      ...configuration,
-      // TODO: Should we keep storing the tier in the db?
-      tier: GrantTier.getTypeFromBudget(configuration.size),
-      choices: DEFAULT_CHOICES,
-    },
+    configuration: grantConfiguration,
   })
 }
 

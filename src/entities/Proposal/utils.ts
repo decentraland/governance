@@ -163,12 +163,3 @@ export function isProposalInCliffPeriod(grant: TransparencyGrant) {
 export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
-
-export function isGrantProposalSubmitEnabled(now: number) {
-  const DISABLE_START_DATE = Time.utc('2023-01-01').add(8, 'hour')
-  if (Time(now).isAfter(DISABLE_START_DATE)) {
-    return false
-  }
-
-  return true
-}

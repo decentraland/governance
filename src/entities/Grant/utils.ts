@@ -8,7 +8,7 @@ import Platform from '../../components/Icon/Grants/Platform'
 import SocialMediaContent from '../../components/Icon/Grants/SocialMediaContent'
 import Sponsorship from '../../components/Icon/Grants/Sponsorship'
 
-import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from './constants'
+import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from './types'
 import { GrantStatus, NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from './types'
 
 export const isValidGrantBudget = (size: number) => {
