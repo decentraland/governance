@@ -69,9 +69,13 @@ export default function SubmitGrant() {
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
 
-  const submit = () => {
+  useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
+  }, [grantRequest])
 
+  usePreventNavigation(!!preventNavigation)
+
+  const submit = () => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
       Promise.resolve()
