@@ -10,9 +10,9 @@ import {
   GRANT_PROPOSAL_MIN_BUDGET,
   GrantRequestFundingSchema,
   MIN_LOW_TIER_PROJECT_DURATION,
+  NewGrantCategory,
 } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
-import { ProposalGrantCategory } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
@@ -79,7 +79,7 @@ const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) =
 }
 
 interface Props {
-  grantCategory: ProposalGrantCategory | null
+  grantCategory: NewGrantCategory | null
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
   onCategoryChange: () => void
   isFormDisabled: boolean

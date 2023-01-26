@@ -1,0 +1,13 @@
+.ProgressBar__Container {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ProgressBar__Status {
+  height: inherit;
+  position: absolute;
+  border-radius: inherit;
+}

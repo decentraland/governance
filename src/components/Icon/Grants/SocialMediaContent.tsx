@@ -5,14 +5,14 @@ import {
   CategoryIconVariant,
   getCategoryIconPrimaryColor,
   getCategoryIconSecondaryColor,
-} from '../../helpers/styles'
+} from '../../../helpers/styles'
 
 function SocialMediaContent({ variant = CategoryIconVariant.Normal, size = 42 }: CategoryIconProps) {
   const primaryColor = getCategoryIconPrimaryColor('yellow', variant)
   const secondaryColor = getCategoryIconSecondaryColor('yellow', variant)
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 52 52">
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="-5 -5 52 52">
       <path fill={primaryColor} d="M22.271 14.242a4.5 4.5 0 10-5 0V34.5a2.5 2.5 0 105 0V14.242z"></path>
       <path
         fill={secondaryColor}

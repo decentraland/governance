@@ -3,13 +3,13 @@ import React from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { ProposalGrantCategory, VALID_CATEGORIES } from '../../entities/Proposal/types'
+import { NewGrantCategory, VALID_CATEGORIES } from '../../entities/Grant/types'
 
 import CategoryItem from './CategoryItem'
 import './CategorySelector.css'
 
 interface Props {
-  onCategoryClick: (value: ProposalGrantCategory) => void
+  onCategoryClick: (value: NewGrantCategory) => void
 }
 
 const CategorySelector = ({ onCategoryClick }: Props) => {

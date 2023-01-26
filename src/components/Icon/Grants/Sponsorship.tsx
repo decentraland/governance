@@ -5,14 +5,14 @@ import {
   CategoryIconVariant,
   getCategoryIconPrimaryColor,
   getCategoryIconSecondaryColor,
-} from '../../helpers/styles'
+} from '../../../helpers/styles'
 
 function Sponsorship({ variant = CategoryIconVariant.Normal, size = 42 }: CategoryIconProps) {
   const primaryColor = getCategoryIconPrimaryColor('orange', variant)
   const secondaryColor = getCategoryIconSecondaryColor('orange', variant)
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 52 52">
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="-5 -10 52 52">
       <rect width="4" height="31" x="34.272" fill={primaryColor} rx="2"></rect>
       <path
         fill={primaryColor}

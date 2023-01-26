@@ -2,60 +2,48 @@ import { useMemo } from 'react'
 
 import filter from 'lodash/filter'
 
-import {
-  GrantWithUpdateAttributes,
-  PROPOSAL_GRANT_CATEGORY_ALL,
-  ProposalGrantCategory,
-} from '../entities/Proposal/types'
+import { NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
+import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
 
 export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdateAttributes[]) {
   // TODO: Check this
   return useMemo(
     () => ({
       [PROPOSAL_GRANT_CATEGORY_ALL]: grants,
-      [ProposalGrantCategory.Community]: filter(
+      [OldGrantCategory.Community]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Community
+        (item) => item.configuration.category === OldGrantCategory.Community
       ),
-      [ProposalGrantCategory.Gaming]: filter(
+      [OldGrantCategory.Gaming]: filter(grants, (item) => item.configuration.category === OldGrantCategory.Gaming),
+      [OldGrantCategory.PlatformContributor]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Gaming
+        (item) => item.configuration.category === OldGrantCategory.PlatformContributor
       ),
-      [ProposalGrantCategory.PlatformContributor]: filter(
+      [OldGrantCategory.ContentCreator]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.PlatformContributor
+        (item) => item.configuration.category === OldGrantCategory.ContentCreator
       ),
-      [ProposalGrantCategory.ContentCreator]: filter(
+      [NewGrantCategory.Accelerator]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.ContentCreator
+        (item) => item.configuration.category === NewGrantCategory.Accelerator
       ),
-      [ProposalGrantCategory.Accelerator]: filter(
+      [NewGrantCategory.CoreUnit]: filter(grants, (item) => item.configuration.category === NewGrantCategory.CoreUnit),
+      [NewGrantCategory.Documentation]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Accelerator
+        (item) => item.configuration.category === NewGrantCategory.Documentation
       ),
-      [ProposalGrantCategory.CoreUnit]: filter(
+      [NewGrantCategory.InWorldContent]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.CoreUnit
+        (item) => item.configuration.category === NewGrantCategory.InWorldContent
       ),
-      [ProposalGrantCategory.Documentation]: filter(
+      [NewGrantCategory.Platform]: filter(grants, (item) => item.configuration.category === NewGrantCategory.Platform),
+      [NewGrantCategory.SocialMediaContent]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Documentation
+        (item) => item.configuration.category === NewGrantCategory.SocialMediaContent
       ),
-      [ProposalGrantCategory.InWorldContent]: filter(
+      [NewGrantCategory.Sponsorship]: filter(
         grants,
-        (item) => item.configuration.category === ProposalGrantCategory.InWorldContent
-      ),
-      [ProposalGrantCategory.Platform]: filter(
-        grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Platform
-      ),
-      [ProposalGrantCategory.SocialMediaContent]: filter(
-        grants,
-        (item) => item.configuration.category === ProposalGrantCategory.SocialMediaContent
-      ),
-      [ProposalGrantCategory.Sponsorship]: filter(
-        grants,
-        (item) => item.configuration.category === ProposalGrantCategory.Sponsorship
+        (item) => item.configuration.category === NewGrantCategory.Sponsorship
       ),
     }),
     [grants]

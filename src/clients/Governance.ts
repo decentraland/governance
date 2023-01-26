@@ -6,6 +6,7 @@ import { snakeCase } from 'lodash'
 
 import { GOVERNANCE_API } from '../constants'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { ProposalGrantCategory } from '../entities/Grant/types'
 import {
   GrantsResponse,
   NewProposalBanName,
@@ -17,7 +18,6 @@ import {
   NewProposalPoll,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
-  ProposalGrantCategory,
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
