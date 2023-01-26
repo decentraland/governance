@@ -4,11 +4,10 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { GrantRequestGeneralInfo } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
-import { GrantStatus, GrantTierType, ProposalGrantCategory, VALID_CATEGORIES } from '../Grant/types'
+import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
-  GRANT_SIZE_MINIMUM,
   MAX_NAME_SIZE,
   MIN_NAME_SIZE,
   VOTING_POWER_TO_PASS_BAN_NAME,
