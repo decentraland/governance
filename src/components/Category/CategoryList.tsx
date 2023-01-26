@@ -28,7 +28,7 @@ function CategoryList() {
     <ActionableLayout leftAction={<Header sub>{t(`page.proposal_list.categories`)}</Header>}>
       <CategoryOption
         type={'all'}
-        href={handleUrlFilters(FILTER_KEY, null, params)}
+        href={handleUrlFilters(FILTER_KEY, params)}
         active={type === null}
         onClick={handleClick}
       />
@@ -37,7 +37,7 @@ function CategoryList() {
           <CategoryOption
             key={'category_list' + index}
             type={ProposalType[key]}
-            href={handleUrlFilters(FILTER_KEY, ProposalType[key], params)}
+            href={handleUrlFilters(FILTER_KEY, params, ProposalType[key])}
             active={type === ProposalType[key]}
             onClick={handleClick}
           />

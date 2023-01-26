@@ -33,11 +33,11 @@ export default function SortingMenu() {
       <Dropdown.Menu>
         <Dropdown.Item
           text={t('navigation.search.sorting.DESC')}
-          onClick={() => navigate(handleUrlFilters(SORT_KEY, 'DESC', params))}
+          onClick={() => navigate(handleUrlFilters(SORT_KEY, params, 'DESC'))}
         />
         <Dropdown.Item
           text={t('navigation.search.sorting.ASC')}
-          onClick={() => navigate(handleUrlFilters(SORT_KEY, 'ASC', params))}
+          onClick={() => navigate(handleUrlFilters(SORT_KEY, params, 'ASC'))}
         />
       </Dropdown.Menu>
     </Dropdown>

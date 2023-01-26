@@ -46,7 +46,7 @@ export default React.memo(function CategoryFilter({
       {!isLegacyGrantsFilter && (
         <CategoryOption
           type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
-          href={handleUrlFilters(FILTER_KEY, null, params)}
+          href={handleUrlFilters(FILTER_KEY, params)}
           active={!type}
           className={'CategoryFilter__CategoryOption'}
         />
@@ -57,7 +57,7 @@ export default React.memo(function CategoryFilter({
           <CategoryOption
             key={'category_filter' + index}
             type={label}
-            href={handleUrlFilters(FILTER_KEY, label, params)}
+            href={handleUrlFilters(FILTER_KEY, params, label)}
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
           />

@@ -29,7 +29,7 @@ export default React.memo(function StatusFilter({
 
   return (
     <CollapsibleFilter title={t('navigation.search.status_filter_title')} startOpen={startOpen} onChange={onChange}>
-      <FilterLabel label={t(`status.all`)} href={handleUrlFilters(FILTER_KEY, null, params)} active={!status} />
+      <FilterLabel label={t(`status.all`)} href={handleUrlFilters(FILTER_KEY, params)} active={!status} />
       {Object.values(statusType).map((value, index) => {
         const label = toSnakeCase(value)
         if (![ProposalStatus.Deleted, ProposalStatus.Pending].includes(value)) {
@@ -37,7 +37,7 @@ export default React.memo(function StatusFilter({
             <FilterLabel
               key={'status_filter' + index}
               label={t(`${isEqual(statusType, GrantStatus) ? 'grant_' : ''}status.${label}`)}
-              href={handleUrlFilters(FILTER_KEY, label, params)}
+              href={handleUrlFilters(FILTER_KEY, params, label)}
               active={status === label}
             />
           )

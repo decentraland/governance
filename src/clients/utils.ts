@@ -37,7 +37,7 @@ export function capitalizeFirstLetter(string: string) {
   return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
 }
 
-export function handleUrlFilters<T>(filterKey: string, value: T | null, params: URLSearchParams) {
+export function handleUrlFilters<T>(filterKey: string, params: URLSearchParams, value?: T) {
   const newParams = new URLSearchParams(params)
   value ? newParams.set(filterKey, String(value)) : newParams.delete(filterKey)
   newParams.delete('page')
