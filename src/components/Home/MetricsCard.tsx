@@ -18,13 +18,17 @@ const MetricsCard = ({ href, category, title, description, isLoading, loadingLab
   return (
     <Link href={href} className="MetricsCard">
       {!isLoading && (
-        <>
+        <div className="MetricsCard__Container">
           <p className="MetricsCard__Category">{category}</p>
           <h2 className="MetricsCard__Title">{title}</h2>
           <p className="MetricsCard__Description">{description}</p>
-        </>
+        </div>
       )}
-      {isLoading && <HomeLoader size="small">{loadingLabel}</HomeLoader>}
+      {isLoading && (
+        <div className="MetricsCard__Container">
+          <HomeLoader size="small">{loadingLabel}</HomeLoader>
+        </div>
+      )}
     </Link>
   )
 }

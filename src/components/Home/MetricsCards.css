@@ -7,9 +7,17 @@
 }
 
 .MetricsCards__Carousel {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  gap: 16px;
+  scroll-snap-type: x mandatory;
+  padding-inline-start: 16px;
+  padding-inline-end: 16px;
+  scroll-padding: 0 16px;
   margin-bottom: 40px;
 }
 
-.MetricsCards__Carousel .flickity-slider {
-  margin: 0 16px !important;
+.MetricsCards__Carousel::-webkit-scrollbar {
+  display: none;
 }
