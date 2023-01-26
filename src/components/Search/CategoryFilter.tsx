@@ -13,19 +13,29 @@ import CategoryOption from '../Category/CategoryOption'
 import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
 
-type FilterType = typeof ProposalType | typeof NewGrantCategory | typeof OldGrantCategory
+export type FilterType = typeof ProposalType | typeof NewGrantCategory | typeof OldGrantCategory
+export type Counter = Record<ProposalType, number> | Record<NewGrantCategory, number> | Record<OldGrantCategory, number>
 
 export type FilterProps = {
   onChange?: (open: boolean) => void
   startOpen?: boolean
+  categoryCount?: Counter
 }
 
 const FILTER_KEY = 'type'
+
+function isCounterValid(counter: Counter, filterType: FilterType) {
+  const counterKeys = Object.keys(counter)
+  const filterKeys = Object.values(filterType)
+
+  return isEqual(counterKeys, filterKeys)
+}
 
 export default React.memo(function CategoryFilter({
   filterType,
   onChange,
   startOpen,
+  categoryCount,
 }: FilterProps & { filterType: FilterType }) {
   const t = useFormatMessage()
   const location = useLocation()
@@ -34,6 +44,7 @@ export default React.memo(function CategoryFilter({
   const type = params.get(FILTER_KEY)
   const isProposalsFilter = isEqual(filterType, ProposalType)
   const isLegacyGrantsFilter = isEqual(filterType, OldGrantCategory)
+  const isCounter = !!categoryCount && isCounterValid(categoryCount, filterType)
 
   return (
     <CollapsibleFilter
@@ -60,6 +71,7 @@ export default React.memo(function CategoryFilter({
             href={handleUrlFilters(FILTER_KEY, params, label)}
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
+            count={isCounter ? categoryCount[value as keyof Counter] : undefined}
           />
         )
       })}

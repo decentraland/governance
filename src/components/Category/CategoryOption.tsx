@@ -4,6 +4,7 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory } from '../../entities/Grant/types'
@@ -16,6 +17,7 @@ import './CategoryOption.css'
 export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean
   type: string
+  count?: number
 }
 
 const icons: Record<string, any> = {
@@ -40,7 +42,7 @@ const getIcon = (type: string) => {
   return <img src={icons[type]} width="24" height="24" />
 }
 
-export default React.memo(function CategoryOption({ active, type, className, ...props }: CategoryOptionProps) {
+export default React.memo(function CategoryOption({ active, type, className, count, ...props }: CategoryOptionProps) {
   const t = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
@@ -67,12 +69,19 @@ export default React.memo(function CategoryOption({ active, type, className, ...
         className,
       ])}
     >
-      <span>{getIcon(type)}</span>
       <span>
-        <Paragraph tiny semiBold>
-          {t(`category.${type}_title`)}
-        </Paragraph>
+        <span>{getIcon(type)}</span>
+        <span>
+          <Paragraph tiny semiBold>
+            {t(`category.${type}_title`)}
+          </Paragraph>
+        </span>
       </span>
+      {isNumber(count) && (
+        <span className={TokenList.join(['CategoryOption__Counter', active && 'CategoryOption__Counter--active'])}>
+          {count}
+        </span>
+      )}
     </a>
   )
 })
