@@ -34,7 +34,11 @@ function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: stri
     : grants
 }
 
-function getCounter(allGrants: GrantWithUpdateAttributes[], filterType: FilterType, status: string | null): Counter {
+function getCounter(allGrants: GrantWithUpdateAttributes[], filterType: FilterType, status: string | null) {
+  if (isEmpty(allGrants)) {
+    return undefined
+  }
+
   const counter = {} as Record<string, number>
   for (const filter of Object.values(filterType)) {
     const grants = filterDisplayableGrants(allGrants, filter, status)
