@@ -79,21 +79,21 @@ export default function GrantsPage() {
       <Navigation activeTab={NavigationTab.Grants} />
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
-        <Container>
-          <Grid stackable>
-            <Grid.Row>
-              <CurrentGrantsBanner />
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column tablet="4">
-                <NotMobile>
-                  <CategoryFilter filterType={NewGrantCategory} categoryCount={newGrantsCounter} startOpen />
-                  <CategoryFilter filterType={OldGrantCategory} categoryCount={oldGrantsCounter} />
-                  <StatusFilter statusType={GrantStatus} startOpen />
-                  <RequestBanner />
-                </NotMobile>
-              </Grid.Column>
-              <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
+        <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
+          <Container>
+            <Grid stackable>
+              <Grid.Row>
+                <CurrentGrantsBanner />
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column tablet="4">
+                  <NotMobile>
+                    <CategoryFilter filterType={NewGrantCategory} categoryCount={newGrantsCounter} startOpen />
+                    <CategoryFilter filterType={OldGrantCategory} categoryCount={oldGrantsCounter} />
+                    <StatusFilter statusType={GrantStatus} startOpen />
+                    <RequestBanner />
+                  </NotMobile>
+                </Grid.Column>
                 <Grid.Column tablet="12">
                   <CurrentGrantsList
                     grants={displayableGrants}
@@ -101,10 +101,10 @@ export default function GrantsPage() {
                     status={toGrantStatus(status)}
                   />
                 </Grid.Column>
-              </BurgerMenuLayout>
-            </Grid.Row>
-          </Grid>
-        </Container>
+              </Grid.Row>
+            </Grid>
+          </Container>
+        </BurgerMenuLayout>
       )}
     </div>
   )

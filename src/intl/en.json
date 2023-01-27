@@ -750,6 +750,10 @@
         "update_timestamp": "Last updated",
         "created_at": "Newest"
       },
+      "empty": {
+        "description": "Looks like there's no grants following this criteria to be displayed",
+        "button": "View all grants"
+      },
       "vested": "vested",
       "transferred": "transferred",
       "one_time_payment": "One-time payment",

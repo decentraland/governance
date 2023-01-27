@@ -10,17 +10,17 @@ const CurrentGrantsBanner = () => {
     {
       title: t('page.grants.current_banner.budget_title'),
       description: t('page.grants.current_banner.budget_description'),
-      url: 'https://google.com/',
+      url: 'MISSING_URL',
     },
     {
       title: t('page.grants.current_banner.transparency_title'),
       description: t('page.grants.current_banner.transparency_description'),
-      url: 'https://google.com/',
+      url: 'MISSING_URL',
     },
     {
       title: t('page.grants.current_banner.faq_title'),
       description: t('page.grants.current_banner.faq_description'),
-      url: 'https://google.com/',
+      url: 'MISSING_URL',
     },
   ]
 
