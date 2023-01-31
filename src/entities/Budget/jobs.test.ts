@@ -4,7 +4,7 @@ import { DclData } from '../../clients/DclData'
 
 import { getTransparencyBudgets } from './jobs'
 
-const VALID_BUDGET_1 = {
+export const VALID_BUDGET_1 = {
   category_percentages: {
     accelerator: 7,
     core_unit: 15,
@@ -32,7 +32,7 @@ const VALID_BUDGET_2 = {
   total: 1501500,
 }
 
-const INVALID_BUDGET_FORMAT = {
+export const INVALID_BUDGET_FORMAT = {
   category_percentages: {
     core_unit: 10,
     documentation: 5,
@@ -50,6 +50,7 @@ describe('getTransparencyBudgets', () => {
     it('returns a list of parsed budgets', async () => {
       expect(await getTransparencyBudgets()).toEqual([VALID_BUDGET_1, VALID_BUDGET_2])
     })
+    afterAll(() => jest.clearAllMocks())
   })
 
   describe('when it receives a list with no valid budgets', () => {

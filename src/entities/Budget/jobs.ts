@@ -84,8 +84,8 @@ export async function getTransparencyBudgets() {
     try {
       budgets.forEach((budget) => validate<TransparencyBudget>(transparencyBudgetValidator, budget))
     } catch (e) {
-      logger.error(`Invalid transparency budgets ${budgets}. ${JSON.stringify(e)}`)
-      console.error(`Invalid transparency budgets ${budgets}`, e)
+      logger.error(`Invalid transparency budgets ${JSON.stringify(budgets)}. ${JSON.stringify(e)}`)
+      console.error(`Invalid transparency budgets ${JSON.stringify(budgets)}`, e)
       return []
     }
   } catch (e) {

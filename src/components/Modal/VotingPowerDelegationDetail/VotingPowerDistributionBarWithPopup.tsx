@@ -2,7 +2,7 @@ import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { getPercentage } from '../../../helpers'
+import { getFormattedPercentage } from '../../../helpers'
 
 import './VotingPowerDistributionBarWithPopup.css'
 import VotingPowerDistributionPopup from './VotingPowerDistributionPopup'
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const VotingPowerDistributionBarWithPopup = ({ value, className, label, total }: Props) => {
-  const valuePercentage = getPercentage(value, total)
+  const valuePercentage = getFormattedPercentage(value, total)
   return (
     <>
       {value > 0 && (

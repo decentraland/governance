@@ -20,7 +20,7 @@ export default class QuarterCategoryBudgetModel extends Model<QuarterCategoryBud
       const newQuarterCategoryBudget: QuarterCategoryBudgetAttributes = {
         quarter_budget_id: newQuarterBudget.id,
         category: toNewGrantCategory(category),
-        total: getCategoryBudgetTotal(categoryPercentage, newQuarterBudget),
+        total: getCategoryBudgetTotal(categoryPercentage, newQuarterBudget.total),
         allocated: 0,
         created_at: newQuarterBudget.created_at,
         updated_at: newQuarterBudget.updated_at,
