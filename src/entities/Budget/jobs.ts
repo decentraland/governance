@@ -70,7 +70,6 @@ export const TransparencyBudgetSchema = {
     },
   },
 }
-
 const transparencyBudgetValidator = schema.compile(TransparencyBudgetSchema)
 export async function getTransparencyBudgets() {
   let budgets: TransparencyBudget[] = []
@@ -78,7 +77,7 @@ export async function getTransparencyBudgets() {
     budgets = await DclData.get().getBudgets()
     if (!budgets || budgets.length < 1) {
       logger.error(`Received an empty list of transparency budgets`)
-      return budgets
+      return []
     }
     try {
       budgets.forEach((budget) => validate<TransparencyBudget>(transparencyBudgetValidator, budget))

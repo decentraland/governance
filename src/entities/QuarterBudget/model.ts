@@ -38,7 +38,7 @@ function getCategoryBudgetTotal(categoryPercentage: number, newQuarterBudget: Qu
 }
 
 export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
-  static tableName = 'quarter_budget'
+  static tableName = 'quarter_budgets'
   static withTimestamps = false
   static primaryKey = 'id'
 
@@ -50,7 +50,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
       for (const transparencyBudget of sortedBudgets) {
         const startAt = new Date(transparencyBudget.start_date)
         if (!existingBudgets.some((existingBudget) => existingBudget.start_at === startAt)) {
-          const finishAt = Time(transparencyBudget.start_date).add(4, 'months').toDate()
+          const finishAt = Time(transparencyBudget.start_date).add(4, 'months').toDate() //TODO a chequear
           if (this.thereAreNoOverlappingBudgets(startAt, finishAt, existingBudgets)) {
             this.validateCategoryBudgets(transparencyBudget)
             const newQuarterBudget: QuarterBudgetAttributes = {
