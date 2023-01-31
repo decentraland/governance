@@ -1,40 +1,57 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalGrantCategory } from '../../../entities/Grant/types'
+import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
 import { PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
 import ProgressBar from '../../Common/ProgressBar'
+import { Counter } from '../../Search/CategoryFilter'
 
 import './BudgetBanner.css'
 import BudgetBannerItem from './BudgetBannerItem'
 
 interface Props {
   category: ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL
+  status?: GrantStatus | null
+  counter?: Counter
 }
 
-function BudgetBanner({ category }: Props) {
+function getAllInitiatives(counter: Counter) {
+  return Object.values(counter).reduce((acc, curr) => acc + curr, 0)
+}
+
+function BudgetBanner({ category, status, counter }: Props) {
   const t = useFormatMessage()
-  const { percentage, currentAmount, totalBudget, initiatives } = useBudgetByCategory(category)
+  const { percentage, currentAmount, totalBudget } = useBudgetByCategory(category)
+  const allInitiativesAmount = useMemo(() => (counter ? getAllInitiatives(counter) : 0), [counter])
+  const selectedInitiativesAmount =
+    category !== PROPOSAL_GRANT_CATEGORY_ALL ? counter?.[category as keyof Counter] || 0 : allInitiativesAmount
+  const showProgress = !status || status === GrantStatus.InProgress
   return (
-    <div className="BudgetBanner">
+    <div className={TokenList.join(['BudgetBanner', !showProgress && 'BudgetBanner--start'])}>
       <BudgetBannerItem value={totalBudget} label={t('page.grants.budget_banner.budget_label')} />
-      <BudgetBannerItem value={String(initiatives)} label={t('page.grants.budget_banner.progress_label')} />
-      <div className="BudgetBanner__ProgressContainer">
-        <ProgressBar
-          height="6px"
-          percentage={percentage}
-          background="linear-gradient(270deg, #A524B3 -0.33%, #FF2D55 100%)"
-        />
-        <div className="BudgetBanner__ProgressLabel">
-          <div>
-            <span>{t('page.grants.budget_banner.spent_label')}</span>
-            <span className="BudgetBanner__Amount">{currentAmount}</span>
+      <BudgetBannerItem
+        value={String(selectedInitiativesAmount)}
+        label={`${t('page.grants.budget_banner.progress_label')}${status ? ` ${status.toLowerCase()}` : ''}`}
+      />
+      {showProgress && (
+        <div className="BudgetBanner__ProgressContainer">
+          <ProgressBar
+            height="6px"
+            percentage={percentage}
+            background="linear-gradient(270deg, #A524B3 -0.33%, #FF2D55 100%)"
+          />
+          <div className="BudgetBanner__ProgressLabel">
+            <div>
+              <span>{t('page.grants.budget_banner.spent_label')}</span>
+              <span className="BudgetBanner__Amount">{currentAmount}</span>
+            </div>
+            <div className="BudgetBanner__Percentage">{`${percentage}%`}</div>
           </div>
-          <div className="BudgetBanner__Percentage">{`${percentage}%`}</div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

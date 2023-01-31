@@ -26,6 +26,7 @@ export default React.memo(function StatusFilter({
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const status = params.get(FILTER_KEY)
+  const isGrantFilter = isEqual(statusType, GrantStatus)
 
   return (
     <CollapsibleFilter title={t('navigation.search.status_filter_title')} startOpen={startOpen} onChange={onChange}>
@@ -36,7 +37,7 @@ export default React.memo(function StatusFilter({
           return (
             <FilterLabel
               key={'status_filter' + index}
-              label={t(`${isEqual(statusType, GrantStatus) ? 'grant_' : ''}status.${label}`)}
+              label={t(`${isGrantFilter ? 'grant_' : ''}status.${label}`)}
               href={handleUrlFilters(FILTER_KEY, params, label)}
               active={status === label}
             />

@@ -103,6 +103,11 @@ export default function GrantsPage() {
                     grants={displayableGrants}
                     category={toProposalGrantCategory(type)}
                     status={toGrantStatus(status)}
+                    counter={
+                      newGrantsCounter && oldGrantsCounter
+                        ? { ...newGrantsCounter, ...oldGrantsCounter }
+                        : newGrantsCounter || oldGrantsCounter
+                    }
                   />
                 </Grid.Column>
               </Grid.Row>

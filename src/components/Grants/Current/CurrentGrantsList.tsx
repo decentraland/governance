@@ -14,6 +14,7 @@ import locations from '../../../modules/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
 import Watermelon from '../../Icon/Watermelon'
+import { Counter } from '../../Search/CategoryFilter'
 import GrantCard from '../GrantCard/GrantCard'
 
 import BudgetBanner from './BudgetBanner'
@@ -27,6 +28,7 @@ interface Props {
   grants: GrantWithUpdateAttributes[]
   category: ProposalGrantCategory | null
   status: GrantStatus | null
+  counter?: Counter
 }
 
 const CATEGORY_KEYS: Record<GrantCategoryFilter, string> = {
@@ -51,7 +53,7 @@ const GRANTS_STATUS_KEYS: Record<GrantStatus, string> = {
   [GrantStatus.Revoked]: 'grant_status.revoked',
 }
 
-const CurrentGrantsList = ({ grants, category, status }: Props) => {
+const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
   const t = useFormatMessage()
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
@@ -110,7 +112,7 @@ const CurrentGrantsList = ({ grants, category, status }: Props) => {
             <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
           </div>
         </div>
-        <BudgetBanner category={selectedCategory} />
+        <BudgetBanner category={selectedCategory} counter={counter} status={status} />
         {isEmpty(grants) && (
           <Empty
             className="CurrentGrants__Empty"

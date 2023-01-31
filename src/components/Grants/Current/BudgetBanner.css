@@ -10,6 +10,14 @@
   padding: 21px 25px;
 }
 
+.BudgetBanner.BudgetBanner--start {
+  justify-content: flex-start;
+}
+
+.BudgetBanner.BudgetBanner--start > div {
+  margin-right: auto;
+}
+
 .BudgetBanner__ProgressContainer {
   width: 40%;
 }
