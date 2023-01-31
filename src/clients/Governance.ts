@@ -375,7 +375,7 @@ export class Governance extends API {
   async updateGovernanceBudgets() {
     const response = await this.fetch<ApiResponse<QuarterBudgetAttributes[]>>(
       `/budget/update`,
-      this.options().method('GET').authorization({ sign: true })
+      this.options().method('POST').authorization({ sign: true })
     )
     return response.data
   }

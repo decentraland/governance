@@ -4,24 +4,15 @@ import { TransparencyBudget } from '../../clients/DclData'
 import { NewGrantCategory } from '../Grant/types'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
-export function toNewGrantCategory(category: string): NewGrantCategory {
-  switch (category) {
-    case snakeCase(NewGrantCategory.Platform):
-      return NewGrantCategory.Platform
-    case snakeCase(NewGrantCategory.InWorldContent):
-      return NewGrantCategory.InWorldContent
-    case snakeCase(NewGrantCategory.CoreUnit):
-      return NewGrantCategory.CoreUnit
-    case snakeCase(NewGrantCategory.Sponsorship):
-      return NewGrantCategory.Sponsorship
-    case snakeCase(NewGrantCategory.Accelerator):
-      return NewGrantCategory.Accelerator
-    case snakeCase(NewGrantCategory.SocialMediaContent):
-      return NewGrantCategory.SocialMediaContent
-    case snakeCase(NewGrantCategory.Documentation):
-      return NewGrantCategory.Documentation
+export function toNewGrantCategory(category: string) {
+  const categories = Object.values(NewGrantCategory)
+  const idx = categories.map(snakeCase).findIndex((value) => value === snakeCase(category))
+
+  if (idx >= 0) {
+    return categories[idx]
   }
-  throw new Error(`Attempted to parse an invalid NewGrantCategory ${category}`)
+
+  throw Error(`Attempted to parse an invalid NewGrantCategory ${category}`)
 }
 
 export function getCategoryBudgetTotal(categoryPercentage: number, newQuarterBudget: QuarterBudgetAttributes) {

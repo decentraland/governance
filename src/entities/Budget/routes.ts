@@ -56,7 +56,7 @@ export const BUDGET = {
 export default routes((route) => {
   const withAuth = auth()
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
-  route.get('/budget/update/', withAuth, handleAPI(updateBudgets))
+  route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
