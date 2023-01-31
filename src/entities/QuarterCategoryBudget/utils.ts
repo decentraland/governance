@@ -1,27 +1,27 @@
 import { snakeCase } from 'lodash'
 
 import { TransparencyBudget } from '../../clients/DclData'
-import { ProposalGrantCategory } from '../Proposal/types'
+import { NewGrantCategory } from '../Grant/types'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
-export function toProposalGrantCategory(category: string): ProposalGrantCategory {
+export function toNewGrantCategory(category: string): NewGrantCategory {
   switch (category) {
-    case snakeCase(ProposalGrantCategory.Platform):
-      return ProposalGrantCategory.Platform
-    case snakeCase(ProposalGrantCategory.InWorldContent):
-      return ProposalGrantCategory.InWorldContent
-    case snakeCase(ProposalGrantCategory.CoreUnit):
-      return ProposalGrantCategory.CoreUnit
-    case snakeCase(ProposalGrantCategory.Sponsorship):
-      return ProposalGrantCategory.Sponsorship
-    case snakeCase(ProposalGrantCategory.Accelerator):
-      return ProposalGrantCategory.Accelerator
-    case snakeCase(ProposalGrantCategory.SocialMediaContent):
-      return ProposalGrantCategory.SocialMediaContent
-    case snakeCase(ProposalGrantCategory.Documentation):
-      return ProposalGrantCategory.Documentation
+    case snakeCase(NewGrantCategory.Platform):
+      return NewGrantCategory.Platform
+    case snakeCase(NewGrantCategory.InWorldContent):
+      return NewGrantCategory.InWorldContent
+    case snakeCase(NewGrantCategory.CoreUnit):
+      return NewGrantCategory.CoreUnit
+    case snakeCase(NewGrantCategory.Sponsorship):
+      return NewGrantCategory.Sponsorship
+    case snakeCase(NewGrantCategory.Accelerator):
+      return NewGrantCategory.Accelerator
+    case snakeCase(NewGrantCategory.SocialMediaContent):
+      return NewGrantCategory.SocialMediaContent
+    case snakeCase(NewGrantCategory.Documentation):
+      return NewGrantCategory.Documentation
   }
-  throw new Error(`Attempted to parse an invalid ProposalGrantCategory ${category}`)
+  throw new Error(`Attempted to parse an invalid NewGrantCategory ${category}`)
 }
 
 export function getCategoryBudgetTotal(categoryPercentage: number, newQuarterBudget: QuarterBudgetAttributes) {

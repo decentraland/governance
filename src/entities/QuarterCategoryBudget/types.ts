@@ -1,8 +1,8 @@
-import { ProposalGrantCategory } from '../Proposal/types'
+import { NewGrantCategory } from '../Grant/types'
 
 export type QuarterCategoryBudgetAttributes = {
   quarter_budget_id: string
-  category: ProposalGrantCategory
+  category: NewGrantCategory
   total: number
   allocated: number
   created_at: Date

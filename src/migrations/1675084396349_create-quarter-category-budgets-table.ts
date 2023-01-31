@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ColumnDefinitions, MigrationBuilder } from 'node-pg-migrate'
 
-import { ProposalGrantCategory } from '../entities/Proposal/types'
+import { NewGrantCategory } from '../entities/Grant/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import Model from '../entities/QuarterCategoryBudget/model'
 
 export const shorthands: ColumnDefinitions | undefined = undefined
 
-const PROPOSAL_GRANT_CATEGORY_TYPE = 'proposal_grant_category_type'
+const NEW_GRANT_CATEGORY_TYPE = 'new_grant_category_type'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-  pgm.createType(PROPOSAL_GRANT_CATEGORY_TYPE, Object.values(ProposalGrantCategory))
+  pgm.createType(NEW_GRANT_CATEGORY_TYPE, Object.values(NewGrantCategory))
 
   pgm.createTable(Model.tableName, {
     quarter_budget_id: {
@@ -19,7 +19,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true,
     },
     category: {
-      type: PROPOSAL_GRANT_CATEGORY_TYPE,
+      type: NEW_GRANT_CATEGORY_TYPE,
       primaryKey: true,
       notNull: true,
     },
@@ -54,6 +54,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
-  pgm.dropTable(Model.tableName, { cascade: true })
-  pgm.dropType(PROPOSAL_GRANT_CATEGORY_TYPE, { cascade: true })
+  pgm.dropTable(Model.tableName, { cascade: false })
+  pgm.dropType(NEW_GRANT_CATEGORY_TYPE, { cascade: true })
 }

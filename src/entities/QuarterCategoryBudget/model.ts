@@ -4,7 +4,7 @@ import { TransparencyBudget } from '../../clients/DclData'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
 import { QuarterCategoryBudgetAttributes } from './types'
-import { getCategoryBudgetTotal, toProposalGrantCategory } from './utils'
+import { getCategoryBudgetTotal, toNewGrantCategory } from './utils'
 
 export default class QuarterCategoryBudgetModel extends Model<QuarterCategoryBudgetAttributes> {
   static tableName = 'quarter_category_budgets'
@@ -19,7 +19,7 @@ export default class QuarterCategoryBudgetModel extends Model<QuarterCategoryBud
       const categoryPercentage = transparencyBudget.category_percentages[category]
       const newQuarterCategoryBudget: QuarterCategoryBudgetAttributes = {
         quarter_budget_id: newQuarterBudget.id,
-        category: toProposalGrantCategory(category),
+        category: toNewGrantCategory(category),
         total: getCategoryBudgetTotal(categoryPercentage, newQuarterBudget),
         allocated: 0,
         created_at: newQuarterBudget.created_at,
