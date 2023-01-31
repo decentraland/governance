@@ -3,6 +3,8 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 
 import { DclData, TransparencyBudget } from '../../clients/DclData'
+import QuarterBudgetModel from '../QuarterBudget/model'
+import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -90,5 +92,11 @@ export async function getTransparencyBudgets() {
     logger.error(`Unable to fetch transparency budgets. ${JSON.stringify(e)}`)
     console.error('Unable to fetch transparency budgets', e)
   }
+  console.log('Transparency budgets: ', JSON.stringify(budgets))
   return budgets
+}
+
+export async function updateGovernanceBudgets(): Promise<QuarterBudgetAttributes[]> {
+  const transparencyBudgets = await getTransparencyBudgets()
+  return await QuarterBudgetModel.createNewBudgets(transparencyBudgets)
 }

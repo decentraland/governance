@@ -44,6 +44,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
 
   static async createNewBudgets(transparencyBudgets: TransparencyBudget[]) {
     const existingBudgets = await this.find<QuarterBudgetAttributes>()
+    const newBudgets = []
     if (transparencyBudgets.length > existingBudgets.length) {
       const sortedBudgets = transparencyBudgets.sort((a, b) => Date.parse(b.start_date) - Date.parse(a.start_date))
       const now = new Date()
@@ -64,6 +65,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
             await this.create(newQuarterBudget)
             try {
               await this.createCategoryBudgets(newQuarterBudget, transparencyBudget)
+              newBudgets.push(newQuarterBudget)
             } catch (e) {
               await this.delete(newQuarterBudget)
               throw e
@@ -74,6 +76,11 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
         }
       }
     }
+
+    console.log(`Created ${newBudgets.length} new budgets`)
+    console.log(`New budgets: ${JSON.stringify(newBudgets)}`)
+    console.log(`Existing budgets: ${JSON.stringify(existingBudgets)}`)
+    return [...existingBudgets, ...newBudgets]
   }
 
   private static thereAreNoOverlappingBudgets(
