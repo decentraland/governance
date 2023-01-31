@@ -1,9 +1,14 @@
+import { auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 import { snakeCase } from 'lodash'
 
-import { NewGrantCategory, OldGrantCategory } from './../Grant/types'
+import { TransparencyBudget } from '../../clients/DclData'
+import { NewGrantCategory } from '../Grant/types'
+import { QuarterBudgetAttributes } from '../QuarterBudget/types'
+
+import { getTransparencyBudgets, updateGovernanceBudgets } from './jobs'
 
 // TODO: This object should be generated dynamically, calculating budget available from passed/enacted proposals
 export const BUDGET = {
@@ -45,31 +50,13 @@ export const BUDGET = {
       available: 45045,
       allocated: 0,
     },
-    // TODO: Remove old. Done this to fix typing
-    [snakeCase(OldGrantCategory.PlatformContributor)]: {
-      total: 0,
-      available: 0,
-      allocated: 0,
-    },
-    [snakeCase(OldGrantCategory.Community)]: {
-      total: 0,
-      available: 0,
-      allocated: 0,
-    },
-    [snakeCase(OldGrantCategory.Gaming)]: {
-      total: 0,
-      available: 0,
-      allocated: 0,
-    },
-    [snakeCase(OldGrantCategory.ContentCreator)]: {
-      total: 0,
-      available: 0,
-      allocated: 0,
-    },
   },
 }
 
 export default routes((route) => {
+  const withAuth = auth()
+  route.get('/budget/fetch/', handleAPI(fetchBudgets))
+  route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
@@ -77,4 +64,12 @@ async function getCategoryBudget(req: Request) {
   const { category } = req.params
 
   return BUDGET.categories[category as NewGrantCategory]
+}
+
+async function updateBudgets(): Promise<QuarterBudgetAttributes[]> {
+  return await updateGovernanceBudgets()
+}
+
+async function fetchBudgets(): Promise<TransparencyBudget[]> {
+  return await getTransparencyBudgets()
 }

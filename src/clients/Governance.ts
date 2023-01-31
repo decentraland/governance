@@ -21,10 +21,13 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
+import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 import { GrantRequest } from '../pages/submit/grant'
+
+import { TransparencyBudget } from './DclData'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -360,6 +363,19 @@ export class Governance extends API {
     const response = await this.fetch<ApiResponse<{ total: number; available: number; allocated: number }>>(
       `/budget/${snakeCase(category)}`,
       this.options().method('GET')
+    )
+    return response.data
+  }
+
+  async getTransparencyBudgets() {
+    const response = await this.fetch<ApiResponse<TransparencyBudget[]>>(`/budget/fetch`, this.options().method('GET'))
+    return response.data
+  }
+
+  async updateGovernanceBudgets() {
+    const response = await this.fetch<ApiResponse<QuarterBudgetAttributes[]>>(
+      `/budget/update`,
+      this.options().method('POST').authorization({ sign: true })
     )
     return response.data
   }
