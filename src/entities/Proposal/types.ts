@@ -613,10 +613,11 @@ export type TransparencyGrant = {
 
 export type GrantWithUpdateAttributes = TransparencyGrant & {
   update: IndexedUpdate | null
+  update_timestamp: number
 }
 
 export type GrantsResponse = {
   current: GrantWithUpdateAttributes[]
-  past: TransparencyGrant[]
+  past: GrantWithUpdateAttributes[]
   total: number
 }

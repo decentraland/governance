@@ -107,6 +107,7 @@ function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps
               <CategoryFilter
                 onChange={(open) => handleFilterStatusChange({ ...filterStatus, categoryOpen: open })}
                 filterType={ProposalType}
+                startOpen
               />
               <StatusFilter
                 onChange={(open) => handleFilterStatusChange({ ...filterStatus, statusOpen: open })}

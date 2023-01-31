@@ -26,7 +26,7 @@ import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
-import { GrantRequestSchema } from '../Grant/types'
+import { GrantRequestSchema, GrantStatus } from '../Grant/types'
 import { isValidGrantBudget } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
@@ -40,6 +40,7 @@ import ProposalModel from './model'
 import {
   GrantProposalConfiguration,
   GrantWithUpdateAttributes,
+  GrantsResponse,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -533,12 +534,12 @@ async function getGrantLatestUpdate(proposalId: string): Promise<IndexedUpdate |
   return { ...currentUpdate, index: publicUpdates.length }
 }
 
-async function getGrants() {
+async function getGrants(): Promise<GrantsResponse> {
   const grants = await DclData.get().getGrants()
   const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
 
-  const current: TransparencyGrant[] = []
-  const past: TransparencyGrant[] = []
+  const current: GrantWithUpdateAttributes[] = []
+  const past: GrantWithUpdateAttributes[] = []
 
   await Promise.all(
     enactedGrants.map(async (grant) => {
@@ -592,18 +593,17 @@ async function getGrants() {
           })
         }
 
-        const isCurrentGrant = newGrant.contract?.vestedAmount !== newGrant.contract?.vesting_total_amount
-        if (!isCurrentGrant) {
-          return past.push(newGrant)
-        }
+        const isCurrentGrant = newGrant.status === GrantStatus.InProgress || newGrant.status === GrantStatus.Paused
 
         try {
           const update = await getGrantLatestUpdate(grant.id)
-          return current.push({
+          const grantWithUpdate: GrantWithUpdateAttributes = {
             ...newGrant,
             update,
             update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
-          } as GrantWithUpdateAttributes)
+          }
+
+          return isCurrentGrant ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
         } catch (error) {
           logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
         }
@@ -636,7 +636,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   const grantsResult = await getGrants()
 
-  const filterGrants = (grants: TransparencyGrant[]) => {
+  const filterGrants = (grants: GrantWithUpdateAttributes[]) => {
     return grants.filter(
       (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
     )

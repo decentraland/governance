@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { navigate } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import filter from 'lodash/filter'
@@ -9,7 +10,10 @@ import orderBy from 'lodash/orderBy'
 import { GrantStatus, NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
 import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGrantsFilteredByCategory'
+import locations from '../../../modules/locations'
+import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
+import Watermelon from '../../Icon/Watermelon'
 import GrantCard from '../GrantCard/GrantCard'
 
 import BudgetBanner from './BudgetBanner'
@@ -107,6 +111,16 @@ const CurrentGrantsList = ({ grants, category, status }: Props) => {
           </div>
         </div>
         <BudgetBanner category={selectedCategory} />
+        {isEmpty(grants) && (
+          <Empty
+            className="CurrentGrants__Empty"
+            icon={<Watermelon />}
+            description={t('page.grants.empty.description')}
+            onLinkClick={() => navigate(locations.grants())}
+            linkText={t('page.grants.empty.button')}
+            actionType={ActionType.BUTTON}
+          />
+        )}
         <Container className="CurrentGrants__Container">
           {filteredCurrentGrants?.map((grant) => (
             <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />

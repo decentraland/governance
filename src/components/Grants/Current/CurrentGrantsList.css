@@ -30,6 +30,10 @@
     flex-direction: row;
     align-items: center;
   }
+
+  .CurrentGrants__Empty {
+    margin-top: 185px;
+  }
 }
 
 .CurrentGrants__Container {
