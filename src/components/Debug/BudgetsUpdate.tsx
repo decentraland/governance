@@ -21,32 +21,23 @@ export default function BudgetsUpdate({ className }: Props) {
   const [formDisabled, setFormDisabled] = useState(false)
 
   async function handleFetchBudgets() {
-    setFormDisabled(true)
-    Promise.resolve()
-      .then(async () => {
-        const budgets = await Governance.get().getTransparencyBudgets()
-        console.log('budgets', budgets)
-        setTransparencyBudgets(budgets)
-      })
-      .then((result) => {
-        console.log('result', result)
-        setFormDisabled(false)
-        setErrorMessage('')
-      })
-      .catch((err) => {
-        console.error(err, { ...err })
-        setErrorMessage(err.message)
-        setFormDisabled(false)
-      })
+    await submit<TransparencyBudget[]>(async () => Governance.get().getTransparencyBudgets(), setTransparencyBudgets)
   }
 
   async function handleUpdateBudgets() {
+    await submit<QuarterBudgetAttributes[]>(
+      async () => Governance.get().updateGovernanceBudgets(),
+      setGovernanceBudgets
+    )
+  }
+
+  async function submit<T>(submit: () => Promise<T>, update: (result: T) => void) {
     setFormDisabled(true)
     Promise.resolve()
       .then(async () => {
-        const budgets = await Governance.get().updateGovernanceBudgets()
-        console.log('budgets', budgets)
-        setGovernanceBudgets(budgets)
+        const result: T = await submit()
+        console.log('result', result)
+        update(result)
       })
       .then((result) => {
         console.log('result', result)
