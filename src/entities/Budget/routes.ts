@@ -1,3 +1,4 @@
+import { auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -53,8 +54,9 @@ export const BUDGET = {
 }
 
 export default routes((route) => {
+  const withAuth = auth()
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
-  route.get('/budget/update/', handleAPI(updateBudgets))
+  route.get('/budget/update/', withAuth, handleAPI(updateBudgets))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
