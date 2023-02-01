@@ -1,4 +1,4 @@
-import { INVALID_BUDGET_FORMAT, VALID_BUDGET_1 } from '../Budget/jobs.test'
+import { INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET, VALID_TRANSPARENCY_BUDGET_1 } from '../Budget/jobs.test'
 
 import { getCategoryBudgetTotal, validateCategoryBudgets } from './utils'
 
@@ -15,12 +15,14 @@ describe('getCategoryBudgetTotal', () => {
 
 describe('validateCategoryBudgets', () => {
   it('does not throw an error if the sum of the category percentages is 100', () => {
-    expect(() => validateCategoryBudgets(VALID_BUDGET_1)).not.toThrowError()
+    expect(() => validateCategoryBudgets(VALID_TRANSPARENCY_BUDGET_1)).not.toThrowError()
   })
 
   it('throws if categories do not amount to 100', () => {
-    expect(() => validateCategoryBudgets(INVALID_BUDGET_FORMAT)).toThrowError(
-      `Categories percentages do not amount to 100 for budget: ${JSON.stringify(INVALID_BUDGET_FORMAT)}`
+    expect(() => validateCategoryBudgets(INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET)).toThrowError(
+      `Categories percentages do not amount to 100 for budget: ${JSON.stringify(
+        INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET
+      )}`
     )
   })
 })
