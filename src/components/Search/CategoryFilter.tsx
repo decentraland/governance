@@ -14,8 +14,7 @@ import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
 
 export type FilterType = typeof ProposalType | typeof NewGrantCategory | typeof OldGrantCategory
-export type Counter = Record<ProposalType, number> | Record<NewGrantCategory, number> | Record<OldGrantCategory, number>
-
+export type Counter = Record<any, number>
 export type FilterProps = {
   onChange?: (open: boolean) => void
   startOpen?: boolean

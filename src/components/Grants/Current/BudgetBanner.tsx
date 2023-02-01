@@ -18,22 +18,25 @@ interface Props {
   counter?: Counter
 }
 
-function getAllInitiatives(counter: Counter) {
+function getAllInitiativesCount(counter: Counter) {
   return Object.values(counter).reduce((acc, curr) => acc + curr, 0)
 }
 
 function BudgetBanner({ category, status, counter }: Props) {
   const t = useFormatMessage()
   const { percentage, currentAmount, totalBudget } = useBudgetByCategory(category)
-  const allInitiativesAmount = useMemo(() => (counter ? getAllInitiatives(counter) : 0), [counter])
-  const selectedInitiativesAmount =
-    category !== PROPOSAL_GRANT_CATEGORY_ALL ? counter?.[category as keyof Counter] || 0 : allInitiativesAmount
+  const initiativesCount = useMemo(
+    () =>
+      (counter && (category !== PROPOSAL_GRANT_CATEGORY_ALL ? counter[category] : getAllInitiativesCount(counter))) ||
+      0,
+    [category, counter]
+  )
   const showProgress = !status || status === GrantStatus.InProgress
   return (
     <div className={TokenList.join(['BudgetBanner', !showProgress && 'BudgetBanner--start'])}>
       <BudgetBannerItem value={totalBudget} label={t('page.grants.budget_banner.budget_label')} />
       <BudgetBannerItem
-        value={String(selectedInitiativesAmount)}
+        value={String(initiativesCount)}
         label={`${t('page.grants.budget_banner.progress_label')}${status ? ` ${status.toLowerCase()}` : ''}`}
       />
       {showProgress && (
