@@ -1,4 +1,3 @@
-// import Time from 'dayjs'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { TransparencyBudget } from '../../clients/DclData'
