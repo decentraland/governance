@@ -11,6 +11,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { Governance } from '../../clients/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
   GrantRequestFunding,
@@ -69,6 +70,7 @@ export default function SubmitGrant() {
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
+  const [submitError, setSubmitError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -93,7 +95,7 @@ export default function SubmitGrant() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          // editor.error({ '*': err.body?.error || err.message })
+          setSubmitError(err.body?.error || err.message)
           setIsFormDisabled(false)
         })
     }
@@ -171,6 +173,13 @@ export default function SubmitGrant() {
             </ContentSection>
           </Container>
         </>
+      )}
+      {!!submitError && (
+        <Container className="GrantRequest__Error">
+          <ContentSection>
+            <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(submitError) || submitError} />
+          </ContentSection>
+        </Container>
       )}
     </div>
   )
