@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -41,7 +41,11 @@ export const INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE: GrantRequestGeneralInfo =
 const schema = GrantRequestGeneralInfoSchema
 const validate = createValidator<GrantRequestGeneralInfo>({
   title: (state) => ({
-    title: assert(state.title.length <= schema.title.maxLength, 'error.grant.title_too_large') || undefined,
+    title:
+      assert(state.title.length <= schema.title.maxLength, 'error.grant.title_too_large') ||
+      assert(state.title.length > 0, 'error.grant.title_empty') ||
+      assert(state.title.length > schema.title.minLength, 'error.grant.title_too_short') ||
+      undefined,
   }),
   description: (state) => ({
     description:
@@ -64,7 +68,7 @@ const validate = createValidator<GrantRequestGeneralInfo>({
       ) ||
       assert(state.specification.length > 0, 'error.grant.general_info.specification_empty') ||
       assert(
-        state.specification.length > schema.specification.minLength,
+        state.specification.length >= schema.specification.minLength,
         'error.grant.general_info.specification_too_short'
       ) ||
       undefined,
@@ -117,19 +121,44 @@ interface Props {
   isFormDisabled: boolean
 }
 
+type Fields = keyof Omit<GrantRequestGeneralInfo, 'coAuthors'>
+
 export default function GrantRequestGeneralInfoSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
+  const [checkedFields, setCheckedFields] = useState<Record<Fields, boolean>>({
+    title: false,
+    abstract: false,
+    description: false,
+    specification: false,
+    beneficiary: false,
+    email: false,
+    personnel: false,
+    roadmap: false,
+  })
+
+  const canValidate = useCallback(() => Object.values(checkedFields).every((value) => value), [checkedFields])
+
+  const onFieldBlur = (field: Fields) => {
+    setCheckedFields({ ...checkedFields, [field]: true })
+    editor.set({ [field]: state.value[field].trim() })
+  }
 
   useEffect(() => {
     onValidation({ ...state.value }, state.validated)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
 
+  useEffect(() => {
+    if (canValidate()) {
+      editor.validate()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canValidate])
+
   return (
     <GrantRequestSection
-      onBlur={() => editor.validate()}
       validated={state.validated}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.general_info.title')}
@@ -142,7 +171,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             value={state.value.title}
             placeholder={t('page.submit_grant.general_info.title_placeholder')}
             onChange={(_, { value }) => editor.set({ title: value })}
-            onBlur={() => editor.set({ title: state.value.title.trim() })}
+            onBlur={() => onFieldBlur('title')}
             error={!!state.error.title}
             message={
               t(state.error.title) +
@@ -163,7 +192,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             value={state.value.abstract}
             placeholder={t('page.submit_grant.general_info.abstract_placeholder')}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ abstract: value })}
-            onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
+            onBlur={() => onFieldBlur('abstract')}
             error={!!state.error.abstract}
             message={
               t(state.error.abstract) +
@@ -185,7 +214,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             minHeight={175}
             value={state.value.description}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
-            onBlur={() => editor.set({ description: state.value.description.trim() })}
+            onBlur={() => onFieldBlur('description')}
             error={!!state.error.description}
             message={
               t(state.error.description) +
@@ -207,7 +236,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             minHeight={175}
             value={state.value.specification}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
-            onBlur={() => editor.set({ specification: state.value.specification.trim() })}
+            onBlur={() => onFieldBlur('specification')}
             error={!!state.error.specification}
             message={
               t(state.error.specification) +
@@ -229,7 +258,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             type="address"
             value={state.value.beneficiary}
             onChange={(_, { value }) => editor.set({ beneficiary: value }, { validate: false })}
-            onBlur={() => editor.set({ beneficiary: state.value.beneficiary.trim() })}
+            onBlur={() => onFieldBlur('beneficiary')}
             message={t(state.error.beneficiary)}
             error={!!state.error.beneficiary}
             disabled={isFormDisabled}
@@ -245,7 +274,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             value={state.value.email}
             placeholder={t('page.submit_grant.general_info.email_placeholder')}
             onChange={(_, { value }) => editor.set({ email: value })}
-            onBlur={() => editor.set({ email: state.value.email.trim() })}
+            onBlur={() => onFieldBlur('email')}
             message={t(state.error.email)}
             error={!!state.error.email}
             disabled={isFormDisabled}
@@ -260,7 +289,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             value={state.value.personnel}
             placeholder={t('page.submit_grant.general_info.personnel_placeholder')}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ personnel: value })}
-            onBlur={() => editor.set({ personnel: state.value.personnel.trim() })}
+            onBlur={() => onFieldBlur('personnel')}
             error={!!state.error.personnel}
             message={
               t(state.error.personnel) +
@@ -281,7 +310,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             value={state.value.roadmap}
             placeholder={t('page.submit_grant.general_info.roadmap_placeholder')}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ roadmap: value })}
-            onBlur={() => editor.set({ roadmap: state.value.roadmap.trim() })}
+            onBlur={() => onFieldBlur('roadmap')}
             error={!!state.error.roadmap}
             message={
               t(state.error.roadmap) +
@@ -296,10 +325,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection onBlur={() => onValidation({ ...state.value }, state.validated)}>
           <CoAuthors
-            setCoAuthors={(addresses?: string[]) => {
-              editor.set({ coAuthors: addresses })
-              editor.validate()
-            }}
+            setCoAuthors={(addresses?: string[]) => editor.set({ coAuthors: addresses })}
             isDisabled={isFormDisabled}
           />
         </ContentSection>
