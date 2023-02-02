@@ -1,11 +1,17 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
+import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { snakeCase } from 'lodash'
 import { v1 as uuid } from 'uuid'
 
 import { TransparencyBudget } from '../../clients/DclData'
+import { CurrentBudget, CurrentCategoryBudget } from '../Budget/types'
+import { NewGrantCategory } from '../Grant/types'
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
+import { QuarterCategoryBudgetAttributes } from '../QuarterCategoryBudget/types'
 import { validateCategoryBudgets } from '../QuarterCategoryBudget/utils'
 
-import { QuarterBudgetAttributes } from './types'
+import { CurrentBudgetQueryResult, QuarterBudgetAttributes } from './types'
 import {
   budgetExistsForStartingDate,
   getQuarterEndDate,
@@ -81,6 +87,71 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     } catch (e) {
       await this.delete({ id: newQuarterBudget.id })
       throw e
+    }
+  }
+
+  static async getCurrentBudget(): Promise<CurrentBudget> {
+    const now = new Date()
+    const query = SQL`
+        SELECT qcb.category, qcb.total as category_total, qcb.allocated, qb.start_at, qb.finish_at, qb.total
+        FROM ${table(QuarterCategoryBudgetModel)} as qcb 
+        INNER JOIN ${table(QuarterBudgetModel)} as qb
+        ON qcb.quarter_budget_id = qb.id
+        WHERE 
+          qb.start_at <= ${now} AND
+          qb.finish_at > ${now}
+    `
+
+    const result = await this.query(query)
+    return this.parseCurrentBudget(result)
+  }
+
+  static async getCategoryBudgetForCurrentQuarter(
+    category: NewGrantCategory
+  ): Promise<QuarterCategoryBudgetAttributes> {
+    const now = new Date()
+    const query = SQL`
+        SELECT qcb.*
+        FROM ${table(QuarterCategoryBudgetModel)} as qcb 
+        INNER JOIN ${table(QuarterBudgetModel)} as qb
+        ON qcb.quarter_budget_id = qb.id
+        WHERE 
+          qcb.category = ${category} AND
+          qb.start_at <= ${now} AND
+          qb.finish_at > ${now}
+    `
+
+    const result = await this.query(query)
+    this.validateUniqueness(result)
+    return result[0]
+  }
+
+  private static validateUniqueness(result: any[]) {
+    if (result.length > 1) {
+      throw new Error('There is more than one quarter budget available for current date')
+    }
+    if (result.length === 0) {
+      throw new Error('There is no budget available for current date')
+    }
+  }
+
+  static parseCurrentBudget(result: CurrentBudgetQueryResult[]): CurrentBudget {
+    const categoriesResults: Record<string, CurrentCategoryBudget> = {}
+    result.forEach((categoryResult) => {
+      const { category_total, allocated } = categoryResult
+
+      categoriesResults[snakeCase(categoryResult.category)] = {
+        total: category_total,
+        allocated,
+        available: category_total - allocated,
+      }
+    })
+
+    return {
+      start_at: Time.date(result[0].start_at),
+      finish_at: Time.date(result[0].finish_at),
+      total: result[0].total,
+      categories: categoriesResults,
     }
   }
 }

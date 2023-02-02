@@ -1,6 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 
 import { TransparencyBudget } from '../../clients/DclData'
+import { ProposalAttributes } from '../Proposal/types'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
 import { QuarterCategoryBudgetAttributes } from './types'
@@ -26,6 +27,14 @@ export default class QuarterCategoryBudgetModel extends Model<QuarterCategoryBud
         updated_at: newQuarterBudget.updated_at,
       }
       await QuarterCategoryBudgetModel.create(newQuarterCategoryBudget)
+    }
+  }
+
+  static parse(proposal: ProposalAttributes): ProposalAttributes {
+    return {
+      ...proposal,
+      configuration: JSON.parse(proposal.configuration),
+      snapshot_proposal: JSON.parse(proposal.snapshot_proposal),
     }
   }
 }

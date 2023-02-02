@@ -8,6 +8,10 @@ import { TransparencyBudget } from '../../clients/DclData'
 import { BudgetService } from '../../services/BudgetService'
 import { NewGrantCategory } from '../Grant/types'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
+import { QuarterCategoryBudgetAttributes } from '../QuarterCategoryBudget/types'
+import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
+
+import { CurrentBudget } from './types'
 
 // TODO: This object should be generated dynamically, calculating budget available from passed/enacted proposals
 export const BUDGET = {
@@ -56,13 +60,14 @@ export default routes((route) => {
   const withAuth = auth()
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
   route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
+  route.get('/budget/current', handleAPI(getCurrentBudget))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
-async function getCategoryBudget(req: Request) {
+async function getCategoryBudget(req: Request): Promise<QuarterCategoryBudgetAttributes> {
   const { category } = req.params
-
-  return BUDGET.categories[category as NewGrantCategory]
+  const grantCategory = toNewGrantCategory(category)
+  return await BudgetService.getCategoryBudget(grantCategory)
 }
 
 async function updateBudgets(): Promise<QuarterBudgetAttributes[]> {
@@ -71,4 +76,8 @@ async function updateBudgets(): Promise<QuarterBudgetAttributes[]> {
 
 async function fetchBudgets(): Promise<TransparencyBudget[]> {
   return await BudgetService.getTransparencyBudgets()
+}
+
+async function getCurrentBudget(): Promise<CurrentBudget> {
+  return await BudgetService.getCurrentBudget()
 }
