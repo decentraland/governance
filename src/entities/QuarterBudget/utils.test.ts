@@ -4,7 +4,7 @@ import {
   VALID_TRANSPARENCY_BUDGET_1,
   VALID_TRANSPARENCY_BUDGET_2,
   VALID_TRANSPARENCY_BUDGET_3,
-} from '../Budget/jobs.test'
+} from '../../services/BudgetService.test'
 
 import { QuarterBudgetAttributes } from './types'
 import {

@@ -5,10 +5,9 @@ import { Request } from 'express'
 import { snakeCase } from 'lodash'
 
 import { TransparencyBudget } from '../../clients/DclData'
+import { BudgetService } from '../../services/BudgetService'
 import { NewGrantCategory } from '../Grant/types'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
-
-import { getTransparencyBudgets, updateGovernanceBudgets } from './jobs'
 
 // TODO: This object should be generated dynamically, calculating budget available from passed/enacted proposals
 export const BUDGET = {
@@ -67,9 +66,9 @@ async function getCategoryBudget(req: Request) {
 }
 
 async function updateBudgets(): Promise<QuarterBudgetAttributes[]> {
-  return await updateGovernanceBudgets()
+  return await BudgetService.updateGovernanceBudgets()
 }
 
 async function fetchBudgets(): Promise<TransparencyBudget[]> {
-  return await getTransparencyBudgets()
+  return await BudgetService.getTransparencyBudgets()
 }

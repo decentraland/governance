@@ -2,9 +2,9 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 
-import { DclData, TransparencyBudget } from '../../clients/DclData'
-import QuarterBudgetModel from '../QuarterBudget/model'
-import { QuarterBudgetAttributes } from '../QuarterBudget/types'
+import { DclData, TransparencyBudget } from '../clients/DclData'
+import QuarterBudgetModel from '../entities/QuarterBudget/model'
+import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -73,30 +73,33 @@ export const TransparencyBudgetSchema = {
   },
 }
 const transparencyBudgetValidator = schema.compile(TransparencyBudgetSchema)
-export async function getTransparencyBudgets() {
-  let budgets: TransparencyBudget[] = []
-  try {
-    budgets = await DclData.get().getBudgets()
-    if (!budgets || budgets.length < 1) {
-      logger.error(`Received an empty list of transparency budgets`)
-      return []
-    }
-    try {
-      budgets.forEach((budget) => validate<TransparencyBudget>(transparencyBudgetValidator, budget))
-    } catch (e) {
-      logger.error(`Invalid transparency budgets ${JSON.stringify(budgets)}. ${JSON.stringify(e)}`)
-      console.error(`Invalid transparency budgets ${JSON.stringify(budgets)}`, e)
-      return []
-    }
-  } catch (e) {
-    logger.error(`Unable to fetch transparency budgets. ${JSON.stringify(e)}`)
-    console.error('Unable to fetch transparency budgets', e)
-  }
-  console.log('Transparency budgets: ', JSON.stringify(budgets))
-  return budgets
-}
 
-export async function updateGovernanceBudgets(): Promise<QuarterBudgetAttributes[]> {
-  const transparencyBudgets = await getTransparencyBudgets()
-  return await QuarterBudgetModel.createNewBudgets(transparencyBudgets)
+export class BudgetService {
+  public static async getTransparencyBudgets() {
+    let budgets: TransparencyBudget[] = []
+    try {
+      budgets = await DclData.get().getBudgets()
+      if (!budgets || budgets.length < 1) {
+        logger.error(`Received an empty list of transparency budgets`)
+        return []
+      }
+      try {
+        budgets.forEach((budget) => validate<TransparencyBudget>(transparencyBudgetValidator, budget))
+      } catch (e) {
+        logger.error(`Invalid transparency budgets ${JSON.stringify(budgets)}. ${JSON.stringify(e)}`)
+        console.error(`Invalid transparency budgets ${JSON.stringify(budgets)}`, e)
+        return []
+      }
+    } catch (e) {
+      logger.error(`Unable to fetch transparency budgets. ${JSON.stringify(e)}`)
+      console.error('Unable to fetch transparency budgets', e)
+    }
+    console.log('Transparency budgets: ', JSON.stringify(budgets))
+    return budgets
+  }
+
+  public static async updateGovernanceBudgets(): Promise<QuarterBudgetAttributes[]> {
+    const transparencyBudgets = await this.getTransparencyBudgets()
+    return await QuarterBudgetModel.createNewBudgets(transparencyBudgets)
+  }
 }

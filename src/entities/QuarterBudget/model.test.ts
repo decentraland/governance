@@ -4,7 +4,7 @@ import {
   OVERLAPPING_TRANSPARENCY_BUDGET,
   VALID_TRANSPARENCY_BUDGET_1,
   VALID_TRANSPARENCY_BUDGET_2,
-} from '../Budget/jobs.test'
+} from '../../services/BudgetService.test'
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 
 import QuarterBudgetModel from './model'
