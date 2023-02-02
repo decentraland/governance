@@ -133,11 +133,10 @@ describe('QuarterBudgetModel', () => {
         beforeEach(() => {
           jest.spyOn(QuarterBudgetModel, 'find').mockResolvedValue([VALID_QUARTER_BUDGET_1])
           jest.spyOn(QuarterBudgetModel, 'create').mockResolvedValue([VALID_QUARTER_BUDGET_2])
-          jest.spyOn(QuarterBudgetModel, 'delete')
           jest.spyOn(QuarterCategoryBudgetModel, 'create').mockResolvedValue({})
         })
 
-        it('log the budget it creates, and throws', async () => {
+        it('logs the budget it creates, and throws', async () => {
           const logSpy = jest.spyOn(console, 'log')
 
           try {
@@ -175,7 +174,7 @@ describe('QuarterBudgetModel', () => {
         })
       })
 
-      describe('when receiving an invalid budget', () => {
+      describe('when receiving a new invalid budget', () => {
         it('does not create any budget and throws an error', async () => {
           await expect(
             QuarterBudgetModel.createNewBudgets([

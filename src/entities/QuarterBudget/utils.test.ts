@@ -67,7 +67,7 @@ describe('getQuarterStartDate', () => {
 })
 
 describe('getQuarterEndDate', () => {
-  it('gets the same day of the month, four months later', () => {
+  it('gets the same day of the month, three months later', () => {
     expect(getQuarterEndDate(new Date('2023-01-01T00:00:00Z'))).toEqual(new Date('2023-04-01T00:00:00Z'))
     expect(getQuarterEndDate(new Date('2023-04-01T00:00:00Z'))).toEqual(new Date('2023-07-01T00:00:00Z'))
     expect(getQuarterEndDate(new Date('2023-07-01T00:00:00Z'))).toEqual(new Date('2023-10-01T00:00:00Z'))
