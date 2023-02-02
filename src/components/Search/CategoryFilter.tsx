@@ -2,47 +2,76 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import isEqual from 'lodash/isEqual'
+import toSnakeCase from 'lodash/snakeCase'
 
-import { ProposalType, toProposalType } from '../../entities/Proposal/types'
-import locations from '../../modules/locations'
+import { handleUrlFilters } from '../../clients/utils'
+import { NewGrantCategory, OldGrantCategory } from '../../entities/Grant/types'
+import { ProposalType } from '../../entities/Proposal/types'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
 
+export type FilterType = typeof ProposalType | typeof NewGrantCategory | typeof OldGrantCategory
+export type Counter = Record<ProposalType, number> | Record<NewGrantCategory, number> | Record<OldGrantCategory, number>
+
 export type FilterProps = {
   onChange?: (open: boolean) => void
+  startOpen?: boolean
+  categoryCount?: Counter
 }
 
-export default React.memo(function CategoryFilter({ onChange }: FilterProps) {
+const FILTER_KEY = 'type'
+
+function isCounterValid(counter: Counter, filterType: FilterType) {
+  const counterKeys = Object.keys(counter)
+  const filterKeys = Object.values(filterType)
+
+  return isEqual(counterKeys, filterKeys)
+}
+
+export default React.memo(function CategoryFilter({
+  filterType,
+  onChange,
+  startOpen,
+  categoryCount,
+}: FilterProps & { filterType: FilterType }) {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const type = toProposalType(params.get('type')) ?? undefined
-
-  function handleTypeFilter(type: ProposalType | null) {
-    const newParams = new URLSearchParams(params)
-    type ? newParams.set('type', type) : newParams.delete('type')
-    newParams.delete('page')
-    return locations.proposals(newParams)
-  }
+  const filters: string[] = Object.values(filterType)
+  const type = params.get(FILTER_KEY)
+  const isProposalsFilter = isEqual(filterType, ProposalType)
+  const isLegacyGrantsFilter = isEqual(filterType, OldGrantCategory)
+  const isCounter = !!categoryCount && isCounterValid(categoryCount, filterType)
 
   return (
-    <CollapsibleFilter title={t('navigation.search.category_filter_title') || ''} startOpen={true} onChange={onChange}>
-      <CategoryOption
-        type={'all'}
-        href={handleTypeFilter(null)}
-        active={!type}
-        className={'CategoryFilter__CategoryOption'}
-      />
-      {(Object.keys(ProposalType) as Array<keyof typeof ProposalType>).map((key, index) => {
+    <CollapsibleFilter
+      title={t(
+        isLegacyGrantsFilter ? 'navigation.search.legacy_filter_title' : 'navigation.search.category_filter_title'
+      )}
+      startOpen={!!startOpen}
+      onChange={onChange}
+    >
+      {!isLegacyGrantsFilter && (
+        <CategoryOption
+          type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
+          href={handleUrlFilters(FILTER_KEY, params)}
+          active={!type}
+          className={'CategoryFilter__CategoryOption'}
+        />
+      )}
+      {filters.map((value, index) => {
+        const label = toSnakeCase(value)
         return (
           <CategoryOption
             key={'category_filter' + index}
-            type={ProposalType[key]}
-            href={handleTypeFilter(ProposalType[key])}
-            active={type === ProposalType[key]}
+            type={label}
+            href={handleUrlFilters(FILTER_KEY, params, label)}
+            active={type === label}
             className={'CategoryFilter__CategoryOption'}
+            count={isCounter ? categoryCount[value as keyof Counter] : undefined}
           />
         )
       })}

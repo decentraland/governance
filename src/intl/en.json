@@ -28,6 +28,7 @@
         "ASC": "Oldest"
       },
       "category_filter_title": "Filter by Category",
+      "legacy_filter_title": "Filter by Legacy Grants",
       "status_filter_title": "Filter by Status",
       "timeframe_filter": {
         "title": "Filter by TimeFrame",
@@ -243,7 +244,7 @@
     "draft": "Draft",
     "governance": "Governance",
     "linked_wearables": "Linked Wearables",
-    "all_title": "All proposals",
+    "all_proposals_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community-run servers",
     "poi_title": "Point of Interest",
@@ -264,7 +265,19 @@
     "governance_title": "Governance Proposal",
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "linked_wearables_title": "Linked Wearables Registry",
-    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
+    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland",
+    "all_grants_title": "All grants",
+    "core_unit_title": "Core Unit",
+    "platform_title": "Platform",
+    "documentation_title": "Documentation",
+    "in_world_content_title": "In-World Content",
+    "social_media_content_title": "Social Media Content",
+    "sponsorship_title": "Sponsorship",
+    "accelerator_title": "Accelerator",
+    "community_title": "Community",
+    "content_creator_title": "Content Creator",
+    "gaming_title": "Gaming",
+    "platform_contributor_title": "Platform Contributor"
   },
   "status": {
     "all": "All outcomes",
@@ -274,6 +287,12 @@
     "rejected": "Rejected outcomes",
     "passed": "Passed outcomes",
     "enacted": "Enacted outcomes"
+  },
+  "grant_status": {
+    "in_progress": "In progress",
+    "finished": "Finished",
+    "paused": "Paused",
+    "revoked": "Revoked"
   },
   "modal": {
     "new_proposal": {
@@ -687,15 +706,20 @@
       "title": "Decentraland DAO Community Grants",
       "description": "Check the projects funded by the Decentraland DAO Grants program. Browse them to see their goals, progress, and how they are making an impact in our community.",
       "load_more_button": "Load more",
+      "request_banner": {
+        "title": "Get funded",
+        "description": "Decentraland could be the means to realize that project of yours",
+        "button": "Request a Grant"
+      },
       "current_banner": {
-        "title": "Discover the projects making the Decentraland ecosystem grow",
-        "description": "All these projects have been funded by you via the Decentraland DAO Grants program. Browse them to see their goals, progress and how they are making an impact in our community.",
-        "active_grants_title": "{value} Active Grants",
-        "active_grants_description": "Initiatives currently being funded",
-        "released_title": "${value} USD Released",
-        "released_description": "Funds already cashed out by Grant teams",
-        "to_be_vested_title": "${value} USD to be Vested",
-        "to_be_vested_description": "Funds to be made available for active Grants"
+        "title": "Initiatives making the Decentraland Ecosystem grow",
+        "description": "Every quarter, our Community defines Treasury funding allocation and distribution and projects to award Grants to. Keep browsing to see their goals, progress and how they are making an impact in our community.",
+        "budget_title": "Budget Definition",
+        "budget_description": "Review Quarterly Governance Proposal",
+        "transparency_title": "Transparency",
+        "transparency_description": "How the Grants System is performing",
+        "faq_title": "FAQ",
+        "faq_description": "Learn more about our Grants System"
       },
       "past_banner": {
         "title": "See what the Community already achieved",
@@ -707,7 +731,12 @@
         "approved_rate_title": "{value}% Approval",
         "approved_rate_description": "Rate of approved Grant proposals"
       },
-      "currently_funded": "Currently being funded",
+      "grants_category_title": "{status}{category} Grants",
+      "budget_banner": {
+        "budget_label": "Quarterly budget",
+        "progress_label": "Initiatives in progress",
+        "spent_label": "Quarterly spend: "
+      },
       "category_filters": {
         "all": "All",
         "community": "Community",
@@ -720,6 +749,10 @@
         "amount": "Amount granted",
         "update_timestamp": "Last updated",
         "created_at": "Newest"
+      },
+      "empty": {
+        "description": "Looks like there's no grants following this criteria to be displayed",
+        "button": "View all grants"
       },
       "vested": "vested",
       "transferred": "transferred",

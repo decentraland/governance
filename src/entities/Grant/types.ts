@@ -1,5 +1,3 @@
-import { VALID_CATEGORIES } from '../Proposal/types'
-
 export const GRANT_PROPOSAL_MIN_BUDGET = 100
 export const GRANT_PROPOSAL_MAX_BUDGET = 240000
 export const MIN_PROJECT_DURATION = 1
@@ -30,6 +28,34 @@ export enum GrantTierType {
   Tier6 = 'Tier 6: up to $240,000 USD, 6 months vesting (1 month cliff)',
   LowerTier = 'Lower Tier',
   HigherTier = 'Higher Tier',
+}
+
+export enum OldGrantCategory {
+  Community = 'Community',
+  ContentCreator = 'Content Creator',
+  Gaming = 'Gaming',
+  PlatformContributor = 'Platform Contributor',
+}
+
+export enum NewGrantCategory {
+  Accelerator = 'Accelerator',
+  CoreUnit = 'Core Unit',
+  Documentation = 'Documentation',
+  InWorldContent = 'In-World Content',
+  Platform = 'Platform',
+  SocialMediaContent = 'Social Media Content',
+  Sponsorship = 'Sponsorship',
+}
+
+export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
+
+export const VALID_CATEGORIES = Object.values(NewGrantCategory)
+
+export enum GrantStatus {
+  InProgress = 'In Progress',
+  Finished = 'Finished',
+  Paused = 'Paused',
+  Revoked = 'Revoked',
 }
 
 export const GrantRequestGeneralInfoSchema = {

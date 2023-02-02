@@ -155,7 +155,7 @@
   bottom: 0;
   width: 100%;
   height: 4em;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white-900) 100%);
 }
 
 .VotingPowerDelegationDetail__Content .Info > .Fadeout--hidden {

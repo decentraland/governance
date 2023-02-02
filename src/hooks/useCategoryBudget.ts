@@ -1,7 +1,7 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { Governance } from '../clients/Governance'
-import { ProposalGrantCategory } from '../entities/Proposal/types'
+import { ProposalGrantCategory } from '../entities/Grant/types'
 
 export default function useCategoryBudget(category?: ProposalGrantCategory | null) {
   const [data] = useAsyncMemo(

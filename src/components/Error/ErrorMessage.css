@@ -32,7 +32,7 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
 }
 
 .ErrorMessage__Message {
-  background: #ffffff;
+  background: var(--white-900);
   border-radius: 8px;
   margin-left: 16px;
   margin-right: 16px;

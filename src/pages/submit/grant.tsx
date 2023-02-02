@@ -11,6 +11,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { Governance } from '../../clients/Governance'
+import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
   GrantRequestFunding,
@@ -25,7 +26,7 @@ import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { ProposalGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory } from '../../entities/Grant/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import loader from '../../modules/loader'
@@ -35,7 +36,8 @@ import './grant.css'
 import './submit.css'
 
 export type GrantRequest = {
-  category: ProposalGrantCategory | null
+  title: string
+  category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo
 
@@ -68,6 +70,7 @@ export default function SubmitGrant() {
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
+  const [submitError, setSubmitError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -92,7 +95,7 @@ export default function SubmitGrant() {
         })
         .catch((err) => {
           console.error(err, { ...err })
-          // editor.error({ '*': err.body?.error || err.message })
+          setSubmitError(err.body?.error || err.message)
           setIsFormDisabled(false)
         })
     }
@@ -131,9 +134,7 @@ export default function SubmitGrant() {
 
       {!isCategorySelected && (
         <Container className="ContentLayout__Container GrantRequestSection__Container">
-          <CategorySelector
-            onCategoryClick={(value: ProposalGrantCategory) => patchGrantRequest({ category: value })}
-          />
+          <CategorySelector onCategoryClick={(value: NewGrantCategory) => patchGrantRequest({ category: value })} />
         </Container>
       )}
 
@@ -172,6 +173,13 @@ export default function SubmitGrant() {
             </ContentSection>
           </Container>
         </>
+      )}
+      {!!submitError && (
+        <Container className="GrantRequest__Error">
+          <ContentSection>
+            <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(submitError) || submitError} />
+          </ContentSection>
+        </Container>
       )}
     </div>
   )

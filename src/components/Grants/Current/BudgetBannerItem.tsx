@@ -1,0 +1,19 @@
+import React from 'react'
+
+import './BudgetBannerItem.css'
+
+interface Props {
+  value: string
+  label: string
+}
+
+function BudgetBannerItem({ value, label }: Props) {
+  return (
+    <div>
+      <div className="BudgetBannerItem__Value">{value}</div>
+      <div className="BudgetBannerItem__Label">{label}</div>
+    </div>
+  )
+}
+
+export default BudgetBannerItem

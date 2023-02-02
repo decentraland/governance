@@ -10,11 +10,17 @@ export enum BannerType {
   Past = 'past',
 }
 
+export type BannerItem = {
+  title: string
+  description: string
+  url?: string
+}
+
 interface Props {
   title: string
   description: string
   type: BannerType
-  items: { title: string; description: string }[]
+  items: BannerItem[]
 }
 
 const Banner = ({ title, description, items, type }: Props) => {
@@ -30,6 +36,7 @@ const Banner = ({ title, description, items, type }: Props) => {
             key={item.title}
             title={item.title}
             description={item.description}
+            url={item.url}
             showDivider={index !== items.length - 1}
           />
         ))}

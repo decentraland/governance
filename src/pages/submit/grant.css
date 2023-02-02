@@ -26,3 +26,7 @@
   letter-spacing: -0.2px;
   text-align: left;
 }
+
+.GrantRequest__Error {
+  margin-top: 40px;
+}

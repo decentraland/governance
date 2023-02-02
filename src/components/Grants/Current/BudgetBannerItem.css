@@ -1,0 +1,18 @@
+.BudgetBannerItem__Value {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: 0.3px;
+  color: var(--black-800);
+}
+
+.BudgetBannerItem__Label {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 26px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}

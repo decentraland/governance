@@ -4,7 +4,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { GrantRequestGeneralInfo } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
-import { GrantTierType } from '../Grant/types'
+import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
@@ -448,22 +448,6 @@ export const newProposalCatalystScheme = {
 }
 
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
-export enum ProposalGrantCategory {
-  // OLD
-  Community = 'Community',
-  ContentCreator = 'Content Creator',
-  Gaming = 'Gaming',
-  PlatformContributor = 'Platform Contributor',
-
-  // NEW
-  Accelerator = 'Accelerator',
-  CoreUnit = 'Core Unit',
-  Documentation = 'Documentation',
-  InWorldContent = 'In-World Content',
-  Platform = 'Platform',
-  SocialMediaContent = 'Social Media Content',
-  Sponsorship = 'Sponsorship',
-}
 
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
@@ -475,7 +459,6 @@ export const ProposalRequiredVP = {
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
   [ProposalType.Grant]: 0, // TODO: Remove this and fix type in test
 }
-
 export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
   category: ProposalGrantCategory | null
   size: number
@@ -483,16 +466,6 @@ export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
   tier: GrantTierType
   choices: string[]
 }
-
-export const VALID_CATEGORIES = [
-  ProposalGrantCategory.Accelerator,
-  ProposalGrantCategory.CoreUnit,
-  ProposalGrantCategory.Documentation,
-  ProposalGrantCategory.InWorldContent,
-  ProposalGrantCategory.Platform,
-  ProposalGrantCategory.SocialMediaContent,
-  ProposalGrantCategory.Sponsorship,
-]
 
 export type NewProposalLinkedWearables = {
   name: string
@@ -629,6 +602,7 @@ export type TransparencyGrant = {
     category: ProposalGrantCategory
     tier: string
   }
+  status?: GrantStatus
   contract?: VestingContractData
   enacting_tx?: string
   token?: string
@@ -639,10 +613,11 @@ export type TransparencyGrant = {
 
 export type GrantWithUpdateAttributes = TransparencyGrant & {
   update: IndexedUpdate | null
+  update_timestamp: number
 }
 
 export type GrantsResponse = {
   current: GrantWithUpdateAttributes[]
-  past: TransparencyGrant[]
+  past: GrantWithUpdateAttributes[]
   total: number
 }
