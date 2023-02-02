@@ -3,7 +3,7 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
-import { getPercentage } from '../../../helpers'
+import { getFormattedPercentage } from '../../../helpers'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
 import MobileSlider from '../../Common/MobileSlider'
 
@@ -43,7 +43,7 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
               tooltipText={t(`modal.vp_delegation.details.stats_bar_${intlKey}_info`)}
               subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
                 amount: value,
-                percentage: getPercentage(value, total, 0),
+                percentage: getFormattedPercentage(value, total, 0),
               })}
               className={`VotingPowerDistribution__${cssClassName}`}
             />

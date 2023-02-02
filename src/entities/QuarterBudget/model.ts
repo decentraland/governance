@@ -1,4 +1,3 @@
-import Time from 'dayjs'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { v1 as uuid } from 'uuid'
 
@@ -7,7 +6,13 @@ import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 import { validateCategoryBudgets } from '../QuarterCategoryBudget/utils'
 
 import { QuarterBudgetAttributes } from './types'
-import { thereAreNoOverlappingBudgets } from './utils'
+import {
+  budgetExistsForStartingDate,
+  getQuarterEndDate,
+  getQuarterStartDate,
+  getSortedBudgets,
+  thereAreNoOverlappingBudgets,
+} from './utils'
 
 export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
   static tableName = 'quarter_budgets'
@@ -18,36 +23,50 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     const existingBudgets = await this.find<QuarterBudgetAttributes>()
     const newBudgets: QuarterBudgetAttributes[] = []
     if (transparencyBudgets.length > existingBudgets.length) {
-      const sortedBudgets = transparencyBudgets.sort((a, b) => Date.parse(b.start_date) - Date.parse(a.start_date))
+      const sortedBudgets = getSortedBudgets(transparencyBudgets)
       const now = new Date()
       for (const transparencyBudget of sortedBudgets) {
-        const startAt = new Date(transparencyBudget.start_date)
-        if (!existingBudgets.some((existingBudget) => existingBudget.start_at === startAt)) {
-          const finishAt = Time(transparencyBudget.start_date).add(4, 'months').toDate() //TODO a chequear
-          if (thereAreNoOverlappingBudgets(startAt, finishAt, existingBudgets)) {
-            validateCategoryBudgets(transparencyBudget)
-            const newQuarterBudget: QuarterBudgetAttributes = {
-              id: uuid(),
-              total: transparencyBudget.total,
-              start_at: startAt,
-              finish_at: finishAt,
-              created_at: now,
-              updated_at: now,
+        try {
+          const startAt = getQuarterStartDate(transparencyBudget.start_date)
+          if (!budgetExistsForStartingDate(existingBudgets, startAt)) {
+            const finishAt = getQuarterEndDate(startAt)
+            if (thereAreNoOverlappingBudgets(startAt, finishAt, existingBudgets)) {
+              validateCategoryBudgets(transparencyBudget)
+              const newQuarterBudget = this.getNewQuarterBudget(transparencyBudget, startAt, finishAt, now)
+              await this.saveAndCreateCategoryBudgets(newQuarterBudget, transparencyBudget, (newBudget) => {
+                newBudgets.push(newBudget)
+                existingBudgets.push(newBudget)
+              })
+            } else {
+              throw new Error(`There are overlapping budgets with: ${JSON.stringify(transparencyBudget)}`)
             }
-            await this.saveAndCreateCategoryBudgets(newQuarterBudget, transparencyBudget, (newBudget) =>
-              newBudgets.push(newBudget)
-            )
-          } else {
-            throw new Error(`There are overlapping budgets with: ${transparencyBudget}`)
           }
+        } catch (e) {
+          this.logCreatedBudgets(newBudgets)
+          throw e
         }
       }
     }
 
+    this.logCreatedBudgets(newBudgets)
+    return newBudgets
+  }
+
+  private static getNewQuarterBudget(transparencyBudget: TransparencyBudget, startAt: Date, finishAt: Date, now: Date) {
+    const newQuarterBudget: QuarterBudgetAttributes = {
+      id: uuid(),
+      total: transparencyBudget.total,
+      start_at: startAt,
+      finish_at: finishAt,
+      created_at: now,
+      updated_at: now,
+    }
+    return newQuarterBudget
+  }
+
+  private static logCreatedBudgets(newBudgets: QuarterBudgetAttributes[]) {
     console.log(`Created ${newBudgets.length} new budgets`)
     console.log(`New budgets: ${JSON.stringify(newBudgets)}`)
-    console.log(`Existing budgets: ${JSON.stringify(existingBudgets)}`)
-    return [...existingBudgets, ...newBudgets]
   }
 
   private static async saveAndCreateCategoryBudgets(
@@ -60,7 +79,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
       await QuarterCategoryBudgetModel.createCategoryBudgets(newQuarterBudget, transparencyBudget)
       onSuccess(newQuarterBudget)
     } catch (e) {
-      await this.delete(newQuarterBudget)
+      await this.delete({ id: newQuarterBudget.id })
       throw e
     }
   }

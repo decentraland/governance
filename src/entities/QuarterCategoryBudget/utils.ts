@@ -15,15 +15,15 @@ export function toNewGrantCategory(category: string) {
   throw Error(`Attempted to parse an invalid NewGrantCategory ${category}`)
 }
 
-export function getCategoryBudgetTotal(categoryPercentage: number, newQuarterBudget: QuarterBudgetAttributes) {
+export function getCategoryBudgetTotal(categoryPercentage: number, total: number) {
   if (categoryPercentage < 0 || categoryPercentage > 100) {
     throw new Error(`Invalid category percentage`)
   }
-  return (categoryPercentage * newQuarterBudget.total) / 100
+  return (categoryPercentage * total) / 100
 }
 
 export function validateCategoryBudgets(transparencyBudget: TransparencyBudget) {
   if (Object.values(transparencyBudget.category_percentages).reduce((prev, next) => prev + next, 0) !== 100) {
-    throw new Error(`Categories percentages do not amount to 100 for budget: ${transparencyBudget}`)
+    throw new Error(`Categories percentages do not amount to 100 for budget: ${JSON.stringify(transparencyBudget)}`)
   }
 }
