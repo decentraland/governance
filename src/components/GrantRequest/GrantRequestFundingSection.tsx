@@ -14,7 +14,7 @@ import {
 } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
-import { getPercentage } from '../../helpers'
+import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
 import Helper from '../Helper/Helper'
 import Lock from '../Icon/Lock'
@@ -175,7 +175,7 @@ export default function GrantRequestFundingSection({
             title={`$${t('general.number', {
               value: availableCategoryBudget,
             })}`}
-            titleExtra={`(${getPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
+            titleExtra={`(${getFormattedPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
             subtitle={t('page.submit_grant.funding_section.category_budget_total', {
               value: totalCategoryBudget,
             })}

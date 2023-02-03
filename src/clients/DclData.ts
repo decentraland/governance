@@ -95,6 +95,12 @@ export const TransparencyGrantsTiers = {
   'Higher Tier': GrantTierType.HigherTier,
 }
 
+export type TransparencyBudget = {
+  start_date: string
+  total: number
+  category_percentages: Record<string, number>
+}
+
 export class DclData extends API {
   static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
@@ -118,5 +124,9 @@ export class DclData extends API {
 
   async getGrants() {
     return this.fetch<Grants>('/grants.json', this.options().method('GET'))
+  }
+
+  async getBudgets() {
+    return this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET'))
   }
 }
