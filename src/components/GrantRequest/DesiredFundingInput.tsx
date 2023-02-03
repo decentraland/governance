@@ -55,7 +55,7 @@ const DesiredFundingInput = ({ disabled, value, onChange, onBlur, error }: Props
         {showError && (
           <div className={'DesiredFundingInput__ErrorHelper'}>
             <Helper
-              text={`*${error}*`}
+              text={t(error)}
               position="right center"
               open
               icon={<ExclamationCircle color={'red-800'} size={'16px'} />}

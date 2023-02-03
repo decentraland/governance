@@ -331,6 +331,8 @@ export async function createProposalGrant(req: WithAuth) {
     throw new RequestError('Grant size is not valid for the selected tier')
   }
 
+  // TODO: add valid category budget size validation!
+
   const grantConfiguration: GrantProposalConfiguration = {
     ...grantRequest,
     size: grantSize,

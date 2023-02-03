@@ -155,10 +155,10 @@
     },
     "grant": {
       "funding": {
-        "invalid": "Funding is invalid",
-        "too_low": "Funding is too low. Minimum is 100 USD",
-        "too_big": "Funding is too big. Maximum is 240000 USD",
-        "over_budget": "Funding is over budget"
+        "invalid": "*Funding is invalid*",
+        "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
+        "too_big": "*Funding is too big.*\n\n*Maximum is 240000 USD*",
+        "over_budget": "*Funding is over budget*"
       },
       "general_info": {
         "description_empty": "Description is empty",
