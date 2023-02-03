@@ -16,7 +16,7 @@ export function thereAreNoOverlappingBudgets(
   )
 }
 
-function toUtcTime(quarterStartDate: string | Date) {
+function toUtcTime(quarterStartDate: string | Date): Time.Dayjs {
   return Time(quarterStartDate).utc(true).startOf('day')
 }
 

@@ -1,13 +1,16 @@
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
 import {
   INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET,
   INVALID_CATEGORIES_NAME_TRANSPARENCY_BUDGET,
   OVERLAPPING_TRANSPARENCY_BUDGET,
   VALID_TRANSPARENCY_BUDGET_1,
   VALID_TRANSPARENCY_BUDGET_2,
-} from '../Budget/jobs.test'
+} from '../../services/BudgetService.test'
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 
 import QuarterBudgetModel from './model'
+import { CurrentBudgetQueryResult } from './types'
 import { getQuarterEndDate, getQuarterStartDate } from './utils'
 
 const NOW = new Date('2023-01-01')
@@ -192,6 +195,111 @@ describe('QuarterBudgetModel', () => {
           expect(QuarterBudgetModel.delete).toHaveBeenCalledTimes(0)
           expect(QuarterCategoryBudgetModel.create).toHaveBeenCalledTimes(0)
         })
+      })
+    })
+  })
+
+  describe('parseCurrentBudget', () => {
+    it('returns a CurrentBudget', () => {
+      const results: CurrentBudgetQueryResult[] = [
+        {
+          category: 'Accelerator',
+          category_total: 105105,
+          allocated: 5105,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+        {
+          category: 'Core Unit',
+          category_total: 225225,
+          allocated: 225225,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+        {
+          category: 'Documentation',
+          category_total: 45045,
+          allocated: 60000,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+        {
+          category: 'In-World Content',
+          category_total: 300300,
+          allocated: 0,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+        {
+          category: 'Platform',
+          category_total: 600600,
+          allocated: 0,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+        {
+          category: 'Social Media Content',
+          category_total: 75075,
+          allocated: 0,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+        {
+          category: 'Sponsorship',
+          category_total: 150150,
+          allocated: 0,
+          start_at: '2023-01-01 00:00:00Z',
+          finish_at: '2023-04-01 00:00:00Z',
+          total: 1501500,
+        },
+      ]
+      expect(QuarterBudgetModel.parseCurrentBudget(results)).toStrictEqual({
+        categories: {
+          accelerator: {
+            allocated: 5105,
+            available: 100000,
+            total: 105105,
+          },
+          core_unit: {
+            allocated: 225225,
+            available: 0,
+            total: 225225,
+          },
+          documentation: {
+            allocated: 60000,
+            available: -14955,
+            total: 45045,
+          },
+          in_world_content: {
+            allocated: 0,
+            available: 300300,
+            total: 300300,
+          },
+          platform: {
+            allocated: 0,
+            available: 600600,
+            total: 600600,
+          },
+          social_media_content: {
+            allocated: 0,
+            available: 75075,
+            total: 75075,
+          },
+          sponsorship: {
+            allocated: 0,
+            available: 150150,
+            total: 150150,
+          },
+        },
+        finish_at: Time.date('2023-04-01T00:00:00.000Z'),
+        start_at: Time.date('2023-01-01T00:00:00.000Z'),
+        total: 1501500,
       })
     })
   })

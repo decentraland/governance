@@ -1,8 +1,8 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
-import { DclData } from '../../clients/DclData'
+import { DclData } from '../clients/DclData'
 
-import { getTransparencyBudgets } from './jobs'
+import { BudgetService } from './BudgetService'
 
 export const VALID_TRANSPARENCY_BUDGET_1 = {
   category_percentages: {
@@ -87,13 +87,24 @@ export const OVERLAPPING_TRANSPARENCY_BUDGET = {
   total: 1501500,
 }
 
+function asserErrorLogging() {
+  it('logs the error', async () => {
+    const logError = jest.spyOn(logger, 'error')
+    await BudgetService.getTransparencyBudgets()
+    expect(logError).toHaveBeenCalled()
+  })
+}
+
 describe('getTransparencyBudgets', () => {
   describe('when it receives a list of valid budgets', () => {
     jest
       .spyOn(DclData.get(), 'getBudgets')
       .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
     it('returns a list of parsed budgets', async () => {
-      expect(await getTransparencyBudgets()).toEqual([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
+      expect(await BudgetService.getTransparencyBudgets()).toEqual([
+        VALID_TRANSPARENCY_BUDGET_1,
+        VALID_TRANSPARENCY_BUDGET_2,
+      ])
     })
     afterAll(() => jest.clearAllMocks())
   })
@@ -105,14 +116,10 @@ describe('getTransparencyBudgets', () => {
         .mockImplementation(async () => [INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
     )
 
-    it('logs the error', async () => {
-      const logError = jest.spyOn(logger, 'error')
-      await getTransparencyBudgets()
-      expect(logError).toHaveBeenCalled()
-    })
+    asserErrorLogging()
 
     it('returns an empty list', async () => {
-      expect(await getTransparencyBudgets()).toEqual([])
+      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
     })
 
     afterAll(() => jest.clearAllMocks())
@@ -121,14 +128,10 @@ describe('getTransparencyBudgets', () => {
   describe('when it receives an empty list of budgets', () => {
     beforeAll(() => jest.spyOn(DclData.get(), 'getBudgets').mockResolvedValue([]))
 
-    it('logs the error', async () => {
-      const logError = jest.spyOn(logger, 'error')
-      await getTransparencyBudgets()
-      expect(logError).toHaveBeenCalled()
-    })
+    asserErrorLogging()
 
     it('returns an empty list', async () => {
-      expect(await getTransparencyBudgets()).toEqual([])
+      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
     })
 
     afterAll(() => jest.clearAllMocks())
@@ -141,14 +144,10 @@ describe('getTransparencyBudgets', () => {
         .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
     )
 
-    it('logs the error', async () => {
-      const logError = jest.spyOn(logger, 'error')
-      await getTransparencyBudgets()
-      expect(logError).toHaveBeenCalled()
-    })
+    asserErrorLogging()
 
     it('returns an empty list', async () => {
-      expect(await getTransparencyBudgets()).toEqual([])
+      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
     })
 
     afterAll(() => jest.clearAllMocks())

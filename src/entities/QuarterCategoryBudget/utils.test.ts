@@ -1,4 +1,7 @@
-import { INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET, VALID_TRANSPARENCY_BUDGET_1 } from '../Budget/jobs.test'
+import {
+  INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET,
+  VALID_TRANSPARENCY_BUDGET_1,
+} from '../../services/BudgetService.test'
 
 import { getCategoryBudgetTotal, validateCategoryBudgets } from './utils'
 
