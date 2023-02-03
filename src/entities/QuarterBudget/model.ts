@@ -1,12 +1,13 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { snakeCase } from 'lodash'
+import snakeCase from 'lodash/snakeCase'
 import { v1 as uuid } from 'uuid'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import { CurrentBudget, CurrentCategoryBudget } from '../Budget/types'
 import { NewGrantCategory } from '../Grant/types'
+import { asNumber } from '../Proposal/utils'
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../QuarterCategoryBudget/types'
 import { validateCategoryBudgets } from '../QuarterCategoryBudget/utils'
@@ -138,19 +139,22 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
   static parseCurrentBudget(result: CurrentBudgetQueryResult[]): CurrentBudget {
     const categoriesResults: Record<string, CurrentCategoryBudget> = {}
     result.forEach((categoryResult) => {
-      const { category_total, allocated } = categoryResult
+      const { category_total, allocated: category_allocated } = categoryResult
+      const total = asNumber(category_total)
+      const allocated = asNumber(category_allocated)
 
       categoriesResults[snakeCase(categoryResult.category)] = {
-        total: category_total,
+        total,
         allocated,
-        available: category_total - allocated,
+        available: total - allocated,
       }
     })
 
     return {
       start_at: Time.date(result[0].start_at),
       finish_at: Time.date(result[0].finish_at),
-      total: result[0].total,
+      total: asNumber(result[0].total),
+      allocated: Object.values(categoriesResults).reduce((acc, category) => acc + category.allocated, 0),
       categories: categoriesResults,
     }
   }

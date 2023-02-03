@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
@@ -22,8 +23,15 @@ function getAllInitiativesCount(counter: Counter) {
   return Object.values(counter).reduce((acc, curr) => acc + curr, 0)
 }
 
+const currencyFormatter: any = {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+}
+
 function BudgetBanner({ category, status, counter }: Props) {
   const t = useFormatMessage()
+  const intl = useIntl()
   const { percentage, currentAmount, totalBudget } = useBudgetByCategory(category)
   const initiativesCount = useMemo(
     () =>
@@ -34,7 +42,10 @@ function BudgetBanner({ category, status, counter }: Props) {
   const showProgress = !status || status === GrantStatus.InProgress
   return (
     <div className={TokenList.join(['BudgetBanner', !showProgress && 'BudgetBanner--start'])}>
-      <BudgetBannerItem value={totalBudget} label={t('page.grants.budget_banner.budget_label')} />
+      <BudgetBannerItem
+        value={intl.formatNumber(totalBudget, currencyFormatter)}
+        label={t('page.grants.budget_banner.budget_label')}
+      />
       <BudgetBannerItem
         value={String(initiativesCount)}
         label={`${t('page.grants.budget_banner.progress_label')}${status ? ` ${status.toLowerCase()}` : ''}`}
@@ -49,7 +60,7 @@ function BudgetBanner({ category, status, counter }: Props) {
           <div className="BudgetBanner__ProgressLabel">
             <div>
               <span>{t('page.grants.budget_banner.spent_label')}</span>
-              <span className="BudgetBanner__Amount">{currentAmount}</span>
+              <span className="BudgetBanner__Amount">{intl.formatNumber(currentAmount, currencyFormatter)}</span>
             </div>
             <div className="BudgetBanner__Percentage">{`${percentage}%`}</div>
           </div>

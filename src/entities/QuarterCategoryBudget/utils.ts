@@ -1,8 +1,7 @@
-import { snakeCase } from 'lodash'
+import snakeCase from 'lodash/snakeCase'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import { NewGrantCategory } from '../Grant/types'
-import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
 export function toNewGrantCategory(category: string) {
   const categories = Object.values(NewGrantCategory)

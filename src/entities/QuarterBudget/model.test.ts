@@ -300,6 +300,7 @@ describe('QuarterBudgetModel', () => {
         finish_at: Time.date('2023-04-01T00:00:00.000Z'),
         start_at: Time.date('2023-01-01T00:00:00.000Z'),
         total: 1501500,
+        allocated: 290330,
       })
     })
   })
