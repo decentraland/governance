@@ -9,7 +9,7 @@ import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 import { QuarterCategoryBudgetAttributes } from '../QuarterCategoryBudget/types'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
-import { CurrentBudget } from './types'
+import { CurrentBudget, CurrentCategoryBudget } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -19,7 +19,7 @@ export default routes((route) => {
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
-async function getCategoryBudget(req: Request): Promise<QuarterCategoryBudgetAttributes> {
+async function getCategoryBudget(req: Request): Promise<CurrentCategoryBudget> {
   const { category } = req.params
   const grantCategory = toNewGrantCategory(category)
   return await BudgetService.getCategoryBudget(grantCategory)

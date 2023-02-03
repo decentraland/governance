@@ -1,8 +1,13 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import { DclData } from '../clients/DclData'
+import { NewGrantCategory } from '../entities/Grant/types'
+import QuarterBudgetModel from '../entities/QuarterBudget/model'
+import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 
 import { BudgetService } from './BudgetService'
+
+const NOW = new Date('2023-02-03T00:00:00Z')
 
 export const VALID_TRANSPARENCY_BUDGET_1 = {
   category_percentages: {
@@ -95,61 +100,105 @@ function asserErrorLogging() {
   })
 }
 
-describe('getTransparencyBudgets', () => {
-  describe('when it receives a list of valid budgets', () => {
-    jest
-      .spyOn(DclData.get(), 'getBudgets')
-      .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
-    it('returns a list of parsed budgets', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([
-        VALID_TRANSPARENCY_BUDGET_1,
-        VALID_TRANSPARENCY_BUDGET_2,
-      ])
-    })
-    afterAll(() => jest.clearAllMocks())
-  })
-
-  describe('when it receives a list with no valid budgets', () => {
-    beforeAll(() =>
+describe('BudgetService', () => {
+  describe('getTransparencyBudgets', () => {
+    describe('when it receives a list of valid budgets', () => {
       jest
         .spyOn(DclData.get(), 'getBudgets')
-        .mockImplementation(async () => [INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
-    )
-
-    asserErrorLogging()
-
-    it('returns an empty list', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+        .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
+      it('returns a list of parsed budgets', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([
+          VALID_TRANSPARENCY_BUDGET_1,
+          VALID_TRANSPARENCY_BUDGET_2,
+        ])
+      })
+      afterAll(() => jest.clearAllMocks())
     })
 
-    afterAll(() => jest.clearAllMocks())
+    describe('when it receives a list with no valid budgets', () => {
+      beforeAll(() =>
+        jest
+          .spyOn(DclData.get(), 'getBudgets')
+          .mockImplementation(async () => [INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
+      )
+
+      asserErrorLogging()
+
+      it('returns an empty list', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      })
+
+      afterAll(() => jest.clearAllMocks())
+    })
+
+    describe('when it receives an empty list of budgets', () => {
+      beforeAll(() => jest.spyOn(DclData.get(), 'getBudgets').mockResolvedValue([]))
+
+      asserErrorLogging()
+
+      it('returns an empty list', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      })
+
+      afterAll(() => jest.clearAllMocks())
+    })
+
+    describe('when it receives a list with valid and invalid budgets', () => {
+      beforeAll(() =>
+        jest
+          .spyOn(DclData.get(), 'getBudgets')
+          .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
+      )
+
+      asserErrorLogging()
+
+      it('returns an empty list', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      })
+
+      afterAll(() => jest.clearAllMocks())
+    })
   })
 
-  describe('when it receives an empty list of budgets', () => {
-    beforeAll(() => jest.spyOn(DclData.get(), 'getBudgets').mockResolvedValue([]))
+  describe('getCategoryBudget', () => {
+    it('returns the total, allocated, and available amounts for the current category budget ', async () => {
+      const categoryBudget: QuarterCategoryBudgetAttributes = {
+        quarter_budget_id: '1',
+        category: NewGrantCategory.Accelerator,
+        total: 10,
+        allocated: 8,
+        created_at: NOW,
+        updated_at: NOW,
+      }
+      jest.spyOn(QuarterBudgetModel, 'getCategoryBudgetForCurrentQuarter').mockResolvedValue(categoryBudget)
 
-    asserErrorLogging()
-
-    it('returns an empty list', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      expect(await BudgetService.getCategoryBudget(NewGrantCategory.Accelerator)).toEqual({
+        total: 10,
+        allocated: 8,
+        available: 2,
+      })
     })
 
-    afterAll(() => jest.clearAllMocks())
-  })
+    describe('when the allocated amount is bigger than the total', () => {
+      beforeEach(() => {
+        const categoryBudget: QuarterCategoryBudgetAttributes = {
+          quarter_budget_id: '1',
+          category: NewGrantCategory.Accelerator,
+          total: 10,
+          allocated: 12,
+          created_at: NOW,
+          updated_at: NOW,
+        }
+        jest.spyOn(QuarterBudgetModel, 'getCategoryBudgetForCurrentQuarter').mockResolvedValue(categoryBudget)
+      })
 
-  describe('when it receives a list with valid and invalid budgets', () => {
-    beforeAll(() =>
-      jest
-        .spyOn(DclData.get(), 'getBudgets')
-        .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
-    )
-
-    asserErrorLogging()
-
-    it('returns an empty list', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      it('returns a current category budget with a negative available amount', async () => {
+        expect(await BudgetService.getCategoryBudget(NewGrantCategory.Accelerator)).toEqual({
+          total: 10,
+          allocated: 12,
+          available: -2,
+        })
+      })
     })
-
-    afterAll(() => jest.clearAllMocks())
   })
 })
