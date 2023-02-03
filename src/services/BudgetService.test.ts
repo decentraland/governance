@@ -96,6 +96,15 @@ function asserErrorLogging() {
 }
 
 describe('getTransparencyBudgets', () => {
+  beforeAll(() => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    jest.spyOn(logger, 'error').mockImplementation(() => {})
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
   describe('when it receives a list of valid budgets', () => {
     jest
       .spyOn(DclData.get(), 'getBudgets')
