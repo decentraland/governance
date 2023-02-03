@@ -170,7 +170,7 @@ export default function GrantRequestFundingSection({
             helper={
               <Helper
                 text={t('page.submit_grant.funding_section.category_budget_info')}
-                size="12"
+                size="16"
                 position="right center"
               />
             }
@@ -182,6 +182,7 @@ export default function GrantRequestFundingSection({
               value: totalCategoryBudget,
             })}
             subtitleVariant="uppercase"
+            error={state.error.funding === 'error.grant.funding.over_budget'}
           />
         </div>
         <div className="GrantRequestSection__Row">

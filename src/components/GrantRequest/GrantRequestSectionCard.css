@@ -10,6 +10,11 @@
   min-height: 104px;
 }
 
+.GrantRequestSectionCard__Error {
+  border: 1px solid rgba(216, 0, 39, 0.3);
+  box-shadow: 0 1px 8px rgba(216, 0, 39, 0.15);
+}
+
 .GrantRequestSectionCard__Header {
   display: flex;
   justify-content: space-between;
@@ -21,6 +26,9 @@
 }
 
 .GrantRequestSectionCard__HeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
