@@ -3,11 +3,10 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 
 import { DclData, TransparencyBudget } from '../clients/DclData'
-import { CurrentBudget } from '../entities/Budget/types'
+import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
 import { NewGrantCategory } from '../entities/Grant/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
-import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -110,7 +109,9 @@ export class BudgetService {
     return QuarterBudgetModel.getCurrentBudget()
   }
 
-  static async getCategoryBudget(category: NewGrantCategory): Promise<QuarterCategoryBudgetAttributes> {
-    return QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
+  static async getCategoryBudget(category: NewGrantCategory): Promise<CurrentCategoryBudget> {
+    const categoryBudget = await QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
+    const { total, allocated } = categoryBudget
+    return { total, allocated, available: total - allocated }
   }
 }
