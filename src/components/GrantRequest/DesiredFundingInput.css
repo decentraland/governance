@@ -30,7 +30,7 @@
 }
 
 .DesiredFundingInput__Description--Error {
-  background: rgba(216, 0, 39, 0.2);
+  background: var(--red-100);
   border-right: 1px solid var(--red-800);
 }
 

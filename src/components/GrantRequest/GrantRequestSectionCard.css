@@ -11,8 +11,8 @@
 }
 
 .GrantRequestSectionCard__Error {
-  border: 1px solid rgba(216, 0, 39, 0.3);
-  box-shadow: 0 1px 8px rgba(216, 0, 39, 0.15);
+  border: 1px solid var(--red-150);
+  box-shadow: 0 1px 8px var(--red-100);
 }
 
 .GrantRequestSectionCard__Header {

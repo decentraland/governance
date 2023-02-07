@@ -16,7 +16,7 @@
 }
 
 .ProjectHealthStatus--offTrack {
-  background-color: rgba(216, 0, 39, 0.1);
+  background-color: var(--red-100);
 }
 
 .ProjectHealthStatus__Icon {
