@@ -190,10 +190,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
-    if (filter.coauthor && !filter.user) {
-      return 0
-    }
-
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
     const sqlSnapshotIds = filter.snapshotIds ? filter.snapshotIds?.split(',').map((id) => SQL`${id}`) : null
@@ -206,28 +202,40 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const result = await this.query(SQL`
     SELECT COUNT(*) as "total"
     FROM ${table(ProposalModel)} p
-        ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)} 
-        ${conditional(!!filter.coauthor, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)}
+          ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
+          ${conditional(
+            !!filter.coauthor && !!filter.user,
+            SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`
+          )} 
+          ${conditional(
+            !!filter.coauthor && !filter.user,
+            SQL`LEFT OUTER JOIN (
+              select proposal_id, array_agg(address) coauthors
+              from ${table(CoauthorModel)}
+              where status = ${CoauthorStatus.APPROVED}
+              group by proposal_id) c
+          on p.id = c.proposal_id`
+          )} 
+          ${conditional(
+            !!filter.search,
+            SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+          )}
+      WHERE "deleted" = FALSE 
+      ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
+      ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
       ${conditional(
-        !!filter.search,
-        SQL`, ts_rank_cd(p.textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
+        !!filter.coauthor && !!filter.user,
+        SQL`AND lower(c."address") = lower(${filter.user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
       )}
-    WHERE "deleted" = FALSE 
-    ${conditional(!!filter.snapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
-    ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
-    ${conditional(
-      !!filter.coauthor,
-      SQL`AND lower(c."address") = lower(${filter.user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
-    )}
-    ${conditional(!!filter.type, SQL`AND p."type" = ${filter.type}`)} 
-    ${conditional(!!filter.status, SQL`AND p."status" = ${filter.status}`)} 
-    ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
-    ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
-    ${conditional(
-      !!timeFrame && timeFrameKey === 'finish_at',
-      SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
-    )}
-    ${conditional(!!filter.search, SQL`AND "rank" > 0`)}`)
+      ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
+      ${conditional(!!filter.status, SQL`AND "status" = ${filter.status}`)} 
+      ${conditional(!!filter.subscribed, SQL`AND s."user" = ${filter.subscribed}`)} 
+      ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
+      ${conditional(
+        !!timeFrame && timeFrameKey === 'finish_at',
+        SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
+      )}
+      ${conditional(!!filter.search, SQL`AND "rank" > 0`)}`)
 
     return (!!result && result[0] && Number(result[0].total)) || 0
   }
@@ -249,10 +257,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
-    if (filter.coauthor && !filter.user) {
-      return []
-    }
-
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
     const orderDirection = filter.order || 'DESC'
@@ -267,10 +271,22 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
     const proposals = await this.query(SQL`
-    SELECT p.*
+    SELECT p.*${conditional(!!filter.coauthor && !filter.user, SQL`, c."coauthors"`)}
     FROM ${table(ProposalModel)} p
         ${conditional(!!filter.subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-        ${conditional(!!filter.coauthor, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)} 
+        ${conditional(
+          !!filter.coauthor && !!filter.user,
+          SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`
+        )} 
+        ${conditional(
+          !!filter.coauthor && !filter.user,
+          SQL`LEFT OUTER JOIN (
+            select proposal_id, array_agg(address) coauthors
+            from ${table(CoauthorModel)}
+            where status = ${CoauthorStatus.APPROVED}
+            group by proposal_id) c
+        on p.id = c.proposal_id`
+        )} 
         ${conditional(
           !!filter.search,
           SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(filter.search || '')})) AS "rank"`
@@ -279,7 +295,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
     ${conditional(!!filter.user && !filter.coauthor, SQL`AND p."user" = ${filter.user}`)} 
     ${conditional(
-      !!filter.coauthor,
+      !!filter.coauthor && !!filter.user,
       SQL`AND lower(c."address") = lower(${filter.user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
     )}
     ${conditional(!!filter.type, SQL`AND "type" = ${filter.type}`)} 
@@ -291,7 +307,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
     )}
     ${conditional(!!filter.search, SQL`AND "rank" > 0`)}
-    ORDER BY ${conditional(!!filter.coauthor, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
+    ORDER BY ${conditional(!!filter.coauthor && !!filter.user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
     ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
     ${limit(filter.limit, {
       min: 0,
