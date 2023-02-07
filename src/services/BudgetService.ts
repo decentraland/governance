@@ -5,8 +5,10 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { DclData, TransparencyBudget } from '../clients/DclData'
 import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
 import { NewGrantCategory } from '../entities/Grant/types'
+import { isValidGrantBudget } from '../entities/Grant/utils'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
+import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -113,5 +115,22 @@ export class BudgetService {
     const categoryBudget = await QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
     const { total, allocated } = categoryBudget
     return { total, allocated, available: total - allocated }
+  }
+
+  static async validateGrantRequest(grantSize: number, grantCategory: NewGrantCategory | null) {
+    if (!isValidGrantBudget(grantSize)) {
+      throw new Error('Grant size is not valid for the selected tier')
+    }
+    const validGrantCategory = toNewGrantCategory(grantCategory)
+
+    console.log('validGrantCategory', validGrantCategory)
+    const currentCategoryBudget = await this.getCategoryBudget(validGrantCategory)
+    console.log('currentCategoryBudget', currentCategoryBudget)
+
+    if (currentCategoryBudget.available > grantSize) {
+      throw new Error(
+        `Not enough budget for requested grant size. Available: $${currentCategoryBudget.available}. Requested: $${grantSize}`
+      )
+    }
   }
 }

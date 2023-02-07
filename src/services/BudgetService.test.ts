@@ -201,4 +201,59 @@ describe('BudgetService', () => {
       })
     })
   })
+  //
+  //   describe('validateGrantRequest', () => {
+  //     const TOTAL_BUDGET = 1000
+  //     const grantCategory = NewGrantCategory.InWorldContent
+  //     afterEach(() => jest.clearAllMocks())
+  //
+  //     describe('when there is a positive amount of available budget', () => {
+  //       const AVAILABLE_BUDGET = 200
+  //       beforeEach(() => {
+  //         const currentCategoryBudget: CurrentCategoryBudget = {
+  //           total: TOTAL_BUDGET,
+  //           allocated: TOTAL_BUDGET - AVAILABLE_BUDGET,
+  //           available: AVAILABLE_BUDGET,
+  //         }
+  //         jest.spyOn(BudgetService, 'getCategoryBudget').mockResolvedValue(currentCategoryBudget)
+  //       })
+  //
+  //       // TODO: test for grant size menor a 100
+  //       it('fails when the requested amount is bigger than the available budget', async () => {
+  //         const requestedGrantSize = AVAILABLE_BUDGET + 1
+  //         expect(async () => await BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).toThrow(
+  //           `Not enough budget for requested grant size. Available: $${AVAILABLE_BUDGET}. Requested: $${requestedGrantSize}`
+  //         )
+  //       })
+  //
+  //       it('allows for requests equal to the total available budget for a category', () => {
+  //         const requestedGrantSize = AVAILABLE_BUDGET
+  //         expect(async () => await BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).not.toThrow()
+  //       })
+  //
+  //       it('allows for requests below the available budget for a category', () => {
+  //         const requestedGrantSize = AVAILABLE_BUDGET - 1
+  //         expect(async () => await BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).not.toThrow()
+  //       })
+  //     })
+  //
+  //     describe('when allocated budget exceeds available budget', () => {
+  //       const AVAILABLE_BUDGET = -200
+  //       beforeEach(() => {
+  //         const currentCategoryBudget: CurrentCategoryBudget = {
+  //           total: 1000,
+  //           allocated: 1200,
+  //           available: AVAILABLE_BUDGET,
+  //         }
+  //         jest.spyOn(BudgetService, 'getCategoryBudget').mockResolvedValue(currentCategoryBudget)
+  //       })
+  //
+  //       it('fails for any requested grant size', async () => {
+  //         const requestedGrantSize = 400
+  //         expect(async () => await BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).toThrow(
+  //           `Not enough budget for requested grant size. Available: $${AVAILABLE_BUDGET}. Requested: $${requestedGrantSize}`
+  //         )
+  //       })
+  //     })
+  //   })
 })

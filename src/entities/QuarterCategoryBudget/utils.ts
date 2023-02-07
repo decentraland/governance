@@ -2,17 +2,17 @@ import { snakeCase } from 'lodash'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import { NewGrantCategory } from '../Grant/types'
-import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
-export function toNewGrantCategory(category: string) {
-  const categories = Object.values(NewGrantCategory)
-  const idx = categories.map(snakeCase).findIndex((value) => value === snakeCase(category))
+export function toNewGrantCategory(category: string | null): NewGrantCategory {
+  if (category != null && category.length > 0) {
+    const categories = Object.values(NewGrantCategory)
+    const idx = categories.map(snakeCase).findIndex((value) => value === snakeCase(category))
 
-  if (idx >= 0) {
-    return categories[idx]
+    if (idx >= 0) {
+      return categories[idx]
+    }
   }
-
-  throw Error(`Attempted to parse an invalid NewGrantCategory ${category}`)
+  throw Error(`Attempted to parse an invalid NewGrantCategory: ${category}`)
 }
 
 export function getCategoryBudgetTotal(categoryPercentage: number, total: number) {

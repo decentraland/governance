@@ -19,12 +19,6 @@ export const isValidGrantBudget = (size: number) => {
   return true
 }
 
-export function isProposalGrantCategory(value: string | null | undefined): boolean {
-  return [...Object.values(NewGrantCategory), ...Object.values(OldGrantCategory)].includes(
-    value as ProposalGrantCategory
-  )
-}
-
 export function getNewGrantsCategoryIcon(category: NewGrantCategory) {
   switch (category) {
     case NewGrantCategory.Accelerator:
