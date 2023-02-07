@@ -16,7 +16,7 @@ interface Props {
   value: string | number
   onChange: (e: React.FormEvent<HTMLInputElement>) => void
   onBlur: (e: React.FormEvent<HTMLInputElement>) => void
-  error: string // TODO: Show errors in the UI
+  error: string
 }
 
 const DesiredFundingInput = ({ disabled, value, onChange, onBlur, error }: Props) => {
@@ -29,19 +29,19 @@ const DesiredFundingInput = ({ disabled, value, onChange, onBlur, error }: Props
         <div
           className={TokenList.join([
             'DesiredFundingInput__InputContainer',
-            showError && 'DesiredFundingInput__InputContainerError',
+            showError && 'DesiredFundingInput__InputContainer--Error',
           ])}
         >
           <div
             className={TokenList.join([
               'DesiredFundingInput__Description',
-              showError && 'DesiredFundingInput__DescriptionError',
+              showError && 'DesiredFundingInput__Description--Error',
             ])}
           >
             USD
           </div>
           <input
-            className={TokenList.join(['DesiredFundingInput__Input', showError && 'DesiredFundingInput__Error'])}
+            className={'DesiredFundingInput__Input'}
             type="number"
             value={value}
             onChange={onChange}
