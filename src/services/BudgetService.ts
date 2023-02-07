@@ -122,12 +122,9 @@ export class BudgetService {
       throw new Error('Grant size is not valid for the selected tier')
     }
     const validGrantCategory = toNewGrantCategory(grantCategory)
-
-    console.log('validGrantCategory', validGrantCategory)
     const currentCategoryBudget = await this.getCategoryBudget(validGrantCategory)
-    console.log('currentCategoryBudget', currentCategoryBudget)
 
-    if (currentCategoryBudget.available > grantSize) {
+    if (grantSize > currentCategoryBudget.available) {
       throw new Error(
         `Not enough budget for requested grant size. Available: $${currentCategoryBudget.available}. Requested: $${grantSize}`
       )
