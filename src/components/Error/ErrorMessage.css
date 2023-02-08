@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: rgba(216, 0, 39, 0.2);
+  background: var(--red-100);
   opacity: 0.9;
   border-radius: 6px;
 }

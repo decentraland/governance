@@ -18,6 +18,7 @@ import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { formatError, inBackground } from '../../helpers'
 import { GrantRequest } from '../../pages/submit/grant'
+import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
@@ -27,7 +28,6 @@ import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
 import { GrantRequestSchema, GrantStatus } from '../Grant/types'
-import { isValidGrantBudget } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -327,13 +327,11 @@ export async function createProposalGrant(req: WithAuth) {
 
   const grantSize = Number(grantRequest.funding || 0)
 
-  if (!isValidGrantBudget(grantSize)) {
-    throw new RequestError('Grant size is not valid for the selected tier')
-  }
+  await BudgetService.validateGrantRequest(grantSize, grantRequest.category)
 
   const grantConfiguration: GrantProposalConfiguration = {
     ...grantRequest,
-    size: grantSize,
+    size: Number(grantRequest.funding),
     tier: GrantTier.getTypeFromBudget(grantSize),
     choices: DEFAULT_CHOICES,
   }

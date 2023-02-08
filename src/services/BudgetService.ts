@@ -3,11 +3,12 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 
 import { DclData, TransparencyBudget } from '../clients/DclData'
-import { CurrentBudget } from '../entities/Budget/types'
+import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
 import { NewGrantCategory } from '../entities/Grant/types'
+import { isValidGrantBudget } from '../entities/Grant/utils'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
-import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
+import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -110,7 +111,23 @@ export class BudgetService {
     return QuarterBudgetModel.getCurrentBudget()
   }
 
-  static async getCategoryBudget(category: NewGrantCategory): Promise<QuarterCategoryBudgetAttributes> {
-    return QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
+  static async getCategoryBudget(category: NewGrantCategory): Promise<CurrentCategoryBudget> {
+    const categoryBudget = await QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
+    const { total, allocated } = categoryBudget
+    return { total, allocated, available: total - allocated }
+  }
+
+  static async validateGrantRequest(grantSize: number, grantCategory: NewGrantCategory | null) {
+    if (!isValidGrantBudget(grantSize)) {
+      throw new Error('Grant size is not valid for the selected tier')
+    }
+    const validGrantCategory = toNewGrantCategory(grantCategory)
+    const currentCategoryBudget = await this.getCategoryBudget(validGrantCategory)
+
+    if (grantSize > currentCategoryBudget.available) {
+      throw new Error(
+        `Not enough budget for requested grant size. Available: $${currentCategoryBudget.available}. Requested: $${grantSize}`
+      )
+    }
   }
 }

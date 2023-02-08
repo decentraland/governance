@@ -1,8 +1,14 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import { DclData } from '../clients/DclData'
+import { CurrentCategoryBudget } from '../entities/Budget/types'
+import { NewGrantCategory } from '../entities/Grant/types'
+import QuarterBudgetModel from '../entities/QuarterBudget/model'
+import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 
 import { BudgetService } from './BudgetService'
+
+const NOW = new Date('2023-02-03T00:00:00Z')
 
 export const VALID_TRANSPARENCY_BUDGET_1 = {
   category_percentages: {
@@ -95,61 +101,167 @@ function asserErrorLogging() {
   })
 }
 
-describe('getTransparencyBudgets', () => {
-  describe('when it receives a list of valid budgets', () => {
-    jest
-      .spyOn(DclData.get(), 'getBudgets')
-      .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
-    it('returns a list of parsed budgets', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([
-        VALID_TRANSPARENCY_BUDGET_1,
-        VALID_TRANSPARENCY_BUDGET_2,
-      ])
+describe('BudgetService', () => {
+  describe('getTransparencyBudgets', () => {
+    beforeAll(() => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      jest.spyOn(logger, 'error').mockImplementation(() => {})
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      jest.spyOn(console, 'error').mockImplementation(() => {})
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      jest.spyOn(console, 'log').mockImplementation(() => {})
     })
-    afterAll(() => jest.clearAllMocks())
-  })
-
-  describe('when it receives a list with no valid budgets', () => {
-    beforeAll(() =>
+    describe('when it receives a list of valid budgets', () => {
       jest
         .spyOn(DclData.get(), 'getBudgets')
-        .mockImplementation(async () => [INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
-    )
-
-    asserErrorLogging()
-
-    it('returns an empty list', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+        .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
+      it('returns a list of parsed budgets', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([
+          VALID_TRANSPARENCY_BUDGET_1,
+          VALID_TRANSPARENCY_BUDGET_2,
+        ])
+      })
+      afterAll(() => jest.clearAllMocks())
     })
 
-    afterAll(() => jest.clearAllMocks())
+    describe('when it receives a list with no valid budgets', () => {
+      beforeAll(() =>
+        jest
+          .spyOn(DclData.get(), 'getBudgets')
+          .mockImplementation(async () => [INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
+      )
+
+      asserErrorLogging()
+
+      it('returns an empty list', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      })
+
+      afterAll(() => jest.clearAllMocks())
+    })
+
+    describe('when it receives an empty list of budgets', () => {
+      beforeAll(() => jest.spyOn(DclData.get(), 'getBudgets').mockResolvedValue([]))
+
+      asserErrorLogging()
+
+      it('returns an empty list', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      })
+
+      afterAll(() => jest.clearAllMocks())
+    })
+
+    describe('when it receives a list with valid and invalid budgets', () => {
+      beforeAll(() =>
+        jest
+          .spyOn(DclData.get(), 'getBudgets')
+          .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
+      )
+
+      asserErrorLogging()
+
+      it('returns an empty list', async () => {
+        expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      })
+
+      afterAll(() => jest.clearAllMocks())
+    })
   })
 
-  describe('when it receives an empty list of budgets', () => {
-    beforeAll(() => jest.spyOn(DclData.get(), 'getBudgets').mockResolvedValue([]))
+  describe('getCategoryBudget', () => {
+    it('returns the total, allocated, and available amounts for the current category budget ', async () => {
+      const categoryBudget: QuarterCategoryBudgetAttributes = {
+        quarter_budget_id: '1',
+        category: NewGrantCategory.Accelerator,
+        total: 10,
+        allocated: 8,
+        created_at: NOW,
+        updated_at: NOW,
+      }
+      jest.spyOn(QuarterBudgetModel, 'getCategoryBudgetForCurrentQuarter').mockResolvedValue(categoryBudget)
 
-    asserErrorLogging()
-
-    it('returns an empty list', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      expect(await BudgetService.getCategoryBudget(NewGrantCategory.Accelerator)).toEqual({
+        total: 10,
+        allocated: 8,
+        available: 2,
+      })
     })
 
-    afterAll(() => jest.clearAllMocks())
+    describe('when the allocated amount is bigger than the total', () => {
+      beforeEach(() => {
+        const categoryBudget: QuarterCategoryBudgetAttributes = {
+          quarter_budget_id: '1',
+          category: NewGrantCategory.Accelerator,
+          total: 10,
+          allocated: 12,
+          created_at: NOW,
+          updated_at: NOW,
+        }
+        jest.spyOn(QuarterBudgetModel, 'getCategoryBudgetForCurrentQuarter').mockResolvedValue(categoryBudget)
+      })
+
+      it('returns a current category budget with a negative available amount', async () => {
+        expect(await BudgetService.getCategoryBudget(NewGrantCategory.Accelerator)).toEqual({
+          total: 10,
+          allocated: 12,
+          available: -2,
+        })
+      })
+    })
   })
 
-  describe('when it receives a list with valid and invalid budgets', () => {
-    beforeAll(() =>
-      jest
-        .spyOn(DclData.get(), 'getBudgets')
-        .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
-    )
+  describe('validateGrantRequest', () => {
+    const TOTAL_BUDGET = 1000
+    const grantCategory = NewGrantCategory.InWorldContent
+    afterEach(() => jest.clearAllMocks())
 
-    asserErrorLogging()
+    describe('when there is a positive amount of available budget', () => {
+      const AVAILABLE_BUDGET = 200
+      beforeEach(() => {
+        const currentCategoryBudget: CurrentCategoryBudget = {
+          total: TOTAL_BUDGET,
+          allocated: TOTAL_BUDGET - AVAILABLE_BUDGET,
+          available: AVAILABLE_BUDGET,
+        }
+        jest.spyOn(BudgetService, 'getCategoryBudget').mockResolvedValue(currentCategoryBudget)
+      })
 
-    it('returns an empty list', async () => {
-      expect(await BudgetService.getTransparencyBudgets()).toEqual([])
+      it('fails when the requested amount is bigger than the available budget', async () => {
+        const requestedGrantSize = AVAILABLE_BUDGET + 1
+        await expect(() => BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).rejects.toThrowError(
+          `Not enough budget for requested grant size. Available: $${AVAILABLE_BUDGET}. Requested: $${requestedGrantSize}`
+        )
+      })
+
+      it('allows for requests equal to the total available budget for a category', () => {
+        const requestedGrantSize = AVAILABLE_BUDGET
+        expect(async () => await BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).not.toThrow()
+      })
+
+      it('allows for requests below the available budget for a category', () => {
+        const requestedGrantSize = AVAILABLE_BUDGET - 1
+        expect(async () => await BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).not.toThrow()
+      })
     })
 
-    afterAll(() => jest.clearAllMocks())
+    describe('when allocated budget exceeds available budget', () => {
+      const AVAILABLE_BUDGET = -200
+      beforeEach(() => {
+        const currentCategoryBudget: CurrentCategoryBudget = {
+          total: 1000,
+          allocated: 1200,
+          available: AVAILABLE_BUDGET,
+        }
+        jest.spyOn(BudgetService, 'getCategoryBudget').mockResolvedValue(currentCategoryBudget)
+      })
+
+      it('fails for any requested grant size', async () => {
+        const requestedGrantSize = 400
+        await expect(() => BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).rejects.toThrow(
+          `Not enough budget for requested grant size. Available: $${AVAILABLE_BUDGET}. Requested: $${requestedGrantSize}`
+        )
+      })
+    })
   })
 })

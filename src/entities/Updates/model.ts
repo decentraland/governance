@@ -8,8 +8,8 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createPendingUpdates(proposalId: string, duration: string) {
-    const updatesQuantity = duration // TODO: Validate duration is between 1-12?
+  static async createPendingUpdates(proposalId: string, duration: number) {
+    const updatesQuantity = duration
     const now = new Date()
 
     return Array.from(Array(updatesQuantity), async (_, index) => {

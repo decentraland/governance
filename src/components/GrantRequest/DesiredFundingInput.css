@@ -2,10 +2,20 @@
   margin-bottom: 32px;
 }
 
+.DesiredFundingInput__Container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .DesiredFundingInput__InputContainer {
   display: inline-flex;
   border: 1px solid rgba(115, 110, 125, 0.32);
   border-radius: 6px;
+}
+
+.DesiredFundingInput__InputContainer--Error {
+  border: 1px solid var(--red-800);
 }
 
 .DesiredFundingInput__Description {
@@ -19,6 +29,11 @@
   border-right: 1px solid rgba(115, 110, 125, 0.32);
 }
 
+.DesiredFundingInput__Description--Error {
+  background: var(--red-100);
+  border-right: 1px solid var(--red-800);
+}
+
 .DesiredFundingInput__Input {
   padding: 9px 11px;
   min-width: 130px;
@@ -29,4 +44,12 @@
   line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
+}
+
+.DesiredFundingInput__ErrorHelper {
+  display: flex;
+}
+
+.DesiredFundingInput__ErrorHelper > .Helper__Container {
+  height: 16px;
 }
