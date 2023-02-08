@@ -16,7 +16,7 @@ import {
 } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
-import { getPercentage } from '../../helpers'
+import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
 import Helper from '../Helper/Helper'
 import Lock from '../Icon/Lock'
@@ -41,39 +41,41 @@ export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   vestingStartDate: VestingStartDate.First,
 }
 
-const AVAILABLE_CATEGORY_BUDGET = 100000 // TODO: Remove this
-
 // TODO: this could be in a GrantCategory class/service/whatevs
 const isValidBudgetForCategory = (budget: number | string | undefined, total: number) => {
   return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= total
 }
 
-const validate = createValidator<GrantRequestFunding>({
-  funding: (state) => ({
-    funding:
-      assert(Number.isFinite(asNumber(state.funding)), 'error.grant.funding.invalid') ||
-      assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
-      assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
-      assert(
-        !state.funding || (!!state.funding && state.funding <= AVAILABLE_CATEGORY_BUDGET), // TODO: This validation needs to be done dynamically
-        'error.grant.funding.over_budget'
-      ) ||
-      undefined,
-  }),
-  projectDuration: (state) => ({
-    projectDuration:
-      assert(!state.projectDuration || Number.isFinite(asNumber(state.projectDuration)), 'error.grant.size_invalid') ||
-      assert(
-        !state.projectDuration || asNumber(state.projectDuration) >= schema.projectDuration.minimum,
-        'error.grant.size_too_low'
-      ) ||
-      assert(
-        !state.projectDuration || asNumber(state.projectDuration) <= schema.projectDuration.maximum,
-        'error.grant.size_too_big'
-      ) ||
-      undefined,
-  }),
-})
+const validate = (availableCategoryBudget: number | 0) =>
+  createValidator<GrantRequestFunding>({
+    funding: (state) => ({
+      funding:
+        assert(Number.isFinite(asNumber(state.funding)), 'error.grant.funding.invalid') ||
+        assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
+        assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
+        assert(
+          !state.funding || (!!state.funding && state.funding <= availableCategoryBudget),
+          'error.grant.funding.over_budget'
+        ) ||
+        undefined,
+    }),
+    projectDuration: (state) => ({
+      projectDuration:
+        assert(
+          !state.projectDuration || Number.isFinite(asNumber(state.projectDuration)),
+          'error.grant.size_invalid'
+        ) ||
+        assert(
+          !state.projectDuration || asNumber(state.projectDuration) >= schema.projectDuration.minimum,
+          'error.grant.size_too_low'
+        ) ||
+        assert(
+          !state.projectDuration || asNumber(state.projectDuration) <= schema.projectDuration.maximum,
+          'error.grant.size_too_big'
+        ) ||
+        undefined,
+    }),
+  })
 
 const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) => {
   return {
@@ -126,7 +128,9 @@ export default function GrantRequestFundingSection({
   onCategoryChange,
 }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_FUNDING_STATE)
+  const { totalCategoryBudget, availableCategoryBudget } = useCategoryBudget(grantCategory)
+  const validator = useMemo(() => validate(availableCategoryBudget), [availableCategoryBudget])
+  const [state, editor] = useEditor(edit, validator, INITIAL_GRANT_REQUEST_FUNDING_STATE)
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
 
   useEffect(() => {
@@ -137,8 +141,6 @@ export default function GrantRequestFundingSection({
   const availableDurations = useMemo(() => {
     return getProjectDurationOptions(Number(state.value.funding) || GRANT_PROPOSAL_MIN_BUDGET)
   }, [state.value.funding])
-
-  const { totalCategoryBudget, availableCategoryBudget } = useCategoryBudget(grantCategory)
 
   const passThreshold =
     grantCategory && isValidBudgetForCategory(Number(state.value.funding), totalCategoryBudget)
@@ -172,18 +174,19 @@ export default function GrantRequestFundingSection({
             helper={
               <Helper
                 text={t('page.submit_grant.funding_section.category_budget_info')}
-                size="12"
+                size="16"
                 position="right center"
               />
             }
             title={`$${t('general.number', {
               value: availableCategoryBudget,
             })}`}
-            titleExtra={`(${getPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
+            titleExtra={`(${getFormattedPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
             subtitle={t('page.submit_grant.funding_section.category_budget_total', {
               value: totalCategoryBudget,
             })}
             subtitleVariant="uppercase"
+            error={state.error.funding === 'error.grant.funding.over_budget'}
           />
         </div>
         <div className="GrantRequestSection__Row">

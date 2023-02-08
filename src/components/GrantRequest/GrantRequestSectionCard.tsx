@@ -1,6 +1,10 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import ExclamationCircle from '../Icon/ExclamationCircle'
+
 import './GrantRequestSectionCard.css'
 
 export const GrantRequestSectionCard = ({
@@ -10,6 +14,7 @@ export const GrantRequestSectionCard = ({
   title,
   titleExtra,
   subtitleVariant = 'normal',
+  error,
 }: {
   category: string
   title: string | null
@@ -17,11 +22,16 @@ export const GrantRequestSectionCard = ({
   subtitle: string
   helper: React.ReactNode
   subtitleVariant?: 'normal' | 'uppercase'
+  error?: boolean
 }) => {
   return (
-    <div className="GrantRequestSectionCard">
+    <div className={TokenList.join(['GrantRequestSectionCard', error && 'GrantRequestSectionCard__Error'])}>
       <div className="GrantRequestSectionCard__Header">
-        <div className="GrantRequestSectionCard__HeaderTitle">{category}</div>
+        <div className="GrantRequestSectionCard__HeaderTitle">
+          {category}
+          {error && <ExclamationCircle color={'red-800'} size={'13px'} />}
+        </div>
+
         {helper}
       </div>
       <div className="GrantRequestSectionCard__ContentTitle GrantRequestSectionCard__AlignBaseline">
