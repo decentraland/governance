@@ -4,7 +4,7 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
-import { snakeCase } from 'lodash'
+import snakeCase from 'lodash/snakeCase'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
 import {

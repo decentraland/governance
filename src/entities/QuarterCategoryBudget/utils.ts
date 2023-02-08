@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash'
+import snakeCase from 'lodash/snakeCase'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import { NewGrantCategory } from '../Grant/types'
