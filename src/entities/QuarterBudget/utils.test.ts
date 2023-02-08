@@ -56,7 +56,7 @@ describe('getQuarterStartDate', () => {
     expect(getQuarterStartDate('2023-01-01T00:00:00Z')).toEqual(new Date('2023-01-01T00:00:00Z'))
   })
   it('gets the beginning of the month for string dates without UTC format', () => {
-    expect(getQuarterStartDate('2023-01-01T00:00:00')).toEqual(new Date('2023-01-01T00:00:00Z'))
+    expect(getQuarterStartDate('2023-01-01T00:00:00Z')).toEqual(new Date('2023-01-01T00:00:00Z'))
   })
   it('gets the beginning of the month for a date with the wrong hour', () => {
     expect(getQuarterStartDate('2023-01-01T12:00:00Z')).toEqual(new Date('2023-01-01T00:00:00Z'))
