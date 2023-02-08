@@ -465,7 +465,7 @@ export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
   projectDuration?: number // Old grants may not have this field
   tier: GrantTierType
   choices: string[]
-  vestingStartDate: VestingStartDate
+  vestingStartDate?: VestingStartDate
 }
 
 export type NewProposalLinkedWearables = {
