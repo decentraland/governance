@@ -7,6 +7,11 @@ import { QuarterBudgetAttributes } from './types'
 
 dayjs.extend(utc)
 
+function isUTCFormat(date: string) {
+  const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/
+  return dateRegex.test(date)
+}
+
 export function thereAreNoOverlappingBudgets(
   startAt: Date,
   finishAt: Date,
@@ -24,6 +29,9 @@ export function getQuarterEndDate(quarterStartDate: Date) {
 }
 
 export function getQuarterStartDate(quarterStartDate: string) {
+  if (!isUTCFormat(quarterStartDate)) {
+    throw new Error(`Invalid date format. Expected UTC format. Received ${quarterStartDate}`)
+  }
   const startDate = new Date(quarterStartDate)
   return new Date(dayjs.utc(startDate).startOf('day').toISOString())
 }

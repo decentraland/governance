@@ -22,8 +22,8 @@ const TEST_DATA: Omit<QuarterBudgetAttributes, 'start_at' | 'finish_at'> = {
   updated_at: new Date('2023-01-01'),
 }
 
-const QUARTER_1_START_DATE = getQuarterStartDate('2023-01-01')
-const QUARTER_2_START_DATE = getQuarterStartDate('2023-04-01')
+const QUARTER_1_START_DATE = getQuarterStartDate('2023-01-01T00:00:00Z')
+const QUARTER_2_START_DATE = getQuarterStartDate('2023-04-01T00:00:00Z')
 const QUARTER_2_END_DATE = getQuarterEndDate(QUARTER_2_START_DATE)
 
 const EXISTING_BUDGETS: QuarterBudgetAttributes[] = [
@@ -56,13 +56,13 @@ describe('getQuarterStartDate', () => {
     expect(getQuarterStartDate('2023-01-01T00:00:00Z')).toEqual(new Date('2023-01-01T00:00:00Z'))
   })
   it('gets the beginning of the month for string dates without UTC format', () => {
-    expect(getQuarterStartDate('2023-01-01T00:00:00')).toEqual(new Date('2023-01-01T00:00:00Z'))
+    expect(() => getQuarterStartDate('2023-01-01T00:00:00')).toThrowError()
   })
   it('gets the beginning of the month for a date with the wrong hour', () => {
     expect(getQuarterStartDate('2023-01-01T12:00:00Z')).toEqual(new Date('2023-01-01T00:00:00Z'))
   })
   it('gets the beginning of the month for a date without specified hours', () => {
-    expect(getQuarterStartDate('2023-01-01')).toEqual(new Date('2023-01-01T00:00:00Z'))
+    expect(getQuarterStartDate('2023-01-01T00:00:00Z')).toEqual(new Date('2023-01-01T00:00:00Z'))
   })
 })
 
@@ -93,11 +93,11 @@ describe('getSortedBudgets', () => {
 
 describe('budgetExistsForStartingDate', () => {
   it('returns true if a budget has the same starting date as the received', () => {
-    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-01-01'))).toBe(true)
-    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-04-01'))).toBe(true)
+    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-01-01T00:00:00Z'))).toBe(true)
+    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-04-01T00:00:00Z'))).toBe(true)
   })
   it('returns false if no budget has the same starting date as the received', () => {
-    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-01-02'))).toBe(false)
-    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-03-30'))).toBe(false)
+    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-01-02T00:00:00Z'))).toBe(false)
+    expect(budgetExistsForStartingDate(EXISTING_BUDGETS, getQuarterStartDate('2023-03-30T00:00:00Z'))).toBe(false)
   })
 })
