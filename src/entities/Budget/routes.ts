@@ -6,7 +6,6 @@ import { Request } from 'express'
 import { TransparencyBudget } from '../../clients/DclData'
 import { BudgetService } from '../../services/BudgetService'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
-import { QuarterCategoryBudgetAttributes } from '../QuarterCategoryBudget/types'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
 import { CurrentBudget, CurrentCategoryBudget } from './types'

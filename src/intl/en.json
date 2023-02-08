@@ -286,7 +286,8 @@
     "active": "Active outcomes",
     "rejected": "Rejected outcomes",
     "passed": "Passed outcomes",
-    "enacted": "Enacted outcomes"
+    "enacted": "Enacted outcomes",
+    "out_of_budget": "OOB outcomes"
   },
   "grant_status": {
     "in_progress": "In progress",

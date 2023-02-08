@@ -1,0 +1,118 @@
+import { ProposalStatus } from './types'
+import {
+  canLinkProposal,
+  isProposalStatus,
+  isValidUpdateProposalStatus,
+  proposalCanBeDeleted,
+  proposalCanBeEnacted,
+  proposalCanBePassedOrRejected,
+  toProposalStatus,
+} from './utils'
+
+describe('isProposalStatus', () => {
+  it('returns true for every proposal status', () => {
+    Object.values(ProposalStatus).forEach((status) => expect(isProposalStatus(status)).toBe(true))
+  })
+  it('returns false for anything else', () => {
+    expect(isProposalStatus('status')).toBe(false)
+  })
+})
+
+describe('toProposalStatus', () => {
+  it('returns a ProposalStatus for every proposal status string', () => {
+    Object.values(ProposalStatus).forEach((status) =>
+      expect(toProposalStatus(status.toString(), () => {})).toBe(status)
+    )
+  })
+  it('calls the handler function for anything else', () => {
+    expect(toProposalStatus('status', () => false)).toBe(false)
+    expect(toProposalStatus('status', () => null)).toBe(null)
+    expect(toProposalStatus('status', () => undefined)).toBe(undefined)
+    expect(() =>
+      toProposalStatus('status', () => {
+        throw new Error('ProposalStatus invalid')
+      })
+    ).toThrowError('ProposalStatus invalid')
+  })
+})
+
+describe('isValidUpdateProposalStatus', () => {
+  it('returns true when current status is Finished and next status is Rejected, Passed, Enacted, or Out of Budget', () => {
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Rejected)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Passed)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Enacted)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.OutOfBudget)).toBe(true)
+  })
+
+  it('can only update to Enacted from Passed, Enacted, or Finished', () => {
+    expect(isValidUpdateProposalStatus(ProposalStatus.Passed, ProposalStatus.Enacted)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Enacted, ProposalStatus.Enacted)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Enacted)).toBe(true)
+
+    expect(isValidUpdateProposalStatus(ProposalStatus.Pending, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Active, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Rejected, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.OutOfBudget, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Deleted, ProposalStatus.Enacted)).toBe(false)
+  })
+
+  it('returns false for Pending, Active, Rejected, OutOfBudget and Deleted statuses', () => {
+    Object.values(ProposalStatus).forEach((status) => {
+      expect(isValidUpdateProposalStatus(ProposalStatus.Pending, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.Active, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.Rejected, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.OutOfBudget, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.Deleted, status)).toBe(false)
+    })
+  })
+})
+
+describe('proposalCanBeDeleted', () => {
+  it('should return true for active or pending proposals', () => {
+    expect(proposalCanBeDeleted(ProposalStatus.Active)).toBe(true)
+    expect(proposalCanBeDeleted(ProposalStatus.Pending)).toBe(true)
+  })
+  it('should return false for all status other than active or pending', () => {
+    Object.values(ProposalStatus)
+      .filter((status) => status !== ProposalStatus.Active && status !== ProposalStatus.Pending)
+      .forEach((status) => {
+        expect(proposalCanBeDeleted(status)).toBe(false)
+      })
+  })
+})
+
+describe('proposalCanBeEnacted', () => {
+  it('should return true for enacted or passed proposals', () => {
+    expect(proposalCanBeEnacted(ProposalStatus.Passed)).toBe(true)
+    expect(proposalCanBeEnacted(ProposalStatus.Enacted)).toBe(true)
+  })
+  it('should return false for all status other than active or pending', () => {
+    Object.values(ProposalStatus)
+      .filter((status) => status !== ProposalStatus.Passed && status !== ProposalStatus.Enacted)
+      .forEach((status) => {
+        expect(proposalCanBeEnacted(status)).toBe(false)
+      })
+  })
+})
+
+describe('proposalCanBePassedOrRejected', () => {
+  it('should only be true for finished proposals', () => {
+    Object.values(ProposalStatus).forEach((status) => {
+      expect(proposalCanBePassedOrRejected(status)).toBe(status === ProposalStatus.Finished)
+    })
+  })
+})
+
+describe('canLinkProposal', () => {
+  it('should return true for passed or OOB proposals', () => {
+    expect(canLinkProposal(ProposalStatus.Passed)).toBe(true)
+    expect(canLinkProposal(ProposalStatus.OutOfBudget)).toBe(true)
+  })
+  it('should return false for all status other than passed or OOB', () => {
+    Object.values(ProposalStatus)
+      .filter((status) => status !== ProposalStatus.Passed && status !== ProposalStatus.OutOfBudget)
+      .forEach((status) => {
+        expect(canLinkProposal(status)).toBe(false)
+      })
+  })
+})

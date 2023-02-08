@@ -49,6 +49,10 @@ export default function StatusMenu(props: StatusMenu) {
           onClick={(e) => handleChange(e, ProposalStatus.Rejected)}
         />
         <Dropdown.Item
+          text={t(`status.${ProposalStatus.OutOfBudget}`)}
+          onClick={(e) => handleChange(e, ProposalStatus.OutOfBudget)}
+        />
+        <Dropdown.Item
           text={t(`status.${ProposalStatus.Enacted}`)}
           onClick={(e) => handleChange(e, ProposalStatus.Enacted)}
         />

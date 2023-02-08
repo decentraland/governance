@@ -69,6 +69,7 @@ import {
   DEFAULT_CHOICES,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
+  canLinkProposal,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
@@ -502,8 +503,11 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
       RequestError.NotFound
     )
   }
-  if (linkedProposal.status != ProposalStatus.Passed) {
-    throw new RequestError("Cannot link selected proposal since it's not in a PASSED status", RequestError.Forbidden)
+  if (!canLinkProposal(linkedProposal.status)) {
+    throw new RequestError(
+      "Cannot link selected proposal since it's not in a PASSED or OOB status",
+      RequestError.Forbidden
+    )
   }
 }
 
