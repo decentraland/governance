@@ -32,7 +32,11 @@ const currencyFormatter: any = {
 function BudgetBanner({ category, status, counter }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
-  const { percentage, currentAmount, totalBudget } = useBudgetByCategory(category)
+  const {
+    allocatedPercentage: percentage,
+    allocated: currentAmount,
+    total: totalBudget,
+  } = useBudgetByCategory(category)
   const initiativesCount = useMemo(
     () =>
       (counter && (category !== PROPOSAL_GRANT_CATEGORY_ALL ? counter[category] : getAllInitiativesCount(counter))) ||

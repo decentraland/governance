@@ -9,15 +9,15 @@ import { Governance } from './../clients/Governance'
 import { ProposalGrantCategory } from './../entities/Grant/types'
 
 type Budget = {
-  percentage: number
-  currentAmount: number
-  totalBudget: number
+  allocatedPercentage: number
+  allocated: number
+  total: number
 }
 
 const INITIAL_BUDGET: Budget = {
-  percentage: 0,
-  currentAmount: 0,
-  totalBudget: 0,
+  allocatedPercentage: 0,
+  allocated: 0,
+  total: 0,
 }
 
 function convertPercentageToInt(percentage: number): number {
@@ -33,17 +33,17 @@ export default function useBudgetByCategory(category: ProposalGrantCategory | ty
       const { categories, allocated, total } = budgetData
       if (category === PROPOSAL_GRANT_CATEGORY_ALL) {
         setBudget({
-          percentage: convertPercentageToInt(allocated / total),
-          currentAmount: allocated,
-          totalBudget: total,
+          allocatedPercentage: convertPercentageToInt(allocated / total),
+          allocated,
+          total,
         })
       } else {
         const categoryBudget = categories[toSnakeCase(category)]
         if (categoryBudget) {
           setBudget({
-            percentage: convertPercentageToInt(categoryBudget.allocated / categoryBudget.total),
-            currentAmount: categoryBudget.allocated,
-            totalBudget: categoryBudget.total,
+            allocatedPercentage: convertPercentageToInt(categoryBudget.allocated / categoryBudget.total),
+            allocated: categoryBudget.allocated,
+            total: categoryBudget.total,
           })
         } else {
           setBudget(INITIAL_BUDGET)
