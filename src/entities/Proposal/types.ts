@@ -4,7 +4,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { GrantRequestGeneralInfo } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
-import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../Grant/types'
+import { GrantStatus, GrantTierType, ProposalGrantCategory, VestingStartDate } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
@@ -465,6 +465,7 @@ export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
   projectDuration?: number // Old grants may not have this field
   tier: GrantTierType
   choices: string[]
+  vestingStartDate?: VestingStartDate
 }
 
 export type NewProposalLinkedWearables = {

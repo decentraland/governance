@@ -3,6 +3,7 @@ import React, { useEffect, useMemo } from 'react'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import snakeCase from 'lodash/snakeCase'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
@@ -11,6 +12,7 @@ import {
   GrantRequestFundingSchema,
   MIN_LOW_TIER_PROJECT_DURATION,
   NewGrantCategory,
+  VestingStartDate,
 } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
@@ -30,11 +32,13 @@ const schema = GrantRequestFundingSchema
 export type GrantRequestFunding = {
   funding: string | number
   projectDuration: number
+  vestingStartDate: VestingStartDate
 }
 
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   funding: '',
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
+  vestingStartDate: VestingStartDate.First,
 }
 
 // TODO: this could be in a GrantCategory class/service/whatevs
@@ -232,8 +236,36 @@ export default function GrantRequestFundingSection({
             subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
           />
         </div>
-        <div className="GrantRequestSection__Row">
+        <div>
           <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
+          <ContentSection
+            className="GrantRequestSection__Checkbox"
+            onClick={() => editor.set({ vestingStartDate: VestingStartDate.First })}
+          >
+            <Radio
+              name="vestingStartDate"
+              id={VestingStartDate.First}
+              value={VestingStartDate.First}
+              checked={state.value.vestingStartDate === VestingStartDate.First}
+              type="radio"
+              disabled={isFormDisabled}
+            />
+            {t('page.submit_grant.funding_section.funding_time_first_day')}
+          </ContentSection>
+          <ContentSection
+            className="GrantRequestSection__Checkbox"
+            onClick={() => editor.set({ vestingStartDate: VestingStartDate.Fifteenth })}
+          >
+            <Radio
+              name="vestingStartDate"
+              id={VestingStartDate.Fifteenth}
+              value={VestingStartDate.Fifteenth}
+              type="radio"
+              checked={state.value.vestingStartDate === VestingStartDate.Fifteenth}
+              disabled={isFormDisabled}
+            />
+            {t('page.submit_grant.funding_section.funding_time_fifteenth_day')}
+          </ContentSection>
         </div>
       </ContentSection>
     </GrantRequestSection>

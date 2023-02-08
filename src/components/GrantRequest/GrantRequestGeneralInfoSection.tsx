@@ -44,7 +44,14 @@ const validate = createValidator<GrantRequestGeneralInfo>({
     title:
       assert(state.title.length <= schema.title.maxLength, 'error.grant.title_too_large') ||
       assert(state.title.length > 0, 'error.grant.title_empty') ||
-      assert(state.title.length > schema.title.minLength, 'error.grant.title_too_short') ||
+      assert(state.title.length >= schema.title.minLength, 'error.grant.title_too_short') ||
+      undefined,
+  }),
+  abstract: (state) => ({
+    abstract:
+      assert(state.abstract.length <= schema.abstract.maxLength, 'error.grant.general_info.abstract_too_large') ||
+      assert(state.abstract.length > 0, 'error.grant.general_info.abstract_empty') ||
+      assert(state.abstract.length >= schema.abstract.minLength, 'error.grant.general_info.abstract_too_short') ||
       undefined,
   }),
   description: (state) => ({
@@ -55,7 +62,7 @@ const validate = createValidator<GrantRequestGeneralInfo>({
       ) ||
       assert(state.description.length > 0, 'error.grant.general_info.description_empty') ||
       assert(
-        state.description.length > schema.description.minLength,
+        state.description.length >= schema.description.minLength,
         'error.grant.general_info.description_too_short'
       ) ||
       undefined,
@@ -71,13 +78,6 @@ const validate = createValidator<GrantRequestGeneralInfo>({
         state.specification.length >= schema.specification.minLength,
         'error.grant.general_info.specification_too_short'
       ) ||
-      undefined,
-  }),
-  abstract: (state) => ({
-    abstract:
-      assert(state.abstract.length <= schema.abstract.maxLength, 'error.grant.general_info.abstract_too_large') ||
-      assert(state.abstract.length > 0, 'error.grant.general_info.abstract_empty') ||
-      assert(state.abstract.length >= schema.abstract.minLength, 'error.grant.general_info.abstract_too_short') ||
       undefined,
   }),
   beneficiary: (state) => ({

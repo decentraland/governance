@@ -47,6 +47,11 @@ export enum NewGrantCategory {
   Sponsorship = 'Sponsorship',
 }
 
+export enum VestingStartDate {
+  First = '1st',
+  Fifteenth = '15th',
+}
+
 export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const VALID_CATEGORIES = Object.values(NewGrantCategory)
@@ -114,6 +119,10 @@ export const GrantRequestFundingSchema = {
     minimum: Number(MIN_PROJECT_DURATION || 1),
     maximum: Number(MAX_PROJECT_DURATION || 1),
   },
+  vestingStartDate: {
+    type: 'string',
+    enum: Object.values(VestingStartDate),
+  },
 }
 
 export const GrantRequestSchema = {
@@ -121,16 +130,8 @@ export const GrantRequestSchema = {
   additionalProperties: false,
   required: [
     'category',
-    'funding',
-    'projectDuration',
-    'title',
-    'abstract',
-    'description',
-    'specification',
-    'beneficiary',
-    'email',
-    'personnel',
-    'roadmap',
+    ...Object.keys(GrantRequestFundingSchema),
+    ...Object.keys(GrantRequestGeneralInfoSchema).filter((section) => section !== 'coAuthors'),
   ],
   properties: {
     category: {
