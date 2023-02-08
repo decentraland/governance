@@ -240,7 +240,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return (!!result && result[0] && Number(result[0].total)) || 0
   }
 
-  static async getProposalList(filter: Partial<FilterProposalList & FilterPagination> = {}) {
+  static async getProposalList(
+    filter: Partial<FilterProposalList & FilterPagination> = {}
+  ): Promise<(ProposalAttributes & { coauthors?: string[] | null })[]> {
     if (filter.user && !isEthereumAddress(filter.user)) {
       return []
     }

@@ -63,7 +63,6 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   created_at: Date
   updated_at: Date
   textsearch: SQLStatement | string | null | undefined
-  coauthors?: string[] | null
 }
 
 export enum ProposalStatus {
