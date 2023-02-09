@@ -1,16 +1,16 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { Discourse, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
 import * as templates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import { inBackground } from '../helpers'
+import { env } from '../modules/env'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
-const DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
+const DISCOURSE_CATEGORY = env('DISCOURSE_CATEGORY')
 
 export class DiscourseService {
   static async createProposal(

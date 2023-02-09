@@ -6,7 +6,6 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
@@ -36,6 +35,7 @@ import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
 
+import { SUBMISSION_THRESHOLD_POLL } from './constants'
 import ProposalModel from './model'
 import {
   GrantProposalConfiguration,
@@ -77,8 +77,6 @@ import {
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
 } from './utils'
-
-const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
 export default routes((route) => {
   const withAuth = auth()
@@ -167,7 +165,7 @@ export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
 
-  await validateSubmissionThreshold(user, POLL_SUBMISSION_THRESHOLD)
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_POLL)
 
   // add default options
   configuration.choices = [...configuration.choices, INVALID_PROPOSAL_POLL_OPTIONS]
@@ -512,7 +510,7 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
 }
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
-  const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
+  const requiredVp = Number(submissionThreshold || SUBMISSION_THRESHOLD_POLL)
   const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
   if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
