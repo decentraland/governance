@@ -1,3 +1,4 @@
+import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { GrantTier } from '../Grant/GrantTier'
@@ -91,4 +92,28 @@ export function createTestProposal(proposalType: ProposalType, proposalStatus: P
     updated_at: start.toJSON() as never,
     textsearch: null,
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+interface CustomJobContext extends JobContext<{}> {
+  log: jest.Mock<unknown, unknown[]>
+  error: jest.Mock<unknown, unknown[]>
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export const JOB_CONTEXT_MOCK: CustomJobContext = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  schedule(name: string | null, date: Date, payload: Record<string, unknown> | undefined): Promise<void> {
+    return Promise.resolve(undefined)
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updatePayload(payload: Record<string, unknown> | undefined): Promise<void> {
+    return Promise.resolve(undefined)
+  },
+  log: jest.fn(),
+  error: jest.fn(),
+  id: 'some-id',
+  handler: null,
+  payload: {},
 }
