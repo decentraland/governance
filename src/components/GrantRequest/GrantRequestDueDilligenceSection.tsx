@@ -41,6 +41,9 @@ export default function GrantRequestDueDilligenceSection() {
         <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_label')}</Label>
         <SubLabel>{t('page.submit_grant.due_dilligence.budget_breakdown_detail', { value: 240000 })}</SubLabel>
         <AddBox>{t('page.submit_grant.due_dilligence.budget_breakdown_add_concept')}</AddBox>
+        <span className="GrantRequestSection__ExampleLabel">
+          {t('page.submit_grant.due_dilligence.budget_breakdown_example')}
+        </span>
       </div>
     </GrantRequestSection>
   )
