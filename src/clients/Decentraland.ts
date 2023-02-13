@@ -18,6 +18,6 @@ export class Decentraland extends API {
   }
 
   async subscribe(email: string) {
-    return this.fetch('/subscribe', this.options().method('POST').json({ email, list: 'governance' }))
+    return this.fetch('https://subscription.decentraland.org/subscribe', this.options().method('POST').json({ email, list: 'governance' }))
   }
 }
