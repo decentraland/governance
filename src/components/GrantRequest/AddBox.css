@@ -1,0 +1,22 @@
+.AddBox {
+  max-width: 386px;
+  height: 64px;
+  display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 2px dashed rgba(115, 110, 125, 0.24);
+  border-radius: 8px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 28px;
+  letter-spacing: 0.4px;
+  color: var(--black-600);
+  cursor: pointer;
+}
+
+.AddBox__Icon {
+  margin-right: 10px;
+}

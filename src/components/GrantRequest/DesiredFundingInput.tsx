@@ -6,11 +6,11 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/types'
+import Label from '../Common/Label'
 import Helper from '../Helper/Helper'
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
 import './DesiredFundingInput.css'
-import Label from './Label'
 
 interface Props {
   disabled: boolean

@@ -4,10 +4,10 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import Label from '../Common/Label'
 
 import CheckboxField from './CheckboxField'
 import GrantRequestSection from './GrantRequestSection'
-import Label from './Label'
 
 export type GrantRequestFinalConsent = {
   grantsFramework: boolean

@@ -22,6 +22,7 @@ import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
+import Label from '../Common/Label'
 import Helper from '../Helper/Helper'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -30,7 +31,6 @@ import DesiredFundingInput from './DesiredFundingInput'
 import './GrantRequestFundingSection.css'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
-import Label from './Label'
 import ProjectDurationInput from './ProjectDurationInput'
 
 const schema = GrantRequestFundingSchema

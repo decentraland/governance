@@ -1241,6 +1241,23 @@
           "investment_recovery_label": "How many months will it take the DAO to recover the investment made on your project based on your estimations?"
         }
       },
+      "due_dilligence": {
+        "title": "Due-dilligence",
+        "budget_breakdown_label": "Budget breakdown",
+        "budget_breakdown_detail": "Our community values transparency. ${value} left to disclose.",
+        "budget_breakdown_add_concept": "Add concept",
+        "budget_breakdown_modal": {
+          "title": "Breaking the Budget Down",
+          "concept_label": "Concept title/name",
+          "concept_placeholder": "ie. Frontend development",
+          "duration_label": "Duration",
+          "estimated_budget_label": "Estimated budget",
+          "about_this_label": "About this",
+          "about_this_placeholder": "Highlight relevant information",
+          "relevant_link_label": "Relevant Link",
+          "relevant_link_placeholder": "https://"
+        }
+      },
       "final_consent": {
         "title": "Final Consent",
         "subtitle": "Review and check the following",

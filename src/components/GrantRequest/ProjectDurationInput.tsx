@@ -2,10 +2,10 @@ import React, { useCallback } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import Label from '../Common/Label'
 import Add from '../Icon/Add'
 import Remove from '../Icon/Remove'
 
-import Label from './Label'
 import './ProjectDurationInput.css'
 
 interface Props {

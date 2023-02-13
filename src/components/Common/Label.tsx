@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Label = ({ children }: Props) => {
-  return <label className="GrantRequestLabel">{children}</label>
+  return <label className="FormLabel">{children}</label>
 }
 
 export default Label

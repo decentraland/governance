@@ -9,11 +9,12 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { GrantRequestGeneralInfo, GrantRequestGeneralInfoSchema } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import Label from '../Common/Label'
+import SubLabel from '../Common/SubLabel'
 import { ContentSection } from '../Layout/ContentLayout'
 import CoAuthors from '../Proposal/Submit/CoAuthor/CoAuthors'
 
 import GrantRequestSection from './GrantRequestSection'
-import Label from './Label'
 
 export const INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE: GrantRequestGeneralInfo = {
   title: '',
@@ -178,7 +179,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.abstract_label')}</Label>
-          <span className="GrantRequestSection__Sublabel">{t('page.submit_grant.general_info.abstract_detail')}</span>
+          <SubLabel>{t('page.submit_grant.general_info.abstract_detail')}</SubLabel>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.abstract}
@@ -199,9 +200,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.description_label')}</Label>
-          <span className="GrantRequestSection__Sublabel">
-            {t('page.submit_grant.general_info.description_detail')}
-          </span>
+          <SubLabel>{t('page.submit_grant.general_info.description_detail')}</SubLabel>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.description}
@@ -221,9 +220,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.specification_label')}</Label>
-          <span className="GrantRequestSection__Sublabel">
-            {t('page.submit_grant.general_info.specification_detail')}
-          </span>
+          <SubLabel>{t('page.submit_grant.general_info.specification_detail')}</SubLabel>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.specification}
@@ -243,9 +240,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.beneficiary_label')}</Label>
-          <span className="GrantRequestSection__Sublabel">
-            {t('page.submit_grant.general_info.beneficiary_detail')}
-          </span>
+          <SubLabel>{t('page.submit_grant.general_info.beneficiary_detail')}</SubLabel>
           <Field
             type="address"
             value={state.value.beneficiary}
@@ -260,7 +255,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
           <Label>
             <span className="EmailLabel">{t('page.submit_grant.general_info.email_label')}</span>
           </Label>
-          <span className="GrantRequestSection__Sublabel">{t('page.submit_grant.general_info.email_detail')}</span>
+          <SubLabel>{t('page.submit_grant.general_info.email_detail')}</SubLabel>
           <Field
             type="email"
             value={state.value.email}
@@ -275,7 +270,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.personnel_label')}</Label>
-          <span className="GrantRequestSection__Sublabel">{t('page.submit_grant.general_info.personnel_detail')}</span>
+          <SubLabel>{t('page.submit_grant.general_info.personnel_detail')}</SubLabel>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.personnel}
@@ -296,7 +291,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.roadmap_label')}</Label>
-          <span className="GrantRequestSection__Sublabel">{t('page.submit_grant.general_info.roadmap_detail')}</span>
+          <SubLabel>{t('page.submit_grant.general_info.roadmap_detail')}</SubLabel>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.roadmap}
