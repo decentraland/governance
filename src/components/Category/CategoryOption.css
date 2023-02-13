@@ -10,6 +10,7 @@
 
 .CategoryOption span {
   display: flex;
+  align-items: center;
 }
 
 .CategoryOption img,
