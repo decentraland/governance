@@ -1,7 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
 export class Decentraland extends API {
-  static Url = process.env.GATSBY_DECENTRALAND_API || 'https://decentraland.org'
+  static Url = process.env.GATSBY_DECENTRALAND_API || 'https://subscription.decentraland.org'
 
   static Cache = new Map<string, Decentraland>()
 
@@ -18,6 +18,6 @@ export class Decentraland extends API {
   }
 
   async subscribe(email: string) {
-    return this.fetch('https://subscription.decentraland.org/subscribe', this.options().method('POST').json({ email, list: 'governance' }))
+    return this.fetch('/subscribe', this.options().method('POST').json({ email, list: 'governance' }))
   }
 }
