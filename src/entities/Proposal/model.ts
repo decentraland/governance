@@ -20,8 +20,8 @@ import SubscriptionModel from '../Subscription/model'
 import { CoauthorStatus } from './../Coauthor/types'
 
 import tsquery from './tsquery'
-import { ProposalAttributes, ProposalStatus, isProposalStatus, isProposalType } from './types'
-import { SITEMAP_ITEMS_PER_PAGE } from './utils'
+import { ProposalAttributes, ProposalStatus, isProposalType } from './types'
+import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
 
 export type FilterProposalList = {
   type: string

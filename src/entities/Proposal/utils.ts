@@ -14,7 +14,6 @@ import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 import { ProposalAttributes, ProposalStatus, ProposalType, TransparencyGrant } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
-export const MIN_PROPOSAL_LIMIT = 0
 export const MAX_PROPOSAL_LIMIT = 100
 export const SITEMAP_ITEMS_PER_PAGE = 100
 
@@ -24,24 +23,6 @@ export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME
 export const JOIN_DISCORD_URL = env('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 
 export const CLIFF_PERIOD_IN_DAYS = 29
-
-export async function asyncSome<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
-  for (const item of arr) {
-    if (await predicate(item)) {
-      return true
-    }
-  }
-  return false
-}
-
-export async function asyncEvery<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
-  for (const item of arr) {
-    if (!(await predicate(item))) {
-      return false
-    }
-  }
-  return true
-}
 
 export function formatBalance(value: number | bigint) {
   return numeral(value).format('0,0')
@@ -91,7 +72,12 @@ export async function isAlreadyACatalyst(domain: string) {
 export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
   switch (current) {
     case ProposalStatus.Finished:
-      return next === ProposalStatus.Rejected || next === ProposalStatus.Passed || next === ProposalStatus.Enacted
+      return (
+        next === ProposalStatus.Rejected ||
+        next === ProposalStatus.Passed ||
+        next === ProposalStatus.Enacted ||
+        next === ProposalStatus.OutOfBudget
+      )
     case ProposalStatus.Passed:
     case ProposalStatus.Enacted:
       return next === ProposalStatus.Enacted
@@ -162,4 +148,40 @@ export function isProposalInCliffPeriod(grant: TransparencyGrant) {
 
 export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
+}
+
+export function isProposalStatus(value: string | null | undefined): boolean {
+  switch (value) {
+    case ProposalStatus.Pending:
+    case ProposalStatus.Finished:
+    case ProposalStatus.Active:
+    case ProposalStatus.Rejected:
+    case ProposalStatus.Passed:
+    case ProposalStatus.OutOfBudget:
+    case ProposalStatus.Enacted:
+    case ProposalStatus.Deleted:
+      return true
+    default:
+      return false
+  }
+}
+
+export function toProposalStatus(value: string | null | undefined, orElse: () => any): ProposalStatus | any {
+  return isProposalStatus(value) ? (value as ProposalStatus) : orElse()
+}
+
+export function isProposalDeletable(proposalStatus?: ProposalStatus) {
+  return proposalStatus === ProposalStatus.Pending || proposalStatus === ProposalStatus.Active
+}
+
+export function isProposalEnactable(proposalStatus?: ProposalStatus) {
+  return proposalStatus === ProposalStatus.Passed || proposalStatus === ProposalStatus.Enacted
+}
+
+export function proposalCanBePassedOrRejected(proposalStatus?: ProposalStatus) {
+  return proposalStatus === ProposalStatus.Finished
+}
+
+export function canLinkProposal(status: ProposalStatus) {
+  return status === ProposalStatus.Passed || status === ProposalStatus.OutOfBudget
 }

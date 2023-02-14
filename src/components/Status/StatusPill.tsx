@@ -2,7 +2,8 @@ import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalStatus, isProposalStatus } from '../../entities/Proposal/types'
+import { ProposalStatus } from '../../entities/Proposal/types'
+import { isProposalStatus } from '../../entities/Proposal/utils'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Check from '../Icon/Check'
 
@@ -13,12 +14,13 @@ type Props = {
 }
 
 const ColorsConfig: Record<ProposalStatus, PillColor> = {
-  [ProposalStatus.Rejected]: PillColor.Red,
   [ProposalStatus.Pending]: PillColor.Gray,
-  [ProposalStatus.Passed]: PillColor.Green,
-  [ProposalStatus.Finished]: PillColor.Gray,
   [ProposalStatus.Active]: PillColor.Gray,
+  [ProposalStatus.Finished]: PillColor.Gray,
+  [ProposalStatus.Passed]: PillColor.Green,
   [ProposalStatus.Enacted]: PillColor.Green,
+  [ProposalStatus.OutOfBudget]: PillColor.Yellow,
+  [ProposalStatus.Rejected]: PillColor.Red,
   [ProposalStatus.Deleted]: PillColor.Red,
 }
 
@@ -30,7 +32,7 @@ const StatusPill = ({ className, status, size }: Props) => {
   return (
     <Pill
       size={size || 'default'}
-      style={label === ProposalStatus.Enacted ? 'shiny' : 'outline'}
+      style={label === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'}
       className={TokenList.join(['StatusPill', className])}
       color={ColorsConfig[label]}
       icon={showIcon ? <Check color={iconColor} /> : null}

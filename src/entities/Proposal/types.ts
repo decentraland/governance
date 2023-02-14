@@ -59,26 +59,9 @@ export enum ProposalStatus {
   Finished = 'finished',
   Rejected = 'rejected',
   Passed = 'passed',
+  OutOfBudget = 'out_of_budget',
   Enacted = 'enacted',
   Deleted = 'deleted',
-}
-
-export function isProposalStatus(value: string | null | undefined): boolean {
-  switch (value) {
-    case ProposalStatus.Pending:
-    case ProposalStatus.Finished:
-    case ProposalStatus.Active:
-    case ProposalStatus.Rejected:
-    case ProposalStatus.Passed:
-    case ProposalStatus.Enacted:
-      return true
-    default:
-      return false
-  }
-}
-
-export function toProposalStatus(value: string | null | undefined): ProposalStatus | null {
-  return isProposalStatus(value) ? (value as ProposalStatus) : null
 }
 
 export enum ProposalType {
