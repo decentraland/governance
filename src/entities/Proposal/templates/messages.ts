@@ -3,8 +3,7 @@ import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'
 
 function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
-  if (proposalStatus === ProposalStatus.OutOfBudget) return 'OUT OF BUDGET'
-  return proposalStatus.toUpperCase()
+  return proposalStatus.split('_').join(' ').toUpperCase()
 }
 
 export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<string, Vote>) {

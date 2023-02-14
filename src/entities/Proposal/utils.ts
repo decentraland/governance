@@ -170,11 +170,11 @@ export function toProposalStatus(value: string | null | undefined, orElse: () =>
   return isProposalStatus(value) ? (value as ProposalStatus) : orElse()
 }
 
-export function proposalCanBeDeleted(proposalStatus?: ProposalStatus) {
+export function isProposalDeletable(proposalStatus?: ProposalStatus) {
   return proposalStatus === ProposalStatus.Pending || proposalStatus === ProposalStatus.Active
 }
 
-export function proposalCanBeEnacted(proposalStatus?: ProposalStatus) {
+export function isProposalEnactable(proposalStatus?: ProposalStatus) {
   return proposalStatus === ProposalStatus.Passed || proposalStatus === ProposalStatus.Enacted
 }
 

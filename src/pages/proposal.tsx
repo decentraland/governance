@@ -45,8 +45,8 @@ import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import {
   forumUrl,
-  proposalCanBeDeleted,
-  proposalCanBeEnacted,
+  isProposalDeletable,
+  isProposalEnactable,
   proposalCanBePassedOrRejected,
 } from '../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
@@ -299,13 +299,13 @@ export default function ProposalPage() {
                     basic
                     fluid
                     loading={deleting}
-                    disabled={!proposalCanBeDeleted(proposalStatus)}
+                    disabled={!isProposalDeletable(proposalStatus)}
                     onClick={() => patchOptions({ confirmDeletion: true })}
                   >
                     {t('page.proposal_detail.delete')}
                   </Button>
                 )}
-                {isCommittee && proposalCanBeEnacted(proposalStatus) && (
+                {isCommittee && isProposalEnactable(proposalStatus) && (
                   <Button
                     basic
                     loading={updatingStatus}

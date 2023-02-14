@@ -1,10 +1,10 @@
 import { ProposalStatus } from './types'
 import {
   canLinkProposal,
+  isProposalDeletable,
+  isProposalEnactable,
   isProposalStatus,
   isValidUpdateProposalStatus,
-  proposalCanBeDeleted,
-  proposalCanBeEnacted,
   proposalCanBePassedOrRejected,
   toProposalStatus,
 } from './utils'
@@ -69,28 +69,28 @@ describe('isValidUpdateProposalStatus', () => {
 
 describe('proposalCanBeDeleted', () => {
   it('should return true for active or pending proposals', () => {
-    expect(proposalCanBeDeleted(ProposalStatus.Active)).toBe(true)
-    expect(proposalCanBeDeleted(ProposalStatus.Pending)).toBe(true)
+    expect(isProposalDeletable(ProposalStatus.Active)).toBe(true)
+    expect(isProposalDeletable(ProposalStatus.Pending)).toBe(true)
   })
   it('should return false for all status other than active or pending', () => {
     Object.values(ProposalStatus)
       .filter((status) => status !== ProposalStatus.Active && status !== ProposalStatus.Pending)
       .forEach((status) => {
-        expect(proposalCanBeDeleted(status)).toBe(false)
+        expect(isProposalDeletable(status)).toBe(false)
       })
   })
 })
 
 describe('proposalCanBeEnacted', () => {
   it('should return true for enacted or passed proposals', () => {
-    expect(proposalCanBeEnacted(ProposalStatus.Passed)).toBe(true)
-    expect(proposalCanBeEnacted(ProposalStatus.Enacted)).toBe(true)
+    expect(isProposalEnactable(ProposalStatus.Passed)).toBe(true)
+    expect(isProposalEnactable(ProposalStatus.Enacted)).toBe(true)
   })
   it('should return false for all status other than active or pending', () => {
     Object.values(ProposalStatus)
       .filter((status) => status !== ProposalStatus.Passed && status !== ProposalStatus.Enacted)
       .forEach((status) => {
-        expect(proposalCanBeEnacted(status)).toBe(false)
+        expect(isProposalEnactable(status)).toBe(false)
       })
   })
 })
