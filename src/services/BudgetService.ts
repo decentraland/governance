@@ -4,8 +4,10 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 
 import { DclData, TransparencyBudget } from '../clients/DclData'
 import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
+import { getProposalsMinAndMaxDates } from '../entities/Budget/utils'
 import { NewGrantCategory } from '../entities/Grant/types'
 import { isValidGrantBudget } from '../entities/Grant/utils'
+import { ProposalAttributes } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
@@ -129,5 +131,19 @@ export class BudgetService {
         `Not enough budget for requested grant size. Available: $${currentCategoryBudget.available}. Requested: $${grantSize}`
       )
     }
+  }
+
+  static async getBudgets(proposals: ProposalAttributes[]): Promise<CurrentBudget[]> {
+    const BUDGETS = []
+    const { minDate, maxDate } = getProposalsMinAndMaxDates(proposals)
+    BUDGETS.push(await QuarterBudgetModel.getBudget(maxDate))
+    if (minDate !== maxDate) {
+      BUDGETS.push(await QuarterBudgetModel.getBudget(minDate))
+    }
+    return BUDGETS
+  }
+
+  static async updateBudgets(budgetUpdates: CurrentBudget[]) {
+    budgetUpdates.forEach(await QuarterBudgetModel.updateBudget)
   }
 }

@@ -8,9 +8,10 @@ export type QuarterBudgetAttributes = {
 }
 
 export interface CurrentBudgetQueryResult {
+  id: string
   category: string
   category_total: number
-  allocated: number
+  category_allocated: number
   start_at: string
   finish_at: string
   total: number

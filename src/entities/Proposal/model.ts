@@ -147,6 +147,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         WHERE "deleted" = FALSE
           AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
           AND "finish_at" <= (now() + interval '1 minute')
+          ORDER BY created_at ASC
     `
 
     const result = await this.query(query)
