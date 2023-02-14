@@ -41,7 +41,6 @@
 
 .ProposalDetailPage .ProposalDetailDescription img {
   max-width: 100%;
-  width: -webkit-fill-available;
 }
 
 .ProposalImagesPreview {
