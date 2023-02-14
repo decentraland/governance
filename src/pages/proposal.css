@@ -39,8 +39,9 @@
   font-size: 15px;
 }
 
-.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph img {
+.ProposalDetailPage .ProposalDetailDescription img {
   max-width: 100%;
+  width: -webkit-fill-available;
 }
 
 .ProposalImagesPreview {
