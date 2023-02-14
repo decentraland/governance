@@ -7,9 +7,9 @@ import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 import { ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
-const start = Time.utc().set('seconds', 0)
+const start = new Date('2023-02-01T00:00:00.000Z')
 const SNAPSHOT_DURATION = 600
-const TEST_GRANT_SIZE = 22000
+const TEST_GRANT_SIZE = 10000
 
 function getGrantConfiguration(grantSize: number) {
   return {
@@ -64,7 +64,7 @@ export function createTestProposal(proposalType: ProposalType, proposalStatus: P
     type: proposalType,
     user: TEST_PROPOSAL_USER,
     required_to_pass: getRequiredToPassThreshold(proposalType, testProposalConfiguration?.size),
-    configuration: JSON.stringify(testProposalConfiguration),
+    configuration: testProposalConfiguration,
     title: 'Test Proposal',
     description: 'Test proposal description',
     status: proposalStatus,
@@ -75,7 +75,7 @@ export function createTestProposal(proposalType: ProposalType, proposalStatus: P
     discourse_id: 333,
     discourse_topic_id: 444,
     discourse_topic_slug: 'discourse test topic slug',
-    start_at: start.toJSON() as never,
+    start_at: Time.utc(start).toJSON() as never,
     finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toJSON() as never,
     deleted: false,
     deleted_by: null,
