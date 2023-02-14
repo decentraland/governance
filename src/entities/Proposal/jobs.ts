@@ -80,7 +80,7 @@ async function categorizeProposals(
   for (const proposal of pendingProposals) {
     const outcome = await calculateOutcome(proposal, context)
     if (!outcome) {
-      console.error(`Unable to calculate outcome for ${proposal.id}`)
+      context.error(`Unable to calculate outcome for ${proposal.id}`)
       continue
     }
 
@@ -100,7 +100,7 @@ async function categorizeProposals(
               budget.finish_at > proposalWithWinnerChoice.start_at
           )
           if (!proposalBudget) {
-            console.error(`Unable to find corresponding quarter budget for ${proposal.id}`)
+            context.error(`Unable to find corresponding quarter budget for ${proposal.id}`)
             break
           }
           const categoryBudget = proposalBudget.categories[snakeCase(proposalWithWinnerChoice.configuration.category)]
