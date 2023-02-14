@@ -2,6 +2,7 @@ import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 
+import { CurrentBudget } from '../Budget/types'
 import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
@@ -100,8 +101,8 @@ export function createTestProposal(
     discourse_id: 333,
     discourse_topic_id: 444,
     discourse_topic_slug: 'discourse test topic slug',
-    start_at: Time.utc(start).toJSON() as never,
-    finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toJSON() as never,
+    start_at: Time.utc(start).toDate(),
+    finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toDate(),
     deleted: false,
     deleted_by: null,
     enacted: false,
@@ -113,8 +114,8 @@ export function createTestProposal(
     passed_description: null,
     rejected_by: null,
     rejected_description: null,
-    created_at: Time.utc(start).toJSON() as never,
-    updated_at: Time.utc(start).toJSON() as never,
+    created_at: Time.utc(start).toDate(),
+    updated_at: Time.utc(start).toDate(),
     textsearch: null,
   }
 }
@@ -143,7 +144,10 @@ export const JOB_CONTEXT_MOCK: CustomJobContext = {
   payload: {},
 }
 
-export function getTestBudgetWithAvailableSize(availableForAccelerator?: number, availableForCoreUnit?: number) {
+export function getTestBudgetWithAvailableSize(
+  availableForAccelerator?: number,
+  availableForCoreUnit?: number
+): CurrentBudget {
   const allocatedForAccelerator =
     availableForAccelerator !== undefined ? ACCELERATOR_TOTAL - availableForAccelerator : 5000
   availableForAccelerator = availableForAccelerator !== undefined ? availableForAccelerator : 100000
@@ -189,8 +193,8 @@ export function getTestBudgetWithAvailableSize(availableForAccelerator?: number,
         total: 150150,
       },
     },
-    finish_at: Time.utc('2023-04-01T00:00:00.000Z').toJSON() as never,
-    start_at: Time.utc('2023-01-01T00:00:00.000Z').toJSON() as never,
+    finish_at: Time.utc('2023-04-01T00:00:00.000Z').toDate(),
+    start_at: Time.utc('2023-01-01T00:00:00.000Z').toDate(),
     total: 1501500,
     allocated: 285225 + allocatedForAccelerator + allocatedForCoreUnit,
     id: 'budget_id_1',

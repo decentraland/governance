@@ -1,4 +1,5 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
+import rollbar from 'decentraland-gatsby/dist/utils/development/rollbar'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetService } from '../../services/BudgetService'
@@ -67,6 +68,32 @@ async function updateFinishedProposals(finishedProposals: ProposalWithOutcome[],
   }
 }
 
+function getBudgetForProposal(currentBudgets: CurrentBudget[], proposalWithWinnerChoice: ProposalWithOutcome) {
+  return currentBudgets.find(
+    (budget) =>
+      budget.start_at <= proposalWithWinnerChoice.start_at && budget.finish_at > proposalWithWinnerChoice.start_at
+  )
+}
+
+function getCategoryBudgetFor(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
+  const categoryName = snakeCase(proposal.configuration.category)
+  return proposalBudget.categories[categoryName]
+}
+
+function grantCanBeFunded(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
+  const categoryBudget = getCategoryBudgetFor(proposal, proposalBudget)
+  const size = asNumber(proposal.configuration.size)
+  return categoryBudget.allocated + size <= categoryBudget.total
+}
+
+function updateCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
+  const categoryBudget = getCategoryBudgetFor(proposal, proposalBudget)
+  const size = asNumber(proposal.configuration.size)
+  categoryBudget.allocated += size
+  categoryBudget.available -= size
+  proposalBudget.allocated += size
+}
+
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
   currentBudgets: CurrentBudget[],
@@ -84,41 +111,31 @@ async function categorizeProposals(
       continue
     }
 
-    const proposalWithWinnerChoice = { ...proposal, ...outcome }
+    const proposalWithOutcome = { ...proposal, ...outcome }
     switch (outcome.outcomeStatus) {
       case ProposalOutcome.REJECTED:
-        rejectedProposals.push(proposalWithWinnerChoice)
+        rejectedProposals.push(proposalWithOutcome)
         break
       case ProposalOutcome.ACCEPTED:
-        if (proposalWithWinnerChoice.type !== ProposalType.Grant) {
-          acceptedProposals.push(proposalWithWinnerChoice)
+        if (proposalWithOutcome.type !== ProposalType.Grant) {
+          acceptedProposals.push(proposalWithOutcome)
           break
         } else {
-          const proposalBudget = currentBudgets.find(
-            (budget) =>
-              budget.start_at <= proposalWithWinnerChoice.start_at &&
-              budget.finish_at > proposalWithWinnerChoice.start_at
-          )
+          const proposalBudget = getBudgetForProposal(currentBudgets, proposalWithOutcome)
           if (!proposalBudget) {
             context.error(`Unable to find corresponding quarter budget for ${proposal.id}`)
             break
           }
-          const categoryBudget = proposalBudget.categories[snakeCase(proposalWithWinnerChoice.configuration.category)]
-          const size = asNumber(proposalWithWinnerChoice.configuration.size)
-          if (categoryBudget.allocated + size <= categoryBudget.total) {
-            proposalBudget.categories[snakeCase(proposalWithWinnerChoice.configuration.category)].allocated =
-              categoryBudget.allocated + size
-            proposalBudget.categories[snakeCase(proposalWithWinnerChoice.configuration.category)].available =
-              categoryBudget.available - size
-            proposalBudget.allocated = proposalBudget.allocated + size
-            acceptedProposals.push(proposalWithWinnerChoice)
+          if (grantCanBeFunded(proposalWithOutcome, proposalBudget)) {
+            updateCategoryBudget(proposalWithOutcome, proposalBudget)
+            acceptedProposals.push(proposalWithOutcome)
           } else {
-            outOfBudgetProposals.push(proposalWithWinnerChoice)
+            outOfBudgetProposals.push(proposalWithOutcome)
           }
         }
         break
       case ProposalOutcome.FINISHED:
-        finishedProposals.push(proposalWithWinnerChoice)
+        finishedProposals.push(proposalWithOutcome)
     }
   }
   return {
