@@ -7,6 +7,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import BudgetsUpdate from '../components/Debug/BudgetsUpdate'
 import EnvStatus from '../components/Debug/EnvStatus'
+import ErrorReporting from '../components/Debug/ErrorReporting'
 import HttpStatus from '../components/Debug/HttpStatus'
 import SnapshotStatus from '../components/Debug/SnapshotStatus'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -32,6 +33,7 @@ export default function DebugPage() {
       <SnapshotStatus className="DebugPage__Section" />
       <EnvStatus className="DebugPage__Section" />
       <BudgetsUpdate className="DebugPage__Section" />
+      <ErrorReporting className="DebugPage__Section" />
       <div>Version: {process.env.GATSBY_VERSION_NUMBER}</div>
     </Container>
   )
