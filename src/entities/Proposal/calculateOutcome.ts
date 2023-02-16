@@ -1,14 +1,9 @@
-import JobContext from 'decentraland-gatsby/dist/entities/Job/context';
+import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { Scores } from '../Votes/utils'
 
-
-import { SnapshotGraphql } from '../../clients/SnapshotGraphql';
-import { Scores } from '../Votes/utils';
-
-
-
-import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types';
-
+import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types'
 
 function sameOptions(options: string[], expected: string[]) {
   if (options.length !== expected.length) {
@@ -87,6 +82,9 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
 
     return outcome
   } catch (e) {
-    context.error(`Unable to calculate outcome for ${proposal.snapshot_id}`, e as Error)
+    context.error(
+      `Unable to calculate outcome for proposal: ${proposal.id}, snapshot id: ${proposal.snapshot_id}`,
+      e as Error
+    )
   }
 }
