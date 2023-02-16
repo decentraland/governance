@@ -13,9 +13,9 @@ export default routes((router) => {
     '/debug',
     handleAPI(async () => DEBUG_ADDRESSES)
   )
-  router.post('/debug/report_error', withAuth, handleAPI(reportServerError))
+  router.post('/debug/report_error', withAuth, handleAPI(reportClientError))
 })
 
-function reportServerError(req: WithAuth<Request>): void {
-  ErrorService.report(req.body.message, { client: true })
+function reportClientError(req: WithAuth<Request>): void {
+  ErrorService.report(req.body.message, JSON.stringify({ client: true }))
 }
