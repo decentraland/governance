@@ -265,7 +265,8 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestCategoryAssessment
+  GrantRequestCategoryAssessment &
+  GrantRequestDueDilligence
 
 export type GrantRequestFunding = {
   funding: string | number
@@ -283,6 +284,18 @@ export type GrantRequestGeneralInfo = {
   personnel: string
   roadmap: string
   coAuthors?: string[]
+}
+
+export type BudgetBreakdownItem = {
+  concept: string
+  // duration: number
+  estimatedBudget: number
+  aboutThis: string
+  relevantLink?: string
+}
+
+export type GrantRequestDueDilligence = {
+  budgetBreakdown: BudgetBreakdownItem[]
 }
 
 export type GrantRequestCategoryAssessment = {

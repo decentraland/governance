@@ -1,0 +1,51 @@
+.BudgetInput__Container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.BudgetInput__InputContainer {
+  display: inline-flex;
+  border: 1px solid rgba(115, 110, 125, 0.32);
+  border-radius: 6px;
+}
+
+.BudgetInput__InputContainer--Error {
+  border: 1px solid var(--red-800);
+}
+
+.BudgetInput__Description {
+  padding: 9px;
+  background: rgba(115, 110, 125, 0.1); /* TODO: Add color to theme */
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+  border-right: 1px solid rgba(115, 110, 125, 0.32);
+}
+
+.BudgetInput__Description--Error {
+  background: var(--red-100);
+  border-right: 1px solid var(--red-800);
+}
+
+.BudgetInput__Input {
+  padding: 9px 11px;
+  min-width: 130px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}
+
+.BudgetInput__ErrorHelper {
+  display: flex;
+}
+
+.BudgetInput__ErrorHelper > .Helper__Container {
+  height: 16px;
+}

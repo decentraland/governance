@@ -57,7 +57,7 @@ export class SnapshotSubgraph {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            query: query,
+            query,
             variables: { ...vars, skip, first },
           }),
         })

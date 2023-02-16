@@ -1117,6 +1117,11 @@
         "description": "Choose a category that best suits your project",
         "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://MISSING_URL)"
       },
+      "modal_actions": {
+        "submit": "SUBMIT",
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
       "funding_section": {
         "title": "Funding",
         "project_category_title": "Project Category",

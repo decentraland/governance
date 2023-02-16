@@ -6,11 +6,12 @@ import './AddBox.css'
 
 interface Props {
   children: React.ReactText
+  onClick: () => void
 }
 
-const AddBox = ({ children }: Props) => {
+const AddBox = ({ children, onClick }: Props) => {
   return (
-    <button className="AddBox">
+    <button className="AddBox" onClick={onClick}>
       <AddPrimary className="AddBox__Icon" />
       <span>{children}</span>
     </button>

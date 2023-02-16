@@ -15,7 +15,9 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestCategorySection from '../../components/GrantRequest/GrantRequestCategorySection'
-import GrantRequestDueDilligenceSection from '../../components/GrantRequest/GrantRequestDueDilligenceSection'
+import GrantRequestDueDilligenceSection, {
+  INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE,
+} from '../../components/GrantRequest/GrantRequestDueDilligenceSection'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
@@ -41,6 +43,7 @@ const initialState: GrantRequest = {
   category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
+  ...INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE,
 }
 
 export type GrantRequestValidationState = {
@@ -225,7 +228,10 @@ export default function SubmitGrant() {
             />
           )}
 
-          <GrantRequestDueDilligenceSection />
+          <GrantRequestDueDilligenceSection
+            funding={grantRequest.funding}
+            onValidation={(data) => patchGrantRequest({ ...data })}
+          />
 
           <GrantRequestFinalConsentSection
             category={grantRequest.category}

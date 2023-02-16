@@ -1,0 +1,26 @@
+.AddModal {
+  max-width: 520px !important;
+}
+
+.AddModal .content {
+  margin-bottom: 0 !important;
+}
+
+.AddModal__Title {
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 17px !important;
+  line-height: 26px !important;
+  letter-spacing: -0.2px !important;
+  color: var(--black-800) !important;
+  margin: 0 !important;
+}
+
+.AddModal__SecondaryButton {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.AddModal__SecondaryButton:hover {
+  transform: none !important;
+}
