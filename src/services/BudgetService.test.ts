@@ -1,7 +1,9 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { DclData } from '../clients/DclData'
 import { CurrentCategoryBudget } from '../entities/Budget/types'
+import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
@@ -261,6 +263,46 @@ describe('BudgetService', () => {
         await expect(() => BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).rejects.toThrow(
           `Not enough budget for requested grant size. Available: $${AVAILABLE_BUDGET}. Requested: $${requestedGrantSize}`
         )
+      })
+    })
+  })
+
+  describe('getProposalsMinAndMaxDates', () => {
+    const MIN_DATE = Time.utc('2023-01-01 00:00:00Z').toDate()
+    const MIDDLE_DATE = Time.utc('2023-03-01 00:00:00Z').toDate()
+    const MAX_DATE = Time.utc('2023-05-02 00:00:00Z').toDate()
+
+    describe('given a list of proposals with different start dates', () => {
+      it('returns the min and max start dates', () => {
+        const PROPOSALS = [{ start_at: MIDDLE_DATE }, { start_at: MIN_DATE }, { start_at: MAX_DATE }]
+        expect(BudgetService.getProposalsMinAndMaxDates(PROPOSALS)).toEqual({
+          minDate: MIN_DATE,
+          maxDate: MAX_DATE,
+        })
+      })
+    })
+
+    describe('given a list of proposals with same start dates', () => {
+      it('returns the same min and max start dates', () => {
+        const PROPOSALS = [{ start_at: MIN_DATE }, { start_at: MIN_DATE }, { start_at: MIN_DATE }]
+        expect(BudgetService.getProposalsMinAndMaxDates(PROPOSALS)).toEqual({
+          minDate: MIN_DATE,
+          maxDate: MIN_DATE,
+        })
+      })
+    })
+
+    describe('when there is a proposal older than the budgeting system implementation', () => {
+      it('filters the proposal from the chosen dates', () => {
+        const PROPOSALS = [
+          { start_at: Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate() },
+          { start_at: MAX_DATE },
+          { start_at: MIN_DATE },
+        ]
+        expect(BudgetService.getProposalsMinAndMaxDates(PROPOSALS)).toEqual({
+          minDate: MIN_DATE,
+          maxDate: MAX_DATE,
+        })
       })
     })
   })

@@ -1,9 +1,9 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
-import rollbar from 'decentraland-gatsby/dist/utils/development/rollbar'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
+import { ErrorService } from '../../services/ErrorService'
 import { CurrentBudget } from '../Budget/types'
 import UpdateModel from '../Updates/model'
 
@@ -68,11 +68,8 @@ async function updateFinishedProposals(finishedProposals: ProposalWithOutcome[],
   }
 }
 
-function getBudgetForProposal(currentBudgets: CurrentBudget[], proposalWithWinnerChoice: ProposalWithOutcome) {
-  return currentBudgets.find(
-    (budget) =>
-      budget.start_at <= proposalWithWinnerChoice.start_at && budget.finish_at > proposalWithWinnerChoice.start_at
-  )
+function getBudgetForProposal(currentBudgets: CurrentBudget[], proposal: ProposalWithOutcome) {
+  return currentBudgets.find((budget) => budget.start_at <= proposal.start_at && budget.finish_at > proposal.start_at)
 }
 
 function getCategoryBudgetFor(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
@@ -123,7 +120,7 @@ async function categorizeProposals(
         } else {
           const proposalBudget = getBudgetForProposal(currentBudgets, proposalWithOutcome)
           if (!proposalBudget) {
-            context.error(`Unable to find corresponding quarter budget for ${proposal.id}`)
+            ErrorService.report(`Unable to find corresponding quarter budget for ${proposal.id}`)
             break
           }
           if (grantCanBeFunded(proposalWithOutcome, proposalBudget)) {

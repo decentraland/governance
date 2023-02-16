@@ -91,7 +91,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     }
   }
 
-  static async getCurrentBudget(): Promise<CurrentBudget> {
+  static async getCurrentBudget(): Promise<CurrentBudget | null> {
     const now = new Date()
     const query = SQL`
         SELECT qb.id, qcb.category, qcb.total as category_total, qcb.allocated as category_allocated, qb.start_at, qb.finish_at, qb.total
@@ -104,10 +104,13 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     `
 
     const result = await this.query(query)
+    if (!result || result.length === 0) {
+      return null
+    }
     return this.parseCurrentBudget(result)
   }
 
-  static async getBudget(dateWithinBudget: Date): Promise<CurrentBudget> {
+  static async getBudget(dateWithinBudget: Date): Promise<CurrentBudget | null> {
     const query = SQL`
         SELECT 
           qb.id, qb.start_at, qb.finish_at,
@@ -124,12 +127,15 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     `
 
     const result = await this.query(query)
+    if (!result || result.length === 0) {
+      return null
+    }
     return this.parseCurrentBudget(result)
   }
 
   static async getCategoryBudgetForCurrentQuarter(
     category: NewGrantCategory
-  ): Promise<QuarterCategoryBudgetAttributes> {
+  ): Promise<QuarterCategoryBudgetAttributes | null> {
     const now = new Date()
     const query = SQL`
         SELECT qcb.*
@@ -143,7 +149,9 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     `
 
     const result = await this.query(query)
-    this.validateUniqueness(result)
+    if (!result || result.length !== 1) {
+      return null
+    }
     return result[0]
   }
 
@@ -161,15 +169,6 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
         AND "category" = ${newGrantCategory} 
          `
       await this.query(query)
-    }
-  }
-
-  private static validateUniqueness(result: any[]) {
-    if (result.length > 1) {
-      throw new Error('There is more than one quarter budget available for current date')
-    }
-    if (result.length === 0) {
-      throw new Error('There is no budget available for current date')
     }
   }
 
