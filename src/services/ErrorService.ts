@@ -3,11 +3,11 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Rollbar from 'rollbar'
 
 import { config } from '../config'
-import { ROLLBAR_SERVER_TOKEN } from '../constants'
+import { ROLLBAR_TOKEN } from '../constants'
 
 export class ErrorService {
   static client = new Rollbar({
-    accessToken: ROLLBAR_SERVER_TOKEN,
+    accessToken: ROLLBAR_TOKEN,
     captureUncaught: true,
     captureUnhandledRejections: true,
   })
@@ -18,7 +18,7 @@ export class ErrorService {
   }
 
   public static report(errorMsg: string, error?: any) {
-    if (ROLLBAR_SERVER_TOKEN) {
+    if (ROLLBAR_TOKEN) {
       this.client.error(errorMsg, error, this.getEnvironmentNameForRollbar())
     } else {
       if (!this.isDevEnv()) logger.error('Rollbar server access token not found')

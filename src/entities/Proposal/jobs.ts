@@ -105,7 +105,6 @@ async function categorizeProposals(
   for (const proposal of pendingProposals) {
     const outcome = await calculateOutcome(proposal, context)
     if (!outcome) {
-      context.error(`Unable to calculate outcome for ${proposal.id}`)
       continue
     }
 
