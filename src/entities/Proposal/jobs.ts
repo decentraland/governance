@@ -5,6 +5,7 @@ import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
 import { CurrentBudget } from '../Budget/types'
+import { BUDGETING_START_DATE } from '../Grant/constants'
 import UpdateModel from '../Updates/model'
 
 import { Outcome, ProposalOutcome, calculateOutcome } from './calculateOutcome'
@@ -114,7 +115,7 @@ async function categorizeProposals(
         rejectedProposals.push(proposalWithOutcome)
         break
       case ProposalOutcome.ACCEPTED:
-        if (proposalWithOutcome.type !== ProposalType.Grant) {
+        if (proposalWithOutcome.type !== ProposalType.Grant || proposalWithOutcome.start_at < BUDGETING_START_DATE) {
           acceptedProposals.push(proposalWithOutcome)
           break
         } else {

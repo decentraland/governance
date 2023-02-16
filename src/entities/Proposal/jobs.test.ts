@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash'
 
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
+import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 import UpdateModel from '../Updates/model'
@@ -184,6 +185,23 @@ describe('finishProposals', () => {
     it('finishes the proposal without affecting the budget', async () => {
       await finishProposal(JOB_CONTEXT_MOCK)
       expect(ProposalModel.finishProposal).toHaveBeenCalledWith([POI_PROPOSAL.id], ProposalStatus.Passed)
+      expect(BudgetService.updateBudgets).toHaveBeenCalledWith([getTestBudgetWithAvailableSize()])
+    })
+  })
+
+  describe('for an accepted proposal that has a start_at date older than the budgeting system start date', () => {
+    const OLD_GRANT = cloneDeep(GRANT_PROPOSAL_1)
+    OLD_GRANT.start_at = Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate()
+
+    beforeEach(() => {
+      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([OLD_GRANT])
+      jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+      jest.spyOn(BudgetService, 'getBudgets').mockResolvedValue([getTestBudgetWithAvailableSize()])
+    })
+
+    it('finishes the proposal', async () => {
+      await finishProposal(JOB_CONTEXT_MOCK)
+      expect(ProposalModel.finishProposal).toHaveBeenCalledWith([OLD_GRANT.id], ProposalStatus.Passed)
       expect(BudgetService.updateBudgets).toHaveBeenCalledWith([getTestBudgetWithAvailableSize()])
     })
   })
