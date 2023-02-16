@@ -1076,7 +1076,7 @@
         "title": "Funding",
         "project_category_title": "Project Category",
         "project_category_action": "Change",
-        "category_budget_title": "Category Budget",
+        "category_budget_title": "Remaining Category Budget",
         "category_budget_info": "The DAO allocates a portion of its monthly budget to the Grants program. Each Category has allocated a percentage of the total available funds for the program. If your ask is bigger than the remaining budget for the selected category, you won't be able to request it and will have to wait until the next quarter.",
         "category_budget_total": "Category total for Q: ${value, number}",
         "desired_funding": "Desired Funding",
