@@ -19,9 +19,9 @@ import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
 import Helper from '../Helper/Helper'
-import Lock from '../Icon/Lock'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import CalculationHelper from './CalculationHelper'
 import DesiredFundingInput from './DesiredFundingInput'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
@@ -215,7 +215,7 @@ export default function GrantRequestFundingSection({
         <div className="GrantRequestSection__Row">
           <GrantRequestSectionCard
             category={t('page.submit_grant.funding_section.pass_threshold_title')}
-            helper={<Lock />}
+            helper={<CalculationHelper />}
             title={
               grantCategory && isValidBudgetForCategory(state.value.funding, totalCategoryBudget)
                 ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
@@ -225,7 +225,7 @@ export default function GrantRequestFundingSection({
           />
           <GrantRequestSectionCard
             category={t('page.submit_grant.funding_section.payout_strategy_title')}
-            helper={<Lock />}
+            helper={<CalculationHelper />}
             title={
               grantCategory && isValidBudgetForCategory(state.value.funding, totalCategoryBudget)
                 ? t('page.submit_grant.funding_section.payout_strategy_payments', {

@@ -1088,6 +1088,7 @@
         "payout_strategy_title": "Payout Strategy",
         "payout_strategy_payments": "{value, number} Monthly Payments",
         "payout_strategy_sub": "Executed 7 days after the proposal has passed",
+        "calculation_helper": "Calculation is automated based on the Grants Rules",
         "funding_time_title": "What time of the month would you like for the funding to happen?",
         "funding_time_first_day": "1st day of month",
         "funding_time_fifteenth_day": "15th day of month"
