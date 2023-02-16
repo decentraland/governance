@@ -12,18 +12,22 @@ export class ErrorService {
     captureUnhandledRejections: true,
   })
 
-  private static getEnvironment() {
+  private static getEnvironmentNameForRollbar() {
     const env = config.getEnv()
     return { environment: env === Env.PRODUCTION ? 'production' : env }
   }
 
   public static report(errorMsg: string, error?: any) {
     if (ROLLBAR_SERVER_TOKEN) {
-      this.client.error(errorMsg, error, this.getEnvironment())
+      this.client.error(errorMsg, error, this.getEnvironmentNameForRollbar())
     } else {
-      logger.error('Rollbar server access token not found.')
+      if (!this.isDevEnv()) logger.error('Rollbar server access token not found')
     }
     logger.error(errorMsg, error)
+  }
+
+  private static isDevEnv() {
+    return config.getEnv() === Env.LOCAL || config.getEnv() === Env.DEVELOPMENT
   }
 
   public static reportAndThrow(errorMsg: string, error: any) {
