@@ -1,8 +1,9 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { cloneDeep } from 'lodash'
 
 import { DclData } from '../clients/DclData'
-import { CurrentCategoryBudget } from '../entities/Budget/types'
+import { CurrentCategoryBudget, NULL_CURRENT_BUDGET } from '../entities/Budget/types'
 import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
@@ -275,7 +276,7 @@ describe('BudgetService', () => {
     describe('given a list of proposals with different start dates', () => {
       it('returns the min and max start dates', () => {
         const PROPOSALS = [{ start_at: MIDDLE_DATE }, { start_at: MIN_DATE }, { start_at: MAX_DATE }]
-        expect(BudgetService.getProposalsMinAndMaxDates(PROPOSALS)).toEqual({
+        expect(BudgetService.getProposalsBudgetingMinAndMaxDates(PROPOSALS)).toEqual({
           minDate: MIN_DATE,
           maxDate: MAX_DATE,
         })
@@ -285,7 +286,7 @@ describe('BudgetService', () => {
     describe('given a list of proposals with same start dates', () => {
       it('returns the same min and max start dates', () => {
         const PROPOSALS = [{ start_at: MIN_DATE }, { start_at: MIN_DATE }, { start_at: MIN_DATE }]
-        expect(BudgetService.getProposalsMinAndMaxDates(PROPOSALS)).toEqual({
+        expect(BudgetService.getProposalsBudgetingMinAndMaxDates(PROPOSALS)).toEqual({
           minDate: MIN_DATE,
           maxDate: MIN_DATE,
         })
@@ -299,10 +300,65 @@ describe('BudgetService', () => {
           { start_at: MAX_DATE },
           { start_at: MIN_DATE },
         ]
-        expect(BudgetService.getProposalsMinAndMaxDates(PROPOSALS)).toEqual({
+        expect(BudgetService.getProposalsBudgetingMinAndMaxDates(PROPOSALS)).toEqual({
           minDate: MIN_DATE,
           maxDate: MAX_DATE,
         })
+      })
+    })
+  })
+
+  describe('getBudgets', () => {
+    const QUARTER_1_DATE = Time.utc('2023-01-01 00:00:00Z').toDate()
+    const QUARTER_2_DATE = Time.utc('2023-05-02 00:00:00Z').toDate()
+
+    describe('if there are no proposals with starting dates after the budgeting system implementation', () => {
+      const PROPOSALS = [{ start_at: Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate() }]
+      beforeEach(() => {
+        jest
+          .spyOn(BudgetService, 'getProposalsBudgetingMinAndMaxDates')
+          .mockReturnValueOnce({ minDate: undefined, maxDate: undefined })
+      })
+      it('returns an empty budgets list', async () => {
+        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([])
+      })
+    })
+
+    describe('if proposals min and max dates are the same', () => {
+      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_1_DATE }]
+      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      it('returns only one budget', async () => {
+        jest.spyOn(QuarterBudgetModel, 'getBudget').mockResolvedValueOnce(BUDGET_1)
+        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1])
+      })
+    })
+
+    describe('if proposals min and max dates are different but are for the same budget', () => {
+      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: Time.utc(QUARTER_1_DATE).add(1, 'day').toDate() }]
+      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      BUDGET_1.id = 'budget_1'
+      beforeEach(() => {
+        jest.spyOn(QuarterBudgetModel, 'getBudget').mockResolvedValue(BUDGET_1)
+      })
+
+      it('returns only one budget', async () => {
+        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1])
+      })
+    })
+
+    describe('if proposals min and max dates are for different budgets', () => {
+      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_2_DATE }]
+      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      BUDGET_1.id = 'budget_1'
+      const BUDGET_2 = cloneDeep(NULL_CURRENT_BUDGET)
+      BUDGET_2.id = 'budget_2'
+
+      beforeEach(() => {
+        jest.spyOn(QuarterBudgetModel, 'getBudget').mockResolvedValueOnce(BUDGET_1).mockResolvedValueOnce(BUDGET_2)
+      })
+
+      it('returns only one budget', async () => {
+        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1, BUDGET_2])
       })
     })
   })

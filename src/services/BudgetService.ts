@@ -151,27 +151,34 @@ export class BudgetService {
     }
   }
 
-  static getProposalsMinAndMaxDates(proposals: Pick<ProposalAttributes, 'start_at'>[]) {
+  static getProposalsBudgetingMinAndMaxDates(proposals: Pick<ProposalAttributes, 'start_at'>[]): {
+    minDate?: Date
+    maxDate?: Date
+  } {
     const sorted = proposals
-      .filter((p) => p.start_at >= BUDGETING_START_DATE)
+      .filter((p) => p.start_at && p.start_at >= BUDGETING_START_DATE)
       .sort((p1, p2) => p1.start_at.getTime() - p2.start_at.getTime())
-    return { minDate: sorted[0].start_at, maxDate: sorted[sorted.length - 1].start_at }
+    return { minDate: sorted[0]?.start_at, maxDate: sorted[sorted.length - 1]?.start_at }
   }
 
-  static async getBudgets(proposals: ProposalAttributes[]): Promise<CurrentBudget[]> {
-    const BUDGETS: CurrentBudget[] = []
-    const { minDate, maxDate } = this.getProposalsMinAndMaxDates(proposals)
-    const oldestBudgetForProposals = await QuarterBudgetModel.getBudget(maxDate)
-    if (oldestBudgetForProposals === null) {
+  static async getBudgets(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<CurrentBudget[]> {
+    const budgetsForProposals: CurrentBudget[] = []
+    const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(proposals)
+    if (!minDate) return budgetsForProposals
+    const oldestBudget = await QuarterBudgetModel.getBudget(minDate)
+    if (oldestBudget === null) {
       ErrorService.report(`Could not find budget for ${minDate}`)
-      return BUDGETS
+      return budgetsForProposals
     }
-    BUDGETS.push(oldestBudgetForProposals)
-    if (minDate !== maxDate) {
-      const newestBudgetForProposals = await QuarterBudgetModel.getBudget(minDate)
-      newestBudgetForProposals && BUDGETS.push(newestBudgetForProposals)
+    budgetsForProposals.push(oldestBudget)
+    if (maxDate && minDate !== maxDate) {
+      const newestBudget = await QuarterBudgetModel.getBudget(maxDate)
+      if (newestBudget !== null) {
+        const index = budgetsForProposals.findIndex((budget) => budget.id === newestBudget.id)
+        if (index === -1) budgetsForProposals.push(newestBudget)
+      }
     }
-    return BUDGETS
+    return budgetsForProposals
   }
 
   static async updateBudgets(budgetUpdates: CurrentBudget[]) {
