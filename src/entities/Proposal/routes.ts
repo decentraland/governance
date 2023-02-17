@@ -7,18 +7,16 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
-import filter from 'lodash/filter'
-import isNil from 'lodash/isNil'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { DclData } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
-import { formatError, inBackground } from '../../helpers'
+import { inBackground } from '../../helpers'
 import { GrantRequest } from '../../pages/submit/grant'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
+import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
@@ -27,7 +25,6 @@ import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
 import { GrantRequestSchema } from '../Grant/types'
-import { isCurrentGrant } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -39,9 +36,9 @@ import { getUpdateMessage } from './templates/messages'
 import { SUBMISSION_THRESHOLD_POLL } from './constants'
 import ProposalModel from './model'
 import {
+  CategorizedGrants,
   GrantProposalConfiguration,
   GrantWithUpdateAttributes,
-  GrantsResponse,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -55,7 +52,6 @@ import {
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
-  TransparencyGrant,
   UpdateProposalStatusProposal,
   newProposalBanNameScheme,
   newProposalCatalystScheme,
@@ -518,104 +514,8 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-async function getGrantLatestUpdate(proposalId: string): Promise<IndexedUpdate | null> {
-  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
-    created_at: 'desc',
-  } as never)
-  if (!updates || updates.length === 0) {
-    return null
-  }
-
-  const publicUpdates = getPublicUpdates(updates)
-  const currentUpdate = publicUpdates[0]
-  if (!currentUpdate) {
-    return null
-  }
-
-  return { ...currentUpdate, index: publicUpdates.length }
-}
-
-async function getGrants(): Promise<GrantsResponse> {
-  const grants = await DclData.get().getGrants()
-  const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
-
-  const current: GrantWithUpdateAttributes[] = []
-  const past: GrantWithUpdateAttributes[] = []
-
-  await Promise.all(
-    enactedGrants.map(async (grant) => {
-      if (!grant.vesting_address && !grant.enacting_tx) {
-        return
-      }
-
-      try {
-        const proposal = await ProposalModel.findOne<ProposalAttributes>(grant.id)
-
-        if (!proposal) {
-          throw new Error('Proposal not found')
-        }
-
-        const newGrant: TransparencyGrant = {
-          id: grant.id,
-          size: grant.size,
-          configuration: {
-            category: grant.category,
-            tier: grant.tier,
-          },
-          status: grant.vesting_status,
-          user: grant.user,
-          title: grant.title,
-          token: grant.token,
-          created_at: Time(proposal.created_at).unix(),
-          enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
-        }
-
-        if (grant.tx_date) {
-          Object.assign(newGrant, {
-            enacting_tx: grant.enacting_tx,
-            tx_amount: grant.tx_amount,
-          })
-        } else {
-          const { vesting_total_amount, vesting_released, vesting_releasable } = grant
-
-          if (isNil(vesting_total_amount) || isNil(vesting_released) || isNil(vesting_releasable)) {
-            throw new Error('Missing vesting data')
-          }
-
-          Object.assign(newGrant, {
-            contract: {
-              vesting_total_amount: Math.round(vesting_total_amount),
-              vestedAmount: Math.round(vesting_released + vesting_releasable),
-              releasable: Math.round(vesting_releasable),
-              released: Math.round(vesting_released),
-              start_at: Time(grant.vesting_start_at).unix(),
-              finish_at: Time(grant.vesting_finish_at).unix(),
-            },
-          })
-        }
-
-        try {
-          const update = await getGrantLatestUpdate(grant.id)
-          const grantWithUpdate: GrantWithUpdateAttributes = {
-            ...newGrant,
-            update,
-            update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
-          }
-          return isCurrentGrant(newGrant.status) ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
-        } catch (error) {
-          logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
-        }
-      } catch (error) {
-        logger.error(`Failed to fetch proposal ${grant.id}`, formatError(error as Error))
-      }
-    })
-  )
-
-  return {
-    current,
-    past,
-    total: grants.length,
-  }
+async function getGrants(): Promise<CategorizedGrants> {
+  return await GrantsService.getGrants()
 }
 
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
