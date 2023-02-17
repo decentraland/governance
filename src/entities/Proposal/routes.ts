@@ -534,6 +534,14 @@ async function getGrantLatestUpdate(proposalId: string): Promise<IndexedUpdate |
   return { ...currentUpdate, index: publicUpdates.length }
 }
 
+function isCurrentGrant(newGrantStatus?: GrantStatus) {
+  return (
+    newGrantStatus === GrantStatus.InProgress ||
+    newGrantStatus === GrantStatus.Paused ||
+    newGrantStatus === GrantStatus.Pending
+  )
+}
+
 async function getGrants(): Promise<GrantsResponse> {
   const grants = await DclData.get().getGrants()
   const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
@@ -593,8 +601,6 @@ async function getGrants(): Promise<GrantsResponse> {
           })
         }
 
-        const isCurrentGrant = newGrant.status === GrantStatus.InProgress || newGrant.status === GrantStatus.Paused
-
         try {
           const update = await getGrantLatestUpdate(grant.id)
           const grantWithUpdate: GrantWithUpdateAttributes = {
@@ -602,8 +608,7 @@ async function getGrants(): Promise<GrantsResponse> {
             update,
             update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
           }
-
-          return isCurrentGrant ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
+          return isCurrentGrant(newGrant.status) ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
         } catch (error) {
           logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
         }

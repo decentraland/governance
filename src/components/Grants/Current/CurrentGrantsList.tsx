@@ -47,6 +47,7 @@ const CATEGORY_KEYS: Record<GrantCategoryFilter, string> = {
 }
 
 const GRANTS_STATUS_KEYS: Record<GrantStatus, string> = {
+  [GrantStatus.Pending]: 'grant_status.pending',
   [GrantStatus.InProgress]: 'grant_status.in_progress',
   [GrantStatus.Finished]: 'grant_status.finished',
   [GrantStatus.Paused]: 'grant_status.paused',
