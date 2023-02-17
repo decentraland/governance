@@ -4,6 +4,7 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
+import { isEmpty } from 'lodash'
 import snakeCase from 'lodash/snakeCase'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
@@ -112,7 +113,7 @@ function getProjectDurationOptions(funding: number) {
   return projectDurationOptions
 }
 
-function updateProjectDuration(rawFunding: string, previousDuration: number | undefined) {
+function getUpdatedProjectDuration(rawFunding: string, previousDuration: number | undefined) {
   const availableDurations = getAvailableProjectDurations(rawFunding)
   const previousDurationIsBetweenNewLimits =
     previousDuration &&
@@ -149,8 +150,12 @@ export default function GrantRequestFundingSection({
 
   return (
     <GrantRequestSection
-      onBlur={() => editor.validate()}
-      validated={state.validated}
+      onBlur={() => {
+        if (state.value.funding !== '') {
+          editor.validate()
+        }
+      }}
+      validated={state.validated || (isFormEdited && isEmpty(state.error))}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.funding_section.title')}
       sectionNumber={1}
@@ -196,7 +201,7 @@ export default function GrantRequestFundingSection({
               onChange={({ currentTarget }) =>
                 editor.set({
                   funding: currentTarget.value,
-                  projectDuration: updateProjectDuration(currentTarget.value, state.value.projectDuration),
+                  projectDuration: getUpdatedProjectDuration(currentTarget.value, state.value.projectDuration),
                 })
               }
               onBlur={() => editor.set({ funding: state.value.funding })}
