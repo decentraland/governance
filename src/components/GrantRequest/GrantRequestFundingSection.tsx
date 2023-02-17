@@ -113,7 +113,7 @@ function getProjectDurationOptions(funding: number) {
   return projectDurationOptions
 }
 
-function updateProjectDuration(rawFunding: string, previousDuration: number | undefined) {
+function getUpdatedProjectDuration(rawFunding: string, previousDuration: number | undefined) {
   const availableDurations = getAvailableProjectDurations(rawFunding)
   const previousDurationIsBetweenNewLimits =
     previousDuration &&
@@ -150,7 +150,11 @@ export default function GrantRequestFundingSection({
 
   return (
     <GrantRequestSection
-      onBlur={() => editor.validate()}
+      onBlur={() => {
+        if (state.value.funding !== '') {
+          editor.validate()
+        }
+      }}
       validated={state.validated || (isFormEdited && isEmpty(state.error))}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.funding_section.title')}
@@ -197,7 +201,7 @@ export default function GrantRequestFundingSection({
               onChange={({ currentTarget }) =>
                 editor.set({
                   funding: currentTarget.value,
-                  projectDuration: updateProjectDuration(currentTarget.value, state.value.projectDuration),
+                  projectDuration: getUpdatedProjectDuration(currentTarget.value, state.value.projectDuration),
                 })
               }
               onBlur={() => editor.set({ funding: state.value.funding })}
