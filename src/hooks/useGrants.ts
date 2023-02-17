@@ -1,9 +1,9 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { Governance } from '../clients/Governance'
-import { GrantsResponse } from '../entities/Proposal/types'
+import { CategorizedGrants } from '../entities/Proposal/types'
 
-const initialValue: GrantsResponse = {
+const initialValue: CategorizedGrants = {
   current: [],
   past: [],
   total: 0,

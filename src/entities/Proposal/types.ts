@@ -600,7 +600,7 @@ export type GrantWithUpdateAttributes = TransparencyGrant & {
   update_timestamp: number
 }
 
-export type GrantsResponse = {
+export type CategorizedGrants = {
   current: GrantWithUpdateAttributes[]
   past: GrantWithUpdateAttributes[]
   total: number
