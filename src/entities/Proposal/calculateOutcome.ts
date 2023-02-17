@@ -1,6 +1,8 @@
+import { Env } from '@dcl/ui-env'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { config } from '../../config'
 import { Scores } from '../Votes/utils'
 
 import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types'
@@ -82,9 +84,12 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
 
     return outcome
   } catch (e) {
-    context.error(
-      `Unable to calculate outcome for proposal: ${proposal.id}, snapshot id: ${proposal.snapshot_id}`,
-      e as Error
-    )
+    //TODO: move this logging decisions to the ErrorService
+    if (config.getEnv() !== Env.LOCAL && config.getEnv() !== Env.DEVELOPMENT) {
+      context.error(
+        `Unable to calculate outcome for proposal: ${proposal.id}, snapshot id: ${proposal.snapshot_id}`,
+        e as Error
+      )
+    }
   }
 }
