@@ -535,14 +535,6 @@ async function getGrantLatestUpdate(proposalId: string): Promise<IndexedUpdate |
   return { ...currentUpdate, index: publicUpdates.length }
 }
 
-function isCurrentGrant(newGrantStatus?: GrantStatus) {
-  return (
-    newGrantStatus === GrantStatus.InProgress ||
-    newGrantStatus === GrantStatus.Paused ||
-    newGrantStatus === GrantStatus.Pending
-  )
-}
-
 async function getGrants(): Promise<GrantsResponse> {
   const grants = await DclData.get().getGrants()
   const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
