@@ -1,12 +1,10 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Options from 'decentraland-gatsby/dist/utils/api/Options'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { DISCOURSE_API, DISCOURSE_USER } from '../entities/Discourse/utils'
-import { env } from '../modules/env'
 
 import { trimLastForwardSlash } from './utils'
-
-export const DISCOURSE_API_KEY = env('DISCOURSE_API_KEY')
 
 export type DiscourseAuth = {
   apiKey: string
@@ -295,10 +293,11 @@ export class Discourse extends API {
 
   constructor(baseUrl: string) {
     super(baseUrl)
-    this.auth = this.getCredentials()
+    this.auth = Discourse.getCredentials()
   }
 
-  private getCredentials() {
+  private static getCredentials() {
+    const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
     if (!DISCOURSE_API_KEY) {
       throw new Error('Failed to determine discourse API key. Please check DISCOURSE_API_KEY env is defined')
     }

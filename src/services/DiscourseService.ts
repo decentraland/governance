@@ -1,18 +1,18 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { Discourse, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
 import * as templates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import { inBackground } from '../helpers'
-import { env } from '../modules/env'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
-const DISCOURSE_CATEGORY = env('DISCOURSE_CATEGORY')
-
 export class DiscourseService {
+  private static DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
+
   static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
@@ -49,7 +49,7 @@ export class DiscourseService {
     }
 
     return {
-      category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
+      category: DiscourseService.DISCOURSE_CATEGORY ? Number(DiscourseService.DISCOURSE_CATEGORY) : undefined,
       title: templates.forumTitle(discourseTemplateProps),
       raw: await templates.forumDescription(discourseTemplateProps),
     }
