@@ -182,6 +182,8 @@ export class BudgetService {
   }
 
   static async updateBudgets(budgetUpdates: CurrentBudget[]) {
-    budgetUpdates.forEach(await QuarterBudgetModel.updateBudget)
+    for (const budgetUpdate of budgetUpdates) {
+      await QuarterBudgetModel.updateBudget(budgetUpdate)
+    }
   }
 }
