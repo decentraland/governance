@@ -20,11 +20,11 @@ import CategoryFilter, { Counter, FilterType } from '../components/Search/Catego
 import StatusFilter from '../components/Search/StatusFilter'
 import { GrantStatus, NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
 import { toGrantStatus, toProposalGrantCategory } from '../entities/Grant/utils'
-import { GrantWithUpdateAttributes } from '../entities/Proposal/types'
+import { GrantWithUpdate } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
 import { isUnderMaintenance } from '../modules/maintenance'
 
-function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: string | null, status: string | null) {
+function filterDisplayableGrants(grants: GrantWithUpdate[], type: string | null, status: string | null) {
   return status || type
     ? grants.filter(
         (grant) =>
@@ -34,7 +34,7 @@ function filterDisplayableGrants(grants: GrantWithUpdateAttributes[], type: stri
     : grants
 }
 
-function getCounter(allGrants: GrantWithUpdateAttributes[], filterType: FilterType, status: string | null) {
+function getCounter(allGrants: GrantWithUpdate[], filterType: FilterType, status: string | null) {
   if (isEmpty(allGrants)) {
     return undefined
   }

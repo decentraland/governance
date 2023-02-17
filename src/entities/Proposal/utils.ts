@@ -11,7 +11,7 @@ import { DISCOURSE_API } from '../Discourse/utils'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
-import { ProposalAttributes, ProposalStatus, ProposalType, TransparencyGrant } from './types'
+import { GovernanceGrant, ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MAX_PROPOSAL_LIMIT = 100
@@ -141,9 +141,9 @@ export function userModifiedForm(stateValue: Record<string, unknown>, initialSta
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
 }
 
-export function isProposalInCliffPeriod(grant: TransparencyGrant) {
+export function isProposalInCliffPeriod(grant: GovernanceGrant) {
   const now = Time.utc()
-  return Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+  return !!grant.enacted_at && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
 
 export function isGovernanceProcessProposal(type: ProposalType) {

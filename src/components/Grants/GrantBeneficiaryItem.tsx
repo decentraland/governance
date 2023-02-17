@@ -7,7 +7,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { TransparencyGrantsTiers } from '../../clients/DclData'
-import { TransparencyGrant } from '../../entities/Proposal/types'
+import { GovernanceGrant } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import { abbreviateTimeDifference, formatDate } from '../../modules/time'
@@ -22,16 +22,16 @@ import './GrantBeneficiaryItem.css'
 import GrantPill from './GrantPill'
 
 interface Props {
-  grant: TransparencyGrant
+  grant: GovernanceGrant
 }
 
 function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
   const { user, title, enacted_at, token, configuration } = grant
-  const enactedDate = new Date(enacted_at * 1000)
   const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
   const isInMana = Object.keys(TransparencyGrantsTiers).slice(0, 3).includes(configuration.tier)
+  const formattedEnactedDate = enacted_at ? formatDate(new Date(enacted_at * 1000)) : null
 
   return (
     <Card as={Link} className="GrantBeneficiaryItem" href={locations.proposal(grant.id)}>
@@ -41,15 +41,17 @@ function GrantBeneficiaryItem({ grant }: Props) {
             <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="medium" />
             <div>
               <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
-              <span className="GrantBeneficiaryItem__Details">
-                <Markdown>
-                  {t('page.profile.grants.item_description', {
-                    time: formatDate(enactedDate),
-                    amount: intl.formatNumber(grant.size),
-                    token: isInMana ? 'USD' : token,
-                  })}
-                </Markdown>
-              </span>
+              {formattedEnactedDate && (
+                <span className="GrantBeneficiaryItem__Details">
+                  <Markdown>
+                    {t('page.profile.grants.item_description', {
+                      time: formattedEnactedDate,
+                      amount: intl.formatNumber(grant.size),
+                      token: isInMana ? 'USD' : token,
+                    })}
+                  </Markdown>
+                </span>
+              )}
             </div>
           </div>
           <div className="GrantBeneficiaryItem__CategorySection">
@@ -60,7 +62,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
               <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
                 <div>
                   {proposalInCliffPeriod ? (
-                    <CliffProgress enactedAt={enacted_at} basic />
+                    <CliffProgress enactedAt={enacted_at!} basic />
                   ) : (
                     <VestingProgress grant={grant} basic />
                   )}
@@ -76,15 +78,17 @@ function GrantBeneficiaryItem({ grant }: Props) {
               <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
               <span className="GrantBeneficiaryItem__Details">
                 <GrantPill type={grant.configuration.category} />
-                <span>
-                  <Markdown>
-                    {t('page.profile.grants.item_short_description', {
-                      time: abbreviateTimeDifference(formatDate(enactedDate)),
-                      amount: intl.formatNumber(grant.size),
-                      token: token,
-                    })}
-                  </Markdown>
-                </span>
+                {formattedEnactedDate && (
+                  <span>
+                    <Markdown>
+                      {t('page.profile.grants.item_short_description', {
+                        time: abbreviateTimeDifference(formattedEnactedDate),
+                        amount: intl.formatNumber(grant.size),
+                        token: token,
+                      })}
+                    </Markdown>
+                  </span>
+                )}
               </span>
             </div>
           </div>

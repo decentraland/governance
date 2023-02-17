@@ -7,7 +7,7 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import isEmpty from 'lodash/isEmpty'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import { TransparencyGrant } from '../../../entities/Proposal/types'
+import { GovernanceGrant } from '../../../entities/Proposal/types'
 import { useSortingByKey } from '../../../hooks/useSortingByKey'
 import FullWidthButton from '../../Common/FullWidthButton'
 
@@ -19,14 +19,14 @@ import PastGrantsTable from './PastGrantsTable'
 const PAST_GRANTS_PER_PAGE = 10
 
 interface Props {
-  grants: TransparencyGrant[]
+  grants: GovernanceGrant[]
   currentGrantsTotal: number
   totalGrants: number
 }
 
 const PastGrantsList = ({ grants, currentGrantsTotal, totalGrants }: Props) => {
   const t = useFormatMessage()
-  const [filteredPastGrants, setFilteredPastGrants] = useState<TransparencyGrant[]>([])
+  const [filteredPastGrants, setFilteredPastGrants] = useState<GovernanceGrant[]>([])
   const {
     sorted: sortedPastGrants,
     changeSort,

@@ -4,12 +4,12 @@ import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFor
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import { TransparencyGrant } from '../../../entities/Proposal/types'
+import { GovernanceGrant } from '../../../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import { formatDate } from '../../../modules/time'
 
 interface Props {
-  grant: TransparencyGrant
+  grant: GovernanceGrant
   isInCliff: boolean
   children: React.ReactNode
 }
@@ -19,13 +19,13 @@ function ProgressBarTooltip({ grant, isInCliff, children }: Props) {
   const intl = useIntl()
 
   const { contract, tx_amount, token, enacted_at } = grant
-  const isOneTimePayment = !contract
+  const isOneTimePayment = !contract && enacted_at
   const vestedAmount = (contract ? contract.vestedAmount : tx_amount) || 0
-  const releasedAmount = !isOneTimePayment ? contract.released : 0
+  const releasedAmount = !isOneTimePayment && contract ? contract.released : 0
 
   let textToShow = ''
 
-  if (isInCliff) {
+  if (isInCliff && enacted_at) {
     const now = Time.utc()
     const vestingStartDate = Time.unix(enacted_at)
     const elapsedSinceVestingStarted = now.diff(vestingStartDate, 'day')

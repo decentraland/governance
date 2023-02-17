@@ -4,7 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { Governance } from '../../../clients/Governance'
-import { ProposalAttributes, TransparencyGrant } from '../../../entities/Proposal/types'
+import { GovernanceGrant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
 import locations from '../../../modules/locations'
@@ -20,8 +20,8 @@ import ExpandedProposalUpdate from './ExpandedProposalUpdate'
 import './ProposalUpdate.css'
 
 interface Props {
-  proposal: ProposalAttributes | TransparencyGrant
-  update: UpdateAttributes | null
+  proposal: ProposalAttributes | GovernanceGrant
+  update?: UpdateAttributes | null
   expanded: boolean
   index?: number
   isCoauthor?: boolean
