@@ -54,3 +54,11 @@ export function toGrantStatus(status?: string | null): GrantStatus | null {
 
   return idx !== -1 ? statuses[idx] : null
 }
+
+export function isCurrentGrant(newGrantStatus?: GrantStatus) {
+  return (
+    newGrantStatus === GrantStatus.InProgress ||
+    newGrantStatus === GrantStatus.Paused ||
+    newGrantStatus === GrantStatus.Pending
+  )
+}

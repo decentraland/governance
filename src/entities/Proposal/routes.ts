@@ -26,7 +26,8 @@ import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
-import { GrantRequestSchema, GrantStatus } from '../Grant/types'
+import { GrantRequestSchema } from '../Grant/types'
+import { isCurrentGrant } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -532,14 +533,6 @@ async function getGrantLatestUpdate(proposalId: string): Promise<IndexedUpdate |
   }
 
   return { ...currentUpdate, index: publicUpdates.length }
-}
-
-function isCurrentGrant(newGrantStatus?: GrantStatus) {
-  return (
-    newGrantStatus === GrantStatus.InProgress ||
-    newGrantStatus === GrantStatus.Paused ||
-    newGrantStatus === GrantStatus.Pending
-  )
 }
 
 async function getGrants(): Promise<GrantsResponse> {
