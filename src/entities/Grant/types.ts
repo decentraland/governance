@@ -57,6 +57,7 @@ export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 export const VALID_CATEGORIES = Object.values(NewGrantCategory)
 
 export enum GrantStatus {
+  Pending = 'Pending',
   InProgress = 'In Progress',
   Finished = 'Finished',
   Paused = 'Paused',
