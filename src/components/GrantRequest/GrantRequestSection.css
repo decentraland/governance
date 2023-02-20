@@ -38,14 +38,27 @@
 .GrantRequestSection__Content {
   display: flex;
   flex-direction: column;
-  margin-left: 58px;
+}
+
+@media (min-width: 768px) {
+  .GrantRequestSection__Content {
+    margin-left: 58px;
+  }
 }
 
 .GrantRequestSection__Row {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   width: 100%;
   gap: 32px;
+  margin-bottom: 33px;
+}
+
+@media (min-width: 768px) {
+  .GrantRequestSection__Row {
+    flex-direction: row;
+  }
 }
 
 .GrantRequestSection__InputContainer {
