@@ -197,3 +197,12 @@ export function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
 export function getProposalStatusShortName(status: ProposalStatus) {
   return status === ProposalStatus.OutOfBudget ? 'OOB' : getProposalStatusDisplayName(status)
 }
+
+export function isGrantProposalSubmitEnabled(now: number) {
+  const ENABLE_START_DATE = Time.utc('2023-01-03').add(8, 'hour')
+  if (Time(now).isBefore(ENABLE_START_DATE)) {
+    return false
+  }
+
+  return true
+}
