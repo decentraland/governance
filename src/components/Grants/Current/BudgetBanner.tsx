@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
@@ -37,6 +36,7 @@ function BudgetBanner({ category, status, counter }: Props) {
     allocated: currentAmount,
     total: totalBudget,
   } = useBudgetByCategory(category)
+
   const initiativesCount = useMemo(
     () =>
       (counter && (category !== PROPOSAL_GRANT_CATEGORY_ALL ? counter[category] : getAllInitiativesCount(counter))) ||
