@@ -9,7 +9,7 @@ import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalGrantCategory } from '../entities/Grant/types'
 import {
-  GrantsResponse,
+  CategorizedGrants,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -119,13 +119,13 @@ export class Governance extends API {
   }
 
   async getGrants() {
-    const proposals = await this.fetch<ApiResponse<GrantsResponse>>('/proposals/grants')
+    const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
 
     return proposals.data
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {
-    const grants = await this.fetch<ApiResponse<GrantsResponse>>(
+    const grants = await this.fetch<ApiResponse<CategorizedGrants>>(
       `/proposals/grants/${user}?coauthoring=${!!coauthoring}`
     )
 
