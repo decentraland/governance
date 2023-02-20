@@ -29,7 +29,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
   const { user, title, enacted_at, token, configuration } = grant
-  const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
+  const proposalInCliffPeriod = !!enacted_at && isProposalInCliffPeriod(enacted_at)
   const isInMana = Object.keys(TransparencyGrantsTiers).slice(0, 3).includes(configuration.tier)
   const formattedEnactedDate = enacted_at ? formatDate(new Date(enacted_at * 1000)) : null
 
@@ -62,7 +62,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
               <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
                 <div>
                   {proposalInCliffPeriod ? (
-                    <CliffProgress enactedAt={enacted_at!} basic />
+                    <CliffProgress enactedAt={enacted_at} basic />
                   ) : (
                     <VestingProgress grant={grant} basic />
                   )}
