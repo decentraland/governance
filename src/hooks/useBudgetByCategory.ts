@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import toSnakeCase from 'lodash/snakeCase'
 
+import { Governance } from '../clients/Governance'
+import { ProposalGrantCategory } from '../entities/Grant/types'
 import { PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
-
-import { Governance } from './../clients/Governance'
-import { ProposalGrantCategory } from './../entities/Grant/types'
 
 type Budget = {
   allocatedPercentage: number
@@ -21,16 +20,16 @@ const INITIAL_BUDGET: Budget = {
 }
 
 function convertPercentageToInt(percentage: number): number {
-  return Math.round(percentage * 100)
+  return Math.ceil(percentage * 100)
 }
 
 export default function useBudgetByCategory(category: ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL) {
-  const [budgetData] = useAsyncMemo(() => Governance.get().getCurrentBudget(), [])
+  const [currentBudget] = useAsyncMemo(() => Governance.get().getCurrentBudget(), [])
   const [budget, setBudget] = useState(INITIAL_BUDGET)
 
   useEffect(() => {
-    if (budgetData) {
-      const { categories, allocated, total } = budgetData
+    if (currentBudget) {
+      const { categories, allocated, total } = currentBudget
       if (category === PROPOSAL_GRANT_CATEGORY_ALL) {
         setBudget({
           allocatedPercentage: convertPercentageToInt(allocated / total),
@@ -50,7 +49,7 @@ export default function useBudgetByCategory(category: ProposalGrantCategory | ty
         }
       }
     }
-  }, [budgetData, category])
+  }, [currentBudget, category])
 
   return budget
 }
