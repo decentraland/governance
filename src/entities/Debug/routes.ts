@@ -13,7 +13,7 @@ export default routes((router) => {
     '/debug',
     handleAPI(async () => DEBUG_ADDRESSES)
   )
-  router.post('/debug/report_error', withAuth, handleAPI(reportClientError))
+  router.post('/debug/report-error', withAuth, handleAPI(reportClientError))
 })
 
 function reportClientError(req: WithAuth<Request>): void {
