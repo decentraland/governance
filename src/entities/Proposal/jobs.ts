@@ -73,19 +73,19 @@ function getBudgetForProposal(currentBudgets: CurrentBudget[], proposal: Proposa
   return currentBudgets.find((budget) => budget.start_at <= proposal.start_at && budget.finish_at > proposal.start_at)
 }
 
-function getCategoryBudgetFor(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
+function getCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
   const categoryName = snakeCase(proposal.configuration.category)
   return proposalBudget.categories[categoryName]
 }
 
 function grantCanBeFunded(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
-  const categoryBudget = getCategoryBudgetFor(proposal, proposalBudget)
+  const categoryBudget = getCategoryBudget(proposal, proposalBudget)
   const size = asNumber(proposal.configuration.size)
   return categoryBudget.allocated + size <= categoryBudget.total
 }
 
 function updateCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
-  const categoryBudget = getCategoryBudgetFor(proposal, proposalBudget)
+  const categoryBudget = getCategoryBudget(proposal, proposalBudget)
   const size = asNumber(proposal.configuration.size)
   categoryBudget.allocated += size
   categoryBudget.available -= size

@@ -120,10 +120,9 @@ export class BudgetService {
     const currentBudget = await QuarterBudgetModel.getCurrentBudget()
     if (currentBudget !== null) {
       return currentBudget
-    } else {
-      ErrorService.report('Could not find current budget')
-      return NULL_CURRENT_BUDGET
     }
+    ErrorService.report('Could not find current budget')
+    return NULL_CURRENT_BUDGET
   }
 
   static async getCategoryBudget(category: NewGrantCategory): Promise<CurrentCategoryBudget> {
@@ -131,10 +130,9 @@ export class BudgetService {
     if (categoryBudget !== null) {
       const { total, allocated } = categoryBudget
       return { total, allocated, available: total - allocated }
-    } else {
-      ErrorService.report(`Could not find category budget for current quarter. Category: ${category}`)
-      return NULL_CURRENT_CATEGORY_BUDGET
     }
+    ErrorService.report(`Could not find category budget for current quarter. Category: ${category}`)
+    return NULL_CURRENT_CATEGORY_BUDGET
   }
 
   static async validateGrantRequest(grantSize: number, grantCategory: NewGrantCategory | null) {
@@ -173,17 +171,16 @@ export class BudgetService {
     budgetsForProposals.push(oldestBudget)
     if (maxDate && minDate !== maxDate) {
       const newestBudget = await QuarterBudgetModel.getBudgetForDate(maxDate)
-      if (newestBudget !== null) {
-        const index = budgetsForProposals.findIndex((budget) => budget.id === newestBudget.id)
-        if (index === -1) budgetsForProposals.push(newestBudget)
+      if (newestBudget !== null && newestBudget.id !== oldestBudget.id) {
+        budgetsForProposals.push(newestBudget)
       }
     }
     return budgetsForProposals
   }
 
-  static async updateBudgets(budgetUpdates: CurrentBudget[]) {
-    for (const budgetUpdate of budgetUpdates) {
-      await QuarterBudgetModel.updateBudget(budgetUpdate)
+  static async updateBudgets(budgets: CurrentBudget[]) {
+    for (const budget of budgets) {
+      await QuarterBudgetModel.updateBudget(budget)
     }
   }
 }
