@@ -51,7 +51,7 @@ const validate = (availableCategoryBudget: number | 0) =>
   createValidator<GrantRequestFunding>({
     funding: (state) => ({
       funding:
-        assert(Number.isFinite(asNumber(state.funding)), 'error.grant.funding.invalid') ||
+        assert(Number.isInteger(asNumber(state.funding)), 'error.grant.funding.invalid') ||
         assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
         assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
         assert(
