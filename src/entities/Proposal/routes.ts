@@ -26,7 +26,8 @@ import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
 import { GrantTier } from '../Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
-import { GrantRequestSchema, GrantStatus } from '../Grant/types'
+import { GrantRequestSchema } from '../Grant/types'
+import { isCurrentGrant } from '../Grant/utils'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
@@ -593,8 +594,6 @@ async function getGrants(): Promise<GrantsResponse> {
           })
         }
 
-        const isCurrentGrant = newGrant.status === GrantStatus.InProgress || newGrant.status === GrantStatus.Paused
-
         try {
           const update = await getGrantLatestUpdate(grant.id)
           const grantWithUpdate: GrantWithUpdateAttributes = {
@@ -602,8 +601,7 @@ async function getGrants(): Promise<GrantsResponse> {
             update,
             update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
           }
-
-          return isCurrentGrant ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
+          return isCurrentGrant(newGrant.status) ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
         } catch (error) {
           logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
         }

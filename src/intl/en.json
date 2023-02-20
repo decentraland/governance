@@ -290,6 +290,7 @@
     "out_of_budget": "OOB outcomes"
   },
   "grant_status": {
+    "pending": "Pending",
     "in_progress": "In progress",
     "finished": "Finished",
     "paused": "Paused",
