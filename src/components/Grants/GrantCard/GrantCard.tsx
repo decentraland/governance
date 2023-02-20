@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
+import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
 import locations from '../../../modules/locations'
 import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
@@ -15,14 +15,14 @@ import GrantCardHeadline from './GrantCardHeadline'
 import VestingProgress from './VestingProgress'
 
 export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
-  grant: GrantWithUpdateAttributes
+  grant: GrantWithUpdate
   hoverable?: boolean
 }
 
 const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
-  const { id } = grant
+  const { id, enacted_at } = grant
   const [expanded, setExpanded] = useState(!hoverable)
-  const proposalInCliffPeriod = isProposalInCliffPeriod(grant)
+  const proposalInCliffPeriod = !!enacted_at && isProposalInCliffPeriod(enacted_at)
 
   return (
     <Link
@@ -38,7 +38,7 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
       <div>
         <GrantCardHeader grant={grant} />
         <GrantCardHeadline grant={grant} expanded={expanded} hoverable={hoverable} />
-        {proposalInCliffPeriod ? <CliffProgress enactedAt={grant.enacted_at} /> : <VestingProgress grant={grant} />}
+        {proposalInCliffPeriod ? <CliffProgress enactedAt={enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       <div className="GrantCard__UpdateContainer">
         <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />

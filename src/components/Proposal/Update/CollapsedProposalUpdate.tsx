@@ -7,7 +7,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
-import { ProposalAttributes, TransparencyGrant } from '../../../entities/Proposal/types'
+import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import locations from '../../../modules/locations'
@@ -19,7 +19,7 @@ import './ProposalUpdate.css'
 import UpdateMenu from './UpdateMenu'
 
 interface Props {
-  proposal: ProposalAttributes | TransparencyGrant
+  proposal: ProposalAttributes | Grant
   update: UpdateAttributes
   index?: number
   isCoauthor?: boolean

@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import filter from 'lodash/filter'
 
 import { NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
-import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
+import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
 
-export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdateAttributes[]) {
+export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdate[]) {
   // TODO: Check this
   return useMemo(
     () => ({

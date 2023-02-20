@@ -2,14 +2,14 @@ import React from 'react'
 
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
+import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import Username from '../../User/Username'
 import GrantPill from '../GrantPill'
 
 import './GrantCardHeader.css'
 
 export type GrantCardHeaderProps = React.HTMLAttributes<HTMLDivElement> & {
-  grant: GrantWithUpdateAttributes
+  grant: GrantWithUpdate
 }
 
 const GrantCardHeader = ({ grant }: GrantCardHeaderProps) => {

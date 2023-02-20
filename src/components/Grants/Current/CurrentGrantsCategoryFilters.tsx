@@ -6,7 +6,7 @@ import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
-import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
+import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import FilterButton from '../FilterButton'
 
 import './CurrentGrantsCategoryFilters.css'
@@ -21,7 +21,7 @@ const GRANTS_CATEGORY_FILTERS: GrantCategoryFilter[] = [
 ]
 
 interface Props {
-  currentGrantsFilteredByCategory: Record<GrantCategoryFilter, GrantWithUpdateAttributes[]>
+  currentGrantsFilteredByCategory: Record<GrantCategoryFilter, GrantWithUpdate[]>
   onSelectedCategoryChange: (newCategory: GrantCategoryFilter) => void
 }
 

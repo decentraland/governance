@@ -576,7 +576,7 @@ type VestingContractData = {
   vesting_total_amount: number
 }
 
-export type TransparencyGrant = {
+export type Grant = {
   id: string
   title: string
   user: string
@@ -590,18 +590,18 @@ export type TransparencyGrant = {
   contract?: VestingContractData
   enacting_tx?: string
   token?: string
-  enacted_at: number
+  enacted_at?: number
   tx_amount?: number
   tx_date?: number
 }
 
-export type GrantWithUpdateAttributes = TransparencyGrant & {
-  update: IndexedUpdate | null
-  update_timestamp: number
+export type GrantWithUpdate = Grant & {
+  update?: IndexedUpdate | null
+  update_timestamp?: number
 }
 
 export type CategorizedGrants = {
-  current: GrantWithUpdateAttributes[]
-  past: GrantWithUpdateAttributes[]
+  current: GrantWithUpdate[]
+  past: GrantWithUpdate[]
   total: number
 }

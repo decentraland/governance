@@ -3,11 +3,11 @@ import React, { useMemo } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmpty from 'lodash/isEmpty'
 
-import { TransparencyGrant } from '../../../entities/Proposal/types'
+import { Grant } from '../../../entities/Proposal/types'
 import { numberFormat } from '../../../modules/intl'
 import Banner, { BannerType } from '../Banner'
 
-const getBannerStats = (grants: TransparencyGrant[], currentGrantsTotal: number, totalGrants: number) => {
+const getBannerStats = (grants: Grant[], currentGrantsTotal: number, totalGrants: number) => {
   if (isEmpty(grants)) {
     return {}
   }
@@ -25,7 +25,7 @@ const getBannerStats = (grants: TransparencyGrant[], currentGrantsTotal: number,
 }
 
 interface Props {
-  grants: TransparencyGrant[]
+  grants: Grant[]
   currentGrantsTotal: number
   totalGrants: number
 }

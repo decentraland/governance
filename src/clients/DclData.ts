@@ -39,7 +39,7 @@ export type TransparencyData = {
   teams: Team[]
 }
 
-type Grants = {
+export type TransparencyGrant = {
   id: string
   snapshot_id: string
   user: string
@@ -81,7 +81,8 @@ type Grants = {
   vesting_total_amount?: number
   vesting_status?: GrantStatus
   next_update?: number
-}[]
+}
+export type TransparencyGrants = TransparencyGrant[]
 
 // TODO: Maybe Transparency should share GrantTierType instead of overriding names
 export const TransparencyGrantsTiers = {
@@ -123,7 +124,7 @@ export class DclData extends API {
   }
 
   async getGrants() {
-    return this.fetch<Grants>('/grants.json', this.options().method('GET'))
+    return this.fetch<TransparencyGrants>('/grants.json', this.options().method('GET'))
   }
 
   async getBudgets() {

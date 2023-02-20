@@ -27,8 +27,6 @@ import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
 import { GrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
-import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
-import { getPublicUpdates } from '../Updates/utils'
 import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
@@ -38,7 +36,7 @@ import ProposalModel from './model'
 import {
   CategorizedGrants,
   GrantProposalConfiguration,
-  GrantWithUpdateAttributes,
+  GrantWithUpdate,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
@@ -96,7 +94,7 @@ export default routes((route) => {
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
-export async function getProposals(req: WithAuth<Request>) {
+export async function getProposals(req: WithAuth) {
   const query = req.query
   const type = query.type && String(query.type)
   const status = query.status && String(query.status)
@@ -534,7 +532,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   const grantsResult = await getGrants()
 
-  const filterGrants = (grants: GrantWithUpdateAttributes[]) => {
+  const filterGrants = (grants: GrantWithUpdate[]) => {
     return grants.filter(
       (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
     )

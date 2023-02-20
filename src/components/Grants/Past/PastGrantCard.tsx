@@ -5,14 +5,14 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { TransparencyGrant } from '../../../entities/Proposal/types'
+import { Grant } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
 import GrantPill from '../GrantPill'
 
 import './PastGrantCard.css'
 
 interface Props {
-  grant: TransparencyGrant
+  grant: Grant
 }
 
 const PastGrantCard = ({ grant }: Props) => {

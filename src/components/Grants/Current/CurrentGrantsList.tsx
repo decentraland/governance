@@ -8,7 +8,7 @@ import isEmpty from 'lodash/isEmpty'
 import orderBy from 'lodash/orderBy'
 
 import { GrantStatus, NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
-import { GrantWithUpdateAttributes, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
+import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGrantsFilteredByCategory'
 import locations from '../../../modules/locations'
 import Empty, { ActionType } from '../../Common/Empty'
@@ -25,7 +25,7 @@ import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu
 const CURRENT_GRANTS_PER_PAGE = 8
 
 interface Props {
-  grants: GrantWithUpdateAttributes[]
+  grants: GrantWithUpdate[]
   category: ProposalGrantCategory | null
   status: GrantStatus | null
   counter?: Counter
@@ -59,7 +59,7 @@ const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(grants, [sortingKey], ['desc']), [grants, sortingKey])
-  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdateAttributes[]>([])
+  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdate[]>([])
   const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)
 
   useEffect(() => {

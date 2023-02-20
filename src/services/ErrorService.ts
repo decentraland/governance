@@ -26,7 +26,7 @@ export class ErrorService {
     logger.error(errorMsg, error)
   }
 
-  private static isDevEnv() {
+  public static isDevEnv() {
     return config.getEnv() === Env.LOCAL || config.getEnv() === Env.DEVELOPMENT
   }
 
