@@ -3,6 +3,7 @@ import React from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/types'
 import Helper from '../Helper/Helper'
@@ -54,12 +55,22 @@ const DesiredFundingInput = ({ disabled, value, onChange, onBlur, error }: Props
         </div>
         {showError && (
           <div className={'DesiredFundingInput__ErrorHelper'}>
-            <Helper
-              text={t(error)}
-              position="right center"
-              open
-              icon={<ExclamationCircle color={'red-800'} size={'16px'} />}
-            />
+            <Mobile>
+              <Helper
+                text={t(error)}
+                position="bottom center"
+                open
+                icon={<ExclamationCircle color="red-800" size="16px" />}
+              />
+            </Mobile>
+            <NotMobile>
+              <Helper
+                text={t(error)}
+                position="right center"
+                open
+                icon={<ExclamationCircle color="red-800" size="16px" />}
+              />
+            </NotMobile>
           </div>
         )}
       </div>

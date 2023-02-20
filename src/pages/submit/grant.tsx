@@ -111,7 +111,7 @@ export default function SubmitGrant() {
 
   return (
     <div>
-      <Container className="ContentLayout__Container" preventNavigation={preventNavigation.current}>
+      <Container className="ContentLayout__Container">
         <div className="GrantRequest__Head">
           <Head
             title={t('page.submit_grant.title') || ''}
