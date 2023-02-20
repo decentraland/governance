@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 
-import { GovernanceGrant } from '../../entities/Proposal/types'
+import { Grant } from '../../entities/Proposal/types'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
 
 import GrantBeneficiaryItem from './GrantBeneficiaryItem'
 
 interface Props {
-  grants: GovernanceGrant[]
+  grants: Grant[]
 }
 
 const MAX_GRANTS = 4

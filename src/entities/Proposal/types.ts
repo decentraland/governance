@@ -576,7 +576,7 @@ type VestingContractData = {
   vesting_total_amount: number
 }
 
-export type GovernanceGrant = {
+export type Grant = {
   id: string
   title: string
   user: string
@@ -595,7 +595,7 @@ export type GovernanceGrant = {
   tx_date?: number
 }
 
-export type GrantWithUpdate = GovernanceGrant & {
+export type GrantWithUpdate = Grant & {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }

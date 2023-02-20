@@ -4,12 +4,12 @@ import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFor
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import { GovernanceGrant } from '../../../entities/Proposal/types'
+import { Grant } from '../../../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import { formatDate } from '../../../modules/time'
 
 interface Props {
-  grant: GovernanceGrant
+  grant: Grant
   isInCliff: boolean
   children: React.ReactNode
 }

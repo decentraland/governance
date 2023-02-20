@@ -4,14 +4,14 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { GovernanceGrant } from '../../../entities/Proposal/types'
+import { Grant } from '../../../entities/Proposal/types'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
 import PercentageLabel from './PercentageLabel'
 import './VestingProgress.css'
 
 export type Props = React.HTMLAttributes<HTMLDivElement> & {
-  grant: GovernanceGrant
+  grant: Grant
   basic?: boolean
 }
 

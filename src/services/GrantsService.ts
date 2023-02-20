@@ -7,7 +7,7 @@ import { DclData, TransparencyGrant } from '../clients/DclData'
 import { GrantStatus } from '../entities/Grant/types'
 import { isCurrentGrant } from '../entities/Grant/utils'
 import ProposalModel from '../entities/Proposal/model'
-import { GovernanceGrant, GrantWithUpdate, ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
+import { Grant, GrantWithUpdate, ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
@@ -31,7 +31,7 @@ export class GrantsService {
         try {
           //TODO: we could findAll and iterate in memory
           const createdAt = await this.getCreationDate(grant)
-          const newGrant: GovernanceGrant = this.parseTransparencyGrant(grant, createdAt)
+          const newGrant: Grant = this.parseTransparencyGrant(grant, createdAt)
 
           Object.assign(newGrant, this.getVestingData(grant))
 
@@ -65,7 +65,7 @@ export class GrantsService {
     }
   }
 
-  private static toPendingGovernanceGrant(grant: ProposalAttributes): GovernanceGrant {
+  private static toPendingGovernanceGrant(grant: ProposalAttributes): Grant {
     return {
       id: grant.id,
       title: grant.title,

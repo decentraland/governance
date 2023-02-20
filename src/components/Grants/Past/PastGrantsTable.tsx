@@ -3,14 +3,14 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
-import { GovernanceGrant } from '../../../entities/Proposal/types'
+import { Grant } from '../../../entities/Proposal/types'
 import Sort from '../../Icon/Sort'
 import GrantsPastItem from '../GrantsPastItem'
 
 import './PastGrantsTable.css'
 
 interface Props {
-  sortedGrants: GovernanceGrant[]
+  sortedGrants: Grant[]
   onSortClick: () => void
   isDescendingSort: boolean
 }

@@ -7,7 +7,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { TransparencyGrantsTiers } from '../../clients/DclData'
-import { GovernanceGrant } from '../../entities/Proposal/types'
+import { Grant } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 import { abbreviateTimeDifference, formatDate } from '../../modules/time'
@@ -22,7 +22,7 @@ import './GrantBeneficiaryItem.css'
 import GrantPill from './GrantPill'
 
 interface Props {
-  grant: GovernanceGrant
+  grant: Grant
 }
 
 function GrantBeneficiaryItem({ grant }: Props) {
