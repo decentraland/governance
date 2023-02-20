@@ -298,9 +298,6 @@ export class Discourse extends API {
 
   private static getCredentials() {
     const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
-    if (!DISCOURSE_API_KEY) {
-      throw new Error('Failed to determine discourse API key. Please check DISCOURSE_API_KEY env is defined')
-    }
     if (!DISCOURSE_USER) {
       throw new Error('Failed to determine discourse user. Please check DISCOURSE_USER env is defined')
     }
