@@ -3,12 +3,21 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 
 import { DclData, TransparencyBudget } from '../clients/DclData'
-import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
+import {
+  CurrentBudget,
+  CurrentCategoryBudget,
+  NULL_CURRENT_BUDGET,
+  NULL_CURRENT_CATEGORY_BUDGET,
+} from '../entities/Budget/types'
+import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import { isValidGrantBudget } from '../entities/Grant/utils'
+import { ProposalAttributes } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
+
+import { ErrorService } from './ErrorService'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -107,14 +116,23 @@ export class BudgetService {
     return await QuarterBudgetModel.createNewBudgets(transparencyBudgets)
   }
 
-  static getCurrentBudget(): Promise<CurrentBudget> {
-    return QuarterBudgetModel.getCurrentBudget()
+  static async getCurrentBudget(): Promise<CurrentBudget> {
+    const currentBudget = await QuarterBudgetModel.getCurrentBudget()
+    if (currentBudget !== null) {
+      return currentBudget
+    }
+    ErrorService.report('Could not find current budget')
+    return NULL_CURRENT_BUDGET
   }
 
   static async getCategoryBudget(category: NewGrantCategory): Promise<CurrentCategoryBudget> {
     const categoryBudget = await QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
-    const { total, allocated } = categoryBudget
-    return { total, allocated, available: total - allocated }
+    if (categoryBudget !== null) {
+      const { total, allocated } = categoryBudget
+      return { total, allocated, available: total - allocated }
+    }
+    ErrorService.report(`Could not find category budget for current quarter. Category: ${category}`)
+    return NULL_CURRENT_CATEGORY_BUDGET
   }
 
   static async validateGrantRequest(grantSize: number, grantCategory: NewGrantCategory | null) {
@@ -128,6 +146,41 @@ export class BudgetService {
       throw new Error(
         `Not enough budget for requested grant size. Available: $${currentCategoryBudget.available}. Requested: $${grantSize}`
       )
+    }
+  }
+
+  static getProposalsBudgetingMinAndMaxDates(proposals: Pick<ProposalAttributes, 'start_at'>[]): {
+    minDate?: Date
+    maxDate?: Date
+  } {
+    const sorted = proposals
+      .filter((p) => p.start_at && p.start_at >= BUDGETING_START_DATE)
+      .sort((p1, p2) => p1.start_at.getTime() - p2.start_at.getTime())
+    return { minDate: sorted[0]?.start_at, maxDate: sorted[sorted.length - 1]?.start_at }
+  }
+
+  static async getBudgetsForProposals(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<CurrentBudget[]> {
+    const budgetsForProposals: CurrentBudget[] = []
+    const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(proposals)
+    if (!minDate) return budgetsForProposals
+    const oldestBudget = await QuarterBudgetModel.getBudgetForDate(minDate)
+    if (oldestBudget === null) {
+      ErrorService.report(`Could not find budget for ${minDate}`)
+      return budgetsForProposals
+    }
+    budgetsForProposals.push(oldestBudget)
+    if (maxDate && minDate !== maxDate) {
+      const newestBudget = await QuarterBudgetModel.getBudgetForDate(maxDate)
+      if (newestBudget !== null && newestBudget.id !== oldestBudget.id) {
+        budgetsForProposals.push(newestBudget)
+      }
+    }
+    return budgetsForProposals
+  }
+
+  static async updateBudgets(budgets: CurrentBudget[]) {
+    for (const budget of budgets) {
+      await QuarterBudgetModel.updateBudget(budget)
     }
   }
 }

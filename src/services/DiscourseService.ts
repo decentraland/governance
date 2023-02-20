@@ -10,9 +10,9 @@ import { inBackground } from '../helpers'
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
-const DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
-
 export class DiscourseService {
+  private static DISCOURSE_CATEGORY = requiredEnv('GATSBY_DISCOURSE_CATEGORY')
+
   static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
@@ -49,7 +49,7 @@ export class DiscourseService {
     }
 
     return {
-      category: DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined,
+      category: DiscourseService.DISCOURSE_CATEGORY ? Number(DiscourseService.DISCOURSE_CATEGORY) : undefined,
       title: templates.forumTitle(discourseTemplateProps),
       raw: await templates.forumDescription(discourseTemplateProps),
     }

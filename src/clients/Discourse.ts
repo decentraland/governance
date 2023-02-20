@@ -6,8 +6,6 @@ import { DISCOURSE_API, DISCOURSE_USER } from '../entities/Discourse/utils'
 
 import { trimLastForwardSlash } from './utils'
 
-export const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
-
 export type DiscourseAuth = {
   apiKey: string
   apiUsername: string
@@ -295,13 +293,11 @@ export class Discourse extends API {
 
   constructor(baseUrl: string) {
     super(baseUrl)
-    this.auth = this.getCredentials()
+    this.auth = Discourse.getCredentials()
   }
 
-  private getCredentials() {
-    if (!DISCOURSE_API_KEY) {
-      throw new Error('Failed to determine discourse API key. Please check DISCOURSE_API_KEY env is defined')
-    }
+  private static getCredentials() {
+    const DISCOURSE_API_KEY = requiredEnv('DISCOURSE_API_KEY')
     if (!DISCOURSE_USER) {
       throw new Error('Failed to determine discourse user. Please check DISCOURSE_USER env is defined')
     }

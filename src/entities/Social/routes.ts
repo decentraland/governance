@@ -1,27 +1,28 @@
+import { MetadataOptions } from 'decentraland-gatsby/dist/entities/Gatsby/types'
+import { replaceHelmetMetadata } from 'decentraland-gatsby/dist/entities/Gatsby/utils'
+import { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import { readOnce } from 'decentraland-gatsby/dist/entities/Route/routes/file'
+import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
-import routes from "decentraland-gatsby/dist/entities/Route/routes";
-import { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle';
-import { replaceHelmetMetadata } from "decentraland-gatsby/dist/entities/Gatsby/utils";
-import { MetadataOptions } from "decentraland-gatsby/dist/entities/Gatsby/types";
+import { resolve } from 'path'
+import isUUID from 'validator/lib/isUUID'
+
 import intl from '../../intl/en.json'
-import { readOnce } from 'decentraland-gatsby/dist/entities/Route/routes/file';
-import { resolve } from 'path';
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env';
-import isUUID from 'validator/lib/isUUID';
-import ProposalModel from '../Proposal/model';
-import { ProposalAttributes } from '../Proposal/types';
+import ProposalModel from '../Proposal/model'
+import { ProposalAttributes } from '../Proposal/types'
 
 const GOVERNANCE_API = requiredEnv('GOVERNANCE_API')
-const DEFAUTL_URL = new URL(GOVERNANCE_API)
-DEFAUTL_URL.pathname = ''
-const DEFAUTL_INFO: Partial<MetadataOptions> = {
+const DEFAULT_URL = new URL(GOVERNANCE_API)
+DEFAULT_URL.pathname = ''
+const DEFAULT_INFO: Partial<MetadataOptions> = {
   title: intl.page.proposal_list.title,
   description: intl.page.proposal_list.description,
-  url: DEFAUTL_URL.toString(),
-  "og:type": 'website',
-  "og:site_name": 'Decentraland DAO',
-  "twitter:site": '@decentraland',
-  "twitter:card": 'summary',
+  url: DEFAULT_URL.toString(),
+  'og:type': 'website',
+  'og:site_name': 'Decentraland DAO',
+  'twitter:site': '@decentraland',
+  'twitter:card': 'summary',
   image: 'https://decentraland.org/images/decentraland.png',
 }
 
@@ -37,8 +38,8 @@ async function readFile(req: Request) {
 export async function injectHomeMetadata(req: Request) {
   const page = await readFile(req)
   return replaceHelmetMetadata(page.toString(), {
-    ...DEFAUTL_INFO,
-    url: DEFAUTL_INFO.url! + req.originalUrl.slice(1)
+    ...DEFAULT_INFO,
+    url: DEFAULT_INFO.url! + req.originalUrl.slice(1),
   })
 }
 
@@ -47,8 +48,8 @@ export async function injectProposalMetadata(req: Request) {
   const page = await readFile(req)
   if (!isUUID(id || '')) {
     return replaceHelmetMetadata(page.toString(), {
-      ...DEFAUTL_INFO,
-      url: DEFAUTL_INFO.url! + req.originalUrl.slice(1),
+      ...DEFAULT_INFO,
+      url: DEFAULT_INFO.url! + req.originalUrl.slice(1),
       title: intl.page[404].title,
       description: intl.page[404].description,
     })
@@ -57,16 +58,16 @@ export async function injectProposalMetadata(req: Request) {
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
   if (!proposal) {
     return replaceHelmetMetadata(page.toString(), {
-      ...DEFAUTL_INFO,
-      url: DEFAUTL_INFO.url! + req.originalUrl.slice(1),
+      ...DEFAULT_INFO,
+      url: DEFAULT_INFO.url! + req.originalUrl.slice(1),
       title: intl.page[404].title,
       description: intl.page[404].description,
     })
   }
 
   return replaceHelmetMetadata(page.toString(), {
-    ...DEFAUTL_INFO,
-    url: DEFAUTL_INFO.url! + req.originalUrl.slice(1),
+    ...DEFAULT_INFO,
+    url: DEFAULT_INFO.url! + req.originalUrl.slice(1),
     title: proposal.title,
     description: proposal.description,
   })

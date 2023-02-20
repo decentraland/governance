@@ -1,7 +1,10 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import { cloneDeep } from 'lodash'
 
 import { DclData } from '../clients/DclData'
-import { CurrentCategoryBudget } from '../entities/Budget/types'
+import { CurrentCategoryBudget, NULL_CURRENT_BUDGET } from '../entities/Budget/types'
+import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
@@ -261,6 +264,104 @@ describe('BudgetService', () => {
         await expect(() => BudgetService.validateGrantRequest(requestedGrantSize, grantCategory)).rejects.toThrow(
           `Not enough budget for requested grant size. Available: $${AVAILABLE_BUDGET}. Requested: $${requestedGrantSize}`
         )
+      })
+    })
+  })
+
+  describe('getProposalsMinAndMaxDates', () => {
+    const MIN_DATE = Time.utc('2023-01-01 00:00:00Z').toDate()
+    const MIDDLE_DATE = Time.utc('2023-03-01 00:00:00Z').toDate()
+    const MAX_DATE = Time.utc('2023-05-02 00:00:00Z').toDate()
+
+    describe('given a list of proposals with different start dates', () => {
+      it('returns the min and max start dates', () => {
+        const PROPOSALS = [{ start_at: MIDDLE_DATE }, { start_at: MIN_DATE }, { start_at: MAX_DATE }]
+        expect(BudgetService.getProposalsBudgetingMinAndMaxDates(PROPOSALS)).toEqual({
+          minDate: MIN_DATE,
+          maxDate: MAX_DATE,
+        })
+      })
+    })
+
+    describe('given a list of proposals with same start dates', () => {
+      it('returns the same min and max start dates', () => {
+        const PROPOSALS = [{ start_at: MIN_DATE }, { start_at: MIN_DATE }, { start_at: MIN_DATE }]
+        expect(BudgetService.getProposalsBudgetingMinAndMaxDates(PROPOSALS)).toEqual({
+          minDate: MIN_DATE,
+          maxDate: MIN_DATE,
+        })
+      })
+    })
+
+    describe('when there is a proposal older than the budgeting system implementation', () => {
+      it('filters the proposal from the chosen dates', () => {
+        const PROPOSALS = [
+          { start_at: Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate() },
+          { start_at: MAX_DATE },
+          { start_at: MIN_DATE },
+        ]
+        expect(BudgetService.getProposalsBudgetingMinAndMaxDates(PROPOSALS)).toEqual({
+          minDate: MIN_DATE,
+          maxDate: MAX_DATE,
+        })
+      })
+    })
+  })
+
+  describe('getBudgets', () => {
+    const QUARTER_1_DATE = Time.utc('2023-01-01 00:00:00Z').toDate()
+    const QUARTER_2_DATE = Time.utc('2023-05-02 00:00:00Z').toDate()
+
+    describe('if there are no proposals with starting dates after the budgeting system implementation', () => {
+      const PROPOSALS = [{ start_at: Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate() }]
+      beforeEach(() => {
+        jest
+          .spyOn(BudgetService, 'getProposalsBudgetingMinAndMaxDates')
+          .mockReturnValueOnce({ minDate: undefined, maxDate: undefined })
+      })
+      it('returns an empty budgets list', async () => {
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([])
+      })
+    })
+
+    describe('if proposals min and max dates are the same', () => {
+      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_1_DATE }]
+      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      it('returns only one budget', async () => {
+        jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValueOnce(BUDGET_1)
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1])
+      })
+    })
+
+    describe('if proposals min and max dates are different but are for the same budget', () => {
+      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: Time.utc(QUARTER_1_DATE).add(1, 'day').toDate() }]
+      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      BUDGET_1.id = 'budget_1'
+      beforeEach(() => {
+        jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValue(BUDGET_1)
+      })
+
+      it('returns only one budget', async () => {
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1])
+      })
+    })
+
+    describe('if proposals min and max dates are for different budgets', () => {
+      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_2_DATE }]
+      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      BUDGET_1.id = 'budget_1'
+      const BUDGET_2 = cloneDeep(NULL_CURRENT_BUDGET)
+      BUDGET_2.id = 'budget_2'
+
+      beforeEach(() => {
+        jest
+          .spyOn(QuarterBudgetModel, 'getBudgetForDate')
+          .mockResolvedValueOnce(BUDGET_1)
+          .mockResolvedValueOnce(BUDGET_2)
+      })
+
+      it('returns only one budget', async () => {
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1, BUDGET_2])
       })
     })
   })
