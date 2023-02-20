@@ -110,7 +110,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     return this.parseCurrentBudget(result)
   }
 
-  static async getBudget(dateWithinBudget: Date): Promise<CurrentBudget | null> {
+  static async getBudgetForDate(dateWithinBudget: Date): Promise<CurrentBudget | null> {
     const query = SQL`
         SELECT 
           qb.id, qb.start_at, qb.finish_at,

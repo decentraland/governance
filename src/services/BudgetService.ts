@@ -165,14 +165,14 @@ export class BudgetService {
     const budgetsForProposals: CurrentBudget[] = []
     const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(proposals)
     if (!minDate) return budgetsForProposals
-    const oldestBudget = await QuarterBudgetModel.getBudget(minDate)
+    const oldestBudget = await QuarterBudgetModel.getBudgetForDate(minDate)
     if (oldestBudget === null) {
       ErrorService.report(`Could not find budget for ${minDate}`)
       return budgetsForProposals
     }
     budgetsForProposals.push(oldestBudget)
     if (maxDate && minDate !== maxDate) {
-      const newestBudget = await QuarterBudgetModel.getBudget(maxDate)
+      const newestBudget = await QuarterBudgetModel.getBudgetForDate(maxDate)
       if (newestBudget !== null) {
         const index = budgetsForProposals.findIndex((budget) => budget.id === newestBudget.id)
         if (index === -1) budgetsForProposals.push(newestBudget)

@@ -9,9 +9,9 @@ import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 import UpdateModel from '../Updates/model'
 
-import * as calculateOutcome from './calculateOutcome'
 import { finishProposal } from './jobs'
 import ProposalModel from './model'
+import * as calculateOutcome from './outcome'
 import * as routes from './routes'
 import {
   ACCEPTED_OUTCOME,
@@ -20,7 +20,7 @@ import {
   REJECTED_OUTCOME,
   createTestProposal,
   getTestBudgetWithAvailableSize,
-} from './test_helpers'
+} from './testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 export const ACCELERATOR_TOTAL = 105000

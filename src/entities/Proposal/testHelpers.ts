@@ -6,8 +6,8 @@ import { CurrentBudget } from '../Budget/types'
 import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
-import { ProposalOutcome } from './calculateOutcome'
 import { ACCELERATOR_TOTAL, CORE_UNIT_TOTAL } from './jobs.test'
+import { ProposalOutcome } from './outcome'
 import { ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 

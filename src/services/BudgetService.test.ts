@@ -328,7 +328,7 @@ describe('BudgetService', () => {
       const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_1_DATE }]
       const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
       it('returns only one budget', async () => {
-        jest.spyOn(QuarterBudgetModel, 'getBudget').mockResolvedValueOnce(BUDGET_1)
+        jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValueOnce(BUDGET_1)
         expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1])
       })
     })
@@ -338,7 +338,7 @@ describe('BudgetService', () => {
       const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
       BUDGET_1.id = 'budget_1'
       beforeEach(() => {
-        jest.spyOn(QuarterBudgetModel, 'getBudget').mockResolvedValue(BUDGET_1)
+        jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValue(BUDGET_1)
       })
 
       it('returns only one budget', async () => {
@@ -354,7 +354,10 @@ describe('BudgetService', () => {
       BUDGET_2.id = 'budget_2'
 
       beforeEach(() => {
-        jest.spyOn(QuarterBudgetModel, 'getBudget').mockResolvedValueOnce(BUDGET_1).mockResolvedValueOnce(BUDGET_2)
+        jest
+          .spyOn(QuarterBudgetModel, 'getBudgetForDate')
+          .mockResolvedValueOnce(BUDGET_1)
+          .mockResolvedValueOnce(BUDGET_2)
       })
 
       it('returns only one budget', async () => {
