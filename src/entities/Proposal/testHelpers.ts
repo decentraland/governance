@@ -6,7 +6,6 @@ import { CurrentBudget } from '../Budget/types'
 import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
-import { ACCELERATOR_TOTAL, CORE_UNIT_TOTAL } from './jobs.test'
 import { ProposalOutcome } from './outcome'
 import { ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
@@ -143,6 +142,21 @@ export const JOB_CONTEXT_MOCK: CustomJobContext = {
   handler: null,
   payload: {},
 }
+
+export const ACCELERATOR_TOTAL = 105000
+export const CORE_UNIT_TOTAL = 225225
+export const GRANT_1_SIZE = 10000
+export const GRANT_PROPOSAL_1 = createTestProposal(ProposalType.Grant, ProposalStatus.Active, GRANT_1_SIZE)
+export const GRANT_2_SIZE = 5000
+export const GRANT_PROPOSAL_2 = createTestProposal(ProposalType.Grant, ProposalStatus.Active, GRANT_2_SIZE)
+export const GRANT_3_SIZE = 1000
+export const GRANT_PROPOSAL_3 = createTestProposal(
+  ProposalType.Grant,
+  ProposalStatus.Active,
+  GRANT_3_SIZE,
+  NewGrantCategory.CoreUnit
+)
+export const POI_PROPOSAL: ProposalAttributes = createTestProposal(ProposalType.POI, ProposalStatus.Active)
 
 export function getTestBudgetWithAvailableSize(
   availableForAccelerator?: number,

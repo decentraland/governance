@@ -5,7 +5,6 @@ import { cloneDeep } from 'lodash'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { BUDGETING_START_DATE } from '../Grant/constants'
-import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 import UpdateModel from '../Updates/model'
 
@@ -16,28 +15,18 @@ import * as routes from './routes'
 import {
   ACCEPTED_OUTCOME,
   FINISHED_OUTCOME,
+  GRANT_1_SIZE,
+  GRANT_2_SIZE,
+  GRANT_3_SIZE,
+  GRANT_PROPOSAL_1,
+  GRANT_PROPOSAL_2,
+  GRANT_PROPOSAL_3,
   JOB_CONTEXT_MOCK,
+  POI_PROPOSAL,
   REJECTED_OUTCOME,
-  createTestProposal,
   getTestBudgetWithAvailableSize,
 } from './testHelpers'
-import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
-
-export const ACCELERATOR_TOTAL = 105000
-export const CORE_UNIT_TOTAL = 225225
-
-const GRANT_1_SIZE = 10000
-const GRANT_PROPOSAL_1 = createTestProposal(ProposalType.Grant, ProposalStatus.Active, GRANT_1_SIZE)
-const GRANT_2_SIZE = 5000
-const GRANT_PROPOSAL_2 = createTestProposal(ProposalType.Grant, ProposalStatus.Active, GRANT_2_SIZE)
-const GRANT_3_SIZE = 1000
-const GRANT_PROPOSAL_3 = createTestProposal(
-  ProposalType.Grant,
-  ProposalStatus.Active,
-  GRANT_3_SIZE,
-  NewGrantCategory.CoreUnit
-)
-const POI_PROPOSAL: ProposalAttributes = createTestProposal(ProposalType.POI, ProposalStatus.Active)
+import { ProposalStatus } from './types'
 
 jest.mock('../../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
