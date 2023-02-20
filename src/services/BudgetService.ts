@@ -159,7 +159,7 @@ export class BudgetService {
     return { minDate: sorted[0]?.start_at, maxDate: sorted[sorted.length - 1]?.start_at }
   }
 
-  static async getBudgets(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<CurrentBudget[]> {
+  static async getBudgetsForProposals(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<CurrentBudget[]> {
     const budgetsForProposals: CurrentBudget[] = []
     const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(proposals)
     if (!minDate) return budgetsForProposals

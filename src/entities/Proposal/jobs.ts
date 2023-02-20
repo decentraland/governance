@@ -84,12 +84,12 @@ function grantCanBeFunded(proposal: ProposalWithOutcome, proposalBudget: Current
   return categoryBudget.allocated + size <= categoryBudget.total
 }
 
-function updateCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
-  const categoryBudget = getCategoryBudget(proposal, proposalBudget)
+function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: CurrentBudget) {
+  const categoryBudget = getCategoryBudget(proposal, budgetForProposal)
   const size = asNumber(proposal.configuration.size)
   categoryBudget.allocated += size
   categoryBudget.available -= size
-  proposalBudget.allocated += size
+  budgetForProposal.allocated += size
 }
 
 async function categorizeProposals(
@@ -101,6 +101,7 @@ async function categorizeProposals(
   const acceptedProposals: ProposalWithOutcome[] = []
   const outOfBudgetProposals: ProposalWithOutcome[] = []
   const rejectedProposals: ProposalWithOutcome[] = []
+  const updatedBudgets = [...currentBudgets]
 
   for (const proposal of pendingProposals) {
     const outcome = await calculateOutcome(proposal, context)
@@ -118,13 +119,13 @@ async function categorizeProposals(
           acceptedProposals.push(proposalWithOutcome)
           break
         } else {
-          const proposalBudget = getBudgetForProposal(currentBudgets, proposalWithOutcome)
-          if (!proposalBudget) {
+          const budgetForProposal = getBudgetForProposal(updatedBudgets, proposalWithOutcome)
+          if (!budgetForProposal) {
             ErrorService.report(`Unable to find corresponding quarter budget for ${proposal.id}`)
             break
           }
-          if (grantCanBeFunded(proposalWithOutcome, proposalBudget)) {
-            updateCategoryBudget(proposalWithOutcome, proposalBudget)
+          if (grantCanBeFunded(proposalWithOutcome, budgetForProposal)) {
+            updateCategoryBudget(proposalWithOutcome, budgetForProposal)
             acceptedProposals.push(proposalWithOutcome)
           } else {
             outOfBudgetProposals.push(proposalWithOutcome)
@@ -140,7 +141,7 @@ async function categorizeProposals(
     acceptedProposals,
     outOfBudgetProposals,
     rejectedProposals,
-    updatedBudgets: currentBudgets,
+    updatedBudgets,
   }
 }
 
@@ -151,7 +152,7 @@ export async function finishProposal(context: JobContext) {
     return
   }
 
-  const currentBudgets = await BudgetService.getBudgets(pendingProposals)
+  const currentBudgets = await BudgetService.getBudgetsForProposals(pendingProposals)
 
   context.log(`Updating ${pendingProposals.length} proposals...`)
   const { finishedProposals, acceptedProposals, outOfBudgetProposals, rejectedProposals, updatedBudgets } =

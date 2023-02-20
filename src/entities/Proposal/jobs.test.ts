@@ -56,7 +56,7 @@ describe('finishProposals', () => {
   })
   beforeEach(() => {
     updatesSpy.mockClear()
-    jest.spyOn(BudgetService, 'getBudgets').mockResolvedValue([getTestBudgetWithAvailableSize()])
+    jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     jest.spyOn(BudgetService, 'updateBudgets').mockImplementation(async () => {})
   })
   describe('for a grant proposal with ACTIVE status', () => {
@@ -102,7 +102,7 @@ describe('finishProposals', () => {
         const AVAILABLE_FOR_ACCELERATOR = GRANT_1_SIZE + 1
         beforeEach(() => {
           jest
-            .spyOn(BudgetService, 'getBudgets')
+            .spyOn(BudgetService, 'getBudgetsForProposals')
             .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
         })
         it('discounts the grant funding size from the corresponding category budget', async () => {
@@ -122,7 +122,7 @@ describe('finishProposals', () => {
         const AVAILABLE_FOR_ACCELERATOR = GRANT_1_SIZE
         beforeEach(() => {
           jest
-            .spyOn(BudgetService, 'getBudgets')
+            .spyOn(BudgetService, 'getBudgetsForProposals')
             .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
         })
 
@@ -143,7 +143,7 @@ describe('finishProposals', () => {
         const AVAILABLE_FOR_ACCELERATOR = GRANT_1_SIZE - 1
         beforeEach(() => {
           jest
-            .spyOn(BudgetService, 'getBudgets')
+            .spyOn(BudgetService, 'getBudgetsForProposals')
             .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
         })
         it('does not discount the grant funding from the corresponding category budget', async () => {
@@ -180,7 +180,7 @@ describe('finishProposals', () => {
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([POI_PROPOSAL])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
-      jest.spyOn(BudgetService, 'getBudgets').mockResolvedValue([getTestBudgetWithAvailableSize()])
+      jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     })
     it('finishes the proposal without affecting the budget', async () => {
       await finishProposal(JOB_CONTEXT_MOCK)
@@ -196,7 +196,7 @@ describe('finishProposals', () => {
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([OLD_GRANT])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
-      jest.spyOn(BudgetService, 'getBudgets').mockResolvedValue([getTestBudgetWithAvailableSize()])
+      jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     })
 
     it('finishes the proposal', async () => {
@@ -216,7 +216,7 @@ describe('finishProposals', () => {
       const AVAILABLE_FOR_ACCELERATOR = GRANT_1_SIZE + GRANT_2_SIZE
       beforeEach(() => {
         jest
-          .spyOn(BudgetService, 'getBudgets')
+          .spyOn(BudgetService, 'getBudgetsForProposals')
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
       })
       it('discounts the budget of the corresponding categories', async () => {
@@ -233,7 +233,7 @@ describe('finishProposals', () => {
       const AVAILABLE_FOR_ACCELERATOR = GRANT_1_SIZE + GRANT_2_SIZE - 1
       beforeEach(() => {
         jest
-          .spyOn(BudgetService, 'getBudgets')
+          .spyOn(BudgetService, 'getBudgetsForProposals')
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
       })
       it('the latest grants in the list are updated as OUT OF BUDGET', async () => {
@@ -252,7 +252,7 @@ describe('finishProposals', () => {
       const AVAILABLE_FOR_ACCELERATOR = GRANT_2_SIZE + 1
       beforeEach(() => {
         jest
-          .spyOn(BudgetService, 'getBudgets')
+          .spyOn(BudgetService, 'getBudgetsForProposals')
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
       })
       it('marks the first grant as OOB and passes the second grant, discounting only the second grant size from the budget', async () => {
@@ -279,7 +279,7 @@ describe('finishProposals', () => {
       const AVAILABLE_FOR_CORE_UNIT = GRANT_3_SIZE
       beforeEach(() => {
         jest
-          .spyOn(BudgetService, 'getBudgets')
+          .spyOn(BudgetService, 'getBudgetsForProposals')
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR, AVAILABLE_FOR_CORE_UNIT)])
       })
       it('discounts the budget of the corresponding categories', async () => {
@@ -318,7 +318,7 @@ describe('finishProposals', () => {
 
     describe('if there is no budget to fund one category, but there is for another', () => {
       beforeEach(() => {
-        jest.spyOn(BudgetService, 'getBudgets').mockResolvedValue([BUDGET_1, BUDGET_2])
+        jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([BUDGET_1, BUDGET_2])
       })
       it('discounts each grant size for the corresponding budget', async () => {
         const EXPECTED_BUDGET_1 = cloneDeep(BUDGET_1)

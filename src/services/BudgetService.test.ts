@@ -320,7 +320,7 @@ describe('BudgetService', () => {
           .mockReturnValueOnce({ minDate: undefined, maxDate: undefined })
       })
       it('returns an empty budgets list', async () => {
-        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([])
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([])
       })
     })
 
@@ -329,7 +329,7 @@ describe('BudgetService', () => {
       const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
       it('returns only one budget', async () => {
         jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValueOnce(BUDGET_1)
-        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1])
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1])
       })
     })
 
@@ -342,7 +342,7 @@ describe('BudgetService', () => {
       })
 
       it('returns only one budget', async () => {
-        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1])
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1])
       })
     })
 
@@ -361,7 +361,7 @@ describe('BudgetService', () => {
       })
 
       it('returns only one budget', async () => {
-        expect(await BudgetService.getBudgets(PROPOSALS)).toEqual([BUDGET_1, BUDGET_2])
+        expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1, BUDGET_2])
       })
     })
   })
