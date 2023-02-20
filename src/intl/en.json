@@ -181,6 +181,17 @@
         "roadmap_too_large": "Roadmap is too large",
         "roadmap_too_short": "Roadmap is too short"
       },
+      "due_dilligence": {
+        "concept_empty": "Concept is empty",
+        "concept_too_large": "Concept is too large",
+        "concept_short": "Concept is too short",
+        "estimated_budget_invalid": "Estimated budget is invalid",
+        "estimated_budget_too_low": "Estimated budget is too low",
+        "estimated_budget_too_big": "Estimated budget is too big",
+        "about_this_empty": "About This is empty",
+        "about_this_too_large": "About This is too large",
+        "about_this_too_short": "About This is too short"
+      },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
       "title_too_short": "Title is too short",

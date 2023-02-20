@@ -289,7 +289,7 @@ export type GrantRequestGeneralInfo = {
 export type BudgetBreakdownItem = {
   concept: string
   // duration: number
-  estimatedBudget: number
+  estimatedBudget: string | number
   aboutThis: string
   relevantLink?: string
 }

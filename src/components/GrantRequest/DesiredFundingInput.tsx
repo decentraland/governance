@@ -7,7 +7,6 @@ import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../enti
 import Label from '../Common/Label'
 
 import BudgetInput from './BudgetInput'
-import './DesiredFundingInput.css'
 
 interface Props {
   disabled: boolean

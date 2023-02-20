@@ -9,15 +9,25 @@ interface Props {
   item: BudgetBreakdownItemType
 }
 
+const BUDGET_FORMAT_OPTIONS = {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+}
+
 const BudgetBreakdownItem = ({ item }: Props) => {
+  const { concept, estimatedBudget } = item
+
   return (
     <div className="BudgetBreakdownItem">
       <div>
-        <h3 className="BudgetBreakdownItem__Concept">{item.concept}</h3>
+        <h3 className="BudgetBreakdownItem__Concept">{concept}</h3>
         <span className="BudgetBreakdownItem__Duration">6 months</span>
       </div>
       <div className="BudgetBreakdownItem__BudgetContainer">
-        <span className="BudgetBreakdownItem__Budget">$140,000</span>
+        <span className="BudgetBreakdownItem__Budget">
+          {Number(estimatedBudget).toLocaleString(undefined, BUDGET_FORMAT_OPTIONS)}
+        </span>
         <ChevronRightCircleOutline />
       </div>
     </div>

@@ -53,9 +53,9 @@ export default function GrantRequestDueDilligenceSection({ funding, onValidation
       <div className="GrantRequestSection__Content">
         <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_label')}</Label>
         <SubLabel>{t('page.submit_grant.due_dilligence.budget_breakdown_detail', { value: funding })}</SubLabel>
-        {dueDilligenceState.budgetBreakdown.map((item, index) => {
-          return <BudgetBreakdownItem key={`${item.concept}-${index}`} item={item} />
-        })}
+        {dueDilligenceState.budgetBreakdown.map((item, index) => (
+          <BudgetBreakdownItem key={`${item.concept}-${index}`} item={item} />
+        ))}
         <AddBox onClick={() => setModalOpen(true)}>
           {t('page.submit_grant.due_dilligence.budget_breakdown_add_concept')}
         </AddBox>

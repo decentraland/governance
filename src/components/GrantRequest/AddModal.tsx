@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Button } from 'decentraland-ui'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
+import { TextAreaField } from 'decentraland-ui/dist/components/TextAreaField/TextAreaField'
 
 import {
   GRANT_PROPOSAL_MAX_BUDGET,
   GRANT_PROPOSAL_MIN_BUDGET, // MAX_PROJECT_DURATION,
   // MIN_PROJECT_DURATION,
 } from '../../entities/Grant/types'
+import { asNumber } from '../../entities/Proposal/utils'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -51,7 +52,7 @@ const BudgetBreakdownItemSchema = {
 export const INITIAL_BUDGET_BREAKDOWN_ITEM: BudgetBreakdownItem = {
   concept: '',
   // duration: 0,
-  estimatedBudget: 0,
+  estimatedBudget: '',
   aboutThis: '',
   relevantLink: '',
 }
@@ -60,24 +61,44 @@ const schema = BudgetBreakdownItemSchema
 const validate = createValidator<BudgetBreakdownItem>({
   concept: (state) => ({
     concept:
-      assert(state.concept.length <= schema.concept.maxLength, 'error.grant.concept_too_large') ||
-      assert(state.concept.length > 0, 'error.grant.concept_empty') ||
-      assert(state.concept.length >= schema.concept.minLength, 'error.grant.concept_too_short') ||
+      assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_dilligence.concept_too_large') ||
+      assert(state.concept.length > 0, 'error.grant.due_dilligence.concept_empty') ||
+      assert(state.concept.length >= schema.concept.minLength, 'error.grant.due_dilligence.concept_too_short') ||
       undefined,
+  }),
+  estimatedBudget: (state) => ({
+    estimatedBudget:
+      assert(
+        Number.isInteger(asNumber(state.estimatedBudget)),
+        'error.grant.due_dilligence.estimated_budget_invalid'
+      ) ||
+      assert(
+        !state.estimatedBudget || asNumber(state.estimatedBudget) >= schema.estimatedBudget.minimum,
+        'error.grant.due_dilligence.estimated_budget_too_low'
+      ) ||
+      assert(
+        !state.estimatedBudget || asNumber(state.estimatedBudget) <= schema.estimatedBudget.maximum,
+        'error.grant.due_dilligence.estimated_budget_too_big'
+      ) ||
+      undefined,
+  }),
+  aboutThis: (state) => ({
     aboutThis:
-      assert(state.aboutThis.length <= schema.aboutThis.maxLength, 'error.grant.about_this_too_large') ||
-      assert(state.aboutThis.length > 0, 'error.grant.about_this_empty') ||
-      assert(state.aboutThis.length >= schema.aboutThis.minLength, 'error.grant.about_this_too_short') ||
+      assert(state.aboutThis.length <= schema.aboutThis.maxLength, 'error.grant.due_dilligence.about_this_too_large') ||
+      assert(state.aboutThis.length > 0, 'error.grant.due_dilligence.about_this_empty') ||
+      assert(state.aboutThis.length >= schema.aboutThis.minLength, 'error.grant.due_dilligence.about_this_too_short') ||
       undefined,
+  }),
+  relevantLink: (state) => ({
     relevantLink:
       assert(
         !!state.relevantLink && state.relevantLink.length <= schema.relevantLink.maxLength,
-        'error.grant.relevant_link_too_large'
+        'error.grant.due_dilligence.relevant_link_too_large'
       ) ||
-      assert(!!state.relevantLink && state.relevantLink.length > 0, 'error.grant.relevant_link_empty') ||
+      assert(!!state.relevantLink && state.relevantLink.length > 0, 'error.grant.due_dilligence.relevant_link_empty') ||
       assert(
         !!state.relevantLink && state.relevantLink.length >= schema.relevantLink.minLength,
-        'error.grant.relevant_link_too_short'
+        'error.grant.due_dilligence.relevant_link_too_short'
       ) ||
       undefined,
   }),
@@ -139,16 +160,23 @@ const AddModal = ({ isOpen, onClose, onSubmit }: Props) => {
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.estimated_budget_label')}</Label>
-          <BudgetInput error={state.error.estimatedBudget} />
+          <BudgetInput
+            value={state.value.estimatedBudget}
+            error={state.error.estimatedBudget}
+            onChange={({ currentTarget }) =>
+              editor.set({
+                estimatedBudget: currentTarget.value,
+              })
+            }
+          />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.about_this_label')}</Label>
-          <MarkdownTextarea
-            preview={false}
+          <TextAreaField
             minHeight={175}
             value={state.value.aboutThis}
             placeholder={t('page.submit_grant.due_dilligence.budget_breakdown_modal.about_this_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ aboutThis: value })}
+            onChange={(_, { value }) => editor.set({ aboutThis: String(value) })}
             error={!!state.error.aboutThis}
             message={
               t(state.error.aboutThis) +
