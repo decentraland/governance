@@ -11,7 +11,7 @@ import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
 export class DiscourseService {
-  private static DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
+  private static DISCOURSE_CATEGORY = requiredEnv('GATSBY_DISCOURSE_CATEGORY')
 
   static async createProposal(
     data: ProposalInCreation,
