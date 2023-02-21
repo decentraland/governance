@@ -11,8 +11,6 @@ import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
 export class DiscourseService {
-  private static DISCOURSE_CATEGORY = requiredEnv('GATSBY_DISCOURSE_CATEGORY')
-
   static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
@@ -49,10 +47,15 @@ export class DiscourseService {
     }
 
     return {
-      category: DiscourseService.DISCOURSE_CATEGORY ? Number(DiscourseService.DISCOURSE_CATEGORY) : undefined,
+      category: this.getCategory(),
       title: templates.forumTitle(discourseTemplateProps),
       raw: await templates.forumDescription(discourseTemplateProps),
     }
+  }
+
+  public static getCategory(): number | undefined {
+    const DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
+    return DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined
   }
 
   private static logProposalCreation(discourseProposal: DiscoursePost) {

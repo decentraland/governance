@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash'
 
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
+import { DiscourseService } from '../../services/DiscourseService'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 import UpdateModel from '../Updates/model'
@@ -42,6 +43,7 @@ describe('finishProposals', () => {
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newUpdate').mockImplementation(() => {})
+    jest.spyOn(DiscourseService, 'getCategory').mockImplementation(() => 5)
   })
   beforeEach(() => {
     updatesSpy.mockClear()
