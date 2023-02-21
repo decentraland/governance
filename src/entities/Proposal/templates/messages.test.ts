@@ -1,6 +1,7 @@
 import { def, get } from 'bdd-lazy-var/getter'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+import { GrantTier } from '../../Grant/GrantTier'
 import { GrantTierType, NewGrantCategory, OldGrantCategory } from '../../Grant/types'
 import VotesModel from '../../Votes/model'
 import ProposalModel from '../model'
@@ -33,9 +34,10 @@ export function initProposalAttributes(
 ): ProposalAttributes {
   return {
     id: '1',
-    type: type,
+    type,
     user: '0xProposalCreatorUserAddress',
-    required_to_pass: ProposalRequiredVP[type],
+    required_to_pass:
+      type !== ProposalType.Grant ? ProposalRequiredVP[type] : GrantTier.getVPThreshold(Number(configuration.size)),
     configuration: JSON.stringify(configuration),
     title: 'Test Proposal',
     description: 'Test proposal description',
