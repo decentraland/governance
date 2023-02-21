@@ -1,4 +1,4 @@
-import { ErrorService } from '../services/ErrorService'
+import { ErrorClient } from './ErrorClient'
 
 const SNAPSHOT_SKIP_LIMIT = 5000
 
@@ -25,7 +25,7 @@ export async function inBatches<T, K>(
     }
     return allResults
   } catch (error) {
-    ErrorService.report(`Error while executing ${fetchFunction.name} in batches: `, error)
+    ErrorClient.report(`Error while executing ${fetchFunction.name} in batches: `, error)
     return []
   }
 }
