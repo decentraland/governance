@@ -88,12 +88,15 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
-  const updates = await UpdateModel.find({
+  const updates = await UpdateModel.find<UpdateAttributes>({
     proposal_id: proposalId,
     status: UpdateStatus.Pending,
   })
 
-  if (updates.length > 0) {
+  const currentUpdate = getCurrentUpdate(updates)
+  const nextPendingUpdate = getNextPendingUpdate(updates)
+
+  if (updates.length > 0 && (currentUpdate || nextPendingUpdate)) {
     throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
   }
 

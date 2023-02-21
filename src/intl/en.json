@@ -51,7 +51,7 @@
       "show": "Show error",
       "copy": "Copy to Clipboard",
       "copied": "Copied!",
-      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on [Discord](https://discord.com/channels/894658869391933540/987439629533855774)."
+      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on our #🚨┃support channel on [Discord](https://dcl.gg/dao-discord)."
     },
     "poll": {
       "title_empty": "Title field is empty",
@@ -257,7 +257,7 @@
     "ban_name_description": "Ban an offensive name from Decentraland",
     "grant_title": "Grant Request",
     "grant_description": "Request funding from the DAO for a project or contribution",
-    "grant_paused": "The Decentraland DAO Grants Program has been put on hold by community decision until February 28th, 2023. Please read [this governance proposal](https://governance.decentraland.org/proposal/?id=9f3b0be0-7e94-11ed-8750-cd1748a98b11) to learn more or visit the [DAO Discord Server](https://discord.gg/amkcFrqPBh) to engage with members of the community.",
+    "grant_paused": "The Decentraland DAO Grants Program has been put on hold by community decision until February 28th, 2023. Please read [this governance proposal](https://governance.decentraland.org/proposal/?id=9f3b0be0-7e94-11ed-8750-cd1748a98b11) to learn more or visit the [DAO Discord Server](https://dcl.gg/dao-discord) to engage with members of the community.",
     "poll_title": "Pre-Proposal Poll",
     "poll_description": "Ask community members for their opinion on an issue or topic",
     "draft_title": "Draft Proposal",
@@ -947,12 +947,12 @@
       "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
       "co_author_label": "Co-authors",
       "optional_tooltip": " (optional)",
-      "co_author_description": "If you co-authored this proposal with someone else, you can add their addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
-      "co_author_placeholder": "Enter their address",
+      "co_author_description": "If you co-authored this proposal with someone else, you can add their wallet addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
+      "co_author_placeholder": "Enter their wallet address",
       "co_author_count": "{amount}/{maxAmount} Co-authors added",
-      "co_author_error": "Invalid address",
-      "co_author_as_author_error": "This address cannot be added since it belongs to the proposal's author.",
-      "co_author_duplicated_error": "It looks like this co-author's address has already been added.",
+      "co_author_error": "Invalid wallet address",
+      "co_author_as_author_error": "This wallet address cannot be added since it belongs to the proposal's author.",
+      "co_author_duplicated_error": "It looks like this co-author's wallet address has already been added.",
       "co_author_max_error": "The maximum number of co-authors was exceeded.",
       "error_label": "There was an error while trying to create the proposal, please try again later."
     },

@@ -1,7 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
 export class Decentraland extends API {
-  static Url = process.env.GATSBY_DECENTRALAND_API || 'https://decentraland.org'
+  static Url = process.env.GATSBY_DECENTRALAND_API || 'https://subscription.decentraland.org'
 
   static Cache = new Map<string, Decentraland>()
 
