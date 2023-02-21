@@ -5,7 +5,6 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
@@ -14,7 +13,6 @@ import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { inBackground } from '../../helpers'
 import { GrantRequest } from '../../pages/submit/grant'
-import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
@@ -22,8 +20,6 @@ import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
-import { GrantTier } from '../Grant/GrantTier'
-import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../Grant/constants'
 import { GrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
@@ -35,7 +31,6 @@ import { SUBMISSION_THRESHOLD_POLL } from './constants'
 import ProposalModel from './model'
 import {
   CategorizedGrants,
-  GrantProposalConfiguration,
   GrantWithUpdate,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -71,6 +66,7 @@ import {
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
+  proposalDuration,
 } from './utils'
 
 export default routes((route) => {
@@ -148,10 +144,6 @@ export async function getProposals(req: WithAuth) {
   ])
 
   return { ok: true, total, data }
-}
-
-function proposalDuration(duration: number) {
-  return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
 
 const newProposalPollValidator = schema.compile(newProposalPollScheme)
@@ -314,29 +306,11 @@ export async function createProposalCatalyst(req: WithAuth) {
 }
 
 const newProposalGrantValidator = schema.compile(GrantRequestSchema)
-
 export async function createProposalGrant(req: WithAuth) {
   const user = req.auth!
   const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
-
-  const grantSize = Number(grantRequest.funding || 0)
-
-  await BudgetService.validateGrantRequest(grantSize, grantRequest.category)
-
-  const grantConfiguration: GrantProposalConfiguration = {
-    ...grantRequest,
-    size: Number(grantRequest.funding),
-    tier: GrantTier.getTypeFromBudget(grantSize),
-    choices: DEFAULT_CHOICES,
-  }
-
-  return createProposal({
-    user,
-    type: ProposalType.Grant,
-    required_to_pass: GrantTier.getVPThreshold(grantSize),
-    finish_at: proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS),
-    configuration: grantConfiguration,
-  })
+  const grantInCreation = await GrantsService.getGrantInCreation(grantRequest, user)
+  return createProposal(grantInCreation)
 }
 
 const newProposalLinkedWearablesValidator = schema.compile(newProposalLinkedWearablesScheme)

@@ -1,19 +1,33 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import env from 'decentraland-gatsby/dist/utils/env'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
 import { DclData, TransparencyGrant } from '../clients/DclData'
+import { GrantTier } from '../entities/Grant/GrantTier'
+import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantStatus } from '../entities/Grant/types'
 import { isCurrentGrant } from '../entities/Grant/utils'
 import ProposalModel from '../entities/Proposal/model'
-import { Grant, GrantWithUpdate, ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
+import {
+  Grant,
+  GrantProposalConfiguration,
+  GrantWithUpdate,
+  ProposalAttributes,
+  ProposalStatus,
+  ProposalType,
+} from '../entities/Proposal/types'
+import { DEFAULT_CHOICES, asNumber, proposalDuration } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
+import { isDevEnv } from '../modules/env'
+import { GrantRequest } from '../pages/submit/grant'
 
-import { ErrorService } from './ErrorService'
+import { BudgetService } from './BudgetService'
+import { ProposalInCreation } from './ProposalService'
 
 export class GrantsService {
   public static async getGrants() {
@@ -46,7 +60,7 @@ export class GrantsService {
             logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
           }
         } catch (error) {
-          if (!ErrorService.isDevEnv()) {
+          if (!isDevEnv()) {
             logger.error(`Failed to get data for ${grant.id}`, formatError(error as Error))
           }
         }
@@ -159,5 +173,35 @@ export class GrantsService {
     }
 
     return { ...currentUpdate, index: publicUpdates.length }
+  }
+
+  public static async getGrantInCreation(grantRequest: GrantRequest, user: string) {
+    const grantSize = Number(grantRequest.funding || 0)
+
+    await BudgetService.validateGrantRequest(grantSize, grantRequest.category)
+
+    const grantConfiguration: GrantProposalConfiguration = {
+      ...grantRequest,
+      size: Number(grantRequest.funding),
+      tier: GrantTier.getTypeFromBudget(grantSize),
+      choices: DEFAULT_CHOICES,
+    }
+
+    const grantInCreation: ProposalInCreation = {
+      user,
+      type: ProposalType.Grant,
+      required_to_pass: GrantTier.getVPThreshold(grantSize),
+      finish_at: this.getFinishAt(),
+      configuration: grantConfiguration,
+    }
+    return grantInCreation
+  }
+
+  private static getFinishAt() {
+    const GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS = env('GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS')
+    if (isDevEnv() && GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS) {
+      return proposalDuration(asNumber(GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS))
+    }
+    return proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS)
   }
 }
