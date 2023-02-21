@@ -13,14 +13,13 @@ const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> =
   [OldGrantCategory.PlatformContributor]: PillColor.Purple,
   [OldGrantCategory.Gaming]: PillColor.Blue,
 
-  // TODO: Review new colors
-  [NewGrantCategory.Accelerator]: PillColor.Gray,
-  [NewGrantCategory.CoreUnit]: PillColor.Gray,
-  [NewGrantCategory.Documentation]: PillColor.Gray,
-  [NewGrantCategory.InWorldContent]: PillColor.Gray,
-  [NewGrantCategory.Platform]: PillColor.Gray,
-  [NewGrantCategory.SocialMediaContent]: PillColor.Gray,
-  [NewGrantCategory.Sponsorship]: PillColor.Gray,
+  [NewGrantCategory.Accelerator]: PillColor.Green,
+  [NewGrantCategory.CoreUnit]: PillColor.Blue,
+  [NewGrantCategory.Documentation]: PillColor.Purple,
+  [NewGrantCategory.InWorldContent]: PillColor.Red,
+  [NewGrantCategory.Platform]: PillColor.Fuchsia,
+  [NewGrantCategory.SocialMediaContent]: PillColor.Yellow,
+  [NewGrantCategory.Sponsorship]: PillColor.Orange,
 }
 
 function GrantPill({ type }: Props) {
