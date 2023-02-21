@@ -191,17 +191,13 @@ export class GrantsService {
       user,
       type: ProposalType.Grant,
       required_to_pass: GrantTier.getVPThreshold(grantSize),
-      finish_at: this.getFinishAt(),
+      finish_at: this.getGrantProposalEndDate(),
       configuration: grantConfiguration,
     }
     return grantInCreation
   }
 
-  private static getFinishAt() {
-    const GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS = env('GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS')
-    if (isDevEnv() && GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS) {
-      return getProposalEndDate(asNumber(GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS))
-    }
-    return getProposalEndDate(GRANT_PROPOSAL_DURATION_IN_SECONDS)
+  private static getGrantProposalEndDate() {
+    return getProposalEndDate(asNumber(GRANT_PROPOSAL_DURATION_IN_SECONDS))
   }
 }
