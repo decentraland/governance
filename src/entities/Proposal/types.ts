@@ -440,8 +440,8 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
-  [ProposalType.Grant]: 0, // TODO: Remove this and fix type in test
 }
+
 export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
   category: ProposalGrantCategory | null
   size: number

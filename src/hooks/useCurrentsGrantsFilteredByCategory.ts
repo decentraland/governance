@@ -6,7 +6,6 @@ import { NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
 import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
 
 export function useCurrentGrantsFilteredByCategory(grants: GrantWithUpdate[]) {
-  // TODO: Check this
   return useMemo(
     () => ({
       [PROPOSAL_GRANT_CATEGORY_ALL]: grants,
