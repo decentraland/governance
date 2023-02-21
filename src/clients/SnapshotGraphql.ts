@@ -3,8 +3,8 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-import { ErrorService } from '../services/ErrorService'
 
+import { ErrorClient } from './ErrorClient'
 import {
   SnapshotProposal,
   SnapshotProposalContent,
@@ -181,7 +181,7 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      ErrorService.report(`Error fetching addresses votes`, error)
+      ErrorClient.report(`Error fetching addresses votes`, error)
 
       return []
     }
@@ -313,7 +313,7 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      ErrorService.report('Error fetching votes', error)
+      ErrorClient.report('Error fetching votes', error)
 
       return []
     }
