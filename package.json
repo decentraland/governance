@@ -8,7 +8,7 @@
     "npm": ">=7.0.0"
   },
   "scripts": {
-    "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --runInBand",
+    "test": "jest --no-cache --runInBand",
     "build": "npm run build:server && npm run build:front",
     "build:server": "tsc -p .",
     "build:front": "GATSBY_VERSION_NUMBER=$VERSION_NUMBER GATSBY_HEROKU_APP_NAME=$HEROKU_APP_NAME gatsby build",
