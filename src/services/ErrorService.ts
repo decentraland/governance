@@ -4,6 +4,7 @@ import Rollbar from 'rollbar'
 
 import { config } from '../config'
 import { ROLLBAR_TOKEN } from '../constants'
+import { isDevEnv } from '../modules/env'
 
 export class ErrorService {
   static client = new Rollbar({
@@ -21,13 +22,9 @@ export class ErrorService {
     if (ROLLBAR_TOKEN) {
       this.client.error(errorMsg, error, this.getEnvironmentNameForRollbar())
     } else {
-      if (!this.isDevEnv()) logger.error('Rollbar server access token not found')
+      if (!isDevEnv()) logger.error('Rollbar server access token not found')
     }
     logger.error(errorMsg, error)
-  }
-
-  public static isDevEnv() {
-    return config.getEnv() === Env.LOCAL || config.getEnv() === Env.DEVELOPMENT
   }
 
   public static reportAndThrow(errorMsg: string, error: any) {

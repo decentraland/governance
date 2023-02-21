@@ -11,7 +11,7 @@ import { DISCOURSE_API } from '../Discourse/utils'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
-import { Grant, ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MAX_PROPOSAL_LIMIT = 100
@@ -184,4 +184,8 @@ export function proposalCanBePassedOrRejected(proposalStatus?: ProposalStatus) {
 
 export function canLinkProposal(status: ProposalStatus) {
   return status === ProposalStatus.Passed || status === ProposalStatus.OutOfBudget
+}
+
+export function getProposalEndDate(duration: number) {
+  return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
