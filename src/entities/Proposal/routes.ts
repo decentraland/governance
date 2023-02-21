@@ -60,13 +60,13 @@ import {
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
   canLinkProposal,
+  getProposalEndDate,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
-  proposalDuration,
 } from './utils'
 
 export default routes((route) => {
@@ -161,7 +161,7 @@ export async function createProposalPoll(req: WithAuth) {
     user,
     type: ProposalType.Poll,
     required_to_pass: ProposalRequiredVP[ProposalType.Poll],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_POLL)),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_POLL)),
     configuration,
   })
 }
@@ -179,7 +179,7 @@ export async function createProposalDraft(req: WithAuth) {
     user,
     type: ProposalType.Draft,
     required_to_pass: ProposalRequiredVP[ProposalType.Draft],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_DRAFT)),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_DRAFT)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -200,7 +200,7 @@ export async function createProposalGovernance(req: WithAuth) {
     user,
     type: ProposalType.Governance,
     required_to_pass: ProposalRequiredVP[ProposalType.Governance],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_GOVERNANCE)),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_GOVERNANCE)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -227,7 +227,7 @@ export async function createProposalBanName(req: WithAuth) {
     user,
     type: ProposalType.BanName,
     required_to_pass: ProposalRequiredVP[ProposalType.BanName],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -275,7 +275,7 @@ export async function createProposalPOI(req: WithAuth) {
     user,
     type: ProposalType.POI,
     required_to_pass: ProposalRequiredVP[ProposalType.POI],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -297,7 +297,7 @@ export async function createProposalCatalyst(req: WithAuth) {
     user,
     type: ProposalType.Catalyst,
     required_to_pass: ProposalRequiredVP[ProposalType.Catalyst],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -323,7 +323,7 @@ export async function createProposalLinkedWearables(req: WithAuth) {
     user,
     type: ProposalType.LinkedWearables,
     required_to_pass: ProposalRequiredVP[ProposalType.LinkedWearables],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,

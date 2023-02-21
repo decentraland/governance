@@ -18,7 +18,7 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
-import { DEFAULT_CHOICES, asNumber, proposalDuration } from '../entities/Proposal/utils'
+import { DEFAULT_CHOICES, asNumber, getProposalEndDate } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
@@ -200,8 +200,8 @@ export class GrantsService {
   private static getFinishAt() {
     const GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS = env('GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS')
     if (isDevEnv() && GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS) {
-      return proposalDuration(asNumber(GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS))
+      return getProposalEndDate(asNumber(GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS))
     }
-    return proposalDuration(GRANT_PROPOSAL_DURATION_IN_SECONDS)
+    return getProposalEndDate(GRANT_PROPOSAL_DURATION_IN_SECONDS)
   }
 }

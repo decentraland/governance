@@ -186,6 +186,6 @@ export function canLinkProposal(status: ProposalStatus) {
   return status === ProposalStatus.Passed || status === ProposalStatus.OutOfBudget
 }
 
-export function proposalDuration(duration: number) {
+export function getProposalEndDate(duration: number) {
   return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
