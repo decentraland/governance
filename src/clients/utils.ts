@@ -1,3 +1,5 @@
+import { ErrorClient } from './ErrorClient'
+
 const SNAPSHOT_SKIP_LIMIT = 5000
 
 export async function inBatches<T, K>(
@@ -23,8 +25,7 @@ export async function inBatches<T, K>(
     }
     return allResults
   } catch (error) {
-    console.error(`Error while executing ${fetchFunction.name} in batches: `, error)
-    // TODO: report error to Rollbar
+    ErrorClient.report(`Error while executing ${fetchFunction.name} in batches: `, error)
     return []
   }
 }
