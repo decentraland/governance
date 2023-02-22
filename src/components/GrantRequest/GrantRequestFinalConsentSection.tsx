@@ -17,6 +17,8 @@ export type GrantRequestFinalConsent = {
   contentPolicy: boolean
   termsOfUse: boolean
   codeOfEthics: boolean
+  platformAgreement: boolean
+  documentationAgreement: boolean
 }
 
 export const INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE: GrantRequestFinalConsent = {
@@ -24,6 +26,28 @@ export const INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE: GrantRequestFinalConsent
   contentPolicy: false,
   termsOfUse: false,
   codeOfEthics: false,
+  platformAgreement: false,
+  documentationAgreement: false,
+}
+
+const getAcceptedAllTerms = (category: NewGrantCategory | null, state: GrantRequestFinalConsent): boolean => {
+  if (category === NewGrantCategory.Documentation) {
+    return (
+      state.codeOfEthics &&
+      state.contentPolicy &&
+      state.grantsFramework &&
+      state.termsOfUse &&
+      state.documentationAgreement
+    )
+  }
+
+  if (category === NewGrantCategory.Platform) {
+    return (
+      state.codeOfEthics && state.contentPolicy && state.grantsFramework && state.termsOfUse && state.platformAgreement
+    )
+  }
+
+  return (state.codeOfEthics && state.contentPolicy && state.grantsFramework && state.termsOfUse) || false
 }
 
 interface Props {
@@ -36,7 +60,7 @@ export default function GrantRequestFinalConsentSection({ category, onValidation
   const t = useFormatMessage()
   const [state, setState] = useState(INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE)
   const isFormEdited = userModifiedForm(state, INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE)
-  const acceptedAllTerms = Object.values(state).every((prop) => prop)
+  const acceptedAllTerms = getAcceptedAllTerms(category, state)
 
   useEffect(() => {
     onValidation(acceptedAllTerms)
@@ -82,6 +106,24 @@ export default function GrantRequestFinalConsentSection({ category, onValidation
           <Checkbox checked={state.codeOfEthics} disabled={isFormDisabled} />
           <Markdown>{t('page.submit_grant.final_consent.code_of_ethics_label')}</Markdown>
         </ContentSection>
+        {category === NewGrantCategory.Platform && (
+          <ContentSection
+            className="GrantRequestSection__Checkbox"
+            onClick={() => setState({ ...state, platformAgreement: !state.platformAgreement })}
+          >
+            <Checkbox checked={state.platformAgreement} disabled={isFormDisabled} />
+            <Markdown>{t('page.submit_grant.final_consent.platform_category_label')}</Markdown>
+          </ContentSection>
+        )}
+        {category === NewGrantCategory.Documentation && (
+          <ContentSection
+            className="GrantRequestSection__Checkbox"
+            onClick={() => setState({ ...state, documentationAgreement: !state.documentationAgreement })}
+          >
+            <Checkbox checked={state.documentationAgreement} disabled={isFormDisabled} />
+            <Markdown>{t('page.submit_grant.final_consent.documentation_category_label')}</Markdown>
+          </ContentSection>
+        )}
       </div>
     </GrantRequestSection>
   )
