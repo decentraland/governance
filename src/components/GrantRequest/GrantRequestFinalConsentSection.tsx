@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import { Checkbox } from '../Checkbox/Checkbox'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import './GrantRequestFinalConsentSection.css'
@@ -56,28 +56,28 @@ export default function GrantRequestFinalConsentSection({ onValidation, isFormDi
           className="GrantRequestSection__Checkbox"
           onClick={() => setState({ ...state, grantsFramework: !state.grantsFramework })}
         >
-          <Radio type="checkbox" checked={state.grantsFramework} disabled={isFormDisabled} />
+          <Checkbox checked={state.grantsFramework} disabled={isFormDisabled} />
           <Markdown>{t('page.submit_grant.final_consent.grants_framework_label')}</Markdown>
         </ContentSection>
         <ContentSection
           className="GrantRequestSection__Checkbox"
           onClick={() => setState({ ...state, contentPolicy: !state.contentPolicy })}
         >
-          <Radio type="checkbox" checked={state.contentPolicy} disabled={isFormDisabled} />
+          <Checkbox checked={state.contentPolicy} disabled={isFormDisabled} />
           <Markdown>{t('page.submit_grant.final_consent.content_policy_label')}</Markdown>
         </ContentSection>
         <ContentSection
           className="GrantRequestSection__Checkbox"
           onClick={() => setState({ ...state, termsOfUse: !state.termsOfUse })}
         >
-          <Radio type="checkbox" checked={state.termsOfUse} disabled={isFormDisabled} />
+          <Checkbox checked={state.termsOfUse} disabled={isFormDisabled} />
           <Markdown>{t('page.submit_grant.final_consent.terms_of_use_label')}</Markdown>
         </ContentSection>
         <ContentSection
           className="GrantRequestSection__Checkbox"
           onClick={() => setState({ ...state, codeOfEthics: !state.codeOfEthics })}
         >
-          <Radio type="checkbox" checked={state.codeOfEthics} disabled={isFormDisabled} />
+          <Checkbox checked={state.codeOfEthics} disabled={isFormDisabled} />
           <Markdown>{t('page.submit_grant.final_consent.code_of_ethics_label')}</Markdown>
         </ContentSection>
       </div>
