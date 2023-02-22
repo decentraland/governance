@@ -14,7 +14,7 @@ export const useGrantCategoryEditor = (ref: React.ForwardedRef<unknown>, editor:
           return state.validated
         },
         isFormEdited() {
-          return userModifiedForm(state, initialValue)
+          return userModifiedForm(state.value, initialValue)
         },
       }
     },
