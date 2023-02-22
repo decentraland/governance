@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
@@ -30,34 +30,43 @@ interface Props {
 export default function GrantRequestCategorySection({ category, onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
 
+  const sectionRef = useRef<{ validate: () => void; isValidated: () => boolean }>(null)
+
+  const handleBlur = () => {
+    if (sectionRef) {
+      sectionRef.current?.validate()
+    }
+  }
+
   const handleValidation = (data: Partial<GrantRequestCategoryQuestions>, validated: boolean) => {
     onValidation(data, validated)
   }
 
   return (
     <GrantRequestSection
-      validated={true}
-      isFormEdited={false}
+      onBlur={handleBlur}
+      validated={sectionRef.current?.isValidated() || false}
+      isFormEdited={sectionRef.current?.isValidated() || false}
       sectionTitle={t('page.submit_grant.category_assessment.title')}
       sectionNumber={3}
     >
-      {category === NewGrantCategory.CoreUnit && (
-        <CoreUnitSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
-      )}
       {category === NewGrantCategory.Accelerator && (
-        <AcceleratorSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <AcceleratorSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+      )}
+      {category === NewGrantCategory.CoreUnit && (
+        <CoreUnitSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.Documentation && (
-        <DocumentationSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <DocumentationSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.InWorldContent && (
-        <InWorldContentSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <InWorldContentSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.SocialMediaContent && (
-        <SocialMediaContentSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <SocialMediaContentSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.Sponsorship && (
-        <SponsorshipSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <SponsorshipSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
     </GrantRequestSection>
   )

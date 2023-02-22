@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import { asNumber } from '../../entities/Proposal/utils'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
@@ -12,7 +14,7 @@ import Label from './Label'
 export type AcceleratorQuestions = {
   revenueGenerationModel: string
   returnOfInvestmentPlan: string
-  investmentRecoveryTime: string | number // TODO: Implement field
+  investmentRecoveryTime: string | number
 }
 
 const INITIAL_ACCELERATOR_QUESTIONS = {
@@ -31,6 +33,10 @@ const AcceleratorQuestionsSchema = {
     type: 'string',
     minLength: 1,
     maxLength: 750,
+  },
+  investmentRecoveryTime: {
+    type: 'integer',
+    minimum: 0,
   },
 }
 
@@ -62,6 +68,18 @@ const validate = createValidator<AcceleratorQuestions>({
       ) ||
       undefined,
   }),
+  investmentRecoveryTime: (state) => ({
+    investmentRecoveryTime:
+      assert(
+        Number.isInteger(asNumber(state.investmentRecoveryTime)),
+        'error.grant.category_assessment.field_invalid'
+      ) ||
+      assert(
+        asNumber(state.investmentRecoveryTime) >= schema.investmentRecoveryTime.minimum,
+        'error.grant.category_assessment.field_too_low'
+      ) ||
+      undefined,
+  }),
 })
 
 const edit = (state: AcceleratorQuestions, props: Partial<AcceleratorQuestions>) => {
@@ -76,9 +94,24 @@ interface Props {
   isFormDisabled: boolean
 }
 
-export default function AcceleratorSection({ onValidation, isFormDisabled }: Props) {
+const AcceleratorSection = forwardRef(function AcceleratorSection({ onValidation, isFormDisabled }: Props, ref) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_ACCELERATOR_QUESTIONS)
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        validate() {
+          editor.validate()
+        },
+        isValidated() {
+          return state.validated
+        },
+      }
+    },
+    [editor, state]
+  )
 
   useEffect(() => {
     onValidation({ accelerator: { ...state.value } }, state.validated)
@@ -123,6 +156,20 @@ export default function AcceleratorSection({ onValidation, isFormDisabled }: Pro
           disabled={isFormDisabled}
         />
       </ContentSection>
+      <ContentSection className="GrantRequestSection__Field">
+        <Label>{t('page.submit_grant.category_assessment.accelerator.investment_recovery_label')}</Label>
+        <Field
+          type="number"
+          min="0"
+          value={state.value.investmentRecoveryTime}
+          onChange={(_: unknown, { value }: { value: string }) => editor.set({ investmentRecoveryTime: value })}
+          error={!!state.error.investmentRecoveryTime}
+          message={t(state.error.investmentRecoveryTime)}
+          disabled={isFormDisabled}
+        />
+      </ContentSection>
     </div>
   )
-}
+})
+
+export default AcceleratorSection

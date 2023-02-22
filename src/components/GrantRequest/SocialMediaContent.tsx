@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -82,9 +82,27 @@ interface Props {
   isFormDisabled: boolean
 }
 
-export default function SocialMediaContentSection({ onValidation, isFormDisabled }: Props) {
+const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
+  { onValidation, isFormDisabled }: Props,
+  ref
+) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS)
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        validate() {
+          editor.validate()
+        },
+        isValidated() {
+          return state.validated
+        },
+      }
+    },
+    [editor, state]
+  )
 
   useEffect(() => {
     onValidation({ socialMediaContent: { ...state.value } }, state.validated)
@@ -163,4 +181,6 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
       </ContentSection>
     </div>
   )
-}
+})
+
+export default SocialMediaContentSection

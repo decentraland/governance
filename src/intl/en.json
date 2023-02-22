@@ -187,7 +187,9 @@
       "category_assessment": {
         "field_too_short": "Field is too short",
         "field_too_large:": "Field is too large",
-        "field_empty": "Field is empty"
+        "field_empty": "Field is empty",
+        "field_too_low": "Field is too low",
+        "field_invalid": "Field is invalid"
       }
     },
     "linked_wearables": {
@@ -1133,7 +1135,6 @@
           "impact_metrics_label": "List your impact metrics"
         },
         "documentation": {
-          "content_type_label": "What type of content are you planning to produce?",
           "content_type": {
             "label": "What type of content are you planning to produce?",
             "choices": {
@@ -1184,7 +1185,7 @@
         "accelerator": {
           "revenue_label": "Please describe your revenue generation model",
           "return_of_investment_label": "What’s your plan for returning the investment to the DAO?",
-          "investment_recovery_label": "How long will it take the DAO to recover the investment made on your project based on your estimations?"
+          "investment_recovery_label": "How many months will it take the DAO to recover the investment made on your project based on your estimations?"
         }
       },
       "final_consent": {
