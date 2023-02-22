@@ -5,6 +5,7 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -12,10 +13,9 @@ import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type SponsorshipQuestions = {
-  eventType: string
-  eventCategory: string
-  primarySourceFunding: string
-  fundingOutside: string
+  eventType: string // TODO: This should be a dropdown online/offline field
+  eventCategory: string // TODO: This should be a multiple choice field
+  primarySourceFunding: string // TODO: this should be a dropdown yes/no field
   totalEvents: string | number
   totalAttendance: string | number
   audienceRelevance: string
@@ -26,7 +26,6 @@ const INITIAL_SPONSORSHIP_QUESTIONS = {
   eventType: '',
   eventCategory: '',
   primarySourceFunding: '',
-  fundingOutside: '',
   totalEvents: '',
   totalAttendance: '',
   audienceRelevance: '',
@@ -39,10 +38,23 @@ const SponsorshipQuestionsSchema = {
     minLength: 1,
     maxLength: 750,
   },
+  eventCategory: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
   audienceRelevance: {
     type: 'string',
     minLength: 1,
     maxLength: 750,
+  },
+  totalAttendance: {
+    type: 'integer',
+    minimum: 0,
+  },
+  totalEvents: {
+    type: 'integer',
+    minimum: 0,
   },
   showcase: {
     type: 'string',
@@ -60,6 +72,19 @@ const validate = createValidator<SponsorshipQuestions>({
       assert(state.eventType.length >= schema.eventType.minLength, 'error.grant.category_assessment.field_too_short') ||
       undefined,
   }),
+  eventCategory: (state) => ({
+    eventCategory:
+      assert(
+        state.eventCategory.length <= schema.eventCategory.maxLength,
+        'error.grant.category_assessment.field_too_large'
+      ) ||
+      assert(state.eventCategory.length > 0, 'error.grant.category_assessment.field_empty') ||
+      assert(
+        state.eventCategory.length >= schema.eventCategory.minLength,
+        'error.grant.category_assessment.field_too_short'
+      ) ||
+      undefined,
+  }),
   audienceRelevance: (state) => ({
     audienceRelevance:
       assert(
@@ -73,7 +98,24 @@ const validate = createValidator<SponsorshipQuestions>({
       ) ||
       undefined,
   }),
-  // TODO: Add missing validations
+  totalAttendance: (state) => ({
+    totalAttendance:
+      assert(Number.isInteger(asNumber(state.totalAttendance)), 'error.grant.category_assessment.field_invalid') ||
+      assert(
+        asNumber(state.totalAttendance) >= schema.totalAttendance.minimum,
+        'error.grant.category_assessment.field_too_low'
+      ) ||
+      undefined,
+  }),
+  totalEvents: (state) => ({
+    totalEvents:
+      assert(Number.isInteger(asNumber(state.totalEvents)), 'error.grant.category_assessment.field_invalid') ||
+      assert(
+        asNumber(state.totalEvents) >= schema.totalEvents.minimum,
+        'error.grant.category_assessment.field_too_low'
+      ) ||
+      undefined,
+  }),
 })
 
 const edit = (state: SponsorshipQuestions, props: Partial<SponsorshipQuestions>) => {

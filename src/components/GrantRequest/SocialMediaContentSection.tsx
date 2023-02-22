@@ -5,6 +5,7 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -34,6 +35,19 @@ const SocialMediaContentQuestionsSchema = {
     maxLength: 750,
   },
   audienceRelevance: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  totalPieces: {
+    type: 'integer',
+    minimum: 0,
+  },
+  totalPeopleImpact: {
+    type: 'integer',
+    minimum: 0,
+  },
+  relevantLink: {
     type: 'string',
     minLength: 1,
     maxLength: 750,
@@ -68,7 +82,37 @@ const validate = createValidator<SocialMediaContentQuestions>({
       ) ||
       undefined,
   }),
-  // TODO: Add totalPieces and totalImpact validation
+  totalPieces: (state) => ({
+    totalPieces:
+      assert(Number.isInteger(asNumber(state.totalPieces)), 'error.grant.category_assessment.field_invalid') ||
+      assert(
+        asNumber(state.totalPieces) >= schema.totalPieces.minimum,
+        'error.grant.category_assessment.field_too_low'
+      ) ||
+      undefined,
+  }),
+  totalPeopleImpact: (state) => ({
+    totalPeopleImpact:
+      assert(Number.isInteger(asNumber(state.totalPeopleImpact)), 'error.grant.category_assessment.field_invalid') ||
+      assert(
+        asNumber(state.totalPeopleImpact) >= schema.totalPeopleImpact.minimum,
+        'error.grant.category_assessment.field_too_low'
+      ) ||
+      undefined,
+  }),
+  relevantLink: (state) => ({
+    relevantLink:
+      assert(
+        state.relevantLink.length <= schema.relevantLink.maxLength,
+        'error.grant.category_assessment.field_too_large'
+      ) ||
+      assert(state.relevantLink.length > 0, 'error.grant.category_assessment.field_empty') ||
+      assert(
+        state.relevantLink.length >= schema.relevantLink.minLength,
+        'error.grant.category_assessment.field_too_short'
+      ) ||
+      undefined,
+  }),
 })
 
 const edit = (state: SocialMediaContentQuestions, props: Partial<SocialMediaContentQuestions>) => {

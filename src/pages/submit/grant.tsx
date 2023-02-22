@@ -114,8 +114,6 @@ export default function SubmitGrant() {
     return <LogIn title={t('page.submit_grant.title') || ''} description={t('page.submit_grant.description') || ''} />
   }
 
-  console.log('g', grantRequest)
-
   return (
     <div>
       <Container className="ContentLayout__Container">

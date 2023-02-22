@@ -9,7 +9,7 @@ import CoreUnitSection, { CoreUnitQuestions } from './CoreUnitSection'
 import DocumentationSection, { DocumentationQuestions } from './DocumentationSection'
 import GrantRequestSection from './GrantRequestSection'
 import InWorldContentSection, { InWorldContentQuestions } from './InWorldContentSection'
-import SocialMediaContentSection, { SocialMediaContentQuestions } from './SocialMediaContent'
+import SocialMediaContentSection, { SocialMediaContentQuestions } from './SocialMediaContentSection'
 import SponsorshipSection, { SponsorshipQuestions } from './SponsorshipSection'
 
 export type GrantRequestCategoryQuestions = {
