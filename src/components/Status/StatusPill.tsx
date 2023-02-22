@@ -3,7 +3,7 @@ import React from 'react'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
-import { isProposalStatus } from '../../entities/Proposal/utils'
+import { getProposalStatusDisplayName, isProposalStatus } from '../../entities/Proposal/utils'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Check from '../Icon/Check'
 
@@ -25,7 +25,7 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
 }
 
 const StatusPill = ({ className, status, size }: Props) => {
-  const label = isProposalStatus(status) ? status : ProposalStatus.Pending
+  const label = isProposalStatus(status) ? getProposalStatusDisplayName(status) : ProposalStatus.Pending
   const showIcon = label === ProposalStatus.Enacted || label === ProposalStatus.Passed
   const iconColor = label === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
 
@@ -34,7 +34,7 @@ const StatusPill = ({ className, status, size }: Props) => {
       size={size || 'default'}
       style={label === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'}
       className={TokenList.join(['StatusPill', className])}
-      color={ColorsConfig[label]}
+      color={ColorsConfig[status]}
       icon={showIcon ? <Check color={iconColor} /> : null}
     >
       {label}
