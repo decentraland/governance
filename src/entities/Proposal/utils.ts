@@ -193,3 +193,7 @@ export function getProposalEndDate(duration: number) {
 export function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
   return proposalStatus.split('_').join(' ').toUpperCase()
 }
+
+export function getProposalStatusShortName(status: ProposalStatus) {
+  return status === ProposalStatus.OutOfBudget ? 'OOB' : getProposalStatusDisplayName(status)
+}

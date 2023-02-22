@@ -1,6 +1,7 @@
 import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import Pill, { PillColor } from '../Common/Pill'
@@ -18,17 +19,34 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
 
 export type Props = {
   className?: string
-  type: ProposalType
+  proposalType: ProposalType
   size?: 'small' | 'default'
 }
 
-const CategoryPill = ({ className, type, size = 'default' }: Props) => {
-  const label = type.replaceAll('_', ' ')
+function getProposalTypeShortLabel(proposalType: ProposalType) {
+  return proposalType === ProposalType.LinkedWearables ? 'LWearables' : getProposalTypeLabel(proposalType)
+}
 
+function getProposalTypeLabel(proposalType: ProposalType) {
+  return proposalType.replaceAll('_', ' ')
+}
+
+const CategoryPill = ({ className, proposalType, size = 'default' }: Props) => {
+  const colorsConfig = ColorsConfig[proposalType]
+  const classNames = TokenList.join(['CategoryPill', className])
   return (
-    <Pill style="light" color={ColorsConfig[type]} className={TokenList.join(['CategoryPill', className])} size={size}>
-      {label}
-    </Pill>
+    <>
+      <Mobile>
+        <Pill style="light" color={colorsConfig} className={classNames} size={'small'}>
+          {getProposalTypeShortLabel(proposalType)}
+        </Pill>
+      </Mobile>
+      <NotMobile>
+        <Pill style="light" color={colorsConfig} className={classNames} size={size}>
+          {getProposalTypeLabel(proposalType)}
+        </Pill>
+      </NotMobile>
+    </>
   )
 }
 

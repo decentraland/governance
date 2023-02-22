@@ -1,9 +1,14 @@
 import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
-import { getProposalStatusDisplayName, isProposalStatus } from '../../entities/Proposal/utils'
+import {
+  getProposalStatusDisplayName,
+  getProposalStatusShortName,
+  isProposalStatus,
+} from '../../entities/Proposal/utils'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Check from '../Icon/Check'
 
@@ -25,20 +30,27 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
 }
 
 const StatusPill = ({ className, status, size }: Props) => {
-  const label = isProposalStatus(status) ? getProposalStatusDisplayName(status) : ProposalStatus.Pending
-  const showIcon = label === ProposalStatus.Enacted || label === ProposalStatus.Passed
-  const iconColor = label === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
+  const validStatus = isProposalStatus(status) ? status : ProposalStatus.Pending
+  const style = validStatus === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'
+  const classNames = TokenList.join(['StatusPill', className])
+  const colorsConfig = ColorsConfig[validStatus]
+  const showIcon = validStatus === ProposalStatus.Enacted || validStatus === ProposalStatus.Passed
+  const iconColor = validStatus === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
+  const icon = showIcon ? <Check color={iconColor} /> : null
 
   return (
-    <Pill
-      size={size || 'default'}
-      style={label === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'}
-      className={TokenList.join(['StatusPill', className])}
-      color={ColorsConfig[status]}
-      icon={showIcon ? <Check color={iconColor} /> : null}
-    >
-      {label}
-    </Pill>
+    <>
+      <Mobile>
+        <Pill size={'small'} style={style} className={classNames} color={colorsConfig} icon={icon}>
+          {getProposalStatusShortName(validStatus)}
+        </Pill>
+      </Mobile>
+      <NotMobile>
+        <Pill size={size || 'default'} style={style} className={classNames} color={colorsConfig} icon={icon}>
+          {getProposalStatusDisplayName(validStatus)}
+        </Pill>
+      </NotMobile>
+    </>
   )
 }
 
