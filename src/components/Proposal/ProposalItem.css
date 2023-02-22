@@ -100,3 +100,11 @@
   text-transform: uppercase;
   color: var(--black-600);
 }
+
+.ProposalItem__Details > span.Username > img.dg.dcl-avatar {
+  margin: 0 !important;
+}
+
+.ProposalItem__Details > span.Username .dcl.blockie {
+  margin: 0 0 0 0;
+}
