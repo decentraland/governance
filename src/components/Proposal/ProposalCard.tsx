@@ -77,7 +77,7 @@ export default function ProposalCard({
       <Card.Content>
         <div className="ProposalCard__Info">
           <StatusPill status={proposal.status} />
-          <CategoryPill type={proposal.type} />
+          <CategoryPill proposalType={proposal.type} />
         </div>
         {coauthorRequest && <CoauthorRequestLabel />}
       </Card.Content>

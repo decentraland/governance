@@ -189,3 +189,11 @@ export function canLinkProposal(status: ProposalStatus) {
 export function getProposalEndDate(duration: number) {
   return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
+
+export function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
+  return proposalStatus.split('_').join(' ').toUpperCase()
+}
+
+export function getProposalStatusShortName(status: ProposalStatus) {
+  return status === ProposalStatus.OutOfBudget ? 'OOB' : getProposalStatusDisplayName(status)
+}

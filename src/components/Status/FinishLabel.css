@@ -10,4 +10,7 @@
   align-content: center;
   align-items: center;
   text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
