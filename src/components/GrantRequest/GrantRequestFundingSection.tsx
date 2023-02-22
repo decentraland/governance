@@ -134,7 +134,7 @@ export default function GrantRequestFundingSection({
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
 
   useEffect(() => {
-    editor.validate()
+    isFormEdited && editor.validate()
     onValidation({ ...state.value }, state.validated)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
