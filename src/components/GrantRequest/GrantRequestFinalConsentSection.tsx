@@ -4,6 +4,7 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 
+import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -26,11 +27,12 @@ export const INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE: GrantRequestFinalConsent
 }
 
 interface Props {
+  category: NewGrantCategory | null
   onValidation: (sectionValid: boolean) => void
   isFormDisabled: boolean
 }
 
-export default function GrantRequestFinalConsentSection({ onValidation, isFormDisabled }: Props) {
+export default function GrantRequestFinalConsentSection({ category, onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
   const [state, setState] = useState(INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE)
   const isFormEdited = userModifiedForm(state, INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE)
@@ -46,7 +48,7 @@ export default function GrantRequestFinalConsentSection({ onValidation, isFormDi
       validated={acceptedAllTerms}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.final_consent.title')}
-      sectionNumber={3}
+      sectionNumber={category === NewGrantCategory.Platform ? 3 : 4}
     >
       <div className="GrantRequestSection__Content">
         <Label>{t('page.submit_grant.final_consent.subtitle')}</Label>

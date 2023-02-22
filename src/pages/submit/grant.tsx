@@ -12,6 +12,9 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
+import GrantRequestCategorySection, {
+  GrantRequestCategoryQuestions,
+} from '../../components/GrantRequest/GrantRequestCategorySection'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
   GrantRequestFunding,
@@ -36,10 +39,10 @@ import './grant.css'
 import './submit.css'
 
 export type GrantRequest = {
-  title: string
   category: NewGrantCategory | null
 } & GrantRequestFunding &
-  GrantRequestGeneralInfo
+  GrantRequestGeneralInfo &
+  GrantRequestCategoryQuestions
 
 const initialState: GrantRequest = {
   category: null,
@@ -50,12 +53,14 @@ const initialState: GrantRequest = {
 export type GrantRequestValidationState = {
   fundingSectionValid: boolean
   generalInformationSectionValid: boolean
+  categoryAssessmentSectionValid: boolean
   finalConsentSectionValid: boolean
 }
 
 const initialValidationState: GrantRequestValidationState = {
   fundingSectionValid: false,
   generalInformationSectionValid: false,
+  categoryAssessmentSectionValid: false,
   finalConsentSectionValid: false,
 }
 
@@ -109,6 +114,8 @@ export default function SubmitGrant() {
     return <LogIn title={t('page.submit_grant.title') || ''} description={t('page.submit_grant.description') || ''} />
   }
 
+  console.log('g', grantRequest)
+
   return (
     <div>
       <Container className="ContentLayout__Container">
@@ -158,7 +165,19 @@ export default function SubmitGrant() {
             isFormDisabled={isFormDisabled}
           />
 
+          {grantRequest.category && grantRequest.category !== NewGrantCategory.Platform && (
+            <GrantRequestCategorySection
+              category={grantRequest.category}
+              onValidation={(data, sectionValid) => {
+                patchGrantRequest({ ...data })
+                patchValidationState({ categoryAssessmentSectionValid: sectionValid })
+              }}
+              isFormDisabled={isFormDisabled}
+            />
+          )}
+
           <GrantRequestFinalConsentSection
+            category={grantRequest.category}
             onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
             isFormDisabled={isFormDisabled}
           />

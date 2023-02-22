@@ -183,7 +183,12 @@
       },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
-      "title_too_short": "Title is too short"
+      "title_too_short": "Title is too short",
+      "category_assessment": {
+        "field_too_short": "Field is too short",
+        "field_too_large:": "Field is too large",
+        "field_empty": "Field is empty"
+      }
     },
     "linked_wearables": {
       "name_empty": "Name is empty",
@@ -1121,13 +1126,76 @@
         "email_error_message": "Please enter a valid email",
         "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
       },
+      "category_assessment": {
+        "title": "Category-Specific Assessment",
+        "core_unit": {
+          "strategic_value_label": "How will your team provide strategic value to the Decentraland DAO?",
+          "impact_metrics_label": "List your impact metrics"
+        },
+        "documentation": {
+          "content_type_label": "What type of content are you planning to produce?",
+          "content_type": {
+            "label": "What type of content are you planning to produce?",
+            "choices": {
+              "documentation_article": "Documentation Article",
+              "scene_example": "Scene Example",
+              "videos": "Videos",
+              "code_examples": "Code examples"
+            }
+          },
+          "total_pieces_label": "How many pieces of content are you planning to publish under the duration of this Grant?"
+        },
+        "in_world_content": {
+          "total_pieces_label": "How many pieces of content (i.e. number of events, scenes, or games) are you planning to produce under the duration of this Grant?",
+          "total_users_label": "How many users do you expect to engage with this content?",
+          "engagement_measurement_label": "How are you going to measure the engagement with your content? (I.e. newly populated land, Active Users, Returning Users, Time on Scene)"
+        },
+        "social_media_content": {
+          "social_media_platforms_label": "Please select the social media platforms where you will publish this content:",
+          "audience_relevance_label": "Tell us how your audience is relevant to Decentraland.",
+          "total_pieces_label": "How many pieces of content are you planning to generate?",
+          "total_impact_label": "How many people do you plan to impact with this content?",
+          "relevant_link_label": "Please provide links to your current social media channels"
+        },
+        "sponsorship": {
+          "event_type": {
+            "label": "Event type",
+            "choices": {
+              "online": "Online (outside of the Decentraland ecosystem)",
+              "offline": "Offline"
+            }
+          },
+          "event_category": {
+            "label": "Please select the Event category:",
+            "choices": {
+              "conference": "Conference",
+              "side_event": "Side event",
+              "community_meetups": "Community meetups",
+              "hackathon": "Hackathon",
+              "other": "Other"
+            }
+          },
+          "primary_source_funding_check": "Is this grant the primary source of funding for this event?",
+          "total_events_label": "How many events are you planning to organize?",
+          "total_attendance_label": "How many people are you expecting to attend?",
+          "audience_relevance_label": "How your audience is relevant to Decentraland?",
+          "showcase_label": "Where is the Decentraland brand going to be showcased?"
+        },
+        "accelerator": {
+          "revenue_label": "Please describe your revenue generation model",
+          "return_of_investment_label": "What’s your plan for returning the investment to the DAO?",
+          "investment_recovery_label": "How long will it take the DAO to recover the investment made on your project based on your estimations?"
+        }
+      },
       "final_consent": {
         "title": "Final Consent",
         "subtitle": "Review and check the following",
         "grants_framework_label": "I’ve read and understood the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/)",
         "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy]()",
         "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use]() and agree with them",
-        "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics]() and hereby commit to honoring it"
+        "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics]() and hereby commit to honoring it",
+        "platform_category_label": "If this Grant gets funded, I agree to work and publish the source code and its derivatives developed under the budget provided by the DAO under an open-source license and in a public repository. I also commit to publishing documentation for the community to understand and contribute to the codebase.",
+        "documentation_category_label": "I agree to publish all the content produced under this Grant with an Attribution 4.0 International (CC BY 4.0) license"
       },
       "category_label": "Category",
       "category_placeholder": "Select a category",
