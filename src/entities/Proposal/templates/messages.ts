@@ -1,10 +1,7 @@
 import { Vote } from '../../Votes/types'
 import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'
-
-function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
-  return proposalStatus.split('_').join(' ').toUpperCase()
-}
+import { getProposalStatusDisplayName } from '../utils'
 
 export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<string, Vote>) {
   let updatingUser: string | null

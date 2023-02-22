@@ -1,9 +1,7 @@
-import env from 'decentraland-gatsby/dist/utils/env'
-
 import { isDevEnv } from '../../modules/env'
 import { asNumber } from '../Proposal/utils'
 
-import { MAX_LOWER_TIER_GRANT_FUNDING } from './constants'
+import { GATSBY_GRANT_VP_THRESHOLD, MAX_LOWER_TIER_GRANT_FUNDING } from './constants'
 import {
   GRANT_PROPOSAL_MIN_BUDGET,
   GrantTierType,
@@ -31,7 +29,6 @@ export class GrantTier {
   }
 
   static getVPThreshold(budget: number) {
-    const GATSBY_GRANT_VP_THRESHOLD = env('GATSBY_GRANT_VP_THRESHOLD')
     if (isDevEnv() && GATSBY_GRANT_VP_THRESHOLD) {
       return asNumber(GATSBY_GRANT_VP_THRESHOLD)
     }

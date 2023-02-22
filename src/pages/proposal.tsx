@@ -239,7 +239,7 @@ export default function ProposalPage() {
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
             {proposal && <StatusPill status={proposal.status} />}
-            {proposal && <CategoryPill type={proposal.type} />}
+            {proposal && <CategoryPill proposalType={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>
