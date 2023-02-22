@@ -42,7 +42,6 @@ export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   vestingStartDate: VestingStartDate.First,
 }
 
-// TODO: this could be in a GrantCategory class/service/whatevs
 const isValidBudgetForCategory = (budget: number | string | undefined, total: number) => {
   return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= total
 }
@@ -135,6 +134,7 @@ export default function GrantRequestFundingSection({
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
 
   useEffect(() => {
+    editor.validate()
     onValidation({ ...state.value }, state.validated)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
