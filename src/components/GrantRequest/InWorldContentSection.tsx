@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -6,6 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { asNumber } from '../../entities/Proposal/utils'
+import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
@@ -90,20 +91,7 @@ const InWorldContentSection = forwardRef(function InWorldContentSection({ onVali
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_IN_WORLD_CONTENT_QUESTIONS)
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        validate() {
-          editor.validate()
-        },
-        isValidated() {
-          return state.validated
-        },
-      }
-    },
-    [editor, state]
-  )
+  useGrantCategoryEditor(ref, editor, state, INITIAL_IN_WORLD_CONTENT_QUESTIONS)
 
   useEffect(() => {
     onValidation({ inWorldContent: { ...state.value } }, state.validated, editor.validate)

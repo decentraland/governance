@@ -1,9 +1,10 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
@@ -78,20 +79,7 @@ const CoreUnitSection = forwardRef(function CoreUnitSection({ onValidation, isFo
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_CORE_UNIT_QUESTIONS)
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        validate() {
-          editor.validate()
-        },
-        isValidated() {
-          return state.validated
-        },
-      }
-    },
-    [editor, state]
-  )
+  useGrantCategoryEditor(ref, editor, state, INITIAL_CORE_UNIT_QUESTIONS)
 
   useEffect(() => {
     onValidation({ coreUnit: { ...state.value } }, state.validated)

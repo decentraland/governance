@@ -30,7 +30,7 @@ interface Props {
 export default function GrantRequestCategorySection({ category, onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
 
-  const sectionRef = useRef<{ validate: () => void; isValidated: () => boolean }>(null)
+  const sectionRef = useRef<{ validate: () => void; isValidated: () => boolean; isFormEdited: () => boolean }>(null)
 
   const handleBlur = () => {
     if (sectionRef) {
@@ -46,7 +46,7 @@ export default function GrantRequestCategorySection({ category, onValidation, is
     <GrantRequestSection
       onBlur={handleBlur}
       validated={sectionRef.current?.isValidated() || false}
-      isFormEdited={sectionRef.current?.isValidated() || false}
+      isFormEdited={sectionRef.current?.isFormEdited() || false}
       sectionTitle={t('page.submit_grant.category_assessment.title')}
       sectionNumber={3}
     >
