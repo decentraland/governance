@@ -1100,7 +1100,10 @@
         "calculation_helper": "Calculation is automated based on the Grants Rules",
         "funding_time_title": "What time of the month would you like for the funding to happen?",
         "funding_time_first_day": "1st day of month",
-        "funding_time_fifteenth_day": "15th day of month"
+        "funding_time_fifteenth_day": "15th day of month",
+        "preferred_payment_token": "What is your preferred payment token?",
+        "preferred_payment_token_mana": "MANA",
+        "preferred_payment_token_dai": "DAI"
       },
       "general_info": {
         "title": "General Information",
