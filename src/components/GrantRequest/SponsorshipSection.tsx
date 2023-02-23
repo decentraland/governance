@@ -1,19 +1,18 @@
-import React, { forwardRef, useCallback, useEffect } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import { isEmpty } from 'lodash'
 
 import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import CheckboxField from './CheckboxField'
 import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
 import Label from './Label'
+import MultipleChoiceField from './MultipleChoiceField'
 
 export type SponsorshipQuestions = {
   eventType: string
@@ -27,13 +26,15 @@ export type SponsorshipQuestions = {
 
 const INITIAL_SPONSORSHIP_QUESTIONS = {
   eventType: '',
-  eventCategory: '',
+  eventCategory: null,
   primarySourceFunding: '',
   totalEvents: '',
   totalAttendance: '',
   audienceRelevance: '',
   showcase: '',
 }
+
+const EVENT_CATEGORY_OPTIONS = ['conference', 'side_event', 'community_meetups', 'hackathon']
 
 const SponsorshipQuestionsSchema = {
   eventType: {
@@ -145,33 +146,6 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
 
-  const handleEventCategoryChange = useCallback(
-    (type: string) => {
-      let eventCategoryValues = state.value.eventCategory?.split(', ') || []
-      const text = t(`page.submit_grant.category_assessment.documentation.event_category.choices.${type}`)
-
-      if (eventCategoryValues.includes(text)) {
-        eventCategoryValues = eventCategoryValues.filter((item) => item !== text)
-      } else {
-        eventCategoryValues.push(text)
-      }
-
-      const newEventCategory = !isEmpty(eventCategoryValues) ? eventCategoryValues.join(', ') : null
-      editor.set({ eventCategory: newEventCategory })
-    },
-    [editor, t, state.value.eventCategory]
-  )
-
-  const isChecked = useCallback(
-    (type: string) => {
-      const eventCategoryValues = state.value.eventCategory?.split(', ') || []
-      const text = t(`page.submit_grant.category_assessment.documentation.event_category.choices.${type}`)
-
-      return eventCategoryValues.includes(text)
-    },
-    [t, state.value.eventCategory]
-  )
-
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
@@ -194,37 +168,13 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
           disabled={isFormDisabled}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
-        <Label>{t('page.submit_grant.category_assessment.sponsorship.event_category.label')}</Label>
-        <CheckboxField
-          disabled={isFormDisabled}
-          checked={isChecked('conference')}
-          onClick={() => handleEventCategoryChange('conference')}
-        >
-          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.conference')}
-        </CheckboxField>
-        <CheckboxField
-          disabled={isFormDisabled}
-          checked={isChecked('side_event')}
-          onClick={() => handleEventCategoryChange('side_event')}
-        >
-          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.side_event')}
-        </CheckboxField>
-        <CheckboxField
-          disabled={isFormDisabled}
-          checked={isChecked('community_meetups')}
-          onClick={() => handleEventCategoryChange('community_meetups')}
-        >
-          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.community_meetups')}
-        </CheckboxField>
-        <CheckboxField
-          disabled={isFormDisabled}
-          checked={isChecked('hackathon')}
-          onClick={() => handleEventCategoryChange('hackathon')}
-        >
-          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.hackathon')}
-        </CheckboxField>
-      </ContentSection>
+      <MultipleChoiceField
+        intlKey="page.submit_grant.category_assessment.sponsorship.event_category.choices"
+        options={EVENT_CATEGORY_OPTIONS}
+        isFormDisabled={isFormDisabled}
+        value={state.value.eventCategory}
+        onChange={(value) => editor.set({ eventCategory: value })}
+      />
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.primary_source_funding_label')}</Label>
         <SelectField
