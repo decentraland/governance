@@ -4,6 +4,7 @@ import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownT
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
@@ -13,7 +14,7 @@ import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type SponsorshipQuestions = {
-  eventType: string // TODO: This should be a dropdown online/offline field
+  eventType: string
   eventCategory: string // TODO: This should be a multiple choice field
   primarySourceFunding: string // TODO: this should be a dropdown yes/no field
   totalEvents: string | number
@@ -145,9 +146,19 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.event_type.label')}</Label>
-        <Field
-          value={state.value.eventType}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ eventType: value })}
+        <SelectField
+          value={state.value.eventType || undefined}
+          onChange={(_, { value }) => editor.set({ eventType: String(value) })}
+          options={[
+            {
+              text: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.online'),
+              value: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.online'),
+            },
+            {
+              text: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.offline'),
+              value: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.offline'),
+            },
+          ]}
           error={!!state.error.eventType}
           message={t(state.error.eventType)}
           disabled={isFormDisabled}
