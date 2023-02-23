@@ -11,8 +11,10 @@ import { GrantTier } from '../../entities/Grant/GrantTier'
 import {
   GRANT_PROPOSAL_MIN_BUDGET,
   GrantRequestFundingSchema,
+  GrantTierType,
   MIN_LOW_TIER_PROJECT_DURATION,
   NewGrantCategory,
+  PaymentToken,
   VestingStartDate,
 } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
@@ -35,12 +37,14 @@ export type GrantRequestFunding = {
   funding: string | number
   projectDuration: number
   vestingStartDate: VestingStartDate
+  paymentToken: PaymentToken
 }
 
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   funding: '',
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
   vestingStartDate: VestingStartDate.First,
+  paymentToken: PaymentToken.MANA,
 }
 
 const isValidBudgetForCategory = (budget: number | string | undefined, total: number) => {
@@ -151,6 +155,17 @@ export default function GrantRequestFundingSection({
       ? GrantTier.getVPThreshold(Number(state.value.funding))
       : undefined
 
+  const isHigherTier = isValidGrantBudget(Number(state.value.funding))
+    ? GrantTier.getTypeFromBudget(Number(state.value.funding)) === GrantTierType.HigherTier
+    : false
+
+  useEffect(() => {
+    if (isHigherTier) {
+      editor.set({ paymentToken: PaymentToken.DAI })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.value.funding])
+
   return (
     <GrantRequestSection
       onBlur={() => {
@@ -244,7 +259,7 @@ export default function GrantRequestFundingSection({
             subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
           />
         </div>
-        <div>
+        <div className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
           <ContentSection
             className="GrantRequestFundingSection__Radio"
@@ -273,6 +288,37 @@ export default function GrantRequestFundingSection({
               disabled={isFormDisabled}
             />
             {t('page.submit_grant.funding_section.funding_time_fifteenth_day')}
+          </ContentSection>
+        </div>
+        <div>
+          <Label>{t('page.submit_grant.funding_section.preferred_payment_token')}</Label>
+          <ContentSection
+            className="GrantRequestFundingSection__Radio"
+            onClick={() => !isHigherTier && editor.set({ paymentToken: PaymentToken.MANA })}
+          >
+            <Radio
+              name="paymentToken"
+              id={PaymentToken.MANA}
+              value={PaymentToken.MANA}
+              checked={state.value.paymentToken === PaymentToken.MANA}
+              type="radio"
+              disabled={isHigherTier || isFormDisabled}
+            />
+            {t('page.submit_grant.funding_section.preferred_payment_token_mana')}
+          </ContentSection>
+          <ContentSection
+            className="GrantRequestFundingSection__Radio"
+            onClick={() => !isHigherTier && editor.set({ paymentToken: PaymentToken.DAI })}
+          >
+            <Radio
+              name="paymentToken"
+              id={PaymentToken.DAI}
+              value={PaymentToken.DAI}
+              type="radio"
+              checked={state.value.paymentToken === PaymentToken.DAI}
+              disabled={isHigherTier || isFormDisabled}
+            />
+            {t('page.submit_grant.funding_section.preferred_payment_token_dai')}
           </ContentSection>
         </div>
       </ContentSection>

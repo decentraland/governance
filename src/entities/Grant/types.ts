@@ -52,6 +52,11 @@ export enum VestingStartDate {
   Fifteenth = '15th',
 }
 
+export enum PaymentToken {
+  MANA = 'MANA',
+  DAI = 'DAI',
+}
+
 export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const VALID_CATEGORIES = Object.values(NewGrantCategory)
