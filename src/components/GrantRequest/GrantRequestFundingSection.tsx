@@ -90,6 +90,7 @@ interface Props {
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
   onCategoryChange: () => void
   isFormDisabled: boolean
+  sectionNumber: number
 }
 
 function getAvailableProjectDurations(rawFunding: number | string | undefined) {
@@ -127,6 +128,7 @@ export default function GrantRequestFundingSection({
   isFormDisabled,
   grantCategory,
   onCategoryChange,
+  sectionNumber,
 }: Props) {
   const t = useFormatMessage()
   const { totalCategoryBudget, availableCategoryBudget } = useCategoryBudget(grantCategory)
@@ -159,7 +161,7 @@ export default function GrantRequestFundingSection({
       validated={state.validated || (isFormEdited && isEmpty(state.error))}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.funding_section.title')}
-      sectionNumber={1}
+      sectionNumber={sectionNumber}
     >
       <ContentSection className="GrantRequestSection__Content">
         <div className="GrantRequestSection__Row">

@@ -119,11 +119,12 @@ const edit = (state: GrantRequestGeneralInfo, props: Partial<GrantRequestGeneral
 interface Props {
   onValidation: (data: GrantRequestGeneralInfo, sectionValid: boolean) => void
   isFormDisabled: boolean
+  sectionNumber: number
 }
 
 type Fields = keyof Omit<GrantRequestGeneralInfo, 'coAuthors'>
 
-export default function GrantRequestGeneralInfoSection({ onValidation, isFormDisabled }: Props) {
+export default function GrantRequestGeneralInfoSection({ onValidation, isFormDisabled, sectionNumber }: Props) {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
   const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
@@ -162,7 +163,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
       validated={state.validated}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.general_info.title')}
-      sectionNumber={2}
+      sectionNumber={sectionNumber}
     >
       <div className="GrantRequestSection__Content">
         <ContentSection className="GrantRequestSection__Field">

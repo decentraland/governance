@@ -76,6 +76,12 @@ export default function SubmitGrant() {
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
   const [submitError, setSubmitError] = useState<string | undefined>(undefined)
+  let sectionNumber = 0
+
+  const getSectionNumber = () => {
+    sectionNumber++
+    return sectionNumber
+  }
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -153,6 +159,7 @@ export default function SubmitGrant() {
               patchValidationState({ fundingSectionValid: sectionValid })
             }}
             isFormDisabled={isFormDisabled}
+            sectionNumber={getSectionNumber()}
           />
 
           <GrantRequestGeneralInfoSection
@@ -161,6 +168,7 @@ export default function SubmitGrant() {
               patchValidationState({ generalInformationSectionValid: sectionValid })
             }}
             isFormDisabled={isFormDisabled}
+            sectionNumber={getSectionNumber()}
           />
 
           {grantRequest.category && grantRequest.category !== NewGrantCategory.Platform && (
@@ -171,6 +179,7 @@ export default function SubmitGrant() {
                 patchValidationState({ categoryAssessmentSectionValid: sectionValid })
               }}
               isFormDisabled={isFormDisabled}
+              sectionNumber={getSectionNumber()}
             />
           )}
 
@@ -178,6 +187,7 @@ export default function SubmitGrant() {
             category={grantRequest.category}
             onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
             isFormDisabled={isFormDisabled}
+            sectionNumber={getSectionNumber()}
           />
 
           <Container className="ContentLayout__Container">
