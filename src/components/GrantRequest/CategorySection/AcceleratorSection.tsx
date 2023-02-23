@@ -5,40 +5,20 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { asNumber } from '../../entities/Proposal/utils'
-import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
-import { ContentSection } from '../Layout/ContentLayout'
+import {
+  AcceleratorQuestions,
+  AcceleratorQuestionsSchema,
+  GrantRequestCategoryAssessment,
+} from '../../../entities/Grant/types'
+import { asNumber } from '../../../entities/Proposal/utils'
+import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import { ContentSection } from '../../Layout/ContentLayout'
+import Label from '../Label'
 
-import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
-import Label from './Label'
-
-export type AcceleratorQuestions = {
-  revenueGenerationModel: string
-  returnOfInvestmentPlan: string
-  investmentRecoveryTime: string | number
-}
-
-const INITIAL_ACCELERATOR_QUESTIONS = {
+const INITIAL_ACCELERATOR_QUESTIONS: AcceleratorQuestions = {
   revenueGenerationModel: '',
   returnOfInvestmentPlan: '',
   investmentRecoveryTime: '',
-}
-
-const AcceleratorQuestionsSchema = {
-  revenueGenerationModel: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  returnOfInvestmentPlan: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  investmentRecoveryTime: {
-    type: 'integer',
-    minimum: 0,
-  },
 }
 
 const schema = AcceleratorQuestionsSchema

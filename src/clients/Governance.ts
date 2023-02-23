@@ -7,7 +7,7 @@ import snakeCase from 'lodash/snakeCase'
 import { GOVERNANCE_API } from '../constants'
 import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { ProposalGrantCategory } from '../entities/Grant/types'
+import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
   CategorizedGrants,
   NewProposalBanName,
@@ -26,7 +26,6 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
-import { GrantRequest } from '../pages/submit/grant'
 
 import { TransparencyBudget } from './DclData'
 

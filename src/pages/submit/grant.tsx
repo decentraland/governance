@@ -14,16 +14,12 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
-import GrantRequestCategorySection, {
-  GrantRequestCategoryAssessment,
-} from '../../components/GrantRequest/GrantRequestCategorySection'
+import GrantRequestCategorySection from '../../components/GrantRequest/GrantRequestCategorySection'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
-  GrantRequestFunding,
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
 } from '../../components/GrantRequest/GrantRequestFundingSection'
 import GrantRequestGeneralInfoSection, {
-  GrantRequestGeneralInfo,
   INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
 import CategorySelector from '../../components/Grants/CategorySelector'
@@ -31,7 +27,7 @@ import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { NewGrantCategory } from '../../entities/Grant/types'
+import { GrantRequest, NewGrantCategory } from '../../entities/Grant/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import loader from '../../modules/loader'
@@ -39,12 +35,6 @@ import locations from '../../modules/locations'
 
 import './grant.css'
 import './submit.css'
-
-export type GrantRequest = {
-  category: NewGrantCategory | null
-} & GrantRequestFunding &
-  GrantRequestGeneralInfo &
-  GrantRequestCategoryAssessment
 
 const initialState: GrantRequest = {
   category: null,
@@ -64,6 +54,29 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
   categoryAssessmentSectionValid: false,
   finalConsentSectionValid: false,
+}
+
+function parseStringsAsNumbers(grantRequest: GrantRequest) {
+  grantRequest.funding = asNumber(grantRequest.funding)
+
+  if (grantRequest.accelerator) {
+    grantRequest.accelerator.investmentRecoveryTime = asNumber(grantRequest.accelerator.investmentRecoveryTime)
+  }
+  if (grantRequest.documentation) {
+    grantRequest.documentation.totalPieces = asNumber(grantRequest.documentation?.totalPieces)
+  }
+  if (grantRequest.inWorldContent) {
+    grantRequest.inWorldContent.totalPieces = asNumber(grantRequest.inWorldContent.totalPieces)
+    grantRequest.inWorldContent.totalUsers = asNumber(grantRequest.inWorldContent.totalUsers)
+  }
+  if (grantRequest.socialMediaContent) {
+    grantRequest.socialMediaContent.totalPieces = asNumber(grantRequest.socialMediaContent.totalPieces)
+    grantRequest.socialMediaContent.totalPeopleImpact = asNumber(grantRequest.socialMediaContent.totalPeopleImpact)
+  }
+  if (grantRequest.sponsorship) {
+    grantRequest.sponsorship.totalEvents = asNumber(grantRequest.sponsorship.totalEvents)
+    grantRequest.sponsorship.totalAttendance = asNumber(grantRequest.sponsorship.totalAttendance)
+  }
 }
 
 export default function SubmitGrant() {
@@ -95,11 +108,8 @@ export default function SubmitGrant() {
       setIsFormDisabled(true)
       Promise.resolve()
         .then(async () => {
-          const funding = asNumber(grantRequest.funding)
-          return Governance.get().createProposalGrant({
-            ...grantRequest,
-            funding,
-          })
+          parseStringsAsNumbers(grantRequest)
+          return Governance.get().createProposalGrant(grantRequest)
         })
         .then((proposal) => {
           loader.proposals.set(proposal.id, proposal)
@@ -166,7 +176,14 @@ export default function SubmitGrant() {
 
       {!isCategorySelected && (
         <Container className="GrantRequestSection__Container">
-          <CategorySelector onCategoryClick={(value: NewGrantCategory) => patchGrantRequest({ category: value })} />
+          <CategorySelector
+            onCategoryClick={(value: NewGrantCategory) => {
+              patchGrantRequest({ category: value })
+              patchValidationState({
+                categoryAssessmentSectionValid: value === NewGrantCategory.Platform,
+              })
+            }}
+          />
         </Container>
       )}
 

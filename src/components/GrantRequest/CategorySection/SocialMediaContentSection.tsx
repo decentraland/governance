@@ -5,20 +5,15 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { asNumber } from '../../entities/Proposal/utils'
-import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
-import { ContentSection } from '../Layout/ContentLayout'
-
-import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
-import Label from './Label'
-
-export type SocialMediaContentQuestions = {
-  socialMediaPlatforms: string // TODO: Implement multiple choice
-  audienceRelevance: string
-  totalPieces: string | number
-  totalPeopleImpact: string | number
-  relevantLink: string
-}
+import {
+  GrantRequestCategoryAssessment,
+  SocialMediaContentQuestions,
+  SocialMediaContentQuestionsSchema,
+} from '../../../entities/Grant/types'
+import { asNumber } from '../../../entities/Proposal/utils'
+import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import { ContentSection } from '../../Layout/ContentLayout'
+import Label from '../Label'
 
 const INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS = {
   socialMediaPlatforms: '',
@@ -26,32 +21,6 @@ const INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS = {
   totalPieces: '',
   totalPeopleImpact: '',
   relevantLink: '',
-}
-
-const SocialMediaContentQuestionsSchema = {
-  socialMediaPlatforms: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  audienceRelevance: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  totalPieces: {
-    type: 'integer',
-    minimum: 0,
-  },
-  totalPeopleImpact: {
-    type: 'integer',
-    minimum: 0,
-  },
-  relevantLink: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
 }
 
 const schema = SocialMediaContentQuestionsSchema

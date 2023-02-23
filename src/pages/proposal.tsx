@@ -249,6 +249,9 @@ export default function ProposalPage() {
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
+              {proposal && proposal.type === ProposalType.Grant && !!proposal.configuration.categoryAssessment && (
+                <Markdown>{JSON.stringify(proposal.configuration.categoryAssessment)}</Markdown>
+              )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
                 <ProposalUpdates

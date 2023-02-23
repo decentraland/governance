@@ -2,24 +2,16 @@ import React, { useRef } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { NewGrantCategory } from '../../entities/Grant/types'
+import { GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 
-import AcceleratorSection, { AcceleratorQuestions } from './AcceleratorSection'
-import CoreUnitSection, { CoreUnitQuestions } from './CoreUnitSection'
-import DocumentationSection, { DocumentationQuestions } from './DocumentationSection'
+import AcceleratorSection from './CategorySection/AcceleratorSection'
+import CoreUnitSection from './CategorySection/CoreUnitSection'
+import DocumentationSection from './CategorySection/DocumentationSection'
+import InWorldContentSection from './CategorySection/InWorldContentSection'
+import SocialMediaContentSection from './CategorySection/SocialMediaContentSection'
+import SponsorshipSection from './CategorySection/SponsorshipSection'
+
 import GrantRequestSection from './GrantRequestSection'
-import InWorldContentSection, { InWorldContentQuestions } from './InWorldContentSection'
-import SocialMediaContentSection, { SocialMediaContentQuestions } from './SocialMediaContentSection'
-import SponsorshipSection, { SponsorshipQuestions } from './SponsorshipSection'
-
-export type GrantRequestCategoryAssessment = {
-  accelerator?: AcceleratorQuestions
-  coreUnit?: CoreUnitQuestions
-  documentation?: DocumentationQuestions
-  inWorldContent?: InWorldContentQuestions
-  socialMediaContent?: SocialMediaContentQuestions
-  sponsorship?: SponsorshipQuestions
-}
 
 interface Props {
   category: NewGrantCategory

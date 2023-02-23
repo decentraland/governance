@@ -1,3 +1,7 @@
+import { camelCase } from 'lodash'
+
+import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
+
 export const GRANT_PROPOSAL_MIN_BUDGET = 100
 export const GRANT_PROPOSAL_MAX_BUDGET = 240000
 export const MIN_PROJECT_DURATION = 1
@@ -6,18 +10,6 @@ export const MIN_LOW_TIER_PROJECT_DURATION = MIN_PROJECT_DURATION
 export const MAX_LOW_TIER_PROJECT_DURATION = 6
 export const MIN_HIGH_TIER_PROJECT_DURATION = 3
 export const MAX_HIGH_TIER_PROJECT_DURATION = MAX_PROJECT_DURATION
-
-export type GrantTierAttributes = {
-  type: GrantTierType
-  min: number
-  max: number
-  status: GrantTierStatus
-}
-
-export enum GrantTierStatus {
-  Active = 'active',
-  Inactive = 'inactive',
-}
 
 export enum GrantTierType {
   Tier1 = 'Tier 1: up to $1,500 USD in MANA, one-time payment',
@@ -129,6 +121,126 @@ export const GrantRequestFundingSchema = {
     type: 'string',
     enum: Object.values(VestingStartDate),
   },
+  paymentToken: {
+    type: 'string',
+    enum: Object.values(PaymentToken),
+  },
+}
+
+export const AcceleratorQuestionsSchema = {
+  revenueGenerationModel: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  returnOfInvestmentPlan: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  investmentRecoveryTime: {
+    type: 'integer',
+    minimum: 0,
+  },
+}
+
+export const DocumentationQuestionsSchema = {
+  contentType: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  totalPieces: {
+    type: 'integer',
+    minimum: 1,
+  },
+}
+export const InWorldContentQuestionsSchema = {
+  totalPieces: {
+    type: 'integer',
+    minimum: 0,
+  },
+  totalUsers: {
+    type: 'integer',
+    minimum: 0,
+  },
+  engagementMeasurement: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+}
+export const SocialMediaContentQuestionsSchema = {
+  socialMediaPlatforms: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  audienceRelevance: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  totalPieces: {
+    type: 'integer',
+    minimum: 0,
+  },
+  totalPeopleImpact: {
+    type: 'integer',
+    minimum: 0,
+  },
+  relevantLink: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+}
+export const SponsorshipQuestionsSchema = {
+  eventType: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  eventCategory: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  primarySourceFunding: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 10,
+  },
+  audienceRelevance: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  totalAttendance: {
+    type: 'integer',
+    minimum: 0,
+  },
+  totalEvents: {
+    type: 'integer',
+    minimum: 0,
+  },
+  showcase: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+}
+export const CoreUnitQuestionsSchema = {
+  strategicValue: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  impactMetrics: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
 }
 
 export const GrantRequestSchema = {
@@ -147,4 +259,116 @@ export const GrantRequestSchema = {
     ...GrantRequestFundingSchema,
     ...GrantRequestGeneralInfoSchema,
   },
+}
+
+export type GrantRequest = {
+  category: NewGrantCategory | null
+} & GrantRequestFunding &
+  GrantRequestGeneralInfo &
+  GrantRequestCategoryAssessment
+
+export type GrantRequestFunding = {
+  funding: string | number
+  projectDuration: number
+  vestingStartDate: VestingStartDate
+  paymentToken: PaymentToken
+}
+export type GrantRequestGeneralInfo = {
+  title: string
+  abstract: string
+  description: string
+  specification: string
+  beneficiary: string
+  email: string
+  personnel: string
+  roadmap: string
+  coAuthors?: string[]
+}
+
+export type GrantRequestCategoryAssessment = {
+  accelerator?: AcceleratorQuestions
+  coreUnit?: CoreUnitQuestions
+  documentation?: DocumentationQuestions
+  inWorldContent?: InWorldContentQuestions
+  socialMediaContent?: SocialMediaContentQuestions
+  sponsorship?: SponsorshipQuestions
+}
+export type AcceleratorQuestions = {
+  revenueGenerationModel: string
+  returnOfInvestmentPlan: string
+  investmentRecoveryTime: string | number
+}
+export type DocumentationQuestions = {
+  contentType: string | null
+  totalPieces: string | number
+}
+export type InWorldContentQuestions = {
+  totalPieces: string | number
+  totalUsers: string | number
+  engagementMeasurement: string
+}
+export type SocialMediaContentQuestions = {
+  socialMediaPlatforms: string // TODO: Implement multiple choice
+  audienceRelevance: string
+  totalPieces: string | number
+  totalPeopleImpact: string | number
+  relevantLink: string
+}
+export type SponsorshipQuestions = {
+  eventType: string
+  eventCategory: string | null
+  primarySourceFunding: string
+  totalEvents: string | number
+  totalAttendance: string | number
+  audienceRelevance: string
+  showcase: string
+}
+export type CoreUnitQuestions = {
+  strategicValue: string
+  impactMetrics: string
+}
+
+export type CategoryAssessmentQuestions =
+  | AcceleratorQuestions
+  | CoreUnitQuestions
+  | DocumentationQuestions
+  | InWorldContentQuestions
+  | SocialMediaContentQuestions
+  | SponsorshipQuestions
+
+function getCategoryAssessmentSchema(category: NewGrantCategory) {
+  switch (category) {
+    case NewGrantCategory.Accelerator:
+      return AcceleratorQuestionsSchema
+    case NewGrantCategory.CoreUnit:
+      return CoreUnitQuestionsSchema
+    case NewGrantCategory.Documentation:
+      return DocumentationQuestionsSchema
+    case NewGrantCategory.InWorldContent:
+      return InWorldContentQuestionsSchema
+    case NewGrantCategory.SocialMediaContent:
+      return SocialMediaContentQuestionsSchema
+    case NewGrantCategory.Sponsorship:
+      return SponsorshipQuestionsSchema
+    case NewGrantCategory.Platform:
+      return {}
+  }
+}
+
+export function getGrantRequestSchema(category: string | null) {
+  const schema: any = GrantRequestSchema
+  const parsedCategory: NewGrantCategory = toNewGrantCategory(category)
+  if (parsedCategory === NewGrantCategory.Platform) {
+    return schema
+  }
+  const categoryName = camelCase(parsedCategory)
+  schema.required = [...GrantRequestSchema.required, categoryName]
+  const categoryAssessmentSchema = getCategoryAssessmentSchema(parsedCategory)
+  schema.properties[categoryName] = {
+    type: 'object',
+    additionalProperties: false,
+    required: [...Object.keys(categoryAssessmentSchema)],
+    properties: categoryAssessmentSchema,
+  }
+  return schema
 }

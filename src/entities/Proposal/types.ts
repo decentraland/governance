@@ -3,8 +3,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { GrantRequestGeneralInfo } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
-import { GrantStatus, GrantTierType, ProposalGrantCategory, VestingStartDate } from '../Grant/types'
+import {
+  CategoryAssessmentQuestions,
+  GrantRequestGeneralInfo,
+  GrantStatus,
+  GrantTierType,
+  ProposalGrantCategory,
+  VestingStartDate,
+} from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
 
 import {
@@ -449,6 +455,7 @@ export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
   tier: GrantTierType
   choices: string[]
   vestingStartDate?: VestingStartDate
+  categoryAssessment?: CategoryAssessmentQuestions
 }
 
 export type NewProposalLinkedWearables = {

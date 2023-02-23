@@ -6,7 +6,7 @@ import isNil from 'lodash/isNil'
 import { DclData, TransparencyGrant } from '../clients/DclData'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantStatus } from '../entities/Grant/types'
+import { GrantRequest, GrantStatus } from '../entities/Grant/types'
 import { isCurrentGrant } from '../entities/Grant/utils'
 import ProposalModel from '../entities/Proposal/model'
 import {
@@ -23,7 +23,6 @@ import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
 import { isDevEnv } from '../modules/env'
-import { GrantRequest } from '../pages/submit/grant'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
@@ -184,6 +183,7 @@ export class GrantsService {
       size: Number(grantRequest.funding),
       tier: GrantTier.getTypeFromBudget(grantSize),
       choices: DEFAULT_CHOICES,
+      categoryAssessment: this.getCategoryAssessment(grantRequest),
     }
 
     const grantInCreation: ProposalInCreation = {
@@ -195,6 +195,17 @@ export class GrantsService {
     }
 
     return grantInCreation
+  }
+
+  private static getCategoryAssessment(grantRequest: GrantRequest) {
+    return (
+      grantRequest.accelerator ||
+      grantRequest.coreUnit ||
+      grantRequest.documentation ||
+      grantRequest.inWorldContent ||
+      grantRequest.socialMediaContent ||
+      grantRequest.sponsorship
+    )
   }
 
   private static getGrantProposalEndDate() {

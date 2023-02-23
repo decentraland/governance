@@ -4,33 +4,18 @@ import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownT
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
-import { ContentSection } from '../Layout/ContentLayout'
-
-import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
-import Label from './Label'
-
-export type CoreUnitQuestions = {
-  strategicValue: string
-  impactMetrics: string
-}
+import {
+  CoreUnitQuestions,
+  CoreUnitQuestionsSchema,
+  GrantRequestCategoryAssessment,
+} from '../../../entities/Grant/types'
+import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import { ContentSection } from '../../Layout/ContentLayout'
+import Label from '../Label'
 
 const INITIAL_CORE_UNIT_QUESTIONS = {
   strategicValue: '',
   impactMetrics: '',
-}
-
-const CoreUnitQuestionsSchema = {
-  strategicValue: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  impactMetrics: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
 }
 
 const schema = CoreUnitQuestionsSchema

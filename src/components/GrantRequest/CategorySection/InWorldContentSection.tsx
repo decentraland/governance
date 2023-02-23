@@ -5,39 +5,20 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { asNumber } from '../../entities/Proposal/utils'
-import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
-import { ContentSection } from '../Layout/ContentLayout'
-
-import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
-import Label from './Label'
-
-export type InWorldContentQuestions = {
-  totalPieces: string | number
-  totalUsers: string | number
-  engagementMeasurement: string
-}
+import {
+  GrantRequestCategoryAssessment,
+  InWorldContentQuestions,
+  InWorldContentQuestionsSchema,
+} from '../../../entities/Grant/types'
+import { asNumber } from '../../../entities/Proposal/utils'
+import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import { ContentSection } from '../../Layout/ContentLayout'
+import Label from '../Label'
 
 const INITIAL_IN_WORLD_CONTENT_QUESTIONS = {
   totalPieces: '',
   totalUsers: '',
   engagementMeasurement: '',
-}
-
-const InWorldContentQuestionsSchema = {
-  totalPieces: {
-    type: 'integer',
-    minimum: 0,
-  },
-  totalUsers: {
-    type: 'integer',
-    minimum: 0,
-  },
-  engagementMeasurement: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
 }
 
 const schema = InWorldContentQuestionsSchema
