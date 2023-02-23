@@ -1,24 +1,25 @@
-import React, { forwardRef, useEffect } from 'react'
+import React, { forwardRef, useCallback, useEffect } from 'react'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { isEmpty } from 'lodash'
 
 import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import CheckboxSection from './CheckboxSection'
 import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type DocumentationQuestions = {
-  contentType: string // TODO: Implement multiple choice checkbox
+  contentType: string | null
   totalPieces: string | number
 }
 
 const INITIAL_DOCUMENTATION_QUESTIONS = {
-  contentType: '',
+  contentType: null,
   totalPieces: '',
 }
 
@@ -38,13 +39,14 @@ const schema = DocumentationQuestionsSchema
 const validate = createValidator<DocumentationQuestions>({
   contentType: (state) => ({
     contentType:
+      assert(state.contentType !== null, 'error.grant.category_assessment.field_invalid') ||
       assert(
-        state.contentType.length <= schema.contentType.maxLength,
+        String(state.contentType).length <= schema.contentType.maxLength,
         'error.grant.category_assessment.field_too_large'
       ) ||
-      assert(state.contentType.length > 0, 'error.grant.category_assessment.field_empty') ||
+      assert(String(state.contentType).length > 0, 'error.grant.category_assessment.field_empty') ||
       assert(
-        state.contentType.length >= schema.contentType.minLength,
+        String(state.contentType).length >= schema.contentType.minLength,
         'error.grant.category_assessment.field_too_short'
       ) ||
       undefined,
@@ -76,6 +78,33 @@ const DocumentationSection = forwardRef(function DocumentationSection({ onValida
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_DOCUMENTATION_QUESTIONS)
 
+  const handleContentTypeChange = useCallback(
+    (type: string) => {
+      let contentTypeValues = state.value.contentType?.split(', ') || []
+      const text = t(`page.submit_grant.category_assessment.documentation.content_type.choices.${type}`)
+
+      if (contentTypeValues.includes(text)) {
+        contentTypeValues = contentTypeValues.filter((item) => item !== text)
+      } else {
+        contentTypeValues.push(text)
+      }
+
+      const newContentType = !isEmpty(contentTypeValues) ? contentTypeValues.join(', ') : null
+      editor.set({ contentType: newContentType })
+    },
+    [editor, t, state.value.contentType]
+  )
+
+  const isChecked = useCallback(
+    (type: string) => {
+      const contentTypeValues = state.value.contentType?.split(', ') || []
+      const text = t(`page.submit_grant.category_assessment.documentation.content_type.choices.${type}`)
+
+      return contentTypeValues.includes(text)
+    },
+    [t, state.value.contentType]
+  )
+
   useGrantCategoryEditor(ref, editor, state, INITIAL_DOCUMENTATION_QUESTIONS)
 
   useEffect(() => {
@@ -87,21 +116,34 @@ const DocumentationSection = forwardRef(function DocumentationSection({ onValida
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.documentation.content_type.label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.contentType}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ contentType: value })}
-          error={!!state.error.contentType}
-          message={
-            t(state.error.contentType) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.contentType.length,
-              limit: schema.contentType.maxLength,
-            })
-          }
+        <CheckboxSection
           disabled={isFormDisabled}
-        />
+          checked={isChecked('documentation_article')}
+          onClick={() => handleContentTypeChange('documentation_article')}
+        >
+          {t('page.submit_grant.category_assessment.documentation.content_type.choices.documentation_article')}
+        </CheckboxSection>
+        <CheckboxSection
+          disabled={isFormDisabled}
+          checked={isChecked('scene_example')}
+          onClick={() => handleContentTypeChange('scene_example')}
+        >
+          {t('page.submit_grant.category_assessment.documentation.content_type.choices.scene_example')}
+        </CheckboxSection>
+        <CheckboxSection
+          disabled={isFormDisabled}
+          checked={isChecked('videos')}
+          onClick={() => handleContentTypeChange('videos')}
+        >
+          {t('page.submit_grant.category_assessment.documentation.content_type.choices.videos')}
+        </CheckboxSection>
+        <CheckboxSection
+          disabled={isFormDisabled}
+          checked={isChecked('code_examples')}
+          onClick={() => handleContentTypeChange('code_examples')}
+        >
+          {t('page.submit_grant.category_assessment.documentation.content_type.choices.code_examples')}
+        </CheckboxSection>
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.documentation.total_pieces_label')}</Label>
