@@ -1075,11 +1075,11 @@
     },
     "submit_grant": {
       "title": "Request a Grant",
-      "description": "Decentraland Grants allow MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO, and there are no constraints on the content or features that may be funded (within the bounds of Decentraland’s [Content Policy]()).",
+      "description": "Decentraland Grants allow MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO, and there are no constraints on the content or features that may be funded (within the bounds of Decentraland’s [Content Policy](https://decentraland.org/content)).",
       "cancel": "Cancel",
       "category_selection": {
         "description": "Choose a category that best suits your project",
-        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation]()"
+        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://MISSING_URL)"
       },
       "funding_section": {
         "title": "Funding",
@@ -1192,8 +1192,8 @@
         "title": "Final Consent",
         "subtitle": "Review and check the following",
         "grants_framework_label": "I’ve read and understood the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/)",
-        "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy]()",
-        "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use]() and agree with them",
+        "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy](https://decentraland.org/content)",
+        "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use](https://decentraland.org/terms) and agree with them",
         "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics](https://decentraland.org/ethics) and hereby commit to honoring it",
         "platform_category_label": "If this Grant gets funded, I agree to work and publish the source code and its derivatives developed under the budget provided by the DAO under an open-source license and in a public repository. I also commit to publishing documentation for the community to understand and contribute to the codebase.",
         "documentation_category_label": "I agree to publish all the content produced under this Grant with an Attribution 4.0 International (CC BY 4.0) license"
