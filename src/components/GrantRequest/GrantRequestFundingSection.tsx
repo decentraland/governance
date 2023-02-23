@@ -24,6 +24,7 @@ import { ContentSection } from '../Layout/ContentLayout'
 
 import CalculationHelper from './CalculationHelper'
 import DesiredFundingInput from './DesiredFundingInput'
+import './GrantRequestFundingSection.css'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
 import Label from './Label'
@@ -244,7 +245,7 @@ export default function GrantRequestFundingSection({
         <div>
           <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
           <ContentSection
-            className="GrantRequestSection__Checkbox"
+            className="GrantRequestFundingSection__Radio"
             onClick={() => editor.set({ vestingStartDate: VestingStartDate.First })}
           >
             <Radio
@@ -258,7 +259,7 @@ export default function GrantRequestFundingSection({
             {t('page.submit_grant.funding_section.funding_time_first_day')}
           </ContentSection>
           <ContentSection
-            className="GrantRequestSection__Checkbox"
+            className="GrantRequestFundingSection__Radio"
             onClick={() => editor.set({ vestingStartDate: VestingStartDate.Fifteenth })}
           >
             <Radio

@@ -1,6 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import env from 'decentraland-gatsby/dist/utils/env'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
@@ -180,7 +179,7 @@ export class GrantsService {
 
     await BudgetService.validateGrantRequest(grantSize, grantRequest.category)
 
-    const grantConfiguration: GrantProposalConfiguration = {
+    const configuration: GrantProposalConfiguration = {
       ...grantRequest,
       size: Number(grantRequest.funding),
       tier: GrantTier.getTypeFromBudget(grantSize),
@@ -192,8 +191,9 @@ export class GrantsService {
       type: ProposalType.Grant,
       required_to_pass: GrantTier.getVPThreshold(grantSize),
       finish_at: this.getGrantProposalEndDate(),
-      configuration: grantConfiguration,
+      configuration,
     }
+
     return grantInCreation
   }
 
