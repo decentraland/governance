@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
-import { Checkbox } from '../Checkbox/Checkbox'
-import { ContentSection } from '../Layout/ContentLayout'
 
-import './GrantRequestFinalConsentSection.css'
+import CheckboxSection from './CheckboxSection'
 import GrantRequestSection from './GrantRequestSection'
 import Label from './Label'
 
@@ -78,51 +75,51 @@ export default function GrantRequestFinalConsentSection({ category, onValidation
         <Label>{t('page.submit_grant.final_consent.subtitle')}</Label>
       </div>
       <div className="GrantRequestSection__Content">
-        <ContentSection
-          className="GrantRequestSection__Checkbox"
+        <CheckboxSection
           onClick={() => setState({ ...state, grantsFramework: !state.grantsFramework })}
+          checked={state.grantsFramework}
+          disabled={isFormDisabled}
         >
-          <Checkbox checked={state.grantsFramework} disabled={isFormDisabled} />
-          <Markdown>{t('page.submit_grant.final_consent.grants_framework_label')}</Markdown>
-        </ContentSection>
-        <ContentSection
-          className="GrantRequestSection__Checkbox"
+          {t('page.submit_grant.final_consent.grants_framework_label')}
+        </CheckboxSection>
+        <CheckboxSection
           onClick={() => setState({ ...state, contentPolicy: !state.contentPolicy })}
+          checked={state.contentPolicy}
+          disabled={isFormDisabled}
         >
-          <Checkbox checked={state.contentPolicy} disabled={isFormDisabled} />
-          <Markdown>{t('page.submit_grant.final_consent.content_policy_label')}</Markdown>
-        </ContentSection>
-        <ContentSection
-          className="GrantRequestSection__Checkbox"
+          {t('page.submit_grant.final_consent.content_policy_label')}
+        </CheckboxSection>
+        <CheckboxSection
           onClick={() => setState({ ...state, termsOfUse: !state.termsOfUse })}
+          checked={state.termsOfUse}
+          disabled={isFormDisabled}
         >
-          <Checkbox checked={state.termsOfUse} disabled={isFormDisabled} />
-          <Markdown>{t('page.submit_grant.final_consent.terms_of_use_label')}</Markdown>
-        </ContentSection>
-        <ContentSection
-          className="GrantRequestSection__Checkbox"
+          {t('page.submit_grant.final_consent.terms_of_use_label')}
+        </CheckboxSection>
+        <CheckboxSection
           onClick={() => setState({ ...state, codeOfEthics: !state.codeOfEthics })}
+          checked={state.codeOfEthics}
+          disabled={isFormDisabled}
         >
-          <Checkbox checked={state.codeOfEthics} disabled={isFormDisabled} />
-          <Markdown>{t('page.submit_grant.final_consent.code_of_ethics_label')}</Markdown>
-        </ContentSection>
+          {t('page.submit_grant.final_consent.code_of_ethics_label')}
+        </CheckboxSection>
         {category === NewGrantCategory.Platform && (
-          <ContentSection
-            className="GrantRequestSection__Checkbox"
+          <CheckboxSection
             onClick={() => setState({ ...state, platformAgreement: !state.platformAgreement })}
+            checked={state.platformAgreement}
+            disabled={isFormDisabled}
           >
-            <Checkbox checked={state.platformAgreement} disabled={isFormDisabled} />
-            <Markdown>{t('page.submit_grant.final_consent.platform_category_label')}</Markdown>
-          </ContentSection>
+            {t('page.submit_grant.final_consent.platform_category_label')}
+          </CheckboxSection>
         )}
         {category === NewGrantCategory.Documentation && (
-          <ContentSection
-            className="GrantRequestSection__Checkbox"
+          <CheckboxSection
             onClick={() => setState({ ...state, documentationAgreement: !state.documentationAgreement })}
+            checked={state.documentationAgreement}
+            disabled={isFormDisabled}
           >
-            <Checkbox checked={state.documentationAgreement} disabled={isFormDisabled} />
-            <Markdown>{t('page.submit_grant.final_consent.documentation_category_label')}</Markdown>
-          </ContentSection>
+            {t('page.submit_grant.final_consent.documentation_category_label')}
+          </CheckboxSection>
         )}
       </div>
     </GrantRequestSection>
