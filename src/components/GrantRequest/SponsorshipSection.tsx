@@ -146,8 +146,6 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
 
-  console.log('s', state.value.eventCategory)
-
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
