@@ -46,9 +46,15 @@ interface Props {
   category: NewGrantCategory | null
   onValidation: (sectionValid: boolean) => void
   isFormDisabled: boolean
+  sectionNumber: number
 }
 
-export default function GrantRequestFinalConsentSection({ category, onValidation, isFormDisabled }: Props) {
+export default function GrantRequestFinalConsentSection({
+  category,
+  onValidation,
+  isFormDisabled,
+  sectionNumber,
+}: Props) {
   const t = useFormatMessage()
   const [state, setState] = useState(INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE)
   const isFormEdited = userModifiedForm(state, INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE)
@@ -64,7 +70,7 @@ export default function GrantRequestFinalConsentSection({ category, onValidation
       validated={acceptedAllTerms}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.final_consent.title')}
-      sectionNumber={category === NewGrantCategory.Platform ? 3 : 4}
+      sectionNumber={sectionNumber}
     >
       <div className="GrantRequestSection__Content">
         <Label>{t('page.submit_grant.final_consent.subtitle')}</Label>

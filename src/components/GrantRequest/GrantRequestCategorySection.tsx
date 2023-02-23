@@ -25,9 +25,10 @@ interface Props {
   category: NewGrantCategory
   onValidation: (data: GrantRequestCategoryAssessment, sectionValid: boolean) => void
   isFormDisabled: boolean
+  sectionNumber: number
 }
 
-export default function GrantRequestCategorySection({ category, onValidation, isFormDisabled }: Props) {
+export default function GrantRequestCategorySection({ category, onValidation, isFormDisabled, sectionNumber }: Props) {
   const t = useFormatMessage()
 
   const sectionRef = useRef<{ validate: () => void; isValidated: () => boolean; isFormEdited: () => boolean }>(null)
@@ -48,7 +49,7 @@ export default function GrantRequestCategorySection({ category, onValidation, is
       validated={sectionRef.current?.isValidated() || false}
       isFormEdited={sectionRef.current?.isFormEdited() || false}
       sectionTitle={t('page.submit_grant.category_assessment.title')}
-      sectionNumber={3}
+      sectionNumber={sectionNumber}
     >
       {category === NewGrantCategory.Accelerator && (
         <AcceleratorSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
