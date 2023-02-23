@@ -1176,7 +1176,7 @@
               "other": "Other"
             }
           },
-          "primary_source_funding_check": "Is this grant the primary source of funding for this event?",
+          "primary_source_funding_label": "Is this grant the primary source of funding for this event?",
           "total_events_label": "How many events are you planning to organize?",
           "total_attendance_label": "How many people are you expecting to attend?",
           "audience_relevance_label": "How your audience is relevant to Decentraland?",

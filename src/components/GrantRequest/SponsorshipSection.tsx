@@ -16,7 +16,7 @@ import Label from './Label'
 export type SponsorshipQuestions = {
   eventType: string
   eventCategory: string // TODO: This should be a multiple choice field
-  primarySourceFunding: string // TODO: this should be a dropdown yes/no field
+  primarySourceFunding: string
   totalEvents: string | number
   totalAttendance: string | number
   audienceRelevance: string
@@ -47,7 +47,7 @@ const SponsorshipQuestionsSchema = {
   audienceRelevance: {
     type: 'string',
     minLength: 1,
-    maxLength: 750,
+    maxLength: 4,
   },
   totalAttendance: {
     type: 'integer',
@@ -171,6 +171,26 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
           onChange={(_: unknown, { value }: { value: string }) => editor.set({ eventCategory: value })}
           error={!!state.error.eventCategory}
           message={t(state.error.eventCategory)}
+          disabled={isFormDisabled}
+        />
+      </ContentSection>
+      <ContentSection className="GrantRequestSection__Field">
+        <Label>{t('page.submit_grant.category_assessment.sponsorship.primary_source_funding_label')}</Label>
+        <SelectField
+          value={state.value.primarySourceFunding || undefined}
+          onChange={(_, { value }) => editor.set({ primarySourceFunding: String(value) })}
+          options={[
+            {
+              text: 'Yes',
+              value: 'Yes',
+            },
+            {
+              text: 'No',
+              value: 'No',
+            },
+          ]}
+          error={!!state.error.primarySourceFunding}
+          message={t(state.error.primarySourceFunding)}
           disabled={isFormDisabled}
         />
       </ContentSection>
