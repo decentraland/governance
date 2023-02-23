@@ -9,7 +9,7 @@ import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
+import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type AcceleratorQuestions = {
@@ -91,7 +91,7 @@ const edit = (state: AcceleratorQuestions, props: Partial<AcceleratorQuestions>)
 }
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryQuestions>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
 

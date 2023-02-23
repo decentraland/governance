@@ -7,7 +7,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
+import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type CoreUnitQuestions = {
@@ -71,7 +71,7 @@ const edit = (state: CoreUnitQuestions, props: Partial<CoreUnitQuestions>) => {
 }
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryQuestions>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
 

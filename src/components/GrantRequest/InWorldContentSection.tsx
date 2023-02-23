@@ -9,7 +9,7 @@ import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
+import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type InWorldContentQuestions = {
@@ -83,7 +83,7 @@ const edit = (state: InWorldContentQuestions, props: Partial<InWorldContentQuest
 }
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryQuestions>, sectionValid: boolean, onValidate: () => void) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean, onValidate: () => void) => void
   isFormDisabled: boolean
 }
 

@@ -13,7 +13,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestCategorySection, {
-  GrantRequestCategoryQuestions,
+  GrantRequestCategoryAssessment,
 } from '../../components/GrantRequest/GrantRequestCategorySection'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
@@ -42,7 +42,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestCategoryQuestions
+  GrantRequestCategoryAssessment
 
 const initialState: GrantRequest = {
   category: null,

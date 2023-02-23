@@ -5,7 +5,7 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Checkbox } from '../Checkbox/Checkbox'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import './CheckboxSection.css'
+import './CheckboxField.css'
 
 interface Props {
   onClick: () => void
@@ -14,13 +14,13 @@ interface Props {
   children: string
 }
 
-const CheckboxSection = ({ onClick, checked, disabled, children }: Props) => {
+const CheckboxField = ({ onClick, checked, disabled, children }: Props) => {
   return (
-    <ContentSection className="CheckboxSection" onClick={onClick}>
+    <ContentSection className="CheckboxField" onClick={onClick}>
       <Checkbox checked={checked} disabled={disabled} />
       <Markdown>{children}</Markdown>
     </ContentSection>
   )
 }
 
-export default CheckboxSection
+export default CheckboxField

@@ -9,8 +9,8 @@ import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import CheckboxSection from './CheckboxSection'
-import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
+import CheckboxField from './CheckboxField'
+import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type DocumentationQuestions = {
@@ -70,7 +70,7 @@ const edit = (state: DocumentationQuestions, props: Partial<DocumentationQuestio
 }
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryQuestions>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
 
@@ -116,34 +116,34 @@ const DocumentationSection = forwardRef(function DocumentationSection({ onValida
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.documentation.content_type.label')}</Label>
-        <CheckboxSection
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('documentation_article')}
           onClick={() => handleContentTypeChange('documentation_article')}
         >
           {t('page.submit_grant.category_assessment.documentation.content_type.choices.documentation_article')}
-        </CheckboxSection>
-        <CheckboxSection
+        </CheckboxField>
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('scene_example')}
           onClick={() => handleContentTypeChange('scene_example')}
         >
           {t('page.submit_grant.category_assessment.documentation.content_type.choices.scene_example')}
-        </CheckboxSection>
-        <CheckboxSection
+        </CheckboxField>
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('videos')}
           onClick={() => handleContentTypeChange('videos')}
         >
           {t('page.submit_grant.category_assessment.documentation.content_type.choices.videos')}
-        </CheckboxSection>
-        <CheckboxSection
+        </CheckboxField>
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('code_examples')}
           onClick={() => handleContentTypeChange('code_examples')}
         >
           {t('page.submit_grant.category_assessment.documentation.content_type.choices.code_examples')}
-        </CheckboxSection>
+        </CheckboxField>
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.documentation.total_pieces_label')}</Label>

@@ -12,7 +12,7 @@ import InWorldContentSection, { InWorldContentQuestions } from './InWorldContent
 import SocialMediaContentSection, { SocialMediaContentQuestions } from './SocialMediaContentSection'
 import SponsorshipSection, { SponsorshipQuestions } from './SponsorshipSection'
 
-export type GrantRequestCategoryQuestions = {
+export type GrantRequestCategoryAssessment = {
   accelerator?: AcceleratorQuestions
   coreUnit?: CoreUnitQuestions
   documentation?: DocumentationQuestions
@@ -23,7 +23,7 @@ export type GrantRequestCategoryQuestions = {
 
 interface Props {
   category: NewGrantCategory
-  onValidation: (data: GrantRequestCategoryQuestions, sectionValid: boolean) => void
+  onValidation: (data: GrantRequestCategoryAssessment, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
 
@@ -38,7 +38,7 @@ export default function GrantRequestCategorySection({ category, onValidation, is
     }
   }
 
-  const handleValidation = (data: Partial<GrantRequestCategoryQuestions>, validated: boolean) => {
+  const handleValidation = (data: Partial<GrantRequestCategoryAssessment>, validated: boolean) => {
     onValidation(data, validated)
   }
 

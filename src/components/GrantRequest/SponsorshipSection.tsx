@@ -11,8 +11,8 @@ import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import CheckboxSection from './CheckboxSection'
-import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
+import CheckboxField from './CheckboxField'
+import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type SponsorshipQuestions = {
@@ -130,7 +130,7 @@ const edit = (state: SponsorshipQuestions, props: Partial<SponsorshipQuestions>)
 }
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryQuestions>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
   isFormDisabled: boolean
 }
 
@@ -196,34 +196,34 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.event_category.label')}</Label>
-        <CheckboxSection
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('conference')}
           onClick={() => handleEventCategoryChange('conference')}
         >
           {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.conference')}
-        </CheckboxSection>
-        <CheckboxSection
+        </CheckboxField>
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('side_event')}
           onClick={() => handleEventCategoryChange('side_event')}
         >
           {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.side_event')}
-        </CheckboxSection>
-        <CheckboxSection
+        </CheckboxField>
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('community_meetups')}
           onClick={() => handleEventCategoryChange('community_meetups')}
         >
           {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.community_meetups')}
-        </CheckboxSection>
-        <CheckboxSection
+        </CheckboxField>
+        <CheckboxField
           disabled={isFormDisabled}
           checked={isChecked('hackathon')}
           onClick={() => handleEventCategoryChange('hackathon')}
         >
           {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.hackathon')}
-        </CheckboxSection>
+        </CheckboxField>
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.primary_source_funding_label')}</Label>
