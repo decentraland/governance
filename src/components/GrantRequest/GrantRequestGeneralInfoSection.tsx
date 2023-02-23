@@ -146,7 +146,6 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
   }
 
   useEffect(() => {
-    editor.validate()
     onValidation({ ...state.value }, state.validated)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
