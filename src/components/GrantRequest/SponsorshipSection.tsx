@@ -1,21 +1,23 @@
-import React, { forwardRef, useEffect } from 'react'
+import React, { forwardRef, useCallback, useEffect } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
+import { isEmpty } from 'lodash'
 
 import { asNumber } from '../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import CheckboxSection from './CheckboxSection'
 import { GrantRequestCategoryQuestions } from './GrantRequestCategorySection'
 import Label from './Label'
 
 export type SponsorshipQuestions = {
   eventType: string
-  eventCategory: string // TODO: This should be a multiple choice field
+  eventCategory: string | null
   primarySourceFunding: string
   totalEvents: string | number
   totalAttendance: string | number
@@ -75,13 +77,14 @@ const validate = createValidator<SponsorshipQuestions>({
   }),
   eventCategory: (state) => ({
     eventCategory:
+      assert(state.eventCategory !== null, 'error.grant.category_assessment.field_invalid') ||
       assert(
-        state.eventCategory.length <= schema.eventCategory.maxLength,
+        String(state.eventCategory).length <= schema.eventCategory.maxLength,
         'error.grant.category_assessment.field_too_large'
       ) ||
-      assert(state.eventCategory.length > 0, 'error.grant.category_assessment.field_empty') ||
+      assert(String(state.eventCategory).length > 0, 'error.grant.category_assessment.field_empty') ||
       assert(
-        state.eventCategory.length >= schema.eventCategory.minLength,
+        String(state.eventCategory).length >= schema.eventCategory.minLength,
         'error.grant.category_assessment.field_too_short'
       ) ||
       undefined,
@@ -142,6 +145,33 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.validated, state.value])
 
+  const handleEventCategoryChange = useCallback(
+    (type: string) => {
+      let eventCategoryValues = state.value.eventCategory?.split(', ') || []
+      const text = t(`page.submit_grant.category_assessment.documentation.event_category.choices.${type}`)
+
+      if (eventCategoryValues.includes(text)) {
+        eventCategoryValues = eventCategoryValues.filter((item) => item !== text)
+      } else {
+        eventCategoryValues.push(text)
+      }
+
+      const newEventCategory = !isEmpty(eventCategoryValues) ? eventCategoryValues.join(', ') : null
+      editor.set({ eventCategory: newEventCategory })
+    },
+    [editor, t, state.value.eventCategory]
+  )
+
+  const isChecked = useCallback(
+    (type: string) => {
+      const eventCategoryValues = state.value.eventCategory?.split(', ') || []
+      const text = t(`page.submit_grant.category_assessment.documentation.event_category.choices.${type}`)
+
+      return eventCategoryValues.includes(text)
+    },
+    [t, state.value.eventCategory]
+  )
+
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
@@ -166,13 +196,34 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.event_category.label')}</Label>
-        <Field
-          value={state.value.eventCategory}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ eventCategory: value })}
-          error={!!state.error.eventCategory}
-          message={t(state.error.eventCategory)}
+        <CheckboxSection
           disabled={isFormDisabled}
-        />
+          checked={isChecked('conference')}
+          onClick={() => handleEventCategoryChange('conference')}
+        >
+          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.conference')}
+        </CheckboxSection>
+        <CheckboxSection
+          disabled={isFormDisabled}
+          checked={isChecked('side_event')}
+          onClick={() => handleEventCategoryChange('side_event')}
+        >
+          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.side_event')}
+        </CheckboxSection>
+        <CheckboxSection
+          disabled={isFormDisabled}
+          checked={isChecked('community_meetups')}
+          onClick={() => handleEventCategoryChange('community_meetups')}
+        >
+          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.community_meetups')}
+        </CheckboxSection>
+        <CheckboxSection
+          disabled={isFormDisabled}
+          checked={isChecked('hackathon')}
+          onClick={() => handleEventCategoryChange('hackathon')}
+        >
+          {t('page.submit_grant.category_assessment.sponsorship.event_category.choices.hackathon')}
+        </CheckboxSection>
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.primary_source_funding_label')}</Label>
