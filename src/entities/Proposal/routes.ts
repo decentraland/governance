@@ -12,7 +12,6 @@ import isUUID from 'validator/lib/isUUID'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { inBackground } from '../../helpers'
-import { GrantRequest } from '../../pages/submit/grant'
 import { DiscourseService } from '../../services/DiscourseService'
 import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
@@ -20,7 +19,7 @@ import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
-import { GrantRequestSchema } from '../Grant/types'
+import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
 import { getVotes } from '../Votes/routes'
@@ -305,8 +304,10 @@ export async function createProposalCatalyst(req: WithAuth) {
   })
 }
 
-const newProposalGrantValidator = schema.compile(GrantRequestSchema)
 export async function createProposalGrant(req: WithAuth) {
+  const grantRequestSchema = getGrantRequestSchema(req.body.category)
+  schema.removeSchema(grantRequestSchema)
+  const newProposalGrantValidator = schema.compile(grantRequestSchema)
   const user = req.auth!
   const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
   const grantInCreation = await GrantsService.getGrantInCreation(grantRequest, user)

@@ -10,6 +10,7 @@ import snakeCase from 'lodash/snakeCase'
 import { GrantTier } from '../../entities/Grant/GrantTier'
 import {
   GRANT_PROPOSAL_MIN_BUDGET,
+  GrantRequestFunding,
   GrantRequestFundingSchema,
   GrantTierType,
   MIN_LOW_TIER_PROJECT_DURATION,
@@ -33,12 +34,6 @@ import Label from './Label'
 import ProjectDurationInput from './ProjectDurationInput'
 
 const schema = GrantRequestFundingSchema
-export type GrantRequestFunding = {
-  funding: string | number
-  projectDuration: number
-  vestingStartDate: VestingStartDate
-  paymentToken: PaymentToken
-}
 
 export const INITIAL_GRANT_REQUEST_FUNDING_STATE: GrantRequestFunding = {
   funding: '',

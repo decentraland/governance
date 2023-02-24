@@ -4,34 +4,20 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { asNumber } from '../../entities/Proposal/utils'
-import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
-import { ContentSection } from '../Layout/ContentLayout'
-
-import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
-import Label from './Label'
-import MultipleChoiceField from './MultipleChoiceField'
-
-export type DocumentationQuestions = {
-  contentType: string | null
-  totalPieces: string | number
-}
+import {
+  DocumentationQuestions,
+  DocumentationQuestionsSchema,
+  GrantRequestCategoryAssessment,
+} from '../../../entities/Grant/types'
+import { asNumber } from '../../../entities/Proposal/utils'
+import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import { ContentSection } from '../../Layout/ContentLayout'
+import Label from '../Label'
+import MultipleChoiceField from '../MultipleChoiceField'
 
 const INITIAL_DOCUMENTATION_QUESTIONS = {
   contentType: null,
   totalPieces: '',
-}
-
-const DocumentationQuestionsSchema = {
-  contentType: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  totalPieces: {
-    type: 'integer',
-    minimum: 1,
-  },
 }
 
 const CONTENT_TYPE_OPTIONS = ['documentation_article', 'scene_example', 'videos', 'code_examples']

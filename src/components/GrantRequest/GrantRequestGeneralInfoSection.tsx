@@ -7,25 +7,13 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { GrantRequestGeneralInfoSchema } from '../../entities/Grant/types'
+import { GrantRequestGeneralInfo, GrantRequestGeneralInfoSchema } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import { ContentSection } from '../Layout/ContentLayout'
 import CoAuthors from '../Proposal/Submit/CoAuthor/CoAuthors'
 
 import GrantRequestSection from './GrantRequestSection'
 import Label from './Label'
-
-export type GrantRequestGeneralInfo = {
-  title: string
-  abstract: string
-  description: string
-  specification: string
-  beneficiary: string
-  email: string
-  personnel: string
-  roadmap: string
-  coAuthors?: string[]
-}
 
 export const INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE: GrantRequestGeneralInfo = {
   title: '',

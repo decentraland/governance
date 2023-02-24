@@ -6,23 +6,16 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
-import { asNumber } from '../../entities/Proposal/utils'
-import { useGrantCategoryEditor } from '../../hooks/useGrantCategoryEditor'
-import { ContentSection } from '../Layout/ContentLayout'
-
-import { GrantRequestCategoryAssessment } from './GrantRequestCategorySection'
-import Label from './Label'
-import MultipleChoiceField from './MultipleChoiceField'
-
-export type SponsorshipQuestions = {
-  eventType: string
-  eventCategory: string | null
-  primarySourceFunding: string
-  totalEvents: string | number
-  totalAttendance: string | number
-  audienceRelevance: string
-  showcase: string
-}
+import {
+  GrantRequestCategoryAssessment,
+  SponsorshipQuestions,
+  SponsorshipQuestionsSchema,
+} from '../../../entities/Grant/types'
+import { asNumber } from '../../../entities/Proposal/utils'
+import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import { ContentSection } from '../../Layout/ContentLayout'
+import Label from '../Label'
+import MultipleChoiceField from '../MultipleChoiceField'
 
 const INITIAL_SPONSORSHIP_QUESTIONS = {
   eventType: '',
@@ -35,37 +28,6 @@ const INITIAL_SPONSORSHIP_QUESTIONS = {
 }
 
 const EVENT_CATEGORY_OPTIONS = ['conference', 'side_event', 'community_meetups', 'hackathon']
-
-const SponsorshipQuestionsSchema = {
-  eventType: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  eventCategory: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  audienceRelevance: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 4,
-  },
-  totalAttendance: {
-    type: 'integer',
-    minimum: 0,
-  },
-  totalEvents: {
-    type: 'integer',
-    minimum: 0,
-  },
-  showcase: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-}
 
 const schema = SponsorshipQuestionsSchema
 const validate = createValidator<SponsorshipQuestions>({
