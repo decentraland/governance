@@ -306,7 +306,6 @@ export async function createProposalCatalyst(req: WithAuth) {
 
 export async function createProposalGrant(req: WithAuth) {
   const grantRequestSchema = getGrantRequestSchema(req.body.category)
-  schema.removeSchema(grantRequestSchema)
   const newProposalGrantValidator = schema.compile(grantRequestSchema)
   const user = req.auth!
   const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
