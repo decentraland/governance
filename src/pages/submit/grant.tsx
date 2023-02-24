@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
+import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
@@ -64,14 +66,13 @@ const initialValidationState: GrantRequestValidationState = {
   finalConsentSectionValid: false,
 }
 
-const HAS_STICKY_NAVBAR_FEATURE = false // TODO: Implement this
-
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
   const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
+  const [hasScrolled, setHasScrolled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
@@ -112,6 +113,24 @@ export default function SubmitGrant() {
     }
   }
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onScroll = function () {
+        if (window.scrollY > 100) {
+          setHasScrolled(true)
+        }
+
+        if (window.scrollY <= 100) {
+          setHasScrolled(false)
+        }
+      }
+
+      window.addEventListener('scroll', onScroll)
+
+      return () => window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
   if (accountState.loading) {
     return <LoadingView />
   }
@@ -122,29 +141,31 @@ export default function SubmitGrant() {
 
   return (
     <div>
-      <Container className="ContentLayout__Container">
-        <div className="GrantRequest__Head">
-          <Head
-            title={t('page.submit_grant.title') || ''}
-            description={t('page.submit_grant.description') || ''}
-            image="https://decentraland.org/images/decentraland.png"
+      <Head
+        title={t('page.submit_grant.title') || ''}
+        description={t('page.submit_grant.description') || ''}
+        image="https://decentraland.org/images/decentraland.png"
+      />
+      <Helmet title={t('page.submit_grant.title') || ''} />
+      <Container className="GrantRequest__Head">
+        <div className="GrantRequest__Header">
+          <DecentralandLogo
+            className={TokenList.join(['GrantRequest__Logo', hasScrolled && 'GrantRequest__Logo--visible'])}
           />
-          <Helmet title={t('page.submit_grant.title') || ''} />
-          <div className="GrantRequest__Header">
-            {HAS_STICKY_NAVBAR_FEATURE && <DecentralandLogo />}
-            <div>{t('page.submit_grant.title')}</div>
-          </div>
-          {HAS_STICKY_NAVBAR_FEATURE && <Button basic>{t('page.submit_grant.cancel')}</Button>}
+          <h1 className="GrantRequest_HeaderTitle">{t('page.submit_grant.title')}</h1>
         </div>
+        <Link href={locations.submit()}>
+          <Button basic className="GrantRequest__CancelButton">
+            {t('page.submit_grant.cancel')}
+          </Button>
+        </Link>
       </Container>
-      <Container className="ContentLayout__Container GrantRequestSection__Container">
-        <ContentSection>
-          <Markdown className="GrantRequest__HeaderDescription">{t('page.submit_grant.description')}</Markdown>
-        </ContentSection>
+      <Container className="GrantRequestSection__Container">
+        <Markdown className="GrantRequest__HeaderDescription">{t('page.submit_grant.description')}</Markdown>
       </Container>
 
       {!isCategorySelected && (
-        <Container className="ContentLayout__Container GrantRequestSection__Container">
+        <Container className="GrantRequestSection__Container">
           <CategorySelector onCategoryClick={(value: NewGrantCategory) => patchGrantRequest({ category: value })} />
         </Container>
       )}
