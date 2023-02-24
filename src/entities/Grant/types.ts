@@ -1,4 +1,4 @@
-import { camelCase } from 'lodash'
+import { camelCase, cloneDeep } from 'lodash'
 
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
@@ -356,7 +356,7 @@ function getCategoryAssessmentSchema(category: NewGrantCategory) {
 }
 
 export function getGrantRequestSchema(category: string | null) {
-  const schema: any = GrantRequestSchema
+  const schema: any = cloneDeep(GrantRequestSchema)
   const parsedCategory: NewGrantCategory = toNewGrantCategory(category)
   if (parsedCategory === NewGrantCategory.Platform) {
     return schema
