@@ -14,26 +14,39 @@ import { asNumber } from '../../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import { ContentSection } from '../../Layout/ContentLayout'
 import Label from '../Label'
+import MultipleChoiceField from '../MultipleChoiceField'
 
 const INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS = {
-  socialMediaPlatforms: '',
+  socialMediaPlatforms: null,
   audienceRelevance: '',
   totalPieces: '',
   totalPeopleImpact: '',
   relevantLink: '',
 }
 
+const SOCIAL_MEDIA_PLATFORMS_OPTIONS = [
+  'instagram',
+  'facebook',
+  'tiktok',
+  'discord',
+  'youtube',
+  'twitter',
+  'twitch',
+  'other',
+]
+
 const schema = SocialMediaContentQuestionsSchema
 const validate = createValidator<SocialMediaContentQuestions>({
   socialMediaPlatforms: (state) => ({
     socialMediaPlatforms:
+      assert(state.socialMediaPlatforms !== null, 'error.grant.category_assessment.field_invalid') ||
       assert(
-        state.socialMediaPlatforms.length <= schema.socialMediaPlatforms.maxLength,
+        String(state.socialMediaPlatforms).length <= schema.socialMediaPlatforms.maxLength,
         'error.grant.category_assessment.field_too_large'
       ) ||
-      assert(state.socialMediaPlatforms.length > 0, 'error.grant.category_assessment.field_empty') ||
+      assert(String(state.socialMediaPlatforms).length > 0, 'error.grant.category_assessment.field_empty') ||
       assert(
-        state.socialMediaPlatforms.length >= schema.socialMediaPlatforms.minLength,
+        String(state.socialMediaPlatforms).length >= schema.socialMediaPlatforms.minLength,
         'error.grant.category_assessment.field_too_short'
       ) ||
       undefined,
@@ -112,24 +125,14 @@ const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
 
   return (
     <div className="GrantRequestSection__Content">
-      <ContentSection className="GrantRequestSection__Field">
-        <Label>{t('page.submit_grant.category_assessment.social_media_content.social_media_platforms_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.socialMediaPlatforms}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ socialMediaPlatforms: value })}
-          error={!!state.error.socialMediaPlatforms}
-          message={
-            t(state.error.socialMediaPlatforms) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.socialMediaPlatforms.length,
-              limit: schema.socialMediaPlatforms.maxLength,
-            })
-          }
-          disabled={isFormDisabled}
-        />
-      </ContentSection>
+      <MultipleChoiceField
+        label={t('page.submit_grant.category_assessment.social_media_content.social_media_platforms.label')}
+        onChange={(value) => editor.set({ socialMediaPlatforms: value })}
+        value={state.value.socialMediaPlatforms}
+        isFormDisabled={isFormDisabled}
+        intlKey="page.submit_grant.category_assessment.social_media_content.social_media_platforms.choices"
+        options={SOCIAL_MEDIA_PLATFORMS_OPTIONS}
+      />
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.audience_relevance_label')}</Label>
         <MarkdownTextarea

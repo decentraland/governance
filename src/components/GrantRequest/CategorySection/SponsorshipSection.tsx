@@ -131,6 +131,7 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
         />
       </ContentSection>
       <MultipleChoiceField
+        label={t('page.submit_grant.category_assessment.sponsorship.event_category.label')}
         intlKey="page.submit_grant.category_assessment.sponsorship.event_category.choices"
         options={EVENT_CATEGORY_OPTIONS}
         isFormDisabled={isFormDisabled}

@@ -75,6 +75,7 @@ const DocumentationSection = forwardRef(function DocumentationSection({ onValida
   return (
     <div className="GrantRequestSection__Content">
       <MultipleChoiceField
+        label={t('page.submit_grant.category_assessment.documentation.content_type.label')}
         intlKey="page.submit_grant.category_assessment.documentation.content_type.choices"
         options={CONTENT_TYPE_OPTIONS}
         isFormDisabled={isFormDisabled}
