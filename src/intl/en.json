@@ -1155,7 +1155,19 @@
           "engagement_measurement_label": "How are you going to measure the engagement with your content? (I.e. newly populated land, Active Users, Returning Users, Time on Scene)"
         },
         "social_media_content": {
-          "social_media_platforms_label": "Please select the social media platforms where you will publish this content:",
+          "social_media_platforms": {
+            "label": "Please select the social media platforms where you will publish this content:",
+            "choices": {
+              "instagram": "Instagram",
+              "facebook": "Facebook",
+              "tiktok": "TikTok",
+              "discord": "Discord",
+              "youtube": "YouTube",
+              "twitter": "Twitter",
+              "twitch": "Twitch",
+              "other": "Other"
+            }
+          },
           "audience_relevance_label": "Tell us how your audience is relevant to Decentraland.",
           "total_pieces_label": "How many pieces of content are you planning to generate?",
           "total_impact_label": "How many people do you plan to impact with this content?",

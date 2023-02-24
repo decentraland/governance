@@ -218,11 +218,11 @@ export const SponsorshipQuestionsSchema = {
   },
   totalAttendance: {
     type: 'integer',
-    minimum: 0,
+    minimum: 1,
   },
   totalEvents: {
     type: 'integer',
-    minimum: 0,
+    minimum: 1,
   },
   showcase: {
     type: 'string',
@@ -308,7 +308,7 @@ export type InWorldContentQuestions = {
   engagementMeasurement: string
 }
 export type SocialMediaContentQuestions = {
-  socialMediaPlatforms: string // TODO: Implement multiple choice
+  socialMediaPlatforms: string | null
   audienceRelevance: string
   totalPieces: string | number
   totalPeopleImpact: string | number
