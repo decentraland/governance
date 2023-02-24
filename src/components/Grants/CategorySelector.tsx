@@ -16,7 +16,7 @@ const CategorySelector = ({ onCategoryClick }: Props) => {
   const t = useFormatMessage()
 
   return (
-    <div>
+    <div className="CategorySelector">
       <p className="CategorySelector__Description">{t('page.submit_grant.category_selection.description')}</p>
       <div className="CategorySelector__ItemsContainer">
         {VALID_CATEGORIES.map((category) => {
