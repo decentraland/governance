@@ -100,7 +100,7 @@ ${
   (type === ProposalType.Poll ? await poll.post_description(configuration as any) : '')
 }
 
-**[Vote on this proposal on the Decentraland DAO](${proposal_url})**
+**[This proposal is summarized due to technical limitations. To view it complete and vote on it, visit the DCL DAO Governance dApp](${proposal_url})**
 
 `
 
