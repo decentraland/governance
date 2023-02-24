@@ -1,8 +1,15 @@
 import React from 'react'
 
-function DecentralandLogo() {
+function DecentralandLogo({ className }: { className?: string }) {
   return (
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="36"
+      height="36"
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="18" cy="18" r="18" fill="url(#paint0_linear_8404_3509)" />
       <path
         fillRule="evenodd"
