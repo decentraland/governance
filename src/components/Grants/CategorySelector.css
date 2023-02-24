@@ -1,3 +1,9 @@
+@media (min-width: 768px) {
+  .CategorySelector {
+    margin-left: 61px;
+  }
+}
+
 .CategorySelector__ItemsContainer {
   display: grid;
   gap: 30px;

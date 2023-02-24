@@ -13,7 +13,7 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 24px;
+  gap: 26px;
   margin-bottom: 16px;
 }
 
@@ -42,7 +42,7 @@
 
 @media (min-width: 768px) {
   .GrantRequestSection__Content {
-    margin-left: 58px;
+    margin-left: 61px;
   }
 }
 
