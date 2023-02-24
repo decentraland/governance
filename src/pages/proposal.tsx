@@ -28,6 +28,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
+import CategoryAssessment from '../components/Proposal/CategoryAssessment'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -42,6 +43,7 @@ import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
+import { NewGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import {
   forumUrl,
@@ -221,6 +223,11 @@ export default function ProposalPage() {
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const showCategoryAssessment =
+    proposal &&
+    proposal.type === ProposalType.Grant &&
+    proposal.configuration.category !== NewGrantCategory.Platform &&
+    !!proposal.configuration.categoryAssessment
 
   return (
     <>
@@ -249,8 +256,11 @@ export default function ProposalPage() {
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
-              {proposal && proposal.type === ProposalType.Grant && !!proposal.configuration.categoryAssessment && (
-                <Markdown>{JSON.stringify(proposal.configuration.categoryAssessment)}</Markdown>
+              {showCategoryAssessment && (
+                <CategoryAssessment
+                  category={proposal.configuration.category}
+                  data={proposal.configuration.categoryAssessment}
+                />
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
