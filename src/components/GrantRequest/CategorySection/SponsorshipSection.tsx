@@ -27,7 +27,7 @@ const INITIAL_SPONSORSHIP_QUESTIONS = {
   showcase: '',
 }
 
-const EVENT_CATEGORY_OPTIONS = ['conference', 'side_event', 'community_meetups', 'hackathon']
+const EVENT_CATEGORY_OPTIONS = ['conference', 'side_event', 'community_meetups', 'hackathon', 'other']
 
 const schema = SponsorshipQuestionsSchema
 const validate = createValidator<SponsorshipQuestions>({

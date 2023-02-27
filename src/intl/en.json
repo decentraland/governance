@@ -1144,7 +1144,8 @@
               "documentation_article": "Documentation Article",
               "scene_example": "Scene Example",
               "videos": "Videos",
-              "code_examples": "Code examples"
+              "code_examples": "Code examples",
+              "other": "Other"
             }
           },
           "total_pieces_label": "How many pieces of content are you planning to publish under the duration of this Grant?"
@@ -1210,8 +1211,9 @@
         "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy](https://decentraland.org/content)",
         "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use](https://decentraland.org/terms) and agree with them",
         "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics](https://decentraland.org/ethics) and hereby commit to honoring it",
-        "platform_category_label": "If this Grant gets funded, I agree to work and publish the source code and its derivatives developed under the budget provided by the DAO under an open-source license and in a public repository. I also commit to publishing documentation for the community to understand and contribute to the codebase.",
-        "documentation_category_label": "I agree to publish all the content produced under this Grant with an Attribution 4.0 International (CC BY 4.0) license"
+        "platform_category_license_label": "I agree to work and publish the source code and its derivatives produced for this grant under an [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0)",
+        "platform_category_documentation_label": "I agree to publish documentation for the community to understand and contribute to the codebase",
+        "documentation_category_label": "I agree to publish all the content produced under this Grant with an [Attribution 4.0 International (CC BY 4.0) license](https://creativecommons.org/licenses/by/4.0/)"
       },
       "category_label": "Category",
       "category_placeholder": "Select a category",
