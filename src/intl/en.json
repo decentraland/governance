@@ -1194,8 +1194,8 @@
           "primary_source_funding_label": "Is this grant the primary source of funding for this event?",
           "total_events_label": "How many events are you planning to organize?",
           "total_attendance_label": "How many people are you expecting to attend?",
-          "audience_relevance_label": "How your audience is relevant to Decentraland?",
-          "showcase_label": "Where is the Decentraland brand going to be showcased?"
+          "audience_relevance_label": "How is your audience relevant to Decentraland?",
+          "showcase_label": "How is the Decentraland brand going to be showcased?"
         },
         "accelerator": {
           "revenue_label": "Please describe your revenue generation model",
@@ -1220,7 +1220,7 @@
       "documentation_description": "Creation of free educational content related to Decentraland’s dynamics",
       "in_world_content_description": "Development of experiences aiming to improve user retention",
       "platform_description": "Creation of tools and applications extending our platform and ecosystem",
-      "social_media_content_description": "Marketing efforts aiming to reach new, users and keeping them engaged",
+      "social_media_content_description": "Marketing efforts aiming to reach new users and keeping them engaged",
       "sponsorship_description": "Supporting IRL initiatives targeting audiences relevant to Decentraland",
       "tier_label": "Grant tier",
       "tier_placeholder": "Select a tier",
