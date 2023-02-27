@@ -1,8 +1,8 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
-import { ChannelType, Client, EmbedBuilder, GatewayIntentBits } from 'discord.js'
 
 import { capitalizeFirstLetter } from '../clients/utils'
+import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
 import { ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
@@ -14,9 +14,7 @@ import { inBackground } from '../helpers'
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
 
-const DISCORD_SERVICE_ENABLED = true
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+const Discord = DISCORD_SERVICE_ENABLED ? require('discord.js') : null
 
 const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
@@ -57,6 +55,7 @@ function getPreviewText(text: string) {
 }
 
 export class DiscordService {
+  private static client: any
   static init() {
     if (!DISCORD_SERVICE_ENABLED) {
       logger.log('Discord service disabled')
@@ -67,7 +66,8 @@ export class DiscordService {
       throw new Error('Discord token missing')
     }
 
-    client.login(TOKEN)
+    this.client = new Discord.Client({ intents: [Discord.GatewayIntentBits.Guilds] })
+    this.client.login(TOKEN)
   }
 
   private static get channel() {
@@ -75,8 +75,8 @@ export class DiscordService {
       throw new Error('Discord channel ID not set')
     }
 
-    const channel = client.channels.cache.get(CHANNEL_ID)
-    if (channel?.type !== ChannelType.GuildText && channel?.type !== ChannelType.GuildAnnouncement) {
+    const channel = this.client.channels.cache.get(CHANNEL_ID)
+    if (channel?.type !== Discord.ChannelType.GuildText && channel?.type !== Discord.ChannelType.GuildAnnouncement) {
       throw new Error(`Discord channel type is not supported: ${channel?.type}`)
     }
 
@@ -110,7 +110,7 @@ export class DiscordService {
       fields.push({ name: BLANK, value: BLANK }, ...choices)
     }
 
-    const embed = new EmbedBuilder()
+    const embed = new Discord.EmbedBuilder()
       .setColor(color)
       .setTitle(title)
       .setURL(url)

@@ -8,6 +8,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'flickity/css/flickity.css'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { getProposalStatusDisplayName } from '../../entities/Proposal/utils'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
@@ -27,12 +28,12 @@ const flickityOptions = {
   setGallerySize: true,
 }
 
-export type VotingStatusSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  proposal?: ProposalAttributes | null
+type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+  proposal: ProposalAttributes
   votes: ChoiceProgressProps[]
 }
 
-export default function VotingStatusSummary({ proposal, votes }: VotingStatusSummaryProps) {
+export default function VotingStatusSummary({ proposal, votes }: Props) {
   const t = useFormatMessage()
   const vpInFavor = votes[0].power || 0
   const threshold = proposal?.required_to_pass || 0
@@ -86,7 +87,11 @@ export default function VotingStatusSummary({ proposal, votes }: VotingStatusSum
               : t('page.proposal_detail.threshold_not_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="VotingStatusSummary__Title">
-            <Bold>{t('page.proposal_detail.proposal_status', { status: proposal?.status })}</Bold>
+            <Bold>
+              {t('page.proposal_detail.proposal_status', {
+                status: getProposalStatusDisplayName(proposal.status).toLowerCase(),
+              })}
+            </Bold>
           </div>
         </div>
       )}

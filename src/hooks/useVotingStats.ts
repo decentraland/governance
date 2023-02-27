@@ -5,7 +5,7 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { SnapshotGraphql, getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
-import { getPercentage } from '../helpers'
+import { getFormattedPercentage } from '../helpers'
 
 function sortAddressesVotes(votes: SnapshotVote[], userAddress: string | null) {
   const addressVotes: SnapshotVote[] = []
@@ -35,7 +35,11 @@ function getParticipation(
     }
   })
 
-  const participationPercentage = getPercentage(proposalsVotedInTheLast30Days.size, last30DaysProposals.length, 0)
+  const participationPercentage = getFormattedPercentage(
+    proposalsVotedInTheLast30Days.size,
+    last30DaysProposals.length,
+    0
+  )
   return { participationTotal: proposalsVotedInTheLast30Days.size, participationPercentage }
 }
 

@@ -1,110 +1,118 @@
-import { ProposalGrantTier, ProposalGrantTierValues } from './types'
-import { isGrantSizeValid } from './utils'
+import { ProposalStatus } from './types'
+import {
+  canLinkProposal,
+  isProposalDeletable,
+  isProposalEnactable,
+  isProposalStatus,
+  isValidUpdateProposalStatus,
+  proposalCanBePassedOrRejected,
+  toProposalStatus,
+} from './utils'
 
-describe('isGrantSizeValid', () => {
-  let tier: ProposalGrantTier | null, size: string | number
+describe('isProposalStatus', () => {
+  it('returns true for every proposal status', () => {
+    Object.values(ProposalStatus).forEach((status) => expect(isProposalStatus(status)).toBe(true))
+  })
+  it('returns false for anything else', () => {
+    expect(isProposalStatus('status')).toBe(false)
+  })
+})
 
-  describe('for the lower tier ', () => {
-    beforeAll(() => {
-      tier = ProposalGrantTier.Tier1
-    })
+describe('toProposalStatus', () => {
+  it('returns a ProposalStatus for every proposal status string', () => {
+    Object.values(ProposalStatus).forEach((status) =>
+      expect(toProposalStatus(status.toString(), () => {})).toBe(status)
+    )
+  })
+  it('calls the handler function for anything else', () => {
+    expect(toProposalStatus('status', () => false)).toBe(false)
+    expect(toProposalStatus('status', () => null)).toBe(null)
+    expect(toProposalStatus('status', () => undefined)).toBe(undefined)
+    expect(() =>
+      toProposalStatus('status', () => {
+        throw new Error('ProposalStatus invalid')
+      })
+    ).toThrowError('ProposalStatus invalid')
+  })
+})
 
-    describe('when the grant size is inside the tier limits ', () => {
-      beforeAll(() => {
-        size = 800
-      })
-      it('should say it is valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(true)
-      })
-    })
-
-    describe('when the grant size is zero ', () => {
-      beforeAll(() => {
-        size = 0
-      })
-      it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false)
-      })
-    })
-
-    describe('when the grant size is negative ', () => {
-      beforeAll(() => {
-        size = -100
-      })
-      it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false)
-      })
-    })
-
-    describe('when the grant size is equal to the upper limit', () => {
-      beforeAll(() => {
-        size = ProposalGrantTierValues[ProposalGrantTier.Tier1]
-      })
-      it('should say it valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(true)
-      })
-    })
-
-    describe('when the grant size is above the upper limit', () => {
-      beforeAll(() => {
-        size = ProposalGrantTierValues[ProposalGrantTier.Tier1] + 1
-      })
-      it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false)
-      })
-    })
+describe('isValidUpdateProposalStatus', () => {
+  it('returns true when current status is Finished and next status is Rejected, Passed, Enacted, or Out of Budget', () => {
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Rejected)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Passed)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Enacted)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.OutOfBudget)).toBe(true)
   })
 
-  describe('when no tier is provided', () => {
-    beforeAll(() => {
-      tier = null
-      size = 100
-    })
+  it('can only update to Enacted from Passed, Enacted, or Finished', () => {
+    expect(isValidUpdateProposalStatus(ProposalStatus.Passed, ProposalStatus.Enacted)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Enacted, ProposalStatus.Enacted)).toBe(true)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Enacted)).toBe(true)
 
-    it('should say it is not valid', () => {
-      expect(isGrantSizeValid(tier, size)).toBe(false)
-    })
+    expect(isValidUpdateProposalStatus(ProposalStatus.Pending, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Active, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Rejected, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.OutOfBudget, ProposalStatus.Enacted)).toBe(false)
+    expect(isValidUpdateProposalStatus(ProposalStatus.Deleted, ProposalStatus.Enacted)).toBe(false)
   })
 
-  describe('for the upper tier ', () => {
-    beforeAll(() => {
-      tier = ProposalGrantTier.Tier6
+  it('returns false for Pending, Active, Rejected, OutOfBudget and Deleted statuses', () => {
+    Object.values(ProposalStatus).forEach((status) => {
+      expect(isValidUpdateProposalStatus(ProposalStatus.Pending, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.Active, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.Rejected, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.OutOfBudget, status)).toBe(false)
+      expect(isValidUpdateProposalStatus(ProposalStatus.Deleted, status)).toBe(false)
     })
+  })
+})
 
-    describe('when the grant size is inside the tier limits ', () => {
-      beforeAll(() => {
-        size = ProposalGrantTierValues[ProposalGrantTier.Tier5] + 500
+describe('proposalCanBeDeleted', () => {
+  it('should return true for active or pending proposals', () => {
+    expect(isProposalDeletable(ProposalStatus.Active)).toBe(true)
+    expect(isProposalDeletable(ProposalStatus.Pending)).toBe(true)
+  })
+  it('should return false for all status other than active or pending', () => {
+    Object.values(ProposalStatus)
+      .filter((status) => status !== ProposalStatus.Active && status !== ProposalStatus.Pending)
+      .forEach((status) => {
+        expect(isProposalDeletable(status)).toBe(false)
       })
-      it('should say it is valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(true)
-      })
-    })
+  })
+})
 
-    describe('when the grant is below the lower limit ', () => {
-      beforeAll(() => {
-        size = ProposalGrantTierValues[ProposalGrantTier.Tier5] - 500
+describe('proposalCanBeEnacted', () => {
+  it('should return true for enacted or passed proposals', () => {
+    expect(isProposalEnactable(ProposalStatus.Passed)).toBe(true)
+    expect(isProposalEnactable(ProposalStatus.Enacted)).toBe(true)
+  })
+  it('should return false for all status other than active or pending', () => {
+    Object.values(ProposalStatus)
+      .filter((status) => status !== ProposalStatus.Passed && status !== ProposalStatus.Enacted)
+      .forEach((status) => {
+        expect(isProposalEnactable(status)).toBe(false)
       })
-      it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false)
-      })
-    })
+  })
+})
 
-    describe('when the grant is equal to the lower limit ', () => {
-      beforeAll(() => {
-        size = ProposalGrantTierValues[ProposalGrantTier.Tier5]
-      })
-      it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false)
-      })
+describe('proposalCanBePassedOrRejected', () => {
+  it('should only be true for finished proposals', () => {
+    Object.values(ProposalStatus).forEach((status) => {
+      expect(proposalCanBePassedOrRejected(status)).toBe(status === ProposalStatus.Finished)
     })
+  })
+})
 
-    describe('when the grant size is above the upper limit ', () => {
-      beforeAll(() => {
-        size = ProposalGrantTierValues[ProposalGrantTier.Tier6] + 500
+describe('canLinkProposal', () => {
+  it('should return true for passed or OOB proposals', () => {
+    expect(canLinkProposal(ProposalStatus.Passed)).toBe(true)
+    expect(canLinkProposal(ProposalStatus.OutOfBudget)).toBe(true)
+  })
+  it('should return false for all status other than passed or OOB', () => {
+    Object.values(ProposalStatus)
+      .filter((status) => status !== ProposalStatus.Passed && status !== ProposalStatus.OutOfBudget)
+      .forEach((status) => {
+        expect(canLinkProposal(status)).toBe(false)
       })
-      it('should say it is not valid', () => {
-        expect(isGrantSizeValid(tier, size)).toBe(false)
-      })
-    })
   })
 })

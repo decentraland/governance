@@ -15,13 +15,14 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import CoauthorModel from '../Coauthor/model'
+import { BUDGETING_START_DATE } from '../Grant/constants'
 import SubscriptionModel from '../Subscription/model'
 
 import { CoauthorStatus } from './../Coauthor/types'
 
 import tsquery from './tsquery'
-import { ProposalAttributes, ProposalStatus, isProposalStatus, isProposalType } from './types'
-import { SITEMAP_ITEMS_PER_PAGE } from './utils'
+import { ProposalAttributes, ProposalStatus, ProposalType, isProposalType } from './types'
+import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
 
 export type FilterProposalList = {
   type: string
@@ -140,6 +141,21 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
+  static async getPendingNewGrants() {
+    const query = SQL`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "deleted" = FALSE
+          AND "status" IN (${ProposalStatus.Passed})
+          AND "type" IN (${ProposalType.Grant})
+          AND "start_at" >= ${BUDGETING_START_DATE}
+          ORDER BY created_at ASC
+    `
+
+    const result = await this.query(query)
+    return result.map(ProposalModel.parse)
+  }
+
   static async getFinishedProposals() {
     const query = SQL`
         SELECT *
@@ -147,6 +163,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         WHERE "deleted" = FALSE
           AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
           AND "finish_at" <= (now() + interval '1 minute')
+          ORDER BY created_at ASC
     `
 
     const result = await this.query(query)

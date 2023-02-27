@@ -4,14 +4,14 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { GrantAttributes } from '../../../entities/Proposal/types'
+import { Grant } from '../../../entities/Proposal/types'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
 import PercentageLabel from './PercentageLabel'
 import './VestingProgress.css'
 
 export type Props = React.HTMLAttributes<HTMLDivElement> & {
-  grant: GrantAttributes
+  grant: Grant
   basic?: boolean
 }
 
@@ -20,6 +20,8 @@ const getRoundedPercentage = (value: number, total: number) => Math.min(Math.rou
 const VestingProgress = ({ grant, basic }: Props) => {
   const t = useFormatMessage()
   const { contract, enacting_tx, tx_amount, token, enacted_at } = grant
+  if (!enacted_at) return null
+
   const total = contract?.vesting_total_amount || 100
   const vestedPercentage = contract ? getRoundedPercentage(contract.vestedAmount, total) : 100
   const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null

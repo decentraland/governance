@@ -7,6 +7,8 @@
   --green-200: #e1f3d6;
   --green-800: #44b600;
   --green-900: #328500;
+  --red-100: rgba(216, 0, 39, 0.16);
+  --red-150: rgba(216, 0, 39, 0.3);
   --red-200: #f9d6dc;
   --red-800: #d80027;
   --blue-200: #e2ecfc;
@@ -40,6 +42,8 @@
   --dao-footer-height: 156px;
   --dao-header-height: 64px;
   --dao-navigation-height: 89px;
+
+  --background-banner-gradient: linear-gradient(89.29deg, #f6f5f8 0%, rgba(246, 245, 248, 0) 100%);
 }
 
 body {

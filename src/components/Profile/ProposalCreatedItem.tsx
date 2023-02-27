@@ -46,7 +46,7 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
               <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
             )}
             <Mobile>
-              {type && <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" type={type} />}
+              {type && <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" proposalType={type} />}
             </Mobile>
             <div className="ProposalCreatedItem__Stats">
               <span className="ProposalCreatedItem__Details">
@@ -64,7 +64,7 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
             <div className="ProposalCreatedItem__CategorySection">
               {type && (
                 <div className="ProposalCreatedItem__CategoryPillContainer">
-                  <CategoryPill size="small" type={type} />
+                  <CategoryPill size="small" proposalType={type} />
                 </div>
               )}
               {proposal.status === ProposalStatus.Active && (

@@ -8,31 +8,12 @@ import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'
 import { DISCOURSE_API } from '../Discourse/utils'
-import { SNAPSHOT_DURATION, SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
+import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
-import {
-  DURATION_GRANT_TIER1,
-  DURATION_GRANT_TIER2,
-  DURATION_GRANT_TIER3,
-  DURATION_GRANT_TIER4,
-  DURATION_GRANT_TIER5,
-  DURATION_GRANT_TIER6,
-  GRANT_SIZE_MINIMUM,
-  MAX_NAME_SIZE,
-  MIN_NAME_SIZE,
-} from './constants'
-import {
-  GrantAttributes,
-  ProposalAttributes,
-  ProposalGrantTier,
-  ProposalGrantTierValues,
-  ProposalStatus,
-  ProposalType,
-  toProposalGrantTier,
-} from './types'
+import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
+import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
-export const MIN_PROPOSAL_LIMIT = 0
 export const MAX_PROPOSAL_LIMIT = 100
 export const SITEMAP_ITEMS_PER_PAGE = 100
 
@@ -42,24 +23,6 @@ export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME
 export const JOIN_DISCORD_URL = env('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 
 export const CLIFF_PERIOD_IN_DAYS = 29
-
-export async function asyncSome<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
-  for (const item of arr) {
-    if (await predicate(item)) {
-      return true
-    }
-  }
-  return false
-}
-
-export async function asyncEvery<T>(arr: T[], predicate: (param: T) => Promise<boolean>) {
-  for (const item of arr) {
-    if (!(await predicate(item))) {
-      return false
-    }
-  }
-  return true
-}
 
 export function formatBalance(value: number | bigint) {
   return numeral(value).format('0,0')
@@ -106,25 +69,15 @@ export async function isAlreadyACatalyst(domain: string) {
   return !!servers.find((server) => server.baseUrl === 'https://' + domain)
 }
 
-export function isGrantSizeValid(tier: string | null, size: string | number): boolean {
-  const tierIndex = Object.values(ProposalGrantTier).indexOf(toProposalGrantTier(tier)!)
-  const values = Object.values(ProposalGrantTierValues)
-
-  if (tierIndex < 0 || tierIndex >= values.length) {
-    return false
-  }
-
-  const sizeNumber = asNumber(size)
-  const upperTierLimit = values[tierIndex]
-  const lowerTierLimit = tierIndex === 0 ? asNumber(GRANT_SIZE_MINIMUM || 0) : values[tierIndex - 1]
-
-  return sizeNumber > lowerTierLimit && sizeNumber <= upperTierLimit
-}
-
 export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
   switch (current) {
     case ProposalStatus.Finished:
-      return next === ProposalStatus.Rejected || next === ProposalStatus.Passed || next === ProposalStatus.Enacted
+      return (
+        next === ProposalStatus.Rejected ||
+        next === ProposalStatus.Passed ||
+        next === ProposalStatus.Enacted ||
+        next === ProposalStatus.OutOfBudget
+      )
     case ProposalStatus.Passed:
     case ProposalStatus.Enacted:
       return next === ProposalStatus.Enacted
@@ -181,19 +134,6 @@ export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
   return target.toString()
 }
 
-function grantDuration(value: string | undefined | null) {
-  return Number(value || SNAPSHOT_DURATION)
-}
-
-export const GrantDuration = {
-  [ProposalGrantTier.Tier1]: grantDuration(DURATION_GRANT_TIER1),
-  [ProposalGrantTier.Tier2]: grantDuration(DURATION_GRANT_TIER2),
-  [ProposalGrantTier.Tier3]: grantDuration(DURATION_GRANT_TIER3),
-  [ProposalGrantTier.Tier4]: grantDuration(DURATION_GRANT_TIER4),
-  [ProposalGrantTier.Tier5]: grantDuration(DURATION_GRANT_TIER5),
-  [ProposalGrantTier.Tier6]: grantDuration(DURATION_GRANT_TIER6),
-}
-
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
 export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
@@ -201,23 +141,59 @@ export function userModifiedForm(stateValue: Record<string, unknown>, initialSta
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
 }
 
-const TRANSPARENCY_ONE_TIME_PAYMENT_TIERS = new Set(['Tier 1', 'Tier 2'])
-
-export function isProposalInCliffPeriod(grant: GrantAttributes) {
-  const isOneTimePayment = TRANSPARENCY_ONE_TIME_PAYMENT_TIERS.has(grant.configuration.tier)
+export function isProposalInCliffPeriod(enactedDate: number) {
   const now = Time.utc()
-  return !isOneTimePayment && Time.unix(grant.enacted_at).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
+  return Time.unix(enactedDate).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
 
 export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
 
-export function isGrantProposalSubmitEnabled(now: number) {
-  const DISABLE_START_DATE = Time.utc('2023-01-01').add(8, 'hour')
-  if (Time(now).isAfter(DISABLE_START_DATE)) {
-    return false
+export function isProposalStatus(value: string | null | undefined): boolean {
+  switch (value) {
+    case ProposalStatus.Pending:
+    case ProposalStatus.Finished:
+    case ProposalStatus.Active:
+    case ProposalStatus.Rejected:
+    case ProposalStatus.Passed:
+    case ProposalStatus.OutOfBudget:
+    case ProposalStatus.Enacted:
+    case ProposalStatus.Deleted:
+      return true
+    default:
+      return false
   }
+}
 
-  return true
+export function toProposalStatus(value: string | null | undefined, orElse: () => any): ProposalStatus | any {
+  return isProposalStatus(value) ? (value as ProposalStatus) : orElse()
+}
+
+export function isProposalDeletable(proposalStatus?: ProposalStatus) {
+  return proposalStatus === ProposalStatus.Pending || proposalStatus === ProposalStatus.Active
+}
+
+export function isProposalEnactable(proposalStatus?: ProposalStatus) {
+  return proposalStatus === ProposalStatus.Passed || proposalStatus === ProposalStatus.Enacted
+}
+
+export function proposalCanBePassedOrRejected(proposalStatus?: ProposalStatus) {
+  return proposalStatus === ProposalStatus.Finished
+}
+
+export function canLinkProposal(status: ProposalStatus) {
+  return status === ProposalStatus.Passed || status === ProposalStatus.OutOfBudget
+}
+
+export function getProposalEndDate(duration: number) {
+  return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
+}
+
+export function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
+  return proposalStatus.split('_').join(' ').toUpperCase()
+}
+
+export function getProposalStatusShortName(status: ProposalStatus) {
+  return status === ProposalStatus.OutOfBudget ? 'OOB' : getProposalStatusDisplayName(status)
 }

@@ -28,6 +28,7 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
+import CategoryAssessment from '../components/Proposal/CategoryAssessment'
 import ProposalComments from '../components/Proposal/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -42,8 +43,14 @@ import SubscribeButton from '../components/Section/SubscribeButton'
 import VestingContract from '../components/Section/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
+import { NewGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { forumUrl } from '../entities/Proposal/utils'
+import {
+  forumUrl,
+  isProposalDeletable,
+  isProposalEnactable,
+  proposalCanBePassedOrRejected,
+} from '../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
@@ -209,12 +216,18 @@ export default function ProposalPage() {
     )
   }
 
-  const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposal?.status as ProposalStatus)
+  const proposalStatus = proposal?.status
+  const isProposalStatusWithUpdates = PROPOSAL_STATUS_WITH_UPDATES.has(proposalStatus as ProposalStatus)
   const showProposalUpdatesActions =
     isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const showCategoryAssessment =
+    proposal &&
+    proposal.type === ProposalType.Grant &&
+    proposal.configuration.category !== NewGrantCategory.Platform &&
+    !!proposal.configuration.categoryAssessment
 
   return (
     <>
@@ -233,7 +246,7 @@ export default function ProposalPage() {
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
             {proposal && <StatusPill status={proposal.status} />}
-            {proposal && <CategoryPill type={proposal.type} />}
+            {proposal && <CategoryPill proposalType={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>
@@ -243,6 +256,12 @@ export default function ProposalPage() {
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <Markdown>{proposal?.description || ''}</Markdown>
+              {showCategoryAssessment && (
+                <CategoryAssessment
+                  category={proposal.configuration.category}
+                  data={proposal.configuration.categoryAssessment}
+                />
+              )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
                 <ProposalUpdates
@@ -293,32 +312,31 @@ export default function ProposalPage() {
                     basic
                     fluid
                     loading={deleting}
-                    disabled={proposal?.status !== ProposalStatus.Pending && proposal?.status !== ProposalStatus.Active}
+                    disabled={!isProposalDeletable(proposalStatus)}
                     onClick={() => patchOptions({ confirmDeletion: true })}
                   >
                     {t('page.proposal_detail.delete')}
                   </Button>
                 )}
-                {isCommittee &&
-                  (proposal?.status === ProposalStatus.Passed || proposal?.status === ProposalStatus.Enacted) && (
-                    <Button
-                      basic
-                      loading={updatingStatus}
-                      fluid
-                      onClick={() =>
-                        patchOptions({
-                          confirmStatusUpdate: ProposalStatus.Enacted,
-                        })
-                      }
-                    >
-                      {t(
-                        proposal?.status === ProposalStatus.Passed
-                          ? 'page.proposal_detail.enact'
-                          : 'page.proposal_detail.edit_enacted_data'
-                      )}
-                    </Button>
-                  )}
-                {isCommittee && proposal?.status === ProposalStatus.Finished && (
+                {isCommittee && isProposalEnactable(proposalStatus) && (
+                  <Button
+                    basic
+                    loading={updatingStatus}
+                    fluid
+                    onClick={() =>
+                      patchOptions({
+                        confirmStatusUpdate: ProposalStatus.Enacted,
+                      })
+                    }
+                  >
+                    {t(
+                      proposalStatus === ProposalStatus.Passed
+                        ? 'page.proposal_detail.enact'
+                        : 'page.proposal_detail.edit_enacted_data'
+                    )}
+                  </Button>
+                )}
+                {isCommittee && proposalCanBePassedOrRejected(proposalStatus) && (
                   <>
                     <Button
                       basic

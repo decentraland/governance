@@ -4,6 +4,7 @@ import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
+import { ErrorClient } from './ErrorClient'
 import {
   SnapshotProposal,
   SnapshotProposalContent,
@@ -180,8 +181,8 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      console.error(`Error fetching addresses votes`, error)
-      // TODO: report error to Rollbar
+      ErrorClient.report(`Error fetching addresses votes`, error)
+
       return []
     }
 
@@ -312,8 +313,8 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      console.error(`Error fetching votes`)
-      // TODO: report error to Rollbar
+      ErrorClient.report('Error fetching votes', error)
+
       return []
     }
 

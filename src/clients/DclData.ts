@@ -1,6 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { ProposalGrantCategory, ProposalGrantTier, ProposalStatus } from '../entities/Proposal/types'
+import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/Grant/types'
+import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
 
@@ -38,7 +39,7 @@ export type TransparencyData = {
   teams: Team[]
 }
 
-type Grants = {
+export type TransparencyGrant = {
   id: string
   snapshot_id: string
   user: string
@@ -78,16 +79,27 @@ type Grants = {
   vesting_finish_at?: number
   vesting_token_contract_balance?: number
   vesting_total_amount?: number
+  vesting_status?: GrantStatus
   next_update?: number
-}[]
+}
+export type TransparencyGrants = TransparencyGrant[]
 
+// TODO: Maybe Transparency should share GrantTierType instead of overriding names
 export const TransparencyGrantsTiers = {
-  'Tier 1': ProposalGrantTier.Tier1,
-  'Tier 2': ProposalGrantTier.Tier2,
-  'Tier 3': ProposalGrantTier.Tier3,
-  'Tier 4': ProposalGrantTier.Tier4,
-  'Tier 5': ProposalGrantTier.Tier5,
-  'Tier 6': ProposalGrantTier.Tier6,
+  'Tier 1': GrantTierType.Tier1,
+  'Tier 2': GrantTierType.Tier2,
+  'Tier 3': GrantTierType.Tier3,
+  'Tier 4': GrantTierType.Tier4,
+  'Tier 5': GrantTierType.Tier5,
+  'Tier 6': GrantTierType.Tier6,
+  'Lower Tier': GrantTierType.LowerTier,
+  'Higher Tier': GrantTierType.HigherTier,
+}
+
+export type TransparencyBudget = {
+  start_date: string
+  total: number
+  category_percentages: Record<string, number>
 }
 
 export class DclData extends API {
@@ -112,6 +124,10 @@ export class DclData extends API {
   }
 
   async getGrants() {
-    return this.fetch<Grants>('/grants.json', this.options().method('GET'))
+    return this.fetch<TransparencyGrants>('/grants.json', this.options().method('GET'))
+  }
+
+  async getBudgets() {
+    return this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET'))
   }
 }

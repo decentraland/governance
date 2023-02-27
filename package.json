@@ -8,7 +8,7 @@
     "npm": ">=7.0.0"
   },
   "scripts": {
-    "test": "DOTENV_CONFIG_PATH=.env.development jest --no-cache --runInBand",
+    "test": "jest --no-cache --runInBand",
     "build": "npm run build:server && npm run build:front",
     "build:server": "tsc -p .",
     "build:front": "GATSBY_VERSION_NUMBER=$VERSION_NUMBER GATSBY_HEROKU_APP_NAME=$HEROKU_APP_NAME gatsby build",
@@ -92,7 +92,8 @@
     "sharp": "^0.30.6",
     "slug": "^4.0.4",
     "swiper": "^8.3.0",
-    "unified": "9.2.2"
+    "unified": "9.2.2",
+    "rollbar": "^2.26.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",

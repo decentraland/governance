@@ -3,10 +3,10 @@ import { useMemo } from 'react'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { Governance } from '../clients/Governance'
-import { GrantsResponse } from '../entities/Proposal/types'
+import { CategorizedGrants } from '../entities/Proposal/types'
 
 export default function useGrantsByUser(address: string | null, coauthoring?: boolean) {
-  const initialValue: GrantsResponse = { current: [], past: [], total: 0 }
+  const initialValue: CategorizedGrants = { current: [], past: [], total: 0 }
   const [grants] = useAsyncMemo(
     async () => {
       if (!address) {

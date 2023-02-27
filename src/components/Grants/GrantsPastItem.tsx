@@ -5,7 +5,8 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
-import { GrantAttributes, ProposalGrantCategory } from '../../entities/Proposal/types'
+import { ProposalGrantCategory } from '../../entities/Grant/types'
+import { Grant } from '../../entities/Proposal/types'
 import locations from '../../modules/locations'
 import ChevronRight from '../Icon/ChevronRight'
 
@@ -13,7 +14,7 @@ import GrantPill from './GrantPill'
 import './GrantsPastItem.css'
 
 interface Props {
-  grant: GrantAttributes
+  grant: Grant
   showSeparator: boolean
 }
 

@@ -1,3 +1,5 @@
+import { ErrorClient } from './ErrorClient'
+
 const SNAPSHOT_SKIP_LIMIT = 5000
 
 export async function inBatches<T, K>(
@@ -23,8 +25,7 @@ export async function inBatches<T, K>(
     }
     return allResults
   } catch (error) {
-    console.error(`Error while executing ${fetchFunction.name} in batches: `, error)
-    // TODO: report error to Rollbar
+    ErrorClient.report(`Error while executing ${fetchFunction.name} in batches: `, error)
     return []
   }
 }
@@ -35,4 +36,12 @@ export function trimLastForwardSlash(url: string) {
 
 export function capitalizeFirstLetter(string: string) {
   return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
+}
+
+export function handleUrlFilters<T>(filterKey: string, params: URLSearchParams, value?: T) {
+  const newParams = new URLSearchParams(params)
+  value ? newParams.set(filterKey, String(value)) : newParams.delete(filterKey)
+  newParams.delete('page')
+  const stringParams = newParams.toString()
+  return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }

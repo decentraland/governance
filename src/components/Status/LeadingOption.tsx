@@ -17,9 +17,13 @@ export default React.memo(function LeadingOption({ status, leadingOption, metVP,
   const t = useFormatMessage()
 
   const proposalFinished = useMemo(() => {
-    return [ProposalStatus.Passed, ProposalStatus.Rejected, ProposalStatus.Finished, ProposalStatus.Enacted].includes(
-      status
-    )
+    return [
+      ProposalStatus.Passed,
+      ProposalStatus.Rejected,
+      ProposalStatus.Finished,
+      ProposalStatus.OutOfBudget,
+      ProposalStatus.Enacted,
+    ].includes(status)
   }, [status])
 
   return (
