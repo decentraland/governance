@@ -156,6 +156,9 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
       <div className="GrantRequestSection__Content">
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.title_label')}</Label>
+          <span className="GrantRequestSection__Sublabel GrantRequestSection__TitleSubLabel">
+            {t('page.submit_grant.general_info.title_detail')}
+          </span>
           <Field
             value={state.value.title}
             placeholder={t('page.submit_grant.general_info.title_placeholder')}

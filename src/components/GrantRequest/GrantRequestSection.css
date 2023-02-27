@@ -86,11 +86,16 @@
 }
 
 .GrantRequestSection__Sublabel,
+.GrantRequestSection__Sublabel .dg.Paragraph,
 .Co-author > .dg.Paragraph.details {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
   color: var(--black-600);
+}
+
+.GrantRequestSection__TitleSubLabel {
+  margin-bottom: 20px !important;
 }
 
 p.EmailNote {
