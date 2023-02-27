@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
@@ -156,6 +157,9 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
       <div className="GrantRequestSection__Content">
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.title_label')}</Label>
+          <Markdown className="GrantRequestSection__Sublabel GrantRequestSection__TitleSubLabel">
+            {t('page.submit_grant.general_info.title_detail')}
+          </Markdown>
           <Field
             value={state.value.title}
             placeholder={t('page.submit_grant.general_info.title_placeholder')}
