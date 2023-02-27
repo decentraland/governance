@@ -14,7 +14,8 @@ export type GrantRequestFinalConsent = {
   contentPolicy: boolean
   termsOfUse: boolean
   codeOfEthics: boolean
-  platformAgreement: boolean
+  platformLicenseAgreement: boolean
+  platformDocumentationAgreement: boolean
   documentationAgreement: boolean
 }
 
@@ -23,7 +24,8 @@ export const INITIAL_GRANT_REQUEST_FINAL_CONSENT_STATE: GrantRequestFinalConsent
   contentPolicy: false,
   termsOfUse: false,
   codeOfEthics: false,
-  platformAgreement: false,
+  platformLicenseAgreement: false,
+  platformDocumentationAgreement: false,
   documentationAgreement: false,
 }
 
@@ -36,7 +38,7 @@ const getAcceptedAllTerms = (category: NewGrantCategory | null, state: GrantRequ
   }
 
   if (category === NewGrantCategory.Platform) {
-    return generalTermsAccepted && state.platformAgreement
+    return generalTermsAccepted && state.platformLicenseAgreement && state.platformDocumentationAgreement
   }
 
   return generalTermsAccepted
@@ -105,13 +107,24 @@ export default function GrantRequestFinalConsentSection({
           {t('page.submit_grant.final_consent.code_of_ethics_label')}
         </CheckboxField>
         {category === NewGrantCategory.Platform && (
-          <CheckboxField
-            onClick={() => setState({ ...state, platformAgreement: !state.platformAgreement })}
-            checked={state.platformAgreement}
-            disabled={isFormDisabled}
-          >
-            {t('page.submit_grant.final_consent.platform_category_label')}
-          </CheckboxField>
+          <>
+            <CheckboxField
+              onClick={() => setState({ ...state, platformLicenseAgreement: !state.platformLicenseAgreement })}
+              checked={state.platformLicenseAgreement}
+              disabled={isFormDisabled}
+            >
+              {t('page.submit_grant.final_consent.platform_category_license_label')}
+            </CheckboxField>
+            <CheckboxField
+              onClick={() =>
+                setState({ ...state, platformDocumentationAgreement: !state.platformDocumentationAgreement })
+              }
+              checked={state.platformDocumentationAgreement}
+              disabled={isFormDisabled}
+            >
+              {t('page.submit_grant.final_consent.platform_category_documentation_label')}
+            </CheckboxField>
+          </>
         )}
         {category === NewGrantCategory.Documentation && (
           <CheckboxField
