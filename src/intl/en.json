@@ -708,7 +708,43 @@
         "next_update_due_date": "Next one due in **{date}**",
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
-        "vesting_button": "View vesting contract"
+        "vesting_button": "View vesting contract",
+        "category_assessment": {
+          "accelerator": {
+            "revenue_label": "Revenue Generation Model",
+            "investment_recovery_plan_label": "Return of Investment to the DAO Treasury",
+            "investment_recovery_time_label": "Return of Investment Timeframe"
+          },
+          "core_unit": {
+            "strategic_value_label": "Strategic Value",
+            "impact_metrics_label": "Impact Metrics"
+          },
+          "documentation": {
+            "content_type_label": "Content Type",
+            "total_pieces_label": "Content Pieces"
+          },
+          "in_world_content": {
+            "total_pieces_label": "Content Pieces",
+            "total_users_label": "Target Audience size",
+            "engagement_measurement_label": "Engagement Metrics"
+          },
+          "social_media_content": {
+            "social_media_platforms_label": "Social Media Platforms",
+            "audience_relevance_label": "Audience Assessment",
+            "total_pieces_label": "Content Pieces",
+            "total_impact_label": "Target Audience size",
+            "relevant_link_label": "Relevant Social Profiles"
+          },
+          "sponsorship": {
+            "event_type_label": "Event Type",
+            "event_category_label": "Event Category",
+            "primary_source_funding_label": "Funding Source",
+            "total_events_label": "Number of Events",
+            "total_attendance_label": "Intended Attendance",
+            "audience_relevance_label": "Audience Assessment",
+            "showcase_label": "Decentraland's Brand Presence"
+          }
+        }
       }
     },
     "grants": {
