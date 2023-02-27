@@ -1144,7 +1144,8 @@
               "documentation_article": "Documentation Article",
               "scene_example": "Scene Example",
               "videos": "Videos",
-              "code_examples": "Code examples"
+              "code_examples": "Code examples",
+              "other": "Other"
             }
           },
           "total_pieces_label": "How many pieces of content are you planning to publish under the duration of this Grant?"

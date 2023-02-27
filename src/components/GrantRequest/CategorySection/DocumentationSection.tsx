@@ -20,7 +20,7 @@ const INITIAL_DOCUMENTATION_QUESTIONS = {
   totalPieces: '',
 }
 
-const CONTENT_TYPE_OPTIONS = ['documentation_article', 'scene_example', 'videos', 'code_examples']
+const CONTENT_TYPE_OPTIONS = ['documentation_article', 'scene_example', 'videos', 'code_examples', 'other']
 
 const schema = DocumentationQuestionsSchema
 const validate = createValidator<DocumentationQuestions>({
