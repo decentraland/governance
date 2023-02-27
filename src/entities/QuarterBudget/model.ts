@@ -73,7 +73,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
 
   private static logCreatedBudgets(newBudgets: QuarterBudgetAttributes[]) {
     console.log(`Created ${newBudgets.length} new budgets`)
-    console.log(`New budgets: ${JSON.stringify(newBudgets)}`)
+    if (newBudgets.length > 0) console.log(`New budgets: ${JSON.stringify(newBudgets)}`)
   }
 
   private static async saveAndCreateCategoryBudgets(
