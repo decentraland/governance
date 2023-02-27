@@ -54,7 +54,7 @@ export class DiscourseService {
   }
 
   public static getCategory(): number | undefined {
-    const DISCOURSE_CATEGORY = requiredEnv('DISCOURSE_CATEGORY')
+    const DISCOURSE_CATEGORY = requiredEnv('GATSBY_DISCOURSE_CATEGORY')
     return DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined
   }
 
