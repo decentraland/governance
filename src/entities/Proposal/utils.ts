@@ -6,7 +6,7 @@ import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
-import { env } from '../../modules/env'
+import { env, isDevEnv } from '../../modules/env'
 import { DISCOURSE_API } from '../Discourse/utils'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 
@@ -200,7 +200,7 @@ export function getProposalStatusShortName(status: ProposalStatus) {
 
 export function isGrantProposalSubmitEnabled(now: number) {
   const ENABLE_START_DATE = Time.utc('2023-01-03').add(8, 'hour')
-  if (Time(now).isBefore(ENABLE_START_DATE)) {
+  if (!isDevEnv() && Time(now).isBefore(ENABLE_START_DATE)) {
     return false
   }
 

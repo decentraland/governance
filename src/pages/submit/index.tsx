@@ -43,7 +43,7 @@ export default function NewProposalPage() {
           <CategoryBanner
             type={ProposalType.Grant}
             href={locations.submit(ProposalType.Grant)}
-            active={!isGrantProposalSubmitEnabled(NOW)}
+            active={isGrantProposalSubmitEnabled(NOW)}
           />
         </ContentSection>
         <ContentSection>
