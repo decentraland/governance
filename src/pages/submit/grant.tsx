@@ -103,7 +103,7 @@ export default function SubmitGrant() {
 
   usePreventNavigation(!!preventNavigation)
 
-  if (isGrantProposalSubmitEnabled(Date.now())) {
+  if (!isGrantProposalSubmitEnabled(Date.now())) {
     navigate('/submit')
   }
 
