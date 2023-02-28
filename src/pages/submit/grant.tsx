@@ -28,7 +28,7 @@ import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
 import { GrantRequest, NewGrantCategory } from '../../entities/Grant/types'
-import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
+import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -102,6 +102,10 @@ export default function SubmitGrant() {
   }, [grantRequest])
 
   usePreventNavigation(!!preventNavigation)
+
+  if (!isGrantProposalSubmitEnabled(Date.now())) {
+    navigate('/submit')
+  }
 
   const submit = () => {
     if (allSectionsValid) {
