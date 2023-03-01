@@ -149,24 +149,23 @@ export default function SubmitGrant() {
     return <LoadingView />
   }
 
+  const title = t('page.submit_grant.title') || ''
+  const description = t('page.submit_grant.description') || ''
+
   if (!account) {
-    return <LogIn title={t('page.submit_grant.title') || ''} description={t('page.submit_grant.description') || ''} />
+    return <LogIn title={title} description={description} />
   }
 
   return (
     <div>
-      <Head
-        title={t('page.submit_grant.title') || ''}
-        description={t('page.submit_grant.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <Helmet title={t('page.submit_grant.title') || ''} />
+      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+      <Helmet title={title} />
       <Container className="GrantRequest__Head">
         <div className="GrantRequest__Header">
           <DecentralandLogo
             className={TokenList.join(['GrantRequest__Logo', hasScrolled && 'GrantRequest__Logo--visible'])}
           />
-          <h1 className="GrantRequest_HeaderTitle">{t('page.submit_grant.title')}</h1>
+          <h1 className="GrantRequest_HeaderTitle">{title}</h1>
         </div>
         <Link href={locations.submit()}>
           <Button basic className="GrantRequest__CancelButton">
@@ -175,7 +174,7 @@ export default function SubmitGrant() {
         </Link>
       </Container>
       <Container className="GrantRequestSection__Container">
-        <Markdown className="GrantRequest__HeaderDescription">{t('page.submit_grant.description')}</Markdown>
+        <Markdown className="GrantRequest__HeaderDescription">{description}</Markdown>
       </Container>
 
       {!isCategorySelected && (
