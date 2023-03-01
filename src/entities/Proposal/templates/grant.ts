@@ -28,7 +28,7 @@ ${proposal.email}
 
 ${formatMarkdown(proposal.description)}
 
-## Specification
+## Budget Specification
 
 ${formatMarkdown(proposal.specification)}
 
