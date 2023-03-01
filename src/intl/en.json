@@ -1268,7 +1268,7 @@
     },
     "submit_linked_wearables": {
       "title": "Linked Wearables Registry",
-      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Third parties need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](http://builder.decentraland.org/) and get slots to submit the 3D models. By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland.\n\nNote that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
+      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Third parties need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](https://builder.decentraland.org/) and get slots to submit the 3D models. By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland.\n\nNote that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
       "name_label": "Name",
       "name_detail": "Please enter the name that represents your Project, Company or Community as a whole",
       "name_placeholder": "Enter the name here",
