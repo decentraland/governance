@@ -11,8 +11,9 @@ import { TextAreaField } from 'decentraland-ui/dist/components/TextAreaField/Tex
 import {
   BudgetBreakdownItem,
   GRANT_PROPOSAL_MAX_BUDGET,
-  GRANT_PROPOSAL_MIN_BUDGET, // MAX_PROJECT_DURATION,
-  // MIN_PROJECT_DURATION,
+  GRANT_PROPOSAL_MIN_BUDGET,
+  MAX_PROJECT_DURATION,
+  MIN_PROJECT_DURATION,
 } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
 import Label from '../Common/Label'
@@ -20,6 +21,7 @@ import { ContentSection } from '../Layout/ContentLayout'
 
 import './AddModal.css'
 import BudgetInput from './BudgetInput'
+import NumberSelector from './NumberSelector'
 
 const BudgetBreakdownItemSchema = {
   concept: {
@@ -27,11 +29,11 @@ const BudgetBreakdownItemSchema = {
     minLength: 1,
     maxLength: 80,
   },
-  // duration: {
-  //   type: 'integer',
-  //   minimum: Number(MIN_PROJECT_DURATION || 1),
-  //   maximum: Number(MAX_PROJECT_DURATION || 1),
-  // },
+  duration: {
+    type: 'integer',
+    minimum: Number(MIN_PROJECT_DURATION || 1),
+    maximum: Number(MAX_PROJECT_DURATION || 1),
+  },
   estimatedBudget: {
     type: 'integer',
     minimum: Number(GRANT_PROPOSAL_MIN_BUDGET || 0),
@@ -51,7 +53,7 @@ const BudgetBreakdownItemSchema = {
 
 export const INITIAL_BUDGET_BREAKDOWN_ITEM: BudgetBreakdownItem = {
   concept: '',
-  // duration: 0,
+  duration: 1,
   estimatedBudget: '',
   aboutThis: '',
   relevantLink: '',
@@ -158,17 +160,27 @@ const AddModal = ({ isOpen, onClose, onSubmit }: Props) => {
             }
           />
         </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.estimated_budget_label')}</Label>
-          <BudgetInput
-            value={state.value.estimatedBudget}
-            error={state.error.estimatedBudget}
-            onChange={({ currentTarget }) =>
-              editor.set({
-                estimatedBudget: currentTarget.value,
-              })
-            }
+        <ContentSection className="GrantRequestSection__Field GrantRequestSection__Field--row">
+          <NumberSelector
+            value={state.value.duration}
+            min={BudgetBreakdownItemSchema.duration.minimum}
+            max={BudgetBreakdownItemSchema.duration.maximum}
+            onChange={(value) => editor.set({ duration: Number(value) })}
+            label="Duration" // TODO: move to i18n file
+            unitLabel="months" // TODO: move to i18n file
           />
+          <div>
+            <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.estimated_budget_label')}</Label>
+            <BudgetInput
+              value={state.value.estimatedBudget}
+              error={state.error.estimatedBudget}
+              onChange={({ currentTarget }) =>
+                editor.set({
+                  estimatedBudget: currentTarget.value,
+                })
+              }
+            />
+          </div>
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.about_this_label')}</Label>

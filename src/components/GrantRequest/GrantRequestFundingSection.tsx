@@ -31,7 +31,7 @@ import DesiredFundingInput from './DesiredFundingInput'
 import './GrantRequestFundingSection.css'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
-import ProjectDurationInput from './ProjectDurationInput'
+import NumberSelector from './NumberSelector'
 
 const schema = GrantRequestFundingSchema
 
@@ -223,10 +223,13 @@ export default function GrantRequestFundingSection({
             />
           </div>
           <div className="GrantRequestSection__InputContainer">
-            <ProjectDurationInput
+            <NumberSelector
               value={state.value.projectDuration}
-              options={availableDurations}
+              min={availableDurations[0]}
+              max={availableDurations[availableDurations.length - 1]}
               onChange={(value) => editor.set({ projectDuration: Number(value) })}
+              label={t('page.submit_grant.funding_section.project_duration_title')}
+              unitLabel="months" // TODO: move to i18n file
             />
           </div>
         </div>

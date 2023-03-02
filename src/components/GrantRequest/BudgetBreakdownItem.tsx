@@ -16,13 +16,13 @@ const BUDGET_FORMAT_OPTIONS = {
 }
 
 const BudgetBreakdownItem = ({ item }: Props) => {
-  const { concept, estimatedBudget } = item
+  const { concept, estimatedBudget, duration } = item
 
   return (
     <div className="BudgetBreakdownItem">
       <div>
         <h3 className="BudgetBreakdownItem__Concept">{concept}</h3>
-        <span className="BudgetBreakdownItem__Duration">6 months</span>
+        <span className="BudgetBreakdownItem__Duration">{duration} months</span>
       </div>
       <div className="BudgetBreakdownItem__BudgetContainer">
         <span className="BudgetBreakdownItem__Budget">

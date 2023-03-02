@@ -85,6 +85,11 @@
   margin-bottom: 32px;
 }
 
+.GrantRequestSection__Field--row {
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 .GrantRequestSection__Sublabel,
 .GrantRequestSection__Sublabel .dg.Paragraph,
 .Co-author > .dg.Paragraph.details {
