@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -28,7 +27,9 @@ import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
 import { GrantRequest, NewGrantCategory } from '../../entities/Grant/types'
+import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
+import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -79,9 +80,31 @@ function parseStringsAsNumbers(grantRequest: GrantRequest) {
   }
 }
 
+function handleCancel() {
+  if ((window as any).routeUpdate) {
+    window.history.back()
+  } else {
+    navigate(locations.submit())
+  }
+}
+
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  useEffect(() => {
+    let category: NewGrantCategory | null = null
+    try {
+      category = toNewGrantCategory(params.get('category'))
+    } catch (error) {
+      // do nothing
+    } finally {
+      patchGrantRequest({ category })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params])
+
   const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
   const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
@@ -167,11 +190,9 @@ export default function SubmitGrant() {
           />
           <h1 className="GrantRequest_HeaderTitle">{title}</h1>
         </div>
-        <Link href={locations.submit()}>
-          <Button basic className="GrantRequest__CancelButton">
-            {t('page.submit_grant.cancel')}
-          </Button>
-        </Link>
+        <Button basic className="GrantRequest__CancelButton" onClick={handleCancel}>
+          {t('page.submit_grant.cancel')}
+        </Button>
       </Container>
       <Container className="GrantRequestSection__Container">
         <Markdown className="GrantRequest__HeaderDescription">{description}</Markdown>
@@ -185,6 +206,7 @@ export default function SubmitGrant() {
               patchValidationState({
                 categoryAssessmentSectionValid: value === NewGrantCategory.Platform,
               })
+              navigate(locations.submit(ProposalType.Grant, { category: value }), { replace: true })
             }}
           />
         </Container>
@@ -194,7 +216,10 @@ export default function SubmitGrant() {
         <>
           <GrantRequestFundingSection
             grantCategory={grantRequest.category}
-            onCategoryChange={() => patchGrantRequest({ category: null })}
+            onCategoryChange={() => {
+              patchGrantRequest({ category: null })
+              navigate(locations.submit(ProposalType.Grant), { replace: true })
+            }}
             onValidation={(data, sectionValid) => {
               patchGrantRequest({ ...data })
               patchValidationState({ fundingSectionValid: sectionValid })
