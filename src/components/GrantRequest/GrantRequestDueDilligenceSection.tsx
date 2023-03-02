@@ -22,11 +22,12 @@ export const INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE: GrantRequestDueDilligen
 }
 
 interface Props {
+  sectionNumber: number
   funding: GrantRequest['funding']
   onValidation: (data: GrantRequestDueDilligence) => void
 }
 
-export default function GrantRequestDueDilligenceSection({ funding, onValidation }: Props) {
+export default function GrantRequestDueDilligenceSection({ sectionNumber, funding, onValidation }: Props) {
   const t = useFormatMessage()
   const [dueDilligenceState, setDueDilligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE)
   const isFormEdited = userModifiedForm(dueDilligenceState, INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE)
@@ -48,7 +49,7 @@ export default function GrantRequestDueDilligenceSection({ funding, onValidation
       validated={acceptedAllTerms}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.due_dilligence.title')}
-      sectionNumber={3}
+      sectionNumber={sectionNumber}
     >
       <div className="GrantRequestSection__Content">
         <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_label')}</Label>

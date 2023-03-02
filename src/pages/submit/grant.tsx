@@ -231,6 +231,7 @@ export default function SubmitGrant() {
           <GrantRequestDueDilligenceSection
             funding={grantRequest.funding}
             onValidation={(data) => patchGrantRequest({ ...data })}
+            sectionNumber={getSectionNumber()}
           />
 
           <GrantRequestFinalConsentSection
