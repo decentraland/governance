@@ -11,8 +11,8 @@ import {
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
-import Label from '../Label'
 import MultipleChoiceField from '../MultipleChoiceField'
 
 const INITIAL_DOCUMENTATION_QUESTIONS = {

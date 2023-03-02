@@ -3,10 +3,10 @@ import React, { useCallback } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { isEmpty } from 'lodash'
 
+import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import CheckboxField from './CheckboxField'
-import Label from './Label'
 
 interface Props {
   label: string
