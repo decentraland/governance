@@ -1,11 +1,15 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import { cloneDeep } from 'lodash'
+import snakeCase from 'lodash/snakeCase'
 
 import { DclData, TransparencyBudget } from '../clients/DclData'
 import {
+  ContestingGrantProposal,
   CurrentBudget,
   CurrentCategoryBudget,
+  ExpectedBudget,
   NULL_CURRENT_BUDGET,
   NULL_CURRENT_CATEGORY_BUDGET,
 } from '../entities/Budget/types'
@@ -18,6 +22,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 
 import { ErrorService } from './ErrorService'
+import { ProposalService } from './ProposalService'
 
 export const TransparencyBudgetSchema = {
   type: 'object',
@@ -182,5 +187,66 @@ export class BudgetService {
     for (const budget of budgets) {
       await QuarterBudgetModel.updateBudget(budget)
     }
+  }
+
+  static getUncappedRoundedPercentage(value: number, total: number): number {
+    return Math.round((value * 100) / total)
+  }
+
+  static async getExpectedAllocatedBudget() {
+    const activeGrantProposals = await ProposalService.getActiveGrantProposals()
+    const categories = Object.values(NewGrantCategory).map(snakeCase)
+    const currentBudget = await this.getCurrentBudget()
+    const expectedBudget: ExpectedBudget = this.initializeExpectedBudget(categories, currentBudget)
+    this.addContestants(activeGrantProposals, expectedBudget)
+
+    categories.forEach((cat) => {
+      expectedBudget.categories[cat].contested_over_available_percentage = this.getUncappedRoundedPercentage(
+        expectedBudget.categories[cat].contested,
+        expectedBudget.categories[cat].available
+      )
+      expectedBudget.categories[cat].contestants.forEach((contestingGrant: ContestingGrantProposal) => {
+        contestingGrant.contested_percentage = this.getUncappedRoundedPercentage(
+          contestingGrant.size,
+          expectedBudget.categories[cat].contested
+        )
+      })
+    })
+    return expectedBudget
+  }
+
+  private static addContestants(activeGrantProposals: ProposalAttributes[], expectedBudget: ExpectedBudget) {
+    for (const proposal of activeGrantProposals) {
+      const proposalCategory = snakeCase(proposal.configuration.category)
+      const proposalSize = proposal.configuration.size
+
+      expectedBudget.categories[proposalCategory].contested += proposalSize
+      expectedBudget.categories[proposalCategory].contestants.push(this.getContestingGrantProposal(proposal))
+      expectedBudget.total_contested += proposalSize
+    }
+  }
+
+  private static initializeExpectedBudget(categories: string[], currentBudget: CurrentBudget): ExpectedBudget {
+    const expectedBudget: any = cloneDeep(currentBudget)
+    categories.forEach((cat) => {
+      expectedBudget.categories[cat] = {
+        ...expectedBudget.categories[cat],
+        contested: 0,
+        contested_over_available_percentage: 0,
+        contestants: [],
+      }
+    })
+    expectedBudget.total_contested = 0
+    return expectedBudget
+  }
+
+  private static getContestingGrantProposal(proposal: ProposalAttributes) {
+    const contestingGrant: ContestingGrantProposal = {
+      title: proposal.title,
+      id: proposal.id,
+      size: proposal.configuration.size,
+      contested_percentage: 0,
+    }
+    return contestingGrant
   }
 }

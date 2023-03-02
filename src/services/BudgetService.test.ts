@@ -6,10 +6,12 @@ import { DclData } from '../clients/DclData'
 import { CurrentCategoryBudget, NULL_CURRENT_BUDGET } from '../entities/Budget/types'
 import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
+import { CURRENT_TEST_BUDGET, GRANT_PROPOSAL_1, GRANT_PROPOSAL_2 } from '../entities/Proposal/testHelpers'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 
 import { BudgetService } from './BudgetService'
+import { ProposalService } from './ProposalService'
 
 const NOW = new Date('2023-02-03T00:00:00Z')
 
@@ -103,6 +105,10 @@ function asserErrorLogging() {
     expect(logError).toHaveBeenCalled()
   })
 }
+
+jest.mock('../constants', () => ({
+  DISCORD_SERVICE_ENABLED: false,
+}))
 
 describe('BudgetService', () => {
   describe('getTransparencyBudgets', () => {
@@ -362,6 +368,107 @@ describe('BudgetService', () => {
 
       it('returns only one budget', async () => {
         expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1, BUDGET_2])
+      })
+    })
+  })
+
+  describe('getExpectedAllocatedBudget', () => {
+    describe('when the contested budget is below the available budget', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(ProposalService, 'getActiveGrantProposals')
+          .mockResolvedValueOnce([GRANT_PROPOSAL_1, GRANT_PROPOSAL_2])
+        jest.spyOn(BudgetService, 'getCurrentBudget').mockResolvedValueOnce(CURRENT_TEST_BUDGET)
+      })
+
+      it('returns the expected allocated budget', async () => {
+        const proposal2Size = GRANT_PROPOSAL_2.configuration.size
+        const proposal1Size = GRANT_PROPOSAL_1.configuration.size
+        const totalContested = proposal1Size + proposal2Size
+        const availableForAccelerator =
+          CURRENT_TEST_BUDGET.categories.accelerator.total - CURRENT_TEST_BUDGET.categories.accelerator.allocated
+
+        const expectedAllocatedBudget = await BudgetService.getExpectedAllocatedBudget()
+        expect(expectedAllocatedBudget.total).toEqual(CURRENT_TEST_BUDGET.total)
+        expect(expectedAllocatedBudget.total_contested).toEqual(totalContested)
+        expect(expectedAllocatedBudget.categories.accelerator).toEqual({
+          total: CURRENT_TEST_BUDGET.categories.accelerator.total,
+          allocated: CURRENT_TEST_BUDGET.categories.accelerator.allocated,
+          available: availableForAccelerator,
+          contested: totalContested,
+          contested_over_available_percentage: BudgetService.getUncappedRoundedPercentage(
+            totalContested,
+            availableForAccelerator
+          ),
+          contestants: [
+            {
+              title: GRANT_PROPOSAL_1.title,
+              id: GRANT_PROPOSAL_1.id,
+              size: proposal1Size,
+              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal1Size, totalContested),
+            },
+            {
+              title: GRANT_PROPOSAL_2.title,
+              id: GRANT_PROPOSAL_2.id,
+              size: proposal2Size,
+              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal2Size, totalContested),
+            },
+          ],
+        })
+
+        expect(expectedAllocatedBudget.categories.core_unit).toEqual({
+          total: CURRENT_TEST_BUDGET.categories.core_unit.total,
+          allocated: CURRENT_TEST_BUDGET.categories.core_unit.allocated,
+          available: 173250,
+          contested: 0,
+          contested_over_available_percentage: 0,
+          contestants: [],
+        })
+      })
+    })
+
+    describe('when the contested budget is above the available budget', () => {
+      const GRANT_PROPOSAL_ABOVE_BUDGET = cloneDeep(GRANT_PROPOSAL_1)
+      GRANT_PROPOSAL_ABOVE_BUDGET.configuration.size = CURRENT_TEST_BUDGET.categories.accelerator.total * 2
+
+      beforeEach(() => {
+        jest
+          .spyOn(ProposalService, 'getActiveGrantProposals')
+          .mockResolvedValueOnce([GRANT_PROPOSAL_ABOVE_BUDGET, GRANT_PROPOSAL_2])
+        jest.spyOn(BudgetService, 'getCurrentBudget').mockResolvedValueOnce(CURRENT_TEST_BUDGET)
+      })
+
+      it('returns the expected allocated budget with a contested over available percentage over 100', async () => {
+        const proposal2Size = GRANT_PROPOSAL_2.configuration.size
+        const proposal1Size = GRANT_PROPOSAL_ABOVE_BUDGET.configuration.size
+        const totalContested = proposal1Size + proposal2Size
+        const availableForAccelerator =
+          CURRENT_TEST_BUDGET.categories.accelerator.total - CURRENT_TEST_BUDGET.categories.accelerator.allocated
+
+        const expectedAllocatedBudget = await BudgetService.getExpectedAllocatedBudget()
+        expect(expectedAllocatedBudget.total).toEqual(CURRENT_TEST_BUDGET.total)
+        expect(expectedAllocatedBudget.total_contested).toEqual(totalContested)
+        expect(expectedAllocatedBudget.categories.accelerator).toEqual({
+          total: CURRENT_TEST_BUDGET.categories.accelerator.total,
+          allocated: CURRENT_TEST_BUDGET.categories.accelerator.allocated,
+          available: availableForAccelerator,
+          contested: totalContested,
+          contested_over_available_percentage: 206,
+          contestants: [
+            {
+              title: GRANT_PROPOSAL_ABOVE_BUDGET.title,
+              id: GRANT_PROPOSAL_ABOVE_BUDGET.id,
+              size: proposal1Size,
+              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal1Size, totalContested),
+            },
+            {
+              title: GRANT_PROPOSAL_2.title,
+              id: GRANT_PROPOSAL_2.id,
+              size: proposal2Size,
+              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal2Size, totalContested),
+            },
+          ],
+        })
       })
     })
   })

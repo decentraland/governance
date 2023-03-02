@@ -141,6 +141,21 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
+  static async getActiveGrantProposals(from: Date) {
+    const query = SQL`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "deleted" = FALSE
+          AND "status" IN (${ProposalStatus.Active})
+          AND "type" IN (${ProposalType.Grant})
+          AND "start_at" >= ${from}
+          ORDER BY created_at ASC
+    `
+
+    const result = await this.query(query)
+    return result.map(ProposalModel.parse)
+  }
+
   static async getPendingNewGrants() {
     const query = SQL`
         SELECT *

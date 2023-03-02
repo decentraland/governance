@@ -15,6 +15,7 @@ export default routes((route) => {
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
   route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
   route.get('/budget/current', handleAPI(getCurrentBudget))
+  route.get('/budget/expected', handleAPI(getExpectedAllocatedBudget))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
@@ -34,4 +35,8 @@ async function fetchBudgets(): Promise<TransparencyBudget[]> {
 
 async function getCurrentBudget(): Promise<CurrentBudget> {
   return await BudgetService.getCurrentBudget()
+}
+
+async function getExpectedAllocatedBudget(): Promise<Record<string, any>> {
+  return await BudgetService.getExpectedAllocatedBudget()
 }
