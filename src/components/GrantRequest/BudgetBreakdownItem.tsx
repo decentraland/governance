@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { BudgetBreakdownItem as BudgetBreakdownItemType } from '../../entities/Grant/types'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BudgetBreakdownItem.css'
-import { BudgetBreakdownItem as BudgetBreakdownItemType } from './GrantRequestDueDilligenceSection'
 
 interface Props {
   item: BudgetBreakdownItemType

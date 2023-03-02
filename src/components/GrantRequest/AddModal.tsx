@@ -9,6 +9,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { TextAreaField } from 'decentraland-ui/dist/components/TextAreaField/TextAreaField'
 
 import {
+  BudgetBreakdownItem,
   GRANT_PROPOSAL_MAX_BUDGET,
   GRANT_PROPOSAL_MIN_BUDGET, // MAX_PROJECT_DURATION,
   // MIN_PROJECT_DURATION,
@@ -19,7 +20,6 @@ import { ContentSection } from '../Layout/ContentLayout'
 
 import './AddModal.css'
 import BudgetInput from './BudgetInput'
-import { BudgetBreakdownItem } from './GrantRequestDueDilligenceSection'
 
 const BudgetBreakdownItemSchema = {
   concept: {
