@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -91,19 +91,18 @@ function handleCancel() {
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   useEffect(() => {
+    const params = new URLSearchParams(location.search)
     let category: NewGrantCategory | null = null
     try {
       category = toNewGrantCategory(params.get('category'))
     } catch (error) {
-      // do nothing
+      console.error(error)
     } finally {
       patchGrantRequest({ category })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
+  }, [])
 
   const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
   const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
