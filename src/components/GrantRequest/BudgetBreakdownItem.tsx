@@ -1,12 +1,13 @@
 import React from 'react'
 
 import { BudgetBreakdownItem as BudgetBreakdownItemType } from '../../entities/Grant/types'
-import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
+import CloseCircle from '../Icon/CloseCircle'
 
 import './BudgetBreakdownItem.css'
 
 interface Props {
   item: BudgetBreakdownItemType
+  onDeleteClick: () => void
 }
 
 const BUDGET_FORMAT_OPTIONS = {
@@ -15,7 +16,7 @@ const BUDGET_FORMAT_OPTIONS = {
   maximumFractionDigits: 0,
 }
 
-const BudgetBreakdownItem = ({ item }: Props) => {
+const BudgetBreakdownItem = ({ item, onDeleteClick }: Props) => {
   const { concept, estimatedBudget, duration } = item
 
   return (
@@ -28,7 +29,9 @@ const BudgetBreakdownItem = ({ item }: Props) => {
         <span className="BudgetBreakdownItem__Budget">
           {Number(estimatedBudget).toLocaleString(undefined, BUDGET_FORMAT_OPTIONS)}
         </span>
-        <ChevronRightCircleOutline />
+        <button className="BudgetBreakdownItem__DeleteButton" onClick={onDeleteClick}>
+          <CloseCircle />
+        </button>
       </div>
     </div>
   )

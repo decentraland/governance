@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import './GrantRequestSection.css'
@@ -13,6 +12,7 @@ export type Props = {
   isFormEdited: boolean
   onBlur?: () => void
   children: React.ReactNode
+  shouldFocus?: boolean
 }
 
 export default function GrantRequestSection({
@@ -22,17 +22,17 @@ export default function GrantRequestSection({
   isFormEdited,
   onBlur,
   children,
+  shouldFocus = true,
 }: Props) {
-  const t = useFormatMessage()
   const [focused, setFocused] = useState(false)
 
   return (
     <Container
       className="ContentLayout__Container GrantRequestSection__Container"
-      onFocus={() => setFocused(true)}
+      onFocus={() => shouldFocus && setFocused(true)}
       onBlur={() => {
         onBlur && onBlur()
-        setFocused(false)
+        shouldFocus && setFocused(false)
       }}
     >
       <div className="GrantRequestSection__Head">

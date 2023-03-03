@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { isEmpty, isEqual } from 'lodash'
 
 import {
   BudgetBreakdownItem as BudgetBreakdownItemType,
@@ -31,8 +32,6 @@ export default function GrantRequestDueDilligenceSection({ sectionNumber, fundin
   const t = useFormatMessage()
   const [dueDilligenceState, setDueDilligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE)
   const isFormEdited = userModifiedForm(dueDilligenceState, INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE)
-  const acceptedAllTerms = Object.values(dueDilligenceState).every((prop) => prop) // TODO: Change this
-
   const [isModalOpen, setModalOpen] = useState(false)
 
   const handleSubmitItem = (item: BudgetBreakdownItemType) => {
@@ -46,7 +45,8 @@ export default function GrantRequestDueDilligenceSection({ sectionNumber, fundin
 
   return (
     <GrantRequestSection
-      validated={acceptedAllTerms}
+      shouldFocus={false}
+      validated={!isEmpty(dueDilligenceState.budgetBreakdown)}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.due_dilligence.title')}
       sectionNumber={sectionNumber}
@@ -55,7 +55,15 @@ export default function GrantRequestDueDilligenceSection({ sectionNumber, fundin
         <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_label')}</Label>
         <SubLabel>{t('page.submit_grant.due_dilligence.budget_breakdown_detail', { value: funding })}</SubLabel>
         {dueDilligenceState.budgetBreakdown.map((item, index) => (
-          <BudgetBreakdownItem key={`${item.concept}-${index}`} item={item} />
+          <BudgetBreakdownItem
+            key={`${item.concept}-${index}`}
+            item={item}
+            onDeleteClick={() =>
+              setDueDilligenceState((prevState) => ({
+                budgetBreakdown: prevState.budgetBreakdown.filter((i) => !isEqual(i, item)),
+              }))
+            }
+          />
         ))}
         <AddBox onClick={() => setModalOpen(true)}>
           {t('page.submit_grant.due_dilligence.budget_breakdown_add_concept')}

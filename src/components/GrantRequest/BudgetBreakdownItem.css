@@ -45,3 +45,13 @@
   letter-spacing: 0.4px;
   color: var(--black-600);
 }
+
+.BudgetBreakdownItem__DeleteButton {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
