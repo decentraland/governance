@@ -23,3 +23,15 @@ export const getFormattedPercentage = (value: number, total: number, decimals = 
 }
 
 export const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
+
+export function getUncappedRoundedPercentage(value: number, total: number): number {
+  return Math.round((value * 100) / total)
+}
+
+export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, value?: T) {
+  const newParams = new URLSearchParams(params)
+  value ? newParams.set(filterKey, String(value)) : newParams.delete(filterKey)
+  newParams.delete('page')
+  const stringParams = newParams.toString()
+  return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
+}

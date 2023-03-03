@@ -33,15 +33,3 @@ export async function inBatches<T, K>(
 export function trimLastForwardSlash(url: string) {
   return url.replace(/\/$/, '')
 }
-
-export function capitalizeFirstLetter(string: string) {
-  return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
-}
-
-export function handleUrlFilters<T>(filterKey: string, params: URLSearchParams, value?: T) {
-  const newParams = new URLSearchParams(params)
-  value ? newParams.set(filterKey, String(value)) : newParams.delete(filterKey)
-  newParams.delete('page')
-  const stringParams = newParams.toString()
-  return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
-}

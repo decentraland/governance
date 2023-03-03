@@ -8,13 +8,14 @@ import { BudgetService } from '../../services/BudgetService'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
-import { CurrentBudget, CurrentCategoryBudget } from './types'
+import { CurrentBudget, CurrentCategoryBudget, ExpectedBudget } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
   route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
   route.get('/budget/current', handleAPI(getCurrentBudget))
+  route.get('/budget/expected', handleAPI(getExpectedAllocatedBudget))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
@@ -34,4 +35,8 @@ async function fetchBudgets(): Promise<TransparencyBudget[]> {
 
 async function getCurrentBudget(): Promise<CurrentBudget> {
   return await BudgetService.getCurrentBudget()
+}
+
+async function getExpectedAllocatedBudget(): Promise<ExpectedBudget> {
+  return await BudgetService.getExpectedAllocatedBudget()
 }
