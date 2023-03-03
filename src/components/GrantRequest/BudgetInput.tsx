@@ -2,7 +2,6 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import Helper from '../Helper/Helper'
 import ExclamationCircle from '../Icon/ExclamationCircle'
@@ -18,36 +17,33 @@ const BudgetInput = ({ error, ...props }: Props & React.HTMLProps<HTMLInputEleme
   const showError = error && error.length > 0
 
   return (
-    <div className="BudgetInput__Container">
-      <div
-        className={TokenList.join(['BudgetInput__InputContainer', showError && 'BudgetInput__InputContainer--Error'])}
-      >
-        <div className={TokenList.join(['BudgetInput__Description', showError && 'BudgetInput__Description--Error'])}>
-          USD
-        </div>
-        <input className="BudgetInput__Input" type="number" {...props} />
-      </div>
-      {showError && (
-        <div className="BudgetInput__ErrorHelper">
-          <Mobile>
-            <Helper
-              text={t(error)}
-              position="bottom center"
-              open
-              icon={<ExclamationCircle color="red-800" size="16px" />}
+    <Helper
+      text={t(error)}
+      position="bottom center"
+      open={!!showError}
+      icon={
+        <div className="BudgetInput__Container">
+          <div
+            className={TokenList.join([
+              'BudgetInput__InputContainer',
+              showError && 'BudgetInput__InputContainer--Error',
+            ])}
+          >
+            <div
+              className={TokenList.join(['BudgetInput__Description', showError && 'BudgetInput__Description--Error'])}
+            >
+              USD
+            </div>
+            <input
+              className={TokenList.join(['BudgetInput__Input', showError && 'BudgetInput__Input--error'])}
+              type="number"
+              {...props}
             />
-          </Mobile>
-          <NotMobile>
-            <Helper
-              text={t(error)}
-              position="right center"
-              open
-              icon={<ExclamationCircle color="red-800" size="16px" />}
-            />
-          </NotMobile>
+            {showError && <ExclamationCircle className="BudgetInput__ErrorHelper" color="red-800" size="16px" />}
+          </div>
         </div>
-      )}
-    </div>
+      }
+    />
   )
 }
 

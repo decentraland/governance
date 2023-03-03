@@ -8,6 +8,7 @@
   display: inline-flex;
   border: 1px solid rgba(115, 110, 125, 0.32);
   border-radius: 6px;
+  position: relative;
 }
 
 .BudgetInput__InputContainer--Error {
@@ -40,10 +41,26 @@
   line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
+  outline-color: var(--black-800);
+}
+
+.BudgetInput__Input--error {
+  outline-color: var(--red-800);
+}
+
+.BudgetInput__Input:hover + .BudgetInput__ErrorHelper {
+  right: 35px;
+}
+
+.BudgetInput__Input:focus + .BudgetInput__ErrorHelper {
+  right: 35px;
 }
 
 .BudgetInput__ErrorHelper {
   display: flex;
+  position: absolute;
+  right: 9px;
+  top: 14px;
 }
 
 .BudgetInput__ErrorHelper > .Helper__Container {

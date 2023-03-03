@@ -162,7 +162,7 @@ body {
 .dg.Textarea.error .ui.input textarea,
 .dcl.field.error .ui.input input {
   border-color: var(--error);
-  border-bottom-width: 2px;
+  border-bottom-width: 1px;
 }
 
 .dcl.field.field .ui.input input:focus,
@@ -170,6 +170,17 @@ body {
 .ui.form .dcl.field .ui.input input:focus,
 .ui.form .dcl.field .ui.input input:active {
   border-color: var(--text);
+  border-bottom-width: 1px;
+}
+
+.ui.modal .field .ui.input input {
+  border-bottom-color: rgba(34, 36, 38, 0.15);
+}
+
+.dcl.field.error .ui.input input,
+.ui.form .dcl.field.error .ui.input input {
+  border-color: var(--error) !important;
+  border-bottom: 1px solid var(--error) !important;
 }
 
 ::placeholder {
