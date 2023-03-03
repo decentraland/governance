@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -11,7 +11,6 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import {
   BudgetBreakdownItem,
   GRANT_PROPOSAL_MAX_BUDGET,
-  GRANT_PROPOSAL_MIN_BUDGET,
   MAX_PROJECT_DURATION,
   MIN_PROJECT_DURATION,
 } from '../../entities/Grant/types'
@@ -36,7 +35,7 @@ const BudgetBreakdownItemSchema = {
   },
   estimatedBudget: {
     type: 'integer',
-    minimum: Number(GRANT_PROPOSAL_MIN_BUDGET || 0),
+    minimum: 1,
     maximum: Number(GRANT_PROPOSAL_MAX_BUDGET || 0),
   },
   aboutThis: {
@@ -60,38 +59,45 @@ export const INITIAL_BUDGET_BREAKDOWN_ITEM: BudgetBreakdownItem = {
 }
 
 const schema = BudgetBreakdownItemSchema
-const validate = createValidator<BudgetBreakdownItem>({
-  concept: (state) => ({
-    concept:
-      assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_dilligence.concept_too_large') ||
-      assert(state.concept.length > 0, 'error.grant.due_dilligence.concept_empty') ||
-      assert(state.concept.length >= schema.concept.minLength, 'error.grant.due_dilligence.concept_too_short') ||
-      undefined,
-  }),
-  estimatedBudget: (state) => ({
-    estimatedBudget:
-      assert(
-        Number.isInteger(asNumber(state.estimatedBudget)),
-        'error.grant.due_dilligence.estimated_budget_invalid'
-      ) ||
-      assert(
-        !state.estimatedBudget || asNumber(state.estimatedBudget) >= schema.estimatedBudget.minimum,
-        'error.grant.due_dilligence.estimated_budget_too_low'
-      ) ||
-      assert(
-        !state.estimatedBudget || asNumber(state.estimatedBudget) <= schema.estimatedBudget.maximum,
-        'error.grant.due_dilligence.estimated_budget_too_big'
-      ) ||
-      undefined,
-  }),
-  aboutThis: (state) => ({
-    aboutThis:
-      assert(state.aboutThis.length <= schema.aboutThis.maxLength, 'error.grant.due_dilligence.about_this_too_large') ||
-      assert(state.aboutThis.length > 0, 'error.grant.due_dilligence.about_this_empty') ||
-      assert(state.aboutThis.length >= schema.aboutThis.minLength, 'error.grant.due_dilligence.about_this_too_short') ||
-      undefined,
-  }),
-})
+const validate = (fundingLeftToDisclose: number) =>
+  createValidator<BudgetBreakdownItem>({
+    concept: (state) => ({
+      concept:
+        assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_dilligence.concept_too_large') ||
+        assert(state.concept.length > 0, 'error.grant.due_dilligence.concept_empty') ||
+        assert(state.concept.length >= schema.concept.minLength, 'error.grant.due_dilligence.concept_too_short') ||
+        undefined,
+    }),
+    estimatedBudget: (state) => ({
+      estimatedBudget:
+        assert(
+          Number.isInteger(asNumber(state.estimatedBudget)),
+          'error.grant.due_dilligence.estimated_budget_invalid'
+        ) ||
+        assert(
+          !state.estimatedBudget || asNumber(state.estimatedBudget) >= schema.estimatedBudget.minimum,
+          'error.grant.due_dilligence.estimated_budget_too_low'
+        ) ||
+        assert(
+          !state.estimatedBudget || asNumber(state.estimatedBudget) <= fundingLeftToDisclose,
+          'error.grant.due_dilligence.estimated_budget_too_big'
+        ) ||
+        undefined,
+    }),
+    aboutThis: (state) => ({
+      aboutThis:
+        assert(
+          state.aboutThis.length <= schema.aboutThis.maxLength,
+          'error.grant.due_dilligence.about_this_too_large'
+        ) ||
+        assert(state.aboutThis.length > 0, 'error.grant.due_dilligence.about_this_empty') ||
+        assert(
+          state.aboutThis.length >= schema.aboutThis.minLength,
+          'error.grant.due_dilligence.about_this_too_short'
+        ) ||
+        undefined,
+    }),
+  })
 
 const edit = (state: BudgetBreakdownItem, props: Partial<BudgetBreakdownItem>) => {
   return {
@@ -104,11 +110,13 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   onSubmit: (item: BudgetBreakdownItem) => void
+  fundingLeftToDisclose: number
 }
 
-const AddModal = ({ isOpen, onClose, onSubmit }: Props) => {
+const AddModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) => {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_BUDGET_BREAKDOWN_ITEM)
+  const validator = useMemo(() => validate(fundingLeftToDisclose), [fundingLeftToDisclose])
+  const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_ITEM)
 
   useEffect(() => {
     if (state.validated) {
@@ -164,7 +172,7 @@ const AddModal = ({ isOpen, onClose, onSubmit }: Props) => {
                 error={state.error.estimatedBudget}
                 onChange={({ currentTarget }) =>
                   editor.set({
-                    estimatedBudget: currentTarget.value,
+                    estimatedBudget: Number(currentTarget.value),
                   })
                 }
               />

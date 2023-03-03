@@ -7,11 +7,12 @@ import './AddBox.css'
 interface Props {
   children: React.ReactText
   onClick: () => void
+  disabled: boolean
 }
 
-const AddBox = ({ children, onClick }: Props) => {
+const AddBox = ({ children, onClick, disabled }: Props) => {
   return (
-    <button className="AddBox" onClick={onClick}>
+    <button disabled={disabled} className="AddBox" onClick={onClick}>
       <AddPrimary className="AddBox__Icon" />
       <span>{children}</span>
     </button>

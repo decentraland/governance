@@ -1,3 +1,3 @@
-.DesiredFundingInput {
-  margin-bottom: 32px;
+.DesiredFundingInput__InputContainer {
+  display: flex;
 }

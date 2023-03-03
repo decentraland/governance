@@ -7,6 +7,7 @@ import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../enti
 import Label from '../Common/Label'
 
 import BudgetInput from './BudgetInput'
+import './DesiredFundingInput.css'
 
 interface Props {
   disabled: boolean
@@ -22,16 +23,18 @@ const DesiredFundingInput = ({ disabled, value, onChange, onBlur, error }: Props
   return (
     <div className="DesiredFundingInput">
       <Label>{t('page.submit_grant.funding_section.desired_funding')}</Label>
-      <BudgetInput
-        min={GRANT_PROPOSAL_MIN_BUDGET}
-        max={GRANT_PROPOSAL_MAX_BUDGET}
-        placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
-        disabled={disabled}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        error={error}
-      />
+      <div className="DesiredFundingInput__InputContainer">
+        <BudgetInput
+          min={GRANT_PROPOSAL_MIN_BUDGET}
+          max={GRANT_PROPOSAL_MAX_BUDGET}
+          placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
+          disabled={disabled}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          error={error}
+        />
+      </div>
       <Markdown className="GrantRequestSection__InputSubtitle">
         {t('page.submit_grant.funding_section.desired_funding_sub')}
       </Markdown>

@@ -51,6 +51,7 @@ export type GrantRequestValidationState = {
   generalInformationSectionValid: boolean
   categoryAssessmentSectionValid: boolean
   finalConsentSectionValid: boolean
+  dueDilligenceSectionValid: boolean
 }
 
 const initialValidationState: GrantRequestValidationState = {
@@ -58,6 +59,7 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
   categoryAssessmentSectionValid: false,
   finalConsentSectionValid: false,
+  dueDilligenceSectionValid: false,
 }
 
 function parseStringsAsNumbers(grantRequest: GrantRequest) {
@@ -230,7 +232,10 @@ export default function SubmitGrant() {
 
           <GrantRequestDueDilligenceSection
             funding={grantRequest.funding}
-            onValidation={(data) => patchGrantRequest({ ...data })}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ dueDilligenceSectionValid: sectionValid })
+            }}
             sectionNumber={getSectionNumber()}
           />
 
