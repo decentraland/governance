@@ -9,6 +9,7 @@ import { NewGrantCategory } from '../entities/Grant/types'
 import { CURRENT_TEST_BUDGET, GRANT_PROPOSAL_1, GRANT_PROPOSAL_2 } from '../entities/Proposal/testHelpers'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
+import { getUncappedRoundedPercentage } from '../helpers'
 
 import { BudgetService } from './BudgetService'
 import { ProposalService } from './ProposalService'
@@ -396,22 +397,19 @@ describe('BudgetService', () => {
           allocated: CURRENT_TEST_BUDGET.categories.accelerator.allocated,
           available: availableForAccelerator,
           contested: totalContested,
-          contested_over_available_percentage: BudgetService.getUncappedRoundedPercentage(
-            totalContested,
-            availableForAccelerator
-          ),
+          contested_over_available_percentage: getUncappedRoundedPercentage(totalContested, availableForAccelerator),
           contestants: [
             {
               title: GRANT_PROPOSAL_1.title,
               id: GRANT_PROPOSAL_1.id,
               size: proposal1Size,
-              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal1Size, totalContested),
+              contested_percentage: getUncappedRoundedPercentage(proposal1Size, totalContested),
             },
             {
               title: GRANT_PROPOSAL_2.title,
               id: GRANT_PROPOSAL_2.id,
               size: proposal2Size,
-              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal2Size, totalContested),
+              contested_percentage: getUncappedRoundedPercentage(proposal2Size, totalContested),
             },
           ],
         })
@@ -459,13 +457,13 @@ describe('BudgetService', () => {
               title: GRANT_PROPOSAL_ABOVE_BUDGET.title,
               id: GRANT_PROPOSAL_ABOVE_BUDGET.id,
               size: proposal1Size,
-              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal1Size, totalContested),
+              contested_percentage: getUncappedRoundedPercentage(proposal1Size, totalContested),
             },
             {
               title: GRANT_PROPOSAL_2.title,
               id: GRANT_PROPOSAL_2.id,
               size: proposal2Size,
-              contested_percentage: BudgetService.getUncappedRoundedPercentage(proposal2Size, totalContested),
+              contested_percentage: getUncappedRoundedPercentage(proposal2Size, totalContested),
             },
           ],
         })

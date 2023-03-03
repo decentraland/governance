@@ -18,7 +18,7 @@ export type ExpectedBudget = Pick<CurrentBudget, 'id' | 'allocated' | 'start_at'
   total_contested: number
 }
 
-type ExpectedCategoryBudget = Pick<CurrentCategoryBudget, 'total' | 'allocated' | 'available'> & {
+export type ExpectedCategoryBudget = Pick<CurrentCategoryBudget, 'total' | 'allocated' | 'available'> & {
   contested: number
   contested_over_available_percentage: number
   contestants: ContestingGrantProposal[]
