@@ -8,7 +8,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import { handleUrlFilters } from '../../clients/utils'
+import { getUrlFilters } from '../../helpers'
 
 import './SortingMenu.css'
 
@@ -33,11 +33,11 @@ export default function SortingMenu() {
       <Dropdown.Menu>
         <Dropdown.Item
           text={t('navigation.search.sorting.DESC')}
-          onClick={() => navigate(handleUrlFilters(SORT_KEY, params, 'DESC'))}
+          onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'DESC'))}
         />
         <Dropdown.Item
           text={t('navigation.search.sorting.ASC')}
-          onClick={() => navigate(handleUrlFilters(SORT_KEY, params, 'ASC'))}
+          onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'ASC'))}
         />
       </Dropdown.Menu>
     </Dropdown>

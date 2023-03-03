@@ -4,8 +4,8 @@ import { useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { handleUrlFilters } from '../../clients/utils'
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
+import { getUrlFilters } from '../../helpers'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import ActionableLayout from '../Layout/ActionableLayout'
 
@@ -28,7 +28,7 @@ function CategoryList() {
     <ActionableLayout leftAction={<Header sub>{t(`page.proposal_list.categories`)}</Header>}>
       <CategoryOption
         type={'all_proposals'}
-        href={handleUrlFilters(FILTER_KEY, params)}
+        href={getUrlFilters(FILTER_KEY, params)}
         active={type === null}
         onClick={handleClick}
       />
@@ -37,7 +37,7 @@ function CategoryList() {
           <CategoryOption
             key={'category_list' + index}
             type={ProposalType[key]}
-            href={handleUrlFilters(FILTER_KEY, params, ProposalType[key])}
+            href={getUrlFilters(FILTER_KEY, params, ProposalType[key])}
             active={type === ProposalType[key]}
             onClick={handleClick}
           />

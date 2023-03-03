@@ -8,7 +8,7 @@ import { BudgetService } from '../../services/BudgetService'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
-import { CurrentBudget, CurrentCategoryBudget } from './types'
+import { CurrentBudget, CurrentCategoryBudget, ExpectedBudget } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -37,6 +37,6 @@ async function getCurrentBudget(): Promise<CurrentBudget> {
   return await BudgetService.getCurrentBudget()
 }
 
-async function getExpectedAllocatedBudget(): Promise<Record<string, any>> {
+async function getExpectedAllocatedBudget(): Promise<ExpectedBudget> {
   return await BudgetService.getExpectedAllocatedBudget()
 }

@@ -20,6 +20,7 @@ import { ProposalAttributes } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
+import { getUncappedRoundedPercentage } from '../helpers'
 
 import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
@@ -189,10 +190,6 @@ export class BudgetService {
     }
   }
 
-  static getUncappedRoundedPercentage(value: number, total: number): number {
-    return Math.round((value * 100) / total)
-  }
-
   static async getExpectedAllocatedBudget() {
     const activeGrantProposals = await ProposalService.getActiveGrantProposals()
     const categories = Object.values(NewGrantCategory).map(snakeCase)
@@ -201,12 +198,12 @@ export class BudgetService {
     this.addContestants(activeGrantProposals, expectedBudget)
 
     categories.forEach((cat) => {
-      expectedBudget.categories[cat].contested_over_available_percentage = this.getUncappedRoundedPercentage(
+      expectedBudget.categories[cat].contested_over_available_percentage = getUncappedRoundedPercentage(
         expectedBudget.categories[cat].contested,
         expectedBudget.categories[cat].available
       )
       expectedBudget.categories[cat].contestants.forEach((contestingGrant: ContestingGrantProposal) => {
-        contestingGrant.contested_percentage = this.getUncappedRoundedPercentage(
+        contestingGrant.contested_percentage = getUncappedRoundedPercentage(
           contestingGrant.size,
           expectedBudget.categories[cat].contested
         )

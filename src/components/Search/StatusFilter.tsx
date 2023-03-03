@@ -5,9 +5,9 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { handleUrlFilters } from '../../clients/utils'
 import { GrantStatus } from '../../entities/Grant/types'
 import { ProposalStatus } from '../../entities/Proposal/types'
+import { getUrlFilters } from '../../helpers'
 
 import { FilterProps } from './CategoryFilter'
 import CollapsibleFilter from './CollapsibleFilter'
@@ -30,7 +30,7 @@ export default React.memo(function StatusFilter({
 
   return (
     <CollapsibleFilter title={t('navigation.search.status_filter_title')} startOpen={startOpen} onChange={onChange}>
-      <FilterLabel label={t(`status.all`)} href={handleUrlFilters(FILTER_KEY, params)} active={!status} />
+      <FilterLabel label={t(`status.all`)} href={getUrlFilters(FILTER_KEY, params)} active={!status} />
       {Object.values(statusType).map((value, index) => {
         const label = toSnakeCase(value)
         if (![ProposalStatus.Deleted, ProposalStatus.Pending].includes(value)) {
@@ -38,7 +38,7 @@ export default React.memo(function StatusFilter({
             <FilterLabel
               key={'status_filter' + index}
               label={t(`${isGrantFilter ? 'grant_' : ''}status.${label}`)}
-              href={handleUrlFilters(FILTER_KEY, params, label)}
+              href={getUrlFilters(FILTER_KEY, params, label)}
               active={status === label}
             />
           )
