@@ -242,6 +242,13 @@ export const CoreUnitQuestionsSchema = {
     maxLength: 750,
   },
 }
+export const PlatformQuestionsSchema = {
+  impactMetrics: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+}
 
 export const GrantRequestSchema = {
   type: 'object',
@@ -292,6 +299,7 @@ export type GrantRequestCategoryAssessment = {
   inWorldContent?: InWorldContentQuestions
   socialMediaContent?: SocialMediaContentQuestions
   sponsorship?: SponsorshipQuestions
+  platform?: PlatformQuestions
 }
 export type AcceleratorQuestions = {
   revenueGenerationModel: string
@@ -325,6 +333,9 @@ export type SponsorshipQuestions = {
 }
 export type CoreUnitQuestions = {
   strategicValue: string
+  impactMetrics: string
+}
+export type PlatformQuestions = {
   impactMetrics: string
 }
 

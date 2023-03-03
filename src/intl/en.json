@@ -1174,6 +1174,9 @@
           "strategic_value_label": "How will your team provide strategic value to the Decentraland DAO?",
           "impact_metrics_label": "List your impact metrics"
         },
+        "platform": {
+          "impact_metrics_label": "List your impact metrics"
+        },
         "documentation": {
           "content_type": {
             "label": "What type of content are you planning to produce?",
