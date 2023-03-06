@@ -719,6 +719,9 @@
             "strategic_value_label": "Strategic Value",
             "impact_metrics_label": "Impact Metrics"
           },
+          "platform": {
+            "impact_metrics_label": "Impact Metrics"
+          },
           "documentation": {
             "content_type_label": "Content Type",
             "total_pieces_label": "Content Pieces"

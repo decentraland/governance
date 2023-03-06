@@ -55,6 +55,15 @@ const CategoryAssessment = ({ data, category }: Props) => {
           </CategoryAssessmentItem>
         </>
       )}
+      {category === NewGrantCategory.Platform && (
+        <>
+          <CategoryAssessmentItem
+            label={t('page.proposal_detail.grant.category_assessment.platform.impact_metrics_label')}
+          >
+            {data.impactMetrics}
+          </CategoryAssessmentItem>
+        </>
+      )}
       {category === NewGrantCategory.Documentation && (
         <>
           <CategoryAssessmentItem
