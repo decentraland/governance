@@ -39,6 +39,8 @@
   --background-popup: #5c5c6e;
   --background-disabled: #f9f8f9;
 
+  --border-color-default: rgba(34, 36, 38, 0.15);
+
   --dao-footer-height: 156px;
   --dao-header-height: 64px;
   --dao-navigation-height: 89px;
@@ -124,7 +126,7 @@ body {
 .dg.Textarea .ui.input textarea,
 .dcl.field.field .ui.input input,
 .dcl.select-field.select-field .ui.search.selection.dropdown {
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  border: 1px solid var(--border-color-default);
   border-radius: 6px;
   padding: 8px 8px 8px;
 }
@@ -174,7 +176,7 @@ body {
 }
 
 .ui.modal .field .ui.input input {
-  border-bottom-color: rgba(34, 36, 38, 0.15);
+  border-bottom-color: var(--border-color-default);
 }
 
 .dcl.field.error .ui.input input,

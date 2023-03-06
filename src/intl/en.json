@@ -181,7 +181,7 @@
         "roadmap_too_large": "Roadmap is too large",
         "roadmap_too_short": "Roadmap is too short"
       },
-      "due_dilligence": {
+      "due_diligence": {
         "concept_empty": "Concept is empty",
         "concept_too_large": "Concept is too large",
         "concept_short": "Concept is too short",
@@ -1257,8 +1257,8 @@
           "investment_recovery_label": "How many months will it take the DAO to recover the investment made on your project based on your estimations?"
         }
       },
-      "due_dilligence": {
-        "title": "Due-dilligence",
+      "due_diligence": {
+        "title": "Due-diligence",
         "budget_breakdown_label": "Budget breakdown",
         "budget_breakdown_detail": "Our community values transparency. ${value} left to disclose.",
         "budget_breakdown_add_concept": "Add concept",

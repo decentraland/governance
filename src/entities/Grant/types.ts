@@ -307,7 +307,7 @@ export type GrantRequest = {
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
   GrantRequestCategoryAssessment &
-  GrantRequestDueDilligence
+  GrantRequestDueDiligence
 
 export type GrantRequestFunding = {
   funding: string | number
@@ -336,7 +336,7 @@ export type BudgetBreakdownItem = {
   relevantLink?: string
 }
 
-export type GrantRequestDueDilligence = {
+export type GrantRequestDueDiligence = {
   budgetBreakdown: BudgetBreakdownItem[]
 }
 

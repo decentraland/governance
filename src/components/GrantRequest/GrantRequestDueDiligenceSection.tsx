@@ -6,7 +6,7 @@ import { isEqual, sumBy } from 'lodash'
 import {
   BudgetBreakdownItem as BudgetBreakdownItemType,
   GrantRequest,
-  GrantRequestDueDilligence,
+  GrantRequestDueDiligence,
 } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import Label from '../Common/Label'
@@ -15,70 +15,70 @@ import SubLabel from '../Common/SubLabel'
 import AddBox from './AddBox'
 import AddModal from './AddModal'
 import BudgetBreakdownItem from './BudgetBreakdownItem'
-import './GrantRequestDueDilligenceSection.css'
+import './GrantRequestDueDiligenceSection.css'
 import GrantRequestSection from './GrantRequestSection'
 
-export const INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE: GrantRequestDueDilligence = {
+export const INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE: GrantRequestDueDiligence = {
   budgetBreakdown: [],
 }
 
 interface Props {
   sectionNumber: number
   funding: GrantRequest['funding']
-  onValidation: (data: GrantRequestDueDilligence, sectionValid: boolean) => void
+  onValidation: (data: GrantRequestDueDiligence, sectionValid: boolean) => void
 }
 
-export default function GrantRequestDueDilligenceSection({ sectionNumber, funding, onValidation }: Props) {
+export default function GrantRequestDueDiligenceSection({ sectionNumber, funding, onValidation }: Props) {
   const t = useFormatMessage()
-  const [dueDilligenceState, setDueDilligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE)
-  const isFormEdited = userModifiedForm(dueDilligenceState, INITIAL_GRANT_REQUEST_DUE_DILLIGENCE_STATE)
+  const [DueDiligenceState, setDueDiligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
+  const isFormEdited = userModifiedForm(DueDiligenceState, INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
   const [isModalOpen, setModalOpen] = useState(false)
 
   const handleSubmitItem = (item: BudgetBreakdownItemType) => {
-    setDueDilligenceState((prevState) => ({ budgetBreakdown: [...prevState.budgetBreakdown, item] }))
+    setDueDiligenceState((prevState) => ({ budgetBreakdown: [...prevState.budgetBreakdown, item] }))
   }
 
   const fundingLeftToDisclose = useMemo(
-    () => Number(funding) - Number(sumBy(dueDilligenceState.budgetBreakdown, 'estimatedBudget')),
-    [dueDilligenceState.budgetBreakdown, funding]
+    () => Number(funding) - Number(sumBy(DueDiligenceState.budgetBreakdown, 'estimatedBudget')),
+    [DueDiligenceState.budgetBreakdown, funding]
   )
 
   const isCompleted = funding >= 0 && Number(fundingLeftToDisclose) <= 0
 
   useEffect(() => {
-    onValidation(dueDilligenceState, isCompleted)
+    onValidation(DueDiligenceState, isCompleted)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dueDilligenceState, isCompleted])
+  }, [DueDiligenceState, isCompleted])
 
   return (
     <GrantRequestSection
       shouldFocus={false}
       validated={isCompleted}
       isFormEdited={isFormEdited}
-      sectionTitle={t('page.submit_grant.due_dilligence.title')}
+      sectionTitle={t('page.submit_grant.due_diligence.title')}
       sectionNumber={sectionNumber}
     >
       <div className="GrantRequestSection__Content">
-        <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_label')}</Label>
+        <Label>{t('page.submit_grant.due_diligence.budget_breakdown_label')}</Label>
         <SubLabel>
-          {t('page.submit_grant.due_dilligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
+          {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
         </SubLabel>
-        {dueDilligenceState.budgetBreakdown.map((item, index) => (
+        {DueDiligenceState.budgetBreakdown.map((item, index) => (
           <BudgetBreakdownItem
             key={`${item.concept}-${index}`}
             item={item}
             onDeleteClick={() =>
-              setDueDilligenceState((prevState) => ({
+              setDueDiligenceState((prevState) => ({
                 budgetBreakdown: prevState.budgetBreakdown.filter((i) => !isEqual(i, item)),
               }))
             }
           />
         ))}
         <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
-          {t('page.submit_grant.due_dilligence.budget_breakdown_add_concept')}
+          {t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
         </AddBox>
         <span className="GrantRequestSection__ExampleLabel">
-          {t('page.submit_grant.due_dilligence.budget_breakdown_example')}
+          {t('page.submit_grant.due_diligence.budget_breakdown_example')}
         </span>
       </div>
       <AddModal

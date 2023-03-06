@@ -30,24 +30,24 @@ const validate = (fundingLeftToDisclose: number) =>
   createValidator<BudgetBreakdownItem>({
     concept: (state) => ({
       concept:
-        assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_dilligence.concept_too_large') ||
-        assert(state.concept.length > 0, 'error.grant.due_dilligence.concept_empty') ||
-        assert(state.concept.length >= schema.concept.minLength, 'error.grant.due_dilligence.concept_too_short') ||
+        assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_diligence.concept_too_large') ||
+        assert(state.concept.length > 0, 'error.grant.due_diligence.concept_empty') ||
+        assert(state.concept.length >= schema.concept.minLength, 'error.grant.due_diligence.concept_too_short') ||
         undefined,
     }),
     estimatedBudget: (state) => ({
       estimatedBudget:
         assert(
           Number.isInteger(asNumber(state.estimatedBudget)),
-          'error.grant.due_dilligence.estimated_budget_invalid'
+          'error.grant.due_diligence.estimated_budget_invalid'
         ) ||
         assert(
           !state.estimatedBudget || asNumber(state.estimatedBudget) >= schema.estimatedBudget.minimum,
-          'error.grant.due_dilligence.estimated_budget_too_low'
+          'error.grant.due_diligence.estimated_budget_too_low'
         ) ||
         assert(
           !state.estimatedBudget || asNumber(state.estimatedBudget) <= fundingLeftToDisclose,
-          'error.grant.due_dilligence.estimated_budget_too_big'
+          'error.grant.due_diligence.estimated_budget_too_big'
         ) ||
         undefined,
     }),
@@ -55,12 +55,12 @@ const validate = (fundingLeftToDisclose: number) =>
       aboutThis:
         assert(
           state.aboutThis.length <= schema.aboutThis.maxLength,
-          'error.grant.due_dilligence.about_this_too_large'
+          'error.grant.due_diligence.about_this_too_large'
         ) ||
-        assert(state.aboutThis.length > 0, 'error.grant.due_dilligence.about_this_empty') ||
+        assert(state.aboutThis.length > 0, 'error.grant.due_diligence.about_this_empty') ||
         assert(
           state.aboutThis.length >= schema.aboutThis.minLength,
-          'error.grant.due_dilligence.about_this_too_short'
+          'error.grant.due_diligence.about_this_too_short'
         ) ||
         undefined,
     }),
@@ -102,15 +102,15 @@ const AddModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) =
       open={isOpen}
     >
       <Modal.Header className="AddModal__Title">
-        {t('page.submit_grant.due_dilligence.budget_breakdown_modal.title')}
+        {t('page.submit_grant.due_diligence.budget_breakdown_modal.title')}
       </Modal.Header>
       <Modal.Content>
         <div>
           <ContentSection className="GrantRequestSection__Field">
-            <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.concept_label')}</Label>
+            <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_label')}</Label>
             <Field
               value={state.value.concept}
-              placeholder={t('page.submit_grant.due_dilligence.budget_breakdown_modal.concept_placeholder')}
+              placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_placeholder')}
               onChange={(_, { value }) => editor.set({ concept: value })}
               error={!!state.error.concept}
               message={
@@ -133,7 +133,7 @@ const AddModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) =
               unitLabel="months" // TODO: move to i18n file
             />
             <div>
-              <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.estimated_budget_label')}</Label>
+              <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}</Label>
               <BudgetInput
                 value={state.value.estimatedBudget}
                 error={state.error.estimatedBudget}
@@ -146,11 +146,11 @@ const AddModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) =
             </div>
           </ContentSection>
           <ContentSection className="GrantRequestSection__Field">
-            <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.about_this_label')}</Label>
+            <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_label')}</Label>
             <Textarea
               value={state.value.aboutThis}
               minHeight={175}
-              placeholder={t('page.submit_grant.due_dilligence.budget_breakdown_modal.about_this_placeholder')}
+              placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_placeholder')}
               onChange={(_: unknown, { value }: { value: string }) => editor.set({ aboutThis: String(value) })}
               error={!!state.error.aboutThis}
               message={
@@ -164,10 +164,10 @@ const AddModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) =
             />
           </ContentSection>
           <ContentSection className="GrantRequestSection__Field">
-            <Label>{t('page.submit_grant.due_dilligence.budget_breakdown_modal.relevant_link_label')}</Label>
+            <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_label')}</Label>
             <Field
               value={state.value.relevantLink}
-              placeholder={t('page.submit_grant.due_dilligence.budget_breakdown_modal.relevant_link_placeholder')}
+              placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_placeholder')}
               onChange={(_, { value }) => editor.set({ relevantLink: value })}
             />
           </ContentSection>
