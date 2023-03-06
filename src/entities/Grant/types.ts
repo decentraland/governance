@@ -73,11 +73,6 @@ export const GrantRequestGeneralInfoSchema = {
     maxLength: 750,
   },
   description: { type: 'string', minLength: 20, maxLength: 3500 },
-  specification: {
-    type: 'string',
-    minLength: 20,
-    maxLength: 3500,
-  },
   beneficiary: {
     type: 'string',
     format: 'address',
@@ -85,11 +80,6 @@ export const GrantRequestGeneralInfoSchema = {
   email: {
     type: 'string',
     format: 'email',
-  },
-  personnel: {
-    type: 'string',
-    minLength: 20,
-    maxLength: 1500,
   },
   roadmap: {
     type: 'string',
@@ -370,10 +360,8 @@ export type GrantRequestGeneralInfo = {
   title: string
   abstract: string
   description: string
-  specification: string
   beneficiary: string
   email: string
-  personnel: string
   roadmap: string
   coAuthors?: string[]
 }
@@ -450,6 +438,7 @@ export type CoreUnitQuestions = {
   strategicValue: string
   impactMetrics: string
 }
+
 export type PlatformQuestions = {
   impactMetrics: string
 }

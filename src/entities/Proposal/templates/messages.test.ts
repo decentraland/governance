@@ -292,8 +292,6 @@ describe('getUpdateMessage', () => {
             size: 1000,
             beneficiary: 'Grant Beneficiary',
             description: 'Grant Description',
-            specification: 'Grant Specification',
-            personnel: 'Grant Personnel',
             roadmap: 'Grant Roadmap',
             choices: DEFAULT_CHOICES,
           }
@@ -396,8 +394,6 @@ describe('getUpdateMessage', () => {
             size: 1000,
             beneficiary: 'Grant Beneficiary',
             description: 'Grant Description',
-            specification: 'Grant Specification',
-            personnel: 'Grant Personnel',
             roadmap: 'Grant Roadmap',
             choices: DEFAULT_CHOICES,
             projectDuration: 6,
