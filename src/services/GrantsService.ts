@@ -204,7 +204,8 @@ export class GrantsService {
       grantRequest.documentation ||
       grantRequest.inWorldContent ||
       grantRequest.socialMediaContent ||
-      grantRequest.sponsorship
+      grantRequest.sponsorship ||
+      grantRequest.platform
     )
   }
 

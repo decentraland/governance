@@ -246,6 +246,13 @@ export const CoreUnitQuestionsSchema = {
     maxLength: 750,
   },
 }
+export const PlatformQuestionsSchema = {
+  impactMetrics: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+}
 
 export const BudgetBreakdownItemSchema = {
   concept: {
@@ -351,6 +358,7 @@ export type GrantRequestCategoryAssessment = {
   inWorldContent?: InWorldContentQuestions
   socialMediaContent?: SocialMediaContentQuestions
   sponsorship?: SponsorshipQuestions
+  platform?: PlatformQuestions
 }
 
 export type AcceleratorQuestions = {
@@ -392,6 +400,9 @@ export type CoreUnitQuestions = {
   strategicValue: string
   impactMetrics: string
 }
+export type PlatformQuestions = {
+  impactMetrics: string
+}
 
 export type CategoryAssessmentQuestions =
   | AcceleratorQuestions
@@ -400,6 +411,7 @@ export type CategoryAssessmentQuestions =
   | InWorldContentQuestions
   | SocialMediaContentQuestions
   | SponsorshipQuestions
+  | PlatformQuestions
 
 function getCategoryAssessmentSchema(category: NewGrantCategory) {
   switch (category) {
@@ -416,16 +428,13 @@ function getCategoryAssessmentSchema(category: NewGrantCategory) {
     case NewGrantCategory.Sponsorship:
       return SponsorshipQuestionsSchema
     case NewGrantCategory.Platform:
-      return {}
+      return PlatformQuestionsSchema
   }
 }
 
 export function getGrantRequestSchema(category: string | null) {
   const schema: any = cloneDeep(GrantRequestSchema)
   const parsedCategory: NewGrantCategory = toNewGrantCategory(category)
-  if (parsedCategory === NewGrantCategory.Platform) {
-    return schema
-  }
   const categoryName = camelCase(parsedCategory)
   schema.required = [...GrantRequestSchema.required, categoryName]
   const categoryAssessmentSchema = getCategoryAssessmentSchema(parsedCategory)

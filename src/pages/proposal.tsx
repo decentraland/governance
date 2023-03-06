@@ -29,18 +29,18 @@ import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
 import CategoryAssessment from '../components/Proposal/CategoryAssessment'
-import ProposalComments from '../components/Proposal/ProposalComments'
+import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
-import ProposalImagesPreview from '../components/ProposalImagesPreview/ProposalImagesPreview'
-import ForumButton from '../components/Section/ForumButton'
-import ProposalCoAuthorStatus from '../components/Section/ProposalCoAuthorStatus'
-import ProposalDetailSection from '../components/Section/ProposalDetailSection'
-import ProposalResultSection from '../components/Section/ProposalResultSection'
-import ProposalUpdatesActions from '../components/Section/ProposalUpdatesActions'
-import SubscribeButton from '../components/Section/SubscribeButton'
-import VestingContract from '../components/Section/VestingContract'
+import ForumButton from '../components/Proposal/View/ForumButton'
+import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
+import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
+import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import ProposalResultSection from '../components/Proposal/View/ProposalResultSection'
+import ProposalUpdatesActions from '../components/Proposal/View/ProposalUpdatesActions'
+import SubscribeButton from '../components/Proposal/View/SubscribeButton'
+import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { NewGrantCategory } from '../entities/Grant/types'
@@ -224,10 +224,7 @@ export default function ProposalPage() {
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showCategoryAssessment =
-    proposal &&
-    proposal.type === ProposalType.Grant &&
-    proposal.configuration.category !== NewGrantCategory.Platform &&
-    !!proposal.configuration.categoryAssessment
+    proposal && proposal.type === ProposalType.Grant && !!proposal.configuration.categoryAssessment
 
   return (
     <>

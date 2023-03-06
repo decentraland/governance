@@ -218,7 +218,7 @@ export default function SubmitGrant() {
             sectionNumber={getSectionNumber()}
           />
 
-          {grantRequest.category && grantRequest.category !== NewGrantCategory.Platform && (
+          {grantRequest.category && (
             <GrantRequestCategorySection
               category={grantRequest.category}
               onValidation={(data, sectionValid) => {
