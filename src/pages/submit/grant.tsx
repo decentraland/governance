@@ -25,6 +25,9 @@ import GrantRequestFundingSection, {
 import GrantRequestGeneralInfoSection, {
   INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
+import GrantRequestPersonnelSection, {
+  INITIAL_GRANT_REQUEST_PERSONNEL_STATE,
+} from '../../components/GrantRequest/GrantRequestPersonnelSection'
 import CategorySelector from '../../components/Grants/CategorySelector'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
@@ -43,6 +46,7 @@ const initialState: GrantRequest = {
   category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
+  ...INITIAL_GRANT_REQUEST_PERSONNEL_STATE,
   ...INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE,
 }
 
@@ -51,7 +55,8 @@ export type GrantRequestValidationState = {
   generalInformationSectionValid: boolean
   categoryAssessmentSectionValid: boolean
   finalConsentSectionValid: boolean
-  DueDiligenceSectionValid: boolean
+  dueDiligenceSectionValid: boolean
+  personnelSectionValid: boolean
 }
 
 const initialValidationState: GrantRequestValidationState = {
@@ -59,7 +64,8 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
   categoryAssessmentSectionValid: false,
   finalConsentSectionValid: false,
-  DueDiligenceSectionValid: false,
+  dueDiligenceSectionValid: false,
+  personnelSectionValid: false,
 }
 
 function parseStringsAsNumbers(grantRequest: GrantRequest) {
@@ -230,11 +236,20 @@ export default function SubmitGrant() {
             />
           )}
 
+          <GrantRequestPersonnelSection
+            funding={grantRequest.funding}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ personnelSectionValid: sectionValid })
+            }}
+            sectionNumber={getSectionNumber()}
+          />
+
           <GrantRequestDueDiligenceSection
             funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
               patchGrantRequest({ ...data })
-              patchValidationState({ DueDiligenceSectionValid: sectionValid })
+              patchValidationState({ dueDiligenceSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
           />

@@ -192,6 +192,17 @@
         "about_this_too_large": "About this is too large",
         "about_this_too_short": "About this is too short"
       },
+      "personnel": {
+        "name_empty": "Name is empty",
+        "name_too_large": "Name is too large",
+        "name_short": "Name is too short",
+        "role_empty": "Role is empty",
+        "role_too_large": "Role is too large",
+        "role_short": "Role is too short",
+        "about_empty": "About them is empty",
+        "about_too_large": "About them is too large",
+        "about_too_short": "About them is too short"
+      },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
       "title_too_short": "Title is too short",
@@ -1279,6 +1290,23 @@
           "estimated_budget_label": "Estimated budget",
           "about_this_label": "About this",
           "about_this_placeholder": "Highlight relevant information",
+          "relevant_link_label": "Relevant Link",
+          "relevant_link_placeholder": "https://"
+        }
+      },
+      "personnel": {
+        "title": "Personnel",
+        "team_label": "Your team",
+        "team_detail": "Please list who will be working on this project, along with an explicit overview of their relevant skill sets and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
+        "team_add_member": "Add team member",
+        "team_modal": {
+          "title": "Adding a team member",
+          "name_label": "Their name/identity",
+          "name_placeholder": "Names or pseudonyms are OK",
+          "role_label": "Their role/position",
+          "role_placeholder": "Developer, marketing, designer...",
+          "about_label": "About them",
+          "about_placeholder": "Highlight relevant information",
           "relevant_link_label": "Relevant Link",
           "relevant_link_placeholder": "https://"
         }

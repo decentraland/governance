@@ -282,6 +282,41 @@ export const BudgetBreakdownItemSchema = {
   },
 }
 
+export const TeamMemberItemSchema = {
+  name: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
+  role: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
+  about: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  relevantLink: {
+    type: 'string',
+    minLength: 0,
+    maxLength: 80,
+  },
+}
+
+const GrantRequestPersonnelSchema = {
+  team: {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      required: [...Object.keys(TeamMemberItemSchema)],
+      properties: TeamMemberItemSchema,
+    },
+  },
+}
+
 const GrantRequestDueDiligenceSchema = {
   budgetBreakdown: {
     type: 'array',
@@ -301,6 +336,8 @@ export const GrantRequestSchema = {
     'category',
     ...Object.keys(GrantRequestFundingSchema),
     ...Object.keys(GrantRequestGeneralInfoSchema).filter((section) => section !== 'coAuthors'),
+    ...Object.keys(GrantRequestDueDiligenceSchema),
+    ...Object.keys(GrantRequestPersonnelSchema),
   ],
   properties: {
     category: {
@@ -310,6 +347,7 @@ export const GrantRequestSchema = {
     ...GrantRequestFundingSchema,
     ...GrantRequestGeneralInfoSchema,
     ...GrantRequestDueDiligenceSchema,
+    ...GrantRequestPersonnelSchema,
   },
 }
 
@@ -317,6 +355,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
+  GrantRequestPersonnel &
   GrantRequestCategoryAssessment &
   GrantRequestDueDiligence
 
@@ -349,6 +388,17 @@ export type BudgetBreakdownItem = {
 
 export type GrantRequestDueDiligence = {
   budgetBreakdown: BudgetBreakdownItem[]
+}
+
+export type TeamMember = {
+  name: string
+  role: string
+  about: string
+  relevantLink?: string
+}
+
+export type GrantRequestPersonnel = {
+  team: TeamMember[]
 }
 
 export type GrantRequestCategoryAssessment = {
