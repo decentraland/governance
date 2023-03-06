@@ -1,4 +1,4 @@
-import { VotedChoice } from '../../../components/Section/ProposalVoting/VotedChoiceButton'
+import { VotedChoice } from '../../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
 import { Vote } from '../../../entities/Votes/types'
 
 export class VotedChoiceBuilder {

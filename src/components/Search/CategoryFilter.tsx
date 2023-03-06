@@ -5,9 +5,9 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { handleUrlFilters } from '../../clients/utils'
 import { NewGrantCategory, OldGrantCategory } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'
+import { getUrlFilters } from '../../helpers'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'
@@ -56,7 +56,7 @@ export default React.memo(function CategoryFilter({
       {!isLegacyGrantsFilter && (
         <CategoryOption
           type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
-          href={handleUrlFilters(FILTER_KEY, params)}
+          href={getUrlFilters(FILTER_KEY, params)}
           active={!type}
           className={'CategoryFilter__CategoryOption'}
         />
@@ -67,7 +67,7 @@ export default React.memo(function CategoryFilter({
           <CategoryOption
             key={'category_filter' + index}
             type={label}
-            href={handleUrlFilters(FILTER_KEY, params, label)}
+            href={getUrlFilters(FILTER_KEY, params, label)}
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
             count={isCounter ? categoryCount[value as keyof Counter] : undefined}

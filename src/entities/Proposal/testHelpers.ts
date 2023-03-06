@@ -214,3 +214,48 @@ export function getTestBudgetWithAvailableSize(
     id: 'budget_id_1',
   }
 }
+
+export const CURRENT_TEST_BUDGET: CurrentBudget = {
+  id: 'test-id',
+  start_at: Time.utc('2023-01-01T00:00:00.000Z').toDate(),
+  finish_at: Time.utc('2023-04-01T00:00:00.000Z').toDate(),
+  total: 1155000,
+  allocated: 0,
+  categories: {
+    accelerator: {
+      total: 80850,
+      allocated: 0,
+      available: 80850,
+    },
+    core_unit: {
+      total: 173250,
+      allocated: 0,
+      available: 173250,
+    },
+    documentation: {
+      total: 34650,
+      allocated: 0,
+      available: 34650,
+    },
+    in_world_content: {
+      total: 231000,
+      allocated: 0,
+      available: 231000,
+    },
+    platform: {
+      total: 462000,
+      allocated: 0,
+      available: 462000,
+    },
+    social_media_content: {
+      total: 57750,
+      allocated: 0,
+      available: 57750,
+    },
+    sponsorship: {
+      total: 115500,
+      allocated: 0,
+      available: 115500,
+    },
+  },
+}

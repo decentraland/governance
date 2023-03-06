@@ -1,7 +1,6 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 
-import { capitalizeFirstLetter } from '../clients/utils'
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
 import { ProposalType } from '../entities/Proposal/types'
@@ -41,6 +40,10 @@ type EmbedMessageProps = {
   action: string
   color: MessageColors
   url: string
+}
+
+function capitalizeFirstLetter(string: string) {
+  return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
 }
 
 function getChoices(choices: string[]): Field[] {

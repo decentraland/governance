@@ -8,7 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { MonthlyTotal } from '../../clients/DclData'
 import { formatBalance } from '../../entities/Proposal/utils'
-import { DetailItem } from '../Section/DetailItem'
+import { DetailItem } from '../Proposal/View/DetailItem'
 
 import './MonthlyTotal.css'
 
