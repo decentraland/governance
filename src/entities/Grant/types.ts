@@ -155,6 +155,7 @@ export const DocumentationQuestionsSchema = {
     minimum: 1,
   },
 }
+
 export const InWorldContentQuestionsSchema = {
   totalPieces: {
     type: 'integer',
@@ -170,6 +171,7 @@ export const InWorldContentQuestionsSchema = {
     maxLength: 750,
   },
 }
+
 export const SocialMediaContentQuestionsSchema = {
   socialMediaPlatforms: {
     type: 'string',
@@ -195,6 +197,7 @@ export const SocialMediaContentQuestionsSchema = {
     maxLength: 750,
   },
 }
+
 export const SponsorshipQuestionsSchema = {
   eventType: {
     type: 'string',
@@ -230,6 +233,7 @@ export const SponsorshipQuestionsSchema = {
     maxLength: 750,
   },
 }
+
 export const CoreUnitQuestionsSchema = {
   strategicValue: {
     type: 'string',
@@ -250,6 +254,46 @@ export const PlatformQuestionsSchema = {
   },
 }
 
+export const BudgetBreakdownItemSchema = {
+  concept: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
+  duration: {
+    type: 'integer',
+    minimum: Number(MIN_PROJECT_DURATION || 1),
+    maximum: Number(MAX_PROJECT_DURATION || 1),
+  },
+  estimatedBudget: {
+    type: 'integer',
+    minimum: 1,
+    maximum: Number(GRANT_PROPOSAL_MAX_BUDGET || 0),
+  },
+  aboutThis: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  relevantLink: {
+    type: 'string',
+    minLength: 0,
+    maxLength: 80,
+  },
+}
+
+const GrantRequestDueDiligenceSchema = {
+  budgetBreakdown: {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      required: [...Object.keys(BudgetBreakdownItemSchema)],
+      properties: BudgetBreakdownItemSchema,
+    },
+  },
+}
+
 export const GrantRequestSchema = {
   type: 'object',
   additionalProperties: false,
@@ -265,6 +309,7 @@ export const GrantRequestSchema = {
     },
     ...GrantRequestFundingSchema,
     ...GrantRequestGeneralInfoSchema,
+    ...GrantRequestDueDiligenceSchema,
   },
 }
 
@@ -272,7 +317,8 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestCategoryAssessment
+  GrantRequestCategoryAssessment &
+  GrantRequestDueDiligence
 
 export type GrantRequestFunding = {
   funding: string | number
@@ -280,6 +326,7 @@ export type GrantRequestFunding = {
   vestingStartDate: VestingStartDate
   paymentToken: PaymentToken
 }
+
 export type GrantRequestGeneralInfo = {
   title: string
   abstract: string
@@ -292,6 +339,18 @@ export type GrantRequestGeneralInfo = {
   coAuthors?: string[]
 }
 
+export type BudgetBreakdownItem = {
+  concept: string
+  duration: number
+  estimatedBudget: string | number
+  aboutThis: string
+  relevantLink?: string
+}
+
+export type GrantRequestDueDiligence = {
+  budgetBreakdown: BudgetBreakdownItem[]
+}
+
 export type GrantRequestCategoryAssessment = {
   accelerator?: AcceleratorQuestions
   coreUnit?: CoreUnitQuestions
@@ -301,20 +360,24 @@ export type GrantRequestCategoryAssessment = {
   sponsorship?: SponsorshipQuestions
   platform?: PlatformQuestions
 }
+
 export type AcceleratorQuestions = {
   revenueGenerationModel: string
   returnOfInvestmentPlan: string
   investmentRecoveryTime: string | number
 }
+
 export type DocumentationQuestions = {
   contentType: string | null
   totalPieces: string | number
 }
+
 export type InWorldContentQuestions = {
   totalPieces: string | number
   totalUsers: string | number
   engagementMeasurement: string
 }
+
 export type SocialMediaContentQuestions = {
   socialMediaPlatforms: string | null
   audienceRelevance: string
@@ -322,6 +385,7 @@ export type SocialMediaContentQuestions = {
   totalPeopleImpact: string | number
   relevantLink: string
 }
+
 export type SponsorshipQuestions = {
   eventType: string
   eventCategory: string | null
@@ -331,6 +395,7 @@ export type SponsorshipQuestions = {
   audienceRelevance: string
   showcase: string
 }
+
 export type CoreUnitQuestions = {
   strategicValue: string
   impactMetrics: string

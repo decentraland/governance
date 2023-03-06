@@ -27,7 +27,7 @@
 
 .GrantRequestSection__HorizontalLine {
   flex-grow: 100;
-  border: 1px solid rgba(115, 110, 125, 0.24);
+  border: 1px solid var(--black-300);
 }
 
 .GrantRequestSection__FixedSizeIcon {
@@ -83,6 +83,15 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
+}
+
+.GrantRequestSection__Field:last-child {
+  margin-bottom: 0;
+}
+
+.GrantRequestSection__Field--row {
+  justify-content: space-between;
+  flex-direction: row;
 }
 
 .GrantRequestSection__Sublabel,

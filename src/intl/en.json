@@ -181,6 +181,17 @@
         "roadmap_too_large": "Roadmap is too large",
         "roadmap_too_short": "Roadmap is too short"
       },
+      "due_diligence": {
+        "concept_empty": "Concept is empty",
+        "concept_too_large": "Concept is too large",
+        "concept_short": "Concept is too short",
+        "estimated_budget_invalid": "Estimated budget is invalid",
+        "estimated_budget_too_low": "Estimated budget is too low",
+        "estimated_budget_too_big": "Estimated budget is too big",
+        "about_this_empty": "About this is empty",
+        "about_this_too_large": "About this is too large",
+        "about_this_too_short": "About this is too short"
+      },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
       "title_too_short": "Title is too short",
@@ -1120,6 +1131,11 @@
         "description": "Choose a category that best suits your project",
         "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://MISSING_URL)"
       },
+      "modal_actions": {
+        "submit": "SUBMIT",
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
       "funding_section": {
         "title": "Funding",
         "project_category_title": "Project Category",
@@ -1130,6 +1146,7 @@
         "desired_funding": "Desired Funding",
         "desired_funding_sub": "More about our [Funding Tiers](https://governance.decentraland.org/proposal/?id=853092a0-7b70-11ed-ad27-015f26e7c35c)",
         "project_duration_title": "Estimated Project Duration",
+        "project_duration_unit": "months",
         "pass_threshold_title": "Pass Threshold",
         "pass_threshold": "{value, number} VP in 14 days",
         "pass_threshold_sub": "Accumulated VP needed for this proposal to pass",
@@ -1245,6 +1262,25 @@
           "revenue_label": "Please describe your revenue generation model",
           "return_of_investment_label": "What’s your plan for returning the investment to the DAO?",
           "investment_recovery_label": "How many months will it take the DAO to recover the investment made on your project based on your estimations?"
+        }
+      },
+      "due_diligence": {
+        "title": "Due-diligence",
+        "budget_breakdown_label": "Budget breakdown",
+        "budget_breakdown_detail": "Our community values transparency. ${value} left to disclose.",
+        "budget_breakdown_add_concept": "Add concept",
+        "budget_breakdown_example": "Example: Team compensation; Marketing",
+        "budget_breakdown_modal": {
+          "title": "Breaking the Budget Down",
+          "concept_label": "Concept title/name",
+          "concept_placeholder": "ie. Frontend development",
+          "duration_label": "Duration",
+          "duration_unit_label": "months",
+          "estimated_budget_label": "Estimated budget",
+          "about_this_label": "About this",
+          "about_this_placeholder": "Highlight relevant information",
+          "relevant_link_label": "Relevant Link",
+          "relevant_link_placeholder": "https://"
         }
       },
       "final_consent": {

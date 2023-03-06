@@ -22,6 +22,7 @@ import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
+import Label from '../Common/Label'
 import Helper from '../Helper/Helper'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -30,8 +31,7 @@ import DesiredFundingInput from './DesiredFundingInput'
 import './GrantRequestFundingSection.css'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
-import Label from './Label'
-import ProjectDurationInput from './ProjectDurationInput'
+import NumberSelector from './NumberSelector'
 
 const schema = GrantRequestFundingSchema
 
@@ -223,10 +223,13 @@ export default function GrantRequestFundingSection({
             />
           </div>
           <div className="GrantRequestSection__InputContainer">
-            <ProjectDurationInput
+            <NumberSelector
               value={state.value.projectDuration}
-              options={availableDurations}
+              min={availableDurations[0]}
+              max={availableDurations[availableDurations.length - 1]}
               onChange={(value) => editor.set({ projectDuration: Number(value) })}
+              label={t('page.submit_grant.funding_section.project_duration_title')}
+              unitLabel={t('page.submit_grant.funding_section.project_duration_unit')}
             />
           </div>
         </div>

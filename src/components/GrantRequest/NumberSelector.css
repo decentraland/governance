@@ -1,10 +1,10 @@
-.ProjectDurationInput__InputContainer {
+.NumberSelector__InputContainer {
   display: inline-flex;
   border: 1px solid rgba(115, 110, 125, 0.32);
   border-radius: 6px;
 }
 
-.ProjectDurationInput__Description {
+.NumberSelector__Description {
   display: flex;
   align-items: center;
   padding: 9px;
@@ -17,7 +17,7 @@
   border-left: 1px solid rgba(115, 110, 125, 0.32);
 }
 
-.ProjectDurationInput__Input {
+.NumberSelector__Input {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,11 +31,11 @@
   color: var(--black-600);
 }
 
-.ProjectDurationInput__Value {
+.NumberSelector__Value {
   padding: 0 15px;
 }
 
-.ProjectDurationInput__Button {
+.NumberSelector__Button {
   border: none;
   background: none;
   padding: 0;

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
@@ -18,6 +17,8 @@ import omit from 'lodash/omit'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Governance } from '../../clients/Governance'
+import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -192,9 +193,7 @@ export default function SubmitPoll() {
 
       <ContentSection>
         <Label>{t('page.submit_poll.title_label')}</Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_poll.title_detail')}
-        </Paragraph>
+        <SubLabel>{t('page.submit_poll.title_detail')}</SubLabel>
         <Field
           value={state.value.title}
           placeholder={t('page.submit_poll.title_placeholder') || ''}
@@ -218,9 +217,7 @@ export default function SubmitPoll() {
           {t('page.submit_poll.description_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_poll.description_detail')}
-        </Paragraph>
+        <SubLabel>{t('page.submit_poll.description_detail')}</SubLabel>
         <MarkdownTextarea
           minHeight={175}
           placeholder={t('page.submit_poll.description_placeholder') || ''}

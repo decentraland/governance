@@ -22,7 +22,7 @@
   --black-200: #f3f2f5;
   --black-300: #dddce0;
   --black-400: #b9b7be;
-  --black-600: #736e7d;
+  --black-600: #6e6977;
   --black-700: #37333d;
   --black-800: #16141a;
   --purple-200: #e0dcf3;
@@ -38,6 +38,8 @@
   --background-linked-wearables: #fef9f0;
   --background-popup: #5c5c6e;
   --background-disabled: #f9f8f9;
+
+  --border-color-default: rgba(34, 36, 38, 0.15);
 
   --dao-footer-height: 156px;
   --dao-header-height: 64px;
@@ -124,7 +126,7 @@ body {
 .dg.Textarea .ui.input textarea,
 .dcl.field.field .ui.input input,
 .dcl.select-field.select-field .ui.search.selection.dropdown {
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  border: 1px solid var(--border-color-default);
   border-radius: 6px;
   padding: 8px 8px 8px;
 }
@@ -162,7 +164,7 @@ body {
 .dg.Textarea.error .ui.input textarea,
 .dcl.field.error .ui.input input {
   border-color: var(--error);
-  border-bottom-width: 2px;
+  border-bottom-width: 1px;
 }
 
 .dcl.field.field .ui.input input:focus,
@@ -170,6 +172,17 @@ body {
 .ui.form .dcl.field .ui.input input:focus,
 .ui.form .dcl.field .ui.input input:active {
   border-color: var(--text);
+  border-bottom-width: 1px;
+}
+
+.ui.modal .field .ui.input input {
+  border-bottom-color: var(--border-color-default);
+}
+
+.dcl.field.error .ui.input input,
+.ui.form .dcl.field.error .ui.input input {
+  border-color: var(--error) !important;
+  border-bottom: 1px solid var(--error) !important;
 }
 
 ::placeholder {

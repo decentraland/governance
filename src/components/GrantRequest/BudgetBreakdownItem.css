@@ -1,0 +1,57 @@
+.BudgetBreakdownItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white-900);
+  margin-bottom: 23px;
+  padding: 0 16px;
+  height: 64px;
+  border: 1px solid var(--black-300);
+  box-shadow: 0px 1px 4px rgba(115, 110, 125, 0.2);
+  border-radius: 8px;
+}
+
+.BudgetBreakdownItem__Concept {
+  margin: 0;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+  color: var(--black-700);
+}
+
+.BudgetBreakdownItem__Duration {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}
+
+.BudgetBreakdownItem__BudgetContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+}
+
+.BudgetBreakdownItem__Budget {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 28px;
+  display: flex;
+  align-items: flex-end;
+  text-align: right;
+  letter-spacing: 0.4px;
+  color: var(--black-600);
+}
+
+.BudgetBreakdownItem__DeleteButton {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}

@@ -6,7 +6,7 @@
 
 .ui.input.input--disabled input {
   pointer-events: none;
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  border: 1px solid var(--border-color-default);
   border-radius: 6px;
   padding: 8px 8px 8px;
   opacity: 0.45;

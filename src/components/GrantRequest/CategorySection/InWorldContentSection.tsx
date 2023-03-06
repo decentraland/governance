@@ -12,8 +12,8 @@ import {
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
-import Label from '../Label'
 
 const INITIAL_IN_WORLD_CONTENT_QUESTIONS = {
   totalPieces: '',

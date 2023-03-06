@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -15,6 +15,9 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestCategorySection from '../../components/GrantRequest/GrantRequestCategorySection'
+import GrantRequestDueDiligenceSection, {
+  INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE,
+} from '../../components/GrantRequest/GrantRequestDueDiligenceSection'
 import GrantRequestFinalConsentSection from '../../components/GrantRequest/GrantRequestFinalConsentSection'
 import GrantRequestFundingSection, {
   INITIAL_GRANT_REQUEST_FUNDING_STATE,
@@ -40,6 +43,7 @@ const initialState: GrantRequest = {
   category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
+  ...INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE,
 }
 
 export type GrantRequestValidationState = {
@@ -47,6 +51,7 @@ export type GrantRequestValidationState = {
   generalInformationSectionValid: boolean
   categoryAssessmentSectionValid: boolean
   finalConsentSectionValid: boolean
+  DueDiligenceSectionValid: boolean
 }
 
 const initialValidationState: GrantRequestValidationState = {
@@ -54,6 +59,7 @@ const initialValidationState: GrantRequestValidationState = {
   generalInformationSectionValid: false,
   categoryAssessmentSectionValid: false,
   finalConsentSectionValid: false,
+  DueDiligenceSectionValid: false,
 }
 
 function parseStringsAsNumbers(grantRequest: GrantRequest) {
@@ -107,7 +113,7 @@ export default function SubmitGrant() {
     navigate('/submit')
   }
 
-  const submit = () => {
+  const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
       Promise.resolve()
@@ -125,7 +131,7 @@ export default function SubmitGrant() {
           setIsFormDisabled(false)
         })
     }
-  }
+  }, [allSectionsValid, grantRequest])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -223,6 +229,15 @@ export default function SubmitGrant() {
               sectionNumber={getSectionNumber()}
             />
           )}
+
+          <GrantRequestDueDiligenceSection
+            funding={grantRequest.funding}
+            onValidation={(data, sectionValid) => {
+              patchGrantRequest({ ...data })
+              patchValidationState({ DueDiligenceSectionValid: sectionValid })
+            }}
+            sectionNumber={getSectionNumber()}
+          />
 
           <GrantRequestFinalConsentSection
             category={grantRequest.category}

@@ -10,8 +10,8 @@ import {
   PlatformQuestionsSchema,
 } from '../../../entities/Grant/types'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
-import Label from '../Label'
 
 const INITIAL_PLATFORM_QUESTIONS = {
   impactMetrics: '',
