@@ -224,10 +224,7 @@ export default function ProposalPage() {
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showCategoryAssessment =
-    proposal &&
-    proposal.type === ProposalType.Grant &&
-    proposal.configuration.category !== NewGrantCategory.Platform &&
-    !!proposal.configuration.categoryAssessment
+    proposal && proposal.type === ProposalType.Grant && !!proposal.configuration.categoryAssessment
 
   return (
     <>

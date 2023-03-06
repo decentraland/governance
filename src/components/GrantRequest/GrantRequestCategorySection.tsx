@@ -8,6 +8,7 @@ import AcceleratorSection from './CategorySection/AcceleratorSection'
 import CoreUnitSection from './CategorySection/CoreUnitSection'
 import DocumentationSection from './CategorySection/DocumentationSection'
 import InWorldContentSection from './CategorySection/InWorldContentSection'
+import PlatformSection from './CategorySection/PlatformSection'
 import SocialMediaContentSection from './CategorySection/SocialMediaContentSection'
 import SponsorshipSection from './CategorySection/SponsorshipSection'
 
@@ -60,6 +61,9 @@ export default function GrantRequestCategorySection({ category, onValidation, is
       )}
       {category === NewGrantCategory.Sponsorship && (
         <SponsorshipSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+      )}
+      {category === NewGrantCategory.Platform && (
+        <PlatformSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
     </GrantRequestSection>
   )
