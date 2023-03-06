@@ -3,7 +3,7 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ChoiceColor } from '../../entities/Votes/types'
-import TextWithTooltip from '../Section/TextWithTooltip'
+import TextWithTooltip from '../Proposal/View/TextWithTooltip'
 
 import './ChoiceProgress.css'
 import Progress from './Progress'
