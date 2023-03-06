@@ -129,8 +129,8 @@ const AddModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) =
               min={BudgetBreakdownItemSchema.duration.minimum}
               max={BudgetBreakdownItemSchema.duration.maximum}
               onChange={(value) => editor.set({ duration: Number(value) })}
-              label="Duration" // TODO: move to i18n file
-              unitLabel="months" // TODO: move to i18n file
+              label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
+              unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
             />
             <div>
               <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}</Label>

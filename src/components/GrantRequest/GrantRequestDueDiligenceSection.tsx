@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { isEqual, sumBy } from 'lodash'
+import isEqual from 'lodash/isEqual'
+import sumBy from 'lodash/sumBy'
 
 import {
   BudgetBreakdownItem as BudgetBreakdownItemType,

@@ -229,7 +229,7 @@ export default function GrantRequestFundingSection({
               max={availableDurations[availableDurations.length - 1]}
               onChange={(value) => editor.set({ projectDuration: Number(value) })}
               label={t('page.submit_grant.funding_section.project_duration_title')}
-              unitLabel="months" // TODO: move to i18n file
+              unitLabel={t('page.submit_grant.funding_section.project_duration_unit')}
             />
           </div>
         </div>
