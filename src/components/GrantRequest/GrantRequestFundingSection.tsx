@@ -178,18 +178,18 @@ export default function GrantRequestFundingSection({
         <div className="GrantRequestSection__Row">
           {grantCategory && (
             <GrantRequestSectionCard
-              category={t('page.submit_grant.funding_section.project_category_title')}
+              title={t('page.submit_grant.funding_section.project_category_title')}
               helper={
                 <Button basic onClick={onCategoryChange}>
                   {t('page.submit_grant.funding_section.project_category_action')}
                 </Button>
               }
-              title={grantCategory}
+              content={grantCategory}
               subtitle={t(`page.submit_grant.${snakeCase(grantCategory || undefined)}_description`)}
             />
           )}
           <GrantRequestSectionCard
-            category={t('page.submit_grant.funding_section.category_budget_title')}
+            title={t('page.submit_grant.funding_section.category_budget_title')}
             helper={
               <Helper
                 text={t('page.submit_grant.funding_section.category_budget_info')}
@@ -197,7 +197,7 @@ export default function GrantRequestFundingSection({
                 position="right center"
               />
             }
-            title={`$${t('general.number', {
+            content={`$${t('general.number', {
               value: availableCategoryBudget,
             })}`}
             titleExtra={`(${getFormattedPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
@@ -241,9 +241,9 @@ export default function GrantRequestFundingSection({
         </div>
         <div className="GrantRequestSection__Row">
           <GrantRequestSectionCard
-            category={t('page.submit_grant.funding_section.pass_threshold_title')}
+            title={t('page.submit_grant.funding_section.pass_threshold_title')}
             helper={<CalculationHelper />}
-            title={
+            content={
               grantCategory && isValidBudgetForCategory(state.value.funding, totalCategoryBudget)
                 ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
                 : null
@@ -251,9 +251,9 @@ export default function GrantRequestFundingSection({
             subtitle={t('page.submit_grant.funding_section.pass_threshold_sub')}
           />
           <GrantRequestSectionCard
-            category={t('page.submit_grant.funding_section.payout_strategy_title')}
+            title={t('page.submit_grant.funding_section.payout_strategy_title')}
             helper={<CalculationHelper />}
-            title={
+            content={
               grantCategory && isValidBudgetForCategory(state.value.funding, totalCategoryBudget)
                 ? t('page.submit_grant.funding_section.payout_strategy_payments', {
                     value: state.value.projectDuration,

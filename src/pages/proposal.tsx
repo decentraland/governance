@@ -33,6 +33,7 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import ForumButton from '../components/Proposal/View/ForumButton'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
@@ -51,6 +52,7 @@ import {
   proposalCanBePassedOrRejected,
 } from '../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
+import useExpectedAllocatedBudget from '../hooks/useExpectedAllocatedBudget'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -59,7 +61,6 @@ import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './proposal.css'
-import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
@@ -98,6 +99,7 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
+  const { expectedBudget, isLoadingExpectedBudget } = useExpectedAllocatedBudget()
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
 
@@ -247,6 +249,9 @@ export default function ProposalPage() {
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
+              {proposal?.type === ProposalType.Grant && !isLoadingExpectedBudget && (
+                <ProposalBudget proposal={proposal} expectedBudget={expectedBudget} />
+              )}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               {proposal?.type === ProposalType.Grant ? (

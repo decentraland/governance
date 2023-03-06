@@ -43,3 +43,13 @@ export const NULL_CURRENT_CATEGORY_BUDGET: CurrentCategoryBudget = {
   available: 0,
   total: 0,
 }
+
+export const NULL_EXPECTED_BUDGET: ExpectedBudget = {
+  total_contested: 0,
+  allocated: 0,
+  categories: {},
+  finish_at: Time.utc('2023-01-01 00:00:00Z').toDate(),
+  start_at: Time.utc('2023-01-01 00:00:00Z').toDate(),
+  id: 'null-id',
+  total: 0,
+}
