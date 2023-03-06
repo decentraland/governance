@@ -6,11 +6,13 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './DistributionBar.css'
 import DistributionBarItem from './DistributionBarItem'
+import { DistributionBarPopupContent } from './DistributionBarPopup'
 
 export interface DistributionItemProps {
   value: number
   label: string
   style: string
+  popupContent?: DistributionBarPopupContent
   selected?: boolean
 }
 
@@ -39,7 +41,7 @@ const DistributionBar = ({ items, total, isLoading, className }: Props) => {
           <DistributionBarItem
             value={item.value}
             total={total}
-            label={t(item.label)}
+            popupContent={item.popupContent}
             style={item.style}
             selected={item.selected}
             key={`${index}-dist-bar-item`}

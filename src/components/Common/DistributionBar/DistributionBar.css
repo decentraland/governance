@@ -1,7 +1,3 @@
-.VotingPowerDistribution__Mana {
-  background: var(--dcl-primary);
-}
-
 .DistributionBar {
   display: flex;
   flex-direction: row;

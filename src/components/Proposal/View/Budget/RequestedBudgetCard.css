@@ -1,0 +1,27 @@
+.RequestedBudgetCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.AllocatedBudgetBar {
+  background: #44b600;
+  opacity: 0.4;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.RequestedBudgetBar {
+  background: linear-gradient(90deg, #017f0a 0%, #00bfd9 100.66%);
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 182, 73, 0.4);
+  height: 8px;
+}
+
+.RemainingBudgetBar {
+  background: rgba(115, 110, 125, 0.24);
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
