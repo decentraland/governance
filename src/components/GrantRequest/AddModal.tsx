@@ -8,12 +8,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import {
-  BudgetBreakdownItem,
-  GRANT_PROPOSAL_MAX_BUDGET,
-  MAX_PROJECT_DURATION,
-  MIN_PROJECT_DURATION,
-} from '../../entities/Grant/types'
+import { BudgetBreakdownItem, BudgetBreakdownItemSchema } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
@@ -21,34 +16,6 @@ import { ContentSection } from '../Layout/ContentLayout'
 import './AddModal.css'
 import BudgetInput from './BudgetInput'
 import NumberSelector from './NumberSelector'
-
-const BudgetBreakdownItemSchema = {
-  concept: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 80,
-  },
-  duration: {
-    type: 'integer',
-    minimum: Number(MIN_PROJECT_DURATION || 1),
-    maximum: Number(MAX_PROJECT_DURATION || 1),
-  },
-  estimatedBudget: {
-    type: 'integer',
-    minimum: 1,
-    maximum: Number(GRANT_PROPOSAL_MAX_BUDGET || 0),
-  },
-  aboutThis: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 750,
-  },
-  relevantLink: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 80,
-  },
-}
 
 export const INITIAL_BUDGET_BREAKDOWN_ITEM: BudgetBreakdownItem = {
   concept: '',

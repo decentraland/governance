@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -113,7 +113,7 @@ export default function SubmitGrant() {
     navigate('/submit')
   }
 
-  const submit = () => {
+  const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
       Promise.resolve()
@@ -131,7 +131,7 @@ export default function SubmitGrant() {
           setIsFormDisabled(false)
         })
     }
-  }
+  }, [allSectionsValid, grantRequest])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
