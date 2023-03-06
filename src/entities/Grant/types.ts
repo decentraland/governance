@@ -275,6 +275,18 @@ export const BudgetBreakdownItemSchema = {
   },
 }
 
+const GrantRequestDueDiligenceSchema = {
+  budgetBreakdown: {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      required: [...Object.keys(BudgetBreakdownItemSchema)],
+      properties: BudgetBreakdownItemSchema,
+    },
+  },
+}
+
 export const GrantRequestSchema = {
   type: 'object',
   additionalProperties: false,
@@ -290,15 +302,7 @@ export const GrantRequestSchema = {
     },
     ...GrantRequestFundingSchema,
     ...GrantRequestGeneralInfoSchema,
-    budgetBreakdown: {
-      type: 'array',
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: [...Object.keys(BudgetBreakdownItemSchema)],
-        properties: BudgetBreakdownItemSchema,
-      },
-    },
+    ...GrantRequestDueDiligenceSchema,
   },
 }
 

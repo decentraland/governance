@@ -5,8 +5,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border: 2px dashed rgba(115, 110, 125, 0.24);
+  background: var(--white-900);
+  border: 2px dashed var(--black-300);
   border-radius: 8px;
   font-style: normal;
   font-weight: 500;

@@ -27,7 +27,7 @@
 
 .GrantRequestSection__HorizontalLine {
   flex-grow: 100;
-  border: 1px solid rgba(115, 110, 125, 0.24);
+  border: 1px solid var(--black-300);
 }
 
 .GrantRequestSection__FixedSizeIcon {
