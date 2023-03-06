@@ -5,7 +5,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { GOVERNANCE_API } from '../constants'
-import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
+import { CurrentBudget, CurrentCategoryBudget, ExpectedBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
@@ -374,6 +374,11 @@ export class Governance extends API {
 
   async getCurrentBudget() {
     const response = await this.fetch<ApiResponse<CurrentBudget>>(`/budget/current`, this.options().method('GET'))
+    return response.data
+  }
+
+  async getExpectedAllocatedBudget() {
+    const response = await this.fetch<ApiResponse<ExpectedBudget>>(`/budget/expected`, this.options().method('GET'))
     return response.data
   }
 
