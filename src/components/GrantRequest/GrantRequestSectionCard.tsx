@@ -16,7 +16,7 @@ export const GrantRequestSectionCard = ({
   subtitleVariant = 'normal',
   error,
 }: {
-  title: string
+  title: string | React.ReactNode
   content: string | React.ReactNode | null
   titleExtra?: string
   subtitle: string

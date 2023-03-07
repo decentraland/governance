@@ -6,8 +6,9 @@ import snakeCase from 'lodash/snakeCase'
 import { ExpectedBudget } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { getFormattedPercentage } from '../../../../helpers'
+import { CategoryIconVariant } from '../../../../helpers/styles'
+import { getCategoryIcon } from '../../../Category/CategoryOption'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
-import Helper from '../../../Helper/Helper'
 import { ContentSection } from '../../../Layout/ContentLayout'
 
 import './ProposalBudget.css'
@@ -30,13 +31,11 @@ export default function ProposalBudget({ proposal, expectedBudget }: Props) {
       <div className="ProposalBudget__Row">
         <RequestedBudgetCard proposal={proposal} expectedBudget={expectedBudget} />
         <GrantRequestSectionCard
-          title={t('page.submit_grant.funding_section.category_budget_title')}
-          helper={
-            <Helper
-              text={t('page.submit_grant.funding_section.category_budget_info')}
-              size="16"
-              position="right center"
-            />
+          title={
+            <>
+              {getCategoryIcon(snakeCase(proposal.configuration.category), CategoryIconVariant.Circled)}
+              {proposal.configuration.category}
+            </>
           }
           content={`$${t('general.number', {
             value: remainingCategoryBudget,

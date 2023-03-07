@@ -2,6 +2,7 @@ export enum CategoryIconVariant {
   Normal = 'normal',
   Hover = 'hover',
   Filled = 'filled',
+  Circled = 'circled',
 }
 
 export interface CategoryIconProps {
