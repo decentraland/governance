@@ -29,6 +29,8 @@ ${proposal.email}
 ${formatMarkdown(proposal.description)}
 `
 
+//TODO: add budget and personnel
+
 export const secondPart = (proposal: GrantProposalConfiguration) => template`
 ## Personnel
 

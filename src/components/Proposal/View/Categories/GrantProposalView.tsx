@@ -5,6 +5,7 @@ import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFor
 
 import { NewGrantCategory } from '../../../../entities/Grant/types'
 import { GrantProposalConfiguration } from '../../../../entities/Proposal/types'
+import BreakdownAccordion from '../../../GrantRequest/BreakdownAccordion'
 import CategoryAssessment from '../../CategoryAssessment'
 import ProposalDescriptionItem from '../ProposalDescriptionItem'
 
@@ -29,6 +30,7 @@ function GrantProposalView({ config }: Props) {
     email,
     description,
     budgetBreakdown,
+    specification,
     personnel,
     roadmap,
     categoryAssessment,
@@ -50,6 +52,10 @@ function GrantProposalView({ config }: Props) {
       <ProposalDescriptionItem title={t('page.proposal_view.grant.beneficiary_title')} body={beneficiary} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.email_title')} body={email} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.description_title')} body={description} />
+      {budgetBreakdown && <BreakdownAccordion breakdown={budgetBreakdown} />}
+      {!budgetBreakdown && specification && (
+        <ProposalDescriptionItem title={t('page.proposal_view.grant.specification_title')} body={specification} />
+      )}
       <ProposalDescriptionItem title={t('page.proposal_view.grant.personnel_title')} body={personnel} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.roadmap_title')} body={roadmap} />
       {categoryAssessment && (

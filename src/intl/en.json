@@ -586,6 +586,9 @@
         "beneficiary_title": "Beneficiary address",
         "email_title": "Email address",
         "description_title": "Description",
+        "specification_title": "Budget specification",
+        "breakdown_title": "Budget breakdown",
+        "breakdown_subtitle": "{duration} {duration, plural, one {month} other {months}}",
         "personnel_title": "Personnel",
         "roadmap_title": "Roadmap and milestones"
       }
