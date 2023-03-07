@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 
 import { GrantRequest, GrantRequestPersonnel, TeamMember } from '../../entities/Grant/types'
@@ -33,7 +34,7 @@ export default function GrantRequestPersonnelSection({ sectionNumber, onValidati
     setPersonnelState((prevState) => ({ team: [...prevState.team, item] }))
   }
 
-  const isCompleted = false
+  const isCompleted = !isEmpty(personnelState.team)
 
   useEffect(() => {
     onValidation(personnelState, isCompleted)
