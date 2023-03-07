@@ -8,6 +8,8 @@
 }
 
 .BudgetBannerItem__Label {
+  display: flex;
+  justify-content: space-between;
   font-style: normal;
   font-weight: 400;
   font-size: 11px;

@@ -19,7 +19,11 @@
 }
 
 .BudgetBanner__ProgressContainer {
+  display: flex;
   width: 40%;
+  align-content: flex-start;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .BudgetBanner__ProgressContainer .ProgressBar__Container {
@@ -44,4 +48,15 @@
 .BudgetBanner__ProgressLabel .BudgetBanner__Amount,
 .BudgetBanner__ProgressLabel .BudgetBanner__Percentage {
   font-weight: 600;
+}
+
+.BudgetBanner__LabelWithIcon {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  height: 50px;
+}
+
+.BudgetBannerItem {
+  height: 50px;
 }
