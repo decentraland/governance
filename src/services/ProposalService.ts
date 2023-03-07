@@ -199,4 +199,17 @@ export class ProposalService {
 
     return ProposalModel.parse(proposal)
   }
+
+  static async getProposal(id: string) {
+    if (!isUUID(id || '')) {
+      throw new Error(`Invalid proposal id: "${id}"`)
+    }
+
+    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
+    if (!proposal) {
+      throw new Error(`Proposal not found: "${id}"`)
+    }
+
+    return ProposalModel.parse(proposal)
+  }
 }
