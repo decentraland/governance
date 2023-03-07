@@ -26,7 +26,7 @@ const CategoryItem = ({ category, onCategoryClick }: Props) => {
       onClick={() => onCategoryClick(category)}
     >
       <div>
-        <Icon variant={iconVariant} />
+        <Icon variant={iconVariant} size={42} />
       </div>
       <div className="CategorySelector__Content">
         <h2>{category}</h2>

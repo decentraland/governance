@@ -70,7 +70,7 @@ export default React.memo(function CategoryOption({ active, type, className, cou
       ])}
     >
       <span>
-        <span>{getCategoryIcon(type)}</span>
+        <span>{getCategoryIcon(type, CategoryIconVariant.Circled)}</span>
         <span>
           <Paragraph tiny semiBold>
             {t(`category.${type}_title`)}
