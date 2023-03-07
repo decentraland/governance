@@ -28,14 +28,6 @@ ${proposal.email}
 
 ${formatMarkdown(proposal.description)}
 
-## Budget Specification
-
-${formatMarkdown(proposal.specification)}
-
-## Personnel
-
-${formatMarkdown(proposal.personnel)}
-
 ## Roadmap and milestones
 
 ${formatMarkdown(proposal.roadmap)}

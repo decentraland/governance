@@ -73,11 +73,6 @@ export const GrantRequestGeneralInfoSchema = {
     maxLength: 750,
   },
   description: { type: 'string', minLength: 20, maxLength: 3500 },
-  specification: {
-    type: 'string',
-    minLength: 20,
-    maxLength: 3500,
-  },
   beneficiary: {
     type: 'string',
     format: 'address',
@@ -85,11 +80,6 @@ export const GrantRequestGeneralInfoSchema = {
   email: {
     type: 'string',
     format: 'email',
-  },
-  personnel: {
-    type: 'string',
-    minLength: 20,
-    maxLength: 1500,
   },
   roadmap: {
     type: 'string',
@@ -282,6 +272,41 @@ export const BudgetBreakdownItemSchema = {
   },
 }
 
+export const TeamMemberItemSchema = {
+  name: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
+  role: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
+  about: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  relevantLink: {
+    type: 'string',
+    minLength: 0,
+    maxLength: 80,
+  },
+}
+
+const GrantRequestPersonnelSchema = {
+  team: {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      required: [...Object.keys(TeamMemberItemSchema)],
+      properties: TeamMemberItemSchema,
+    },
+  },
+}
+
 const GrantRequestDueDiligenceSchema = {
   budgetBreakdown: {
     type: 'array',
@@ -301,6 +326,8 @@ export const GrantRequestSchema = {
     'category',
     ...Object.keys(GrantRequestFundingSchema),
     ...Object.keys(GrantRequestGeneralInfoSchema).filter((section) => section !== 'coAuthors'),
+    ...Object.keys(GrantRequestDueDiligenceSchema),
+    ...Object.keys(GrantRequestPersonnelSchema),
   ],
   properties: {
     category: {
@@ -310,6 +337,7 @@ export const GrantRequestSchema = {
     ...GrantRequestFundingSchema,
     ...GrantRequestGeneralInfoSchema,
     ...GrantRequestDueDiligenceSchema,
+    ...GrantRequestPersonnelSchema,
   },
 }
 
@@ -317,6 +345,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
+  GrantRequestPersonnel &
   GrantRequestCategoryAssessment &
   GrantRequestDueDiligence
 
@@ -331,10 +360,8 @@ export type GrantRequestGeneralInfo = {
   title: string
   abstract: string
   description: string
-  specification: string
   beneficiary: string
   email: string
-  personnel: string
   roadmap: string
   coAuthors?: string[]
 }
@@ -349,6 +376,17 @@ export type BudgetBreakdownItem = {
 
 export type GrantRequestDueDiligence = {
   budgetBreakdown: BudgetBreakdownItem[]
+}
+
+export type TeamMember = {
+  name: string
+  role: string
+  about: string
+  relevantLink?: string
+}
+
+export type GrantRequestPersonnel = {
+  team: TeamMember[]
 }
 
 export type GrantRequestCategoryAssessment = {
@@ -400,6 +438,7 @@ export type CoreUnitQuestions = {
   strategicValue: string
   impactMetrics: string
 }
+
 export type PlatformQuestions = {
   impactMetrics: string
 }

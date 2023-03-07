@@ -20,10 +20,8 @@ export const INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE: GrantRequestGeneralInfo =
   title: '',
   abstract: '',
   description: '',
-  specification: '',
   beneficiary: '',
   email: '',
-  personnel: '',
   roadmap: '',
 }
 
@@ -56,19 +54,6 @@ const validate = createValidator<GrantRequestGeneralInfo>({
       ) ||
       undefined,
   }),
-  specification: (state) => ({
-    specification:
-      assert(
-        state.specification.length <= schema.specification.maxLength,
-        'error.grant.general_info.specification_too_large'
-      ) ||
-      assert(state.specification.length > 0, 'error.grant.general_info.specification_empty') ||
-      assert(
-        state.specification.length >= schema.specification.minLength,
-        'error.grant.general_info.specification_too_short'
-      ) ||
-      undefined,
-  }),
   beneficiary: (state) => ({
     beneficiary:
       assert(state.beneficiary !== '', 'error.grant.general_info.beneficiary_empty') ||
@@ -81,13 +66,6 @@ const validate = createValidator<GrantRequestGeneralInfo>({
     email:
       assert(state.email !== '', 'error.grant.general_info.email_empty') ||
       assert(!state.email || isEmail(state.email), 'error.grant.general_info.email_invalid'),
-  }),
-  personnel: (state) => ({
-    personnel:
-      assert(state.personnel.length <= schema.personnel.maxLength, 'error.grant.general_info.personnel_too_large') ||
-      assert(state.personnel.length > 0, 'error.grant.general_info.personnel_empty') ||
-      assert(state.personnel.length >= schema.personnel.minLength, 'error.grant.general_info.personnel_too_short') ||
-      undefined,
   }),
   roadmap: (state) => ({
     roadmap:
@@ -121,10 +99,8 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
     title: false,
     abstract: false,
     description: false,
-    specification: false,
     beneficiary: false,
     email: false,
-    personnel: false,
     roadmap: false,
   })
 
@@ -219,26 +195,6 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.general_info.specification_label')}</Label>
-          <SubLabel>{t('page.submit_grant.general_info.specification_detail')}</SubLabel>
-          <MarkdownTextarea
-            minHeight={175}
-            value={state.value.specification}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
-            onBlur={() => onFieldBlur('specification')}
-            error={!!state.error.specification}
-            message={
-              t(state.error.specification) +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: state.value.specification.length,
-                limit: schema.specification.maxLength,
-              })
-            }
-            disabled={isFormDisabled}
-          />
-        </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.beneficiary_label')}</Label>
           <SubLabel>{t('page.submit_grant.general_info.beneficiary_detail')}</SubLabel>
           <Field
@@ -267,27 +223,6 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             disabled={isFormDisabled}
           />
           <p className="EmailNote">{t('page.submit_grant.general_info.email_note')}</p>
-        </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.general_info.personnel_label')}</Label>
-          <SubLabel>{t('page.submit_grant.general_info.personnel_detail')}</SubLabel>
-          <MarkdownTextarea
-            minHeight={175}
-            value={state.value.personnel}
-            placeholder={t('page.submit_grant.general_info.personnel_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ personnel: value })}
-            onBlur={() => onFieldBlur('personnel')}
-            error={!!state.error.personnel}
-            message={
-              t(state.error.personnel) +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: state.value.personnel.length,
-                limit: schema.personnel.maxLength,
-              })
-            }
-            disabled={isFormDisabled}
-          />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.roadmap_label')}</Label>
