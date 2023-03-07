@@ -1,5 +1,6 @@
 import React from 'react'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import './DistributionBarPopup.css'
@@ -16,11 +17,12 @@ interface DistributionBarPopupProps {
 }
 
 const DistributionBarPopup = ({ popupContent, children }: DistributionBarPopupProps) => {
+  const t = useFormatMessage()
   return (
     <Popup className="DistributionBarPopup" position="top center" trigger={children} on="hover">
       <Popup.Content>
         <div className="DistributionBarPopup">
-          <div className="DistributionBarPopup__Label">{popupContent.label}</div>
+          <div className="DistributionBarPopup__Label">{t(popupContent.label)}</div>
           <div className="DistributionBarPopup__Content">{popupContent.content}</div>
           {popupContent.sub && <div className="DistributionBarPopup__Sub">{popupContent.sub}</div>}
         </div>

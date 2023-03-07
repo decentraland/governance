@@ -728,6 +728,14 @@
         "promote_to_governance_label": "Escalate Proposal"
       },
       "grant": {
+        "requested_budget": {
+          "title": "Requesting",
+          "allocated": "Allocated Budget",
+          "requested": "Requested Budget",
+          "total": "Total Budget",
+          "subtitle": "{percentage} of quarterly category budget"
+        },
+        "category_budget": {},
         "update_title": "Project updates",
         "update_empty": "This team has not posted any updates yet.",
         "update_index": "Update #{index}",

@@ -25,23 +25,37 @@ export default function RequestedBudgetCard({ proposal, expectedBudget }: Props)
   const remainingUncontestedBudget = totalCategoryBudget - requestedBudget - allocatedCategoryBudget
   const remainingBudgetDisplayed = remainingUncontestedBudget > 0 ? remainingUncontestedBudget : 0
 
-  //TODO: internationalization
   const items: DistributionItemProps[] = [
-    { label: 'Allocated Budget', value: allocatedCategoryBudget, style: 'AllocatedBudgetBar' },
-    { label: 'Requested Budget', value: requestedBudget, style: 'RequestedBudgetBar', selected: true },
-    { label: 'Remaining Budget', value: remainingBudgetDisplayed, style: 'RemainingBudgetBar' },
+    {
+      label: 'page.proposal_detail.grant.requested_budget.title',
+      value: allocatedCategoryBudget,
+      style: 'AllocatedBudgetBar',
+    },
+    {
+      label: 'page.proposal_detail.grant.requested_budget.allocated',
+      value: requestedBudget,
+      style: 'RequestedBudgetBar',
+      selected: true,
+    },
+    {
+      label: 'page.proposal_detail.grant.requested_budget.requested',
+      value: remainingBudgetDisplayed,
+      style: 'RemainingBudgetBar',
+    },
   ]
 
   return (
     <GrantRequestSectionCard
-      title={'Requesting'}
+      title={t('page.proposal_detail.grant.requested_budget.total')}
       content={
         <div className="RequestedBudgetCard">
           <>${t('general.number', { value: proposal.configuration.size })}</>
           <DistributionBar items={items} total={totalCategoryBudget} />
         </div>
       }
-      subtitle={`${getFormattedPercentage(requestedBudget, totalCategoryBudget, 0)} of quarterly category budget`}
+      subtitle={t('page.proposal_detail.grant.requested_budget.subtitle', {
+        percentage: getFormattedPercentage(requestedBudget, totalCategoryBudget, 0),
+      })}
     />
   )
 }
