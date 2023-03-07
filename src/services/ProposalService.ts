@@ -1,6 +1,7 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
+import isUUID from 'validator/lib/isUUID'
 
 import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
@@ -195,5 +196,18 @@ export class ProposalService {
     return await ProposalModel.getActiveGrantProposals(
       this.getActiveGrantsWindowStartDate(GRANT_PROPOSAL_DURATION_IN_SECONDS)
     )
+  }
+
+  static async getProposal(id: string) {
+    if (!isUUID(id || '')) {
+      throw new Error(`Invalid proposal id: "${id}"`)
+    }
+
+    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
+    if (!proposal) {
+      throw new Error(`Proposal not found: "${id}"`)
+    }
+
+    return ProposalModel.parse(proposal)
   }
 }

@@ -27,18 +27,18 @@ export default function RequestedBudgetCard({ proposal, expectedBudget }: Props)
 
   const items: DistributionItemProps[] = [
     {
-      label: 'page.proposal_detail.grant.requested_budget.title',
+      label: 'page.proposal_detail.grant.requested_budget.allocated',
       value: allocatedCategoryBudget,
       style: 'AllocatedBudgetBar',
     },
     {
-      label: 'page.proposal_detail.grant.requested_budget.allocated',
+      label: 'page.proposal_detail.grant.requested_budget.requested',
       value: requestedBudget,
       style: 'RequestedBudgetBar',
       selected: true,
     },
     {
-      label: 'page.proposal_detail.grant.requested_budget.requested',
+      label: 'page.proposal_detail.grant.requested_budget.total',
       value: remainingBudgetDisplayed,
       style: 'RemainingBudgetBar',
     },
@@ -46,7 +46,7 @@ export default function RequestedBudgetCard({ proposal, expectedBudget }: Props)
 
   return (
     <GrantRequestSectionCard
-      title={t('page.proposal_detail.grant.requested_budget.total')}
+      title={t('page.proposal_detail.grant.requested_budget.title')}
       content={
         <div className="RequestedBudgetCard">
           <>${t('general.number', { value: proposal.configuration.size })}</>

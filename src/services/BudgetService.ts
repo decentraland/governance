@@ -12,11 +12,12 @@ import {
   ExpectedCategoryBudget,
   NULL_CURRENT_BUDGET,
   NULL_CURRENT_CATEGORY_BUDGET,
+  NULL_EXPECTED_BUDGET,
 } from '../entities/Budget/types'
 import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import { isValidGrantBudget } from '../entities/Grant/utils'
-import { ProposalAttributes } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
@@ -207,6 +208,44 @@ export class BudgetService {
 
     // calculate percentages
     for (const category of Object.keys(currentBudget.categories)) {
+      expectedBudget.categories[category].contested_over_available_percentage = getUncappedRoundedPercentage(
+        expectedBudget.categories[category].contested,
+        expectedBudget.categories[category].available
+      )
+      for (const contestingGrant of expectedBudget.categories[category].contestants) {
+        contestingGrant.contested_percentage = getUncappedRoundedPercentage(
+          contestingGrant.size,
+          expectedBudget.categories[category].contested
+        )
+      }
+    }
+    return expectedBudget
+  }
+
+  static async getContestedBudget(proposalId: string) {
+    const proposal = await ProposalService.getProposal(proposalId)
+    if (proposal.type !== ProposalType.Grant) {
+      return NULL_EXPECTED_BUDGET
+    }
+    const proposalBudget = await QuarterBudgetModel.getBudgetForDate(proposal.created_at)
+    if (!proposalBudget) {
+      return NULL_EXPECTED_BUDGET
+    }
+    const contestingProposals = await ProposalService.getActiveGrantProposals() //TODO: this should be active proposals for the same budget
+    const expectedBudget: ExpectedBudget = this.initializeExpectedBudget(proposalBudget)
+
+    // add contesting proposals
+    for (const proposal of contestingProposals) {
+      const proposalCategory = snakeCase(proposal.configuration.category)
+      const proposalSize = proposal.configuration.size
+
+      expectedBudget.categories[proposalCategory].contested += proposalSize
+      expectedBudget.categories[proposalCategory].contestants.push(this.getContestingGrantProposal(proposal))
+      expectedBudget.total_contested += proposalSize
+    }
+
+    // calculate percentages
+    for (const category of Object.keys(proposalBudget.categories)) {
       expectedBudget.categories[category].contested_over_available_percentage = getUncappedRoundedPercentage(
         expectedBudget.categories[category].contested,
         expectedBudget.categories[category].available
