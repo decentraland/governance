@@ -331,7 +331,6 @@ export type GrantRequestGeneralInfo = {
   title: string
   abstract: string
   description: string
-  specification: string
   beneficiary: string
   email: string
   personnel: string
