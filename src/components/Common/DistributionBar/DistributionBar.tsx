@@ -1,7 +1,6 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './DistributionBar.css'
@@ -24,8 +23,6 @@ interface Props {
 }
 
 const DistributionBar = ({ items, total, isLoading, className }: Props) => {
-  const t = useFormatMessage()
-
   if (isLoading) {
     return (
       <div className={className}>

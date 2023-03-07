@@ -19,23 +19,26 @@ interface Props {
 export default function CategoryTotalCard({ proposal, expectedBudget }: Props) {
   const t = useFormatMessage()
   const grantCategory = proposal.configuration.category
-  const totalCategoryBudget = expectedBudget.categories[snakeCase(grantCategory)].total
 
   return (
     <GrantRequestSectionCard
       title={
         <>
           {getCategoryIcon(snakeCase(grantCategory), CategoryIconVariant.Circled)}
-          <span className="CategoryTotalCard__Title">{grantCategory + ' INITIATIVE'}</span>
+          <span className="CategoryTotalCard__Title">
+            {t('page.proposal_detail.grant.category_budget.title', { category: grantCategory })}
+          </span>
         </>
       }
       content={
         <span className="CategoryTotalCard__Description">
-          {'Seeking funding for the development of experiences to improve user retention'}
+          {t(`page.proposal_detail.grant.category_budget.description.${snakeCase(grantCategory)}`)}
         </span>
       }
-      subtitle={t('page.submit_grant.funding_section.category_budget_total', {
-        value: totalCategoryBudget,
+      subtitle={t('page.proposal_detail.grant.category_budget.total', {
+        value: t('general.number', {
+          value: expectedBudget.categories[snakeCase(grantCategory)].total,
+        }),
       })}
       subtitleVariant="uppercase"
     />

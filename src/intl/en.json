@@ -735,7 +735,19 @@
           "total": "Total Budget",
           "subtitle": "{percentage} of quarterly category budget"
         },
-        "category_budget": {},
+        "category_budget": {
+          "title": "{category} Initiative",
+          "description": {
+            "in_world_content": "Seeking funding for the development of experiences to improve user retention",
+            "accelerator": "Private companies or external for-profit initiatives in need of funding",
+            "core_unit": "Seeking funding to provide core infrastructure and operations for the DAO",
+            "documentation": "Seeking funding to create free educational content related to DCL",
+            "platform": "Seeking funding to create tools and applications extending our ecosystem",
+            "social_media_content": "Seeking funding for marketing to improve user adoption and retention",
+            "sponsorship": "Seeking funding to support IRL initiatives for audiences relevant to DCL"
+          },
+          "total": "Category Budget: ${value}"
+        },
         "update_title": "Project updates",
         "update_empty": "This team has not posted any updates yet.",
         "update_index": "Update #{index}",
