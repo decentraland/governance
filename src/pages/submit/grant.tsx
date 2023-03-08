@@ -25,9 +25,9 @@ import GrantRequestFundingSection, {
 import GrantRequestGeneralInfoSection, {
   INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/GrantRequest/GrantRequestGeneralInfoSection'
-import GrantRequestPersonnelSection, {
-  INITIAL_GRANT_REQUEST_PERSONNEL_STATE,
-} from '../../components/GrantRequest/GrantRequestPersonnelSection'
+import GrantRequestTeamSection, {
+  INITIAL_GRANT_REQUEST_TEAM_STATE,
+} from '../../components/GrantRequest/GrantRequestTeamSection'
 import CategorySelector from '../../components/Grants/CategorySelector'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
@@ -46,7 +46,7 @@ const initialState: GrantRequest = {
   category: null,
   ...INITIAL_GRANT_REQUEST_FUNDING_STATE,
   ...INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
-  ...INITIAL_GRANT_REQUEST_PERSONNEL_STATE,
+  ...INITIAL_GRANT_REQUEST_TEAM_STATE,
   ...INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE,
 }
 
@@ -56,7 +56,7 @@ export type GrantRequestValidationState = {
   categoryAssessmentSectionValid: boolean
   finalConsentSectionValid: boolean
   dueDiligenceSectionValid: boolean
-  personnelSectionValid: boolean
+  teamSectionValid: boolean
 }
 
 const initialValidationState: GrantRequestValidationState = {
@@ -65,7 +65,7 @@ const initialValidationState: GrantRequestValidationState = {
   categoryAssessmentSectionValid: false,
   finalConsentSectionValid: false,
   dueDiligenceSectionValid: false,
-  personnelSectionValid: false,
+  teamSectionValid: false,
 }
 
 function parseStringsAsNumbers(grantRequest: GrantRequest) {
@@ -236,11 +236,11 @@ export default function SubmitGrant() {
             />
           )}
 
-          <GrantRequestPersonnelSection
+          <GrantRequestTeamSection
             funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
               patchGrantRequest({ ...data })
-              patchValidationState({ personnelSectionValid: sectionValid })
+              patchValidationState({ teamSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
           />

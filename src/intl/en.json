@@ -186,7 +186,7 @@
         "about_this_too_large": "About this is too large",
         "about_this_too_short": "About this is too short"
       },
-      "personnel": {
+      "team": {
         "name_empty": "Name is empty",
         "name_too_large": "Name is too large",
         "name_short": "Name is too short",
@@ -1283,11 +1283,11 @@
           "relevant_link_placeholder": "https://"
         }
       },
-      "personnel": {
-        "title": "Personnel",
-        "team_label": "Your team",
-        "team_detail": "Please list who will be working on this project, along with an explicit overview of their relevant skill sets and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
-        "team_add_member": "Add team member",
+      "team": {
+        "title": "Team",
+        "members_label": "Members",
+        "members_detail": "Please list who will be working on this project and an explicit overview of their relevant skillset and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
+        "add_member": "Add team member",
         "team_modal": {
           "title": "Adding a team member",
           "name_label": "Their name/identity",
