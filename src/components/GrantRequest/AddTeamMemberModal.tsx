@@ -23,23 +23,23 @@ const schema = TeamMemberItemSchema
 const validate = createValidator<TeamMember>({
   name: (state) => ({
     name:
-      assert(state.name.length <= schema.name.maxLength, 'error.grant.personnel.name_too_large') ||
-      assert(state.name.length > 0, 'error.grant.personnel.name_empty') ||
-      assert(state.name.length >= schema.name.minLength, 'error.grant.personnel.name_too_short') ||
+      assert(state.name.length <= schema.name.maxLength, 'error.grant.team.name_too_large') ||
+      assert(state.name.length > 0, 'error.grant.team.name_empty') ||
+      assert(state.name.length >= schema.name.minLength, 'error.grant.team.name_too_short') ||
       undefined,
   }),
   role: (state) => ({
     role:
-      assert(state.role.length <= schema.role.maxLength, 'error.grant.personnel.role_too_large') ||
-      assert(state.role.length > 0, 'error.grant.personnel.role_empty') ||
-      assert(state.role.length >= schema.role.minLength, 'error.grant.personnel.role_too_short') ||
+      assert(state.role.length <= schema.role.maxLength, 'error.grant.team.role_too_large') ||
+      assert(state.role.length > 0, 'error.grant.team.role_empty') ||
+      assert(state.role.length >= schema.role.minLength, 'error.grant.team.role_too_short') ||
       undefined,
   }),
   about: (state) => ({
     about:
-      assert(state.about.length <= schema.about.maxLength, 'error.grant.personnel.about_too_large') ||
-      assert(state.about.length > 0, 'error.grant.personnel.about_empty') ||
-      assert(state.about.length >= schema.about.minLength, 'error.grant.personnel.about_too_short') ||
+      assert(state.about.length <= schema.about.maxLength, 'error.grant.team.about_too_large') ||
+      assert(state.about.length > 0, 'error.grant.team.about_empty') ||
+      assert(state.about.length >= schema.about.minLength, 'error.grant.team.about_too_short') ||
       undefined,
   }),
 })
@@ -71,17 +71,17 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit }: Props) => {
 
   return (
     <AddModal
-      title={t('page.submit_grant.personnel.team_modal.title')}
+      title={t('page.submit_grant.team.team_modal.title')}
       isOpen={isOpen}
       onClose={onClose}
       onPrimaryClick={() => editor.validate()}
     >
       <div>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.personnel.team_modal.name_label')}</Label>
+          <Label>{t('page.submit_grant.team.team_modal.name_label')}</Label>
           <Field
             value={state.value.name}
-            placeholder={t('page.submit_grant.personnel.team_modal.name_placeholder')}
+            placeholder={t('page.submit_grant.team.team_modal.name_placeholder')}
             onChange={(_, { value }) => editor.set({ name: value })}
             error={!!state.error.name}
             message={
@@ -95,10 +95,10 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit }: Props) => {
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.personnel.team_modal.role_label')}</Label>
+          <Label>{t('page.submit_grant.team.team_modal.role_label')}</Label>
           <Field
             value={state.value.role}
-            placeholder={t('page.submit_grant.personnel.team_modal.role_placeholder')}
+            placeholder={t('page.submit_grant.team.team_modal.role_placeholder')}
             onChange={(_, { value }) => editor.set({ role: value })}
             error={!!state.error.role}
             message={
@@ -112,11 +112,11 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit }: Props) => {
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.personnel.team_modal.about_label')}</Label>
+          <Label>{t('page.submit_grant.team.team_modal.about_label')}</Label>
           <Textarea
             value={state.value.about}
             minHeight={175}
-            placeholder={t('page.submit_grant.personnel.team_modal.about_placeholder')}
+            placeholder={t('page.submit_grant.team.team_modal.about_placeholder')}
             onChange={(_: unknown, { value }: { value: string }) => editor.set({ about: String(value) })}
             error={!!state.error.about}
             message={
@@ -130,10 +130,10 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit }: Props) => {
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.personnel.team_modal.relevant_link_label')}</Label>
+          <Label>{t('page.submit_grant.team.team_modal.relevant_link_label')}</Label>
           <Field
             value={state.value.relevantLink}
-            placeholder={t('page.submit_grant.personnel.team_modal.relevant_link_placeholder')}
+            placeholder={t('page.submit_grant.team.team_modal.relevant_link_placeholder')}
             onChange={(_, { value }) => editor.set({ relevantLink: value })}
           />
         </ContentSection>

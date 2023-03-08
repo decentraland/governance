@@ -295,8 +295,8 @@ export const TeamMemberItemSchema = {
   },
 }
 
-const GrantRequestPersonnelSchema = {
-  team: {
+const GrantRequestTeamSchema = {
+  members: {
     type: 'array',
     items: {
       type: 'object',
@@ -327,7 +327,7 @@ export const GrantRequestSchema = {
     ...Object.keys(GrantRequestFundingSchema),
     ...Object.keys(GrantRequestGeneralInfoSchema).filter((section) => section !== 'coAuthors'),
     ...Object.keys(GrantRequestDueDiligenceSchema),
-    ...Object.keys(GrantRequestPersonnelSchema),
+    ...Object.keys(GrantRequestTeamSchema),
   ],
   properties: {
     category: {
@@ -337,7 +337,7 @@ export const GrantRequestSchema = {
     ...GrantRequestFundingSchema,
     ...GrantRequestGeneralInfoSchema,
     ...GrantRequestDueDiligenceSchema,
-    ...GrantRequestPersonnelSchema,
+    ...GrantRequestTeamSchema,
   },
 }
 
@@ -345,7 +345,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestPersonnel &
+  GrantRequestTeam &
   GrantRequestCategoryAssessment &
   GrantRequestDueDiligence
 
@@ -385,8 +385,8 @@ export type TeamMember = {
   relevantLink?: string
 }
 
-export type GrantRequestPersonnel = {
-  team: TeamMember[]
+export type GrantRequestTeam = {
+  members: TeamMember[]
 }
 
 export type GrantRequestCategoryAssessment = {
