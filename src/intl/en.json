@@ -1278,6 +1278,7 @@
           "duration_label": "Duration",
           "duration_unit_label": "months",
           "estimated_budget_label": "Estimated budget",
+          "estimated_budget_left_to_disclose": "**${value}** left to disclose.",
           "about_this_label": "About this",
           "about_this_placeholder": "Highlight relevant information",
           "relevant_link_label": "Relevant Link",

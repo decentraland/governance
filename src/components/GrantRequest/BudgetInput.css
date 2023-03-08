@@ -9,6 +9,7 @@
   border: 1px solid rgba(115, 110, 125, 0.32);
   border-radius: 6px;
   position: relative;
+  margin-bottom: 5px;
 }
 
 .BudgetInput__InputContainer--Error {
@@ -65,4 +66,12 @@
 
 .BudgetInput__ErrorHelper > .Helper__Container {
   height: 16px;
+}
+
+.BudgetInput__Subtitle > .dg.Paragraph {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 24px;
+  color: var(--black-600);
 }
