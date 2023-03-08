@@ -26,13 +26,11 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
 
   const items: DistributionItemProps[] = [
     {
-      label: 'page.proposal_detail.grant.requested_budget.requested',
       value: requestedBudget,
       style: 'RequestedBudgetBar',
       selected: true,
     },
     {
-      label: 'page.proposal_detail.grant.requested_budget.total',
       value: remainingTotalBudgetDisplayed,
       style: 'TotalBudgetBar',
     },

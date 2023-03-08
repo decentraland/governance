@@ -226,13 +226,13 @@ export class BudgetService {
       total_contested: 0,
     } as any as BudgetWithContestants
     for (const category of Object.keys(budget.categories)) {
-      const expectedCategoryBudget: CategoryBudgetWithContestants = {
+      const contestedCategoryBudget: CategoryBudgetWithContestants = {
         ...budget.categories[category],
         contested: 0,
         contested_over_available_percentage: 0,
         contestants: [],
       }
-      budgetWithContestants.categories[category] = expectedCategoryBudget
+      budgetWithContestants.categories[category] = contestedCategoryBudget
     }
 
     // add contesting proposals

@@ -6,7 +6,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import './DistributionBarPopup.css'
 
 export interface DistributionBarPopupContent {
-  label: string
+  title: string
   content: React.ReactNode
   sub?: React.ReactNode
 }
@@ -22,7 +22,7 @@ const DistributionBarPopup = ({ popupContent, children }: DistributionBarPopupPr
     <Popup className="DistributionBarPopup" position="top center" trigger={children} on="hover">
       <Popup.Content>
         <div className="DistributionBarPopup">
-          <div className="DistributionBarPopup__Label">{t(popupContent.label)}</div>
+          <div className="DistributionBarPopup__Title">{t(popupContent.title)}</div>
           <div className="DistributionBarPopup__Content">{popupContent.content}</div>
           {popupContent.sub && <div className="DistributionBarPopup__Sub">{popupContent.sub}</div>}
         </div>

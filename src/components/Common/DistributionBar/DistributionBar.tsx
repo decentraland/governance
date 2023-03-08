@@ -9,7 +9,6 @@ import { DistributionBarPopupContent } from './DistributionBarPopup'
 
 export interface DistributionItemProps {
   value: number
-  label: string
   style: string
   popupContent?: DistributionBarPopupContent
   selected?: boolean
@@ -34,16 +33,17 @@ const DistributionBar = ({ items, total, isLoading, className }: Props) => {
   return (
     <div className={className}>
       <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--Empty'])}>
-        {items.map((item, index) => (
-          <DistributionBarItem
-            value={item.value}
-            total={total}
-            popupContent={item.popupContent}
-            style={item.style}
-            selected={item.selected}
-            key={`distribution-bar-item-${index}`}
-          />
-        ))}
+        {total > 0 &&
+          items.map((item, index) => (
+            <DistributionBarItem
+              value={item.value}
+              total={total}
+              popupContent={item.popupContent}
+              style={item.style}
+              selected={item.selected}
+              key={`distribution-bar-item-${index}`}
+            />
+          ))}
       </div>
     </div>
   )
