@@ -10,12 +10,11 @@ import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../../../hooks/useCoAuthorsByProposal'
 import DateTooltip from '../../Common/DateTooltip'
+import Open from '../../Icon/open'
 import Username from '../../User/Username'
 
 import ProposalDetailCoauthors from './ProposalDetailCoauthors'
 import './ProposalDetailSection.css'
-
-const openIcon = require('../../../images/icons/open.svg').default
 
 export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal: ProposalAttributes
@@ -60,7 +59,7 @@ export default React.memo(function ProposalDetailSection({ proposal, ...props }:
           <div className="DetailsSection__Value">
             <Link href={snapshotProposalUrl(proposal)}>
               {'#' + proposal.snapshot_id.slice(0, 7)}
-              <img src={openIcon} width="12" height="12" className="ProposalDetailSection__Icon" />
+              <Open className="ProposalDetailSection__Icon" />
             </Link>
           </div>
         </div>

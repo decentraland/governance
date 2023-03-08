@@ -9,6 +9,7 @@ import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordi
 
 import type { BudgetBreakdownItem } from '../../entities/Grant/types'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
+import Open from '../Icon/open'
 
 import './BreakdownAccordion.css'
 
@@ -34,7 +35,7 @@ function BreakdownAccordion({ breakdown }: Props) {
     <>
       <Markdown>{`## ${t('page.proposal_view.grant.breakdown_title')}`}</Markdown>
       <Accordion fluid styled className="BreakdownAccordion">
-        {breakdown.map(({ concept, duration, estimatedBudget, aboutThis }, i) => (
+        {breakdown.map(({ concept, duration, estimatedBudget, aboutThis, relevantLink }, i) => (
           <>
             <Accordion.Title
               className="BreakdownAccordion__TitleContainer"
@@ -68,6 +69,11 @@ function BreakdownAccordion({ breakdown }: Props) {
             </Accordion.Title>
             <Accordion.Content active={idx === i}>
               <p>{aboutThis}</p>
+              {relevantLink && (
+                <a href={relevantLink} target="_blank" rel="noopener noreferrer" className="BreakdownAccordion__Link">
+                  {t('page.proposal_view.grant.relevant_link')} <Open />
+                </a>
+              )}
             </Accordion.Content>
           </>
         ))}

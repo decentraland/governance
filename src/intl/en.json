@@ -590,7 +590,8 @@
         "breakdown_title": "Budget breakdown",
         "breakdown_subtitle": "{duration} {duration, plural, one {month} other {months}}",
         "personnel_title": "Personnel",
-        "roadmap_title": "Roadmap and milestones"
+        "roadmap_title": "Roadmap and milestones",
+        "relevant_link": "Relevant link"
       }
     },
     "proposal_list": {

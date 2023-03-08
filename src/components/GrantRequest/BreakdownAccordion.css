@@ -50,3 +50,11 @@
 .BreakdownAccordion__Arrow.BreakdownAccordion__Arrow--selected .svg-stroke-black {
   stroke: var(--white-900);
 }
+
+.BreakdownAccordion__Link {
+  text-transform: uppercase;
+}
+
+.BreakdownAccordion__Link > svg {
+  margin-left: 6px;
+}
