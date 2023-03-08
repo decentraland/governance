@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import toNumber from 'lodash/toNumber'
 import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
 
-import type { BudgetBreakdownItem } from '../../entities/Grant/types'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Open from '../Icon/open'
 
@@ -15,8 +13,16 @@ import './BreakdownAccordion.css'
 
 type Index = number | undefined
 
+export interface BreakdownItem {
+  title: string
+  subtitle: string
+  description: string
+  url?: string
+  value?: string
+}
+
 interface Props {
-  breakdown: BudgetBreakdownItem[]
+  items: BreakdownItem[]
 }
 
 function handleClick(titleProps: AccordionTitleProps, idx: Index, setIdx: React.Dispatch<React.SetStateAction<Index>>) {
@@ -26,16 +32,14 @@ function handleClick(titleProps: AccordionTitleProps, idx: Index, setIdx: React.
   setIdx(numberIdx === idx ? undefined : numberIdx)
 }
 
-function BreakdownAccordion({ breakdown }: Props) {
+function BreakdownAccordion({ items }: Props) {
   const [idx, setIdx] = useState<Index>(undefined)
-  const intl = useIntl()
   const t = useFormatMessage()
 
   return (
     <>
-      <Markdown>{`## ${t('page.proposal_view.grant.breakdown_title')}`}</Markdown>
       <Accordion fluid styled className="BreakdownAccordion">
-        {breakdown.map(({ concept, duration, estimatedBudget, aboutThis, relevantLink }, i) => (
+        {items.map(({ title, subtitle, description, url, value }, i) => (
           <>
             <Accordion.Title
               className="BreakdownAccordion__TitleContainer"
@@ -44,19 +48,11 @@ function BreakdownAccordion({ breakdown }: Props) {
               onClick={(_, data) => handleClick(data, idx, setIdx)}
             >
               <div>
-                <div className="BreakdownAccordion__Title">{concept}</div>
-                <div className="BreakdownAccordion__Subtitle">
-                  {t('page.proposal_view.grant.breakdown_subtitle', { duration })}
-                </div>
+                <div className="BreakdownAccordion__Title">{title}</div>
+                <div className="BreakdownAccordion__Subtitle">{subtitle}</div>
               </div>
               <div className="BreakdownAccordion__SizeContainer">
-                <span>
-                  {intl.formatNumber(toNumber(estimatedBudget), {
-                    style: 'currency',
-                    currency: 'USD',
-                    maximumFractionDigits: 0,
-                  })}
-                </span>
+                {value && <span>{value}</span>}
                 <span>
                   <ChevronRightCircleOutline
                     className={TokenList.join([
@@ -68,9 +64,9 @@ function BreakdownAccordion({ breakdown }: Props) {
               </div>
             </Accordion.Title>
             <Accordion.Content active={idx === i}>
-              <p>{aboutThis}</p>
-              {relevantLink && (
-                <a href={relevantLink} target="_blank" rel="noopener noreferrer" className="BreakdownAccordion__Link">
+              <p>{description}</p>
+              {url && (
+                <a href={url} target="_blank" rel="noopener noreferrer" className="BreakdownAccordion__Link">
                   {t('page.proposal_view.grant.relevant_link')} <Open />
                 </a>
               )}

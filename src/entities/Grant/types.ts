@@ -363,7 +363,7 @@ export type GrantRequestGeneralInfo = {
   beneficiary: string
   email: string
   specification?: string
-  personnel: string
+  personnel?: string
   roadmap: string
   coAuthors?: string[]
 }

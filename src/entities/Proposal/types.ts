@@ -7,6 +7,7 @@ import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
   GrantRequestGeneralInfo,
+  GrantRequestTeam,
   GrantStatus,
   GrantTierType,
   ProposalGrantCategory,
@@ -450,7 +451,8 @@ export const ProposalRequiredVP = {
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &
-  GrantRequestDueDiligence & {
+  GrantRequestDueDiligence &
+  GrantRequestTeam & {
     category: ProposalGrantCategory | null
     size: number
     projectDuration?: number // Old grants may not have this field
