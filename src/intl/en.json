@@ -1267,8 +1267,9 @@
       "due_diligence": {
         "title": "Due-diligence",
         "budget_breakdown_label": "Budget breakdown",
-        "budget_breakdown_detail": "Our community values transparency. ${value} left to disclose.",
+        "budget_breakdown_detail": "Our community values transparency. **${value}** left to disclose.",
         "budget_breakdown_add_concept": "Add concept",
+        "budget_breakdown_no_funds_left": "No funds left to disclose",
         "budget_breakdown_example": "Example: Team compensation; Marketing",
         "budget_breakdown_modal": {
           "title": "Breaking the Budget Down",
