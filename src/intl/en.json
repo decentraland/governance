@@ -1286,7 +1286,7 @@
       "team": {
         "title": "Team",
         "members_label": "Members",
-        "members_detail": "Please list who will be working on this project and an explicit overview of their relevant skillset and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
+        "members_detail": "Please list who will be working on this project and include an explicit overview of their relevant skillset and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
         "add_member": "Add team member",
         "team_modal": {
           "title": "Adding a team member",
