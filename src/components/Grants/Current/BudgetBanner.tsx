@@ -47,7 +47,6 @@ function BudgetBanner({ category, status, counter }: Props) {
     [category, counter]
   )
   const showProgress = !status || status === GrantStatus.InProgress
-  console.log('category', category)
   return (
     <div className={TokenList.join(['BudgetBanner', !showProgress && 'BudgetBanner--start'])}>
       <div className="BudgetBanner__LabelWithIcon">
