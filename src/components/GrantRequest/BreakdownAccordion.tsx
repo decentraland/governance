@@ -7,7 +7,7 @@ import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
 
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
-import Open from '../Icon/open'
+import Open from '../Icon/Open'
 
 import './BreakdownAccordion.css'
 

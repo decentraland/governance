@@ -10,7 +10,7 @@ import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../../../hooks/useCoAuthorsByProposal'
 import DateTooltip from '../../Common/DateTooltip'
-import Open from '../../Icon/open'
+import Open from '../../Icon/Open'
 import Username from '../../User/Username'
 
 import ProposalDetailCoauthors from './ProposalDetailCoauthors'

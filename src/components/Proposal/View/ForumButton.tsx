@@ -4,7 +4,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import Open from '../../Icon/open'
+import Open from '../../Icon/Open'
 
 import './DetailsSection.css'
 import './SectionButton.css'
