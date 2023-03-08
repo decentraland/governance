@@ -13,10 +13,10 @@ import './CategoryTotalCard.css'
 
 interface Props {
   proposal: ProposalAttributes
-  expectedBudget: BudgetWithContestants
+  budget: BudgetWithContestants
 }
 
-export default function CategoryTotalCard({ proposal, expectedBudget }: Props) {
+export default function CategoryTotalCard({ proposal, budget }: Props) {
   const t = useFormatMessage()
   const grantCategory = proposal.configuration.category
 
@@ -37,7 +37,7 @@ export default function CategoryTotalCard({ proposal, expectedBudget }: Props) {
       }
       subtitle={t('page.proposal_detail.grant.category_budget.total', {
         value: t('general.number', {
-          value: expectedBudget.categories[snakeCase(grantCategory)].total,
+          value: budget.categories[snakeCase(grantCategory)].total,
         }),
       })}
       subtitleVariant="uppercase"

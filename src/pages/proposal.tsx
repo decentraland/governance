@@ -250,7 +250,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               {proposal?.type === ProposalType.Grant && !isLoadingBudgetWithContestants && (
-                <ProposalBudget proposal={proposal} expectedBudget={budgetWithContestants} />
+                <ProposalBudget proposal={proposal} budget={budgetWithContestants} />
               )}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}

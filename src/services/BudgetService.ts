@@ -205,7 +205,6 @@ export class BudgetService {
   }
 
   static async getBudgetWithContestants(proposalId: string) {
-    console.log('proposalId', proposalId)
     const proposal = await ProposalService.getProposal(proposalId)
     if (proposal.type !== ProposalType.Grant) {
       return NULL_CONTESTED_BUDGET

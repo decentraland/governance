@@ -10,16 +10,15 @@ import RequestedBudgetCard from './RequestedBudgetCard'
 
 interface Props {
   proposal: ProposalAttributes
-  expectedBudget: BudgetWithContestants
+  budget: BudgetWithContestants
 }
 
-export default function ProposalBudget({ proposal, expectedBudget }: Props) {
-  console.log('expectedBudget', expectedBudget)
+export default function ProposalBudget({ proposal, budget }: Props) {
   return (
     <ContentSection className="ProposalBudget__Content">
       <div className="ProposalBudget__Row">
-        <RequestedBudgetCard proposal={proposal} expectedBudget={expectedBudget} />
-        <CategoryTotalCard proposal={proposal} expectedBudget={expectedBudget} />
+        <RequestedBudgetCard proposal={proposal} budget={budget} />
+        <CategoryTotalCard proposal={proposal} budget={budget} />
       </div>
     </ContentSection>
   )

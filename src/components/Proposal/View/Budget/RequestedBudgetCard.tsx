@@ -13,24 +13,18 @@ import './RequestedBudgetCard.css'
 
 interface Props {
   proposal: ProposalAttributes
-  expectedBudget: BudgetWithContestants
+  budget: BudgetWithContestants
 }
 
-export default function RequestedBudgetCard({ proposal, expectedBudget }: Props) {
+export default function RequestedBudgetCard({ proposal, budget }: Props) {
   const t = useFormatMessage()
   const grantCategory = proposal.configuration.category
-  const allocatedCategoryBudget = expectedBudget.categories[snakeCase(grantCategory)]?.allocated || 0
-  const totalCategoryBudget = expectedBudget.categories[snakeCase(grantCategory)]?.total || 0
+  const totalCategoryBudget = budget.categories[snakeCase(grantCategory)]?.total || 0
   const requestedBudget = proposal.configuration.size
-  const remainingUncontestedBudget = totalCategoryBudget - requestedBudget - allocatedCategoryBudget
-  const remainingBudgetDisplayed = remainingUncontestedBudget > 0 ? remainingUncontestedBudget : 0
+  const remainingTotalBudget = totalCategoryBudget - requestedBudget
+  const remainingTotalBudgetDisplayed = remainingTotalBudget > 0 ? remainingTotalBudget : 0
 
   const items: DistributionItemProps[] = [
-    {
-      label: 'page.proposal_detail.grant.requested_budget.allocated',
-      value: allocatedCategoryBudget,
-      style: 'AllocatedBudgetBar',
-    },
     {
       label: 'page.proposal_detail.grant.requested_budget.requested',
       value: requestedBudget,
@@ -39,8 +33,8 @@ export default function RequestedBudgetCard({ proposal, expectedBudget }: Props)
     },
     {
       label: 'page.proposal_detail.grant.requested_budget.total',
-      value: remainingBudgetDisplayed,
-      style: 'RemainingBudgetBar',
+      value: remainingTotalBudgetDisplayed,
+      style: 'TotalBudgetBar',
     },
   ]
 
