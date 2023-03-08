@@ -14,7 +14,7 @@ import Label from '../Common/Label'
 import SubLabel from '../Common/SubLabel'
 
 import AddBox from './AddBox'
-import AddModal from './AddModal'
+import AddBudgetBreakdownModal from './AddBudgetBreakdownModal'
 import BudgetBreakdownItem from './BudgetBreakdownItem'
 import './GrantRequestDueDiligenceSection.css'
 import GrantRequestSection from './GrantRequestSection'
@@ -31,8 +31,8 @@ interface Props {
 
 export default function GrantRequestDueDiligenceSection({ sectionNumber, funding, onValidation }: Props) {
   const t = useFormatMessage()
-  const [DueDiligenceState, setDueDiligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
-  const isFormEdited = userModifiedForm(DueDiligenceState, INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
+  const [dueDiligenceState, setDueDiligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
+  const isFormEdited = userModifiedForm(dueDiligenceState, INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
   const [isModalOpen, setModalOpen] = useState(false)
 
   const handleSubmitItem = (item: BudgetBreakdownItemType) => {
@@ -40,16 +40,16 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
   }
 
   const fundingLeftToDisclose = useMemo(
-    () => Number(funding) - Number(sumBy(DueDiligenceState.budgetBreakdown, 'estimatedBudget')),
-    [DueDiligenceState.budgetBreakdown, funding]
+    () => Number(funding) - Number(sumBy(dueDiligenceState.budgetBreakdown, 'estimatedBudget')),
+    [dueDiligenceState.budgetBreakdown, funding]
   )
 
   const isCompleted = funding >= 0 && Number(fundingLeftToDisclose) <= 0
 
   useEffect(() => {
-    onValidation(DueDiligenceState, isCompleted)
+    onValidation(dueDiligenceState, isCompleted)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [DueDiligenceState, isCompleted])
+  }, [dueDiligenceState, isCompleted])
 
   return (
     <GrantRequestSection
@@ -64,7 +64,7 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
         <SubLabel>
           {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
         </SubLabel>
-        {DueDiligenceState.budgetBreakdown.map((item, index) => (
+        {dueDiligenceState.budgetBreakdown.map((item, index) => (
           <BudgetBreakdownItem
             key={`${item.concept}-${index}`}
             item={item}
@@ -82,7 +82,7 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
           {t('page.submit_grant.due_diligence.budget_breakdown_example')}
         </span>
       </div>
-      <AddModal
+      <AddBudgetBreakdownModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmitItem}

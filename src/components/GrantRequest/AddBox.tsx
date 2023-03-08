@@ -7,7 +7,7 @@ import './AddBox.css'
 interface Props {
   children: React.ReactText
   onClick: () => void
-  disabled: boolean
+  disabled?: boolean
 }
 
 const AddBox = ({ children, onClick, disabled }: Props) => {

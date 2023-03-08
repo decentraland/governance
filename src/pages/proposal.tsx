@@ -28,7 +28,6 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import CategoryAssessment from '../components/Proposal/CategoryAssessment'
 import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
@@ -44,8 +43,6 @@ import SubscribeButton from '../components/Proposal/View/SubscribeButton'
 import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
-import { NewGrantCategory } from '../entities/Grant/types'
-import { firstPart, secondPart } from '../entities/Proposal/templates/grant'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import {
   forumUrl,
