@@ -82,12 +82,14 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
           {t('page.submit_grant.due_diligence.budget_breakdown_example')}
         </span>
       </div>
-      <AddBudgetBreakdownModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleSubmitItem}
-        fundingLeftToDisclose={fundingLeftToDisclose}
-      />
+      {isModalOpen && (
+        <AddBudgetBreakdownModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleSubmitItem}
+          fundingLeftToDisclose={fundingLeftToDisclose}
+        />
+      )}
     </GrantRequestSection>
   )
 }

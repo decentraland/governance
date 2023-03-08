@@ -9,6 +9,7 @@
   border: 1px solid var(--black-300);
   box-shadow: 0px 1px 4px rgba(115, 110, 125, 0.2);
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .TeamMemberItem__Concept {
@@ -44,14 +45,4 @@
   text-align: right;
   letter-spacing: 0.4px;
   color: var(--black-600);
-}
-
-.TeamMemberItem__DeleteButton {
-  display: flex;
-  align-items: center;
-  border: none;
-  background: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
 }
