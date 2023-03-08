@@ -7,11 +7,10 @@ import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
 import CoauthorModel from '../entities/Coauthor/model'
 import isCommittee from '../entities/Committee/isCommittee'
-import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import ProposalModel from '../entities/Proposal/model'
 import * as templates from '../entities/Proposal/templates'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { asNumber, isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
+import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../modules/votes/utils'
@@ -186,16 +185,6 @@ export class ProposalService {
       throw Error("Couldn't create proposal in DB: " + err.message, err)
     }
     return newProposal
-  }
-
-  public static getActiveGrantsWindowStartDate(grantProposalsDuration: string | number) {
-    return Time().subtract(asNumber(grantProposalsDuration), 'seconds').toDate()
-  }
-
-  public static async getActiveGrantProposals() {
-    return await ProposalModel.getActiveGrantProposals(
-      this.getActiveGrantsWindowStartDate(GRANT_PROPOSAL_DURATION_IN_SECONDS)
-    )
   }
 
   static async getProposal(id: string) {

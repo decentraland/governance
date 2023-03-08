@@ -141,14 +141,15 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
-  static async getActiveGrantProposals(from: Date) {
+  static async getActiveGrantProposals(from?: Date, to?: Date) {
     const query = SQL`
         SELECT *
         FROM ${table(ProposalModel)}
         WHERE "deleted" = FALSE
           AND "status" IN (${ProposalStatus.Active})
           AND "type" IN (${ProposalType.Grant})
-          AND "start_at" >= ${from}
+          ${conditional(!!from, SQL`AND "start_at" >= ${from}`)}
+          ${conditional(!!to, SQL`AND "start_at" < ${to}`)}
           ORDER BY created_at ASC
     `
 

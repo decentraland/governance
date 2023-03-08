@@ -7,7 +7,7 @@ export type QuarterBudgetAttributes = {
   updated_at: Date
 }
 
-export interface CurrentBudgetQueryResult {
+export interface BudgetQueryResult {
   id: string
   category: string
   category_total: number

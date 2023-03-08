@@ -3,7 +3,7 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import snakeCase from 'lodash/snakeCase'
 
-import { ExpectedBudget } from '../../../../entities/Budget/types'
+import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../../../helpers/styles'
 import { getCategoryIcon } from '../../../Category/CategoryOption'
@@ -13,7 +13,7 @@ import './CategoryTotalCard.css'
 
 interface Props {
   proposal: ProposalAttributes
-  expectedBudget: ExpectedBudget
+  expectedBudget: BudgetWithContestants
 }
 
 export default function CategoryTotalCard({ proposal, expectedBudget }: Props) {

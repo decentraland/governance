@@ -51,8 +51,8 @@ import {
   isProposalEnactable,
   proposalCanBePassedOrRejected,
 } from '../entities/Proposal/utils'
+import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
-import useExpectedAllocatedBudget from '../hooks/useExpectedAllocatedBudget'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
@@ -99,7 +99,7 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
-  const { expectedBudget, isLoadingExpectedBudget } = useExpectedAllocatedBudget()
+  const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
 
@@ -249,8 +249,8 @@ export default function ProposalPage() {
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
-              {proposal?.type === ProposalType.Grant && !isLoadingExpectedBudget && (
-                <ProposalBudget proposal={proposal} expectedBudget={expectedBudget} />
+              {proposal?.type === ProposalType.Grant && !isLoadingBudgetWithContestants && (
+                <ProposalBudget proposal={proposal} expectedBudget={budgetWithContestants} />
               )}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}

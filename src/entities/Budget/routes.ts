@@ -8,18 +8,19 @@ import { BudgetService } from '../../services/BudgetService'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
-import { CurrentBudget, CurrentCategoryBudget, ExpectedBudget } from './types'
+import { Budget, BudgetWithContestants, CategoryBudget } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
   route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
   route.get('/budget/current', handleAPI(getCurrentBudget))
-  route.get('/budget/expected', handleAPI(getExpectedAllocatedBudget))
+  route.get('/budget/current-contested', handleAPI(getCurrentContestedBudget))
+  route.get('/budget/contested/:proposal', handleAPI(getBudgetWithContestants))
   route.get('/budget/:category', handleAPI(getCategoryBudget))
 })
 
-async function getCategoryBudget(req: Request): Promise<CurrentCategoryBudget> {
+async function getCategoryBudget(req: Request): Promise<CategoryBudget> {
   const { category } = req.params
   const grantCategory = toNewGrantCategory(category)
   return await BudgetService.getCategoryBudget(grantCategory)
@@ -33,10 +34,14 @@ async function fetchBudgets(): Promise<TransparencyBudget[]> {
   return await BudgetService.getTransparencyBudgets()
 }
 
-async function getCurrentBudget(): Promise<CurrentBudget> {
+async function getCurrentBudget(): Promise<Budget> {
   return await BudgetService.getCurrentBudget()
 }
 
-async function getExpectedAllocatedBudget(): Promise<ExpectedBudget> {
-  return await BudgetService.getExpectedAllocatedBudget()
+async function getCurrentContestedBudget(): Promise<BudgetWithContestants> {
+  return await BudgetService.getCurrentContestedBudget()
+}
+
+async function getBudgetWithContestants(req: Request<{ proposal: string }>): Promise<BudgetWithContestants> {
+  return await BudgetService.getBudgetWithContestants(req.params.proposal)
 }

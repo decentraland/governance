@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ExpectedBudget } from '../../../../entities/Budget/types'
+import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { ContentSection } from '../../../Layout/ContentLayout'
 
@@ -10,10 +10,11 @@ import RequestedBudgetCard from './RequestedBudgetCard'
 
 interface Props {
   proposal: ProposalAttributes
-  expectedBudget: ExpectedBudget
+  expectedBudget: BudgetWithContestants
 }
 
 export default function ProposalBudget({ proposal, expectedBudget }: Props) {
+  console.log('expectedBudget', expectedBudget)
   return (
     <ContentSection className="ProposalBudget__Content">
       <div className="ProposalBudget__Row">

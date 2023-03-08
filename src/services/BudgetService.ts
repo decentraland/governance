@@ -5,18 +5,19 @@ import snakeCase from 'lodash/snakeCase'
 
 import { DclData, TransparencyBudget } from '../clients/DclData'
 import {
+  Budget,
+  BudgetWithContestants,
+  CategoryBudget,
+  CategoryBudgetWithContestants,
   ContestingGrantProposal,
-  CurrentBudget,
-  CurrentCategoryBudget,
-  ExpectedBudget,
-  ExpectedCategoryBudget,
-  NULL_CURRENT_BUDGET,
-  NULL_CURRENT_CATEGORY_BUDGET,
-  NULL_EXPECTED_BUDGET,
+  NULL_BUDGET,
+  NULL_CATEGORY_BUDGET,
+  NULL_CONTESTED_BUDGET,
 } from '../entities/Budget/types'
 import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import { isValidGrantBudget } from '../entities/Grant/utils'
+import ProposalModel from '../entities/Proposal/model'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
@@ -123,23 +124,23 @@ export class BudgetService {
     return await QuarterBudgetModel.createNewBudgets(transparencyBudgets)
   }
 
-  static async getCurrentBudget(): Promise<CurrentBudget> {
+  static async getCurrentBudget(): Promise<Budget> {
     const currentBudget = await QuarterBudgetModel.getCurrentBudget()
     if (currentBudget !== null) {
       return currentBudget
     }
     ErrorService.report('Could not find current budget')
-    return NULL_CURRENT_BUDGET
+    return NULL_BUDGET
   }
 
-  static async getCategoryBudget(category: NewGrantCategory): Promise<CurrentCategoryBudget> {
+  static async getCategoryBudget(category: NewGrantCategory): Promise<CategoryBudget> {
     const categoryBudget = await QuarterBudgetModel.getCategoryBudgetForCurrentQuarter(category)
     if (categoryBudget !== null) {
       const { total, allocated } = categoryBudget
       return { total, allocated, available: total - allocated }
     }
     ErrorService.report(`Could not find category budget for current quarter. Category: ${category}`)
-    return NULL_CURRENT_CATEGORY_BUDGET
+    return NULL_CATEGORY_BUDGET
   }
 
   static async validateGrantRequest(grantSize: number, grantCategory: NewGrantCategory | null) {
@@ -166,8 +167,8 @@ export class BudgetService {
     return { minDate: sorted[0]?.start_at, maxDate: sorted[sorted.length - 1]?.start_at }
   }
 
-  static async getBudgetsForProposals(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<CurrentBudget[]> {
-    const budgetsForProposals: CurrentBudget[] = []
+  static async getBudgetsForProposals(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<Budget[]> {
+    const budgetsForProposals: Budget[] = []
     const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(proposals)
     if (!minDate) return budgetsForProposals
     const oldestBudget = await QuarterBudgetModel.getBudgetForDate(minDate)
@@ -185,93 +186,80 @@ export class BudgetService {
     return budgetsForProposals
   }
 
-  static async updateBudgets(budgets: CurrentBudget[]) {
+  static async updateBudgets(budgets: Budget[]) {
     for (const budget of budgets) {
       await QuarterBudgetModel.updateBudget(budget)
     }
   }
 
-  static async getExpectedAllocatedBudget() {
-    const activeGrantProposals = await ProposalService.getActiveGrantProposals()
+  static async getCurrentContestedBudget() {
     const currentBudget = await this.getCurrentBudget()
-    const expectedBudget: ExpectedBudget = this.initializeExpectedBudget(currentBudget)
-
-    // add contesting proposals
-    for (const proposal of activeGrantProposals) {
-      const proposalCategory = snakeCase(proposal.configuration.category)
-      const proposalSize = proposal.configuration.size
-
-      expectedBudget.categories[proposalCategory].contested += proposalSize
-      expectedBudget.categories[proposalCategory].contestants.push(this.getContestingGrantProposal(proposal))
-      expectedBudget.total_contested += proposalSize
+    if (!currentBudget) {
+      return NULL_CONTESTED_BUDGET
     }
-
-    // calculate percentages
-    for (const category of Object.keys(currentBudget.categories)) {
-      expectedBudget.categories[category].contested_over_available_percentage = getUncappedRoundedPercentage(
-        expectedBudget.categories[category].contested,
-        expectedBudget.categories[category].available
-      )
-      for (const contestingGrant of expectedBudget.categories[category].contestants) {
-        contestingGrant.contested_percentage = getUncappedRoundedPercentage(
-          contestingGrant.size,
-          expectedBudget.categories[category].contested
-        )
-      }
-    }
-    return expectedBudget
+    const activeGrantProposals = await ProposalModel.getActiveGrantProposals(
+      currentBudget.start_at,
+      currentBudget.finish_at
+    )
+    return this.createBudgetWithContestants(currentBudget, activeGrantProposals)
   }
 
-  static async getContestedBudget(proposalId: string) {
+  static async getBudgetWithContestants(proposalId: string) {
+    console.log('proposalId', proposalId)
     const proposal = await ProposalService.getProposal(proposalId)
     if (proposal.type !== ProposalType.Grant) {
-      return NULL_EXPECTED_BUDGET
+      return NULL_CONTESTED_BUDGET
     }
     const proposalBudget = await QuarterBudgetModel.getBudgetForDate(proposal.created_at)
     if (!proposalBudget) {
-      return NULL_EXPECTED_BUDGET
+      return NULL_CONTESTED_BUDGET
     }
-    const contestingProposals = await ProposalService.getActiveGrantProposals() //TODO: this should be active proposals for the same budget
-    const expectedBudget: ExpectedBudget = this.initializeExpectedBudget(proposalBudget)
+    const contestingProposals = await ProposalModel.getActiveGrantProposals(
+      proposalBudget.start_at,
+      proposalBudget.finish_at
+    )
+    return this.createBudgetWithContestants(proposalBudget, contestingProposals)
+  }
+
+  private static createBudgetWithContestants(budget: Budget, contestingProposals: ProposalAttributes[]) {
+    const budgetWithContestants: BudgetWithContestants = {
+      ...budget,
+      total_contested: 0,
+    } as any as BudgetWithContestants
+    for (const category of Object.keys(budget.categories)) {
+      const expectedCategoryBudget: CategoryBudgetWithContestants = {
+        ...budget.categories[category],
+        contested: 0,
+        contested_over_available_percentage: 0,
+        contestants: [],
+      }
+      budgetWithContestants.categories[category] = expectedCategoryBudget
+    }
 
     // add contesting proposals
     for (const proposal of contestingProposals) {
       const proposalCategory = snakeCase(proposal.configuration.category)
       const proposalSize = proposal.configuration.size
 
-      expectedBudget.categories[proposalCategory].contested += proposalSize
-      expectedBudget.categories[proposalCategory].contestants.push(this.getContestingGrantProposal(proposal))
-      expectedBudget.total_contested += proposalSize
+      budgetWithContestants.categories[proposalCategory].contested += proposalSize
+      budgetWithContestants.categories[proposalCategory].contestants.push(this.getContestingGrantProposal(proposal))
+      budgetWithContestants.total_contested += proposalSize
     }
 
     // calculate percentages
-    for (const category of Object.keys(proposalBudget.categories)) {
-      expectedBudget.categories[category].contested_over_available_percentage = getUncappedRoundedPercentage(
-        expectedBudget.categories[category].contested,
-        expectedBudget.categories[category].available
+    for (const category of Object.keys(budget.categories)) {
+      budgetWithContestants.categories[category].contested_over_available_percentage = getUncappedRoundedPercentage(
+        budgetWithContestants.categories[category].contested,
+        budgetWithContestants.categories[category].available
       )
-      for (const contestingGrant of expectedBudget.categories[category].contestants) {
+      for (const contestingGrant of budgetWithContestants.categories[category].contestants) {
         contestingGrant.contested_percentage = getUncappedRoundedPercentage(
           contestingGrant.size,
-          expectedBudget.categories[category].contested
+          budgetWithContestants.categories[category].contested
         )
       }
     }
-    return expectedBudget
-  }
-
-  private static initializeExpectedBudget(currentBudget: CurrentBudget): ExpectedBudget {
-    const expectedBudget: ExpectedBudget = { ...currentBudget, total_contested: 0 } as any as ExpectedBudget
-    for (const category of Object.keys(currentBudget.categories)) {
-      const expectedCategoryBudget: ExpectedCategoryBudget = {
-        ...currentBudget.categories[category],
-        contested: 0,
-        contested_over_available_percentage: 0,
-        contestants: [],
-      }
-      expectedBudget.categories[category] = expectedCategoryBudget
-    }
-    return expectedBudget
+    return budgetWithContestants
   }
 
   private static getContestingGrantProposal(proposal: ProposalAttributes) {

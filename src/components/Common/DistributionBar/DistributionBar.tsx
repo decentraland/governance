@@ -41,7 +41,7 @@ const DistributionBar = ({ items, total, isLoading, className }: Props) => {
             popupContent={item.popupContent}
             style={item.style}
             selected={item.selected}
-            key={`${index}-dist-bar-item`}
+            key={`distribution-bar-item-${index}`}
           />
         ))}
       </div>

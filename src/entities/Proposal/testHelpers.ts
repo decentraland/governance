@@ -2,7 +2,7 @@ import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 
-import { CurrentBudget } from '../Budget/types'
+import { Budget } from '../Budget/types'
 import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
@@ -161,7 +161,7 @@ export const POI_PROPOSAL: ProposalAttributes = createTestProposal(ProposalType.
 export function getTestBudgetWithAvailableSize(
   availableForAccelerator?: number,
   availableForCoreUnit?: number
-): CurrentBudget {
+): Budget {
   const allocatedForAccelerator =
     availableForAccelerator !== undefined ? ACCELERATOR_TOTAL - availableForAccelerator : 5000
   availableForAccelerator = availableForAccelerator !== undefined ? availableForAccelerator : 100000
@@ -215,7 +215,7 @@ export function getTestBudgetWithAvailableSize(
   }
 }
 
-export const CURRENT_TEST_BUDGET: CurrentBudget = {
+export const CURRENT_TEST_BUDGET: Budget = {
   id: 'test-id',
   start_at: Time.utc('2023-01-01T00:00:00.000Z').toDate(),
   finish_at: Time.utc('2023-04-01T00:00:00.000Z').toDate(),
