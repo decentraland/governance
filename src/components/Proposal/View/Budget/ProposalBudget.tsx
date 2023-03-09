@@ -1,5 +1,7 @@
 import React from 'react'
 
+import snakeCase from 'lodash/snakeCase'
+
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { ContentSection } from '../../../Layout/ContentLayout'
@@ -15,15 +17,20 @@ interface Props {
 }
 
 export default function ProposalBudget({ proposal, budget }: Props) {
+  const grantCategory = proposal.configuration.category
+  const contestantsAmount = (budget.categories[snakeCase(grantCategory)]?.contestants.length || 0) - 1
+
   return (
     <ContentSection className="ProposalBudget__Content">
       <div className="ProposalBudget__Row">
         <RequestedBudgetCard proposal={proposal} budget={budget} />
         <CategoryTotalCard proposal={proposal} budget={budget} />
       </div>
-      <div className="ProposalBudget__Row">
-        <CompetingProposals proposal={proposal} budget={budget} />
-      </div>
+      {contestantsAmount > 0 && (
+        <div className="ProposalBudget__Row">
+          <CompetingProposals proposal={proposal} budget={budget} />
+        </div>
+      )}
     </ContentSection>
   )
 }

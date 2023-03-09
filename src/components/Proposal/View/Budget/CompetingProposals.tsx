@@ -19,9 +19,9 @@ export default function CompetingProposals({ proposal, budget }: Props) {
   const t = useFormatMessage()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const grantCategory = proposal.configuration.category
-  const contestantsAmount = budget.categories[snakeCase(grantCategory)]?.contestants.length || 0
+  const contestantsAmount = (budget.categories[snakeCase(grantCategory)]?.contestants.length || 0) - 1
 
-  if (!contestantsAmount) return null
+  if (!contestantsAmount || contestantsAmount < 1) return null
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)

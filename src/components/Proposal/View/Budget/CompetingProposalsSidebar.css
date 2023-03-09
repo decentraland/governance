@@ -1,5 +1,9 @@
+.ui.push.right.very.wide.visible.sidebar.CompetingProposalsSidebar {
+  width: 600px;
+}
+
 .CompetingProposalsSidebar {
-  background: #ffffff;
+  background: var(--white-900);
   display: flex;
   padding-top: 26px;
   padding-left: 27px;
@@ -43,6 +47,57 @@
   margin-bottom: 2px;
 }
 
+.ContestedBudgetCard__Row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ContestedBudgetCard__Label {
+  display: flex;
+  align-items: center;
+}
+.ContestedBudgetCard__Legend {
+  width: 8px;
+  height: 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+.ContestedLabel {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 18px;
+  letter-spacing: 0.4px;
+  color: var(--black-800);
+  margin-right: 6px;
+}
+.ContestedLegend {
+  background: #a524b3;
+}
+.GrantedFundsLegend {
+  background: var(--black-600);
+}
+.UncontestedFundsLegend {
+  background: rgba(115, 110, 125, 0.24);
+}
+.GrantedFundsLabel {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--black-600);
+  text-transform: uppercase;
+  gap: 2px;
+  display: flex;
+  margin-right: 6px;
+}
+.GrantedFundsPercentageLabel{
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--black-600);
+  line-height: 24px;
+  opacity: 0.45;
+}
+
+/* DistributionBar*/
 .AllocatedBudgetBar {
   background: var(--black-600);
   border-radius: 4px;
@@ -53,10 +108,11 @@
   background: linear-gradient(90deg, #a524b3 0%, #9918a7 100%);
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-
 }
 
-.ContestedBudgetBar + .ContestedBudgetBar { border-radius: 0; }
+.ContestedBudgetBar + .ContestedBudgetBar {
+  border-radius: 0;
+}
 
 .ThisInitiativeBar {
   background: linear-gradient(90deg, #c640cd 0%, #405fcd 100%);
@@ -64,7 +120,7 @@
   border-radius: 10px;
 }
 
-.TotalBudgetBar {
+.UncontestedBudgetBar {
   background: rgba(115, 110, 125, 0.24);
   border-top-right-radius: 4px;
   margin-left: 2px;
