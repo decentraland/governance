@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -13,12 +13,16 @@ interface Props {
 
 function PersonnelView({ members }: Props) {
   const t = useFormatMessage()
-  const items = members.map<BreakdownItem>(({ name, role, about, relevantLink }) => ({
-    title: name,
-    subtitle: role,
-    description: about,
-    url: relevantLink,
-  }))
+  const items = useMemo(
+    () =>
+      members.map<BreakdownItem>(({ name, role, about, relevantLink }) => ({
+        title: name,
+        subtitle: role,
+        description: about,
+        url: relevantLink,
+      })),
+    [members]
+  )
   return (
     <>
       <Markdown>{`## ${t('page.proposal_view.grant.personnel_title')}`}</Markdown>

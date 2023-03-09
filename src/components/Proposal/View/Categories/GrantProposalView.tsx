@@ -39,8 +39,8 @@ function GrantProposalView({ config }: Props) {
     categoryAssessment,
   } = config
 
-  const isBudgetBreakdown = budgetBreakdown && budgetBreakdown.length > 0
-  const isMembers = members && members.length > 0
+  const hasBudgetBreakdown = budgetBreakdown && budgetBreakdown.length > 0
+  const hasMembers = members && members.length > 0
 
   return (
     <div>
@@ -64,12 +64,12 @@ function GrantProposalView({ config }: Props) {
       <ProposalDescriptionItem title={t('page.proposal_view.grant.beneficiary_title')} body={beneficiary} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.email_title')} body={email} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.description_title')} body={description} />
-      {isBudgetBreakdown && <BudgetBreakdownView breakdown={budgetBreakdown} />}
-      {!isBudgetBreakdown && specification && (
+      {hasBudgetBreakdown && <BudgetBreakdownView breakdown={budgetBreakdown} />}
+      {!hasBudgetBreakdown && specification && (
         <ProposalDescriptionItem title={t('page.proposal_view.grant.specification_title')} body={specification} />
       )}
-      {isMembers && <PersonnelView members={members} />}
-      {!isMembers && personnel && (
+      {hasMembers && <PersonnelView members={members} />}
+      {!hasMembers && personnel && (
         <ProposalDescriptionItem title={t('page.proposal_view.grant.personnel_title')} body={personnel} />
       )}
       <ProposalDescriptionItem title={t('page.proposal_view.grant.roadmap_title')} body={roadmap} />

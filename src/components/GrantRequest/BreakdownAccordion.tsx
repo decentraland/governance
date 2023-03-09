@@ -11,7 +11,7 @@ import Open from '../Icon/Open'
 
 import './BreakdownAccordion.css'
 
-type Index = number | undefined
+const UNSELECTED_ITEM = -1
 
 export interface BreakdownItem {
   title: string
@@ -25,56 +25,54 @@ interface Props {
   items: BreakdownItem[]
 }
 
-function handleClick(titleProps: AccordionTitleProps, idx: Index, setIdx: React.Dispatch<React.SetStateAction<Index>>) {
-  const { index } = titleProps
-  const numberIdx = toNumber(index)
-
-  setIdx(numberIdx === idx ? undefined : numberIdx)
-}
-
 function BreakdownAccordion({ items }: Props) {
-  const [idx, setIdx] = useState<Index>(undefined)
+  const [activeAccordionItem, setActiveAccordionItem] = useState(UNSELECTED_ITEM)
   const t = useFormatMessage()
 
+  const handleClick = (titleProps: AccordionTitleProps) => {
+    const { index } = titleProps
+    const selectedAccordion = toNumber(index)
+
+    setActiveAccordionItem(selectedAccordion === activeAccordionItem ? UNSELECTED_ITEM : selectedAccordion)
+  }
+
   return (
-    <>
-      <Accordion fluid styled className="BreakdownAccordion">
-        {items.map(({ title, subtitle, description, url, value }, i) => (
-          <>
-            <Accordion.Title
-              className="BreakdownAccordion__TitleContainer"
-              active={idx === i}
-              index={i}
-              onClick={(_, data) => handleClick(data, idx, setIdx)}
-            >
-              <div>
-                <div className="BreakdownAccordion__Title">{title}</div>
-                <div className="BreakdownAccordion__Subtitle">{subtitle}</div>
-              </div>
-              <div className="BreakdownAccordion__SizeContainer">
-                {value && <span>{value}</span>}
-                <span>
-                  <ChevronRightCircleOutline
-                    className={TokenList.join([
-                      'BreakdownAccordion__Arrow',
-                      idx === i && 'BreakdownAccordion__Arrow--selected',
-                    ])}
-                  />
-                </span>
-              </div>
-            </Accordion.Title>
-            <Accordion.Content active={idx === i}>
-              <p>{description}</p>
-              {url && (
-                <a href={url} target="_blank" rel="noopener noreferrer" className="BreakdownAccordion__Link">
-                  {t('page.proposal_view.grant.relevant_link')} <Open />
-                </a>
-              )}
-            </Accordion.Content>
-          </>
-        ))}
-      </Accordion>
-    </>
+    <Accordion fluid styled className="BreakdownAccordion">
+      {items.map(({ title, subtitle, description, url, value }, accordionNumber) => (
+        <>
+          <Accordion.Title
+            className="BreakdownAccordion__TitleContainer"
+            active={activeAccordionItem === accordionNumber}
+            index={accordionNumber}
+            onClick={(_, titleProps) => handleClick(titleProps)}
+          >
+            <div>
+              <div className="BreakdownAccordion__Title">{title}</div>
+              <div className="BreakdownAccordion__Subtitle">{subtitle}</div>
+            </div>
+            <div className="BreakdownAccordion__SizeContainer">
+              {value && <span>{value}</span>}
+              <span>
+                <ChevronRightCircleOutline
+                  className={TokenList.join([
+                    'BreakdownAccordion__Arrow',
+                    activeAccordionItem === accordionNumber && 'BreakdownAccordion__Arrow--selected',
+                  ])}
+                />
+              </span>
+            </div>
+          </Accordion.Title>
+          <Accordion.Content active={activeAccordionItem === accordionNumber}>
+            <p>{description}</p>
+            {url && (
+              <a href={url} target="_blank" rel="noopener noreferrer" className="BreakdownAccordion__Link">
+                {t('page.proposal_view.grant.relevant_link')} <Open />
+              </a>
+            )}
+          </Accordion.Content>
+        </>
+      ))}
+    </Accordion>
   )
 }
 
