@@ -61,7 +61,7 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
     >
       <div className="GrantRequestSection__Content">
         <Label>{t('page.submit_grant.due_diligence.budget_breakdown_label')}</Label>
-        <SubLabel>
+        <SubLabel isMarkdown>
           {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
         </SubLabel>
         {dueDiligenceState.budgetBreakdown.map((item, index) => (
@@ -76,18 +76,22 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
           />
         ))}
         <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
-          {t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
+          {isCompleted || funding <= 0
+            ? t('page.submit_grant.due_diligence.budget_breakdown_no_funds_left')
+            : t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
         </AddBox>
         <span className="GrantRequestSection__ExampleLabel">
           {t('page.submit_grant.due_diligence.budget_breakdown_example')}
         </span>
       </div>
-      <AddBudgetBreakdownModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleSubmitItem}
-        fundingLeftToDisclose={fundingLeftToDisclose}
-      />
+      {isModalOpen && (
+        <AddBudgetBreakdownModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleSubmitItem}
+          fundingLeftToDisclose={fundingLeftToDisclose}
+        />
+      )}
     </GrantRequestSection>
   )
 }

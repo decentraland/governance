@@ -55,9 +55,11 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   onSubmit: (item: TeamMember) => void
+  onDelete: () => void
+  selectedTeamMember: TeamMember | null
 }
 
-const AddTeamMemberModal = ({ isOpen, onClose, onSubmit }: Props) => {
+const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onDelete }: Props) => {
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_TEAM_MEMBER_ITEM)
 
@@ -65,15 +67,22 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit }: Props) => {
     if (state.validated) {
       onSubmit(state.value)
       onClose()
-      editor.set(INITIAL_TEAM_MEMBER_ITEM)
     }
   }, [editor, onClose, onSubmit, state.validated, state.value])
+
+  useEffect(() => {
+    if (selectedTeamMember) {
+      editor.set({ ...selectedTeamMember })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTeamMember])
 
   return (
     <AddModal
       title={t('page.submit_grant.team.team_modal.title')}
       isOpen={isOpen}
       onClose={onClose}
+      onSecondaryClick={selectedTeamMember ? onDelete : undefined}
       onPrimaryClick={() => editor.validate()}
     >
       <div>

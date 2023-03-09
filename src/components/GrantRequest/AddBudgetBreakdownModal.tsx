@@ -117,6 +117,19 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field GrantRequestSection__Field--row">
+          <BudgetInput
+            label={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}
+            value={state.value.estimatedBudget}
+            error={state.error.estimatedBudget}
+            onChange={({ currentTarget }) =>
+              editor.set({
+                estimatedBudget: currentTarget.value !== '' ? Number(currentTarget.value) : currentTarget.value,
+              })
+            }
+            subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_left_to_disclose', {
+              value: fundingLeftToDisclose,
+            })}
+          />
           <NumberSelector
             value={state.value.duration}
             min={BudgetBreakdownItemSchema.duration.minimum}
@@ -125,18 +138,6 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
             unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
           />
-          <div>
-            <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}</Label>
-            <BudgetInput
-              value={state.value.estimatedBudget}
-              error={state.error.estimatedBudget}
-              onChange={({ currentTarget }) =>
-                editor.set({
-                  estimatedBudget: Number(currentTarget.value),
-                })
-              }
-            />
-          </div>
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_label')}</Label>

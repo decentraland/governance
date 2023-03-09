@@ -9,6 +9,7 @@ import snakeCase from 'lodash/snakeCase'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
 import {
+  GRANT_PROPOSAL_MAX_BUDGET,
   GRANT_PROPOSAL_MIN_BUDGET,
   GrantRequestFunding,
   GrantRequestFundingSchema,
@@ -26,8 +27,8 @@ import Label from '../Common/Label'
 import Helper from '../Helper/Helper'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import BudgetInput from './BudgetInput'
 import CalculationHelper from './CalculationHelper'
-import DesiredFundingInput from './DesiredFundingInput'
 import './GrantRequestFundingSection.css'
 import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
@@ -209,7 +210,12 @@ export default function GrantRequestFundingSection({
         </div>
         <div className="GrantRequestSection__Row">
           <div className="GrantRequestSection__InputContainer">
-            <DesiredFundingInput
+            <BudgetInput
+              label={t('page.submit_grant.funding_section.desired_funding')}
+              min={GRANT_PROPOSAL_MIN_BUDGET}
+              max={GRANT_PROPOSAL_MAX_BUDGET}
+              placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
+              subtitle={t('page.submit_grant.funding_section.desired_funding_sub')}
               value={state.value.funding}
               onChange={({ currentTarget }) =>
                 editor.set({

@@ -67,14 +67,6 @@
   flex: 1;
 }
 
-.GrantRequestSection__InputSubtitle > p.dg.Paragraph {
-  font-style: italic;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 24px;
-  color: var(--black-600);
-}
-
 .GrantRequestSection__InputLabel {
   padding-right: 20px;
 }

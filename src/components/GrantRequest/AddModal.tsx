@@ -11,11 +11,12 @@ interface Props {
   title: string
   isOpen: boolean
   onPrimaryClick: () => void
+  onSecondaryClick?: () => void
   onClose: () => void
   children: React.ReactNode
 }
 
-const AddModal = ({ title, isOpen, onClose, onPrimaryClick, children }: Props) => {
+const AddModal = ({ title, isOpen, onClose, onSecondaryClick, onPrimaryClick, children }: Props) => {
   const t = useFormatMessage()
 
   return (
@@ -33,8 +34,10 @@ const AddModal = ({ title, isOpen, onClose, onPrimaryClick, children }: Props) =
           <Button fluid primary onClick={onPrimaryClick}>
             {t('page.submit_grant.modal_actions.submit')}
           </Button>
-          <Button fluid secondary onClick={onClose} className="AddModal__SecondaryButton">
-            {t('page.submit_grant.modal_actions.cancel')}
+          <Button fluid secondary onClick={onSecondaryClick || onClose} className="AddModal__SecondaryButton">
+            {onSecondaryClick
+              ? t('page.submit_grant.modal_actions.delete')
+              : t('page.submit_grant.modal_actions.cancel')}
           </Button>
         </div>
       </Modal.Content>

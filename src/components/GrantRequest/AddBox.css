@@ -17,6 +17,10 @@
   cursor: pointer;
 }
 
+.AddBox--disabled {
+  cursor: default;
+}
+
 .AddBox__Icon {
   margin-right: 10px;
 }

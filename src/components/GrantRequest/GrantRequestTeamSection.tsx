@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmpty from 'lodash/isEmpty'
-import isEqual from 'lodash/isEqual'
 
 import { GrantRequest, GrantRequestTeam, TeamMember } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
@@ -29,10 +28,31 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation }:
   const [teamState, setTeamState] = useState(INITIAL_GRANT_REQUEST_TEAM_STATE)
   const isFormEdited = userModifiedForm(teamState, INITIAL_GRANT_REQUEST_TEAM_STATE)
   const [isModalOpen, setModalOpen] = useState(false)
+  const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null)
 
-  const handleSubmitItem = (item: TeamMember) => {
-    setTeamState((prevState) => ({ members: [...prevState.members, item] }))
-  }
+  const handleSubmitItem = useCallback(
+    (item: TeamMember) => {
+      if (selectedTeamMember) {
+        setTeamState((prevState) => ({
+          members: prevState.members.map((i) => (i.name === selectedTeamMember.name ? item : i)),
+        }))
+        setSelectedTeamMember(null)
+      } else {
+        setTeamState((prevState) => ({ members: [...prevState.members, item] }))
+      }
+    },
+    [selectedTeamMember]
+  )
+
+  const handleDeleteItem = useCallback(() => {
+    if (selectedTeamMember) {
+      setTeamState((prevState) => ({
+        members: prevState.members.filter((i) => i.name !== selectedTeamMember.name),
+      }))
+      setModalOpen(false)
+      setSelectedTeamMember(null)
+    }
+  }, [selectedTeamMember])
 
   const isCompleted = !isEmpty(teamState.members)
 
@@ -56,17 +76,27 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation }:
           <TeamMemberItem
             key={`${item.name}-${index}`}
             item={item}
-            onDeleteClick={() =>
-              setTeamState((prevState) => ({
-                members: prevState.members.filter((i) => !isEqual(i, item)),
-              }))
-            }
+            onClick={() => {
+              setSelectedTeamMember(item)
+              setModalOpen(true)
+            }}
           />
         ))}
         <AddBox onClick={() => setModalOpen(true)}>{t('page.submit_grant.team.add_member')}</AddBox>
       </div>
       {isModalOpen && (
-        <AddTeamMemberModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmitItem} />
+        <AddTeamMemberModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            if (selectedTeamMember) {
+              setSelectedTeamMember(null)
+            }
+            setModalOpen(false)
+          }}
+          onSubmit={handleSubmitItem}
+          onDelete={handleDeleteItem}
+          selectedTeamMember={selectedTeamMember}
+        />
       )}
     </GrantRequestSection>
   )
