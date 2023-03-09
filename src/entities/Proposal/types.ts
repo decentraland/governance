@@ -5,7 +5,9 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import {
   CategoryAssessmentQuestions,
+  GrantRequestDueDiligence,
   GrantRequestGeneralInfo,
+  GrantRequestTeam,
   GrantStatus,
   GrantTierType,
   ProposalGrantCategory,
@@ -448,15 +450,17 @@ export const ProposalRequiredVP = {
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
 }
 
-export type GrantProposalConfiguration = GrantRequestGeneralInfo & {
-  category: ProposalGrantCategory | null
-  size: number
-  projectDuration?: number // Old grants may not have this field
-  tier: GrantTierType
-  choices: string[]
-  vestingStartDate?: VestingStartDate
-  categoryAssessment?: CategoryAssessmentQuestions
-}
+export type GrantProposalConfiguration = GrantRequestGeneralInfo &
+  GrantRequestDueDiligence &
+  GrantRequestTeam & {
+    category: ProposalGrantCategory | null
+    size: number
+    projectDuration?: number // Old grants may not have this field
+    tier: GrantTierType
+    choices: string[]
+    vestingStartDate?: VestingStartDate
+    categoryAssessment?: CategoryAssessmentQuestions
+  }
 
 export type NewProposalLinkedWearables = {
   name: string

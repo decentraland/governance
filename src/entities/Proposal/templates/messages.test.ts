@@ -394,6 +394,8 @@ describe('getUpdateMessage', () => {
             size: 1000,
             beneficiary: 'Grant Beneficiary',
             description: 'Grant Description',
+            budgetBreakdown: [],
+            members: [],
             roadmap: 'Grant Roadmap',
             choices: DEFAULT_CHOICES,
             projectDuration: 6,

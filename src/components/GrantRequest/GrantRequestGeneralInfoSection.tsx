@@ -89,7 +89,7 @@ interface Props {
   sectionNumber: number
 }
 
-type Fields = keyof Omit<GrantRequestGeneralInfo, 'coAuthors'>
+type Fields = keyof Omit<GrantRequestGeneralInfo, 'coAuthors' | 'specification' | 'personnel'>
 
 export default function GrantRequestGeneralInfoSection({ onValidation, isFormDisabled, sectionNumber }: Props) {
   const t = useFormatMessage()

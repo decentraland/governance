@@ -583,6 +583,23 @@
       "4_panel_title": "How to create a proposal",
       "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
     },
+    "proposal_view": {
+      "grant": {
+        "header": "Should the following {value} grant in the {category} category be approved?",
+        "abstract_title": "Abstract",
+        "size_title": "Grant size",
+        "duration_title": "Project duration",
+        "beneficiary_title": "Beneficiary address",
+        "email_title": "Email address",
+        "description_title": "Description",
+        "specification_title": "Budget specification",
+        "breakdown_title": "Budget breakdown",
+        "breakdown_subtitle": "{duration} {duration, plural, one {month} other {months}}",
+        "personnel_title": "Personnel",
+        "roadmap_title": "Roadmap and milestones",
+        "relevant_link": "Relevant link"
+      }
+    },
     "proposal_list": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",

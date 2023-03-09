@@ -28,11 +28,11 @@ import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalSta
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
-import CategoryAssessment from '../components/Proposal/CategoryAssessment'
 import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ForumButton from '../components/Proposal/View/ForumButton'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
@@ -222,8 +222,6 @@ export default function ProposalPage() {
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
-  const showCategoryAssessment =
-    proposal && proposal.type === ProposalType.Grant && !!proposal.configuration.categoryAssessment
 
   return (
     <>
@@ -251,12 +249,10 @@ export default function ProposalPage() {
               <Loader active={proposalState.loading} />
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
-              <Markdown>{proposal?.description || ''}</Markdown>
-              {showCategoryAssessment && (
-                <CategoryAssessment
-                  category={proposal.configuration.category}
-                  data={proposal.configuration.categoryAssessment}
-                />
+              {proposal?.type === ProposalType.Grant ? (
+                <GrantProposalView config={proposal.configuration} />
+              ) : (
+                <Markdown>{proposal?.description || ''}</Markdown>
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
