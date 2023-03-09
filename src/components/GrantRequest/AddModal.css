@@ -16,6 +16,10 @@
   margin: 0 !important;
 }
 
+.AddModal__PrimaryButton {
+  margin-top: 10px !important;
+}
+
 .AddModal__SecondaryButton {
   background-color: transparent !important;
   box-shadow: none !important;

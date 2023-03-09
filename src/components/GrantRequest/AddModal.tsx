@@ -31,7 +31,7 @@ const AddModal = ({ title, isOpen, onClose, onSecondaryClick, onPrimaryClick, ch
       <Modal.Content>
         {children}
         <div>
-          <Button fluid primary onClick={onPrimaryClick}>
+          <Button fluid primary onClick={onPrimaryClick} className="AddModal__PrimaryButton">
             {t('page.submit_grant.modal_actions.submit')}
           </Button>
           <Button fluid secondary onClick={onSecondaryClick || onClose} className="AddModal__SecondaryButton">

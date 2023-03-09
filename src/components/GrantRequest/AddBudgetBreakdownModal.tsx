@@ -4,6 +4,7 @@ import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import isURL from 'validator/lib/isURL'
 
 import { BudgetBreakdownItem, BudgetBreakdownItemSchema } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
@@ -84,6 +85,11 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
   const validator = useMemo(() => validate(fundingLeftToDisclose), [fundingLeftToDisclose])
   const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_ITEM)
 
+  const hasInvalidUrl =
+    state.value.relevantLink !== '' &&
+    !!state.value.relevantLink &&
+    (!isURL(state.value.relevantLink) || state.value.relevantLink?.length >= schema.relevantLink.maxLength)
+
   useEffect(() => {
     if (state.validated) {
       onSubmit(state.value)
@@ -97,7 +103,7 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
       title={t('page.submit_grant.due_diligence.budget_breakdown_modal.title')}
       isOpen={isOpen}
       onClose={onClose}
-      onPrimaryClick={() => editor.validate()}
+      onPrimaryClick={() => !hasInvalidUrl && editor.validate()}
     >
       <div>
         <ContentSection className="GrantRequestSection__Field">
@@ -164,6 +170,17 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
             value={state.value.relevantLink}
             placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_placeholder')}
             onChange={(_, { value }) => editor.set({ relevantLink: value })}
+            error={hasInvalidUrl}
+            message={
+              (!!state.value.relevantLink && !isURL(state.value.relevantLink)
+                ? t('error.grant.due_diligence.relevant_link_invalid')
+                : '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: state.value.relevantLink?.length,
+                limit: schema.relevantLink.maxLength,
+              })
+            }
           />
         </ContentSection>
       </div>

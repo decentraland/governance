@@ -4,6 +4,7 @@ import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import isURL from 'validator/lib/isURL'
 
 import { TeamMember, TeamMemberItemSchema } from '../../entities/Grant/types'
 import Label from '../Common/Label'
@@ -63,6 +64,11 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onD
   const t = useFormatMessage()
   const [state, editor] = useEditor(edit, validate, INITIAL_TEAM_MEMBER_ITEM)
 
+  const hasInvalidUrl =
+    state.value.relevantLink !== '' &&
+    !!state.value.relevantLink &&
+    (!isURL(state.value.relevantLink) || state.value.relevantLink?.length >= schema.relevantLink.maxLength)
+
   useEffect(() => {
     if (state.validated) {
       onSubmit(state.value)
@@ -83,7 +89,7 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onD
       isOpen={isOpen}
       onClose={onClose}
       onSecondaryClick={selectedTeamMember ? onDelete : undefined}
-      onPrimaryClick={() => editor.validate()}
+      onPrimaryClick={() => !hasInvalidUrl && editor.validate()}
     >
       <div>
         <ContentSection className="GrantRequestSection__Field">
@@ -144,6 +150,17 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onD
             value={state.value.relevantLink}
             placeholder={t('page.submit_grant.team.team_modal.relevant_link_placeholder')}
             onChange={(_, { value }) => editor.set({ relevantLink: value })}
+            error={hasInvalidUrl}
+            message={
+              (!!state.value.relevantLink && !isURL(state.value.relevantLink)
+                ? t('error.grant.team.relevant_link_invalid')
+                : '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: state.value.relevantLink?.length,
+                limit: schema.relevantLink.maxLength,
+              })
+            }
           />
         </ContentSection>
       </div>
