@@ -27,9 +27,15 @@ interface Props {
   sectionNumber: number
   funding: GrantRequest['funding']
   onValidation: (data: GrantRequestDueDiligence, sectionValid: boolean) => void
+  projectDuration: GrantRequest['projectDuration']
 }
 
-export default function GrantRequestDueDiligenceSection({ sectionNumber, funding, onValidation }: Props) {
+export default function GrantRequestDueDiligenceSection({
+  sectionNumber,
+  funding,
+  projectDuration,
+  onValidation,
+}: Props) {
   const t = useFormatMessage()
   const [dueDiligenceState, setDueDiligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
   const isFormEdited = userModifiedForm(dueDiligenceState, INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
@@ -90,6 +96,7 @@ export default function GrantRequestDueDiligenceSection({ sectionNumber, funding
           onClose={() => setModalOpen(false)}
           onSubmit={handleSubmitItem}
           fundingLeftToDisclose={fundingLeftToDisclose}
+          projectDuration={projectDuration}
         />
       )}
     </GrantRequestSection>

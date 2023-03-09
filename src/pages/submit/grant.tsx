@@ -276,6 +276,7 @@ export default function SubmitGrant() {
               patchValidationState({ dueDiligenceSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
+            projectDuration={grantRequest.projectDuration}
           />
 
           <GrantRequestFinalConsentSection

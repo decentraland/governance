@@ -76,9 +76,10 @@ interface Props {
   onClose: () => void
   onSubmit: (item: BudgetBreakdownItem) => void
   fundingLeftToDisclose: number
+  projectDuration: number
 }
 
-const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose }: Props) => {
+const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose, projectDuration }: Props) => {
   const t = useFormatMessage()
   const validator = useMemo(() => validate(fundingLeftToDisclose), [fundingLeftToDisclose])
   const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_ITEM)
@@ -133,7 +134,7 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
           <NumberSelector
             value={state.value.duration}
             min={BudgetBreakdownItemSchema.duration.minimum}
-            max={BudgetBreakdownItemSchema.duration.maximum}
+            max={projectDuration}
             onChange={(value) => editor.set({ duration: Number(value) })}
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
             unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
