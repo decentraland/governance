@@ -5,7 +5,7 @@ import { Sidebar } from 'decentraland-ui'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
 
-import { BudgetWithContestants } from '../../../../entities/Budget/types'
+import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import DistributionBar, { DistributionItemProps } from '../../../Common/DistributionBar/DistributionBar'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
@@ -18,16 +18,16 @@ interface Props {
   visible: boolean
 }
 
-export default function CompetingProposalsSidebar({ proposal, budget, visible }: Props) {
-  const t = useFormatMessage()
-  const grantCategory = proposal.configuration.category
-  const categoryBudget = budget.categories[snakeCase(grantCategory)]
-  const contestantsAmount = categoryBudget?.contestants.length || 0
-  const requestedBudget = proposal.configuration.size
+function getBarItems(
+  t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
+  proposal: ProposalAttributes,
+  categoryBudget: CategoryBudgetWithContestants
+) {
   const totalCategoryBudget = categoryBudget?.total || 0
-  const allocatedBudget = categoryBudget?.allocated || 0
+  const requestedBudget = proposal.configuration.size
   const remainingTotalBudget = totalCategoryBudget - requestedBudget
   const remainingTotalBudgetDisplayed = remainingTotalBudget > 0 ? remainingTotalBudget : 0
+  const allocatedBudget = categoryBudget?.allocated || 0
   const contestedBudget = categoryBudget.contested || 0
 
   const items: DistributionItemProps[] = [
@@ -35,20 +35,44 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
       value: allocatedBudget,
       style: 'AllocatedBudgetBar',
     },
-    {
-      value: contestedBudget,
-      style: 'ContestedBudgetBar',
-    },
-    {
-      value: requestedBudget,
-      style: 'ThisInitiativeBar',
-      selected: true,
-    },
-    {
-      value: remainingTotalBudgetDisplayed,
-      style: 'TotalBudgetBar',
-    },
   ]
+  categoryBudget?.contestants.forEach((contestant) => {
+    if(contestant.id !== proposal.id){
+      items.push({
+        value: contestant.size,
+        style: 'ContestedBudgetBar',
+        popupContent: {
+          title: contestant.title,
+          content: <span>{`$${t('general.number', { value: contestant.size })}`}</span>,
+        },
+      })
+    }
+  })
+
+  items.push({
+    value: requestedBudget,
+    style: 'ThisInitiativeBar',
+    selected: true,
+    popupContent: {
+      title: proposal.title,
+      content: <span>{`$${t('general.number', { value: requestedBudget })}`}</span>,
+    },
+  })
+
+  items.push({
+    value: remainingTotalBudgetDisplayed,
+    style: 'TotalBudgetBar',
+  })
+  return items
+}
+
+export default function CompetingProposalsSidebar({ proposal, budget, visible }: Props) {
+  const t = useFormatMessage()
+  const grantCategory = proposal.configuration.category
+  const categoryBudget = budget.categories[snakeCase(grantCategory)]
+  const totalCategoryBudget = categoryBudget?.total || 0
+  const items = getBarItems(t, proposal, categoryBudget)
+
   //TODO: internationalization
   return (
     <Sidebar
@@ -69,7 +93,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
           content={
             <div className="ContestedBudgetCard">
               <>${t('general.number', { value: proposal.configuration.size })}</>
-              <DistributionBar items={items} total={totalCategoryBudget} />
+              <DistributionBar items={items} total={totalCategoryBudget} className="ContestedBudget__DistributionBar" />
             </div>
           }
           subtitle={''}
