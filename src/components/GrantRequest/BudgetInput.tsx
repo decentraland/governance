@@ -23,34 +23,29 @@ const BudgetInput = ({ error, label, subtitle, ...props }: Props & React.HTMLPro
   return (
     <div className="BudgetInput">
       <Label>{label}</Label>
-      <div className="BudgetInput__Wrapper">
+      <div className="BudgetInput__Container">
         <Helper
           text={t(error)}
           position="bottom center"
           open={!!showError}
           icon={
-            <div className="BudgetInput__Container">
+            <div
+              className={TokenList.join([
+                'BudgetInput__InputContainer',
+                showError && 'BudgetInput__InputContainer--error',
+              ])}
+            >
               <div
-                className={TokenList.join([
-                  'BudgetInput__InputContainer',
-                  showError && 'BudgetInput__InputContainer--error',
-                ])}
+                className={TokenList.join(['BudgetInput__Description', showError && 'BudgetInput__Description--error'])}
               >
-                <div
-                  className={TokenList.join([
-                    'BudgetInput__Description',
-                    showError && 'BudgetInput__Description--error',
-                  ])}
-                >
-                  USD
-                </div>
-                <input
-                  className={TokenList.join(['BudgetInput__Input', showError && 'BudgetInput__Input--error'])}
-                  type="number"
-                  {...props}
-                />
-                {showError && <ExclamationCircle className="BudgetInput__ErrorHelper" color="red-800" size="16px" />}
+                USD
               </div>
+              <input
+                className={TokenList.join(['BudgetInput__Input', showError && 'BudgetInput__Input--error'])}
+                type="number"
+                {...props}
+              />
+              {showError && <ExclamationCircle className="BudgetInput__ErrorHelper" color="red-800" size="16px" />}
             </div>
           }
         />

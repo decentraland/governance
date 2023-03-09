@@ -1,7 +1,5 @@
 .BudgetInput__Container {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: flex;
 }
 
 .BudgetInput__InputContainer {
