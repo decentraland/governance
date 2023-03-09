@@ -179,12 +179,13 @@
         "concept_empty": "Concept is empty",
         "concept_too_large": "Concept is too large",
         "concept_short": "Concept is too short",
-        "estimated_budget_invalid": "Estimated budget is invalid",
-        "estimated_budget_too_low": "Estimated budget is too low",
-        "estimated_budget_too_big": "Estimated budget is too big",
+        "estimated_budget_invalid": "Concept budget is invalid",
+        "estimated_budget_too_low": "Concept budget is lower than remaining budget available",
+        "estimated_budget_too_big": "Concept budget is bigger than remaining budget available",
         "about_this_empty": "About this is empty",
         "about_this_too_large": "About this is too large",
-        "about_this_too_short": "About this is too short"
+        "about_this_too_short": "About this is too short",
+        "relevant_link_invalid": "URL is invalid"
       },
       "team": {
         "name_empty": "Name is empty",
@@ -195,7 +196,8 @@
         "role_short": "Role is too short",
         "about_empty": "About them is empty",
         "about_too_large": "About them is too large",
-        "about_too_short": "About them is too short"
+        "about_too_short": "About them is too short",
+        "relevant_link_invalid": "URL is invalid"
       },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
