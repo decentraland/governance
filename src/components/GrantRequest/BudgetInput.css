@@ -12,7 +12,7 @@
   margin-bottom: 5px;
 }
 
-.BudgetInput__InputContainer--Error {
+.BudgetInput__InputContainer--error {
   border: 1px solid var(--red-800);
 }
 
@@ -27,7 +27,7 @@
   border-right: 1px solid rgba(115, 110, 125, 0.32);
 }
 
-.BudgetInput__Description--Error {
+.BudgetInput__Description--error {
   background: var(--red-100);
   border-right: 1px solid var(--red-800);
 }

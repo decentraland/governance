@@ -33,13 +33,13 @@ const BudgetInput = ({ error, label, subtitle, ...props }: Props & React.HTMLPro
               <div
                 className={TokenList.join([
                   'BudgetInput__InputContainer',
-                  showError && 'BudgetInput__InputContainer--Error',
+                  showError && 'BudgetInput__InputContainer--error',
                 ])}
               >
                 <div
                   className={TokenList.join([
                     'BudgetInput__Description',
-                    showError && 'BudgetInput__Description--Error',
+                    showError && 'BudgetInput__Description--error',
                   ])}
                 >
                   USD
