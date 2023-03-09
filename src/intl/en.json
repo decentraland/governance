@@ -588,6 +588,7 @@
         "header": "Should the following {value} grant in the {category} category be approved?",
         "abstract_title": "Abstract",
         "size_title": "Grant size",
+        "duration_title": "Project duration",
         "beneficiary_title": "Beneficiary address",
         "email_title": "Email address",
         "description_title": "Description",

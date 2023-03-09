@@ -26,6 +26,7 @@ function GrantProposalView({ config }: Props) {
   const {
     category,
     size,
+    projectDuration,
     abstract,
     beneficiary,
     email,
@@ -54,6 +55,12 @@ function GrantProposalView({ config }: Props) {
         title={t('page.proposal_view.grant.size_title')}
         body={`${intl.formatNumber(size)} USD`}
       />
+      {projectDuration && (
+        <ProposalDescriptionItem
+          title={t('page.proposal_view.grant.duration_title')}
+          body={t('page.proposal_view.grant.breakdown_subtitle', { duration: projectDuration })}
+        />
+      )}
       <ProposalDescriptionItem title={t('page.proposal_view.grant.beneficiary_title')} body={beneficiary} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.email_title')} body={email} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.description_title')} body={description} />
