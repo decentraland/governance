@@ -4,10 +4,6 @@
   border-radius: 8px;
 }
 
-.DistributionBarPopup.ui.popup:before {
-  background-color: var(--background-popup) !important;
-}
-
 .DistributionBarPopup__Title {
   font-weight: 500;
   font-size: 10px;
