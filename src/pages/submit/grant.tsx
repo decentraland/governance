@@ -248,18 +248,6 @@ export default function SubmitGrant() {
             sectionNumber={getSectionNumber()}
           />
 
-          {grantRequest.category && (
-            <GrantRequestCategorySection
-              category={grantRequest.category}
-              onValidation={(data, sectionValid) => {
-                patchGrantRequest({ ...data })
-                patchValidationState({ categoryAssessmentSectionValid: sectionValid })
-              }}
-              isFormDisabled={isFormDisabled}
-              sectionNumber={getSectionNumber()}
-            />
-          )}
-
           <GrantRequestTeamSection
             funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
@@ -278,6 +266,18 @@ export default function SubmitGrant() {
             sectionNumber={getSectionNumber()}
             projectDuration={grantRequest.projectDuration}
           />
+
+          {grantRequest.category && (
+            <GrantRequestCategorySection
+              category={grantRequest.category}
+              onValidation={(data, sectionValid) => {
+                patchGrantRequest({ ...data })
+                patchValidationState({ categoryAssessmentSectionValid: sectionValid })
+              }}
+              isFormDisabled={isFormDisabled}
+              sectionNumber={getSectionNumber()}
+            />
+          )}
 
           <GrantRequestFinalConsentSection
             category={grantRequest.category}
