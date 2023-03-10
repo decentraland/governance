@@ -730,9 +730,11 @@
       "grant": {
         "requested_budget": {
           "title": "Requesting",
+          "overbudget_pill": "Over Budget",
           "requested": "Requested Budget",
           "total": "Total Budget",
-          "subtitle": "{percentage} of quarterly category budget"
+          "subtitle": "{percentage} of quarterly category budget",
+          "overbudget_subtitle": "There's only ${amount} left"
         },
         "category_budget": {
           "title": "{category} Initiative",
