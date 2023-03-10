@@ -32,8 +32,8 @@ import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
-import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
+import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ForumButton from '../components/Proposal/View/ForumButton'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
@@ -224,6 +224,10 @@ export default function ProposalPage() {
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const showProposalBudget =
+    proposal?.type === ProposalType.Grant &&
+    !isLoadingBudgetWithContestants &&
+    proposal.status === ProposalStatus.Active
 
   return (
     <>
@@ -249,9 +253,7 @@ export default function ProposalPage() {
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
-              {proposal?.type === ProposalType.Grant && !isLoadingBudgetWithContestants && (
-                <ProposalBudget proposal={proposal} budget={budgetWithContestants} />
-              )}
+              {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               {proposal?.type === ProposalType.Grant ? (
