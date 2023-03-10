@@ -21,11 +21,16 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
   const grantCategory = proposal.configuration.category
   const totalCategoryBudget = budget.categories[snakeCase(grantCategory)]?.total || 0
   const requestedBudget = proposal.configuration.size
+  const allocatedCategoryBudget = budget.categories[snakeCase(grantCategory)].allocated
   const remainingTotalBudget = totalCategoryBudget - requestedBudget
   const remainingTotalBudgetDisplayed = remainingTotalBudget > 0 ? remainingTotalBudget : 0
 
   const items: DistributionItemProps[] = useMemo(() => {
     return [
+      {
+        value: allocatedCategoryBudget,
+        className: 'AllocatedBudgetBar',
+      },
       {
         value: requestedBudget,
         className: 'RequestedBudgetBar',
