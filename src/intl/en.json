@@ -747,7 +747,7 @@
             "social_media_content": "Seeking funding for marketing to improve user adoption and retention",
             "sponsorship": "Seeking funding to support IRL initiatives for audiences relevant to DCL"
           },
-          "total": "Category Budget: ${value}"
+          "total": "Quarterly Category Budget: ${value}"
         },
         "update_title": "Project updates",
         "update_empty": "This team has not posted any updates yet.",
