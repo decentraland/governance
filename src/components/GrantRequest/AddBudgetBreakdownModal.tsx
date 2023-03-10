@@ -76,13 +76,26 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   onSubmit: (item: BudgetBreakdownConcept) => void
+  onDelete: () => void
   fundingLeftToDisclose: number
   projectDuration: number
+  selectedConcept: BudgetBreakdownConcept | null
 }
 
-const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose, projectDuration }: Props) => {
+const AddBudgetBreakdownModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  onDelete,
+  fundingLeftToDisclose,
+  selectedConcept,
+  projectDuration,
+}: Props) => {
   const t = useFormatMessage()
-  const validator = useMemo(() => validate(fundingLeftToDisclose), [fundingLeftToDisclose])
+  const validator = useMemo(
+    () => validate(selectedConcept ? Number(selectedConcept.estimatedBudget) : fundingLeftToDisclose),
+    [fundingLeftToDisclose, selectedConcept]
+  )
   const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_CONCEPT)
 
   const hasInvalidUrl =
@@ -98,12 +111,20 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
     }
   }, [editor, onClose, onSubmit, state.validated, state.value])
 
+  useEffect(() => {
+    if (selectedConcept) {
+      editor.set({ ...selectedConcept })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedConcept])
+
   return (
     <AddModal
       title={t('page.submit_grant.due_diligence.budget_breakdown_modal.title')}
       isOpen={isOpen}
       onClose={onClose}
       onPrimaryClick={() => !hasInvalidUrl && editor.validate()}
+      onSecondaryClick={selectedConcept ? onDelete : undefined}
     >
       <div>
         <ContentSection className="GrantRequestSection__Field">

@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import isEqual from 'lodash/isEqual'
 import sumBy from 'lodash/sumBy'
 
 import {
@@ -40,15 +39,38 @@ export default function GrantRequestDueDiligenceSection({
   const [dueDiligenceState, setDueDiligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
   const isFormEdited = userModifiedForm(dueDiligenceState, INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
   const [isModalOpen, setModalOpen] = useState(false)
+  const [selectedBudgetBreakdownConcept, setSelectedBudgetBreakdownConcept] =
+    useState<BudgetBreakdownConceptType | null>(null)
 
-  const handleSubmitItem = (item: BudgetBreakdownConceptType) => {
-    setDueDiligenceState((prevState) => ({ budgetBreakdown: [...prevState.budgetBreakdown, item] }))
-  }
-
+  const handleSubmitItem = useCallback(
+    (item: BudgetBreakdownConceptType) => {
+      if (selectedBudgetBreakdownConcept) {
+        setDueDiligenceState((prevState) => ({
+          budgetBreakdown: prevState.budgetBreakdown.map((i) =>
+            i.concept === selectedBudgetBreakdownConcept.concept ? item : i
+          ),
+        }))
+        setSelectedBudgetBreakdownConcept(null)
+      } else {
+        setDueDiligenceState((prevState) => ({ budgetBreakdown: [...prevState.budgetBreakdown, item] }))
+      }
+    },
+    [selectedBudgetBreakdownConcept]
+  )
   const fundingLeftToDisclose = useMemo(
     () => Number(funding) - Number(sumBy(dueDiligenceState.budgetBreakdown, 'estimatedBudget')),
     [dueDiligenceState.budgetBreakdown, funding]
   )
+
+  const handleDeleteItem = useCallback(() => {
+    if (selectedBudgetBreakdownConcept) {
+      setDueDiligenceState((prevState) => ({
+        budgetBreakdown: prevState.budgetBreakdown.filter((i) => i.concept !== selectedBudgetBreakdownConcept.concept),
+      }))
+      setModalOpen(false)
+      setSelectedBudgetBreakdownConcept(null)
+    }
+  }, [selectedBudgetBreakdownConcept])
 
   const isCompleted = funding >= 0 && Number(fundingLeftToDisclose) <= 0
 
@@ -74,11 +96,10 @@ export default function GrantRequestDueDiligenceSection({
           <BudgetBreakdownConcept
             key={`${item.concept}-${index}`}
             item={item}
-            onDeleteClick={() =>
-              setDueDiligenceState((prevState) => ({
-                budgetBreakdown: prevState.budgetBreakdown.filter((i) => !isEqual(i, item)),
-              }))
-            }
+            onClick={() => {
+              setSelectedBudgetBreakdownConcept(item)
+              setModalOpen(true)
+            }}
           />
         ))}
         <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
@@ -93,10 +114,17 @@ export default function GrantRequestDueDiligenceSection({
       {isModalOpen && (
         <AddBudgetBreakdownModal
           isOpen={isModalOpen}
-          onClose={() => setModalOpen(false)}
+          onClose={() => {
+            if (selectedBudgetBreakdownConcept) {
+              setSelectedBudgetBreakdownConcept(null)
+            }
+            setModalOpen(false)
+          }}
           onSubmit={handleSubmitItem}
+          onDelete={handleDeleteItem}
           fundingLeftToDisclose={fundingLeftToDisclose}
           projectDuration={projectDuration}
+          selectedConcept={selectedBudgetBreakdownConcept}
         />
       )}
     </GrantRequestSection>

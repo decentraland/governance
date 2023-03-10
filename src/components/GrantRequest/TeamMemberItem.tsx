@@ -14,7 +14,7 @@ const TeamMemberItem = ({ item, onClick }: Props) => {
   const { name, role } = item
 
   return (
-    <div className="TeamMemberItem" onClick={onClick}>
+    <div role="button" className="TeamMemberItem" onClick={onClick}>
       <div>
         <h3 className="TeamMemberItem__Concept">{name}</h3>
         <span className="TeamMemberItem__Duration">{role}</span>
