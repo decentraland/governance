@@ -1,6 +1,6 @@
 import React from 'react'
 
-function OpenFolder({
+function DocumentOutline({
   className,
   size = 24,
   color = 'var(--black-800)',
@@ -13,10 +13,10 @@ function OpenFolder({
     <svg className={className} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
       <path
         fill={color}
-        d="M6.1 10L4 18V8h17a2 2 0 00-2-2h-7l-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2h15c.9 0 1.7-.6 1.9-1.5l2.3-8.5H6.1M19 18H6l1.6-6h13L19 18z"
+        d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6H6m0 2h7v5h5v11H6V4m2 8v2h8v-2H8m0 4v2h5v-2H8z"
       ></path>
     </svg>
   )
 }
 
-export default OpenFolder
+export default DocumentOutline

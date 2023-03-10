@@ -12,13 +12,12 @@ interface Props {
   loading?: boolean
   disabled?: boolean
   href: string
-  imageSrc?: string
   children: string
   isExternal?: boolean
   icon?: React.ReactNode
 }
 
-function SidebarLinkButton({ loading, disabled, href, imageSrc, isExternal = true, children, icon }: Props) {
+function SidebarLinkButton({ loading, disabled, href, isExternal = true, children, icon }: Props) {
   return (
     // eslint-disable-next-line react/jsx-no-target-blank
     <a
@@ -34,7 +33,6 @@ function SidebarLinkButton({ loading, disabled, href, imageSrc, isExternal = tru
       ])}
     >
       <Loader active={loading} size="small" />
-      {imageSrc && <img src={imageSrc} width="20" height="20" />}
       {icon}
       <span>{children}</span>
       {isExternal && <Open />}
