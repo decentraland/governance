@@ -20,6 +20,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
+import Forum from '../components/Icon/Forum'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -33,12 +34,12 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
-import ForumButton from '../components/Proposal/View/ForumButton'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
 import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalResultSection from '../components/Proposal/View/ProposalResultSection'
 import ProposalUpdatesActions from '../components/Proposal/View/ProposalUpdatesActions'
+import SidebarLinkButton from '../components/Proposal/View/SidebarLinkButton'
 import SubscribeButton from '../components/Proposal/View/SubscribeButton'
 import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
@@ -270,11 +271,14 @@ export default function ProposalPage() {
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
               {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
               <div className="ProposalDetail__StickySidebar">
-                <ForumButton
+                <SidebarLinkButton
                   loading={proposalState.loading}
                   disabled={!proposal}
                   href={(proposal && forumUrl(proposal)) || ''}
-                />
+                  icon={<Forum size={20} />}
+                >
+                  {t('page.proposal_detail.forum_button')}
+                </SidebarLinkButton>
                 <SubscribeButton
                   loading={proposalState.loading || subscriptionsState.loading || subscribing}
                   disabled={!proposal}

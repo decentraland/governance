@@ -10,8 +10,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import ExternalLinkWithIcon from '../components/Proposal/View/ExternalLinkWithIcon'
-import LinkWithIcon from '../components/Proposal/View/LinkWithIcon'
+import SidebarLinkButton from '../components/Proposal/View/SidebarLinkButton'
 import TokenBalanceCard from '../components/Token/TokenBalanceCard'
 import GrantList from '../components/Transparency/GrantList'
 import MembersSection from '../components/Transparency/MembersSection'
@@ -63,26 +62,18 @@ export default function TransparencyPage() {
                     <div>
                       <Header>{t('page.transparency.mission.title')}</Header>
                       <p>{t('page.transparency.mission.description')}</p>
-                      <ExternalLinkWithIcon
-                        href={JOIN_DISCORD_URL}
-                        imageSrc={discordIcon}
-                        text={t('page.transparency.mission.join_discord_button')}
-                      />
-                      <ExternalLinkWithIcon
-                        href={DOCS_URL}
-                        imageSrc={docsIcon}
-                        text={t('page.transparency.mission.docs_button')}
-                      />
-                      <ExternalLinkWithIcon
-                        href={DASHBOARD_URL}
-                        imageSrc={dashboardIcon}
-                        text={t('page.transparency.mission.dashboard_button')}
-                      />
-                      <ExternalLinkWithIcon
-                        href={DATA_SHEET_URL}
-                        imageSrc={dataSheetIcon}
-                        text={t('page.transparency.mission.data_source_button')}
-                      />
+                      <SidebarLinkButton href={JOIN_DISCORD_URL} imageSrc={discordIcon}>
+                        {t('page.transparency.mission.join_discord_button')}
+                      </SidebarLinkButton>
+                      <SidebarLinkButton href={DOCS_URL} imageSrc={docsIcon}>
+                        {t('page.transparency.mission.docs_button')}
+                      </SidebarLinkButton>
+                      <SidebarLinkButton href={DASHBOARD_URL} imageSrc={dashboardIcon}>
+                        {t('page.transparency.mission.dashboard_button')}
+                      </SidebarLinkButton>
+                      <SidebarLinkButton href={DATA_SHEET_URL} imageSrc={dataSheetIcon}>
+                        {t('page.transparency.mission.data_source_button')}
+                      </SidebarLinkButton>
                     </div>
                   </Grid.Column>
 
@@ -128,11 +119,13 @@ export default function TransparencyPage() {
                     <div>
                       <Header>{t('page.transparency.funding.title')}</Header>
                       <p>{t('page.transparency.funding.description')}</p>
-                      <LinkWithIcon
+                      <SidebarLinkButton
                         href={locations.proposals()}
                         imageSrc={viewAllProposalsIcon}
-                        text={t('page.transparency.funding.view_all_button')}
-                      />
+                        isExternal={false}
+                      >
+                        {t('page.transparency.funding.view_all_button')}
+                      </SidebarLinkButton>
                     </div>
                   </Grid.Column>
 
@@ -173,21 +166,15 @@ export default function TransparencyPage() {
                       <Header>{t('page.transparency.members.title')}</Header>
                       <p>{t('page.transparency.members.description')}</p>
 
-                      <ExternalLinkWithIcon
-                        href={ABOUT_DAO_URL}
-                        imageSrc={documentOutline}
-                        text={t('page.transparency.members.about_dao_button')}
-                      />
-                      <ExternalLinkWithIcon
-                        href={WEARABLE_CURATORS_URL}
-                        imageSrc={personIcon}
-                        text={t('page.transparency.members.wearables_curator_button')}
-                      />
-                      <ExternalLinkWithIcon
-                        href={OPEN_CALL_FOR_DELEGATES_LINK}
-                        imageSrc={personIcon}
-                        text={t('page.transparency.members.delegate_button')}
-                      />
+                      <SidebarLinkButton href={ABOUT_DAO_URL} imageSrc={documentOutline}>
+                        {t('page.transparency.members.about_dao_button')}
+                      </SidebarLinkButton>
+                      <SidebarLinkButton href={WEARABLE_CURATORS_URL} imageSrc={personIcon}>
+                        {t('page.transparency.members.wearables_curator_button')}
+                      </SidebarLinkButton>
+                      <SidebarLinkButton href={OPEN_CALL_FOR_DELEGATES_LINK} imageSrc={personIcon}>
+                        {t('page.transparency.members.delegate_button')}
+                      </SidebarLinkButton>
                     </div>
                   </Grid.Column>
 

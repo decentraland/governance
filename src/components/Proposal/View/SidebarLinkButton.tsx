@@ -6,43 +6,40 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import Open from '../../Icon/Open'
 
 import './DetailsSection.css'
-import './LinkWithIcon.css'
 import './SectionButton.css'
 
-export type ExternalLinkWithIconProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+interface Props {
   loading?: boolean
   disabled?: boolean
   href: string
   imageSrc?: string
-  text: string | null
+  children: string
+  isExternal?: boolean
+  icon?: React.ReactNode
 }
 
-export default React.memo(function ExternalLinkWithIcon({
-  loading,
-  disabled,
-  href,
-  imageSrc,
-  text,
-  ...props
-}: ExternalLinkWithIconProps) {
+function SidebarLinkButton({ loading, disabled, href, imageSrc, isExternal = true, children, icon }: Props) {
   return (
+    // eslint-disable-next-line react/jsx-no-target-blank
     <a
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
       className={TokenList.join([
         'DetailsSection',
         'SectionButton',
-        'LinkWithIcon',
+        'SidebarLinkButton',
         loading && 'SectionButton--loading',
         disabled && 'SectionButton--disabled',
-        props.className,
       ])}
     >
       <Loader active={loading} size="small" />
-      <img src={imageSrc} width="20" height="20" />
-      <span>{text}</span>
-      <Open />
+      {imageSrc && <img src={imageSrc} width="20" height="20" />}
+      {icon}
+      <span>{children}</span>
+      {isExternal && <Open />}
     </a>
   )
-})
+}
+
+export default SidebarLinkButton
