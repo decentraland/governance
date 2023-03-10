@@ -9,7 +9,7 @@ import { DistributionBarPopupContent } from './DistributionBarPopup'
 
 export interface DistributionItemProps {
   value: number
-  style: string
+  className: string
   popupContent?: DistributionBarPopupContent
   selected?: boolean
 }
@@ -39,7 +39,7 @@ const DistributionBar = ({ items, total, isLoading, className }: Props) => {
               value={item.value}
               total={total}
               popupContent={item.popupContent}
-              style={item.style}
+              className={item.className}
               selected={item.selected}
               key={`distribution-bar-item-${index}`}
             />

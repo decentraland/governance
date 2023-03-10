@@ -1,3 +1,7 @@
+.BudgetBannerItem {
+  height: 50px;
+}
+
 .BudgetBannerItem__Value {
   font-style: normal;
   font-weight: 500;

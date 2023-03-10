@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import snakeCase from 'lodash/snakeCase'
@@ -24,17 +24,19 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
   const remainingTotalBudget = totalCategoryBudget - requestedBudget
   const remainingTotalBudgetDisplayed = remainingTotalBudget > 0 ? remainingTotalBudget : 0
 
-  const items: DistributionItemProps[] = [
-    {
-      value: requestedBudget,
-      style: 'RequestedBudgetBar',
-      selected: true,
-    },
-    {
-      value: remainingTotalBudgetDisplayed,
-      style: 'TotalBudgetBar',
-    },
-  ]
+  const items: DistributionItemProps[] = useMemo(() => {
+    return [
+      {
+        value: requestedBudget,
+        className: 'RequestedBudgetBar',
+        selected: true,
+      },
+      {
+        value: remainingTotalBudgetDisplayed,
+        className: 'TotalBudgetBar',
+      },
+    ]
+  }, [requestedBudget, remainingTotalBudgetDisplayed])
 
   return (
     <GrantRequestSectionCard

@@ -26,7 +26,7 @@ function getAllInitiativesCount(counter: Counter) {
 }
 
 const currencyFormatter: any = {
-  style: 'currency',
+  class: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
 }

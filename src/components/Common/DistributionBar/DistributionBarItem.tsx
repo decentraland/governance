@@ -1,35 +1,22 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-
-import { getFormattedPercentage } from '../../../helpers'
-
-import './DistributionBarItem.css'
 import DistributionBarPopup, { DistributionBarPopupContent } from './DistributionBarPopup'
+import HorizontalBar, { HorizontalBarProps } from './HorizontalBar'
 
-interface Props {
-  value: number
-  total: number
-  style: string
-  selected?: boolean
+export type DistributionBarItemProps = {
   popupContent?: DistributionBarPopupContent
-}
+} & HorizontalBarProps
 
-const DistributionBarItem = ({ value, style, selected, popupContent, total }: Props) => {
-  const valuePercentage = getFormattedPercentage(value, total)
-  const distributionBar = (
-    <div
-      className={TokenList.join(['DistributionBarItem', !!selected && 'DistributionBarItem__Selected', style])}
-      style={{ width: valuePercentage }}
-    />
-  )
+const DistributionBarItem = ({ value, className, selected, total, popupContent }: DistributionBarItemProps) => {
   return (
     <>
       {value > 0 &&
         (popupContent ? (
-          <DistributionBarPopup popupContent={popupContent}>{distributionBar}</DistributionBarPopup>
+          <DistributionBarPopup popupContent={popupContent}>
+            <HorizontalBar value={value} total={total} className={className} selected={selected} />
+          </DistributionBarPopup>
         ) : (
-          distributionBar
+          <HorizontalBar value={value} total={total} className={className} selected={selected} />
         ))}
     </>
   )

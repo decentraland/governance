@@ -4,7 +4,7 @@
   border-radius: 8px;
 }
 
-.ui.popup:before {
+.DistributionBarPopup.ui.popup:before {
   background-color: var(--background-popup) !important;
 }
 
