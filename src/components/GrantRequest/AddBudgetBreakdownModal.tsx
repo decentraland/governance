@@ -6,7 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import isURL from 'validator/lib/isURL'
 
-import { BudgetBreakdownItem, BudgetBreakdownItemSchema } from '../../entities/Grant/types'
+import { BudgetBreakdownConcept, BudgetBreakdownConceptSchema } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
@@ -16,7 +16,7 @@ import './AddModal.css'
 import BudgetInput from './BudgetInput'
 import NumberSelector from './NumberSelector'
 
-export const INITIAL_BUDGET_BREAKDOWN_ITEM: BudgetBreakdownItem = {
+export const INITIAL_BUDGET_BREAKDOWN_CONCEPT: BudgetBreakdownConcept = {
   concept: '',
   duration: 1,
   estimatedBudget: '',
@@ -24,9 +24,9 @@ export const INITIAL_BUDGET_BREAKDOWN_ITEM: BudgetBreakdownItem = {
   relevantLink: '',
 }
 
-const schema = BudgetBreakdownItemSchema
+const schema = BudgetBreakdownConceptSchema
 const validate = (fundingLeftToDisclose: number) =>
-  createValidator<BudgetBreakdownItem>({
+  createValidator<BudgetBreakdownConcept>({
     concept: (state) => ({
       concept:
         assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_diligence.concept_too_large') ||
@@ -65,7 +65,7 @@ const validate = (fundingLeftToDisclose: number) =>
     }),
   })
 
-const edit = (state: BudgetBreakdownItem, props: Partial<BudgetBreakdownItem>) => {
+const edit = (state: BudgetBreakdownConcept, props: Partial<BudgetBreakdownConcept>) => {
   return {
     ...state,
     ...props,
@@ -75,7 +75,7 @@ const edit = (state: BudgetBreakdownItem, props: Partial<BudgetBreakdownItem>) =
 interface Props {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (item: BudgetBreakdownItem) => void
+  onSubmit: (item: BudgetBreakdownConcept) => void
   fundingLeftToDisclose: number
   projectDuration: number
 }
@@ -83,7 +83,7 @@ interface Props {
 const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDisclose, projectDuration }: Props) => {
   const t = useFormatMessage()
   const validator = useMemo(() => validate(fundingLeftToDisclose), [fundingLeftToDisclose])
-  const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_ITEM)
+  const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_CONCEPT)
 
   const hasInvalidUrl =
     state.value.relevantLink !== '' &&
@@ -94,7 +94,7 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
     if (state.validated) {
       onSubmit(state.value)
       onClose()
-      editor.set(INITIAL_BUDGET_BREAKDOWN_ITEM)
+      editor.set(INITIAL_BUDGET_BREAKDOWN_CONCEPT)
     }
   }, [editor, onClose, onSubmit, state.validated, state.value])
 
@@ -139,7 +139,7 @@ const AddBudgetBreakdownModal = ({ isOpen, onClose, onSubmit, fundingLeftToDiscl
           />
           <NumberSelector
             value={state.value.duration}
-            min={BudgetBreakdownItemSchema.duration.minimum}
+            min={BudgetBreakdownConceptSchema.duration.minimum}
             max={projectDuration}
             onChange={(value) => editor.set({ duration: Number(value) })}
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}

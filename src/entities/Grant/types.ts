@@ -244,7 +244,7 @@ export const PlatformQuestionsSchema = {
   },
 }
 
-export const BudgetBreakdownItemSchema = {
+export const BudgetBreakdownConceptSchema = {
   concept: {
     type: 'string',
     minLength: 1,
@@ -313,8 +313,8 @@ const GrantRequestDueDiligenceSchema = {
     items: {
       type: 'object',
       additionalProperties: false,
-      required: [...Object.keys(BudgetBreakdownItemSchema)],
-      properties: BudgetBreakdownItemSchema,
+      required: [...Object.keys(BudgetBreakdownConceptSchema)],
+      properties: BudgetBreakdownConceptSchema,
     },
   },
 }
@@ -368,7 +368,7 @@ export type GrantRequestGeneralInfo = {
   coAuthors?: string[]
 }
 
-export type BudgetBreakdownItem = {
+export type BudgetBreakdownConcept = {
   concept: string
   duration: number
   estimatedBudget: string | number
@@ -377,7 +377,7 @@ export type BudgetBreakdownItem = {
 }
 
 export type GrantRequestDueDiligence = {
-  budgetBreakdown: BudgetBreakdownItem[]
+  budgetBreakdown: BudgetBreakdownConcept[]
 }
 
 export type TeamMember = {

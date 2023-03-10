@@ -1,4 +1,4 @@
-.BudgetBreakdownItem {
+.BudgetBreakdownConcept {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -11,7 +11,7 @@
   border-radius: 8px;
 }
 
-.BudgetBreakdownItem__Concept {
+.BudgetBreakdownConcept__Concept {
   margin: 0;
   font-weight: 500;
   font-size: 15px;
@@ -19,7 +19,7 @@
   color: var(--black-700);
 }
 
-.BudgetBreakdownItem__Duration {
+.BudgetBreakdownConcept__Duration {
   margin: 0;
   font-weight: 400;
   font-size: 11px;
@@ -28,14 +28,14 @@
   color: var(--black-600);
 }
 
-.BudgetBreakdownItem__BudgetContainer {
+.BudgetBreakdownConcept__BudgetContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 18px;
 }
 
-.BudgetBreakdownItem__Budget {
+.BudgetBreakdownConcept__Budget {
   font-weight: 400;
   font-size: 15px;
   line-height: 28px;
@@ -46,7 +46,7 @@
   color: var(--black-600);
 }
 
-.BudgetBreakdownItem__DeleteButton {
+.BudgetBreakdownConcept__DeleteButton {
   display: flex;
   align-items: center;
   border: none;

@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual'
 import sumBy from 'lodash/sumBy'
 
 import {
-  BudgetBreakdownItem as BudgetBreakdownItemType,
+  BudgetBreakdownConcept as BudgetBreakdownConceptType,
   GrantRequest,
   GrantRequestDueDiligence,
 } from '../../entities/Grant/types'
@@ -15,7 +15,7 @@ import SubLabel from '../Common/SubLabel'
 
 import AddBox from './AddBox'
 import AddBudgetBreakdownModal from './AddBudgetBreakdownModal'
-import BudgetBreakdownItem from './BudgetBreakdownItem'
+import BudgetBreakdownConcept from './BudgetBreakdownConcept'
 import './GrantRequestDueDiligenceSection.css'
 import GrantRequestSection from './GrantRequestSection'
 
@@ -41,7 +41,7 @@ export default function GrantRequestDueDiligenceSection({
   const isFormEdited = userModifiedForm(dueDiligenceState, INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
   const [isModalOpen, setModalOpen] = useState(false)
 
-  const handleSubmitItem = (item: BudgetBreakdownItemType) => {
+  const handleSubmitItem = (item: BudgetBreakdownConceptType) => {
     setDueDiligenceState((prevState) => ({ budgetBreakdown: [...prevState.budgetBreakdown, item] }))
   }
 
@@ -71,7 +71,7 @@ export default function GrantRequestDueDiligenceSection({
           {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
         </SubLabel>
         {dueDiligenceState.budgetBreakdown.map((item, index) => (
-          <BudgetBreakdownItem
+          <BudgetBreakdownConcept
             key={`${item.concept}-${index}`}
             item={item}
             onDeleteClick={() =>
