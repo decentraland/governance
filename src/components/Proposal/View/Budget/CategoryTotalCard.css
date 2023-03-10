@@ -17,3 +17,12 @@
   color: var(--black-600);
   margin-bottom: 6px;
 }
+
+.CategoryTotalCard__Sub {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}

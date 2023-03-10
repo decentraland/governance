@@ -19,7 +19,7 @@ export const GrantRequestSectionCard = ({
   title: string | React.ReactNode
   content: string | React.ReactNode | null
   titleExtra?: string
-  subtitle: string
+  subtitle: string | React.ReactNode
   helper?: React.ReactNode
   subtitleVariant?: 'normal' | 'uppercase'
   error?: boolean

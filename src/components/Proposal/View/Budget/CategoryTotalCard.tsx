@@ -35,11 +35,15 @@ export default function CategoryTotalCard({ proposal, budget }: Props) {
           {t(`page.proposal_detail.grant.category_budget.description.${snakeCase(grantCategory)}`)}
         </span>
       }
-      subtitle={t('page.proposal_detail.grant.category_budget.total', {
-        value: t('general.number', {
-          value: budget.categories[snakeCase(grantCategory)].total,
-        }),
-      })}
+      subtitle={
+        <div className="CategoryTotalCard__Sub">
+          {t('page.proposal_detail.grant.category_budget.total', {
+            value: t('general.number', {
+              value: budget.categories[snakeCase(grantCategory)].total,
+            }),
+          })}
+        </div>
+      }
       subtitleVariant="uppercase"
     />
   )
