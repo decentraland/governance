@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -39,7 +39,7 @@ function BreakdownAccordion({ items }: Props) {
   return (
     <Accordion fluid styled className="BreakdownAccordion">
       {items.map(({ title, subtitle, description, url, value }, accordionNumber) => (
-        <>
+        <Fragment key={`BreakdownAccordionItem--${accordionNumber}`}>
           <Accordion.Title
             className="BreakdownAccordion__TitleContainer"
             active={activeAccordionItem === accordionNumber}
@@ -70,7 +70,7 @@ function BreakdownAccordion({ items }: Props) {
               </a>
             )}
           </Accordion.Content>
-        </>
+        </Fragment>
       ))}
     </Accordion>
   )
