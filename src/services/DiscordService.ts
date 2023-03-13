@@ -1,5 +1,6 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
+import type { EmbedBuilder } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
@@ -79,6 +80,11 @@ export class DiscordService {
     }
 
     const channel = this.client.channels.cache.get(CHANNEL_ID)
+
+    if (!channel) {
+      throw new Error(`Discord channel not found: ${CHANNEL_ID}`)
+    }
+
     if (channel?.type !== Discord.ChannelType.GuildText && channel?.type !== Discord.ChannelType.GuildAnnouncement) {
       throw new Error(`Discord channel type is not supported: ${channel?.type}`)
     }
@@ -150,6 +156,13 @@ export class DiscordService {
     return embed
   }
 
+  private static async sendMessages(messages: EmbedBuilder[]) {
+    const sentMessage = await this.channel.send({ embeds: messages })
+    if (this.channel.type === Discord.ChannelType.GuildAnnouncement) {
+      await sentMessage.crosspost()
+    }
+  }
+
   static newProposal(
     proposalId: string,
     title: string,
@@ -173,7 +186,7 @@ export class DiscordService {
           color: MessageColors.NEW_PROPOSAL,
         })
         try {
-          await this.channel.send({ embeds: [message] })
+          await this.sendMessages([message])
           return { action, proposalId }
         } catch (error) {
           throw new Error(`[Error sending message to Discord - New proposal] ID ${proposalId}, Error: ${error}`)
@@ -216,7 +229,7 @@ export class DiscordService {
             action,
             color: MessageColors.NEW_UPDATE,
           })
-          await this.channel.send({ embeds: [message] })
+          await this.sendMessages([message])
           return { action, updateId }
         } catch (error) {
           throw new Error(`[Error sending message to Discord - New update] ID ${updateId}, Error: ${error}`)
@@ -237,7 +250,7 @@ export class DiscordService {
           color: MessageColors.FINISH_PROPOSAL,
         })
         try {
-          await this.channel.send({ embeds: [message] })
+          await this.sendMessages([message])
           return { action, proposalId: id }
         } catch (error) {
           throw new Error(`[Error sending message to Discord - Finish proposal] ID ${id}, Error: ${error}`)
