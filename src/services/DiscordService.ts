@@ -157,14 +157,9 @@ export class DiscordService {
   }
 
   private static async sendMessages(messages: EmbedBuilder[]) {
-    try {
-      const sentMessage = await this.channel.send({ embeds: messages })
-      if (this.channel.type === Discord.ChannelType.GuildAnnouncement) {
-        await sentMessage.crosspost()
-        logger.log('Announcement crossposted')
-      }
-    } catch (error) {
-      throw new Error(`${error}`)
+    const sentMessage = await this.channel.send({ embeds: messages })
+    if (this.channel.type === Discord.ChannelType.GuildAnnouncement) {
+      await sentMessage.crosspost()
     }
   }
 
