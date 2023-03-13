@@ -34,6 +34,7 @@
   line-height: 18px;
   text-transform: uppercase;
   color: var(--black-600);
+  width: 100%;
 }
 
 .GrantRequestSectionCard__Header > button.ui.basic.button {

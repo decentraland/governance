@@ -32,6 +32,7 @@ import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ForumButton from '../components/Proposal/View/ForumButton'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
@@ -50,6 +51,7 @@ import {
   isProposalEnactable,
   proposalCanBePassedOrRejected,
 } from '../entities/Proposal/utils'
+import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useProposal from '../hooks/useProposal'
@@ -59,7 +61,6 @@ import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './proposal.css'
-import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
 
@@ -98,6 +99,7 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
+  const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
 
@@ -222,6 +224,10 @@ export default function ProposalPage() {
   const showProposalUpdates = publicUpdates && isProposalStatusWithUpdates && proposal?.type === ProposalType.Grant
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const showProposalBudget =
+    proposal?.type === ProposalType.Grant &&
+    !isLoadingBudgetWithContestants &&
+    proposal.status === ProposalStatus.Active
 
   return (
     <>
@@ -247,6 +253,7 @@ export default function ProposalPage() {
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
+              {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               {proposal?.type === ProposalType.Grant ? (

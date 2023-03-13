@@ -1,10 +1,10 @@
-.popup.VotingPowerDistributionPopup {
+.popup.DistributionBarPopup {
   background-color: var(--background-popup);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
 }
 
-.VotingPowerDistributionPopup__Label {
+.DistributionBarPopup__Title {
   font-weight: 500;
   font-size: 10px;
   line-height: 18px;
@@ -12,7 +12,7 @@
   color: var(--white-900);
 }
 
-.VotingPowerDistributionPopup__Percentage {
+.DistributionBarPopup__Sub {
   font-weight: 500;
   font-size: 10px;
   line-height: 18px;
@@ -21,7 +21,7 @@
   opacity: 0.5;
 }
 
-.VotingPowerDistributionPopup .VotingPower {
+.DistributionBarPopup__Content {
   font-size: 17px;
   color: var(--white-900);
 }

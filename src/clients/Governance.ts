@@ -5,7 +5,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { GOVERNANCE_API } from '../constants'
-import { CurrentBudget, CurrentCategoryBudget } from '../entities/Budget/types'
+import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
@@ -359,8 +359,8 @@ export class Governance extends API {
     return response.data
   }
 
-  async getCategoryBudget(category: ProposalGrantCategory): Promise<CurrentCategoryBudget> {
-    const response = await this.fetch<ApiResponse<CurrentCategoryBudget>>(
+  async getCategoryBudget(category: ProposalGrantCategory): Promise<CategoryBudget> {
+    const response = await this.fetch<ApiResponse<CategoryBudget>>(
       `/budget/${snakeCase(category)}`,
       this.options().method('GET')
     )
@@ -373,8 +373,13 @@ export class Governance extends API {
   }
 
   async getCurrentBudget() {
-    const response = await this.fetch<ApiResponse<CurrentBudget>>(`/budget/current`, this.options().method('GET'))
+    const response = await this.fetch<ApiResponse<Budget>>(`/budget/current`, this.options().method('GET'))
     return response.data
+  }
+
+  async getBudgetWithContestants(proposalId: string) {
+    const result = await this.fetch<ApiResponse<BudgetWithContestants>>(`/budget/contested/${proposalId}`)
+    return result.data
   }
 
   async updateGovernanceBudgets() {

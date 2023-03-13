@@ -7,7 +7,6 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
@@ -346,16 +345,11 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
 
 export async function getProposal(req: Request<{ proposal: string }>) {
   const id = req.params.proposal
-  if (!isUUID(id || '')) {
-    throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
+  try {
+    return await ProposalService.getProposal(id)
+  } catch (e) {
+    throw new RequestError(`Proposal "${id}" not found`, RequestError.NotFound)
   }
-
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
-  if (!proposal) {
-    throw new RequestError(`Not found proposal: "${id}"`, RequestError.NotFound)
-  }
-
-  return ProposalModel.parse(proposal)
 }
 
 const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)

@@ -1,10 +1,10 @@
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { Governance } from '../clients/Governance'
-import { CurrentCategoryBudget } from '../entities/Budget/types'
+import { CategoryBudget } from '../entities/Budget/types'
 import { ProposalGrantCategory } from '../entities/Grant/types'
 
-const EMPTY_CATEGORY_BUDGET: CurrentCategoryBudget = {
+const EMPTY_CATEGORY_BUDGET: CategoryBudget = {
   total: 0,
   allocated: 0,
   available: 0,

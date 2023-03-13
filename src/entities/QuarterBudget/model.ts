@@ -5,14 +5,14 @@ import snakeCase from 'lodash/snakeCase'
 import { v1 as uuid } from 'uuid'
 
 import { TransparencyBudget } from '../../clients/DclData'
-import { CurrentBudget, CurrentCategoryBudget } from '../Budget/types'
+import { Budget, CategoryBudget } from '../Budget/types'
 import { NewGrantCategory } from '../Grant/types'
 import { asNumber } from '../Proposal/utils'
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../QuarterCategoryBudget/types'
 import { toNewGrantCategory, validateCategoryBudgets } from '../QuarterCategoryBudget/utils'
 
-import { CurrentBudgetQueryResult, QuarterBudgetAttributes } from './types'
+import { BudgetQueryResult, QuarterBudgetAttributes } from './types'
 import {
   budgetExistsForStartingDate,
   getQuarterEndDate,
@@ -91,7 +91,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     }
   }
 
-  static async getCurrentBudget(): Promise<CurrentBudget | null> {
+  static async getCurrentBudget(): Promise<Budget | null> {
     const now = new Date()
     const query = SQL`
         SELECT qb.id, qcb.category, qcb.total as category_total, qcb.allocated as category_allocated, qb.start_at, qb.finish_at, qb.total
@@ -107,10 +107,10 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     if (!result || result.length === 0) {
       return null
     }
-    return this.parseCurrentBudget(result)
+    return this.parseBudget(result)
   }
 
-  static async getBudgetForDate(dateWithinBudget: Date): Promise<CurrentBudget | null> {
+  static async getBudgetForDate(dateWithinBudget: Date): Promise<Budget | null> {
     const query = SQL`
         SELECT 
           qb.id, qb.start_at, qb.finish_at,
@@ -130,7 +130,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     if (!result || result.length === 0) {
       return null
     }
-    return this.parseCurrentBudget(result)
+    return this.parseBudget(result)
   }
 
   static async getCategoryBudgetForCurrentQuarter(
@@ -155,7 +155,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     return result[0]
   }
 
-  public static async updateBudget(budgetUpdate: CurrentBudget) {
+  public static async updateBudget(budgetUpdate: Budget) {
     const now = new Date()
     const categories = Object.keys(budgetUpdate.categories)
     for (const category of categories) {
@@ -172,8 +172,8 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     }
   }
 
-  static parseCurrentBudget(result: CurrentBudgetQueryResult[]): CurrentBudget {
-    const categoriesResults: Record<string, CurrentCategoryBudget> = {}
+  static parseBudget(result: BudgetQueryResult[]): Budget {
+    const categoriesResults: Record<string, CategoryBudget> = {}
     result.forEach((categoryResult) => {
       const { category_total, category_allocated } = categoryResult
       const total = asNumber(category_total)

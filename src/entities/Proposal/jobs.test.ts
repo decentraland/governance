@@ -305,31 +305,27 @@ describe('finishProposals', () => {
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([PROPOSAL_OF_DATE_1, PROPOSAL_OF_DATE_2])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+      jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([BUDGET_1, BUDGET_2])
     })
 
-    describe('if there is no budget to fund one category, but there is for another', () => {
-      beforeEach(() => {
-        jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([BUDGET_1, BUDGET_2])
-      })
-      it('discounts each grant size for the corresponding budget', async () => {
-        const EXPECTED_BUDGET_1 = cloneDeep(BUDGET_1)
-        EXPECTED_BUDGET_1.categories.accelerator.allocated += GRANT_1_SIZE
-        EXPECTED_BUDGET_1.categories.accelerator.available -= GRANT_1_SIZE
-        EXPECTED_BUDGET_1.allocated += GRANT_1_SIZE
+    it('discounts each grant size for the corresponding budget', async () => {
+      const EXPECTED_BUDGET_1 = cloneDeep(BUDGET_1)
+      EXPECTED_BUDGET_1.categories.accelerator.allocated += GRANT_1_SIZE
+      EXPECTED_BUDGET_1.categories.accelerator.available -= GRANT_1_SIZE
+      EXPECTED_BUDGET_1.allocated += GRANT_1_SIZE
 
-        const EXPECTED_BUDGET_2 = cloneDeep(BUDGET_2)
-        EXPECTED_BUDGET_2.categories.accelerator.allocated += GRANT_2_SIZE
-        EXPECTED_BUDGET_2.categories.accelerator.available -= GRANT_2_SIZE
-        EXPECTED_BUDGET_2.allocated += GRANT_2_SIZE
+      const EXPECTED_BUDGET_2 = cloneDeep(BUDGET_2)
+      EXPECTED_BUDGET_2.categories.accelerator.allocated += GRANT_2_SIZE
+      EXPECTED_BUDGET_2.categories.accelerator.available -= GRANT_2_SIZE
+      EXPECTED_BUDGET_2.allocated += GRANT_2_SIZE
 
-        await finishProposal(JOB_CONTEXT_MOCK)
+      await finishProposal(JOB_CONTEXT_MOCK)
 
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith(
-          [PROPOSAL_OF_DATE_1.id, PROPOSAL_OF_DATE_2.id],
-          ProposalStatus.Passed
-        )
-        expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET_1, EXPECTED_BUDGET_2])
-      })
+      expect(ProposalModel.finishProposal).toHaveBeenCalledWith(
+        [PROPOSAL_OF_DATE_1.id, PROPOSAL_OF_DATE_2.id],
+        ProposalStatus.Passed
+      )
+      expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET_1, EXPECTED_BUDGET_2])
     })
   })
 })

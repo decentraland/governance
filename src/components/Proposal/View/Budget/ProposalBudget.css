@@ -1,0 +1,11 @@
+.ProposalBudget__Row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: 32px;
+}
+
+.ProposalBudget__Row + .ProposalBudget__Row {
+  margin-bottom: 33px;
+}

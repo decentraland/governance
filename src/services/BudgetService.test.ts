@@ -3,16 +3,16 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { cloneDeep } from 'lodash'
 
 import { DclData } from '../clients/DclData'
-import { CurrentCategoryBudget, NULL_CURRENT_BUDGET } from '../entities/Budget/types'
+import { CategoryBudget, NULL_BUDGET } from '../entities/Budget/types'
 import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
+import ProposalModel from '../entities/Proposal/model'
 import { CURRENT_TEST_BUDGET, GRANT_PROPOSAL_1, GRANT_PROPOSAL_2 } from '../entities/Proposal/testHelpers'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 import { getUncappedRoundedPercentage } from '../helpers'
 
 import { BudgetService } from './BudgetService'
-import { ProposalService } from './ProposalService'
 
 const NOW = new Date('2023-02-03T00:00:00Z')
 
@@ -229,7 +229,7 @@ describe('BudgetService', () => {
     describe('when there is a positive amount of available budget', () => {
       const AVAILABLE_BUDGET = 200
       beforeEach(() => {
-        const currentCategoryBudget: CurrentCategoryBudget = {
+        const currentCategoryBudget: CategoryBudget = {
           total: TOTAL_BUDGET,
           allocated: TOTAL_BUDGET - AVAILABLE_BUDGET,
           available: AVAILABLE_BUDGET,
@@ -258,7 +258,7 @@ describe('BudgetService', () => {
     describe('when allocated budget exceeds available budget', () => {
       const AVAILABLE_BUDGET = -200
       beforeEach(() => {
-        const currentCategoryBudget: CurrentCategoryBudget = {
+        const currentCategoryBudget: CategoryBudget = {
           total: 1000,
           allocated: 1200,
           available: AVAILABLE_BUDGET,
@@ -333,7 +333,7 @@ describe('BudgetService', () => {
 
     describe('if proposals min and max dates are the same', () => {
       const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_1_DATE }]
-      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      const BUDGET_1 = cloneDeep(NULL_BUDGET)
       it('returns only one budget', async () => {
         jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValueOnce(BUDGET_1)
         expect(await BudgetService.getBudgetsForProposals(PROPOSALS)).toEqual([BUDGET_1])
@@ -342,7 +342,7 @@ describe('BudgetService', () => {
 
     describe('if proposals min and max dates are different but are for the same budget', () => {
       const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: Time.utc(QUARTER_1_DATE).add(1, 'day').toDate() }]
-      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      const BUDGET_1 = cloneDeep(NULL_BUDGET)
       BUDGET_1.id = 'budget_1'
       beforeEach(() => {
         jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValue(BUDGET_1)
@@ -355,9 +355,9 @@ describe('BudgetService', () => {
 
     describe('if proposals min and max dates are for different budgets', () => {
       const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_2_DATE }]
-      const BUDGET_1 = cloneDeep(NULL_CURRENT_BUDGET)
+      const BUDGET_1 = cloneDeep(NULL_BUDGET)
       BUDGET_1.id = 'budget_1'
-      const BUDGET_2 = cloneDeep(NULL_CURRENT_BUDGET)
+      const BUDGET_2 = cloneDeep(NULL_BUDGET)
       BUDGET_2.id = 'budget_2'
 
       beforeEach(() => {
@@ -376,9 +376,7 @@ describe('BudgetService', () => {
   describe('getExpectedAllocatedBudget', () => {
     describe('when the contested budget is below the available budget', () => {
       beforeEach(() => {
-        jest
-          .spyOn(ProposalService, 'getActiveGrantProposals')
-          .mockResolvedValueOnce([GRANT_PROPOSAL_1, GRANT_PROPOSAL_2])
+        jest.spyOn(ProposalModel, 'getActiveGrantProposals').mockResolvedValueOnce([GRANT_PROPOSAL_1, GRANT_PROPOSAL_2])
         jest.spyOn(BudgetService, 'getCurrentBudget').mockResolvedValueOnce(CURRENT_TEST_BUDGET)
       })
 
@@ -389,7 +387,7 @@ describe('BudgetService', () => {
         const availableForAccelerator =
           CURRENT_TEST_BUDGET.categories.accelerator.total - CURRENT_TEST_BUDGET.categories.accelerator.allocated
 
-        const expectedAllocatedBudget = await BudgetService.getExpectedAllocatedBudget()
+        const expectedAllocatedBudget = await BudgetService.getCurrentContestedBudget()
         expect(expectedAllocatedBudget.total).toEqual(CURRENT_TEST_BUDGET.total)
         expect(expectedAllocatedBudget.total_contested).toEqual(totalContested)
         expect(expectedAllocatedBudget.categories.accelerator).toEqual({
@@ -431,7 +429,7 @@ describe('BudgetService', () => {
 
       beforeEach(() => {
         jest
-          .spyOn(ProposalService, 'getActiveGrantProposals')
+          .spyOn(ProposalModel, 'getActiveGrantProposals')
           .mockResolvedValueOnce([GRANT_PROPOSAL_ABOVE_BUDGET, GRANT_PROPOSAL_2])
         jest.spyOn(BudgetService, 'getCurrentBudget').mockResolvedValueOnce(CURRENT_TEST_BUDGET)
       })
@@ -443,7 +441,7 @@ describe('BudgetService', () => {
         const availableForAccelerator =
           CURRENT_TEST_BUDGET.categories.accelerator.total - CURRENT_TEST_BUDGET.categories.accelerator.allocated
 
-        const expectedAllocatedBudget = await BudgetService.getExpectedAllocatedBudget()
+        const expectedAllocatedBudget = await BudgetService.getCurrentContestedBudget()
         expect(expectedAllocatedBudget.total).toEqual(CURRENT_TEST_BUDGET.total)
         expect(expectedAllocatedBudget.total_contested).toEqual(totalContested)
         expect(expectedAllocatedBudget.categories.accelerator).toEqual({

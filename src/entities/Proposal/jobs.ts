@@ -4,7 +4,7 @@ import snakeCase from 'lodash/snakeCase'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
-import { CurrentBudget } from '../Budget/types'
+import { Budget } from '../Budget/types'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import UpdateModel from '../Updates/model'
 
@@ -69,22 +69,22 @@ async function updateFinishedProposals(finishedProposals: ProposalWithOutcome[],
   }
 }
 
-function getBudgetForProposal(currentBudgets: CurrentBudget[], proposal: ProposalWithOutcome) {
+function getBudgetForProposal(currentBudgets: Budget[], proposal: ProposalWithOutcome) {
   return currentBudgets.find((budget) => budget.start_at <= proposal.start_at && budget.finish_at > proposal.start_at)
 }
 
-function getCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
+function getCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: Budget) {
   const categoryName = snakeCase(proposal.configuration.category)
   return proposalBudget.categories[categoryName]
 }
 
-function grantCanBeFunded(proposal: ProposalWithOutcome, proposalBudget: CurrentBudget) {
+function grantCanBeFunded(proposal: ProposalWithOutcome, proposalBudget: Budget) {
   const categoryBudget = getCategoryBudget(proposal, proposalBudget)
   const size = asNumber(proposal.configuration.size)
   return categoryBudget.allocated + size <= categoryBudget.total
 }
 
-function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: CurrentBudget) {
+function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: Budget) {
   const categoryBudget = getCategoryBudget(proposal, budgetForProposal)
   const size = asNumber(proposal.configuration.size)
   categoryBudget.allocated += size
@@ -94,7 +94,7 @@ function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: 
 
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
-  currentBudgets: CurrentBudget[],
+  currentBudgets: Budget[],
   context: JobContext
 ) {
   const finishedProposals: ProposalWithOutcome[] = []

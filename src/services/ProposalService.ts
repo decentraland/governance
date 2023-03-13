@@ -1,16 +1,16 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
+import isUUID from 'validator/lib/isUUID'
 
 import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
 import CoauthorModel from '../entities/Coauthor/model'
 import isCommittee from '../entities/Committee/isCommittee'
-import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import ProposalModel from '../entities/Proposal/model'
 import * as templates from '../entities/Proposal/templates'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { asNumber, isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
+import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../modules/votes/utils'
@@ -187,13 +187,16 @@ export class ProposalService {
     return newProposal
   }
 
-  public static getActiveGrantsWindowStartDate(grantProposalsDuration: string | number) {
-    return Time().subtract(asNumber(grantProposalsDuration), 'seconds').toDate()
-  }
+  static async getProposal(id: string) {
+    if (!isUUID(id || '')) {
+      throw new Error(`Invalid proposal id: "${id}"`)
+    }
 
-  public static async getActiveGrantProposals() {
-    return await ProposalModel.getActiveGrantProposals(
-      this.getActiveGrantsWindowStartDate(GRANT_PROPOSAL_DURATION_IN_SECONDS)
-    )
+    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
+    if (!proposal) {
+      throw new Error(`Proposal not found: "${id}"`)
+    }
+
+    return ProposalModel.parse(proposal)
   }
 }

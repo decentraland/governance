@@ -10,7 +10,7 @@ import {
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 
 import QuarterBudgetModel from './model'
-import { CurrentBudgetQueryResult } from './types'
+import { BudgetQueryResult } from './types'
 import { getQuarterEndDate, getQuarterStartDate } from './utils'
 
 const NOW = new Date('2023-01-01')
@@ -201,7 +201,7 @@ describe('QuarterBudgetModel', () => {
 
   describe('parseCurrentBudget', () => {
     it('returns a CurrentBudget', () => {
-      const results: CurrentBudgetQueryResult[] = [
+      const results: BudgetQueryResult[] = [
         {
           id: 'budget_id',
           category: 'Accelerator',
@@ -266,7 +266,7 @@ describe('QuarterBudgetModel', () => {
           total: 1501500,
         },
       ]
-      expect(QuarterBudgetModel.parseCurrentBudget(results)).toStrictEqual({
+      expect(QuarterBudgetModel.parseBudget(results)).toStrictEqual({
         categories: {
           accelerator: {
             allocated: 5105,

@@ -30,13 +30,13 @@ const icons: Record<string, any> = {
   ...categoryIcons,
 }
 
-const getIcon = (type: string) => {
+export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, size?: number) => {
   const newGrants = Object.values(NewGrantCategory)
   const newGrantIndex = newGrants.map(toSnakeCase).indexOf(type)
   const isNewGrant = newGrantIndex !== -1
   if (isNewGrant) {
     const icon = getNewGrantsCategoryIcon(newGrants[newGrantIndex])
-    return icon({ variant: CategoryIconVariant.Filled, size: 24 })
+    return icon({ variant: variant || CategoryIconVariant.Filled, size: size })
   }
 
   return <img src={icons[type]} width="24" height="24" />
@@ -70,7 +70,7 @@ export default React.memo(function CategoryOption({ active, type, className, cou
       ])}
     >
       <span>
-        <span>{getIcon(type)}</span>
+        <span>{getCategoryIcon(type, CategoryIconVariant.Circled)}</span>
         <span>
           <Paragraph tiny semiBold>
             {t(`category.${type}_title`)}

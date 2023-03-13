@@ -9,18 +9,18 @@ import './GrantRequestSectionCard.css'
 
 export const GrantRequestSectionCard = ({
   subtitle,
-  category,
-  helper,
   title,
+  helper,
+  content,
   titleExtra,
   subtitleVariant = 'normal',
   error,
 }: {
-  category: string
-  title: string | null
+  title: string | React.ReactNode
+  content: string | React.ReactNode | null
   titleExtra?: string
-  subtitle: string
-  helper: React.ReactNode
+  subtitle: string | React.ReactNode
+  helper?: React.ReactNode
   subtitleVariant?: 'normal' | 'uppercase'
   error?: boolean
 }) => {
@@ -28,14 +28,14 @@ export const GrantRequestSectionCard = ({
     <div className={TokenList.join(['GrantRequestSectionCard', error && 'GrantRequestSectionCard__Error'])}>
       <div className="GrantRequestSectionCard__Header">
         <div className="GrantRequestSectionCard__HeaderTitle">
-          {category}
+          {title}
           {error && <ExclamationCircle color={'red-800'} size={'13px'} />}
         </div>
 
         {helper}
       </div>
       <div className="GrantRequestSectionCard__ContentTitle GrantRequestSectionCard__AlignBaseline">
-        {title || <Skeleton className="GrantRequestSectionCard__Empty" enableAnimation={false} />}
+        {content || <Skeleton className="GrantRequestSectionCard__Empty" enableAnimation={false} />}
         {titleExtra && <span className="GrantRequestSectionCard__TitleExtra">{titleExtra}</span>}
       </div>
       <div
