@@ -4,12 +4,12 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import toNumber from 'lodash/toNumber'
 
-import { BudgetBreakdownItem } from '../../entities/Grant/types'
+import { BudgetBreakdownConcept } from '../../entities/Grant/types'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 
 interface Props {
-  breakdown: BudgetBreakdownItem[]
+  breakdown: BudgetBreakdownConcept[]
 }
 
 function BudgetBreakdownView({ breakdown }: Props) {

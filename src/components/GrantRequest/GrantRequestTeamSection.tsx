@@ -33,9 +33,13 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation }:
   const handleSubmitItem = useCallback(
     (item: TeamMember) => {
       if (selectedTeamMember) {
-        setTeamState((prevState) => ({
-          members: prevState.members.map((i) => (i.name === selectedTeamMember.name ? item : i)),
-        }))
+        setTeamState((prevState) => {
+          const replaceEditedItem = (i: TeamMember) => (i.name === selectedTeamMember.name ? item : i)
+
+          return {
+            members: prevState.members.map(replaceEditedItem),
+          }
+        })
         setSelectedTeamMember(null)
       } else {
         setTeamState((prevState) => ({ members: [...prevState.members, item] }))
