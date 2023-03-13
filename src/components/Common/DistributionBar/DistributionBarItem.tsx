@@ -8,16 +8,19 @@ export type DistributionBarItemProps = {
 } & HorizontalBarProps
 
 const DistributionBarItem = ({ value, className, selected, total, popupContent }: DistributionBarItemProps) => {
+  if (value <= 0) {
+    return null
+  }
+
   return (
     <>
-      {value > 0 &&
-        (popupContent ? (
-          <DistributionBarPopup popupContent={popupContent}>
-            <HorizontalBar value={value} total={total} className={className} selected={selected} />
-          </DistributionBarPopup>
-        ) : (
+      {popupContent ? (
+        <DistributionBarPopup popupContent={popupContent}>
           <HorizontalBar value={value} total={total} className={className} selected={selected} />
-        ))}
+        </DistributionBarPopup>
+      ) : (
+        <HorizontalBar value={value} total={total} className={className} selected={selected} />
+      )}
     </>
   )
 }

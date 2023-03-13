@@ -278,6 +278,24 @@ export default function ProposalPage() {
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
               {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
               <div className="ProposalDetail__StickySidebar">
+                {showProposalUpdatesActions && (
+                  <ProposalUpdatesActions
+                    nextUpdate={nextUpdate}
+                    currentUpdate={currentUpdate}
+                    onPostUpdateClick={handlePostUpdateClick}
+                  />
+                )}
+                <ProposalResultSection
+                  proposal={proposal}
+                  loading={voting || proposalState.loading || votesState.loading}
+                  disabled={!proposal || !votes}
+                  votes={votes}
+                  changingVote={options.changing}
+                  onChangeVote={(_, changing) => patchOptions({ changing })}
+                  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
+                  onOpenVotesList={() => patchOptions({ showVotesList: true })}
+                />
+                {proposal && <ProposalDetailSection proposal={proposal} />}
                 <SidebarLinkButton
                   loading={proposalState.loading}
                   disabled={!proposal}
@@ -292,24 +310,6 @@ export default function ProposalPage() {
                   subscribed={subscribed}
                   onClick={() => subscribe(!subscribed)}
                 />
-                {showProposalUpdatesActions && (
-                  <ProposalUpdatesActions
-                    nextUpdate={nextUpdate}
-                    currentUpdate={currentUpdate}
-                    onPostUpdateClick={handlePostUpdateClick}
-                  />
-                )}
-                <ProposalResultSection
-                  disabled={!proposal || !votes}
-                  loading={voting || proposalState.loading || votesState.loading}
-                  proposal={proposal}
-                  votes={votes}
-                  changingVote={options.changing}
-                  onChangeVote={(_, changing) => patchOptions({ changing })}
-                  onOpenVotesList={() => patchOptions({ showVotesList: true })}
-                  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
-                />
-                {proposal && <ProposalDetailSection proposal={proposal} />}
                 {(isOwner || isCommittee) && (
                   <Button
                     basic

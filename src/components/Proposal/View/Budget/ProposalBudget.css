@@ -1,9 +1,15 @@
 .ProposalBudget__Row {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  gap: 32px;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .ProposalBudget__Row {
+    flex-direction: row;
+  }
 }
 
 .ProposalBudget__Row + .ProposalBudget__Row {

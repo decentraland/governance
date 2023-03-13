@@ -12,7 +12,7 @@
   border: 0;
 }
 
-.DistributionBar--Empty {
+.DistributionBar--empty {
   height: 8px;
   background-color: rgba(0, 0, 0, 0.2);
 }
