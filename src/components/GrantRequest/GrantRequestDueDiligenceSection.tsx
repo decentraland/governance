@@ -45,11 +45,14 @@ export default function GrantRequestDueDiligenceSection({
   const handleSubmitItem = useCallback(
     (item: BudgetBreakdownConceptType) => {
       if (selectedBudgetBreakdownConcept) {
-        setDueDiligenceState((prevState) => ({
-          budgetBreakdown: prevState.budgetBreakdown.map((i) =>
+        setDueDiligenceState((prevState) => {
+          const replaceEditedItem = (i: BudgetBreakdownConceptType) =>
             i.concept === selectedBudgetBreakdownConcept.concept ? item : i
-          ),
-        }))
+
+          return {
+            budgetBreakdown: prevState.budgetBreakdown.map(replaceEditedItem),
+          }
+        })
         setSelectedBudgetBreakdownConcept(null)
       } else {
         setDueDiligenceState((prevState) => ({ budgetBreakdown: [...prevState.budgetBreakdown, item] }))
