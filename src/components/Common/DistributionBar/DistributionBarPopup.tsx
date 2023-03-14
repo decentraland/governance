@@ -13,13 +13,21 @@ export interface DistributionBarPopupContent {
 
 interface DistributionBarPopupProps {
   popupContent: DistributionBarPopupContent
+  open?: boolean
   children: React.ReactNode
 }
 
-const DistributionBarPopup = ({ popupContent, children }: DistributionBarPopupProps) => {
+const DistributionBarPopup = ({ popupContent, open, children }: DistributionBarPopupProps) => {
   const t = useFormatMessage()
   return (
-    <Popup className="DistributionBarPopup" position="top center" trigger={children} on="hover">
+    <Popup
+      className="DistributionBarPopup"
+      position="top center"
+      trigger={children}
+      on="hover"
+      open={open}
+      hideOnScroll={true}
+    >
       <Popup.Content>
         <div className="DistributionBarPopup">
           <div className="DistributionBarPopup__Title">{t(popupContent.title)}</div>

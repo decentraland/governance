@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -10,9 +10,11 @@ import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../.
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { toNewGrantCategory } from '../../../../entities/QuarterCategoryBudget/utils'
 import { getFormattedPercentage } from '../../../../helpers'
-import DistributionBar, { DistributionItemProps } from '../../../Common/DistributionBar/DistributionBar'
+import DistributionBar from '../../../Common/DistributionBar/DistributionBar'
+import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 
+import CompetingProposal from './CompetingProposal'
 import './CompetingProposalsSidebar.css'
 
 interface Props {
@@ -25,7 +27,9 @@ interface Props {
 function getBarItems(
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
   proposal: ProposalAttributes,
-  categoryBudget: CategoryBudgetWithContestants
+  categoryBudget: CategoryBudgetWithContestants,
+  highlightedContestant: string,
+  setHighlightedContestant: (value: ((prevState: string) => string) | string) => void
 ) {
   const contestedBudget = categoryBudget.contested || 0
   const requestedBudget = proposal.configuration.size
@@ -33,17 +37,24 @@ function getBarItems(
   const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
   const allocatedBudget = categoryBudget?.allocated || 0
 
-  const items: DistributionItemProps[] = [
+  const items: DistributionBarItemProps[] = [
     {
       value: allocatedBudget,
-      style: 'AllocatedBudgetBar',
+      className: 'GrantedFundsBar',
     },
   ]
   categoryBudget?.contestants.forEach((contestant) => {
     if (contestant.id !== proposal.id) {
       items.push({
         value: contestant.size,
-        style: 'ContestedBudgetBar',
+        className: 'ContestedBudgetBar',
+        onHover: (e: React.MouseEvent<unknown>) => {
+          e.preventDefault()
+          setHighlightedContestant(contestant.id)
+        },
+        onBlur: () => {
+          setHighlightedContestant('')
+        },
         popupContent: {
           title: contestant.title,
           content: <span>{`$${t('general.number', { value: contestant.size })}`}</span>,
@@ -54,8 +65,8 @@ function getBarItems(
 
   items.push({
     value: requestedBudget,
-    style: 'ThisInitiativeBar',
-    selected: true,
+    className: 'ThisInitiativeBar',
+    selected: highlightedContestant === '',
     popupContent: {
       title: proposal.title,
       content: <span>{`$${t('general.number', { value: requestedBudget })}`}</span>,
@@ -64,7 +75,7 @@ function getBarItems(
 
   items.push({
     value: uncontestedTotalBudgetDisplayed,
-    style: 'UncontestedBudgetBar',
+    className: 'UncontestedBudgetBar',
   })
   return items
 }
@@ -77,8 +88,9 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
   const contestedBudget = categoryBudget.contested || 0
   const uncontestedTotalBudget = (categoryBudget?.available || 0) - contestedBudget
   const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
-
-  const items = getBarItems(t, proposal, categoryBudget)
+  const contestants = categoryBudget.contestants.filter((contestant) => contestant.id !== proposal.id)
+  const [highlightedContestant, setHighlightedContestant] = useState('')
+  const items = getBarItems(t, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
 
   //TODO: internationalization
   return (
@@ -140,6 +152,20 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
             </div>
           }
         />
+      </div>
+
+      <div className="CompetingProposalsSidebar__Content">
+        <div className="CompetingProposalsSidebar__TitleContainer">
+          <span className="CompetingProposalsSidebar__Title">{`Other ${toNewGrantCategory(
+            grantCategory
+          )} Initiatives`}</span>
+        </div>
+
+        {contestants.map((contestant, index) => (
+          <div className="ContestedBudgetCard__Row" key={`contestant-${index}`}>
+            <CompetingProposal proposal={contestant} highlight={highlightedContestant === contestant.id} />
+          </div>
+        ))}
       </div>
     </Sidebar>
   )

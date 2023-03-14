@@ -26,7 +26,7 @@ export type CategoryBudgetWithContestants = Pick<CategoryBudget, 'total' | 'allo
   contestants: ContestingGrantProposal[]
 }
 
-export type ContestingGrantProposal = Pick<ProposalAttributes, 'title' | 'id'> &
+export type ContestingGrantProposal = ProposalAttributes &
   Pick<GrantProposalConfiguration, 'size'> & {
     contested_percentage: number
   }
