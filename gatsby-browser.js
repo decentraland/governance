@@ -19,7 +19,6 @@ import 'decentraland-ui/dist/themes/base-theme.css'
 import 'semantic-ui-css/semantic.min.css'
 
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
-import ExternalLinkContextProvider from './src/components/Context/ExternalLinkContext'
 import Navbar from './src/components/Layout/Navbar'
 import ExternalLinkWarningModalWrapper from './src/components/Modal/ExternalLinkWarningModalWrapper'
 import { ROLLBAR_TOKEN, SEGMENT_KEY } from './src/constants'
@@ -38,14 +37,12 @@ export function wrapRootElement({ element }) {
 export const wrapPageElement = ({ element, props }) => {
   return (
     <IntlProvider {...props.pageContext.intl}>
-      <ExternalLinkContextProvider>
-        <BurgerMenuStatusContextProvider>
-          <Layout {...props} rightMenu={<Navbar />}>
-            {element}
-          </Layout>
-        </BurgerMenuStatusContextProvider>
-        <ExternalLinkWarningModalWrapper />
-      </ExternalLinkContextProvider>
+      <BurgerMenuStatusContextProvider>
+        <Layout {...props} rightMenu={<Navbar />}>
+          {element}
+        </Layout>
+      </BurgerMenuStatusContextProvider>
+      <ExternalLinkWarningModalWrapper />
     </IntlProvider>
   )
 }
