@@ -45,7 +45,7 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
         className: 'RemainingBudgetBar',
       },
     ]
-  }, [allocatedCategoryBudget, requestedBudget, remainingBudgetDisplayed])
+  }, [allocatedCategoryBudget, requestedBudget, remainingBudgetDisplayed, categoryBudget.available, isOverBudget])
 
   return (
     <GrantRequestSectionCard
@@ -61,7 +61,7 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
       }
       content={
         <div className="RequestedBudgetCard__Content">
-          <>${t('general.number', { value: proposal.configuration.size })}</>
+          ${t('general.number', { value: proposal.configuration.size })}
           <DistributionBar items={items} total={totalCategoryBudget} />
         </div>
       }

@@ -18,7 +18,7 @@ import './DetailsSection.css'
 import { ProposalPromotionSection } from './ProposalPromotionSection'
 import VotingStatusSummary from './VotingStatusSummary'
 
-export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   loading?: boolean
@@ -31,7 +31,7 @@ export type ProposalResultSectionProps = Omit<React.HTMLAttributes<HTMLDivElemen
 
 const EMPTY_CHOICES: string[] = []
 
-export default function ProposalResultSection({
+function ProposalResultSection({
   proposal,
   loading,
   disabled,
@@ -40,8 +40,7 @@ export default function ProposalResultSection({
   onChangeVote,
   onVote,
   onOpenVotesList,
-  ...props
-}: ProposalResultSectionProps) {
+}: Props) {
   const t = useFormatMessage()
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
   const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
@@ -54,13 +53,10 @@ export default function ProposalResultSection({
 
   return (
     <div
-      {...props}
       className={TokenList.join([
         'DetailsSection',
         disabled && 'DetailsSection--disabled',
         loading && 'DetailsSection--loading',
-        'ResultSection',
-        props.className,
       ])}
     >
       <div className="DetailsSection__Content">
@@ -101,3 +97,5 @@ export default function ProposalResultSection({
     </div>
   )
 }
+
+export default ProposalResultSection

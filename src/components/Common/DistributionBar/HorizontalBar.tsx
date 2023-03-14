@@ -15,6 +15,7 @@ export type HorizontalBarProps = {
 
 const HorizontalBar = ({ value, className, selected, total }: HorizontalBarProps) => {
   const valuePercentage = getFormattedPercentage(value, total)
+
   return (
     <div
       className={TokenList.join(['HorizontalBar', !!selected && 'HorizontalBar--selected', className])}

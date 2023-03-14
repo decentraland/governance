@@ -32,16 +32,16 @@ const DistributionBar = ({ items, total, isLoading, className }: Props) => {
 
   return (
     <div className={className}>
-      <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--Empty'])}>
+      <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--empty'])}>
         {total > 0 &&
-          items.map((item, index) => (
+          items.map(({ value, popupContent, className, selected }, index) => (
             <DistributionBarItem
-              value={item.value}
-              total={total}
-              popupContent={item.popupContent}
-              className={item.className}
-              selected={item.selected}
               key={`distribution-bar-item-${index}`}
+              value={value}
+              total={total}
+              popupContent={popupContent}
+              className={className}
+              selected={selected}
             />
           ))}
       </div>

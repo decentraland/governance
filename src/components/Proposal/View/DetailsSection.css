@@ -1,9 +1,9 @@
 .DetailsSection {
   width: 100%;
-  border: 1px solid var(--black-400);
+  border: 1px solid var(--black-300);
   border-radius: 8px;
   display: block;
-  margin: 16px 0;
+  margin-bottom: 16px;
   position: relative;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .DetailsSection .DetailsSection__Content + .DetailsSection__Content {
-  border-top: 1px solid var(--black-400);
+  border-top: 1px solid var(--black-300);
 }
 
 .DetailsSection .DetailsSection__Flex {
