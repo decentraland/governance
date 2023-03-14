@@ -470,6 +470,12 @@
       "accept": "Save",
       "reject": "Cancel",
       "action": "Edit"
+    },
+    "external_link_warning": {
+      "title": "Leaving Decentraland DAO",
+      "description": "The link you're trying to open would make you leave the Governance Environment. Be wary of malicious sites that may try to track your activity.",
+      "accept": "Follow link",
+      "reject": "I've changed my mind"
     }
   },
   "component": {
