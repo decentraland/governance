@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -9,15 +9,60 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import './ExternalLinkWarningModal.css'
 
-type Props = Omit<ModalProps, 'children'> & {
-  onDismiss: (e: React.MouseEvent<unknown>) => void
-  onContinue: (e: React.MouseEvent<unknown>) => void
+type Props = Omit<ModalProps, 'children'>
+
+type WarningModalProps = {
+  isWarningModalOpen: boolean
+  href: string
 }
 
-function ExternalLinkWarningModal({ onDismiss, onContinue, open, ...props }: Props) {
+function openInNewTab(url: string) {
+  window?.open(url, '_blank')?.focus()
+}
+
+const WHITELIST = [
+  /^https:\/\/([a-zA-Z0-9]+\.)?decentraland\.org(\/[^\s]*)?$/g,
+  /^https:\/\/([a-zA-Z0-9]+\.)?decentraland\.vote(\/[^\s]*)?$/g,
+  /^https:\/\/([a-zA-Z0-9]+\.)?snapshot\.org(\/[^\s]*)?$/g,
+  /^https:\/\/([a-zA-Z0-9]+\.)?dcl\.gg(\/[^\s]*)?$/g,
+]
+
+const INITIAL_STATE: WarningModalProps = {
+  isWarningModalOpen: false,
+  href: '',
+}
+
+function ExternalLinkWarningModal({ ...props }: Props) {
   const t = useFormatMessage()
+  const [warningModalProps, setWarningModalProps] = useState(INITIAL_STATE)
+
+  const { isWarningModalOpen, href } = warningModalProps
+  const onDismiss = useMemo(() => () => setWarningModalProps((props) => ({ ...props, isWarningModalOpen: false })), [])
+  const onContinue = useMemo(() => () => openInNewTab(href), [href])
+
+  useEffect(() => {
+    const handleExternalLinkClick = (event: MouseEvent) => {
+      const target = event.target as HTMLAnchorElement
+      const href = target.getAttribute('href')
+      if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+        const url = new URL(href)
+        const matchedItem = WHITELIST.find((regex) => regex.test(url.href))
+        if (!matchedItem) {
+          event.preventDefault()
+          setWarningModalProps({ isWarningModalOpen: true, href: url.href })
+        }
+      }
+    }
+
+    document.addEventListener('click', handleExternalLinkClick)
+
+    return () => {
+      document.removeEventListener('click', handleExternalLinkClick)
+    }
+  }, [])
+
   return (
-    <Modal {...props} open={open} size="tiny" closeIcon={<Close />} className={'ExternalLinkWarningModal'}>
+    <Modal {...props} open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={onDismiss}>
       <Modal.Content>
         <div className={'ExternalLinkWarningModal__Title'}>
           <Header>{t('modal.external_link_warning.title')}</Header>

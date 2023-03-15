@@ -5,25 +5,24 @@
  */
 import React from 'react'
 
-import 'core-js/features/set-immediate'
-import 'semantic-ui-css/semantic.min.css'
 import 'balloon-css/balloon.min.css'
-import 'decentraland-ui/dist/themes/base-theme.css'
-import 'decentraland-ui/dist/themes/alternative/light-theme.css'
-import './src/theme.css'
-
-import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
+import 'core-js/features/set-immediate'
+import Rollbar from 'decentraland-gatsby/dist/components/Development/Rollbar'
+import Segment from 'decentraland-gatsby/dist/components/Development/Segment'
+import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
 import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
-import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
+import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
-import Navbar from './src/components/Layout/Navbar'
-import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
-import ExternalLinkWarningModalWrapper from './src/components/Modal/ExternalLinkWarningModalWrapper'
-import Segment from "decentraland-gatsby/dist/components/Development/Segment"
-import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar"
-import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants"
+import 'decentraland-ui/dist/themes/alternative/light-theme.css'
+import 'decentraland-ui/dist/themes/base-theme.css'
+import 'semantic-ui-css/semantic.min.css'
 
+import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
+import Navbar from './src/components/Layout/Navbar'
+import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal'
+import { ROLLBAR_TOKEN, SEGMENT_KEY } from './src/constants'
+import './src/theme.css'
 
 export function wrapRootElement({ element }) {
   return (
@@ -43,7 +42,7 @@ export const wrapPageElement = ({ element, props }) => {
           {element}
         </Layout>
       </BurgerMenuStatusContextProvider>
-      <ExternalLinkWarningModalWrapper />
+      <ExternalLinkWarningModal />
     </IntlProvider>
   )
 }
