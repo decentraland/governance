@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -37,8 +37,11 @@ function ExternalLinkWarningModal({ ...props }: Props) {
   const [warningModalProps, setWarningModalProps] = useState(INITIAL_STATE)
 
   const { isWarningModalOpen, href } = warningModalProps
-  const onDismiss = useMemo(() => () => setWarningModalProps((props) => ({ ...props, isWarningModalOpen: false })), [])
-  const onContinue = useMemo(() => () => openInNewTab(href), [href])
+  const handleDismiss = useCallback(
+    () => setWarningModalProps((props) => ({ ...props, isWarningModalOpen: false })),
+    []
+  )
+  const handleContinue = useCallback(() => openInNewTab(href), [href])
 
   useEffect(() => {
     const handleExternalLinkClick = (event: MouseEvent) => {
@@ -62,17 +65,17 @@ function ExternalLinkWarningModal({ ...props }: Props) {
   }, [])
 
   return (
-    <Modal {...props} open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={onDismiss}>
+    <Modal {...props} open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={handleDismiss}>
       <Modal.Content>
         <div className={'ExternalLinkWarningModal__Title'}>
           <Header>{t('modal.external_link_warning.title')}</Header>
           <Paragraph>{t('modal.external_link_warning.description')}</Paragraph>
         </div>
         <div className={'ExternalLinkWarningModal__Actions'}>
-          <Button fluid primary className={'ExternalLinkWarningModal__Button'} onClick={onContinue}>
+          <Button fluid primary className={'ExternalLinkWarningModal__Button'} onClick={handleContinue}>
             {t('modal.external_link_warning.accept')}
           </Button>
-          <Button fluid basic className={'ExternalLinkWarningModal__Button'} onClick={onDismiss}>
+          <Button fluid basic className={'ExternalLinkWarningModal__Button'} onClick={handleDismiss}>
             {t('modal.external_link_warning.reject')}
           </Button>
         </div>
