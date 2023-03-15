@@ -54,13 +54,13 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
     }
   }
 
-  const Component = active ? Link : Box
+  const Component = active && href ? Link : Box
 
   return (
     <Component
       href={href}
       onClick={handleClick}
-      className={TokenList.join([`CategoryBanner`, `CategoryBanner--${type}`, active && `CategoryBanner--active`])}
+      className={TokenList.join(['CategoryBanner', `CategoryBanner--${type}`, active && 'CategoryBanner--active'])}
     >
       <div className={TokenList.join(['CategoryBanner__Icon', !active && 'CategoryBanner__Icon--inactive'])}>
         <img src={categoryIcons[type]} width="48" height="48" />
