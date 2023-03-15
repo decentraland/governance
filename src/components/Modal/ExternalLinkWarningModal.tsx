@@ -11,7 +11,7 @@ import './ExternalLinkWarningModal.css'
 
 type Props = Omit<ModalProps, 'children'>
 
-type WarningModalProps = {
+type WarningModalState = {
   isWarningModalOpen: boolean
   href: string
 }
@@ -27,18 +27,18 @@ const WHITELIST = [
   /^https:\/\/([a-zA-Z0-9]+\.)?dcl\.gg(\/[^\s]*)?$/g,
 ]
 
-const INITIAL_STATE: WarningModalProps = {
+const INITIAL_STATE: WarningModalState = {
   isWarningModalOpen: false,
   href: '',
 }
 
 function ExternalLinkWarningModal({ ...props }: Props) {
   const t = useFormatMessage()
-  const [warningModalProps, setWarningModalProps] = useState(INITIAL_STATE)
+  const [warningModalState, setWarningModalState] = useState(INITIAL_STATE)
 
-  const { isWarningModalOpen, href } = warningModalProps
+  const { isWarningModalOpen, href } = warningModalState
   const handleDismiss = useCallback(
-    () => setWarningModalProps((props) => ({ ...props, isWarningModalOpen: false })),
+    () => setWarningModalState((state) => ({ ...state, isWarningModalOpen: false })),
     []
   )
   const handleContinue = useCallback(() => openInNewTab(href), [href])
@@ -52,7 +52,7 @@ function ExternalLinkWarningModal({ ...props }: Props) {
         const matchedItem = WHITELIST.find((regex) => regex.test(url.href))
         if (!matchedItem) {
           event.preventDefault()
-          setWarningModalProps({ isWarningModalOpen: true, href: url.href })
+          setWarningModalState({ isWarningModalOpen: true, href: url.href })
         }
       }
     }
