@@ -34,7 +34,7 @@ export default function CompetingProposals({ proposal, budget }: Props) {
         className={'CompetingProposals__Title'}
       >{`This proposal is competing with ${contestantsAmount} others for funds`}</span>
       <ChevronRightCircleOutline />
-      <CompetingProposalsSidebar proposal={proposal} budget={budget} visible={sidebarOpen} />
+      <CompetingProposalsSidebar proposal={proposal} budget={budget} isSidebarVisible={sidebarOpen} />
     </div>
   )
 }

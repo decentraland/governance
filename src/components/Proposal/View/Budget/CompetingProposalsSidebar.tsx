@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -20,16 +20,17 @@ import './CompetingProposalsSidebar.css'
 interface Props {
   proposal: ProposalAttributes
   budget: BudgetWithContestants
-  visible: boolean
+  isSidebarVisible: boolean
 }
 
 //TODO: consider case when requested is over available!
 function getBarItems(
+  // eslint-disable-next-line @typescript-eslint/ban-types
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
-  highlightedContestant: string,
-  setHighlightedContestant: (value: ((prevState: string) => string) | string) => void
+  highlightedContestant: string | null,
+  setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void
 ) {
   const contestedBudget = categoryBudget.contested || 0
   const requestedBudget = proposal.configuration.size
@@ -43,17 +44,20 @@ function getBarItems(
       className: 'GrantedFundsBar',
     },
   ]
+
+  // add contestants
   categoryBudget?.contestants.forEach((contestant) => {
     if (contestant.id !== proposal.id) {
       items.push({
         value: contestant.size,
         className: 'ContestedBudgetBar',
+        selected: highlightedContestant === contestant.id,
         onHover: (e: React.MouseEvent<unknown>) => {
           e.preventDefault()
           setHighlightedContestant(contestant.id)
         },
         onBlur: () => {
-          setHighlightedContestant('')
+          setHighlightedContestant(null)
         },
         popupContent: {
           title: contestant.title,
@@ -63,10 +67,11 @@ function getBarItems(
     }
   })
 
+  // add this initiative
   items.push({
     value: requestedBudget,
     className: 'ThisInitiativeBar',
-    selected: highlightedContestant === '',
+    selected: !highlightedContestant,
     popupContent: {
       title: proposal.title,
       content: <span>{`$${t('general.number', { value: requestedBudget })}`}</span>,
@@ -80,7 +85,7 @@ function getBarItems(
   return items
 }
 
-export default function CompetingProposalsSidebar({ proposal, budget, visible }: Props) {
+export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible }: Props) {
   const t = useFormatMessage()
   const grantCategory = proposal.configuration.category
   const categoryBudget = budget.categories[snakeCase(grantCategory)]
@@ -89,8 +94,12 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
   const uncontestedTotalBudget = (categoryBudget?.available || 0) - contestedBudget
   const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
   const contestants = categoryBudget.contestants.filter((contestant) => contestant.id !== proposal.id)
-  const [highlightedContestant, setHighlightedContestant] = useState('')
-  const items = getBarItems(t, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
+  const [highlightedContestant, setHighlightedContestant] = useState<string | null>(null)
+  const items = useMemo(() => {
+    return getBarItems(t, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
+  }, [categoryBudget, highlightedContestant, proposal, t])
+
+  useEffect(() => setHighlightedContestant(null), [isSidebarVisible])
 
   //TODO: internationalization
   return (
@@ -98,7 +107,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
       className="CompetingProposalsSidebar"
       animation={'push'}
       direction={'right'}
-      visible={visible}
+      visible={isSidebarVisible}
       width={'very wide'}
     >
       <div className="CompetingProposalsSidebar__Content">
@@ -120,7 +129,12 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
                   0
                 )})`}</span>
               </div>
-              <DistributionBar items={items} total={totalCategoryBudget} className="ContestedBudget__DistributionBar" />
+              <DistributionBar
+                items={items}
+                total={totalCategoryBudget}
+                className="ContestedBudget__DistributionBar"
+                hidePopups={!isSidebarVisible}
+              />
             </div>
           }
           subtitle={
@@ -162,7 +176,12 @@ export default function CompetingProposalsSidebar({ proposal, budget, visible }:
         </div>
 
         {contestants.map((contestant, index) => (
-          <div className="ContestedBudgetCard__Row" key={`contestant-${index}`}>
+          <div
+            className="ContestedBudgetCard__Row"
+            key={`contestant-${index}`}
+            onMouseEnter={() => setHighlightedContestant(contestant.id)}
+            onMouseLeave={() => setHighlightedContestant(null)}
+          >
             <CompetingProposal proposal={contestant} highlight={highlightedContestant === contestant.id} />
           </div>
         ))}
