@@ -114,7 +114,7 @@ export default function ProposalsPage() {
     )
   }
 
-  const isLoading = isLoadingProposals && votesState.loading
+  const isLoading = !proposals || (isLoadingProposals && votesState.loading)
 
   return (
     <>

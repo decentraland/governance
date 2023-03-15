@@ -53,7 +53,6 @@ export default function GrantsPage() {
   const { grants, isLoadingGrants } = useGrants()
   const location = useLocation()
   const params = new URLSearchParams(location.search)
-  const isLoading = isEmpty(grants) && isLoadingGrants
   const type = params.get('type')
   const status = params.get('status')
 
@@ -72,6 +71,8 @@ export default function GrantsPage() {
       />
     )
   }
+
+  const isLoading = grants.total === 0 || isLoadingGrants
 
   return (
     <div>
