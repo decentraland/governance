@@ -111,6 +111,7 @@ export class Governance extends API {
       `/proposals${query}`,
       options
     )
+
     return {
       ...proposals,
       data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
