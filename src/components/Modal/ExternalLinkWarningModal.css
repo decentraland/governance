@@ -1,0 +1,11 @@
+.ExternalLinkWarningModal__Title {
+  margin-bottom: 24px;
+}
+
+.ExternalLinkWarningModal__Title * {
+  text-align: center;
+}
+
+.ExternalLinkWarningModal__Actions button:not(:last-child) {
+  margin-bottom: 15px;
+}

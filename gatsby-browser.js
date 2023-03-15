@@ -18,19 +18,19 @@ import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Navbar from './src/components/Layout/Navbar'
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
+import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment";
 import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar";
 import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants";
 
 export function wrapRootElement({ element }) {
-  return (<AuthProvider>
-    <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
-    {typeof window !== 'undefined' && ROLLBAR_TOKEN && <Rollbar
-      key="rollbar"
-      accessToken={ROLLBAR_TOKEN}
-    />}
-    {typeof window !== 'undefined' && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
-  </AuthProvider>)
+  return (
+    <AuthProvider>
+      <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
+      {typeof window !== 'undefined' && ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
+      {typeof window !== 'undefined' && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
+    </AuthProvider>
+  )
 }
 
 export const wrapPageElement = ({ element, props }) => {
@@ -41,6 +41,7 @@ export const wrapPageElement = ({ element, props }) => {
           {element}
         </Layout>
       </BurgerMenuStatusContextProvider>
+      <ExternalLinkWarningModal />
     </IntlProvider>
   )
 }
