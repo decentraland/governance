@@ -34,6 +34,10 @@
   font-weight: 500;
 }
 
+.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph {
+  white-space: pre-line;
+}
+
 .ProposalDetailPage .ProposalDetailDescription .dg.Paragraph,
 .ProposalDetailPage .ProposalDetailDescription .dg.ListItem {
   font-size: 15px;
