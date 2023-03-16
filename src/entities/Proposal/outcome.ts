@@ -6,6 +6,7 @@ import { config } from '../../config'
 import { Scores } from '../Votes/utils'
 
 import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types'
+import { DEFAULT_CHOICES } from './utils'
 
 function sameOptions(options: string[], expected: string[]) {
   if (options.length !== expected.length) {
@@ -59,7 +60,11 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
     }
 
     const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
-    const isYesNo = sameOptions(choices, ['yes', 'no'])
+    const isYesNo = sameOptions(
+      choices,
+      DEFAULT_CHOICES.map((choice) => choice.toLowerCase())
+    )
+
     const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
     const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
 
