@@ -6,6 +6,21 @@
   text-align: center;
 }
 
+.ExternalLinkWarningModal__Title .dg.Paragraph {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.ExternalLinkWarningModal__Title .ui.header {
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.ExternalLinkWarningModal__Title .dg.Paragraph,
+.ExternalLinkWarningModal__Actions {
+  padding: 0 50px;
+}
+
 .ExternalLinkWarningModal__Actions button:not(:last-child) {
   margin-bottom: 15px;
 }
