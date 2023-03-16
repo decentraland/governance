@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -69,7 +69,7 @@ function ExternalLinkWarningModal({ ...props }: Props) {
       <Modal.Content>
         <div className={'ExternalLinkWarningModal__Title'}>
           <Header>{t('modal.external_link_warning.title')}</Header>
-          <Paragraph>{t('modal.external_link_warning.description')}</Paragraph>
+          <Markdown>{t('modal.external_link_warning.description', { url: warningModalState.href })}</Markdown>
         </div>
         <div className={'ExternalLinkWarningModal__Actions'}>
           <Button fluid primary className={'ExternalLinkWarningModal__Button'} onClick={handleContinue}>

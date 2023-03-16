@@ -9,6 +9,13 @@
 .ExternalLinkWarningModal__Title .dg.Paragraph {
   font-size: 15px;
   line-height: 24px;
+  white-space: pre-line;
+}
+
+.ExternalLinkWarningModal__Title .dg.Paragraph a {
+  color: var(--black-800);
+  pointer-events: none;
+  cursor: default;
 }
 
 .ExternalLinkWarningModal__Title .ui.header {
