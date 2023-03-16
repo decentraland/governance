@@ -20,8 +20,8 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
   const t = useFormatMessage()
 
   return (
-    <div className="Co-author">
-      <div className="Title__Container">
+    <div className="CoAuthors">
+      <div className="CoAuthors__TitleContainer">
         <div className="Label">{t('page.submit.co_author_label')}</div>
         <sup className="Optional">{t('page.submit.optional_tooltip')}</sup>
       </div>

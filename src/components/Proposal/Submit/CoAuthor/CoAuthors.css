@@ -1,16 +1,16 @@
-.Co-author .Title__Container {
+.CoAuthors__TitleContainer {
   display: flex;
   align-items: center;
 }
 
-.Co-author .Title__Container {
+.CoAuthors__TitleContainer {
   line-height: 18px;
 }
 
-.Co-author .Title__Container > :not(:first-child) {
+.CoAuthors__TitleContainer > :not(:first-child) {
   margin-left: 5px;
 }
 
-.Co-author .dg.Paragraph.details {
+.CoAuthors .dg.Paragraph.details {
   margin-bottom: 20px !important;
 }

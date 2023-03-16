@@ -84,11 +84,13 @@
 .GrantRequestSection__Field--row {
   justify-content: space-between;
   flex-direction: row;
+  gap: 21px;
 }
 
 .GrantRequestSection__Sublabel,
 .GrantRequestSection__Sublabel .dg.Paragraph,
-.Co-author > .dg.Paragraph.details {
+/* TODO: Avoid changing other components classes directly from another component, difficult to refactor */
+.CoAuthors > .dg.Paragraph.details {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
@@ -106,7 +108,8 @@ p.EmailNote {
   margin-top: 8px;
 }
 
-.Co-author > .Title__Container > .Label {
+/* TODO: Avoid changing other components classes directly from another component, difficult to refactor */
+.CoAuthors > .Title__Container > .Label {
   display: block;
   margin-bottom: 8px;
   font-style: normal;
