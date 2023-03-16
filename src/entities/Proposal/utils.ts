@@ -17,7 +17,7 @@ export const MIN_PROPOSAL_OFFSET = 0
 export const MAX_PROPOSAL_LIMIT = 100
 export const SITEMAP_ITEMS_PER_PAGE = 100
 
-export const DEFAULT_CHOICES = ['yes', 'no']
+export const DEFAULT_CHOICES = ['Yes', 'No', 'Abstain']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
 export const JOIN_DISCORD_URL = env('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
