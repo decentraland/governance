@@ -1,8 +1,8 @@
 .CompetingProposals {
   height: 47px;
-  background: #ffffff;
-  border: 1px solid #dddce0;
-  box-shadow: 0px 0px 10px rgba(115, 110, 125, 0.15);
+  background: var(--white-900);
+  border: 1px solid var(--black-300);
+  box-shadow: 0 0 10px rgba(115, 110, 125, 0.15); /*TODO: Add to theme*/
   border-radius: 6px;
   display: flex;
   width: 100%;

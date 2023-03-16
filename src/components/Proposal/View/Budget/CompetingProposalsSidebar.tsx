@@ -17,7 +17,7 @@ import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSecti
 import CompetingProposal from './CompetingProposal'
 import './CompetingProposalsSidebar.css'
 
-//TODO: consider case when requested is over available!
+//TODO: case when requested is over available budget
 function getBarItems(
   // eslint-disable-next-line @typescript-eslint/ban-types
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
