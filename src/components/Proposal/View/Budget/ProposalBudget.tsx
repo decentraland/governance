@@ -4,6 +4,7 @@ import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { isDevEnv } from '../../../../modules/env'
 import { ContentSection } from '../../../Layout/ContentLayout'
 
 import CategoryTotalCard from './CategoryTotalCard'
@@ -16,6 +17,8 @@ interface Props {
   budget: BudgetWithContestants
 }
 
+const COMPETING_PROPOSALS_FEATURE_ENABLED = isDevEnv()
+
 export default function ProposalBudget({ proposal, budget }: Props) {
   const grantCategory = proposal.configuration.category
   const contestantsAmount = (budget.categories[snakeCase(grantCategory)]?.contestants.length || 0) - 1
@@ -26,7 +29,7 @@ export default function ProposalBudget({ proposal, budget }: Props) {
         <RequestedBudgetCard proposal={proposal} budget={budget} />
         <CategoryTotalCard proposal={proposal} budget={budget} />
       </div>
-      {contestantsAmount > 0 && (
+      {COMPETING_PROPOSALS_FEATURE_ENABLED && contestantsAmount > 0 && (
         <div className="ProposalBudget__Row">
           <CompetingProposals proposal={proposal} budget={budget} />
         </div>
