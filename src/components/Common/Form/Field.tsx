@@ -1,7 +1,7 @@
 import React from 'react'
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
-import { Field as DCLField, FieldProps } from 'decentraland-ui'
+import { Field as DCLField, FieldProps } from 'decentraland-ui/dist/components/Field/Field'
 
 interface Props<T extends FieldValues> extends FieldProps {
   control: Control<T>
