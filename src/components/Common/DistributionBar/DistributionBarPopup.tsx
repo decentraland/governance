@@ -5,10 +5,22 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import './DistributionBarPopup.css'
 
+type PopupPropsPosition =
+  | 'top center'
+  | 'top left'
+  | 'top right'
+  | 'bottom right'
+  | 'bottom left'
+  | 'right center'
+  | 'left center'
+  | 'bottom center'
+  | undefined
+
 export interface DistributionBarPopupContent {
   title: string
   content: React.ReactNode
   sub?: React.ReactNode
+  position?: PopupPropsPosition
 }
 
 interface DistributionBarPopupProps {
@@ -21,7 +33,14 @@ const DistributionBarPopup = ({ popupContent, open, children }: DistributionBarP
   const t = useFormatMessage()
 
   return (
-    <Popup className="DistributionBarPopup" position="top center" trigger={children} open={open} hideOnScroll={true}>
+    <Popup
+      className="DistributionBarPopup"
+      position={popupContent.position || 'top center'}
+      trigger={children}
+      open={open}
+      hideOnScroll={true}
+      hoverable={false}
+    >
       <Popup.Content>
         <div className="DistributionBarPopup">
           <div className="DistributionBarPopup__Title">{t(popupContent.title)}</div>

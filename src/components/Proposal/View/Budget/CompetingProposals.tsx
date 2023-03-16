@@ -23,18 +23,21 @@ export default function CompetingProposals({ proposal, budget }: Props) {
 
   if (!contestantsAmount || contestantsAmount < 1) return null
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
-
   //TODO: internationalization
   return (
-    <div className={'CompetingProposals'} onClick={toggleSidebar}>
+    <div className={'CompetingProposals'} onClick={() => setSidebarOpen(true)}>
       <span
         className={'CompetingProposals__Title'}
       >{`This proposal is competing with ${contestantsAmount} others for funds`}</span>
       <ChevronRightCircleOutline />
-      <CompetingProposalsSidebar proposal={proposal} budget={budget} isSidebarVisible={sidebarOpen} />
+      <CompetingProposalsSidebar
+        proposal={proposal}
+        budget={budget}
+        isSidebarVisible={sidebarOpen}
+        onClose={() => {
+          setSidebarOpen(false)
+        }}
+      />
     </div>
   )
 }

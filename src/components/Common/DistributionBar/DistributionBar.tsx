@@ -11,10 +11,10 @@ interface Props {
   total: number
   isLoading?: boolean
   className?: string
-  hidePopups: boolean
+  showPopups: boolean
 }
 
-const DistributionBar = ({ items, total, isLoading, hidePopups, className }: Props) => {
+const DistributionBar = ({ items, total, isLoading, showPopups, className }: Props) => {
   if (isLoading) {
     return (
       <div className={className}>
@@ -32,7 +32,7 @@ const DistributionBar = ({ items, total, isLoading, hidePopups, className }: Pro
               key={`distribution-bar-item-${index}`}
               value={value}
               total={total}
-              popupContent={hidePopups ? undefined : popupContent}
+              popupContent={showPopups ? popupContent : undefined}
               className={className}
               selected={selected}
               onHover={onHover}

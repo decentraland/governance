@@ -32,6 +32,7 @@ const DistributionBarItem = ({ value, className, selected, total, popupContent, 
               'DistributionBarItem',
               !!selected && 'DistributionBarItem--selected',
               className,
+              !!selected && `${className}--selected`,
             ])}
             style={{ width: getFormattedPercentage(value, total) }}
             onMouseEnter={onHover}

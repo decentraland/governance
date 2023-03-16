@@ -17,12 +17,6 @@ import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSecti
 import CompetingProposal from './CompetingProposal'
 import './CompetingProposalsSidebar.css'
 
-interface Props {
-  proposal: ProposalAttributes
-  budget: BudgetWithContestants
-  isSidebarVisible: boolean
-}
-
 //TODO: consider case when requested is over available!
 function getBarItems(
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -53,7 +47,6 @@ function getBarItems(
         className: 'ContestedBudgetBar',
         selected: highlightedContestant === contestant.id,
         onHover: (e: React.MouseEvent<unknown>) => {
-          e.preventDefault()
           setHighlightedContestant(contestant.id)
         },
         onBlur: () => {
@@ -62,6 +55,7 @@ function getBarItems(
         popupContent: {
           title: contestant.title,
           content: <span>{`$${t('general.number', { value: contestant.size })}`}</span>,
+          position: 'bottom center',
         },
       })
     }
@@ -85,7 +79,14 @@ function getBarItems(
   return items
 }
 
-export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible }: Props) {
+type Props = {
+  proposal: ProposalAttributes
+  budget: BudgetWithContestants
+  isSidebarVisible: boolean
+  onClose: () => void
+}
+
+export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible, onClose }: Props) {
   const t = useFormatMessage()
   const grantCategory = proposal.configuration.category
   const categoryBudget = budget.categories[snakeCase(grantCategory)]
@@ -98,14 +99,46 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   const items = useMemo(() => {
     return getBarItems(t, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
   }, [categoryBudget, highlightedContestant, proposal, t])
+  const [showPopups, setShowPopups] = useState(false)
 
-  useEffect(() => setHighlightedContestant(null), [isSidebarVisible])
+  // useEffect(() => setHighlightedContestant(null), [isSidebarVisible])
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const sidebar = document.querySelector('.CompetingProposalsSidebar')
+      if (sidebar && !sidebar.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    if (isSidebarVisible) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isSidebarVisible, onClose])
+
+  function handleClose(e: React.MouseEvent<unknown>) {
+    e.preventDefault()
+    e.stopPropagation()
+    onClose()
+  }
 
   //TODO: internationalization
   return (
     <Sidebar
       className="CompetingProposalsSidebar"
       animation={'push'}
+      onShow={() => {
+        setShowPopups(true)
+      }}
+      onHide={() => {
+        setShowPopups(false)
+      }}
       direction={'right'}
       visible={isSidebarVisible}
       width={'very wide'}
@@ -113,7 +146,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
       <div className="CompetingProposalsSidebar__Content">
         <div className="CompetingProposalsSidebar__TitleContainer">
           <span className="CompetingProposalsSidebar__Title">{`${toNewGrantCategory(grantCategory)} Budget`}</span>
-          <Close />
+          <Close onClick={handleClose} />
         </div>
 
         <GrantRequestSectionCard
@@ -133,7 +166,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
                 items={items}
                 total={totalCategoryBudget}
                 className="ContestedBudget__DistributionBar"
-                hidePopups={!isSidebarVisible}
+                showPopups={showPopups}
               />
             </div>
           }
