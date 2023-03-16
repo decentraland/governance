@@ -10,7 +10,6 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../../clients/Governance'
@@ -18,6 +17,7 @@ import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entiti
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
+import Field from '../../Common/Form/Field'
 import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
@@ -167,7 +167,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
             {t('page.submit_poi.coordinates_detail')}
           </Paragraph>
           <div className="CoordinatesField__Inputs">
-            <Controller
+            <Field
               control={control}
               name="x"
               rules={{
@@ -175,20 +175,15 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
                 min: { value: schema.x.minimum, message: t('error.poi.coordinates_out_of_map') },
                 max: { value: schema.x.maximum, message: t('error.poi.coordinates_out_of_map') },
               }}
-              render={({ field: { ref, ...field } }) => (
-                <Field
-                  type="number"
-                  min={schema.x.minimum}
-                  max={schema.x.maximum}
-                  placeholder={t('page.submit_poi.x_placeholder')}
-                  error={!!errors.x}
-                  disabled={formDisabled}
-                  {...field}
-                />
-              )}
+              type="number"
+              min={schema.x.minimum}
+              max={schema.x.maximum}
+              placeholder={t('page.submit_poi.x_placeholder')}
+              error={!!errors.x}
+              disabled={formDisabled}
             />
 
-            <Controller
+            <Field
               control={control}
               name="y"
               rules={{
@@ -196,17 +191,12 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
                 min: { value: schema.y.minimum, message: t('error.poi.coordinates_out_of_map') },
                 max: { value: schema.y.maximum, message: t('error.poi.coordinates_out_of_map') },
               }}
-              render={({ field: { ref, ...field } }) => (
-                <Field
-                  type="number"
-                  min={schema.y.minimum}
-                  max={schema.y.maximum}
-                  placeholder={t('page.submit_poi.y_placeholder')}
-                  error={!!errors.y}
-                  disabled={formDisabled}
-                  {...field}
-                />
-              )}
+              type="number"
+              min={schema.y.minimum}
+              max={schema.y.maximum}
+              placeholder={t('page.submit_poi.y_placeholder')}
+              error={!!errors.y}
+              disabled={formDisabled}
             />
 
             {(errors.x || errors.y) && (
