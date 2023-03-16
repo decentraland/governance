@@ -67,7 +67,7 @@ function getBarItems(
     className: 'ThisInitiativeBar',
     selected: !highlightedContestant,
     popupContent: {
-      title: proposal.title,
+      title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
       content: <span>{`$${t('general.number', { value: requestedBudget })}`}</span>,
     },
   })
@@ -101,8 +101,6 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   }, [categoryBudget, highlightedContestant, proposal, t])
   const [showPopups, setShowPopups] = useState(false)
 
-  // useEffect(() => setHighlightedContestant(null), [isSidebarVisible])
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const sidebar = document.querySelector('.CompetingProposalsSidebar')
@@ -128,7 +126,6 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
     onClose()
   }
 
-  //TODO: internationalization
   return (
     <Sidebar
       className="CompetingProposalsSidebar"
@@ -145,7 +142,11 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
     >
       <div className="CompetingProposalsSidebar__Content">
         <div className="CompetingProposalsSidebar__TitleContainer">
-          <span className="CompetingProposalsSidebar__Title">{`${toNewGrantCategory(grantCategory)} Budget`}</span>
+          <span className="CompetingProposalsSidebar__Title">
+            {t('page.proposal_detail.grant.competing_proposals.sidebar.title', {
+              category: toNewGrantCategory(grantCategory),
+            })}
+          </span>
           <Close onClick={handleClose} />
         </div>
 
@@ -174,9 +175,11 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
             <div className="ContestedBudgetCard__Row">
               <div className="ContestedBudgetCard__Label">
                 <div className={TokenList.join(['ContestedBudgetCard__Legend', 'GrantedFundsLegend'])} />
-                <span className="GrantedFundsLabel">{`Granted Funds $${t('general.number', {
-                  value: categoryBudget.allocated,
-                })}`}</span>
+                <span className="GrantedFundsLabel">
+                  {t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds', {
+                    amount: t('general.number', { value: categoryBudget.allocated }),
+                  })}
+                </span>
                 <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
                   categoryBudget.allocated,
                   categoryBudget.total,
@@ -186,9 +189,11 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
               {uncontestedTotalBudgetDisplayed > 0 && (
                 <div className="ContestedBudgetCard__Label">
                   <div className={TokenList.join(['ContestedBudgetCard__Legend', 'UncontestedFundsLegend'])} />
-                  <span className="GrantedFundsLabel">{`Uncontested $${t('general.number', {
-                    value: uncontestedTotalBudgetDisplayed,
-                  })}`}</span>
+                  <span className="GrantedFundsLabel">
+                    {t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds', {
+                      amount: t('general.number', { value: uncontestedTotalBudgetDisplayed }),
+                    })}
+                  </span>
                   <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
                     uncontestedTotalBudgetDisplayed,
                     categoryBudget.total,
@@ -203,9 +208,11 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
 
       <div className="CompetingProposalsSidebar__Content">
         <div className="CompetingProposalsSidebar__TitleContainer">
-          <span className="CompetingProposalsSidebar__Title">{`Other ${toNewGrantCategory(
-            grantCategory
-          )} Initiatives`}</span>
+          <span className="CompetingProposalsSidebar__Title">
+            {t('page.proposal_detail.grant.competing_proposals.sidebar.other_initiatives_title', {
+              category: toNewGrantCategory(grantCategory),
+            })}
+          </span>
         </div>
 
         {contestants.map((contestant, index) => (

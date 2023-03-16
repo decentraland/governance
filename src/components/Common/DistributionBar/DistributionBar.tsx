@@ -11,10 +11,10 @@ interface Props {
   total: number
   isLoading?: boolean
   className?: string
-  showPopups: boolean
+  showPopups?: boolean
 }
 
-const DistributionBar = ({ items, total, isLoading, showPopups, className }: Props) => {
+const DistributionBar = ({ items, total, isLoading, showPopups = true, className }: Props) => {
   if (isLoading) {
     return (
       <div className={className}>

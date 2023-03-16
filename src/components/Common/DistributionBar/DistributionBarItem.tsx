@@ -7,7 +7,6 @@ import { getFormattedPercentage } from '../../../helpers'
 import './DistributionBarItem.css'
 import DistributionBarPopup, { DistributionBarPopupContent } from './DistributionBarPopup'
 
-
 export type DistributionBarItemProps = {
   popupContent?: DistributionBarPopupContent
   value: number
@@ -23,33 +22,28 @@ const DistributionBarItem = ({ value, className, selected, total, popupContent, 
     return null
   }
 
+  const horizontalBar = (
+    <div
+      className={TokenList.join([
+        'DistributionBarItem',
+        !!selected && 'DistributionBarItem--selected',
+        className,
+        !!selected && `${className}--selected`,
+      ])}
+      style={{ width: getFormattedPercentage(value, total) }}
+      onMouseEnter={onHover}
+      onMouseLeave={onBlur}
+    />
+  )
+
   return (
     <>
       {popupContent ? (
         <DistributionBarPopup popupContent={popupContent} open={selected}>
-          <div
-            className={TokenList.join([
-              'DistributionBarItem',
-              !!selected && 'DistributionBarItem--selected',
-              className,
-              !!selected && `${className}--selected`,
-            ])}
-            style={{ width: getFormattedPercentage(value, total) }}
-            onMouseEnter={onHover}
-            onMouseLeave={onBlur}
-          />
+          {horizontalBar}
         </DistributionBarPopup>
       ) : (
-        <div
-          className={TokenList.join([
-            'DistributionBarItem',
-            !!selected && 'DistributionBarItem--selected',
-            className,
-          ])}
-          style={{ width: getFormattedPercentage(value, total) }}
-          onMouseEnter={onHover}
-          onMouseLeave={onBlur}
-        />
+        horizontalBar
       )}
     </>
   )

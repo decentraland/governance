@@ -23,12 +23,11 @@ export default function CompetingProposals({ proposal, budget }: Props) {
 
   if (!contestantsAmount || contestantsAmount < 1) return null
 
-  //TODO: internationalization
   return (
     <div className={'CompetingProposals'} onClick={() => setSidebarOpen(true)}>
-      <span
-        className={'CompetingProposals__Title'}
-      >{`This proposal is competing with ${contestantsAmount} others for funds`}</span>
+      <span className={'CompetingProposals__Title'}>
+        {t('page.proposal_detail.grant.competing_proposals.show_sidebar_label', { amount: contestantsAmount })}
+      </span>
       <ChevronRightCircleOutline />
       <CompetingProposalsSidebar
         proposal={proposal}
