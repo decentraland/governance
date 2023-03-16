@@ -74,28 +74,6 @@ async function validateAlreadyPointOfInterest(x: number, y: number, required: bo
   }
 }
 
-const getPoiErrorMessageKey = (errorType: string) => {
-  switch (errorType) {
-    case 'required':
-      return 'error.poi.coordinates_incomplete'
-    case 'max':
-    case 'min':
-    default:
-      return 'error.poi.coordinates_out_of_map'
-  }
-}
-
-const getDescriptionErrorMessageKey = (errorType: string) => {
-  switch (errorType) {
-    case 'maxLength':
-      return `error.poi.description_too_large`
-    case 'minLength':
-      return `error.poi.description_too_short`
-    default:
-      return `error.poi.description_empty`
-  }
-}
-
 interface Props {
   poiType: PoiType
 }
@@ -193,9 +171,9 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
               control={control}
               name="x"
               rules={{
-                required: true,
-                min: schema.x.minimum,
-                max: schema.x.maximum,
+                required: { value: true, message: t('error.poi.coordinates_incomplete') },
+                min: { value: schema.x.minimum, message: t('error.poi.coordinates_out_of_map') },
+                max: { value: schema.x.maximum, message: t('error.poi.coordinates_out_of_map') },
               }}
               render={({ field: { ref, ...field } }) => (
                 <Field
@@ -214,9 +192,9 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
               control={control}
               name="y"
               rules={{
-                required: true,
-                min: schema.y.minimum,
-                max: schema.y.maximum,
+                required: { value: true, message: t('error.poi.coordinates_incomplete') },
+                min: { value: schema.y.minimum, message: t('error.poi.coordinates_out_of_map') },
+                max: { value: schema.y.maximum, message: t('error.poi.coordinates_out_of_map') },
               }}
               render={({ field: { ref, ...field } }) => (
                 <Field
@@ -231,10 +209,10 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
               )}
             />
 
-            {errors && (
+            {(errors.x || errors.y) && (
               <div className="CoordinatesField__Error">
                 <Paragraph tiny primary>
-                  {t(getPoiErrorMessageKey(errors.x?.type || '')) || t(getPoiErrorMessageKey(errors.y?.type || ''))}
+                  {t(errors.x?.message || '') || t(errors.y?.message || '')}
                 </Paragraph>
               </div>
             )}
@@ -251,7 +229,11 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
           <Controller
             control={control}
             name="description"
-            rules={{ required: true, minLength: schema.description.minLength, maxLength: schema.description.maxLength }}
+            rules={{
+              required: { value: true, message: t('error.poi.description_empty') },
+              minLength: { value: schema.description.minLength, message: t('error.poi.description_too_short') },
+              maxLength: { value: schema.description.maxLength, message: t('error.poi.description_too_large') },
+            }}
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
@@ -259,7 +241,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
                 disabled={formDisabled}
                 error={!!errors.description}
                 message={
-                  t(getDescriptionErrorMessageKey(errors.description?.type || '')) +
+                  (errors.description?.message || '') +
                   ' ' +
                   t('page.submit.character_counter', {
                     current: watch('description').length,
