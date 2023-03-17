@@ -1,4 +1,4 @@
-.MetricsCard {
+.MetricsCard.ui.card {
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -8,6 +8,7 @@
   min-height: 110px;
   justify-content: center;
   scroll-snap-align: start;
+  margin: 0;
 }
 
 .MetricsCard__Container {
@@ -15,7 +16,7 @@
 }
 
 @media (min-width: 768px) {
-  .MetricsCard {
+  .MetricsCard.ui.card {
     flex: 1;
     margin-right: 0;
   }
