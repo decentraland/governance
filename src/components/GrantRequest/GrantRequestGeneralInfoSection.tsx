@@ -222,7 +222,7 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             error={!!state.error.email}
             disabled={isFormDisabled}
           />
-          <p className="EmailNote">{t('page.submit_grant.general_info.email_note')}</p>
+          <p className="GrantRequestSection__EmailNote">{t('page.submit_grant.general_info.email_note')}</p>
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.roadmap_label')}</Label>
