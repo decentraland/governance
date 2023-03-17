@@ -5,11 +5,9 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import './ExternalLinkWarningModal.css'
-
-type Props = Omit<ModalProps, 'children'>
 
 type WarningModalState = {
   isWarningModalOpen: boolean
@@ -32,19 +30,15 @@ const INITIAL_STATE: WarningModalState = {
   href: '',
 }
 
-function ExternalLinkWarningModal({ ...props }: Props) {
+function ExternalLinkWarningModal() {
   const t = useFormatMessage()
   const [warningModalState, setWarningModalState] = useState(INITIAL_STATE)
 
   const { isWarningModalOpen, href } = warningModalState
-  const handleDismiss = useCallback(
-    () => setWarningModalState((state) => ({ ...state, isWarningModalOpen: false })),
-    []
-  )
+  const handleDismiss = () => setWarningModalState((state) => ({ ...state, isWarningModalOpen: false }))
   const handleContinue = useCallback(() => {
     openInNewTab(href)
     handleDismiss()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [href])
 
   useEffect(() => {
@@ -69,7 +63,7 @@ function ExternalLinkWarningModal({ ...props }: Props) {
   }, [])
 
   return (
-    <Modal {...props} open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={handleDismiss}>
+    <Modal open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={handleDismiss}>
       <Modal.Content>
         <div className={'ExternalLinkWarningModal__Title'}>
           <Header>{t('modal.external_link_warning.title')}</Header>
