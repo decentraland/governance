@@ -21,7 +21,7 @@ const VALID_PROPOSAL: ProposalAttributes = {
   type: ProposalType.POI,
   status: ProposalStatus.Active,
   configuration: {
-    choices: [...DEFAULT_CHOICES.map((choice) => choice.toLowerCase())],
+    choices: [...DEFAULT_CHOICES],
   },
   start_at: new Date(),
   finish_at: new Date(),

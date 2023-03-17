@@ -29,10 +29,7 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
     }
 
     const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
-    const isYesNo = sameOptions(
-      choices,
-      DEFAULT_CHOICES.map((choice) => choice.toLowerCase())
-    )
+    const isUsingDefaultOptions = sameOptions(choices, DEFAULT_CHOICES)
 
     const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
     const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
@@ -42,9 +39,9 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
       outcome.outcomeStatus = ProposalOutcome.REJECTED
     } else if (winnerChoice === invalidOption) {
       outcome.outcomeStatus = ProposalOutcome.REJECTED
-    } else if (isYesNo || isAcceptReject || isForAgainst) {
+    } else if (isUsingDefaultOptions || isAcceptReject || isForAgainst) {
       if (
-        (isYesNo && results['yes'] > results['no']) ||
+        (isUsingDefaultOptions && results['yes'] > results['no']) ||
         (isAcceptReject && results['accept'] > results['reject']) ||
         (isForAgainst && results['for'] > results['against'])
       ) {
