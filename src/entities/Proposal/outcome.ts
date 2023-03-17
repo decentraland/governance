@@ -1,41 +1,11 @@
 import { Env } from '@dcl/ui-env'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
-import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { config } from '../../config'
-import { Scores } from '../Votes/utils'
 
+import { calculateWinnerChoice, getVotingResults, sameOptions } from './outcomeUtils'
 import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types'
-
-function sameOptions(options: string[], expected: string[]) {
-  if (options.length !== expected.length) {
-    return false
-  }
-
-  options = options.map((option) => option.toLowerCase()).sort()
-  expected = expected.map((option) => option.toLowerCase()).sort()
-  return options.every((option, i) => option === expected[i])
-}
-
-function calculateWinnerChoice(result: Scores) {
-  const winnerChoice = Object.keys(result).reduce((winner, choice) => {
-    if (!winner || result[winner] < result[choice]) {
-      return choice
-    }
-    return winner
-  })
-  const winnerVotingPower = result[winnerChoice]
-  return { winnerChoice, winnerVotingPower }
-}
-
-async function getVotingResults(proposal: ProposalAttributes<any>, choices: string[]) {
-  const snapshotScores = await SnapshotGraphql.get().getProposalScores(proposal.snapshot_id)
-  const result: Scores = {}
-  for (const choice of choices) {
-    result[choice] = snapshotScores[choices.indexOf(choice)]
-  }
-  return result
-}
+import { DEFAULT_CHOICES } from './utils'
 
 export const enum ProposalOutcome {
   REJECTED = 'REJECTED',
@@ -59,7 +29,8 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
     }
 
     const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
-    const isYesNo = sameOptions(choices, ['yes', 'no'])
+    const isUsingDefaultOptions = sameOptions(choices, DEFAULT_CHOICES)
+
     const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
     const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
 
@@ -68,9 +39,9 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
       outcome.outcomeStatus = ProposalOutcome.REJECTED
     } else if (winnerChoice === invalidOption) {
       outcome.outcomeStatus = ProposalOutcome.REJECTED
-    } else if (isYesNo || isAcceptReject || isForAgainst) {
+    } else if (isUsingDefaultOptions || isAcceptReject || isForAgainst) {
       if (
-        (isYesNo && results['yes'] > results['no']) ||
+        (isUsingDefaultOptions && results['yes'] > results['no']) ||
         (isAcceptReject && results['accept'] > results['reject']) ||
         (isForAgainst && results['for'] > results['against'])
       ) {
