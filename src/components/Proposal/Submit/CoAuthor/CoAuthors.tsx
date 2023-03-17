@@ -2,6 +2,7 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import Label from '../../../Common/Label'
 import SubLabel from '../../../Common/SubLabel'
 
 import CoAuthorSelect from './CoAuthorSelect'
@@ -21,8 +22,8 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
 
   return (
     <div className="CoAuthors">
-      <div className="CoAuthors__TitleContainer">
-        <div className="Label">{t('page.submit.co_author_label')}</div>
+      <div className="CoAuthors__LabelContainer">
+        <Label>{t('page.submit.co_author_label')}</Label>
         <sup className="Optional">{t('page.submit.optional_tooltip')}</sup>
       </div>
       <SubLabel>{t('page.submit.co_author_description')}</SubLabel>

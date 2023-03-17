@@ -1,13 +1,10 @@
-.CoAuthors__TitleContainer {
+.CoAuthors__LabelContainer {
   display: flex;
   align-items: center;
-}
-
-.CoAuthors__TitleContainer {
   line-height: 18px;
 }
 
-.CoAuthors__TitleContainer > :not(:first-child) {
+.CoAuthors__LabelContainer > :not(:first-child) {
   margin-left: 5px;
 }
 

@@ -144,7 +144,7 @@ const AddBudgetBreakdownModal = ({
             }
           />
         </ContentSection>
-        <ContentSection className="GrantRequestSection__Field GrantRequestSection__Field--row">
+        <ContentSection className="GrantRequestSection__FieldRow">
           <BudgetInput
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}
             value={state.value.estimatedBudget}

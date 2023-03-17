@@ -81,16 +81,16 @@
   margin-bottom: 0;
 }
 
-.GrantRequestSection__Field--row {
-  justify-content: space-between;
+.GrantRequestSection__FieldRow {
+  display: flex;
   flex-direction: row;
+  margin-bottom: 32px;
+  justify-content: space-between;
   gap: 21px;
 }
 
 .GrantRequestSection__Sublabel,
-.GrantRequestSection__Sublabel .dg.Paragraph,
-/* TODO: Avoid changing other components classes directly from another component, difficult to refactor */
-.CoAuthors > .dg.Paragraph.details {
+.GrantRequestSection__Sublabel .dg.Paragraph {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
@@ -101,20 +101,9 @@
   margin-bottom: 20px !important;
 }
 
-p.EmailNote {
+.GrantRequestSection__EmailNote {
   font-size: 10px;
   font-weight: 300;
   margin-bottom: 8px;
   margin-top: 8px;
-}
-
-/* TODO: Avoid changing other components classes directly from another component, difficult to refactor */
-.CoAuthors > .Title__Container > .Label {
-  display: block;
-  margin-bottom: 8px;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 24px;
-  color: var(--black-600);
 }
