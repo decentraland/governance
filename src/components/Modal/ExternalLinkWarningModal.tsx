@@ -41,7 +41,11 @@ function ExternalLinkWarningModal({ ...props }: Props) {
     () => setWarningModalState((state) => ({ ...state, isWarningModalOpen: false })),
     []
   )
-  const handleContinue = useCallback(() => openInNewTab(href), [href])
+  const handleContinue = useCallback(() => {
+    openInNewTab(href)
+    handleDismiss()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [href])
 
   useEffect(() => {
     const handleExternalLinkClick = (event: MouseEvent) => {
