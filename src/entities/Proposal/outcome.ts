@@ -1,42 +1,11 @@
 import { Env } from '@dcl/ui-env'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
-import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { config } from '../../config'
-import { Scores } from '../Votes/utils'
 
+import { calculateWinnerChoice, getVotingResults, sameOptions } from './outcomeUtils'
 import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types'
 import { DEFAULT_CHOICES } from './utils'
-
-function sameOptions(options: string[], expected: string[]) {
-  if (options.length !== expected.length) {
-    return false
-  }
-
-  options = options.map((option) => option.toLowerCase()).sort()
-  expected = expected.map((option) => option.toLowerCase()).sort()
-  return options.every((option, i) => option === expected[i])
-}
-
-function calculateWinnerChoice(result: Scores) {
-  const winnerChoice = Object.keys(result).reduce((winner, choice) => {
-    if (!winner || result[winner] < result[choice]) {
-      return choice
-    }
-    return winner
-  })
-  const winnerVotingPower = result[winnerChoice]
-  return { winnerChoice, winnerVotingPower }
-}
-
-async function getVotingResults(proposal: ProposalAttributes<any>, choices: string[]) {
-  const snapshotScores = await SnapshotGraphql.get().getProposalScores(proposal.snapshot_id)
-  const result: Scores = {}
-  for (const choice of choices) {
-    result[choice] = snapshotScores[choices.indexOf(choice)]
-  }
-  return result
-}
 
 export const enum ProposalOutcome {
   REJECTED = 'REJECTED',
