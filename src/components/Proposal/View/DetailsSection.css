@@ -33,8 +33,13 @@
 .DetailsSection .DetailsSection__Flex--Coauthors span {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: center;
+}
+
+@media (min-width: 1080px) {
+  .DetailsSection .DetailsSection__Flex--Coauthors span {
+    justify-content: flex-end;
+  }
 }
 
 .DetailsSection .DetailsSection__Flex--Coauthors span > svg {
