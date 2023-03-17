@@ -54,7 +54,7 @@ function BudgetBanner({ category, status, counter }: Props) {
           <span>{getCategoryIcon(snakeCase(category), CategoryIconVariant.Circled, 48)}</span>
         )}
         <BudgetBannerItem
-          value={intl.formatNumber(totalBudget, currencyFormatter)}
+          value={`$${intl.formatNumber(totalBudget, currencyFormatter)}`}
           label={t('page.grants.budget_banner.budget_label')}
         />
       </div>
@@ -72,7 +72,7 @@ function BudgetBanner({ category, status, counter }: Props) {
           <div className="BudgetBannerItem__Label">
             <div>
               <span>{t('page.grants.budget_banner.spent_label')}</span>
-              <span className="BudgetBanner__Amount">{intl.formatNumber(currentAmount, currencyFormatter)}</span>
+              <span className="BudgetBanner__Amount">${intl.formatNumber(currentAmount, currencyFormatter)}</span>
             </div>
             <div className="BudgetBanner__Percentage">{`${percentage}%`}</div>
           </div>
