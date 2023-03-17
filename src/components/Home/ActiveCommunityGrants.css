@@ -36,15 +36,18 @@
 
 @media (min-width: 425px) {
   .HoverableCardContainer {
-    height: 189px;
-    overflow: hidden;
+    height: 188px;
     border: 1px solid rgba(0, 0, 0, 0.04);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     border-radius: 8px;
+    transition: all 1s ease 0s;
+  }
+
+  .HoverableCardContainer__FirstRow {
+    z-index: 101;
   }
 
   .HoverableCardContainer:hover {
-    overflow: visible;
     z-index: 100;
   }
 }
