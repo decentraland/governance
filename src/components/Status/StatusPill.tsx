@@ -42,7 +42,7 @@ const StatusPill = ({ className, status, size, isLink }: Props) => {
   const icon = showIcon ? <Check color={iconColor} /> : null
 
   const Wrapper = isLink ? Link : Fragment
-  const href = isLink ? locations.proposals({ status }) : undefined
+  const href = isLink ? locations.proposals({ status: validStatus }) : undefined
 
   return (
     <>
