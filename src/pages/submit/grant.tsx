@@ -180,6 +180,14 @@ export default function SubmitGrant() {
     }
   }, [])
 
+  const handleFundingSectionValidation = useCallback(
+    (data, sectionValid) => {
+      patchGrantRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ fundingSectionValid: sectionValid })
+    },
+    [patchGrantRequest, patchValidationState]
+  )
+
   if (accountState.loading) {
     return <LoadingView />
   }
@@ -236,10 +244,7 @@ export default function SubmitGrant() {
               })
               navigate(locations.submit(ProposalType.Grant), { replace: true })
             }}
-            onValidation={(data, sectionValid) => {
-              patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-              patchValidationState({ fundingSectionValid: sectionValid })
-            }}
+            onValidation={handleFundingSectionValidation}
             isFormDisabled={isFormDisabled}
             sectionNumber={getSectionNumber()}
           />
