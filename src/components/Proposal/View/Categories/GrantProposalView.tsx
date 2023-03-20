@@ -27,6 +27,7 @@ function GrantProposalView({ config }: Props) {
     category,
     size,
     projectDuration,
+    vestingStartDate,
     abstract,
     beneficiary,
     email,
@@ -59,6 +60,12 @@ function GrantProposalView({ config }: Props) {
         <ProposalDescriptionItem
           title={t('page.proposal_view.grant.duration_title')}
           body={t('page.proposal_view.grant.breakdown_subtitle', { duration: projectDuration })}
+        />
+      )}
+      {vestingStartDate && (
+        <ProposalDescriptionItem
+          title={t('page.proposal_view.grant.payout_strategy_title')}
+          body={t('page.proposal_view.grant.payout_strategy_body', { startDate: vestingStartDate })}
         />
       )}
       <ProposalDescriptionItem title={t('page.proposal_view.grant.beneficiary_title')} body={beneficiary} />
