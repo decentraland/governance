@@ -15,7 +15,7 @@ interface Props {
 }
 
 const CURRENCY_FORMAT_OPTIONS = {
-  class: 'currency',
+  style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
 }
