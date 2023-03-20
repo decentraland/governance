@@ -20,8 +20,8 @@ interface Props {
 
 const CompetingProposal = ({ proposal, highlight }: Props) => {
   const t = useFormatMessage()
-  const { title, user, finish_at } = proposal
-  const { votes } = useProposalVotes(proposal.id)
+  const { id, title, user, finish_at } = proposal
+  const { votes } = useProposalVotes(id)
 
   const dateText = t(`page.home.open_proposals.${Time().isBefore(Time(finish_at)) ? 'ends_date' : 'ended_date'}`, {
     value: Time(finish_at).fromNow(),
@@ -30,7 +30,7 @@ const CompetingProposal = ({ proposal, highlight }: Props) => {
   return (
     <Link
       className={TokenList.join(['CompetingProposal', highlight && 'CompetingProposal--highlight'])}
-      href={locations.proposal(proposal.id)}
+      href={locations.proposal(id)}
     >
       <div className="CompetingProposal__Container">
         <span className="CompetingProposal__Title">{title}</span>

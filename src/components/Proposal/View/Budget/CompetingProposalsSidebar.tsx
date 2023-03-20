@@ -17,29 +17,15 @@ import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSecti
 import CompetingProposal from './CompetingProposal'
 import './CompetingProposalsSidebar.css'
 
-//TODO: case when requested is over available budget
-function getBarItems(
-  // eslint-disable-next-line @typescript-eslint/ban-types
+/* eslint-disable @typescript-eslint/ban-types */
+function getContestingProposalsItems(
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,
   setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void
 ) {
-  const contestedBudget = categoryBudget.contested || 0
-  const requestedBudget = proposal.configuration.size
-  const uncontestedTotalBudget = (categoryBudget?.available || 0) - contestedBudget
-  const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
-  const allocatedBudget = categoryBudget?.allocated || 0
-
-  const items: DistributionBarItemProps[] = [
-    {
-      value: allocatedBudget,
-      className: 'GrantedFundsBar',
-    },
-  ]
-
-  // add contestants
+  const items: DistributionBarItemProps[] = []
   categoryBudget?.contestants.forEach((contestant) => {
     if (contestant.id !== proposal.id) {
       items.push({
@@ -60,9 +46,37 @@ function getBarItems(
       })
     }
   })
+  return items
+}
 
-  // add this initiative
-  items.push({
+//TODO: case when requested is over available budget
+function getBarItems(
+  t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
+  proposal: ProposalAttributes,
+  categoryBudget: CategoryBudgetWithContestants,
+  highlightedContestant: string | null,
+  setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void
+) {
+  const contestedBudget = categoryBudget.contested || 0
+  const requestedBudget = proposal.configuration.size
+  const uncontestedTotalBudget = (categoryBudget?.available || 0) - contestedBudget
+  const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
+  const allocatedBudget = categoryBudget?.allocated || 0
+
+  const allocatedBudgetItem = {
+    value: allocatedBudget,
+    className: 'GrantedFundsBar',
+  }
+
+  const contestingProposalsItems = getContestingProposalsItems(
+    t,
+    proposal,
+    categoryBudget,
+    highlightedContestant,
+    setHighlightedContestant
+  )
+
+  const requestedBudgetItem = {
     value: requestedBudget,
     className: 'ThisInitiativeBar',
     selected: !highlightedContestant,
@@ -70,14 +84,17 @@ function getBarItems(
       title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
       content: <span>{`$${t('general.number', { value: requestedBudget })}`}</span>,
     },
-  })
+  }
 
-  items.push({
+  const uncontestedTotalBudgetItem = {
     value: uncontestedTotalBudgetDisplayed,
     className: 'UncontestedBudgetBar',
-  })
-  return items
+  }
+
+  return [allocatedBudgetItem, ...contestingProposalsItems, requestedBudgetItem, uncontestedTotalBudgetItem]
 }
+
+/* eslint-disable @typescript-eslint/ban-types */
 
 type Props = {
   proposal: ProposalAttributes
