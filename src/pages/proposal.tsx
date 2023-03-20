@@ -246,8 +246,8 @@ export default function ProposalPage() {
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
-            {proposal && <StatusPill status={proposal.status} />}
-            {proposal && <CategoryPill proposalType={proposal.type} />}
+            {proposal && <StatusPill isLink status={proposal.status} />}
+            {proposal && <CategoryPill isLink proposalType={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>

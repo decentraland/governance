@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+
 import Label from '../Common/Label'
 import Add from '../Icon/Add'
 import Remove from '../Icon/Remove'
@@ -13,9 +15,10 @@ interface Props {
   max: number
   label: string
   unitLabel: string
+  subtitle?: string
 }
 
-const NumberSelector = ({ value, onChange, min, max, label, unitLabel }: Props) => {
+const NumberSelector = ({ value, onChange, min, max, label, unitLabel, subtitle }: Props) => {
   const handleAddClick = useCallback(() => {
     if (value === max) {
       return
@@ -33,7 +36,7 @@ const NumberSelector = ({ value, onChange, min, max, label, unitLabel }: Props) 
   }, [onChange, min, value])
 
   return (
-    <div>
+    <div className="NumberSelector">
       <Label>{label}</Label>
       <div>
         <div className="NumberSelector__InputContainer">
@@ -49,6 +52,7 @@ const NumberSelector = ({ value, onChange, min, max, label, unitLabel }: Props) 
           <div className="NumberSelector__Description">{unitLabel}</div>
         </div>
       </div>
+      {subtitle && <Markdown className="NumberSelector__Subtitle">{subtitle}</Markdown>}
     </div>
   )
 }

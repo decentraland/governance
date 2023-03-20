@@ -14,12 +14,12 @@ import GrantCardHeader from './GrantCardHeader'
 import GrantCardHeadline from './GrantCardHeadline'
 import VestingProgress from './VestingProgress'
 
-export type GrantCardProps = React.HTMLAttributes<HTMLDivElement> & {
+interface Props {
   grant: GrantWithUpdate
   hoverable?: boolean
 }
 
-const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
+const GrantCard = ({ grant, hoverable = false }: Props) => {
   const { id, enacted_at } = grant
   const [expanded, setExpanded] = useState(!hoverable)
   const proposalInCliffPeriod = !!enacted_at && isProposalInCliffPeriod(enacted_at)
@@ -29,11 +29,7 @@ const GrantCard = ({ grant, hoverable = false }: GrantCardProps) => {
       href={locations.proposal(id)}
       onMouseEnter={() => hoverable && setExpanded(true)}
       onMouseLeave={() => hoverable && setExpanded(false)}
-      className={TokenList.join([
-        'GrantCard',
-        hoverable && !expanded && 'GrantCard__Collapsed',
-        hoverable && expanded && 'GrantCard__Expanded',
-      ])}
+      className={TokenList.join(['GrantCard', hoverable && 'GrantCard__Expanded'])}
     >
       <div>
         <GrantCardHeader grant={grant} />

@@ -144,7 +144,7 @@ const AddBudgetBreakdownModal = ({
             }
           />
         </ContentSection>
-        <ContentSection className="GrantRequestSection__Field GrantRequestSection__Field--row">
+        <ContentSection className="GrantRequestSection__FieldRow">
           <BudgetInput
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}
             value={state.value.estimatedBudget}
@@ -165,6 +165,7 @@ const AddBudgetBreakdownModal = ({
             onChange={(value) => editor.set({ duration: Number(value) })}
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
             unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
+            subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_subtitle')}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
