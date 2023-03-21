@@ -23,14 +23,15 @@ function getContestingProposalsItems(
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,
-  setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void
+  setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void,
+  isOverbudget: boolean
 ) {
   const items: DistributionBarItemProps[] = []
   categoryBudget?.contestants.forEach((contestant) => {
     if (contestant.id !== proposal.id) {
       items.push({
         value: contestant.size,
-        className: 'ContestedBudgetBar',
+        className: isOverbudget ? 'ContestedBudgetOverbudgetBar' : 'ContestedBudgetBar',
         selected: highlightedContestant === contestant.id,
         onHover: (e: React.MouseEvent<unknown>) => {
           setHighlightedContestant(contestant.id)
@@ -59,8 +60,10 @@ function getBarItems(
 ) {
   const contestedBudget = categoryBudget.contested || 0
   const requestedBudget = proposal.configuration.size
-  const uncontestedTotalBudget = (categoryBudget?.available || 0) - contestedBudget
-  const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
+  const availableBudget = categoryBudget?.available || 0
+  const uncontestedTotalBudget = availableBudget - contestedBudget
+  const isOverbudget = uncontestedTotalBudget <= 0
+  const uncontestedTotalBudgetDisplayed = !isOverbudget ? uncontestedTotalBudget : 0
   const allocatedBudget = categoryBudget?.allocated || 0
 
   const allocatedBudgetItem = {
@@ -73,12 +76,15 @@ function getBarItems(
     proposal,
     categoryBudget,
     highlightedContestant,
-    setHighlightedContestant
+    setHighlightedContestant,
+    isOverbudget
   )
+
+  console.log('isOverbudget', isOverbudget)
 
   const requestedBudgetItem = {
     value: requestedBudget,
-    className: 'ThisInitiativeBar',
+    className: isOverbudget ? 'ThisInitiativeOverbudgetBar' : 'ThisInitiativeBar',
     selected: !highlightedContestant,
     popupContent: {
       title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
@@ -86,12 +92,23 @@ function getBarItems(
     },
   }
 
+  // TODO: dont add if isOverbudget
   const uncontestedTotalBudgetItem = {
     value: uncontestedTotalBudgetDisplayed,
     className: 'UncontestedBudgetBar',
   }
 
-  return [allocatedBudgetItem, ...contestingProposalsItems, requestedBudgetItem, uncontestedTotalBudgetItem]
+  const availableOverBudget = {
+    value: availableBudget,
+    className: 'AvailableOverBudgetBar',
+  }
+
+  const distributionBarItems = [allocatedBudgetItem]
+  distributionBarItems.push(...contestingProposalsItems)
+  if (isOverbudget) distributionBarItems.push(availableOverBudget)
+  distributionBarItems.push(requestedBudgetItem)
+  if (!isOverbudget) distributionBarItems.push(uncontestedTotalBudgetItem)
+  return distributionBarItems
 }
 
 /* eslint-disable @typescript-eslint/ban-types */
@@ -180,6 +197,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
                   0
                 )})`}</span>
               </div>
+              {/*TODO: total changes if isOverbudget*/}
               <DistributionBar
                 items={items}
                 total={totalCategoryBudget}
