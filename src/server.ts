@@ -15,6 +15,7 @@ import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import budget from './entities/Budget/routes'
 import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
+import common from './entities/Common/routes'
 import debug from './entities/Debug/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
@@ -47,6 +48,7 @@ app.use('/api', [
   updates,
   coauthor,
   budget,
+  common,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

@@ -6,8 +6,8 @@ import toNumber from 'lodash/toNumber'
 import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
 
+import LinkWithTitle from '../Common/LinkWithTitle'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
-import Open from '../Icon/Open'
 
 import './BreakdownAccordion.css'
 
@@ -64,11 +64,7 @@ function BreakdownAccordion({ items }: Props) {
           </Accordion.Title>
           <Accordion.Content active={activeAccordionItem === accordionNumber}>
             <p>{description}</p>
-            {url && (
-              <a href={url} target="_blank" rel="noopener noreferrer" className="BreakdownAccordion__Link">
-                {t('page.proposal_view.grant.relevant_link')} <Open />
-              </a>
-            )}
+            {url && <LinkWithTitle url={url} />}
           </Accordion.Content>
         </Fragment>
       ))}
