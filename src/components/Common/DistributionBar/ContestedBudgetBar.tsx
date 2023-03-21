@@ -90,17 +90,13 @@ const ContestedBudgetBar = ({
         )}
       </div>
       {availableOverBudget && (
-        <div className={TokenList.join(['DistributionBar', 'HiddenDistributionBar'])}>
+        <div className={'HiddenDistributionBar'}>
           <>
             <DistributionBarItem
               key={`distribution-bar-item-allocated`}
               value={allocatedBudgetItem.value}
               total={total}
-              popupContent={showPopups ? allocatedBudgetItem.popupContent : undefined}
-              className={TokenList.join([allocatedBudgetItem.className, 'TransparentBar'])}
-              selected={allocatedBudgetItem.selected}
-              onHover={allocatedBudgetItem.onHover}
-              onBlur={allocatedBudgetItem.onBlur}
+              className={'TransparentBar'}
             />
             <DistributionBarItem
               key={`distribution-bar-item-available`}

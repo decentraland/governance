@@ -23,10 +23,15 @@
 
 .TransparentBar {
   background: transparent !important;
+  height: 2px !important;
 }
 
 .HiddenDistributionBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
+  border-radius: 4px;
   position: absolute;
 }
 
