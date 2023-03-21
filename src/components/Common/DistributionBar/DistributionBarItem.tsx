@@ -15,9 +15,11 @@ export type DistributionBarItemProps = {
   onHover?: (e: React.MouseEvent<unknown>) => void
   onBlur?: () => void
 }
-type Props = DistributionBarItemProps & { total: number }
+type Props = { item: DistributionBarItemProps; total: number; showPopup?: boolean }
 
-const DistributionBarItem = ({ value, className, selected, total, popupContent, onHover, onBlur }: Props) => {
+const DistributionBarItem = ({ item, total, showPopup }: Props) => {
+  const { value, className, selected, popupContent, onHover, onBlur } = item
+
   if (value <= 0) {
     return null
   }
@@ -38,7 +40,7 @@ const DistributionBarItem = ({ value, className, selected, total, popupContent, 
 
   return (
     <>
-      {popupContent ? (
+      {!!showPopup && popupContent ? (
         <DistributionBarPopup popupContent={popupContent} open={selected}>
           {horizontalBar}
         </DistributionBarPopup>

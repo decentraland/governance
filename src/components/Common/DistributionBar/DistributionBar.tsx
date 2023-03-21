@@ -27,16 +27,12 @@ const DistributionBar = ({ items, total, isLoading, showPopups = true, className
     <div className={className}>
       <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--empty'])}>
         {total > 0 &&
-          items.map(({ value, popupContent, className, selected, onHover, onBlur }, index) => (
+          items.map((item, index) => (
             <DistributionBarItem
               key={`distribution-bar-item-${index}`}
-              value={value}
+              item={item}
               total={total}
-              popupContent={showPopups ? popupContent : undefined}
-              className={className}
-              selected={selected}
-              onHover={onHover}
-              onBlur={onBlur}
+              showPopup={showPopups}
             />
           ))}
       </div>

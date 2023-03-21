@@ -16,7 +16,7 @@ import './CompetingProposal.css'
 interface Props {
   proposal: ProposalAttributes
   highlight: boolean
-  isOverBudget: boolean
+  isOverBudget?: boolean
 }
 
 const CompetingProposal = ({ proposal, highlight, isOverBudget }: Props) => {
@@ -32,8 +32,7 @@ const CompetingProposal = ({ proposal, highlight, isOverBudget }: Props) => {
     <Link
       className={TokenList.join([
         'CompetingProposal',
-        highlight && 'CompetingProposal--highlight',
-        isOverBudget && 'CompetingProposal--overbudget',
+        highlight && (isOverBudget ? 'CompetingProposal--overbudget' : 'CompetingProposal--highlight'),
       ])}
       href={locations.proposal(id)}
     >

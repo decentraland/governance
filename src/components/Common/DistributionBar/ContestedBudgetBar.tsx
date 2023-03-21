@@ -3,6 +3,8 @@ import Skeleton from 'react-loading-skeleton'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import { getFormattedPercentage } from '../../../helpers'
+
 import './ContestedBudgetBar.css'
 import DistributionBarItem, { DistributionBarItemProps } from './DistributionBarItem'
 
@@ -12,7 +14,7 @@ interface Props {
   className?: string
   showPopups?: boolean
   allocatedBudgetItem: DistributionBarItemProps
-  availableOverBudget?: DistributionBarItemProps
+  availableOverBudgetItem?: DistributionBarItemProps
   contestingProposalsItems: DistributionBarItemProps[]
   requestedBudgetItem: DistributionBarItemProps
   uncontestedTotalBudgetItem?: DistributionBarItemProps
@@ -20,7 +22,7 @@ interface Props {
 
 const ContestedBudgetBar = ({
   allocatedBudgetItem,
-  availableOverBudget,
+  availableOverBudgetItem,
   contestingProposalsItems,
   requestedBudgetItem,
   uncontestedTotalBudgetItem,
@@ -42,72 +44,30 @@ const ContestedBudgetBar = ({
       <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--empty'])}>
         {total > 0 && (
           <>
-            <DistributionBarItem
-              key={`distribution-bar-item-allocated`}
-              value={allocatedBudgetItem.value}
-              total={total}
-              popupContent={showPopups ? allocatedBudgetItem.popupContent : undefined}
-              className={allocatedBudgetItem.className}
-              selected={allocatedBudgetItem.selected}
-              onHover={allocatedBudgetItem.onHover}
-              onBlur={allocatedBudgetItem.onBlur}
-            />
-            {contestingProposalsItems.map(({ value, popupContent, className, selected, onHover, onBlur }, index) => (
+            <DistributionBarItem item={allocatedBudgetItem} total={total} showPopup={showPopups} />
+            {contestingProposalsItems.map((item, index) => (
               <DistributionBarItem
                 key={`distribution-bar-item-${index}`}
-                value={value}
+                item={item}
                 total={total}
-                popupContent={showPopups ? popupContent : undefined}
-                className={className}
-                selected={selected}
-                onHover={onHover}
-                onBlur={onBlur}
+                showPopup={showPopups}
               />
             ))}
-            <DistributionBarItem
-              key={`distribution-bar-item-requested`}
-              value={requestedBudgetItem.value}
-              total={total}
-              popupContent={showPopups ? requestedBudgetItem.popupContent : undefined}
-              className={requestedBudgetItem.className}
-              selected={requestedBudgetItem.selected}
-              onHover={requestedBudgetItem.onHover}
-              onBlur={requestedBudgetItem.onBlur}
-            />
+            <DistributionBarItem item={requestedBudgetItem} total={total} showPopup={showPopups} />
             {uncontestedTotalBudgetItem && (
-              <DistributionBarItem
-                key={`distribution-bar-item-uncontested`}
-                value={uncontestedTotalBudgetItem.value}
-                total={total}
-                popupContent={showPopups ? uncontestedTotalBudgetItem.popupContent : undefined}
-                className={uncontestedTotalBudgetItem.className}
-                selected={uncontestedTotalBudgetItem.selected}
-                onHover={uncontestedTotalBudgetItem.onHover}
-                onBlur={uncontestedTotalBudgetItem.onBlur}
-              />
+              <DistributionBarItem item={uncontestedTotalBudgetItem} total={total} showPopup={showPopups} />
             )}
           </>
         )}
       </div>
-      {availableOverBudget && (
+      {availableOverBudgetItem && (
         <div className={'HiddenDistributionBar'}>
           <>
-            <DistributionBarItem
-              key={`distribution-bar-item-allocated`}
-              value={allocatedBudgetItem.value}
-              total={total}
+            <div
               className={'TransparentBar'}
+              style={{ width: getFormattedPercentage(allocatedBudgetItem.value, total) }}
             />
-            <DistributionBarItem
-              key={`distribution-bar-item-available`}
-              value={availableOverBudget.value}
-              total={total}
-              popupContent={showPopups ? availableOverBudget.popupContent : undefined}
-              className={availableOverBudget.className}
-              selected={availableOverBudget.selected}
-              onHover={availableOverBudget.onHover}
-              onBlur={availableOverBudget.onBlur}
-            />
+            <DistributionBarItem item={availableOverBudgetItem} total={total} />
           </>
         </div>
       )}

@@ -51,7 +51,6 @@ function getContestingProposalsItems(
   return items
 }
 
-//TODO: case when requested is over available budget
 function getBarItems(
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
   proposal: ProposalAttributes,
@@ -98,7 +97,7 @@ function getBarItems(
         className: 'UncontestedBudgetBar',
       }
 
-  const availableOverBudget = isOverBudget
+  const availableOverBudgetItem = isOverBudget
     ? {
         value: availableBudget,
         className: 'AvailableOverBudgetBar',
@@ -108,7 +107,7 @@ function getBarItems(
   return {
     allocatedBudgetItem,
     contestingProposalsItems,
-    availableOverBudget,
+    availableOverBudgetItem,
     requestedBudgetItem,
     uncontestedTotalBudgetItem,
     isOverBudget,
@@ -138,7 +137,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   const {
     allocatedBudgetItem,
     contestingProposalsItems,
-    availableOverBudget,
+    availableOverBudgetItem,
     requestedBudgetItem,
     uncontestedTotalBudgetItem,
     isOverBudget,
@@ -226,7 +225,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
               <ContestedBudgetBar
                 allocatedBudgetItem={allocatedBudgetItem}
                 contestingProposalsItems={contestingProposalsItems}
-                availableOverBudget={availableOverBudget}
+                availableOverBudgetItem={availableOverBudgetItem}
                 requestedBudgetItem={requestedBudgetItem}
                 uncontestedTotalBudgetItem={uncontestedTotalBudgetItem}
                 total={isOverBudget ? categoryBudget.allocated + categoryBudget.contested : totalCategoryBudget}

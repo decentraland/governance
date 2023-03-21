@@ -20,7 +20,8 @@
 .CompetingProposal--highlight {
   border: 1px solid #a524b3; /*TODO: Add to theme*/
 }
-.CompetingProposal--highlight {
+
+.CompetingProposal--overbudget {
   border: 1px solid var(--red-800) !important;
 }
 
