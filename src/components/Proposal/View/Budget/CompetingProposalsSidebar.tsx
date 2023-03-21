@@ -10,13 +10,13 @@ import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../.
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { toNewGrantCategory } from '../../../../entities/QuarterCategoryBudget/utils'
 import { getFormattedPercentage } from '../../../../helpers'
-import ContestedBudgetBar from '../../../Common/DistributionBar/ContestedBudgetBar'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import Pill, { PillColor } from '../../../Common/Pill'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 
 import CompetingProposal from './CompetingProposal'
 import './CompetingProposalsSidebar.css'
+import ContestedBudgetDistributionBar from './ContestedBudgetDistributionBar'
 
 /* eslint-disable @typescript-eslint/ban-types */
 function getContestingProposalsItems(
@@ -222,14 +222,13 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
                   0
                 )})`}</span>
               </div>
-              <ContestedBudgetBar
+              <ContestedBudgetDistributionBar
                 allocatedBudgetItem={allocatedBudgetItem}
                 contestingProposalsItems={contestingProposalsItems}
                 availableOverBudgetItem={availableOverBudgetItem}
                 requestedBudgetItem={requestedBudgetItem}
                 uncontestedTotalBudgetItem={uncontestedTotalBudgetItem}
                 total={isOverBudget ? categoryBudget.allocated + categoryBudget.contested : totalCategoryBudget}
-                className="ContestedBudget__DistributionBar"
                 showPopups={showPopups}
               />
             </div>

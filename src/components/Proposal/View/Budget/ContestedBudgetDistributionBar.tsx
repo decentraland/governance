@@ -3,15 +3,14 @@ import Skeleton from 'react-loading-skeleton'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { getFormattedPercentage } from '../../../helpers'
+import { getFormattedPercentage } from '../../../../helpers'
+import DistributionBarItem, { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 
-import './ContestedBudgetBar.css'
-import DistributionBarItem, { DistributionBarItemProps } from './DistributionBarItem'
+import './ContestedBudgetDistributionBar.css'
 
 interface Props {
   total: number
   isLoading?: boolean
-  className?: string
   showPopups?: boolean
   allocatedBudgetItem: DistributionBarItemProps
   availableOverBudgetItem?: DistributionBarItemProps
@@ -20,7 +19,7 @@ interface Props {
   uncontestedTotalBudgetItem?: DistributionBarItemProps
 }
 
-const ContestedBudgetBar = ({
+const ContestedBudgetDistributionBar = ({
   allocatedBudgetItem,
   availableOverBudgetItem,
   contestingProposalsItems,
@@ -29,18 +28,17 @@ const ContestedBudgetBar = ({
   total,
   isLoading,
   showPopups = true,
-  className,
 }: Props) => {
   if (isLoading) {
     return (
-      <div className={className}>
+      <div className="ContestedBudgetDistributionBar">
         <Skeleton className={TokenList.join(['DistributionBar', 'DistributionBar__Loading'])} />
       </div>
     )
   }
 
   return (
-    <div className={className}>
+    <div className="ContestedBudgetDistributionBar">
       <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--empty'])}>
         {total > 0 && (
           <>
@@ -61,7 +59,7 @@ const ContestedBudgetBar = ({
         )}
       </div>
       {availableOverBudgetItem && (
-        <div className={'HiddenDistributionBar'}>
+        <div className={'AvailableOverBudgetBar'}>
           <>
             <div
               className={'TransparentBar'}
@@ -75,4 +73,4 @@ const ContestedBudgetBar = ({
   )
 }
 
-export default ContestedBudgetBar
+export default ContestedBudgetDistributionBar
