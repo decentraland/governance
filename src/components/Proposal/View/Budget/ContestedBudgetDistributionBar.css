@@ -18,7 +18,7 @@
   height: 2px !important;
 }
 
-.AvailableOverBudgetBar {
+.AvailableOverBudgetDistributionBar {
   display: flex;
   flex-direction: row;
   align-items: center;
