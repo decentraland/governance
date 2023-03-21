@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Sidebar } from 'decentraland-ui'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
+import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
