@@ -74,7 +74,7 @@ const ProposalVotingSection = ({ proposal, votes, loading, changingVote, choices
   return (
     <div className="DetailsSection__Content OnlyDesktop">
       {proposalVotingSectionLoading && (
-        <div className={'ProposalVotingSection__Loader'}>
+        <div className="ProposalVotingSection__Loader">
           <Loader active={proposalVotingSectionLoading} />
         </div>
       )}

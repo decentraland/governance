@@ -1,8 +1,8 @@
 import React from 'react'
 
-function ChevronRight({ color }: { color?: string }) {
+function ChevronRight({ className, color }: { className?: string; color?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" fill="none" viewBox="0 0 8 14">
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="8" height="14" fill="none" viewBox="0 0 8 14">
       <path
         fill={color || '#fff'}
         fillRule="evenodd"

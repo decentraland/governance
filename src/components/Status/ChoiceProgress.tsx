@@ -1,8 +1,10 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ChoiceColor } from '../../entities/Votes/types'
+import ChevronRight from '../Icon/ChevronRight'
 import TextWithTooltip from '../Proposal/View/TextWithTooltip'
 
 import './ChoiceProgress.css'
@@ -14,13 +16,18 @@ export type ChoiceProgressProps = {
   power: number
   progress: number
   color: ChoiceColor
+  onClick?: () => void
 }
 
-export default function ChoiceProgress({ choice, progress, power, color, votes }: ChoiceProgressProps) {
+export default function ChoiceProgress({ choice, progress, power, color, votes, onClick }: ChoiceProgressProps) {
   const t = useFormatMessage()
+  const hasVotes = votes > 0
 
   return (
-    <div className="ChoiceProgress">
+    <div
+      className={TokenList.join(['ChoiceProgress', hasVotes && 'ChoiceProgress--clickable'])}
+      onClick={hasVotes ? onClick : undefined}
+    >
       <div className="ChoiceProgress__Description">
         <TextWithTooltip className="ChoiceProgress__Choice">{choice}</TextWithTooltip>
         <div className="ChoiceProgress__Stats">{progress}%</div>
@@ -31,7 +38,10 @@ export default function ChoiceProgress({ choice, progress, power, color, votes }
           {t('general.number', { value: power })}
           {' VP '}
         </strong>
-        <span>({t('general.count_votes', { count: votes })})</span>
+        <span className="ChoiceProgress__VotesCount">
+          {t('general.count_votes', { count: votes })}{' '}
+          {hasVotes && <ChevronRight className="ChoiceProgress__VotesCountIcon" color="var(--black-600)" />}
+        </span>
       </div>
     </div>
   )
