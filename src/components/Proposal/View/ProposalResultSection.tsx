@@ -109,6 +109,7 @@ function ProposalResultSection({
           changingVote={changingVote}
           choices={choices}
           finished={finished}
+          hasVoted={hasVoted}
           onVote={onVote}
           onChangeVote={onChangeVote}
         />

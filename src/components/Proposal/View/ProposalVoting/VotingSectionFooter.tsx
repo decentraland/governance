@@ -50,13 +50,13 @@ const VotingSectionFooter = ({
   const [userAddress] = useAuthContext()
 
   return (
-    <div className={'VotingSectionFooter'}>
-      <div className={'VotingSectionFooter__VP'}>
+    <div className="VotingSectionFooter">
+      <div className="VotingSectionFooter__VP">
         {showVotingPowerInfo && (
           <VoteVotingPowerInfo accountVotingPower={totalVpOnProposal} hasEnoughToVote={hasEnoughToVote} vote={vote} />
         )}
       </div>
-      <div className={'VotingSectionFooter__Actions'}>
+      <div className="VotingSectionFooter__Actions">
         {showVotingPowerInfo && userAddress && !hasEnoughToVote && (
           <Link href={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
         )}

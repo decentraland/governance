@@ -593,7 +593,7 @@
     },
     "proposal_view": {
       "grant": {
-        "header": "Should the following ${value} grant in the {category} category be approved?",
+        "header": "Should the following **{value}** grant in the **{category}** category be approved?",
         "abstract_title": "Abstract",
         "size_title": "Grant size",
         "duration_title": "Project duration",
