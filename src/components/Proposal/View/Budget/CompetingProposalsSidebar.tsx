@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
@@ -9,7 +9,7 @@ import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { toNewGrantCategory } from '../../../../entities/QuarterCategoryBudget/utils'
-import { getFormattedPercentage } from '../../../../helpers'
+import { CURRENCY_FORMAT_OPTIONS, getFormattedPercentage } from '../../../../helpers'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import Pill, { PillColor } from '../../../Common/Pill'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
@@ -21,6 +21,7 @@ import ContestedBudgetDistributionBar from './ContestedBudgetDistributionBar'
 /* eslint-disable @typescript-eslint/ban-types */
 function getContestingProposalsItems(
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
+  intl: any,
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,
@@ -42,7 +43,7 @@ function getContestingProposalsItems(
         },
         popupContent: {
           title: contestant.title,
-          content: <span>{`$${t('general.number', { value: contestant.size })}`}</span>,
+          content: <span>{intl.formatNumber(contestant.size, CURRENCY_FORMAT_OPTIONS)}</span>,
           position: 'bottom center',
         },
       })
@@ -53,6 +54,7 @@ function getContestingProposalsItems(
 
 function getBarItems(
   t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
+  intl: any,
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,
@@ -73,6 +75,7 @@ function getBarItems(
 
   const contestingProposalsItems = getContestingProposalsItems(
     t,
+    intl,
     proposal,
     categoryBudget,
     highlightedContestant,
@@ -86,7 +89,7 @@ function getBarItems(
     selected: !highlightedContestant,
     popupContent: {
       title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
-      content: <span>{`$${t('general.number', { value: requestedBudget })}`}</span>,
+      content: <span>{intl.formatNumber(requestedBudget, CURRENCY_FORMAT_OPTIONS)}</span>,
     },
   }
 
@@ -125,6 +128,7 @@ type Props = {
 
 export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible, onClose }: Props) {
   const t = useFormatMessage()
+  const intl = useIntl()
   const grantCategory = proposal.configuration.category
   const categoryBudget = budget.categories[snakeCase(grantCategory)]
   const totalCategoryBudget = categoryBudget?.total || 0
@@ -142,7 +146,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
     uncontestedTotalBudgetItem,
     isOverBudget,
   } = useMemo(() => {
-    return getBarItems(t, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
+    return getBarItems(t, intl, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
   }, [categoryBudget, highlightedContestant, proposal, t])
   const [showPopups, setShowPopups] = useState(false)
 

@@ -1,5 +1,11 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
+export const CURRENCY_FORMAT_OPTIONS = {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+}
+
 export function inBackground(fun: () => Promise<any>) {
   Promise.resolve()
     .then(fun)

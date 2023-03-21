@@ -5,6 +5,7 @@ import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFor
 
 import { NewGrantCategory } from '../../../../entities/Grant/types'
 import { GrantProposalConfiguration } from '../../../../entities/Proposal/types'
+import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
 import BudgetBreakdownView from '../../../GrantRequest/BudgetBreakdownView'
 import PersonnelView from '../../../GrantRequest/PersonnelView'
 import CategoryAssessment from '../../CategoryAssessment'
@@ -12,12 +13,6 @@ import ProposalDescriptionItem from '../ProposalDescriptionItem'
 
 interface Props {
   config: GrantProposalConfiguration
-}
-
-const CURRENCY_FORMAT_OPTIONS = {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
 }
 
 function GrantProposalView({ config }: Props) {
