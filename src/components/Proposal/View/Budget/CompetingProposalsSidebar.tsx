@@ -10,8 +10,9 @@ import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../.
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { toNewGrantCategory } from '../../../../entities/QuarterCategoryBudget/utils'
 import { getFormattedPercentage } from '../../../../helpers'
-import DistributionBar from '../../../Common/DistributionBar/DistributionBar'
+import ContestedBudgetBar from '../../../Common/DistributionBar/ContestedBudgetBar'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
+import Pill, { PillColor } from '../../../Common/Pill'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 
 import CompetingProposal from './CompetingProposal'
@@ -24,14 +25,14 @@ function getContestingProposalsItems(
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,
   setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void,
-  isOverbudget: boolean
+  isOverBudget: boolean
 ) {
   const items: DistributionBarItemProps[] = []
   categoryBudget?.contestants.forEach((contestant) => {
     if (contestant.id !== proposal.id) {
       items.push({
         value: contestant.size,
-        className: isOverbudget ? 'ContestedBudgetOverbudgetBar' : 'ContestedBudgetBar',
+        className: isOverBudget ? 'ContestedBudgetOverbudgetBar' : 'ContestedBudgetBar',
         selected: highlightedContestant === contestant.id,
         onHover: (e: React.MouseEvent<unknown>) => {
           setHighlightedContestant(contestant.id)
@@ -62,8 +63,8 @@ function getBarItems(
   const requestedBudget = proposal.configuration.size
   const availableBudget = categoryBudget?.available || 0
   const uncontestedTotalBudget = availableBudget - contestedBudget
-  const isOverbudget = uncontestedTotalBudget <= 0
-  const uncontestedTotalBudgetDisplayed = !isOverbudget ? uncontestedTotalBudget : 0
+  const isOverBudget = uncontestedTotalBudget <= 0
+  const uncontestedTotalBudgetDisplayed = !isOverBudget ? uncontestedTotalBudget : 0
   const allocatedBudget = categoryBudget?.allocated || 0
 
   const allocatedBudgetItem = {
@@ -77,14 +78,12 @@ function getBarItems(
     categoryBudget,
     highlightedContestant,
     setHighlightedContestant,
-    isOverbudget
+    isOverBudget
   )
-
-  console.log('isOverbudget', isOverbudget)
 
   const requestedBudgetItem = {
     value: requestedBudget,
-    className: isOverbudget ? 'ThisInitiativeOverbudgetBar' : 'ThisInitiativeBar',
+    className: isOverBudget ? 'ThisInitiativeOverbudgetBar' : 'ThisInitiativeBar',
     selected: !highlightedContestant,
     popupContent: {
       title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
@@ -92,23 +91,28 @@ function getBarItems(
     },
   }
 
-  // TODO: dont add if isOverbudget
-  const uncontestedTotalBudgetItem = {
-    value: uncontestedTotalBudgetDisplayed,
-    className: 'UncontestedBudgetBar',
-  }
+  const uncontestedTotalBudgetItem = isOverBudget
+    ? undefined
+    : {
+        value: uncontestedTotalBudgetDisplayed,
+        className: 'UncontestedBudgetBar',
+      }
 
-  const availableOverBudget = {
-    value: availableBudget,
-    className: 'AvailableOverBudgetBar',
-  }
+  const availableOverBudget = isOverBudget
+    ? {
+        value: availableBudget,
+        className: 'AvailableOverBudgetBar',
+      }
+    : undefined
 
-  const distributionBarItems = [allocatedBudgetItem]
-  distributionBarItems.push(...contestingProposalsItems)
-  if (isOverbudget) distributionBarItems.push(availableOverBudget)
-  distributionBarItems.push(requestedBudgetItem)
-  if (!isOverbudget) distributionBarItems.push(uncontestedTotalBudgetItem)
-  return distributionBarItems
+  return {
+    allocatedBudgetItem,
+    contestingProposalsItems,
+    availableOverBudget,
+    requestedBudgetItem,
+    uncontestedTotalBudgetItem,
+    isOverBudget,
+  }
 }
 
 /* eslint-disable @typescript-eslint/ban-types */
@@ -126,11 +130,19 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   const categoryBudget = budget.categories[snakeCase(grantCategory)]
   const totalCategoryBudget = categoryBudget?.total || 0
   const contestedBudget = categoryBudget.contested || 0
-  const uncontestedTotalBudget = (categoryBudget?.available || 0) - contestedBudget
+  const availableBudget = categoryBudget?.available || 0
+  const uncontestedTotalBudget = availableBudget - contestedBudget
   const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
   const contestants = categoryBudget.contestants.filter((contestant) => contestant.id !== proposal.id)
   const [highlightedContestant, setHighlightedContestant] = useState<string | null>(null)
-  const items = useMemo(() => {
+  const {
+    allocatedBudgetItem,
+    contestingProposalsItems,
+    availableOverBudget,
+    requestedBudgetItem,
+    uncontestedTotalBudgetItem,
+    isOverBudget,
+  } = useMemo(() => {
     return getBarItems(t, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
   }, [categoryBudget, highlightedContestant, proposal, t])
   const [showPopups, setShowPopups] = useState(false)
@@ -185,11 +197,25 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
         </div>
 
         <GrantRequestSectionCard
-          title="Contested"
+          title={
+            <>
+              {t('page.proposal_detail.grant.competing_proposals.sidebar.competing_proposals_bar_title')}
+              {isOverBudget && (
+                <Pill style="outline" color={PillColor.Yellow} size={'small'}>
+                  {t('page.proposal_detail.grant.requested_budget.overbudget_pill')}
+                </Pill>
+              )}
+            </>
+          }
           content={
             <div className="ContestedBudgetCard">
               <div className="ContestedBudgetCard__Label">
-                <div className={TokenList.join(['ContestedBudgetCard__Legend', 'ContestedLegend'])} />
+                <div
+                  className={TokenList.join([
+                    'ContestedBudgetCard__Legend',
+                    isOverBudget ? 'ContestedOverbudgetLegend' : 'ContestedLegend',
+                  ])}
+                />
                 <span className="ContestedLabel">${t('general.number', { value: categoryBudget.contested })}</span>
                 <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
                   categoryBudget.contested,
@@ -197,10 +223,13 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
                   0
                 )})`}</span>
               </div>
-              {/*TODO: total changes if isOverbudget*/}
-              <DistributionBar
-                items={items}
-                total={totalCategoryBudget}
+              <ContestedBudgetBar
+                allocatedBudgetItem={allocatedBudgetItem}
+                contestingProposalsItems={contestingProposalsItems}
+                availableOverBudget={availableOverBudget}
+                requestedBudgetItem={requestedBudgetItem}
+                uncontestedTotalBudgetItem={uncontestedTotalBudgetItem}
+                total={isOverBudget ? categoryBudget.allocated + categoryBudget.contested : totalCategoryBudget}
                 className="ContestedBudget__DistributionBar"
                 showPopups={showPopups}
               />
@@ -236,6 +265,21 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
                   )})`}</span>
                 </div>
               )}
+              {isOverBudget && (
+                <div className="ContestedBudgetCard__Label">
+                  <div className={TokenList.join(['ContestedBudgetCard__Legend', 'AvailableOverBudgetLegend'])} />
+                  <span className="GrantedFundsLabel">
+                    {t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds', {
+                      amount: t('general.number', { value: availableBudget }),
+                    })}
+                  </span>
+                  <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
+                    availableBudget,
+                    categoryBudget.total,
+                    0
+                  )})`}</span>
+                </div>
+              )}
             </div>
           }
         />
@@ -257,7 +301,11 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
             onMouseEnter={() => setHighlightedContestant(contestant.id)}
             onMouseLeave={() => setHighlightedContestant(null)}
           >
-            <CompetingProposal proposal={contestant} highlight={highlightedContestant === contestant.id} />
+            <CompetingProposal
+              proposal={contestant}
+              highlight={highlightedContestant === contestant.id}
+              isOverBudget={isOverBudget}
+            />
           </div>
         ))}
       </div>

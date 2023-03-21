@@ -2,7 +2,7 @@
   height: 47px;
   background: var(--white-900);
   border: 1px solid var(--black-300);
-  box-shadow: 0 0 10px rgba(115, 110, 125, 0.15); /*TODO: Add to theme*/
+  box-shadow: 0 0 10px var(--black-100);
   border-radius: 6px;
   display: flex;
   width: 100%;
