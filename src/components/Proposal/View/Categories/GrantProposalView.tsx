@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { NewGrantCategory } from '../../../../entities/Grant/types'
@@ -12,12 +11,6 @@ import ProposalDescriptionItem from '../ProposalDescriptionItem'
 
 interface Props {
   config: GrantProposalConfiguration
-}
-
-const CURRENCY_FORMAT_OPTIONS = {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
 }
 
 function GrantProposalView({ config }: Props) {
@@ -45,12 +38,6 @@ function GrantProposalView({ config }: Props) {
 
   return (
     <div>
-      <Markdown>
-        {t('page.proposal_view.grant.header', {
-          value: intl.formatNumber(size, CURRENCY_FORMAT_OPTIONS as any),
-          category,
-        })}
-      </Markdown>
       <ProposalDescriptionItem title={t('page.proposal_view.grant.abstract_title')} body={abstract} />
       <ProposalDescriptionItem
         title={t('page.proposal_view.grant.size_title')}
