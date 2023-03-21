@@ -41,7 +41,7 @@ const StatusPill = ({ className, status, size, isLink }: Props) => {
   const iconColor = validStatus === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
   const icon = showIcon ? <Check color={iconColor} /> : null
 
-  const Wrapper = isLink ? Link : Fragment
+  const Wrapper = isLink ? Link : 'div'
   const href = isLink ? locations.proposals({ status: validStatus }) : undefined
 
   return (
