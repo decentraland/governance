@@ -4,7 +4,7 @@ import { Request } from 'express'
 import isURL from 'validator/lib/isURL'
 
 export default routes((router) => {
-  return router.post('/urlTitle', handleAPI(urlTitle))
+  return router.post('/url-title', handleAPI(checkUrlTitle))
 })
 
 async function getTitle(url: string) {
@@ -14,7 +14,7 @@ async function getTitle(url: string) {
   return title
 }
 
-async function urlTitle(req: Request<any, any, { url: string }>) {
+async function checkUrlTitle(req: Request<any, any, { url: string }>) {
   const { url } = req.body
   if (!url) {
     throw new Error('Missing url')

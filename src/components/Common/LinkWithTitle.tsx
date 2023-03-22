@@ -14,7 +14,7 @@ interface Props {
 
 const fetchTitle = async (url: string) => {
   try {
-    const response = await Governance.get().urlTitle(url)
+    const response = await Governance.get().checkUrlTitle(url)
     return response.title
   } catch (error) {
     console.error(error)

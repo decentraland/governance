@@ -399,9 +399,9 @@ export class Governance extends API {
     return response.data
   }
 
-  async urlTitle(url: string) {
+  async checkUrlTitle(url: string) {
     const response = await this.fetch<ApiResponse<{ title?: string }>>(
-      `/urlTitle`,
+      `/url-title`,
       this.options().method('POST').json({ url })
     )
     return response.data
