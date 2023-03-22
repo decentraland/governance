@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -10,6 +10,8 @@ import toSnakeCase from 'lodash/snakeCase'
 import { NewGrantCategory } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { CategoryIconVariant } from '../../helpers/styles'
+import Arrow from '../Icon/Arrow'
+import Subitem from '../Icon/Subitem'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
@@ -18,6 +20,7 @@ export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
   active?: boolean
   type: string
   count?: number
+  subtypes?: (`${NewGrantCategory}` | 'All grants' | 'Legacy')[]
 }
 
 const icons: Record<string, any> = {
@@ -42,7 +45,14 @@ export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, siz
   return <img src={icons[type]} width="24" height="24" />
 }
 
-export default React.memo(function CategoryOption({ active, type, className, count, ...props }: CategoryOptionProps) {
+export default React.memo(function CategoryOption({
+  active,
+  type,
+  className,
+  count,
+  subtypes,
+  ...props
+}: CategoryOptionProps) {
   const t = useFormatMessage()
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
@@ -58,30 +68,66 @@ export default React.memo(function CategoryOption({ active, type, className, cou
     }
   }
 
+  const hasSubtypes = !!subtypes && subtypes.length > 0
+  const [isSubcategoriesOpen, setIsSubcategoriesOpen] = useState(false)
+
   return (
-    <a
-      {...props}
-      onClick={handleClick}
-      className={TokenList.join([
-        'CategoryOption',
-        `CategoryOption--${type}`,
-        active && 'CategoryOption--active',
-        className,
-      ])}
-    >
-      <span>
-        <span>{getCategoryIcon(type, CategoryIconVariant.Circled)}</span>
-        <span>
-          <Paragraph tiny semiBold>
-            {t(`category.${type}_title`)}
-          </Paragraph>
+    <Fragment>
+      <a
+        {...props}
+        onClick={handleClick}
+        className={TokenList.join([
+          'CategoryOption',
+          `CategoryOption--${type}`,
+          active && 'CategoryOption--active',
+          className,
+        ])}
+      >
+        <span className="CategoryOption__TitleContainer">
+          <span>
+            {getCategoryIcon(type, CategoryIconVariant.Circled)}
+            <Paragraph tiny semiBold>
+              {t(`category.${type}_title`)}
+            </Paragraph>
+          </span>
+          {hasSubtypes && (
+            <span
+              className={TokenList.join([
+                'CategoryOption__Arrow',
+                isSubcategoriesOpen && 'CategoryOption__Arrow--active',
+              ])}
+              onClick={(e) => {
+                e.preventDefault()
+                setIsSubcategoriesOpen((prev) => !prev)
+              }}
+            >
+              <Arrow filled={false} />
+            </span>
+          )}
         </span>
-      </span>
-      {isNumber(count) && (
-        <span className={TokenList.join(['CategoryOption__Counter', active && 'CategoryOption__Counter--active'])}>
-          {count}
-        </span>
+        {isNumber(count) && (
+          <span className={TokenList.join(['CategoryOption__Counter', active && 'CategoryOption__Counter--active'])}>
+            {count}
+          </span>
+        )}
+      </a>
+      {hasSubtypes && (
+        <div
+          className={TokenList.join([
+            'CategoryOption__Subcategories',
+            isSubcategoriesOpen && 'CategoryOption__Subcategories--active',
+          ])}
+        >
+          {subtypes.map((subtype, index) => {
+            return (
+              <div className="CategoryOption__SubcategoryItem" key={subtype + `-${index}`}>
+                <Subitem />
+                {subtype}
+              </div>
+            )
+          })}
+        </div>
       )}
-    </a>
+    </Fragment>
   )
 })

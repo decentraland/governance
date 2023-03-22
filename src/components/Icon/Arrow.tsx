@@ -5,11 +5,12 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 type ArrowProps = {
   filled: boolean
   className?: string
+  color?: string
 }
 
-function Arrow({ filled, className }: ArrowProps) {
-  const fill = filled ? 'var(--black-400)' : 'white'
-  const stroke = filled ? 'white' : 'var(--black-400)'
+function Arrow({ filled, className, color = 'var(--black-400)' }: ArrowProps) {
+  const fill = filled ? color : 'rgba(255, 255, 255, 0)'
+  const stroke = filled ? 'white' : color
 
   return (
     <svg

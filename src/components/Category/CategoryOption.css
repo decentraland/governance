@@ -6,6 +6,7 @@
   cursor: pointer;
   position: relative;
   margin-bottom: 4px;
+  text-transform: capitalize;
 }
 
 .CategoryOption span {
@@ -88,4 +89,40 @@
   opacity: 1;
   background: var(--black-600);
   color: var(--white-900);
+}
+
+.CategoryOption__TitleContainer {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.CategoryOption__Arrow svg {
+  transition: all 0.5s ease 0s;
+  transform: rotate(90deg);
+}
+
+.CategoryOption__Arrow--active svg {
+  transform: rotate(-90deg);
+}
+
+.CategoryOption__Subcategories {
+  display: none;
+}
+
+.CategoryOption__Subcategories--active {
+  display: block;
+}
+
+.CategoryOption__SubcategoryItem {
+  margin-left: 15px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+  text-transform: capitalize;
+}
+
+.CategoryOption__SubcategoryItem svg {
+  margin-right: 8px;
 }

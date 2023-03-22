@@ -74,6 +74,13 @@ export default React.memo(function CategoryFilter({
           />
         )
       })}
+      <CategoryOption
+        type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
+        href={getUrlFilters(FILTER_KEY, params)}
+        active={!type}
+        className={'CategoryFilter__CategoryOption'}
+        subtypes={['All grants', ...Object.values(NewGrantCategory), 'Legacy']}
+      />
     </CollapsibleFilter>
   )
 })
