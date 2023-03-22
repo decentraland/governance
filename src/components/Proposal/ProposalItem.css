@@ -1,6 +1,7 @@
-.ProposalItem {
+.ProposalItem,
+.ui.card.Link.ProposalItem {
   width: 100% !important;
-  position: relative;
+  border: 1px solid var(--black-100);
 }
 
 .ProposalItem .ProposalItem__Title {

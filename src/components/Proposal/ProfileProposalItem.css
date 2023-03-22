@@ -10,7 +10,7 @@
 a.ui.card:hover,
 .ui.cards > .ui.card.link:hover,
 .ui.card.link:hover {
-  border: 1px solid var(--black-100) !important;
+  /* border: 1px solid var(--black-100) !important;*/
 }
 
 .ProfileProposalItem .content {

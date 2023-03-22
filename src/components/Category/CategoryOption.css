@@ -31,6 +31,11 @@
   background-color: var(--background-disabled);
 }
 
+.CategoryOption.CategoryOption--active .dg.Paragraph.Paragraph--semi-bold,
+.FilterLabel--active .dg.Paragraph.Paragraph--tiny {
+  font-weight: 500;
+}
+
 .CategoryOption.CategoryOption--catalyst:hover,
 .CategoryOption.CategoryOption--catalyst.CategoryOption--active {
   background-color: var(--background-catalyst);
