@@ -6,23 +6,21 @@ import { ChoiceColor } from '../../entities/Votes/types'
 
 import './Progress.css'
 
-export type ProgressProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> & {
+interface Props {
   color: ChoiceColor
-  progress?: number
+  progress: number
 }
 
-export default function Progress({ color, progress, ...props }: ProgressProps) {
-  progress = progress || 0
+export default function Progress({ color, progress }: Props) {
   return (
     <div
-      {...props}
       className={TokenList.join([
         'Progress',
         typeof color === 'string' && `Progress--${color}`,
         typeof color === 'number' && `Progress--status-${color % 8}`,
       ])}
     >
-      <div className="Progress--bar" style={{ width: progress + `%` }} />
+      <div className="Progress--bar" style={{ width: (progress || 0) + `%` }} />
     </div>
   )
 }

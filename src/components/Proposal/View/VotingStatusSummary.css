@@ -1,11 +1,26 @@
 .VotingStatusSummary__Carousel {
   width: 100%;
   padding-bottom: 8px;
+  margin-bottom: 24px;
 }
+
+.VotingStatusSummary__Container {
+  background: var(--secondary);
+  border-radius: 6px;
+  padding: 8px 11px;
+}
+
+.VotingStatusSummary__SingleItem {
+  margin-bottom: 16px;
+}
+
 .VotingStatusSummary__CarouselCell {
   width: 100%;
   border-radius: 5px;
   cursor: pointer;
+  background: var(--secondary);
+  border-radius: 6px;
+  padding: 8px 11px;
 }
 
 .VotingStatusSummary__CarouselCell:first-child {
@@ -20,13 +35,6 @@
   width: 4px;
   height: 4px;
   margin: 0 4px;
-}
-
-.VotingStatusSummary__Container {
-  background: var(--secondary);
-  border-radius: 6px;
-  margin-top: 24px;
-  padding: 8px 11px;
 }
 
 .VotingStatusSummary__Title {

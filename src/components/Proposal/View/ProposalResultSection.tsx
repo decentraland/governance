@@ -1,24 +1,23 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import Anchor from 'decentraland-gatsby/dist/components/Text/Link'
+import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ProposalAttributes, ProposalStatus } from '../../../entities/Proposal/types'
+import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
-import { calculateResult } from '../../../entities/Votes/utils'
-import ChoiceProgress from '../../Status/ChoiceProgress'
+import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
 import './DetailsSection.css'
-import { ProposalPromotionSection } from './ProposalPromotionSection'
-import VotingStatusSummary from './VotingStatusSummary'
+import ProposalPromotionSection from './ProposalPromotionSection'
+import './ProposalResultSection.css'
 
-type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+interface Props {
+  choices: string[]
+  results: ChoiceProgressProps[]
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   loading?: boolean
@@ -29,9 +28,9 @@ type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   onVote?: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
 }
 
-const EMPTY_CHOICES: string[] = []
-
 function ProposalResultSection({
+  choices,
+  results,
   proposal,
   loading,
   disabled,
@@ -42,14 +41,17 @@ function ProposalResultSection({
   onOpenVotesList,
 }: Props) {
   const t = useFormatMessage()
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
-  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
-  const showVotingStatusSummary =
-    proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
-  const showSeeVotesButton = useMemo(() => Object.keys(votes || {}).length > 0, [votes])
+  const [showResults, setShowResults] = useState(finished)
+  const [userAddress] = useAuth()
+  const hasVoted = !!(!!userAddress && votes?.[userAddress])
+  const showResultsButton = !hasVoted && !finished
+
+  useEffect(() => {
+    setShowResults(hasVoted || finished)
+  }, [hasVoted, finished])
 
   return (
     <div
@@ -59,28 +61,45 @@ function ProposalResultSection({
         loading && 'DetailsSection--loading',
       ])}
     >
-      <div className="DetailsSection__Content">
-        <Loader active={loading} />
-        <div className="DetailsSection__Flex_Header_Labels">
-          <Header sub>{t('page.proposal_detail.result_label')}</Header>
-          {showSeeVotesButton && (
-            <Anchor onClick={onOpenVotesList}>{t('page.proposal_detail.see_votes_button')}</Anchor>
-          )}
+      <div>
+        <div className="ProposalResultSection__Container">
+          <div className="ProposalResultSection__Header">
+            <div className="ProposalResultSection__HeaderLabel">
+              {showResults ? t('page.proposal_detail.result_label') : t('page.proposal_detail.get_involved')}
+            </div>
+            {showResultsButton && (
+              <button
+                className="ProposalResultSection__ResultsButton"
+                onClick={() => setShowResults((prevState) => !prevState)}
+              >
+                {!showResults ? t('page.proposal_detail.show_results') : t('page.proposal_detail.hide_results')}
+              </button>
+            )}
+          </div>
         </div>
-        {results.map((result) => {
-          return (
-            <ChoiceProgress
-              key={result.choice}
-              color={result.color}
-              choice={result.choice}
-              votes={result.votes}
-              power={result.power}
-              progress={result.progress}
-            />
-          )
-        })}
+        {showResults && (
+          <div
+            className={TokenList.join([
+              'ProposalResultSection__Results',
+              !finished && 'ProposalResultSection__Results--current',
+            ])}
+          >
+            {results.map((result) => {
+              return (
+                <ChoiceProgress
+                  onClick={onOpenVotesList}
+                  key={result.choice}
+                  color={result.color}
+                  choice={result.choice}
+                  votes={result.votes}
+                  power={result.power}
+                  progress={result.progress}
+                />
+              )
+            })}
+          </div>
+        )}
         <ProposalPromotionSection proposal={proposal} loading={loading} />
-        {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} votes={results} />}
       </div>
       {!finished && (
         <ProposalVotingSection
@@ -90,6 +109,7 @@ function ProposalResultSection({
           changingVote={changingVote}
           choices={choices}
           finished={finished}
+          hasVoted={hasVoted}
           onVote={onVote}
           onChangeVote={onChangeVote}
         />

@@ -593,7 +593,7 @@
     },
     "proposal_view": {
       "grant": {
-        "header": "Should the following ${value} grant in the {category} category be approved?",
+        "header": "Should the following **{value}** grant in the **{category}** category be approved?",
         "abstract_title": "Abstract",
         "size_title": "Grant size",
         "duration_title": "Project duration",
@@ -674,7 +674,10 @@
       "all_delegators_voted": "All your delegators voted by themselves",
       "delegators_represented": "You're representing **{total} {total, plural, one {account} other {accounts}}**",
       "user_voted_for_delegators": "You voted on behalf of **{amountRepresented} {amountRepresented, plural, one {account} other {accounts}}**",
-      "result_label": "Current result",
+      "result_label": "Current results",
+      "get_involved": "Get involved",
+      "show_results": "Show results",
+      "hide_results": "Hide results",
       "vote_change": "Change Vote",
       "vote_overrule": "Overrule Vote",
       "vote_manage": "Manage",
