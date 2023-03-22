@@ -145,7 +145,10 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onD
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.team.team_modal.relevant_link_label')}</Label>
+          <div className="LabelContainer">
+            <Label>{t('page.submit_grant.team.team_modal.relevant_link_label')}</Label>
+            <span className="Optional">{t('page.submit_grant.team.team_modal.optional_label')}</span>
+          </div>
           <Field
             value={state.value.relevantLink}
             placeholder={t('page.submit_grant.team.team_modal.relevant_link_placeholder')}
