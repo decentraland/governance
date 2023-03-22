@@ -7,7 +7,8 @@ import snakeCase from 'lodash/snakeCase'
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { getFormattedPercentage } from '../../../../helpers'
-import DistributionBar, { DistributionItemProps } from '../../../Common/DistributionBar/DistributionBar'
+import DistributionBar from '../../../Common/DistributionBar/DistributionBar'
+import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import Pill, { PillColor } from '../../../Common/Pill'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 
@@ -29,7 +30,7 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
   const remainingBudgetDisplayed = remainingBudget > 0 ? remainingBudget : 0
   const isOverBudget = remainingBudget < 0
 
-  const items: DistributionItemProps[] = useMemo(() => {
+  const items: DistributionBarItemProps[] = useMemo(() => {
     return [
       {
         value: allocatedCategoryBudget,

@@ -6,6 +6,7 @@ import snakeCase from 'lodash/snakeCase'
 
 import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
 import { PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
+import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
 import { getCategoryIcon } from '../../Category/CategoryOption'
@@ -23,12 +24,6 @@ interface Props {
 
 function getAllInitiativesCount(counter: Counter) {
   return Object.values(counter).reduce((acc, curr) => acc + curr, 0)
-}
-
-const currencyFormatter: any = {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
 }
 
 function BudgetBanner({ category, status, counter }: Props) {
@@ -54,7 +49,7 @@ function BudgetBanner({ category, status, counter }: Props) {
           <span>{getCategoryIcon(snakeCase(category), CategoryIconVariant.Circled, 48)}</span>
         )}
         <BudgetBannerItem
-          value={intl.formatNumber(totalBudget, currencyFormatter)}
+          value={intl.formatNumber(totalBudget, CURRENCY_FORMAT_OPTIONS as any)}
           label={t('page.grants.budget_banner.budget_label')}
         />
       </div>
@@ -72,7 +67,9 @@ function BudgetBanner({ category, status, counter }: Props) {
           <div className="BudgetBannerItem__Label">
             <div>
               <span>{t('page.grants.budget_banner.spent_label')}</span>
-              <span className="BudgetBanner__Amount">{intl.formatNumber(currentAmount, currencyFormatter)}</span>
+              <span className="BudgetBanner__Amount">
+                {intl.formatNumber(currentAmount, CURRENCY_FORMAT_OPTIONS as any)}
+              </span>
             </div>
             <div className="BudgetBanner__Percentage">{`${percentage}%`}</div>
           </div>

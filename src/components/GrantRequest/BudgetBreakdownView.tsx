@@ -5,6 +5,7 @@ import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFor
 import toNumber from 'lodash/toNumber'
 
 import { BudgetBreakdownConcept } from '../../entities/Grant/types'
+import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 
@@ -22,11 +23,7 @@ function BudgetBreakdownView({ breakdown }: Props) {
         subtitle: t('page.proposal_view.grant.breakdown_subtitle', { duration }),
         description: aboutThis,
         url: relevantLink,
-        value: intl.formatNumber(toNumber(estimatedBudget), {
-          style: 'currency',
-          currency: 'USD',
-          maximumFractionDigits: 0,
-        }),
+        value: intl.formatNumber(toNumber(estimatedBudget), CURRENCY_FORMAT_OPTIONS as any),
       })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [breakdown]

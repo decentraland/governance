@@ -1,0 +1,84 @@
+.CompetingProposal {
+  margin-bottom: 8px;
+  width: 100%;
+  background: var(--white-900);
+  border: 1px solid rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+  box-shadow: 0 1px 8px var(--black-100);
+  border-radius: 8px;
+  padding: 10px 20px 10px 16px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.CompetingProposal__Container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.CompetingProposal--highlight {
+  border: 1px solid #a524b3; /*TODO: Add to theme*/
+}
+
+.CompetingProposal--overbudget {
+  border: 1px solid var(--red-800) !important;
+}
+
+.CompetingProposal__Title {
+  display: flex;
+  width: 100%;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-800);
+  margin-bottom: 2px;
+}
+
+.CompetingProposal__Details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  text-transform: uppercase;
+  gap: 4px;
+  font-size: 11px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}
+
+.CompetingProposal__ByUser {
+  font-weight: 500;
+  text-align: left;
+  margin-left: 2px;
+}
+
+.CompetingProposal__Username {
+  font-weight: 600;
+  color: var(--black-800);
+  font-size: 11px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  text-align: left;
+}
+
+.CompetingProposal__ProposalsContainer {
+  border: 1px solid var(--black-100);
+  box-shadow: 0 1px 8px var(--black-100);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.CompetingProposal__Loader,
+.CompetingProposal__Empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 378px;
+}
+
+.CompetingProposal__ViewAllButton {
+  margin-bottom: 40px;
+}
