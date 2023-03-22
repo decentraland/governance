@@ -88,7 +88,7 @@ const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) =
 interface Props {
   grantCategory: NewGrantCategory | null
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
-  onCategoryChange: () => void
+  onCategoryChange: (category: NewGrantCategory) => void
   isFormDisabled: boolean
   sectionNumber: number
 }
@@ -180,7 +180,7 @@ export default function GrantRequestFundingSection({
             <GrantRequestSectionCard
               title={t('page.submit_grant.funding_section.project_category_title')}
               helper={
-                <Button basic onClick={onCategoryChange}>
+                <Button basic onClick={() => onCategoryChange(grantCategory)}>
                   {t('page.submit_grant.funding_section.project_category_action')}
                 </Button>
               }
