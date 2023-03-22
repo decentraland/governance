@@ -60,16 +60,14 @@ const ContestedBudgetDistributionBar = ({
       </div>
       {availableOverBudgetItem && (
         <div className={'AvailableOverBudgetDistributionBar'}>
-          <>
-            <div
-              className={'TransparentBar'}
-              style={{ width: getFormattedPercentage(allocatedBudgetItem.value, total) }}
-            />
-            <div
-              className={availableOverBudgetItem.className}
-              style={{ width: getFormattedPercentage(availableOverBudgetItem.value, total) }}
-            />
-          </>
+          <div
+            className={'TransparentBar'}
+            style={{ width: getFormattedPercentage(allocatedBudgetItem.value, total) }}
+          />
+          <div
+            className={availableOverBudgetItem.className}
+            style={{ width: getFormattedPercentage(availableOverBudgetItem.value, total) }}
+          />
         </div>
       )}
     </div>

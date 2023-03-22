@@ -296,10 +296,10 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
           </span>
         </div>
 
-        {contestants.map((contestant, index) => (
+        {contestants.map((contestant) => (
           <div
             className="ContestedBudgetCard__Row"
-            key={`contestant-${index}`}
+            key={`contestant-${contestant.id}`}
             onMouseEnter={() => setHighlightedContestant(contestant.id)}
             onMouseLeave={() => setHighlightedContestant(null)}
           >
