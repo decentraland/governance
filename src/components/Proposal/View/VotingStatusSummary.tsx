@@ -49,19 +49,19 @@ export default function VotingStatusSummary({ proposal, votes }: Props) {
     <>
       {timeout.time > 0 && !thresholdReached && (
         <Flickity
-          className={'VotingStatusSummary__Carousel'}
+          className="VotingStatusSummary__Carousel"
           options={flickityOptions}
           flickityRef={(ref) => (flickity.current = ref)}
         >
           <div
-            className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
+            className="VotingStatusSummary__Container VotingStatusSummary__CarouselCell"
             onClick={() => flickity.current?.next()}
           >
             <div className="VotingStatusSummary__Subtitle">{t('page.proposal_detail.required_vp')}</div>
             <div className="VotingStatusSummary__Title">{t('general.number', { value: threshold })} VP</div>
           </div>
           <div
-            className="VotingStatusSummary__CarouselCell VotingStatusSummary__Container"
+            className="VotingStatusSummary__Container VotingStatusSummary__CarouselCell"
             onClick={() => flickity.current?.previous()}
           >
             <div className="VotingStatusSummary__Subtitle">{t('page.proposal_detail.needed_for_acceptance')}</div>
@@ -70,7 +70,7 @@ export default function VotingStatusSummary({ proposal, votes }: Props) {
         </Flickity>
       )}
       {timeout.time > 0 && thresholdReached && (
-        <div className="VotingStatusSummary__Container">
+        <div className="VotingStatusSummary__Container VotingStatusSummary__SingleItem">
           <div className="VotingStatusSummary__Subtitle">
             {thresholdReached && t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
           </div>
@@ -80,7 +80,7 @@ export default function VotingStatusSummary({ proposal, votes }: Props) {
         </div>
       )}
       {timeout.time <= 0 && (
-        <div className="VotingStatusSummary__Container">
+        <div className="VotingStatusSummary__Container VotingStatusSummary__SingleItem">
           <div className="VotingStatusSummary__Subtitle">
             {thresholdReached
               ? t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })

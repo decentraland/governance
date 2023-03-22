@@ -43,6 +43,7 @@ import ProposalUpdatesActions from '../components/Proposal/View/ProposalUpdatesA
 import SidebarLinkButton from '../components/Proposal/View/SidebarLinkButton'
 import SubscribeButton from '../components/Proposal/View/SubscribeButton'
 import VestingContract from '../components/Proposal/View/VestingContract'
+import VotingStatusSummary from '../components/Proposal/View/VotingStatusSummary'
 import StatusPill from '../components/Status/StatusPill'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -52,6 +53,7 @@ import {
   isProposalEnactable,
   proposalCanBePassedOrRejected,
 } from '../entities/Proposal/utils'
+import { calculateResult } from '../entities/Votes/utils'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useCoAuthorsByProposal from '../hooks/useCoAuthorsByProposal'
 import useIsCommittee from '../hooks/useIsCommittee'
@@ -64,6 +66,8 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import './proposal.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
+
+const EMPTY_CHOICES: string[] = []
 
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])
 
@@ -202,6 +206,11 @@ export default function ProposalPage() {
     )
   }, [pendingUpdates, currentUpdate, proposal])
 
+  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_CHOICES
+  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
+  const showVotingStatusSummary =
+    proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
+
   if (proposalState.error) {
     return (
       <>
@@ -286,6 +295,8 @@ export default function ProposalPage() {
                   />
                 )}
                 <ProposalResultSection
+                  choices={choices}
+                  results={results}
                   proposal={proposal}
                   loading={voting || proposalState.loading || votesState.loading}
                   disabled={!proposal || !votes}
@@ -295,6 +306,7 @@ export default function ProposalPage() {
                   onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}
                   onOpenVotesList={() => patchOptions({ showVotesList: true })}
                 />
+                {showVotingStatusSummary && <VotingStatusSummary proposal={proposal} votes={results} />}
                 {proposal && <ProposalDetailSection proposal={proposal} />}
                 <SidebarLinkButton
                   loading={proposalState.loading}
