@@ -18,7 +18,7 @@ export type ProposalPromotionSectionProps = React.HTMLAttributes<HTMLDivElement>
 
 const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft]
 
-export function ProposalPromotionSection({ proposal, loading }: ProposalPromotionSectionProps) {
+export default function ProposalPromotionSection({ proposal, loading }: ProposalPromotionSectionProps) {
   const t = useFormatMessage()
   const showPromotionSection = useMemo(
     () => proposal && proposal.status === ProposalStatus.Passed && PROMOTABLE_PROPOSALS.includes(proposal.type),

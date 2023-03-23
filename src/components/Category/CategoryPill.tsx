@@ -37,7 +37,7 @@ function getProposalTypeLabel(proposalType: ProposalType) {
 const CategoryPill = ({ className, proposalType, size = 'default', isLink }: Props) => {
   const colorsConfig = ColorsConfig[proposalType]
   const classNames = TokenList.join(['CategoryPill', className])
-  const Wrapper = isLink ? Link : Fragment
+  const Wrapper = isLink ? Link : 'div'
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
 
   return (

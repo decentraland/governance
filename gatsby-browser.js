@@ -23,12 +23,12 @@ import Segment from "decentraland-gatsby/dist/components/Development/Segment";
 import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar";
 import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants";
 
-export function wrapRootElement({ element }) {
+export const wrapRootElement = ({ element }) => {
   return (
     <AuthProvider>
       <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
       {typeof window !== 'undefined' && ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
-      {typeof window !== 'undefined' && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
+      {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
   )
 }
