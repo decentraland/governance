@@ -1,9 +1,8 @@
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isURL from 'validator/lib/isURL'
 
-import { fetchWithTimeout } from '../../helpers'
+import { fetchWithTimeout, isHttpsURL } from '../../helpers'
 
 export default routes((router) => {
   return router.post('/url-title', handleAPI(checkUrlTitle))
@@ -22,7 +21,7 @@ async function checkUrlTitle(req: Request<any, any, { url: string }>) {
     throw new Error('Missing url')
   }
 
-  if (!isURL(url)) {
+  if (!isHttpsURL(url)) {
     throw new Error('Invalid url: ' + url)
   }
 
