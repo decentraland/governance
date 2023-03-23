@@ -1,25 +1,51 @@
 import React from 'react'
 
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+
+import { getFormattedPercentage } from '../../../helpers'
+
+import './DistributionBarItem.css'
 import DistributionBarPopup, { DistributionBarPopupContent } from './DistributionBarPopup'
-import HorizontalBar, { HorizontalBarProps } from './HorizontalBar'
 
 export type DistributionBarItemProps = {
   popupContent?: DistributionBarPopupContent
-} & HorizontalBarProps
+  value: number
+  className: string
+  selected?: boolean
+  onHover?: (e: React.MouseEvent<unknown>) => void
+  onBlur?: () => void
+}
+type Props = { item: DistributionBarItemProps; total: number; showPopup?: boolean }
 
-const DistributionBarItem = ({ value, className, selected, total, popupContent }: DistributionBarItemProps) => {
+const DistributionBarItem = ({ item, total, showPopup }: Props) => {
+  const { value, className, selected, popupContent, onHover, onBlur } = item
+
   if (value <= 0) {
     return null
   }
 
+  const horizontalBar = (
+    <div
+      className={TokenList.join([
+        'DistributionBarItem',
+        !!selected && 'DistributionBarItem--selected',
+        className,
+        !!selected && `${className}--selected`,
+      ])}
+      style={{ width: getFormattedPercentage(value, total) }}
+      onMouseEnter={onHover}
+      onMouseLeave={onBlur}
+    />
+  )
+
   return (
     <>
-      {popupContent ? (
-        <DistributionBarPopup popupContent={popupContent}>
-          <HorizontalBar value={value} total={total} className={className} selected={selected} />
+      {!!showPopup && popupContent ? (
+        <DistributionBarPopup popupContent={popupContent} open={selected}>
+          {horizontalBar}
         </DistributionBarPopup>
       ) : (
-        <HorizontalBar value={value} total={total} className={className} selected={selected} />
+        horizontalBar
       )}
     </>
   )

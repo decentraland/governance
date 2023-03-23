@@ -6,6 +6,7 @@ import toNumber from 'lodash/toNumber'
 import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
 
+import { isHttpsURL } from '../../helpers'
 import LinkWithTitle from '../Common/LinkWithTitle'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
@@ -24,6 +25,8 @@ export interface BreakdownItem {
 interface Props {
   items: BreakdownItem[]
 }
+
+const formatUrl = (url: string) => (isHttpsURL(url) ? url : `//${url}`)
 
 function BreakdownAccordion({ items }: Props) {
   const [activeAccordionItem, setActiveAccordionItem] = useState(UNSELECTED_ITEM)
@@ -64,7 +67,7 @@ function BreakdownAccordion({ items }: Props) {
           </Accordion.Title>
           <Accordion.Content active={activeAccordionItem === accordionNumber}>
             <p>{description}</p>
-            {url && <LinkWithTitle url={url} />}
+            {url && <LinkWithTitle url={formatUrl(url)} />}
           </Accordion.Content>
         </Fragment>
       ))}

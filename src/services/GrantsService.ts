@@ -22,7 +22,7 @@ import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
-import { isDevEnv } from '../modules/env'
+import { isDevEnv } from '../modules/isDevEnv'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'

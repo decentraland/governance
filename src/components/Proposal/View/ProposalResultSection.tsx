@@ -14,6 +14,7 @@ import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 import './DetailsSection.css'
 import ProposalPromotionSection from './ProposalPromotionSection'
 import './ProposalResultSection.css'
+import SidebarHeaderLabel from './SidebarHeaderLabel'
 
 interface Props {
   choices: string[]
@@ -64,9 +65,9 @@ function ProposalResultSection({
       <div>
         <div className="ProposalResultSection__Container">
           <div className="ProposalResultSection__Header">
-            <div className="ProposalResultSection__HeaderLabel">
+            <SidebarHeaderLabel>
               {showResults ? t('page.proposal_detail.result_label') : t('page.proposal_detail.get_involved')}
-            </div>
+            </SidebarHeaderLabel>
             {showResultsButton && (
               <button
                 className="ProposalResultSection__ResultsButton"
@@ -103,6 +104,7 @@ function ProposalResultSection({
       </div>
       {!finished && (
         <ProposalVotingSection
+          isShowingResults={showResults}
           proposal={proposal}
           votes={votes}
           loading={loading}

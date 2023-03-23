@@ -1,0 +1,188 @@
+.ui.push.right.very.wide.visible.sidebar.CompetingProposalsSidebar {
+  width: 600px;
+}
+
+.CompetingProposalsSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  background: var(--white-900);
+  padding-top: 26px;
+  padding-left: 27px;
+  padding-right: 24px;
+}
+
+.CompetingProposalsSidebar__Content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.CompetingProposalsSidebar__Content > .GrantRequestSectionCard {
+  flex: none;
+}
+
+.CompetingProposalsSidebar__TitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 27px;
+  margin-bottom: 11px;
+}
+
+.CompetingProposalsSidebar__TitleContainer > .dcl.close {
+  width: 20px;
+}
+
+.CompetingProposalsSidebar__Title {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--black-800);
+}
+
+.ContestedBudgetCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.ContestedBudgetCard__Row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ContestedBudgetCard__Label {
+  display: flex;
+  align-items: center;
+}
+
+.ContestedBudgetCard__Legend {
+  width: 8px;
+  height: 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+
+.ContestedLabel {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 18px;
+  letter-spacing: 0.4px;
+  color: var(--black-800);
+  margin-right: 6px;
+}
+
+.ContestedLegend {
+  background: #a524b3; /*TODO: Add to theme*/
+}
+
+.ContestedOverbudgetLegend {
+  background: var(--red-800); /*TODO: Add to theme*/
+}
+
+.GrantedFundsLegend {
+  background: var(--black-600);
+}
+
+.UncontestedFundsLegend {
+  background: rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+}
+
+.AvailableOverBudgetLegend {
+  background: var(--white-900);
+  border: 1px solid var(--red-800);
+  box-shadow: 0 1px 1px rgba(115, 110, 125, 0.3);
+}
+
+.GrantedFundsLabel {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--black-600);
+  text-transform: uppercase;
+  gap: 2px;
+  display: flex;
+  margin-right: 6px;
+}
+
+.GrantedFundsPercentageLabel {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--black-600);
+  line-height: 24px;
+  opacity: 0.45;
+}
+
+.GrantedFundsBar {
+  background: var(--black-600);
+  border-radius: 4px;
+  margin-right: 2px;
+}
+
+.ContestedBudgetBar {
+  background: linear-gradient(90deg, #a524b3 0%, #9918a7 100%); /*TODO: Add to theme*/
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.ContestedBudgetOverbudgetBar {
+  background: var(--red-800);
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.ContestedBudgetBar--selected {
+  background: linear-gradient(90deg, #db00ff 0%, #841191 100%); /*TODO: Add to theme*/
+  box-shadow: 0 1px 4px #c640cd;
+}
+
+.ContestedBudgetOverbudgetBar--selected {
+  background: linear-gradient(90deg, #d80027 0%, #ff0000 100%) !important;
+  box-shadow: 0 1px 4px #c640cd !important;
+}
+
+.ContestedBudgetBar + .ContestedBudgetBar,
+.ContestedBudgetOverbudgetBar + .ContestedBudgetOverbudgetBar {
+  border-radius: 0;
+}
+
+.ThisInitiativeBar {
+  background: linear-gradient(90deg, #a524b3 0%, #9918a7 100%); /*TODO: Add to theme*/
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.ThisInitiativeBar--selected {
+  background: linear-gradient(90deg, #c640cd 0%, #405fcd 100%) !important; /*TODO: Add to theme*/
+  box-shadow: 0 1px 4px rgba(198, 64, 205, 0.5) !important; /*TODO: Add to theme*/
+}
+
+.ThisInitiativeOverbudgetBar {
+  background: var(--red-800);
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.ThisInitiativeOverbudgetBar--selected {
+  background: linear-gradient(90deg, #ff002e 0%, #c640cd 100%) !important;
+  box-shadow: 0 1px 4px rgba(198, 64, 205, 0.5) !important; /*TODO: Add to theme*/
+}
+
+.UncontestedBudgetBar {
+  background: rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+  border-radius: 4px;
+  margin-left: 2px;
+}
+
+.AvailableOverBudgetBar {
+  background: var(--white-900);
+  border-radius: 2px;
+  height: 2px;
+  position: relative;
+  z-index: 2;
+  margin-top: 3px;
+  margin-left: 3px;
+}

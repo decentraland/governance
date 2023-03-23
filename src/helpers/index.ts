@@ -1,4 +1,11 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import isURL from 'validator/lib/isURL'
+
+export const CURRENCY_FORMAT_OPTIONS = {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+}
 
 export function inBackground(fun: () => Promise<any>) {
   Promise.resolve()
@@ -52,3 +59,5 @@ export const fetchWithTimeout = async (url: string, timeout = 10000, options?: R
     clearTimeout(timeoutId)
   }
 }
+
+export const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
