@@ -204,7 +204,7 @@
       "title_too_short": "Title is too short",
       "category_assessment": {
         "field_too_short": "Field is too short",
-        "field_too_large:": "Field is too large",
+        "field_too_large": "Field is too large",
         "field_empty": "Field is empty",
         "field_too_low": "Field is too low",
         "field_invalid": "Field is invalid"
