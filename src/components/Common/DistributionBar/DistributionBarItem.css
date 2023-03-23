@@ -5,9 +5,7 @@
 }
 
 .DistributionBarItem--selected {
-  height: 8px;
+  height: 8px !important;
   scale: 1.03 1;
-  background: linear-gradient(90deg, #db00ff 0%, #841191 100%);
-  box-shadow: 0 1px 4px #c640cd;
   border-radius: 10px !important;
 }
