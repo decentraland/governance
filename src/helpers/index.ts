@@ -1,4 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import isURL from 'validator/lib/isURL'
 
 export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
@@ -41,3 +42,5 @@ export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, val
   const stringParams = newParams.toString()
   return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }
+
+export const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
