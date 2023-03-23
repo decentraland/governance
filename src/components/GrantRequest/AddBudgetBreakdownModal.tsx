@@ -4,10 +4,10 @@ import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
-import isURL from 'validator/lib/isURL'
 
 import { BudgetBreakdownConcept, BudgetBreakdownConceptSchema } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
+import { isHttpsURL } from '../../helpers'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -101,7 +101,7 @@ const AddBudgetBreakdownModal = ({
   const hasInvalidUrl =
     state.value.relevantLink !== '' &&
     !!state.value.relevantLink &&
-    (!isURL(state.value.relevantLink) || state.value.relevantLink?.length >= schema.relevantLink.maxLength)
+    (!isHttpsURL(state.value.relevantLink) || state.value.relevantLink?.length >= schema.relevantLink.maxLength)
 
   useEffect(() => {
     if (state.validated) {
@@ -199,7 +199,7 @@ const AddBudgetBreakdownModal = ({
             onChange={(_, { value }) => editor.set({ relevantLink: value })}
             error={hasInvalidUrl}
             message={
-              (!!state.value.relevantLink && !isURL(state.value.relevantLink)
+              (!!state.value.relevantLink && !isHttpsURL(state.value.relevantLink)
                 ? t('error.grant.due_diligence.relevant_link_invalid')
                 : '') +
               ' ' +

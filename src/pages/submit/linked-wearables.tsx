@@ -17,7 +17,6 @@ import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import omit from 'lodash/omit'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
-import isURL from 'validator/lib/isURL'
 
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -28,6 +27,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
+import { isHttpsURL } from '../../helpers'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -130,10 +130,7 @@ const validate = createValidator<LinkedWearablesState>({
       ),
       marketplace_link:
         assert(state.marketplace_link.length > 0, 'error.linked_wearables.single_url_empty') ||
-        assert(
-          isURL(state.marketplace_link, { protocols: ['https'], require_protocol: true }),
-          'error.linked_wearables.single_url_invalid'
-        ),
+        assert(isHttpsURL(state.marketplace_link), 'error.linked_wearables.single_url_invalid'),
       links: assert(
         links.some((option) => option !== ''),
         'error.linked_wearables.links_empty'
@@ -176,7 +173,7 @@ const validate = createValidator<LinkedWearablesState>({
 const removeEmptyStrings = (array: string[]) => array.filter((item) => item)
 
 const urlValidator: ListSectionValidator = (input: string) => {
-  return assert(isURL(input, { protocols: ['https'], require_protocol: true }), 'error.linked_wearables.url_invalid')
+  return assert(isHttpsURL(input), 'error.linked_wearables.url_invalid')
 }
 
 const addressValidator: ListSectionValidator = (input: string) => {
