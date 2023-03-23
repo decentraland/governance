@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -103,9 +103,8 @@ export default function GrantRequestFundingSection({
     mode: 'onTouched',
   })
 
+  const values = useWatch({ control }) as GrantRequestFunding
   const isFormEdited = isDirty
-
-  const values = useMemo(() => watch(), [watch])
 
   useEffect(() => {
     onValidation({ ...values }, isValid)
