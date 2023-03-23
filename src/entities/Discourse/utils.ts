@@ -4,7 +4,6 @@ import { env } from '../../modules/env'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
 export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || env('GATSBY_DISCOURSE_USER') || ''
-export const BASE_AVATAR_URL = process.env.DISCOURSE_BASE_AVATAR_URL || 'https://sjc6.discourse-cdn.com/standard10'
 export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || env('GATSBY_DISCOURSE_API') || ''
 const DEFAULT_AVATAR_SIZE = '45'
 
@@ -16,9 +15,9 @@ export function getUserProfileUrl(user: string) {
   return `${FORUM_URL}/u/${user}`
 }
 
-function setAvatarUrl(post: DiscoursePostInTopic) {
+function getAvatarUrl(post: DiscoursePostInTopic) {
   const defaultSizeUrl = getDefaultAvatarSizeUrl(post.avatar_template)
-  return defaultSizeUrl.includes('letter') ? defaultSizeUrl : BASE_AVATAR_URL + defaultSizeUrl
+  return defaultSizeUrl.includes('letter') ? defaultSizeUrl : FORUM_URL + defaultSizeUrl
 }
 
 export function filterComments(posts: DiscoursePostInTopic[]): ProposalCommentsInDiscourse {
@@ -29,7 +28,7 @@ export function filterComments(posts: DiscoursePostInTopic[]): ProposalCommentsI
   const proposalComments: ProposalComment[] = userPosts.map((post) => {
     return {
       username: post.username,
-      avatar_url: setAvatarUrl(post),
+      avatar_url: getAvatarUrl(post),
       created_at: post.created_at,
       cooked: post.cooked,
     }

@@ -1,9 +1,14 @@
 import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
+import { FORUM_URL } from '../../constants'
 import { ProposalCommentsInDiscourse } from '../Proposal/types'
 
 import { ONE_USER_POST, SEVERAL_USERS_POST, createWithPosts } from './__data__/discourse_samples'
 
-import { BASE_AVATAR_URL, DISCOURSE_USER, filterComments } from './utils'
+import { DISCOURSE_USER, filterComments } from './utils'
+
+jest.mock('../../constants', () => ({
+  FORUM_URL: 'https://forum.test.url',
+}))
 
 describe('filterUserComments', () => {
   let discourseTopic: DiscourseTopic
@@ -24,14 +29,14 @@ describe('filterUserComments', () => {
       expect(filteredComments.totalComments).toBe(1)
     })
 
-    it('should contain the base discourse avatar url in the user avatar url', () => {
-      expect(filteredComments.comments[0].avatar_url).toContain(BASE_AVATAR_URL)
+    it('should contain the base discourse forum url in the user avatar url', () => {
+      expect(filteredComments.comments[0].avatar_url).toContain(FORUM_URL)
     })
 
     it('should return a parsed list of the user comments with avatar, username, user comment, and comment date', () => {
       expect(filteredComments.comments[0].username).toBe('yemel')
       expect(filteredComments.comments[0].avatar_url).toBe(
-        'https://sjc6.discourse-cdn.com/standard10/user_avatar/forum.decentraland.vote/yemel/45/1_2.png'
+        `${FORUM_URL}/user_avatar/forum.decentraland.vote/yemel/45/1_2.png`
       )
       expect(filteredComments.comments[0].created_at).toBe('2021-11-19T21:36:13.181Z')
       expect(filteredComments.comments[0].cooked).toBe('<p>I am commenting as Yemel</p>')
