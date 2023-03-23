@@ -4,7 +4,7 @@ import Rollbar from 'rollbar'
 
 import { config } from '../config'
 import { ROLLBAR_TOKEN } from '../constants'
-import { isDevEnv } from '../modules/env'
+import { isDevEnv } from '../modules/isDevEnv'
 
 export class ErrorService {
   static client = new Rollbar({

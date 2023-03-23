@@ -1,4 +1,4 @@
-import { isDevEnv } from '../../modules/env'
+import { isDevEnv } from '../../modules/isDevEnv'
 import { asNumber } from '../Proposal/utils'
 
 import { GATSBY_GRANT_VP_THRESHOLD, MAX_LOWER_TIER_GRANT_FUNDING } from './constants'

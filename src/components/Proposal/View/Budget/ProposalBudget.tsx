@@ -5,7 +5,7 @@ import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
-import { isDevEnv } from '../../../../modules/env'
+import { isDevEnv } from '../../../../modules/isDevEnv'
 import { ContentSection } from '../../../Layout/ContentLayout'
 
 import CategoryTotalCard from './CategoryTotalCard'
