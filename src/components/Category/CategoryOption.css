@@ -121,6 +121,30 @@
   letter-spacing: -0.2px;
   color: var(--black-600);
   text-transform: capitalize;
+  cursor: pointer;
+  display: block;
+  width: fit-content;
+}
+.CategoryOption__SubcategoryItem:hover,
+.CategoryOption__SubcategoryItem--active {
+  color: var(--black-800);
+}
+
+.CategoryOption__SubcategoryItem--active {
+  position: relative;
+}
+
+.CategoryOption__SubcategoryItem--active::after {
+  --size: 8px;
+  content: '';
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--size);
+  height: var(--size);
+  background-color: var(--purple-800);
+  border-radius: 50%;
 }
 
 .CategoryOption__SubcategoryItem svg {

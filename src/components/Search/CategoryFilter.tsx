@@ -63,6 +63,7 @@ export default React.memo(function CategoryFilter({
       )}
       {filters.map((value, index) => {
         const label = toSnakeCase(value)
+        const isGrant = value == ProposalType.Grant
         return (
           <CategoryOption
             key={'category_filter' + index}
@@ -71,16 +72,10 @@ export default React.memo(function CategoryFilter({
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
             count={isCounter ? categoryCount[value as keyof Counter] : undefined}
+            subtypes={isGrant ? ['All grants', ...Object.values(NewGrantCategory), 'Legacy'] : undefined}
           />
         )
       })}
-      <CategoryOption
-        type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
-        href={getUrlFilters(FILTER_KEY, params)}
-        active={!type}
-        className={'CategoryFilter__CategoryOption'}
-        subtypes={['All grants', ...Object.values(NewGrantCategory), 'Legacy']}
-      />
     </CollapsibleFilter>
   )
 })
