@@ -12,3 +12,7 @@
   font-size: 15px;
   line-height: 24px;
 }
+
+.ProposalVotingSection__HeaderLabel {
+  margin: 10px 0 8px 0;
+}

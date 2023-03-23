@@ -263,8 +263,7 @@ export class BudgetService {
 
   private static getContestingGrantProposal(proposal: ProposalAttributes) {
     const contestingGrant: ContestingGrantProposal = {
-      title: proposal.title,
-      id: proposal.id,
+      ...proposal,
       size: proposal.configuration.size,
       contested_percentage: 0,
     }

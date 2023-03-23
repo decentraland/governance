@@ -10,6 +10,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import camelCase from 'lodash/camelCase'
 
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -32,7 +33,7 @@ import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
-import { GrantRequest, NewGrantCategory } from '../../entities/Grant/types'
+import { GrantRequest, GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
@@ -111,12 +112,12 @@ export default function SubmitGrant() {
     } catch (error) {
       console.error(error)
     } finally {
-      patchGrantRequest({ category })
+      patchGrantRequest((prevState) => ({ ...prevState, category }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [grantRequest, patchGrantRequest] = usePatchState<GrantRequest>(initialState)
+  const [grantRequest, patchGrantRequest] = useState<GrantRequest>(initialState)
   const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
@@ -179,6 +180,14 @@ export default function SubmitGrant() {
     }
   }, [])
 
+  const handleFundingSectionValidation = useCallback(
+    (data, sectionValid) => {
+      patchGrantRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ fundingSectionValid: sectionValid })
+    },
+    [patchGrantRequest, patchValidationState]
+  )
+
   if (accountState.loading) {
     return <LoadingView />
   }
@@ -213,7 +222,7 @@ export default function SubmitGrant() {
         <Container className="GrantRequestSection__Container">
           <CategorySelector
             onCategoryClick={(value: NewGrantCategory) => {
-              patchGrantRequest({ category: value })
+              patchGrantRequest((prevState) => ({ ...prevState, category: value }))
               patchValidationState({
                 categoryAssessmentSectionValid: value === NewGrantCategory.Platform,
               })
@@ -227,21 +236,22 @@ export default function SubmitGrant() {
         <>
           <GrantRequestFundingSection
             grantCategory={grantRequest.category}
-            onCategoryChange={() => {
-              patchGrantRequest({ category: null })
+            onCategoryChange={(category: NewGrantCategory) => {
+              patchGrantRequest((prevState) => {
+                const formattedCategory = camelCase(category) as keyof GrantRequestCategoryAssessment
+                delete prevState[formattedCategory]
+                return { ...prevState, category: null }
+              })
               navigate(locations.submit(ProposalType.Grant), { replace: true })
             }}
-            onValidation={(data, sectionValid) => {
-              patchGrantRequest({ ...data })
-              patchValidationState({ fundingSectionValid: sectionValid })
-            }}
+            onValidation={handleFundingSectionValidation}
             isFormDisabled={isFormDisabled}
             sectionNumber={getSectionNumber()}
           />
 
           <GrantRequestGeneralInfoSection
             onValidation={(data, sectionValid) => {
-              patchGrantRequest({ ...data })
+              patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ generalInformationSectionValid: sectionValid })
             }}
             isFormDisabled={isFormDisabled}
@@ -251,7 +261,7 @@ export default function SubmitGrant() {
           <GrantRequestTeamSection
             funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
-              patchGrantRequest({ ...data })
+              patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ teamSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
@@ -260,7 +270,7 @@ export default function SubmitGrant() {
           <GrantRequestDueDiligenceSection
             funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
-              patchGrantRequest({ ...data })
+              patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ dueDiligenceSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
@@ -271,7 +281,7 @@ export default function SubmitGrant() {
             <GrantRequestCategorySection
               category={grantRequest.category}
               onValidation={(data, sectionValid) => {
-                patchGrantRequest({ ...data })
+                patchGrantRequest((prevState) => ({ ...prevState, ...data }))
                 patchValidationState({ categoryAssessmentSectionValid: sectionValid })
               }}
               isFormDisabled={isFormDisabled}

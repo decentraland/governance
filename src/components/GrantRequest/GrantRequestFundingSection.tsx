@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
-import { isEmpty } from 'lodash'
 import snakeCase from 'lodash/snakeCase'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
@@ -20,7 +19,6 @@ import {
   VestingStartDate,
 } from '../../entities/Grant/types'
 import { isValidGrantBudget } from '../../entities/Grant/utils'
-import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
 import Label from '../Common/Label'
@@ -47,48 +45,10 @@ const isValidBudgetForCategory = (budget: number | string | undefined, total: nu
   return !!budget && isValidGrantBudget(Number(budget)) && Number(budget) <= total
 }
 
-const validate = (availableCategoryBudget: number | 0) =>
-  createValidator<GrantRequestFunding>({
-    funding: (state) => ({
-      funding:
-        assert(Number.isInteger(asNumber(state.funding)), 'error.grant.funding.invalid') ||
-        assert(!state.funding || asNumber(state.funding) >= schema.funding.minimum, 'error.grant.funding.too_low') ||
-        assert(!state.funding || asNumber(state.funding) <= schema.funding.maximum, 'error.grant.funding.too_big') ||
-        assert(
-          !state.funding || (!!state.funding && state.funding <= availableCategoryBudget),
-          'error.grant.funding.over_budget'
-        ) ||
-        undefined,
-    }),
-    projectDuration: (state) => ({
-      projectDuration:
-        assert(
-          !state.projectDuration || Number.isFinite(asNumber(state.projectDuration)),
-          'error.grant.size_invalid'
-        ) ||
-        assert(
-          !state.projectDuration || asNumber(state.projectDuration) >= schema.projectDuration.minimum,
-          'error.grant.size_too_low'
-        ) ||
-        assert(
-          !state.projectDuration || asNumber(state.projectDuration) <= schema.projectDuration.maximum,
-          'error.grant.size_too_big'
-        ) ||
-        undefined,
-    }),
-  })
-
-const edit = (state: GrantRequestFunding, props: Partial<GrantRequestFunding>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
-
 interface Props {
   grantCategory: NewGrantCategory | null
   onValidation: (data: GrantRequestFunding, sectionValid: boolean) => void
-  onCategoryChange: () => void
+  onCategoryChange: (category: NewGrantCategory) => void
   isFormDisabled: boolean
   sectionNumber: number
 }
@@ -132,44 +92,52 @@ export default function GrantRequestFundingSection({
 }: Props) {
   const t = useFormatMessage()
   const { totalCategoryBudget, availableCategoryBudget } = useCategoryBudget(grantCategory)
-  const validator = useMemo(() => validate(availableCategoryBudget), [availableCategoryBudget])
-  const [state, editor] = useEditor(edit, validator, INITIAL_GRANT_REQUEST_FUNDING_STATE)
-  const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_FUNDING_STATE)
+
+  const {
+    formState: { isDirty, isValid, errors },
+    control,
+    setValue,
+    watch,
+  } = useForm<GrantRequestFunding>({
+    defaultValues: INITIAL_GRANT_REQUEST_FUNDING_STATE,
+    mode: 'onTouched',
+  })
+
+  const values = useWatch({ control }) as GrantRequestFunding
+  const isFormEdited = isDirty
 
   useEffect(() => {
-    isFormEdited && editor.validate()
-    onValidation({ ...state.value }, state.validated)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+    onValidation({ ...values }, isValid)
+  }, [values, isValid, onValidation])
+
+  const funding = watch('funding')
 
   const availableDurations = useMemo(() => {
-    return getProjectDurationOptions(Number(state.value.funding) || GRANT_PROPOSAL_MIN_BUDGET)
-  }, [state.value.funding])
+    return getProjectDurationOptions(Number(funding) || GRANT_PROPOSAL_MIN_BUDGET)
+  }, [funding])
 
   const passThreshold =
-    grantCategory && isValidBudgetForCategory(Number(state.value.funding), totalCategoryBudget)
-      ? GrantTier.getVPThreshold(Number(state.value.funding))
+    grantCategory && isValidBudgetForCategory(Number(funding), totalCategoryBudget)
+      ? GrantTier.getVPThreshold(Number(funding))
       : undefined
 
-  const isHigherTier = isValidGrantBudget(Number(state.value.funding))
-    ? GrantTier.getTypeFromBudget(Number(state.value.funding)) === GrantTierType.HigherTier
+  const isHigherTier = isValidGrantBudget(Number(funding))
+    ? GrantTier.getTypeFromBudget(Number(funding)) === GrantTierType.HigherTier
     : false
 
   useEffect(() => {
     if (isHigherTier) {
-      editor.set({ paymentToken: PaymentToken.DAI })
+      setValue('paymentToken', PaymentToken.DAI)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.value.funding])
+  }, [isHigherTier, setValue])
+
+  useEffect(() => {
+    setValue('projectDuration', getUpdatedProjectDuration(String(funding), watch('projectDuration')))
+  }, [setValue, funding, watch])
 
   return (
     <GrantRequestSection
-      onBlur={() => {
-        if (state.value.funding !== '') {
-          editor.validate()
-        }
-      }}
-      validated={state.validated || (isFormEdited && isEmpty(state.error))}
+      validated={isValid}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.funding_section.title')}
       sectionNumber={sectionNumber}
@@ -180,7 +148,7 @@ export default function GrantRequestFundingSection({
             <GrantRequestSectionCard
               title={t('page.submit_grant.funding_section.project_category_title')}
               helper={
-                <Button basic onClick={onCategoryChange}>
+                <Button basic onClick={() => onCategoryChange(grantCategory)}>
                   {t('page.submit_grant.funding_section.project_category_action')}
                 </Button>
               }
@@ -205,35 +173,45 @@ export default function GrantRequestFundingSection({
               value: totalCategoryBudget,
             })}
             subtitleVariant="uppercase"
-            error={state.error.funding === 'error.grant.funding.over_budget'}
+            error={errors.funding?.message === 'error.grant.funding.over_budget'}
           />
         </div>
         <div className="GrantRequestSection__Row">
           <div className="GrantRequestSection__InputContainer">
-            <BudgetInput
-              label={t('page.submit_grant.funding_section.desired_funding')}
-              min={GRANT_PROPOSAL_MIN_BUDGET}
-              max={GRANT_PROPOSAL_MAX_BUDGET}
-              placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
-              subtitle={t('page.submit_grant.funding_section.desired_funding_sub')}
-              value={state.value.funding}
-              onChange={({ currentTarget }) =>
-                editor.set({
-                  funding: currentTarget.value,
-                  projectDuration: getUpdatedProjectDuration(currentTarget.value, state.value.projectDuration),
-                })
-              }
-              onBlur={() => editor.set({ funding: state.value.funding })}
-              error={state.error.funding || ''}
-              disabled={isFormDisabled}
+            <Controller
+              control={control}
+              name="funding"
+              rules={{
+                required: { value: true, message: t('error.grant.funding.invalid') },
+                validate: (value) => {
+                  if (value > availableCategoryBudget) {
+                    return t('error.grant.funding.over_budget')
+                  }
+                },
+                min: { value: schema.funding.minimum, message: t('error.grant.funding.too_low') },
+                max: { value: schema.funding.maximum, message: t('error.grant.funding.too_big') },
+              }}
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              render={({ field: { ref, ...field } }) => (
+                <BudgetInput
+                  label={t('page.submit_grant.funding_section.desired_funding')}
+                  min={GRANT_PROPOSAL_MIN_BUDGET}
+                  max={GRANT_PROPOSAL_MAX_BUDGET}
+                  placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
+                  subtitle={t('page.submit_grant.funding_section.desired_funding_sub')}
+                  error={errors.funding?.message || ''}
+                  disabled={isFormDisabled}
+                  {...field}
+                />
+              )}
             />
           </div>
           <div className="GrantRequestSection__InputContainer">
             <NumberSelector
-              value={state.value.projectDuration}
+              value={watch('projectDuration')}
               min={availableDurations[0]}
               max={availableDurations[availableDurations.length - 1]}
-              onChange={(value) => editor.set({ projectDuration: Number(value) })}
+              onChange={(value) => setValue('projectDuration', Number(value))}
               label={t('page.submit_grant.funding_section.project_duration_title')}
               unitLabel={t('page.submit_grant.funding_section.project_duration_unit')}
             />
@@ -244,7 +222,7 @@ export default function GrantRequestFundingSection({
             title={t('page.submit_grant.funding_section.pass_threshold_title')}
             helper={<CalculationHelper />}
             content={
-              grantCategory && isValidBudgetForCategory(state.value.funding, totalCategoryBudget)
+              grantCategory && isValidBudgetForCategory(watch('funding'), totalCategoryBudget)
                 ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
                 : null
             }
@@ -254,9 +232,9 @@ export default function GrantRequestFundingSection({
             title={t('page.submit_grant.funding_section.payout_strategy_title')}
             helper={<CalculationHelper />}
             content={
-              grantCategory && isValidBudgetForCategory(state.value.funding, totalCategoryBudget)
+              grantCategory && isValidBudgetForCategory(watch('funding'), totalCategoryBudget)
                 ? t('page.submit_grant.funding_section.payout_strategy_payments', {
-                    value: state.value.projectDuration,
+                    value: watch('projectDuration'),
                   })
                 : null
             }
@@ -267,13 +245,13 @@ export default function GrantRequestFundingSection({
           <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
           <ContentSection
             className="GrantRequestFundingSection__Radio"
-            onClick={() => editor.set({ vestingStartDate: VestingStartDate.First })}
+            onClick={() => setValue('vestingStartDate', VestingStartDate.First)}
           >
             <Radio
               name="vestingStartDate"
               id={VestingStartDate.First}
               value={VestingStartDate.First}
-              checked={state.value.vestingStartDate === VestingStartDate.First}
+              checked={watch('vestingStartDate') === VestingStartDate.First}
               type="radio"
               disabled={isFormDisabled}
             />
@@ -281,14 +259,14 @@ export default function GrantRequestFundingSection({
           </ContentSection>
           <ContentSection
             className="GrantRequestFundingSection__Radio"
-            onClick={() => editor.set({ vestingStartDate: VestingStartDate.Fifteenth })}
+            onClick={() => setValue('vestingStartDate', VestingStartDate.Fifteenth)}
           >
             <Radio
               name="vestingStartDate"
               id={VestingStartDate.Fifteenth}
               value={VestingStartDate.Fifteenth}
               type="radio"
-              checked={state.value.vestingStartDate === VestingStartDate.Fifteenth}
+              checked={watch('vestingStartDate') === VestingStartDate.Fifteenth}
               disabled={isFormDisabled}
             />
             {t('page.submit_grant.funding_section.funding_time_fifteenth_day')}
@@ -298,13 +276,13 @@ export default function GrantRequestFundingSection({
           <Label>{t('page.submit_grant.funding_section.preferred_payment_token')}</Label>
           <ContentSection
             className="GrantRequestFundingSection__Radio"
-            onClick={() => !isHigherTier && editor.set({ paymentToken: PaymentToken.MANA })}
+            onClick={() => !isHigherTier && setValue('paymentToken', PaymentToken.MANA)}
           >
             <Radio
               name="paymentToken"
               id={PaymentToken.MANA}
               value={PaymentToken.MANA}
-              checked={state.value.paymentToken === PaymentToken.MANA}
+              checked={watch('paymentToken') === PaymentToken.MANA}
               type="radio"
               disabled={isHigherTier || isFormDisabled}
             />
@@ -312,14 +290,14 @@ export default function GrantRequestFundingSection({
           </ContentSection>
           <ContentSection
             className="GrantRequestFundingSection__Radio"
-            onClick={() => !isHigherTier && editor.set({ paymentToken: PaymentToken.DAI })}
+            onClick={() => !isHigherTier && setValue('paymentToken', PaymentToken.DAI)}
           >
             <Radio
               name="paymentToken"
               id={PaymentToken.DAI}
               value={PaymentToken.DAI}
               type="radio"
-              checked={state.value.paymentToken === PaymentToken.DAI}
+              checked={watch('paymentToken') === PaymentToken.DAI}
               disabled={isHigherTier || isFormDisabled}
             />
             {t('page.submit_grant.funding_section.preferred_payment_token_dai')}

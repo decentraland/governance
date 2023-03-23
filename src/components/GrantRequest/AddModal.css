@@ -28,3 +28,23 @@
 .AddModal__SecondaryButton:hover {
   transform: none !important;
 }
+
+.AddModal .GrantRequestSection__Field .LabelContainer label {
+  margin: 0;
+}
+
+.AddModal .GrantRequestSection__Field .LabelContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.AddModal .GrantRequestSection__Field .LabelContainer .Optional {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  text-align: right;
+  color: var(--black-400);
+}
