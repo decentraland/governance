@@ -18,6 +18,10 @@
   margin-bottom: 15px;
 }
 
+.ProposalComment .ProposalComment__Author a {
+  font-weight: 600;
+}
+
 .ProposalComment__Cooked {
   width: auto;
   height: auto;

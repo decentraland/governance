@@ -25,7 +25,7 @@
 .ProposalDetailPage .ProposalDetailDescription .dg.Title {
   font-size: 13px;
   text-transform: uppercase;
-  font-weight: normal;
+  font-weight: 600;
   color: var(--black-600);
 }
 
