@@ -4,7 +4,6 @@ import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
@@ -15,6 +14,7 @@ import Username from '../../User/Username'
 
 import ProposalDetailCoauthors from './ProposalDetailCoauthors'
 import './ProposalDetailSection.css'
+import SidebarHeaderLabel from './SidebarHeaderLabel'
 
 export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
   proposal: ProposalAttributes
@@ -25,9 +25,9 @@ export default React.memo(function ProposalDetailSection({ proposal, ...props }:
   const coAuthors = useCoAuthorsByProposal(proposal)
 
   return (
-    <div {...props} className={TokenList.join(['DetailsSection', 'ResultSection', props.className])}>
+    <div {...props} className={TokenList.join(['DetailsSection', props.className])}>
       <div className="DetailsSection__Content">
-        <Header sub>{t('page.proposal_detail.details_label')}</Header>
+        <SidebarHeaderLabel>{t('page.proposal_detail.details_label')}</SidebarHeaderLabel>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_user_label')}</div>
           <Username address={proposal.user} linked />
