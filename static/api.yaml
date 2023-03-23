@@ -72,7 +72,7 @@ paths:
     get:
       tags:
         - Proposals
-      summary: Get the proposal from the give ID
+      summary: Get the proposal from the given ID
       parameters:
         - name: proposalId
           $ref: '#/components/parameters/proposalId'
@@ -85,7 +85,7 @@ paths:
     get:
       tags:
         - Proposals
-      summary: Get the proposal comments from the give ID
+      summary: Get the proposal comments from the given ID
       parameters:
         - name: proposalId
           $ref: '#/components/parameters/proposalId'
