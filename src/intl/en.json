@@ -1346,6 +1346,7 @@
           "about_this_label": "About this",
           "about_this_placeholder": "Highlight relevant information",
           "relevant_link_label": "Relevant Link",
+          "optional_label": "Optional",
           "relevant_link_placeholder": "https://"
         }
       },
@@ -1363,6 +1364,7 @@
           "about_label": "About them",
           "about_placeholder": "Highlight relevant information",
           "relevant_link_label": "Relevant Link",
+          "optional_label": "Optional",
           "relevant_link_placeholder": "https://"
         }
       },
