@@ -12,6 +12,7 @@ import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../../modules/votes/utils'
+import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -27,6 +28,7 @@ interface Props {
   choices: string[]
   finished: boolean
   hasVoted: boolean
+  isShowingResults: boolean
   onVote?: (e: React.MouseEvent<unknown, MouseEvent>, choice: string, choiceIndex: number) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
 }
@@ -44,6 +46,7 @@ const ProposalVotingSection = ({
   changingVote,
   choices,
   hasVoted,
+  isShowingResults,
   onVote,
   onChangeVote,
   finished,
@@ -98,6 +101,12 @@ const ProposalVotingSection = ({
         <div className="ProposalVotingSection__Loader">
           <Loader active={proposalVotingSectionLoading} />
         </div>
+      )}
+
+      {!proposalVotingSectionLoading && !hasVoted && isShowingResults && (
+        <SidebarHeaderLabel className="ProposalVotingSection__HeaderLabel">
+          {t('page.proposal_detail.get_involved')}
+        </SidebarHeaderLabel>
       )}
 
       {showGrantRequestText && (
