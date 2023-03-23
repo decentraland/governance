@@ -3,12 +3,14 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 import isURL from 'validator/lib/isURL'
 
+import { fetchWithTimeout } from '../../helpers'
+
 export default routes((router) => {
   return router.post('/url-title', handleAPI(checkUrlTitle))
 })
 
 async function getTitle(url: string) {
-  const response = await fetch(url)
+  const response = await fetchWithTimeout(url, 6000)
   const text = await response.text()
   const title = text.match(/<title>([^<]+)<\/title>/)?.[1]
   return title

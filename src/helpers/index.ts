@@ -35,3 +35,20 @@ export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, val
   const stringParams = newParams.toString()
   return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }
+
+export const fetchWithTimeout = async (url: string, timeout = 10000, options?: RequestInit) => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => {
+    controller.abort()
+  }, timeout)
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    })
+    return response
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
