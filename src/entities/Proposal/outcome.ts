@@ -18,6 +18,8 @@ export type Outcome = {
   outcomeStatus?: ProposalOutcome
 }
 
+const LEGACY_OPTIONS = ['yes', 'no']
+
 export async function calculateOutcome(proposal: ProposalAttributes, context: JobContext<Record<string, unknown>>) {
   try {
     const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
@@ -29,7 +31,7 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
     }
 
     const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
-    const isUsingDefaultOptions = sameOptions(choices, DEFAULT_CHOICES)
+    const isUsingDefaultOptions = sameOptions(choices, DEFAULT_CHOICES) || sameOptions(choices, LEGACY_OPTIONS)
 
     const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
     const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
