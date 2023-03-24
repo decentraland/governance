@@ -2,16 +2,18 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+import snakeCase from 'lodash/snakeCase'
 
 import { GOVERNANCE_API } from '../constants'
+import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
-  GrantsResponse,
+  CategorizedGrants,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
-  NewProposalGrant,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
@@ -20,10 +22,13 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
+import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
-import { SurveyTopicAttributes, Topic } from '../entities/SurveyTopic/types'
+import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
+
+import { TransparencyBudget } from './DclData'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -32,7 +37,7 @@ type NewProposalMap = {
   [`/proposals/ban-name`]: NewProposalBanName
   [`/proposals/poi`]: NewProposalPOI
   [`/proposals/catalyst`]: NewProposalCatalyst
-  [`/proposals/grant`]: NewProposalGrant
+  [`/proposals/grant`]: GrantRequest
   [`/proposals/linked-wearables`]: NewProposalLinkedWearables
 }
 
@@ -107,6 +112,7 @@ export class Governance extends API {
       `/proposals${query}`,
       options
     )
+
     return {
       ...proposals,
       data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
@@ -114,13 +120,13 @@ export class Governance extends API {
   }
 
   async getGrants() {
-    const proposals = await this.fetch<ApiResponse<GrantsResponse>>('/proposals/grants')
+    const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
 
     return proposals.data
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {
-    const grants = await this.fetch<ApiResponse<GrantsResponse>>(
+    const grants = await this.fetch<ApiResponse<CategorizedGrants>>(
       `/proposals/grants/${user}?coauthoring=${!!coauthoring}`
     )
 
@@ -160,7 +166,7 @@ export class Governance extends API {
     return this.createProposal(`/proposals/catalyst`, proposal)
   }
 
-  async createProposalGrant(proposal: NewProposalGrant) {
+  async createProposalGrant(proposal: GrantRequest) {
     return this.createProposal(`/proposals/grant`, proposal)
   }
 
@@ -352,6 +358,53 @@ export class Governance extends API {
       this.options().method('GET')
     )
 
+    return response.data
+  }
+
+  async getCategoryBudget(category: ProposalGrantCategory): Promise<CategoryBudget> {
+    const response = await this.fetch<ApiResponse<CategoryBudget>>(
+      `/budget/${snakeCase(category)}`,
+      this.options().method('GET')
+    )
+    return response.data
+  }
+
+  async getTransparencyBudgets() {
+    const response = await this.fetch<ApiResponse<TransparencyBudget[]>>(`/budget/fetch`, this.options().method('GET'))
+    return response.data
+  }
+
+  async getCurrentBudget() {
+    const response = await this.fetch<ApiResponse<Budget>>(`/budget/current`, this.options().method('GET'))
+    return response.data
+  }
+
+  async getBudgetWithContestants(proposalId: string) {
+    const result = await this.fetch<ApiResponse<BudgetWithContestants>>(`/budget/contested/${proposalId}`)
+    return result.data
+  }
+
+  async updateGovernanceBudgets() {
+    const response = await this.fetch<ApiResponse<QuarterBudgetAttributes[]>>(
+      `/budget/update`,
+      this.options().method('POST').authorization({ sign: true })
+    )
+    return response.data
+  }
+
+  async reportErrorToServer(message: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/debug/report-error`,
+      this.options().method('POST').authorization({ sign: true }).json({ message })
+    )
+    return response.data
+  }
+
+  async checkUrlTitle(url: string) {
+    const response = await this.fetch<ApiResponse<{ title?: string }>>(
+      `/url-title`,
+      this.options().method('POST').json({ url })
+    )
     return response.data
   }
 

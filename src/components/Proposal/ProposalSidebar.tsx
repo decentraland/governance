@@ -10,14 +10,15 @@ import { UpdateAttributes } from '../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
 import { ProposalPageState } from '../../pages/proposal'
-import ForumButton from '../Section/ForumButton'
-import ProposalCoAuthorStatus from '../Section/ProposalCoAuthorStatus'
-import ProposalDetailSection from '../Section/ProposalDetailSection'
-import ProposalGovernanceSection from '../Section/ProposalGovernanceSection'
-import ProposalUpdatesActions from '../Section/ProposalUpdatesActions'
-import SubscribeButton from '../Section/SubscribeButton'
-import VestingContract from '../Section/VestingContract'
 import { ChoiceProgressProps } from '../Status/ChoiceProgress'
+
+import ForumButton from './View/ForumButton'
+import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
+import ProposalDetailSection from './View/ProposalDetailSection'
+import ProposalGovernanceSection from './View/ProposalGovernanceSection'
+import ProposalUpdatesActions from './View/ProposalUpdatesActions'
+import SubscribeButton from './View/SubscribeButton'
+import VestingContract from './View/VestingContract'
 
 import ProposalActions from './ProposalActions'
 import './ProposalSidebar.css'
@@ -126,6 +127,7 @@ export default function ProposalSidebar({
           subscribed={subscribed}
           onClick={() => subscribe(!subscribed)}
         />
+
         {proposal && <ProposalDetailSection proposal={proposal} />}
         {proposal && (
           <ProposalActions

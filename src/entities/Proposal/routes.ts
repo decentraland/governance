@@ -5,48 +5,42 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
-import filter from 'lodash/filter'
-import isNil from 'lodash/isNil'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { DclData, TransparencyGrantsTiers } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
-import { formatError, inBackground } from '../../helpers'
+import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
+import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
 import { filterComments } from '../Discourse/utils'
+import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
-import { IndexedUpdate, UpdateAttributes } from '../Updates/types'
-import { getPublicUpdates } from '../Updates/utils'
 import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
 
+import { SUBMISSION_THRESHOLD_POLL } from './constants'
 import ProposalModel from './model'
 import {
-  GrantAttributes,
-  GrantRequiredVP,
-  GrantWithUpdateAttributes,
+  CategorizedGrants,
+  GrantWithUpdate,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
-  NewProposalGrant,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
-  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -55,7 +49,6 @@ import {
   newProposalCatalystScheme,
   newProposalDraftScheme,
   newProposalGovernanceScheme,
-  newProposalGrantScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
   newProposalPollScheme,
@@ -63,19 +56,17 @@ import {
 } from './types'
 import {
   DEFAULT_CHOICES,
-  GrantDuration,
   MAX_PROPOSAL_LIMIT,
   MIN_PROPOSAL_OFFSET,
+  canLinkProposal,
+  getProposalEndDate,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  isGrantSizeValid,
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
 } from './utils'
-
-const POLL_SUBMISSION_THRESHOLD = requiredEnv('GATSBY_SUBMISSION_THRESHOLD_POLL')
 
 export default routes((route) => {
   const withAuth = auth()
@@ -98,7 +89,7 @@ export default routes((route) => {
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
-export async function getProposals(req: WithAuth<Request>) {
+export async function getProposals(req: WithAuth) {
   const query = req.query
   const type = query.type && String(query.type)
   const status = query.status && String(query.status)
@@ -154,17 +145,13 @@ export async function getProposals(req: WithAuth<Request>) {
   return { ok: true, total, data }
 }
 
-function proposalDuration(duration: number) {
-  return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
-}
-
 const newProposalPollValidator = schema.compile(newProposalPollScheme)
 
 export async function createProposalPoll(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalPoll>(newProposalPollValidator, req.body || {})
 
-  await validateSubmissionThreshold(user, POLL_SUBMISSION_THRESHOLD)
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_POLL)
 
   // add default options
   configuration.choices = [...configuration.choices, INVALID_PROPOSAL_POLL_OPTIONS]
@@ -173,7 +160,7 @@ export async function createProposalPoll(req: WithAuth) {
     user,
     type: ProposalType.Poll,
     required_to_pass: ProposalRequiredVP[ProposalType.Poll],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_POLL)),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_POLL)),
     configuration,
   })
 }
@@ -191,7 +178,7 @@ export async function createProposalDraft(req: WithAuth) {
     user,
     type: ProposalType.Draft,
     required_to_pass: ProposalRequiredVP[ProposalType.Draft],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_DRAFT)),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_DRAFT)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -212,7 +199,7 @@ export async function createProposalGovernance(req: WithAuth) {
     user,
     type: ProposalType.Governance,
     required_to_pass: ProposalRequiredVP[ProposalType.Governance],
-    finish_at: proposalDuration(Number(process.env.GATSBY_DURATION_GOVERNANCE)),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_GOVERNANCE)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -239,7 +226,7 @@ export async function createProposalBanName(req: WithAuth) {
     user,
     type: ProposalType.BanName,
     required_to_pass: ProposalRequiredVP[ProposalType.BanName],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -287,7 +274,7 @@ export async function createProposalPOI(req: WithAuth) {
     user,
     type: ProposalType.POI,
     required_to_pass: ProposalRequiredVP[ProposalType.POI],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -309,7 +296,7 @@ export async function createProposalCatalyst(req: WithAuth) {
     user,
     type: ProposalType.Catalyst,
     required_to_pass: ProposalRequiredVP[ProposalType.Catalyst],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -317,26 +304,13 @@ export async function createProposalCatalyst(req: WithAuth) {
   })
 }
 
-const newProposalGrantValidator = schema.compile(newProposalGrantScheme)
-
 export async function createProposalGrant(req: WithAuth) {
+  const grantRequestSchema = getGrantRequestSchema(req.body.category)
+  const newProposalGrantValidator = schema.compile(grantRequestSchema)
   const user = req.auth!
-  const configuration = validate<NewProposalGrant>(newProposalGrantValidator, req.body || {})
-
-  if (!isGrantSizeValid(configuration.tier, configuration.size)) {
-    throw new RequestError('Grant size is not valid for the selected tier')
-  }
-
-  return createProposal({
-    user,
-    type: ProposalType.Grant,
-    required_to_pass: GrantRequiredVP[configuration.tier],
-    finish_at: proposalDuration(GrantDuration[configuration.tier]),
-    configuration: {
-      ...configuration,
-      choices: DEFAULT_CHOICES,
-    },
-  })
+  const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
+  const grantInCreation = await GrantsService.getGrantInCreation(grantRequest, user)
+  return createProposal(grantInCreation)
 }
 
 const newProposalLinkedWearablesValidator = schema.compile(newProposalLinkedWearablesScheme)
@@ -349,7 +323,7 @@ export async function createProposalLinkedWearables(req: WithAuth) {
     user,
     type: ProposalType.LinkedWearables,
     required_to_pass: ProposalRequiredVP[ProposalType.LinkedWearables],
-    finish_at: proposalDuration(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -361,9 +335,11 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
     return await ProposalService.createProposal(proposalInCreation)
   } catch (e: any) {
+    const errorTitle = `Error creating proposal: ${JSON.stringify(proposalInCreation)}`
+    ErrorService.report(errorTitle, e)
     throw new RequestError(
-      `Error creating proposal: ${JSON.stringify(proposalInCreation)}\n 
-      Error: ${e.message ? e.message : JSON.stringify(e)}`,
+      `${errorTitle}\n 
+    Error: ${e.message ? e.message : JSON.stringify(e)}`,
       RequestError.InternalServerError,
       e
     )
@@ -371,10 +347,11 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {
+  const id = req.params.proposal
   try {
-    return ProposalModel.getProposal(req.params.proposal)
-  } catch (e: any) {
-    throw new RequestError(e.message, RequestError.NotFound)
+    return await ProposalService.getProposal(id)
+  } catch (e) {
+    throw new RequestError(`Proposal "${id}" not found`, RequestError.NotFound)
   }
 }
 
@@ -438,7 +415,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.passed_by = user
     update.passed_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.tier)
+      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.projectDuration)
     }
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
@@ -490,129 +467,24 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
       RequestError.NotFound
     )
   }
-  if (linkedProposal.status != ProposalStatus.Passed) {
-    throw new RequestError("Cannot link selected proposal since it's not in a PASSED status", RequestError.Forbidden)
+  if (!canLinkProposal(linkedProposal.status)) {
+    throw new RequestError(
+      "Cannot link selected proposal since it's not in a PASSED or OOB status",
+      RequestError.Forbidden
+    )
   }
 }
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
-  const requiredVp = Number(submissionThreshold || POLL_SUBMISSION_THRESHOLD)
+  const requiredVp = Number(submissionThreshold || SUBMISSION_THRESHOLD_POLL)
   const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
   if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
 }
 
-async function getGrantLatestUpdate(tier: ProposalGrantTier, proposalId: string): Promise<IndexedUpdate | null> {
-  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
-    created_at: 'desc',
-  } as never)
-  if (!updates || updates.length === 0) {
-    return null
-  }
-
-  if (tier === ProposalGrantTier.Tier1 || tier === ProposalGrantTier.Tier2) {
-    return { ...updates[0], index: updates.length }
-  }
-
-  const publicUpdates = getPublicUpdates(updates)
-  const currentUpdate = publicUpdates[0]
-  if (!currentUpdate) {
-    return null
-  }
-
-  return { ...currentUpdate, index: publicUpdates.length }
-}
-
-async function getGrants() {
-  const grants = await DclData.get().getGrants()
-  const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
-
-  const current: GrantAttributes[] = []
-  const past: GrantAttributes[] = []
-
-  await Promise.all(
-    enactedGrants.map(async (grant) => {
-      if (!grant.vesting_address && !grant.enacting_tx) {
-        return
-      }
-
-      try {
-        const proposal = await ProposalModel.findOne<ProposalAttributes>(grant.id)
-
-        if (!proposal) {
-          throw new Error('Proposal not found')
-        }
-
-        const newGrant: GrantAttributes = {
-          id: grant.id,
-          size: grant.size,
-          configuration: {
-            category: grant.category,
-            tier: grant.tier,
-          },
-          user: grant.user,
-          title: grant.title,
-          token: grant.token,
-          created_at: Time(proposal.created_at).unix(),
-          enacted_at: grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix(),
-        }
-
-        if (grant.tx_date) {
-          Object.assign(newGrant, {
-            enacting_tx: grant.enacting_tx,
-            tx_amount: grant.tx_amount,
-          })
-        } else {
-          const { vesting_total_amount, vesting_released, vesting_releasable } = grant
-
-          if (isNil(vesting_total_amount) || isNil(vesting_released) || isNil(vesting_releasable)) {
-            throw new Error('Missing vesting data')
-          }
-
-          Object.assign(newGrant, {
-            contract: {
-              vesting_total_amount: Math.round(vesting_total_amount),
-              vestedAmount: Math.round(vesting_released + vesting_releasable),
-              releasable: Math.round(vesting_releasable),
-              released: Math.round(vesting_released),
-              start_at: Time(grant.vesting_start_at).unix(),
-              finish_at: Time(grant.vesting_finish_at).unix(),
-            },
-          })
-        }
-
-        const oneTimePaymentThreshold = Time(grant.tx_date).add(1, 'month')
-        const isCurrentGrant =
-          grant.tier === 'Tier 1' || grant.tier === 'Tier 2'
-            ? Time().isBefore(oneTimePaymentThreshold)
-            : newGrant.contract?.vestedAmount !== newGrant.contract?.vesting_total_amount
-
-        if (!isCurrentGrant) {
-          return past.push(newGrant)
-        }
-
-        try {
-          const update = await getGrantLatestUpdate(TransparencyGrantsTiers[grant.tier], grant.id)
-          return current.push({
-            ...newGrant,
-            update,
-            update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
-          } as GrantWithUpdateAttributes)
-        } catch (error) {
-          logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
-        }
-      } catch (error) {
-        logger.error(`Failed to fetch proposal ${grant.id}`, formatError(error as Error))
-      }
-    })
-  )
-
-  return {
-    current,
-    past,
-    total: grants.length,
-  }
+async function getGrants(): Promise<CategorizedGrants> {
+  return await GrantsService.getGrants()
 }
 
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
@@ -631,7 +503,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   const grantsResult = await getGrants()
 
-  const filterGrants = (grants: GrantAttributes[]) => {
+  const filterGrants = (grants: GrantWithUpdate[]) => {
     return grants.filter(
       (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
     )

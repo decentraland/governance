@@ -9,13 +9,16 @@ import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import { POIProposalModal } from '../../components/Modal/POIProposalModal/POIProposalModal'
 import { ProposalType } from '../../entities/Proposal/types'
+import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 
 import './submit.css'
 
+const NOW = Date.now()
+
 export default function NewProposalPage() {
   const t = useFormatMessage()
-  const [show, setShow] = useState(false)
+  const [showPOIProposalModal, setShowPOIProposalModal] = useState(false)
 
   return (
     <>
@@ -33,26 +36,25 @@ export default function NewProposalPage() {
           <Header sub className="ProposalDetailPage_SubHeader">
             {t('page.submit.common_actions')}
           </Header>
-          <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} active />
-          <CategoryBanner type={ProposalType.POI} onClick={() => setShow(true)} active />
-          <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} active />
-          <CategoryBanner type={ProposalType.Grant} href={locations.submit(ProposalType.Grant)} active />
+          <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} />
+          <CategoryBanner type={ProposalType.POI} onClick={() => setShowPOIProposalModal(true)} />
+          <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} />
+          <CategoryBanner type={ProposalType.LinkedWearables} href={locations.submit(ProposalType.LinkedWearables)} />
           <CategoryBanner
-            type={ProposalType.LinkedWearables}
-            href={locations.submit(ProposalType.LinkedWearables)}
-            active
-            isNew
+            type={ProposalType.Grant}
+            href={locations.submit(ProposalType.Grant)}
+            active={isGrantProposalSubmitEnabled(NOW)}
           />
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">
             {t('page.submit.governance_process')}
           </Header>
-          <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} active />
+          <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} />
         </ContentSection>
       </ContentLayout>
 
-      <POIProposalModal open={show} onClose={() => setShow(false)} />
+      <POIProposalModal open={showPOIProposalModal} onClose={() => setShowPOIProposalModal(false)} />
     </>
   )
 }

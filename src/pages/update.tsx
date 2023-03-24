@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
+import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
@@ -26,9 +27,7 @@ export default function UpdateDetail() {
   const [proposal, proposalState] = useProposal(update?.proposal_id)
   const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
 
-  const index = getUpdateNumber(publicUpdates, updateId)
-
-  if (updateState.error || proposalState.error || updatesState.error || isNaN(index)) {
+  if (updateState.error || proposalState.error || updatesState.error) {
     return (
       <ContentLayout>
         <NotFound />
@@ -36,21 +35,29 @@ export default function UpdateDetail() {
     )
   }
 
-  if (!update || updateState.loading || updatesState.loading || proposalState.loading) {
+  if (!update || !publicUpdates || updateState.loading || updatesState.loading || proposalState.loading) {
     return <LoadingView />
   }
 
+  const index = getUpdateNumber(publicUpdates, updateId)
   const proposalHref = locations.proposal(update.proposal_id)
 
   return (
-    <ContentLayout navigateHref={proposalHref} small>
-      <ContentSection className="UpdateDetail__Header">
-        <span className="UpdateDetail__ProjectTitle">
-          {t('page.update_detail.project_title', { title: <Link href={proposalHref}>{proposal?.title}</Link> })}
-        </span>
-        <Header size="huge">{t('page.update_detail.title', { index })}</Header>
-      </ContentSection>
-      {update && <UpdateMarkdownView update={update} author={update.author} />}
-    </ContentLayout>
+    <>
+      <Head
+        title={t('page.update_detail.page_title', { title: proposal?.title, index })}
+        description={update?.introduction}
+        image="https://decentraland.org/images/decentraland.png"
+      />
+      <ContentLayout navigateHref={proposalHref} small>
+        <ContentSection className="UpdateDetail__Header">
+          <span className="UpdateDetail__ProjectTitle">
+            {t('page.update_detail.project_title', { title: <Link href={proposalHref}>{proposal?.title}</Link> })}
+          </span>
+          <Header size="huge">{t('page.update_detail.title', { index })}</Header>
+        </ContentSection>
+        {update && <UpdateMarkdownView update={update} author={update.author} />}
+      </ContentLayout>
+    </>
   )
 }

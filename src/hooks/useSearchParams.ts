@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 
-import { ProposalStatus, ProposalType, toProposalStatus, toProposalType } from '../entities/Proposal/types'
+import { ProposalStatus, ProposalType, toProposalType } from '../entities/Proposal/types'
+import { toProposalStatus } from '../entities/Proposal/utils'
 import { toProposalListPage } from '../modules/locations'
 
 export type SearchParams = {
@@ -20,7 +21,7 @@ export function useSearchParams(): SearchParams {
   return useMemo(() => {
     const params = new URLSearchParams(location.search)
     const type = toProposalType(params.get('type')) ?? undefined
-    const status = toProposalStatus(params.get('status')) ?? undefined
+    const status = toProposalStatus(params.get('status'), () => undefined)
     const search = params.get('search') || ''
     const timeFrame = params.get('timeFrame') || ''
     const order = params.get('order') ? (params.get('order') === 'ASC' ? 'ASC' : 'DESC') : undefined

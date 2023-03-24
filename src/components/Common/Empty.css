@@ -23,8 +23,8 @@
   margin-bottom: 24px;
 }
 
-.Empty__Link {
-  margin-top: 15px;
+.Empty__Action {
+  margin-top: 15px !important;
 }
 
 .Empty .dg.Link {

@@ -3,13 +3,13 @@ import React from 'react'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
+import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import Username from '../../User/Username'
 
 import './GrantCardHeadline.css'
 
 export type GrantCardHeadlineProps = React.HTMLAttributes<HTMLDivElement> & {
-  grant: GrantWithUpdateAttributes
+  grant: GrantWithUpdate
   hoverable?: boolean
   expanded?: boolean
 }

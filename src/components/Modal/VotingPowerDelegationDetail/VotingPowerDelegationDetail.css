@@ -5,7 +5,7 @@
 }
 
 @media (max-width: 424px) {
-  .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
+  .header.VotingPowerDelegationCandidatesList__Header.VotingPowerDelegationDetail__Header {
     display: flex;
     flex-direction: column;
     padding: 0 !important;
@@ -46,7 +46,7 @@
 }
 
 @media (max-width: 768px) {
-  .header.VotingPowerDelegationModal__Header.VotingPowerDelegationDetail__Header {
+  .header.VotingPowerDelegationCandidatesList__Header.VotingPowerDelegationDetail__Header {
     padding-right: 0 !important;
     padding-left: 0 !important;
   }
@@ -94,7 +94,7 @@
 }
 
 .VotingPowerDelegationDetail__Header .dcl.blockie {
-  margin-right: 0 !important;
+  margin-right: 6px !important;
 }
 
 .VotingPowerDelegationDetail__Header .DelegateButton__Container {
@@ -155,7 +155,7 @@
   bottom: 0;
   width: 100%;
   height: 4em;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white-900) 100%);
 }
 
 .VotingPowerDelegationDetail__Content .Info > .Fadeout--hidden {

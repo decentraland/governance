@@ -1,36 +1,65 @@
-.ChoiceProgress .ChoiceProgress__Description {
+.ChoiceProgress {
+  padding: 0 15px;
+}
+
+.ChoiceProgress--clickable {
+  cursor: pointer;
+}
+
+.ChoiceProgress__Description {
   display: flex;
   justify-content: space-between;
   color: var(--text);
   flex-wrap: wrap;
 }
 
-.ChoiceProgress .ChoiceProgress__Choice {
+.ChoiceProgress__Choice {
   font-weight: 500;
   font-size: 15px;
   display: -webkit-box;
   overflow: hidden;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  display: block;
 }
 
-.ChoiceProgress .ChoiceProgress__Stats {
+.ChoiceProgress .ChoiceProgress__Choice::first-letter {
+  text-transform: uppercase;
+}
+
+.ChoiceProgress__Stats {
   flex: 1 0 auto;
   font-size: 15px;
   text-align: right;
   padding-left: 1em;
 }
 
-.ChoiceProgress .Progress {
-  margin-top: 4px;
-}
-
-.ChoiceProgress .ChoiceProgress__Votes {
+.ChoiceProgress__Votes {
+  display: flex;
+  justify-content: space-between;
   font-size: 13px;
   margin-top: 8px;
   font-weight: normal;
 }
 
-.ChoiceProgress .ChoiceProgress__Votes strong {
-  font-weight: 500
+.ChoiceProgress__Votes strong {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--black-700);
+}
+
+.ChoiceProgress__VotesCount {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--black-600);
+}
+
+.ChoiceProgress__VotesCountIcon {
+  width: 4px;
+  height: 7px;
+  margin-left: 2px;
 }

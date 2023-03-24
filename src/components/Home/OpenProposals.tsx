@@ -4,8 +4,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import isEmpty from 'lodash/isEmpty'
 
-import { ProposalStatus } from '../../entities/Proposal/types'
-import useProposals from '../../hooks/useProposals'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
 import locations from '../../modules/locations'
 import BoxTabs from '../Common/BoxTabs'
@@ -23,19 +22,17 @@ enum Tab {
   ParticipatingVP = 'participatingVp',
 }
 
+interface Props {
+  endingSoonProposals?: ProposalAttributes[]
+  isLoadingProposals: boolean
+}
+
 const now = Time().toDate()
 const twoWeeksAgo = Time(now).subtract(2, 'week').toDate()
 
-const OpenProposals = () => {
+const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
-  const { proposals: endingSoonProposals, isLoadingProposals } = useProposals({
-    order: 'ASC',
-    status: ProposalStatus.Active,
-    timeFrameKey: 'finish_at',
-    page: 1,
-    itemsPerPage: 5,
-  })
 
   const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
     useProposalsByParticipatingVP(twoWeeksAgo, now)
@@ -60,12 +57,12 @@ const OpenProposals = () => {
         {activeTab === Tab.EndingSoon && (
           <>
             {!isLoadingProposals &&
-              endingSoonProposals?.data &&
-              endingSoonProposals.data.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              endingSoonProposals &&
+              endingSoonProposals.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
             {isLoadingProposals && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
             )}
-            {!isLoadingProposals && isEmpty(endingSoonProposals?.data) && (
+            {!isLoadingProposals && isEmpty(endingSoonProposals) && (
               <Empty className="OpenProposals__Empty" description="No active proposals" />
             )}
           </>

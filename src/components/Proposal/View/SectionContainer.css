@@ -1,0 +1,15 @@
+.SectionContainer {
+  background: var(--secondary);
+  padding: 2rem 1rem 1rem 1rem;
+  position: relative;
+}
+
+.SectionContainer .SectionContainer__Container {
+  z-index: 1;
+  width: 100%;
+  max-width: 800px;
+  min-height: 100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 0;
+}

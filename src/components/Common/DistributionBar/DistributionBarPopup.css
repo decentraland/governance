@@ -1,0 +1,27 @@
+.popup.DistributionBarPopup {
+  background-color: var(--background-popup);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+}
+
+.DistributionBarPopup__Title {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--white-900);
+}
+
+.DistributionBarPopup__Sub {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--white-900);
+  opacity: 0.5;
+}
+
+.DistributionBarPopup__Content {
+  font-size: 17px;
+  color: var(--white-900);
+}

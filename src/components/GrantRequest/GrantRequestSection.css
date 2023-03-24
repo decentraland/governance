@@ -1,0 +1,109 @@
+.GrantRequestSection__Container {
+  margin-bottom: 50px;
+}
+
+.GrantRequestSection__Head {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.GrantRequestSection__Header {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 26px;
+  margin-bottom: 16px;
+}
+
+.GrantRequestSection__HeaderTitle {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 42px;
+  letter-spacing: 0.4px;
+  text-align: left;
+}
+
+.GrantRequestSection__HorizontalLine {
+  flex-grow: 100;
+  border: 1px solid var(--black-300);
+}
+
+.GrantRequestSection__FixedSizeIcon {
+  min-width: 34px;
+  max-width: 34px;
+}
+
+.GrantRequestSection__Content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .GrantRequestSection__Content {
+    margin-left: 61px;
+  }
+}
+
+.GrantRequestSection__Row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  gap: 32px;
+  margin-bottom: 33px;
+}
+
+@media (min-width: 768px) {
+  .GrantRequestSection__Row {
+    flex-direction: row;
+  }
+}
+
+.GrantRequestSection__InputContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.GrantRequestSection__InputLabel {
+  padding-right: 20px;
+}
+
+.GrantRequestSection__Field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+}
+
+.GrantRequestSection__Field:last-child {
+  margin-bottom: 0;
+}
+
+.GrantRequestSection__FieldRow {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 32px;
+  justify-content: space-between;
+  gap: 21px;
+}
+
+.GrantRequestSection__Sublabel,
+.GrantRequestSection__Sublabel .dg.Paragraph {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__TitleSubLabel {
+  margin-bottom: 20px !important;
+}
+
+.GrantRequestSection__EmailNote {
+  font-size: 10px;
+  font-weight: 300;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}

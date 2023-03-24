@@ -2,6 +2,8 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 
 import { PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 
+import { NewGrantCategory } from './../entities/Grant/types'
+
 const GATSBY_BASE_URL = process.env.GATSBY_BASE_URL || '/'
 
 export function toProposalListPage(value: string | number | null | undefined): number {
@@ -44,8 +46,10 @@ export default {
   ) => url('/proposals/', options),
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
-  submit: (type?: ProposalType, options: { linked_proposal_id?: string; request?: PoiType } = {}) =>
-    url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
+  submit: (
+    type?: ProposalType,
+    options: { linked_proposal_id?: string; request?: PoiType; category?: NewGrantCategory } = {}
+  ) => url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
   profile: (options: Partial<{ address: string }> = {}) => url('/profile/', options),
   transparency: () => url('/transparency/'),

@@ -8,9 +8,11 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import locations from '../../modules/locations'
+import { getUrlFilters } from '../../helpers'
 
 import './SortingMenu.css'
+
+const SORT_KEY = 'order'
 
 export default function SortingMenu() {
   const location = useLocation()
@@ -22,13 +24,6 @@ export default function SortingMenu() {
 
   const t = useFormatMessage()
 
-  function handleSortingChange(value: string) {
-    const newParams = new URLSearchParams(params)
-    order ? newParams.set('order', value) : newParams.delete('order')
-    newParams.delete('page')
-    return navigate(locations.proposals(newParams))
-  }
-
   return (
     <Dropdown
       className={TokenList.join(['SortingMenu', arrowDirection])}
@@ -36,8 +31,14 @@ export default function SortingMenu() {
       text={t(`navigation.search.sorting.${order}`) || ''}
     >
       <Dropdown.Menu>
-        <Dropdown.Item text={t('navigation.search.sorting.DESC')} onClick={() => handleSortingChange('DESC')} />
-        <Dropdown.Item text={t('navigation.search.sorting.ASC')} onClick={() => handleSortingChange('ASC')} />
+        <Dropdown.Item
+          text={t('navigation.search.sorting.DESC')}
+          onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'DESC'))}
+        />
+        <Dropdown.Item
+          text={t('navigation.search.sorting.ASC')}
+          onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'ASC'))}
+        />
       </Dropdown.Menu>
     </Dropdown>
   )

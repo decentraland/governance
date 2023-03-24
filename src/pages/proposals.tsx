@@ -34,7 +34,7 @@ import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
-import { ProposalType } from '../entities/Proposal/types'
+import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
@@ -114,7 +114,7 @@ export default function ProposalsPage() {
     )
   }
 
-  const isLoading = isLoadingProposals && votesState.loading
+  const isLoading = !proposals || (isLoadingProposals && votesState.loading)
 
   return (
     <>
@@ -156,8 +156,8 @@ export default function ProposalsPage() {
               <Grid.Column tablet="4">
                 <NotMobile>
                   <div>
-                    <CategoryFilter />
-                    <StatusFilter />
+                    <CategoryFilter filterType={ProposalType} startOpen />
+                    <StatusFilter statusType={ProposalStatus} />
                     <TimeFrameFilter />
                   </div>
                 </NotMobile>
@@ -191,7 +191,7 @@ export default function ProposalsPage() {
                     }
                   >
                     <Loader active={!proposals || isLoadingProposals} />
-                    {type && !searching && <CategoryBanner type={type} active />}
+                    {type && !searching && <CategoryBanner type={type} />}
                     {proposals && proposals.data.length === 0 && (
                       <Empty
                         description={

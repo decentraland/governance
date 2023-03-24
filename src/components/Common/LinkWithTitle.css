@@ -1,0 +1,7 @@
+.LinkWithTitle {
+  text-transform: uppercase;
+}
+
+.LinkWithTitle > svg {
+  margin-left: 6px;
+}

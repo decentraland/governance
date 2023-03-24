@@ -1,13 +1,14 @@
 import { def, get } from 'bdd-lazy-var/getter'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+import { GrantTier } from '../../Grant/GrantTier'
+import { GrantTierType, NewGrantCategory, OldGrantCategory } from '../../Grant/types'
 import VotesModel from '../../Votes/model'
 import ProposalModel from '../model'
 import {
+  GrantProposalConfiguration,
   INVALID_PROPOSAL_POLL_OPTIONS,
   ProposalAttributes,
-  ProposalGrantCategory,
-  ProposalGrantTier,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -33,9 +34,10 @@ export function initProposalAttributes(
 ): ProposalAttributes {
   return {
     id: '1',
-    type: type,
+    type,
     user: '0xProposalCreatorUserAddress',
-    required_to_pass: ProposalRequiredVP[type],
+    required_to_pass:
+      type !== ProposalType.Grant ? ProposalRequiredVP[type] : GrantTier.getVPThreshold(Number(configuration.size)),
     configuration: JSON.stringify(configuration),
     title: 'Test Proposal',
     description: 'Test proposal description',
@@ -188,7 +190,8 @@ describe('getUpdateMessage', () => {
             'This proposal is now in status: FINISHED.\n\n' +
             'Voting Results:\n' +
             '* Yes 97% 115,182 VP (3 votes)\n' +
-            '* No 3% 4,269 VP (1 votes)\n'
+            '* No 3% 4,269 VP (1 votes)\n' +
+            '* Abstain 0% 0 VP (0 votes)\n'
         )
       })
     })
@@ -225,7 +228,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -249,7 +253,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -274,7 +279,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -285,13 +291,11 @@ describe('getUpdateMessage', () => {
           return {
             title: 'Grant Title',
             abstract: 'Grant Abstract',
-            category: ProposalGrantCategory.Community,
-            tier: ProposalGrantTier.Tier1,
+            category: OldGrantCategory.Community,
+            tier: GrantTierType.Tier1,
             size: 1000,
             beneficiary: 'Grant Beneficiary',
             description: 'Grant Description',
-            specification: 'Grant Specification',
-            personnel: 'Grant Personnel',
             roadmap: 'Grant Roadmap',
             choices: DEFAULT_CHOICES,
           }
@@ -305,7 +309,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -379,6 +384,47 @@ describe('getUpdateMessage', () => {
       })
     })
 
+    describe('when the updated status is Out of Budget', () => {
+      def('votes', () => PASSED_VOTES)
+      def('proposalStatus', () => ProposalStatus.OutOfBudget)
+
+      describe('when the proposal is Grant', () => {
+        def('proposalType', () => ProposalType.Grant)
+        def('configuration', () => {
+          const grantConfiguration: GrantProposalConfiguration = {
+            title: 'Grant Title',
+            abstract: 'Grant Abstract',
+            category: NewGrantCategory.InWorldContent,
+            tier: GrantTierType.LowerTier,
+            size: 1000,
+            beneficiary: 'Grant Beneficiary',
+            description: 'Grant Description',
+            budgetBreakdown: [],
+            members: [],
+            roadmap: 'Grant Roadmap',
+            choices: DEFAULT_CHOICES,
+            projectDuration: 6,
+            email: 'a@a.org',
+          }
+          return grantConfiguration
+        })
+
+        it('should return a message with the out of budget status and the results of the voting', () => {
+          expect(get.updateMessage).not.toContain(TESTING_COMMITTEE_USER)
+          expect(get.updateMessage).not.toContain(get.passedDescription)
+          expect(get.updateMessage).toContain(get.proposal.title)
+          expect(get.updateMessage).toBe(
+            'Test Proposal\n\n' +
+              'This proposal is now in status: OUT OF BUDGET.\n\n' +
+              'Voting Results:\n' +
+              '* Yes 97% 115,182 VP (3 votes)\n' +
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
+          )
+        })
+      })
+    })
+
     describe('when the updated status is rejected', () => {
       def('configuration', () => DEFAULT_CONFIGURATION)
       def('votes', () => REJECTED_VOTES)
@@ -394,7 +440,8 @@ describe('getUpdateMessage', () => {
             '\n' +
             'Voting Results:\n' +
             '* Yes 3% 4,269 VP (1 votes)\n' +
-            '* No 97% 115,182 VP (3 votes)\n'
+            '* No 97% 115,182 VP (3 votes)\n' +
+            '* Abstain 0% 0 VP (0 votes)\n'
         )
       })
 

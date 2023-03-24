@@ -20,6 +20,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
+import Forum from '../components/Icon/Forum'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -29,21 +30,37 @@ import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import { VotesListModal } from '../components/Modal/Votes/VotesList'
 import { VotingModal } from '../components/Modal/Votes/VotingModal/VotingModal'
-import ProposalComments from '../components/Proposal/ProposalComments'
+import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
-import ProposalImagesPreview from '../components/ProposalImagesPreview/ProposalImagesPreview'
-import ProposalResults from '../components/Section/ProposalResults'
+import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
+import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
+import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
+import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import ProposalPromotionSection from '../components/Proposal/View/ProposalPromotionSection'
+import ProposalResults from '../components/Proposal/View/ProposalResults'
+import ProposalUpdatesActions from '../components/Proposal/View/ProposalUpdatesActions'
+import SidebarLinkButton from '../components/Proposal/View/SidebarLinkButton'
+import SubscribeButton from '../components/Proposal/View/SubscribeButton'
+import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import {
+  forumUrl,
+  isProposalDeletable,
+  isProposalEnactable,
+  proposalCanBePassedOrRejected,
+} from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
+import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useIsCommittee from '../hooks/useIsCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
@@ -55,9 +72,10 @@ import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 
 import './proposal.css'
-import './proposals.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
+
+const EMPTY_CHOICES: string[] = []
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const EMPTY_VOTE_CHOICES: string[] = []
@@ -111,6 +129,8 @@ export default function ProposalPage() {
     [proposal],
     { callWithTruthyDeps: true }
   )
+  const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
+
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
@@ -237,8 +257,9 @@ export default function ProposalPage() {
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  const showImagesPreview =
-    !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
+  const showVotingStatusSummary =
+    proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
   const showSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0
 
   if (proposalState.error) {
@@ -257,6 +278,16 @@ export default function ProposalPage() {
     )
   }
 
+  const proposalStatus = proposal?.status
+  const showProposalUpdatesActions =
+    isProposalStatusWithUpdates(proposalStatus) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
+  const showImagesPreview =
+    !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+  const showProposalBudget =
+    proposal?.type === ProposalType.Grant &&
+    !isLoadingBudgetWithContestants &&
+    proposal.status === ProposalStatus.Active
+
   return (
     <>
       <Head
@@ -273,17 +304,22 @@ export default function ProposalPage() {
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
-            {proposal && <StatusPill status={proposal.status} />}
-            {proposal && <CategoryPill type={proposal.type} />}
+            {proposal && <StatusPill isLink status={proposal.status} />}
+            {proposal && <CategoryPill isLink proposalType={proposal.type} />}
           </div>
         </ContentSection>
         <Grid stackable>
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
+              {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
-              <Markdown>{proposal?.description || ''}</Markdown>
+              {proposal?.type === ProposalType.Grant ? (
+                <GrantProposalView config={proposal.configuration} />
+              ) : (
+                <Markdown>{proposal?.description || ''}</Markdown>
+              )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showProposalUpdates && (
                 <ProposalUpdates
@@ -315,6 +351,37 @@ export default function ProposalPage() {
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
+              {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
+              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
+              <div className="ProposalDetail__StickySidebar">
+                {showProposalUpdatesActions && (
+                  <ProposalUpdatesActions nextUpdate={nextUpdate} currentUpdate={currentUpdate} proposal={proposal} />
+                )}
+                {/*<ProposalResultSection*/}
+                {/*  choices={choices}*/}
+                {/*  results={results}*/}
+                {/*  proposal={proposal}*/}
+                {/*  loading={castingVote || proposalState.loading || votesState.loading}*/}
+                {/*  disabled={!proposal || !votes}*/}
+                {/*  votes={votes}*/}
+                {/*  changingVote={options.changing}*/}
+                {/*  onChangeVote={(_, changing) => updatePageState({ changingVote: changing })}*/}
+                {/*  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}*/}
+                {/*  onOpenVotesList={() => patchOptions({ showVotesList: true })}*/}
+                {/*/>*/}
+                {showVotingStatusSummary && (
+                  <ProposalPromotionSection proposal={proposal} loading={proposalState.loading} />
+                )}
+                {proposal && <ProposalDetailSection proposal={proposal} />}
+                <SidebarLinkButton
+                  loading={proposalState.loading}
+                  disabled={!proposal}
+                  href={(proposal && forumUrl(proposal)) || ''}
+                  icon={<Forum size={20} />}
+                >
+                  {t('page.proposal_detail.forum_button')}
+                </SidebarLinkButton>
+              </div>
               <ProposalSidebar
                 proposal={proposal}
                 proposalLoading={proposalState.loading}

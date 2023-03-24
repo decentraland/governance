@@ -11,8 +11,11 @@ import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/han
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
 
+import { updateGovernanceBudgets } from './entities/Budget/jobs'
+import budget from './entities/Budget/routes'
 import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
+import common from './entities/Common/routes'
 import debug from './entities/Debug/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
@@ -28,6 +31,7 @@ import { DiscordService } from './services/DiscordService'
 const jobs = manager()
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
+jobs.cron('@daily', updateGovernanceBudgets)
 
 const app = express()
 app.set('x-powered-by', false)
@@ -45,6 +49,8 @@ app.use('/api', [
   subscription,
   updates,
   coauthor,
+  budget,
+  common,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

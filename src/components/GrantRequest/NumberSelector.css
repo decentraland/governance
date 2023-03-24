@@ -1,0 +1,59 @@
+.NumberSelector {
+  max-width: 210px;
+}
+
+.NumberSelector__InputContainer {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid rgba(115, 110, 125, 0.32);
+  border-radius: 6px;
+  margin-bottom: 7px;
+}
+
+.NumberSelector__Description {
+  display: flex;
+  align-items: center;
+  padding: 9px;
+  background: rgba(115, 110, 125, 0.1); /* TODO: Add color to theme */
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+  border-left: 1px solid rgba(115, 110, 125, 0.32);
+}
+
+.NumberSelector__Input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 11px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}
+
+.NumberSelector__Value {
+  padding: 0 15px;
+}
+
+.NumberSelector__Button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.NumberSelector__Subtitle > .dg.Paragraph {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+  color: var(--black-600);
+}

@@ -1,0 +1,28 @@
+.CategoryTotalCard__Title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: var(--black-800);
+}
+
+.CategoryTotalCard__Description {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+  margin-bottom: 6px;
+}
+
+.CategoryTotalCard__Sub {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}

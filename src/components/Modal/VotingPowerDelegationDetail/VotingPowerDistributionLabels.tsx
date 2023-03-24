@@ -3,7 +3,7 @@ import React from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
-import { getPercentage } from '../../../helpers'
+import { getFormattedPercentage } from '../../../helpers'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
 import MobileSlider from '../../Common/MobileSlider'
 
@@ -21,7 +21,7 @@ interface LabelProps {
 
 const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
   const t = useFormatMessage()
-  const { total, mana, names, land, delegated, estate, l1Wearables } = vpDistribution || EMPTY_DISTRIBUTION
+  const { total, mana, names, land, delegated, estate, l1Wearables, rental } = vpDistribution || EMPTY_DISTRIBUTION
 
   const DISTRIBUTION_PROPS: LabelProps[] = [
     { value: mana, intlKey: 'mana', cssClassName: 'Mana' },
@@ -30,6 +30,7 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
     { value: land, intlKey: 'land', cssClassName: 'Land' },
     { value: estate, intlKey: 'estates', cssClassName: 'Estate' },
     { value: delegated, intlKey: 'delegated', cssClassName: 'Delegated' },
+    { value: rental, intlKey: 'rental', cssClassName: 'Rental' },
   ]
 
   return (
@@ -42,7 +43,7 @@ const VotingPowerDistributionLabels = ({ vpDistribution }: Props) => {
               tooltipText={t(`modal.vp_delegation.details.stats_bar_${intlKey}_info`)}
               subtitleText={t('modal.vp_delegation.details.stats_bar_full_label', {
                 amount: value,
-                percentage: getPercentage(value, total, 0),
+                percentage: getFormattedPercentage(value, total, 0),
               })}
               className={`VotingPowerDistribution__${cssClassName}`}
             />

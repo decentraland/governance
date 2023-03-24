@@ -1,5 +1,4 @@
-import React, { useMemo, useRef } from 'react'
-import Flickity from 'react-flickity-component'
+import React, { useMemo } from 'react'
 
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -16,23 +15,11 @@ import locations from '../../modules/locations'
 import MetricsCard from './MetricsCard'
 import './MetricsCards.css'
 
-const flickityOptions = {
-  cellAlign: 'left',
-  accessibility: true,
-  pageDots: false,
-  prevNextButtons: false,
-  draggable: true,
-  dragThreshold: 10,
-  selectedAttraction: 0.01,
-  friction: 0.15,
-}
-
 const now = Time().toDate()
 const oneWeekAgo = Time(now).subtract(1, 'week').toDate()
 const oneMonthAgo = Time(now).subtract(1, 'month').toDate()
 
 const MetricsCards = () => {
-  const flickity = useRef<Flickity>()
   const t = useFormatMessage()
   const [transparencyData, transparencyState] = useAsyncMemo(async () => DclData.get().getData())
   const treasuryAmount = useMemo(
@@ -97,13 +84,7 @@ const MetricsCards = () => {
   return (
     <>
       <Mobile>
-        <Flickity
-          className="MetricsCards__Carousel"
-          options={flickityOptions}
-          flickityRef={(ref) => (flickity.current = ref)}
-        >
-          {content}
-        </Flickity>
+        <div className="MetricsCards__Carousel">{content}</div>
       </Mobile>
       <NotMobile>
         <Container>

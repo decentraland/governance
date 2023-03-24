@@ -13,6 +13,7 @@ export const EMPTY_DISTRIBUTION = {
   names: 0,
   delegated: 0,
   l1Wearables: 0,
+  rental: 0,
 }
 
 export default function useVotingPowerDistribution(address?: string | null, proposalSnapshotId?: string) {

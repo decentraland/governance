@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: rgba(216, 0, 39, 0.2);
+  background: var(--red-100);
   opacity: 0.9;
   border-radius: 6px;
 }
@@ -32,7 +32,7 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
 }
 
 .ErrorMessage__Message {
-  background: #ffffff;
+  background: var(--white-900);
   border-radius: 8px;
   margin-left: 16px;
   margin-right: 16px;

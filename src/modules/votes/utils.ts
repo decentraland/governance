@@ -1,7 +1,7 @@
 import { ChainId } from '@dcl/schemas'
 
-import { DelegationsLabelProps } from '../../components/Section/ProposalVoting/DelegationsLabel'
-import { VotedChoice } from '../../components/Section/ProposalVoting/VotedChoiceButton'
+import { DelegationsLabelProps } from '../../components/Proposal/View/ProposalVoting/DelegationsLabel'
+import { VotedChoice } from '../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
 import { Vote } from '../../entities/Votes/types'
 import { Scores } from '../../entities/Votes/utils'
 import { env } from '../env'

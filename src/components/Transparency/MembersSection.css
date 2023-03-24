@@ -17,7 +17,7 @@ img.MembersPopup__Icon {
 }
 
 .MembersPopup .dg.Paragraph {
-  color: #ffffff;
+  color: var(--white-900);
   font-size: 14px;
   line-height: 20px;
 }

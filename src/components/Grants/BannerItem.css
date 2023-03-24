@@ -5,12 +5,17 @@
   justify-content: space-between;
 }
 
+.GrantsBannerItem--noUrl {
+  cursor: default;
+  pointer-events: none;
+}
+
 .GrantsBannerItem__Title {
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: #ffffff;
+  color: var(--white-900);
   margin-bottom: 3px;
 }
 
@@ -19,11 +24,11 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: #ffffff;
+  color: var(--white-900);
 }
 
 .GrantsBanner__ItemsDivider {
   opacity: 0.3;
   width: auto;
-  border: 1px solid #ffffff;
+  border: 1px solid var(--white-900);
 }

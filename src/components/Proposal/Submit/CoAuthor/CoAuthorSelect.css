@@ -1,11 +1,11 @@
 .CoAuthorSelect .CoAuthorSelect__control {
   background-color: white;
-  border-color: rgba(34, 36, 38, 0.15);
+  border-color: var(--border-color-default);
   box-shadow: none;
 }
 
 .CoAuthorSelect .CoAuthorSelect__control:hover {
-  border-color: rgba(34, 36, 38, 0.15);
+  border-color: var(--border-color-default);
 }
 
 .CoAuthorSelect.dcl.field.error .CoAuthorSelect__control,

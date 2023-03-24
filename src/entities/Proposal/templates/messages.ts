@@ -2,11 +2,12 @@ import { formatChoice } from '../../../modules/votes/utils'
 import { Vote } from '../../Votes/types'
 import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'
+import { getProposalStatusDisplayName } from '../utils'
 
 export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<string, Vote>) {
   let updatingUser: string | null
 
-  const statusDisplayName = proposal.status.toUpperCase()
+  const statusDisplayName = getProposalStatusDisplayName(proposal.status)
   if (proposal.enacted) {
     updatingUser = proposal.enacted_by
     if (!updatingUser) {
@@ -37,7 +38,7 @@ export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<str
     return updatingUser
       ? getUserTriggeredUpdateMessage(statusDisplayName, updatingUser, proposal.rejected_description, proposal)
       : getJobTriggeredUpdateMessage(statusDisplayName, proposal, votes)
-  } else if (proposal.status === ProposalStatus.Finished) {
+  } else if (proposal.status === ProposalStatus.Finished || ProposalStatus.OutOfBudget) {
     return getJobTriggeredUpdateMessage(statusDisplayName, proposal, votes)
   } else {
     throw new Error(`Proposal update message builder received an invalid status: ${proposal.status}`)

@@ -1,74 +1,36 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import isEmpty from 'lodash/isEmpty'
 
-import { GrantWithUpdateAttributes } from '../../../entities/Proposal/types'
-import { numberFormat } from '../../../modules/intl'
-import Banner, { BannerType } from '../Banner'
+import Banner, { BannerItem, BannerType } from '../Banner'
 
-const getBannerStats = (grants: GrantWithUpdateAttributes[]) => {
-  if (isEmpty(grants)) {
-    return {}
-  }
-
-  const releasedValues = grants.map((item) => {
-    if (item.configuration.tier === 'Tier 1' || item.configuration.tier === 'Tier 2') {
-      return item.size
-    }
-
-    const releasedPercentage = ((item.contract?.released || 0) * 100) / (item.contract?.vesting_total_amount || 0)
-
-    return ((item.size || 0) * releasedPercentage) / 100
-  })
-
-  const totalReleased = releasedValues.filter(Number).reduce((prev, next) => prev! + next!, 0) || 0
-  const toBeVestedValues = grants.map(
-    (item) => (item.contract?.vesting_total_amount || 0) - (item.contract?.vestedAmount || 0)
-  )
-  const totalToBeVested = toBeVestedValues.filter(Number).reduce((prev, next) => prev! + next!, 0) || 0
-
-  return {
-    totalGrants: grants.length,
-    totalReleased,
-    totalToBeVested,
-  }
-}
-
-const CurrentGrantsBanner = ({ grants }: { grants: GrantWithUpdateAttributes[] }) => {
+const CurrentGrantsBanner = () => {
   const t = useFormatMessage()
-  const bannerStats = useMemo(() => getBannerStats(grants), [])
-  const bannerItems = useMemo(
-    () => [
-      {
-        title: t('page.grants.current_banner.active_grants_title', { value: bannerStats.totalGrants }),
-        description: t('page.grants.current_banner.active_grants_description'),
-      },
-      {
-        title: t('page.grants.current_banner.released_title', {
-          value: numberFormat.format(bannerStats.totalReleased || 0),
-        }),
-        description: t('page.grants.current_banner.released_description'),
-      },
-      {
-        title: t('page.grants.current_banner.to_be_vested_title', {
-          value: numberFormat.format(bannerStats.totalToBeVested || 0),
-        }),
-        description: t('page.grants.current_banner.to_be_vested_description'),
-      },
-    ],
-    [bannerStats, t]
-  )
+  const bannerItems: BannerItem[] = [
+    {
+      title: t('page.grants.current_banner.budget_title'),
+      description: t('page.grants.current_banner.budget_description'),
+      url: 'https://governance.decentraland.org/proposal/?id=bfab7b70-7b75-11ed-ad27-015f26e7c35c',
+    },
+    {
+      title: t('page.grants.current_banner.transparency_title'),
+      description: t('page.grants.current_banner.transparency_description'),
+      url: 'https://docs.google.com/spreadsheets/d/1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo/edit#gid=1087165366',
+    },
+    {
+      title: t('page.grants.current_banner.faq_title'),
+      description: t('page.grants.current_banner.faq_description'),
+      url: 'https://docs.decentraland.org/player/general/dao/overview/grants-faq/',
+    },
+  ]
 
   return (
-    <>
-      <Banner
-        type={BannerType.Current}
-        title={t('page.grants.current_banner.title')}
-        description={t('page.grants.current_banner.description')}
-        items={bannerItems}
-      />
-    </>
+    <Banner
+      type={BannerType.Current}
+      title={t('page.grants.current_banner.title')}
+      description={t('page.grants.current_banner.description')}
+      items={bannerItems}
+    />
   )
 }
 

@@ -1,0 +1,18 @@
+.ProposalVotingSection {
+  padding-top: 5px !important;
+}
+
+.ProposalVotingSection__Loader {
+  margin: 64px 0;
+}
+
+.ProposalVotingSection__GrantRequest .dg.Paragraph {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.ProposalVotingSection__HeaderLabel {
+  margin: 10px 0 8px 0;
+}

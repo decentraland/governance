@@ -4,6 +4,7 @@ import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
+import { ErrorClient } from './ErrorClient'
 import {
   SnapshotProposal,
   SnapshotProposalContent,
@@ -181,8 +182,8 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      console.error(`Error fetching addresses votes`, error)
-      // TODO: report error to Rollbar
+      ErrorClient.report(`Error fetching addresses votes`, error)
+
       return []
     }
 
@@ -227,6 +228,7 @@ export class SnapshotGraphql extends API {
   }
 
   fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
+    const { start, end } = params
     const query = `
       query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
         votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
@@ -250,8 +252,8 @@ export class SnapshotGraphql extends API {
           query,
           variables: {
             space: SNAPSHOT_SPACE,
-            start: getQueryTimestamp(params.start.getTime()),
-            end: getQueryTimestamp(params.end.getTime()),
+            start: getQueryTimestamp(start.getTime()),
+            end: getQueryTimestamp(end.getTime()),
             first: batchSize,
             skip,
           },
@@ -313,8 +315,8 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      console.error(`Error fetching votes`)
-      // TODO: report error to Rollbar
+      ErrorClient.report('Error fetching votes', error)
+
       return []
     }
 
@@ -332,34 +334,42 @@ export class SnapshotGraphql extends API {
     skip: number,
     batchSize: number
   ) => {
+    const { start, end, orderBy, scoresState, fields } = params
     const query = `
-      query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!, $scores_state: String!) {
+      query getProposals($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!${
+        scoresState ? ', $scores_state: String!' : ''
+      }) {
         proposals(
-          where: { space: $space, created_gte: $start, created_lt: $end, scores_state: $scores_state },
-          orderBy: ${params.orderBy || '"created_at"'},
+          where: { space: $space, created_gte: $start, created_lt: $end${
+            scoresState ? ', scores_state: $scores_state' : ''
+          } },
+          orderBy: "${orderBy || 'created_at'}",
           orderDirection: asc
           first: $first, skip: $skip
         ) {
-          ${params.fields}
+          ${fields}
         }
       }
     `
 
+    const variables: Record<string, unknown> = {
+      space: SNAPSHOT_SPACE,
+      start: getQueryTimestamp(start.getTime()),
+      end: getQueryTimestamp(end.getTime()),
+      first: batchSize,
+      skip,
+    }
+
+    if (scoresState) {
+      variables['scores_state'] = scoresState
+    }
+
     const result = await this.fetch<SnapshotProposalsResponse>(
       GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({
-          query,
-          variables: {
-            space: SNAPSHOT_SPACE,
-            start: getQueryTimestamp(params.start.getTime()),
-            end: getQueryTimestamp(params.end.getTime()),
-            scores_state: params.scoresState || '',
-            first: batchSize,
-            skip,
-          },
-        })
+      this.options().method('POST').json({
+        query,
+        variables,
+      })
     )
 
     return result?.data?.proposals
@@ -416,6 +426,7 @@ export class SnapshotGraphql extends API {
       names: Math.floor(vpByStrategy[StrategyOrder.Names]),
       delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
       l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
+      rental: Math.floor(vpByStrategy[StrategyOrder.Rental]),
     }
   }
 

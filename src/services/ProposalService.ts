@@ -1,6 +1,7 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
+import isUUID from 'validator/lib/isUUID'
 
 import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
@@ -8,7 +9,8 @@ import CoauthorModel from '../entities/Coauthor/model'
 import isCommittee from '../entities/Committee/isCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import * as templates from '../entities/Proposal/templates'
-import { ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../modules/votes/utils'
@@ -30,6 +32,10 @@ export type ProposalLifespan = {
 
 export class ProposalService {
   static async createProposal(proposalInCreation: ProposalInCreation) {
+    if (proposalInCreation.type === ProposalType.Grant && !isGrantProposalSubmitEnabled(Date.now())) {
+      throw new Error('Decentraland DAO Grants Program has been put on hold')
+    }
+
     const proposalId = uuid()
     const proposalLifespan = this.getLifespan(proposalInCreation)
     const coAuthors = this.getCoAuthors(proposalInCreation)
@@ -179,5 +185,18 @@ export class ProposalService {
       throw Error("Couldn't create proposal in DB: " + err.message, err)
     }
     return newProposal
+  }
+
+  static async getProposal(id: string) {
+    if (!isUUID(id || '')) {
+      throw new Error(`Invalid proposal id: "${id}"`)
+    }
+
+    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
+    if (!proposal) {
+      throw new Error(`Proposal not found: "${id}"`)
+    }
+
+    return ProposalModel.parse(proposal)
   }
 }

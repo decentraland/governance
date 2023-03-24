@@ -16,7 +16,7 @@ The governance hub for the Decentraland ecosystem. Create and vote on proposals 
 Before you start make sure you have installed:
 
 - [Homebrew](https://brew.sh/)
-- [Postgres](https://www.postgresql.org/download/)
+- [Postgres](https://wiki.postgresql.org/wiki/Homebrew)
 
 ### Node version
 
@@ -32,9 +32,9 @@ If you are using WSL (Windows Subsystem for Linux) as your development environme
 
 Run `npm install` to install all the dependencies needed to run the project.
 
-### environment setup
+### Environment setup
 
-create a copy of `.env.example` and name it as `.env.development`
+Create a copy of `.env.example` and name it as `.env.development`
 
 ```bash
   cp .env.example .env.development
@@ -42,7 +42,7 @@ create a copy of `.env.example` and name it as `.env.development`
 
 > to know more about this file see [the documentation](https://www.gatsbyjs.com/docs/how-to/local-development/environment-variables/#defining-environment-variables)
 
-if you are running this project locally you only need to check the following environment variables:
+If you are running this project locally you only need to check the following environment variables:
 
 * `CONNECTION_STRING`: make sure it is point to a valid database
 * `COMMITTEE_ADDRESSES`: list of eth addresses separated by `,` that will be able to enact finished proposals
@@ -52,49 +52,40 @@ if you are running this project locally you only need to check the following env
 
 These environment variables are used by the application backend. The environment variables for the frontend are located in `src/config/env`.
 
-### setup the required voting power to pass
+### Setup the required voting power to pass
 
 The minimum amount of voting power require to pass a proposal of each type it's defined in these variables, if they are not defined or are not numbers `0` will be used instead
 
 ```bash
   GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES=0
-  GATSBY_VOTING_POWER_TO_PASS_GRANT=0
   GATSBY_VOTING_POWER_TO_PASS_CATALYST=0
   GATSBY_VOTING_POWER_TO_PASS_BAN_NAME=0
   GATSBY_VOTING_POWER_TO_PASS_POI=0
   GATSBY_VOTING_POWER_TO_PASS_POLL=0
 ```
 
-### database setup
+### Database setup
 
-Make sure you have postgres running.
+Make sure you have Postgres running.
 
 To create the db, run in the terminal
 ```bash
-createdb -U >USER< snapshot
+createdb -U YOUR_USER snapshot
 ````
 
-The `default user` is postgres and the `default password` is postgres as well.
+The default postgres user is `postgres` or your username and the default password is `postgres`.
 
-Use your `user:pwd` for the connection string, it should look like this:
+Use your user and password for the connection string variable, it should look like this:
 
 ```bash
-postgres://usr:pwd@localhost:5432/snapshot
+postgres://YOUR_USER:YOU_PASSWORD@localhost:5432/snapshot
 ````
 
-If you installed postgres using brew, you might need to create a role for npm to run the migrations
-To do so, run this in psql 
-```sql
-CREATE USER postgres SUPERUSER;
-```
-
-once you have a `CONNECTION_STRING` you can setup you database tables using the following command
+Once you have a `CONNECTION_STRING` you can setup your database tables using the following command:
 
 ```bash
 npm run migrate up
 ```
-
-if migrations are not running, or get stuck, please check that you are using node v12
 
 ### Snapshot Setup
 

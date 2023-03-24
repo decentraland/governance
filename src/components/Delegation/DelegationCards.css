@@ -31,3 +31,7 @@
 .DelegationsCards__EmptyContainer {
   padding: 30px 0;
 }
+
+.DelegationsCards__EmptyContainerButton {
+  margin-top: 16px;
+}

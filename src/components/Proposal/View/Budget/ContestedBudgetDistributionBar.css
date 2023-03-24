@@ -1,0 +1,28 @@
+.ContestedBudgetDistributionBar {
+  display: flex;
+  position: relative;
+}
+
+.ContestedBudgetBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 4px;
+  height: 6px;
+  min-width: 6px;
+  margin: 0;
+}
+
+.TransparentBar {
+  background: transparent !important;
+  height: 2px !important;
+}
+
+.AvailableOverBudgetDistributionBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  border-radius: 4px;
+  position: absolute;
+}

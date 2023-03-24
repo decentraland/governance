@@ -1,6 +1,7 @@
 .CategoryOption {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px 16px;
   cursor: pointer;
   position: relative;
@@ -9,69 +10,82 @@
 
 .CategoryOption span {
   display: flex;
+  align-items: center;
 }
 
-.CategoryOption img {
+.CategoryOption img,
+.CategoryOption svg {
   margin-right: 8px;
 }
 
-.CategoryOption::before {
-  display: block;
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+.CategoryOption {
   border-radius: 6px;
   padding: 10px 16px;
   width: 100%;
   height: 100%;
-  opacity: .08;
-  transition: background-color ease .3s
+  transition: background-color ease 0.3s;
 }
 
-.CategoryOption:hover::before,
-.CategoryOption.CategoryOption--active::before {
-  background-color: #444;
+.CategoryOption:hover,
+.CategoryOption.CategoryOption--active {
+  background-color: var(--background-disabled);
 }
 
-.CategoryOption.CategoryOption--catalyst:hover::before,
-.CategoryOption.CategoryOption--catalyst.CategoryOption--active::before {
+.CategoryOption.CategoryOption--catalyst:hover,
+.CategoryOption.CategoryOption--catalyst.CategoryOption--active {
   background-color: var(--background-catalyst);
 }
 
-.CategoryOption.CategoryOption--poi:hover::before,
-.CategoryOption.CategoryOption--poi.CategoryOption--active::before {
+.CategoryOption.CategoryOption--poi:hover,
+.CategoryOption.CategoryOption--poi.CategoryOption--active {
   background-color: var(--background-poi);
 }
 
-.CategoryOption.CategoryOption--ban_name:hover::before,
-.CategoryOption.CategoryOption--ban_name.CategoryOption--active::before {
+.CategoryOption.CategoryOption--ban_name:hover,
+.CategoryOption.CategoryOption--ban_name.CategoryOption--active {
   background-color: var(--background-ban-name);
 }
 
-.CategoryOption.CategoryOption--grant:hover::before,
-.CategoryOption.CategoryOption--grant.CategoryOption--active::before {
+.CategoryOption.CategoryOption--grant:hover,
+.CategoryOption.CategoryOption--grant.CategoryOption--active {
   background-color: var(--background-grant);
 }
 
-.CategoryOption.CategoryOption--linked_wearables:hover::before,
-.CategoryOption.CategoryOption--linked_wearables.CategoryOption--active::before {
+.CategoryOption.CategoryOption--linked_wearables:hover,
+.CategoryOption.CategoryOption--linked_wearables.CategoryOption--active {
   background-color: var(--background-linked-wearables);
 }
 
-.CategoryOption.CategoryOption--poll:hover::before,
-.CategoryOption.CategoryOption--poll.CategoryOption--active::before,
-.CategoryOption.CategoryOption--draft:hover::before,
-.CategoryOption.CategoryOption--draft.CategoryOption--active::before,
-.CategoryOption.CategoryOption--governance:hover::before,
-.CategoryOption.CategoryOption--governance.CategoryOption--active::before {
+.CategoryOption.CategoryOption--poll:hover,
+.CategoryOption.CategoryOption--poll.CategoryOption--active,
+.CategoryOption.CategoryOption--draft:hover,
+.CategoryOption.CategoryOption--draft.CategoryOption--active,
+.CategoryOption.CategoryOption--governance:hover,
+.CategoryOption.CategoryOption--governance.CategoryOption--active {
   background-color: var(--background-poll);
 }
 
-.CategoryOption .dg.Paragraph  {
+.CategoryOption .dg.Paragraph {
   margin-bottom: 0;
 }
 
-.CategoryOption .dg.Paragraph.Paragraph--tiny  {
+.CategoryOption .dg.Paragraph.Paragraph--tiny {
   font-size: 15px;
+}
+
+.CategoryOption__Counter {
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 13px;
+  color: var(--black-600);
+  opacity: 0.45;
+  border: 1px solid var(--black-600);
+  border-radius: 10px;
+  padding: 0px 4px;
+}
+
+.CategoryOption__Counter--active {
+  opacity: 1;
+  background: var(--black-600);
+  color: var(--white-900);
 }

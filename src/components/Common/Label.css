@@ -1,0 +1,9 @@
+.FormLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+}

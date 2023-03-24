@@ -1,9 +1,9 @@
 import React from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import NewBadge from '../../NewBadge/NewBadge'
+import Label from '../../../Common/Label'
+import SubLabel from '../../../Common/SubLabel'
 
 import CoAuthorSelect from './CoAuthorSelect'
 import './CoAuthors.css'
@@ -21,15 +21,12 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
   const t = useFormatMessage()
 
   return (
-    <div className="Co-author">
-      <div className="Title__Container">
-        <div className="Label">{t('page.submit.co_author_label')}</div>
-        <NewBadge />
+    <div className="CoAuthors">
+      <div className="CoAuthors__LabelContainer">
+        <Label>{t('page.submit.co_author_label')}</Label>
         <sup className="Optional">{t('page.submit.optional_tooltip')}</sup>
       </div>
-      <Paragraph tiny secondary className="details">
-        {t('page.submit.co_author_description')}
-      </Paragraph>
+      <SubLabel>{t('page.submit.co_author_description')}</SubLabel>
       <CoAuthorSelect setCoAuthors={setCoAuthors} isDisabled={isDisabled} />
     </div>
   )

@@ -28,6 +28,7 @@
         "ASC": "Oldest"
       },
       "category_filter_title": "Filter by Category",
+      "legacy_filter_title": "Filter by Legacy Grants",
       "status_filter_title": "Filter by Status",
       "timeframe_filter": {
         "title": "Filter by TimeFrame",
@@ -50,7 +51,7 @@
       "show": "Show error",
       "copy": "Copy to Clipboard",
       "copied": "Copied!",
-      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on [Discord](https://discord.com/channels/894658869391933540/987439629533855774)."
+      "call_for_action": "We rely on external services that *can* fail. However, feel free to post this error message on our #🚨┃support channel on [Discord](https://dcl.gg/dao-discord)."
     },
     "poll": {
       "title_empty": "Title field is empty",
@@ -153,36 +154,61 @@
       "server_invalid_status": "Error fetching catalyst statuses"
     },
     "grant": {
-      "abstract_empty": "Abstract is empty",
-      "abstract_too_large": "Abstract is too large",
-      "abstract_too_short": "Abstract is too short",
-      "beneficiary_empty": "Beneficiary is empty",
-      "beneficiary_invalid": "Beneficiary is invalid",
-      "email_empty": "Email address is empty",
-      "email_invalid": "Email address is invalid",
-      "description_empty": "Description is empty",
-      "description_too_large": "Description is too large",
-      "description_too_short": "Description is too short",
-      "personnel_empty": "Personnel is empty",
-      "personnel_too_large": "Personnel is too large",
-      "personnel_too_short": "Personnel is too short",
-      "roadmap_empty": "Roadmap is empty",
-      "roadmap_too_large": "Roadmap is too large",
-      "roadmap_too_short": "Roadmap is too short",
-      "specification_empty": "Specification is empty",
-      "specification_too_large": "Specification is too large",
-      "specification_too_short": "Specification is too short",
+      "funding": {
+        "invalid": "*Funding is invalid*",
+        "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
+        "too_big": "*Funding is too big.*\n\n*Maximum is 240000 USD*",
+        "over_budget": "*Funding is over budget*"
+      },
+      "general_info": {
+        "description_empty": "Description is empty",
+        "description_too_large": "Description is too large",
+        "description_too_short": "Description is too short",
+        "abstract_empty": "Abstract is empty",
+        "abstract_too_large": "Abstract is too large",
+        "abstract_too_short": "Abstract is too short",
+        "beneficiary_empty": "Beneficiary is empty",
+        "beneficiary_invalid": "Beneficiary is invalid",
+        "email_empty": "Email address is empty",
+        "email_invalid": "Email address is invalid",
+        "roadmap_empty": "Roadmap is empty",
+        "roadmap_too_large": "Roadmap is too large",
+        "roadmap_too_short": "Roadmap is too short"
+      },
+      "due_diligence": {
+        "concept_empty": "Concept is empty",
+        "concept_too_large": "Concept is too large",
+        "concept_short": "Concept is too short",
+        "estimated_budget_invalid": "Concept budget is invalid",
+        "estimated_budget_too_low": "Concept budget is lower than remaining budget available",
+        "estimated_budget_too_big": "Concept budget is bigger than remaining budget available",
+        "about_this_empty": "About this is empty",
+        "about_this_too_large": "About this is too large",
+        "about_this_too_short": "About this is too short",
+        "relevant_link_invalid": "URL is invalid, it must start with 'https://'"
+      },
+      "team": {
+        "name_empty": "Name is empty",
+        "name_too_large": "Name is too large",
+        "name_short": "Name is too short",
+        "role_empty": "Role is empty",
+        "role_too_large": "Role is too large",
+        "role_short": "Role is too short",
+        "about_empty": "About them is empty",
+        "about_too_large": "About them is too large",
+        "about_too_short": "About them is too short",
+        "relevant_link_invalid": "URL is invalid, it must start with 'https://'"
+      },
       "title_empty": "Title is empty",
       "title_too_large": "Title is too large",
       "title_too_short": "Title is too short",
-      "category_empty": "Category is empty",
-      "category_invalid": "Category is invalid",
-      "tier_empty": "Tier is empty",
-      "tier_invalid": "Tier is invalid",
-      "size_empty": "Grant size is empty",
-      "size_invalid": "Grant size is not a valid number",
-      "size_too_low": "Grant size is too low",
-      "size_tier_invalid": "Grant size is not valid for the selected tier"
+      "category_assessment": {
+        "field_too_short": "Field is too short",
+        "field_too_large": "Field is too large",
+        "field_empty": "Field is empty",
+        "field_too_low": "Field is too low",
+        "field_invalid": "Field is invalid"
+      }
     },
     "linked_wearables": {
       "name_empty": "Name is empty",
@@ -234,6 +260,7 @@
   },
   "category": {
     "new": "New",
+    "paused": "Paused",
     "poi": "POI",
     "catalyst": "Catalyst",
     "ban_name": "Ban Name",
@@ -242,7 +269,7 @@
     "draft": "Draft",
     "governance": "Governance",
     "linked_wearables": "Linked Wearables",
-    "all_title": "All proposals",
+    "all_proposals_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community-run servers",
     "poi_title": "Point of Interest",
@@ -255,6 +282,7 @@
     "ban_name_description": "Ban an offensive name from Decentraland",
     "grant_title": "Grant Request",
     "grant_description": "Request funding from the DAO for a project or contribution",
+    "grant_paused": "The Decentraland DAO Grants Program has been put on hold by community decision until February 28th, 2023. Please read [this governance proposal](https://governance.decentraland.org/proposal/?id=9f3b0be0-7e94-11ed-8750-cd1748a98b11) to learn more or visit the [DAO Discord Server](https://dcl.gg/dao-discord) to engage with members of the community.",
     "poll_title": "Pre-Proposal Poll",
     "poll_description": "Ask community members for their opinion on an issue or topic",
     "draft_title": "Draft Proposal",
@@ -262,7 +290,19 @@
     "governance_title": "Governance Proposal",
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "linked_wearables_title": "Linked Wearables Registry",
-    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland"
+    "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland",
+    "all_grants_title": "All grants",
+    "core_unit_title": "Core Unit",
+    "platform_title": "Platform",
+    "documentation_title": "Documentation",
+    "in_world_content_title": "In-World Content",
+    "social_media_content_title": "Social Media Content",
+    "sponsorship_title": "Sponsorship",
+    "accelerator_title": "Accelerator",
+    "community_title": "Community",
+    "content_creator_title": "Content Creator",
+    "gaming_title": "Gaming",
+    "platform_contributor_title": "Platform Contributor"
   },
   "survey": {
     "topics_title": "Topics",
@@ -295,7 +335,15 @@
     "active": "Active outcomes",
     "rejected": "Rejected outcomes",
     "passed": "Passed outcomes",
-    "enacted": "Enacted outcomes"
+    "enacted": "Enacted outcomes",
+    "out_of_budget": "OOB outcomes"
+  },
+  "grant_status": {
+    "pending": "Pending",
+    "in_progress": "In progress",
+    "finished": "Finished",
+    "paused": "Paused",
+    "revoked": "Revoked"
   },
   "modal": {
     "new_proposal": {
@@ -365,7 +413,7 @@
     "vp_delegation": {
       "title": "Voting Power Delegation",
       "description": "Choose who you’d like to receive the 100% of your **{vp} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates.",
-      "description_generic": "Sign in to choose who you'd like to receive your VP. You may delegate it to any user, but we'd like you to consider picking one of the following individuals who have applied to become Delegates.",
+      "description_generic": "Sign in to choose who you'd like to receive your VP. You may delegate it to any user, but we'd like you to consider picking one of the following individuals who have applied to become Delegates. ",
       "read_more": "[Read more](#)",
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
@@ -400,6 +448,7 @@
         "stats_delegated": "DELEGATED",
         "stats_estate": "ESTATE",
         "stats_l1_wearables": "L1 WEARABLES",
+        "stats_rental": "LAND RENTAL",
         "stats_active_since": "Active since",
         "stats_voted_on": "Voted on",
         "stats_match": "Match",
@@ -416,6 +465,8 @@
         "stats_bar_estates_info": "**ESTATES Voting Power** comes from owning Decentraland's ESTATE. VP for ESTATEs is calculated by mutiplying the number on LANDs in a ESTATE * 2,000",
         "stats_bar_l1_wearables": "L1 Wearables",
         "stats_bar_l1_wearables_info": "**L1 Wearables** from selected collections accounts for VP based on their level of rarity.",
+        "stats_bar_rental": "LAND Rental",
+        "stats_bar_rental_info": "**LAND Rental Voting Power** comes from owning Decentraland's LAND or ESTATES (NFT), currently being rented. 1 LAND rented = 2,000 VP / 1 ESTATE rented = LANDs in an ESTATE * 2,000",
         "stats_bar_full_label": "{amount} VP ({percentage})",
         "stats_popup_percentage": "{percentage} of total VP held",
         "stats_initiatives_title": "Initiatives voted on",
@@ -443,6 +494,12 @@
       "accept": "Save",
       "reject": "Cancel",
       "action": "Edit"
+    },
+    "external_link_warning": {
+      "title": "Leaving Decentraland DAO",
+      "description": "This link will take you to\n**{url}**\nAre you sure you want to go there?",
+      "accept": "Follow link",
+      "reject": "I've changed my mind"
     },
     "voting_modal_survey": {
       "title": "We'd appreciate some extra feedback",
@@ -479,7 +536,8 @@
         "title": "Get involved and shape Decentraland’s future.",
         "description": "The  DAO is a key component of the ecosystem and it is the consensus mechanism for defining the rules of the Decentraland's virtual world. Participate in the DAO and make your voice heard.",
         "discord_button": "Join our Discord",
-        "docs_button": "Read our docs"
+        "docs_button": "Read our docs",
+        "close_button_label": "Dismiss banner"
       },
       "metrics": {
         "proposals": "Proposals",
@@ -568,6 +626,25 @@
       "4_panel_title": "How to create a proposal",
       "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
     },
+    "proposal_view": {
+      "grant": {
+        "header": "Should the following **{value}** grant in the **{category}** category be approved?",
+        "abstract_title": "Abstract",
+        "size_title": "Grant size",
+        "duration_title": "Project duration",
+        "payout_strategy_title": "Payout Strategy",
+        "payout_strategy_body": "Monthly on the {startDate} day",
+        "beneficiary_title": "Beneficiary address",
+        "email_title": "Email address",
+        "description_title": "Description",
+        "specification_title": "Budget specification",
+        "breakdown_title": "Budget breakdown",
+        "breakdown_subtitle": "{duration} {duration, plural, one {month} other {months}}",
+        "personnel_title": "Personnel",
+        "roadmap_title": "Roadmap and milestones",
+        "relevant_link": "Relevant link"
+      }
+    },
     "proposal_list": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
@@ -642,7 +719,10 @@
       "all_delegators_voted": "All your delegators voted by themselves",
       "delegators_represented": "You're representing **{total} {total, plural, one {account} other {accounts}}**",
       "user_voted_for_delegators": "You voted on behalf of **{amountRepresented} {amountRepresented, plural, one {account} other {accounts}}**",
-      "result_label": "Current result",
+      "result_label": "Current results",
+      "get_involved": "Get involved",
+      "show_results": "Show results",
+      "hide_results": "Hide results",
       "vote_change": "Change Vote",
       "vote_overrule": "Overrule Vote",
       "vote_manage": "Manage",
@@ -712,6 +792,39 @@
         "promote_to_governance_label": "Escalate Proposal"
       },
       "grant": {
+        "requested_budget": {
+          "title": "Requesting",
+          "overbudget_pill": "Over Budget",
+          "requested": "Requested Budget",
+          "total": "Total Budget",
+          "subtitle": "{percentage} of quarterly category budget",
+          "overbudget_subtitle": "There's only ${amount} left"
+        },
+        "category_budget": {
+          "title": "{category} Initiative",
+          "description": {
+            "in_world_content": "Seeking funding for the development of experiences to improve user retention",
+            "accelerator": "Private companies or external for-profit initiatives in need of funding",
+            "core_unit": "Seeking funding to provide core infrastructure and operations for the DAO",
+            "documentation": "Seeking funding to create free educational content related to DCL",
+            "platform": "Seeking funding to create tools and applications extending our ecosystem",
+            "social_media_content": "Seeking funding for marketing to improve user adoption and retention",
+            "sponsorship": "Seeking funding to support IRL initiatives for audiences relevant to DCL"
+          },
+          "total": "Quarterly Category Budget: ${value}"
+        },
+        "competing_proposals": {
+          "show_sidebar_label": "This proposal is competing with {amount} {amount, plural, one {other} other {others}} for funds",
+          "sidebar": {
+            "title": "{category} Budget",
+            "competing_proposals_bar_title": "Contested",
+            "granted_funds": "Granted Funds ${amount}",
+            "uncontested_funds": "Uncontested ${amount}",
+            "available_funds": "Available ${amount}",
+            "this_initiative_title": "This Initiative",
+            "other_initiatives_title": "Other {category} Initiatives"
+          }
+        },
         "update_title": "Project updates",
         "update_empty": "This team has not posted any updates yet.",
         "update_index": "Update #{index}",
@@ -727,22 +840,66 @@
         "next_update_due_date": "Next one due in **{date}**",
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
-        "vesting_button": "View vesting contract"
+        "vesting_button": "View vesting contract",
+        "category_assessment": {
+          "accelerator": {
+            "revenue_label": "Revenue Generation Model",
+            "investment_recovery_plan_label": "Return of Investment to the DAO Treasury",
+            "investment_recovery_time_label": "Return of Investment Timeframe"
+          },
+          "core_unit": {
+            "strategic_value_label": "Strategic Value",
+            "impact_metrics_label": "Impact Metrics"
+          },
+          "platform": {
+            "impact_metrics_label": "Impact Metrics"
+          },
+          "documentation": {
+            "content_type_label": "Content Type",
+            "total_pieces_label": "Content Pieces"
+          },
+          "in_world_content": {
+            "total_pieces_label": "Content Pieces",
+            "total_users_label": "Target Audience size",
+            "engagement_measurement_label": "Engagement Metrics"
+          },
+          "social_media_content": {
+            "social_media_platforms_label": "Social Media Platforms",
+            "audience_relevance_label": "Audience Assessment",
+            "total_pieces_label": "Content Pieces",
+            "total_impact_label": "Target Audience size",
+            "relevant_link_label": "Relevant Social Profiles"
+          },
+          "sponsorship": {
+            "event_type_label": "Event Type",
+            "event_category_label": "Event Category",
+            "primary_source_funding_label": "Funding Source",
+            "total_events_label": "Number of Events",
+            "total_attendance_label": "Intended Attendance",
+            "audience_relevance_label": "Audience Assessment",
+            "showcase_label": "Decentraland's Brand Presence"
+          }
+        }
       }
     },
     "grants": {
       "title": "Decentraland DAO Community Grants",
       "description": "Check the projects funded by the Decentraland DAO Grants program. Browse them to see their goals, progress, and how they are making an impact in our community.",
       "load_more_button": "Load more",
+      "request_banner": {
+        "title": "Get funded",
+        "description": "Decentraland could be the means to realize that project of yours",
+        "button": "Request a Grant"
+      },
       "current_banner": {
-        "title": "Discover the projects making the Decentraland ecosystem grow",
-        "description": "All these projects have been funded by you via the Decentraland DAO Grants program. Browse them to see their goals, progress and how they are making an impact in our community.",
-        "active_grants_title": "{value} Active Grants",
-        "active_grants_description": "Initiatives currently being funded",
-        "released_title": "${value} USD Released",
-        "released_description": "Funds already cashed out by Grant teams",
-        "to_be_vested_title": "${value} USD to be Vested",
-        "to_be_vested_description": "Funds to be made available for active Grants"
+        "title": "Initiatives making the Decentraland Ecosystem grow",
+        "description": "Every quarter, our Community defines Treasury funding allocation and distribution and projects to award Grants to. Keep browsing to see their goals, progress and how they are making an impact in our community.",
+        "budget_title": "Budget Definition",
+        "budget_description": "Review Quarterly Governance Proposal",
+        "transparency_title": "Transparency",
+        "transparency_description": "How the Grants System is performing",
+        "faq_title": "FAQ",
+        "faq_description": "Learn more about our Grants System"
       },
       "past_banner": {
         "title": "See what the Community already achieved",
@@ -754,7 +911,12 @@
         "approved_rate_title": "{value}% Approval",
         "approved_rate_description": "Rate of approved Grant proposals"
       },
-      "currently_funded": "Currently being funded",
+      "grants_category_title": "{status}{category} Grants",
+      "budget_banner": {
+        "budget_label": "Quarterly budget",
+        "progress_label": "Initiatives",
+        "spent_label": "Quarterly spend: "
+      },
       "category_filters": {
         "all": "All",
         "community": "Community",
@@ -767,6 +929,10 @@
         "amount": "Amount granted",
         "update_timestamp": "Last updated",
         "created_at": "Newest"
+      },
+      "empty": {
+        "description": "Looks like there's no grants following this criteria to be displayed",
+        "button": "View all grants"
       },
       "vested": "vested",
       "transferred": "transferred",
@@ -851,7 +1017,8 @@
       },
       "delegation": {
         "title": "Delegated VP to",
-        "helper": "This is the DAO member this user delegated their VP to. Learn more about VP delegation [here](https://docs.decentraland.org/player/general/dao/overview/how-does-the-dao-work/)"
+        "helper": "This is the DAO member this user delegated their VP to. Learn more about VP delegation [here](https://docs.decentraland.org/player/general/dao/overview/how-does-the-dao-work/)",
+        "change_delegation": "Change Delegation"
       },
       "delegators": {
         "title": "VP Delegators",
@@ -928,6 +1095,7 @@
       }
     },
     "update_detail": {
+      "page_title": "{title} - Project Update #{index}",
       "project_title": "Project update for {title}",
       "title": "Update #{index}",
       "on_track_title": "Project Health: On Track",
@@ -957,12 +1125,12 @@
       "markdown_notice": "You can format your proposal using markdown! Toggle the preview switch to see how your post will be displayed.",
       "co_author_label": "Co-authors",
       "optional_tooltip": " (optional)",
-      "co_author_description": "If you co-authored this proposal with someone else, you can add their addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
-      "co_author_placeholder": "Enter their address",
+      "co_author_description": "If you co-authored this proposal with someone else, you can add their wallet addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
+      "co_author_placeholder": "Enter their wallet address",
       "co_author_count": "{amount}/{maxAmount} Co-authors added",
-      "co_author_error": "Invalid address",
-      "co_author_as_author_error": "This address cannot be added since it belongs to the proposal's author.",
-      "co_author_duplicated_error": "It looks like this co-author's address has already been added.",
+      "co_author_error": "Invalid wallet address",
+      "co_author_as_author_error": "This wallet address cannot be added since it belongs to the proposal's author.",
+      "co_author_duplicated_error": "It looks like this co-author's wallet address has already been added.",
       "co_author_max_error": "The maximum number of co-authors was exceeded.",
       "error_label": "There was an error while trying to create the proposal, please try again later."
     },
@@ -1077,41 +1245,210 @@
       "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
     },
     "submit_grant": {
-      "title": "Request a grant",
-      "description": "Decentraland Grants allow the DAO’s MANA to fund the creation of features or content for the Decentraland platform. Either individuals or teams may apply within one of five categories, and there are six levels of funding for each category. Before submitting your grant proposal, please review the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/) here.\n\nAside from the requirements listed in the Grants Framework and Decentraland’s [Content Policy](https://decentraland.org/content), [Terms of Use](https://decentraland.org/terms), and [Code of Ethics](https://decentraland.org/ethics), there are no constraints on the content or features that may be funded.",
+      "title": "Request a Grant",
+      "description": "Decentraland Grants allow MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO, and there are no constraints on the content or features that may be funded (within the bounds of Decentraland’s [Content Policy](https://decentraland.org/content)).\n\nFor your convenience and in preparation for your Grant Request you can download a file with all the questions present in this form [here](https://docs.google.com/document/d/1PSkV756XOUuAPPFlSu0LgqVy0QZ-DueeDj7MwSGRphc/edit#heading=h.xnwultcdr0as).",
+      "cancel": "Cancel",
+      "category_selection": {
+        "description": "Choose a category that best suits your project",
+        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://MISSING_URL)"
+      },
+      "modal_actions": {
+        "submit": "SUBMIT",
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
+      "funding_section": {
+        "title": "Funding",
+        "project_category_title": "Project Category",
+        "project_category_action": "Change",
+        "category_budget_title": "Remaining Category Budget",
+        "category_budget_info": "The DAO allocates a portion of its monthly budget to the Grants program. Each Category has allocated a percentage of the total available funds for the program. If your ask is bigger than the remaining budget for the selected category, you won't be able to request it and will have to wait until the next quarter.",
+        "category_budget_total": "Category total for Q: ${value, number}",
+        "desired_funding": "Desired Funding",
+        "desired_funding_sub": "More about our [Funding Tiers](https://governance.decentraland.org/proposal/?id=853092a0-7b70-11ed-ad27-015f26e7c35c)",
+        "project_duration_title": "Estimated Project Duration",
+        "project_duration_unit": "months",
+        "pass_threshold_title": "Pass Threshold",
+        "pass_threshold": "{value, number} VP in 14 days",
+        "pass_threshold_sub": "Accumulated VP needed for this proposal to pass",
+        "payout_strategy_title": "Payout Strategy",
+        "payout_strategy_payments": "{value, number} Monthly Payments",
+        "payout_strategy_sub": "Executed 7 days after the proposal has passed",
+        "calculation_helper": "Calculation is automated based on the Grants Rules",
+        "funding_time_title": "What time of the month would you like for the funding to happen?",
+        "funding_time_first_day": "1st day of month",
+        "funding_time_fifteenth_day": "15th day of month",
+        "preferred_payment_token": "What is your preferred payment token?",
+        "preferred_payment_token_mana": "MANA",
+        "preferred_payment_token_dai": "DAI"
+      },
+      "general_info": {
+        "title": "General Information",
+        "title_label": "Title",
+        "title_detail": "Provide a title that is concise and descriptive for your grant request. This title will appear as the header of your proposal’s detail page on the Governance dApp, our Snapshot space, and the Forum thread of your Proposal.",
+        "title_placeholder": "Enter a descriptive title for your grant proposal here.",
+        "description": "Decentraland Grants allow the DAO’s MANA to fund the creation of features or content for the Decentraland platform. Either individuals or teams may apply within one of five categories, and there are six levels of funding for each category. Before submitting your grant proposal, please review the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/) here.\n\nAside from the requirements listed in the Grants Framework and Decentraland’s [Content Policy](https://decentraland.org/content), [Terms of Use](https://decentraland.org/terms), and [Code of Ethics](https://decentraland.org/ethics), there are no constraints on the content or features that may be funded.",
+        "description_label": "Description",
+        "description_detail": "Allows you to elaborate on why your project should receive funding, the problems that your project will solve, or the benefits it will bring to the Decentraland platform.",
+        "abstract_label": "Abstract",
+        "abstract_detail": "Please explain the key components of your project. This should include a description of the feature or content you want to create, what needs or goals your work may satisfy, and the skills or experience you have that will contribute to your success. This is your chance to make a good first impression on the community.",
+        "abstract_placeholder": "Enter a quick, non-technical overview of your project here.",
+        "beneficiary_label": "Beneficiary address",
+        "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
+        "roadmap_label": "Roadmap and milestones",
+        "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
+        "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
+        "email_label": "Contact Email Address",
+        "email_detail": "This email address will be used by the Grant Support teams to contact you to check the progress of the grant, set up meetings and maintain an open communication channel.",
+        "email_placeholder": "Enter your email address",
+        "email_error_message": "Please enter a valid email",
+        "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
+      },
+      "category_assessment": {
+        "title": "Category-Specific Assessment",
+        "core_unit": {
+          "strategic_value_label": "How will your team provide strategic value to the Decentraland DAO?",
+          "impact_metrics_label": "List your impact metrics"
+        },
+        "platform": {
+          "impact_metrics_label": "List your impact metrics"
+        },
+        "documentation": {
+          "content_type": {
+            "label": "What type of content are you planning to produce?",
+            "choices": {
+              "documentation_article": "Documentation Article",
+              "scene_example": "Scene Example",
+              "videos": "Videos",
+              "code_examples": "Code examples",
+              "other": "Other"
+            }
+          },
+          "total_pieces_label": "How many pieces of content are you planning to publish under the duration of this Grant?"
+        },
+        "in_world_content": {
+          "total_pieces_label": "How many pieces of content (i.e. number of events, scenes, or games) are you planning to produce under the duration of this Grant?",
+          "total_users_label": "How many users do you expect to engage with this content?",
+          "engagement_measurement_label": "How are you going to measure the engagement with your content? (I.e. newly populated land, Active Users, Returning Users, Time on Scene)"
+        },
+        "social_media_content": {
+          "social_media_platforms": {
+            "label": "Please select the social media platforms where you will publish this content:",
+            "choices": {
+              "instagram": "Instagram",
+              "facebook": "Facebook",
+              "tiktok": "TikTok",
+              "discord": "Discord",
+              "youtube": "YouTube",
+              "twitter": "Twitter",
+              "twitch": "Twitch",
+              "other": "Other"
+            }
+          },
+          "audience_relevance_label": "Tell us how your audience is relevant to Decentraland.",
+          "total_pieces_label": "How many pieces of content are you planning to generate?",
+          "total_impact_label": "How many people do you plan to impact with this content?",
+          "relevant_link_label": "Please provide links to your current social media channels"
+        },
+        "sponsorship": {
+          "event_type": {
+            "label": "Event type",
+            "choices": {
+              "online": "Online (outside of the Decentraland ecosystem)",
+              "offline": "Offline"
+            }
+          },
+          "event_category": {
+            "label": "Please select the Event category:",
+            "choices": {
+              "conference": "Conference",
+              "side_event": "Side event",
+              "community_meetups": "Community meetups",
+              "hackathon": "Hackathon",
+              "other": "Other"
+            }
+          },
+          "primary_source_funding_label": "Is this grant the primary source of funding for this event?",
+          "total_events_label": "How many events are you planning to organize?",
+          "total_attendance_label": "How many people are you expecting to attend?",
+          "audience_relevance_label": "How is your audience relevant to Decentraland?",
+          "showcase_label": "How is the Decentraland brand going to be showcased?"
+        },
+        "accelerator": {
+          "revenue_label": "Please describe your revenue generation model",
+          "return_of_investment_label": "What’s your plan for returning the investment to the DAO?",
+          "investment_recovery_label": "How many months will it take the DAO to recover the investment made on your project based on your estimations?"
+        }
+      },
+      "due_diligence": {
+        "title": "Due-diligence",
+        "budget_breakdown_label": "Budget breakdown",
+        "budget_breakdown_detail": "Please provide a detailed specification on how you will be using the funds requested for this Grant. Our community values transparency, so be as specific as possible. **${value}** left to disclose.",
+        "budget_breakdown_add_concept": "Add concept",
+        "budget_breakdown_no_funds_left": "No funds left to disclose",
+        "budget_breakdown_example": "Example: Team compensation; Marketing",
+        "budget_breakdown_modal": {
+          "title": "Breaking the Budget Down",
+          "concept_label": "Concept title/name",
+          "concept_placeholder": "ie. Frontend development",
+          "duration_label": "Duration",
+          "duration_unit_label": "months",
+          "duration_subtitle": "In how many months will this cost be splitted",
+          "estimated_budget_label": "Estimated budget",
+          "estimated_budget_left_to_disclose": "**${value}** left to disclose.",
+          "about_this_label": "About this",
+          "about_this_placeholder": "Highlight relevant information",
+          "relevant_link_label": "Relevant Link",
+          "optional_label": "Optional",
+          "relevant_link_placeholder": "https://"
+        }
+      },
+      "team": {
+        "title": "Team",
+        "members_label": "Members",
+        "members_detail": "Please list who will be working on this project and include an explicit overview of their relevant skillset and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
+        "add_member": "Add team member",
+        "team_modal": {
+          "title": "Adding a team member",
+          "name_label": "Their name/identity",
+          "name_placeholder": "Names or pseudonyms are OK",
+          "role_label": "Their role/position",
+          "role_placeholder": "Developer, marketing, designer...",
+          "about_label": "About them",
+          "about_placeholder": "Highlight relevant information",
+          "relevant_link_label": "Relevant Link",
+          "optional_label": "Optional",
+          "relevant_link_placeholder": "https://"
+        }
+      },
+      "final_consent": {
+        "title": "Final Consent",
+        "subtitle": "Review and check the following",
+        "grants_framework_label": "I’ve read and understood the [Grants Framework](https://docs.decentraland.org/decentraland/community-grants/)",
+        "content_policy_label": "I’ve read and understood Decentraland’s [Content Policy](https://decentraland.org/content)",
+        "terms_of_use_label": "I’ve read Decentraland’s [Terms of Use](https://decentraland.org/terms) and agree with them",
+        "code_of_ethics_label": "I’ve read Decentraland’s [Code of Ethics](https://decentraland.org/ethics) and hereby commit to honoring it",
+        "platform_category_license_label": "I agree to work and publish the source code and its derivatives produced for this grant under an [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0)",
+        "platform_category_documentation_label": "I agree to publish documentation for the community to understand and contribute to the codebase",
+        "documentation_category_label": "I agree to publish all the content produced under this Grant with an [Attribution 4.0 International (CC BY 4.0) license](https://creativecommons.org/licenses/by/4.0/)"
+      },
       "category_label": "Category",
       "category_placeholder": "Select a category",
+      "accelerator_description": "A private company or for-profit initiative in need of funding",
+      "core_unit_description": "Provide core infrastructure and operations for the DAO",
+      "documentation_description": "Creation of free educational content related to Decentraland’s dynamics",
+      "in_world_content_description": "Development of experiences aiming to improve user retention",
+      "platform_description": "Creation of tools and applications extending our platform and ecosystem",
+      "social_media_content_description": "Marketing efforts aiming to reach new users and keeping them engaged",
+      "sponsorship_description": "Supporting IRL initiatives targeting audiences relevant to Decentraland",
       "tier_label": "Grant tier",
       "tier_placeholder": "Select a tier",
-      "title_label": "Title",
-      "title_placeholder": "Enter a descriptive title for your grant proposal here.",
-      "abstract_label": "Abstract",
-      "abstract_detail": "Please explain the key components of your project. This should include a description of the feature or content you want to create, what needs or goals your work may satisfy, and the skills or experience you have that will contribute to your success. This is your chance to make a good first impression on the community.",
-      "abstract_placeholder": "Enter a quick, non-technical overview of your project here.",
       "size_label": "Grant size",
-      "size_detail": "Please enter the exact amount of funding you would like to request. This amount must be within the range of your selected tier.",
-      "beneficiary_label": "Beneficiary address",
-      "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
-      "description_label": "Description",
-      "description_placeholder": "Allows you to elaborate on why your project should receive funding, the problems that your project will solve, or the benefits it will bring to the Decentraland platform.",
-      "specification_label": "Specification",
-      "specification_detail": "Provide an explanation of how you will complete your project, listing the tools and methods you plan to use. Include any technical documentation, drafts, or other preliminary work you’ve already completed.",
-      "specification_placeholder": "The technical specification for your project.",
-      "personnel_label": "Personnel",
-      "personnel_detail": "Please list who will be working on this project, along with an explicit overview of their relevant skill sets and experience. You may provide links to portfolios or profiles to help the Decentraland community get to know who the DAO will be funding and how their backgrounds will contribute to your project’s success.",
-      "personnel_placeholder": "A description of your team and why they are particularly qualified for your project.",
-      "roadmap_label": "Roadmap and milestones",
-      "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
-      "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
-      "email_label": "Contact Email Address",
-      "email_detail": "This email address will be used by the Grant Support teams to contact you to check the progress of the grant, set up meetings and maintain an open communication channel.",
-      "email_placeholder": "Enter your email address",
-      "email_error_message": "Please enter a valid email",
-      "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
+      "size_detail": "Please enter the exact amount of funding you would like to request. This amount must be within the range of your selected tier."
     },
     "submit_linked_wearables": {
       "title": "Linked Wearables Registry",
-      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Third parties need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](http://builder.decentraland.org/) and get slots to submit the 3D models. By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland.\n\nNote that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
+      "description": "Linked Wearables are a way to represent NFTs as Wearables in Decentraland. Third parties need to submit a proposal to be approved by the DAO in order to access the tool in the [Builder](https://builder.decentraland.org/) and get slots to submit the 3D models. By using this tool, you will be able to submit [NFTs as Wearables](https://governance.decentraland.org/proposal/?id=14e76cc0-2bc7-11ec-ac84-77607720a240) to be curated and made available for your NFT holders inside Decentraland.\n\nNote that after being approved, you will need to create an API with the endpoints described in this [Document](https://github.com/decentraland/adr/blob/main/docs/ADR-42-third-party-assets-integration.md#third-party-resolver).",
       "name_label": "Name",
       "name_detail": "Please enter the name that represents your Project, Company or Community as a whole",
       "name_placeholder": "Enter the name here",
@@ -1190,13 +1527,15 @@
     }
   },
   "delegation": {
-    "delegated_to_user_empty_title": "No VP delegated to you",
-    "delegated_to_address_empty_title": "No VP delegated to them",
-    "delegated_to_user_empty_description": "Sound candidates may be chosen by the community to vote in their name",
-    "delegated_to_user_empty_link": "Become a Delegate",
+    "delegated_to_user_empty_title": "No delegations",
+    "delegated_to_address_empty_title": "VP not delegated",
+    "delegated_to_user_empty_description": "You haven't been delegated any VP",
+    "delegated_to_address_empty_description": "This account hasn't been delegated any VP",
+    "delegated_to_address_empty_action": "Delegate them your VP",
     "delegated_voting_power_list_title": "Delegated Voting Power",
     "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice.",
     "delegation_empty_title": "VP not delegated",
-    "delegation_address_empty": "This address has not delegated its voting power"
+    "delegation_address_empty": "This account has not delegated their VP",
+    "choose_delegate": "Choose a delegate"
   }
 }

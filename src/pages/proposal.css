@@ -26,7 +26,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: normal;
-  color: var(--black-400);
+  color: var(--black-600);
 }
 
 .ProposalDetailPage .ProposalDetailDescription .dg.SubTitle {
@@ -34,12 +34,16 @@
   font-weight: 500;
 }
 
+.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph {
+  white-space: pre-line;
+}
+
 .ProposalDetailPage .ProposalDetailDescription .dg.Paragraph,
 .ProposalDetailPage .ProposalDetailDescription .dg.ListItem {
   font-size: 15px;
 }
 
-.ProposalDetailPage .ProposalDetailDescription .dg.Paragraph img {
+.ProposalDetailPage .ProposalDetailDescription img {
   max-width: 100%;
 }
 

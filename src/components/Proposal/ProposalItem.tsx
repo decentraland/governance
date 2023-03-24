@@ -78,7 +78,7 @@ export default function ProposalItem({
         <div className="ProposalItem__Status">
           <div className="ProposalItem__Details">
             <StatusPill status={proposal.status} />
-            <CategoryPill type={proposal.type} />
+            <CategoryPill proposalType={proposal.type} />
             <Username address={proposal.user} variant="avatar" />
             <div className="ProposalItem__Stats">
               {votes && (

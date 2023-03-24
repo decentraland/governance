@@ -1,81 +1,60 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { CANDIDATE_ADDRESSES } from '../../../constants'
-import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
-import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
-import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import DelegatesTable from '../../Delegation/DelegatesTable'
+import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
+import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 
-import './VotingPowerDelegationModal.css'
+import VotingPowerDelegationCandidatesList, { Candidate } from './VotingPowerDelegationCandidatesList'
 
-type VotingPowerDelegationModalProps = Omit<ModalProps, 'children'> & {
-  setSelectedCandidate: (candidate: Candidate) => void
+type Props = {
+  vpDistribution: VpDistribution
+  openDelegationModal: boolean
+  setOpenDelegationModal: React.Dispatch<any>
+  selectedCandidate?: Candidate | null
+  setSelectedCandidate: React.Dispatch<React.SetStateAction<Candidate | null>>
   showPickOtherDelegateButton?: boolean
 }
 
-export type Candidate = Delegate & {
-  bio: string
-  links: string[]
-  relevant_skills: string[]
-  involvement: string
-  motivation: string
-  vision: string
-  most_important_issue: string
-}
-
-function VotingPowerDelegationModal({
-  onClose,
+const VotingPowerDelegationModal = ({
+  vpDistribution,
+  openDelegationModal,
+  setOpenDelegationModal,
+  selectedCandidate,
   setSelectedCandidate,
   showPickOtherDelegateButton,
-  ...props
-}: VotingPowerDelegationModalProps) {
-  const delegates = useDelegatesInfo(CANDIDATE_ADDRESSES)
-  const [userAddress] = useAuthContext()
-  const { vpDistribution } = useVotingPowerDistribution(userAddress)
-
-  const t = useFormatMessage()
+}: Props) => {
+  const handleModalClose = () => {
+    setSelectedCandidate(null)
+    setOpenDelegationModal(false)
+  }
 
   return (
-    <Modal
-      {...props}
-      onClose={onClose}
-      size="small"
-      closeIcon={<Close />}
-      className="GovernanceContentModal VotingPowerDelegationModal"
-    >
-      <Modal.Header className="VotingPowerDelegationModal__Header">{t('modal.vp_delegation.title')}</Modal.Header>
-      <Modal.Description className="VotingPowerDelegationModal__Description">
-        <Markdown>
-          {(userAddress && vpDistribution
-            ? t('modal.vp_delegation.description', { vp: vpDistribution.own })
-            : t('modal.vp_delegation.description_generic')) +
-            ' ' +
-            t('modal.vp_delegation.read_more')}
-        </Markdown>
-      </Modal.Description>
-      <Modal.Content>
-        <DelegatesTable delegates={delegates} setSelectedCandidate={setSelectedCandidate} full />
-      </Modal.Content>
-      {showPickOtherDelegateButton && (
-        <Button
-          className="VotingPowerDelegationModal__PickButton"
-          fluid
-          primary
-          href={EDIT_DELEGATE_SNAPSHOT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <VotingPowerDelegationCandidatesList
+        onClose={handleModalClose}
+        setSelectedCandidate={setSelectedCandidate}
+        open={openDelegationModal && !selectedCandidate}
+        showPickOtherDelegateButton={showPickOtherDelegateButton}
+      />
+      {selectedCandidate && vpDistribution && (
+        <Modal
+          onClose={handleModalClose}
+          size="small"
+          closeIcon={<Close />}
+          className="GovernanceContentModal VotingPowerDelegationCandidatesList"
+          open={openDelegationModal && !!selectedCandidate}
         >
-          {t('modal.vp_delegation.pick_button')}
-        </Button>
+          <VotingPowerDelegationDetail
+            userVP={vpDistribution.own}
+            candidate={selectedCandidate}
+            onBackClick={() => setSelectedCandidate(null)}
+            onUserProfileClick={handleModalClose}
+          />
+        </Modal>
       )}
-    </Modal>
+    </>
   )
 }
 

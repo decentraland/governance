@@ -1,15 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { DAO_DISCORD_URL, DOCS_URL } from '../../constants'
+import CloseCircle from '../Icon/CloseCircle'
 
 import './MainBanner.css'
 
+const HIDE_HOME_BANNER_KEY = 'org.decentraland.governance.home_banner.hide'
+
+const shouldShowMainBanner = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(HIDE_HOME_BANNER_KEY) !== 'true'
+  }
+}
+
 const MainBanner = () => {
   const t = useFormatMessage()
+  const [showMainBanner, setShowMainBanner] = useState(false)
+
+  useEffect(() => {
+    setShowMainBanner(!!shouldShowMainBanner())
+  }, [])
+
+  if (!showMainBanner) {
+    return null
+  }
+
+  const handleCloseMainBannerClick = () => {
+    localStorage.setItem(HIDE_HOME_BANNER_KEY, 'true')
+    setShowMainBanner(false)
+  }
 
   return (
     <div className="MainBanner">
@@ -24,6 +47,13 @@ const MainBanner = () => {
           {t('page.home.main_banner.docs_button')}
         </Button>
       </div>
+      <button
+        aria-label={t('page.home.main_banner.close_button_label')}
+        className="MainBanner__CloseButton"
+        onClick={handleCloseMainBannerClick}
+      >
+        <CloseCircle />
+      </button>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ProposalGrantCategory } from '../../entities/Proposal/types'
+import { NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../entities/Grant/types'
 import Pill, { PillColor } from '../Common/Pill'
 
 interface Props {
@@ -8,10 +8,18 @@ interface Props {
 }
 
 const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> = {
-  [ProposalGrantCategory.Community]: PillColor.Green,
-  [ProposalGrantCategory.ContentCreator]: PillColor.Orange,
-  [ProposalGrantCategory.PlatformContributor]: PillColor.Purple,
-  [ProposalGrantCategory.Gaming]: PillColor.Blue,
+  [OldGrantCategory.Community]: PillColor.Green,
+  [OldGrantCategory.ContentCreator]: PillColor.Orange,
+  [OldGrantCategory.PlatformContributor]: PillColor.Purple,
+  [OldGrantCategory.Gaming]: PillColor.Blue,
+
+  [NewGrantCategory.Accelerator]: PillColor.Green,
+  [NewGrantCategory.CoreUnit]: PillColor.Blue,
+  [NewGrantCategory.Documentation]: PillColor.Purple,
+  [NewGrantCategory.InWorldContent]: PillColor.Red,
+  [NewGrantCategory.Platform]: PillColor.Fuchsia,
+  [NewGrantCategory.SocialMediaContent]: PillColor.Yellow,
+  [NewGrantCategory.Sponsorship]: PillColor.Orange,
 }
 
 function GrantPill({ type }: Props) {
