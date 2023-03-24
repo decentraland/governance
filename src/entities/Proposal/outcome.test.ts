@@ -6,7 +6,7 @@ import { JOB_CONTEXT_MOCK } from './testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
-const NEW_VALID_PROPOSAL: ProposalAttributes = {
+const DEFAULT_VALID_PROPOSAL: ProposalAttributes = {
   id: '1',
   snapshot_id: 'snapshot_1',
   snapshot_space: 'snapshot_space_1',
@@ -42,7 +42,7 @@ const NEW_VALID_PROPOSAL: ProposalAttributes = {
   textsearch: null,
 }
 
-const LEGACY_VALID_PROPOSAL: ProposalAttributes = {
+const YES_NO_VALID_PROPOSAL: ProposalAttributes = {
   id: '14f39810-c289-11ed-931d-5b5c5c595273',
   snapshot_id: '0xdd438bbd8e2a9c22974f6f680ba29b6ced48f742b9ea8d91210dac34b7d0f49c',
   snapshot_space: 'snapshot.dcl.eth',
@@ -130,42 +130,42 @@ describe('calculateOutcome for options with abstain', () => {
   })
   it('should return the accepted outcome for a proposal with a valid winner and sufficient voting power', async () => {
     mockChoicesResult({ yes: 100, no: 0, abstain: 0 })
-    const outcome = await calculateOutcome(NEW_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('yes')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
   })
   it('should return the rejected outcome for a proposal with more voting power in No than Yes', async () => {
     mockChoicesResult({ yes: 100, no: 200, abstain: 0 })
-    const outcome = await calculateOutcome(NEW_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('no')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
   })
   it('should return the accepted outcome for a proposal with more voting more voting power in Yes than No and majority Abstention', async () => {
     mockChoicesResult({ yes: 100, no: 50, abstain: 1000 })
-    const outcome = await calculateOutcome(NEW_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('yes')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
   })
   it('should return the rejected outcome for a proposal with only Abstention', async () => {
     mockChoicesResult({ yes: 0, no: 0, abstain: 1000 })
-    const outcome = await calculateOutcome(NEW_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('no')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
   })
   it('should return the rejected outcome for a proposal with tie between Yes and No', async () => {
     mockChoicesResult({ yes: 100, no: 100, abstain: 0 })
-    const outcome = await calculateOutcome(NEW_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('no')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
   })
   it('should return the accepted outcome for a proposal with tie between Yes and Abstain', async () => {
     mockChoicesResult({ yes: 100, no: 0, abstain: 100 })
-    const outcome = await calculateOutcome(NEW_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('yes')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
@@ -178,28 +178,28 @@ describe('calculateOutcome for legacy options', () => {
   })
   it('should return the accepted outcome for a proposal with a valid winner and sufficient voting power', async () => {
     mockChoicesResult({ yes: 100, no: 0 })
-    const outcome = await calculateOutcome(LEGACY_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('yes')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
   })
   it('should return the rejected outcome for a proposal with more voting power in No than Yes', async () => {
     mockChoicesResult({ yes: 100, no: 200 })
-    const outcome = await calculateOutcome(LEGACY_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('no')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
   })
   it('should return the rejected outcome for a proposal without votes', async () => {
     mockChoicesResult({ yes: 0, no: 0 })
-    const outcome = await calculateOutcome(LEGACY_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('no')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
   })
   it('should return the rejected outcome for a proposal with tie between Yes and No', async () => {
     mockChoicesResult({ yes: 100, no: 100 })
-    const outcome = await calculateOutcome(LEGACY_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
+    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
     expect(outcome).toBeDefined()
     expect(outcome?.winnerChoice).toBe('no')
     expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
