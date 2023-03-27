@@ -13,7 +13,7 @@
 
 .FilterLabel::before {
   display: block;
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -21,20 +21,23 @@
   padding: 10px 16px;
   width: 100%;
   height: 100%;
-  opacity: .08;
-  transition: background-color ease .3s
+  opacity: 0.08;
+  transition: background-color ease 0.3s;
 }
-
 
 .FilterLabel:hover::before,
 .FilterLabel.FilterLabel--active::before {
   background-color: #444;
 }
 
-.FilterLabel .dg.Paragraph  {
+.FilterLabel .dg.Paragraph {
   margin-bottom: 0;
 }
 
-.FilterLabel .dg.Paragraph.Paragraph--tiny  {
+.FilterLabel .dg.Paragraph.Paragraph--tiny {
   font-size: 15px;
+}
+
+.FilterLabel--active .dg.Paragraph.Paragraph--tiny {
+  font-weight: 500;
 }
