@@ -1,6 +1,7 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import useGrants from '../../hooks/useGrants'
 import locations from '../../modules/locations'
@@ -30,11 +31,12 @@ const ActiveCommunityGrants = () => {
       )}
       {!isLoadingGrants && (
         <div className="ActiveCommunityGrants__Container">
-          {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant) => (
-            <div className="HoverableCardContainer" key={`HoverableCard__${grant.id}`}>
-              <div className="HoverableCardContainer__Content">
-                <GrantCard grant={grant} hoverable />
-              </div>
+          {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant, index) => (
+            <div
+              className={TokenList.join(['HoverableCardContainer', index <= 1 && 'HoverableCardContainer__FirstRow'])}
+              key={`HoverableCard__${grant.id}`}
+            >
+              <GrantCard grant={grant} hoverable />
             </div>
           ))}
         </div>

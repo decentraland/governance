@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Card } from 'decentraland-ui/dist/components/Card/Card'
 
 import HomeLoader from './HomeLoader'
 import './MetricsCard.css'
@@ -16,7 +17,7 @@ interface Props {
 
 const MetricsCard = ({ href, category, title, description, isLoading, loadingLabel }: Props) => {
   return (
-    <Link href={href} className="MetricsCard">
+    <Card as={Link} href={href} className="MetricsCard">
       {!isLoading && (
         <div className="MetricsCard__Container">
           <p className="MetricsCard__Category">{category}</p>
@@ -29,7 +30,7 @@ const MetricsCard = ({ href, category, title, description, isLoading, loadingLab
           <HomeLoader size="small">{loadingLabel}</HomeLoader>
         </div>
       )}
-    </Link>
+    </Card>
   )
 }
 

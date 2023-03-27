@@ -190,7 +190,8 @@ describe('getUpdateMessage', () => {
             'This proposal is now in status: FINISHED.\n\n' +
             'Voting Results:\n' +
             '* Yes 97% 115,182 VP (3 votes)\n' +
-            '* No 3% 4,269 VP (1 votes)\n'
+            '* No 3% 4,269 VP (1 votes)\n' +
+            '* Abstain 0% 0 VP (0 votes)\n'
         )
       })
     })
@@ -227,7 +228,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -251,7 +253,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -276,7 +279,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -305,7 +309,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: PASSED.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -413,7 +418,8 @@ describe('getUpdateMessage', () => {
               'This proposal is now in status: OUT OF BUDGET.\n\n' +
               'Voting Results:\n' +
               '* Yes 97% 115,182 VP (3 votes)\n' +
-              '* No 3% 4,269 VP (1 votes)\n'
+              '* No 3% 4,269 VP (1 votes)\n' +
+              '* Abstain 0% 0 VP (0 votes)\n'
           )
         })
       })
@@ -434,7 +440,8 @@ describe('getUpdateMessage', () => {
             '\n' +
             'Voting Results:\n' +
             '* Yes 3% 4,269 VP (1 votes)\n' +
-            '* No 97% 115,182 VP (3 votes)\n'
+            '* No 97% 115,182 VP (3 votes)\n' +
+            '* Abstain 0% 0 VP (0 votes)\n'
         )
       })
 

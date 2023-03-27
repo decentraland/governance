@@ -12,6 +12,11 @@
   overflow: hidden;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  display: block;
+}
+
+.ChoiceProgress .ChoiceProgress__Choice::first-letter {
+  text-transform: uppercase;
 }
 
 .ChoiceProgress .ChoiceProgress__Stats {
@@ -32,5 +37,5 @@
 }
 
 .ChoiceProgress .ChoiceProgress__Votes strong {
-  font-weight: 500
+  font-weight: 500;
 }

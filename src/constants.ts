@@ -8,7 +8,7 @@ function getBooleanStringVar(variableName: string, defaultValue: boolean) {
 }
 
 export const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
-export const FORUM_URL = env('GATSBY_DISCOURSE_API') || ''
+export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || env('GATSBY_DISCOURSE_API') || ''
 export const GOVERNANCE_API = process.env.GATSBY_GOVERNANCE_API || env('GATSBY_GOVERNANCE_API') || ''
 export const DAO_DISCORD_URL = 'https://dcl.gg/dao-discord'
 export const NEWSLETTER_URL = 'https://mailchi.mp/decentraland.org/decentraland-dao-weekly-newsletter'

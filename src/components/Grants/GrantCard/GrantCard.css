@@ -24,11 +24,13 @@
 }
 
 .GrantCard__Expanded {
-  overflow: visible;
-  z-index: 100;
   transition: all 0.2s ease 0s;
+  z-index: 100;
+}
+
+.GrantCard__Expanded:hover {
   transform: scale(1.1);
-  height: auto;
+  height: 249px;
   box-shadow: 0 5px 30px 0 #0000003d;
 }
 
@@ -38,27 +40,6 @@
   justify-content: space-between;
   align-content: center;
   width: 100%;
-}
-
-.GrantCard__SizeContainer {
-  display: inline-flex;
-  text-transform: uppercase;
-  font-style: normal;
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0;
-  align-items: center;
-}
-
-.GrantCard__Size {
-  color: var(--black-600);
-  padding-right: 3px;
-  margin-bottom: 0;
-  font-weight: 400;
-}
-
-.GrantCard__SizeNumber {
-  font-weight: 600;
 }
 
 .ui.header.GrantCard__Title {
@@ -87,8 +68,8 @@
     padding: 16px 16px 0 16px;
   }
 
-  .GrantCard__Collapsed {
-    height: 191px;
+  .GrantCard__Expanded {
+    height: 188px;
   }
 }
 
