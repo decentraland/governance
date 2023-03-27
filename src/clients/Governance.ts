@@ -7,7 +7,7 @@ import snakeCase from 'lodash/snakeCase'
 import { GOVERNANCE_API } from '../constants'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
+import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
 import {
   CategorizedGrants,
   NewProposalBanName,
@@ -43,6 +43,7 @@ type NewProposalMap = {
 export type GetProposalsFilter = {
   user: string
   type: ProposalType
+  subtype?: SubtypeOptions
   status: ProposalStatus
   subscribed: boolean | string
   coauthor: boolean

@@ -92,6 +92,7 @@ export default routes((route) => {
 export async function getProposals(req: WithAuth) {
   const query = req.query
   const type = query.type && String(query.type)
+  const subtype = query.subtype && String(query.subtype)
   const status = query.status && String(query.status)
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
@@ -117,6 +118,7 @@ export async function getProposals(req: WithAuth) {
   const [total, data] = await Promise.all([
     ProposalModel.getProposalTotal({
       type,
+      subtype,
       status,
       user,
       search,
@@ -128,6 +130,7 @@ export async function getProposals(req: WithAuth) {
     }),
     ProposalModel.getProposalList({
       type,
+      subtype,
       status,
       user,
       subscribed,

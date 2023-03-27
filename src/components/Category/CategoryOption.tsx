@@ -8,7 +8,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory } from '../../entities/Grant/types'
+import { NewGrantCategory, SubtypeAlternativeOptions, SubtypeOptions } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
@@ -17,13 +17,6 @@ import Subitem from '../Icon/Subitem'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
-
-enum SubtypeAlternativeOptions {
-  All = 'All grants',
-  Legacy = 'Legacy',
-}
-
-type SubtypeOptions = `${NewGrantCategory}` | `${SubtypeAlternativeOptions}`
 
 export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean
@@ -87,7 +80,7 @@ export default React.memo(function CategoryOption({
     if (subtype === SubtypeAlternativeOptions.All) {
       url.searchParams.delete('subtype')
     } else {
-      url.searchParams.set('subtype', toSnakeCase(subtype))
+      url.searchParams.set('subtype', subtype)
     }
     const newHref = url.pathname + '?' + url.searchParams.toString()
     return newHref

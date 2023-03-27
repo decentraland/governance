@@ -2,12 +2,16 @@ import { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 
+import { toGrantType } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType, toProposalType } from '../entities/Proposal/types'
+import { toProposalStatus } from '../entities/Proposal/utils'
 import { toProposalListPage } from '../modules/locations'
-import { toProposalStatus } from "../entities/Proposal/utils";
+
+import { SubtypeOptions } from './../entities/Grant/types'
 
 export type SearchParams = {
   type: ProposalType | undefined
+  subtype: SubtypeOptions | undefined
   status: ProposalStatus | undefined
   search: string
   searching: boolean
@@ -21,6 +25,7 @@ export function useSearchParams(): SearchParams {
   return useMemo(() => {
     const params = new URLSearchParams(location.search)
     const type = toProposalType(params.get('type')) ?? undefined
+    const subtype = toGrantType(params.get('subtype')) ?? undefined
     const status = toProposalStatus(params.get('status'), () => undefined)
     const search = params.get('search') || ''
     const timeFrame = params.get('timeFrame') || ''
@@ -28,6 +33,6 @@ export function useSearchParams(): SearchParams {
     const searching = !!search && search.length > 0
     const page = toProposalListPage(params.get('page')) ?? undefined
 
-    return { type, status, search, searching, timeFrame, order, page }
+    return { type, subtype, status, search, searching, timeFrame, order, page }
   }, [location.search])
 }

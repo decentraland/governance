@@ -5,7 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory, OldGrantCategory } from '../../entities/Grant/types'
+import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import CategoryOption from '../Category/CategoryOption'
@@ -72,7 +72,15 @@ export default React.memo(function CategoryFilter({
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
             count={isCounter ? categoryCount[value as keyof Counter] : undefined}
-            subtypes={isGrant ? ['All grants', ...Object.values(NewGrantCategory), 'Legacy'] : undefined}
+            subtypes={
+              isGrant
+                ? [
+                    `${SubtypeAlternativeOptions.All}`,
+                    ...Object.values(NewGrantCategory),
+                    `${SubtypeAlternativeOptions.Legacy}`,
+                  ]
+                : undefined
+            }
           />
         )
       })}
