@@ -20,7 +20,6 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
-import Forum from '../components/Icon/Forum'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -39,22 +38,11 @@ import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
-import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
-import ProposalPromotionSection from '../components/Proposal/View/ProposalPromotionSection'
 import ProposalResults from '../components/Proposal/View/ProposalResults'
-import ProposalUpdatesActions from '../components/Proposal/View/ProposalUpdatesActions'
-import SidebarLinkButton from '../components/Proposal/View/SidebarLinkButton'
-import SubscribeButton from '../components/Proposal/View/SubscribeButton'
 import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import {
-  forumUrl,
-  isProposalDeletable,
-  isProposalEnactable,
-  proposalCanBePassedOrRejected,
-} from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
@@ -74,8 +62,6 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import './proposal.css'
 
 // TODO: Review why proposals.css is being imported and use only proposal.css
-
-const EMPTY_CHOICES: string[] = []
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const EMPTY_VOTE_CHOICES: string[] = []
@@ -257,9 +243,6 @@ export default function ProposalPage() {
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
-  const showVotingStatusSummary =
-    proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
   const showSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0
 
   if (proposalState.error) {
@@ -353,35 +336,6 @@ export default function ProposalPage() {
             <Grid.Column tablet="4" className="ProposalDetailActions">
               {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
               {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
-              <div className="ProposalDetail__StickySidebar">
-                {showProposalUpdatesActions && (
-                  <ProposalUpdatesActions nextUpdate={nextUpdate} currentUpdate={currentUpdate} proposal={proposal} />
-                )}
-                {/*<ProposalResultSection*/}
-                {/*  choices={choices}*/}
-                {/*  results={results}*/}
-                {/*  proposal={proposal}*/}
-                {/*  loading={castingVote || proposalState.loading || votesState.loading}*/}
-                {/*  disabled={!proposal || !votes}*/}
-                {/*  votes={votes}*/}
-                {/*  changingVote={options.changing}*/}
-                {/*  onChangeVote={(_, changing) => updatePageState({ changingVote: changing })}*/}
-                {/*  onVote={(_, choice, choiceIndex) => vote(choice, choiceIndex)}*/}
-                {/*  onOpenVotesList={() => patchOptions({ showVotesList: true })}*/}
-                {/*/>*/}
-                {showVotingStatusSummary && (
-                  <ProposalPromotionSection proposal={proposal} loading={proposalState.loading} />
-                )}
-                {proposal && <ProposalDetailSection proposal={proposal} />}
-                <SidebarLinkButton
-                  loading={proposalState.loading}
-                  disabled={!proposal}
-                  href={(proposal && forumUrl(proposal)) || ''}
-                  icon={<Forum size={20} />}
-                >
-                  {t('page.proposal_detail.forum_button')}
-                </SidebarLinkButton>
-              </div>
               <ProposalSidebar
                 proposal={proposal}
                 proposalLoading={proposalState.loading}

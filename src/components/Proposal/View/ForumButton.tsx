@@ -1,40 +1,28 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import './DetailsSection.css'
-import './SectionButton.css'
+import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { forumUrl } from '../../../entities/Proposal/utils'
+import Forum from '../../Icon/Forum'
 
-const forumIcon = require('../../../images/icons/forum.svg').default
-const openIcon = require('../../../images/icons/open.svg').default
+import SidebarLinkButton from './SidebarLinkButton'
 
-export type ForumButtonProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+export type ForumButtonProps = {
   loading?: boolean
-  disabled?: boolean
+  proposal: ProposalAttributes | null
 }
 
-export default React.memo(function ForumButton({ loading, disabled, ...props }: ForumButtonProps) {
+export default React.memo(function ForumButton({ loading, proposal }: ForumButtonProps) {
   const t = useFormatMessage()
   return (
-    <a
-      {...props}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={TokenList.join([
-        'DetailsSection',
-        'SectionButton',
-        'ForumButton',
-        loading && 'SectionButton--loading',
-        disabled && 'SectionButton--disabled',
-        props.className,
-      ])}
+    <SidebarLinkButton
+      loading={loading}
+      disabled={!proposal}
+      href={(proposal && forumUrl(proposal)) || ''}
+      icon={<Forum size={20} />}
     >
-      <Loader active={loading} size="small" />
-      <img src={forumIcon} width="20" height="20" />
-      <span>{t('page.proposal_detail.forum_button')}</span>
-      <img src={openIcon} width="12" height="12" />
-    </a>
+      {t('page.proposal_detail.forum_button')}
+    </SidebarLinkButton>
   )
 })

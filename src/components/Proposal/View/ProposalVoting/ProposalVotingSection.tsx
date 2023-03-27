@@ -14,7 +14,6 @@ import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../../modules/votes/utils'
 import { ProposalPageState } from '../../../../pages/proposal'
-import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -112,12 +111,6 @@ const ProposalVotingSection = ({
         </div>
       )}
 
-      {!proposalVotingSectionLoading && !hasVoted && isShowingResults && (
-        <SidebarHeaderLabel className="ProposalVotingSection__HeaderLabel">
-          {t('page.proposal_detail.get_involved')}
-        </SidebarHeaderLabel>
-      )}
-
       {showGrantRequestText && (
         <Markdown className="ProposalVotingSection__GrantRequest">
           {t('page.proposal_view.grant.header', {
@@ -144,7 +137,6 @@ const ProposalVotingSection = ({
             <>
               {handleScrollTo && (
                 <div className="DetailsSection__Header">
-                  <Header sub>{t('page.proposal_detail.voting_section.title')}</Header>
                   <Button basic onClick={handleScrollTo}>
                     {t('page.proposal_detail.voting_section.show_results')}
                   </Button>

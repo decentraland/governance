@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
 import { ProposalPageState } from '../../../pages/proposal'
 import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress'
@@ -17,35 +17,37 @@ import ProposalPromotionSection from './ProposalPromotionSection'
 import './ProposalResultSection.css'
 import SidebarHeaderLabel from './SidebarHeaderLabel'
 
-interface Props {
-  choices: string[]
-  results: ChoiceProgressProps[]
+type ProposalGovernanceSectionProps = {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
+  partialResults: ChoiceProgressProps[]
+  choices: string[]
   loading?: boolean
   disabled?: boolean
+  onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
+  onVote: (selectedChoice: SelectedVoteChoice) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
-  onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
-  onOpenVotesList?: () => void
-  onVote: (selectedChoice: SelectedVoteChoice) => void
+  handleScrollTo: () => void
 }
 
-function ProposalResultSection({
-  choices,
-  results,
+const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft]
+
+export default function ProposalResultSection({
   proposal,
   loading,
   disabled,
   votes,
+  partialResults,
+  choices,
+  onChangeVote,
+  onVote,
   castingVote,
   proposalPageState,
   updatePageState,
-  onChangeVote,
-  onVote,
-  onOpenVotesList,
-}: Props) {
+  handleScrollTo,
+}: ProposalGovernanceSectionProps) {
   const t = useFormatMessage()
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
@@ -55,9 +57,16 @@ function ProposalResultSection({
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
   const showResultsButton = !hasVoted && !finished
 
+  const showPromotionSection = useMemo(
+    () => proposal && proposal.status === ProposalStatus.Passed && PROMOTABLE_PROPOSALS.includes(proposal.type),
+    [proposal]
+  )
+
   useEffect(() => {
     setShowResults(hasVoted || finished || !userAddress)
   }, [hasVoted, finished, userAddress])
+
+  if (!showPromotionSection && !!finished) return null
 
   return (
     <div
@@ -90,10 +99,10 @@ function ProposalResultSection({
               !finished && 'ProposalResultSection__Results--current',
             ])}
           >
-            {results.map((result) => {
+            {partialResults.map((result) => {
               return (
                 <ChoiceProgress
-                  onClick={onOpenVotesList}
+                  // onClick={onOpenVotesList} TODO
                   key={result.choice}
                   color={result.color}
                   choice={result.choice}
@@ -107,6 +116,7 @@ function ProposalResultSection({
         )}
         <ProposalPromotionSection proposal={proposal} loading={loading} />
       </div>
+
       {!finished && (
         <ProposalVotingSection
           proposal={proposal}
@@ -120,11 +130,10 @@ function ProposalResultSection({
           updatePageState={updatePageState}
           onChangeVote={onChangeVote}
           hasVoted={hasVoted}
+          handleScrollTo={handleScrollTo}
           isShowingResults={showResults}
         />
       )}
     </div>
   )
 }
-
-export default ProposalResultSection

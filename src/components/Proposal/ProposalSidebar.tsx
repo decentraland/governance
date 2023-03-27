@@ -2,8 +2,7 @@ import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
-import { ProposalAttributes, ProposalType } from '../../entities/Proposal/types'
-import { forumUrl } from '../../entities/Proposal/utils'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
 import { Survey } from '../../entities/SurveyTopic/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
@@ -15,7 +14,8 @@ import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 import ForumButton from './View/ForumButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
 import ProposalDetailSection from './View/ProposalDetailSection'
-import ProposalGovernanceSection from './View/ProposalGovernanceSection'
+import ProposalResultSection from './View/ProposalResultSection'
+import ProposalThresholdsSummary from './View/ProposalThresholdsSummary'
 import ProposalUpdatesActions from './View/ProposalUpdatesActions'
 import SubscribeButton from './View/SubscribeButton'
 import VestingContract from './View/VestingContract'
@@ -92,6 +92,12 @@ export default function ProposalSidebar({
   }
   const showProposalUpdatesActions =
     isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
+  const showProposalThresholdsSummary = !!(
+    proposal &&
+    proposal?.required_to_pass !== null &&
+    proposal?.required_to_pass >= 0 &&
+    !(proposal.status === ProposalStatus.Passed)
+  )
 
   return (
     <>
@@ -106,7 +112,7 @@ export default function ProposalSidebar({
             proposal={proposal}
           />
         )}
-        <ProposalGovernanceSection
+        <ProposalResultSection
           disabled={!proposal || !votes}
           loading={proposalLoading || votesLoading}
           proposal={proposal}
@@ -120,15 +126,17 @@ export default function ProposalSidebar({
           proposalPageState={proposalPageState}
           handleScrollTo={handleScrollClick}
         />
-        <ForumButton loading={proposalLoading} disabled={!proposal} href={(proposal && forumUrl(proposal)) || ''} />
+        {showProposalThresholdsSummary && (
+          <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
+        )}
+        {proposal && <ProposalDetailSection proposal={proposal} />}
+        <ForumButton loading={proposalLoading} proposal={proposal} />
         <SubscribeButton
           loading={proposalLoading || subscriptionsLoading || subscribing}
           disabled={!proposal}
           subscribed={subscribed}
           onClick={() => subscribe(!subscribed)}
         />
-
-        {proposal && <ProposalDetailSection proposal={proposal} />}
         {proposal && (
           <ProposalActions
             proposal={proposal}
