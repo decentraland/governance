@@ -64,7 +64,7 @@ function getBarItems(
   const requestedBudget = proposal.configuration.size
   const availableBudget = categoryBudget?.available || 0
   const uncontestedTotalBudget = availableBudget - contestedBudget
-  const isOverBudget = uncontestedTotalBudget <= 0
+  const isOverBudget = uncontestedTotalBudget < 0
   const uncontestedTotalBudgetDisplayed = !isOverBudget ? uncontestedTotalBudget : 0
   const allocatedBudget = categoryBudget?.allocated || 0
 
@@ -147,7 +147,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
     isOverBudget,
   } = useMemo(() => {
     return getBarItems(t, intl, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
-  }, [categoryBudget, highlightedContestant, proposal, t])
+  }, [categoryBudget, highlightedContestant, proposal, t, intl])
   const [showPopups, setShowPopups] = useState(false)
 
   useEffect(() => {
