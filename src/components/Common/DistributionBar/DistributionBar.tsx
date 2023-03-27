@@ -4,24 +4,17 @@ import Skeleton from 'react-loading-skeleton'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './DistributionBar.css'
-import DistributionBarItem from './DistributionBarItem'
-import { DistributionBarPopupContent } from './DistributionBarPopup'
-
-export interface DistributionItemProps {
-  value: number
-  className: string
-  popupContent?: DistributionBarPopupContent
-  selected?: boolean
-}
+import DistributionBarItem, { DistributionBarItemProps } from './DistributionBarItem'
 
 interface Props {
-  items: DistributionItemProps[]
+  items: DistributionBarItemProps[]
   total: number
   isLoading?: boolean
   className?: string
+  showPopups?: boolean
 }
 
-const DistributionBar = ({ items, total, isLoading, className }: Props) => {
+const DistributionBar = ({ items, total, isLoading, showPopups = true, className }: Props) => {
   if (isLoading) {
     return (
       <div className={className}>
@@ -34,14 +27,12 @@ const DistributionBar = ({ items, total, isLoading, className }: Props) => {
     <div className={className}>
       <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--empty'])}>
         {total > 0 &&
-          items.map(({ value, popupContent, className, selected }, index) => (
+          items.map((item, index) => (
             <DistributionBarItem
               key={`distribution-bar-item-${index}`}
-              value={value}
+              item={item}
               total={total}
-              popupContent={popupContent}
-              className={className}
-              selected={selected}
+              showPopup={showPopups}
             />
           ))}
       </div>

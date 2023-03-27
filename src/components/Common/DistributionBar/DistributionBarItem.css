@@ -1,0 +1,11 @@
+.DistributionBarItem {
+  height: 6px;
+  min-width: 6px;
+  margin: 0;
+}
+
+.DistributionBarItem--selected {
+  height: 8px !important;
+  scale: 1.03 1;
+  border-radius: 10px !important;
+}

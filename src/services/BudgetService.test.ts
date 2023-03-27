@@ -398,14 +398,12 @@ describe('BudgetService', () => {
           contested_over_available_percentage: getUncappedRoundedPercentage(totalContested, availableForAccelerator),
           contestants: [
             {
-              title: GRANT_PROPOSAL_1.title,
-              id: GRANT_PROPOSAL_1.id,
+              ...GRANT_PROPOSAL_1,
               size: proposal1Size,
               contested_percentage: getUncappedRoundedPercentage(proposal1Size, totalContested),
             },
             {
-              title: GRANT_PROPOSAL_2.title,
-              id: GRANT_PROPOSAL_2.id,
+              ...GRANT_PROPOSAL_2,
               size: proposal2Size,
               contested_percentage: getUncappedRoundedPercentage(proposal2Size, totalContested),
             },
@@ -452,14 +450,12 @@ describe('BudgetService', () => {
           contested_over_available_percentage: 206,
           contestants: [
             {
-              title: GRANT_PROPOSAL_ABOVE_BUDGET.title,
-              id: GRANT_PROPOSAL_ABOVE_BUDGET.id,
+              ...GRANT_PROPOSAL_ABOVE_BUDGET,
               size: proposal1Size,
               contested_percentage: getUncappedRoundedPercentage(proposal1Size, totalContested),
             },
             {
-              title: GRANT_PROPOSAL_2.title,
-              id: GRANT_PROPOSAL_2.id,
+              ...GRANT_PROPOSAL_2,
               size: proposal2Size,
               contested_percentage: getUncappedRoundedPercentage(proposal2Size, totalContested),
             },

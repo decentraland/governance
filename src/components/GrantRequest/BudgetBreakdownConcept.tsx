@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { BudgetBreakdownConcept as BudgetBreakdownConceptType } from '../../entities/Grant/types'
+import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BudgetBreakdownConcept.css'
@@ -8,12 +9,6 @@ import './BudgetBreakdownConcept.css'
 interface Props {
   item: BudgetBreakdownConceptType
   onClick: () => void
-}
-
-const BUDGET_FORMAT_OPTIONS = {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
 }
 
 const BudgetBreakdownConcept = ({ item, onClick }: Props) => {
@@ -27,7 +22,7 @@ const BudgetBreakdownConcept = ({ item, onClick }: Props) => {
       </div>
       <div className="BudgetBreakdownConcept__BudgetContainer">
         <span className="BudgetBreakdownConcept__Budget">
-          {Number(estimatedBudget).toLocaleString(undefined, BUDGET_FORMAT_OPTIONS)}
+          {Number(estimatedBudget).toLocaleString(undefined, CURRENCY_FORMAT_OPTIONS)}
         </span>
         <ChevronRightCircleOutline />
       </div>

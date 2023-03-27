@@ -398,4 +398,12 @@ export class Governance extends API {
     )
     return response.data
   }
+
+  async checkUrlTitle(url: string) {
+    const response = await this.fetch<ApiResponse<{ title?: string }>>(
+      `/url-title`,
+      this.options().method('POST').json({ url })
+    )
+    return response.data
+  }
 }

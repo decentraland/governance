@@ -1,0 +1,21 @@
+.CompetingProposals {
+  height: 47px;
+  background: var(--white-900);
+  border: 1px solid var(--black-300);
+  box-shadow: 0 0 10px var(--black-100);
+  border-radius: 6px;
+  display: flex;
+  width: 100%;
+  padding: 11px 16px 12px 18px;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.CompetingProposals__Title {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}

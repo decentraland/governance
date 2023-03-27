@@ -52,6 +52,10 @@ const validate = createValidator<SponsorshipQuestions>({
       ) ||
       undefined,
   }),
+  primarySourceFunding: (state) => ({
+    primarySourceFunding:
+      assert(state.primarySourceFunding !== null, 'error.grant.category_assessment.field_invalid') || undefined,
+  }),
   audienceRelevance: (state) => ({
     audienceRelevance:
       assert(
@@ -63,6 +67,13 @@ const validate = createValidator<SponsorshipQuestions>({
         state.audienceRelevance.length >= schema.audienceRelevance.minLength,
         'error.grant.category_assessment.field_too_short'
       ) ||
+      undefined,
+  }),
+  showcase: (state) => ({
+    showcase:
+      assert(state.showcase.length <= schema.showcase.maxLength, 'error.grant.category_assessment.field_too_large') ||
+      assert(state.showcase.length > 0, 'error.grant.category_assessment.field_empty') ||
+      assert(state.showcase.length >= schema.showcase.minLength, 'error.grant.category_assessment.field_too_short') ||
       undefined,
   }),
   totalAttendance: (state) => ({

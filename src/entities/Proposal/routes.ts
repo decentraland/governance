@@ -12,6 +12,7 @@ import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
 import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
@@ -334,9 +335,11 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
     return await ProposalService.createProposal(proposalInCreation)
   } catch (e: any) {
+    const errorTitle = `Error creating proposal: ${JSON.stringify(proposalInCreation)}`
+    ErrorService.report(errorTitle, e)
     throw new RequestError(
-      `Error creating proposal: ${JSON.stringify(proposalInCreation)}\n 
-      Error: ${e.message ? e.message : JSON.stringify(e)}`,
+      `${errorTitle}\n 
+    Error: ${e.message ? e.message : JSON.stringify(e)}`,
       RequestError.InternalServerError,
       e
     )

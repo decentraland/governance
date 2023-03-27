@@ -1,0 +1,28 @@
+.ProposalResultSection__Container {
+  padding: 15px 15px 0 15px;
+}
+
+.ProposalResultSection__Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.ProposalResultSection__ResultsButton {
+  color: var(--dcl-primary);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.ProposalResultSection__Results {
+  padding-bottom: 15px;
+}
+
+.ProposalResultSection__Results--current {
+  border-bottom: 1px solid var(--black-300);
+}
