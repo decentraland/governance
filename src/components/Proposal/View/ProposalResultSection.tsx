@@ -56,8 +56,8 @@ function ProposalResultSection({
   const showResultsButton = !hasVoted && !finished
 
   useEffect(() => {
-    setShowResults(hasVoted || finished)
-  }, [hasVoted, finished])
+    setShowResults(hasVoted || finished || !userAddress)
+  }, [hasVoted, finished, userAddress])
 
   return (
     <div
