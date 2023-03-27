@@ -17,7 +17,7 @@ module.exports = {
   },
   developMiddleware: developMiddleware({
     prefix: `/api`,
-    url: `http://127.0.0.1:4000`,
+    url: `http://localhost:4000`,
   }),
   plugins: [
     `gatsby-plugin-react-helmet`,
