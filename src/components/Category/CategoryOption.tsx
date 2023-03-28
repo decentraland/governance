@@ -97,7 +97,7 @@ export default React.memo(function CategoryOption({
       return true
     }
 
-    return toSnakeCase(subtype) === currentSubtype
+    return toSnakeCase(subtype) === toSnakeCase(currentSubtype)
   }
 
   return (
@@ -162,7 +162,7 @@ export default React.memo(function CategoryOption({
                 href={getHref(subtype)}
               >
                 <Subitem />
-                {subtype}
+                {t(`category.${toSnakeCase(subtype)}_title`)}
               </a>
             )
           })}

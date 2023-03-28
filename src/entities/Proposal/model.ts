@@ -16,7 +16,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import CoauthorModel from '../Coauthor/model'
 import { BUDGETING_START_DATE } from '../Grant/constants'
-import { isGrantType } from '../Grant/types'
+import { OldGrantCategory, SubtypeAlternativeOptions, isGrantType } from '../Grant/types'
 import SubscriptionModel from '../Subscription/model'
 
 import { CoauthorStatus } from './../Coauthor/types'
@@ -261,7 +261,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
       )}
       ${conditional(!!type, SQL`AND "type" = ${type}`)} 
-      ${conditional(!!subtype, SQL`AND p."configuration" @> '{"category": "${SQL.raw(subtype || '')}"}'`)}
+      ${conditional(
+        !!subtype,
+        SQL`AND (${
+          subtype === SubtypeAlternativeOptions.Legacy
+            ? join(
+                Object.values(OldGrantCategory).map(
+                  (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
+                ),
+                SQL` OR `
+              )
+            : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype || '')}"}'`
+        })`
+      )}
       ${conditional(!!status, SQL`AND "status" = ${status}`)} 
       ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
       ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
@@ -342,7 +354,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       !!timeFrame && timeFrameKey === 'finish_at',
       SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
     )}
-    ${conditional(!!subtype, SQL`AND p."configuration" @> '{"category": "${SQL.raw(subtype || '')}"}'`)}
+    ${conditional(
+      !!subtype,
+      SQL`AND (${
+        subtype === SubtypeAlternativeOptions.Legacy
+          ? join(
+              Object.values(OldGrantCategory).map(
+                (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
+              ),
+              SQL` OR `
+            )
+          : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype || '')}"}'`
+      })`
+    )}
     ${conditional(!!search, SQL`AND "rank" > 0`)}
     ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
     ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 

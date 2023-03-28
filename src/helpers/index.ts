@@ -39,7 +39,9 @@ export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, val
   const newParams = new URLSearchParams(params)
   value ? newParams.set(filterKey, String(value)) : newParams.delete(filterKey)
   newParams.delete('page')
-  newParams.delete('subtype')
+  if (filterKey === 'type') {
+    newParams.delete('subtype')
+  }
   const stringParams = newParams.toString()
   return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }
