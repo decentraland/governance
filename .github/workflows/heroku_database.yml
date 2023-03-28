@@ -1,0 +1,51 @@
+name: Heroku DB init
+
+on:
+  workflow_dispatch:
+    inputs:
+      app-name:
+        required: true
+        type: string
+        description: 'Review app name'
+      testing-db-url:
+        default: 'https://governance-db-bucket.s3.amazonaws.com/heroku-db-backup-for-testing'
+        type: string
+        description: 'Testing Database URL'
+
+jobs:
+  custom-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Heroku login credentials
+        run: |
+          cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          EOF
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      - name: Add Heroku remote
+        run: |
+          # Get the database name from the heroku pg:info command
+          PG_INFO=$(heroku pg:info -a $HEROKU_APP_NAME)
+          DATABASE=$(echo "$PG_INFO" | sed -n 's/^=== \([^,]*\).*$/\1/p')
+
+          # Restore the Heroku Postgres backup
+          heroku pg:backups:restore $HEROKU_TESTING_DB_URL $DATABASE --app $HEROKU_APP_NAME --confirm $HEROKU_APP_NAME
+
+          # Promote the restored database
+          heroku pg:promote $DATABASE -a $HEROKU_APP_NAME
+
+          # Set the connection string as an environment variable
+          CONNECTION_STRING=$(heroku config:get $HEROKU_TESTING_DB_URL -a $HEROKU_APP_NAME)
+          heroku config:set CONNECTION_STRING=$CONNECTION_STRING -a $HEROKU_APP_NAME
+
+          heroku ps:restart -a $HEROKU_APP_NAME
+        env:
+          HEROKU_APP_NAME: ${{ inputs.app-name }}
+          HEROKU_TESTING_DB_URL: ${{ inputs.testing-db-url }}
