@@ -8,7 +8,6 @@ on:
         type: string
         description: 'Review app name'
       testing-db-url:
-        default: 'https://governance-db-bucket.s3.amazonaws.com/heroku-db-backup-for-testing'
         type: string
         description: 'Testing Database URL'
 
@@ -16,7 +15,8 @@ jobs:
   custom-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Heroku login credentials
+      - uses: akhileshns/heroku-deploy@v3.12.13
+      - name: Add Heroku login credentials
         run: |
           cat > ~/.netrc <<EOF
             machine api.heroku.com
@@ -29,7 +29,7 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-      - name: Add Heroku remote
+      - name: Add database to Heroku app
         run: |
           # Get the database name from the heroku pg:info command
           PG_INFO=$(heroku pg:info -a $HEROKU_APP_NAME)
