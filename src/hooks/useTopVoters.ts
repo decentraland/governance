@@ -9,15 +9,19 @@ type Voters = {
   votes: number
 }
 
+export const TOP_VOTER_VP_THRESHOLD = 5
+
 export default function useTopVoters(start: Date, end: Date, limit: number) {
   const [votes, state] = useAsyncMemo(
     async () => {
       const votes = await SnapshotGraphql.get().getVotes(start, end)
-      const votesByUser = votes.reduce((acc, vote) => {
-        const address = vote.voter.toLowerCase()
-        acc[address] = (acc[address] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      const votesByUser = votes
+        .filter((vote) => vote.vp && vote.vp > TOP_VOTER_VP_THRESHOLD)
+        .reduce((acc, vote) => {
+          const address = vote.voter.toLowerCase()
+          acc[address] = (acc[address] || 0) + 1
+          return acc
+        }, {} as Record<string, number>)
 
       return Object.entries(votesByUser).map<Voters>(([address, votes]) => ({ address, votes }))
     },
