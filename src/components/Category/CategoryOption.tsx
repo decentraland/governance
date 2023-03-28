@@ -13,7 +13,7 @@ import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import Arrow from '../Icon/Arrow'
-import Subitem from '../Icon/Subitem'
+import SubItem from '../Icon/SubItem'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
@@ -161,7 +161,7 @@ export default React.memo(function CategoryOption({
                 }}
                 href={getHref(subtype)}
               >
-                <Subitem />
+                <SubItem />
                 {t(`category.${toSnakeCase(subtype)}_title`)}
               </a>
             )
