@@ -13,7 +13,7 @@ import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import Arrow from '../Icon/Arrow'
-import SubItem from '../Icon/SubItem'
+import SubItem from '../Icon/Subitem'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
