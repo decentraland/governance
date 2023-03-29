@@ -1,8 +1,7 @@
 {
-  "name": "snapshot",
+  "name": "governance",
   "version": "0.0.0-development",
   "description": "",
-  "main": "Pulumi.ts",
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=7.0.0"
@@ -44,9 +43,9 @@
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/decentraland/snapshot/issues"
+    "url": "https://github.com/decentraland/governance/issues"
   },
-  "homepage": "https://github.com/decentraland/snapshot#readme",
+  "homepage": "https://github.com/decentraland/governance#readme",
   "dependencies": {
     "@dcl/ui-env": "1.2.1",
     "@gatsbyjs/reach-router": "^1.3.6",
