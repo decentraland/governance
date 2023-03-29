@@ -9,7 +9,7 @@ type ArrowProps = {
 }
 
 function Arrow({ filled, className, color = 'var(--black-400)' }: ArrowProps) {
-  const fill = filled ? color : 'rgba(255, 255, 255, 0)'
+  const fill = filled ? color : 'transparent'
   const stroke = filled ? 'white' : color
 
   return (

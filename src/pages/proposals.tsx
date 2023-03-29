@@ -195,6 +195,7 @@ export default function ProposalsPage() {
                     {type && !searching && <CategoryBanner type={type} />}
                     {proposals && proposals.data.length === 0 && (
                       <Empty
+                        className="ProposalsTable__Empty"
                         description={
                           searching || status || timeFrame?.length > 0
                             ? t('navigation.search.no_matches')
