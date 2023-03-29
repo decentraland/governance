@@ -17,6 +17,15 @@
   }
 }
 
+.TopVoters__HeaderTitle {
+  display: flex;
+  align-items: center;
+}
+
+.TopVoters__HeaderTitle > .ui.sub.header {
+  padding-right: 2px;
+}
+
 .TopVoters .ui.sub.header {
   font-weight: 600;
   font-size: 13px;
