@@ -24,7 +24,7 @@ export default function CompetingProposals({ proposal, budget }: Props) {
   if (!contestantsAmount || contestantsAmount < 1) return null
 
   return (
-    <div className={'CompetingProposals'} onClick={() => setSidebarOpen(true)}>
+    <button className={'CompetingProposals'} onClick={() => setSidebarOpen(true)}>
       <span className={'CompetingProposals__Title'}>
         {t('page.proposal_detail.grant.competing_proposals.show_sidebar_label', { amount: contestantsAmount })}
       </span>
@@ -37,6 +37,6 @@ export default function CompetingProposals({ proposal, budget }: Props) {
           setSidebarOpen(false)
         }}
       />
-    </div>
+    </button>
   )
 }

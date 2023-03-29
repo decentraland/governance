@@ -204,7 +204,7 @@
       "title_too_short": "Title is too short",
       "category_assessment": {
         "field_too_short": "Field is too short",
-        "field_too_large:": "Field is too large",
+        "field_too_large": "Field is too large",
         "field_empty": "Field is empty",
         "field_too_low": "Field is too low",
         "field_invalid": "Field is invalid"
@@ -564,6 +564,7 @@
         "votes_per_proposal": "Votes",
         "display_median": "Display: median",
         "top_voters": "Last month top voters",
+        "top_voters_tooltip": "Voting with +{vp}VP",
         "votes": "Votes",
         "fetching_participation": "Fetching participation...",
         "fetching_votes": "Fetching top voters..."
