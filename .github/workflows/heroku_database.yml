@@ -37,4 +37,4 @@ jobs:
           ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME $HEROKU_TESTING_DB_URL
         env:
           HEROKU_APP_NAME: ${{ inputs.app-name }}
-          HEROKU_TESTING_DB_URL: ${{ inputs.testing-db-url }}
+          HEROKU_TESTING_DB_URL: ${{ github.workspace }}/scripts/development.sql
