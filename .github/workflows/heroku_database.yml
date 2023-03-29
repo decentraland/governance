@@ -31,21 +31,7 @@ jobs:
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
       - name: Add database to Heroku app
         run: |
-          # Get the database name from the heroku pg:info command
-          PG_INFO=$(heroku pg:info -a $HEROKU_APP_NAME)
-          DATABASE=$(echo "$PG_INFO" | sed -n 's/^=== \([^,]*\).*$/\1/p')
-
-          # Restore the Heroku Postgres backup
-          heroku pg:backups:restore $HEROKU_TESTING_DB_URL $DATABASE --app $HEROKU_APP_NAME --confirm $HEROKU_APP_NAME
-
-          # Promote the restored database
-          heroku pg:promote $DATABASE -a $HEROKU_APP_NAME
-
-          # Set the connection string as an environment variable
-          CONNECTION_STRING=$(heroku config:get $HEROKU_TESTING_DB_URL -a $HEROKU_APP_NAME)
-          heroku config:set CONNECTION_STRING=$CONNECTION_STRING -a $HEROKU_APP_NAME
-
-          heroku ps:restart -a $HEROKU_APP_NAME
+          ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME $HEROKU_TESTING_DB_URL
         env:
           HEROKU_APP_NAME: ${{ inputs.app-name }}
           HEROKU_TESTING_DB_URL: ${{ inputs.testing-db-url }}
