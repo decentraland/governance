@@ -15,6 +15,7 @@ jobs:
   custom-deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.13
       - name: Add Heroku login credentials
         run: |
