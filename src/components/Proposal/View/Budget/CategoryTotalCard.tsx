@@ -1,11 +1,13 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
-import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../../../helpers/styles'
+import locations from '../../../../modules/locations'
 import { getCategoryIcon } from '../../../Category/CategoryOption'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 
@@ -19,6 +21,8 @@ interface Props {
 export default function CategoryTotalCard({ proposal, budget }: Props) {
   const t = useFormatMessage()
   const grantCategory = proposal.configuration.category
+
+  const onClick = () => navigate(locations.proposals({ type: ProposalType.Grant, subtype: grantCategory }))
 
   return (
     <GrantRequestSectionCard
@@ -45,6 +49,7 @@ export default function CategoryTotalCard({ proposal, budget }: Props) {
         </div>
       }
       subtitleVariant="uppercase"
+      onClick={onClick}
     />
   )
 }

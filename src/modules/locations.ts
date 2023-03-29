@@ -29,6 +29,10 @@ export type ProposalsTypeFilter = {
   type: ProposalType
 }
 
+export type GrantCategoryTypeFilter = {
+  subtype: NewGrantCategory
+}
+
 export type ProposalsModal = {
   modal: 'new'
 }
@@ -41,7 +45,9 @@ export default {
   home: () => url('/'),
   proposals: (
     options:
-      | Partial<ProposalListPage & ProposalsStatusFilter & ProposalsTypeFilter & ProposalsModal>
+      | Partial<
+          ProposalListPage & ProposalsStatusFilter & ProposalsTypeFilter & GrantCategoryTypeFilter & ProposalsModal
+        >
       | URLSearchParams = {}
   ) => url('/proposals/', options),
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>

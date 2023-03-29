@@ -8,7 +8,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory, SubtypeAlternativeOptions, SubtypeOptions } from '../../entities/Grant/types'
+import { NewGrantCategory, SubtypeAlternativeOptions, SubtypeOptions, toGrantType } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
@@ -58,7 +58,7 @@ export default React.memo(function CategoryOption({
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const currentSubtype = useMemo(() => (params.get('subtype') as SubtypeOptions) || undefined, [params])
+  const currentSubtype = useMemo(() => toGrantType(params.get('subtype')), [params])
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
@@ -86,7 +86,7 @@ export default React.memo(function CategoryOption({
     return newHref
   }
   const hasSubtypes = !!subtypes && subtypes.length > 0
-  const [isSubcategoriesOpen, setIsSubcategoriesOpen] = useState(false)
+  const [isSubcategoriesOpen, setIsSubcategoriesOpen] = useState(!!currentSubtype)
 
   const isSubtypeActive = (subtype: SubtypeOptions) => {
     if (params.get('type') !== toSnakeCase(ProposalType.Grant)) {
