@@ -1,0 +1,37 @@
+name: Heroku DB init
+
+on:
+  workflow_dispatch:
+    inputs:
+      app-name:
+        required: true
+        type: string
+        description: 'Review app name'
+      testing-db-url:
+        type: string
+        description: 'Testing Database URL'
+
+jobs:
+  custom-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: akhileshns/heroku-deploy@v3.12.13
+      - name: Add Heroku login credentials
+        run: |
+          cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          EOF
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      - name: Add database to Heroku app
+        run: |
+          ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME $HEROKU_TESTING_DB_URL
+        env:
+          HEROKU_APP_NAME: ${{ inputs.app-name }}
+          HEROKU_TESTING_DB_URL: ${{ inputs.testing-db-url }}
