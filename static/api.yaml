@@ -115,30 +115,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
-    # put:
-    #   tags:
-    #     - Coauthor
-    #   summary: Update de coauthor status of the given proposal ID (Auth required)
-    #   security:
-    #     - ApiKeyAuth: []
-    #   parameters:
-    #     - name: proposal
-    #       $ref: '#/components/parameters/proposalId'
-    #   requestBody:
-    #     required: true
-    #     content:
-    #       application/json:
-    #         schema:
-    #           type: object
-    #           properties:
-    #             status:
-    #               $ref: '#/components/parameters/coauthorStatus'
-    #           example:
-    #             status: APPROVED
-    #   responses:
-    #     '200':
-    #       $ref: '#/components/responses/200'
-            
+
   /coauthors/{proposal}/{status}:
     get:
       tags:
@@ -176,7 +153,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
-
   /proposals/{proposal}/updates:
     get:
       tags:
@@ -209,11 +185,48 @@ paths:
         '200':
           $ref: '#/components/responses/200'
 
+  /votes:
+    get:
+      tags:
+        - Votes
+      summary: Get the cached votes from the given proposal ID
+      parameters:
+        - name: id
+          in: query
+          description: Proposal ID
+          required: true
+      schema:
+        type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /votes/{address}:
+    get:
+      tags:
+        - Votes
+      summary: Get the votes from a given address
+      parameters:
+        - name: address
+          $ref: '#/components/parameters/address'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /proposals/{proposal}/votes:
+    get:
+      tags:
+        - Votes
+      summary: Get the votes from a given proposal ID
+      parameters:
+        - name: proposal
+          $ref: '#/components/parameters/proposalId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
 
 ############# COMPONENTS #############
 
 components:
-## Schemas
+  ## Schemas
   schemas:
     coauthorStatus:
       type: string
@@ -236,7 +249,7 @@ components:
     url:
       type: string
       pattern: '^(https:\/\/)([a-zA-Z0-9._-]+)(:[0-9]+)?(\/[a-zA-Z0-9._-]*)*(\?[a-zA-Z0-9._-]*)?(\#[a-zA-Z0-9._-=]*)?$'
-## Parameters
+  ## Parameters
   parameters:
     user:
       name: user
@@ -317,7 +330,6 @@ components:
       description: image URL
       schema:
         $ref: '#/components/schemas/url'
-
     address:
       name: address
       in: path
@@ -346,15 +358,15 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/coauthorStatus'
-## Responses
+  ## Responses
   responses:
     '200':
       description: successful operation
     '404':
       description: not found
 ## Security
-  # securitySchemes:
-  #   ApiKeyAuth:
-  #     type: apiKey
-  #     in: header
-  #     name: auth
+# securitySchemes:
+#   ApiKeyAuth:
+#     type: apiKey
+#     in: header
+#     name: auth
