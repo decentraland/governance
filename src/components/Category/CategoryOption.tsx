@@ -13,7 +13,7 @@ import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import Arrow from '../Icon/Arrow'
-import SubItem from '../Icon/Subitem'
+import SubItem from '../Icon/SubItem'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
@@ -86,7 +86,7 @@ export default React.memo(function CategoryOption({
     return newHref
   }
   const hasSubtypes = !!subtypes && subtypes.length > 0
-  const [isSubcategoriesOpen, setIsSubcategoriesOpen] = useState(!!currentSubtype)
+  const [isSubtypesOpen, setIsSubtypesOpen] = useState(!!currentSubtype)
 
   const isSubtypeActive = (subtype: SubtypeOptions) => {
     if (params.get('type') !== toSnakeCase(ProposalType.Grant)) {
@@ -121,13 +121,10 @@ export default React.memo(function CategoryOption({
           </span>
           {hasSubtypes && (
             <span
-              className={TokenList.join([
-                'CategoryOption__Arrow',
-                isSubcategoriesOpen && 'CategoryOption__Arrow--active',
-              ])}
+              className={TokenList.join(['CategoryOption__Arrow', isSubtypesOpen && 'CategoryOption__Arrow--active'])}
               onClick={(e) => {
                 e.preventDefault()
-                setIsSubcategoriesOpen((prev) => !prev)
+                setIsSubtypesOpen((prev) => !prev)
               }}
             >
               <Arrow filled={false} />
@@ -144,7 +141,7 @@ export default React.memo(function CategoryOption({
         <div
           className={TokenList.join([
             'CategoryOption__Subcategories',
-            isSubcategoriesOpen && 'CategoryOption__Subcategories--active',
+            isSubtypesOpen && 'CategoryOption__Subcategories--active',
           ])}
         >
           {subtypes.map((subtype, index) => {
