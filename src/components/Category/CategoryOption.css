@@ -115,8 +115,8 @@
 
 .CategoryOption__SubcategoryItem {
   margin-left: 15px;
-  font-weight: 500;
   font-size: 13px;
+  font-weight: normal;
   line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
@@ -125,9 +125,11 @@
   display: block;
   width: fit-content;
 }
+
 .CategoryOption__SubcategoryItem:hover,
 .CategoryOption__SubcategoryItem--active {
   color: var(--black-800);
+  font-weight: 500;
 }
 
 .CategoryOption__SubcategoryItem--active {
@@ -139,7 +141,7 @@
   content: '';
   position: absolute;
   right: -13px;
-  top: 50%;
+  top: 53%;
   transform: translateY(-50%);
   width: var(--size);
   height: var(--size);
