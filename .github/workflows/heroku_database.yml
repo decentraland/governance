@@ -34,7 +34,6 @@ jobs:
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
       - name: Add database to Heroku app
         run: |
-          ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME $HEROKU_TESTING_DB_URL
+          ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME ${{ github.workspace }}/scripts/development.sql
         env:
           HEROKU_APP_NAME: ${{ inputs.app-name }}
-          HEROKU_TESTING_DB_URL: ${{ github.workspace }}/scripts/development.sql
