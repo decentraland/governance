@@ -127,7 +127,7 @@ export default React.memo(function CategoryOption({
                 setIsSubtypesOpen((prev) => !prev)
               }}
             >
-              <Arrow filled={false} />
+              <Arrow filled={false} color="var(--black-700)" />
             </span>
           )}
         </span>
