@@ -7,7 +7,6 @@ import { DclData, TransparencyGrant } from '../clients/DclData'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, GrantStatus } from '../entities/Grant/types'
-import { isCurrentGrant } from '../entities/Grant/utils'
 import ProposalModel from '../entities/Proposal/model'
 import {
   Grant,
@@ -53,7 +52,8 @@ export class GrantsService {
               ...newGrant,
               ...this.getUpdateData(update),
             }
-            return isCurrentGrant(newGrant.status) ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
+
+            return this.isCurrentGrant(newGrant.status) ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
           } catch (error) {
             logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
           }
@@ -67,7 +67,7 @@ export class GrantsService {
 
     const pendingNewGrants = await ProposalModel.getPendingNewGrants()
     pendingNewGrants.map((proposal) => {
-      current.push({ ...this.toPendingGovernanceGrant(proposal), update: null, update_timestamp: undefined })
+      current.push({ ...this.toPendingGovernanceGrant(proposal) })
     })
 
     return {
@@ -77,38 +77,48 @@ export class GrantsService {
     }
   }
 
-  private static toPendingGovernanceGrant(grant: ProposalAttributes): Grant {
+  private static toPendingGovernanceGrant(proposal: ProposalAttributes): GrantWithUpdate {
+    const { id, configuration, user, title, created_at } = proposal
+
     return {
-      id: grant.id,
-      title: grant.title,
-      user: grant.user,
-      size: grant.configuration.size,
+      id,
+      title,
+      user,
+      size: configuration.size,
       configuration: {
-        category: grant.configuration.category,
-        tier: grant.configuration.tier,
+        category: configuration.category,
+        tier: configuration.tier,
       },
       status: GrantStatus.Pending,
-      created_at: grant.created_at.getTime(),
+      created_at: created_at.getTime(),
       token: undefined,
       enacted_at: undefined,
+      update: null,
+      update_timestamp: undefined,
     }
   }
 
   private static parseTransparencyGrant(grant: TransparencyGrant, createdAt: Date) {
+    const { id, size, category, tier, vesting_status, user, title, token } = grant
+
     return {
-      id: grant.id,
-      size: grant.size,
+      id,
+      size,
       configuration: {
-        category: grant.category,
-        tier: grant.tier,
+        category,
+        tier,
       },
-      status: grant.vesting_status,
-      user: grant.user,
-      title: grant.title,
-      token: grant.token,
+      status: vesting_status,
+      user,
+      title,
+      token,
       created_at: Time(createdAt).unix(),
       enacted_at: this.getEnactedDate(grant),
     }
+  }
+
+  private static getEnactedDate(grant: TransparencyGrant) {
+    return grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix()
   }
 
   private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {
@@ -116,10 +126,6 @@ export class GrantsService {
       update,
       update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
     }
-  }
-
-  private static getEnactedDate(grant: TransparencyGrant) {
-    return grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix()
   }
 
   private static getVestingData(grant: TransparencyGrant) {
@@ -211,5 +217,9 @@ export class GrantsService {
 
   private static getGrantProposalEndDate() {
     return getProposalEndDate(asNumber(GRANT_PROPOSAL_DURATION_IN_SECONDS))
+  }
+
+  private static isCurrentGrant(status?: GrantStatus) {
+    return status === GrantStatus.InProgress || status === GrantStatus.Paused || status === GrantStatus.Pending
   }
 }
