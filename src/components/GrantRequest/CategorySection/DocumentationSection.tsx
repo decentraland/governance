@@ -4,13 +4,13 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { disableOnWheelInput } from '../../../entities/Common/utils'
 import {
   DocumentationQuestions,
   DocumentationQuestionsSchema,
   GrantRequestCategoryAssessment,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'

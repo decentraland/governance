@@ -4,7 +4,7 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { disableOnWheelInput } from '../../entities/Common/utils'
+import { disableOnWheelInput } from '../../helpers'
 import Label from '../Common/Label'
 import Helper from '../Helper/Helper'
 import ExclamationCircle from '../Icon/ExclamationCircle'

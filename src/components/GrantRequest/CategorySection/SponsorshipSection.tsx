@@ -6,13 +6,13 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
-import { disableOnWheelInput } from '../../../entities/Common/utils'
 import {
   GrantRequestCategoryAssessment,
   SponsorshipQuestions,
   SponsorshipQuestionsSchema,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'

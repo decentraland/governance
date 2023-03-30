@@ -64,3 +64,16 @@ export const fetchWithTimeout = async (url: string, timeout = 10000, options?: R
 }
 
 export const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
+
+export function disableOnWheelInput(event: any) {
+  // Prevent the input value change
+  event.target.blur()
+
+  // Prevent the page/container scrolling
+  event.stopPropagation()
+
+  // Refocus immediately, on the next tick (after the current function is done)
+  setTimeout(() => {
+    event.target.focus()
+  }, 0)
+}
