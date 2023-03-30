@@ -890,6 +890,7 @@
       "cliff_remaining": "{count} {count, plural, one {day} other {days}} to go",
       "released": "released",
       "started_date": "Started",
+      "starts_date": "Starts",
       "end_date": "Ends",
       "transaction_date": "Transaction made",
       "past_funded": {

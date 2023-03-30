@@ -69,15 +69,15 @@ export enum GrantStatus {
   Revoked = 'Revoked',
 }
 
-export function isGrantType(value: string | null | undefined) {
+export function isGrantSubtype(value: string | null | undefined) {
   return (
     !!value &&
     (value === SubtypeAlternativeOptions.Legacy || new Set<string>(Object.values(NewGrantCategory)).has(value))
   )
 }
 
-export function toGrantType(value: string | null | undefined): SubtypeOptions | undefined {
-  return isGrantType(value) ? (value as SubtypeOptions) : undefined
+export function toGrantSubtype(value: string | null | undefined): SubtypeOptions | undefined {
+  return isGrantSubtype(value) ? (value as SubtypeOptions) : undefined
 }
 
 export const GrantRequestGeneralInfoSchema = {
