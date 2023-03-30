@@ -13,6 +13,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../../clients/Governance'
+import { disableOnWheelInput } from '../../../entities/Common/utils'
 import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import loader from '../../../modules/loader'
@@ -181,6 +182,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
               placeholder={t('page.submit_poi.x_placeholder')}
               error={!!errors.x}
               disabled={formDisabled}
+              onWheel={disableOnWheelInput}
             />
 
             <Field
@@ -197,6 +199,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
               placeholder={t('page.submit_poi.y_placeholder')}
               error={!!errors.y}
               disabled={formDisabled}
+              onWheel={disableOnWheelInput}
             />
 
             {(errors.x || errors.y) && (

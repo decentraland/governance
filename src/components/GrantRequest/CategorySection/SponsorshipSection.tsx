@@ -6,6 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
+import { disableOnWheelInput } from '../../../entities/Common/utils'
 import {
   GrantRequestCategoryAssessment,
   SponsorshipQuestions,
@@ -178,6 +179,7 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
           error={!!state.error.totalEvents}
           message={t(state.error.totalEvents)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
@@ -189,6 +191,7 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
           error={!!state.error.totalAttendance}
           message={t(state.error.totalAttendance)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">

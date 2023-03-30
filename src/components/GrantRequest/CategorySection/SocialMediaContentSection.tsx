@@ -5,6 +5,7 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import { disableOnWheelInput } from '../../../entities/Common/utils'
 import {
   GrantRequestCategoryAssessment,
   SocialMediaContentQuestions,
@@ -160,6 +161,7 @@ const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
           error={!!state.error.totalPieces}
           message={t(state.error.totalPieces)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
@@ -171,6 +173,7 @@ const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
           error={!!state.error.totalPeopleImpact}
           message={t(state.error.totalPeopleImpact)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">

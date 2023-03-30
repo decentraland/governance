@@ -5,6 +5,7 @@ import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hoo
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import { disableOnWheelInput } from '../../../entities/Common/utils'
 import {
   AcceleratorQuestions,
   AcceleratorQuestionsSchema,
@@ -134,6 +135,7 @@ const AcceleratorSection = forwardRef(function AcceleratorSection({ onValidation
           error={!!state.error.investmentRecoveryTime}
           message={t(state.error.investmentRecoveryTime)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
     </div>
