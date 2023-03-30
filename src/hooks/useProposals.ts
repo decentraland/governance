@@ -28,6 +28,9 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     if (filter.type) {
       params.type = filter.type
     }
+    if (filter.subtype) {
+      params.subtype = filter.subtype
+    }
     if (filter.user) {
       params.user = filter.user
     }
@@ -68,6 +71,7 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
     filter.load,
     filter.coauthor,
     filter.snapshotIds,
+    filter.subtype,
   ])
 
   return {

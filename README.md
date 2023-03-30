@@ -11,7 +11,7 @@ The governance hub for the Decentraland ecosystem. Create and vote on proposals 
 
 ![Screenshot of the governance hub for Decentraland homepage](./static/home.png)
 
-## Setup
+# Setup
 
 Before you start make sure you have installed:
 
@@ -32,7 +32,7 @@ If you are using WSL (Windows Subsystem for Linux) as your development environme
 
 Run `npm install` to install all the dependencies needed to run the project.
 
-### Environment setup
+## Environment setup
 
 Create a copy of `.env.example` and name it as `.env.development`
 
@@ -44,7 +44,7 @@ Create a copy of `.env.example` and name it as `.env.development`
 
 If you are running this project locally you only need to check the following environment variables:
 
-* `CONNECTION_STRING`: make sure it is point to a valid database
+* `CONNECTION_STRING`: make sure it points to a valid database (see how to create one in the 'Database Setup' section)
 * `COMMITTEE_ADDRESSES`: list of eth addresses separated by `,` that will be able to enact finished proposals
 * `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
 * `RPC_PROVIDER_URL`: the rpc provider to get the latest block
@@ -64,41 +64,54 @@ The minimum amount of voting power require to pass a proposal of each type it's 
   GATSBY_VOTING_POWER_TO_PASS_POLL=0
 ```
 
-### Database setup
+## Database setup
 
 Make sure you have Postgres running.
 
-To create the db, run in the terminal
+You can create a DB from scratch, or you can use the `import-db.sh` script to create a new DB using the `development.sql` dump.
+
+### Importing DB dump
+
 ```bash
-createdb -U YOUR_USER snapshot
+bash ./scripts/import-db.sh USERNAME [DATABASE_NAME] [DUMP_FILE]
+```
+
+If no DATABASE_NAME and DUMP_FILE arguments are given, the script will use the default values and create a `governance` db using the `development.sql` dump.
+The CONNECTION_STRING for the default values should look like this: 
+
+```bash
+postgres://postgres:postgres@localhost:5432/governance
 ````
 
-The default postgres user is `postgres` or your username and the default password is `postgres`.
+### Creating DB from scratch
 
+To create a DB, run in the terminal
+```bash
+createdb -U YOUR_USER DATABASE_NAME
+````
+The default postgres user is `postgres` or your username, and the default password is `postgres`.
 Use your user and password for the connection string variable, it should look like this:
 
 ```bash
-postgres://YOUR_USER:YOU_PASSWORD@localhost:5432/snapshot
+postgres://YOUR_USER:YOUR_PASSWORD@localhost:5432/DATABASE_NAME
 ````
 
-Once you have a `CONNECTION_STRING` you can setup your database tables using the following command:
+Once you have a `CONNECTION_STRING` you can set up your database tables using the following command:
 
 ```bash
 npm run migrate up
 ```
 
-### Snapshot Setup
+## Snapshot Setup
 
 * `GATSBY_SNAPSHOT_SPACE`: the snapshot space where the proposals will be published
 * `SNAPSHOT_PRIVATE_KEY`, `GATSBY_SNAPSHOT_ADDRESS`: a pair address/key with permissions to publish at that snapshot space
 * The configured SNAPSHOT_PROPOSAL_TYPE for the project is 'single-choice', which means each voter may select only one choice. See [available voting systems](https://docs.snapshot.org/proposals/voting-types#single-choice-voting)
 
-#### Creating a Snapshot space
+### Creating a Snapshot space
 
 You are going to need to register an ENS name in the network you'll create the space in.
-For this purpose, you are going to need ETH / Rinkeby ETH / Goerli ETH. Use the faucets to get it:
-
-[Rinkeby Faucet](https://rinkebyfaucet.com/)
+For this purpose, you are going to need ETH / Goerli ETH. Use the faucet to get it:
 
 [Goerli Faucet](https://goerlifaucet.com/)
 
@@ -206,9 +219,9 @@ The order in which each value is returned depends on the order in which strategi
 * DELEGATED
 * WEARABLE
 
-## Run Tests
+# Test
 
-to run the tests you can do
+To run the tests you can do
 ```bash
 npm test
 ``` 
@@ -220,9 +233,9 @@ Also, you can try adding the `--verbose` option.
 The `--runInBand` parameter runs the tests in a single thread, which is usually faster, but you can try without it 
 and see what works best for you.
 
-## Run
+# Run
 
-once you setup this project you can start it using the following command
+Once you setup this project you can start it using the following command
 
 ```bash
   npm start
@@ -234,7 +247,7 @@ once you setup this project you can start it using the following command
 
 the app should be running at https://localhost:8000/
 
-## Clear 
+# Clear 
 To clear cache and update localization and internationalization renders, run
 
 ```bash
@@ -245,18 +258,19 @@ or
 rm -r .cache
 ```
 
-## Project's structure
+# About
+
+### Project's structure
 
 You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
 
-### back and front ends
+### Back and Front ends
 
 this project runs gatsby as front-end and a nodejs server as back-end both connected through a proxy
 
 * locally this proxy is defined in [`gatsby-config.js` (`proxy` prop)](https://www.gatsbyjs.com/docs/api-proxy/#gatsby-skip-here)
-* at servers this proxy is defined in `Pulumi.ts` (`servicePaths` prop)
 
-### routes
+### Routes
 
 **front-end** routes are defined using [gatsby routes](https://www.gatsbyjs.com/docs/reference/routing/creating-routes/#define-routes-in-srcpages) + [gatsby-plugin-intl](https://www.gatsbyjs.com/plugins/gatsby-plugin-intl/?=gatsby-plugin-intl), you can find each page in the `src/pages` directory
 
@@ -268,13 +282,13 @@ Types and Utils contain functions and types that will be accessible to both the 
 
 Be careful with what goes in here, because when webpack tries to compile everything for the frontend it won't have all the backend dependencies, which could result in an error (e.g. `ERROR #98123 WEBPACK`)
 
-## About proposals statuses
+### Proposals statuses
 - Proposals are created in pending, and automatically passed to active
 - After a voting period of 1 week, they are automatically marked as finished, passed, or rejected, depending on the kind of proposal and of the voting results.
 - If proposal is in finished status, a committee user can pass/reject it, with a comment.
 - Once passed, a proposal can be enacted by a committee user, with a comment.
 
-## About voting results
+### Voting results
 - Voting results are calculated in two different ways, for different purposes:
   - `Votes/utils.ts` calculates the results in a user-friendly way, so they can be displayed in the frontend. These results are rounded up for clarity. 
   - `Proposal/jobs.ts` has a more exact calculation, and is used to evaluate the real result of the voting

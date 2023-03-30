@@ -18,8 +18,6 @@ interface Props {
   budget: BudgetWithContestants
 }
 
-const COMPETING_PROPOSALS_FEATURE_ENABLED = isDevEnv()
-
 export default function ProposalBudget({ proposal, budget }: Props) {
   const grantCategory = proposal.configuration.category
   const contestantsAmount = (budget.categories[snakeCase(grantCategory)]?.contestants.length || 0) - 1
@@ -31,7 +29,7 @@ export default function ProposalBudget({ proposal, budget }: Props) {
         <CategoryTotalCard proposal={proposal} budget={budget} />
       </div>
       <Desktop>
-        {COMPETING_PROPOSALS_FEATURE_ENABLED && contestantsAmount > 0 && (
+        {contestantsAmount > 0 && (
           <div className="ProposalBudget__Row">
             <CompetingProposals proposal={proposal} budget={budget} />
           </div>

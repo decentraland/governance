@@ -126,6 +126,8 @@ type Props = {
   onClose: () => void
 }
 
+const SHOW_DISTRIBUTION_BARS = false
+
 export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible, onClose }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
@@ -189,103 +191,104 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
       visible={isSidebarVisible}
       width={'very wide'}
     >
-      <div className="CompetingProposalsSidebar__Content">
-        <div className="CompetingProposalsSidebar__TitleContainer">
-          <span className="CompetingProposalsSidebar__Title">
-            {t('page.proposal_detail.grant.competing_proposals.sidebar.title', {
-              category: toNewGrantCategory(grantCategory),
-            })}
-          </span>
-          <Close onClick={handleClose} />
-        </div>
-
-        <GrantRequestSectionCard
-          title={
-            <>
-              {t('page.proposal_detail.grant.competing_proposals.sidebar.competing_proposals_bar_title')}
-              {isOverBudget && (
-                <Pill style="outline" color={PillColor.Yellow} size={'small'}>
-                  {t('page.proposal_detail.grant.requested_budget.overbudget_pill')}
-                </Pill>
-              )}
-            </>
-          }
-          content={
-            <div className="ContestedBudgetCard">
-              <div className="ContestedBudgetCard__Label">
-                <div
-                  className={TokenList.join([
-                    'ContestedBudgetCard__Legend',
-                    isOverBudget ? 'ContestedOverbudgetLegend' : 'ContestedLegend',
-                  ])}
+      {SHOW_DISTRIBUTION_BARS && (
+        <div className="CompetingProposalsSidebar__Content">
+          <div className="CompetingProposalsSidebar__TitleContainer">
+            <span className="CompetingProposalsSidebar__Title">
+              {t('page.proposal_detail.grant.competing_proposals.sidebar.title', {
+                category: toNewGrantCategory(grantCategory),
+              })}
+            </span>
+            <Close onClick={handleClose} />
+          </div>
+          <GrantRequestSectionCard
+            title={
+              <>
+                {t('page.proposal_detail.grant.competing_proposals.sidebar.competing_proposals_bar_title')}
+                {isOverBudget && (
+                  <Pill style="outline" color={PillColor.Yellow} size={'small'}>
+                    {t('page.proposal_detail.grant.requested_budget.overbudget_pill')}
+                  </Pill>
+                )}
+              </>
+            }
+            content={
+              <div className="ContestedBudgetCard">
+                <div className="ContestedBudgetCard__Label">
+                  <div
+                    className={TokenList.join([
+                      'ContestedBudgetCard__Legend',
+                      isOverBudget ? 'ContestedOverbudgetLegend' : 'ContestedLegend',
+                    ])}
+                  />
+                  <span className="ContestedLabel">${t('general.number', { value: categoryBudget.contested })}</span>
+                  <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
+                    categoryBudget.contested,
+                    categoryBudget.total,
+                    0
+                  )})`}</span>
+                </div>
+                <ContestedBudgetDistributionBar
+                  allocatedBudgetItem={allocatedBudgetItem}
+                  contestingProposalsItems={contestingProposalsItems}
+                  availableOverBudgetItem={availableOverBudgetItem}
+                  requestedBudgetItem={requestedBudgetItem}
+                  uncontestedTotalBudgetItem={uncontestedTotalBudgetItem}
+                  total={isOverBudget ? categoryBudget.allocated + categoryBudget.contested : totalCategoryBudget}
+                  showPopups={showPopups}
                 />
-                <span className="ContestedLabel">${t('general.number', { value: categoryBudget.contested })}</span>
-                <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
-                  categoryBudget.contested,
-                  categoryBudget.total,
-                  0
-                )})`}</span>
               </div>
-              <ContestedBudgetDistributionBar
-                allocatedBudgetItem={allocatedBudgetItem}
-                contestingProposalsItems={contestingProposalsItems}
-                availableOverBudgetItem={availableOverBudgetItem}
-                requestedBudgetItem={requestedBudgetItem}
-                uncontestedTotalBudgetItem={uncontestedTotalBudgetItem}
-                total={isOverBudget ? categoryBudget.allocated + categoryBudget.contested : totalCategoryBudget}
-                showPopups={showPopups}
-              />
-            </div>
-          }
-          subtitle={
-            <div className="ContestedBudgetCard__Row">
-              <div className="ContestedBudgetCard__Label">
-                <div className={TokenList.join(['ContestedBudgetCard__Legend', 'GrantedFundsLegend'])} />
-                <span className="GrantedFundsLabel">
-                  {t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds', {
-                    amount: t('general.number', { value: categoryBudget.allocated }),
-                  })}
-                </span>
-                <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
-                  categoryBudget.allocated,
-                  categoryBudget.total,
-                  0
-                )})`}</span>
-              </div>
-              {uncontestedTotalBudgetDisplayed > 0 && (
+            }
+            subtitle={
+              <div className="ContestedBudgetCard__Row">
                 <div className="ContestedBudgetCard__Label">
-                  <div className={TokenList.join(['ContestedBudgetCard__Legend', 'UncontestedFundsLegend'])} />
+                  <div className={TokenList.join(['ContestedBudgetCard__Legend', 'GrantedFundsLegend'])} />
                   <span className="GrantedFundsLabel">
-                    {t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds', {
-                      amount: t('general.number', { value: uncontestedTotalBudgetDisplayed }),
+                    {t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds', {
+                      amount: t('general.number', { value: categoryBudget.allocated }),
                     })}
                   </span>
                   <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
-                    uncontestedTotalBudgetDisplayed,
+                    categoryBudget.allocated,
                     categoryBudget.total,
                     0
                   )})`}</span>
                 </div>
-              )}
-              {isOverBudget && (
-                <div className="ContestedBudgetCard__Label">
-                  <div className={TokenList.join(['ContestedBudgetCard__Legend', 'AvailableOverBudgetLegend'])} />
-                  <span className="GrantedFundsLabel">
-                    {t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds', {
-                      amount: t('general.number', { value: availableBudget }),
-                    })}
-                  </span>
-                  <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
-                    availableBudget,
-                    categoryBudget.total,
-                    0
-                  )})`}</span>
-                </div>
-              )}
-            </div>
-          }
-        />
-      </div>
+                {uncontestedTotalBudgetDisplayed > 0 && (
+                  <div className="ContestedBudgetCard__Label">
+                    <div className={TokenList.join(['ContestedBudgetCard__Legend', 'UncontestedFundsLegend'])} />
+                    <span className="GrantedFundsLabel">
+                      {t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds', {
+                        amount: t('general.number', { value: uncontestedTotalBudgetDisplayed }),
+                      })}
+                    </span>
+                    <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
+                      uncontestedTotalBudgetDisplayed,
+                      categoryBudget.total,
+                      0
+                    )})`}</span>
+                  </div>
+                )}
+                {isOverBudget && (
+                  <div className="ContestedBudgetCard__Label">
+                    <div className={TokenList.join(['ContestedBudgetCard__Legend', 'AvailableOverBudgetLegend'])} />
+                    <span className="GrantedFundsLabel">
+                      {t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds', {
+                        amount: t('general.number', { value: availableBudget }),
+                      })}
+                    </span>
+                    <span className="GrantedFundsPercentageLabel">{`(${getFormattedPercentage(
+                      availableBudget,
+                      categoryBudget.total,
+                      0
+                    )})`}</span>
+                  </div>
+                )}
+              </div>
+            }
+          />
+        </div>
+      )}
 
       <div className="CompetingProposalsSidebar__Content">
         <div className="CompetingProposalsSidebar__TitleContainer">
@@ -294,6 +297,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
               category: toNewGrantCategory(grantCategory),
             })}
           </span>
+          <Close onClick={handleClose} />
         </div>
 
         {contestants.map((contestant) => (
