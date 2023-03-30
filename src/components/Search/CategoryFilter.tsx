@@ -5,8 +5,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory, OldGrantCategory } from '../../entities/Grant/types'
-import { ProposalType } from '../../entities/Proposal/types'
+import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
+import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import CategoryOption from '../Category/CategoryOption'
 
@@ -61,8 +61,9 @@ export default React.memo(function CategoryFilter({
           className={'CategoryFilter__CategoryOption'}
         />
       )}
-      {filters.map((value, index) => {
-        const label = toSnakeCase(value)
+      {filters.map((filterType, index) => {
+        const label = toSnakeCase(filterType)
+        const isGrantType = toProposalType(filterType) === ProposalType.Grant
         return (
           <CategoryOption
             key={'category_filter' + index}
@@ -70,7 +71,16 @@ export default React.memo(function CategoryFilter({
             href={getUrlFilters(FILTER_KEY, params, label)}
             active={type === label}
             className={'CategoryFilter__CategoryOption'}
-            count={isCounter ? categoryCount[value as keyof Counter] : undefined}
+            count={isCounter ? categoryCount[filterType as keyof Counter] : undefined}
+            subtypes={
+              isGrantType
+                ? [
+                    `${SubtypeAlternativeOptions.All}`,
+                    ...Object.values(NewGrantCategory),
+                    `${SubtypeAlternativeOptions.Legacy}`,
+                  ]
+                : undefined
+            }
           />
         )
       })}
