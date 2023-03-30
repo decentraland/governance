@@ -2,7 +2,7 @@
 
 # Set default values for parameters
 DATABASE_NAME="governance"
-DUMP_FILE="development.sql"
+DUMP_FILE="development.dump"
 
 # Print usage string if no parameters are provided
 if [ $# -eq 0 ]; then
@@ -31,6 +31,6 @@ psql -U $USERNAME -c "CREATE DATABASE $DATABASE_NAME;"
 
 # Restore dump file
 echo "Restoring $DUMP_FILE to $DATABASE_NAME..."
-psql -U $USERNAME $DATABASE_NAME < $DUMP_FILE
+pg_restore --verbose --clean --no-acl --no-owner -U $USERNAME -d $DATABASE_NAME $DUMP_FILE
 
 echo "Done."
