@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define default values
-DEFAULT_DUMP_FILE="development.sql"
+DEFAULT_DUMP_FILE="dcl-governance::b006"
 
 # Get the app name from the first parameter
 APP_NAME=$1
@@ -29,3 +29,5 @@ heroku config:set CONNECTION_STRING=$CONNECTION_STRING -a $APP_NAME
 
 # Restart app dynos
 heroku ps:restart -a $APP_NAME
+
+echo "Database initialized for https://$APP_NAME.herokuapp.com/"
