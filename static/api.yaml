@@ -222,6 +222,20 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+  
+  /proposals/{proposal}/subscriptions:
+    get:
+      tags:
+        - Subscriptions
+      summary: Get the subscriptions from a given proposal ID
+      parameters:
+        - name: proposal
+          $ref: '#/components/parameters/proposalId'
+      schema:
+        type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
 
 ############# COMPONENTS #############
 

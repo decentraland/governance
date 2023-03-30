@@ -1,10 +1,12 @@
+import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
+import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import routes from "decentraland-gatsby/dist/entities/Route/routes";
-import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle';
-import { auth, WithAuth } from 'decentraland-gatsby/dist/entities/Auth/middleware';
-import { getProposal } from "../Proposal/routes";
-import SubscriptionModel from './model';
-import { SubscriptionAttributes } from './types';
+
+import { getProposal } from '../Proposal/routes'
+
+import SubscriptionModel from './model'
+import { SubscriptionAttributes } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -33,7 +35,7 @@ export async function createProposalSubscriptions(req: WithAuth<Request<{ propos
   const proposal = await getProposal(req)
   const alreadySubscribed = await SubscriptionModel.findOne<SubscriptionAttributes>({
     proposal_id: proposal.id,
-    user
+    user,
   })
 
   if (alreadySubscribed) {
@@ -43,7 +45,7 @@ export async function createProposalSubscriptions(req: WithAuth<Request<{ propos
   const subscription: SubscriptionAttributes = {
     proposal_id: proposal.id,
     user,
-    created_at: new Date()
+    created_at: new Date(),
   }
 
   await SubscriptionModel.create(subscription)
@@ -55,7 +57,7 @@ export async function removeProposalSubscriptions(req: WithAuth<Request<{ propos
   const proposal = await getProposal(req)
   await SubscriptionModel.delete<SubscriptionAttributes>({
     proposal_id: proposal.id,
-    user
+    user,
   })
 
   return true
