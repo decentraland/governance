@@ -16,7 +16,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import CoauthorModel from '../Coauthor/model'
 import { BUDGETING_START_DATE } from '../Grant/constants'
-import { OldGrantCategory, SubtypeAlternativeOptions, isGrantType } from '../Grant/types'
+import { OldGrantCategory, SubtypeAlternativeOptions, isGrantSubtype } from '../Grant/types'
 import SubscriptionModel from '../Subscription/model'
 
 import { CoauthorStatus } from './../Coauthor/types'
@@ -207,6 +207,21 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.rowCount(query)
   }
 
+  private static getSubtypeQuery(subtype: string) {
+    return subtype === SubtypeAlternativeOptions.Legacy
+      ? this.getLegacyGrantCategoryQuery()
+      : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype)}"}'`
+  }
+
+  private static getLegacyGrantCategoryQuery() {
+    return join(
+      Object.values(OldGrantCategory).map(
+        (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
+      ),
+      SQL` OR `
+    )
+  }
+
   static async getProposalTotal(filter: Partial<FilterProposalList> = {}): Promise<number> {
     const { user, subscribed, type, subtype, status, search, snapshotIds, coauthor } = filter
     if (user && !isEthereumAddress(user)) {
@@ -221,7 +236,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
-    if (subtype && !isGrantType(subtype)) {
+    if (subtype && !isGrantSubtype(subtype)) {
       return 0
     }
 
@@ -261,19 +276,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
       )}
       ${conditional(!!type, SQL`AND "type" = ${type}`)} 
-      ${conditional(
-        !!subtype,
-        SQL`AND (${
-          subtype === SubtypeAlternativeOptions.Legacy
-            ? join(
-                Object.values(OldGrantCategory).map(
-                  (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
-                ),
-                SQL` OR `
-              )
-            : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype || '')}"}'`
-        })`
-      )}
+      ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
       ${conditional(!!status, SQL`AND "status" = ${status}`)} 
       ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
       ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
@@ -303,7 +306,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
-    if (subtype && !isGrantType(subtype)) {
+    if (subtype && !isGrantSubtype(subtype)) {
       return []
     }
 
@@ -354,19 +357,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       !!timeFrame && timeFrameKey === 'finish_at',
       SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
     )}
-    ${conditional(
-      !!subtype,
-      SQL`AND (${
-        subtype === SubtypeAlternativeOptions.Legacy
-          ? join(
-              Object.values(OldGrantCategory).map(
-                (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
-              ),
-              SQL` OR `
-            )
-          : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype || '')}"}'`
-      })`
-    )}
+    ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
     ${conditional(!!search, SQL`AND "rank" > 0`)}
     ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
     ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
