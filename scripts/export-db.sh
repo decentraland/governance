@@ -2,7 +2,7 @@
 
 # Set default values for parameters
 DATABASE_NAME="governance"
-DUMP_FILE="development.sql"
+DUMP_FILE="development.dump"
 
 # Print usage string if no parameters are provided
 if [ $# -eq 0 ]; then
@@ -21,6 +21,6 @@ fi
 
 # Restore dump file
 echo "Exporting $DATABASE_NAME to $DUMP_FILE..."
-pg_dump -Fp -U $USERNAME -d $DATABASE_NAME > $DUMP_FILE
+pg_dump -Fc --clean --no-acl --no-owner  -U $USERNAME -d $DATABASE_NAME > $DUMP_FILE
 
 echo "Done."
