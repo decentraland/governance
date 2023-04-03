@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -10,7 +10,7 @@ import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, SubtypeAlternativeOptions, SubtypeOptions, toGrantSubtype } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
-import { ProposalType } from '../../entities/Proposal/types'
+import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import Arrow from '../Icon/Arrow'
 import SubItem from '../Icon/SubItem'
@@ -58,6 +58,7 @@ export default React.memo(function CategoryOption({
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const currentType = useMemo(() => toProposalType(params.get('type')), [params])
   const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype')), [params])
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -85,8 +86,13 @@ export default React.memo(function CategoryOption({
     const newHref = url.pathname + '?' + url.searchParams.toString()
     return newHref
   }
+  const isGrant = currentType === ProposalType.Grant
   const hasSubtypes = !!subtypes && subtypes.length > 0
-  const [isSubtypesOpen, setIsSubtypesOpen] = useState(!!currentSubtype)
+  const [isSubtypesOpen, setIsSubtypesOpen] = useState(isGrant)
+
+  useEffect(() => {
+    setIsSubtypesOpen(isGrant)
+  }, [isGrant])
 
   const isSubtypeActive = (subtype: SubtypeOptions) => {
     if (params.get('type') !== toSnakeCase(ProposalType.Grant)) {
