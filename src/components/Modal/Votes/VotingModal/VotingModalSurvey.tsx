@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -50,6 +51,18 @@ export function VotingModalSurvey({
         setSurvey={setSurvey}
       />
       <div className="VotingModal__Actions">
+        {!showVotingError && (
+          <Button
+            basic
+            fluid
+            as={Link}
+            onClick={() => onCastVote(selectedChoice, survey)}
+            loading={castingVote}
+            className="VotingModal__SkipAndCast"
+          >
+            {t('page.proposal_detail.skip_and_cast_vote')}
+          </Button>
+        )}
         <div
           className={TokenList.join([
             'VotingModal__ErrorNotice',

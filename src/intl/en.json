@@ -730,6 +730,7 @@
       "get_vp": "Get VP",
       "vote_choice": "Vote {choice}",
       "cast_vote": "Cast Vote",
+      "skip_and_cast_vote": "Skip and cast",
       "retry": "Retry in {timer}...",
       "delegate_voted_choice": "They voted {choice}",
       "both_voted_choice": "You both voted {choice}",
