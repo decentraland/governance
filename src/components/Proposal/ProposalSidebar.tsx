@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
@@ -78,8 +80,11 @@ export default function ProposalSidebar({
     [account, subscriptions]
   )
 
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
-    if (showSurvey) {
+    if (showSurvey && !isMobile) {
       updatePageState({
         selectedChoice: selectedChoice,
         showVotingModal: true,
@@ -88,6 +93,7 @@ export default function ProposalSidebar({
       castVote(selectedChoice)
     }
   }
+
   const showProposalUpdatesActions =
     isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
   const showProposalThresholdsSummary = !!(
