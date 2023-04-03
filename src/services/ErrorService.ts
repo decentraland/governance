@@ -1,8 +1,6 @@
-import { Env } from '@dcl/ui-env'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Rollbar from 'rollbar'
 
-import { config } from '../config'
 import { ROLLBAR_TOKEN } from '../constants'
 import { isDevEnv } from '../modules/isDevEnv'
 
@@ -14,8 +12,7 @@ export class ErrorService {
   })
 
   private static getEnvironmentNameForRollbar() {
-    const env = config.getEnv()
-    return { environment: env === Env.PRODUCTION ? 'production' : env }
+    return { environment: isDevEnv() ? 'development' : 'production' }
   }
 
   public static report(errorMsg: string, error?: any) {
