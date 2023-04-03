@@ -5,6 +5,7 @@ import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import 'flickity/css/flickity.css'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
@@ -47,7 +48,7 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
   const flickity = useRef<Flickity>()
 
   return (
-    <div className="DetailsSection__Content">
+    <div className={TokenList.join(['ProposalThresholdsSummary', 'DetailsSection__Content'])}>
       {isCountdownRunning && !thresholdReached && (
         <Flickity
           className={'ProposalThresholdsSummary__Carousel'}
