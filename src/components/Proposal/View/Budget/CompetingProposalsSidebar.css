@@ -77,11 +77,11 @@
 }
 
 .ContestedLegend {
-  background: #a524b3; /*TODO: Add to theme*/
+  background: var(--fuchsia-raw-d);
 }
 
 .ContestedOverbudgetLegend {
-  background: var(--red-800); /*TODO: Add to theme*/
+  background: var(--red-800);
 }
 
 .GrantedFundsLegend {
@@ -89,13 +89,13 @@
 }
 
 .UncontestedFundsLegend {
-  background: rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+  background: var(--alpha-black-300);
 }
 
 .AvailableOverBudgetLegend {
   background: var(--white-900);
   border: 1px solid var(--red-800);
-  box-shadow: 0 1px 1px rgba(115, 110, 125, 0.3);
+  box-shadow: 0 1px 1px var(--alpha-black-300);
 }
 
 .GrantedFundsLabel {
@@ -124,7 +124,7 @@
 }
 
 .ContestedBudgetBar {
-  background: linear-gradient(90deg, #a524b3 0%, #9918a7 100%); /*TODO: Add to theme*/
+  background: var(--gradient-purple-3);
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
@@ -136,13 +136,13 @@
 }
 
 .ContestedBudgetBar--selected {
-  background: linear-gradient(90deg, #db00ff 0%, #841191 100%); /*TODO: Add to theme*/
-  box-shadow: 0 1px 4px #c640cd;
+  background: var(--gradient-purple-2);
+  box-shadow: 0 1px 4px var(--purple-raw-b);
 }
 
 .ContestedBudgetOverbudgetBar--selected {
-  background: linear-gradient(90deg, #d80027 0%, #ff0000 100%) !important;
-  box-shadow: 0 1px 4px #c640cd !important;
+  background: var(--gradient-red-2) !important;
+  box-shadow: 0 1px 4px var(--purple-raw-b) !important;
 }
 
 .ContestedBudgetBar + .ContestedBudgetBar,
@@ -151,14 +151,14 @@
 }
 
 .ThisInitiativeBar {
-  background: linear-gradient(90deg, #a524b3 0%, #9918a7 100%); /*TODO: Add to theme*/
+  background: var(--gradient-purple-1);
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
 
 .ThisInitiativeBar--selected {
-  background: linear-gradient(90deg, #c640cd 0%, #405fcd 100%) !important; /*TODO: Add to theme*/
-  box-shadow: 0 1px 4px rgba(198, 64, 205, 0.5) !important; /*TODO: Add to theme*/
+  background: var(--gradient-purple-1) !important;
+  box-shadow: 0 1px 4px var(--alpha-fuchsia-500) !important;
 }
 
 .ThisInitiativeOverbudgetBar {
@@ -168,12 +168,12 @@
 }
 
 .ThisInitiativeOverbudgetBar--selected {
-  background: linear-gradient(90deg, #ff002e 0%, #c640cd 100%) !important;
-  box-shadow: 0 1px 4px rgba(198, 64, 205, 0.5) !important; /*TODO: Add to theme*/
+  background: var(--gradient-red-1) !important;
+  box-shadow: 0 1px 4px var(--alpha-fuchsia-500) !important;
 }
 
 .UncontestedBudgetBar {
-  background: rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+  background: var(--alpha-black-300);
   border-radius: 4px;
   margin-left: 2px;
 }
