@@ -60,46 +60,74 @@
   cursor: pointer;
 }
 
-.CategoryBanner--catalyst .NewBadge,
+.CategoryBanner--catalyst .NewBadge {
+  background-color: rgb(var(--background-catalyst-solid));
+}
+
 .CategoryBanner--catalyst.CategoryBanner--active {
   background-color: var(--background-catalyst);
 }
 
-.CategoryBanner--poi .NewBadge,
+.CategoryBanner--poi .NewBadge {
+  background-color: rgb(var(--background-poi-solid));
+}
+
 .CategoryBanner--poi.CategoryBanner--active {
   background-color: var(--background-poi);
 }
 
-.CategoryBanner--add_poi .NewBadge,
+.CategoryBanner--add_poi .NewBadge {
+  background-color: rgb(var(--background-add-poi-solid));
+}
+
 .CategoryBanner--add_poi.CategoryBanner--active {
   background-color: var(--background-poi);
 }
 
-.CategoryBanner--remove_poi .NewBadge,
 .CategoryBanner--remove_poi.CategoryBanner--active {
   background-color: var(--background-remove-poi);
 }
 
-.CategoryBanner--ban_name .NewBadge,
+.CategoryBanner--ban_name .NewBadge {
+  background-color: rgb(var(--background-ban-name-solid));
+}
+
 .CategoryBanner--ban_name.CategoryBanner--active {
   background-color: var(--background-ban-name);
 }
 
-.CategoryBanner--grant .NewBadge,
+.CategoryBanner--grant .NewBadge {
+  background-color: rgb(var(--background-grant-solid));
+}
+
 .CategoryBanner--grant.CategoryBanner--active {
   background-color: var(--background-grant);
 }
 
-.CategoryBanner--linked_wearables .NewBadge,
+.CategoryBanner--linked_wearables .NewBadge {
+  background-color: rgb(var(--background-linked-wearables-solid));
+}
+
 .CategoryBanner--linked_wearables.CategoryBanner--active {
   background-color: var(--background-linked-wearables);
 }
 
+.CategoryBanner--hiring .NewBadge {
+  background-color: rgb(var(--background-hiring-solid));
+}
+
+.CategoryBanner--hiring.CategoryBanner--active {
+  background-color: var(--background-hiring);
+}
+
 .CategoryBanner--poll .NewBadge,
-.CategoryBanner--poll.CategoryBanner--active,
 .CategoryBanner--draft .NewBadge,
+.CategoryBanner--governance .NewBadge {
+  background-color: rgb(var(--background-poll-solid));
+}
+
+.CategoryBanner--poll.CategoryBanner--active,
 .CategoryBanner--draft.CategoryBanner--active,
-.CategoryBanner--governance .NewBadge,
 .CategoryBanner--governance.CategoryBanner--active {
   background-color: var(--background-poll);
 }

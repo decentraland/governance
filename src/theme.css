@@ -29,13 +29,24 @@
   --purple-800: #3c24b3;
   --dcl-primary: #ff2d55;
 
-  --background-catalyst: rgba(72, 136, 238, 0.08);
-  --background-poi: rgba(68, 182, 0, 0.08);
-  --background-ban-name: rgba(255, 90, 254, 0.08);
-  --background-grant: rgba(60, 36, 179, 0.08);
-  --background-poll: rgba(255, 116, 57, 0.08);
-  --background-remove-poi: #fff1f4;
-  --background-linked-wearables: #fef9f0;
+  --background-catalyst-solid: 72, 136, 238;
+  --background-poi-solid: 68, 182, 0;
+  --background-ban-name-solid: 255, 90, 254;
+  --background-grant-solid: 60, 36, 179;
+  --background-poll-solid: 255, 116, 57;
+  --background-hiring-solid: 0, 182, 138;
+  --background-remove-poi-solid: 216, 0, 39;
+  --background-linked-wearables-solid: 255, 201, 91;
+
+  --background-catalyst: rgba(var(--background-catalyst-solid), 0.08);
+  --background-poi: rgba(var(--background-poi-solid), 0.08);
+  --background-ban-name: rgba(var(--background-ban-name-solid), 0.08);
+  --background-grant: rgba(var(--background-grant-solid), 0.08);
+  --background-poll: rgba(var(--background-poll-solid), 0.08);
+  --background-hiring: rgba(var(--background-hiring-solid), 0.11);
+  --background-remove-poi: rgba(var(--background-remove-poi-solid), 0.08);
+  --background-linked-wearables: rgba(var(--background-linked-wearables-solid), 0.08);
+  /* --background-linked-wearables: #fef9f0; */
   --background-popup: #5c5c6e;
   --background-disabled: #f9f8f9;
 
