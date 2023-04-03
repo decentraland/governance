@@ -13,6 +13,10 @@ tags:
     description: Everything about grant updates
   - name: Committee
     description: View DAO Committee members
+  - name: Votes
+    description: Everything about votes
+  - name: Subscriptions
+    description: Everything about subscriptions
 paths:
   /proposals:
     get:
@@ -222,7 +226,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
-  
+
   /proposals/{proposal}/subscriptions:
     get:
       tags:
@@ -378,9 +382,3 @@ components:
       description: successful operation
     '404':
       description: not found
-## Security
-# securitySchemes:
-#   ApiKeyAuth:
-#     type: apiKey
-#     in: header
-#     name: auth
