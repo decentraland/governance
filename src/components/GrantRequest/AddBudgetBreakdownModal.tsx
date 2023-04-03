@@ -92,10 +92,10 @@ const AddBudgetBreakdownModal = ({
   projectDuration,
 }: Props) => {
   const t = useFormatMessage()
-  const validator = useMemo(
-    () => validate(selectedConcept ? Number(selectedConcept.estimatedBudget) : fundingLeftToDisclose),
-    [fundingLeftToDisclose, selectedConcept]
-  )
+  const leftToDisclose = selectedConcept
+    ? fundingLeftToDisclose + Number(selectedConcept.estimatedBudget)
+    : fundingLeftToDisclose
+  const validator = useMemo(() => validate(leftToDisclose), [leftToDisclose])
   const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_CONCEPT)
 
   const hasInvalidUrl =
@@ -147,6 +147,7 @@ const AddBudgetBreakdownModal = ({
         <ContentSection className="GrantRequestSection__FieldRow">
           <BudgetInput
             label={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}
+            min={0}
             value={state.value.estimatedBudget}
             error={state.error.estimatedBudget}
             onChange={({ currentTarget }) =>
@@ -155,7 +156,7 @@ const AddBudgetBreakdownModal = ({
               })
             }
             subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_left_to_disclose', {
-              value: fundingLeftToDisclose,
+              value: leftToDisclose,
             })}
           />
           <NumberSelector

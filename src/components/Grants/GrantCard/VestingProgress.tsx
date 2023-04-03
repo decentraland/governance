@@ -10,7 +10,7 @@ import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 import PercentageLabel from './PercentageLabel'
 import './VestingProgress.css'
 
-export type Props = React.HTMLAttributes<HTMLDivElement> & {
+type Props = {
   grant: Grant
   basic?: boolean
 }

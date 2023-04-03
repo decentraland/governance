@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 
+import { useLocation } from '@gatsbyjs/reach-router'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -7,9 +8,12 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory } from '../../entities/Grant/types'
+import { NewGrantCategory, SubtypeAlternativeOptions, SubtypeOptions, toGrantSubtype } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
+import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
+import Arrow from '../Icon/Arrow'
+import SubItem from '../Icon/SubItem'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
@@ -18,6 +22,7 @@ export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
   active?: boolean
   type: string
   count?: number
+  subtypes?: SubtypeOptions[]
 }
 
 const icons: Record<string, any> = {
@@ -42,8 +47,19 @@ export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, siz
   return <img src={icons[type]} width="24" height="24" />
 }
 
-export default React.memo(function CategoryOption({ active, type, className, count, ...props }: CategoryOptionProps) {
+export default React.memo(function CategoryOption({
+  active,
+  type,
+  className,
+  count,
+  subtypes,
+  ...props
+}: CategoryOptionProps) {
   const t = useFormatMessage()
+  const location = useLocation()
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype')), [params])
+
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
       props.onClick(e)
@@ -58,30 +74,97 @@ export default React.memo(function CategoryOption({ active, type, className, cou
     }
   }
 
+  const getHref = (subtype: SubtypeOptions) => {
+    const { href } = props
+    const url = new URL(href || '/', 'http://localhost') // Create a URL object using a dummy URL
+    if (subtype === SubtypeAlternativeOptions.All) {
+      url.searchParams.delete('subtype')
+    } else {
+      url.searchParams.set('subtype', subtype)
+    }
+    const newHref = url.pathname + '?' + url.searchParams.toString()
+    return newHref
+  }
+  const hasSubtypes = !!subtypes && subtypes.length > 0
+  const [isSubtypesOpen, setIsSubtypesOpen] = useState(!!currentSubtype)
+
+  const isSubtypeActive = (subtype: SubtypeOptions) => {
+    if (params.get('type') !== toSnakeCase(ProposalType.Grant)) {
+      return false
+    }
+
+    if (subtype === SubtypeAlternativeOptions.All && !currentSubtype) {
+      return true
+    }
+
+    return toSnakeCase(subtype) === toSnakeCase(currentSubtype)
+  }
+
   return (
-    <a
-      {...props}
-      onClick={handleClick}
-      className={TokenList.join([
-        'CategoryOption',
-        `CategoryOption--${type}`,
-        active && 'CategoryOption--active',
-        className,
-      ])}
-    >
-      <span>
-        <span>{getCategoryIcon(type, CategoryIconVariant.Circled)}</span>
-        <span>
-          <Paragraph tiny semiBold>
-            {t(`category.${type}_title`)}
-          </Paragraph>
+    <Fragment>
+      <a
+        {...props}
+        onClick={handleClick}
+        className={TokenList.join([
+          'CategoryOption',
+          `CategoryOption--${type}`,
+          active && 'CategoryOption--active',
+          className,
+        ])}
+      >
+        <span className="CategoryOption__TitleContainer">
+          <span>
+            {getCategoryIcon(type, CategoryIconVariant.Circled)}
+            <Paragraph tiny semiBold>
+              {t(`category.${type}_title`)}
+            </Paragraph>
+          </span>
+          {hasSubtypes && (
+            <span
+              className={TokenList.join(['CategoryOption__Arrow', isSubtypesOpen && 'CategoryOption__Arrow--active'])}
+              onClick={(e) => {
+                e.preventDefault()
+                setIsSubtypesOpen((prev) => !prev)
+              }}
+            >
+              <Arrow filled={false} color="var(--black-700)" />
+            </span>
+          )}
         </span>
-      </span>
-      {isNumber(count) && (
-        <span className={TokenList.join(['CategoryOption__Counter', active && 'CategoryOption__Counter--active'])}>
-          {count}
-        </span>
+        {isNumber(count) && (
+          <span className={TokenList.join(['CategoryOption__Counter', active && 'CategoryOption__Counter--active'])}>
+            {count}
+          </span>
+        )}
+      </a>
+      {hasSubtypes && (
+        <div
+          className={TokenList.join([
+            'CategoryOption__Subcategories',
+            isSubtypesOpen && 'CategoryOption__Subcategories--active',
+          ])}
+        >
+          {subtypes.map((subtype, index) => {
+            return (
+              <a
+                className={TokenList.join([
+                  'CategoryOption__SubcategoryItem',
+                  isSubtypeActive(subtype) && 'CategoryOption__SubcategoryItem--active',
+                ])}
+                key={subtype + `-${index}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigate(getHref(subtype))
+                }}
+                href={getHref(subtype)}
+              >
+                <SubItem />
+                {t(`category.${toSnakeCase(subtype)}_title`)}
+              </a>
+            )
+          })}
+        </div>
       )}
-    </a>
+    </Fragment>
   )
 })

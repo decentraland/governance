@@ -15,6 +15,10 @@
   justify-content: center !important;
 }
 
+.ProposalsTable__Empty {
+  margin-top: 60px;
+}
+
 /* Only Mobile */
 @media only screen and (max-width: 767px) {
   .ui.pagination.menu .item + .item {

@@ -39,6 +39,9 @@ export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, val
   const newParams = new URLSearchParams(params)
   value ? newParams.set(filterKey, String(value)) : newParams.delete(filterKey)
   newParams.delete('page')
+  if (filterKey === 'type') {
+    newParams.delete('subtype')
+  }
   const stringParams = newParams.toString()
   return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }
@@ -61,3 +64,16 @@ export const fetchWithTimeout = async (url: string, timeout = 10000, options?: R
 }
 
 export const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
+
+export function disableOnWheelInput(event: any) {
+  // Prevent the input value change
+  event.target.blur()
+
+  // Prevent the page/container scrolling
+  event.stopPropagation()
+
+  // Refocus immediately, on the next tick (after the current function is done)
+  setTimeout(() => {
+    event.target.focus()
+  }, 0)
+}
