@@ -310,10 +310,10 @@
     "reactions_title": "Reaction",
     "survey_topics": {
       "idea": "Idea",
-      "personnel": "Personnel",
+      "team": "Team",
       "budget": "Budget",
       "roadmap": "Roadmap Proposal",
-      "potential_impact": "Potential Impact"
+      "impact": "Impact"
     },
     "reactions": {
       "add_reaction": "Add reaction"
