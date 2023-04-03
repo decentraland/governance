@@ -122,12 +122,6 @@ export default function ProposalPage() {
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
 
-  const proposalResults = useRef<HTMLDivElement>(null)
-
-  const handleScrollClick = () => {
-    proposalResults.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
@@ -260,9 +254,6 @@ export default function ProposalPage() {
     )
   }
 
-  const proposalStatus = proposal?.status
-  const showProposalUpdatesActions =
-    isProposalStatusWithUpdates(proposalStatus) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showProposalBudget =
@@ -334,7 +325,6 @@ export default function ProposalPage() {
                 pendingUpdates={pendingUpdates}
                 currentUpdate={currentUpdate}
                 nextUpdate={nextUpdate}
-                handleScrollClick={handleScrollClick}
                 castingVote={castingVote}
                 castVote={castVote}
                 showSurvey={showSurvey}

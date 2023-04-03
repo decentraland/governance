@@ -14,7 +14,7 @@ import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 import ForumButton from './View/ForumButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
 import ProposalDetailSection from './View/ProposalDetailSection'
-import ProposalResultSection from './View/ProposalResultSection'
+import ProposalGovernanceSection from './View/ProposalGovernanceSection'
 import ProposalThresholdsSummary from './View/ProposalThresholdsSummary'
 import ProposalUpdatesActions from './View/ProposalUpdatesActions'
 import SubscribeButton from './View/SubscribeButton'
@@ -32,7 +32,6 @@ type ProposalSidebarProps = {
   pendingUpdates?: UpdateAttributes[]
   nextUpdate?: UpdateAttributes
   currentUpdate?: UpdateAttributes | null
-  handleScrollClick: () => void
   castingVote: boolean
   castVote: (selectedChoice: SelectedVoteChoice, survey?: Survey | undefined) => void
   showSurvey: boolean
@@ -58,7 +57,6 @@ export default function ProposalSidebar({
   pendingUpdates,
   nextUpdate,
   currentUpdate,
-  handleScrollClick,
   castingVote,
   castVote,
   showSurvey,
@@ -112,7 +110,7 @@ export default function ProposalSidebar({
             proposal={proposal}
           />
         )}
-        <ProposalResultSection
+        <ProposalGovernanceSection
           disabled={!proposal || !votes}
           loading={proposalLoading || votesLoading}
           proposal={proposal}
@@ -124,7 +122,6 @@ export default function ProposalSidebar({
           onVote={handleVoteClick}
           updatePageState={updatePageState}
           proposalPageState={proposalPageState}
-          handleScrollTo={handleScrollClick}
         />
         {showProposalThresholdsSummary && (
           <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />

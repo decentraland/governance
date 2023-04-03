@@ -13,8 +13,8 @@ import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
 import './DetailsSection.css'
+import './ProposalGovernanceSection.css'
 import ProposalPromotionSection from './ProposalPromotionSection'
-import './ProposalResultSection.css'
 import SidebarHeaderLabel from './SidebarHeaderLabel'
 
 type ProposalGovernanceSectionProps = {
@@ -29,12 +29,11 @@ type ProposalGovernanceSectionProps = {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
-  handleScrollTo: () => void
 }
 
 const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft]
 
-export default function ProposalResultSection({
+export default function ProposalGovernanceSection({
   proposal,
   loading,
   disabled,
@@ -46,7 +45,6 @@ export default function ProposalResultSection({
   castingVote,
   proposalPageState,
   updatePageState,
-  handleScrollTo,
 }: ProposalGovernanceSectionProps) {
   const t = useFormatMessage()
   const now = Time.utc()
@@ -77,14 +75,14 @@ export default function ProposalResultSection({
       ])}
     >
       <div>
-        <div className="ProposalResultSection__Container">
-          <div className="ProposalResultSection__Header">
+        <div className="ProposalGovernanceSection__Container">
+          <div className="ProposalGovernanceSection__Header">
             <SidebarHeaderLabel>
               {showResults ? t('page.proposal_detail.result_label') : t('page.proposal_detail.get_involved')}
             </SidebarHeaderLabel>
             {showResultsButton && (
               <button
-                className="ProposalResultSection__ResultsButton"
+                className="ProposalGovernanceSection__ResultsButton"
                 onClick={() => setShowResults((prevState) => !prevState)}
               >
                 {!showResults ? t('page.proposal_detail.show_results') : t('page.proposal_detail.hide_results')}
@@ -95,8 +93,8 @@ export default function ProposalResultSection({
         {showResults && (
           <div
             className={TokenList.join([
-              'ProposalResultSection__Results',
-              !finished && 'ProposalResultSection__Results--current',
+              'ProposalGovernanceSection__Results',
+              !finished && 'ProposalGovernanceSection__Results--current',
             ])}
           >
             {partialResults.map((result) => {
@@ -130,8 +128,6 @@ export default function ProposalResultSection({
           updatePageState={updatePageState}
           onChangeVote={onChangeVote}
           hasVoted={hasVoted}
-          handleScrollTo={handleScrollTo}
-          isShowingResults={showResults}
         />
       )}
     </div>
