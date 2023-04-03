@@ -6,10 +6,10 @@ export const shorthands: ColumnDefinitions | undefined = undefined
 export async function up(pgm: MigrationBuilder): Promise<void> {
   const sql = `
     INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'idea');
-    INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'personnel');
+    INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'team');
     INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'budget');
     INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'roadmap');
-    INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'potential_impact');
+    INSERT INTO survey_topics (id, topic_id) VALUES (gen_random_uuid(), 'impact');
   `
 
   pgm.sql(sql)
