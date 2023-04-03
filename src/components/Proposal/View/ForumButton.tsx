@@ -8,12 +8,12 @@ import Forum from '../../Icon/Forum'
 
 import SidebarLinkButton from './SidebarLinkButton'
 
-export type ForumButtonProps = {
+type ForumButtonProps = {
   loading?: boolean
-  proposal: ProposalAttributes | null
+  proposal: Pick<ProposalAttributes, 'discourse_topic_id' | 'discourse_topic_slug'> | null
 }
 
-export default React.memo(function ForumButton({ loading, proposal }: ForumButtonProps) {
+export default function ForumButton({ loading, proposal }: ForumButtonProps) {
   const t = useFormatMessage()
   return (
     <SidebarLinkButton
@@ -25,4 +25,4 @@ export default React.memo(function ForumButton({ loading, proposal }: ForumButto
       {t('page.proposal_detail.forum_button')}
     </SidebarLinkButton>
   )
-})
+}
