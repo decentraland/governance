@@ -56,8 +56,8 @@ export function VotingModalSurvey({
             basic
             fluid
             as={Link}
-            onClick={() => onCastVote(selectedChoice, survey)}
-            loading={castingVote}
+            onClick={() => onCastVote(selectedChoice)}
+            disabled={castingVote}
             className="VotingModal__SkipAndCast"
           >
             {t('page.proposal_detail.skip_and_cast_vote')}
