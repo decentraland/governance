@@ -39,7 +39,6 @@ import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
-import ProposalResults from '../components/Proposal/View/ProposalResults'
 import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -313,22 +312,12 @@ export default function ProposalPage() {
                 />
               )}
               {proposal && (
-                <>
-                  <ProposalResults
-                    proposal={proposal}
-                    votes={votes}
-                    partialResults={partialResults}
-                    loading={proposalState.loading || votesState.loading}
-                    onOpenVotesList={() => updatePageState({ showVotesList: true })}
-                    elementRef={proposalResults}
-                  />
-                  <SurveyResults
-                    votes={votes}
-                    isLoadingVotes={votesState.loading}
-                    surveyTopics={surveyTopics}
-                    isLoadingSurveyTopics={isLoadingSurveyTopics}
-                  />
-                </>
+                <SurveyResults
+                  votes={votes}
+                  isLoadingVotes={votesState.loading}
+                  surveyTopics={surveyTopics}
+                  isLoadingSurveyTopics={isLoadingSurveyTopics}
+                />
               )}
               <ProposalComments proposal={proposal} loading={proposalState.loading} />
             </Grid.Column>
