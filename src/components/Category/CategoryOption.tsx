@@ -13,6 +13,8 @@ import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import Arrow from '../Icon/Arrow'
+import All from '../Icon/ProposalCategories/All'
+import Grant from '../Icon/ProposalCategories/Grant'
 import SubItem from '../Icon/SubItem'
 
 import { categoryIcons } from './CategoryBanner'
@@ -26,12 +28,12 @@ export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElem
 }
 
 const icons: Record<string, any> = {
-  all_proposals: require('../../images/icons/all.svg').default,
-  all_grants: require('../../images/icons/all.svg').default,
-  community: require('../../images/icons/grant.svg').default,
-  content_creator: require('../../images/icons/grant.svg').default,
-  gaming: require('../../images/icons/grant.svg').default,
-  platform_contributor: require('../../images/icons/grant.svg').default,
+  all_proposals: All,
+  all_grants: All,
+  community: Grant,
+  content_creator: Grant,
+  gaming: Grant,
+  platform_contributor: Grant,
   ...categoryIcons,
 }
 
@@ -44,7 +46,9 @@ export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, siz
     return icon({ variant: variant || CategoryIconVariant.Filled, size: size })
   }
 
-  return <img src={icons[type]} width="24" height="24" />
+  const Icon = icons[type]
+
+  return <Icon size="24" />
 }
 
 export default React.memo(function CategoryOption({
