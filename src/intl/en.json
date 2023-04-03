@@ -291,6 +291,8 @@
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "linked_wearables_title": "Linked Wearables Registry",
     "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland",
+    "pitch_title": "Pitch",
+    "pitch_description": "Validate ideas to spawn new projects",
     "all_grants_title": "All grants",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",

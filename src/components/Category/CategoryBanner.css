@@ -95,6 +95,14 @@
   background-color: var(--background-linked-wearables);
 }
 
+.CategoryBanner--pitch .NewBadge {
+  background-color: var(--red-800);
+}
+
+.CategoryBanner--pitch.CategoryBanner--active {
+  background-color: var(--background-pitch);
+}
+
 .CategoryBanner--poll .NewBadge,
 .CategoryBanner--poll.CategoryBanner--active,
 .CategoryBanner--draft .NewBadge,

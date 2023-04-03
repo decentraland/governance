@@ -81,6 +81,7 @@ export enum ProposalType {
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
+  Pitch = 'pitch',
 }
 
 export enum PoiType {

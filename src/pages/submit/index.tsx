@@ -45,6 +45,7 @@ export default function NewProposalPage() {
             href={locations.submit(ProposalType.Grant)}
             active={isGrantProposalSubmitEnabled(NOW)}
           />
+          <CategoryBanner isNew type={ProposalType.Pitch} href={locations.submit(ProposalType.Pitch)} />
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">

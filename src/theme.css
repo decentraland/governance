@@ -9,7 +9,7 @@
   --green-900: #328500;
   --red-100: rgba(216, 0, 39, 0.16);
   --red-150: rgba(216, 0, 39, 0.3);
-  --red-200: #f9d6dc;
+  --red-200: #fce9ec;
   --red-800: #d80027;
   --blue-200: #e2ecfc;
   --blue-600: #89baff;
@@ -36,6 +36,7 @@
   --background-poll: rgba(255, 116, 57, 0.08);
   --background-remove-poi: #fff1f4;
   --background-linked-wearables: #fef9f0;
+  --background-pitch: var(--red-200);
   --background-popup: #5c5c6e;
   --background-disabled: #f9f8f9;
 

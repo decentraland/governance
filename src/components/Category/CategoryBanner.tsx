@@ -15,6 +15,7 @@ import Draft from '../Icon/ProposalCategories/Draft'
 import Governance from '../Icon/ProposalCategories/Governance'
 import Grant from '../Icon/ProposalCategories/Grant'
 import LinkedWearables from '../Icon/ProposalCategories/LinkedWearables'
+import Pitch from '../Icon/ProposalCategories/Pitch'
 import Poi from '../Icon/ProposalCategories/Poi'
 import Poll from '../Icon/ProposalCategories/Poll'
 import RemovePoi from '../Icon/ProposalCategories/RemovePoi'
@@ -34,6 +35,7 @@ export const categoryIcons = {
   [ProposalType.Draft]: Draft,
   [ProposalType.Governance]: Governance,
   [ProposalType.LinkedWearables]: LinkedWearables,
+  [ProposalType.Pitch]: Pitch,
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
