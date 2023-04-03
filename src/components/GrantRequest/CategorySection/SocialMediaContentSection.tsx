@@ -11,6 +11,7 @@ import {
   SocialMediaContentQuestionsSchema,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
@@ -160,6 +161,7 @@ const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
           error={!!state.error.totalPieces}
           message={t(state.error.totalPieces)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
@@ -171,6 +173,7 @@ const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
           error={!!state.error.totalPeopleImpact}
           message={t(state.error.totalPeopleImpact)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">

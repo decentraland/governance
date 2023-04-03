@@ -11,6 +11,7 @@ import {
   GrantRequestCategoryAssessment,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
@@ -134,6 +135,7 @@ const AcceleratorSection = forwardRef(function AcceleratorSection({ onValidation
           error={!!state.error.investmentRecoveryTime}
           message={t(state.error.investmentRecoveryTime)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
     </div>

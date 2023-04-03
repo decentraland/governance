@@ -10,6 +10,7 @@ import {
   GrantRequestCategoryAssessment,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
@@ -92,6 +93,7 @@ const DocumentationSection = forwardRef(function DocumentationSection({ onValida
           error={!!state.error.totalPieces}
           message={t(state.error.totalPieces)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
     </div>

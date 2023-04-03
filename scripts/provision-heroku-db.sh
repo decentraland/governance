@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Define default values
-DEFAULT_DUMP_FILE="development.sql"
+DEFAULT_BACKUP_DATABASE="dcl-governance::b006"
 
 # Get the app name from the first parameter
 APP_NAME=$1
 
 # Get the dump file parameter from the second parameter, or use the default if not provided
-DB_DUMP=${2:-$DEFAULT_DUMP_FILE}
+DB_DUMP=${2:-$DEFAULT_BACKUP_DATABASE}
 
 # Get the output of the heroku pg:info command
 PG_INFO=$(heroku pg:info -a $APP_NAME)
@@ -29,3 +29,5 @@ heroku config:set CONNECTION_STRING=$CONNECTION_STRING -a $APP_NAME
 
 # Restart app dynos
 heroku ps:restart -a $APP_NAME
+
+echo "Database initialized for https://$APP_NAME.herokuapp.com/"

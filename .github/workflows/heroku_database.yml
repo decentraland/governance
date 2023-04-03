@@ -7,9 +7,9 @@ on:
         required: true
         type: string
         description: 'Review app name'
-      testing-db-url:
+      testing-db:
         type: string
-        description: 'Testing Database URL'
+        description: 'Testing Database'
 
 jobs:
   custom-deploy:
@@ -34,6 +34,7 @@ jobs:
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
       - name: Add database to Heroku app
         run: |
-          ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME ${{ github.workspace }}/scripts/development.sql
+          ./scripts/provision-heroku-db.sh $HEROKU_APP_NAME $HEROKU_TESTING_DB
         env:
           HEROKU_APP_NAME: ${{ inputs.app-name }}
+          HEROKU_TESTING_DB: ${{ inputs.testing-db }}
