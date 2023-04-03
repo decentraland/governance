@@ -57,6 +57,7 @@ import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
+import { ErrorService } from '../services/ErrorService'
 
 import './proposal.css'
 
@@ -143,7 +144,8 @@ export default function ProposalPage() {
           })
           votesState.reload()
         } catch (err) {
-          console.error(err, { ...(err as Error) }) //TODO report error
+          ErrorService.report('Unable to vote: ', err)
+          console.error(err, { ...(err as Error) })
           if ((err as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({
               changingVote: false,
