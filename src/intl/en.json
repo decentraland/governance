@@ -299,6 +299,7 @@
     "social_media_content_title": "Social Media Content",
     "sponsorship_title": "Sponsorship",
     "accelerator_title": "Accelerator",
+    "legacy_title": "Legacy",
     "community_title": "Community",
     "content_creator_title": "Content Creator",
     "gaming_title": "Gaming",
@@ -563,6 +564,7 @@
         "votes_per_proposal": "Votes",
         "display_median": "Display: median",
         "top_voters": "Last month top voters",
+        "top_voters_tooltip": "Voting with +{vp}VP",
         "votes": "Votes",
         "fetching_participation": "Fetching participation...",
         "fetching_votes": "Fetching top voters..."
@@ -888,6 +890,7 @@
       "cliff_remaining": "{count} {count, plural, one {day} other {days}} to go",
       "released": "released",
       "started_date": "Started",
+      "starts_date": "Starts",
       "end_date": "Ends",
       "transaction_date": "Transaction made",
       "past_funded": {

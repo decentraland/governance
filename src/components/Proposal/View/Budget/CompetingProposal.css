@@ -26,7 +26,7 @@
 }
 
 .CompetingProposal__Title {
-  display: flex;
+  display: block;
   width: 100%;
   font-weight: 500;
   font-size: 17px;
@@ -34,6 +34,10 @@
   letter-spacing: -0.2px;
   color: var(--black-800);
   margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 .CompetingProposal__Details {

@@ -1,4 +1,5 @@
-import { camelCase, cloneDeep } from 'lodash'
+import camelCase from 'lodash/camelCase'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
@@ -39,6 +40,13 @@ export enum NewGrantCategory {
   Sponsorship = 'Sponsorship',
 }
 
+export enum SubtypeAlternativeOptions {
+  All = 'all_grants',
+  Legacy = 'legacy',
+}
+
+export type SubtypeOptions = `${NewGrantCategory}` | `${SubtypeAlternativeOptions}`
+
 export enum VestingStartDate {
   First = '1st',
   Fifteenth = '15th',
@@ -59,6 +67,17 @@ export enum GrantStatus {
   Finished = 'Finished',
   Paused = 'Paused',
   Revoked = 'Revoked',
+}
+
+export function isGrantSubtype(value: string | null | undefined) {
+  return (
+    !!value &&
+    (value === SubtypeAlternativeOptions.Legacy || new Set<string>(Object.values(NewGrantCategory)).has(value))
+  )
+}
+
+export function toGrantSubtype(value: string | null | undefined): SubtypeOptions | undefined {
+  return isGrantSubtype(value) ? (value as SubtypeOptions) : undefined
 }
 
 export const GrantRequestGeneralInfoSchema = {

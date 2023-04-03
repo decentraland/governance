@@ -8,22 +8,32 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { PoiType, ProposalType } from '../../entities/Proposal/types'
+import AddPoi from '../Icon/ProposalCategories/AddPoi'
+import BanName from '../Icon/ProposalCategories/BanName'
+import Catalyst from '../Icon/ProposalCategories/Catalyst'
+import Draft from '../Icon/ProposalCategories/Draft'
+import Governance from '../Icon/ProposalCategories/Governance'
+import Grant from '../Icon/ProposalCategories/Grant'
+import LinkedWearables from '../Icon/ProposalCategories/LinkedWearables'
+import Poi from '../Icon/ProposalCategories/Poi'
+import Poll from '../Icon/ProposalCategories/Poll'
+import RemovePoi from '../Icon/ProposalCategories/RemovePoi'
 
 import './CategoryBanner.css'
 
 const Box = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />
 
 export const categoryIcons = {
-  [ProposalType.Catalyst]: require('../../images/icons/catalyst.svg').default,
-  [ProposalType.POI]: require('../../images/icons/poi.svg').default,
-  [PoiType.AddPOI]: require('../../images/icons/add-poi.svg').default,
-  [PoiType.RemovePOI]: require('../../images/icons/remove-poi.svg').default,
-  [ProposalType.BanName]: require('../../images/icons/ban-name.svg').default,
-  [ProposalType.Grant]: require('../../images/icons/grant.svg').default,
-  [ProposalType.Poll]: require('../../images/icons/poll.svg').default,
-  [ProposalType.Draft]: require('../../images/icons/draft.svg').default,
-  [ProposalType.Governance]: require('../../images/icons/governance.svg').default,
-  [ProposalType.LinkedWearables]: require('../../images/icons/linked-wearables.svg').default,
+  [ProposalType.Catalyst]: Catalyst,
+  [ProposalType.POI]: Poi,
+  [PoiType.AddPOI]: AddPoi,
+  [PoiType.RemovePOI]: RemovePoi,
+  [ProposalType.BanName]: BanName,
+  [ProposalType.Grant]: Grant,
+  [ProposalType.Poll]: Poll,
+  [ProposalType.Draft]: Draft,
+  [ProposalType.Governance]: Governance,
+  [ProposalType.LinkedWearables]: LinkedWearables,
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
@@ -55,6 +65,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
   }
 
   const Component = active && href ? Link : Box
+  const Icon = categoryIcons[type]
 
   return (
     <Component
@@ -63,7 +74,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
       className={TokenList.join(['CategoryBanner', `CategoryBanner--${type}`, active && 'CategoryBanner--active'])}
     >
       <div className={TokenList.join(['CategoryBanner__Icon', !active && 'CategoryBanner__Icon--inactive'])}>
-        <img src={categoryIcons[type]} width="48" height="48" />
+        <Icon />
       </div>
       <div>
         <div className="CategoryBanner__TitleContainer">

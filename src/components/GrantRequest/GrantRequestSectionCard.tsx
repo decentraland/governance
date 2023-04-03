@@ -15,6 +15,7 @@ export const GrantRequestSectionCard = ({
   titleExtra,
   subtitleVariant = 'normal',
   error,
+  onClick,
 }: {
   title: string | React.ReactNode
   content: string | React.ReactNode | null
@@ -23,9 +24,17 @@ export const GrantRequestSectionCard = ({
   helper?: React.ReactNode
   subtitleVariant?: 'normal' | 'uppercase'
   error?: boolean
+  onClick?: () => void
 }) => {
   return (
-    <div className={TokenList.join(['GrantRequestSectionCard', error && 'GrantRequestSectionCard__Error'])}>
+    <div
+      className={TokenList.join([
+        'GrantRequestSectionCard',
+        error && 'GrantRequestSectionCard__Error',
+        onClick && 'GrantRequestSectionCard__Hoverable',
+      ])}
+      onClick={onClick}
+    >
       <div className="GrantRequestSectionCard__Header">
         <div className="GrantRequestSectionCard__HeaderTitle">
           {title}

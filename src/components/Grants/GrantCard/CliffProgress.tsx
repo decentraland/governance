@@ -9,7 +9,7 @@ import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
 import './CliffProgress.css'
 
-export type Props = React.HTMLAttributes<HTMLDivElement> & {
+type Props = {
   enactedAt: number
   basic?: boolean
 }
@@ -22,6 +22,7 @@ const CliffProgress = ({ enactedAt, basic }: Props) => {
   const daysToGo = CLIFF_PERIOD_IN_DAYS - elapsedSinceVestingStarted
   const elapsedPercentage = getRoundedPercentage(elapsedSinceVestingStarted, CLIFF_PERIOD_IN_DAYS)
   const enactedDate = vestingStartDate.fromNow()
+  const hasStarted = Time(vestingStartDate).isBefore(now)
 
   return (
     <div className="CliffProgress">
@@ -48,7 +49,7 @@ const CliffProgress = ({ enactedAt, basic }: Props) => {
       {!basic && (
         <div className="CliffProgress__Dates">
           <div className="CliffProgress__EnactedAt">
-            <span>{t('page.grants.started_date')}</span>
+            <span>{hasStarted ? t('page.grants.started_date') : t('page.grants.starts_date')}</span>
             <span className="CliffProgress__EnactedDate">{enactedDate}</span>
           </div>
         </div>

@@ -14,6 +14,14 @@
   box-shadow: 0 1px 8px var(--red-100);
 }
 
+.GrantRequestSectionCard__Hoverable {
+  cursor: pointer;
+}
+
+.GrantRequestSectionCard__Hoverable:hover {
+  box-shadow: 0 10px 10px var(--black-200);
+}
+
 .GrantRequestSectionCard__Header {
   display: flex;
   justify-content: space-between;

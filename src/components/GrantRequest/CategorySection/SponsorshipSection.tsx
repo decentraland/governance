@@ -12,6 +12,7 @@ import {
   SponsorshipQuestionsSchema,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
@@ -178,6 +179,7 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
           error={!!state.error.totalEvents}
           message={t(state.error.totalEvents)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
@@ -189,6 +191,7 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
           error={!!state.error.totalAttendance}
           message={t(state.error.totalAttendance)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">

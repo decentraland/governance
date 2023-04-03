@@ -50,9 +50,10 @@ const ITEMS_PER_PAGE = 25
 export default function ProposalsPage() {
   const t = useFormatMessage()
   const location = useLocation()
-  const { type, status, search, searching, timeFrame, order, page } = useSearchParams()
+  const { type, subtype, status, search, searching, timeFrame, order, page } = useSearchParams()
   const { proposals, isLoadingProposals } = useProposals({
     type,
+    subtype,
     status,
     page,
     search,
@@ -194,6 +195,7 @@ export default function ProposalsPage() {
                     {type && !searching && <CategoryBanner type={type} />}
                     {proposals && proposals.data.length === 0 && (
                       <Empty
+                        className="ProposalsTable__Empty"
                         description={
                           searching || status || timeFrame?.length > 0
                             ? t('navigation.search.no_matches')

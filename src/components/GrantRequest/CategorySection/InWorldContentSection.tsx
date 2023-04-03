@@ -11,6 +11,7 @@ import {
   InWorldContentQuestionsSchema,
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../../helpers'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
@@ -91,6 +92,7 @@ const InWorldContentSection = forwardRef(function InWorldContentSection({ onVali
           error={!!state.error.totalPieces}
           message={t(state.error.totalPieces)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
@@ -103,6 +105,7 @@ const InWorldContentSection = forwardRef(function InWorldContentSection({ onVali
           error={!!state.error.totalUsers}
           message={t(state.error.totalUsers)}
           disabled={isFormDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
