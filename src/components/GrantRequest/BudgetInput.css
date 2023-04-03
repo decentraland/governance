@@ -16,7 +16,7 @@
 
 .BudgetInput__Description {
   padding: 9px;
-  background: rgba(115, 110, 125, 0.1); /* TODO: Add color to theme */
+  background: var(--alpha-black-200);
   font-weight: 400;
   font-size: 17px;
   line-height: 26px;
