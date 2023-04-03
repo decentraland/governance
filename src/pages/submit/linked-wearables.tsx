@@ -27,6 +27,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
+import { disableOnWheelInput } from '../../helpers'
 import { isHttpsURL } from '../../helpers'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -501,6 +502,7 @@ export default function SubmitLinkedWearables() {
           onAction={() => null}
           message={t(state.error.items)}
           disabled={formDisabled}
+          onWheel={disableOnWheelInput}
         />
       </ContentSection>
       <ContentSection>
