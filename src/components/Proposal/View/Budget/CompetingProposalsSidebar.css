@@ -89,13 +89,13 @@
 }
 
 .UncontestedFundsLegend {
-  background: var(--black-300t);
+  background: var(--alpha-black-300);
 }
 
 .AvailableOverBudgetLegend {
   background: var(--white-900);
   border: 1px solid var(--red-800);
-  box-shadow: 0 1px 1px var(--black-300t);
+  box-shadow: 0 1px 1px var(--alpha-black-300);
 }
 
 .GrantedFundsLabel {
@@ -158,7 +158,7 @@
 
 .ThisInitiativeBar--selected {
   background: var(--gradient-purple-fancy-1) !important;
-  box-shadow: 0 1px 4px var(--fuchsia-500t) !important;
+  box-shadow: 0 1px 4px var(--alpha-fuchsia-500) !important;
 }
 
 .ThisInitiativeOverbudgetBar {
@@ -169,11 +169,11 @@
 
 .ThisInitiativeOverbudgetBar--selected {
   background: var(--gradient-red-fancy-1) !important;
-  box-shadow: 0 1px 4px var(--fuchsia-500t) !important;
+  box-shadow: 0 1px 4px var(--alpha-fuchsia-500) !important;
 }
 
 .UncontestedBudgetBar {
-  background: var(--black-300t);
+  background: var(--alpha-black-300);
   border-radius: 4px;
   margin-left: 2px;
 }

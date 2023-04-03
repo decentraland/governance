@@ -34,24 +34,23 @@
   --yellow-800: rgba(var(--yellow-raw), 1);
 
   --fuchsia-200: rgba(255, 228, 255, 1);
-  --fuchsia-200t: rgba(var(--fuchsia-raw), 0.16);
-  --fuchsia-500t: rgba(var(--fuchsia-raw), 0.5);
+  --alpha-fuchsia-200: rgba(var(--fuchsia-raw), 0.16);
+  --alpha-fuchsia-500: rgba(var(--fuchsia-raw), 0.5);
   --fuchsia-800: rgba(var(--fuchsia-raw), 1);
 
   --green-200: rgba(225, 243, 214, 1);
-  --green-200t: rgba(var(--green-raw), 0.16);
-  --green-400t: rgba(var(--green-raw), 0.4);
+  --alpha-green-200: rgba(var(--green-raw), 0.16);
+  --alpha-green-400: rgba(var(--green-raw), 0.4);
   --green-800: rgba(var(--green-raw), 1);
   --green-900: rgba(50, 133, 0, 1);
 
   --red-100: rgba(var(--red-raw), 0.16);
   --red-200: rgba(249, 214, 220, 1);
-  --red-200t: rgba(var(--red-raw), 0.16);
-  --red-400t: rgba(var(--red-raw), 0.4);
+  --alpha-red-400: rgba(var(--red-raw), 0.4);
   --red-800: rgba(var(--red-raw), 1);
 
   --blue-200: rgba(226, 236, 252, 1);
-  --blue-200t: rgba(var(--blue-raw), 0.16);
+  --alpha-blue-200: rgba(var(--blue-raw), 0.16);
   --blue-600: rgba(137, 186, 255, 1);
   --blue-800: rgba(var(--blue-raw), 1);
 
@@ -60,21 +59,21 @@
   --white-900: rgba(var(--white-raw), 1);
 
   --orange-200: rgba(255, 233, 223, 1);
-  --orange-200t: rgba(var(--orange-raw), 0.16);
+  --alpha-orange-200: rgba(var(--orange-raw), 0.16);
   --orange-800: rgba(var(--orange-raw), 1);
 
   --black-100: rgba(var(--black-raw), 0.1);
   --black-200: rgba(243, 242, 245, 1);
-  --black-200t: rgba(var(--gray-raw-b), 0.1);
+  --alpha-black-200: rgba(var(--gray-raw-b), 0.1);
   --black-300: rgba(221, 220, 224, 1);
-  --black-300t: rgba(var(--gray-raw-b), 0.24);
+  --alpha-black-300: rgba(var(--gray-raw-b), 0.24);
   --black-400: rgba(185, 183, 190, 1);
   --black-600: rgba(var(--gray-raw-b), 1);
   --black-700: rgba(55, 51, 61, 1);
   --black-800: rgba(var(--black-raw), 1);
 
   --purple-200: rgba(224, 220, 243, 1);
-  --purple-200t: rgba(var(--purple-raw), 0.16);
+  --alpha-purple-200: rgba(var(--purple-raw), 0.16);
   --purple-800: rgba(var(--purple-raw), 1);
 
   --dcl-primary: rgba(var(--dcl-primary-raw), 1);

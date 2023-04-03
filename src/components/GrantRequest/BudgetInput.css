@@ -16,7 +16,7 @@
 
 .BudgetInput__Description {
   padding: 9px;
-  background: var(--black-200t);
+  background: var(--alpha-black-200);
   font-weight: 400;
   font-size: 17px;
   line-height: 26px;

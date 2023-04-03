@@ -27,15 +27,15 @@
 .RequestedBudgetBar {
   background: var(--gradient-green-fancy);
   border-radius: 5px;
-  box-shadow: 0 1px 4px var(--green-400t);
+  box-shadow: 0 1px 4px var(--alpha-green-400);
 }
 
 .RequestedBudgetBar--overbudget {
   background: var(--red-800);
-  box-shadow: 0 1px 4px var(--red-400t);
+  box-shadow: 0 1px 4px var(--alpha-red-400);
 }
 
 .RemainingBudgetBar {
-  background: var(--black-300t);
+  background: var(--alpha-black-300);
   border-radius: 0 4px 4px 0;
 }
