@@ -17,6 +17,7 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.Poll]: PillColor.Orange,
   [ProposalType.Draft]: PillColor.Orange,
   [ProposalType.Governance]: PillColor.Orange,
+  [ProposalType.Hiring]: PillColor.Green, // TODO: Change to a new color
 }
 
 type Props = {

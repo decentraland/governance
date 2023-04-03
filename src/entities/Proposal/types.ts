@@ -22,6 +22,7 @@ import {
   VOTING_POWER_TO_PASS_CATALYST,
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
+  VOTING_POWER_TO_PASS_HIRING,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
@@ -81,6 +82,7 @@ export enum ProposalType {
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
+  Hiring = 'hiring',
 }
 
 export enum PoiType {
@@ -98,6 +100,7 @@ export function isProposalType(value: string | null | undefined): boolean {
     case ProposalType.Draft:
     case ProposalType.Governance:
     case ProposalType.LinkedWearables:
+    case ProposalType.Hiring:
       return true
     default:
       return false
@@ -409,6 +412,8 @@ export const newProposalPOIScheme = {
   },
 }
 
+export type NewProposalHiring = {}
+
 export type NewProposalCatalyst = {
   owner: string
   domain: string
@@ -445,6 +450,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),
   [ProposalType.BanName]: requiredVotingPower(VOTING_POWER_TO_PASS_BAN_NAME, 0),
   [ProposalType.POI]: requiredVotingPower(VOTING_POWER_TO_PASS_POI, 0),
+  [ProposalType.Hiring]: requiredVotingPower(VOTING_POWER_TO_PASS_HIRING, 0),
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
