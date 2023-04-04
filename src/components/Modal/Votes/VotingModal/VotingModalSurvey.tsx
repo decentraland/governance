@@ -41,7 +41,8 @@ export function VotingModalSurvey({
       <div className="ProposalModal__Title">
         <Header>{t('modal.voting_modal_survey.title')}</Header>
         <Paragraph small>
-          {t('modal.voting_modal_survey.selected_choice', { choice: formatChoice(selectedChoice.choice!) })}
+          {t('modal.voting_modal_survey.selected_choice')}
+          <span className="VotingModal__Choice">{formatChoice(selectedChoice.choice!)}</span>
         </Paragraph>
       </div>
       <SentimentSurvey

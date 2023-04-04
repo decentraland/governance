@@ -4,6 +4,10 @@
   margin-right: 42px !important;
 }
 
+.VotingModal__Choice {
+  font-weight: 600;
+}
+
 .VotingModal__Actions {
   width: 100%;
   display: flex;
