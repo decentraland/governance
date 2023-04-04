@@ -100,7 +100,7 @@ export default function ProposalGovernanceSection({
             {partialResults.map((result) => {
               return (
                 <ChoiceProgress
-                  // onClick={onOpenVotesList} TODO
+                  onClick={() => updatePageState({ showVotesList: true })}
                   key={result.choice}
                   color={result.color}
                   choice={result.choice}
