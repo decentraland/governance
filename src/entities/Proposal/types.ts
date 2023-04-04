@@ -95,6 +95,12 @@ export enum HiringType {
   Remove = 'hiring_remove',
 }
 
+export enum HiringTeams {
+  SAB = 'Security Advisory Board',
+  DAOCommitee = 'DAO Committee',
+  WearableCuration = 'Wearable Curation Team',
+}
+
 export function isProposalType(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
@@ -132,6 +138,20 @@ export function toPoiType(value: string | null | undefined): PoiType | null {
 
 export function getPoiTypeAction(poiType: PoiType) {
   return poiType.split('_')[0] // "add" | "remove"
+}
+
+export function toHiringType(value: string | null | undefined): HiringType | null {
+  switch (value) {
+    case HiringType.Add:
+    case HiringType.Remove:
+      return value
+    default:
+      return null
+  }
+}
+
+export function getHiringTypeAction(hiringType: HiringType) {
+  return hiringType.split('_')[1] // "add" | "remove"
 }
 
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
@@ -418,6 +438,33 @@ export const newProposalPOIScheme = {
 }
 
 export type NewProposalHiring = {}
+
+export const newProposalHiringScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['committee', 'address', 'reasons', 'evidence'],
+  properties: {
+    committee: {
+      type: 'string',
+      enum: Object.values(HiringTeams),
+    },
+    address: {
+      type: 'string',
+      format: 'address',
+    },
+    reasons: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3000,
+    },
+    evidence: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3000,
+    },
+    coAuthors,
+  },
+}
 
 export type NewProposalCatalyst = {
   owner: string

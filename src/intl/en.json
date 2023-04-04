@@ -1180,6 +1180,27 @@
       "y_placeholder": "-150 through 150",
       "description_label": "Description"
     },
+    "submit_hiring": {
+      "add": {
+        "title": "Add Committee Member",
+        "reasons_title": "Reasons to add",
+        "reasons_description": "Please explain why you think they should become part of the Committee",
+        "evidence_title": "Evidence",
+        "evidence_description": "Indicate what makes them worthy of the throne"
+      },
+      "error": {
+        "address_invalid": "Address is invalid",
+        "reasons_required": "Reasons are required",
+        "reasons_min_length": "Reasons field is too short",
+        "reasons_max_length": "Reasons field is too long"
+      },
+      "description": "MISSING_COPY",
+      "target_title": "Target Committee",
+      "target_placeholder": "Select a committee",
+      "target_description": "Only those with available positions are listed",
+      "address_title": "Ethereum Address",
+      "address_placeholder": "Enter their address"
+    },
     "submit_catalyst": {
       "title": "Add a catalyst node",
       "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
