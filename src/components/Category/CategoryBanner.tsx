@@ -7,7 +7,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { PoiType, ProposalType } from '../../entities/Proposal/types'
+import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
 import BanName from '../Icon/ProposalCategories/BanName'
 import Catalyst from '../Icon/ProposalCategories/Catalyst'
@@ -15,6 +15,8 @@ import Draft from '../Icon/ProposalCategories/Draft'
 import Governance from '../Icon/ProposalCategories/Governance'
 import Grant from '../Icon/ProposalCategories/Grant'
 import Hiring from '../Icon/ProposalCategories/Hiring'
+import HiringAdd from '../Icon/ProposalCategories/HiringAdd'
+import HiringRemove from '../Icon/ProposalCategories/HiringRemove'
 import LinkedWearables from '../Icon/ProposalCategories/LinkedWearables'
 import Poi from '../Icon/ProposalCategories/Poi'
 import Poll from '../Icon/ProposalCategories/Poll'
@@ -36,12 +38,14 @@ export const categoryIcons = {
   [ProposalType.Governance]: Governance,
   [ProposalType.LinkedWearables]: LinkedWearables,
   [ProposalType.Hiring]: Hiring,
+  [HiringType.Add]: HiringAdd,
+  [HiringType.Remove]: HiringRemove,
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   active?: boolean
   isNew?: boolean
-  type: ProposalType | PoiType
+  type: ProposalType | PoiType | HiringType
   onClick?: () => void
 }
 

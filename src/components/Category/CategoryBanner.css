@@ -56,21 +56,31 @@
   font-size: 13px !important;
 }
 
-.CategoryBanner--poi {
+.CategoryBanner--poi,
+.CategoryBanner--hiring {
   cursor: pointer;
 }
 
-.CategoryBanner--catalyst .NewBadge,
+.CategoryBanner--catalyst .NewBadge {
+  background-color: var(--blue-800);
+}
+
 .CategoryBanner--catalyst.CategoryBanner--active {
   background-color: var(--background-catalyst);
 }
 
-.CategoryBanner--poi .NewBadge,
+.CategoryBanner--poi .NewBadge {
+  background-color: var(--green-800);
+}
+
 .CategoryBanner--poi.CategoryBanner--active {
   background-color: var(--background-poi);
 }
 
-.CategoryBanner--add_poi .NewBadge,
+.CategoryBanner--add_poi .NewBadge {
+  background-color: var(--green-800);
+}
+
 .CategoryBanner--add_poi.CategoryBanner--active {
   background-color: var(--background-poi);
 }
@@ -80,22 +90,52 @@
   background-color: var(--background-remove-poi);
 }
 
-.CategoryBanner--ban_name .NewBadge,
+.CategoryBanner--ban_name .NewBadge {
+  background-color: var(--fuchsia-800);
+}
+
 .CategoryBanner--ban_name.CategoryBanner--active {
   background-color: var(--background-ban-name);
 }
 
-.CategoryBanner--grant .NewBadge,
+.CategoryBanner--grant .NewBadge {
+  background-color: var(--purple-800);
+}
+
 .CategoryBanner--grant.CategoryBanner--active {
   background-color: var(--background-grant);
 }
 
-.CategoryBanner--linked_wearables .NewBadge,
+.CategoryBanner--linked_wearables .NewBadge {
+  background-color: var(--yellow-800);
+}
+
 .CategoryBanner--linked_wearables.CategoryBanner--active {
   background-color: var(--background-linked-wearables);
 }
 
+.CategoryBanner--hiring .NewBadge {
+  background-color: rgb(var(--green-raw-c));
+}
+
+.CategoryBanner--hiring.CategoryBanner--active {
+  background-color: var(--background-hiring);
+}
+
+.CategoryBanner--hiring_add.CategoryBanner--active {
+  background-color: var(--background-add-hiring);
+}
+
+.CategoryBanner--hiring_remove.CategoryBanner--active {
+  background-color: var(--background-remove-hiring);
+}
+
 .CategoryBanner--poll .NewBadge,
+.CategoryBanner--draft .NewBadge,
+.CategoryBanner--governance .NewBadge {
+  background-color: var(--orange-800);
+}
+
 .CategoryBanner--poll.CategoryBanner--active,
 .CategoryBanner--draft .NewBadge,
 .CategoryBanner--draft.CategoryBanner--active,

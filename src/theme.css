@@ -3,6 +3,7 @@
   --fuchsia-raw: 255, 90, 254;
   --green-raw: 68, 182, 0;
   --green-raw-b: 1, 127, 10;
+  --green-raw-c: 0, 182, 138;
   --red-raw: 216, 0, 39;
   --red-raw-b: 255, 0, 46;
   --red-raw-c: 216, 0, 39;
@@ -83,6 +84,9 @@
   --background-ban-name: rgba(var(--fuchsia-raw), 0.08);
   --background-grant: rgba(var(--purple-raw), 0.08);
   --background-poll: rgba(var(--orange-raw), 0.08);
+  --background-hiring: rgba(var(--green-raw-c), 0.08);
+  --background-add-hiring: rgba(var(--green-raw), 0.08);
+  --background-remove-hiring: var(--red-100);
   --background-remove-poi: var(--red-100);
   --background-linked-wearables: rgba(var(--yellow-raw), 0.2);
   --background-popup: rgba(92, 92, 110, 1);

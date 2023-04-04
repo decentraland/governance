@@ -90,6 +90,11 @@ export enum PoiType {
   RemovePOI = 'remove_poi',
 }
 
+export enum HiringType {
+  Add = 'hiring_add',
+  Remove = 'hiring_remove',
+}
+
 export function isProposalType(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalType.POI:
