@@ -19,10 +19,15 @@ interface Props {
   votesByChoices: Scores
   totalVotes: number
   onVote: (selectedChoice: SelectedVoteChoice) => void
+  voteWithSurvey: boolean
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
   startAt?: Date
+}
+
+function getSelectedChoice(currentChoice: string, currentChoiceIndex: number) {
+  return { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 }
 }
 
 export const ChoiceButtons = ({
@@ -33,6 +38,7 @@ export const ChoiceButtons = ({
   votesByChoices,
   totalVotes,
   onVote,
+  voteWithSurvey,
   castingVote,
   proposalPageState,
   updatePageState,
@@ -46,8 +52,12 @@ export const ChoiceButtons = ({
   const selectionPending = !(selectedChoice && !!selectedChoice.choice)
 
   const handleChoiceClick = (currentChoice: string, currentChoiceIndex: number) => {
-    return () => {
-      updatePageState({ selectedChoice: { choice: currentChoice, choiceIndex: currentChoiceIndex + 1 } })
+    if (voteWithSurvey) {
+      return () => onVote(getSelectedChoice(currentChoice, currentChoiceIndex))
+    } else {
+      return () => {
+        updatePageState({ selectedChoice: getSelectedChoice(currentChoice, currentChoiceIndex) })
+      }
     }
   }
 
@@ -58,7 +68,7 @@ export const ChoiceButtons = ({
         const delegateVotedCurrentChoice = delegateVote?.choice === currentChoiceIndex + 1
         return (
           <ChoiceButton
-            selected={selectedChoice.choice === currentChoice}
+            selected={selectedChoice.choice === currentChoice && !voteWithSurvey}
             key={currentChoice}
             voted={votedCurrentChoice}
             disabled={votedCurrentChoice || !started}
@@ -73,7 +83,7 @@ export const ChoiceButtons = ({
       })}
       <Button
         primary
-        disabled={selectionPending || !started || showVotingError}
+        disabled={selectionPending || !started || showVotingError || voteWithSurvey}
         loading={castingVote}
         onClick={() => onVote && selectedChoice && onVote(selectedChoice)}
       >

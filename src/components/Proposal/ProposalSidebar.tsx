@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
@@ -36,7 +34,7 @@ type ProposalSidebarProps = {
   currentUpdate?: UpdateAttributes | null
   castingVote: boolean
   castVote: (selectedChoice: SelectedVoteChoice, survey?: Survey | undefined) => void
-  showSurvey: boolean
+  voteWithSurvey: boolean
   updatingStatus: boolean
   subscribing: boolean
   subscribe: (subscribe?: boolean) => void
@@ -61,7 +59,7 @@ export default function ProposalSidebar({
   currentUpdate,
   castingVote,
   castVote,
-  showSurvey,
+  voteWithSurvey,
   updatingStatus,
   subscribing,
   subscribe,
@@ -80,11 +78,8 @@ export default function ProposalSidebar({
     [account, subscriptions]
   )
 
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
-    if (showSurvey && !isMobile) {
+    if (voteWithSurvey) {
       updatePageState({
         selectedChoice: selectedChoice,
         showVotingModal: true,
@@ -123,6 +118,7 @@ export default function ProposalSidebar({
           votes={votes}
           partialResults={partialResults}
           choices={choices}
+          voteWithSurvey={voteWithSurvey}
           castingVote={castingVote}
           onChangeVote={(_, changing) => updatePageState({ changingVote: changing })}
           onVote={handleVoteClick}

@@ -12,9 +12,11 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
+import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../clients/Governance'
@@ -238,7 +240,9 @@ export default function ProposalPage() {
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  const showSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0
+  const responsive = useResponsive()
+  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const voteWithSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0 && !isMobile
 
   if (proposalState.error) {
     return (
@@ -329,7 +333,7 @@ export default function ProposalPage() {
                 nextUpdate={nextUpdate}
                 castingVote={castingVote}
                 castVote={castVote}
-                showSurvey={showSurvey}
+                voteWithSurvey={voteWithSurvey}
                 updatingStatus={updatingStatus}
                 subscribing={subscribing}
                 subscribe={subscribe}
@@ -347,7 +351,7 @@ export default function ProposalPage() {
         </Grid>
       </ContentLayout>
 
-      {proposal && showSurvey && (
+      {proposal && voteWithSurvey && (
         <VotingModal
           proposal={proposal}
           surveyTopics={surveyTopics}

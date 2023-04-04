@@ -25,6 +25,7 @@ type ProposalGovernanceSectionProps = {
   loading?: boolean
   disabled?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
+  voteWithSurvey: boolean
   onVote: (selectedChoice: SelectedVoteChoice) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
@@ -43,6 +44,7 @@ export default function ProposalGovernanceSection({
   onChangeVote,
   onVote,
   castingVote,
+  voteWithSurvey,
   proposalPageState,
   updatePageState,
 }: ProposalGovernanceSectionProps) {
@@ -124,6 +126,8 @@ export default function ProposalGovernanceSection({
           finished={finished}
           onVote={onVote}
           castingVote={castingVote}
+          voteWithSurvey={voteWithSurvey}
+          isShowingResults={showResults}
           proposalPageState={proposalPageState}
           updatePageState={updatePageState}
           onChangeVote={onChangeVote}

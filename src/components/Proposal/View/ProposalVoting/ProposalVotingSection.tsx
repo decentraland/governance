@@ -13,6 +13,7 @@ import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../../modules/votes/utils'
 import { ProposalPageState } from '../../../../pages/proposal'
+import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
@@ -29,6 +30,8 @@ interface Props {
   finished: boolean
   onVote: (selectedChoice: SelectedVoteChoice) => void
   hasVoted: boolean
+  voteWithSurvey: boolean
+  isShowingResults: boolean
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
@@ -50,6 +53,8 @@ const ProposalVotingSection = ({
   onVote,
   onChangeVote,
   castingVote,
+  voteWithSurvey,
+  isShowingResults,
   proposalPageState,
   updatePageState,
   finished,
@@ -106,6 +111,12 @@ const ProposalVotingSection = ({
         </div>
       )}
 
+      {!proposalVotingSectionLoading && !hasVoted && isShowingResults && (
+        <SidebarHeaderLabel className="ProposalVotingSection__HeaderLabel">
+          {t('page.proposal_detail.get_involved')}
+        </SidebarHeaderLabel>
+      )}
+
       {showGrantRequestText && (
         <Markdown className="ProposalVotingSection__GrantRequest">
           {t('page.proposal_view.grant.header', {
@@ -141,6 +152,7 @@ const ProposalVotingSection = ({
                   delegateVote={delegateVote}
                   totalVotes={totalVotes}
                   onVote={onVote}
+                  voteWithSurvey={voteWithSurvey}
                   proposalPageState={proposalPageState}
                   castingVote={castingVote}
                   updatePageState={updatePageState}
