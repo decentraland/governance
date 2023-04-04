@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -8,7 +8,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { Survey, Topic } from '../../../../entities/SurveyTopic/types'
+import { Reaction, Survey, Topic } from '../../../../entities/SurveyTopic/types'
 import { SelectedVoteChoice } from '../../../../entities/Votes/types'
 import { formatChoice } from '../../../../modules/votes/utils'
 import { ProposalPageState } from '../../../../pages/proposal'
@@ -35,6 +35,10 @@ export function VotingModalSurvey({
   const [survey, setSurvey] = useState<Survey>([])
   const t = useFormatMessage()
   const { selectedChoice, showVotingError, retryTimer } = proposalPageState
+  const reactionSelected = useMemo(
+    () => survey.some((topicFeedback) => topicFeedback.reaction != Reaction.EMPTY),
+    [survey]
+  )
 
   return (
     <Modal.Content>
@@ -58,7 +62,7 @@ export function VotingModalSurvey({
             fluid
             as={Link}
             onClick={() => onCastVote(selectedChoice)}
-            disabled={castingVote}
+            disabled={castingVote || reactionSelected}
             className="VotingModal__SkipAndCast"
           >
             {t('page.proposal_detail.skip_and_cast_vote')}

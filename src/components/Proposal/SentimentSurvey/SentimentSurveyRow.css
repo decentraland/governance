@@ -24,7 +24,7 @@
   text-transform: uppercase;
   cursor: pointer;
   position: absolute;
-  right: -60px;
+  right: 10px;
   opacity: 100;
   transition: 0.1s;
 }
