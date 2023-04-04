@@ -23,6 +23,7 @@ import {
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
+  VOTING_POWER_TO_PASS_PITCH,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
 } from './constants'
@@ -439,6 +440,49 @@ export const newProposalCatalystScheme = {
   },
 }
 
+export type NewProposalPitch = {
+  initiativeName: string
+  targetAudience: string
+  problemStatement: string
+  proposedSolution: string
+  relevancy: string
+  coAuthors?: string[]
+}
+
+export const newProposalPitchScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['initiativeName', 'targetAudience', 'problemStatement', 'proposedSolution', 'relevancy'],
+  properties: {
+    initiativeName: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    targetAudience: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    problemStatement: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    proposedSolution: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    relevancy: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    coAuthors,
+  },
+}
+
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 
 export const ProposalRequiredVP = {
@@ -449,6 +493,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Pitch]: requiredVotingPower(VOTING_POWER_TO_PASS_PITCH, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &

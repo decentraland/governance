@@ -256,6 +256,24 @@
     "debug": {
       "invalid_http_status": "Http status must be between 100 and 530",
       "invalid_sleep_time": "Sleep time must be between 0 and 300000 ms (5 minutes)"
+    },
+    "pitch": {
+      "initiative_name_empty": "Initiative name is empty",
+      "initiative_name_too_short": "Initiative name is too short",
+      "initiative_name_too_large": "Initiative name is too large",
+      "target_audience_empty": "Target audience is empty",
+      "target_audience_too_short": "Target audience is too short",
+      "target_audience_too_large": "Target audience is too large",
+      "problem_statement_empty": "Problem statement is empty",
+      "problem_statement_too_short": "Problem statement is too short",
+      "problem_statement_too_large": "Problem statement is too large",
+      "proposed_solution_empty": "Proposed solution is empty",
+      "proposed_solution_too_short": "Proposed solution is too short",
+      "proposed_solution_too_large": "Proposed solution is too large",
+      "relevancy_empty": "Field is empty",
+      "relevancy_too_short": "Field is too short",
+      "relevancy_too_large": "Field is too large",
+      "submission_vp_not_met": "This action requires at least 100 VP."
     }
   },
   "category": {
@@ -1438,6 +1456,20 @@
       "image_add": "Add another image",
       "marketplace_link_label": "NFT Marketplace Listing",
       "marketplace_link_detail": "Provide an URL where users can see your NFT collection listed in an NFT marketplace like OpenSea, Rarible, or any other"
+    },
+    "submit_pitch": {
+      "title": "Pitch proposal",
+      "description": "MISSING_DESCRIPTION\n\nThis action requires at least 100 VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5).",
+      "initiative_name_label": "Initiative name",
+      "initiative_name_postlabel": "This is what will be displayed on the Proposals Feed",
+      "problem_statement_label": "Problem statement",
+      "problem_statement_detail": "Please explain the problem this initiative would solve for using simple words",
+      "proposed_solution_label": "Proposed solution",
+      "proposed_solution_detail": "Please explain how you would think this problem should be approached using simple words",
+      "target_audience_label": "Target audicence",
+      "target_audience_detail": "Please describe the intended user of the proposed solution: their needs, concerns, motivations, etc.",
+      "relevancy_label": "Why is this relevant now?",
+      "relevancy_detail": "Please explain why the Decentraland DAO should be spending money in this project. Specify market conditions, competitor, new technical developments and any other relevant factors you consider"
     },
     "subscription_banner": {
       "title": "Stay in the loop",
