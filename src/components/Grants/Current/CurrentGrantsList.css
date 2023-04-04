@@ -48,11 +48,12 @@
 @media (min-width: 992px) {
   .CurrentGrants__Container {
     grid-template-columns: 48.49% 48.49% !important;
-    grid-column-gap: 31px;
+    grid-column-gap: 24px;
   }
 }
 
 .ui.container.CurrentGrants__Container {
   margin-left: 0 !important;
   margin-right: 0 !important;
+  width: 100% !important;
 }

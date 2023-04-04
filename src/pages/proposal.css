@@ -25,7 +25,7 @@
 .ProposalDetailPage .ProposalDetailDescription .dg.Title {
   font-size: 13px;
   text-transform: uppercase;
-  font-weight: normal;
+  font-weight: 600;
   color: var(--black-600);
 }
 
@@ -41,6 +41,8 @@
 .ProposalDetailPage .ProposalDetailDescription .dg.Paragraph,
 .ProposalDetailPage .ProposalDetailDescription .dg.ListItem {
   font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0px;
 }
 
 .ProposalDetailPage .ProposalDetailDescription img {

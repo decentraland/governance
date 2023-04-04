@@ -4,15 +4,6 @@
   border: 1px solid var(--black-100) !important;
 }
 
-.ProfileProposalItem .ui.cards a.card:hover,
-.ui.link.card:hover,
-.ui.link.cards .card:hover,
-a.ui.card:hover,
-.ui.cards > .ui.card.link:hover,
-.ui.card.link:hover {
-  border: 1px solid var(--black-100) !important;
-}
-
 .ProfileProposalItem .content {
   display: flex !important;
   flex-direction: row !important;

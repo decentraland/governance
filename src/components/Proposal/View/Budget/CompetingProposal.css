@@ -2,7 +2,7 @@
   margin-bottom: 8px;
   width: 100%;
   background: var(--white-900);
-  border: 1px solid rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+  border: 1px solid var(--alpha-black-300);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
   padding: 10px 20px 10px 16px;
@@ -18,7 +18,7 @@
 }
 
 .CompetingProposal--highlight {
-  border: 1px solid #a524b3; /*TODO: Add to theme*/
+  border: 1px solid var(--purple-raw-d);
 }
 
 .CompetingProposal--overbudget {
