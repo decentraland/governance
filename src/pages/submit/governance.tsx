@@ -272,7 +272,6 @@ export default function SubmitGovernanceProposal() {
         <Label>{t('page.submit_governance.linked_proposal_label')}</Label>
         <SelectField
           value={state.value.linked_proposal_id || undefined}
-          placeholder={t('page.submit_governance.linked_proposal_placeholder') || undefined}
           onChange={(_, { value }) => editor.set({ linked_proposal_id: String(value) })}
           options={preselectedProposal}
           error={!!state.error.linked_proposal_id}
