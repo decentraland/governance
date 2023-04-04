@@ -46,11 +46,16 @@ const SentimentSurveyRow = ({ topic, reaction, onReactionPicked, onReactionUnpic
   }, [reaction])
 
   return (
-    <div className="SentimentSurveyRow">
+    <div
+      className="SentimentSurveyRow"
+      onClick={() => {
+        if (!showReactions && !hasPickedReaction) setShowReactions(true)
+      }}
+    >
       {t(`survey.survey_topics.${topic.topic_id}`)}
 
       {!showReactions && !hasPickedReaction && (
-        <div className="SentimentSurveyRow__AddReaction" onClick={() => setShowReactions(true)}>
+        <div className="SentimentSurveyRow__AddReaction">
           <AddReaction />
           <span className="SentimentSurveyRow__AddReactionLabel">{t(`survey.reactions.add_reaction`)}</span>
         </div>

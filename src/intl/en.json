@@ -3,7 +3,7 @@
     "number": "{value, number}",
     "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
     "count_votes": "{count} {count, plural, one {vote} other {votes}}",
-    "sign_in": "sign in",
+    "sign_in": "sign in to vote",
     "jump_in": "jump in",
     "cancel": "cancel"
   },
@@ -316,7 +316,7 @@
       "impact": "Impact"
     },
     "reactions": {
-      "add_reaction": "Add reaction"
+      "add_reaction": "Add"
     },
     "feedback_review": {
       "title": "Please review your extra feedback",
@@ -504,7 +504,7 @@
     },
     "voting_modal_survey": {
       "title": "We'd appreciate some extra feedback",
-      "selected_choice": "You're about to vote {choice}"
+      "selected_choice": "You're about to vote "
     }
   },
   "component": {
