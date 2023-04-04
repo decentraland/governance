@@ -184,7 +184,7 @@ export default function GrantRequestFundingSection({
               rules={{
                 required: { value: true, message: t('error.grant.funding.invalid') },
                 validate: (value) => {
-                  if (value > availableCategoryBudget) {
+                  if (Number(value) > availableCategoryBudget) {
                     return t('error.grant.funding.over_budget')
                   }
                 },
