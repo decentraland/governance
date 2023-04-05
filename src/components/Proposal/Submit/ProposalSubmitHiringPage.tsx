@@ -6,6 +6,7 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import type { DropdownItemProps } from 'decentraland-ui'
@@ -20,6 +21,8 @@ import Field from '../../Common/Form/Field'
 import SubLabel from '../../Common/SubLabel'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+import LoadingView from '../../Layout/LoadingView'
+import LogIn from '../../User/LogIn'
 
 import CoAuthors from './CoAuthor/CoAuthors'
 
@@ -47,6 +50,7 @@ const initialState: HiringState = {
 }
 
 function ProposalSubmitHiringPage({ type }: Props) {
+  const [account, accountState] = useAuthContext()
   const preventNavigation = useRef(false)
   const action = getHiringTypeAction(type)
   const [formDisabled, setFormDisabled] = useState(false)
@@ -71,11 +75,14 @@ function ProposalSubmitHiringPage({ type }: Props) {
       text: committee,
       onClick: () => {
         setValue('committee', committee)
+        if (type === HiringType.Remove) {
+          setValue('address', '')
+        }
         clearErrors('committee')
       },
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setValue])
+  }, [setValue, type])
 
   useEffect(() => {
     preventNavigation.current = isDirty
@@ -96,6 +103,14 @@ function ProposalSubmitHiringPage({ type }: Props) {
   const handleRemoveMemberClick = (_: any, data: DropdownItemProps) => {
     setValue('address', data.value as string)
     clearErrors('address')
+  }
+
+  if (accountState.loading) {
+    return <LoadingView />
+  }
+
+  if (!account) {
+    return <LogIn title={t(`page.submit_hiring.${action}.title`)} description={t('page.submit_hiring.description')} />
   }
 
   return (
