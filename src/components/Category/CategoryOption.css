@@ -61,6 +61,11 @@
   background-color: var(--background-linked-wearables);
 }
 
+.CategoryOption.CategoryOption--hiring:hover,
+.CategoryOption.CategoryOption--hiring.CategoryOption--active {
+  background-color: var(--background-hiring);
+}
+
 .CategoryOption.CategoryOption--poll:hover,
 .CategoryOption.CategoryOption--poll.CategoryOption--active,
 .CategoryOption.CategoryOption--draft:hover,

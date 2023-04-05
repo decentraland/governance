@@ -80,10 +80,10 @@ export enum ProposalType {
   BanName = 'ban_name',
   Grant = 'grant',
   LinkedWearables = 'linked_wearables',
+  Hiring = 'hiring',
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
-  Hiring = 'hiring',
 }
 
 export enum PoiType {
@@ -432,13 +432,25 @@ export const newProposalPOIScheme = {
   },
 }
 
-export type NewProposalHiring = {}
+export type NewProposalHiring = {
+  type: HiringType
+  committee: Committees
+  address: string
+  reasons: string
+  evidence: string
+  name?: string
+  coAuthors?: string[]
+}
 
 export const newProposalHiringScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['committee', 'address', 'reasons', 'evidence'],
+  required: ['type', 'committee', 'address', 'reasons', 'evidence'],
   properties: {
+    type: {
+      type: 'string',
+      enum: Object.values(HiringType),
+    },
     committee: {
       type: 'string',
       enum: Object.values(Committees),
@@ -456,6 +468,11 @@ export const newProposalHiringScheme = {
       type: 'string',
       minLength: 20,
       maxLength: 3000,
+    },
+    name: {
+      type: 'string',
+      minLength: MIN_NAME_SIZE,
+      maxLength: MAX_NAME_SIZE,
     },
     coAuthors,
   },
@@ -501,6 +518,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Hiring]: requiredVotingPower(VOTING_POWER_TO_PASS_HIRING, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &

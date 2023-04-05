@@ -8,6 +8,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -16,7 +17,10 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Committees } from '../../../clients/DclData'
+import { Governance } from '../../../clients/Governance'
 import { HiringType, getHiringTypeAction, newProposalHiringScheme } from '../../../entities/Proposal/types'
+import loader from '../../../modules/loader'
+import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
 import SubLabel from '../../Common/SubLabel'
 import ErrorMessage from '../../Error/ErrorMessage'
@@ -39,6 +43,7 @@ type HiringState = {
   reasons: string
   evidence: string
   coAuthors?: string[]
+  name?: string
 }
 
 const schema = newProposalHiringScheme.properties
@@ -92,8 +97,11 @@ function ProposalSubmitHiringPage({ type }: Props) {
     setFormDisabled(true)
 
     try {
-      console.log(data)
-      throw new Error('Not implemented yet')
+      const proposal = await Governance.get().createProposalHiring({ type, ...data, committee: data.committee! })
+      loader.proposals.set(proposal.id, proposal)
+      navigate(locations.proposal(proposal.id, { new: 'true' }), {
+        replace: true,
+      })
     } catch (error: any) {
       setError(error.body?.error || error.message)
       setFormDisabled(false)
@@ -102,6 +110,7 @@ function ProposalSubmitHiringPage({ type }: Props) {
 
   const handleRemoveMemberClick = (_: any, data: DropdownItemProps) => {
     setValue('address', data.value as string)
+    setValue('name', data.text as string)
     clearErrors('address')
   }
 

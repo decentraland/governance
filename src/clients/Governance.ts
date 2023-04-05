@@ -14,6 +14,7 @@ import {
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
+  NewProposalHiring,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
@@ -39,6 +40,7 @@ type NewProposalMap = {
   [`/proposals/catalyst`]: NewProposalCatalyst
   [`/proposals/grant`]: GrantRequest
   [`/proposals/linked-wearables`]: NewProposalLinkedWearables
+  [`/proposals/hiring`]: NewProposalHiring
 }
 
 export type GetProposalsFilter = {
@@ -173,6 +175,10 @@ export class Governance extends API {
 
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {
     return this.createProposal(`/proposals/linked-wearables`, proposal)
+  }
+
+  async createProposalHiring(proposal: NewProposalHiring) {
+    return this.createProposal(`/proposals/hiring`, proposal)
   }
 
   async deleteProposal(proposal_id: string) {

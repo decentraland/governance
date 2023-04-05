@@ -30,6 +30,9 @@
   --gradient-purple-2: linear-gradient(90deg, rgba(var(--purple-raw-c), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
   --gradient-purple-3: linear-gradient(90deg, rgba(var(--purple-raw-e), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
 
+  --aqua-200: rgba(var(--green-raw-c), 0.08);
+  --aqua-800: rgba(var(--green-raw-c), 1);
+
   --yellow-100: rgba(255, 216, 159, 1);
   --yellow-200: rgba(254, 247, 210, 1);
   --yellow-800: rgba(var(--yellow-raw), 1);

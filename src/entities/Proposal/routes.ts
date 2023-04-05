@@ -5,6 +5,7 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -36,6 +37,7 @@ import {
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
+  NewProposalHiring,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPoll,
@@ -49,6 +51,7 @@ import {
   newProposalCatalystScheme,
   newProposalDraftScheme,
   newProposalGovernanceScheme,
+  newProposalHiringScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
   newProposalPollScheme,
@@ -80,6 +83,7 @@ export default routes((route) => {
   route.post('/proposals/catalyst', withAuth, handleAPI(createProposalCatalyst))
   route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
+  route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
@@ -277,6 +281,28 @@ export async function createProposalPOI(req: WithAuth) {
     user,
     type: ProposalType.POI,
     required_to_pass: ProposalRequiredVP[ProposalType.POI],
+    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES,
+    },
+  })
+}
+
+const newProposalHiringValidator = schema.compile(newProposalHiringScheme)
+
+export async function createProposalHiring(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalHiring>(newProposalHiringValidator, req.body || {})
+  if (!configuration.name) {
+    const profile = await profiles.load(configuration.address)
+    configuration.name = profile?.name || undefined
+  }
+
+  return createProposal({
+    user,
+    type: ProposalType.Hiring,
+    required_to_pass: ProposalRequiredVP[ProposalType.Hiring],
     finish_at: getProposalEndDate(SNAPSHOT_DURATION),
     configuration: {
       ...configuration,

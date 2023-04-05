@@ -1237,7 +1237,7 @@
       "add": {
         "title": "Add Committee Member",
         "address_title": "Ethereum address",
-        "reasons_title": "Reasons to add",
+        "reasons_title": "Reasons for adding",
         "reasons_description": "Please explain why you think they should become part of the Committee",
         "evidence_title": "Evidence",
         "evidence_description": "Indicate what makes them worthy of the throne"
@@ -1245,7 +1245,7 @@
       "remove": {
         "title": "Remove Committee Member",
         "address_title": "Committee member",
-        "reasons_title": "Reasons to remove",
+        "reasons_title": "Reasons for removing",
         "reasons_description": "Please explain why you think they should be removed from the Committee",
         "evidence_title": "Evidence",
         "evidence_description": "Indicate what makes them unworthy of the throne"
