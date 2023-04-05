@@ -25,7 +25,7 @@ export function ProfileBox({ children, title, info, action, className }: Props) 
         </div>
         <div className="ProfileBox__HeaderAction">{action}</div>
       </div>
-      <Divider className="ProfileBox__Divider" color="var(--black-300)" />
+      <Divider className="ProfileBox__Divider" />
       <div className="ProfileBox__Padded">{children}</div>
     </div>
   )

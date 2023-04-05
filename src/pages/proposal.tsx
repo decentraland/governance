@@ -65,8 +65,6 @@ import { isUnderMaintenance } from '../modules/maintenance'
 
 import './proposal.css'
 
-// TODO: Review why proposals.css is being imported and use only proposal.css
-
 const EMPTY_CHOICES: string[] = []
 
 const PROPOSAL_STATUS_WITH_UPDATES = new Set([ProposalStatus.Passed, ProposalStatus.Enacted])

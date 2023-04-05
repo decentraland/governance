@@ -1,9 +1,10 @@
 .Divider {
   width: 100%;
-  border-top: 1px solid;
+  border: none;
+  border-top: 1px solid black;
   margin: 0;
 }
 
-.Divider__Container--small {
+.Divider--small {
   width: 40px;
 }
