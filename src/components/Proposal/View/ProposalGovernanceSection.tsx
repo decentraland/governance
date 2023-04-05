@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
 import { ProposalPageState } from '../../../pages/proposal'
 import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress'
@@ -32,8 +32,6 @@ type ProposalGovernanceSectionProps = {
   updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
-const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft]
-
 export default function ProposalGovernanceSection({
   proposal,
   loading,
@@ -57,16 +55,9 @@ export default function ProposalGovernanceSection({
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
   const showResultsButton = !hasVoted && !finished
 
-  const showPromotionSection = useMemo(
-    () => proposal && proposal.status === ProposalStatus.Passed && PROMOTABLE_PROPOSALS.includes(proposal.type),
-    [proposal]
-  )
-
   useEffect(() => {
     setShowResults(hasVoted || finished || !userAddress)
   }, [hasVoted, finished, userAddress])
-
-  if (!showPromotionSection && !!finished) return null
 
   return (
     <div
