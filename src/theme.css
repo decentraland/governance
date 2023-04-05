@@ -85,6 +85,7 @@
   --background-poll: rgba(var(--orange-raw), 0.08);
   --background-remove-poi: var(--red-100);
   --background-linked-wearables: rgba(var(--yellow-raw), 0.2);
+  --background-pitch: rgba(var(--red-raw), 0.08);
   --background-popup: rgba(92, 92, 110, 1);
   --background-disabled: rgba(249, 248, 249, 1);
 
