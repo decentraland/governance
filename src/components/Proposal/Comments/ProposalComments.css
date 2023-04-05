@@ -1,5 +1,5 @@
 .ProposalComments {
-  margin-top: 16px;
+  margin-top: 36px;
 }
 
 .ProposalComments.ProposalComments--loading > * {
@@ -15,7 +15,8 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-top: 16px;
+  margin-top: 36px;
+  margin-bottom: 24px;
 }
 
 .ProposalComments .ProposalComments__NoComments {

@@ -40,7 +40,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
   }
 
   const hash = VotesModel.hashVotes(snapshotVotes)
-  if (latestVotes.hash === hash) {
+  if (latestVotes.hash === hash && !refresh) {
     return latestVotes.votes
   }
 

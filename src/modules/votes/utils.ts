@@ -1,4 +1,5 @@
 import { ChainId } from '@dcl/schemas'
+import upperFirst from 'lodash/upperFirst'
 
 import { DelegationsLabelProps } from '../../components/Proposal/View/ProposalVoting/DelegationsLabel'
 import { VotedChoice } from '../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
@@ -96,4 +97,8 @@ export function getPartyVotes(
   })
 
   return { votesByChoices, totalVotes }
+}
+
+export function formatChoice(choice: string) {
+  return upperFirst(choice)
 }

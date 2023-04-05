@@ -2,12 +2,10 @@ import { useMemo } from 'react'
 
 import { useLocation } from '@gatsbyjs/reach-router'
 
-import { toGrantSubtype } from '../entities/Grant/types'
+import { SubtypeOptions, toGrantSubtype } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType, toProposalType } from '../entities/Proposal/types'
 import { toProposalStatus } from '../entities/Proposal/utils'
 import { toProposalListPage } from '../modules/locations'
-
-import { SubtypeOptions } from './../entities/Grant/types'
 
 export type SearchParams = {
   type: ProposalType | undefined

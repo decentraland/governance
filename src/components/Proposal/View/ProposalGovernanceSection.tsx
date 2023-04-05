@@ -6,41 +6,46 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Vote } from '../../../entities/Votes/types'
+import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
+import { ProposalPageState } from '../../../pages/proposal'
 import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
 
 import './DetailsSection.css'
+import './ProposalGovernanceSection.css'
 import ProposalPromotionSection from './ProposalPromotionSection'
-import './ProposalResultSection.css'
 import SidebarHeaderLabel from './SidebarHeaderLabel'
 
-interface Props {
-  choices: string[]
-  results: ChoiceProgressProps[]
+type ProposalGovernanceSectionProps = {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
+  partialResults: ChoiceProgressProps[]
+  choices: string[]
   loading?: boolean
   disabled?: boolean
-  changingVote?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
-  onOpenVotesList?: () => void
-  onVote?: (e: React.MouseEvent<unknown>, choice: string, choiceIndex: number) => void
+  voteWithSurvey: boolean
+  onVote: (selectedChoice: SelectedVoteChoice) => void
+  castingVote: boolean
+  proposalPageState: ProposalPageState
+  updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
-function ProposalResultSection({
-  choices,
-  results,
+export default function ProposalGovernanceSection({
   proposal,
   loading,
   disabled,
   votes,
-  changingVote,
+  partialResults,
+  choices,
   onChangeVote,
   onVote,
-  onOpenVotesList,
-}: Props) {
+  castingVote,
+  voteWithSurvey,
+  proposalPageState,
+  updatePageState,
+}: ProposalGovernanceSectionProps) {
   const t = useFormatMessage()
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
@@ -63,14 +68,14 @@ function ProposalResultSection({
       ])}
     >
       <div>
-        <div className="ProposalResultSection__Container">
-          <div className="ProposalResultSection__Header">
+        <div className="ProposalGovernanceSection__Container">
+          <div className="ProposalGovernanceSection__Header">
             <SidebarHeaderLabel>
               {showResults ? t('page.proposal_detail.result_label') : t('page.proposal_detail.get_involved')}
             </SidebarHeaderLabel>
             {showResultsButton && (
               <button
-                className="ProposalResultSection__ResultsButton"
+                className="ProposalGovernanceSection__ResultsButton"
                 onClick={() => setShowResults((prevState) => !prevState)}
               >
                 {!showResults ? t('page.proposal_detail.show_results') : t('page.proposal_detail.hide_results')}
@@ -81,14 +86,14 @@ function ProposalResultSection({
         {showResults && (
           <div
             className={TokenList.join([
-              'ProposalResultSection__Results',
-              !finished && 'ProposalResultSection__Results--current',
+              'ProposalGovernanceSection__Results',
+              !finished && 'ProposalGovernanceSection__Results--current',
             ])}
           >
-            {results.map((result) => {
+            {partialResults.map((result) => {
               return (
                 <ChoiceProgress
-                  onClick={onOpenVotesList}
+                  onClick={() => updatePageState({ showVotesList: true })}
                   key={result.choice}
                   color={result.color}
                   choice={result.choice}
@@ -102,22 +107,24 @@ function ProposalResultSection({
         )}
         <ProposalPromotionSection proposal={proposal} loading={loading} />
       </div>
+
       {!finished && (
         <ProposalVotingSection
-          isShowingResults={showResults}
           proposal={proposal}
           votes={votes}
           loading={loading}
-          changingVote={changingVote}
           choices={choices}
           finished={finished}
-          hasVoted={hasVoted}
           onVote={onVote}
+          castingVote={castingVote}
+          voteWithSurvey={voteWithSurvey}
+          isShowingResults={showResults}
+          proposalPageState={proposalPageState}
+          updatePageState={updatePageState}
           onChangeVote={onChangeVote}
+          hasVoted={hasVoted}
         />
       )}
     </div>
   )
 }
-
-export default ProposalResultSection

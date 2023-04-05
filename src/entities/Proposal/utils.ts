@@ -200,9 +200,9 @@ export function getProposalStatusShortName(status: ProposalStatus) {
 
 export function isGrantProposalSubmitEnabled(now: number) {
   const ENABLE_START_DATE = Time.utc('2023-03-01').add(8, 'hour')
-  if (Time(now).isBefore(ENABLE_START_DATE)) {
-    return false
-  }
+  return !Time(now).isBefore(ENABLE_START_DATE)
+}
 
-  return true
+export function getProposalCategory(proposalType: ProposalType, proposalConfiguration: any): string | null {
+  return proposalType === ProposalType.Grant ? proposalConfiguration.category : null
 }
