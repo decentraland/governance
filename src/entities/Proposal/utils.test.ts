@@ -21,7 +21,7 @@ describe('isProposalStatus', () => {
 describe('toProposalStatus', () => {
   it('returns a ProposalStatus for every proposal status string', () => {
     Object.values(ProposalStatus).forEach((status) =>
-      expect(toProposalStatus(status.toString(), () => {})).toBe(status)
+      expect(toProposalStatus(status.toString(), () => '')).toBe(status)
     )
   })
   it('calls the handler function for anything else', () => {

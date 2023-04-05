@@ -1,0 +1,8 @@
+.Pipe {
+  width: 20px;
+  height: 0;
+  opacity: 0.1;
+  border: 1px solid #000000;
+  transform: rotate(90deg);
+  margin-bottom: 2px;
+}

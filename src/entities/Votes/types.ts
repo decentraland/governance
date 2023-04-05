@@ -14,7 +14,7 @@ export type Vote = {
   timestamp: number
   choice: number
   vp: number
-}
+} & Pick<SnapshotVote, 'metadata'>
 
 export type VotedProposal = SnapshotVote & {
   id: string
@@ -29,3 +29,5 @@ export type VotedProposal = SnapshotVote & {
 }
 
 export type ChoiceColor = 'approve' | 'reject' | number
+
+export type SelectedVoteChoice = { choice?: string; choiceIndex?: number }

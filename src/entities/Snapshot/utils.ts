@@ -210,7 +210,7 @@ export function getChecksumAddress(address: string) {
   return ethers.utils.getAddress(address.toLowerCase())
 }
 
-export function isSameAddress(userAddress: string | null, address: string | null) {
+export function isSameAddress(userAddress?: string | null, address?: string | null) {
   return (
     !!userAddress &&
     userAddress.length > 0 &&

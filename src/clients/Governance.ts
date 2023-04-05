@@ -25,6 +25,7 @@ import {
 } from '../entities/Proposal/types'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
+import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 
@@ -412,5 +413,14 @@ export class Governance extends API {
       this.options().method('POST').json({ url })
     )
     return response.data
+  }
+
+  async getSurveyTopics(proposalId: string) {
+    const result = await this.fetch<ApiResponse<Topic[]>>(
+      `/proposals/${proposalId}/survey-topics`,
+      this.options().method('GET')
+    )
+
+    return result.data
   }
 }

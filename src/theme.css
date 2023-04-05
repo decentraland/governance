@@ -22,7 +22,7 @@
   --purple-raw-e: 165, 36, 179;
   --dcl-primary-raw: 255, 45, 85;
 
-  --gradient-green: linear-gradient(90deg, rgba(var(--green-raw-b), 1) 0%, rgba(var(--green-blue-b), 1) 100%);
+  --gradient-green: linear-gradient(90deg, rgba(var(--green-raw-b), 1) 0%, rgba(var(--blue-raw-b), 1) 100%);
   --gradient-red-1: linear-gradient(90deg, rgba(var(--red-raw-b), 1) 0%, rgba(var(--purple-raw-b), 1) 100%);
   --gradient-red-2: linear-gradient(90deg, rgba(var(--red-raw-c), 1) 0%, rgba(var(--red-raw-b), 1) 100%);
   --gradient-purple-1: linear-gradient(90deg, rgba(var(--purple-raw-b), 1) 0%, rgba(var(--blue-raw-c), 1) 100%);

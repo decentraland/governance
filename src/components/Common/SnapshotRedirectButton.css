@@ -1,0 +1,13 @@
+.SnapshotRedirectButton {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border: 1px solid var(--black-300) !important;
+  border-radius: 6px !important;
+}
+
+.SnapshotRedirectButton__Hidden {
+  width: 12px;
+  opacity: 0;
+}

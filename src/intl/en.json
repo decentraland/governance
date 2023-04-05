@@ -3,7 +3,7 @@
     "number": "{value, number}",
     "count_proposals": "{count} {count, plural, one {proposal} other {proposals}}",
     "count_votes": "{count} {count, plural, one {vote} other {votes}}",
-    "sign_in": "sign in",
+    "sign_in": "sign in to vote",
     "jump_in": "jump in",
     "cancel": "cancel"
   },
@@ -325,6 +325,30 @@
     "gaming_title": "Gaming",
     "platform_contributor_title": "Platform Contributor"
   },
+  "survey": {
+    "topics_title": "Topics",
+    "reactions_title": "Reaction",
+    "survey_topics": {
+      "idea": "Idea",
+      "team": "Team",
+      "budget": "Budget",
+      "roadmap": "Roadmap Proposal",
+      "impact": "Impact"
+    },
+    "reactions": {
+      "add_reaction": "Add"
+    },
+    "feedback_review": {
+      "title": "Please review your extra feedback",
+      "content_copied": "Content Copied",
+      "copy_content": "Copy Content",
+      "open_snapshot": "Open Snapshot",
+      "explanation": "Once you’re done, **copy the message** to the clipboard and **paste it on Snapshot as a comment** when voting"
+    },
+    "results": {
+      "title": "Voter Sentiment"
+    }
+  },
   "status": {
     "all": "All outcomes",
     "pending": "Pending outcomes",
@@ -497,12 +521,23 @@
       "description": "This link will take you to\n**{url}**\nAre you sure you want to go there?",
       "accept": "Follow link",
       "reject": "I've changed my mind"
+    },
+    "voting_modal_survey": {
+      "title": "We'd appreciate some extra feedback",
+      "selected_choice": "You're about to vote "
     }
   },
   "component": {
     "grant_card": {
       "by_user": "By",
       "size": "Size"
+    },
+    "snapshot_redirect_button_label": "Vote on Snapshot",
+    "reaction_icon": {
+      "love": "Love this!",
+      "like": "Like!",
+      "neutral": "Neutral",
+      "concerned": "Concerned"
     }
   },
   "page": {
@@ -696,6 +731,15 @@
       "finished_result_label": "Result: ",
       "your_vote_label": "Your vote: ",
       "threshold_not_met_label": "VP threshold not met",
+      "voting_section": {
+        "show_results": "Show results",
+        "voting_failed": "Failed to cast vote",
+        "voting_open": "Open for votes",
+        "voting_closed": "Voting closed",
+        "voting_finished": "Voting finished {timeElapsed}",
+        "vote_count_title": "Voting Activity",
+        "vote_count": "{voteCount} total votes"
+      },
       "see_votes_button": "See Votes",
       "delegate_name": " is your Delegate",
       "delegate_not_voted": "**Your Delegate** still hasn't voted",
@@ -714,6 +758,9 @@
       "vote_manage": "Manage",
       "get_vp": "Get VP",
       "vote_choice": "Vote {choice}",
+      "cast_vote": "Cast Vote",
+      "skip_and_cast_vote": "Skip and cast",
+      "retry": "Retry in {timer}...",
       "delegate_voted_choice": "They voted {choice}",
       "both_voted_choice": "You both voted {choice}",
       "voted_choice": "You voted {choice}",
@@ -761,6 +808,12 @@
       "pass": "Pass proposal",
       "reject": "Reject proposal",
       "delete": "Delete proposal",
+      "results_header": "Proposal Results",
+      "snapshot_redirect": {
+        "voting_not_available": "Voting not available",
+        "description": "It looks like we're having issues casting your vote from the Governance dApp.",
+        "suggestion": "You can try voting directly on **Snapshot** - the system we use for decision-making."
+      },
       "promotion": {
         "opportunity_label": "opportunity",
         "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
@@ -1509,6 +1562,14 @@
       "publish_update": "Publish update",
       "preview_update": "Preview update",
       "edit_update": "Edit update"
+    },
+    "delegation": {
+      "delegated_to_user_empty_title": "No VP delegated to you",
+      "delegated_to_address_empty_title": "No VP delegated to them",
+      "delegated_to_user_empty_description": "Sound candidates may be chosen by the community to vote in their name",
+      "delegated_to_user_empty_link": "Become a Delegate",
+      "delegated_voting_power_list_title": "Delegated Voting Power",
+      "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice."
     }
   },
   "delegation": {

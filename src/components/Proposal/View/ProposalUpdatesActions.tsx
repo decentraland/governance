@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
+import locations from '../../../modules/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Helper from '../../Helper/Helper'
 
@@ -14,16 +17,28 @@ import './ProposalUpdatesActions.css'
 type ProposalUpdatesActionsProps = {
   nextUpdate?: UpdateAttributes | null
   currentUpdate?: UpdateAttributes | null
-  onPostUpdateClick: () => void
+  pendingUpdates?: UpdateAttributes[]
+  proposal: ProposalAttributes
 }
 
 export default function ProposalUpdatesActions({
-  onPostUpdateClick,
   nextUpdate,
   currentUpdate,
+  pendingUpdates,
+  proposal,
 }: ProposalUpdatesActionsProps) {
   const t = useFormatMessage()
   const hasSubmittedUpdate = !!currentUpdate?.completion_date
+
+  const onPostUpdateClick = useCallback(() => {
+    const hasPendingUpdates = pendingUpdates && pendingUpdates.length > 0
+    navigate(
+      locations.submitUpdate({
+        ...(hasPendingUpdates && { id: currentUpdate?.id }),
+        proposalId: proposal.id,
+      })
+    )
+  }, [currentUpdate?.id, pendingUpdates, proposal])
 
   return (
     <div className="DetailsSection">
