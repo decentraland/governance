@@ -25,17 +25,17 @@
 }
 
 .RequestedBudgetBar {
-  background: linear-gradient(90deg, #017f0a 0%, #00bfd9 100.66%); /*TODO: Add to theme*/
+  background: var(--gradient-green);
   border-radius: 5px;
-  box-shadow: 0 1px 4px rgba(0, 182, 73, 0.4); /*TODO: Add to theme*/
+  box-shadow: 0 1px 4px var(--alpha-green-400);
 }
 
 .RequestedBudgetBar--overbudget {
   background: var(--red-800);
-  box-shadow: 0 1px 4px rgba(216, 0, 39, 0.4); /*TODO: Add to theme*/
+  box-shadow: 0 1px 4px var(--alpha-red-400);
 }
 
 .RemainingBudgetBar {
-  background: rgba(115, 110, 125, 0.24); /*TODO: Add to theme*/
+  background: var(--alpha-black-300);
   border-radius: 0 4px 4px 0;
 }

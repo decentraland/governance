@@ -9,8 +9,18 @@
   justify-content: space-between;
   cursor: pointer;
   background: var(--white-900);
-  transition: all 1s ease 0s;
-  overflow: hidden;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.CurrentGrants__Container .GrantCard i.icon.chevron.right:before {
+  top: -5px;
+  position: relative;
+}
+
+.CurrentGrants__Container .GrantCard:hover {
+  box-shadow: var(--shadow-2);
+  transform: translateY(-4px);
+  cursor: pointer;
 }
 
 .GrantCard__Expanded {
@@ -40,13 +50,22 @@
   font-size: 20px;
 }
 
+.GrantCard .ProposalUpdate {
+  border: none;
+  border-top: 1px solid var(--black-100);
+  border-radius: 0px;
+}
 .GrantCard .ProposalUpdate:last-child {
   margin-bottom: 0;
 }
 
 @media (min-width: 425px) {
   .GrantCard {
-    padding: 16px 22px 0 !important;
+    padding: 0 !important;
+  }
+
+  .GrantCard > div:first-child {
+    padding: 16px 16px 0 16px;
   }
 
   .GrantCard__Expanded {
@@ -61,6 +80,5 @@
 @media (min-width: 425px) {
   .GrantCard__UpdateContainer {
     display: block !important;
-    padding-bottom: 16px !important;
   }
 }

@@ -1,43 +1,92 @@
 :root {
-  --yellow-100: #ffd89f;
-  --yellow-200: #fef7d2;
-  --yellow-800: #ffb03f;
-  --fuchsia-200: #ffe4ff;
-  --fuchsia-800: #ff5afe;
-  --green-200: #e1f3d6;
-  --green-800: #44b600;
-  --green-900: #328500;
-  --red-100: rgba(216, 0, 39, 0.16);
-  --red-150: rgba(216, 0, 39, 0.3);
-  --red-200: #f9d6dc;
-  --red-800: #d80027;
-  --blue-200: #e2ecfc;
-  --blue-600: #89baff;
-  --blue-800: #4888ee;
-  --gray: #a19ea8; /* TODO: Sync with Figma color styles */
-  --white-900: #ffffff;
-  --orange-200: #ffe9df;
-  --orange-800: #ff7439;
-  --black-100: rgba(115, 110, 125, 0.16);
-  --black-200: #f3f2f5;
-  --black-300: #dddce0;
-  --black-400: #b9b7be;
-  --black-600: #6e6977;
-  --black-700: #37333d;
-  --black-800: #16141a;
-  --purple-200: #e0dcf3;
-  --purple-800: #3c24b3;
-  --dcl-primary: #ff2d55;
+  --yellow-raw: 255, 176, 63;
+  --fuchsia-raw: 255, 90, 254;
+  --green-raw: 68, 182, 0;
+  --green-raw-b: 1, 127, 10;
+  --red-raw: 216, 0, 39;
+  --red-raw-b: 255, 0, 46;
+  --red-raw-c: 216, 0, 39;
+  --red-raw-d: 255, 0, 0;
+  --blue-raw: 72, 136, 238;
+  --blue-raw-b: 0, 191, 217;
+  --blue-raw-c: 64, 95, 205;
+  --gray-raw: 161, 158, 168;
+  --gray-raw-b: 115, 110, 125;
+  --white-raw: 255, 255, 255;
+  --orange-raw: 255, 116, 57;
+  --black-raw: 22, 20, 26;
+  --purple-raw: 60, 36, 179;
+  --purple-raw-b: 198, 64, 205;
+  --purple-raw-c: 219, 0, 255;
+  --purple-raw-d: 132, 17, 144;
+  --purple-raw-e: 165, 36, 179;
+  --dcl-primary-raw: 255, 45, 85;
 
-  --background-catalyst: rgba(72, 136, 238, 0.08);
-  --background-poi: rgba(68, 182, 0, 0.08);
-  --background-ban-name: rgba(255, 90, 254, 0.08);
-  --background-grant: rgba(60, 36, 179, 0.08);
-  --background-poll: rgba(255, 116, 57, 0.08);
-  --background-remove-poi: #fff1f4;
-  --background-linked-wearables: #fef9f0;
-  --background-popup: #5c5c6e;
-  --background-disabled: #f9f8f9;
+  --gradient-green: linear-gradient(90deg, rgba(var(--green-raw-b), 1) 0%, rgba(var(--green-blue-b), 1) 100%);
+  --gradient-red-1: linear-gradient(90deg, rgba(var(--red-raw-b), 1) 0%, rgba(var(--purple-raw-b), 1) 100%);
+  --gradient-red-2: linear-gradient(90deg, rgba(var(--red-raw-c), 1) 0%, rgba(var(--red-raw-b), 1) 100%);
+  --gradient-purple-1: linear-gradient(90deg, rgba(var(--purple-raw-b), 1) 0%, rgba(var(--blue-raw-c), 1) 100%);
+  --gradient-purple-2: linear-gradient(90deg, rgba(var(--purple-raw-c), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
+  --gradient-purple-3: linear-gradient(90deg, rgba(var(--purple-raw-e), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
+
+  --yellow-100: rgba(255, 216, 159, 1);
+  --yellow-200: rgba(254, 247, 210, 1);
+  --yellow-800: rgba(var(--yellow-raw), 1);
+
+  --fuchsia-200: rgba(255, 228, 255, 1);
+  --alpha-fuchsia-200: rgba(var(--fuchsia-raw), 0.16);
+  --alpha-fuchsia-500: rgba(var(--fuchsia-raw), 0.5);
+  --fuchsia-800: rgba(var(--fuchsia-raw), 1);
+
+  --green-200: rgba(225, 243, 214, 1);
+  --alpha-green-200: rgba(var(--green-raw), 0.16);
+  --alpha-green-400: rgba(var(--green-raw), 0.4);
+  --green-800: rgba(var(--green-raw), 1);
+  --green-900: rgba(50, 133, 0, 1);
+
+  --red-100: rgba(var(--red-raw), 0.16);
+  --red-200: rgba(249, 214, 220, 1);
+  --alpha-red-400: rgba(var(--red-raw), 0.4);
+  --red-800: rgba(var(--red-raw), 1);
+
+  --blue-200: rgba(226, 236, 252, 1);
+  --alpha-blue-200: rgba(var(--blue-raw), 0.16);
+  --blue-600: rgba(137, 186, 255, 1);
+  --blue-800: rgba(var(--blue-raw), 1);
+
+  --gray: rgba(var(--gray-raw), 1); /* TODO: Sync with Figma color styles */
+
+  --white-900: rgba(var(--white-raw), 1);
+
+  --orange-200: rgba(255, 233, 223, 1);
+  --alpha-orange-200: rgba(var(--orange-raw), 0.16);
+  --orange-800: rgba(var(--orange-raw), 1);
+
+  --black-100: rgba(var(--black-raw), 0.1);
+  --black-200: rgba(243, 242, 245, 1);
+  --alpha-black-200: rgba(var(--gray-raw-b), 0.1);
+  --black-300: rgba(221, 220, 224, 1);
+  --alpha-black-300: rgba(var(--gray-raw-b), 0.24);
+  --black-400: rgba(185, 183, 190, 1);
+  --black-600: rgba(var(--gray-raw-b), 1);
+  --black-700: rgba(55, 51, 61, 1);
+  --black-800: rgba(var(--black-raw), 1);
+
+  --purple-200: rgba(224, 220, 243, 1);
+  --alpha-purple-200: rgba(var(--purple-raw), 0.16);
+  --purple-800: rgba(var(--purple-raw), 1);
+
+  --dcl-primary: rgba(var(--dcl-primary-raw), 1);
+
+  --background-catalyst: rgba(var(--blue-raw), 0.08);
+  --background-poi: rgba(var(--green-raw), 0.08);
+  --background-ban-name: rgba(var(--fuchsia-raw), 0.08);
+  --background-grant: rgba(var(--purple-raw), 0.08);
+  --background-poll: rgba(var(--orange-raw), 0.08);
+  --background-remove-poi: var(--red-100);
+  --background-linked-wearables: rgba(var(--yellow-raw), 0.2);
+  --background-popup: rgba(92, 92, 110, 1);
+  --background-disabled: rgba(249, 248, 249, 1);
 
   --border-color-default: rgba(34, 36, 38, 0.15);
 
