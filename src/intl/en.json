@@ -1263,7 +1263,8 @@
       "target_title": "Target Committee",
       "target_placeholder": "Select a committee",
       "target_description": "Only those with available positions are listed",
-      "address_placeholder": "Enter their address"
+      "address_placeholder": "Enter their address",
+      "member_placeholder": "Select a member"
     },
     "submit_catalyst": {
       "title": "Add a catalyst node",

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { Control, Controller } from 'react-hook-form'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
@@ -20,6 +21,7 @@ type Props = Omit<ExtendedController, 'render'>
 function CommitteeMembersDropdown({ committee, control, disabled, error, onOptionClick, ...props }: Props) {
   const [data] = useDclData()
   const teams = useMemo(() => data?.teams || [], [data])
+  const t = useFormatMessage()
 
   const getCommitteeMembers = useCallback(
     (committee: Committees) => {
@@ -42,7 +44,7 @@ function CommitteeMembersDropdown({ committee, control, disabled, error, onOptio
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       render={({ field: { ref, onChange, ...field } }) => (
         <Dropdown
-          placeholder="Select member"
+          placeholder={t('page.submit_hiring.member_placeholder')}
           fluid
           selection
           options={committee ? getCommitteeMembers(committee) : []}

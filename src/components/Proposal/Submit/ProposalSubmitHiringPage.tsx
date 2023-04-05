@@ -101,11 +101,11 @@ function ProposalSubmitHiringPage({ type }: Props) {
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
-        title={t(`page.submit_hiring.${action}.title`) || ''}
-        description={t('page.submit_hiring.description') || ''}
+        title={t(`page.submit_hiring.${action}.title`)}
+        description={t('page.submit_hiring.description')}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Helmet title={t(`page.submit_hiring.${action}.title`) || ''} />
+      <Helmet title={t(`page.submit_hiring.${action}.title`)} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{t(`page.submit_hiring.${action}.title`)}</Header>
