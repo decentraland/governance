@@ -1,3 +1,5 @@
+import { ErrorService } from '../../services/ErrorService'
+
 import { Reaction, Survey } from './types'
 
 type ReactionWithIcon = { reaction: Reaction; icon: string }
@@ -16,7 +18,9 @@ export class SurveyEncoder {
       const encodedSurvey: Record<string, unknown> = { survey }
       return JSON.stringify(encodedSurvey)
     } catch (e) {
-      console.log(`Unable to encode survey: ${survey}`) //TODO: report error
+      const errorMessage = `Unable to encode survey: ${survey}`
+      console.log(errorMessage)
+      ErrorService.report(errorMessage, e)
       return '{"survey":[]}'
     }
   }
