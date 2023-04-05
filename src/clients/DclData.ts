@@ -19,11 +19,18 @@ export type MonthlyTotal = {
 
 export type Member = {
   avatar: string
+  address: string
   name: string
 }
 
+export enum Committees {
+  SAB = 'Security Advisory Board',
+  DAOCommitee = 'DAO Committee',
+  WearableCuration = 'Wearable Curation Team',
+}
+
 export type Team = {
-  name: string
+  name: Committees
   description: string
   members: Member[]
 }

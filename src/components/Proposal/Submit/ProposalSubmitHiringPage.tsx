@@ -7,12 +7,15 @@ import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownT
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import type { DropdownItemProps } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { HiringTeams, HiringType, getHiringTypeAction, newProposalHiringScheme } from '../../../entities/Proposal/types'
+import { Committees } from '../../../clients/DclData'
+import { HiringType, getHiringTypeAction, newProposalHiringScheme } from '../../../entities/Proposal/types'
 import Field from '../../Common/Form/Field'
 import SubLabel from '../../Common/SubLabel'
 import ErrorMessage from '../../Error/ErrorMessage'
@@ -20,6 +23,7 @@ import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 
 import CoAuthors from './CoAuthor/CoAuthors'
 
+import CommitteeMembersDropdown from './CommitteeMembersDropdown'
 import './ProposalSubmitHiringPage.css'
 
 interface Props {
@@ -27,20 +31,12 @@ interface Props {
 }
 
 type HiringState = {
-  committee: HiringTeams | null
+  committee: Committees | null
   address: string
   reasons: string
   evidence: string
   coAuthors?: string[]
 }
-
-// function getTargetOptions() {
-//   return Object.entries(HiringTeams).map(([key, team]) => ({
-//     key,
-//     value: team,
-//     text: team,
-//   }))
-// }
 
 const schema = newProposalHiringScheme.properties
 const initialState: HiringState = {
@@ -69,12 +65,12 @@ function ProposalSubmitHiringPage({ type }: Props) {
   const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
 
   const getTargetOptions = useCallback(() => {
-    return Object.entries(HiringTeams).map(([key, team]) => ({
+    return Object.entries(Committees).map(([key, committee]) => ({
       key,
-      value: team,
-      text: team,
+      value: committee,
+      text: committee,
       onClick: () => {
-        setValue('committee', team)
+        setValue('committee', committee)
         clearErrors('committee')
       },
     }))
@@ -95,6 +91,11 @@ function ProposalSubmitHiringPage({ type }: Props) {
       setError(error.body?.error || error.message)
       setFormDisabled(false)
     }
+  }
+
+  const handleRemoveMemberClick = (_: any, data: DropdownItemProps) => {
+    setValue('address', data.value as string)
+    clearErrors('address')
   }
 
   return (
@@ -137,25 +138,41 @@ function ProposalSubmitHiringPage({ type }: Props) {
             <span className="SubmitHiring__AddDetail">{t('page.submit_hiring.target_description')}</span>
           )}
         </ContentSection>
-        <ContentSection className="SubmitHiring__AddressSection">
-          <Label>{t('page.submit_hiring.address_title')}</Label>
-          <Field
-            control={control}
-            name="address"
-            rules={{
-              required: { value: true, message: t('page.submit_hiring.error.address_invalid') },
-              validate: (value: string) => {
-                if (!isEthereumAddress(value)) {
-                  return t('page.submit_hiring.error.address_invalid')
-                }
-              },
-            }}
-            type="string"
-            placeholder={t('page.submit_hiring.address_placeholder')}
-            error={!!errors.address}
-            disabled={formDisabled}
-            message={errors.address?.message}
-          />
+        <ContentSection className={TokenList.join([type === HiringType.Add && 'SubmitHiring__AddressSection'])}>
+          <Label>{t(`page.submit_hiring.${action}.address_title`)}</Label>
+          {type === HiringType.Add ? (
+            <Field
+              control={control}
+              name="address"
+              rules={{
+                required: { value: true, message: t('page.submit_hiring.error.address_invalid') },
+                validate: (value: string) => {
+                  if (!isEthereumAddress(value)) {
+                    return t('page.submit_hiring.error.address_invalid')
+                  }
+                },
+              }}
+              type="string"
+              placeholder={t('page.submit_hiring.address_placeholder')}
+              error={!!errors.address}
+              disabled={formDisabled}
+              message={errors.address?.message}
+            />
+          ) : (
+            <div className="SubmitHiring__DropdownContainer">
+              <CommitteeMembersDropdown
+                control={control}
+                name="address"
+                rules={{
+                  required: { value: true, message: '' },
+                }}
+                committee={watch('committee')}
+                disabled={formDisabled}
+                error={!!errors.address}
+                onOptionClick={handleRemoveMemberClick}
+              />
+            </div>
+          )}
         </ContentSection>
         <ContentSection className="SubmitHiring__ReasonsSection">
           <Label>{t(`page.submit_hiring.${action}.reasons_title`)}</Label>
@@ -192,20 +209,39 @@ function ProposalSubmitHiringPage({ type }: Props) {
         <ContentSection className="SubmitHiring__EvidenceSection">
           <Label>{t(`page.submit_hiring.${action}.evidence_title`)}</Label>
           <SubLabel>{t(`page.submit_hiring.${action}.evidence_description`)}</SubLabel>
-          <MarkdownTextarea
-            minHeight={175}
-            disabled={formDisabled}
-            // value={state.value.aboutThis}
-            // onChange={(_: unknown, { value }: { value: string }) => editor.set({ aboutThis: String(value) })}
-            // error={!!state.error.aboutThis}
-            // message={
-            //   t(state.error.aboutThis) +
-            //   ' ' +
-            //   t('page.submit_submit.character_counter', {
-            //     current: state.value.aboutThis.length,
-            //     limit: schema.aboutThis.maxLength,
-            //   })
-            // }
+          <Controller
+            control={control}
+            name="evidence"
+            rules={{
+              required: { value: true, message: t('page.submit_hiring.error.evidence_required') },
+              minLength: {
+                value: schema.evidence.minLength,
+                message: t('page.submit_hiring.error.evidence_min_length'),
+              },
+              maxLength: {
+                value: schema.evidence.maxLength,
+                message: t('page.submit_hiring.error.evidence_max_length'),
+              },
+            }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            render={({ field: { ref, onChange, onBlur, ...field } }) => (
+              <MarkdownTextarea
+                minHeight={175}
+                disabled={formDisabled}
+                onChange={(_: unknown, { value }: { value: string }) => setValue('evidence', value)}
+                onBlur={() => clearErrors('evidence')}
+                error={!!errors.evidence}
+                message={
+                  t(errors.evidence?.message) +
+                  ' ' +
+                  t('page.submit.character_counter', {
+                    current: watch('evidence', '').length,
+                    limit: schema.evidence.maxLength,
+                  })
+                }
+                {...field}
+              />
+            )}
           />
         </ContentSection>
         <ContentSection>

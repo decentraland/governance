@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import { Committees } from '../../clients/DclData'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -93,12 +94,6 @@ export enum PoiType {
 export enum HiringType {
   Add = 'hiring_add',
   Remove = 'hiring_remove',
-}
-
-export enum HiringTeams {
-  SAB = 'Security Advisory Board',
-  DAOCommitee = 'DAO Committee',
-  WearableCuration = 'Wearable Curation Team',
 }
 
 export function isProposalType(value: string | null | undefined): boolean {
@@ -446,7 +441,7 @@ export const newProposalHiringScheme = {
   properties: {
     committee: {
       type: 'string',
-      enum: Object.values(HiringTeams),
+      enum: Object.values(Committees),
     },
     address: {
       type: 'string',
