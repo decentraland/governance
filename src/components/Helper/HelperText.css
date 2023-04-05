@@ -21,3 +21,7 @@
 .HelperText__Content > p.dg.Paragraph {
   margin-bottom: 0 !important;
 }
+
+.ui.bottom.center.popup.transition.visible.Helper__Container--Popup {
+  z-index: 3000;
+}

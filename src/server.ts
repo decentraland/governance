@@ -19,6 +19,7 @@ import common from './entities/Common/routes'
 import debug from './entities/Debug/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
+import proposalSurveyTopics from './entities/ProposalSurveyTopics/routes'
 import sitemap from './entities/Sitemap/routes'
 import social from './entities/Social/routes'
 import subscription from './entities/Subscription/routes'
@@ -43,6 +44,7 @@ app.use('/api', [
   committee,
   debug,
   proposal,
+  proposalSurveyTopics,
   score,
   subscription,
   updates,

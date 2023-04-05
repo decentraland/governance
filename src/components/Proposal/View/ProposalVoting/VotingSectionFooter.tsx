@@ -8,6 +8,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Vote } from '../../../../entities/Votes/types'
 import locations from '../../../../modules/locations'
+import { ProposalPageState } from '../../../../pages/proposal'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'
@@ -19,7 +20,7 @@ interface VotingSectionFooterProps {
   startAt?: Date
   finishAt?: Date
   account: string | null
-  changingVote?: boolean
+  proposalPageState: ProposalPageState
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   delegators: string[] | null
   totalVpOnProposal: number
@@ -32,7 +33,7 @@ const VotingSectionFooter = ({
   startAt,
   finishAt,
   account,
-  changingVote,
+  proposalPageState,
   onChangeVote,
   delegators,
   totalVpOnProposal,
@@ -50,28 +51,41 @@ const VotingSectionFooter = ({
   const [userAddress] = useAuthContext()
 
   return (
-    <div className="VotingSectionFooter">
-      <div className="VotingSectionFooter__VP">
-        {showVotingPowerInfo && (
-          <VoteVotingPowerInfo accountVotingPower={totalVpOnProposal} hasEnoughToVote={hasEnoughToVote} vote={vote} />
-        )}
-      </div>
-      <div className="VotingSectionFooter__Actions">
-        {showVotingPowerInfo && userAddress && !hasEnoughToVote && (
-          <Link href={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
-        )}
-        {hasEnoughToVote && (
-          <ChangeVoteButton
-            vote={vote}
-            delegateVote={delegateVote}
-            hasDelegators={hasDelegators}
-            started={started}
-            finished={finished}
-            changingVote={changingVote}
-            onChangeVote={onChangeVote}
-          />
-        )}
-      </div>
+    <div className={'VotingSectionFooter'}>
+      {!proposalPageState.showVotingError && (
+        <>
+          <div className={'VotingSectionFooter__VP'}>
+            {showVotingPowerInfo && (
+              <VoteVotingPowerInfo
+                accountVotingPower={totalVpOnProposal}
+                hasEnoughToVote={hasEnoughToVote}
+                vote={vote}
+              />
+            )}
+          </div>
+          <div className={'VotingSectionFooter__Actions'}>
+            {showVotingPowerInfo && userAddress && !hasEnoughToVote && (
+              <Link href={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
+            )}
+            {hasEnoughToVote && (
+              <ChangeVoteButton
+                vote={vote}
+                delegateVote={delegateVote}
+                hasDelegators={hasDelegators}
+                started={started}
+                finished={finished}
+                changingVote={proposalPageState.changingVote}
+                onChangeVote={onChangeVote}
+              />
+            )}
+          </div>
+        </>
+      )}
+      {proposalPageState.showVotingError && (
+        <span className="VotingSectionFooter__VotingFailedMessage">
+          {t('page.proposal_detail.voting_section.voting_failed')}
+        </span>
+      )}
     </div>
   )
 }

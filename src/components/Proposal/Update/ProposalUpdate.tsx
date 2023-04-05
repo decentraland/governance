@@ -24,8 +24,8 @@ interface Props {
   update?: UpdateAttributes | null
   expanded: boolean
   index?: number
-  isCoauthor?: boolean
   onUpdateDeleted?: () => void
+  isCoauthor?: boolean
 }
 
 export const getStatusIcon = (
@@ -47,7 +47,7 @@ export const getStatusIcon = (
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, index, isCoauthor, onUpdateDeleted }: Props) => {
+const ProposalUpdate = ({ proposal, update, expanded, index, onUpdateDeleted, isCoauthor }: Props) => {
   const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
   const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
   const [account] = useAuthContext()

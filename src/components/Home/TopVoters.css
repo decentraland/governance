@@ -22,6 +22,10 @@
   align-items: center;
 }
 
+.TopVoters__HeaderTitle > .Helper__Container {
+  height: 14px;
+}
+
 .TopVoters__HeaderTitle > .ui.sub.header {
   padding-right: 2px;
 }

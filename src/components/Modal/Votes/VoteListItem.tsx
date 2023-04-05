@@ -8,10 +8,10 @@ import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { formatChoice } from '../../../entities/Proposal/templates/messages'
 import { Vote } from '../../../entities/Votes/types'
 import { abbreviateNumber } from '../../../entities/Votes/utils'
 import locations from '../../../modules/locations'
+import { formatChoice } from '../../../modules/votes/utils'
 
 export type VoteListItemModalProps = {
   address: string

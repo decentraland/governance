@@ -1,0 +1,41 @@
+.VotingModal .content {
+  margin-bottom: 32px !important;
+  margin-left: 42px !important;
+  margin-right: 42px !important;
+}
+
+.VotingModal__Choice {
+  font-weight: 600;
+}
+
+.VotingModal__Actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.VotingModal__ErrorNotice {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-600);
+  margin-left: 22px;
+}
+
+.VotingModal__ErrorNotice--hidden {
+  opacity: 0;
+}
+
+.VotingModal__CastVote {
+  max-width: 193px;
+}
+
+.VotingModal__SkipAndCast {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  margin-left: 22px !important;
+  padding-left: 0 !important;
+  text-align: left !important ;
+}

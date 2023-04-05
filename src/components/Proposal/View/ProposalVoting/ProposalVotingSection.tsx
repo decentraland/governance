@@ -7,16 +7,18 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
-import { Vote } from '../../../../entities/Votes/types'
+import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
 import { getPartyVotes, getVotingSectionConfig } from '../../../../modules/votes/utils'
+import { ProposalPageState } from '../../../../pages/proposal'
 import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
 import './ProposalVotingSection.css'
+import SidebarSnapshotRedirect from './SidebarSnapshotRedirect'
 import VotedChoiceButton from './VotedChoiceButton'
 import VotingSectionFooter from './VotingSectionFooter'
 
@@ -24,13 +26,16 @@ interface Props {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   loading?: boolean
-  changingVote?: boolean
   choices: string[]
   finished: boolean
+  onVote: (selectedChoice: SelectedVoteChoice) => void
   hasVoted: boolean
+  voteWithSurvey: boolean
   isShowingResults: boolean
-  onVote?: (e: React.MouseEvent<unknown, MouseEvent>, choice: string, choiceIndex: number) => void
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
+  castingVote: boolean
+  proposalPageState: ProposalPageState
+  updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
 const CURRENCY_FORMAT_OPTIONS = {
@@ -43,12 +48,15 @@ const ProposalVotingSection = ({
   proposal,
   votes,
   loading,
-  changingVote,
   choices,
   hasVoted,
-  isShowingResults,
   onVote,
   onChangeVote,
+  castingVote,
+  voteWithSurvey,
+  isShowingResults,
+  proposalPageState,
+  updatePageState,
   finished,
 }: Props) => {
   const t = useFormatMessage()
@@ -131,35 +139,46 @@ const ProposalVotingSection = ({
             </Button>
           )}
 
-          {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
+          {proposal && account && !proposalPageState.showSnapshotRedirect && (
+            <>
+              {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-          {(showChoiceButtons || changingVote) && (
-            <ChoiceButtons
-              choices={choices}
-              vote={vote}
-              votesByChoices={votesByChoices}
-              delegate={delegate}
-              delegateVote={delegateVote}
-              totalVotes={totalVotes}
-              onVote={onVote}
-              startAt={proposal?.start_at}
-            />
+              {(showChoiceButtons || proposalPageState.changingVote) && (
+                <ChoiceButtons
+                  choices={choices}
+                  vote={vote}
+                  votesByChoices={votesByChoices}
+                  delegate={delegate}
+                  delegateVote={delegateVote}
+                  totalVotes={totalVotes}
+                  onVote={onVote}
+                  voteWithSurvey={voteWithSurvey}
+                  proposalPageState={proposalPageState}
+                  castingVote={castingVote}
+                  updatePageState={updatePageState}
+                  startAt={proposal?.start_at}
+                />
+              )}
+
+              {votedChoice && !proposalPageState.changingVote && <VotedChoiceButton {...votedChoice} />}
+
+              <VotingSectionFooter
+                vote={vote}
+                delegateVote={delegateVote}
+                startAt={proposal?.start_at}
+                finishAt={proposal?.finish_at}
+                account={account}
+                proposalPageState={proposalPageState}
+                onChangeVote={onChangeVote}
+                delegators={delegators}
+                totalVpOnProposal={totalVpOnProposal}
+                hasEnoughToVote={hasEnoughToVote}
+              />
+            </>
           )}
-
-          {votedChoice && !changingVote && <VotedChoiceButton {...votedChoice} />}
-
-          <VotingSectionFooter
-            vote={vote}
-            delegateVote={delegateVote}
-            startAt={proposal?.start_at}
-            finishAt={proposal?.finish_at}
-            account={account}
-            changingVote={changingVote}
-            onChangeVote={onChangeVote}
-            delegators={delegators}
-            totalVpOnProposal={totalVpOnProposal}
-            hasEnoughToVote={hasEnoughToVote}
-          />
+          {proposal && account && proposalPageState.showSnapshotRedirect && (
+            <SidebarSnapshotRedirect proposal={proposal} />
+          )}
         </>
       )}
     </div>
