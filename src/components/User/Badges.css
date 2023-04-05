@@ -1,0 +1,53 @@
+.Badges__Container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 25px;
+}
+
+.Badge {
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.Badge__Icon {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  z-index: 1;
+}
+
+.Badge__TitleContainer {
+  background: #d9d9d9;
+  display: flex;
+  height: 24px;
+  opacity: 0.56;
+  border-radius: 4px;
+  padding: 3px 6px 3px 24px;
+  position: relative;
+  right: 20px;
+  gap: 4px;
+}
+
+.Badge__Title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-800);
+}
+
+.Badge__Counter {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-800);
+  opacity: 0.5;
+}
+
+/*TODO: mobile not mobile*/
+@media (min-width: 768px) {
+}

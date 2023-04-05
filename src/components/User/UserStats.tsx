@@ -9,6 +9,7 @@ import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
+import Badges from './Badges'
 import './UserStats.css'
 import UserVotingStats from './UserVotingStats'
 import UserVpStats from './UserVpStats'
@@ -35,6 +36,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
         <NotMobile>
           <Username address={address} size="medium" className="UserStats__Username" />
         </NotMobile>
+        <Badges address={address} />
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
         {total > 0 && (
           <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
