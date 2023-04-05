@@ -19,6 +19,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(115, 110, 125, 0.1);
+  border-top: 1px solid var(--alpha-black-200);
   min-height: 51px;
 }
