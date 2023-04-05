@@ -632,6 +632,15 @@
         "relevant_link": "Relevant link"
       }
     },
+    "proposal_bidding_tendering": {
+      "title": "About the bidding and tendering process",
+      "pitch_proposal_title": "Pitch proposal",
+      "pitch_proposal_description": "Begin by shedding light on problems/opportunities you think are relevant",
+      "tender_proposal_title": "Tender proposal",
+      "tender_proposal_description": "Define a clearer scope for community teams to propose a more specific project",
+      "bid_proposal_title": "Bid proposal",
+      "bid_proposal_description": "The most suitable project and team will be voted to receive funding"
+    },
     "proposal_list": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",

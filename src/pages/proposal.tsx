@@ -33,6 +33,7 @@ import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
@@ -208,6 +209,7 @@ export default function ProposalPage() {
   const results = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
   const showVotingStatusSummary =
     proposal && !!proposal.required_to_pass && !(proposal.status === ProposalStatus.Passed)
+  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch
 
   if (proposalState.error) {
     return (
@@ -270,6 +272,7 @@ export default function ProposalPage() {
                 <Markdown>{proposal?.description || ''}</Markdown>
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
+              {proposal && isBiddingAndTenderingProposal && <BiddingAndTenderingProcess proposalType={proposal.type} />}
               {showProposalUpdates && (
                 <ProposalUpdates
                   proposal={proposal}
