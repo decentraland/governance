@@ -294,6 +294,8 @@ const newProposalHiringValidator = schema.compile(newProposalHiringScheme)
 export async function createProposalHiring(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalHiring>(newProposalHiringValidator, req.body || {})
+  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_HIRING)
+
   if (!configuration.name) {
     const profile = await profiles.load(configuration.address)
     configuration.name = profile?.name || undefined
@@ -303,7 +305,7 @@ export async function createProposalHiring(req: WithAuth) {
     user,
     type: ProposalType.Hiring,
     required_to_pass: ProposalRequiredVP[ProposalType.Hiring],
-    finish_at: getProposalEndDate(SNAPSHOT_DURATION),
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_HIRING)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
