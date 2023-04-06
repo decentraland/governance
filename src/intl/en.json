@@ -668,6 +668,7 @@
       }
     },
     "proposal_bidding_tendering": {
+      "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
       "title": "About the bidding and tendering process",
       "pitch_proposal_title": "Pitch proposal",
       "pitch_proposal_description": "Begin by shedding light on problems/opportunities you think are relevant",
