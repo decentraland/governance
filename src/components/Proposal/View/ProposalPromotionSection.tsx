@@ -21,7 +21,6 @@ const getPromotedProposalType = (type: ProposalType) => {
     case ProposalType.Poll:
       return ProposalType.Draft
     case ProposalType.Draft:
-    default:
       return ProposalType.Governance
   }
 }
@@ -31,7 +30,9 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
 
   const handlePromoteClick = () => {
     const promotedProposalType = getPromotedProposalType(proposal?.type)
-    navigate(locations.submit(promotedProposalType, { linked_proposal_id: proposal!.id }), { replace: true })
+    if (promotedProposalType) {
+      navigate(locations.submit(promotedProposalType, { linked_proposal_id: proposal!.id }), { replace: true })
+    }
   }
 
   return (
