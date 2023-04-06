@@ -1150,6 +1150,7 @@
       "title": "Submit Proposal",
       "description": "Select a proposal category to get started",
       "common_actions": "Common Actions",
+      "bidding_tendering_process": "Bidding & Tendering Process",
       "governance_process": "Governance Process",
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
