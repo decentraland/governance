@@ -39,9 +39,7 @@ import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
-import ProposalCoAuthorStatus from '../components/Proposal/View/ProposalCoAuthorStatus'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
-import VestingContract from '../components/Proposal/View/VestingContract'
 import StatusPill from '../components/Status/StatusPill'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { Survey } from '../entities/SurveyTopic/types'
@@ -320,8 +318,6 @@ export default function ProposalPage() {
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
-              {!!proposal?.vesting_address && <VestingContract vestingAddress={proposal.vesting_address} />}
-              {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
               <ProposalSidebar
                 proposal={proposal}
                 proposalLoading={proposalState.loading}
