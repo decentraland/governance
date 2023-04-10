@@ -12,6 +12,7 @@ import {
   AddDeleteProposalModal,
   AddDeleteProposalModalProps,
 } from '../../components/Modal/AddDeleteProposalModal/AddDeleteProposalModal'
+import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
 import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
@@ -46,7 +47,7 @@ export default function NewProposalPage() {
   const closeProposalModal = () => setProposalModalProps((props) => ({ ...props, open: false }))
   const setHiringModalProps = async () => {
     setProposalModalProps({ ...HIRING_MODAL_PROPS, open: true })
-    const availableCommittees = await DclData.get().getCommitteesWithOpenSlots()
+    const availableCommittees = await getCommitteesWithOpenSlots()
     setProposalModalProps((prev) => ({ ...prev, isAddDisabled: availableCommittees.length === 0 }))
   }
 

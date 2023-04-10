@@ -138,14 +138,4 @@ export class DclData extends API {
   async getBudgets() {
     return this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET'))
   }
-
-  async getCommitteesWithOpenSlots(): Promise<Committee[]> {
-    const { teams } = await this.getData()
-    return teams.filter((team) => team.size > team.members.length)
-  }
-
-  async hasOpenSlots(name: CommitteeName): Promise<boolean> {
-    const committees = await this.getCommitteesWithOpenSlots()
-    return !!committees.find((committee) => committee.name === name)
-  }
 }

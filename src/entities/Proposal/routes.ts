@@ -9,7 +9,6 @@ import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { DclData } from '../../clients/DclData'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { inBackground } from '../../helpers'
@@ -20,6 +19,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isCommittee from '../Committee/isCommittee'
+import { hasOpenSlots } from '../Committee/utils'
 import { filterComments } from '../Discourse/utils'
 import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
@@ -299,7 +299,7 @@ export async function createProposalHiring(req: WithAuth) {
   await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_HIRING)
 
   if (configuration.type === HiringType.Add) {
-    const canHire = await DclData.get().hasOpenSlots(configuration.committee)
+    const canHire = await hasOpenSlots(configuration.committee)
     if (!canHire) {
       throw new RequestError('The committee does not have available slots')
     }
