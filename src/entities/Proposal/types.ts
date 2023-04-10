@@ -100,6 +100,7 @@ export function isProposalType(value: string | null | undefined): boolean {
     case ProposalType.Draft:
     case ProposalType.Governance:
     case ProposalType.LinkedWearables:
+    case ProposalType.Pitch:
       return true
     default:
       return false
