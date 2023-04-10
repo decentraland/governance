@@ -17,9 +17,9 @@ ${formatMarkdown(proposal.proposedSolution)}
 
 ## Target Audience/Customer Base
 
-${proposal.targetAudience}
+${formatMarkdown(proposal.targetAudience)}
 
 ## Why is this relevant now?
 
-${proposal.relevancy}
+${formatMarkdown(proposal.relevancy)}
 `
