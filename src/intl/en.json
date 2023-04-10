@@ -287,6 +287,7 @@
     "hiring_description": "Request a Community member to be added or removed from a Committee",
     "hiring_add_title": "Add Committee Member",
     "hiring_add_description": "Promote a noteworthy Decentraland citizen to be hired by the DAO",
+    "hiring_add_paused": "MISSING_COPY",
     "hiring_remove_title": "Remove Committee Member",
     "hiring_remove_description": "Suggest to demote a specific DAO member from their Committee duties",
     "poll_title": "Pre-Proposal Poll",

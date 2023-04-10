@@ -4,6 +4,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
+import { DclData } from '../../clients/DclData'
 import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
 import { env } from '../../modules/env'

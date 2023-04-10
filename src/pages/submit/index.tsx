@@ -5,6 +5,7 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import { DclData } from '../../clients/DclData'
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import {
@@ -33,6 +34,7 @@ const HIRING_MODAL_PROPS: AddDeleteProposalModalProps = {
   title: 'hiring',
   addType: HiringType.Add,
   addHref: locations.submit(ProposalType.Hiring, { request: HiringType.Add }),
+  isAddDisabled: true,
   removeType: HiringType.Remove,
   removeHref: locations.submit(ProposalType.Hiring, { request: HiringType.Remove }),
 }
@@ -42,6 +44,11 @@ export default function NewProposalPage() {
   const [proposalModalProps, setProposalModalProps] = useState(POI_MODAL_PROPS)
 
   const closeProposalModal = () => setProposalModalProps((props) => ({ ...props, open: false }))
+  const setHiringModalProps = async () => {
+    setProposalModalProps({ ...HIRING_MODAL_PROPS, open: true })
+    const availableCommittees = await DclData.get().getCommitteesWithOpenSlots()
+    setProposalModalProps((prev) => ({ ...prev, isAddDisabled: availableCommittees.length === 0 }))
+  }
 
   return (
     <>
@@ -71,11 +78,7 @@ export default function NewProposalPage() {
             href={locations.submit(ProposalType.Grant)}
             active={isGrantProposalSubmitEnabled(NOW)}
           />
-          <CategoryBanner
-            isNew
-            type={ProposalType.Hiring}
-            onClick={() => setProposalModalProps({ ...HIRING_MODAL_PROPS, open: true })}
-          />
+          <CategoryBanner isNew type={ProposalType.Hiring} onClick={setHiringModalProps} />
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">

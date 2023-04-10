@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { Committees } from '../../clients/DclData'
+import { CommitteeName } from '../../clients/DclData'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -434,7 +434,7 @@ export const newProposalPOIScheme = {
 
 export type NewProposalHiring = {
   type: HiringType
-  committee: Committees
+  committee: CommitteeName
   address: string
   reasons: string
   evidence: string
@@ -453,7 +453,7 @@ export const newProposalHiringScheme = {
     },
     committee: {
       type: 'string',
-      enum: Object.values(Committees),
+      enum: Object.values(CommitteeName),
     },
     address: {
       type: 'string',

@@ -23,14 +23,15 @@ export type Member = {
   name: string
 }
 
-export enum Committees {
+export enum CommitteeName {
   SAB = 'Security Advisory Board',
   DAOCommitee = 'DAO Committee',
   WearableCuration = 'Wearable Curation Team',
 }
 
-export type Team = {
-  name: Committees
+export type Committee = {
+  name: CommitteeName
+  size: number
   description: string
   members: Member[]
 }
@@ -43,7 +44,7 @@ export type TransparencyData = {
     total: bigint
     budget: bigint
   }
-  teams: Team[]
+  teams: Committee[]
 }
 
 export type TransparencyGrant = {
@@ -136,5 +137,15 @@ export class DclData extends API {
 
   async getBudgets() {
     return this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET'))
+  }
+
+  async getCommitteesWithOpenSlots(): Promise<Committee[]> {
+    const { teams } = await this.getData()
+    return teams.filter((team) => team.size > team.members.length)
+  }
+
+  async hasOpenSlots(name: CommitteeName): Promise<boolean> {
+    const committees = await this.getCommitteesWithOpenSlots()
+    return !!committees.find((committee) => committee.name === name)
   }
 }

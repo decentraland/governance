@@ -14,16 +14,20 @@ export type AddDeleteProposalModalProps = ModalProps & {
   title: 'poi' | 'hiring'
   addType: PoiType | HiringType
   addHref: string
+  isAddDisabled?: boolean
   removeType: PoiType | HiringType
   removeHref: string
+  isRemoveDisabled?: boolean
 }
 
 export function AddDeleteProposalModal({
   title,
   addType,
   addHref,
+  isAddDisabled,
   removeType,
   removeHref,
+  isRemoveDisabled,
   ...props
 }: AddDeleteProposalModalProps) {
   const t = useFormatMessage()
@@ -37,8 +41,8 @@ export function AddDeleteProposalModal({
         </div>
       </Modal.Content>
       <div className="ProposalModel__Actions">
-        <CategoryBanner type={addType} href={addHref} />
-        <CategoryBanner type={removeType} href={removeHref} />
+        <CategoryBanner type={addType} href={addHref} active={!isAddDisabled} />
+        <CategoryBanner type={removeType} href={removeHref} active={!isRemoveDisabled} />
       </div>
     </Modal>
   )

@@ -5,11 +5,11 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
-import { Committees } from '../../../clients/DclData'
+import { CommitteeName } from '../../../clients/DclData'
 import useDclData from '../../../hooks/useDclData'
 
 interface ExtendedController extends React.ComponentProps<typeof Controller> {
-  committee?: Committees | null
+  committee?: CommitteeName | null
   disabled?: boolean
   error?: boolean
   control: Control<any, any>
@@ -24,7 +24,7 @@ function CommitteeMembersDropdown({ committee, control, disabled, error, onOptio
   const t = useFormatMessage()
 
   const getCommitteeMembers = useCallback(
-    (committee: Committees) => {
+    (committee: CommitteeName) => {
       const team = teams.find((team) => team.name === committee)
       const members = team?.members || []
       return members.map((member) => ({

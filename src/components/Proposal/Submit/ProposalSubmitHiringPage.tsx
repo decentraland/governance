@@ -16,7 +16,7 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { Committees } from '../../../clients/DclData'
+import { CommitteeName } from '../../../clients/DclData'
 import { Governance } from '../../../clients/Governance'
 import { HiringType, getHiringTypeAction, newProposalHiringScheme } from '../../../entities/Proposal/types'
 import loader from '../../../modules/loader'
@@ -35,10 +35,12 @@ import './ProposalSubmitHiringPage.css'
 
 interface Props {
   type: HiringType
+  committees: CommitteeName[]
+  isCommitteesLoading?: boolean
 }
 
 type HiringState = {
-  committee: Committees | null
+  committee: CommitteeName | null
   address: string
   reasons: string
   evidence: string
@@ -54,7 +56,7 @@ const initialState: HiringState = {
   evidence: '',
 }
 
-function ProposalSubmitHiringPage({ type }: Props) {
+function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Props) {
   const [account, accountState] = useAuthContext()
   const preventNavigation = useRef(false)
   const action = getHiringTypeAction(type)
@@ -74,8 +76,8 @@ function ProposalSubmitHiringPage({ type }: Props) {
   const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
 
   const getTargetOptions = useCallback(() => {
-    return Object.entries(Committees).map(([key, committee]) => ({
-      key,
+    return committees.map((committee) => ({
+      key: committee,
       value: committee,
       text: committee,
       onClick: () => {
@@ -87,7 +89,7 @@ function ProposalSubmitHiringPage({ type }: Props) {
       },
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setValue, type])
+  }, [committees, setValue, type])
 
   useEffect(() => {
     preventNavigation.current = isDirty
@@ -152,8 +154,9 @@ function ProposalSubmitHiringPage({ type }: Props) {
                   fluid
                   selection
                   options={getTargetOptions()}
-                  disabled={formDisabled}
+                  disabled={formDisabled || !!isCommitteesLoading}
                   error={!!errors.committee}
+                  loading={!!isCommitteesLoading}
                 />
               )}
             />
