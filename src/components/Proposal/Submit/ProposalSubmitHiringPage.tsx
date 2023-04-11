@@ -18,7 +18,12 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { CommitteeName } from '../../../clients/DclData'
 import { Governance } from '../../../clients/Governance'
-import { HiringType, getHiringTypeAction, newProposalHiringScheme } from '../../../entities/Proposal/types'
+import {
+  HiringType,
+  NewProposalHiring,
+  getHiringTypeAction,
+  newProposalHiringScheme,
+} from '../../../entities/Proposal/types'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
@@ -39,14 +44,7 @@ interface Props {
   isCommitteesLoading?: boolean
 }
 
-type HiringState = {
-  committee: CommitteeName | null
-  address: string
-  reasons: string
-  evidence: string
-  coAuthors?: string[]
-  name?: string
-}
+type HiringState = Omit<NewProposalHiring, 'type' | 'committee'> & { committee: CommitteeName | null }
 
 const schema = newProposalHiringScheme.properties
 const initialState: HiringState = {
@@ -71,7 +69,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
     setValue,
     clearErrors,
     watch,
-  } = useForm<HiringState>({ defaultValues: initialState })
+  } = useForm<HiringState>({ defaultValues: initialState, mode: 'onTouched' })
 
   const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
 
@@ -217,7 +215,6 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
                 minHeight={175}
                 disabled={formDisabled}
                 onChange={(_: unknown, { value }: { value: string }) => setValue('reasons', value)}
-                onBlur={() => clearErrors('reasons')}
                 error={!!errors.reasons}
                 message={
                   t(errors.reasons?.message) +
@@ -255,7 +252,6 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
                 minHeight={175}
                 disabled={formDisabled}
                 onChange={(_: unknown, { value }: { value: string }) => setValue('evidence', value)}
-                onBlur={() => clearErrors('evidence')}
                 error={!!errors.evidence}
                 message={
                   t(errors.evidence?.message) +

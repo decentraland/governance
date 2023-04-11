@@ -8,9 +8,9 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import {
-  AddDeleteProposalModal,
-  AddDeleteProposalModalProps,
-} from '../../components/Modal/AddDeleteProposalModal/AddDeleteProposalModal'
+  AddRemoveProposalModal,
+  AddRemoveProposalModalProps,
+} from '../../components/Modal/AddRemoveProposalModal/AddRemoveProposalModal'
 import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
 import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
@@ -20,7 +20,7 @@ import './submit.css'
 
 const NOW = Date.now()
 
-const POI_MODAL_PROPS: AddDeleteProposalModalProps = {
+const POI_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
   title: 'poi',
   addType: PoiType.AddPOI,
@@ -29,7 +29,7 @@ const POI_MODAL_PROPS: AddDeleteProposalModalProps = {
   removeHref: locations.submit(ProposalType.POI, { request: PoiType.RemovePOI }),
 }
 
-const HIRING_MODAL_PROPS: AddDeleteProposalModalProps = {
+const HIRING_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
   title: 'hiring',
   addType: HiringType.Add,
@@ -88,7 +88,7 @@ export default function NewProposalPage() {
         </ContentSection>
       </ContentLayout>
 
-      <AddDeleteProposalModal {...proposalModalProps} onClose={closeProposalModal} />
+      <AddRemoveProposalModal {...proposalModalProps} onClose={closeProposalModal} />
     </>
   )
 }

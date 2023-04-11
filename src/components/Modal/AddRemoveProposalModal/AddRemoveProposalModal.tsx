@@ -10,7 +10,7 @@ import { HiringType, PoiType } from '../../../entities/Proposal/types'
 import CategoryBanner from '../../Category/CategoryBanner'
 import '../ProposalModal.css'
 
-export type AddDeleteProposalModalProps = ModalProps & {
+export type AddRemoveProposalModalProps = ModalProps & {
   title: 'poi' | 'hiring'
   addType: PoiType | HiringType
   addHref: string
@@ -20,7 +20,7 @@ export type AddDeleteProposalModalProps = ModalProps & {
   isRemoveDisabled?: boolean
 }
 
-export function AddDeleteProposalModal({
+export function AddRemoveProposalModal({
   title,
   addType,
   addHref,
@@ -29,7 +29,7 @@ export function AddDeleteProposalModal({
   removeHref,
   isRemoveDisabled,
   ...props
-}: AddDeleteProposalModalProps) {
+}: AddRemoveProposalModalProps) {
   const t = useFormatMessage()
 
   return (

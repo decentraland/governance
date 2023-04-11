@@ -3,14 +3,12 @@ import { HiringType, NewProposalHiring } from '../types'
 
 import { template } from './utils'
 
-type HiringConfig = NewProposalHiring & { name: string }
-
-function getName(proposal: HiringConfig) {
-  const hasName = proposal.name && proposal.name.length > 0
+function getName(proposal: NewProposalHiring) {
+  const hasName = !!proposal.name && proposal.name.length > 0
   return hasName ? proposal.name : addressShortener(proposal.address)
 }
 
-export const title = (proposal: HiringConfig) => {
+export const title = (proposal: NewProposalHiring) => {
   const name = getName(proposal)
 
   switch (proposal.type) {
@@ -23,7 +21,7 @@ export const title = (proposal: HiringConfig) => {
   }
 }
 
-export const description = (proposal: HiringConfig) => {
+export const description = (proposal: NewProposalHiring) => {
   const name = getName(proposal)
   const subtitle =
     proposal.type === HiringType.Add
