@@ -4,11 +4,11 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
 import { Governance } from '../clients/Governance'
 
-export default function useIsCommittee(address?: string | null) {
+export default function useIsDAOCommittee(address?: string | null) {
   const [committeeAddresses] = useAsyncMemo(() => Governance.get().getCommittee(), [])
-  const isCommittee = useMemo(
+  const isDAOCommittee = useMemo(
     () => !!(address && committeeAddresses && committeeAddresses.includes(address)),
     [address, committeeAddresses]
   )
-  return { isCommittee }
+  return { isDAOCommittee }
 }

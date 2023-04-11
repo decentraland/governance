@@ -18,7 +18,7 @@ import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
-import isCommittee from '../Committee/isCommittee'
+import isDAOCommittee from '../Committee/isDAOCommittee'
 import { hasOpenSlots } from '../Committee/utils'
 import { filterComments } from '../Discourse/utils'
 import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
@@ -418,8 +418,8 @@ export function commentProposalUpdateInDiscourse(id: string) {
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
-  if (!isCommittee(user)) {
-    throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
+  if (!isDAOCommittee(user)) {
+    throw new RequestError('Only DAO commitee members can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)

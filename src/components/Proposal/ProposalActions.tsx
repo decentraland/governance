@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { isProposalDeletable, isProposalEnactable, proposalCanBePassedOrRejected } from '../../entities/Proposal/utils'
-import useIsCommittee from '../../hooks/useIsCommittee'
+import useIsDAOCommittee from '../../hooks/useIsDAOCommittee'
 import useIsProposalOwner from '../../hooks/useIsProposalOwner'
 import { ProposalPageState } from '../../pages/proposal'
 
@@ -20,13 +20,13 @@ type ProposalActionsProps = {
 export default function ProposalActions({ proposal, deleting, updatingStatus, updatePageState }: ProposalActionsProps) {
   const t = useFormatMessage()
   const [account] = useAuthContext()
-  const { isCommittee } = useIsCommittee(account)
+  const { isDAOCommittee } = useIsDAOCommittee(account)
   const { isOwner } = useIsProposalOwner(proposal)
 
   const proposalStatus = proposal?.status
-  const showDeleteButton = isOwner || isCommittee
-  const showEnactButton = isCommittee && isProposalEnactable(proposalStatus)
-  const showStatusUpdateButton = isCommittee && proposalCanBePassedOrRejected(proposalStatus)
+  const showDeleteButton = isOwner || isDAOCommittee
+  const showEnactButton = isDAOCommittee && isProposalEnactable(proposalStatus)
+  const showStatusUpdateButton = isDAOCommittee && proposalCanBePassedOrRejected(proposalStatus)
 
   return (
     <>

@@ -6,7 +6,7 @@ import isUUID from 'validator/lib/isUUID'
 import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
 import CoauthorModel from '../entities/Coauthor/model'
-import isCommittee from '../entities/Committee/isCommittee'
+import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import * as templates from '../entities/Proposal/templates'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -124,7 +124,7 @@ export class ProposalService {
   }
 
   private static validateRemoval(proposal: ProposalAttributes, user: string) {
-    const allowToRemove = proposal.user === user || isCommittee(user)
+    const allowToRemove = proposal.user === user || isDAOCommittee(user)
     if (!allowToRemove) {
       throw new RequestError('Forbidden', RequestError.Forbidden)
     }
