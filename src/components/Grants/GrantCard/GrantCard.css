@@ -24,13 +24,14 @@
 }
 
 .GrantCard__Expanded {
+  overflow: hidden;
   transition: all 0.2s ease 0s;
   z-index: 100;
 }
 
 .GrantCard__Expanded:hover {
   transform: scale(1.1);
-  height: 249px;
+  height: 237px;
   box-shadow: 0 5px 30px 0 #0000003d;
 }
 
