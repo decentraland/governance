@@ -26,6 +26,7 @@ import {
   VOTING_POWER_TO_PASS_PITCH,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
+  VOTING_POWER_TO_PASS_TENDER,
 } from './constants'
 
 export type ProposalAttributes<C extends Record<string, unknown> = any> = {
@@ -83,6 +84,7 @@ export enum ProposalType {
   Draft = 'draft',
   Governance = 'governance',
   Pitch = 'pitch',
+  Tender = 'tender',
 }
 
 export enum PoiType {
@@ -433,10 +435,10 @@ export const newProposalCatalystScheme = {
 }
 
 export type NewProposalPitch = {
-  initiativeName: string
-  targetAudience: string
-  problemStatement: string
-  proposedSolution: string
+  initiative_name: string
+  target_audience: string
+  problem_statement: string
+  proposed_solution: string
   relevance: string
   coAuthors?: string[]
 }
@@ -444,24 +446,24 @@ export type NewProposalPitch = {
 export const newProposalPitchScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['initiativeName', 'targetAudience', 'problemStatement', 'proposedSolution', 'relevance'],
+  required: ['initiative_name', 'target_audience', 'problem_statement', 'proposed_solution', 'relevance'],
   properties: {
-    initiativeName: {
+    initiative_name: {
       type: 'string',
       minLength: 1,
       maxLength: 80,
     },
-    targetAudience: {
+    target_audience: {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
     },
-    problemStatement: {
+    problem_statement: {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
     },
-    proposedSolution: {
+    proposed_solution: {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
@@ -470,6 +472,74 @@ export const newProposalPitchScheme = {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
+    },
+    coAuthors,
+  },
+}
+
+export type NewProposalTender = {
+  linked_proposal_id: string
+  project_name: string
+  summary: string
+  problem_statement: string
+  technical_specification: string
+  use_cases: string
+  deliverables: string
+  target_release_date: Date
+  coAuthors?: string[]
+}
+
+export const newProposalTenderScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'linked_proposal_id',
+    'project_name',
+    'summary',
+    'problem_statement',
+    'technical_specification',
+    'use_cases',
+    'deliverables',
+  ],
+  properties: {
+    linked_proposal_id: {
+      type: 'string',
+      minLength: 36,
+      maxLength: 255,
+    },
+    project_name: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    summary: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    problem_statement: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    technical_specification: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    use_cases: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    deliverables: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    target_release_date: {
+      type: 'string', // TODO: Check date type
+      maxLength: 100,
     },
     coAuthors,
   },
@@ -486,6 +556,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
   [ProposalType.Pitch]: requiredVotingPower(VOTING_POWER_TO_PASS_PITCH, 0),
+  [ProposalType.Tender]: requiredVotingPower(VOTING_POWER_TO_PASS_TENDER, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &

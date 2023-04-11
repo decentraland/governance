@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react'
 
-import { useSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useSearchParams'
 
 type BurgerMenuStatusContextProps = {
   children: React.ReactNode
@@ -21,7 +21,7 @@ export type BurgerMenuStatusContextType = {
 export const BurgerMenuStatusContext = createContext<BurgerMenuStatusContextType>({} as BurgerMenuStatusContextType)
 
 const BurgerMenuStatusContextProvider = ({ children }: BurgerMenuStatusContextProps) => {
-  const searchParams = useSearchParams()
+  const searchParams = useProposalsSearchParams()
   const filtering =
     !!searchParams.type || !!searchParams.status || (!!searchParams.timeFrame && searchParams.timeFrame.length > 0)
   const [status, setStatus] = useState({

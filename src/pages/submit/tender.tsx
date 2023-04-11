@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import { useLocation } from '@gatsbyjs/reach-router'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -13,6 +12,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
@@ -24,26 +24,30 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
-import { NewProposalPitch, newProposalPitchScheme } from '../../entities/Proposal/types'
+import { NewProposalTender, newProposalTenderScheme } from '../../entities/Proposal/types'
+import usePreselectedProposal from '../../hooks/usePreselectedProposal'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './submit.css'
 
-const initialState: NewProposalPitch = {
-  initiative_name: '',
-  target_audience: '',
+const initialState: NewProposalTender = {
+  linked_proposal_id: '',
+  project_name: '',
+  summary: '',
   problem_statement: '',
-  proposed_solution: '',
-  relevance: '',
+  technical_specification: '',
+  use_cases: '',
+  deliverables: '',
+  target_release_date: new Date(),
 }
-const schema = newProposalPitchScheme.properties
+const schema = newProposalTenderScheme.properties
 
-export default function SubmitPitchProposal() {
+export default function SubmitTenderProposal() {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const params = useURLSearchParams()
   const [account, accountState] = useAuthContext()
   const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
@@ -55,13 +59,16 @@ export default function SubmitPitchProposal() {
   const preventNavigation = useRef(false)
   const [error, setError] = useState('')
 
+  const preselectedLinkedProposalId = params.get('linked_proposal_id')
+  const preselectedProposal = usePreselectedProposal(preselectedLinkedProposalId)
+
   const {
     handleSubmit,
     formState: { isDirty, errors },
     control,
     setValue,
     watch,
-  } = useForm<NewProposalPitch>({ defaultValues: initialState, mode: 'onTouched' })
+  } = useForm<NewProposalTender>({ defaultValues: initialState, mode: 'onTouched' })
 
   const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
 
@@ -69,11 +76,17 @@ export default function SubmitPitchProposal() {
     preventNavigation.current = isDirty
   }, [isDirty])
 
-  const onSubmit: SubmitHandler<NewProposalPitch> = async (data) => {
+  useEffect(() => {
+    if (preselectedLinkedProposalId) {
+      setValue('linked_proposal_id', preselectedLinkedProposalId)
+    }
+  }, [preselectedLinkedProposalId, setValue])
+
+  const onSubmit: SubmitHandler<NewProposalTender> = async (data) => {
     setFormDisabled(true)
 
     try {
-      const proposal = await Governance.get().createProposalPitch({
+      const proposal = await Governance.get().createProposalTender({
         ...data,
       })
 
@@ -92,88 +105,99 @@ export default function SubmitPitchProposal() {
   }
 
   if (!account) {
-    return <LogIn title={t('page.submit_pitch.title') || ''} description={t('page.submit_pitch.description') || ''} />
+    return <LogIn title={t('page.submit_tender.title') || ''} description={t('page.submit_tender.description') || ''} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
-        title={t('page.submit_pitch.title') || ''}
-        description={t('page.submit_pitch.description') || ''}
+        title={t('page.submit_tender.title') || ''}
+        description={t('page.submit_tender.description') || ''}
         image="https://decentraland.org/images/decentraland.png"
       />
-      <Helmet title={t('page.submit_pitch.title') || ''} />
+      <Helmet title={t('page.submit_tender.title') || ''} />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Header size="huge">{t('page.submit_pitch.title')}</Header>
+          <Header size="huge">{t('page.submit_tender.title')}</Header>
         </ContentSection>
         <ContentSection className="MarkdownSection--tiny">
-          <Markdown>{t('page.submit_pitch.description')}</Markdown>
+          <Markdown>{t('page.submit_tender.description')}</Markdown>
+        </ContentSection>
+
+        <ContentSection>
+          <Label>{t('page.submit_draft.linked_proposal_label')}</Label>
+          <SelectField
+            value={watch('linked_proposal_id') || undefined}
+            options={preselectedProposal}
+            error={!!errors.linked_proposal_id}
+            message={errors.linked_proposal_id?.message}
+            rules={{ required: { value: true, message: t('error.tender.linked_proposal_empty') } }}
+            disabled
+            loading={isLoadingVpDistribution}
+          />
         </ContentSection>
 
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.initiative_name_label')}
+            {t('page.submit_tender.project_name_label')}
             <MarkdownNotice />
           </Label>
           <Field
             control={control}
-            name="initiative_name"
+            name="project_name"
             rules={{
-              required: { value: true, message: t('error.pitch.initiative_name_empty') },
-              min: { value: schema.initiative_name.minLength, message: t('error.pitch.initiative_name_too_short') },
-              max: { value: schema.initiative_name.maxLength, message: t('error.pitch.initiative_name_too_long') },
+              required: { value: true, message: t('error.tender.project_name_empty') },
+              min: { value: schema.project_name.minLength, message: t('error.tender.project_name_too_short') },
+              max: { value: schema.project_name.maxLength, message: t('error.tender.project_name_too_long') },
             }}
-            error={!!errors.initiative_name}
+            error={!!errors.project_name}
             loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
             message={
-              (errors.initiative_name?.message || '') +
+              (errors.project_name?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: watch('initiative_name').length,
-                limit: schema.initiative_name.maxLength,
+                current: watch('project_name').length,
+                limit: schema.project_name.maxLength,
               })
             }
           />
-          <span className="Input__PostLabel">{t('page.submit_pitch.initiative_name_postlabel')}</span>
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.target_audience_label')}
+            {t('page.submit_tender.summary_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_pitch.target_audience_detail')}
+            {t('page.submit_tender.summary_description')}
           </Paragraph>
           <Controller
             control={control}
-            name="target_audience"
+            name="summary"
             rules={{
-              required: { value: true, message: t('error.pitch.target_audience_empty') },
+              required: { value: true, message: t('error.tender.summary_empty') },
               minLength: {
-                value: schema.target_audience.minLength,
-                message: t('error.pitch.target_audience_too_short'),
+                value: schema.summary.minLength,
+                message: t('error.tender.summary_too_short'),
               },
               maxLength: {
-                value: schema.target_audience.maxLength,
-                message: t('error.pitch.target_audience_too_large'),
+                value: schema.summary.maxLength,
+                message: t('error.tender.summary_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
                 loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.target_audience}
+                error={!!errors.summary}
                 message={
-                  (errors.target_audience?.message || '') +
+                  (errors.summary?.message || '') +
                   ' ' +
                   t('page.submit.character_counter', {
-                    current: watch('target_audience').length,
-                    limit: schema.target_audience.maxLength,
+                    current: watch('summary').length,
+                    limit: schema.summary.maxLength,
                   })
                 }
                 {...field}
@@ -183,27 +207,26 @@ export default function SubmitPitchProposal() {
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.problem_statement_label')}
+            {t('page.submit_tender.problem_statement_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_pitch.problem_statement_detail')}
+            {t('page.submit_tender.problem_statement_description')}
           </Paragraph>
           <Controller
             control={control}
             name="problem_statement"
             rules={{
-              required: { value: true, message: t('error.pitch.problem_statement_empty') },
+              required: { value: true, message: t('error.tender.problem_statement_empty') },
               minLength: {
                 value: schema.problem_statement.minLength,
-                message: t('error.pitch.problem_statement_too_short'),
+                message: t('error.tender.problem_statement_too_short'),
               },
               maxLength: {
                 value: schema.problem_statement.maxLength,
-                message: t('error.pitch.problem_statement_too_large'),
+                message: t('error.tender.problem_statement_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
@@ -225,39 +248,38 @@ export default function SubmitPitchProposal() {
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.proposed_solution_label')}
+            {t('page.submit_tender.technical_specification_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_pitch.proposed_solution_detail')}
+            {t('page.submit_tender.technical_specification_description')}
           </Paragraph>
           <Controller
             control={control}
-            name="proposed_solution"
+            name="technical_specification"
             rules={{
-              required: { value: true, message: t('error.pitch.proposed_solution_empty') },
+              required: { value: true, message: t('error.tender.technical_specification_empty') },
               minLength: {
-                value: schema.proposed_solution.minLength,
-                message: t('error.pitch.proposed_solution_too_short'),
+                value: schema.technical_specification.minLength,
+                message: t('error.tender.technical_specification_too_short'),
               },
               maxLength: {
-                value: schema.proposed_solution.maxLength,
-                message: t('error.pitch.proposed_solution_too_large'),
+                value: schema.technical_specification.maxLength,
+                message: t('error.tender.technical_specification_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
                 loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.proposed_solution}
+                error={!!errors.technical_specification}
                 message={
-                  (errors.proposed_solution?.message || '') +
+                  (errors.technical_specification?.message || '') +
                   ' ' +
                   t('page.submit.character_counter', {
-                    current: watch('proposed_solution').length,
-                    limit: schema.proposed_solution.maxLength,
+                    current: watch('technical_specification').length,
+                    limit: schema.technical_specification.maxLength,
                   })
                 }
                 {...field}
@@ -267,45 +289,115 @@ export default function SubmitPitchProposal() {
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.relevance_label')}
+            {t('page.submit_tender.use_cases_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_pitch.relevance_detail')}
+            {t('page.submit_tender.use_cases_description')}
           </Paragraph>
           <Controller
             control={control}
-            name="relevance"
+            name="use_cases"
             rules={{
-              required: { value: true, message: t('error.pitch.relevance_empty') },
+              required: { value: true, message: t('error.tender.use_cases_empty') },
               minLength: {
-                value: schema.relevance.minLength,
-                message: t('error.pitch.relevance_too_short'),
+                value: schema.use_cases.minLength,
+                message: t('error.tender.use_cases_too_short'),
               },
               maxLength: {
-                value: schema.relevance.maxLength,
-                message: t('error.pitch.relevance_too_large'),
+                value: schema.use_cases.maxLength,
+                message: t('error.tender.use_cases_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
                 loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.relevance}
+                error={!!errors.use_cases}
                 message={
-                  (errors.relevance?.message || '') +
+                  (errors.use_cases?.message || '') +
                   ' ' +
                   t('page.submit.character_counter', {
-                    current: watch('relevance').length,
-                    limit: schema.relevance.maxLength,
+                    current: watch('use_cases').length,
+                    limit: schema.use_cases.maxLength,
                   })
                 }
                 {...field}
               />
             )}
           />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_tender.deliverables_label')}
+            <MarkdownNotice />
+          </Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_tender.deliverables_description')}
+          </Paragraph>
+          <Controller
+            control={control}
+            name="deliverables"
+            rules={{
+              required: { value: true, message: t('error.tender.deliverables_empty') },
+              minLength: {
+                value: schema.deliverables.minLength,
+                message: t('error.tender.deliverables_too_short'),
+              },
+              maxLength: {
+                value: schema.deliverables.maxLength,
+                message: t('error.tender.deliverables_too_large'),
+              },
+            }}
+            render={({ field: { ref, ...field } }) => (
+              <MarkdownTextarea
+                minHeight={175}
+                loading={isLoadingVpDistribution}
+                disabled={submissionVpNotMet || formDisabled}
+                error={!!errors.deliverables}
+                message={
+                  (errors.deliverables?.message || '') +
+                  ' ' +
+                  t('page.submit.character_counter', {
+                    current: watch('deliverables').length,
+                    limit: schema.deliverables.maxLength,
+                  })
+                }
+                {...field}
+              />
+            )}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_tender.target_release_date_label')}
+            <MarkdownNotice />
+          </Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_tender.target_release_date_description')}
+          </Paragraph>
+          <Field
+            type="date"
+            control={control}
+            name="target_release_date"
+            rules={{
+              required: { value: true, message: t('error.tender.target_release_date_empty') },
+              // TODO: Check if date is in the future
+            }}
+            error={!!errors.project_name}
+            loading={isLoadingVpDistribution}
+            disabled={submissionVpNotMet || formDisabled}
+            message={
+              (errors.project_name?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('project_name').length,
+                limit: schema.project_name.maxLength,
+              })
+            }
+          />
+          {/* TODO: Add target release date input */}
         </ContentSection>
         <ContentSection>
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={submissionVpNotMet || formDisabled} />
@@ -318,7 +410,7 @@ export default function SubmitPitchProposal() {
         {submissionVpNotMet && (
           <ContentSection>
             <Paragraph small primary>
-              {t('error.pitch.submission_vp_not_met')}
+              {t('error.tender.submission_vp_not_met')}
             </Paragraph>
           </ContentSection>
         )}

@@ -6,7 +6,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
-import { useSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useSearchParams'
 import locations from '../../modules/locations'
 
 import './SearchInput.css'
@@ -28,7 +28,7 @@ export function handleSearch(textSearch: string, location: Location) {
 export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>) {
   const t = useFormatMessage()
   const location = useLocation()
-  const { search } = useSearchParams()
+  const { search } = useProposalsSearchParams()
   const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
   const [searchText, setSearchText] = useState(() => search || '')
