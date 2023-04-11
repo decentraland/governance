@@ -20,3 +20,4 @@ export const LOCAL_ENV_VAR = env('GATSBY_LOCAL_ENV_VAR') || ''
 export const TEST_ENV_VAR = env('GATSBY_TEST_ENV_VAR') || ''
 export const PROD_ENV_VAR = env('GATSBY_PROD_ENV_VAR') || ''
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
+export const VOTES_VP_THRESHOLD = 5

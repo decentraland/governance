@@ -5,7 +5,8 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
-import useTopVoters, { TOP_VOTER_VP_THRESHOLD } from '../../hooks/useTopVoters'
+import { VOTES_VP_THRESHOLD } from '../../constants'
+import useTopVoters from '../../hooks/useTopVoters'
 import Helper from '../Helper/Helper'
 
 import HomeLoader from './HomeLoader'
@@ -31,7 +32,7 @@ function TopVoters() {
             <Table.HeaderCell className="TopVoters__HeaderTitle">
               <Header sub>{t('page.home.community_engagement.top_voters')}</Header>
               <Helper
-                text={t('page.home.community_engagement.top_voters_tooltip', { vp: TOP_VOTER_VP_THRESHOLD })}
+                text={t('page.home.community_engagement.top_voters_tooltip', { vp: VOTES_VP_THRESHOLD })}
                 position={'top center'}
                 size={'14'}
               />

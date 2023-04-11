@@ -41,11 +41,12 @@ import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import StatusPill from '../components/Status/StatusPill'
+import { VOTES_VP_THRESHOLD } from '../constants'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
-import { SelectedVoteChoice } from '../entities/Votes/types'
+import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useIsCommittee from '../hooks/useIsCommittee'
@@ -83,6 +84,31 @@ export type ProposalPageState = {
   selectedChoice: SelectedVoteChoice
 }
 
+type VoteSegmentation = {
+  highQualityVotes: Record<string, Vote>
+  lowQualityVotes: Record<string, Vote>
+}
+
+function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation {
+  const highQualityVotes: Record<string, Vote> = {}
+  const lowQualityVotes: Record<string, Vote> = {}
+
+  if (votes) {
+    Object.entries(votes).forEach(([address, vote]) => {
+      if (vote.vp > VOTES_VP_THRESHOLD) {
+        highQualityVotes[address] = vote
+      } else {
+        lowQualityVotes[address] = vote
+      }
+    })
+  }
+
+  return {
+    highQualityVotes,
+    lowQualityVotes,
+  }
+}
+
 export default function ProposalPage() {
   const t = useFormatMessage()
   const location = useLocation()
@@ -109,6 +135,7 @@ export default function ProposalPage() {
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, votesState } = useProposalVotes(proposal?.id)
+  const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
   const [subscriptions, subscriptionsState] = useAsyncMemo(
     () => Governance.get().getSubscriptions(proposal!.id),
@@ -118,7 +145,7 @@ export default function ProposalPage() {
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
 
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
-  const partialResults = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
+  const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
@@ -364,7 +391,8 @@ export default function ProposalPage() {
       <VotesListModal
         open={proposalPageState.showVotesList}
         proposal={proposal}
-        votes={votes}
+        highQualityVotes={highQualityVotes}
+        lowQualityVotes={lowQualityVotes}
         onClose={() => updatePageState({ showVotesList: false })}
       />
       <VoteRegisteredModal
