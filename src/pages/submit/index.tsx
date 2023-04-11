@@ -5,7 +5,6 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { DclData } from '../../clients/DclData'
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import {
