@@ -116,28 +116,27 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
     clearErrors('address')
   }
 
+  const TITLE = t(`page.submit_hiring.${action}.title`)
+  const DESCRIPTION = t(`page.submit_hiring.${action}.description`)
+
   if (accountState.loading) {
     return <LoadingView />
   }
 
   if (!account) {
-    return <LogIn title={t(`page.submit_hiring.${action}.title`)} description={t('page.submit_hiring.description')} />
+    return <LogIn title={TITLE} description={DESCRIPTION} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head
-        title={t(`page.submit_hiring.${action}.title`)}
-        description={t('page.submit_hiring.description')}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <Helmet title={t(`page.submit_hiring.${action}.title`)} />
+      <Head title={TITLE} description={DESCRIPTION} image="https://decentraland.org/images/decentraland.png" />
+      <Helmet title={TITLE} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Header size="huge">{t(`page.submit_hiring.${action}.title`)}</Header>
+          <Header size="huge">{TITLE}</Header>
         </ContentSection>
         <ContentSection>
-          <Paragraph small>{t('page.submit_hiring.description')}</Paragraph>
+          <Paragraph small>{DESCRIPTION}</Paragraph>
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_hiring.target_title')}</Label>

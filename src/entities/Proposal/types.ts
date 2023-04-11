@@ -135,14 +135,18 @@ export function getPoiTypeAction(poiType: PoiType) {
   return poiType.split('_')[0] // "add" | "remove"
 }
 
-export function toHiringType(value: string | null | undefined): HiringType | null {
+export function isHiringType(value: string | null | undefined): boolean {
   switch (value) {
     case HiringType.Add:
     case HiringType.Remove:
-      return value
+      return true
     default:
-      return null
+      return false
   }
+}
+
+export function toHiringType(value: string | null | undefined): HiringType | null {
+  return isHiringType(value) ? (value as HiringType) : null
 }
 
 export function getHiringTypeAction(hiringType: HiringType) {
