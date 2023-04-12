@@ -33,8 +33,8 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
       key={address}
       className={TokenList.join([
         'VoteList__Item VotesList__DividerLine',
-        isLowQuality && 'VoteList__Item--lowQuality',
-        isLowQuality && active && 'VoteList__Item--lowQualityActive',
+        isLowQuality && 'VoteList__Item--low-quality',
+        isLowQuality && active && 'VoteList__Item--low-quality-active',
       ])}
     >
       <Grid.Column width={6}>

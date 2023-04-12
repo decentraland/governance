@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -11,6 +10,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { VOTES_VP_THRESHOLD } from '../../../constants'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
+import FullWidthButton from '../../Common/FullWidthButton'
 import '../ProposalModal.css'
 
 import { VoteListItem } from './VoteListItem'
@@ -75,14 +75,9 @@ export function VotesListModal({
             })}
             {lowQualityVotes && Object.keys(lowQualityVotes).length > 0 && !showLowQualityVotes && (
               <Grid.Row className="VoteList__ShowButtonContainer">
-                <Button
-                  className="VoteList__ShowButton"
-                  basic
-                  size="small"
-                  onClick={() => setShowLowQualityVotes(true)}
-                >
+                <FullWidthButton className="VoteList__ShowButton" onClick={() => setShowLowQualityVotes(true)}>
                   {t('modal.votes_list.show_more', { threshold: VOTES_VP_THRESHOLD })}
-                </Button>
+                </FullWidthButton>
               </Grid.Row>
             )}
             <>

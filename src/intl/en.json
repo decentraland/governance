@@ -384,7 +384,7 @@
       "vp": "VP",
       "voted_yes": "Yes",
       "voted_no": "No",
-      "low_quality_title": "{votes} votes with less than {threshold} VP",
+      "low_quality_title": "{votes} {votes, plural, one {vote} other {votes}} with less than {threshold} VP",
       "show_more": "Show votes with less than {threshold} VP"
     },
     "newsletter_subscription": {

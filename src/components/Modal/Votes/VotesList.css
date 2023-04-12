@@ -51,42 +51,59 @@
   align-items: baseline;
 }
 
-.row.VoteList__Item.VoteList__Item--lowQualityActive {
+.row.VoteList__Item.VoteList__Item--low-quality-active {
   pointer-events: none;
   display: flex !important;
 }
 
-.row.VoteList__Item.VoteList__Item--lowQualityActive * {
-  color: var(--black-300);
+.row.VoteList__Item.VoteList__Item--low-quality-active * {
+  color: var(--black-400);
 }
 
-.row.VoteList__Item.VoteList__Item--lowQualityActive img {
+.row.VoteList__Item.VoteList__Item--low-quality-active img {
   opacity: 0.5;
 }
 
-.row.VoteList__Item.VoteList__Item--lowQuality {
+.row.VoteList__Item.VoteList__Item--low-quality {
   display: none;
 }
 
-.row.VoteList__ShowButtonContainer,
-.row.VoteList__LowQualityDividerContainer {
+.ui.grid > .row.VoteList__ShowButtonContainer,
+.ui.grid > .row.VoteList__LowQualityDividerContainer {
   justify-content: center !important;
   border-top: none;
   text-transform: uppercase;
 }
 
+.ui.grid > .row.VoteList__LowQualityDividerContainer {
+  position: relative;
+}
+
+.ui.grid > .row.VoteList__LowQualityDividerContainer::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 50%;
+  right: 25px;
+  width: 100%;
+  height: 1px;
+  background-color: var(--black-300);
+}
+
+.ui.button.VoteList__ShowButton {
+  width: 90%;
+}
+
 .row.VoteList__LowQualityDividerContainer .VoteList__LowQuality {
+  position: relative;
   border: 1px solid var(--black-300);
-  color: var(--black-300);
+  color: var(--black-400);
   border-radius: 4px;
   padding: 3px 6px;
   font-size: 13px;
   line-height: 18px;
-}
-
-.ui.button.VoteList__ShowButton {
-  border: 1px solid var(--black-300);
-  padding: 8px 100px;
+  background-color: var(--white-900);
+  z-index: 1;
 }
 
 @media (max-width: 991px) {
