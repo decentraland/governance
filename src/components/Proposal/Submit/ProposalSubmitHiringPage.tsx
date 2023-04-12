@@ -165,23 +165,26 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
         <ContentSection className={TokenList.join([type === HiringType.Add && 'SubmitHiring__AddressSection'])}>
           <Label>{t(`page.submit_hiring.${action}.address_title`)}</Label>
           {type === HiringType.Add ? (
-            <Field
-              control={control}
-              name="address"
-              rules={{
-                required: { value: true, message: t('page.submit_hiring.error.address_invalid') },
-                validate: (value: string) => {
-                  if (!isEthereumAddress(value)) {
-                    return t('page.submit_hiring.error.address_invalid')
-                  }
-                },
-              }}
-              type="string"
-              placeholder={t('page.submit_hiring.address_placeholder')}
-              error={!!errors.address}
-              disabled={formDisabled}
-              message={errors.address?.message}
-            />
+            <>
+              <SubLabel>{t(`page.submit_hiring.add.address_description`)}</SubLabel>
+              <Field
+                control={control}
+                name="address"
+                rules={{
+                  required: { value: true, message: t('page.submit_hiring.error.address_invalid') },
+                  validate: (value: string) => {
+                    if (!isEthereumAddress(value)) {
+                      return t('page.submit_hiring.error.address_invalid')
+                    }
+                  },
+                }}
+                type="string"
+                placeholder={t('page.submit_hiring.address_placeholder')}
+                error={!!errors.address}
+                disabled={formDisabled}
+                message={errors.address?.message}
+              />
+            </>
           ) : (
             <div className="SubmitHiring__DropdownContainer">
               <CommitteeMembersDropdown

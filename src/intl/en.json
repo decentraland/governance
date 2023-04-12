@@ -1238,12 +1238,13 @@
     "submit_hiring": {
       "add": {
         "title": "Add Committee Member",
-        "description": "MISSING_COPY",
-        "address_title": "Ethereum address",
+        "description": "Being part of a Committee is great responsibility inside the DAO. Check with whom you are proposing that they agree to be postulated before creating this proposal.",
+        "address_title": "Wallet address",
+        "address_description": "Please copy the address of the proposed member. Check with them which address should you provide",
         "reasons_title": "Reasons for adding",
-        "reasons_description": "Please explain why you think they should become part of the Committee",
+        "reasons_description": "Explain why you think this person should be added to the Committee. Have in mind the goal of the Committee and how this person aligns with it. Be as descriptive and objective as possible",
         "evidence_title": "Evidence",
-        "evidence_description": "Indicate what makes them worthy of the throne"
+        "evidence_description": "Be as objective and detailed as possible. List their qualifications and achievements. Provide only publicly available information"
       },
       "remove": {
         "title": "Remove Committee Member",
