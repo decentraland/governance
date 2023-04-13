@@ -126,7 +126,7 @@ export default function SubmitTenderProposal() {
         </ContentSection>
 
         <ContentSection>
-          <Label>{t('page.submit_draft.linked_proposal_label')}</Label>
+          <Label>{t('page.submit_tender.linked_proposal_label')}</Label>
           <SelectField
             value={watch('linked_proposal_id') || undefined}
             options={preselectedProposal}
@@ -139,10 +139,7 @@ export default function SubmitTenderProposal() {
         </ContentSection>
 
         <ContentSection>
-          <Label>
-            {t('page.submit_tender.project_name_label')}
-            <MarkdownNotice />
-          </Label>
+          <Label>{t('page.submit_tender.project_name_label')}</Label>
           <Field
             control={control}
             name="project_name"
