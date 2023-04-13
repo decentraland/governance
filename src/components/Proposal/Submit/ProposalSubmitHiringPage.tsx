@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
@@ -18,12 +18,14 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { CommitteeName } from '../../../clients/DclData'
 import { Governance } from '../../../clients/Governance'
+import { SUBMISSION_THRESHOLD_HIRING } from '../../../entities/Proposal/constants'
 import {
   HiringType,
   NewProposalHiring,
   getHiringTypeAction,
   newProposalHiringScheme,
 } from '../../../entities/Proposal/types'
+import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
@@ -61,6 +63,15 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
   const [formDisabled, setFormDisabled] = useState(false)
   const [error, setError] = useState('')
   const t = useFormatMessage()
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
+  const submissionVpNotMet = useMemo(
+    () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_HIRING),
+    [vpDistribution]
+  )
+
+  useEffect(() => {
+    setFormDisabled(submissionVpNotMet)
+  }, [submissionVpNotMet])
 
   const {
     handleSubmit,
@@ -153,7 +164,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
                   options={getTargetOptions()}
                   disabled={formDisabled || !!isCommitteesLoading}
                   error={!!errors.committee}
-                  loading={!!isCommitteesLoading}
+                  loading={!!isCommitteesLoading || isLoadingVpDistribution}
                 />
               )}
             />
@@ -183,6 +194,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
                 error={!!errors.address}
                 disabled={formDisabled}
                 message={errors.address?.message}
+                loading={isLoadingVpDistribution}
               />
             </>
           ) : (
@@ -197,6 +209,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
                 disabled={formDisabled}
                 error={!!errors.address}
                 onOptionClick={handleRemoveMemberClick}
+                loading={isLoadingVpDistribution}
               />
             </div>
           )}
@@ -217,6 +230,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
               <MarkdownTextarea
                 minHeight={175}
                 disabled={formDisabled}
+                loading={isLoadingVpDistribution}
                 onChange={(_: unknown, { value }: { value: string }) => setValue('reasons', value)}
                 error={!!errors.reasons}
                 message={
@@ -254,6 +268,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
               <MarkdownTextarea
                 minHeight={175}
                 disabled={formDisabled}
+                loading={isLoadingVpDistribution}
                 onChange={(_: unknown, { value }: { value: string }) => setValue('evidence', value)}
                 error={!!errors.evidence}
                 message={
@@ -273,10 +288,17 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
         </ContentSection>
         <ContentSection>
-          <Button type="submit" primary disabled={formDisabled} loading={false} onClick={() => ({})}>
+          <Button type="submit" primary disabled={formDisabled} loading={isLoadingVpDistribution} onClick={() => ({})}>
             {t('page.submit.button_submit')}
           </Button>
         </ContentSection>
+        {!isLoadingVpDistribution && submissionVpNotMet && (
+          <ContentSection>
+            <Paragraph small primary>
+              {t('page.submit_hiring.error.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_HIRING })}
+            </Paragraph>
+          </ContentSection>
+        )}
         {error && (
           <ContentSection>
             <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(error) || error} />

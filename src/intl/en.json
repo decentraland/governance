@@ -1262,7 +1262,8 @@
         "reasons_max_length": "Reasons field is too long",
         "evidence_required": "Evidence is required",
         "evidence_min_length": "Evidence field is too short",
-        "evidence_max_length": "Evidence field is too long"
+        "evidence_max_length": "Evidence field is too long",
+        "submission_vp_not_met": "This action requires at least {threshold} VP."
       },
       "target_title": "Target Committee",
       "target_placeholder": "Select a committee",

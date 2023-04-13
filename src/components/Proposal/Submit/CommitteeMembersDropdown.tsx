@@ -10,6 +10,7 @@ import useDclData from '../../../hooks/useDclData'
 
 interface ExtendedController extends React.ComponentProps<typeof Controller> {
   committee?: CommitteeName | null
+  loading?: boolean
   disabled?: boolean
   error?: boolean
   control: Control<any, any>
@@ -18,7 +19,7 @@ interface ExtendedController extends React.ComponentProps<typeof Controller> {
 
 type Props = Omit<ExtendedController, 'render'>
 
-function CommitteeMembersDropdown({ committee, control, disabled, error, onOptionClick, ...props }: Props) {
+function CommitteeMembersDropdown({ committee, control, disabled, loading, error, onOptionClick, ...props }: Props) {
   const [data] = useDclData()
   const committees = useMemo(() => data?.committees || [], [data])
   const t = useFormatMessage()
@@ -49,6 +50,7 @@ function CommitteeMembersDropdown({ committee, control, disabled, error, onOptio
           selection
           options={committee ? getCommitteeMembers(committee) : []}
           disabled={disabled}
+          loading={loading}
           error={error}
           {...field}
         />
