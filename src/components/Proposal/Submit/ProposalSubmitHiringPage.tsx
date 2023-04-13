@@ -75,7 +75,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
 
   const {
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: { isDirty, isSubmitting, errors },
     control,
     setValue,
     clearErrors,
@@ -226,12 +226,11 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
               maxLength: { value: schema.reasons.maxLength, message: t('page.submit_hiring.error.reasons_max_length') },
             }}
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, onChange, onBlur, ...field } }) => (
+            render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
                 disabled={formDisabled}
                 loading={isLoadingVpDistribution}
-                onChange={(_: unknown, { value }: { value: string }) => setValue('reasons', value)}
                 error={!!errors.reasons}
                 message={
                   t(errors.reasons?.message) +
@@ -264,12 +263,11 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
               },
             }}
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, onChange, onBlur, ...field } }) => (
+            render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
                 disabled={formDisabled}
                 loading={isLoadingVpDistribution}
-                onChange={(_: unknown, { value }: { value: string }) => setValue('evidence', value)}
                 error={!!errors.evidence}
                 message={
                   t(errors.evidence?.message) +
@@ -288,7 +286,13 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
         </ContentSection>
         <ContentSection>
-          <Button type="submit" primary disabled={formDisabled} loading={isLoadingVpDistribution} onClick={() => ({})}>
+          <Button
+            type="submit"
+            primary
+            disabled={formDisabled}
+            loading={isLoadingVpDistribution || isSubmitting}
+            onClick={() => ({})}
+          >
             {t('page.submit.button_submit')}
           </Button>
         </ContentSection>
