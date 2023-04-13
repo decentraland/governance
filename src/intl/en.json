@@ -379,11 +379,14 @@
     },
     "votes_list": {
       "title": "{votes} {votes, plural, one {Vote} other {Votes}}",
+      "subtitle": "{votes} {votes, plural, one {Vote} other {Votes}} with less than {threshold} VP are excluded from this count",
       "voter": "Voter",
       "voted": "Voted",
       "vp": "VP",
       "voted_yes": "Yes",
-      "voted_no": "No"
+      "voted_no": "No",
+      "low_quality_title": "{votes} {votes, plural, one {vote} other {votes}} with less than {threshold} VP",
+      "show_more": "Show votes with less than {threshold} VP"
     },
     "newsletter_subscription": {
       "title": "Subscribe to the DAO Weekly Newsletter",

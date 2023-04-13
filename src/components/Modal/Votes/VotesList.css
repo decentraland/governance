@@ -1,8 +1,22 @@
-.VotesList .VotesList_Container_Header {
+.VotesList .ProposalModal__Title {
+  text-align: start;
+}
+
+.VotesList .ProposalModal__Title .ui.header.sub {
+  margin: 0;
+  text-transform: none;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--black-700);
+}
+
+.VotesList .VotesList__HeaderContainer {
   margin: 0 auto 20px;
 }
 
-.VotesList .VotesList_Container_Items {
+.VotesList .VotesList__ItemsContainer {
   margin: 0 auto 40px;
   height: 50vh;
   padding: 20px 0;
@@ -10,56 +24,113 @@
   overflow-x: hidden;
 }
 
-.VotesList .VotesList_Container_Items .VoteList_Item:hover {
+.VotesList .VotesList__ItemsContainer .VoteList__Item:hover {
   cursor: pointer;
 }
 
-.VotesList .VotesList_Container_Header .VotesList_Header {
+.VotesList .VotesList__HeaderContainer .VotesList__Header {
   color: #a4a2a8;
 }
 
-.VotesList_Divider {
+.VotesList__Divider {
   position: relative;
 }
 
-.VotesList_Container_Items
-  .VotesList_Divider
-  .VotesList_Divider_Line:first-child:after {
-  content: "";
+.VotesList__ItemsContainer .VotesList__Divider .VotesList__DividerLine:first-child:after {
+  content: '';
   position: absolute;
   top: 0;
   width: 95%;
-  border-bottom: 1px solid #e7e6e9;
+  border-bottom: 1px solid var(--black-300);
 }
 
-.VotesList_Divider .VotesList_Divider_Line:before {
-  content: "";
+.VotesList__Divider .VotesList__DividerLine:before {
+  content: '';
   position: absolute;
   bottom: 0;
   width: 95%;
-  border-bottom: 1px solid #e7e6e9;
+  border-bottom: 1px solid var(--black-300);
+}
+.VoteList__Item:has(+ .VoteList__ShowButtonContainer)::before,
+.VoteList__Item:has(+ .VoteList__LowQualityDividerContainer)::before {
+  border-bottom: none;
 }
 
 .VotesList .dg.dcl-avatar {
-  margin: 0 .25em 0 0;
+  margin: 0 0.25em 0 0;
 }
 
-.row.VoteList_Item.VotesList_Divider_Line {
+.row.VoteList__Item.VotesList__DividerLine {
   display: flex;
   align-items: baseline;
 }
 
+.row.VoteList__Item.VoteList__Item--low-quality-active {
+  pointer-events: none;
+  display: flex !important;
+}
+
+.row.VoteList__Item.VoteList__Item--low-quality-active * {
+  color: var(--black-400);
+}
+
+.row.VoteList__Item.VoteList__Item--low-quality-active img {
+  opacity: 0.5;
+}
+
+.row.VoteList__Item.VoteList__Item--low-quality {
+  display: none;
+}
+
+.ui.grid > .row.VoteList__ShowButtonContainer,
+.ui.grid > .row.VoteList__LowQualityDividerContainer {
+  justify-content: center !important;
+  border-top: none;
+  text-transform: uppercase;
+}
+
+.ui.grid > .row.VoteList__LowQualityDividerContainer {
+  position: relative;
+}
+
+.ui.grid > .row.VoteList__LowQualityDividerContainer::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 50%;
+  right: 25px;
+  width: 100%;
+  height: 1px;
+  background-color: var(--black-300);
+}
+
+.ui.button.VoteList__ShowButton {
+  width: 90%;
+}
+
+.row.VoteList__LowQualityDividerContainer .VoteList__LowQuality {
+  position: relative;
+  border: 1px solid var(--black-300);
+  color: var(--black-400);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 13px;
+  line-height: 18px;
+  background-color: var(--white-900);
+  z-index: 1;
+}
+
 @media (max-width: 991px) {
-  .VotesList .VotesList_Container_Items {
+  .VotesList .VotesList__ItemsContainer {
     font-size: 13px;
   }
 
-  .VotesList .VotesList_Container_Header .VotesList_Header {
+  .VotesList .VotesList__HeaderContainer .VotesList__Header {
     font-size: 13px;
   }
 
   .VotesList .dg.dcl-avatar {
-    margin: 0 .25em 0 0;
+    margin: 0 0.25em 0 0;
     width: 20px;
   }
 }
