@@ -54,6 +54,7 @@
 .CategoryBanner__PausedText .dg.Paragraph {
   margin-top: 4px;
   font-size: 13px !important;
+  font-style: italic;
 }
 
 .CategoryBanner--poi,
