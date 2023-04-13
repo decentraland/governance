@@ -20,12 +20,12 @@ type Props = Omit<ExtendedController, 'render'>
 
 function CommitteeMembersDropdown({ committee, control, disabled, error, onOptionClick, ...props }: Props) {
   const [data] = useDclData()
-  const teams = useMemo(() => data?.teams || [], [data])
+  const committees = useMemo(() => data?.committees || [], [data])
   const t = useFormatMessage()
 
   const getCommitteeMembers = useCallback(
     (committee: CommitteeName) => {
-      const team = teams.find((team) => team.name === committee)
+      const team = committees.find((team) => team.name === committee)
       const members = team?.members || []
       return members.map((member) => ({
         key: member.address,
@@ -35,7 +35,7 @@ function CommitteeMembersDropdown({ committee, control, disabled, error, onOptio
         onClick: onOptionClick,
       }))
     },
-    [teams, onOptionClick]
+    [committees, onOptionClick]
   )
 
   return (

@@ -16,7 +16,7 @@ export default function Hiring() {
   const param = new URLSearchParams(useMemo(() => new URLSearchParams(location.search), [location.search]))
   const request = param.get('request')
 
-  const type = toHiringType(request)
+  const type = toHiringType(request, () => null)
 
   const [committees, committeesState] = useAsyncMemo(
     async () => {

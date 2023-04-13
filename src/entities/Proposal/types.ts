@@ -145,8 +145,8 @@ export function isHiringType(value: string | null | undefined): boolean {
   }
 }
 
-export function toHiringType(value: string | null | undefined): HiringType | null {
-  return isHiringType(value) ? (value as HiringType) : null
+export function toHiringType<T>(value: string | null | undefined, orElse: () => T): HiringType | T {
+  return isHiringType(value) ? (value as HiringType) : orElse()
 }
 
 export function getHiringTypeAction(hiringType: HiringType) {

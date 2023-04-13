@@ -4,6 +4,7 @@ import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/G
 import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
+import { ErrorService } from '../services/ErrorService'
 
 export type Detail = {
   name: string
@@ -44,7 +45,7 @@ export type TransparencyData = {
     total: bigint
     budget: bigint
   }
-  teams: Committee[]
+  committees: Committee[]
 }
 
 export type TransparencyGrant = {
@@ -110,6 +111,25 @@ export type TransparencyBudget = {
   category_percentages: Record<string, number>
 }
 
+const EMPTY_API: TransparencyData = {
+  balances: [],
+  income: {
+    total: BigInt(0),
+    previous: BigInt(0),
+    details: [],
+  },
+  expenses: {
+    total: BigInt(0),
+    previous: BigInt(0),
+    details: [],
+  },
+  funding: {
+    total: BigInt(0),
+    budget: BigInt(0),
+  },
+  committees: [],
+}
+
 export class DclData extends API {
   static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
@@ -127,15 +147,24 @@ export class DclData extends API {
     return this.from(this.Url)
   }
 
+  private async trycatch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+    try {
+      return await fn()
+    } catch (error) {
+      ErrorService.report('Failed DclData fetch', error)
+      return fallback
+    }
+  }
+
   async getData() {
-    return this.fetch<TransparencyData>('/api.json', this.options().method('GET'))
+    return this.trycatch(() => this.fetch<TransparencyData>('/api.json', this.options().method('GET')), EMPTY_API)
   }
 
   async getGrants() {
-    return this.fetch<TransparencyGrants>('/grants.json', this.options().method('GET'))
+    return this.trycatch(() => this.fetch<TransparencyGrants>('/grants.json', this.options().method('GET')), [])
   }
 
   async getBudgets() {
-    return this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET'))
+    return this.trycatch(() => this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET')), [])
   }
 }
