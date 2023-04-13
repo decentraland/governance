@@ -33,7 +33,7 @@ export default function ProposalProcess({ title, items }: Props) {
     <div>
       <Divider />
       <div className="ProposalProcess__TitleContainer">
-        <h3 className="ProposalProcess_Title">{title}</h3>
+        <h3 className="ProposalProcess__Title">{title}</h3>
         <span>
           <NewBadge />
         </span>
