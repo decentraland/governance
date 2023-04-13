@@ -36,6 +36,10 @@ export function VotesListModal({
     () => Object.entries(highQualityVotes || {}).sort((a, b) => b[1].vp - a[1].vp),
     [highQualityVotes]
   )
+  const hasLowQualityVotes = useMemo(
+    () => lowQualityVotes && Object.keys(lowQualityVotes).length > 0,
+    [lowQualityVotes]
+  )
 
   return (
     <Modal
@@ -51,6 +55,14 @@ export function VotesListModal({
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.votes_list.title', { votes: Object.keys(highQualityVotes || {}).length })}</Header>
+          {hasLowQualityVotes && (
+            <Header sub>
+              {t('modal.votes_list.subtitle', {
+                votes: Object.keys(lowQualityVotes || {}).length,
+                threshold: VOTES_VP_THRESHOLD,
+              })}
+            </Header>
+          )}
         </div>
         <div className="VotesList__HeaderContainer">
           <Grid columns="equal">
@@ -73,7 +85,7 @@ export function VotesListModal({
               const [key, value] = vote
               return <VoteListItem key={key} address={key} vote={value} choices={choices} />
             })}
-            {lowQualityVotes && Object.keys(lowQualityVotes).length > 0 && !showLowQualityVotes && (
+            {hasLowQualityVotes && !showLowQualityVotes && (
               <Grid.Row className="VoteList__ShowButtonContainer">
                 <FullWidthButton className="VoteList__ShowButton" onClick={() => setShowLowQualityVotes(true)}>
                   {t('modal.votes_list.show_more', { threshold: VOTES_VP_THRESHOLD })}

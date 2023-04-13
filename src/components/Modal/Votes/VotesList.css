@@ -1,3 +1,17 @@
+.VotesList .ProposalModal__Title {
+  text-align: start;
+}
+
+.VotesList .ProposalModal__Title .ui.header.sub {
+  margin: 0;
+  text-transform: none;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--black-700);
+}
+
 .VotesList .VotesList__HeaderContainer {
   margin: 0 auto 20px;
 }

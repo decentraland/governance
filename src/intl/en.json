@@ -379,6 +379,7 @@
     },
     "votes_list": {
       "title": "{votes} {votes, plural, one {Vote} other {Votes}}",
+      "subtitle": "{votes} {votes, plural, one {Vote} other {Votes}} with less than {threshold} VP are excluded from this count",
       "voter": "Voter",
       "voted": "Voted",
       "vp": "VP",
