@@ -18,6 +18,7 @@ import * as catalyst from './catalyst'
 import * as draft from './draft'
 import * as governance from './governance'
 import * as grant from './grant'
+import * as hiring from './hiring'
 import * as poi from './poi'
 import * as poll from './poll'
 import { template } from './utils'
@@ -50,6 +51,8 @@ export const title = ({ type, configuration }: { type: ProposalType; configurati
       return governance.title(configuration as any)
     case ProposalType.LinkedWearables:
       return linkedWearables.title(configuration as any)
+    case ProposalType.Hiring:
+      return hiring.title(configuration as any)
   }
 }
 
@@ -71,6 +74,8 @@ export const description = async ({ type, configuration }: { type: ProposalType;
       return await governance.description(configuration as any)
     case ProposalType.LinkedWearables:
       return linkedWearables.description(configuration as any)
+    case ProposalType.Hiring:
+      return hiring.description(configuration as any)
   }
 }
 

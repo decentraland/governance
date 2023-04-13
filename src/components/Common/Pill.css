@@ -218,3 +218,27 @@
   border-color: var(--yellow-800);
   color: var(--yellow-800);
 }
+
+.Pill--light-aqua {
+  background-color: var(--aqua-200);
+  border-color: var(--aqua-200);
+  color: var(--aqua-800);
+}
+
+.Pill--medium-aqua {
+  background-color: var(--aqua-200);
+  border-color: var(--aqua-800);
+  color: var(--aqua-800);
+}
+
+.Pill--shiny-aqua {
+  background-color: var(--aqua-800);
+  border-color: var(--aqua-800);
+  color: var(--white-900);
+}
+
+.Pill--outline-aqua {
+  background-color: transparent;
+  border-color: var(--aqua-800);
+  color: var(--aqua-800);
+}

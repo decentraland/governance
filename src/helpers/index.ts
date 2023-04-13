@@ -1,4 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
 
 export const CURRENCY_FORMAT_OPTIONS = {
@@ -76,4 +77,11 @@ export function disableOnWheelInput(event: any) {
   setTimeout(() => {
     event.target.focus()
   }, 0)
+}
+
+export function addressShortener(address: string) {
+  if (!isEthereumAddress(address)) {
+    return address
+  }
+  return address.substring(0, 6) + '...' + address.substring(38, 42)
 }

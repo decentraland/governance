@@ -7,8 +7,12 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
-import { POIProposalModal } from '../../components/Modal/POIProposalModal/POIProposalModal'
-import { ProposalType } from '../../entities/Proposal/types'
+import {
+  AddRemoveProposalModal,
+  AddRemoveProposalModalProps,
+} from '../../components/Modal/AddRemoveProposalModal/AddRemoveProposalModal'
+import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
+import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 
@@ -16,9 +20,35 @@ import './submit.css'
 
 const NOW = Date.now()
 
+const POI_MODAL_PROPS: AddRemoveProposalModalProps = {
+  open: false,
+  title: 'poi',
+  addType: PoiType.AddPOI,
+  addHref: locations.submit(ProposalType.POI, { request: PoiType.AddPOI }),
+  removeType: PoiType.RemovePOI,
+  removeHref: locations.submit(ProposalType.POI, { request: PoiType.RemovePOI }),
+}
+
+const HIRING_MODAL_PROPS: AddRemoveProposalModalProps = {
+  open: false,
+  title: 'hiring',
+  addType: HiringType.Add,
+  addHref: locations.submit(ProposalType.Hiring, { request: HiringType.Add }),
+  isAddDisabled: true,
+  removeType: HiringType.Remove,
+  removeHref: locations.submit(ProposalType.Hiring, { request: HiringType.Remove }),
+}
+
 export default function NewProposalPage() {
   const t = useFormatMessage()
-  const [showPOIProposalModal, setShowPOIProposalModal] = useState(false)
+  const [proposalModalProps, setProposalModalProps] = useState(POI_MODAL_PROPS)
+
+  const closeProposalModal = () => setProposalModalProps((props) => ({ ...props, open: false }))
+  const setHiringModalProps = async () => {
+    setProposalModalProps({ ...HIRING_MODAL_PROPS, open: true })
+    const availableCommittees = await getCommitteesWithOpenSlots()
+    setProposalModalProps((prev) => ({ ...prev, isAddDisabled: availableCommittees.length === 0 }))
+  }
 
   return (
     <>
@@ -37,7 +67,10 @@ export default function NewProposalPage() {
             {t('page.submit.common_actions')}
           </Header>
           <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} />
-          <CategoryBanner type={ProposalType.POI} onClick={() => setShowPOIProposalModal(true)} />
+          <CategoryBanner
+            type={ProposalType.POI}
+            onClick={() => setProposalModalProps({ ...POI_MODAL_PROPS, open: true })}
+          />
           <CategoryBanner type={ProposalType.BanName} href={locations.submit(ProposalType.BanName)} />
           <CategoryBanner type={ProposalType.LinkedWearables} href={locations.submit(ProposalType.LinkedWearables)} />
           <CategoryBanner
@@ -45,6 +78,7 @@ export default function NewProposalPage() {
             href={locations.submit(ProposalType.Grant)}
             active={isGrantProposalSubmitEnabled(NOW)}
           />
+          <CategoryBanner isNew type={ProposalType.Hiring} onClick={setHiringModalProps} />
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">
@@ -54,7 +88,7 @@ export default function NewProposalPage() {
         </ContentSection>
       </ContentLayout>
 
-      <POIProposalModal open={showPOIProposalModal} onClose={() => setShowPOIProposalModal(false)} />
+      <AddRemoveProposalModal {...proposalModalProps} onClose={closeProposalModal} />
     </>
   )
 }

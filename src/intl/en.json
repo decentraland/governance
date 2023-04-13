@@ -261,6 +261,7 @@
   "category": {
     "new": "New",
     "paused": "Paused",
+    "not_available": "Not Available",
     "poi": "POI",
     "catalyst": "Catalyst",
     "ban_name": "Ban Name",
@@ -283,6 +284,13 @@
     "grant_title": "Grant Request",
     "grant_description": "Request funding from the DAO for a project or contribution",
     "grant_paused": "The Decentraland DAO Grants Program has been put on hold by community decision until February 28th, 2023. Please read [this governance proposal](https://governance.decentraland.org/proposal/?id=9f3b0be0-7e94-11ed-8750-cd1748a98b11) to learn more or visit the [DAO Discord Server](https://dcl.gg/dao-discord) to engage with members of the community.",
+    "hiring_title": "Hiring",
+    "hiring_description": "Request a Community member to be added or removed from a Committee",
+    "hiring_add_title": "Add Committee Member",
+    "hiring_add_description": "Promote a noteworthy Decentraland citizen to be hired by the DAO",
+    "hiring_add_paused": "There are no open seats in any of the DAO Committees",
+    "hiring_remove_title": "Remove Committee Member",
+    "hiring_remove_description": "Suggest to demote a specific DAO member from their Committee duties",
     "poll_title": "Pre-Proposal Poll",
     "poll_description": "Ask community members for their opinion on an issue or topic",
     "draft_title": "Draft Proposal",
@@ -1229,6 +1237,42 @@
       "x_placeholder": "-150 through 150",
       "y_placeholder": "-150 through 150",
       "description_label": "Description"
+    },
+    "submit_hiring": {
+      "add": {
+        "title": "Add Committee Member",
+        "description": "Being part of a Committee is great responsibility inside the DAO. Check with whom you are proposing that they agree to be postulated before creating this proposal.",
+        "address_title": "Wallet address",
+        "address_description": "Please copy the address of the proposed member. Check with them which address should you provide",
+        "reasons_title": "Reasons for adding",
+        "reasons_description": "Explain why you think this person should be added to the Committee. Have in mind the goal of the Committee and how this person aligns with it. Be as descriptive and objective as possible",
+        "evidence_title": "Evidence",
+        "evidence_description": "Be as objective and detailed as possible. List their qualifications and achievements. Provide only publicly available information"
+      },
+      "remove": {
+        "title": "Remove Committee Member",
+        "description": "Use this type of Proposal wisely. Before going through this way, talk with the person first, present your case at the Town Halls, and use public communication channels to discuss it. Only after then, publish this proposal.",
+        "address_title": "Committee member",
+        "reasons_title": "Reasons for removing",
+        "reasons_description": "Explain why this person should be removed from the Committee. Be kind, descriptive, and objective as possible.",
+        "evidence_title": "Evidence",
+        "evidence_description": "Be as objective and detailed as possible. Provide only publicly available information."
+      },
+      "error": {
+        "address_invalid": "Address is invalid",
+        "reasons_required": "Reasons are required",
+        "reasons_min_length": "Reasons field is too short",
+        "reasons_max_length": "Reasons field is too long",
+        "evidence_required": "Evidence is required",
+        "evidence_min_length": "Evidence field is too short",
+        "evidence_max_length": "Evidence field is too long",
+        "submission_vp_not_met": "This action requires at least {threshold} VP."
+      },
+      "target_title": "Target Committee",
+      "target_placeholder": "Select a committee",
+      "target_description": "Only those with available positions are listed",
+      "address_placeholder": "Enter their address",
+      "member_placeholder": "Select a member"
     },
     "submit_catalyst": {
       "title": "Add a catalyst node",

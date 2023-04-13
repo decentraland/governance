@@ -49,7 +49,7 @@ import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
-import useIsCommittee from '../hooks/useIsCommittee'
+import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
@@ -131,7 +131,7 @@ export default function ProposalPage() {
   const updatePageStateRef = useRef(updatePageState)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
-  const { isCommittee } = useIsCommittee(account)
+  const { isDAOCommittee } = useIsDAOCommittee(account)
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, votesState } = useProposalVotes(proposal?.id)
@@ -212,7 +212,7 @@ export default function ProposalPage() {
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(
     async (status: ProposalStatus, vesting_address: string | null, enactingTx: string | null, description: string) => {
-      if (proposal && isCommittee) {
+      if (proposal && isDAOCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
@@ -224,15 +224,15 @@ export default function ProposalPage() {
         updatePageState({ confirmStatusUpdate: false })
       }
     },
-    [proposal, account, isCommittee, proposalState, updatePageState]
+    [proposal, account, isDAOCommittee, proposalState, updatePageState]
   )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
-    if (proposal && account && (proposal.user === account || isCommittee)) {
+    if (proposal && account && (proposal.user === account || isDAOCommittee)) {
       await Governance.get().deleteProposal(proposal.id)
       navigate(locations.proposals())
     }
-  }, [proposal, account, isCommittee])
+  }, [proposal, account, isDAOCommittee])
 
   useEffect(() => {
     updatePageStateRef.current({ showProposalSuccessModal: params.get('new') === 'true' })

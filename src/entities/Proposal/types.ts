@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import { CommitteeName } from '../../clients/DclData'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -22,6 +23,7 @@ import {
   VOTING_POWER_TO_PASS_CATALYST,
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
+  VOTING_POWER_TO_PASS_HIRING,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
@@ -78,6 +80,7 @@ export enum ProposalType {
   BanName = 'ban_name',
   Grant = 'grant',
   LinkedWearables = 'linked_wearables',
+  Hiring = 'hiring',
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
@@ -86,6 +89,11 @@ export enum ProposalType {
 export enum PoiType {
   AddPOI = 'add_poi',
   RemovePOI = 'remove_poi',
+}
+
+export enum HiringType {
+  Add = 'hiring_add',
+  Remove = 'hiring_remove',
 }
 
 export function isProposalType(value: string | null | undefined): boolean {
@@ -98,6 +106,7 @@ export function isProposalType(value: string | null | undefined): boolean {
     case ProposalType.Draft:
     case ProposalType.Governance:
     case ProposalType.LinkedWearables:
+    case ProposalType.Hiring:
       return true
     default:
       return false
@@ -124,6 +133,24 @@ export function toPoiType(value: string | null | undefined): PoiType | null {
 
 export function getPoiTypeAction(poiType: PoiType) {
   return poiType.split('_')[0] // "add" | "remove"
+}
+
+export function isHiringType(value: string | null | undefined): boolean {
+  switch (value) {
+    case HiringType.Add:
+    case HiringType.Remove:
+      return true
+    default:
+      return false
+  }
+}
+
+export function toHiringType<T>(value: string | null | undefined, orElse: () => T): HiringType | T {
+  return isHiringType(value) ? (value as HiringType) : orElse()
+}
+
+export function getHiringTypeAction(hiringType: HiringType) {
+  return hiringType.split('_')[1] // "add" | "remove"
 }
 
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
@@ -409,6 +436,52 @@ export const newProposalPOIScheme = {
   },
 }
 
+export type NewProposalHiring = {
+  type: HiringType
+  committee: CommitteeName
+  address: string
+  reasons: string
+  evidence: string
+  name?: string
+  coAuthors?: string[]
+}
+
+export const newProposalHiringScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['type', 'committee', 'address', 'reasons', 'evidence'],
+  properties: {
+    type: {
+      type: 'string',
+      enum: Object.values(HiringType),
+    },
+    committee: {
+      type: 'string',
+      enum: Object.values(CommitteeName),
+    },
+    address: {
+      type: 'string',
+      format: 'address',
+    },
+    reasons: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3000,
+    },
+    evidence: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3000,
+    },
+    name: {
+      type: 'string',
+      minLength: MIN_NAME_SIZE,
+      maxLength: MAX_NAME_SIZE,
+    },
+    coAuthors,
+  },
+}
+
 export type NewProposalCatalyst = {
   owner: string
   domain: string
@@ -445,9 +518,11 @@ export const ProposalRequiredVP = {
   [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),
   [ProposalType.BanName]: requiredVotingPower(VOTING_POWER_TO_PASS_BAN_NAME, 0),
   [ProposalType.POI]: requiredVotingPower(VOTING_POWER_TO_PASS_POI, 0),
+  [ProposalType.Hiring]: requiredVotingPower(VOTING_POWER_TO_PASS_HIRING, 0),
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Hiring]: requiredVotingPower(VOTING_POWER_TO_PASS_HIRING, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &
