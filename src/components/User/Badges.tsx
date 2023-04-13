@@ -2,6 +2,7 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
 import useBadges from '../../hooks/useBadges'
+import HelperText from '../Helper/HelperText'
 
 import './Badges.css'
 
@@ -25,7 +26,7 @@ export default function Badges({ address }: Props) {
                 <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
               </div>
               <div className="Badge__TitleContainer">
-                <span className="Badge__Title">{badge.name}</span>
+                <HelperText labelText={badge.name} tooltipText={badge.description} position="bottom center" />
                 {badge.amount > 1 && <span className="Badge__Counter">x{badge.amount}</span>}
               </div>
             </div>

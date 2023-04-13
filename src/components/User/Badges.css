@@ -11,10 +11,15 @@
 }
 
 .Badge__Icon {
-  display: flex;
+  z-index: 1;
   width: 32px;
   height: 32px;
-  z-index: 1;
+}
+
+.Badge__Icon > img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 
 .Badge__TitleContainer {
@@ -29,7 +34,7 @@
   gap: 4px;
 }
 
-.Badge__Title {
+.Badge__TitleContainer > .HelperText__Label {
   font-style: normal;
   font-weight: 500;
   font-size: 13px;

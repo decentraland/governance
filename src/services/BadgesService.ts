@@ -11,19 +11,21 @@ export class BadgesService {
     const badges: Badge[] = []
 
     for (const badge of otterspaceBadges) {
-      const { name, description, image } = badge.spec.metadata
-      const existingBadge = badges.find((badge) => badge.name === name && badge.description === description)
+      if (badge.spec.metadata) {
+        const { name, description, image } = badge.spec.metadata
+        const existingBadge = badges.find((badge) => badge.name === name && badge.description === description)
 
-      if (existingBadge) {
-        existingBadge.amount++
-      } else {
-        //TODO: should we send unclaimed badges to the front, and display them somehow?
-        badges.push({
-          name,
-          description,
-          image: BadgesService.getHttpsLink(image),
-          amount: 1,
-        })
+        if (existingBadge) {
+          existingBadge.amount++
+        } else {
+          //TODO: should we send unclaimed badges to the front, and display them somehow?
+          badges.push({
+            name,
+            description,
+            image: BadgesService.getHttpsLink(image),
+            amount: 1,
+          })
+        }
       }
     }
 
