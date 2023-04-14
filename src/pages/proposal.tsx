@@ -37,6 +37,7 @@ import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
@@ -60,8 +61,6 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import { ErrorService } from '../services/ErrorService'
 
 import './proposal.css'
-
-// TODO: Review why proposals.css is being imported and use only proposal.css
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const EMPTY_VOTE_CHOICES: string[] = []
@@ -241,6 +240,7 @@ export default function ProposalPage() {
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const voteWithSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0 && !isMobile
+  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch
 
   if (proposalState.error) {
     return (
@@ -298,6 +298,7 @@ export default function ProposalPage() {
                 <Markdown>{proposal?.description || ''}</Markdown>
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
+              {proposal && isBiddingAndTenderingProposal && <BiddingAndTenderingProcess proposalType={proposal.type} />}
               {showProposalUpdates && (
                 <ProposalUpdates
                   proposal={proposal}

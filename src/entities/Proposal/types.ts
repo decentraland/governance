@@ -23,6 +23,7 @@ import {
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
+  VOTING_POWER_TO_PASS_PITCH,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
 } from './constants'
@@ -81,6 +82,7 @@ export enum ProposalType {
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
+  Pitch = 'pitch',
 }
 
 export enum PoiType {
@@ -89,19 +91,11 @@ export enum PoiType {
 }
 
 export function isProposalType(value: string | null | undefined): boolean {
-  switch (value) {
-    case ProposalType.POI:
-    case ProposalType.Catalyst:
-    case ProposalType.BanName:
-    case ProposalType.Grant:
-    case ProposalType.Poll:
-    case ProposalType.Draft:
-    case ProposalType.Governance:
-    case ProposalType.LinkedWearables:
-      return true
-    default:
-      return false
+  if (value === null || value === undefined) {
+    return false
   }
+
+  return Object.values(ProposalType).includes(value as ProposalType)
 }
 
 export function isPoiType(value: string | null | undefined): boolean {
@@ -438,6 +432,49 @@ export const newProposalCatalystScheme = {
   },
 }
 
+export type NewProposalPitch = {
+  initiativeName: string
+  targetAudience: string
+  problemStatement: string
+  proposedSolution: string
+  relevance: string
+  coAuthors?: string[]
+}
+
+export const newProposalPitchScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['initiativeName', 'targetAudience', 'problemStatement', 'proposedSolution', 'relevance'],
+  properties: {
+    initiativeName: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    targetAudience: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    problemStatement: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    proposedSolution: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    relevance: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    coAuthors,
+  },
+}
+
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 
 export const ProposalRequiredVP = {
@@ -448,6 +485,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Pitch]: requiredVotingPower(VOTING_POWER_TO_PASS_PITCH, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &

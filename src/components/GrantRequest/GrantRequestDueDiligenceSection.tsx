@@ -75,7 +75,7 @@ export default function GrantRequestDueDiligenceSection({
     }
   }, [selectedBudgetBreakdownConcept])
 
-  const isCompleted = funding >= 0 && Number(fundingLeftToDisclose) <= 0
+  const isCompleted = Number(funding) >= 0 && Number(fundingLeftToDisclose) <= 0
 
   useEffect(() => {
     onValidation(dueDiligenceState, isCompleted)
@@ -106,7 +106,7 @@ export default function GrantRequestDueDiligenceSection({
           />
         ))}
         <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
-          {isCompleted || funding <= 0
+          {isCompleted || Number(funding) <= 0
             ? t('page.submit_grant.due_diligence.budget_breakdown_no_funds_left')
             : t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
         </AddBox>

@@ -26,7 +26,7 @@ import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
 
-import { SUBMISSION_THRESHOLD_POLL } from './constants'
+import { SUBMISSION_THRESHOLD_PITCH, SUBMISSION_THRESHOLD_POLL } from './constants'
 import ProposalModel from './model'
 import {
   CategorizedGrants,
@@ -38,6 +38,7 @@ import {
   NewProposalGovernance,
   NewProposalLinkedWearables,
   NewProposalPOI,
+  NewProposalPitch,
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
@@ -51,6 +52,7 @@ import {
   newProposalGovernanceScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
+  newProposalPitchScheme,
   newProposalPollScheme,
   updateProposalStatusScheme,
 } from './types'
@@ -80,6 +82,7 @@ export default routes((route) => {
   route.post('/proposals/catalyst', withAuth, handleAPI(createProposalCatalyst))
   route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
+  route.post('/proposals/pitch', withAuth, handleAPI(createProposalPitch))
   route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
@@ -327,6 +330,26 @@ export async function createProposalLinkedWearables(req: WithAuth) {
     type: ProposalType.LinkedWearables,
     required_to_pass: ProposalRequiredVP[ProposalType.LinkedWearables],
     finish_at: getProposalEndDate(SNAPSHOT_DURATION),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES,
+    },
+  })
+}
+
+const newProposalPitchValidator = schema.compile(newProposalPitchScheme)
+
+export async function createProposalPitch(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalPitch>(newProposalPitchValidator, req.body || {})
+
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_PITCH)
+
+  return createProposal({
+    user,
+    type: ProposalType.Pitch,
+    required_to_pass: ProposalRequiredVP[ProposalType.Pitch],
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_PITCH)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,

@@ -48,6 +48,12 @@ export default function NewProposalPage() {
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">
+            {t('page.submit.bidding_tendering_process')}
+          </Header>
+          <CategoryBanner isNew type={ProposalType.Pitch} href={locations.submit(ProposalType.Pitch)} />
+        </ContentSection>
+        <ContentSection>
+          <Header sub className="ProposalDetailPage_SubHeader">
             {t('page.submit.governance_process')}
           </Header>
           <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} />
