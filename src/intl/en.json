@@ -270,9 +270,9 @@
       "proposed_solution_empty": "Proposed solution is empty",
       "proposed_solution_too_short": "Proposed solution is too short",
       "proposed_solution_too_large": "Proposed solution is too large",
-      "relevancy_empty": "Field is empty",
-      "relevancy_too_short": "Field is too short",
-      "relevancy_too_large": "Field is too large",
+      "relevance_empty": "Field is empty",
+      "relevance_too_short": "Field is too short",
+      "relevance_too_large": "Field is too large",
       "submission_vp_not_met": "This action requires at least 100 VP."
     }
   },
@@ -1532,8 +1532,8 @@
       "proposed_solution_detail": "Please explain how you would think this problem should be approached using simple words",
       "target_audience_label": "Target audicence",
       "target_audience_detail": "Please describe the intended user of the proposed solution: their needs, concerns, motivations, etc.",
-      "relevancy_label": "Why is this relevant now?",
-      "relevancy_detail": "Please explain why the Decentraland DAO should be spending money in this project. Specify market conditions, competitor, new technical developments and any other relevant factors you consider"
+      "relevance_label": "Why is this relevant now?",
+      "relevance_detail": "Please explain why the Decentraland DAO should be spending money in this project. Specify market conditions, competitor, new technical developments and any other relevant factors you consider"
     },
     "subscription_banner": {
       "title": "Stay in the loop",

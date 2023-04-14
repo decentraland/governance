@@ -36,7 +36,7 @@ const initialState: NewProposalPitch = {
   targetAudience: '',
   problemStatement: '',
   proposedSolution: '',
-  relevancy: '',
+  relevance: '',
 }
 const schema = newProposalPitchScheme.properties
 
@@ -161,6 +161,7 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.target_audience_too_large'),
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
@@ -202,6 +203,7 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.problem_statement_too_large'),
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
@@ -243,6 +245,7 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.proposed_solution_too_large'),
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
@@ -264,38 +267,39 @@ export default function SubmitPitchProposal() {
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.relevancy_label')}
+            {t('page.submit_pitch.relevance_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_pitch.relevancy_detail')}
+            {t('page.submit_pitch.relevance_detail')}
           </Paragraph>
           <Controller
             control={control}
-            name="relevancy"
+            name="relevance"
             rules={{
-              required: { value: true, message: t('error.pitch.relevancy_empty') },
+              required: { value: true, message: t('error.pitch.relevance_empty') },
               minLength: {
-                value: schema.relevancy.minLength,
-                message: t('error.pitch.relevancy_too_short'),
+                value: schema.relevance.minLength,
+                message: t('error.pitch.relevance_too_short'),
               },
               maxLength: {
-                value: schema.relevancy.maxLength,
-                message: t('error.pitch.relevancy_too_large'),
+                value: schema.relevance.maxLength,
+                message: t('error.pitch.relevance_too_large'),
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
                 loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.relevancy}
+                error={!!errors.relevance}
                 message={
-                  (errors.relevancy?.message || '') +
+                  (errors.relevance?.message || '') +
                   ' ' +
                   t('page.submit.character_counter', {
-                    current: watch('relevancy').length,
-                    limit: schema.relevancy.maxLength,
+                    current: watch('relevance').length,
+                    limit: schema.relevance.maxLength,
                   })
                 }
                 {...field}

@@ -21,5 +21,5 @@ ${formatMarkdown(proposal.targetAudience)}
 
 ## Why is this relevant now?
 
-${formatMarkdown(proposal.relevancy)}
+${formatMarkdown(proposal.relevance)}
 `

@@ -446,14 +446,14 @@ export type NewProposalPitch = {
   targetAudience: string
   problemStatement: string
   proposedSolution: string
-  relevancy: string
+  relevance: string
   coAuthors?: string[]
 }
 
 export const newProposalPitchScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['initiativeName', 'targetAudience', 'problemStatement', 'proposedSolution', 'relevancy'],
+  required: ['initiativeName', 'targetAudience', 'problemStatement', 'proposedSolution', 'relevance'],
   properties: {
     initiativeName: {
       type: 'string',
@@ -475,7 +475,7 @@ export const newProposalPitchScheme = {
       minLength: 20,
       maxLength: 3500,
     },
-    relevancy: {
+    relevance: {
       type: 'string',
       minLength: 20,
       maxLength: 3500,
