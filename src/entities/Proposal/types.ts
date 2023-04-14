@@ -91,20 +91,11 @@ export enum PoiType {
 }
 
 export function isProposalType(value: string | null | undefined): boolean {
-  switch (value) {
-    case ProposalType.POI:
-    case ProposalType.Catalyst:
-    case ProposalType.BanName:
-    case ProposalType.Grant:
-    case ProposalType.Poll:
-    case ProposalType.Draft:
-    case ProposalType.Governance:
-    case ProposalType.LinkedWearables:
-    case ProposalType.Pitch:
-      return true
-    default:
-      return false
+  if (value === null || value === undefined) {
+    return false
   }
+
+  return Object.values(ProposalType).includes(value as ProposalType)
 }
 
 export function isPoiType(value: string | null | undefined): boolean {
