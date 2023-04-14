@@ -29,12 +29,12 @@ const flickityOptions = {
   setGallerySize: true,
 }
 
-type ProposalThresholdsSummaryProps = {
-  proposal?: ProposalAttributes | null
+interface Props {
+  proposal: ProposalAttributes
   partialResults: ChoiceProgressProps[]
 }
 
-export default function ProposalThresholdsSummary({ proposal, partialResults }: ProposalThresholdsSummaryProps) {
+export default function ProposalThresholdsSummary({ proposal, partialResults }: Props) {
   const t = useFormatMessage()
   const vpInFavor = partialResults[0].power || 0
   const threshold = proposal?.required_to_pass || 0
