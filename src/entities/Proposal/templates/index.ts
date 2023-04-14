@@ -84,7 +84,7 @@ export const description = async ({ type, configuration }: { type: ProposalType;
     case ProposalType.Pitch:
       return pitch.description(configuration as any)
     case ProposalType.Tender:
-      return tender.description(configuration as any)
+      return await tender.description(configuration as any)
   }
 }
 

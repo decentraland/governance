@@ -1,11 +1,14 @@
 import { NewProposalTender } from '../types'
 
-import { formatMarkdown, template } from './utils'
+import { formatLinkedProposal, formatMarkdown, template } from './utils'
 
 export const title = (proposal: NewProposalTender) => proposal.project_name.split('\n')[0]
 
-export const description = (proposal: NewProposalTender) => template`
+export const description = async (proposal: NewProposalTender) => template`
 Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?
+
+## Linked Pitch Proposal
+${await formatLinkedProposal(proposal.linked_proposal_id)}
 
 ## Summary
 
