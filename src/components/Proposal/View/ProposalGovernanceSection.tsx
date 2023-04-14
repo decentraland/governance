@@ -69,6 +69,7 @@ export default function ProposalGovernanceSection({
         'DetailsSection',
         disabled && 'DetailsSection--disabled',
         loading && 'DetailsSection--loading',
+        showPromotionSection && 'DetailsSection--shiny',
       ])}
     >
       <div>
