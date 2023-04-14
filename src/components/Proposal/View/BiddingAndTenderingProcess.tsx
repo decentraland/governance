@@ -23,7 +23,7 @@ export default function BiddingAndTenderingProcess({ proposalType }: Props) {
       {
         title: t('page.proposal_bidding_tendering.tender_proposal_title'),
         description: t('page.proposal_bidding_tendering.tender_proposal_description'),
-        isSelected: false,
+        isSelected: proposalType === ProposalType.Tender,
       },
       {
         title: t('page.proposal_bidding_tendering.bid_proposal_title'),

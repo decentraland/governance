@@ -240,7 +240,7 @@ export default function ProposalPage() {
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const voteWithSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0 && !isMobile
-  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch
+  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender
 
   if (proposalState.error) {
     return (
