@@ -844,9 +844,11 @@
         "opportunity_label": "opportunity",
         "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
         "governance_text": "**Given this draft has passed,** it is elegible for being turned into\na Binding Governance Proposal.",
+        "tender_text": "**Given this pitch has passed,** it is elegible for being turned into\na Tender Proposal.",
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
         "promote_to_draft_label": "Promote to Draft",
-        "promote_to_governance_label": "Escalate Proposal"
+        "promote_to_governance_label": "Escalate Proposal",
+        "promote_to_tender_label": "Escalate to Tender"
       },
       "grant": {
         "requested_budget": {

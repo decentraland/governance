@@ -5,7 +5,7 @@ import { formatMarkdown, template } from './utils'
 export const title = (proposal: NewProposalTender) => proposal.project_name.split('\n')[0]
 
 export const description = (proposal: NewProposalTender) => template`
-Should the problem/opportunity outlined be refined and taken to the next level?
+Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?
 
 ## Summary
 

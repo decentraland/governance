@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -22,6 +22,8 @@ const getPromotedProposalType = (type: ProposalType) => {
       return ProposalType.Draft
     case ProposalType.Draft:
       return ProposalType.Governance
+    case ProposalType.Pitch:
+      return ProposalType.Tender
   }
 }
 
@@ -35,20 +37,40 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
     }
   }
 
+  const getDescription = useCallback(() => {
+    switch (proposal?.type) {
+      case ProposalType.Poll:
+        return t('page.proposal_detail.promotion.draft_text')
+      case ProposalType.Draft:
+        return t('page.proposal_detail.promotion.governance_text')
+      case ProposalType.Pitch:
+        return t('page.proposal_detail.promotion.tender_text')
+      default:
+        return ''
+    }
+  }, [proposal?.type, t])
+
+  const getButtonLabel = useCallback(() => {
+    switch (proposal?.type) {
+      case ProposalType.Poll:
+        return t('page.proposal_detail.promotion.promote_to_draft_label')
+      case ProposalType.Draft:
+        return t('page.proposal_detail.promotion.promote_to_governance_label')
+      case ProposalType.Pitch:
+        return t('page.proposal_detail.promotion.promote_to_tender_label')
+      default:
+        return ''
+    }
+  }, [proposal?.type, t])
+
   return (
     <div className="ProposalPromotionSection">
       <Pill color="green" style="shiny">
         {t('page.proposal_detail.promotion.opportunity_label')}
       </Pill>
-      <Markdown className="smallMarkdown">
-        {(proposal?.type == ProposalType.Poll
-          ? t('page.proposal_detail.promotion.draft_text')
-          : t('page.proposal_detail.promotion.governance_text')) || ''}
-      </Markdown>
+      <Markdown className="smallMarkdown">{getDescription()}</Markdown>
       <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()}>
-        {proposal?.type == ProposalType.Poll
-          ? t('page.proposal_detail.promotion.promote_to_draft_label')
-          : t('page.proposal_detail.promotion.promote_to_governance_label')}
+        {getButtonLabel()}
       </Button>
       <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
     </div>
