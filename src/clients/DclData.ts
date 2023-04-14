@@ -27,7 +27,7 @@ export type Member = {
 export enum CommitteeName {
   SAB = 'Security Advisory Board',
   DAOCommitee = 'DAO Committee',
-  WearableCuration = 'Wearable Curation Team',
+  WearableCuration = 'Wearable Curation Committee',
 }
 
 export type Committee = {
