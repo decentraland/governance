@@ -99,7 +99,8 @@
   background-color: var(--red-800);
 }
 
-.CategoryBanner--pitch.CategoryBanner--active {
+.CategoryBanner--pitch.CategoryBanner--active,
+.CategoryBanner--tender.CategoryBanner--active {
   background-color: var(--background-pitch);
 }
 
