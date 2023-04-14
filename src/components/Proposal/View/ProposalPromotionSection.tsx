@@ -29,16 +29,17 @@ const getPromotedProposalType = (type: ProposalType) => {
 
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
+  const { id, type } = proposal
 
   const handlePromoteClick = () => {
-    const promotedProposalType = getPromotedProposalType(proposal?.type)
+    const promotedProposalType = getPromotedProposalType(type)
     if (promotedProposalType) {
-      navigate(locations.submit(promotedProposalType, { linked_proposal_id: proposal!.id }), { replace: true })
+      navigate(locations.submit(promotedProposalType, { linked_proposal_id: id }), { replace: true })
     }
   }
 
   const getDescription = useCallback(() => {
-    switch (proposal?.type) {
+    switch (type) {
       case ProposalType.Poll:
         return t('page.proposal_detail.promotion.draft_text')
       case ProposalType.Draft:
@@ -48,10 +49,10 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       default:
         return ''
     }
-  }, [proposal?.type, t])
+  }, [type, t])
 
   const getButtonLabel = useCallback(() => {
-    switch (proposal?.type) {
+    switch (type) {
       case ProposalType.Poll:
         return t('page.proposal_detail.promotion.promote_to_draft_label')
       case ProposalType.Draft:
@@ -61,7 +62,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       default:
         return ''
     }
-  }, [proposal?.type, t])
+  }, [type, t])
 
   return (
     <div className="ProposalPromotionSection">
@@ -72,7 +73,9 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()}>
         {getButtonLabel()}
       </Button>
-      <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
+      {(type === ProposalType.Poll || type === ProposalType.Draft) && (
+        <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
+      )}
     </div>
   )
 }
