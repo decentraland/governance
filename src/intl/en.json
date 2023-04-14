@@ -1300,7 +1300,7 @@
       "cancel": "Cancel",
       "category_selection": {
         "description": "Choose a category that best suits your project",
-        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://MISSING_URL)"
+        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://docs.decentraland.org/player/general/dao/overview/grants-program/#grant-categories-and-requirements)"
       },
       "modal_actions": {
         "submit": "SUBMIT",
