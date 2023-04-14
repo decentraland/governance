@@ -1,7 +1,7 @@
 import { addressShortener } from '../../../helpers'
 import { HiringType, NewProposalHiring } from '../types'
 
-import { template } from './utils'
+import { formatMarkdown, template } from './utils'
 
 function getName(proposal: NewProposalHiring) {
   const hasName = !!proposal.name && proposal.name.length > 0
@@ -35,9 +35,9 @@ ${subtitle}
 ${proposal.address}
 
 ## Reasons for ${proposal.type === HiringType.Add ? 'adding' : 'removing'}
-${proposal.reasons}
+${formatMarkdown(proposal.reasons)}
 
 ## Evidence
-${proposal.evidence}
+${formatMarkdown(proposal.evidence)}
 `
 }
