@@ -6,17 +6,17 @@ servers:
   - url: localhost:4000/api
 tags:
   - name: Proposals
-    description: Everything about DAO proposal
+    description: The Proposals section of the API provides endpoints to interact with proposals and grants related to the. DAO. Proposals are the format community members use to propose changes to the Decentraland ecosystem.
   - name: Coauthor
-    description: Everything about proposal coauthors
-  - name: Updates
-    description: Everything about grant updates
-  - name: Committee
-    description: View DAO Committee members
+    description: The Coauthor section of the API is focused on retrieving information about the co-authors associated with a particular proposal. Co-authors are individuals or organizations who are collaborating on a proposal, and may have contributed to its creation.
+  - name: Grant Updates
+    description: The Grant Updates section of the API is focused on retrieving information related to updates associated with a specific approved Grant. Updates are  used to inform the community or stakeholders about the progress of a Grant project, highlighting any important milestones, challenges, or changes.
+  - name: DAO Committee
+    description: The DAO Committee section of the API is focused on retrieving information related to the members of the DAO Committee, individuals resnponsible for executing transactions on chain, enacting proposals and with access to the DAO Treasury.
   - name: Votes
-    description: Everything about votes
-  - name: Subscriptions
-    description: Everything about subscriptions
+    description: The Votes section of the API is focused on retrieving information related to the voting process associated with a specific proposal. Votes are the way community members express their support or opposition to a proposal.
+  - name: Subscriptions (User Watchlist)
+    description: The Subscriptions section of the API is focused on retrieving information related to the subscriptions associated with a specific proposal. This feature is called Watchlist on the Governance dApp. Watchlists are usually used to have a closer look on updates or changes related to a proposal. 
 paths:
   /proposals:
     get:
