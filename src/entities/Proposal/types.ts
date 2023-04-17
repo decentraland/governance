@@ -538,7 +538,7 @@ export const newProposalTenderScheme = {
       maxLength: 3500,
     },
     target_release_date: {
-      type: 'string', // TODO: Check date type
+      type: 'string', // TODO: decentraland-gatsby date format in schema isn't working. Review this later.
       maxLength: 100,
     },
     coAuthors,

@@ -10,6 +10,7 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
@@ -88,6 +89,7 @@ export default function SubmitTenderProposal() {
     try {
       const proposal = await Governance.get().createProposalTender({
         ...data,
+        target_release_date: Time(data.target_release_date).toDate(),
       })
 
       loader.proposals.set(proposal.id, proposal)
@@ -382,17 +384,10 @@ export default function SubmitTenderProposal() {
               required: { value: true, message: t('error.tender.target_release_date_empty') },
               // TODO: Check if date is in the future
             }}
-            error={!!errors.project_name}
+            error={!!errors.target_release_date}
             loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
-            message={
-              (errors.project_name?.message || '') +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: watch('project_name').length,
-                limit: schema.project_name.maxLength,
-              })
-            }
+            message={errors.target_release_date?.message}
           />
           {/* TODO: Add target release date input */}
         </ContentSection>

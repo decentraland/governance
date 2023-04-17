@@ -2,7 +2,7 @@ import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { kebabCase } from 'lodash'
+import kebabCase from 'lodash/kebabCase'
 
 import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
