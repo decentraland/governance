@@ -14,7 +14,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -118,8 +117,7 @@ export default function SubmitDraftProposal() {
   const params = useURLSearchParams()
   const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
-  const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
     () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_DRAFT),
     [vpDistribution]

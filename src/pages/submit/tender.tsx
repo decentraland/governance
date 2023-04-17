@@ -14,7 +14,6 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
@@ -50,8 +49,7 @@ export default function SubmitTenderProposal() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const [account, accountState] = useAuthContext()
-  const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
     () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_PITCH),
     [vpDistribution]

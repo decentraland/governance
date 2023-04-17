@@ -500,6 +500,7 @@ export const newProposalTenderScheme = {
     'technical_specification',
     'use_cases',
     'deliverables',
+    'target_release_date',
   ],
   properties: {
     linked_proposal_id: {

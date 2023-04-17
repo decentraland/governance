@@ -13,16 +13,18 @@ export default function GetInvolvedQuestion({ proposal }: { proposal: ProposalAt
   const t = useFormatMessage()
   const intl = useIntl()
 
-  if (proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender) {
-    return <p className="GetInvolvedQuestion">{t(`page.proposal_detail.get_involved_${kebabCase(proposal?.type)}`)}</p>
+  const { type, configuration } = proposal
+
+  if (type === ProposalType.Pitch || type === ProposalType.Tender) {
+    return <p className="GetInvolvedQuestion">{t(`page.proposal_detail.get_involved_${kebabCase(type)}`)}</p>
   }
 
-  if (proposal?.type === ProposalType.Grant) {
+  if (type === ProposalType.Grant) {
     return (
       <Markdown className="GetInvolvedQuestion">
         {t('page.proposal_detail.get_involved_grant', {
-          value: intl.formatNumber(proposal?.configuration.size, CURRENCY_FORMAT_OPTIONS as any),
-          category: proposal?.configuration.category,
+          value: intl.formatNumber(configuration.size, CURRENCY_FORMAT_OPTIONS as any),
+          category: configuration.category,
         })}
       </Markdown>
     )

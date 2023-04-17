@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import { useLocation } from '@gatsbyjs/reach-router'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -13,7 +12,6 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
@@ -42,11 +40,8 @@ const schema = newProposalPitchScheme.properties
 
 export default function SubmitPitchProposal() {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const [account, accountState] = useAuthContext()
-  const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
     () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_PITCH),
     [vpDistribution]
