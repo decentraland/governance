@@ -1,25 +1,30 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Rollbar from 'rollbar'
 
-import { ROLLBAR_TOKEN } from '../constants'
-import { isDevEnv } from '../modules/isDevEnv'
+import { GOVERNANCE_API, ROLLBAR_TOKEN } from '../constants'
+import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from '../modules/governanceEnvs'
 
 export class ErrorService {
   static client = new Rollbar({
     accessToken: ROLLBAR_TOKEN,
     captureUncaught: true,
     captureUnhandledRejections: true,
+    environment: this.getEnvironmentNameForRollbar(),
   })
 
   private static getEnvironmentNameForRollbar() {
-    return { environment: isDevEnv() ? 'development' : 'production' }
+    if (!GOVERNANCE_API || GOVERNANCE_API.length === 0) return 'test'
+    if (isLocalEnv()) return 'local'
+    if (isHerokuEnv()) return 'heroku'
+    if (isStagingEnv()) return 'staging'
+    return 'production'
   }
 
   public static report(errorMsg: string, error?: any) {
     if (ROLLBAR_TOKEN) {
-      this.client.error(errorMsg, error, this.getEnvironmentNameForRollbar())
+      this.client.error(errorMsg, error)
     } else {
-      if (!isDevEnv()) logger.error('Rollbar server access token not found')
+      if (isProdEnv()) logger.error('Rollbar server access token not found')
     }
     logger.error(errorMsg, error)
   }

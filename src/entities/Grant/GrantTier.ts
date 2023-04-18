@@ -1,4 +1,4 @@
-import { isDevEnv } from '../../modules/isDevEnv'
+import { isProdEnv } from '../../modules/governanceEnvs'
 import { asNumber } from '../Proposal/utils'
 
 import { GATSBY_GRANT_VP_THRESHOLD, MAX_LOWER_TIER_GRANT_FUNDING } from './constants'
@@ -29,7 +29,7 @@ export class GrantTier {
   }
 
   static getVPThreshold(budget: number) {
-    if (isDevEnv() && GATSBY_GRANT_VP_THRESHOLD) {
+    if (!isProdEnv() && GATSBY_GRANT_VP_THRESHOLD) {
       return asNumber(GATSBY_GRANT_VP_THRESHOLD)
     }
     const type = GrantTier.getTypeFromBudget(budget)
