@@ -1,15 +1,13 @@
-import { isProdApi } from './governanceEnvs'
+import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from './governanceEnvs'
 
-describe('isProdApi', () => {
-  it('returns false for all dev api urls', () => {
-    expect(isProdApi('https://localhost:8000/api')).toBe(false)
-    expect(isProdApi('https://governance-pr.herokuapp.com')).toBe(false)
-    expect(isProdApi('https://governance.decentraland.vote/api')).toBe(false)
-    expect(isProdApi('https://governance.decentraland.zone/api')).toBe(false)
-  })
-
-  it('returns true for prod api url or an empty string', () => {
-    expect(isProdApi('https://governance.decentraland.org/api')).toBe(true)
-    expect(isProdApi('')).toBe(true)
+jest.mock('../constants', () => ({
+  GOVERNANCE_API: 'https://governance.decentraland.org/api',
+}))
+describe('isProdEnv', () => {
+  it('returns true when env var is from prod', () => {
+    expect(isProdEnv()).toBe(true)
+    expect(isLocalEnv()).toBe(false)
+    expect(isHerokuEnv()).toBe(false)
+    expect(isStagingEnv()).toBe(false)
   })
 })
