@@ -423,4 +423,23 @@ export class Governance extends API {
 
     return result.data
   }
+
+  async getDiscourseConnectUrl() {
+    const result = await this.fetch<ApiResponse<{ url: string }>>(
+      `/discourseConnect`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async setDiscourseConnectToken(token: string) {
+    const result = await this.fetch<
+      ApiResponse<{
+        userApiKey: string
+      }>
+    >(`/discourseConnect`, this.options().method('POST').authorization({ sign: true }).json({ token }))
+
+    return result.data
+  }
 }

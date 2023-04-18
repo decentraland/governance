@@ -7,15 +7,13 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { openUrl } from '../../helpers'
+
 import './ExternalLinkWarningModal.css'
 
 type WarningModalState = {
   isWarningModalOpen: boolean
   href: string
-}
-
-function openInNewTab(url: string) {
-  window?.open(url, '_blank')?.focus()
 }
 
 const WHITELIST = [
@@ -37,7 +35,7 @@ function ExternalLinkWarningModal() {
   const { isWarningModalOpen, href } = warningModalState
   const handleDismiss = () => setWarningModalState((state) => ({ ...state, isWarningModalOpen: false }))
   const handleContinue = useCallback(() => {
-    openInNewTab(href)
+    openUrl(href)
     handleDismiss()
   }, [href])
 

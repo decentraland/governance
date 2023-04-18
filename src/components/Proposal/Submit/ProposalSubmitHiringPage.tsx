@@ -286,13 +286,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
         </ContentSection>
         <ContentSection>
-          <Button
-            type="submit"
-            primary
-            disabled={formDisabled}
-            loading={isLoadingVpDistribution || isSubmitting}
-            onClick={() => ({})}
-          >
+          <Button type="submit" primary disabled={formDisabled} loading={isLoadingVpDistribution || isSubmitting}>
             {t('page.submit.button_submit')}
           </Button>
         </ContentSection>
