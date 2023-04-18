@@ -10,11 +10,11 @@ export default function Identity() {
   const params = useMemo(() => new URLSearchParams(location.search), [])
   const payload = params.get('payload')
   const [hasPayload, setHasPayload] = useState(false)
-  const [token, tokenState] = useAsyncMemo(
+  const [key, keyState] = useAsyncMemo(
     async () => {
       if (payload) {
-        const { userApiKey } = await Governance.get().setDiscourseConnectToken(payload)
-        return userApiKey
+        const { privateKey } = await Governance.get().setDiscourseConnectToken(payload)
+        return privateKey
       }
     },
     [payload],
@@ -37,9 +37,9 @@ export default function Identity() {
         Connect
       </Button>
       <div>
-        {tokenState.loading && <span>Loading...</span>}
-        {!tokenState.loading && token && <span>Token: {token}</span>}
-        {tokenState.error && <span>Error: {tokenState.error.message}</span>}
+        {keyState.loading && <span>Loading...</span>}
+        {!keyState.loading && key && <span>Token: {key}</span>}
+        {keyState.error && <span>Error: {keyState.error.message}</span>}
       </div>
     </div>
   )

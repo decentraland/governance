@@ -1,3 +1,3 @@
 export type DiscourseConnetTokenBody = {
-  token: string
+  payload: string
 }

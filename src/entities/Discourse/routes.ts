@@ -4,6 +4,7 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
 import { GOVERNANCE_API } from '../../constants'
+import { encrypt, generateAsymmetricKeys } from '../../helpers'
 import { DiscourseConnect } from '../../services/DiscourseConnect'
 
 import { DiscourseConnetTokenBody } from './types'
@@ -21,6 +22,7 @@ function getDiscourseConnectUrl(req: WithAuth) {
   const user = req.auth!
   const connectService = new DiscourseConnect(`${GOV_URL}/identity`)
   CONNECTIONS_IN_PROGRESS[user] = connectService
+
   setTimeout(() => {
     delete CONNECTIONS_IN_PROGRESS[user]
   }, 5 * 60 * 1000) // 5mins
@@ -33,10 +35,14 @@ function getDiscourseConnectUrl(req: WithAuth) {
 function setDiscourseConnectToken(req: WithAuth<Request<any, any, DiscourseConnetTokenBody>>) {
   const user = req.auth!
   try {
-    const userApiKey = CONNECTIONS_IN_PROGRESS[user].getUserApiKey(req.body.token)
+    const userApiKey = CONNECTIONS_IN_PROGRESS[user].getUserApiKey(req.body.payload)
     delete CONNECTIONS_IN_PROGRESS[user]
+
+    const { publicKey, privateKey } = generateAsymmetricKeys()
+    const encryptedApiKey = encrypt(userApiKey, publicKey)
+
     return {
-      userApiKey,
+      privateKey,
     }
   } catch (error) {
     throw new Error("Couldn't get the user API key. Error: " + error)
