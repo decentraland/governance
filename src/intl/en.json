@@ -806,12 +806,14 @@
       },
       "grant": {
         "requested_budget": {
-          "title": "Requesting",
+          "active_title": "Requesting",
+          "finished_title": "Requested",
           "overbudget_pill": "Over Budget",
           "requested": "Requested Budget",
           "total": "Total Budget",
           "subtitle": "{percentage} of quarterly category budget",
-          "overbudget_subtitle": "There's only ${amount} left"
+          "active_overbudget_subtitle": "There's only ${amount} left",
+          "finished_overbudget_subtitle": "There were only ${amount} left"
         },
         "category_budget": {
           "title": "{category} Initiative",

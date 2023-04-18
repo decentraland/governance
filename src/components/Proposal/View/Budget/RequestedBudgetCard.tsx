@@ -5,7 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
-import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
 import { getFormattedPercentage } from '../../../../helpers'
 import DistributionBar from '../../../Common/DistributionBar/DistributionBar'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
@@ -52,7 +52,9 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
     <GrantRequestSectionCard
       title={
         <div className="RequestedBudgetCard__Title">
-          {t('page.proposal_detail.grant.requested_budget.title')}
+          {proposal.status === ProposalStatus.Active
+            ? t('page.proposal_detail.grant.requested_budget.active_title')
+            : t('page.proposal_detail.grant.requested_budget.finished_title')}
           {isOverBudget && (
             <Pill style="outline" color={PillColor.Yellow} size={'small'}>
               {t('page.proposal_detail.grant.requested_budget.overbudget_pill')}
@@ -71,7 +73,11 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
           ? t('page.proposal_detail.grant.requested_budget.subtitle', {
               percentage: getFormattedPercentage(requestedBudget, totalCategoryBudget, 0),
             })
-          : t('page.proposal_detail.grant.requested_budget.overbudget_subtitle', {
+          : proposal.status === ProposalStatus.Active
+          ? t('page.proposal_detail.grant.requested_budget.active_overbudget_subtitle', {
+              amount: t('general.number', { value: categoryBudget.available }),
+            })
+          : t('page.proposal_detail.grant.requested_budget.finished_overbudget_subtitle', {
               amount: t('general.number', { value: categoryBudget.available }),
             })
       }
