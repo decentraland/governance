@@ -1,3 +1,8 @@
+.UpdateDetail__Content .ui.header {
+  margin-bottom: 1rem;
+  color: var(--black-600) !important;
+}
+
 .UpdateDetail__Content .dg.Paragraph,
 .UpdateDetail__Content .dg.ListItem {
   font-size: 15px !important;
