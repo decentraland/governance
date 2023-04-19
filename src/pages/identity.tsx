@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { useLocation } from '@gatsbyjs/reach-router'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
@@ -13,7 +14,8 @@ function setPrivateKey(key: string) {
 }
 
 export default function Identity() {
-  const params = useMemo(() => new URLSearchParams(location.search), [])
+  const location = useLocation()
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const payload = params.get('payload')
   const [hasPayload, setHasPayload] = useState(false)
   const [key, keyState] = useAsyncMemo(
