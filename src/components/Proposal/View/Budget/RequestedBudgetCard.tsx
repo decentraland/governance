@@ -23,7 +23,7 @@ function requestedAndTotalItems(requestedBudget: number, totalCategoryBudget: nu
   return [
     {
       value: requestedBudget,
-      className: TokenList.join(['RequestedBudgetBar']),
+      className: 'RequestedBudgetBar',
       selected: true,
     },
     {
