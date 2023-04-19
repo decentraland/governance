@@ -2,12 +2,14 @@ import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
+import 'isomorphic-fetch'
 
-import { GOVERNANCE_API } from '../../constants'
+import { FORUM_URL, GOVERNANCE_API } from '../../constants'
 import { encrypt, generateAsymmetricKeys } from '../../helpers'
 import { DiscourseConnect } from '../../services/DiscourseConnect'
 
-import { DiscourseConnetTokenBody } from './types'
+import Model from './model'
+import { DiscourseConnetTokenBody, DiscourseUser } from './types'
 
 const GOV_URL = GOVERNANCE_API.replace(/\/api/, '')
 
@@ -32,14 +34,27 @@ function getDiscourseConnectUrl(req: WithAuth) {
   }
 }
 
-function setDiscourseConnectToken(req: WithAuth<Request<any, any, DiscourseConnetTokenBody>>) {
+async function setDiscourseConnectToken(req: WithAuth<Request<any, any, DiscourseConnetTokenBody>>) {
   const user = req.auth!
   try {
     const userApiKey = CONNECTIONS_IN_PROGRESS[user].getUserApiKey(req.body.payload)
     delete CONNECTIONS_IN_PROGRESS[user]
 
+    const response = await fetch(`${FORUM_URL}/session/current.json`, { headers: { ['User-Api-Key']: userApiKey } })
+    const discourseUser: DiscourseUser = await response.json()
+
+    if (!discourseUser.current_user) {
+      throw new Error(discourseUser.errors?.join(', '))
+    }
+
     const { publicKey, privateKey } = generateAsymmetricKeys()
     const encryptedApiKey = encrypt(userApiKey, publicKey)
+
+    await Model.createConnection({
+      address: user,
+      forum_id: discourseUser.current_user.id,
+      user_api_key_encrypted: encryptedApiKey,
+    })
 
     return {
       privateKey,

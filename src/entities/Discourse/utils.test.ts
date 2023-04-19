@@ -15,9 +15,9 @@ describe('filterUserComments', () => {
   let posts: DiscoursePostInTopic[]
   let filteredComments: ProposalCommentsInDiscourse
 
-  beforeEach(() => {
+  beforeEach(async () => {
     discourseTopic = createWithPosts(posts)
-    filteredComments = filterComments(discourseTopic.post_stream.posts)
+    filteredComments = await filterComments(discourseTopic.post_stream.posts)
   })
 
   describe('when there are DAO/system comments and a user comments on a discourse topic', () => {

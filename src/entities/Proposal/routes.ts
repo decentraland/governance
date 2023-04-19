@@ -20,6 +20,7 @@ import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
 import { hasOpenSlots } from '../Committee/utils'
+import DiscourseModel from '../Discourse/model'
 import { filterComments } from '../Discourse/utils'
 import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
@@ -485,7 +486,25 @@ export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
     const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
-    return filterComments(allComments)
+    const filteredComments = await filterComments(allComments)
+
+    const userIds = filteredComments.comments.reduce((set, comment) => {
+      set.add(comment.id)
+      return set
+    }, new Set<number>())
+
+    const users = await DiscourseModel.getAddressesByForumId(Array.from(userIds))
+    const userMapping = users.reduce((map, user) => {
+      map[user.forum_id] = user.address
+      return map
+    }, {} as Record<number, string>)
+
+    filteredComments.comments = filteredComments.comments.map((comment) => {
+      comment.address = userMapping[comment.id]
+      return comment
+    })
+
+    return filteredComments
   } catch (e) {
     console.error(
       `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id} `,

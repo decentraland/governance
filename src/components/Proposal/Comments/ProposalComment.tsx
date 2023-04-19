@@ -13,10 +13,11 @@ type Props = {
   user: string
   avatarUrl: string
   createdAt: string
-  cooked: string | undefined
+  cooked?: string
+  address?: string
 }
 
-export default function ProposalComment({ user, avatarUrl, createdAt, cooked }: Props) {
+export default function ProposalComment({ user, avatarUrl, createdAt, cooked, address }: Props) {
   const createMarkup = (html: any) => {
     DOMPurify.addHook('afterSanitizeAttributes', function (node) {
       if (node.nodeName && node.nodeName === 'IMG' && node.getAttribute('alt') === 'image') {
@@ -36,7 +37,7 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked }: 
     return { __html: clean }
   }
 
-  const discourseUserUrl = getUserProfileUrl(user)
+  const discourseUserUrl = getUserProfileUrl(user, address)
 
   return (
     <div className="ProposalComment">

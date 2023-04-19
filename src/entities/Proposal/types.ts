@@ -642,6 +642,8 @@ export const newProposalLinkedWearablesScheme = {
 }
 
 export type ProposalComment = {
+  id: number
+  address?: string
   username: string
   avatar_url: string
   created_at: string
