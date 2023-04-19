@@ -812,8 +812,7 @@
           "requested": "Requested Budget",
           "total": "Total Budget",
           "subtitle": "{percentage} of quarterly category budget",
-          "active_overbudget_subtitle": "There's only ${amount} left",
-          "finished_overbudget_subtitle": "There were only ${amount} left"
+          "overbudget_subtitle": "There's only ${amount} left"
         },
         "category_budget": {
           "title": "{category} Initiative",
