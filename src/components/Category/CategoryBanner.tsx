@@ -19,6 +19,7 @@ import Pitch from '../Icon/ProposalCategories/Pitch'
 import Poi from '../Icon/ProposalCategories/Poi'
 import Poll from '../Icon/ProposalCategories/Poll'
 import RemovePoi from '../Icon/ProposalCategories/RemovePoi'
+import Tender from '../Icon/ProposalCategories/Tender'
 
 import './CategoryBanner.css'
 
@@ -36,6 +37,7 @@ export const categoryIcons = {
   [ProposalType.Governance]: Governance,
   [ProposalType.LinkedWearables]: LinkedWearables,
   [ProposalType.Pitch]: Pitch,
+  [ProposalType.Tender]: Tender,
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {

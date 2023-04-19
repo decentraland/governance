@@ -27,7 +27,7 @@ function VestingContract({ vestingAddress }: Props) {
   const url = VESTING_DASHBOARD_URL.replace('%23', '#').concat(vestingAddress.toLowerCase())
 
   return (
-    <div className="VestingContract DetailsSection">
+    <div className="VestingContract DetailsSection DetailsSection--shiny">
       <div className="DetailsSection__Content">
         <Pill color="green" style="shiny" size="small">
           {t('page.proposal_detail.grant.vesting_label')}

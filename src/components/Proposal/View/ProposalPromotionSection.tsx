@@ -16,22 +16,44 @@ interface Props {
   loading?: boolean
 }
 
-const getPromotedProposalType = (type: ProposalType) => {
+const getSectionConfig = (type: ProposalType) => {
   switch (type) {
     case ProposalType.Poll:
-      return ProposalType.Draft
+      return {
+        description: 'page.proposal_detail.promotion.draft_text',
+        buttonLabel: 'page.proposal_detail.promotion.promote_to_draft_label',
+        promotedType: ProposalType.Draft,
+      }
     case ProposalType.Draft:
-      return ProposalType.Governance
+      return {
+        description: 'page.proposal_detail.promotion.governance_text',
+        buttonLabel: 'page.proposal_detail.promotion.promote_to_governance_label',
+        promotedType: ProposalType.Governance,
+      }
+    case ProposalType.Pitch:
+      return {
+        description: 'page.proposal_detail.promotion.tender_text',
+        buttonLabel: 'page.proposal_detail.promotion.promote_to_tender_label',
+        promotedType: ProposalType.Tender,
+      }
+    default:
+      return {
+        description: '',
+        buttonLabel: '',
+        promotedType: null,
+      }
   }
 }
 
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
+  const { id, type } = proposal
+
+  const { description, buttonLabel, promotedType } = getSectionConfig(type)
 
   const handlePromoteClick = () => {
-    const promotedProposalType = getPromotedProposalType(proposal?.type)
-    if (promotedProposalType) {
-      navigate(locations.submit(promotedProposalType, { linked_proposal_id: proposal!.id }), { replace: true })
+    if (promotedType) {
+      navigate(locations.submit(promotedType, { linked_proposal_id: id }), { replace: true })
     }
   }
 
@@ -40,17 +62,13 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       <Pill color="green" style="shiny">
         {t('page.proposal_detail.promotion.opportunity_label')}
       </Pill>
-      <Markdown className="smallMarkdown">
-        {(proposal?.type == ProposalType.Poll
-          ? t('page.proposal_detail.promotion.draft_text')
-          : t('page.proposal_detail.promotion.governance_text')) || ''}
-      </Markdown>
+      <Markdown className="smallMarkdown">{t(description)}</Markdown>
       <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()}>
-        {proposal?.type == ProposalType.Poll
-          ? t('page.proposal_detail.promotion.promote_to_draft_label')
-          : t('page.proposal_detail.promotion.promote_to_governance_label')}
+        {t(buttonLabel)}
       </Button>
-      <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
+      {(type === ProposalType.Poll || type === ProposalType.Draft) && (
+        <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
+      )}
     </div>
   )
 }

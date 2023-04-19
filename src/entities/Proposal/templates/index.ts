@@ -8,7 +8,9 @@ import {
   NewProposalGovernance,
   NewProposalLinkedWearables,
   NewProposalPOI,
+  NewProposalPitch,
   NewProposalPoll,
+  NewProposalTender,
   ProposalType,
 } from '../types'
 
@@ -21,6 +23,7 @@ import * as grant from './grant'
 import * as pitch from './pitch'
 import * as poi from './poi'
 import * as poll from './poll'
+import * as tender from './tender'
 import { template } from './utils'
 
 type NewConfiguration =
@@ -32,6 +35,8 @@ type NewConfiguration =
   | NewProposalPoll
   | NewProposalDraft
   | NewProposalGovernance
+  | NewProposalPitch
+  | NewProposalTender
 
 export const title = ({ type, configuration }: { type: ProposalType; configuration: NewConfiguration }) => {
   switch (type) {
@@ -53,6 +58,8 @@ export const title = ({ type, configuration }: { type: ProposalType; configurati
       return linkedWearables.title(configuration as any)
     case ProposalType.Pitch:
       return pitch.title(configuration as any)
+    case ProposalType.Tender:
+      return tender.title(configuration as any)
   }
 }
 
@@ -76,6 +83,8 @@ export const description = async ({ type, configuration }: { type: ProposalType;
       return linkedWearables.description(configuration as any)
     case ProposalType.Pitch:
       return pitch.description(configuration as any)
+    case ProposalType.Tender:
+      return await tender.description(configuration as any)
   }
 }
 

@@ -1,14 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
-import { useLocation } from '@gatsbyjs/reach-router'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -16,7 +14,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -28,6 +25,8 @@ import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_DRAFT } from '../../entities/Proposal/constants'
 import { newProposalDraftScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import usePreselectedProposal from '../../hooks/usePreselectedProposal'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
@@ -115,32 +114,15 @@ const validate = createValidator<DraftState>({
 
 export default function SubmitDraftProposal() {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const params = useURLSearchParams()
   const preselectedLinkedProposalId = params.get('linked_proposal_id')
   const [account, accountState] = useAuthContext()
-  const accountBalance = isEthereumAddress(params.get('address') || '') ? params.get('address') : account
-  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(accountBalance)
+  const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
     () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_DRAFT),
     [vpDistribution]
   )
-  const [preselectedProposal] = useAsyncMemo(
-    async () => {
-      if (!preselectedLinkedProposalId) return undefined
-      const proposal = await Governance.get().getProposal(preselectedLinkedProposalId)
-      if (!proposal) return undefined
-      return [
-        {
-          key: proposal.id,
-          text: proposal.title,
-          value: proposal.id,
-        },
-      ]
-    },
-    [],
-    { initialValue: undefined }
-  )
+  const preselectedProposal = usePreselectedProposal(preselectedLinkedProposalId)
   const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
   const preventNavigation = useRef(false)
@@ -211,7 +193,7 @@ export default function SubmitDraftProposal() {
           options={preselectedProposal}
           error={!!state.error.linked_proposal_id}
           message={t(state.error.linked_proposal_id)}
-          disabled={true}
+          disabled
           loading={isLoadingVpDistribution}
         />
       </ContentSection>

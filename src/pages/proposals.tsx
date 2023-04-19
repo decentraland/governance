@@ -38,7 +38,7 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
-import { useSearchParams } from '../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
@@ -50,7 +50,7 @@ const ITEMS_PER_PAGE = 25
 export default function ProposalsPage() {
   const t = useFormatMessage()
   const location = useLocation()
-  const { type, subtype, status, search, searching, timeFrame, order, page } = useSearchParams()
+  const { type, subtype, status, search, searching, timeFrame, order, page } = useProposalsSearchParams()
   const { proposals, isLoadingProposals } = useProposals({
     type,
     subtype,
