@@ -11,7 +11,7 @@ const committeeAddresses = new Set(COMMITTEE_ADDRESSES)
 
 committeeAddresses.forEach((address) => console.log('committee address:', yellow(address)))
 
-export default function isCommittee(user?: string | null | undefined) {
+export default function isDAOCommittee(user?: string | null | undefined) {
   if (!user) {
     return false
   }

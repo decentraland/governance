@@ -7,13 +7,16 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { PoiType, ProposalType } from '../../entities/Proposal/types'
+import { HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
 import BanName from '../Icon/ProposalCategories/BanName'
 import Catalyst from '../Icon/ProposalCategories/Catalyst'
 import Draft from '../Icon/ProposalCategories/Draft'
 import Governance from '../Icon/ProposalCategories/Governance'
 import Grant from '../Icon/ProposalCategories/Grant'
+import Hiring from '../Icon/ProposalCategories/Hiring'
+import HiringAdd from '../Icon/ProposalCategories/HiringAdd'
+import HiringRemove from '../Icon/ProposalCategories/HiringRemove'
 import LinkedWearables from '../Icon/ProposalCategories/LinkedWearables'
 import Pitch from '../Icon/ProposalCategories/Pitch'
 import Poi from '../Icon/ProposalCategories/Poi'
@@ -38,12 +41,15 @@ export const categoryIcons = {
   [ProposalType.LinkedWearables]: LinkedWearables,
   [ProposalType.Pitch]: Pitch,
   [ProposalType.Tender]: Tender,
+  [ProposalType.Hiring]: Hiring,
+  [HiringType.Add]: HiringAdd,
+  [HiringType.Remove]: HiringRemove,
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   active?: boolean
   isNew?: boolean
-  type: ProposalType | PoiType
+  type: ProposalType | PoiType | HiringType
   onClick?: () => void
 }
 
@@ -86,7 +92,11 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
             {t(`category.${type}_title`)}
           </Paragraph>
           {isNew && <span className="CategoryBanner__Badge NewBadge">{t(`category.new`)}</span>}
-          {!active && <span className="CategoryBanner__Badge CategoryBanner__PausedBadge">{t(`category.paused`)}</span>}
+          {!active && (
+            <span className="CategoryBanner__Badge CategoryBanner__PausedBadge">
+              {t(`category.${isHiringType(type) ? 'not_available' : 'paused'}`)}
+            </span>
+          )}
         </div>
         <Paragraph tiny>{t(`category.${type}_description`)}</Paragraph>
         {!active && <Markdown className="CategoryBanner__PausedText">{t(`category.${type}_paused`)}</Markdown>}

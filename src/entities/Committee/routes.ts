@@ -1,7 +1,7 @@
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
-import { COMMITTEE_ADDRESSES } from './isCommittee'
+import { COMMITTEE_ADDRESSES } from './isDAOCommittee'
 
 export default routes((router) => {
   return router.get(

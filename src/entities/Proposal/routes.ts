@@ -5,6 +5,7 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -17,7 +18,8 @@ import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
-import isCommittee from '../Committee/isCommittee'
+import isDAOCommittee from '../Committee/isDAOCommittee'
+import { hasOpenSlots } from '../Committee/utils'
 import { filterComments } from '../Discourse/utils'
 import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
@@ -31,11 +33,13 @@ import ProposalModel from './model'
 import {
   CategorizedGrants,
   GrantWithUpdate,
+  HiringType,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
   NewProposalGovernance,
+  NewProposalHiring,
   NewProposalLinkedWearables,
   NewProposalPOI,
   NewProposalPitch,
@@ -51,6 +55,7 @@ import {
   newProposalCatalystScheme,
   newProposalDraftScheme,
   newProposalGovernanceScheme,
+  newProposalHiringScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
   newProposalPitchScheme,
@@ -86,6 +91,7 @@ export default routes((route) => {
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
   route.post('/proposals/pitch', withAuth, handleAPI(createProposalPitch))
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
+  route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
@@ -291,6 +297,37 @@ export async function createProposalPOI(req: WithAuth) {
   })
 }
 
+const newProposalHiringValidator = schema.compile(newProposalHiringScheme)
+
+export async function createProposalHiring(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalHiring>(newProposalHiringValidator, req.body || {})
+  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_HIRING)
+
+  if (configuration.type === HiringType.Add) {
+    const canHire = await hasOpenSlots(configuration.committee)
+    if (!canHire) {
+      throw new RequestError('The committee does not have available slots')
+    }
+  }
+
+  if (!configuration.name) {
+    const profile = await profiles.load(configuration.address)
+    configuration.name = profile?.name || undefined
+  }
+
+  return createProposal({
+    user,
+    type: ProposalType.Hiring,
+    required_to_pass: ProposalRequiredVP[ProposalType.Hiring],
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_HIRING)),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES,
+    },
+  })
+}
+
 const newProposalCatalystValidator = schema.compile(newProposalCatalystScheme)
 
 export async function createProposalCatalyst(req: WithAuth) {
@@ -428,8 +465,8 @@ export function commentProposalUpdateInDiscourse(id: string) {
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
-  if (!isCommittee(user)) {
-    throw new RequestError('Only commitee members can enact a proposal', RequestError.Forbidden)
+  if (!isDAOCommittee(user)) {
+    throw new RequestError('Only DAO commitee members can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)
@@ -539,7 +576,7 @@ async function getGrants(): Promise<CategorizedGrants> {
 
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   const address = req.params.address
-  const isCoauthoring = req.query.coauthoring === 'true'
+  const isCoauthoring = req.query.coauthor === 'true'
   if (!isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }

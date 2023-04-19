@@ -4,6 +4,7 @@ import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -17,9 +18,11 @@ export type VoteListItemModalProps = {
   address: string
   vote: Vote
   choices: string[]
+  isLowQuality?: boolean
+  active?: boolean
 }
 
-export function VoteListItem({ address, vote, choices }: VoteListItemModalProps) {
+export function VoteListItem({ address, vote, choices, isLowQuality, active }: VoteListItemModalProps) {
   const t = useFormatMessage()
   const [profile] = useAsyncMemo(async () => (address ? profiles.load(address) : null), [address], {
     callWithTruthyDeps: true,
@@ -28,7 +31,11 @@ export function VoteListItem({ address, vote, choices }: VoteListItemModalProps)
     <Grid.Row
       onClick={() => navigate(locations.profile({ address }))}
       key={address}
-      className="VoteList_Item VotesList_Divider_Line"
+      className={TokenList.join([
+        'VoteList__Item VotesList__DividerLine',
+        isLowQuality && 'VoteList__Item--low-quality',
+        isLowQuality && active && 'VoteList__Item--low-quality-active',
+      ])}
     >
       <Grid.Column width={6}>
         <div>

@@ -20,6 +20,7 @@ import * as catalyst from './catalyst'
 import * as draft from './draft'
 import * as governance from './governance'
 import * as grant from './grant'
+import * as hiring from './hiring'
 import * as pitch from './pitch'
 import * as poi from './poi'
 import * as poll from './poll'
@@ -60,6 +61,8 @@ export const title = ({ type, configuration }: { type: ProposalType; configurati
       return pitch.title(configuration as any)
     case ProposalType.Tender:
       return tender.title(configuration as any)
+    case ProposalType.Hiring:
+      return hiring.title(configuration as any)
   }
 }
 
@@ -85,6 +88,8 @@ export const description = async ({ type, configuration }: { type: ProposalType;
       return pitch.description(configuration as any)
     case ProposalType.Tender:
       return await tender.description(configuration as any)
+    case ProposalType.Hiring:
+      return hiring.description(configuration as any)
   }
 }
 

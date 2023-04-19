@@ -42,14 +42,15 @@ import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import StatusPill from '../components/Status/StatusPill'
+import { VOTES_VP_THRESHOLD } from '../constants'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
-import { SelectedVoteChoice } from '../entities/Votes/types'
+import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
 import { calculateResult } from '../entities/Votes/utils'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
-import useIsCommittee from '../hooks/useIsCommittee'
+import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
@@ -82,6 +83,31 @@ export type ProposalPageState = {
   selectedChoice: SelectedVoteChoice
 }
 
+type VoteSegmentation = {
+  highQualityVotes: Record<string, Vote>
+  lowQualityVotes: Record<string, Vote>
+}
+
+function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation {
+  const highQualityVotes: Record<string, Vote> = {}
+  const lowQualityVotes: Record<string, Vote> = {}
+
+  if (votes) {
+    Object.entries(votes).forEach(([address, vote]) => {
+      if (vote.vp > VOTES_VP_THRESHOLD) {
+        highQualityVotes[address] = vote
+      } else {
+        lowQualityVotes[address] = vote
+      }
+    })
+  }
+
+  return {
+    highQualityVotes,
+    lowQualityVotes,
+  }
+}
+
 export default function ProposalPage() {
   const t = useFormatMessage()
   const location = useLocation()
@@ -104,10 +130,11 @@ export default function ProposalPage() {
   const updatePageStateRef = useRef(updatePageState)
   const [account, { provider }] = useAuthContext()
   const [proposal, proposalState] = useProposal(params.get('id'))
-  const { isCommittee } = useIsCommittee(account)
+  const { isDAOCommittee } = useIsDAOCommittee(account)
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, votesState } = useProposalVotes(proposal?.id)
+  const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
   const [subscriptions, subscriptionsState] = useAsyncMemo(
     () => Governance.get().getSubscriptions(proposal!.id),
@@ -117,7 +144,7 @@ export default function ProposalPage() {
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
 
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
-  const partialResults = useMemo(() => calculateResult(choices, votes || {}), [choices, votes])
+  const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
@@ -184,7 +211,7 @@ export default function ProposalPage() {
 
   const [updatingStatus, updateProposalStatus] = useAsyncTask(
     async (status: ProposalStatus, vesting_address: string | null, enactingTx: string | null, description: string) => {
-      if (proposal && isCommittee) {
+      if (proposal && isDAOCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
@@ -196,15 +223,15 @@ export default function ProposalPage() {
         updatePageState({ confirmStatusUpdate: false })
       }
     },
-    [proposal, account, isCommittee, proposalState, updatePageState]
+    [proposal, account, isDAOCommittee, proposalState, updatePageState]
   )
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
-    if (proposal && account && (proposal.user === account || isCommittee)) {
+    if (proposal && account && (proposal.user === account || isDAOCommittee)) {
       await Governance.get().deleteProposal(proposal.id)
       navigate(locations.proposals())
     }
-  }, [proposal, account, isCommittee])
+  }, [proposal, account, isDAOCommittee])
 
   useEffect(() => {
     updatePageStateRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
@@ -365,7 +392,8 @@ export default function ProposalPage() {
       <VotesListModal
         open={proposalPageState.showVotesList}
         proposal={proposal}
-        votes={votes}
+        highQualityVotes={highQualityVotes}
+        lowQualityVotes={lowQualityVotes}
         onClose={() => updatePageState({ showVotesList: false })}
       />
       <VoteRegisteredModal
