@@ -6,6 +6,8 @@ import { generateHash, generateNonce } from '../../helpers'
 
 import { DiscourseService } from './../../services/DiscourseService'
 
+import DiscourseModel from './model'
+
 const TIMEOUT_TIME = 5 * 60 * 1000 // 5mins
 const VALIDATIONS_IN_PROGRESS: Record<string, string> = {}
 
@@ -43,10 +45,15 @@ async function checkValidationHash(req: WithAuth) {
 
     const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
     const regex = new RegExp(`\\b${hash}\\b`)
+    // que pasa si hay mas de un comentario valido?
     const validComment = filteredComments.find((comment) => regex.test(comment.cooked))
+
+    if (validComment) {
+      await DiscourseModel.createConnection(user, validComment.user_id)
+    }
+
     return {
       valid: !!validComment,
-      forum_id: validComment?.user_id,
     }
   } catch (error) {
     throw new Error("Couldn't validate the user. Error: " + error)

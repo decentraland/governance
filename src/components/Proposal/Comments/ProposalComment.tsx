@@ -4,8 +4,10 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import DOMPurify from 'dompurify'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { getUserProfileUrl } from '../../../entities/Discourse/utils'
+import useProfile from '../../../hooks/useProfile'
 
 import './ProposalComment.css'
 
@@ -39,17 +41,21 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked, ad
 
   const discourseUserUrl = getUserProfileUrl(user, address)
 
+  const { displayableAddress } = useProfile(address)
+
   return (
     <div className="ProposalComment">
       <div className="ProposalComment__ProfileImage">
         <a href={discourseUserUrl} target="_blank" rel="noopener noreferrer">
-          <Avatar size="medium" src={avatarUrl} />
+          {address ? <Avatar address={address} size="medium" /> : <Avatar size="medium" src={avatarUrl} />}
         </a>
       </div>
       <div className="ProposalComment__Content">
         <div className="ProposalComment__Author">
           <a href={discourseUserUrl} target="_blank" rel="noopener noreferrer">
-            <Paragraph bold>{user}</Paragraph>
+            <Paragraph bold>
+              {displayableAddress && !isEthereumAddress(displayableAddress) ? displayableAddress : user}
+            </Paragraph>
           </a>
           <span>
             <Paragraph secondary>{Time.from(createdAt).fromNow()}</Paragraph>

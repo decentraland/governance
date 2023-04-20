@@ -444,7 +444,7 @@ export class Governance extends API {
   }
 
   async validateProfile() {
-    const result = await this.fetch<ApiResponse<{ valid: boolean; forum_id?: number }>>(
+    const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
       '/validateProfile',
       this.options().method('POST').authorization({ sign: true })
     )

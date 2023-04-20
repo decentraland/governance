@@ -8,6 +8,13 @@ export default class DiscourseModel extends Model<DiscourseAttributes> {
   static withTimestamps = false
   static primaryKey = 'address'
 
+  static async createConnection(address: string, forum_id: number) {
+    const query = SQL`INSERT INTO ${table(this)} (address, forum_id, verification_date) 
+    VALUES (${address.toLowerCase()}, ${forum_id}, ${new Date().toISOString()})`
+
+    return await this.namedQuery('create_connection', query)
+  }
+
   static async getAddressesByForumId(forum_ids: number[] | string[]): Promise<{ address: string; forum_id: number }[]> {
     if (forum_ids.length === 0) return Promise.resolve([])
 
