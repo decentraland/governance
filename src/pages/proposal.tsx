@@ -287,10 +287,7 @@ export default function ProposalPage() {
 
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
-  const showProposalBudget =
-    proposal?.type === ProposalType.Grant &&
-    !isLoadingBudgetWithContestants &&
-    proposal.status === ProposalStatus.Active
+  const showProposalBudget = proposal?.type === ProposalType.Grant && !isLoadingBudgetWithContestants
 
   return (
     <>
