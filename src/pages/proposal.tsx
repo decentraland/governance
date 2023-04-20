@@ -325,7 +325,13 @@ export default function ProposalPage() {
                 <Markdown>{proposal?.description || ''}</Markdown>
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
-              {proposal && isBiddingAndTenderingProposal && <BiddingAndTenderingProcess proposalType={proposal.type} />}
+              {proposal && isBiddingAndTenderingProposal && (
+                <BiddingAndTenderingProcess
+                  proposalType={proposal.type}
+                  proposalStatus={proposal.status}
+                  proposalFinishAt={proposal.finish_at}
+                />
+              )}
               {showProposalUpdates && (
                 <ProposalUpdates
                   proposal={proposal}
