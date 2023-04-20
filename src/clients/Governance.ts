@@ -460,4 +460,22 @@ export class Governance extends API {
 
     return result.data
   }
+
+  async getValidationHash() {
+    const result = await this.fetch<ApiResponse<{ hash: string }>>(
+      '/validateProfile',
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async validateProfile() {
+    const result = await this.fetch<ApiResponse<{ valid: boolean; forum_id?: number }>>(
+      '/validateProfile',
+      this.options().method('POST').authorization({ sign: true })
+    )
+
+    return result.data
+  }
 }

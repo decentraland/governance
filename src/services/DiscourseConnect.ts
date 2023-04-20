@@ -1,15 +1,10 @@
 import { hostname } from 'os'
 
 import { FORUM_URL, GOVERNANCE_API } from '../constants'
-import { decrypt, generateAsymmetricKeys } from '../helpers'
+import { decrypt, generateAsymmetricKeys, generateNonce } from '../helpers'
 
 const APP_NAME = GOVERNANCE_API.replace(/\/api/, '')
 
-function generateNonce() {
-  const DIGITS_AMOUNT = 6
-  const randomNum = Math.round(Math.random() * Math.pow(10, DIGITS_AMOUNT))
-  return randomNum.toString().padStart(DIGITS_AMOUNT, '0')
-}
 export class DiscourseConnect {
   private privateKey: string
   private nonce: string

@@ -5,20 +5,26 @@ import { Request } from 'express'
 import 'isomorphic-fetch'
 
 import { FORUM_URL, GOVERNANCE_API } from '../../constants'
-import { encrypt, generateAsymmetricKeys } from '../../helpers'
+import { encrypt, generateAsymmetricKeys, generateHash, generateNonce } from '../../helpers'
 import { DiscourseConnect } from '../../services/DiscourseConnect'
+
+import { DiscourseService } from './../../services/DiscourseService'
 
 import Model from './model'
 import { DiscourseConnetTokenBody, DiscourseUser } from './types'
 
 const GOV_URL = GOVERNANCE_API.replace(/\/api/, '')
 
+const TIMEOUT_TIME = 5 * 60 * 1000 // 5mins
 const CONNECTIONS_IN_PROGRESS: Record<string, DiscourseConnect> = {}
+const VALIDATIONS_IN_PROGRESS: Record<string, string> = {}
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/discourseConnect', withAuth, handleAPI(getDiscourseConnectUrl))
   route.post('/discourseConnect', withAuth, handleAPI(setDiscourseConnectToken))
+  route.get('/validateProfile', withAuth, handleAPI(getValidationHash))
+  route.post('/validateProfile', withAuth, handleAPI(checkValidationHash))
 })
 function getDiscourseConnectUrl(req: WithAuth) {
   const user = req.auth!
@@ -27,7 +33,7 @@ function getDiscourseConnectUrl(req: WithAuth) {
 
   setTimeout(() => {
     delete CONNECTIONS_IN_PROGRESS[user]
-  }, 5 * 60 * 1000) // 5mins
+  }, TIMEOUT_TIME)
 
   return {
     url: connectService.getUrl(),
@@ -61,5 +67,43 @@ async function setDiscourseConnectToken(req: WithAuth<Request<any, any, Discours
     }
   } catch (error) {
     throw new Error("Couldn't get the user API key. Error: " + error)
+  }
+}
+
+async function getValidationHash(req: WithAuth) {
+  const user = req.auth!
+  const hash = generateHash(`${user}#${generateNonce()}`)
+  VALIDATIONS_IN_PROGRESS[user] = hash
+  setTimeout(() => {
+    delete VALIDATIONS_IN_PROGRESS[user]
+  }, TIMEOUT_TIME)
+
+  return {
+    hash,
+  }
+}
+
+async function checkValidationHash(req: WithAuth) {
+  const user = req.auth!
+  try {
+    const hash = VALIDATIONS_IN_PROGRESS[user]
+    if (!hash) {
+      throw new Error('Validation timed out')
+    }
+
+    delete VALIDATIONS_IN_PROGRESS[user]
+
+    const comments = await DiscourseService.fetchAllComments(1190)
+    const timeWindow = new Date(new Date().getTime() - TIMEOUT_TIME)
+
+    const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
+    const regex = new RegExp(`\\b${hash}\\b`)
+    const validComment = filteredComments.find((comment) => regex.test(comment.cooked))
+    return {
+      valid: !!validComment,
+      forum_id: validComment?.user_id,
+    }
+  } catch (error) {
+    throw new Error("Couldn't validate the user. Error: " + error)
   }
 }
