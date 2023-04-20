@@ -4,6 +4,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import useProposal from '../../../hooks/useProposal'
 
 import ProposalProcess, { ProcessStatus } from './ProposalProcess'
 
@@ -11,9 +12,10 @@ interface Props {
   proposalType: ProposalType
   proposalStatus: ProposalStatus
   proposalFinishAt: ProposalAttributes['finish_at']
+  linkedProposalId?: string
 }
 
-const getPitchConfig = (type: ProposalType, status: ProposalStatus, finishAt: string) => {
+const getPitchConfig = (type: ProposalType, status: ProposalStatus, finishAt: string, title?: string) => {
   if (type === ProposalType.Pitch && status === ProposalStatus.Active) {
     return { status: ProcessStatus.Active, statusText: `Voting ends ${finishAt}` }
   }
@@ -26,7 +28,7 @@ const getPitchConfig = (type: ProposalType, status: ProposalStatus, finishAt: st
     (type === ProposalType.Pitch && ProposalStatus.Passed) ||
     (type === ProposalType.Tender && ProposalStatus.Active)
   ) {
-    return { status: ProcessStatus.Passed, statusText: `This initiative passed ${finishAt}` }
+    return { status: ProcessStatus.Passed, statusText: `${title || 'This initiative'} passed ${finishAt}` }
   }
 
   return { status: ProcessStatus.Default, statusText: '' }
@@ -56,10 +58,17 @@ const getOpenForBidsConfig = (type: ProposalType, status: ProposalStatus) => {
   return { status: ProcessStatus.Default, statusText: 'Requires Tender to Pass' }
 }
 
-export default function BiddingAndTenderingProcess({ proposalType, proposalStatus, proposalFinishAt }: Props) {
+export default function BiddingAndTenderingProcess({
+  proposalType,
+  proposalStatus,
+  proposalFinishAt,
+  linkedProposalId,
+}: Props) {
   const t = useFormatMessage()
+  const [pitchProposal] = useProposal(linkedProposalId)
 
-  const pitchConfig = getPitchConfig(proposalType, proposalStatus, Time(proposalFinishAt).fromNow())
+  const finishAt = linkedProposalId ? pitchProposal?.finish_at : proposalFinishAt
+  const pitchConfig = getPitchConfig(proposalType, proposalStatus, Time(finishAt).fromNow(), pitchProposal?.title)
   const tenderConfig = getTenderConfig(proposalType, proposalStatus, Time(proposalFinishAt).fromNow())
   const openForBidsConfig = getOpenForBidsConfig(proposalType, proposalStatus)
 

@@ -330,6 +330,7 @@ export default function ProposalPage() {
                   proposalType={proposal.type}
                   proposalStatus={proposal.status}
                   proposalFinishAt={proposal.finish_at}
+                  linkedProposalId={proposal.configuration.linked_proposal_id}
                 />
               )}
               {showProposalUpdates && (
