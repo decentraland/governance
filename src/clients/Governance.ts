@@ -81,14 +81,14 @@ export class Governance extends API {
     return this.Cache.get(baseUrl)!
   }
 
-  private async trycatch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
-    try {
-      return await fn()
-    } catch (error) {
-      ErrorService.report('Failed Governance fetch', error)
-      return fallback
-    }
-  }
+  // private async trycatch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  //   try {
+  //     return await fn()
+  //   } catch (error) {
+  //     ErrorService.report('Failed Governance fetch', error)
+  //     return fallback
+  //   }
+  // }
 
   static get() {
     return this.from(env('GOVERNANCE_API', this.Url))
@@ -429,33 +429,6 @@ export class Governance extends API {
     const result = await this.fetch<ApiResponse<Topic[]>>(
       `/proposals/${proposalId}/survey-topics`,
       this.options().method('GET')
-    )
-
-    return result.data
-  }
-
-  async getDiscourseConnectUrl() {
-    const result = await this.trycatch(
-      () =>
-        this.fetch<ApiResponse<{ url: string }>>(
-          `/discourseConnect`,
-          this.options().method('GET').authorization({ sign: true })
-        ),
-      { ok: false, data: { url: '' } }
-    )
-
-    return result.data
-  }
-
-  async setDiscourseConnectToken(payload: string) {
-    const result = await this.trycatch(
-      () =>
-        this.fetch<
-          ApiResponse<{
-            privateKey: string
-          }>
-        >(`/discourseConnect`, this.options().method('POST').authorization({ sign: true }).json({ payload })),
-      { ok: false, data: { privateKey: '' } }
     )
 
     return result.data

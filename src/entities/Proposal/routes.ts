@@ -486,7 +486,7 @@ export async function proposalComments(req: Request<{ proposal: string }>) {
   const proposal = await getProposal(req)
   try {
     const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
-    const filteredComments = await filterComments(allComments)
+    const filteredComments = filterComments(allComments)
 
     const userIds = filteredComments.comments.reduce((set, comment) => {
       set.add(comment.id)

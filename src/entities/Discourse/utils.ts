@@ -21,7 +21,7 @@ function getAvatarUrl(post: DiscoursePostInTopic) {
   return defaultSizeUrl.includes('letter') ? defaultSizeUrl : FORUM_URL + defaultSizeUrl
 }
 
-export async function filterComments(posts: DiscoursePostInTopic[]): Promise<ProposalCommentsInDiscourse> {
+export function filterComments(posts: DiscoursePostInTopic[]): ProposalCommentsInDiscourse {
   const userPosts = posts.filter(
     (post) => ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase())
   )

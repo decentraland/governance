@@ -13,18 +13,13 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'INTEGER',
       notNull: true,
     },
-    user_api_key_encrypted: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    expiration_date: {
+    verification_date: {
       type: 'TIMESTAMP',
       notNull: true,
     },
   })
 
   pgm.addConstraint(Model.tableName, 'forum_id_unique', 'UNIQUE(forum_id)')
-  pgm.addConstraint(Model.tableName, 'expiration_date_check', 'CHECK(expiration_date > now())')
   pgm.addConstraint(Model.tableName, 'forum_id_check', 'CHECK(forum_id > 0)')
 }
 

@@ -1,4 +1,4 @@
-import { constants, createHash, generateKeyPairSync, privateDecrypt, publicEncrypt } from 'crypto'
+import { createHash } from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
@@ -89,46 +89,6 @@ export function addressShortener(address: string) {
 
 export function openUrl(url: string, newTab = true) {
   window?.open(url, newTab ? '_blank' : '_self')?.focus()
-}
-
-export function generateAsymmetricKeys() {
-  const { publicKey, privateKey } = generateKeyPairSync('rsa', {
-    modulusLength: 4096,
-    publicKeyEncoding: {
-      type: 'pkcs1',
-      format: 'pem',
-    },
-    privateKeyEncoding: {
-      type: 'pkcs1',
-      format: 'pem',
-    },
-  })
-
-  return { publicKey, privateKey }
-}
-
-export function decrypt(data: string, privateKey: string) {
-  const trim = data.trim().replace(/\s/g, '')
-  const decodedKey = privateDecrypt(
-    {
-      key: privateKey,
-      padding: constants.RSA_PKCS1_PADDING,
-    },
-    Buffer.from(trim, 'base64')
-  )
-  return decodedKey.toString('ascii')
-}
-
-export function encrypt(data: string, publicKey: string) {
-  const buffer = Buffer.from(data)
-  const encrypted = publicEncrypt(
-    {
-      key: publicKey,
-      padding: constants.RSA_PKCS1_PADDING,
-    },
-    buffer
-  )
-  return encrypted.toString('base64')
 }
 
 export function generateNonce(digits = 6) {
