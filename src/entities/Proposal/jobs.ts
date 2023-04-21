@@ -9,10 +9,15 @@ import { BUDGETING_START_DATE } from '../Grant/constants'
 import UpdateModel from '../Updates/model'
 
 import ProposalModel from './model'
-import { Outcome, ProposalOutcome, calculateOutcome } from './outcome'
+import { ProposalOutcome, calculateOutcome } from './outcome'
 import { commentProposalUpdateInDiscourse } from './routes'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { asNumber } from './utils'
+
+type Outcome = {
+  winnerChoice: string
+  outcomeStatus?: ProposalOutcome
+}
 
 type ProposalWithOutcome = ProposalAttributes & Outcome
 
