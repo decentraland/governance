@@ -3,14 +3,13 @@ import React, { useEffect, useMemo, useState } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+// import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { forumUrl } from '../../../entities/Proposal/utils'
 import useProposalComments from '../../../hooks/useProposalComments'
-import Divider from '../../Common/Divider'
 import Empty from '../../Common/Empty'
+import Section from '../View/Section'
 
 import ProposalComment from './ProposalComment'
 import './ProposalComments.css'
@@ -43,85 +42,77 @@ export default React.memo(function ProposalComments({ proposal, loading }: Propo
     }
   }, [comments, showAllComments])
 
+  // TODO: Improve loading state.
+  if (loading || isLoadingComments) {
+    return null
+  }
+
   return (
-    <div>
-      {!loading && (
-        <div className="ProposalComments">
-          <Divider />
-          {isLoadingComments && (
-            <div className="ProposalComments__Header">
-              <Loader className="ProposalComments__Loader" active={true} />
+    <Section
+      title={t('page.proposal_comments.title', { count: commentsCount })}
+      action={
+        renderComments && (
+          <Button
+            basic
+            disabled={!proposal}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={(proposal && forumUrl(proposal)) || ''}
+          >
+            {t('page.proposal_comments.join_discussion_label')}
+          </Button>
+        )
+      }
+    >
+      <div className={TokenList.join(['ProposalComments', loading && 'ProposalComments--loading'])}>
+        <div className="ProposalComments__Content">
+          {!renderComments && (
+            <div className="ProposalComments__NoComments">
+              <Empty
+                description={t('page.proposal_comments.no_comments_text')}
+                linkText={t('page.proposal_comments.join_discussion_label')}
+                linkHref={(proposal && forumUrl(proposal)) || ''}
+              />
             </div>
           )}
-          {!isLoadingComments && (
-            <>
-              <div className="ProposalComments__Header">
-                <Header>{t('page.proposal_comments.title', { count: commentsCount })}</Header>
-                {renderComments && (
-                  <Button
-                    basic
-                    disabled={!proposal}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={(proposal && forumUrl(proposal)) || ''}
-                  >
-                    {t('page.proposal_comments.join_discussion_label')}
-                  </Button>
-                )}
-              </div>
-              <div className={TokenList.join(['ProposalComments', loading && 'ProposalComments--loading'])}>
-                <div className="ProposalComments__Content">
-                  {!renderComments && (
-                    <div className="ProposalComments__NoComments">
-                      <Empty
-                        description={t('page.proposal_comments.no_comments_text')}
-                        linkText={t('page.proposal_comments.join_discussion_label')}
-                        linkHref={(proposal && forumUrl(proposal)) || ''}
-                      />
-                    </div>
-                  )}
-                  {renderedComments &&
-                    renderedComments.map((comment, index) => (
-                      <ProposalComment
-                        key={'comment_' + index}
-                        avatarUrl={comment.avatar_url}
-                        user={comment.username}
-                        createdAt={comment.created_at}
-                        cooked={comment.cooked}
-                      />
-                    ))}
-                </div>
-                {renderComments && !showAllComments && (
-                  <Button
-                    basic
-                    className="ProposalComments__ReadMore"
-                    disabled={!proposal}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      setShowAllComments(true)
-                    }}
-                  >
-                    {t('page.proposal_comments.read_more_label')}
-                  </Button>
-                )}
-                {renderComments && showAllComments && (
-                  <Button
-                    basic
-                    className="ProposalComments__ReadMore"
-                    disabled={!proposal}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={(proposal && forumUrl(proposal)) || ''}
-                  >
-                    {t('page.proposal_comments.comment_on_this_proposal_label')}
-                  </Button>
-                )}
-              </div>
-            </>
-          )}
+          {renderedComments &&
+            renderedComments.map((comment, index) => (
+              <ProposalComment
+                key={'comment_' + index}
+                avatarUrl={comment.avatar_url}
+                user={comment.username}
+                createdAt={comment.created_at}
+                cooked={comment.cooked}
+              />
+            ))}
         </div>
-      )}
-    </div>
+        {renderComments && !showAllComments && (
+          <Button
+            basic
+            className="ProposalComments__ReadMore"
+            disabled={!proposal}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => {
+              setShowAllComments(true)
+            }}
+          >
+            {t('page.proposal_comments.read_more_label')}
+          </Button>
+        )}
+        {renderComments && showAllComments && (
+          <Button
+            basic
+            className="ProposalComments__ReadMore"
+            disabled={!proposal}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={(proposal && forumUrl(proposal)) || ''}
+          >
+            {t('page.proposal_comments.comment_on_this_proposal_label')}
+          </Button>
+        )}
+      </div>
+    </Section>
   )
 })

@@ -2,10 +2,8 @@ import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import Divider from '../../Common/Divider'
-import NewBadge from '../NewBadge/NewBadge'
-
 import './ProposalProcess.css'
+import Section from './Section'
 
 export enum ProcessStatus {
   Passed = 'passed',
@@ -39,14 +37,7 @@ const VerticalLine = ({ position, isActive }: { position: 'top' | 'middle' | 'bo
 
 export default function ProposalProcess({ title, items }: Props) {
   return (
-    <div>
-      <Divider />
-      <div className="ProposalProcess__TitleContainer">
-        <h3 className="ProposalProcess__Title">{title}</h3>
-        <span>
-          <NewBadge />
-        </span>
-      </div>
+    <Section title={title} isNew>
       {items.map(({ title, description, statusText, status }, index) => {
         const isActive = status === ProcessStatus.Active
         const isFirstItem = index === 0
@@ -99,6 +90,6 @@ export default function ProposalProcess({ title, items }: Props) {
           </div>
         )
       })}
-    </div>
+    </Section>
   )
 }

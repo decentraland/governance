@@ -9,10 +9,12 @@ import useProposal from '../../../hooks/useProposal'
 import ProposalProcess, { ProcessStatus } from './ProposalProcess'
 
 interface Props {
+  proposalId?: ProposalAttributes['id']
   proposalType: ProposalType
   proposalStatus: ProposalStatus
   proposalFinishAt: ProposalAttributes['finish_at']
   linkedProposalId?: string
+  tenderProposalsTotal?: number
 }
 
 const getPitchConfig = (type: ProposalType, status: ProposalStatus, finishAt: string, title?: string) => {
@@ -34,7 +36,23 @@ const getPitchConfig = (type: ProposalType, status: ProposalStatus, finishAt: st
   return { status: ProcessStatus.Default, statusText: '' }
 }
 
-const getTenderConfig = (type: ProposalType, status: ProposalStatus, finishAt: string) => {
+const getTenderConfig = (
+  type: ProposalType,
+  status: ProposalStatus,
+  finishAt: string,
+  tenderProposalsTotal?: number
+) => {
+  if (type === ProposalType.Pitch && status === ProposalStatus.Passed) {
+    // TODO: Check plural in tenderProposalsTotal
+    return {
+      status: ProcessStatus.Pending,
+      statusText:
+        !!tenderProposalsTotal && tenderProposalsTotal > 0
+          ? `${tenderProposalsTotal} tender proposals submitted`
+          : `Tender proposal pending`,
+    }
+  }
+
   if (type === ProposalType.Tender && status === ProposalStatus.Active) {
     return { status: ProcessStatus.Active, statusText: `Voting ends ${finishAt}` }
   }
@@ -47,7 +65,7 @@ const getTenderConfig = (type: ProposalType, status: ProposalStatus, finishAt: s
     return { status: ProcessStatus.Rejected, statusText: 'Tender rejected' }
   }
 
-  return { status: ProcessStatus.Default, statusText: 'Requires tender to pass' }
+  return { status: ProcessStatus.Default, statusText: 'Requires Pitch to pass' }
 }
 
 const getOpenForBidsConfig = (type: ProposalType, status: ProposalStatus) => {
@@ -63,13 +81,19 @@ export default function BiddingAndTenderingProcess({
   proposalStatus,
   proposalFinishAt,
   linkedProposalId,
+  tenderProposalsTotal,
 }: Props) {
   const t = useFormatMessage()
   const [pitchProposal] = useProposal(linkedProposalId)
 
   const finishAt = linkedProposalId ? pitchProposal?.finish_at : proposalFinishAt
   const pitchConfig = getPitchConfig(proposalType, proposalStatus, Time(finishAt).fromNow(), pitchProposal?.title)
-  const tenderConfig = getTenderConfig(proposalType, proposalStatus, Time(proposalFinishAt).fromNow())
+  const tenderConfig = getTenderConfig(
+    proposalType,
+    proposalStatus,
+    Time(proposalFinishAt).fromNow(),
+    tenderProposalsTotal
+  )
   const openForBidsConfig = getOpenForBidsConfig(proposalType, proposalStatus)
 
   const items = useMemo(

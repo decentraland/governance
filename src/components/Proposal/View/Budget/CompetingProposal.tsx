@@ -15,7 +15,7 @@ import './CompetingProposal.css'
 
 interface Props {
   proposal: ProposalAttributes
-  highlight: boolean
+  highlight?: boolean
   isOverBudget?: boolean
 }
 

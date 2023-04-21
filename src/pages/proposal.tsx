@@ -41,6 +41,7 @@ import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTe
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -57,6 +58,7 @@ import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
+import { useTenderProposals } from '../hooks/useTenderProposals'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 import { ErrorService } from '../services/ErrorService'
@@ -142,6 +144,7 @@ export default function ProposalPage() {
     { callWithTruthyDeps: true }
   )
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
+  const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)
 
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
@@ -291,6 +294,8 @@ export default function ProposalPage() {
     proposal?.type === ProposalType.Grant &&
     !isLoadingBudgetWithContestants &&
     proposal.status === ProposalStatus.Active
+  const showTenderProposals =
+    proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
 
   return (
     <>
@@ -325,12 +330,15 @@ export default function ProposalPage() {
                 <Markdown>{proposal?.description || ''}</Markdown>
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
+              {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {proposal && isBiddingAndTenderingProposal && (
                 <BiddingAndTenderingProcess
+                  proposalId={proposal.id}
                   proposalType={proposal.type}
                   proposalStatus={proposal.status}
                   proposalFinishAt={proposal.finish_at}
                   linkedProposalId={proposal.configuration.linked_proposal_id}
+                  tenderProposalsTotal={tenderProposals?.total}
                 />
               )}
               {showProposalUpdates && (

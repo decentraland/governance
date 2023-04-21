@@ -61,6 +61,7 @@ export type GetProposalsFilter = {
   limit: number
   offset: number
   snapshotIds?: string
+  linkedProposalId?: string
 }
 
 const getGovernanceApiUrl = () => {
