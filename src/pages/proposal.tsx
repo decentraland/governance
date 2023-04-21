@@ -42,6 +42,7 @@ import GrantProposalView from '../components/Proposal/View/Categories/GrantPropo
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
+import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
@@ -61,8 +62,6 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import { ErrorService } from '../services/ErrorService'
 
 import './proposal.css'
-
-// TODO: Review why proposals.css is being imported and use only proposal.css
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const EMPTY_VOTE_CHOICES: string[] = []
@@ -107,6 +106,10 @@ function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): Vo
     highQualityVotes,
     lowQualityVotes,
   }
+}
+
+function isLegacyGrantCategory(category: string) {
+  return Object.values(OldGrantCategory).includes(category as OldGrantCategory)
 }
 
 export default function ProposalPage() {
@@ -287,7 +290,10 @@ export default function ProposalPage() {
 
   const showImagesPreview =
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
-  const showProposalBudget = proposal?.type === ProposalType.Grant && !isLoadingBudgetWithContestants
+  const showProposalBudget =
+    proposal?.type === ProposalType.Grant &&
+    !isLegacyGrantCategory(proposal.configuration.category) &&
+    !isLoadingBudgetWithContestants
 
   return (
     <>
