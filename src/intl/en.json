@@ -295,7 +295,7 @@
       "deliverables_empty": "Deliverables is empty",
       "deliverables_too_short": "Deliverables is too short",
       "deliverables_too_large": "Deliverables is too large",
-      "target_release_date_empty": "Target release date is empty",
+      "target_release_quarter_empty": "Target release quarter is empty",
       "submission_vp_not_met": "This action requires at least 100 VP."
     }
   },
@@ -1644,8 +1644,9 @@
       "use_cases_description": "MISSING COPY",
       "deliverables_label": "Deliverables",
       "deliverables_description": "MISSING COPY",
-      "target_release_date_label": "Target release date",
-      "target_release_date_description": "MISSING COPY"
+      "target_release_quarter_label": "Target release quarter",
+      "target_release_quarter_placeholder": "Select a target release quarter",
+      "target_release_quarter_description": "MISSING COPY"
     },
     "subscription_banner": {
       "title": "Stay in the loop",

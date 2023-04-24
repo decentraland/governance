@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
+import dayjs from 'dayjs'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -10,8 +11,8 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
@@ -33,6 +34,8 @@ import locations from '../../modules/locations'
 
 import './submit.css'
 
+dayjs.extend(require('dayjs/plugin/quarterOfYear'))
+
 const initialState: NewProposalTender = {
   linked_proposal_id: '',
   project_name: '',
@@ -41,9 +44,23 @@ const initialState: NewProposalTender = {
   technical_specification: '',
   use_cases: '',
   deliverables: '',
-  target_release_date: new Date(),
+  target_release_quarter: '',
 }
 const schema = newProposalTenderScheme.properties
+
+function getQuarters(onClick: (quarter: string) => void) {
+  const now = dayjs() as any
+  const currentQuarter = now.quarter()
+  const currentYear = now.year()
+  const quarters = []
+  for (let i = 0; i < 5; i++) {
+    const quarter = currentQuarter + i
+    const year = currentYear + Math.floor(quarter / 5)
+    quarters.push(`${year} Q${quarter % 4 === 0 ? 4 : quarter % 4}`)
+  }
+
+  return quarters.map((quarter) => ({ key: quarter, text: quarter, value: quarter, onClick: () => onClick(quarter) }))
+}
 
 export default function SubmitTenderProposal() {
   const t = useFormatMessage()
@@ -83,11 +100,11 @@ export default function SubmitTenderProposal() {
 
   const onSubmit: SubmitHandler<NewProposalTender> = async (data) => {
     setFormDisabled(true)
+    console.log('d', data)
 
     try {
       const proposal = await Governance.get().createProposalTender({
         ...data,
-        target_release_date: Time(data.target_release_date).toDate(),
       })
 
       loader.proposals.set(proposal.id, proposal)
@@ -368,26 +385,30 @@ export default function SubmitTenderProposal() {
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_tender.target_release_date_label')}
+            {t('page.submit_tender.target_release_quarter_label')}
             <MarkdownNotice />
           </Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.target_release_date_description')}
+            {t('page.submit_tender.target_release_quarter_description')}
           </Paragraph>
-          <Field
-            type="date"
+          <Controller
             control={control}
-            name="target_release_date"
+            name="target_release_quarter"
             rules={{
-              required: { value: true, message: t('error.tender.target_release_date_empty') },
-              // TODO: Check if date is in the future
+              required: { value: true, message: t('error.tender.target_release_quarter_empty') },
             }}
-            error={!!errors.target_release_date}
-            loading={isLoadingVpDistribution}
-            disabled={submissionVpNotMet || formDisabled}
-            message={errors.target_release_date?.message}
+            render={() => (
+              <Dropdown
+                placeholder={t('page.submit_tender.target_release_quarter_placeholder')}
+                fluid
+                selection
+                options={getQuarters((quarter) => setValue('target_release_quarter', quarter))}
+                error={!!errors.target_release_quarter}
+                loading={isLoadingVpDistribution}
+                disabled={submissionVpNotMet || formDisabled}
+              />
+            )}
           />
-          {/* TODO: Add target release date input */}
         </ContentSection>
         <ContentSection>
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={submissionVpNotMet || formDisabled} />

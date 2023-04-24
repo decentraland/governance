@@ -1,5 +1,3 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-
 import { NewProposalTender } from '../types'
 
 import { formatLinkedProposal, formatMarkdown, template } from './utils'
@@ -32,7 +30,7 @@ ${formatMarkdown(proposal.use_cases)}
 
 ${formatMarkdown(proposal.deliverables)}
 
-## Target Release Date
+## Target Release Quarter
 
-${Time(proposal.target_release_date).format('MMMM D, YYYY')}
+${proposal.target_release_quarter}
 `
