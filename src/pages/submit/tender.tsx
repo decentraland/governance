@@ -100,7 +100,6 @@ export default function SubmitTenderProposal() {
 
   const onSubmit: SubmitHandler<NewProposalTender> = async (data) => {
     setFormDisabled(true)
-    console.log('d', data)
 
     try {
       const proposal = await Governance.get().createProposalTender({

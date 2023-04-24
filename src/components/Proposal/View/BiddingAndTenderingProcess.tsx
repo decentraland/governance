@@ -18,16 +18,18 @@ interface Props {
 }
 
 const getPitchConfig = (type: ProposalType, status: ProposalStatus) => {
-  if (type === ProposalType.Pitch && status === ProposalStatus.Active) {
-    return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
-  }
+  if (type === ProposalType.Pitch) {
+    if (status === ProposalStatus.Active) {
+      return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
+    }
 
-  if (type === ProposalType.Pitch && status === ProposalStatus.Rejected) {
-    return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.initiative_rejected' }
-  }
+    if (status === ProposalStatus.Rejected) {
+      return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.initiative_rejected' }
+    }
 
-  if (type === ProposalType.Pitch && ProposalStatus.Passed) {
-    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
+    if (ProposalStatus.Passed) {
+      return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
+    }
   }
 
   if (type === ProposalType.Tender && ProposalStatus.Active) {
@@ -48,16 +50,18 @@ const getTenderConfig = (type: ProposalType, status: ProposalStatus, tenderPropo
     }
   }
 
-  if (type === ProposalType.Tender && status === ProposalStatus.Active) {
-    return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
-  }
+  if (type === ProposalType.Tender) {
+    if (status === ProposalStatus.Active) {
+      return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
+    }
 
-  if (type === ProposalType.Tender && status === ProposalStatus.Passed) {
-    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
-  }
+    if (status === ProposalStatus.Passed) {
+      return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
+    }
 
-  if (type === ProposalType.Tender && status === ProposalStatus.Rejected) {
-    return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.initiative_rejected' }
+    if (status === ProposalStatus.Rejected) {
+      return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.initiative_rejected' }
+    }
   }
 
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tender_proposal_requires' }
