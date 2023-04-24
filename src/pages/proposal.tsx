@@ -357,7 +357,7 @@ export default function ProposalPage() {
                   isLoadingSurveyTopics={isLoadingSurveyTopics}
                 />
               )}
-              <ProposalComments proposal={proposal} loading={proposalState.loading} />
+              <ProposalComments proposal={proposal} />
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">

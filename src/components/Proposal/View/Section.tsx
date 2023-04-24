@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+
 import Divider from '../../Common/Divider'
 import NewBadge from '../NewBadge/NewBadge'
 
@@ -9,10 +11,11 @@ interface Props {
   title: string
   children: React.ReactNode
   isNew?: boolean
+  isLoading?: boolean
   action?: React.ReactNode
 }
 
-export default function Section({ title, children, isNew, action }: Props) {
+export default function Section({ title, children, isNew, isLoading, action }: Props) {
   return (
     <div>
       <Divider />
@@ -28,7 +31,13 @@ export default function Section({ title, children, isNew, action }: Props) {
           </div>
           <div className="Section__Action">{action}</div>
         </div>
-        {children}
+        {isLoading ? (
+          <div className="Section__LoadingContainer">
+            <Loader active />
+          </div>
+        ) : (
+          children
+        )}
       </div>
     </div>
   )

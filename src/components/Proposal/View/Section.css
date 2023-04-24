@@ -29,3 +29,8 @@
   display: flex;
   align-self: flex-end;
 }
+
+.Section__LoadingContainer {
+  position: relative;
+  height: 150px;
+}

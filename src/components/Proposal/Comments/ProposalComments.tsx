@@ -4,7 +4,6 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-// import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { forumUrl } from '../../../entities/Proposal/utils'
 import useProposalComments from '../../../hooks/useProposalComments'
@@ -18,10 +17,9 @@ const DEFAULT_SHOWN_COMMENTS = 5
 
 type ProposalComments = {
   proposal: ProposalAttributes | null
-  loading: boolean
 }
 
-export default React.memo(function ProposalComments({ proposal, loading }: ProposalComments) {
+export default React.memo(function ProposalComments({ proposal }: ProposalComments) {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposal?.id)
   const renderComments = useMemo(() => comments && comments.totalComments > 0, [comments])
@@ -42,13 +40,9 @@ export default React.memo(function ProposalComments({ proposal, loading }: Propo
     }
   }, [comments, showAllComments])
 
-  // TODO: Improve loading state.
-  if (loading || isLoadingComments) {
-    return null
-  }
-
   return (
     <Section
+      isLoading={isLoadingComments}
       title={t('page.proposal_comments.title', { count: commentsCount })}
       action={
         renderComments && (
@@ -64,7 +58,7 @@ export default React.memo(function ProposalComments({ proposal, loading }: Propo
         )
       }
     >
-      <div className={TokenList.join(['ProposalComments', loading && 'ProposalComments--loading'])}>
+      <div className={TokenList.join(['ProposalComments', isLoadingComments && 'ProposalComments--loading'])}>
         <div className="ProposalComments__Content">
           {!renderComments && (
             <div className="ProposalComments__NoComments">
