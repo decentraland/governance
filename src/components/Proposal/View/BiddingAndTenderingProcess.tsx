@@ -86,6 +86,7 @@ export default function BiddingAndTenderingProcess({
   const tenderConfig = getTenderConfig(proposalType, proposalStatus, tenderProposalsTotal)
   const openForBidsConfig = getOpenForBidsConfig(proposalType, proposalStatus)
   const formattedDate = Time(finishAt).fromNow()
+  const formattedProposalDate = Time(proposalFinishAt).fromNow()
 
   const items = useMemo(
     () => [
@@ -93,7 +94,11 @@ export default function BiddingAndTenderingProcess({
         title: t('page.proposal_bidding_tendering.pitch_proposal_title'),
         description: t('page.proposal_bidding_tendering.pitch_proposal_description'),
         status: pitchConfig.status,
-        statusText: t(pitchConfig.statusText, { title: pitchProposal?.title, date: formattedDate }),
+        statusText: t(pitchConfig.statusText, {
+          title: pitchProposal?.title,
+          date: formattedDate,
+          proposalEndDate: formattedProposalDate,
+        }),
       },
       {
         title: t('page.proposal_bidding_tendering.tender_proposal_title'),
@@ -102,6 +107,7 @@ export default function BiddingAndTenderingProcess({
         statusText: t(tenderConfig.statusText, {
           title: pitchProposal?.title,
           date: formattedDate,
+          proposalEndDate: formattedProposalDate,
           total: tenderProposalsTotal,
         }),
       },
@@ -118,7 +124,16 @@ export default function BiddingAndTenderingProcess({
         statusText: t('page.proposal_bidding_tendering.tbd'),
       },
     ],
-    [pitchConfig, tenderConfig, openForBidsConfig, t, pitchProposal?.title, formattedDate, tenderProposalsTotal]
+    [
+      pitchConfig,
+      tenderConfig,
+      openForBidsConfig,
+      t,
+      pitchProposal?.title,
+      formattedDate,
+      tenderProposalsTotal,
+      formattedProposalDate,
+    ]
   )
 
   return <ProposalProcess title={t('page.proposal_bidding_tendering.title')} items={items} />

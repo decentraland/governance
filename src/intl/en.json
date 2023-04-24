@@ -719,10 +719,10 @@
       "open_for_bids_requires": "Requires Tender to Pass",
       "project_assignation_title": "Project assignation",
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
-      "voting_ends": "Voting ends {date}",
-      "initiative_passed": "This initiative passed {date}",
+      "voting_ends": "Voting ends {proposalEndDate}",
+      "initiative_passed": "This initiative passed {proposalEndDate}",
       "initiative_passed_title": "{title} passed {date}",
-      "initiative_rejected": "Initiative rejected {date}",
+      "initiative_rejected": "Initiative rejected {proposalEndDate}",
       "tbd": "TBD"
     },
     "proposal_list": {
