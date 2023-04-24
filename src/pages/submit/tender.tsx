@@ -383,10 +383,7 @@ export default function SubmitTenderProposal() {
           />
         </ContentSection>
         <ContentSection>
-          <Label>
-            {t('page.submit_tender.target_release_quarter_label')}
-            <MarkdownNotice />
-          </Label>
+          <Label>{t('page.submit_tender.target_release_quarter_label')}</Label>
           <Paragraph tiny secondary className="details">
             {t('page.submit_tender.target_release_quarter_description')}
           </Paragraph>
