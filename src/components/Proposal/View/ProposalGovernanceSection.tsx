@@ -17,7 +17,7 @@ import './ProposalGovernanceSection.css'
 import ProposalPromotionSection from './ProposalPromotionSection'
 import SidebarHeaderLabel from './SidebarHeaderLabel'
 
-const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft, ProposalType.Pitch]
+const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft, ProposalType.Pitch, ProposalType.Tender]
 
 type ProposalGovernanceSectionProps = {
   proposal?: ProposalAttributes | null

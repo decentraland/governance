@@ -20,24 +20,35 @@ const getSectionConfig = (type: ProposalType) => {
   switch (type) {
     case ProposalType.Poll:
       return {
+        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
         description: 'page.proposal_detail.promotion.draft_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_draft_label',
         promotedType: ProposalType.Draft,
       }
     case ProposalType.Draft:
       return {
+        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
         description: 'page.proposal_detail.promotion.governance_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_governance_label',
         promotedType: ProposalType.Governance,
       }
     case ProposalType.Pitch:
       return {
+        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
         description: 'page.proposal_detail.promotion.tender_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_tender_label',
         promotedType: ProposalType.Tender,
       }
+    case ProposalType.Tender:
+      return {
+        pillLabel: 'page.proposal_detail.promotion.submit_bid_proposal_pill',
+        description: 'page.proposal_detail.promotion.submit_bid_proposal_text',
+        buttonLabel: 'page.proposal_detail.promotion.submit_bid_proposal_label',
+        promotedType: null,
+      }
     default:
       return {
+        pillLabel: '',
         description: '',
         buttonLabel: '',
         promotedType: null,
@@ -49,7 +60,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
 
-  const { description, buttonLabel, promotedType } = getSectionConfig(type)
+  const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
   const handlePromoteClick = () => {
     if (promotedType) {
@@ -60,10 +71,16 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   return (
     <div className="ProposalPromotionSection">
       <Pill color="green" style="shiny">
-        {t('page.proposal_detail.promotion.opportunity_label')}
+        {t(pillLabel)}
       </Pill>
       <Markdown className="smallMarkdown">{t(description)}</Markdown>
-      <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()}>
+      <Button
+        primary
+        size="small"
+        loading={loading}
+        onClick={() => handlePromoteClick()}
+        disabled={type === ProposalType.Tender}
+      >
         {t(buttonLabel)}
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (

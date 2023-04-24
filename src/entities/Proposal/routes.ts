@@ -8,6 +8,7 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
@@ -113,15 +114,10 @@ export async function getProposals(req: WithAuth) {
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
   const snapshotIds = query.snapshotIds && String(query.snapshotIds)
-
-  let subscribed: string | undefined = undefined
-  if (query.subscribed) {
-    subscribed = req.auth || ''
-  }
-
+  const subscribed = query.subscribed ? req.auth || '' : undefined
   const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
-
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
+  const linkedProposalId = isUUID(String(query.linkedProposalId)) ? String(query.linkedProposalId) : undefined
 
   if (search && !/\w{2}/.test(search)) {
     return []
@@ -139,6 +135,7 @@ export async function getProposals(req: WithAuth) {
       subscribed,
       coauthor,
       snapshotIds,
+      linkedProposalId,
     }),
     ProposalModel.getProposalList({
       type,
@@ -154,6 +151,7 @@ export async function getProposals(req: WithAuth) {
       offset,
       limit,
       snapshotIds,
+      linkedProposalId,
     }),
   ])
 

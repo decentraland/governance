@@ -295,7 +295,7 @@
       "deliverables_empty": "Deliverables is empty",
       "deliverables_too_short": "Deliverables is too short",
       "deliverables_too_large": "Deliverables is too large",
-      "target_release_date_empty": "Target release date is empty",
+      "target_release_quarter_empty": "Target release quarter is empty",
       "submission_vp_not_met": "This action requires at least 100 VP."
     }
   },
@@ -706,12 +706,24 @@
     "proposal_bidding_tendering": {
       "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
       "title": "About the bidding and tendering process",
-      "pitch_proposal_title": "Pitch proposal",
-      "pitch_proposal_description": "Begin by shedding light on problems/opportunities you think are relevant",
-      "tender_proposal_title": "Tender proposal",
-      "tender_proposal_description": "Define a clearer scope for community teams to propose a more specific project",
-      "bid_proposal_title": "Bid proposal",
-      "bid_proposal_description": "The most suitable project and team will be voted to receive funding"
+      "pitch_proposal_title": "Validate by pitching",
+      "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
+      "tender_proposal_title": "Narrow down to Tender",
+      "tender_proposal_description": "Refine into a clearer scope so that teams may propose specific projects",
+      "tender_proposal_requires": "Requires Pitch to pass",
+      "tender_proposal_pending": "Tender proposal pending",
+      "tender_proposal_submitted": "{total} tender {total, plural, one {proposal} other {proposals}} submitted",
+      "open_for_bids_title": "Open for Bids",
+      "open_for_bids_description": "Teams submit projects they think would match the Tender",
+      "open_for_bids_soon": "Bidding Begins Soon",
+      "open_for_bids_requires": "Requires Tender to Pass",
+      "project_assignation_title": "Project assignation",
+      "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
+      "voting_ends": "Voting ends {proposalEndDate}",
+      "initiative_passed": "This initiative passed {proposalEndDate}",
+      "initiative_passed_title": "{title} passed {date}",
+      "initiative_rejected": "Initiative rejected {proposalEndDate}",
+      "tbd": "TBD"
     },
     "proposal_list": {
       "title": "Decentraland DAO",
@@ -860,6 +872,10 @@
         "governance_text": "**Given this draft has passed,** it is elegible for being turned into\na Binding Governance Proposal.",
         "tender_text": "**Given this pitch has passed,** it is elegible for being turned into\na Tender Proposal.",
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
+        "submit_bid_proposal_pill": "Coming Soon",
+        "submit_bid_proposal_text": "**This issue has to be addressed.** Calling all professional teams",
+        "submit_bid_proposal_label": "Submit Bid Proposal",
+        "submit_bid_info": "Bidding begins **soon**",
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal",
         "promote_to_tender_label": "Escalate to Tender"
@@ -1628,8 +1644,9 @@
       "use_cases_description": "MISSING COPY",
       "deliverables_label": "Deliverables",
       "deliverables_description": "MISSING COPY",
-      "target_release_date_label": "Target release date",
-      "target_release_date_description": "MISSING COPY"
+      "target_release_quarter_label": "Target release quarter",
+      "target_release_quarter_placeholder": "Select a target release quarter",
+      "target_release_quarter_description": "MISSING COPY"
     },
     "subscription_banner": {
       "title": "Stay in the loop",

@@ -557,7 +557,7 @@ export type NewProposalTender = {
   technical_specification: string
   use_cases: string
   deliverables: string
-  target_release_date: Date
+  target_release_quarter: string
   coAuthors?: string[]
 }
 
@@ -572,7 +572,7 @@ export const newProposalTenderScheme = {
     'technical_specification',
     'use_cases',
     'deliverables',
-    'target_release_date',
+    'target_release_quarter',
   ],
   properties: {
     linked_proposal_id: {
@@ -610,9 +610,9 @@ export const newProposalTenderScheme = {
       minLength: 20,
       maxLength: 3500,
     },
-    target_release_date: {
-      type: 'string', // TODO: decentraland-gatsby date format in schema isn't working. Review this later.
-      maxLength: 100,
+    target_release_quarter: {
+      type: 'string',
+      maxLength: 7,
     },
     coAuthors,
   },
