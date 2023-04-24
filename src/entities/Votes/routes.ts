@@ -113,5 +113,5 @@ async function getAddressVotes(req: Request) {
     })
   }
 
-  return votesWithProposalData
+  return votesWithProposalData.sort((a, b) => b.created - a.created)
 }
