@@ -17,63 +17,58 @@ interface Props {
   tenderProposalsTotal?: number
 }
 
-const getPitchConfig = (type: ProposalType, status: ProposalStatus, finishAt: string, title?: string) => {
+const getPitchConfig = (type: ProposalType, status: ProposalStatus) => {
   if (type === ProposalType.Pitch && status === ProposalStatus.Active) {
-    return { status: ProcessStatus.Active, statusText: `Voting ends ${finishAt}` }
+    return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
   }
 
   if (type === ProposalType.Pitch && status === ProposalStatus.Rejected) {
-    return { status: ProcessStatus.Rejected, statusText: `Pitch rejected ${finishAt}` }
+    return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.initiative_rejected' }
   }
 
-  if (
-    (type === ProposalType.Pitch && ProposalStatus.Passed) ||
-    (type === ProposalType.Tender && ProposalStatus.Active)
-  ) {
-    return { status: ProcessStatus.Passed, statusText: `${title || 'This initiative'} passed ${finishAt}` }
+  if (type === ProposalType.Pitch && ProposalStatus.Passed) {
+    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
+  }
+
+  if (type === ProposalType.Tender && ProposalStatus.Active) {
+    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed_title' }
   }
 
   return { status: ProcessStatus.Default, statusText: '' }
 }
 
-const getTenderConfig = (
-  type: ProposalType,
-  status: ProposalStatus,
-  finishAt: string,
-  tenderProposalsTotal?: number
-) => {
+const getTenderConfig = (type: ProposalType, status: ProposalStatus, tenderProposalsTotal?: number) => {
   if (type === ProposalType.Pitch && status === ProposalStatus.Passed) {
-    // TODO: Check plural in tenderProposalsTotal
     return {
       status: ProcessStatus.Pending,
       statusText:
         !!tenderProposalsTotal && tenderProposalsTotal > 0
-          ? `${tenderProposalsTotal} tender proposals submitted`
-          : `Tender proposal pending`,
+          ? 'page.proposal_bidding_tendering.tender_proposal_submitted'
+          : 'page.proposal_bidding_tendering.tender_proposal_pending',
     }
   }
 
   if (type === ProposalType.Tender && status === ProposalStatus.Active) {
-    return { status: ProcessStatus.Active, statusText: `Voting ends ${finishAt}` }
+    return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
   }
 
   if (type === ProposalType.Tender && status === ProposalStatus.Passed) {
-    return { status: ProcessStatus.Passed, statusText: `This tender proposal passed ${finishAt}` }
+    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
   }
 
   if (type === ProposalType.Tender && status === ProposalStatus.Rejected) {
-    return { status: ProcessStatus.Rejected, statusText: 'Tender rejected' }
+    return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.initiative_rejected' }
   }
 
-  return { status: ProcessStatus.Default, statusText: 'Requires Pitch to pass' }
+  return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tender_proposal_requires' }
 }
 
 const getOpenForBidsConfig = (type: ProposalType, status: ProposalStatus) => {
   if (type === ProposalType.Tender && status === ProposalStatus.Passed) {
-    return { status: ProcessStatus.Pending, statusText: 'Bidding Begins Soon' }
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_soon' }
   }
 
-  return { status: ProcessStatus.Default, statusText: 'Requires Tender to Pass' }
+  return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
 }
 
 export default function BiddingAndTenderingProcess({
@@ -87,14 +82,10 @@ export default function BiddingAndTenderingProcess({
   const [pitchProposal] = useProposal(linkedProposalId)
 
   const finishAt = linkedProposalId ? pitchProposal?.finish_at : proposalFinishAt
-  const pitchConfig = getPitchConfig(proposalType, proposalStatus, Time(finishAt).fromNow(), pitchProposal?.title)
-  const tenderConfig = getTenderConfig(
-    proposalType,
-    proposalStatus,
-    Time(proposalFinishAt).fromNow(),
-    tenderProposalsTotal
-  )
+  const pitchConfig = getPitchConfig(proposalType, proposalStatus)
+  const tenderConfig = getTenderConfig(proposalType, proposalStatus, tenderProposalsTotal)
   const openForBidsConfig = getOpenForBidsConfig(proposalType, proposalStatus)
+  const formattedDate = Time(finishAt).fromNow()
 
   const items = useMemo(
     () => [
@@ -102,28 +93,32 @@ export default function BiddingAndTenderingProcess({
         title: t('page.proposal_bidding_tendering.pitch_proposal_title'),
         description: t('page.proposal_bidding_tendering.pitch_proposal_description'),
         status: pitchConfig.status,
-        statusText: pitchConfig.statusText,
+        statusText: t(pitchConfig.statusText, { title: pitchProposal?.title, date: formattedDate }),
       },
       {
         title: t('page.proposal_bidding_tendering.tender_proposal_title'),
         description: t('page.proposal_bidding_tendering.tender_proposal_description'),
         status: tenderConfig.status,
-        statusText: tenderConfig.statusText,
+        statusText: t(tenderConfig.statusText, {
+          title: pitchProposal?.title,
+          date: formattedDate,
+          total: tenderProposalsTotal,
+        }),
       },
       {
         title: t('page.proposal_bidding_tendering.open_for_bids_title'),
         description: t('page.proposal_bidding_tendering.open_for_bids_description'),
         status: openForBidsConfig.status,
-        statusText: openForBidsConfig.statusText,
+        statusText: t(openForBidsConfig.statusText),
       },
       {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),
         description: t('page.proposal_bidding_tendering.project_assignation_description'),
         status: ProcessStatus.Default,
-        statusText: 'TBD',
+        statusText: t('page.proposal_bidding_tendering.tbd'),
       },
     ],
-    [pitchConfig, tenderConfig, openForBidsConfig, t]
+    [pitchConfig, tenderConfig, openForBidsConfig, t, pitchProposal?.title, formattedDate, tenderProposalsTotal]
   )
 
   return <ProposalProcess title={t('page.proposal_bidding_tendering.title')} items={items} />

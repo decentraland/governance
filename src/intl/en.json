@@ -710,10 +710,20 @@
       "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
       "tender_proposal_title": "Narrow down to Tender",
       "tender_proposal_description": "Refine into a clearer scope so that teams may propose specific projects",
+      "tender_proposal_requires": "Requires Pitch to pass",
+      "tender_proposal_pending": "Tender proposal pending",
+      "tender_proposal_submitted": "{total} tender {total, plural, one {proposal} other {proposals}} submitted",
       "open_for_bids_title": "Open for Bids",
       "open_for_bids_description": "Teams submit projects they think would match the Tender",
+      "open_for_bids_soon": "Bidding Begins Soon",
+      "open_for_bids_requires": "Requires Tender to Pass",
       "project_assignation_title": "Project assignation",
-      "project_assignation_description": "Funding allocated to the proposal accumulating the most VP"
+      "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
+      "voting_ends": "Voting ends {date}",
+      "initiative_passed": "This initiative passed {date}",
+      "initiative_passed_title": "{title} passed {date}",
+      "initiative_rejected": "Initiative rejected {date}",
+      "tbd": "TBD"
     },
     "proposal_list": {
       "title": "Decentraland DAO",
