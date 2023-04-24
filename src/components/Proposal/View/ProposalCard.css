@@ -1,4 +1,4 @@
-.CompetingProposal {
+.ProposalCard {
   margin-bottom: 8px;
   width: 100%;
   background: var(--white-900);
@@ -11,21 +11,21 @@
   align-items: center;
 }
 
-.CompetingProposal__Container {
+.ProposalCard__Container {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.CompetingProposal--highlight {
+.ProposalCard--highlight {
   border: 1px solid var(--purple-raw-d);
 }
 
-.CompetingProposal--overbudget {
+.ProposalCard--overbudget {
   border: 1px solid var(--red-800) !important;
 }
 
-.CompetingProposal__Title {
+.ProposalCard__Title {
   display: block;
   width: 100%;
   font-weight: 500;
@@ -40,7 +40,7 @@
   text-align: left;
 }
 
-.CompetingProposal__Details {
+.ProposalCard__Details {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -53,13 +53,13 @@
   color: var(--black-600);
 }
 
-.CompetingProposal__ByUser {
+.ProposalCard__ByUser {
   font-weight: 500;
   text-align: left;
   margin-left: 2px;
 }
 
-.CompetingProposal__Username {
+.ProposalCard__Username {
   font-weight: 600;
   color: var(--black-800);
   font-size: 11px;
@@ -68,21 +68,21 @@
   text-align: left;
 }
 
-.CompetingProposal__ProposalsContainer {
+.ProposalCard__ProposalsContainer {
   border: 1px solid var(--black-100);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
   margin-bottom: 16px;
 }
 
-.CompetingProposal__Loader,
-.CompetingProposal__Empty {
+.ProposalCard__Loader,
+.ProposalCard__Empty {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 378px;
 }
 
-.CompetingProposal__ViewAllButton {
+.ProposalCard__ViewAllButton {
   margin-bottom: 40px;
 }
