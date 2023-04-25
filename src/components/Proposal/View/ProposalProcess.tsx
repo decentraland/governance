@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './ProposalProcess.css'
@@ -76,13 +77,15 @@ export default function ProposalProcess({ title, items }: Props) {
                   {description}
                 </p>
                 {statusText !== '' && (
-                  <span
-                    className={TokenList.join([
-                      'ProposalProcess___StatusText',
-                      `ProposalProcess___StatusText--${status}`,
-                    ])}
-                  >
-                    {statusText}
+                  <span className="ProposalProcess___StatusTextContainer">
+                    <Markdown
+                      className={TokenList.join([
+                        'ProposalProcess___StatusText',
+                        `ProposalProcess___StatusText--${status}`,
+                      ])}
+                    >
+                      {statusText}
+                    </Markdown>
                   </span>
                 )}
               </div>

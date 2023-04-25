@@ -175,11 +175,17 @@
   color: var(--white-900);
 }
 
-.ProposalProcess___StatusText {
-  font-style: normal;
+.ProposalProcess___StatusTextContainer {
+  display: flex;
+}
+
+.ProposalProcess___StatusText .dg.Bold {
   font-weight: 600;
-  font-size: 11px;
-  line-height: 24px;
+}
+
+.ProposalProcess___StatusText .dg.Paragraph {
+  font-size: 11px !important;
+  line-height: 12px;
   text-transform: uppercase;
   color: var(--black-600);
   background: var(--alpha-black-200);
@@ -187,22 +193,22 @@
   padding: 3px 5px;
 }
 
-.ProposalProcess___StatusText--active {
+.ProposalProcess___StatusText--active .dg.Paragraph {
   background: var(--red-200);
   color: var(--red-800);
 }
 
-.ProposalProcess___StatusText--passed {
+.ProposalProcess___StatusText--passed .dg.Paragraph {
   background: var(--green-200);
   color: var(--green-900);
 }
 
-.ProposalProcess___StatusText--rejected {
+.ProposalProcess___StatusText--rejected .dg.Paragraph {
   background: var(--red-200);
   color: var(--red-800);
 }
 
-.ProposalProcess___StatusText--pending {
+.ProposalProcess___StatusText--pending .dg.Paragraph {
   background: var(--yellow-100);
   color: var(--yellow-800);
 }
