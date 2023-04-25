@@ -644,6 +644,7 @@
         "header": "Should the following **{value}** grant in the **{category}** category be approved?",
         "abstract_title": "Abstract",
         "size_title": "Grant size",
+        "size_body": "{amount} USD in {token}",
         "duration_title": "Project duration",
         "payout_strategy_title": "Payout Strategy",
         "payout_strategy_body": "Monthly on the {startDate} day",

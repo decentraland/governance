@@ -8,6 +8,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
+import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
@@ -36,12 +37,6 @@ interface Props {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
-}
-
-const CURRENCY_FORMAT_OPTIONS = {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
 }
 
 const ProposalVotingSection = ({
