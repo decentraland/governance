@@ -112,7 +112,7 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
               amount: t('general.number', { value: categoryBudget.available }),
             })
           : t('page.proposal_detail.grant.requested_budget.subtitle', {
-              percentage: getFormattedPercentage(requestedBudget, totalCategoryBudget, 0),
+              percentage: getFormattedPercentage(requestedBudget, totalCategoryBudget),
             })
       }
     />
