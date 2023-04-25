@@ -12,6 +12,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { PROMOTE_PITCH_ENABLED } from '../../constants'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
@@ -400,6 +401,10 @@ const newProposalTenderValidator = schema.compile(newProposalTenderScheme)
 export async function createProposalTender(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalTender>(newProposalTenderValidator, req.body || {})
+
+  if (!PROMOTE_PITCH_ENABLED) {
+    throw new RequestError('Forbidden', RequestError.Forbidden)
+  }
 
   await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Pitch)
   await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_TENDER)

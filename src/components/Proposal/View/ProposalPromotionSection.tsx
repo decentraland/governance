@@ -5,6 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import { PROMOTE_PITCH_ENABLED } from '../../../constants'
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
 import Pill from '../../Common/Pill'
@@ -34,14 +35,14 @@ const getSectionConfig = (type: ProposalType) => {
       }
     case ProposalType.Pitch:
       return {
-        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
+        pillLabel: 'page.proposal_detail.promotion.coming_soon_label',
         description: 'page.proposal_detail.promotion.tender_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_tender_label',
         promotedType: ProposalType.Tender,
       }
     case ProposalType.Tender:
       return {
-        pillLabel: 'page.proposal_detail.promotion.submit_bid_proposal_pill',
+        pillLabel: 'page.proposal_detail.promotion.coming_soon_label',
         description: 'page.proposal_detail.promotion.submit_bid_proposal_text',
         buttonLabel: 'page.proposal_detail.promotion.submit_bid_proposal_label',
         promotedType: null,
@@ -79,7 +80,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
         size="small"
         loading={loading}
         onClick={() => handlePromoteClick()}
-        disabled={type === ProposalType.Tender}
+        disabled={!PROMOTE_PITCH_ENABLED || type === ProposalType.Tender}
       >
         {t(buttonLabel)}
       </Button>
