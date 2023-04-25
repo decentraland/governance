@@ -67,6 +67,7 @@ const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, cho
 const EMPTY_VOTE_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
+const SURVEY_TOPICS_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
 
 export type ProposalPageState = {
   changingVote: boolean
@@ -270,7 +271,13 @@ export default function ProposalPage() {
 
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  const voteWithSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0 && !isMobile
+  const voteWithSurvey =
+    !isLoadingSurveyTopics &&
+    !!surveyTopics &&
+    surveyTopics.length > 0 &&
+    !isMobile &&
+    !!proposal &&
+    proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
 
   if (proposalState.error) {
     return (
@@ -336,7 +343,7 @@ export default function ProposalPage() {
                   isCoauthor={isCoauthor}
                 />
               )}
-              {proposal && (
+              {proposal && voteWithSurvey && (
                 <SurveyResults
                   votes={votes}
                   isLoadingVotes={votesState.loading}
