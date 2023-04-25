@@ -867,12 +867,12 @@
         "suggestion": "You can try voting directly on **Snapshot** - the system we use for decision-making."
       },
       "promotion": {
-        "opportunity_label": "opportunity",
+        "opportunity_label": "Opportunity",
+        "coming_soon_label": "Coming Soon",
         "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
         "governance_text": "**Given this draft has passed,** it is elegible for being turned into\na Binding Governance Proposal.",
         "tender_text": "**Given this pitch has passed,** it is elegible for being turned into\na Tender Proposal.",
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
-        "submit_bid_proposal_pill": "Coming Soon",
         "submit_bid_proposal_text": "**This issue has to be addressed.** Calling all professional teams",
         "submit_bid_proposal_label": "Submit Bid Proposal",
         "submit_bid_info": "Bidding begins **soon**",
