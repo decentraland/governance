@@ -1,4 +1,3 @@
-import escapeMarkdown from 'markdown-escape'
 import markdown from 'remark-parse'
 import stringify from 'remark-stringify'
 import unified from 'unified'
@@ -36,7 +35,7 @@ export function formatMarkdown(value: string): string {
   return result
 }
 
-export function formatMarkdownAST(node: Node): Node {
+function formatMarkdownAST(node: Node): Node {
   switch (node.type) {
     case 'heading':
       return {
@@ -51,5 +50,3 @@ export function formatMarkdownAST(node: Node): Node {
       }
   }
 }
-
-export { escapeMarkdown }
