@@ -38,6 +38,8 @@ function GrantProposalView({ config }: Props) {
   const hasBudgetBreakdown = budgetBreakdown && budgetBreakdown.length > 0
   const hasMembers = members && members.length > 0
 
+  const amount = intl.formatNumber(size, CURRENCY_FORMAT_OPTIONS as any)
+
   return (
     <div>
       <ProposalDescriptionItem title={t('page.proposal_view.grant.abstract_title')} body={abstract} />
@@ -46,10 +48,10 @@ function GrantProposalView({ config }: Props) {
         body={
           paymentToken
             ? t('page.proposal_view.grant.size_body', {
-                amount: intl.formatNumber(size, CURRENCY_FORMAT_OPTIONS as any),
+                amount,
                 token: paymentToken,
               })
-            : `${intl.formatNumber(size, CURRENCY_FORMAT_OPTIONS as any)} USD`
+            : `${amount} USD`
         }
       />
       {projectDuration && (
