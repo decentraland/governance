@@ -7,7 +7,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { UpdateAttributes } from '../../../entities/Updates/types'
+import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import locations from '../../../modules/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Helper from '../../Helper/Helper'
@@ -21,24 +21,19 @@ type ProposalUpdatesActionsProps = {
   proposal: ProposalAttributes
 }
 
-export default function ProposalUpdatesActions({
-  nextUpdate,
-  currentUpdate,
-  pendingUpdates,
-  proposal,
-}: ProposalUpdatesActionsProps) {
+export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, proposal }: ProposalUpdatesActionsProps) {
   const t = useFormatMessage()
   const hasSubmittedUpdate = !!currentUpdate?.completion_date
 
   const onPostUpdateClick = useCallback(() => {
-    const hasPendingUpdates = pendingUpdates && pendingUpdates.length > 0
+    const hasPendingUpdates = currentUpdate?.id && currentUpdate?.status === UpdateStatus.Pending
     navigate(
       locations.submitUpdate({
         ...(hasPendingUpdates && { id: currentUpdate?.id }),
         proposalId: proposal.id,
       })
     )
-  }, [currentUpdate?.id, pendingUpdates, proposal])
+  }, [currentUpdate?.id, currentUpdate?.status, proposal])
 
   return (
     <div className="DetailsSection">
