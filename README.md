@@ -66,22 +66,30 @@ The minimum amount of voting power require to pass a proposal of each type it's 
 
 ## Database setup
 
-Make sure you have Postgres running.
+Make sure you have Postgres installed and running:
 
-You can create a DB from scratch, or you can use the `import-db.sh` script to create a new DB using the `development.sql` dump.
+```shell
+brew install postgresql@14  
+brew services start postgresql@14
+createdb
+```
+
+You can create a DB from scratch, or you can use the `import-db.sh` script to create a new DB using the `development.dump` dump.
 
 ### Importing DB dump
 
 ```bash
-bash ./scripts/import-db.sh USERNAME [DATABASE_NAME] [DUMP_FILE]
+bash scripts/import-db.sh USERNAME [DATABASE_NAME] [DUMP_FILE]
 ```
 
-If no DATABASE_NAME and DUMP_FILE arguments are given, the script will use the default values and create a `governance` db using the `development.sql` dump.
-The CONNECTION_STRING for the default values should look like this: 
+If no DATABASE_NAME and DUMP_FILE arguments are given, the script will use the default values and create a `governance` db using the `development.dump` dump.
+The CONNECTION_STRING should look like this: 
 
 ```bash
-postgres://postgres:postgres@localhost:5432/governance
+postgres://USERNAME:PASSWORD@localhost:5432/governance
 ````
+
+(the default password should be `postgres`)
 
 ### Creating DB from scratch
 
