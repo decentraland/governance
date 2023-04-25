@@ -11,6 +11,7 @@ import {
   GrantRequestTeam,
   GrantStatus,
   GrantTierType,
+  PaymentToken,
   ProposalGrantCategory,
   VestingStartDate,
 } from '../Grant/types'
@@ -530,6 +531,7 @@ export type GrantProposalConfiguration = GrantRequestGeneralInfo &
   GrantRequestTeam & {
     category: ProposalGrantCategory | null
     size: number
+    paymentToken?: PaymentToken
     projectDuration?: number // Old grants may not have this field
     tier: GrantTierType
     choices: string[]

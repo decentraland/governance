@@ -24,7 +24,7 @@ ${formatMarkdown(proposal.abstract)}
 
 ## Grant size
 
-${formatBalance(proposal.size)} USD
+${formatBalance(proposal.size)} USD${proposal.paymentToken ? ` in ${proposal.paymentToken}` : ''}
 ${proposal.projectDuration ? getDuration(proposal.projectDuration) : ''}
 
 ## Beneficiary address
