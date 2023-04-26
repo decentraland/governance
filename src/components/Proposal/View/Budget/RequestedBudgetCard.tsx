@@ -82,10 +82,11 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
   }, [
     isProposalActive,
     allocatedCategoryBudget,
+    isOverBudget,
+    categoryBudget,
     requestedBudget,
     remainingBudgetDisplayed,
-    categoryBudget,
-    isOverBudget,
+    totalCategoryBudget,
   ])
 
   return (
