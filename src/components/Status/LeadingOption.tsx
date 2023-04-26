@@ -18,7 +18,7 @@ export default React.memo(function LeadingOption({ status, leadingOption, metVP,
   const t = useFormatMessage()
   const [user] = useAuthContext()
 
-  const hideLeadingOption = useMemo(() => !!user && !userChoice, [user, userChoice])
+  const showLeadingOption = !user || !!userChoice
 
   const proposalFinished = useMemo(() => {
     return [
@@ -34,7 +34,7 @@ export default React.memo(function LeadingOption({ status, leadingOption, metVP,
     <div className="LeadingOption">
       {status !== ProposalStatus.Pending && (
         <p className="LeadingOption__Text">
-          {status === ProposalStatus.Active && !hideLeadingOption && (
+          {status === ProposalStatus.Active && showLeadingOption && (
             <span title={leadingOption || ''}>
               {t('page.proposal_detail.leading_option_label')}
               <strong>{leadingOption}</strong>.
