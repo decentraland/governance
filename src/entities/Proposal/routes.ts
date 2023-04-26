@@ -46,6 +46,7 @@ import {
   NewProposalPoll,
   PoiType,
   ProposalAttributes,
+  ProposalCommentsInDiscourse,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -482,16 +483,13 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   return await ProposalService.removeProposal(proposal, user, updated_at, id)
 }
 
-export async function proposalComments(req: Request<{ proposal: string }>) {
+export async function proposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
   const proposal = await getProposal(req)
   try {
     const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
     const filteredComments = filterComments(allComments)
 
-    const userIds = filteredComments.comments.reduce((set, comment) => {
-      set.add(comment.id)
-      return set
-    }, new Set<number>())
+    const userIds = new Set(filteredComments.comments.map((comment) => comment.id))
 
     const users = await DiscourseModel.getAddressesByForumId(Array.from(userIds))
     const userMapping = users.reduce((map, user) => {
@@ -499,18 +497,22 @@ export async function proposalComments(req: Request<{ proposal: string }>) {
       return map
     }, {} as Record<number, string>)
 
-    filteredComments.comments = filteredComments.comments.map((comment) => {
-      comment.address = userMapping[comment.id]
-      return comment
-    })
-
-    return filteredComments
+    return {
+      ...filteredComments,
+      comments: filteredComments.comments.map((comment) => {
+        comment.address = userMapping[comment.id]
+        return comment
+      }),
+    }
   } catch (e) {
     console.error(
       `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id} `,
       e as Error
     )
-    return []
+    return {
+      comments: [],
+      totalComments: 0,
+    }
   }
 }
 

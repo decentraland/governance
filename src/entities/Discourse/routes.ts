@@ -9,7 +9,7 @@ import { DiscourseService } from './../../services/DiscourseService'
 import DiscourseModel from './model'
 
 const TIMEOUT_TIME = 5 * 60 * 1000 // 5mins
-const VALIDATIONS_IN_PROGRESS: Record<string, string> = {}
+const VALIDATIONS_IN_PROGRESS: Record<string, { hash: string; hashTimeout: NodeJS.Timeout }> = {}
 
 export default routes((route) => {
   const withAuth = auth()
@@ -17,13 +17,27 @@ export default routes((route) => {
   route.post('/validateProfile', withAuth, handleAPI(checkValidationHash))
 })
 
+function clearValidationInProgress(user: string) {
+  const validation = VALIDATIONS_IN_PROGRESS[user]
+  if (validation) {
+    clearTimeout(validation.hashTimeout)
+    delete VALIDATIONS_IN_PROGRESS[user]
+  }
+}
+
 async function getValidationHash(req: WithAuth) {
   const user = req.auth!
   const hash = generateHash(`${user}#${generateNonce()}`)
-  VALIDATIONS_IN_PROGRESS[user] = hash
-  setTimeout(() => {
+  clearValidationInProgress(user)
+
+  const hashTimeout = setTimeout(() => {
     delete VALIDATIONS_IN_PROGRESS[user]
   }, TIMEOUT_TIME)
+
+  VALIDATIONS_IN_PROGRESS[user] = {
+    hash,
+    hashTimeout,
+  }
 
   return {
     hash,
@@ -33,12 +47,13 @@ async function getValidationHash(req: WithAuth) {
 async function checkValidationHash(req: WithAuth) {
   const user = req.auth!
   try {
-    const hash = VALIDATIONS_IN_PROGRESS[user]
-    if (!hash) {
+    const validation = VALIDATIONS_IN_PROGRESS[user]
+    if (!validation) {
       throw new Error('Validation timed out')
     }
 
-    delete VALIDATIONS_IN_PROGRESS[user]
+    const { hash } = validation
+    clearValidationInProgress(user)
 
     const comments = await DiscourseService.fetchAllComments(1190)
     const timeWindow = new Date(new Date().getTime() - TIMEOUT_TIME)
