@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
@@ -15,6 +16,9 @@ export type LeadingOptionProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export default React.memo(function LeadingOption({ status, leadingOption, metVP, userChoice }: LeadingOptionProps) {
   const t = useFormatMessage()
+  const [user] = useAuthContext()
+
+  const hideLeadingOption = useMemo(() => !!user && !userChoice, [user, userChoice])
 
   const proposalFinished = useMemo(() => {
     return [
@@ -30,7 +34,7 @@ export default React.memo(function LeadingOption({ status, leadingOption, metVP,
     <div className="LeadingOption">
       {status !== ProposalStatus.Pending && (
         <p className="LeadingOption__Text">
-          {status === ProposalStatus.Active && (
+          {status === ProposalStatus.Active && !hideLeadingOption && (
             <span title={leadingOption || ''}>
               {t('page.proposal_detail.leading_option_label')}
               <strong>{leadingOption}</strong>.
