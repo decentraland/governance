@@ -1,7 +1,7 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import ExclamationCircle from '../Icon/ExclamationCircle'
@@ -29,19 +29,13 @@ export const GrantRequestSectionCard = ({
   href,
 }: Props) => {
   return (
-    <a
+    <Link
       className={TokenList.join([
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
         href && 'GrantRequestSectionCard__Hoverable',
       ])}
       href={href}
-      onClick={(e) => {
-        if (href) {
-          e.preventDefault()
-          navigate(href)
-        }
-      }}
     >
       <div className="GrantRequestSectionCard__Header">
         <div className="GrantRequestSectionCard__HeaderTitle">
@@ -62,6 +56,6 @@ export const GrantRequestSectionCard = ({
       >
         {subtitle}
       </div>
-    </a>
+    </Link>
   )
 }
