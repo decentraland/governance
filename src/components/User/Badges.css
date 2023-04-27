@@ -34,6 +34,10 @@
   gap: 4px;
 }
 
+.Badge__TitleContainer:hover {
+  box-shadow: 0 0 8px #736e7d;
+}
+
 .Badge__TitleContainer > .HelperText__Label {
   font-style: normal;
   font-weight: 500;
@@ -43,14 +47,37 @@
   color: var(--black-800);
 }
 
+.Badge__ShowMore {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
 .Badge__Counter {
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
-  color: var(--black-800);
-  opacity: 0.5;
+  color: rgb(var(--dcl-primary-raw));
+}
+
+.Badge__MiniIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.Badge__MiniIcon > img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+}
+
+.Badge__MiniIcon__Overlapping {
+  position: relative;
+  left: -16px;
 }
 
 /*TODO: mobile not mobile*/
