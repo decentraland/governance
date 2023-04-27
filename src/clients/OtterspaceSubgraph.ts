@@ -16,6 +16,7 @@ query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
     id
     createdAt
     status
+    statusReason
     spec {
       id
       metadata {
@@ -35,10 +36,18 @@ query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
   }
 }`
 
+export enum BadgeStatus {
+  BURNED = 'BURNED',
+  MINTED = 'MINTED',
+  REINSTATED = 'REINSTATED',
+  REVOKED = 'REVOKED',
+}
+
 export type OtterspaceBadge = {
   id: string
   createdAt: number
   status: string
+  statusReason: string
   spec: {
     id: string
     metadata: {
