@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import useBadges from '../../hooks/useBadges'
-import HelperText from '../Helper/HelperText'
+import useBadges from '../../../hooks/useBadges'
+import HelperText from '../../Helper/HelperText'
 
 import './Badges.css'
 
@@ -17,6 +17,8 @@ const MAX_DISPLAYED_BADGES = 2
 export default function Badges({ address }: Props) {
   const { badges, isLoadingBadges } = useBadges(address)
 
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   const displayedBadges = badges?.slice(0, MAX_DISPLAYED_BADGES) ?? []
   const miniatureBadges = badges?.slice(MAX_DISPLAYED_BADGES) ?? []
 
@@ -27,16 +29,22 @@ export default function Badges({ address }: Props) {
           return (
             <div className="Badge" key={`${badge.name}-id`}>
               <div className="Badge__Icon">
-                <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
+                <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
               </div>
               <div className="Badge__TitleContainer">
+                {/* eslint-disable-next-line react/jsx-no-undef */}
                 <HelperText labelText={badge.name} tooltipText={badge.description} position="bottom center" />
               </div>
             </div>
           )
         })}
       {!!miniatureBadges && (
-        <div className="Badge__ShowMore">
+        <div
+          className="Badge__ShowMore"
+          onClick={() => {
+            setSidebarOpen(true)
+          }}
+        >
           {miniatureBadges.map((badge, index) => {
             return (
               <div

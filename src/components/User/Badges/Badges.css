@@ -61,6 +61,8 @@
   line-height: 18px;
   text-transform: uppercase;
   color: rgb(var(--dcl-primary-raw));
+  position: relative;
+  margin-left: 4px;
 }
 
 .Badge__MiniIcon {
