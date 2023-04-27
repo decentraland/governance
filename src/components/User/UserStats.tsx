@@ -9,7 +9,8 @@ import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 
-import Badges from './Badges'
+import Badges from './Badges/Badges'
+
 import './UserStats.css'
 import UserVotingStats from './UserVotingStats'
 import UserVpStats from './UserVpStats'

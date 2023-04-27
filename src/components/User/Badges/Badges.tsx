@@ -6,12 +6,13 @@ import useBadges from '../../../hooks/useBadges'
 import HelperText from '../../Helper/HelperText'
 
 import './Badges.css'
+import BadgesSidebar from './BadgesSidebar'
 
 interface Props {
   address: string
 }
 
-const NO_IMAGE = require('../../images/no-image.png').default
+const NO_IMAGE = require('../../../images/no-image.png').default
 
 const MAX_DISPLAYED_BADGES = 2
 export default function Badges({ address }: Props) {
@@ -56,11 +57,12 @@ export default function Badges({ address }: Props) {
                 key={`${badge.name}-id`}
                 style={{ zIndex: index }}
               >
-                <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
+                <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
               </div>
             )
           })}
           <span className="Badge__Counter">{badges.length - MAX_DISPLAYED_BADGES} MORE</span>
+          <BadgesSidebar badges={badges} isSidebarVisible={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </div>
       )}
     </div>

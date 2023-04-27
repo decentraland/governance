@@ -23,6 +23,7 @@ export class BadgesService {
             status: toBadgeStatus(badge.status, () => {
               throw new Error(`Invalid badge status ${badge.status}`)
             }),
+            createdAt: badge.createdAt,
           })
         }
       } catch (e) {

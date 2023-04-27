@@ -5,6 +5,7 @@ export type Badge = {
   description: string
   image: string
   status: BadgeStatus
+  createdAt: number
 }
 
 export function isBadgeStatus(value: string | null | undefined): boolean {
