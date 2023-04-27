@@ -817,9 +817,19 @@
   {
     "address": "0x3e84Ce23Da2ed913B7fc877a9DA31F6Afc138D5a",
     "bio": "Hello, My name is Yasha, I’m the founder of a smart wearables startup called Gaian, and a digital studio called Trix. I’m also head of metaverse at Limewire.",
-    "links": ["https://www.twitter.com/storyofyasha", "https://www.instagram.com/storyofyasha", "https://www.gaian.co/", "https://www.trix.studio/"],
-    "relevant_skills": ["Producing large-scale metaverse events", "designing wearables", "motion capture performances", "brand partnerships", "Grammy nominated director", "patented inventor"
-      
+    "links": [
+      "https://www.twitter.com/storyofyasha",
+      "https://www.instagram.com/storyofyasha",
+      "https://www.gaian.co/",
+      "https://www.trix.studio/"
+    ],
+    "relevant_skills": [
+      "Producing large-scale metaverse events",
+      "designing wearables",
+      "motion capture performances",
+      "brand partnerships",
+      "Grammy nominated director",
+      "patented inventor"
     ],
     "involvement": "I’ve worked with Decentraland on multiple occasions. First to unveil their movie theatre to screen a video I directed for Jim Jones and Migos “We Set The Trends” video, then to create a Limewire venue and Soulja Boy headlining performance for #MVMF22",
     "motivation": "I love DCL and want to help it succeed.",
@@ -840,7 +850,8 @@
     "address": "0x5b5cc427c1D81Db4F94DE4d51D85ce122D63E244",
     "bio": "I consider myself as a professional with extensive experience in leading and coordinating teams, planning and project management. I have a very marked social sciences background, but I also have been involved in techonology and IT projects the last couple of years.",
     "links": ["https://twitter.com/federiconh", "https://www.linkedin.com/in/federico-holzwarth-3557a866/"],
-    "relevant_skills": [ "Throughout my professional career, I have been able to interact and establish lasting and successful bonds with stakeholders from the private sector, civil society organizations, political groups, and public administration at all levels, to develop and implement projects and meet the needs of the organizations which I belonged to, managing to set expectations between all parts involved in a successful way. Since 2010, I have worked in +5 different areas from local governments and at the same time, actively collaborated with NGOs. During those years, I was involved in high scale projects and led different cross-functional teams in order to deliver the Buenos Aires 2018 Youth Olympic Games and most recently, led a task force for the Buenos Aires City Emergency Committee during the pandemic. I’m currently working as a Sr. Program Manager in a media/data analytics company, leading cross-functional teams from different countries and dealing with conflict resolution and intercultural communication every day to deliver results for different clients right on schedule."
+    "relevant_skills": [
+      "Throughout my professional career, I have been able to interact and establish lasting and successful bonds with stakeholders from the private sector, civil society organizations, political groups, and public administration at all levels, to develop and implement projects and meet the needs of the organizations which I belonged to, managing to set expectations between all parts involved in a successful way. Since 2010, I have worked in +5 different areas from local governments and at the same time, actively collaborated with NGOs. During those years, I was involved in high scale projects and led different cross-functional teams in order to deliver the Buenos Aires 2018 Youth Olympic Games and most recently, led a task force for the Buenos Aires City Emergency Committee during the pandemic. I’m currently working as a Sr. Program Manager in a media/data analytics company, leading cross-functional teams from different countries and dealing with conflict resolution and intercultural communication every day to deliver results for different clients right on schedule."
     ],
     "involvement": "I’ve been following this project from the outside since 2018, because I personally know some collaborators and land owners. A couple of months ago, I got more involved by collaborating with the SDK team to document specific architectural decisions and to bring more transparency through some posts in different platforms (‘SDK - Under the hood’), in order to disseminate technical information in an understandable way for everyone and get direct feedback from the community. Since December 22’, I’ve been fullfiling the role of Governance Facilitator within the DAO Facilitation Squad.",
     "motivation": "Addressing VP distribution. Transparency mechanisms between DAO-Foundation. Decission making process structure",
@@ -851,7 +862,9 @@
     "address": "0x8218a2445679e38F358e42F88fe2125C98440D59",
     "bio": "Hi all, I go by 1010(TenTen). I have been in Decentraland since late 2021. My involvement in DCL encompasses not just being an active user, but also building scenes for deployment(recreationally). I am also a multiple LAND/ESTATE owner currently running scenes on ALL of my estate, leaving none barren and only for investment.",
     "links": ["https://twitter.com/thehiddenwalls"],
-    "relevant_skills": ["8 years experience as a traditional retail investor", "Owner of 18 plots of LAND (as of today)"
+    "relevant_skills": [
+      "8 years experience as a traditional retail investor",
+      "Owner of 18 plots of LAND (as of today)"
     ],
     "involvement": "",
     "motivation": "My mandate as a delegate is to represent the interests of LAND/ESTATE owners. Too often than not, LAND owners’ representation has been under the radar/ignored. It has been more obvious with the drastic implementation of Worlds, without the consultation of its users/investors. I want to change that. My goal is simple, to vote in matters that affect LAND, both directly and indirectly, and to be the voice of reason. I intent to keep an open channel to all LAND owners via twtr/discord, so that I may represent them.",
@@ -862,7 +875,14 @@
     "address": "0x4ec0bCF5E3bD218381acf3C889919Bc4Ef12fEBd",
     "bio": "Entrepreneur and blockchain enthusiast passionate about exploring the potential of Decentraland. I’m a creative thinker who enjoys building communities and developing new ideas to make the metaverse more accessible and engaging for all.",
     "links": [],
-    "relevant_skills": ["Community building", "entrepreneurship", "marketing", "blockchain", "strategy", "project management"],
+    "relevant_skills": [
+      "Community building",
+      "entrepreneurship",
+      "marketing",
+      "blockchain",
+      "strategy",
+      "project management"
+    ],
     "involvement": "I’ve been involved with Decentraland for over a year now and have been active in the community as a builder, investor, and advocate. I’ve contributed to the development of several Decentraland projects and have been working closely with other community members to help grow the ecosystem.",
     "motivation": "I want to be a delegate because I believe in the potential of Decentraland and want to help shape its future. I believe that the DAO can be a powerful force for change in the ecosystem and want to be part of that change. As a delegate, I will work tirelessly to promote transparency, accountability, and community engagement within the DAO.",
     "vision": "In the next 5 years, I envision Decentraland as a thriving metaverse with a diverse and engaged community. I see a world where anyone can create, explore, and monetize their own unique experiences in Decentraland, and where the DAO plays a critical role in shaping the ecosystem and ensuring its long-term success.",

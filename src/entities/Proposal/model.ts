@@ -37,6 +37,7 @@ export type FilterProposalList = {
   timeFrameKey?: string
   order?: 'ASC' | 'DESC'
   snapshotIds?: string
+  linkedProposalId?: string
 }
 
 export type FilterPagination = {
@@ -226,6 +227,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype)}"}'`
   }
 
+  private static getLinkedProposalQuery(linkedProposalId: string) {
+    return SQL`p."configuration" @> '{"linked_proposal_id": "${SQL.raw(linkedProposalId)}"}'`
+  }
+
   private static getLegacyGrantCategoryQuery() {
     return join(
       Object.values(OldGrantCategory).map(
@@ -236,7 +241,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async getProposalTotal(filter: Partial<FilterProposalList> = {}): Promise<number> {
-    const { user, subscribed, type, subtype, status, search, snapshotIds, coauthor } = filter
+    const { user, subscribed, type, subtype, status, search, snapshotIds, coauthor, linkedProposalId } = filter
     if (user && !isEthereumAddress(user)) {
       return 0
     }
@@ -254,6 +259,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     if (status && !isProposalStatus(status)) {
+      return 0
+    }
+
+    if (linkedProposalId && !isUUID(linkedProposalId)) {
       return 0
     }
 
@@ -290,6 +299,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       )}
       ${conditional(!!type, SQL`AND "type" = ${type}`)} 
       ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
+      ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
       ${conditional(!!status, SQL`AND "status" = ${status}`)} 
       ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
       ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
@@ -305,7 +315,20 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   static async getProposalList(
     filter: Partial<FilterProposalList & FilterPagination> = {}
   ): Promise<(ProposalAttributes & { coauthors?: string[] | null })[]> {
-    const { user, subscribed, type, subtype, status, order, search, snapshotIds, coauthor, limit, offset } = filter
+    const {
+      user,
+      subscribed,
+      type,
+      subtype,
+      status,
+      order,
+      search,
+      snapshotIds,
+      coauthor,
+      limit,
+      offset,
+      linkedProposalId,
+    } = filter
 
     if (user && !isEthereumAddress(user)) {
       return []
@@ -324,6 +347,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     if (status && !isProposalStatus(status)) {
+      return []
+    }
+
+    if (linkedProposalId && !isUUID(linkedProposalId)) {
       return []
     }
 
@@ -371,6 +398,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
     )}
     ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
+    ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
     ${conditional(!!search, SQL`AND "rank" > 0`)}
     ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
     ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 

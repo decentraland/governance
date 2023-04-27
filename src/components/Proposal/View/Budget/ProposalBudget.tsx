@@ -4,7 +4,7 @@ import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
-import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
+import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { ContentSection } from '../../../Layout/ContentLayout'
 
 import CategoryTotalCard from './CategoryTotalCard'
@@ -28,7 +28,7 @@ export default function ProposalBudget({ proposal, budget }: Props) {
         <CategoryTotalCard proposal={proposal} budget={budget} />
       </div>
       <Desktop>
-        {contestantsAmount > 0 && proposal.status === ProposalStatus.Active && (
+        {contestantsAmount > 0 && (
           <div className="ProposalBudget__Row">
             <CompetingProposals proposal={proposal} budget={budget} />
           </div>

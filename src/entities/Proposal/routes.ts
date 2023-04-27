@@ -8,9 +8,11 @@ import schema from 'decentraland-gatsby/dist/entities/Schema'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { PROMOTE_PITCH_ENABLED } from '../../constants'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
@@ -28,7 +30,7 @@ import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
 
-import { SUBMISSION_THRESHOLD_POLL } from './constants'
+import { SUBMISSION_THRESHOLD_PITCH, SUBMISSION_THRESHOLD_POLL, SUBMISSION_THRESHOLD_TENDER } from './constants'
 import ProposalModel from './model'
 import {
   CategorizedGrants,
@@ -42,7 +44,9 @@ import {
   NewProposalHiring,
   NewProposalLinkedWearables,
   NewProposalPOI,
+  NewProposalPitch,
   NewProposalPoll,
+  NewProposalTender,
   PoiType,
   ProposalAttributes,
   ProposalRequiredVP,
@@ -56,7 +60,9 @@ import {
   newProposalHiringScheme,
   newProposalLinkedWearablesScheme,
   newProposalPOIScheme,
+  newProposalPitchScheme,
   newProposalPollScheme,
+  newProposalTenderScheme,
   updateProposalStatusScheme,
 } from './types'
 import {
@@ -85,6 +91,8 @@ export default routes((route) => {
   route.post('/proposals/catalyst', withAuth, handleAPI(createProposalCatalyst))
   route.post('/proposals/grant', withAuth, handleAPI(createProposalGrant))
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
+  route.post('/proposals/pitch', withAuth, handleAPI(createProposalPitch))
+  route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
@@ -107,15 +115,10 @@ export async function getProposals(req: WithAuth) {
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
   const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
   const snapshotIds = query.snapshotIds && String(query.snapshotIds)
-
-  let subscribed: string | undefined = undefined
-  if (query.subscribed) {
-    subscribed = req.auth || ''
-  }
-
+  const subscribed = query.subscribed ? req.auth || '' : undefined
   const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
-
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
+  const linkedProposalId = isUUID(String(query.linkedProposalId)) ? String(query.linkedProposalId) : undefined
 
   if (search && !/\w{2}/.test(search)) {
     return []
@@ -133,6 +136,7 @@ export async function getProposals(req: WithAuth) {
       subscribed,
       coauthor,
       snapshotIds,
+      linkedProposalId,
     }),
     ProposalModel.getProposalList({
       type,
@@ -148,6 +152,7 @@ export async function getProposals(req: WithAuth) {
       offset,
       limit,
       snapshotIds,
+      linkedProposalId,
     }),
   ])
 
@@ -364,6 +369,51 @@ export async function createProposalLinkedWearables(req: WithAuth) {
     type: ProposalType.LinkedWearables,
     required_to_pass: ProposalRequiredVP[ProposalType.LinkedWearables],
     finish_at: getProposalEndDate(SNAPSHOT_DURATION),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES,
+    },
+  })
+}
+
+const newProposalPitchValidator = schema.compile(newProposalPitchScheme)
+
+export async function createProposalPitch(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalPitch>(newProposalPitchValidator, req.body || {})
+
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_PITCH)
+
+  return createProposal({
+    user,
+    type: ProposalType.Pitch,
+    required_to_pass: ProposalRequiredVP[ProposalType.Pitch],
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_PITCH)),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES,
+    },
+  })
+}
+
+const newProposalTenderValidator = schema.compile(newProposalTenderScheme)
+
+export async function createProposalTender(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalTender>(newProposalTenderValidator, req.body || {})
+
+  if (!PROMOTE_PITCH_ENABLED) {
+    throw new RequestError('Forbidden', RequestError.Forbidden)
+  }
+
+  await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Pitch)
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_TENDER)
+
+  return createProposal({
+    user,
+    type: ProposalType.Tender,
+    required_to_pass: ProposalRequiredVP[ProposalType.Tender],
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_TENDER)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,

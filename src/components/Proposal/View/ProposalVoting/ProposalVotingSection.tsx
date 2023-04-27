@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
+import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
@@ -18,6 +17,7 @@ import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
 import DelegationsLabel from './DelegationsLabel'
+import GetInvolvedQuestion from './GetInvolvedQuestion'
 import './ProposalVotingSection.css'
 import SidebarSnapshotRedirect from './SidebarSnapshotRedirect'
 import VotedChoiceButton from './VotedChoiceButton'
@@ -95,8 +95,7 @@ const ProposalVotingSection = ({
   )
 
   const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
-  const showGrantRequestText =
-    !proposalVotingSectionLoading && !hasVoted && !finished && proposal?.type === ProposalType.Grant
+  const showGetInvolvedQuestion = !!proposal && !proposalVotingSectionLoading && !hasVoted && !finished
 
   return (
     <div className="DetailsSection__Content ProposalVotingSection">
@@ -112,14 +111,7 @@ const ProposalVotingSection = ({
         </SidebarHeaderLabel>
       )}
 
-      {showGrantRequestText && (
-        <Markdown className="ProposalVotingSection__GrantRequest">
-          {t('page.proposal_view.grant.header', {
-            value: intl.formatNumber(proposal?.configuration.size, CURRENCY_FORMAT_OPTIONS as any),
-            category: proposal?.configuration.category,
-          })}
-        </Markdown>
-      )}
+      {showGetInvolvedQuestion && <GetInvolvedQuestion proposal={proposal} />}
 
       {!proposalVotingSectionLoading && (
         <>

@@ -18,9 +18,11 @@ import Hiring from '../Icon/ProposalCategories/Hiring'
 import HiringAdd from '../Icon/ProposalCategories/HiringAdd'
 import HiringRemove from '../Icon/ProposalCategories/HiringRemove'
 import LinkedWearables from '../Icon/ProposalCategories/LinkedWearables'
+import Pitch from '../Icon/ProposalCategories/Pitch'
 import Poi from '../Icon/ProposalCategories/Poi'
 import Poll from '../Icon/ProposalCategories/Poll'
 import RemovePoi from '../Icon/ProposalCategories/RemovePoi'
+import Tender from '../Icon/ProposalCategories/Tender'
 
 import './CategoryBanner.css'
 
@@ -37,6 +39,8 @@ export const categoryIcons = {
   [ProposalType.Draft]: Draft,
   [ProposalType.Governance]: Governance,
   [ProposalType.LinkedWearables]: LinkedWearables,
+  [ProposalType.Pitch]: Pitch,
+  [ProposalType.Tender]: Tender,
   [ProposalType.Hiring]: Hiring,
   [HiringType.Add]: HiringAdd,
   [HiringType.Remove]: HiringRemove,

@@ -115,6 +115,15 @@
   background-color: var(--background-linked-wearables);
 }
 
+.CategoryBanner--pitch .NewBadge {
+  background-color: var(--red-800);
+}
+
+.CategoryBanner--pitch.CategoryBanner--active,
+.CategoryBanner--tender.CategoryBanner--active {
+  background-color: var(--background-pitch);
+}
+
 .CategoryBanner--hiring .NewBadge {
   background-color: rgb(var(--green-raw-c));
 }

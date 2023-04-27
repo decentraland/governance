@@ -88,3 +88,11 @@
   font-size: 15px;
   color: var(--secondary-text);
 }
+
+.Input__PostLabel {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+  color: var(--black-600);
+}

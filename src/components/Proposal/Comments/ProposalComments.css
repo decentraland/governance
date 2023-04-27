@@ -11,14 +11,6 @@
   top: 25%;
 }
 
-.ProposalComments .ProposalComments__Header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-top: 36px;
-  margin-bottom: 24px;
-}
-
 .ProposalComments .ProposalComments__NoComments {
   display: flex;
   flex-direction: column;

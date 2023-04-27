@@ -3,7 +3,6 @@ import React from 'react'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
@@ -16,16 +15,16 @@ import ProposalDetailCoauthors from './ProposalDetailCoauthors'
 import './ProposalDetailSection.css'
 import SidebarHeaderLabel from './SidebarHeaderLabel'
 
-export type ProposalDetailSectionProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+interface Props {
   proposal: ProposalAttributes
 }
 
-export default React.memo(function ProposalDetailSection({ proposal, ...props }: ProposalDetailSectionProps) {
+export default function ProposalDetailSection({ proposal }: Props) {
   const t = useFormatMessage()
   const coAuthors = useCoAuthorsByProposal(proposal)
 
   return (
-    <div {...props} className={TokenList.join(['DetailsSection', props.className])}>
+    <div className="DetailsSection">
       <div className="DetailsSection__Content">
         <SidebarHeaderLabel>{t('page.proposal_detail.details_label')}</SidebarHeaderLabel>
         <div className="DetailsSection__Flex">
@@ -66,4 +65,4 @@ export default React.memo(function ProposalDetailSection({ proposal, ...props }:
       </div>
     </div>
   )
-})
+}
