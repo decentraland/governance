@@ -8,6 +8,10 @@ export type Badge = {
   createdAt: number
 }
 
+export type UserBadges = { currentBadges: Badge[]; expiredBadges: Badge[]; total: number }
+
+export const NULL_USER_BADGES: UserBadges = { currentBadges: [], expiredBadges: [], total: 0 }
+
 export function isBadgeStatus(value: string | null | undefined): boolean {
   return !!value && new Set<string>(Object.values(BadgeStatus)).has(value)
 }

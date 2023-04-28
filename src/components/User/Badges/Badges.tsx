@@ -14,14 +14,14 @@ interface Props {
 
 const NO_IMAGE = require('../../../images/no-image.png').default
 
-const MAX_DISPLAYED_BADGES = 2
+const MAX_DISPLAYED_BADGES = 3
 export default function Badges({ address }: Props) {
   const { badges, isLoadingBadges } = useBadges(address)
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const displayedBadges = badges?.slice(0, MAX_DISPLAYED_BADGES) ?? []
-  const miniatureBadges = badges?.slice(MAX_DISPLAYED_BADGES) ?? []
+  const displayedBadges = badges?.currentBadges.slice(0, MAX_DISPLAYED_BADGES) ?? []
+  const miniatureBadges = badges?.currentBadges.slice(MAX_DISPLAYED_BADGES) ?? badges?.expiredBadges ?? []
 
   return (
     <div className="Badges__Container">
@@ -55,13 +55,15 @@ export default function Badges({ address }: Props) {
                   index > 0 && 'Badge__MiniIcon__Overlapping',
                 ])}
                 key={`${badge.name}-id`}
-                style={{ zIndex: index }}
+                style={{ zIndex: index, left: `${index * -16}px` }}
               >
                 <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
               </div>
             )
           })}
-          <span className="Badge__Counter">{badges.length - MAX_DISPLAYED_BADGES} MORE</span>
+          <span className="Badge__Counter" style={{ left: `${(miniatureBadges.length - 1) * -16}px` }}>
+            {badges?.total - MAX_DISPLAYED_BADGES} MORE
+          </span>
           <BadgesSidebar badges={badges} isSidebarVisible={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </div>
       )}
