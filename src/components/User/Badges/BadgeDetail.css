@@ -1,11 +1,8 @@
-.BadgeDetail__TitleContainer {
-  margin-bottom: 161px !important;
-}
-
 .BadgeDetail__Container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 161px;
 }
 
 .BadgeDetail__Icon {

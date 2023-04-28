@@ -27,10 +27,11 @@
   margin-bottom: 14px;
 }
 
-.BadgesSidebar__Sarlanga {
+.BadgesSidebar__Back {
   display: flex;
   align-items: center;
   gap: 18px;
+  cursor: pointer;
 }
 
 .BadgesSidebar__TitleContainer > .dcl.close {

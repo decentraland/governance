@@ -10,8 +10,6 @@ import BadgeCard from './BadgeCard'
 import BadgeDetail from './BadgeDetail'
 import './BadgesSidebar.css'
 
-const NO_IMAGE = require('../../../images/no-image.png').default
-
 interface Props {
   isSidebarVisible: boolean
   onClose: () => void
@@ -62,8 +60,8 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Pro
       )}
       {badgeInDetail && (
         <div className="BadgesSidebar__Content">
-          <div className="BadgesSidebar__TitleContainer BadgeDetail__TitleContainer">
-            <div className="BadgesSidebar__Sarlanga" onClick={() => setBadgeInDetail(null)}>
+          <div className="BadgesSidebar__TitleContainer">
+            <div className="BadgesSidebar__Back" onClick={() => setBadgeInDetail(null)}>
               <ChevronLeft />
               <span className="BadgesSidebar__Title">{'Badge detail'}</span>
             </div>
