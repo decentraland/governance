@@ -130,7 +130,6 @@ export class Governance extends API {
 
   async getGrants() {
     const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
-
     return proposals.data
   }
 
@@ -440,7 +439,6 @@ export class Governance extends API {
 
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
-    this.options().method('GET')
     return response.data
   }
 }

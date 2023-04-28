@@ -26,7 +26,7 @@ export class BadgesService {
               name,
               description,
               status,
-              image: BadgesService.getHttpsLink(image),
+              image: BadgesService.getIpfsHttpsLink(image),
               createdAt: otterspaceBadge.createdAt,
             }
             if (status === BadgeStatus.REVOKED) {
@@ -46,7 +46,7 @@ export class BadgesService {
     return { currentBadges, expiredBadges, total }
   }
 
-  private static getHttpsLink(ipfsLink: string) {
+  private static getIpfsHttpsLink(ipfsLink: string) {
     return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
   }
 }
