@@ -1,0 +1,61 @@
+.BadgeCard {
+  max-width: 190px;
+  height: 206px;
+  background: var(--white-900);
+  border: 1px solid var(--alpha-black-300);
+  box-shadow: 0 1px 8px var(--alpha-black-200);
+  border-radius: 8px;
+  flex: 1 0 calc(33.333% - 20px);
+  padding: 20px 22px 10px 22px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.BadgeCard:hover {
+  box-shadow: 0 0 8px #736e7d;
+}
+
+.BadgeCard__Icon {
+  width: 120px;
+  height: 120px;
+  padding-bottom: 10px;
+}
+
+.BadgeCard__Icon > img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+
+.BadgeCard__Info {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.BadgeCard__Title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 28px;
+  letter-spacing: 0.4px;
+  color: var(--black-700);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: -4px;
+}
+
+.BadgeCard__MintDate {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 24px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--black-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

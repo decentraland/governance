@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 
 import { Badge, UserBadges } from '../../../entities/Badges/types'
 import ChevronLeft from '../../Icon/ChevronLeft'
 
+import BadgeCard from './BadgeCard'
 import BadgeDetail from './BadgeDetail'
 import './BadgesSidebar.css'
 
@@ -47,17 +47,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Pro
           </div>
           <div className="BadgesSidebar__BadgesContainer">
             {badges.currentBadges.map((badge) => {
-              return (
-                <div className="BadgeCard" key={`${badge.name}-id`} onClick={() => setBadgeInDetail(badge)}>
-                  <div className="BadgeCard__Icon">
-                    <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
-                    <div className="BadgeCard__Info">
-                      <div className="BadgeCard__Title">{badge.name}</div>
-                      <div className="BadgeCard__MintDate">{`Minted ${Time.unix(badge.createdAt).fromNow()}`}</div>
-                    </div>
-                  </div>
-                </div>
-              )
+              return <BadgeCard badge={badge} key={`${badge.name}-id`} onClick={() => setBadgeInDetail(badge)} />
             })}
           </div>
           <div className="BadgesSidebar__Subtitle">
@@ -65,17 +55,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Pro
           </div>
           <div className="BadgesSidebar__BadgesContainer">
             {badges.expiredBadges.map((badge) => {
-              return (
-                <div className="BadgeCard" key={`${badge.name}-id`} onClick={() => setBadgeInDetail(badge)}>
-                  <div className="BadgeCard__Icon">
-                    <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
-                    <div className="BadgeCard__Info">
-                      <div className="BadgeCard__Title">{badge.name}</div>
-                      <div className="BadgeCard__MintDate">{`Minted ${Time.unix(badge.createdAt).fromNow()}`}</div>
-                    </div>
-                  </div>
-                </div>
-              )
+              return <BadgeCard badge={badge} key={`${badge.name}-id`} onClick={() => setBadgeInDetail(badge)} />
             })}
           </div>
         </div>
