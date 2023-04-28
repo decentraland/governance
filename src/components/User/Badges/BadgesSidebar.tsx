@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
@@ -8,6 +7,7 @@ import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 import { Badge, UserBadges } from '../../../entities/Badges/types'
 import ChevronLeft from '../../Icon/ChevronLeft'
 
+import BadgeDetail from './BadgeDetail'
 import './BadgesSidebar.css'
 
 const NO_IMAGE = require('../../../images/no-image.png').default
@@ -89,16 +89,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Pro
             </div>
             <Close onClick={handleClose} />
           </div>
-          <div className="BadgeDetail__Container">
-            <div className="BadgeDetail__Icon">
-              <img src={badgeInDetail.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
-            </div>
-            <div className="BadgeDetail__Info">
-              <div className="BadgeDetail__Title">{badgeInDetail.name}</div>
-              <div className="BadgeDetail__MintDate">{`Minted ${Time.unix(badgeInDetail.createdAt).fromNow()}`}</div>
-            </div>
-            <Markdown className="BadgeDetail__Description">{badgeInDetail.description}</Markdown>
-          </div>
+          <BadgeDetail badge={badgeInDetail} />
         </div>
       )}
     </Sidebar>
