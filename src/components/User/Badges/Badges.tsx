@@ -5,6 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import useBadges from '../../../hooks/useBadges'
 import HelperText from '../../Helper/HelperText'
 
+import Badge from './Badge'
 import './Badges.css'
 import BadgesSidebar from './BadgesSidebar'
 
@@ -27,17 +28,7 @@ export default function Badges({ address }: Props) {
     <div className="Badges__Container">
       {!isLoadingBadges &&
         displayedBadges.map((badge) => {
-          return (
-            <div className="Badge" key={`${badge.name}-id`}>
-              <div className="Badge__Icon">
-                <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
-              </div>
-              <div className="Badge__TitleContainer">
-                {/* eslint-disable-next-line react/jsx-no-undef */}
-                <HelperText labelText={badge.name} tooltipText={badge.description} position="bottom center" />
-              </div>
-            </div>
-          )
+          return <Badge badge={badge} key={`${badge.name}-id`} />
         })}
       {!!miniatureBadges && (
         <div

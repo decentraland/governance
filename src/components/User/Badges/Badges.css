@@ -4,49 +4,6 @@
   margin-bottom: 25px;
 }
 
-.Badge {
-  height: 32px;
-  display: flex;
-  align-items: center;
-}
-
-.Badge__Icon {
-  z-index: 1;
-  width: 32px;
-  height: 32px;
-}
-
-.Badge__Icon > img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
-
-.Badge__TitleContainer {
-  background: #d9d9d9;
-  display: flex;
-  height: 24px;
-  opacity: 0.56;
-  border-radius: 4px;
-  padding: 3px 6px 3px 24px;
-  position: relative;
-  right: 20px;
-  gap: 4px;
-}
-
-.Badge__TitleContainer:hover {
-  box-shadow: 0 0 8px #736e7d;
-}
-
-.Badge__TitleContainer > .HelperText__Label {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: var(--black-800);
-}
-
 .Badge__ShowMore {
   height: 32px;
   display: flex;

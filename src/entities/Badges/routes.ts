@@ -4,7 +4,7 @@ import { Request } from 'express'
 
 import { BadgesService } from '../../services/BadgesService'
 
-import { Badge, NULL_USER_BADGES, UserBadges } from './types'
+import { NULL_USER_BADGES, UserBadges } from './types'
 
 export default routes((router) => {
   router.get('/badges/:address/', handleAPI(getBadges))
