@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useBadges from '../../../hooks/useBadges'
 
@@ -16,8 +16,11 @@ export const MAX_DISPLAYED_BADGES = 3
 export default function Badges({ address }: Props) {
   const { badges, isLoadingBadges } = useBadges(address)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const displayedBadges = badges?.currentBadges.slice(0, MAX_DISPLAYED_BADGES) ?? []
-  const miniatureBadges = badges?.currentBadges.slice(MAX_DISPLAYED_BADGES) ?? badges?.expiredBadges ?? []
+
+  const displayedBadges = useMemo(() => badges?.currentBadges.slice(0, MAX_DISPLAYED_BADGES) ?? [], [badges])
+  const stackedBadges = useMemo(() => {
+    return badges ? [...badges.currentBadges.slice(MAX_DISPLAYED_BADGES), ...badges.expiredBadges] : []
+  }, [badges])
 
   if (isLoadingBadges || badges?.total === 0) return null
 
@@ -26,9 +29,9 @@ export default function Badges({ address }: Props) {
       {displayedBadges.map((badge) => {
         return <Badge badge={badge} key={`${badge.name}-id`} />
       })}
-      {!!miniatureBadges && (
+      {!!stackedBadges && stackedBadges.length > 0 && (
         <BadgeStack
-          badges={miniatureBadges}
+          badges={stackedBadges}
           total={badges.total}
           onClick={() => {
             setSidebarOpen(true)

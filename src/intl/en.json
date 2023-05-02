@@ -568,6 +568,9 @@
       "by_user": "By",
       "size": "Size"
     },
+    "badge_card": {
+      "mint_date": "Minted {at}"
+    },
     "snapshot_redirect_button_label": "Vote on Snapshot",
     "reaction_icon": {
       "love": "Love this!",
@@ -1070,6 +1073,13 @@
       "title": "{address} | Decentraland DAO",
       "empty_title": "Decentraland DAO",
       "description": "Your profile within the DAO",
+      "show_badges": "{amount} More",
+      "badges_sidebar": {
+        "title": "Your Badges",
+        "current": "{amount} Current Badges",
+        "past": "{amount} Past Badges",
+        "detail_title": "Badge Detail"
+      },
       "user_vp_stats": {
         "consolidated_vp": "Consolidated Voting Power",
         "consolidated_vp_info": "Results from the sum of own Voting Power and delegated Voting Power",

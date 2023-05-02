@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { Badge } from '../../../entities/Badges/types'
@@ -14,11 +15,15 @@ interface Props {
 }
 
 const NO_IMAGE = require('../../../images/no-image.png').default
+const MAX_STACKED_BADGES = 5
 
 export default function BadgeStack({ badges, onClick, total }: Props) {
+  const t = useFormatMessage()
+  const badgesToShow = useMemo(() => badges.slice(0, MAX_STACKED_BADGES), [badges])
+
   return (
     <div className="BadgeStack__ShowMore" onClick={onClick}>
-      {badges.map((badge, index) => {
+      {badgesToShow.map((badge, index) => {
         return (
           <div
             className={TokenList.join(['BadgeStack__Icon', index > 0 && 'BadgeStack__Overlapping'])}
@@ -30,7 +35,7 @@ export default function BadgeStack({ badges, onClick, total }: Props) {
         )
       })}
       <span className="BadgeStack__Counter" style={{ left: `${(badges.length - 1) * -16}px` }}>
-        {total - MAX_DISPLAYED_BADGES} MORE
+        {t('page.profile.show_badges', { amount: total - MAX_DISPLAYED_BADGES })}
       </span>
     </div>
   )
