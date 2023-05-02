@@ -256,6 +256,47 @@
     "debug": {
       "invalid_http_status": "Http status must be between 100 and 530",
       "invalid_sleep_time": "Sleep time must be between 0 and 300000 ms (5 minutes)"
+    },
+    "pitch": {
+      "initiative_name_empty": "Initiative name is empty",
+      "initiative_name_too_short": "Initiative name is too short",
+      "initiative_name_too_large": "Initiative name is too large",
+      "target_audience_empty": "Target audience is empty",
+      "target_audience_too_short": "Target audience is too short",
+      "target_audience_too_large": "Target audience is too large",
+      "problem_statement_empty": "Problem statement is empty",
+      "problem_statement_too_short": "Problem statement is too short",
+      "problem_statement_too_large": "Problem statement is too large",
+      "proposed_solution_empty": "Proposed solution is empty",
+      "proposed_solution_too_short": "Proposed solution is too short",
+      "proposed_solution_too_large": "Proposed solution is too large",
+      "relevance_empty": "Field is empty",
+      "relevance_too_short": "Field is too short",
+      "relevance_too_large": "Field is too large",
+      "submission_vp_not_met": "This action requires at least 100 VP."
+    },
+    "tender": {
+      "linked_proposal_empty": "Linked Pitch Proposal field is empty",
+      "project_name_empty": "Project name is empty",
+      "project_name_too_short": "Project name is too short",
+      "project_name_too_large": "Project name is too large",
+      "summary_empty": "Summary is empty",
+      "summary_too_short": "Summary is too short",
+      "summary_too_large": "Summary is too large",
+      "problem_statement_empty": "Problem statement is empty",
+      "problem_statement_too_short": "Problem statement is too short",
+      "problem_statement_too_large": "Problem statement is too large",
+      "technical_specification_empty": "Technical specification is empty",
+      "technical_specification_too_short": "Technical specification is too short",
+      "technical_specification_too_large": "Technical specification is too large",
+      "use_cases_empty": "Use cases are empty",
+      "use_cases_too_short": "Use cases are too short",
+      "use_cases_too_large": "Use cases are too large",
+      "deliverables_empty": "Deliverables is empty",
+      "deliverables_too_short": "Deliverables is too short",
+      "deliverables_too_large": "Deliverables is too large",
+      "target_release_quarter_empty": "Target release quarter is empty",
+      "submission_vp_not_met": "This action requires at least 100 VP."
     }
   },
   "category": {
@@ -299,6 +340,10 @@
     "governance_description": "Formalize the passed version of a Draft Proposal into a binding governance outcome",
     "linked_wearables_title": "Linked Wearables Registry",
     "linked_wearables_description": "Request to be admitted as an approved partner to create wearables as representations of your NFTs in Decentraland",
+    "pitch_title": "Pitch Proposal",
+    "pitch_description": "Validate ideas to spawn new projects",
+    "tender_title": "Tender Proposal",
+    "tender_description": "Refine a previously passed Pitch Proposal",
     "all_grants_title": "All grants",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",
@@ -644,6 +689,7 @@
         "header": "Should the following **{value}** grant in the **{category}** category be approved?",
         "abstract_title": "Abstract",
         "size_title": "Grant size",
+        "size_body": "{amount} USD in {token}",
         "duration_title": "Project duration",
         "payout_strategy_title": "Payout Strategy",
         "payout_strategy_body": "Monthly on the {startDate} day",
@@ -657,6 +703,29 @@
         "roadmap_title": "Roadmap and milestones",
         "relevant_link": "Relevant link"
       }
+    },
+    "proposal_bidding_tendering": {
+      "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
+      "escalated_tender_proposals": "Escalated Tender Propsoals",
+      "title": "About the bidding and tendering process",
+      "pitch_proposal_title": "Validate by pitching",
+      "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
+      "tender_proposal_title": "Narrow down to Tender",
+      "tender_proposal_description": "Refine into a clearer scope so that teams may propose specific projects",
+      "tender_proposal_requires": "**Requires Pitch to pass**",
+      "tender_proposal_pending": "Tender proposal pending",
+      "tender_proposal_submitted": "**{total} tender {total, plural, one {proposal} other {proposals}} submitted**",
+      "open_for_bids_title": "Open for Bids",
+      "open_for_bids_description": "Teams submit projects they think would match the Tender",
+      "open_for_bids_soon": "**Bidding Begins Soon**",
+      "open_for_bids_requires": "**Requires Tender to Pass**",
+      "project_assignation_title": "Project assignation",
+      "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
+      "voting_ends": "**Voting ends** {proposalEndDate}",
+      "initiative_passed": "**This initiative passed** {proposalEndDate}",
+      "initiative_passed_title": "**{title}** passed {date}",
+      "initiative_rejected": "**Initiative rejected** {proposalEndDate}",
+      "tbd": "**TBD**"
     },
     "proposal_list": {
       "title": "Decentraland DAO",
@@ -733,6 +802,9 @@
       "user_voted_for_delegators": "You voted on behalf of **{amountRepresented} {amountRepresented, plural, one {account} other {accounts}}**",
       "result_label": "Current results",
       "get_involved": "Get involved",
+      "get_involved_grant": "Should the following **{value}** grant in the **{category}** category be approved?",
+      "get_involved_pitch": "Should the problem/opportunity outlined be refined and taken to the next level?",
+      "get_involved_tender": "Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?",
       "show_results": "Show results",
       "hide_results": "Hide results",
       "vote_change": "Change Vote",
@@ -797,16 +869,23 @@
         "suggestion": "You can try voting directly on **Snapshot** - the system we use for decision-making."
       },
       "promotion": {
-        "opportunity_label": "opportunity",
+        "opportunity_label": "Opportunity",
+        "coming_soon_label": "Coming Soon",
         "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
         "governance_text": "**Given this draft has passed,** it is elegible for being turned into\na Binding Governance Proposal.",
+        "tender_text": "**Given this pitch has passed,** it is elegible for being turned into\na Tender Proposal.",
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
+        "submit_bid_proposal_text": "**This issue has to be addressed.** Calling all professional teams",
+        "submit_bid_proposal_label": "Submit Bid Proposal",
+        "submit_bid_info": "Bidding begins **soon**",
         "promote_to_draft_label": "Promote to Draft",
-        "promote_to_governance_label": "Escalate Proposal"
+        "promote_to_governance_label": "Escalate Proposal",
+        "promote_to_tender_label": "Escalate to Tender"
       },
       "grant": {
         "requested_budget": {
-          "title": "Requesting",
+          "active_title": "Requesting",
+          "finished_title": "Requested",
           "overbudget_pill": "Over Budget",
           "requested": "Requested Budget",
           "total": "Total Budget",
@@ -1132,6 +1211,7 @@
       "title": "Submit Proposal",
       "description": "Select a proposal category to get started",
       "common_actions": "Common Actions",
+      "bidding_tendering_process": "Bidding & Tendering Process",
       "governance_process": "Governance Process",
       "button_submit": "Submit proposal",
       "character_counter": "({current} out of {limit} characters)",
@@ -1300,7 +1380,7 @@
       "cancel": "Cancel",
       "category_selection": {
         "description": "Choose a category that best suits your project",
-        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://MISSING_URL)"
+        "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://docs.decentraland.org/player/general/dao/overview/grants-program/#grant-categories-and-requirements)"
       },
       "modal_actions": {
         "submit": "SUBMIT",
@@ -1536,6 +1616,39 @@
       "image_add": "Add another image",
       "marketplace_link_label": "NFT Marketplace Listing",
       "marketplace_link_detail": "Provide an URL where users can see your NFT collection listed in an NFT marketplace like OpenSea, Rarible, or any other"
+    },
+    "submit_pitch": {
+      "title": "Pitch proposal",
+      "description": "Pitch proposals are the first step towards validating whether an idea is worth pursuing as a Project Tender and securing funds and bids from external teams to execute it.\n\nThis action requires at least 100 VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5).",
+      "initiative_name_label": "Initiative name",
+      "initiative_name_postlabel": "This is what will be displayed on the Proposals Feed",
+      "problem_statement_label": "Problem statement",
+      "problem_statement_detail": "Please explain the problem this initiative would solve for using simple words",
+      "proposed_solution_label": "Proposed solution",
+      "proposed_solution_detail": "Please explain how you would think this problem should be approached using simple words",
+      "target_audience_label": "Target audicence",
+      "target_audience_detail": "Please describe the intended user of the proposed solution: their needs, concerns, motivations, etc.",
+      "relevance_label": "Why is this relevant now?",
+      "relevance_detail": "Please explain why the Decentraland DAO should be spending money in this project. Specify market conditions, competitor, new technical developments and any other relevant factors you consider"
+    },
+    "submit_tender": {
+      "title": "Tender proposal",
+      "description": "Tender proposals are the second step in the Bidding & Tendering process. The aim of this stage is to refine the problems outlined in the Pitch proposal, providing a clearer vision of what the execution teams should propose in their Bid proposals.\n\nThis action requires at least 100 VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5).",
+      "linked_proposal_label": "Linked Pitch Proposal",
+      "project_name_label": "Project name",
+      "summary_label": "Summary",
+      "summary_description": "Provide a high-level overview of the idea behind this tender and its connection to the original Pitch proposal.",
+      "problem_statement_label": "Problem statement",
+      "problem_statement_description": "Describe the specific problem that this solution aims to solve for the Decentraland community.",
+      "technical_specification_label": "Technical specification",
+      "technical_specification_description": "Outline how the execution team could implement this solution. Please note that this is not binding, and execution teams may propose a new technical pathway in their bid proposals.",
+      "use_cases_label": "Use cases",
+      "use_cases_description": "Explain how the target audience will benefit from this project, how they will use it, and the value they will derive from it.",
+      "deliverables_label": "Deliverables",
+      "deliverables_description": "Detail all the artifacts that the execution teams should deliver as part of this Tender. For example, working software, documentation, marketing plans, social media strategies, etc.",
+      "target_release_quarter_label": "Target release quarter",
+      "target_release_quarter_placeholder": "Select a target release quarter",
+      "target_release_quarter_description": "State the anticipated release date for the community. Please note that this is not binding, and execution teams may propose a new date in their bid proposals."
     },
     "subscription_banner": {
       "title": "Stay in the loop",

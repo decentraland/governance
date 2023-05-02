@@ -17,7 +17,9 @@ import {
   NewProposalHiring,
   NewProposalLinkedWearables,
   NewProposalPOI,
+  NewProposalPitch,
   NewProposalPoll,
+  NewProposalTender,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
@@ -41,6 +43,8 @@ type NewProposalMap = {
   [`/proposals/catalyst`]: NewProposalCatalyst
   [`/proposals/grant`]: GrantRequest
   [`/proposals/linked-wearables`]: NewProposalLinkedWearables
+  [`/proposals/pitch`]: NewProposalPitch
+  [`/proposals/tender`]: NewProposalTender
   [`/proposals/hiring`]: NewProposalHiring
 }
 
@@ -58,6 +62,7 @@ export type GetProposalsFilter = {
   limit: number
   offset: number
   snapshotIds?: string
+  linkedProposalId?: string
 }
 
 const getGovernanceApiUrl = () => {
@@ -185,6 +190,14 @@ export class Governance extends API {
 
   async createProposalLinkedWearables(proposal: NewProposalLinkedWearables) {
     return this.createProposal(`/proposals/linked-wearables`, proposal)
+  }
+
+  async createProposalPitch(proposal: NewProposalPitch) {
+    return this.createProposal(`/proposals/pitch`, proposal)
+  }
+
+  async createProposalTender(proposal: NewProposalTender) {
+    return this.createProposal(`/proposals/tender`, proposal)
   }
 
   async createProposalHiring(proposal: NewProposalHiring) {

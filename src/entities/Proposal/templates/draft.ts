@@ -1,5 +1,6 @@
-import { NewProposalDraft } from '../types';
-import { formatMarkdown, template, formatLinkedProposal } from './utils';
+import { NewProposalDraft } from '../types'
+
+import { formatLinkedProposal, formatMarkdown, template } from './utils'
 
 export const title = (proposal: NewProposalDraft) => proposal.title.split('\n')[0]
 

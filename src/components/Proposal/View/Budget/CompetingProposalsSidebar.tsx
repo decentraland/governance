@@ -13,8 +13,8 @@ import { CURRENCY_FORMAT_OPTIONS, getFormattedPercentage } from '../../../../hel
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import Pill, { PillColor } from '../../../Common/Pill'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
+import ProposalCard from '../ProposalCard'
 
-import CompetingProposal from './CompetingProposal'
 import './CompetingProposalsSidebar.css'
 import ContestedBudgetDistributionBar from './ContestedBudgetDistributionBar'
 
@@ -307,7 +307,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
             onMouseEnter={() => setHighlightedContestant(contestant.id)}
             onMouseLeave={() => setHighlightedContestant(null)}
           >
-            <CompetingProposal
+            <ProposalCard
               proposal={contestant}
               highlight={highlightedContestant === contestant.id}
               isOverBudget={isOverBudget}

@@ -11,6 +11,7 @@ import {
   GrantRequestTeam,
   GrantStatus,
   GrantTierType,
+  PaymentToken,
   ProposalGrantCategory,
   VestingStartDate,
 } from '../Grant/types'
@@ -25,8 +26,10 @@ import {
   VOTING_POWER_TO_PASS_GOVERNANCE,
   VOTING_POWER_TO_PASS_HIRING,
   VOTING_POWER_TO_PASS_LINKED_WEARABLES,
+  VOTING_POWER_TO_PASS_PITCH,
   VOTING_POWER_TO_PASS_POI,
   VOTING_POWER_TO_PASS_POLL,
+  VOTING_POWER_TO_PASS_TENDER,
 } from './constants'
 
 export type ProposalAttributes<C extends Record<string, unknown> = any> = {
@@ -84,6 +87,8 @@ export enum ProposalType {
   Poll = 'poll',
   Draft = 'draft',
   Governance = 'governance',
+  Pitch = 'pitch',
+  Tender = 'tender',
 }
 
 export enum PoiType {
@@ -97,20 +102,11 @@ export enum HiringType {
 }
 
 export function isProposalType(value: string | null | undefined): boolean {
-  switch (value) {
-    case ProposalType.POI:
-    case ProposalType.Catalyst:
-    case ProposalType.BanName:
-    case ProposalType.Grant:
-    case ProposalType.Poll:
-    case ProposalType.Draft:
-    case ProposalType.Governance:
-    case ProposalType.LinkedWearables:
-    case ProposalType.Hiring:
-      return true
-    default:
-      return false
+  if (value === null || value === undefined) {
+    return false
   }
+
+  return Object.values(ProposalType).includes(value as ProposalType)
 }
 
 export function isPoiType(value: string | null | undefined): boolean {
@@ -511,6 +507,118 @@ export const newProposalCatalystScheme = {
   },
 }
 
+export type NewProposalPitch = {
+  initiative_name: string
+  target_audience: string
+  problem_statement: string
+  proposed_solution: string
+  relevance: string
+  coAuthors?: string[]
+}
+
+export const newProposalPitchScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['initiative_name', 'target_audience', 'problem_statement', 'proposed_solution', 'relevance'],
+  properties: {
+    initiative_name: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    target_audience: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    problem_statement: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    proposed_solution: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    relevance: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    coAuthors,
+  },
+}
+
+export type NewProposalTender = {
+  linked_proposal_id: string
+  project_name: string
+  summary: string
+  problem_statement: string
+  technical_specification: string
+  use_cases: string
+  deliverables: string
+  target_release_quarter: string
+  coAuthors?: string[]
+}
+
+export const newProposalTenderScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'linked_proposal_id',
+    'project_name',
+    'summary',
+    'problem_statement',
+    'technical_specification',
+    'use_cases',
+    'deliverables',
+    'target_release_quarter',
+  ],
+  properties: {
+    linked_proposal_id: {
+      type: 'string',
+      minLength: 36,
+      maxLength: 255,
+    },
+    project_name: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    summary: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    problem_statement: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    technical_specification: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    use_cases: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    deliverables: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    target_release_quarter: {
+      type: 'string',
+      maxLength: 7,
+    },
+    coAuthors,
+  },
+}
+
 export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
 
 export const ProposalRequiredVP = {
@@ -522,6 +630,8 @@ export const ProposalRequiredVP = {
   [ProposalType.Poll]: requiredVotingPower(VOTING_POWER_TO_PASS_POLL, 0),
   [ProposalType.Draft]: requiredVotingPower(VOTING_POWER_TO_PASS_DRAFT, 0),
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
+  [ProposalType.Pitch]: requiredVotingPower(VOTING_POWER_TO_PASS_PITCH, 0),
+  [ProposalType.Tender]: requiredVotingPower(VOTING_POWER_TO_PASS_TENDER, 0),
   [ProposalType.Hiring]: requiredVotingPower(VOTING_POWER_TO_PASS_HIRING, 0),
 }
 
@@ -530,6 +640,7 @@ export type GrantProposalConfiguration = GrantRequestGeneralInfo &
   GrantRequestTeam & {
     category: ProposalGrantCategory | null
     size: number
+    paymentToken?: PaymentToken
     projectDuration?: number // Old grants may not have this field
     tier: GrantTierType
     choices: string[]

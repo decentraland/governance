@@ -4,8 +4,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import snakeCase from 'lodash/snakeCase'
 
-import { BudgetWithContestants } from '../../../../entities/Budget/types'
-import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
+import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
 import { getFormattedPercentage } from '../../../../helpers'
 import DistributionBar from '../../../Common/DistributionBar/DistributionBar'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
@@ -19,8 +19,47 @@ interface Props {
   budget: BudgetWithContestants
 }
 
+function requestedAndTotalItems(requestedBudget: number, totalCategoryBudget: number) {
+  return [
+    {
+      value: requestedBudget,
+      className: 'RequestedBudgetBar',
+      selected: true,
+    },
+    {
+      value: totalCategoryBudget - requestedBudget,
+      className: 'RemainingBudgetBar',
+    },
+  ]
+}
+
+function allocatedRequestedAndRemainingItems(
+  allocatedCategoryBudget: number,
+  isOverBudget: boolean,
+  categoryBudget: CategoryBudgetWithContestants,
+  requestedBudget: number,
+  remainingBudgetDisplayed: number
+) {
+  return [
+    {
+      value: allocatedCategoryBudget,
+      className: TokenList.join(['AllocatedBudgetBar', isOverBudget && 'AllocatedBudgetBar--overbudget']),
+    },
+    {
+      value: isOverBudget ? categoryBudget.available : requestedBudget,
+      className: TokenList.join(['RequestedBudgetBar', isOverBudget && 'RequestedBudgetBar--overbudget']),
+      selected: true,
+    },
+    {
+      value: remainingBudgetDisplayed,
+      className: 'RemainingBudgetBar',
+    },
+  ]
+}
+
 export default function RequestedBudgetCard({ proposal, budget }: Props) {
   const t = useFormatMessage()
+  const isProposalActive = proposal.status === ProposalStatus.Active
   const grantCategory = proposal.configuration.category
   const categoryBudget = budget.categories[snakeCase(grantCategory)]
   const totalCategoryBudget = categoryBudget?.total || 0
@@ -31,29 +70,30 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
   const isOverBudget = remainingBudget < 0
 
   const items: DistributionBarItemProps[] = useMemo(() => {
-    return [
-      {
-        value: allocatedCategoryBudget,
-        className: TokenList.join(['AllocatedBudgetBar', isOverBudget && 'AllocatedBudgetBar--overbudget']),
-      },
-      {
-        value: isOverBudget ? categoryBudget.available : requestedBudget,
-        className: TokenList.join(['RequestedBudgetBar', isOverBudget && 'RequestedBudgetBar--overbudget']),
-        selected: true,
-      },
-      {
-        value: remainingBudgetDisplayed,
-        className: 'RemainingBudgetBar',
-      },
-    ]
-  }, [allocatedCategoryBudget, requestedBudget, remainingBudgetDisplayed, categoryBudget.available, isOverBudget])
+    return isProposalActive
+      ? allocatedRequestedAndRemainingItems(
+          allocatedCategoryBudget,
+          isOverBudget,
+          categoryBudget,
+          requestedBudget,
+          remainingBudgetDisplayed
+        )
+      : requestedAndTotalItems(requestedBudget, totalCategoryBudget)
+  }, [
+    isProposalActive,
+    allocatedCategoryBudget,
+    requestedBudget,
+    remainingBudgetDisplayed,
+    categoryBudget,
+    isOverBudget,
+  ])
 
   return (
     <GrantRequestSectionCard
       title={
         <div className="RequestedBudgetCard__Title">
-          {t('page.proposal_detail.grant.requested_budget.title')}
-          {isOverBudget && (
+          {t(`page.proposal_detail.grant.requested_budget.${isProposalActive ? 'active_title' : 'finished_title'}`)}
+          {isProposalActive && isOverBudget && (
             <Pill style="outline" color={PillColor.Yellow} size={'small'}>
               {t('page.proposal_detail.grant.requested_budget.overbudget_pill')}
             </Pill>
@@ -67,12 +107,12 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
         </div>
       }
       subtitle={
-        !isOverBudget
-          ? t('page.proposal_detail.grant.requested_budget.subtitle', {
-              percentage: getFormattedPercentage(requestedBudget, totalCategoryBudget, 0),
-            })
-          : t('page.proposal_detail.grant.requested_budget.overbudget_subtitle', {
+        isProposalActive && isOverBudget
+          ? t('page.proposal_detail.grant.requested_budget.overbudget_subtitle', {
               amount: t('general.number', { value: categoryBudget.available }),
+            })
+          : t('page.proposal_detail.grant.requested_budget.subtitle', {
+              percentage: getFormattedPercentage(requestedBudget, totalCategoryBudget),
             })
       }
     />

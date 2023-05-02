@@ -8,7 +8,7 @@ import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import { useSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useSearchParams'
 import locations from '../../modules/locations'
 
 import './SearchTitle.css'
@@ -16,7 +16,7 @@ import './SearchTitle.css'
 export function SearchTitle() {
   const t = useFormatMessage()
   const responsive = useResponsive()
-  const { search } = useSearchParams()
+  const { search } = useProposalsSearchParams()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
 
   return (

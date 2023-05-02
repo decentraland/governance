@@ -33,9 +33,9 @@
   --aqua-200: rgba(var(--green-raw-c), 0.08);
   --aqua-800: rgba(var(--green-raw-c), 1);
 
-  --yellow-100: rgba(255, 216, 159, 1);
+  --yellow-100: rgba(178, 96, 0, 0.16);
   --yellow-200: rgba(254, 247, 210, 1);
-  --yellow-800: rgba(var(--yellow-raw), 1);
+  --yellow-800: #b36000;
 
   --fuchsia-200: rgba(255, 228, 255, 1);
   --alpha-fuchsia-200: rgba(var(--fuchsia-raw), 0.16);
@@ -92,6 +92,7 @@
   --background-remove-hiring: var(--red-100);
   --background-remove-poi: var(--red-100);
   --background-linked-wearables: rgba(var(--yellow-raw), 0.2);
+  --background-pitch: rgba(var(--red-raw), 0.08);
   --background-popup: rgba(92, 92, 110, 1);
   --background-disabled: rgba(249, 248, 249, 1);
 

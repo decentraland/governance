@@ -174,7 +174,7 @@ export function isProposalDeletable(proposalStatus?: ProposalStatus) {
   return proposalStatus === ProposalStatus.Pending || proposalStatus === ProposalStatus.Active
 }
 
-export function isProposalEnactable(proposalStatus?: ProposalStatus) {
+export function isProposalEnactable(proposalStatus: ProposalStatus) {
   return proposalStatus === ProposalStatus.Passed || proposalStatus === ProposalStatus.Enacted
 }
 

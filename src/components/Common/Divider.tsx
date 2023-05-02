@@ -12,8 +12,9 @@ interface Props {
 
 export default function Divider({ className, size, color = 'var(--black-300)' }: Props) {
   return (
-    <div className={TokenList.join([size && `Divider__Container--${size}`, 'Divider__Container', className])}>
-      <hr className="Divider" style={{ borderTopColor: color }} />
-    </div>
+    <hr
+      className={TokenList.join(['Divider', size && `Divider--${size}`, className])}
+      style={{ borderTopColor: color }}
+    />
   )
 }

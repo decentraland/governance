@@ -7,82 +7,87 @@
   position: relative;
 }
 
-.DetailsSection.DetailsSection--loading > *,
-.DetailsSection.DetailsSection--disabled > * {
+.DetailsSection--shiny {
+  border-color: var(--green-800);
+  box-shadow: 0px 1px 14px 1px #e5f4dd;
+}
+
+.DetailsSection--loading > *,
+.DetailsSection--disabled > * {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.DetailsSection .DetailsSection__Content {
+.DetailsSection__Content {
   padding: 15px;
   position: relative;
   min-height: 24px;
 }
 
-.DetailsSection .DetailsSection__Content + .DetailsSection__Content {
+.DetailsSection__Content + .DetailsSection__Content {
   border-top: 1px solid var(--black-300);
 }
 
-.DetailsSection .DetailsSection__Flex {
+.DetailsSection__Flex {
   display: flex;
   margin-top: 16px;
   justify-content: space-between;
   align-items: flex-start;
 }
 
-.DetailsSection .DetailsSection__Flex--Coauthors span {
+.DetailsSection__Flex--Coauthors span {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 @media (min-width: 1080px) {
-  .DetailsSection .DetailsSection__Flex--Coauthors span {
+  .DetailsSection__Flex--Coauthors span {
     justify-content: flex-end;
   }
 }
 
-.DetailsSection .DetailsSection__Flex--Coauthors span > svg {
+.DetailsSection__Flex--Coauthors span > svg {
   margin-left: 4px;
 }
 
-.DetailsSection .DetailsSection__Flex--Coauthors span:not(:last-child) {
+.DetailsSection__Flex--Coauthors span:not(:last-child) {
   margin-bottom: 8px;
 }
 
-.DetailsSection .DetailsSection__Flex > div {
+.DetailsSection__Flex > div {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.DetailsSection .DetailsSection__Flex > div:first-child {
+.DetailsSection__Flex > div:first-child {
   flex: 0 0 32%;
 }
 
-.DetailsSection .DetailsSection__Flex .DetailsSection__Value {
+.DetailsSection__Flex .DetailsSection__Value {
   text-align: right;
   font-weight: 500;
 }
 
-.DetailsSection .DetailsSection__Flex .Username {
+.DetailsSection__Flex .Username {
   justify-content: flex-end;
 }
 
-.DetailsSection .DetailsSection__Secondary {
+.DetailsSection__Secondary {
   background: var(--secondary);
   border-radius: 6px;
   margin-top: 24px;
   padding: 8px 11px;
 }
 
-.DetailsSection .DetailsSection__Secondary .DetailsSection__Secondary__Subtitle {
+.DetailsSection__Secondary .DetailsSection__Secondary__Subtitle {
   font-size: 13px;
   color: var(--text);
   opacity: 0.8;
 }
 
-.DetailsSection .DetailsSection__Secondary .DetailsSection__Secondary__Title {
+.DetailsSection__Secondary .DetailsSection__Secondary__Title {
   color: var(--text);
   line-height: 24px;
   font-size: 15px;
@@ -99,17 +104,17 @@
 }
 
 @media (min-width: 768px) {
-  .DetailsSection .DetailsSection__Flex {
+  .DetailsSection__Flex {
     flex-direction: column;
   }
 }
 
 @media (min-width: 1080px) {
-  .DetailsSection .DetailsSection__Flex {
+  .DetailsSection__Flex {
     flex-direction: row;
   }
 
-  .DetailsSection .DetailsSection__Flex--Coauthors span svg {
+  .DetailsSection__Flex--Coauthors span svg {
     min-width: 10px;
   }
 }

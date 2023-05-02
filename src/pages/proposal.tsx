@@ -37,11 +37,14 @@ import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
+import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
@@ -56,18 +59,18 @@ import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
+import { useTenderProposals } from '../hooks/useTenderProposals'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
 import { ErrorService } from '../services/ErrorService'
 
 import './proposal.css'
 
-// TODO: Review why proposals.css is being imported and use only proposal.css
-
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const EMPTY_VOTE_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
+const SURVEY_TOPICS_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
 
 export type ProposalPageState = {
   changingVote: boolean
@@ -109,6 +112,10 @@ function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): Vo
   }
 }
 
+function isLegacyGrantCategory(category: string) {
+  return Object.values(OldGrantCategory).includes(category as OldGrantCategory)
+}
+
 export default function ProposalPage() {
   const t = useFormatMessage()
   const location = useLocation()
@@ -143,6 +150,7 @@ export default function ProposalPage() {
     { callWithTruthyDeps: true }
   )
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
+  const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)
 
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
@@ -267,7 +275,14 @@ export default function ProposalPage() {
 
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
-  const voteWithSurvey = !isLoadingSurveyTopics && !!surveyTopics && surveyTopics.length > 0 && !isMobile
+  const voteWithSurvey =
+    !isLoadingSurveyTopics &&
+    !!surveyTopics &&
+    surveyTopics.length > 0 &&
+    !isMobile &&
+    !!proposal &&
+    proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
+  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender
 
   if (proposalState.error) {
     return (
@@ -289,8 +304,11 @@ export default function ProposalPage() {
     !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showProposalBudget =
     proposal?.type === ProposalType.Grant &&
+    !isLegacyGrantCategory(proposal.configuration.category) &&
     !isLoadingBudgetWithContestants &&
     proposal.status === ProposalStatus.Active
+  const showTenderProposals =
+    proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
 
   return (
     <>
@@ -325,6 +343,17 @@ export default function ProposalPage() {
                 <Markdown>{proposal?.description || ''}</Markdown>
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
+              {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
+              {proposal && isBiddingAndTenderingProposal && (
+                <BiddingAndTenderingProcess
+                  proposalId={proposal.id}
+                  proposalType={proposal.type}
+                  proposalStatus={proposal.status}
+                  proposalFinishAt={proposal.finish_at}
+                  linkedProposalId={proposal.configuration.linked_proposal_id}
+                  tenderProposalsTotal={tenderProposals?.total}
+                />
+              )}
               {showProposalUpdates && (
                 <ProposalUpdates
                   proposal={proposal}
@@ -333,7 +362,7 @@ export default function ProposalPage() {
                   isCoauthor={isCoauthor}
                 />
               )}
-              {proposal && (
+              {proposal && voteWithSurvey && (
                 <SurveyResults
                   votes={votes}
                   isLoadingVotes={votesState.loading}
@@ -341,7 +370,7 @@ export default function ProposalPage() {
                   isLoadingSurveyTopics={isLoadingSurveyTopics}
                 />
               )}
-              <ProposalComments proposal={proposal} loading={proposalState.loading} />
+              <ProposalComments proposal={proposal} />
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">

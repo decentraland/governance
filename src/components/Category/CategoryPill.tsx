@@ -17,6 +17,8 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.Poll]: PillColor.Orange,
   [ProposalType.Draft]: PillColor.Orange,
   [ProposalType.Governance]: PillColor.Orange,
+  [ProposalType.Pitch]: PillColor.Red,
+  [ProposalType.Tender]: PillColor.Red,
   [ProposalType.Hiring]: PillColor.Aqua,
 }
 

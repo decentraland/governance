@@ -21,7 +21,7 @@ import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
-import { isDevEnv } from '../modules/isDevEnv'
+import { isProdEnv } from '../modules/governanceEnvs'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
@@ -58,7 +58,7 @@ export class GrantsService {
             logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
           }
         } catch (error) {
-          if (!isDevEnv()) {
+          if (isProdEnv()) {
             logger.error(`Failed to get data for ${grant.id}`, formatError(error as Error))
           }
         }
