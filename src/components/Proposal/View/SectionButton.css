@@ -1,11 +1,16 @@
 .SectionButton {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   color: var(--text);
   cursor: pointer;
-  font-weight: normal;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
   margin: 4px 0;
   padding: 9px 11px;
+  background-color: transparent;
 }
 
 .SectionButton:hover {
@@ -25,7 +30,10 @@
 }
 
 .SectionButton span {
-  flex: 1;
-  line-height: 20px;
   margin: 0 11px;
+}
+
+.SectionButton__Container {
+  display: flex;
+  align-items: center;
 }
