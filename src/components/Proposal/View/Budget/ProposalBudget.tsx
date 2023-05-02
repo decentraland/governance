@@ -22,7 +22,7 @@ export default function ProposalBudget({ proposal, budget }: Props) {
   const contestantsAmount = (budget.categories[snakeCase(grantCategory)]?.contestants.length || 0) - 1
 
   return (
-    <ContentSection className="ProposalBudget__Content">
+    <ContentSection>
       <div className="ProposalBudget__Row">
         <RequestedBudgetCard proposal={proposal} budget={budget} />
         <CategoryTotalCard proposal={proposal} budget={budget} />

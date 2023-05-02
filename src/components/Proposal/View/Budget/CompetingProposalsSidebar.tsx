@@ -117,8 +117,6 @@ function getBarItems(
   }
 }
 
-/* eslint-disable @typescript-eslint/ban-types */
-
 type Props = {
   proposal: ProposalAttributes
   budget: BudgetWithContestants
