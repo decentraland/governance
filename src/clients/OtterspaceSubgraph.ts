@@ -7,7 +7,7 @@ import { inBatches, trimLastForwardSlash } from './utils'
 const BADGES_QUERY = `
 query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
   badges: badges(
-    where: {owner: $address, status: "MINTED"}, 
+    where: {owner: $address}, 
     filter: {spec: {raft:{id:$raft_id}}}
     first: $first, skip: $skip,
     orderBy: createdAt

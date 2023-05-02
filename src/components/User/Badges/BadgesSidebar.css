@@ -58,7 +58,7 @@
 .BadgesSidebar__BadgesContainer {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 14px;
   flex-flow: row wrap;
   margin-bottom: 24px;
