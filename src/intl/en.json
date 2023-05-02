@@ -561,6 +561,11 @@
     "voting_modal_survey": {
       "title": "We'd appreciate some extra feedback",
       "selected_choice": "You're about to vote "
+    },
+    "identity_connect": {
+      "description": "**New Feature: Augmented Profiles**\n\nPower up your Profile by linking different accounts used in the Decentraland ecosystem.\n\nUsers with linked accounts will get visual cues indicating there's more to them that meets the eye.",
+      "connect_button": "Link Accounts",
+      "cancel_button": "Maybe later"
     }
   },
   "component": {

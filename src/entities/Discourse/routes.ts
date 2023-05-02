@@ -13,6 +13,7 @@ const VALIDATIONS_IN_PROGRESS: Record<string, { hash: string; hashTimeout: NodeJ
 
 export default routes((route) => {
   const withAuth = auth()
+  route.get('/forumId', withAuth, handleAPI(getForumId))
   route.get('/validateProfile', withAuth, handleAPI(getValidationHash))
   route.post('/validateProfile', withAuth, handleAPI(checkValidationHash))
 })
@@ -60,7 +61,6 @@ async function checkValidationHash(req: WithAuth) {
 
     const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
     const regex = new RegExp(`\\b${hash}\\b`)
-    // que pasa si hay mas de un comentario valido?
     const validComment = filteredComments.find((comment) => regex.test(comment.cooked))
 
     if (validComment) {
@@ -72,5 +72,17 @@ async function checkValidationHash(req: WithAuth) {
     }
   } catch (error) {
     throw new Error("Couldn't validate the user. Error: " + error)
+  }
+}
+
+async function getForumId(req: WithAuth) {
+  const user = req.auth!
+  try {
+    const forum_id = await DiscourseModel.getForumId(user)
+    return {
+      forum_id,
+    }
+  } catch (error) {
+    throw new Error("Couldn't get the forum id. Error: " + error)
   }
 }

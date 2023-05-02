@@ -1,0 +1,35 @@
+.ui.modal.IdentityConnectModal .header {
+  display: flex;
+  justify-content: center;
+}
+
+.IdentityConnectModal__Description .dg.Paragraph {
+  margin-bottom: 4px;
+  font-size: 15px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.IdentityConnectModal__Description .dg.Paragraph .Bold {
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+}
+
+.IdentityConnectModal__ButtonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ui.button.IdentityConnectModal__Button {
+  margin-top: 20px;
+  max-width: 75%;
+}
+
+.ui.basic.button.IdentityConnectModal__Button {
+  text-transform: none;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 400;
+}

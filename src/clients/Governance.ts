@@ -30,7 +30,6 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
-import { ErrorService } from '../services/ErrorService'
 
 import { TransparencyBudget } from './DclData'
 
@@ -460,6 +459,15 @@ export class Governance extends API {
     const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
       '/validateProfile',
       this.options().method('POST').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async getForumId() {
+    const result = await this.fetch<ApiResponse<{ forum_id: string | undefined }>>(
+      '/forumId',
+      this.options().method('GET').authorization({ sign: true })
     )
 
     return result.data

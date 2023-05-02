@@ -7,7 +7,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { openUrl } from '../../helpers'
+import { openUrl } from '../../../helpers'
 
 import './ExternalLinkWarningModal.css'
 
