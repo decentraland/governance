@@ -43,6 +43,12 @@ export enum BadgeStatus {
   REVOKED = 'REVOKED',
 }
 
+export enum BadgeStatusReason {
+  TENURE_ENDED = 'tenure ended',
+  MINTED = 'Badge minted by user',
+  BURNED_BY_USER = 'Badge burned by user',
+}
+
 export type OtterspaceBadge = {
   id: string
   createdAt: number

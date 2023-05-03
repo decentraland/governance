@@ -1,4 +1,4 @@
-import { BadgeStatus, OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
+import { BadgeStatus, BadgeStatusReason, OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { Badge, UserBadges, toBadgeStatus } from '../entities/Badges/types'
 
 import { ErrorService } from './ErrorService'
@@ -9,7 +9,6 @@ export class BadgesService {
     return this.createBadgesList(otterspaceBadges)
   }
 
-  //TODO: badge grouping
   private static createBadgesList(otterspaceBadges: OtterspaceBadge[]): UserBadges {
     const currentBadges: Badge[] = []
     const expiredBadges: Badge[] = []
@@ -29,7 +28,7 @@ export class BadgesService {
               image: BadgesService.getIpfsHttpsLink(image),
               createdAt: otterspaceBadge.createdAt,
             }
-            if (status === BadgeStatus.REVOKED) {
+            if (this.badgeExpired(status, otterspaceBadge.statusReason)) {
               expiredBadges.push(badge)
             } else {
               currentBadges.push(badge)
@@ -44,6 +43,10 @@ export class BadgesService {
     }
 
     return { currentBadges, expiredBadges, total }
+  }
+
+  private static badgeExpired(status: BadgeStatus, statusReason: string) {
+    return status === BadgeStatus.REVOKED && statusReason === BadgeStatusReason.TENURE_ENDED
   }
 
   private static getIpfsHttpsLink(ipfsLink: string) {
