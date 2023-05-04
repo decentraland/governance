@@ -50,7 +50,9 @@ const ProposalCard = ({ proposal, highlight, isOverBudget }: Props) => {
           <span className="ProposalCard__DetailsItem">{dateText}</span>
         </div>
       </div>
-      <ChevronRight color="var(--black-400)" />
+      <div>
+        <ChevronRight color="var(--black-400)" />
+      </div>
     </Link>
   )
 }
