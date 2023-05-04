@@ -5,25 +5,25 @@
  */
 import React from 'react'
 
-import 'balloon-css/balloon.min.css'
 import 'core-js/features/set-immediate'
-import Rollbar from 'decentraland-gatsby/dist/components/Development/Rollbar'
-import Segment from 'decentraland-gatsby/dist/components/Development/Segment'
-import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
+import 'semantic-ui-css/semantic.min.css'
+import 'balloon-css/balloon.min.css'
+import 'decentraland-ui/dist/themes/base-theme.css'
+import 'decentraland-ui/dist/themes/alternative/light-theme.css'
+import './src/theme.css'
+
+import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
 import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
-import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
+import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
-import 'decentraland-ui/dist/themes/alternative/light-theme.css'
-import 'decentraland-ui/dist/themes/base-theme.css'
-import 'semantic-ui-css/semantic.min.css'
-
-import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import Navbar from './src/components/Layout/Navbar'
+import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
-import { ROLLBAR_TOKEN, SEGMENT_KEY } from './src/constants'
-import './src/theme.css'
+import Segment from "decentraland-gatsby/dist/components/Development/Segment"
+import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar"
+import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants"
 
 export const wrapRootElement = ({ element }) => {
   return (
