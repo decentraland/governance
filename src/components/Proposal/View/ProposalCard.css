@@ -1,4 +1,7 @@
 .ProposalCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
   width: 100%;
   background: var(--white-900);
@@ -6,15 +9,13 @@
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
   padding: 10px 20px 10px 16px;
-  display: flex;
-  align-content: center;
-  align-items: center;
+  transition: border 0.15s ease-in-out;
 }
 
 .ProposalCard__Container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  min-width: 0;
 }
 
 .ProposalCard--highlight {
@@ -28,6 +29,7 @@
 .ProposalCard__Title {
   display: block;
   width: 100%;
+  padding-right: 20px;
   font-weight: 500;
   font-size: 17px;
   line-height: 26px;
