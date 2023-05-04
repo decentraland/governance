@@ -3,18 +3,18 @@ import React, { useMemo } from 'react'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { Badge } from '../../../entities/Badges/types'
+import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 
+import Badge, { BadgeVariant } from './Badge'
 import './BadgeStack.css'
 import { MAX_DISPLAYED_BADGES } from './Badges'
 
 interface Props {
-  badges: Badge[]
+  badges: GovernanceBadge[]
   total: number
   onClick: () => void
 }
 
-const NO_IMAGE = require('../../../images/no-image.png').default
 const MAX_STACKED_BADGES = 3
 
 export default function BadgeStack({ badges, onClick, total }: Props) {
@@ -30,7 +30,7 @@ export default function BadgeStack({ badges, onClick, total }: Props) {
             key={`${badge.name}-id`}
             style={{ zIndex: index, left: `${index * -16}px` }}
           >
-            <img src={badge.image} onError={(e) => (e.currentTarget.src = NO_IMAGE)} alt="badge-icon" />
+            <Badge badge={badge} variant={BadgeVariant.FilledMonoSmall} />
           </div>
         )
       })}

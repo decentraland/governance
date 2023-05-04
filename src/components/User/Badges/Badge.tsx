@@ -8,12 +8,14 @@ import './Badge.css'
 
 interface Props {
   badge: GovernanceBadge
-  variant: BadgeVariant
+  className?: string
+  variant?: BadgeVariant
 }
 
 export enum BadgeVariant {
   Primary = 'Primary',
   FilledMono = 'FilledMono',
+  FilledMonoSmall = 'FilledMonoSmall',
   FilledDuo = 'FilledDuo',
   Outline1px = 'Outline-1px',
   Outline2px = 'Outline-2px',
@@ -25,6 +27,8 @@ function getVariantClass(variant: BadgeVariant) {
   switch (variant) {
     case BadgeVariant.FilledMono:
       return 'Badge__FilledMono'
+    case BadgeVariant.FilledMonoSmall:
+      return 'Badge__FilledMono__Small'
     case BadgeVariant.FilledDuo:
       return 'Badge__FilledDuo'
     case BadgeVariant.Outline1px:
@@ -36,7 +40,7 @@ function getVariantClass(variant: BadgeVariant) {
   }
 }
 
-export default function Badge({ badge, variant = BadgeVariant.Primary }: Props) {
+export default function Badge({ badge, className, variant = BadgeVariant.Primary }: Props) {
   const imgRef = useRef<any>()
 
   useEffect(() => {
@@ -51,7 +55,7 @@ export default function Badge({ badge, variant = BadgeVariant.Primary }: Props) 
   }, [badge.image])
 
   return (
-    <div className="Badge">
+    <div className={TokenList.join(['Badge', className])}>
       <div className={TokenList.join(['Badge__Icon', getVariantClass(variant)])} ref={imgRef} />
     </div>
   )

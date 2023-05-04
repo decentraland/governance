@@ -1,7 +1,5 @@
 .Badge {
   z-index: 1;
-  /*width: 32px;*/
-  /*height: 32px;*/
 }
 
 .Badge__Icon {
@@ -13,29 +11,36 @@
 .Badge__Primary {
   width: 192px;
   height: 192px;
+  background-size: contain;
   background-position: 0 0;
 }
 
 .Badge__FilledMono {
   width: 32px;
   height: 32px;
-  background-position: 0 -160px;
+  background-position: left bottom;
+}
+
+.Badge__FilledMono__Small {
+  width: 24px;
+  height: 24px;
+  background-position: -4px -164px;
 }
 
 .Badge__FilledDuo {
   width: 32px;
   height: 32px;
-  background-position: -160px 0;
+  background-position: right top;
 }
 
 .Badge__Outline1px {
   width: 32px;
   height: 32px;
-  background-position: 0 0;
+  background-position: left top;
 }
 
 .Badge__Outline2px {
   width: 32px;
   height: 32px;
-  background-position: -160px -160px;
+  background-position: right bottom;
 }

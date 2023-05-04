@@ -9,6 +9,8 @@
   padding: 20px 22px 10px 22px;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
 }
 
@@ -17,15 +19,12 @@
 }
 
 .BadgeCard__Icon {
-  width: 120px;
-  height: 120px;
   padding-bottom: 10px;
 }
 
-.BadgeCard__Icon > img {
+.BadgeCard__Icon > .Badge__Icon.Badge__Primary {
   width: 120px;
   height: 120px;
-  border-radius: 50%;
 }
 
 .BadgeCard__Info {

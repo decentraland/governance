@@ -6,15 +6,16 @@
 }
 
 .BadgeDetail__Icon {
+  display: flex;
+  justify-content: center;
   width: 200px;
   height: 200px;
   margin-bottom: 31px;
 }
 
-.BadgeDetail__Icon > img {
+.BadgeDetail__Icon > .Badge__Primary {
   width: 200px;
   height: 200px;
-  border-radius: 50%;
 }
 
 .BadgeDetail__Info {
