@@ -1,42 +1,41 @@
 .Badge {
-  height: 32px;
-  display: flex;
-  align-items: center;
+  z-index: 1;
+  /*width: 32px;*/
+  /*height: 32px;*/
 }
 
 .Badge__Icon {
-  z-index: 1;
-  width: 32px;
-  height: 32px;
-}
-
-.Badge__Icon > img {
-  width: 32px;
-  height: 32px;
   border-radius: 50%;
+  background-size: 192px 192px;
+  background-repeat: no-repeat;
 }
 
-.Badge__Title {
-  background: var(--black-300);
-  display: flex;
-  height: 24px;
-  opacity: 0.56;
-  border-radius: 4px;
-  padding: 3px 6px 3px 24px;
-  position: relative;
-  right: 20px;
-  gap: 4px;
+.Badge__Primary {
+  width: 192px;
+  height: 192px;
+  background-position: 0 0;
 }
 
-.Badge__Title:hover {
-  box-shadow: 0 0 8px #736e7d;
+.Badge__FilledMono {
+  width: 32px;
+  height: 32px;
+  background-position: 0 -160px;
 }
 
-.Badge__Title > .HelperText__Label {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: var(--black-800);
+.Badge__FilledDuo {
+  width: 32px;
+  height: 32px;
+  background-position: -160px 0;
+}
+
+.Badge__Outline1px {
+  width: 32px;
+  height: 32px;
+  background-position: 0 0;
+}
+
+.Badge__Outline2px {
+  width: 32px;
+  height: 32px;
+  background-position: -160px -160px;
 }

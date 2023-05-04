@@ -15,7 +15,7 @@ interface Props {
 }
 
 const NO_IMAGE = require('../../../images/no-image.png').default
-const MAX_STACKED_BADGES = 5
+const MAX_STACKED_BADGES = 3
 
 export default function BadgeStack({ badges, onClick, total }: Props) {
   const t = useFormatMessage()
@@ -34,7 +34,7 @@ export default function BadgeStack({ badges, onClick, total }: Props) {
           </div>
         )
       })}
-      <span className="BadgeStack__Counter" style={{ left: `${(badges.length - 1) * -16}px` }}>
+      <span className="BadgeStack__Counter" style={{ left: `${(badges.length - 2) * -16}px` }}>
         {t('page.profile.show_badges', { amount: total - MAX_DISPLAYED_BADGES })}
       </span>
     </div>

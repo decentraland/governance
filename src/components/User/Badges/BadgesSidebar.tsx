@@ -46,8 +46,8 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Pro
             <span>{t('page.profile.badges_sidebar.current', { amount: badges.currentBadges.length })}</span>
           </div>
           <div className="BadgesSidebar__BadgesContainer">
-            {badges.currentBadges.map((badge) => {
-              return <BadgeCard badge={badge} key={`${badge.name}-id`} onClick={() => setBadgeInDetail(badge)} />
+            {badges.currentBadges.map((badge, index) => {
+              return <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={() => setBadgeInDetail(badge)} />
             })}
           </div>
           {badges.expiredBadges.length > 0 && (
@@ -56,8 +56,10 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Pro
                 <span>{t('page.profile.badges_sidebar.past', { amount: badges.expiredBadges.length })}</span>
               </div>
               <div className="BadgesSidebar__BadgesContainer">
-                {badges.expiredBadges.map((badge) => {
-                  return <BadgeCard badge={badge} key={`${badge.name}-id`} onClick={() => setBadgeInDetail(badge)} />
+                {badges.expiredBadges.map((badge, index) => {
+                  return (
+                    <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={() => setBadgeInDetail(badge)} />
+                  )
                 })}
               </div>
             </>

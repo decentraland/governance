@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react'
 
 import useBadges from '../../../hooks/useBadges'
 
-import Badge from './Badge'
 import BadgeStack from './BadgeStack'
+import BadgeWithTitle from './BadgeWithTitle'
 import './Badges.css'
 import BadgesSidebar from './BadgesSidebar'
 
@@ -26,8 +26,8 @@ export default function Badges({ address }: Props) {
 
   return (
     <div className="Badges__Container">
-      {displayedBadges.map((badge) => {
-        return <Badge badge={badge} key={`${badge.name}-id`} />
+      {displayedBadges.map((badge, index) => {
+        return <BadgeWithTitle badge={badge} key={`${badge.name}-${index}`} />
       })}
       {!!stackedBadges && stackedBadges.length > 0 && (
         <BadgeStack
