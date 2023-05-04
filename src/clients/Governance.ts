@@ -7,6 +7,7 @@ import snakeCase from 'lodash/snakeCase'
 import { GOVERNANCE_API } from '../constants'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { ValidationMessage } from '../entities/Discourse/types'
 import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
 import {
   CategorizedGrants,
@@ -446,8 +447,8 @@ export class Governance extends API {
     return result.data
   }
 
-  async getValidationHash() {
-    const result = await this.fetch<ApiResponse<{ hash: string }>>(
+  async getValidationMessage() {
+    const result = await this.fetch<ApiResponse<Omit<ValidationMessage, 'messageTimeout'>>>(
       '/validateProfile',
       this.options().method('GET').authorization({ sign: true })
     )
