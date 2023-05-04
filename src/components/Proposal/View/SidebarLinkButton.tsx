@@ -32,9 +32,11 @@ function SidebarLinkButton({ loading, disabled, href, isExternal = true, childre
         disabled && 'SectionButton--disabled',
       ])}
     >
-      <Loader active={loading} size="small" />
-      {icon}
-      <span>{children}</span>
+      <div className="SectionButton__Container">
+        <Loader active={loading} size="small" />
+        {icon}
+        <span>{children}</span>
+      </div>
       {isExternal && <Open />}
     </a>
   )

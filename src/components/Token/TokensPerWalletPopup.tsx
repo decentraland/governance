@@ -8,18 +8,17 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { TokenInWallet } from '../../entities/Transparency/types'
 import { blockExplorerLink } from '../../entities/Transparency/utils'
+import Info from '../Icon/Info'
 
 import './TokensPerWalletPopup.css'
 
-const infoIcon = require('../../images/icons/info.svg').default
-
-export type TokensPerWalletPopupProps = React.HTMLAttributes<HTMLDivElement> & {
+interface Props {
   tokensPerWallet: TokenInWallet[]
   open: boolean
-  onCloseHandler: (e: React.MouseEvent<unknown>) => void
+  onClose: (e: React.MouseEvent<unknown>) => void
 }
 
-export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHandler }: TokensPerWalletPopupProps) {
+export default function TokensPerWalletPopup({ tokensPerWallet, open, onClose }: Props) {
   const t = useFormatMessage()
 
   const content = (
@@ -62,9 +61,9 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onCloseHan
       className="TokensPerWalletPopup"
       content={content}
       position="bottom center"
-      trigger={<img className="PopupIcon" src={infoIcon} width="14" height="14" alt="info" />}
-      eventsEnabled={true}
-      onClose={onCloseHandler}
+      trigger={<Info size="14" />}
+      eventsEnabled
+      onClose={onClose}
       open={open}
       on="click"
       pinned={false}
