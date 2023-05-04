@@ -15,15 +15,17 @@ interface Props {
   isSidebarVisible: boolean
   onClose: () => void
   badges: UserBadges
+  badgeInDetail: Badge | null
+  setBadgeInDetail: React.Dispatch<React.SetStateAction<Badge | null>>
 }
 
-export default function BadgesSidebar({ isSidebarVisible, onClose, badges }: Props) {
+export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badgeInDetail, setBadgeInDetail }: Props) {
   const t = useFormatMessage()
-  const [badgeInDetail, setBadgeInDetail] = useState<Badge | null>(null)
 
   const handleClose = (e: React.MouseEvent<unknown>) => {
     e.preventDefault()
     e.stopPropagation()
+    setBadgeInDetail(null)
     onClose()
   }
 

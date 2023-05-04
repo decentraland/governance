@@ -8,11 +8,12 @@ import './BadgeWithTitle.css'
 
 interface Props {
   badge: GovernanceBadge
+  onClick: () => void
 }
 
-export default function BadgeWithTitle({ badge }: Props) {
+export default function BadgeWithTitle({ badge, onClick }: Props) {
   return (
-    <div className="BadgeWithTitle" key={`${badge.name}-id`}>
+    <div className="BadgeWithTitle" key={`${badge.name}-id`} onClick={onClick}>
       <Badge badge={badge} variant={BadgeVariant.FilledMono} />
       <div className="BadgeWithTitle__Title">
         <HelperText labelText={badge.name} tooltipText={badge.description} position="bottom center" />
