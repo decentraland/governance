@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { Badge } from '../../../entities/Badges/types'
 import useBadges from '../../../hooks/useBadges'
@@ -24,6 +24,33 @@ export default function Badges({ address }: Props) {
     return badges ? [...badges.currentBadges.slice(MAX_DISPLAYED_BADGES), ...badges.expiredBadges] : []
   }, [badges])
 
+  const handleSidebarClose = () => {
+    setBadgeInDetail(null)
+    setSidebarOpen(false)
+  }
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const sidebar = document.querySelector('.BadgesSidebar')
+      const target = event.target as Node
+      const isBadgeWithTitle = (target as Element).closest('.BadgeWithTitle')
+
+      if (sidebar && !sidebar.contains(target) && !isBadgeWithTitle) {
+        handleSidebarClose()
+      }
+    }
+
+    if (sidebarOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [sidebarOpen, handleSidebarClose])
+
   if (isLoadingBadges || badges?.total === 0) return null
 
   return (
@@ -34,8 +61,8 @@ export default function Badges({ address }: Props) {
             badge={badge}
             key={`${badge.name}-${index}`}
             onClick={() => {
-              setBadgeInDetail(badge)
               setSidebarOpen(true)
+              setBadgeInDetail(badge)
             }}
           />
         )
@@ -55,10 +82,7 @@ export default function Badges({ address }: Props) {
         isSidebarVisible={sidebarOpen}
         badgeInDetail={badgeInDetail}
         setBadgeInDetail={setBadgeInDetail}
-        onClose={() => {
-          setBadgeInDetail(null)
-          setSidebarOpen(false)
-        }}
+        onClose={handleSidebarClose}
       />
     </div>
   )

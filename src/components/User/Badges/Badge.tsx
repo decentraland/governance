@@ -47,10 +47,14 @@ export default function Badge({ badge, className, variant = BadgeVariant.Primary
     const img = new Image()
     img.src = badge.image
     img.onload = () => {
-      imgRef.current.style.backgroundImage = `url(${badge.image})`
+      if (imgRef && imgRef.current) {
+        imgRef.current.style.backgroundImage = `url(${badge.image})`
+      }
     }
     img.onerror = () => {
-      imgRef.current.style.backgroundImage = `url(${NO_IMAGE})`
+      if (imgRef && imgRef.current) {
+        imgRef.current.style.backgroundImage = `url(${NO_IMAGE})`
+      }
     }
   }, [badge.image])
 
