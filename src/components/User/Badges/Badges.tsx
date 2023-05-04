@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Badge } from '../../../entities/Badges/types'
 import useBadges from '../../../hooks/useBadges'
@@ -24,10 +24,10 @@ export default function Badges({ address }: Props) {
     return badges ? [...badges.currentBadges.slice(MAX_DISPLAYED_BADGES), ...badges.expiredBadges] : []
   }, [badges])
 
-  const handleSidebarClose = () => {
+  const handleSidebarClose = useCallback(() => {
     setBadgeInDetail(null)
     setSidebarOpen(false)
-  }
+  }, [])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

@@ -1,8 +1,9 @@
-.BadgeStack__ShowMore {
+.BadgeStack {
   height: 32px;
   display: flex;
   align-items: center;
   cursor: pointer;
+  margin-left: -12px;
 }
 
 .BadgeStack__Counter {
@@ -21,7 +22,7 @@
   height: 32px;
 }
 
-.BadgeStack__Icon > img {
+.BadgeStack__Icon > .Badge {
   width: 32px;
   height: 32px;
   border-radius: 50%;
