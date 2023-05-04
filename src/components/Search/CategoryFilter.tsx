@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { useLocation } from '@gatsbyjs/reach-router'
+import { useLocation } from '@reach/router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'

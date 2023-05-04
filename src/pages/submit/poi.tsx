@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { useLocation } from '@gatsbyjs/reach-router'
+import { useLocation } from '@reach/router'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 
 import ProposalSubmitPoiPage from '../../components/Proposal/Submit/ProposalSubmitPoiPage'
