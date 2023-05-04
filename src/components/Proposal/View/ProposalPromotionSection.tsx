@@ -80,7 +80,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
         size="small"
         loading={loading}
         onClick={() => handlePromoteClick()}
-        disabled={!PROMOTE_PITCH_ENABLED || type === ProposalType.Tender}
+        disabled={(type === ProposalType.Pitch && !PROMOTE_PITCH_ENABLED) || type === ProposalType.Tender}
       >
         {t(buttonLabel)}
       </Button>
