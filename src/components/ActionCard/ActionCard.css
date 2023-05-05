@@ -33,11 +33,11 @@
   color: var(--black-400);
 }
 
-.ui.card.ActionCard--disabled svg > circle {
+.ui.card.ActionCard--disabled svg circle {
   fill: var(--black-100);
 }
 
-.ui.card.ActionCard--disabled svg > path {
+.ui.card.ActionCard--disabled svg path {
   fill: var(--black-400);
 }
 
@@ -52,4 +52,8 @@
   text-transform: uppercase;
   padding: 1px 5px;
   margin-left: 4px;
+}
+
+.ui.card.ActionCard .ActionCard__Action svg {
+  margin: 0 24px;
 }
