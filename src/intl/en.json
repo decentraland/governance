@@ -566,6 +566,37 @@
       "description": "**New Feature: Augmented Profiles**\n\nPower up your Profile by linking different accounts used in the Decentraland ecosystem.\n\nUsers with linked accounts will get visual cues indicating there's more to them that meets the eye.",
       "connect_button": "Link Accounts",
       "cancel_button": "Maybe later"
+    },
+    "identity_setup": {
+      "title": "Choose accounts to link",
+      "forum": {
+        "card_title": "Forum Account",
+        "card_description": "Make comments left on proposals link back to, and be displayed on your Governance profile.",
+        "title": "Link Forum Account",
+        "title_step_1": "1. Sign message",
+        "description_step_1": "Use your web3 wallet to securely sign a message to get the linking going.",
+        "action_step_1": "Sign",
+        "helper_step_1": "First, sign the message.",
+        "title_step_2": "2. Copy to clipboard",
+        "description_step_2": "You'll be using the same content as the signature for the next step.",
+        "action_step_2": "Copy",
+        "helper_step_2": "Then, copy the signed message.",
+        "title_step_3": "3. Comment on forum thread",
+        "description_step_3": "Paste the content onto the comment box and submit to complete the link.",
+        "action_step_3": "Open",
+        "helper_step_3": "Finally, comment the signed message on the forum thread.",
+        "action": "Confirm link",
+        "action_loading": "Confirming..."
+      },
+      "discord": {
+        "card_title": "Discord User",
+        "card_description": "Elevate your credibility by making sure others know it is actually you trolling and voting."
+      },
+      "twitter": {
+        "card_title": "Twitter",
+        "card_description": "Elevate your credibility by making sure others know it is actually you trolling and voting."
+      },
+      "soon": "Soon"
     }
   },
   "component": {

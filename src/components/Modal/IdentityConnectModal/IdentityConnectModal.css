@@ -1,6 +1,13 @@
+.ui.modal.IdentityConnectModal {
+  border: 0;
+}
+
 .ui.modal.IdentityConnectModal .header {
   display: flex;
   justify-content: center;
+  margin: 0;
+  padding: 30px;
+  background: linear-gradient(260.87deg, rgba(49, 74, 222, 0.3) 0.46%, rgba(198, 64, 205, 0.3) 100%);
 }
 
 .IdentityConnectModal__Description .dg.Paragraph {
@@ -24,7 +31,7 @@
 
 .ui.button.IdentityConnectModal__Button {
   margin-top: 20px;
-  max-width: 75%;
+  max-width: 55%;
 }
 
 .ui.basic.button.IdentityConnectModal__Button {
