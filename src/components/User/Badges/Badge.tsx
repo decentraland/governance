@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
+import { BadgeStatus } from '../../../clients/OtterspaceSubgraph'
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 
 import './Badge.css'
@@ -42,6 +43,7 @@ function getVariantClass(variant: BadgeVariant) {
 
 export default function Badge({ badge, className, variant = BadgeVariant.Primary }: Props) {
   const imgRef = useRef<any>()
+  const isRevoked = badge.status === BadgeStatus.REVOKED
 
   useEffect(() => {
     const img = new Image()
@@ -60,7 +62,10 @@ export default function Badge({ badge, className, variant = BadgeVariant.Primary
 
   return (
     <div className={TokenList.join(['Badge', className])}>
-      <div className={TokenList.join(['Badge__Icon', getVariantClass(variant)])} ref={imgRef} />
+      <div
+        className={TokenList.join(['Badge__Icon', getVariantClass(variant), isRevoked && 'Badge__Revoked'])}
+        ref={imgRef}
+      />
     </div>
   )
 }

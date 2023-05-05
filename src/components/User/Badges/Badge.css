@@ -44,3 +44,7 @@
   height: 32px;
   background-position: right bottom;
 }
+
+.Badge__Revoked {
+  filter: brightness(1) contrast(2) grayscale(1);
+}
