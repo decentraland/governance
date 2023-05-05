@@ -4,12 +4,13 @@
   align-items: baseline;
 }
 
-img.MembersPopup__Icon {
+.MembersPopup__Icon {
   width: 14px !important;
   height: 14px !important;
   margin-left: 4px;
   position: relative;
   top: 1px;
+  z-index: 10;
 }
 
 .ui.popup.transition.visible.MembersPopup {

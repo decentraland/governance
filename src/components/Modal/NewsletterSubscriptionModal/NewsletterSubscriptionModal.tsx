@@ -15,11 +15,10 @@ import isEmail from 'validator/lib/isEmail'
 
 import { Decentraland } from '../../../clients/Decentraland'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../Banner/Subscription/SubscriptionBanner'
+import CheckCloud from '../../Icon/CheckCloud'
 import '../ProposalModal.css'
 
 import './NewsletterSubscriptionModal.css'
-
-const check = require('../../../images/icons/check-cloud.svg').default
 
 type NewsletterSubscriptionResult = {
   email: string
@@ -145,7 +144,7 @@ export function NewsletterSubscriptionModal({
       )}
       {subscribed && (
         <Modal.Content className="NewsletterSubscriptionModal__Subscribed">
-          <img src={check} aria-hidden="true" />
+          <CheckCloud />
           <Header>{t('modal.newsletter_subscription.subscribed')}</Header>
           <Paragraph small className="NewsletterSubscriptionModal__Description">
             {t('modal.newsletter_subscription.thanks')}

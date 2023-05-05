@@ -14,6 +14,8 @@ import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
 import locations from '../../modules/locations'
 import CategoryPill from '../Category/CategoryPill'
+import Subscribe from '../Icon/Subscribe'
+import Subscribed from '../Icon/Subscribed'
 import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
 import FinishLabel from '../Status/FinishLabel'
 import LeadingOption from '../Status/LeadingOption'
@@ -22,7 +24,7 @@ import Username from '../User/Username'
 
 import './ProposalItem.css'
 
-export type ProposalItemProps = {
+interface Props {
   proposal: ProposalAttributes
   hasCoauthorRequest?: boolean
   votes?: Record<string, Vote>
@@ -31,9 +33,6 @@ export type ProposalItemProps = {
   onSubscribe?: (e: React.MouseEvent<unknown>, proposal: ProposalAttributes) => void
 }
 
-const subscribeIcon = require('../../images/icons/subscribe.svg').default
-const subscribedIcon = require('../../images/icons/subscribed.svg').default
-
 export default function ProposalItem({
   proposal,
   hasCoauthorRequest,
@@ -41,7 +40,7 @@ export default function ProposalItem({
   subscribing,
   subscribed,
   onSubscribe,
-}: ProposalItemProps) {
+}: Props) {
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
@@ -71,7 +70,7 @@ export default function ProposalItem({
           {hasCoauthorRequest && <CoauthorRequestLabel />}
           {account && (
             <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
-              <img src={subscribed ? subscribedIcon : subscribeIcon} width="20" height="20" />
+              {subscribed ? <Subscribed size="20" /> : <Subscribe size="20" />}
             </Button>
           )}
         </div>

@@ -21,7 +21,7 @@ export default function TokenBalanceCard({ aggregatedTokenBalance }: TokenBalanc
     setOpenPopup(!openPopup)
   }
 
-  function onCloseHandler() {
+  function handleClose() {
     setOpenPopup(false)
   }
 
@@ -37,7 +37,7 @@ export default function TokenBalanceCard({ aggregatedTokenBalance }: TokenBalanc
             <TokensPerWalletPopup
               tokensPerWallet={aggregatedTokenBalance.tokenInWallets}
               open={openPopup}
-              onCloseHandler={onCloseHandler}
+              onClose={handleClose}
             />
           )}
         </div>

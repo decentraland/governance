@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useLocation } from '@gatsbyjs/reach-router'
+import { useLocation } from '@reach/router'
 import UserMenu, { UserMenuProps } from 'decentraland-gatsby/dist/components/User/UserMenu'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 

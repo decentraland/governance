@@ -6,22 +6,21 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { Member } from '../../clients/DclData'
+import Info from '../Icon/Info'
 
 import MemberCard from './MemberCard'
 import './MembersSection.css'
 
-const infoIcon = require('../../images/icons/info.svg').default
-
-export type MembersSectionProps = React.HTMLAttributes<HTMLDivElement> & {
+interface Props {
   title: string
   description: string
   members: Member[]
 }
 
-export default function MembersSection({ title, description, members }: MembersSectionProps) {
+export default function MembersSection({ title, description, members }: Props) {
   return (
     <Card.Content>
-      <Header className={'MembersHeader'}>
+      <Header className="MembersHeader">
         {title}
         <Popup
           className="MembersPopup"
@@ -31,7 +30,11 @@ export default function MembersSection({ title, description, members }: MembersS
             </Paragraph>
           }
           position="bottom center"
-          trigger={<img className={'MembersPopup__Icon'} src={infoIcon} width="14" height="14" alt="info" />}
+          trigger={
+            <div className="MembersPopup__Icon">
+              <Info size="14" />
+            </div>
+          }
           eventsEnabled={false}
           on="click"
           pinned={false}
