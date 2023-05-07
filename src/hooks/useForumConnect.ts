@@ -22,10 +22,7 @@ export default function useForumConnect() {
     resolve: (value: unknown) => void
     reject: (reason?: any) => void
   }>()
-  const { startTimer, time } = useTimer(MESSAGE_TIMEOUT_TIME / 1000)
-  useEffect(() => {
-    startTimer()
-  }, [])
+  const { startTimer, resetTimer, time } = useTimer(MESSAGE_TIMEOUT_TIME / 1000 - 2)
 
   useEffect(() => {
     if (signResolveReject) {
@@ -33,6 +30,7 @@ export default function useForumConnect() {
         if (!signState.error) {
           signResolveReject.resolve(undefined)
         } else {
+          resetTimer()
           signResolveReject.reject(signState.error)
         }
       }
@@ -44,6 +42,7 @@ export default function useForumConnect() {
       getMessage()
         .then((message) => {
           if (message) {
+            startTimer()
             signState.sign(message)
             setSignResolveReject({ resolve, reject })
           } else {

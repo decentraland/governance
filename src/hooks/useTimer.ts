@@ -23,8 +23,16 @@ export default function useTimer(seconds: number) {
     setCurrentTimer(timerId)
   }, [currentTimer, seconds])
 
+  const resetTimer = useCallback(() => {
+    if (currentTimer) {
+      clearInterval(currentTimer)
+    }
+    setTime(seconds)
+  }, [currentTimer, seconds])
+
   return {
     startTimer,
+    resetTimer,
     time,
   }
 }
