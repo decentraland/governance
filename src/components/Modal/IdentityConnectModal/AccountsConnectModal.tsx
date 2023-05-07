@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
@@ -16,6 +17,7 @@ type ModalState = {
   title: string
   actions: ActionCardProps[]
   button?: string
+  helperTexts?: string[]
 }
 
 enum ModalType {
@@ -23,10 +25,12 @@ enum ModalType {
   FORUM,
 }
 
+type AccountType = 'forum' | 'discord' | 'twitter'
+
 const FORUM_CONNECT_STEPS_AMOUNT = 3
 
 function getAccountActionSteps(
-  account: 'forum' | 'discord' | 'twitter',
+  account: AccountType,
   stepsAmount: number,
   icons: React.ReactNode[],
   actions: (() => void)[],
@@ -46,12 +50,20 @@ function getAccountActionSteps(
   }))
 }
 
+function getHelperTexts(account: AccountType, stepsAmount: number): string[] {
+  if (stepsAmount === 0) {
+    console.error('Invalid steps amount')
+    return []
+  }
+  return Array.from({ length: stepsAmount }, (_, index) => `modal.identity_setup.${account}.helper_step_${index + 1}`)
+}
+
 function AccountsConnectModal({ open, onClose }: ModalProps) {
   const t = useFormatMessage()
   const [currentState, setCurrentState] = useState(ModalType.CHOOSE_ACCOUNT)
   const [currentStep, setCurrentStep] = useState(1)
 
-  const stateMap: Record<ModalType, ModalState> = useMemo(
+  const stateMap = useMemo<Record<ModalType, ModalState>>(
     () => ({
       [ModalType.CHOOSE_ACCOUNT]: {
         title: 'modal.identity_setup.title',
@@ -83,10 +95,15 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
           [() => ({}), () => ({}), () => ({})],
           currentStep
         ),
+        button: 'modal.identity_setup.forum.action',
+        helperTexts: getHelperTexts('forum', FORUM_CONNECT_STEPS_AMOUNT),
       },
     }),
     [currentStep]
   )
+
+  const button = stateMap[currentState].button
+  const helperTexts = stateMap[currentState].helperTexts
 
   return (
     <>
@@ -105,6 +122,16 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
               />
             )
           })}
+          <div className="AccountsConnectModal__HelperContainer">
+            {button && (
+              <Button primary disabled>
+                {t(button)}
+              </Button>
+            )}
+            {helperTexts && helperTexts.length > 0 && (
+              <div className="AccountsConnectModal__HelperText">{t(helperTexts[currentStep - 1])}</div>
+            )}
+          </div>
         </Modal.Content>
       </Modal>
     </>

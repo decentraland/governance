@@ -6,3 +6,19 @@
   line-height: 26px;
   letter-spacing: -0.2px;
 }
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__HelperContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__HelperText {
+  margin-top: 8px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  text-align: center;
+  color: var(--black-600);
+}
