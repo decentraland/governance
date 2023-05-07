@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import useForumConnect from '../../../hooks/useForumConnect'
 import ActionCard, { ActionCardProps } from '../../ActionCard/ActionCard'
 import Comment from '../../Icon/Comment'
 import Copy from '../../Icon/Copy'
@@ -47,6 +48,7 @@ function getAccountActionSteps(
     action_title: `modal.identity_setup.${account}.action_step_${index + 1}`,
     action: actions[index],
     isDisabled: index + 1 > currentStep,
+    isCompleted: index + 1 < currentStep,
   }))
 }
 
@@ -62,6 +64,22 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
   const t = useFormatMessage()
   const [currentState, setCurrentState] = useState(ModalType.CHOOSE_ACCOUNT)
   const [currentStep, setCurrentStep] = useState(1)
+  const { getSignedMessage, copyMessageToClipboard, openThread, time } = useForumConnect()
+  const isTimerExpired = time === 0
+
+  const handleSign = useCallback(async () => {
+    try {
+      await getSignedMessage()
+      setCurrentStep(2)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [getSignedMessage])
+
+  const handleCopy = useCallback(() => {
+    copyMessageToClipboard()
+    setCurrentStep(3)
+  }, [copyMessageToClipboard])
 
   const stateMap = useMemo<Record<ModalType, ModalState>>(
     () => ({
@@ -92,14 +110,14 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
           'forum',
           FORUM_CONNECT_STEPS_AMOUNT,
           [<Sign key="sign" />, <Copy key="copy" />, <Comment key="comment" />],
-          [() => ({}), () => ({}), () => ({})],
+          [handleSign, handleCopy, openThread],
           currentStep
         ),
         button: 'modal.identity_setup.forum.action',
         helperTexts: getHelperTexts('forum', FORUM_CONNECT_STEPS_AMOUNT),
       },
     }),
-    [currentStep]
+    [currentStep, handleCopy, handleSign]
   )
 
   const button = stateMap[currentState].button
@@ -108,7 +126,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
   return (
     <>
       <Modal open={open} className="AccountsConnectModal" size="tiny" onClose={onClose} closeIcon={<Close />}>
-        <Modal.Header className="AccountsConnectModal__Header">{t(stateMap[currentState].title)}</Modal.Header>
+        <Modal.Header className="AccountsConnectModal__Header">
+          {t(stateMap[currentState].title)} {time} {`${isTimerExpired}`}
+        </Modal.Header>
         <Modal.Content>
           {stateMap[currentState].actions.map((cardProps, index) => {
             const { title, description, action_title } = cardProps

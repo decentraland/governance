@@ -448,7 +448,7 @@ export class Governance extends API {
   }
 
   async getValidationMessage() {
-    const result = await this.fetch<ApiResponse<Omit<ValidationMessage, 'messageTimeout'>>>(
+    const result = await this.fetch<ApiResponse<string>>(
       '/validateProfile',
       this.options().method('GET').authorization({ sign: true })
     )

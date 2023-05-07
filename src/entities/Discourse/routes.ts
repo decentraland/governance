@@ -5,10 +5,10 @@ import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 
 import { DiscourseService } from './../../services/DiscourseService'
 
+import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
 import DiscourseModel from './model'
 import { ValidationMessage } from './types'
 
-const TIMEOUT_TIME = 5 * 60 * 1000 // 5mins
 const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
 
 export default routes((route) => {
@@ -35,14 +35,14 @@ async function getValidationMessage(req: WithAuth) {
 
   const messageTimeout = setTimeout(() => {
     delete VALIDATIONS_IN_PROGRESS[address]
-  }, TIMEOUT_TIME)
+  }, MESSAGE_TIMEOUT_TIME)
 
   VALIDATIONS_IN_PROGRESS[address] = {
     ...message,
     messageTimeout,
   }
 
-  return message
+  return JSON.stringify(message)
 }
 
 async function checkValidationMessage(req: WithAuth) {
@@ -54,12 +54,11 @@ async function checkValidationMessage(req: WithAuth) {
     }
 
     const { address, timestamp } = messageProperties
-    clearValidationInProgress(user)
 
     const message = JSON.stringify({ address, timestamp })
 
-    const comments = await DiscourseService.fetchAllComments(1190)
-    const timeWindow = new Date(new Date().getTime() - TIMEOUT_TIME)
+    const comments = await DiscourseService.fetchAllComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
+    const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
 
     const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
     const regex = new RegExp(message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -75,6 +74,7 @@ async function checkValidationMessage(req: WithAuth) {
       }
 
       await DiscourseModel.createConnection(user, validComment.user_id)
+      clearValidationInProgress(user)
     }
 
     return {

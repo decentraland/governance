@@ -6,6 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
+import CircledCheck from '../Icon/CircledCheck'
 import Lock from '../Icon/Lock'
 
 import './ActionCard.css'
@@ -18,6 +19,7 @@ export interface ActionCardProps {
   action_title?: string
   onCardClick?: () => void
   isDisabled?: boolean
+  isCompleted?: boolean
 }
 
 function ActionCard({
@@ -28,6 +30,7 @@ function ActionCard({
   action_title,
   onCardClick,
   isDisabled = false,
+  isCompleted = false,
 }: ActionCardProps) {
   const t = useFormatMessage()
   const isImplemented = !!action || !!onCardClick
@@ -52,6 +55,8 @@ function ActionCard({
                 action_title &&
                 (isDisabled ? (
                   <Lock />
+                ) : isCompleted ? (
+                  <CircledCheck />
                 ) : (
                   <Button basic onClick={action}>
                     {action_title}
