@@ -22,7 +22,7 @@
   padding-bottom: 10px;
 }
 
-.BadgeCard__Icon > .Badge__Icon.Badge__Primary {
+.BadgeCard__Icon > .Badge__Icon.Badge__Icon--primary {
   width: 120px;
   height: 120px;
 }

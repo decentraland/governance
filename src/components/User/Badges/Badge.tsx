@@ -24,17 +24,17 @@ export enum BadgeVariant {
 function getVariantClass(variant: BadgeVariant) {
   switch (variant) {
     case BadgeVariant.FilledMono:
-      return 'Badge__FilledMono'
+      return 'Badge__Icon--filled-mono'
     case BadgeVariant.FilledMonoSmall:
-      return 'Badge__FilledMono__Small'
+      return 'Badge__Icon--filled-mono-small'
     case BadgeVariant.FilledDuo:
-      return 'Badge__FilledDuo'
+      return 'Badge__Icon--filled-duo'
     case BadgeVariant.Outline1px:
-      return 'Badge__Outline1px'
+      return 'Badge__Icon--outline-1px'
     case BadgeVariant.Outline2px:
-      return 'Badge__Outline2px'
+      return 'Badge__Icon--outline-2px'
     default:
-      return 'Badge__Primary'
+      return 'Badge__Icon--primary'
   }
 }
 
@@ -44,7 +44,7 @@ export default function Badge({ badge, className, variant = BadgeVariant.Primary
   return (
     <div className={TokenList.join(['Badge', className])}>
       <div
-        className={TokenList.join(['Badge__Icon', getVariantClass(variant), isRevoked && 'Badge__Revoked'])}
+        className={TokenList.join(['Badge__Icon', getVariantClass(variant), isRevoked && 'Badge__Icon--revoked'])}
         style={{ backgroundImage: `url(${badge.image})` }}
       />
     </div>
