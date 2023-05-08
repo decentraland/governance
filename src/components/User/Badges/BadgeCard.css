@@ -15,7 +15,7 @@
 }
 
 .BadgeCard:hover {
-  box-shadow: 0 0 8px #736e7d;
+  box-shadow: 0 0 8px var(--gray-raw-b);
 }
 
 .BadgeCard__Icon {
