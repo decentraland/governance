@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 
-import { DAO_RAFT_ID, OTTERSPACE_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+import { OTTERSPACE_DAO_RAFT_ID, OTTERSPACE_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 
 import { inBatches, trimLastForwardSlash } from './utils'
 
@@ -106,7 +106,7 @@ export class OtterspaceSubgraph {
         const body = await response.json()
         return body?.data?.badges || []
       },
-      { address, raft_id: DAO_RAFT_ID },
+      { address, raft_id: OTTERSPACE_DAO_RAFT_ID },
       20
     )
 
