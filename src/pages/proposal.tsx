@@ -12,11 +12,10 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../clients/Governance'
@@ -273,24 +272,19 @@ export default function ProposalPage() {
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
   const voteWithSurvey =
     !isLoadingSurveyTopics &&
     !!surveyTopics &&
     surveyTopics.length > 0 &&
-    !isMobile &&
     !!proposal &&
     proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
   const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender
 
   if (proposalState.error) {
     return (
-      <>
-        <ContentLayout className="ProposalDetailPage">
-          <NotFound />
-        </ContentLayout>
-      </>
+      <ContentLayout className="ProposalDetailPage">
+        <NotFound />
+      </ContentLayout>
     )
   }
 
@@ -337,11 +331,13 @@ export default function ProposalPage() {
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
-              {proposal?.type === ProposalType.Grant ? (
-                <GrantProposalView config={proposal.configuration} />
-              ) : (
-                <Markdown>{proposal?.description || ''}</Markdown>
-              )}
+              <div className="ProposalDetailPage__Body">
+                {proposal?.type === ProposalType.Grant ? (
+                  <GrantProposalView config={proposal.configuration} />
+                ) : (
+                  <Markdown>{proposal?.description || ''}</Markdown>
+                )}
+              </div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {proposal && isBiddingAndTenderingProposal && (
@@ -363,12 +359,14 @@ export default function ProposalPage() {
                 />
               )}
               {proposal && voteWithSurvey && (
-                <SurveyResults
-                  votes={votes}
-                  isLoadingVotes={votesState.loading}
-                  surveyTopics={surveyTopics}
-                  isLoadingSurveyTopics={isLoadingSurveyTopics}
-                />
+                <Desktop>
+                  <SurveyResults
+                    votes={votes}
+                    isLoadingVotes={votesState.loading}
+                    surveyTopics={surveyTopics}
+                    isLoadingSurveyTopics={isLoadingSurveyTopics}
+                  />
+                </Desktop>
               )}
               <ProposalComments proposal={proposal} />
             </Grid.Column>

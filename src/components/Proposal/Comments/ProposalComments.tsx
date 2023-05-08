@@ -61,13 +61,11 @@ export default React.memo(function ProposalComments({ proposal }: ProposalCommen
       <div className={TokenList.join(['ProposalComments', isLoadingComments && 'ProposalComments--loading'])}>
         <div className="ProposalComments__Content">
           {!renderComments && (
-            <div className="ProposalComments__NoComments">
-              <Empty
-                description={t('page.proposal_comments.no_comments_text')}
-                linkText={t('page.proposal_comments.join_discussion_label')}
-                linkHref={(proposal && forumUrl(proposal)) || ''}
-              />
-            </div>
+            <Empty
+              description={t('page.proposal_comments.no_comments_text')}
+              linkText={t('page.proposal_comments.join_discussion_label')}
+              linkHref={(proposal && forumUrl(proposal)) || ''}
+            />
           )}
           {renderedComments &&
             renderedComments.map((comment, index) => (
