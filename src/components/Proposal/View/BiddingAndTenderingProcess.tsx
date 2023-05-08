@@ -140,5 +140,5 @@ export default function BiddingAndTenderingProcess({
     ]
   )
 
-  return <ProposalProcess title={t('page.proposal_bidding_tendering.title')} items={items} />
+  return <ProposalProcess title={t('page.proposal_bidding_tendering.title')} items={items} isNew />
 }

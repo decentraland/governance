@@ -40,6 +40,7 @@ import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
@@ -283,6 +284,10 @@ export default function ProposalPage() {
     !!proposal &&
     proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
   const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender
+  const isGovernanceProposal =
+    proposal?.type === ProposalType.Poll ||
+    proposal?.type === ProposalType.Draft ||
+    proposal?.type === ProposalType.Governance
 
   if (proposalState.error) {
     return (
@@ -354,6 +359,7 @@ export default function ProposalPage() {
                   tenderProposalsTotal={tenderProposals?.total}
                 />
               )}
+              {proposal && isGovernanceProposal && <GovernanceProcess proposalType={proposal.type} />}
               {showProposalUpdates && (
                 <ProposalUpdates
                   proposal={proposal}

@@ -727,6 +727,15 @@
       "initiative_rejected": "**Initiative rejected** {proposalEndDate}",
       "tbd": "**TBD**"
     },
+    "proposal_governance_process": {
+      "title": "About the governance process",
+      "poll_title": "Pre-proposal Poll",
+      "poll_description": "Measure community sentiment around an specific topic",
+      "draft_title": "Draft proposal",
+      "draft_description": "Present a potential policy to the community in a structured format",
+      "governance_title": "Governance Proposal",
+      "governance_description": "Binding Proposal outlining a formal implementation pathway"
+    },
     "proposal_list": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",

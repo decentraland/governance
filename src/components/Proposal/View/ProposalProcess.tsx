@@ -16,11 +16,12 @@ export enum ProcessStatus {
 
 interface Props {
   title: string
+  isNew?: boolean
   items: {
     title: string
     description: string
     status: ProcessStatus
-    statusText: string
+    statusText?: string
   }[]
 }
 
@@ -36,9 +37,9 @@ const VerticalLine = ({ position, isActive }: { position: 'top' | 'middle' | 'bo
   )
 }
 
-export default function ProposalProcess({ title, items }: Props) {
+export default function ProposalProcess({ title, items, isNew = false }: Props) {
   return (
-    <Section title={title} isNew>
+    <Section title={title} isNew={isNew}>
       {items.map(({ title, description, statusText, status }, index) => {
         const isActive = status === ProcessStatus.Active
         const isFirstItem = index === 0
@@ -76,7 +77,7 @@ export default function ProposalProcess({ title, items }: Props) {
                 >
                   {description}
                 </p>
-                {statusText !== '' && (
+                {statusText && statusText !== '' && (
                   <span className="ProposalProcess___StatusTextContainer">
                     <Markdown
                       className={TokenList.join([
