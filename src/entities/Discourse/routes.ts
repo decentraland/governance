@@ -5,11 +5,8 @@ import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 
 import { DiscourseService } from './../../services/DiscourseService'
 
-import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
+import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME, VALIDATIONS_IN_PROGRESS } from './constants'
 import DiscourseModel from './model'
-import { ValidationMessage } from './types'
-
-const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
 
 export default routes((route) => {
   const withAuth = auth()

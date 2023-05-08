@@ -569,6 +569,8 @@
     },
     "identity_setup": {
       "title": "Choose accounts to link",
+      "timer": "Time sensitive task. {time} left to complete",
+      "timer_expired": "Signature expired. You'll have to start over.",
       "forum": {
         "card_title": "Forum Account",
         "card_description": "Make comments left on proposals link back to, and be displayed on your Governance profile.",
@@ -586,7 +588,8 @@
         "action_step_3": "Open",
         "helper_step_3": "Finally, comment the signed message on the forum thread.",
         "action": "Confirm link",
-        "action_loading": "Confirming..."
+        "action_loading": "Confirming...",
+        "helper_loading": "Linking in progress."
       },
       "discord": {
         "card_title": "Discord User",
