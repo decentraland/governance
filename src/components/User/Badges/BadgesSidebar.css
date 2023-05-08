@@ -1,18 +1,3 @@
-.BadgesSidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  background: var(--white-900);
-  padding-top: 26px;
-  padding-left: 27px;
-  padding-right: 24px;
-  cursor: default;
-}
-
-.ui.push.right.very.wide.visible.sidebar.BadgesSidebar {
-  width: 645px;
-}
-
 .BadgesSidebar__Content {
   width: 100%;
   display: flex;
@@ -62,13 +47,23 @@
   text-transform: uppercase;
   color: var(--black-600);
   margin-bottom: 16px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .BadgesSidebar__Subtitle {
+    text-align: left !important;
+  }
+  .BadgesSidebar__BadgesContainer {
+    justify-content: flex-start !important;
+  }
 }
 
 .BadgesSidebar__BadgesContainer {
   display: flex;
   width: 100%;
-  justify-content: flex-start;
   gap: 14px;
+  justify-content: center;
   flex-flow: row wrap;
   margin-bottom: 24px;
 }

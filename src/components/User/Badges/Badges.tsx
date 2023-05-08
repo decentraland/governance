@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Badge } from '../../../entities/Badges/types'
 import useBadges from '../../../hooks/useBadges'
+import MobileSlider from '../../Common/MobileSlider'
 
 import BadgeStack from './BadgeStack'
 import BadgeWithTitle from './BadgeWithTitle'
@@ -54,29 +55,31 @@ export default function Badges({ address }: Props) {
   if (isLoadingBadges || badges?.total === 0) return null
 
   return (
-    <div className="Badges__Container">
-      {displayedBadges.map((badge, index) => {
-        return (
-          <BadgeWithTitle
-            badge={badge}
-            key={`${badge.name}-${index}`}
+    <>
+      <MobileSlider containerClassName="Badges__Container" className="Badges__Slider">
+        {displayedBadges.map((badge, index) => {
+          return (
+            <BadgeWithTitle
+              badge={badge}
+              key={`${badge.name}-${index}`}
+              onClick={() => {
+                setSidebarOpen(true)
+                setBadgeInDetail(badge)
+              }}
+            />
+          )
+        })}
+        {!!stackedBadges && stackedBadges.length > 0 && (
+          <BadgeStack
+            badges={stackedBadges}
+            total={stackedBadges.length}
             onClick={() => {
+              setBadgeInDetail(null)
               setSidebarOpen(true)
-              setBadgeInDetail(badge)
             }}
           />
-        )
-      })}
-      {!!stackedBadges && stackedBadges.length > 0 && (
-        <BadgeStack
-          badges={stackedBadges}
-          total={stackedBadges.length}
-          onClick={() => {
-            setBadgeInDetail(null)
-            setSidebarOpen(true)
-          }}
-        />
-      )}
+        )}
+      </MobileSlider>
       <BadgesSidebar
         badges={badges}
         isSidebarVisible={sidebarOpen}
@@ -84,6 +87,6 @@ export default function Badges({ address }: Props) {
         setBadgeInDetail={setBadgeInDetail}
         onClose={handleSidebarClose}
       />
-    </div>
+    </>
   )
 }

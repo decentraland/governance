@@ -2,10 +2,10 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 
 import { Badge, UserBadges } from '../../../entities/Badges/types'
 import ChevronLeft from '../../Icon/ChevronLeft'
+import GovernanceSidebar from '../../Sidebar/GovernanceSidebar'
 
 import BadgeCard from './BadgeCard'
 import BadgeDetail from './BadgeDetail'
@@ -31,13 +31,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
   }
 
   return (
-    <Sidebar
-      className="BadgesSidebar"
-      animation={'push'}
-      direction={'right'}
-      visible={isSidebarVisible}
-      width={'very wide'}
-    >
+    <GovernanceSidebar visible={isSidebarVisible}>
       {!badgeInDetail && (
         <div className="BadgesSidebar__Content">
           <div className="BadgesSidebar__TitleContainer">
@@ -81,6 +75,6 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
           <BadgeDetail badge={badgeInDetail} />
         </div>
       )}
-    </Sidebar>
+    </GovernanceSidebar>
   )
 }
