@@ -24,7 +24,8 @@
 .Badge__FilledMono__Small {
   width: 24px;
   height: 24px;
-  background-position: -4px -164px;
+  background-size: 144px;
+  background-position: bottom left;
 }
 
 .Badge__FilledDuo {
@@ -46,5 +47,5 @@
 }
 
 .Badge__Revoked {
-  filter: brightness(1) contrast(2) grayscale(1);
+  filter: grayscale(1);
 }

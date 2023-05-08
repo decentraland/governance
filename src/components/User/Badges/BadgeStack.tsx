@@ -39,7 +39,7 @@ export default function BadgeStack({ badges, onClick, total }: Props) {
         )
       })}
       <span className="BadgeStack__Counter" style={{ right: counterMargin(badgesToShow.length) }}>
-        {t('page.profile.show_badges', { amount: total - MAX_DISPLAYED_BADGES })}
+        {t('page.profile.show_badges', { amount: total })}
       </span>
     </div>
   )

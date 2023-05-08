@@ -1,5 +1,5 @@
-import { BadgeStatus, BadgeStatusReason, OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
-import { Badge, UserBadges, toBadgeStatus } from '../entities/Badges/types'
+import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
+import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
 
 import { ErrorService } from './ErrorService'
 
@@ -12,12 +12,9 @@ export class BadgesService {
   private static createBadgesList(otterspaceBadges: OtterspaceBadge[]): UserBadges {
     const currentBadges: Badge[] = []
     const expiredBadges: Badge[] = []
-    let total = 0
     for (const otterspaceBadge of otterspaceBadges) {
       try {
-        const status = toBadgeStatus(otterspaceBadge.status, () => {
-          throw new Error(`Invalid badge status ${otterspaceBadge.status}`)
-        })
+        const status: BadgeStatus = toBadgeStatus(otterspaceBadge.status)
         if (status !== BadgeStatus.BURNED) {
           if (otterspaceBadge.spec.metadata) {
             const { name, description, image } = otterspaceBadge.spec.metadata
@@ -33,16 +30,14 @@ export class BadgesService {
             } else {
               currentBadges.push(badge)
             }
-            total++
           }
         }
       } catch (e) {
-        console.log(`Error parsing badge ${otterspaceBadge}`, e)
         ErrorService.report(`Error parsing badge ${otterspaceBadge}`, e)
       }
     }
 
-    return { currentBadges, expiredBadges, total }
+    return { currentBadges, expiredBadges, total: currentBadges.length + expiredBadges.length }
   }
 
   private static badgeExpired(status: BadgeStatus, statusReason: string) {

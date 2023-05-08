@@ -70,7 +70,7 @@ export default function Badges({ address }: Props) {
       {!!stackedBadges && stackedBadges.length > 0 && (
         <BadgeStack
           badges={stackedBadges}
-          total={badges.total}
+          total={stackedBadges.length}
           onClick={() => {
             setBadgeInDetail(null)
             setSidebarOpen(true)

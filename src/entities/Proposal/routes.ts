@@ -580,7 +580,7 @@ async function getGrants(): Promise<CategorizedGrants> {
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   const address = req.params.address
   const isCoauthoring = req.query.coauthor === 'true'
-  if (!isEthereumAddress(address)) {
+  if (!address || address.length === 0 || !isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }
 

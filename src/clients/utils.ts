@@ -1,6 +1,6 @@
 import { ErrorClient } from './ErrorClient'
 
-const SKIP_LIMIT = 5000
+const SUBGRAPH_SKIP_LIMIT = 5000
 
 export async function inBatches<T, K>(
   fetchFunction: (params: T, skip: number, batchSize: number) => Promise<K[]>,
@@ -18,7 +18,7 @@ export async function inBatches<T, K>(
         hasNext = false
       } else {
         skip = allResults.length
-        if (skip > SKIP_LIMIT) {
+        if (skip > SUBGRAPH_SKIP_LIMIT) {
           throw new Error(`${fetchFunction.name} has exceeded skip limit`)
         }
       }

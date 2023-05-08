@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { BadgeStatus } from '../../../clients/OtterspaceSubgraph'
-import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
+import { BadgeStatus, Badge as GovernanceBadge } from '../../../entities/Badges/types'
 
 import './Badge.css'
 
@@ -21,8 +20,6 @@ export enum BadgeVariant {
   Outline1px = 'Outline-1px',
   Outline2px = 'Outline-2px',
 }
-
-const NO_IMAGE = require('../../../images/no-image.png').default
 
 function getVariantClass(variant: BadgeVariant) {
   switch (variant) {
@@ -42,29 +39,13 @@ function getVariantClass(variant: BadgeVariant) {
 }
 
 export default function Badge({ badge, className, variant = BadgeVariant.Primary }: Props) {
-  const imgRef = useRef<any>()
   const isRevoked = badge.status === BadgeStatus.REVOKED
-
-  useEffect(() => {
-    const img = new Image()
-    img.src = badge.image
-    img.onload = () => {
-      if (imgRef && imgRef.current) {
-        imgRef.current.style.backgroundImage = `url(${badge.image})`
-      }
-    }
-    img.onerror = () => {
-      if (imgRef && imgRef.current) {
-        imgRef.current.style.backgroundImage = `url(${NO_IMAGE})`
-      }
-    }
-  }, [badge.image])
 
   return (
     <div className={TokenList.join(['Badge', className])}>
       <div
         className={TokenList.join(['Badge__Icon', getVariantClass(variant), isRevoked && 'Badge__Revoked'])}
-        ref={imgRef}
+        style={{ backgroundImage: `url(${badge.image})` }}
       />
     </div>
   )

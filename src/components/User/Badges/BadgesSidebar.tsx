@@ -21,6 +21,7 @@ interface Props {
 
 export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badgeInDetail, setBadgeInDetail }: Props) {
   const t = useFormatMessage()
+  const { currentBadges, expiredBadges } = badges
 
   const handleClose = (e: React.MouseEvent<unknown>) => {
     e.preventDefault()
@@ -45,20 +46,20 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
           </div>
 
           <div className="BadgesSidebar__Subtitle">
-            <span>{t('page.profile.badges_sidebar.current', { amount: badges.currentBadges.length })}</span>
+            <span>{t('page.profile.badges_sidebar.current', { amount: currentBadges.length })}</span>
           </div>
           <div className="BadgesSidebar__BadgesContainer">
-            {badges.currentBadges.map((badge, index) => {
+            {currentBadges.map((badge, index) => {
               return <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={() => setBadgeInDetail(badge)} />
             })}
           </div>
-          {badges.expiredBadges.length > 0 && (
+          {expiredBadges.length > 0 && (
             <>
               <div className="BadgesSidebar__Subtitle">
-                <span>{t('page.profile.badges_sidebar.past', { amount: badges.expiredBadges.length })}</span>
+                <span>{t('page.profile.badges_sidebar.past', { amount: expiredBadges.length })}</span>
               </div>
               <div className="BadgesSidebar__BadgesContainer">
-                {badges.expiredBadges.map((badge, index) => {
+                {expiredBadges.map((badge, index) => {
                   return (
                     <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={() => setBadgeInDetail(badge)} />
                   )
@@ -71,10 +72,10 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
       {badgeInDetail && (
         <div className="BadgesSidebar__Content">
           <div className="BadgesSidebar__TitleContainer">
-            <div className="BadgesSidebar__Back" onClick={() => setBadgeInDetail(null)}>
+            <button className="BadgesSidebar__Back" onClick={() => setBadgeInDetail(null)}>
               <ChevronLeft />
               <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.detail_title')}</span>
-            </div>
+            </button>
             <Close onClick={handleClose} />
           </div>
           <BadgeDetail badge={badgeInDetail} />

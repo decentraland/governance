@@ -1076,8 +1076,8 @@
       "show_badges": "{amount} More",
       "badges_sidebar": {
         "title": "Your Badges",
-        "current": "{amount} Current Badges",
-        "past": "{amount} Past Badges",
+        "current": "{amount} Current {amount, plural, one {Badge} other {Badges}}",
+        "past": "{amount} Past {amount, plural, one {Badge} other {Badges}}",
         "detail_title": "Badge Detail"
       },
       "user_vp_stats": {
