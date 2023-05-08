@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -12,6 +15,9 @@ import CircledForum from '../../Icon/CircledForum'
 import CircledTwitter from '../../Icon/CircledTwitter'
 import Comment from '../../Icon/Comment'
 import Copy from '../../Icon/Copy'
+import ForumBlue from '../../Icon/ForumBlue'
+import LinkFailed from '../../Icon/LinkFailed'
+import LinkSucceded from '../../Icon/LinkSucceded'
 import Sign from '../../Icon/Sign'
 
 import './AccountsConnectModal.css'
@@ -77,6 +83,7 @@ function getTimeFormatted(totalSeconds: number) {
 
 function AccountsConnectModal({ open, onClose }: ModalProps) {
   const t = useFormatMessage()
+  const [address] = useAuthContext()
   const { getSignedMessage, copyMessageToClipboard, openThread, time, isValidated } = useForumConnect()
 
   const [modalState, setModalState] = useState<ModalState>({
@@ -108,6 +115,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
     if (isValidated !== undefined) {
       setIsValidating(false)
     }
+    console.log('isValidated', isValidated)
   }, [isValidated])
 
   const handleSign = useCallback(async () => {
@@ -177,40 +185,56 @@ function AccountsConnectModal({ open, onClose }: ModalProps) {
   return (
     <>
       <Modal open={open} className="AccountsConnectModal" size="tiny" onClose={onClose} closeIcon={<Close />}>
-        <Modal.Header className="AccountsConnectModal__Header">
-          <div>{t(stateMap[currentType].title)}</div>
-          {modalState.isTimerActive && (
-            <div className="AccountsConnectModal__Timer">{t(timerTextKey, { time: getTimeFormatted(time) })}</div>
-          )}
-        </Modal.Header>
-        <Modal.Content>
-          {stateMap[currentType].actions.map((cardProps, index) => {
-            const { title, description, action_title } = cardProps
-            return (
-              <ActionCard
-                key={`ActionCard--${index}`}
-                {...cardProps}
-                title={t(title)}
-                description={t(description)}
-                action_title={t(action_title)}
-              />
-            )
-          })}
-          <div className="AccountsConnectModal__HelperContainer">
-            {button && (
-              <Button primary disabled loading={modalState.isValidating}>
-                {t(button)}
-              </Button>
-            )}
-            {helperTexts && helperTexts.length > 0 && (
-              <div className="AccountsConnectModal__HelperText">
-                {modalState.isValidating
-                  ? t('modal.identity_setup.forum.helper_loading')
-                  : t(helperTexts[modalState.currentStep - 1])}
+        {isValidated === undefined && (
+          <>
+            <Modal.Header className="AccountsConnectModal__Header">
+              <div>{t(stateMap[currentType].title)}</div>
+              {modalState.isTimerActive && (
+                <div className="AccountsConnectModal__Timer">{t(timerTextKey, { time: getTimeFormatted(time) })}</div>
+              )}
+            </Modal.Header>
+            <Modal.Content>
+              {stateMap[currentType].actions.map((cardProps, index) => {
+                const { title, description, action_title } = cardProps
+                return (
+                  <ActionCard
+                    key={`ActionCard--${index}`}
+                    {...cardProps}
+                    title={t(title)}
+                    description={t(description)}
+                    action_title={t(action_title)}
+                  />
+                )
+              })}
+              <div className="AccountsConnectModal__HelperContainer">
+                {button && (
+                  <Button primary disabled loading={modalState.isValidating}>
+                    {t(button)}
+                  </Button>
+                )}
+                {helperTexts && helperTexts.length > 0 && (
+                  <div className="AccountsConnectModal__HelperText">
+                    {modalState.isValidating
+                      ? t('modal.identity_setup.forum.helper_loading')
+                      : t(helperTexts[modalState.currentStep - 1])}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </Modal.Content>
+            </Modal.Content>
+          </>
+        )}
+        {isValidated !== undefined && (
+          <Modal.Content>
+            <div className="AccountsConnectModal__PostIcons">
+              <Avatar address={address || undefined} size="huge" />
+              {isValidated ? <LinkSucceded /> : <LinkFailed />}
+              <ForumBlue />
+            </div>
+            <div className="AccountsConnectModal__PostText">
+              <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_text`)}</Markdown>
+            </div>
+          </Modal.Content>
+        )}
       </Modal>
     </>
   )

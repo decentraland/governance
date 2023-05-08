@@ -589,7 +589,13 @@
         "helper_step_3": "Finally, comment the signed message on the forum thread.",
         "action": "Confirm link",
         "action_loading": "Confirming...",
-        "helper_loading": "Linking in progress."
+        "helper_loading": "Linking in progress.",
+        "success_text": "**Governance and Forum accounts linked successfully** 🎉\n\nNow your comments left on Proposals' forum threads will link back to, and be displayed on your Governance profile.",
+        "success_subtext": "Plus, you'll get a fancy icon next to your **username**",
+        "success_button": "Got it",
+        "error_text": "**Governance and Forum accounts could not be linked**\n\nSomething happened. It must have been aliens, but we can't be sure.",
+        "error_subtext": "Maybe just have a go at it one more time?",
+        "error_button": "Retry"
       },
       "discord": {
         "card_title": "Discord User",
