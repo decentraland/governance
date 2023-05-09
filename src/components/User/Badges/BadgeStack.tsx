@@ -34,7 +34,7 @@ export default function BadgeStack({ badges, onClick, total }: Props) {
             key={`${badge.name}-id`}
             style={{ zIndex: index, right: `${index * 16}px` }}
           >
-            <Badge badge={badge} variant={BadgeVariant.FilledMonoSmall} />
+            <Badge badge={badge} variant={BadgeVariant.FilledMonoSmall} className="BadgeStack__Badge" />
           </div>
         )
       })}

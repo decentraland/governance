@@ -22,7 +22,7 @@
   height: 32px;
 }
 
-.BadgeStack__Icon > .Badge {
+.BadgeStack__Badge {
   width: 32px;
   height: 32px;
   border-radius: 50%;

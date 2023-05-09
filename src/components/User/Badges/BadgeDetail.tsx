@@ -17,7 +17,7 @@ export default function BadgeDetail({ badge }: Props) {
   const t = useFormatMessage()
   return (
     <div className="BadgeDetail__Container">
-      <Badge badge={badge} variant={BadgeVariant.Primary} className="BadgeDetail__Icon" />
+      <Badge badge={badge} variant={BadgeVariant.Primary} iconClassName="BadgeDetail__Icon" />
       <div className="BadgeDetail__Info">
         <div className="BadgeDetail__Title">{badge.name}</div>
         <div className="BadgeDetail__MintDate">

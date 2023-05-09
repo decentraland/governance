@@ -9,6 +9,7 @@ import './Badge.css'
 interface Props {
   badge: GovernanceBadge
   className?: string
+  iconClassName?: string
   variant?: BadgeVariant
 }
 
@@ -38,13 +39,18 @@ function getVariantClass(variant: BadgeVariant) {
   }
 }
 
-export default function Badge({ badge, className, variant = BadgeVariant.Primary }: Props) {
+export default function Badge({ badge, className, iconClassName, variant = BadgeVariant.Primary }: Props) {
   const isRevoked = badge.status === BadgeStatus.Revoked
 
   return (
     <div className={TokenList.join(['Badge', className])}>
       <div
-        className={TokenList.join(['Badge__Icon', getVariantClass(variant), isRevoked && 'Badge__Icon--revoked'])}
+        className={TokenList.join([
+          'Badge__Icon',
+          getVariantClass(variant),
+          isRevoked && 'Badge__Icon--revoked',
+          iconClassName,
+        ])}
         style={{ backgroundImage: `url(${badge.image})` }}
       />
     </div>

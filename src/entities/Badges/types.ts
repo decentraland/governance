@@ -1,12 +1,8 @@
-import camelCase from 'lodash/camelCase'
-
-import { capitalizeFirstLetter } from '../../helpers'
-
 export enum BadgeStatus {
-  Burned = 'Burned',
-  Minted = 'Minted',
-  Reinstated = 'Reinstated',
-  Revoked = 'Revoked',
+  Burned = 'BURNED',
+  Minted = 'MINTED',
+  Reinstated = 'REINSTATED',
+  Revoked = 'REVOKED',
 }
 
 export enum BadgeStatusReason {
@@ -25,7 +21,11 @@ export type Badge = {
 
 export type UserBadges = { currentBadges: Badge[]; expiredBadges: Badge[]; total: number }
 
-export function toBadgeStatus(value: string): BadgeStatus {
-  if (!value || value.length === 0) throw new Error(`Invalid BadgeStatus`)
-  return capitalizeFirstLetter(value.toLowerCase()) as BadgeStatus
+export function isBadgeStatus(value: string | null | undefined): boolean {
+  return !!value && new Set<string>(Object.values(BadgeStatus)).has(value)
+}
+
+export function toBadgeStatus(value: string | null | undefined): BadgeStatus {
+  if (isBadgeStatus(value)) return value as BadgeStatus
+  else throw new Error(`Invalid BadgeStatus ${value}`)
 }

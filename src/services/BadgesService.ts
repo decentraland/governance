@@ -14,7 +14,7 @@ export class BadgesService {
     const expiredBadges: Badge[] = []
     for (const otterspaceBadge of otterspaceBadges) {
       try {
-        const status: BadgeStatus = toBadgeStatus(otterspaceBadge.status)
+        const status = toBadgeStatus(otterspaceBadge.status)
         if (status !== BadgeStatus.Burned) {
           if (otterspaceBadge.spec.metadata) {
             const { name, description, image } = otterspaceBadge.spec.metadata

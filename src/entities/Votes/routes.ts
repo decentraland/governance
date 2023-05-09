@@ -81,7 +81,7 @@ export async function getVotes(proposal_id: string) {
 
 async function getAddressVotes(req: Request) {
   const address = req.params.address
-  if (!address || address.length === 0 || !isEthereumAddress(address)) {
+  if (!address || !isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }
   const first = Number(req.query.first)

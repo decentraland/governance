@@ -18,7 +18,7 @@ export default function BadgeCard({ badge, onClick }: Props) {
 
   return (
     <div className="BadgeCard" key={`${badge.name}-id`} onClick={onClick}>
-      <Badge badge={badge} className="BadgeCard__Icon" />
+      <Badge badge={badge} iconClassName="BadgeCard__Icon" />
       <div className="BadgeCard__Info">
         <div className="BadgeCard__Title">{badge.name}</div>
         <div className="BadgeCard__MintDate">

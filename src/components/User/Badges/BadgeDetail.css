@@ -12,16 +12,9 @@
 }
 
 .BadgeDetail__Icon {
-  display: flex;
-  justify-content: center;
   width: 200px;
   height: 200px;
   margin-bottom: 31px;
-}
-
-.BadgeDetail__Icon > .Badge__Icon--primary {
-  width: 200px;
-  height: 200px;
 }
 
 .BadgeDetail__Info {

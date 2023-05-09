@@ -15,16 +15,13 @@
 }
 
 .BadgeCard:hover {
-  box-shadow: 0 0 8px var(--gray-raw-b);
+  box-shadow: 0 0 8px rgb(var(--gray-raw-b));
 }
 
 .BadgeCard__Icon {
-  padding-bottom: 10px;
-}
-
-.BadgeCard__Icon > .Badge__Icon.Badge__Icon--primary {
   width: 120px;
   height: 120px;
+  margin-bottom: 10px;
 }
 
 .BadgeCard__Info {

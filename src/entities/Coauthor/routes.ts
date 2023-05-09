@@ -40,7 +40,7 @@ export async function filterCoauthorRequests(requests: CoauthorAttributes[]) {
 
 export async function getProposals(req: Request) {
   const address = req.params.address
-  if (!address || address.length === 0 || !isEthereumAddress(address)) {
+  if (!address || !isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }
   const status = toCoauthorStatusType(req.params.status)

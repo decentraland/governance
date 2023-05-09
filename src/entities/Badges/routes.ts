@@ -14,7 +14,7 @@ export default routes((router) => {
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
   const address = req.params.address
-  if (!address || address.length === 0 || !isEthereumAddress(address)) {
+  if (!address || !isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }
   return await BadgesService.getBadges(address)
