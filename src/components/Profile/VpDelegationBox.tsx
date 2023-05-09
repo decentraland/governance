@@ -35,8 +35,8 @@ function VpDelegationBox({ address, delegation, isLoadingDelegations, ownVp, isL
   const [openDelegationModal, setOpenDelegationModal] = useState(false)
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
+  const profileHasADelegation = delegatedTo.length > 0 && !!ownVp
 
-  const profileHasADelegation = delegatedTo.length > 0 && ownVp
   return (
     <Container>
       <ProfileBox
