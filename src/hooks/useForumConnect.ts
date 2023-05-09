@@ -12,7 +12,9 @@ import { openUrl } from '../helpers'
 
 import useTimer from './useTimer'
 
-export const THREAD_URL = `${DISCOURSE_API}/t/${GATSBY_DISCOURSE_CONNECT_THREAD}`
+export const THREAD_URL = `${DISCOURSE_API}${
+  DISCOURSE_API.endsWith('/') ? '' : '/'
+}t/${GATSBY_DISCOURSE_CONNECT_THREAD}`
 const VALIDATION_CHECK_INTERVAL = 5 * 1000 // 5 seconds
 
 const getMessage = async () => Governance.get().getValidationMessage()
