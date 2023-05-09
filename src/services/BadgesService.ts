@@ -15,7 +15,7 @@ export class BadgesService {
     for (const otterspaceBadge of otterspaceBadges) {
       try {
         const status: BadgeStatus = toBadgeStatus(otterspaceBadge.status)
-        if (status !== BadgeStatus.BURNED) {
+        if (status !== BadgeStatus.Burned) {
           if (otterspaceBadge.spec.metadata) {
             const { name, description, image } = otterspaceBadge.spec.metadata
             const badge = {
@@ -41,7 +41,7 @@ export class BadgesService {
   }
 
   private static badgeExpired(status: BadgeStatus, statusReason: string) {
-    return status === BadgeStatus.REVOKED && statusReason === BadgeStatusReason.TENURE_ENDED
+    return status === BadgeStatus.Revoked && statusReason === BadgeStatusReason.TenureEnded
   }
 
   private static getIpfsHttpsLink(ipfsLink: string) {

@@ -39,7 +39,7 @@ function getVariantClass(variant: BadgeVariant) {
 }
 
 export default function Badge({ badge, className, variant = BadgeVariant.Primary }: Props) {
-  const isRevoked = badge.status === BadgeStatus.REVOKED
+  const isRevoked = badge.status === BadgeStatus.Revoked
 
   return (
     <div className={TokenList.join(['Badge', className])}>
