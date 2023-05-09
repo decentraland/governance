@@ -30,4 +30,10 @@ export default class DiscourseModel extends Model<DiscourseAttributes> {
     const result = await this.namedQuery('get_forum_id', query)
     return result[0]?.forum_id
   }
+
+  // TODO: REMOVE BEFORE PRODUCTION
+  static async deleteConnection(address: string) {
+    const query = SQL`DELETE FROM ${table(this)} WHERE address = ${address.toLowerCase()}`
+    return await this.namedQuery('delete_connection', query)
+  }
 }

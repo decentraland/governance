@@ -2,6 +2,10 @@ import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
+import { Request, Response } from 'express'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
+import isDebugAddress from '../Debug/isDebugAddress'
 
 import { DiscourseService } from './../../services/DiscourseService'
 
@@ -14,6 +18,7 @@ export default routes((route) => {
   route.get('/forumId', withAuth, handleAPI(getForumId))
   route.get('/validateProfile', withAuth, handleAPI(getValidationMessage))
   route.post('/validateProfile', withAuth, handleAPI(checkValidationMessage))
+  route.delete('/validateProfile', withAuth, handleAPI(deleteValidation))
 })
 
 const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
@@ -95,4 +100,20 @@ async function getForumId(req: WithAuth) {
   } catch (error) {
     throw new Error("Couldn't get the forum id. Error: " + error)
   }
+}
+
+// TODO: REMOVE BEFORE PRODUCTION
+async function deleteValidation(req: WithAuth<Request<any, any, { address: string }>>, res: Response) {
+  const user = req.auth!
+  const { address } = req.body
+
+  if (!isDebugAddress(user)) {
+    res.send(401)
+  }
+
+  if (!isEthereumAddress(address)) {
+    res.send(400)
+  }
+
+  return await DiscourseModel.deleteConnection(address)
 }
