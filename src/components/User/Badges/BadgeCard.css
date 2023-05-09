@@ -42,6 +42,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: -4px;
+  max-width: 160px;
 }
 
 .BadgeCard__MintDate {
