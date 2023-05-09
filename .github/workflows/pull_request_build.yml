@@ -43,4 +43,6 @@ jobs:
           DISCOURSE_API_KEY: "DISCOURSE_API_KEY"
 
       - name: building
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
         run: npm run build
