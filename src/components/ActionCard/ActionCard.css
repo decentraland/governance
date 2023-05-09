@@ -26,9 +26,16 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 24px;
+  margin: 0;
+}
+
+.ui.card.ActionCard .ActionCard__Helper {
+  font-size: 13px;
+  color: var(--black-600);
 }
 
 .ui.card.ActionCard--disabled h3,
+.ui.card.ActionCard--disabled .ActionCard__Helper,
 .ui.card.ActionCard--disabled p {
   color: var(--black-400);
 }

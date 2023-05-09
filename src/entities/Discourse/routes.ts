@@ -5,8 +5,9 @@ import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 
 import { DiscourseService } from './../../services/DiscourseService'
 
-import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME, VALIDATIONS_IN_PROGRESS } from './constants'
+import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
 import DiscourseModel from './model'
+import { ValidationMessage } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -14,6 +15,8 @@ export default routes((route) => {
   route.get('/validateProfile', withAuth, handleAPI(getValidationMessage))
   route.post('/validateProfile', withAuth, handleAPI(checkValidationMessage))
 })
+
+const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
 
 function clearValidationInProgress(user: string) {
   const validation = VALIDATIONS_IN_PROGRESS[user]

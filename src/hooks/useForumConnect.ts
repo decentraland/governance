@@ -12,7 +12,7 @@ import { openUrl } from '../helpers'
 
 import useTimer from './useTimer'
 
-const THREAD_URL = `${DISCOURSE_API}/t/${GATSBY_DISCOURSE_CONNECT_THREAD}`
+export const THREAD_URL = `${DISCOURSE_API}/t/${GATSBY_DISCOURSE_CONNECT_THREAD}`
 const VALIDATION_CHECK_INTERVAL = 5 * 1000 // 5 seconds
 
 const getMessage = async () => Governance.get().getValidationMessage()
@@ -51,6 +51,12 @@ export default function useForumConnect() {
       console.error('Validation Time Expired')
     }
   }, [time, validatingProfile])
+
+  useEffect(() => {
+    if (isValidated !== undefined) {
+      resetTimer()
+    }
+  }, [isValidated, resetTimer])
 
   const getSignedMessage = useCallback(async () => {
     return new Promise((resolve, reject) => {
@@ -98,11 +104,21 @@ export default function useForumConnect() {
     }
   }
 
+  const reset = useCallback(() => {
+    if (validatingProfile) {
+      clearInterval(validatingProfile)
+      setValidatingProfile(undefined)
+    }
+    setIsValidated(undefined)
+    resetTimer()
+  }, [resetTimer, validatingProfile])
+
   return {
     getSignedMessage: getSignedMessage,
     copyMessageToClipboard: copyMessageToClipboard,
     openThread: openThread,
     time,
     isValidated,
+    reset,
   }
 }

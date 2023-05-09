@@ -42,10 +42,23 @@
   margin-right: 16px;
 }
 
-.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText {
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText,
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostAction {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText--subtext {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText--subtext > svg {
+  margin-left: 2px;
 }
 
 .ui.modal.AccountsConnectModal .AccountsConnectModal__PostText .dg.Paragraph {
@@ -63,4 +76,23 @@
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
+}
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText--subtext .dg.Paragraph,
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText--subtext .dg.Paragraph .Bold {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--black-600);
+  max-width: 100%;
+  margin: 0;
+}
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostText--subtext .dg.Paragraph .Bold {
+  font-weight: 600;
+}
+
+.ui.modal.AccountsConnectModal .AccountsConnectModal__PostAction .ui.primary.button {
+  width: 40%;
+  margin-top: 16px;
 }

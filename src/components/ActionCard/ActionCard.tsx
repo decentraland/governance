@@ -20,6 +20,7 @@ export interface ActionCardProps {
   onCardClick?: () => void
   isDisabled?: boolean
   isCompleted?: boolean
+  helper?: string
 }
 
 function ActionCard({
@@ -31,6 +32,7 @@ function ActionCard({
   onCardClick,
   isDisabled = false,
   isCompleted = false,
+  helper,
 }: ActionCardProps) {
   const t = useFormatMessage()
   const isImplemented = !!action || !!onCardClick
@@ -49,6 +51,7 @@ function ActionCard({
                 {!isImplemented && <span className="ActionCard__SoonLabel">{t('modal.identity_setup.soon')}</span>}
               </h3>
               <p>{description}</p>
+              {!!helper && <p className="ActionCard__Helper">{helper}</p>}
             </div>
             <div className="ActionCard__Action">
               {action &&

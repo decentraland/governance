@@ -10,17 +10,17 @@ export default function useTimer(seconds: number) {
     }
     setTime(seconds)
 
-    const timerId = setInterval(() => {
+    const timer = setInterval(() => {
       setTime((prevTime) => {
         const newTime = prevTime - 1
         if (newTime === 0) {
-          clearInterval(timerId)
+          clearInterval(timer)
         }
         return newTime
       })
     }, 1000)
 
-    setCurrentTimer(timerId)
+    setCurrentTimer(timer)
   }, [currentTimer, seconds])
 
   const resetTimer = useCallback(() => {
