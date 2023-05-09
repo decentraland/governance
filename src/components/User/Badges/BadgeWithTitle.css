@@ -26,7 +26,7 @@
   box-shadow: 0 0 8px rgb(var(--gray-raw-b));
 }
 
-.BadgeWithTitle__Title > .HelperText__Label {
+.BadgeWithTitle__Title > span {
   font-style: normal;
   font-weight: 500;
   font-size: 13px;

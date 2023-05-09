@@ -26,13 +26,13 @@ export default function Badges({ address }: Props) {
   }, [badges])
 
   const handleSidebarClose = useCallback(() => {
-    setBadgeInDetail(null)
     setSidebarOpen(false)
+    setBadgeInDetail(null)
   }, [])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      const sidebar = document.querySelector('.BadgesSidebar')
+      const sidebar = document.querySelector('.GovernanceSidebar')
       const target = event.target as Node
       const isBadgeWithTitle = (target as Element).closest('.BadgeWithTitle')
 
