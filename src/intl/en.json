@@ -563,7 +563,7 @@
       "selected_choice": "You're about to vote "
     },
     "identity_connect": {
-      "description": "**New Feature: Augmented Profiles**\n\nPower up your Profile by linking different accounts used in the Decentraland ecosystem.\n\nUsers with linked accounts will get visual cues indicating there's more to them that meets the eye.",
+      "description": "**New Feature: Linked Profiles**\n\nEnhance your Profile by linking different third-party accounts used in the Decentraland DAO ecosystem.\n\nUsers with linked accounts will get an eye-catching indicator next to their username.",
       "connect_button": "Link Accounts",
       "cancel_button": "Maybe later"
     },
@@ -576,15 +576,15 @@
         "card_description": "Make comments left on proposals link back to, and be displayed on your Governance profile.",
         "title": "Link Forum Account",
         "title_step_1": "1. Sign message",
-        "description_step_1": "Use your web3 wallet to securely sign a message to get the linking going.",
+        "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
         "action_step_1": "Sign",
         "helper_step_1": "First, sign the message.",
         "title_step_2": "2. Copy to clipboard",
         "description_step_2": "You'll be using the same content as the signature for the next step.",
         "action_step_2": "Copy",
         "helper_step_2": "Then, copy the signed message.",
-        "title_step_3": "3. Comment on forum thread",
-        "description_step_3": "Paste the content onto the comment box and submit to complete the link.",
+        "title_step_3": "3. Post on Forum thread",
+        "description_step_3": "Paste the content onto the comment box and publish to complete the linking.",
         "action_step_3": "Open",
         "helper_step_3": "Finally, comment the signed message on the forum thread.",
         "card_helper": {
@@ -601,17 +601,17 @@
         "success_text": "**Governance and Forum accounts linked successfully** 🎉\n\nNow your comments left on Proposals' forum threads will link back to, and be displayed on your Governance profile.",
         "success_subtext": "Plus, you'll get a fancy icon next to your **username**",
         "success_button": "Got it",
-        "error_text": "**Governance and Forum accounts could not be linked**\n\nSomething happened. It must have been aliens, but we can't be sure.",
+        "error_text": "**Governance and Forum accounts could not be linked**\n\nSomething happened. It must have been aliens, or a malevolent AI but we can't be sure.",
         "error_subtext": "Maybe just have a go at it one more time?",
         "error_button": "Retry"
       },
       "discord": {
-        "card_title": "Discord User",
-        "card_description": "Elevate your credibility by making sure others know it is actually you trolling and voting."
+        "card_title": "Discord",
+        "card_description": "Elevate your credibility by letting others know which wallet is behind your chat interactions."
       },
       "twitter": {
         "card_title": "Twitter",
-        "card_description": "Elevate your credibility by making sure others know it is actually you trolling and voting."
+        "card_description": "Let the world know that you are behind those witty tweets about the Metaverse."
       },
       "soon": "Soon"
     }
