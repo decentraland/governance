@@ -6,7 +6,9 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
+import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import locations from '../../modules/locations'
+import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
 
 import './Navigation.css'
@@ -30,6 +32,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const [user] = useAuthContext()
 
   const { isDebugAddress } = useIsDebugAddress(user)
+  const isProfileValidated = useIsProfileValidated(user)
 
   return (
     <div className="Navigation">
@@ -46,7 +49,10 @@ const Navigation = ({ activeTab }: NavigationProps) => {
           </Link>
           {user && (
             <Link href={locations.profile({ address: user })}>
-              <Tabs.Tab active={activeTab === NavigationTab.Profile}>{t('navigation.profile')}</Tabs.Tab>
+              <Tabs.Tab active={activeTab === NavigationTab.Profile}>
+                {t('navigation.profile')}
+                {!isProfileValidated && <Dot />}
+              </Tabs.Tab>
             </Link>
           )}
           <Link href={locations.transparency()}>

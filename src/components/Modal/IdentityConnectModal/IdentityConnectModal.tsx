@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { Governance } from '../../../clients/Governance'
+import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import Identity from '../../Icon/Identity'
 
 import AccountsConnectModal from './AccountsConnectModal'
@@ -31,28 +30,15 @@ function IdentityConnectModal() {
   }
   const handleCloseSetUp = () => setIsSetUpOpen(false)
 
-  const [isProfileValidated, isProfileValidatedState] = useAsyncMemo(
-    async () => {
-      const timestamp = localStorage.getItem(STORAGE_KEY)
-      if (!timestamp || new Date() > new Date(timestamp)) {
-        if (user) {
-          return await Governance.get().isProfileValidated(user)
-        }
-      }
-      return null
-    },
-    [user],
-    {
-      initialValue: null,
-    }
-  )
+  const timestamp = localStorage.getItem(STORAGE_KEY)
+  const checkProfile = !timestamp || new Date() > new Date(timestamp)
+  const isProfileValidated = useIsProfileValidated(checkProfile ? user : null)
 
   useEffect(() => {
-    if (!isProfileValidatedState.loading && isProfileValidated !== null) {
+    if (isProfileValidated !== null) {
       setIsModalOpen(!isProfileValidated)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isProfileValidatedState.loading])
+  }, [isProfileValidated])
 
   return (
     <>
