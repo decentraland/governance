@@ -42,6 +42,10 @@
   color: var(--black-600);
 }
 
+.BadgeDetail__Description {
+  max-width: 360px;
+}
+
 .BadgeDetail__Description > p.dg.Paragraph {
   font-style: normal;
   font-size: 15px;
