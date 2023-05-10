@@ -1,5 +1,4 @@
 :root {
-  --yellow-raw: 255, 176, 63;
   --fuchsia-raw: 255, 90, 254;
   --green-raw: 68, 182, 0;
   --green-raw-b: 1, 127, 10;
@@ -7,13 +6,8 @@
   --red-raw: 216, 0, 39;
   --red-raw-b: 255, 0, 46;
   --red-raw-c: 216, 0, 39;
-  --red-raw-d: 255, 0, 0;
   --blue-raw: 72, 136, 238;
-  --blue-raw-b: 0, 191, 217;
-  --blue-raw-c: 64, 95, 205;
-  --gray-raw: 161, 158, 168;
   --gray-raw-b: 115, 110, 125;
-  --white-raw: 255, 255, 255;
   --orange-raw: 255, 116, 57;
   --black-raw: 22, 20, 26;
   --purple-raw: 60, 36, 179;
@@ -23,10 +17,10 @@
   --purple-raw-e: 165, 36, 179;
   --dcl-primary-raw: 255, 45, 85;
 
-  --gradient-green: linear-gradient(90deg, rgba(var(--green-raw-b), 1) 0%, rgba(var(--blue-raw-b), 1) 100%);
-  --gradient-red-1: linear-gradient(90deg, rgba(var(--red-raw-b), 1) 0%, rgba(var(--purple-raw-b), 1) 100%);
+  --gradient-green: linear-gradient(90deg, rgba(var(--green-raw-b), 1) 0%, rgba(0, 191, 217, 1) 100%);
+  --gradient-red-1: linear-gradient(90deg, rgba(var(--red-raw-b), 1) 0%, rgba(64, 95, 205, 1) 100%);
   --gradient-red-2: linear-gradient(90deg, rgba(var(--red-raw-c), 1) 0%, rgba(var(--red-raw-b), 1) 100%);
-  --gradient-purple-1: linear-gradient(90deg, rgba(var(--purple-raw-b), 1) 0%, rgba(var(--blue-raw-c), 1) 100%);
+  --gradient-purple-1: linear-gradient(90deg, rgba(var(--purple-raw-b), 1) 0%, rgba(64, 95, 205, 1) 100%);
   --gradient-purple-2: linear-gradient(90deg, rgba(var(--purple-raw-c), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
   --gradient-purple-3: linear-gradient(90deg, rgba(var(--purple-raw-e), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
 
@@ -58,9 +52,9 @@
   --blue-600: rgba(137, 186, 255, 1);
   --blue-800: rgba(var(--blue-raw), 1);
 
-  --gray: rgba(var(--gray-raw), 1); /* TODO: Sync with Figma color styles */
+  --gray: rgba(161, 158, 168, 1); /* TODO: Sync with Figma color styles */
 
-  --white-900: rgba(var(--white-raw), 1);
+  --white-900: rgba(255, 255, 255, 1);
 
   --orange-200: rgba(255, 233, 223, 1);
   --alpha-orange-200: rgba(var(--orange-raw), 0.16);
@@ -91,7 +85,7 @@
   --background-add-hiring: rgba(var(--green-raw), 0.08);
   --background-remove-hiring: var(--red-100);
   --background-remove-poi: var(--red-100);
-  --background-linked-wearables: rgba(var(--yellow-raw), 0.2);
+  --background-linked-wearables: rgba(255, 176, 63, 0.2);
   --background-pitch: rgba(var(--red-raw), 0.08);
   --background-popup: rgba(92, 92, 110, 1);
   --background-disabled: rgba(249, 248, 249, 1);
