@@ -13,8 +13,18 @@ interface Props {
   badge: GovernanceBadge
 }
 
+function addNewLinesAfterFirstDot(text: string): string {
+  const dotIndex = text.indexOf('.')
+  if (dotIndex === -1) return text
+
+  const firstPart = text.substring(0, dotIndex + 1)
+  const secondPart = text.substring(dotIndex + 1)
+  return `${firstPart}\n\n${secondPart}`
+}
+
 export default function BadgeDetail({ badge }: Props) {
   const t = useFormatMessage()
+
   return (
     <div className="BadgeDetail__Container">
       <Badge badge={badge} variant={BadgeVariant.Primary} iconClassName="BadgeDetail__Icon" />
@@ -24,7 +34,7 @@ export default function BadgeDetail({ badge }: Props) {
           {t('component.badge_card.mint_date', { at: Time.unix(badge.createdAt).fromNow() })}
         </div>
       </div>
-      <Markdown className="BadgeDetail__Description">{badge.description}</Markdown>
+      <Markdown className="BadgeDetail__Description">{addNewLinesAfterFirstDot(badge.description)}</Markdown>
     </div>
   )
 }
