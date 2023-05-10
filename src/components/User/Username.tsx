@@ -2,14 +2,17 @@ import React from 'react'
 
 import { Size, SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
+import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
+import { Governance } from '../../clients/Governance'
 import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../modules/locations'
+import ValidatedProfile from '../Icon/ValidatedProfile'
 
 import './Username.css'
 
@@ -53,13 +56,27 @@ function getBlockieScale(size?: string) {
   }
 }
 
-const Username = ({ address, size, linked, variant = UsernameVariant.Full, strong = false, className }: Props) => {
+const Username = ({
+  address,
+  size = 'mini',
+  linked,
+  variant = UsernameVariant.Full,
+  strong = false,
+  className,
+}: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
   const blockieScale = getBlockieScale(size)
   const isAddressVariant = variant === UsernameVariant.Address
   const isAvatarVariant = variant === UsernameVariant.Avatar
   const checksumAddress = address ? getChecksumAddress(address) : ''
+  const [isProfileValidated] = useAsyncMemo(
+    async () => {
+      return await Governance.get().isProfileValidated(address)
+    },
+    [address],
+    { initialValue: false }
+  )
 
   const userElement = (
     <>
@@ -74,7 +91,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
         <>
           {hasDclProfile && (
             <>
-              <Avatar size={size || 'mini'} address={address} />
+              <Avatar size={size} address={address} />
               {profileHasName && !isAvatarVariant && <span>{profile!.name}</span>}
               {!profileHasName && !isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
             </>
@@ -88,6 +105,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
           )}
         </>
       )}
+      {isProfileValidated && !isAvatarVariant && <ValidatedProfile />}
     </>
   )
 

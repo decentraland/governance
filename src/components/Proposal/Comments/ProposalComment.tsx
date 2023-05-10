@@ -8,6 +8,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { getUserProfileUrl } from '../../../entities/Discourse/utils'
 import useProfile from '../../../hooks/useProfile'
+import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './ProposalComment.css'
 
@@ -55,6 +56,7 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked, ad
           <a href={discourseUserUrl} target="_blank" rel="noopener noreferrer">
             <Paragraph bold>
               {displayableAddress && !isEthereumAddress(displayableAddress) ? displayableAddress : user}
+              {address && <ValidatedProfile />}
             </Paragraph>
           </a>
           <span>

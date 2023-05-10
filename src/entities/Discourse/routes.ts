@@ -15,10 +15,10 @@ import { ValidationMessage } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/forumId', withAuth, handleAPI(getForumId))
-  route.get('/validateProfile', withAuth, handleAPI(getValidationMessage))
-  route.post('/validateProfile', withAuth, handleAPI(checkValidationMessage))
-  route.delete('/validateProfile', withAuth, handleAPI(deleteValidation))
+  route.get('/is-profile-validated/:address', handleAPI(isProfileValidated))
+  route.get('/validate-profile', withAuth, handleAPI(getValidationMessage))
+  route.post('/validate-profile', withAuth, handleAPI(checkValidationMessage))
+  route.delete('/validate-profile', withAuth, handleAPI(deleteValidation))
 })
 
 const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
@@ -90,15 +90,15 @@ async function checkValidationMessage(req: WithAuth) {
   }
 }
 
-async function getForumId(req: WithAuth) {
-  const user = req.auth!
+async function isProfileValidated(req: Request) {
+  const address = req.params.address
+  if (!isEthereumAddress(address)) {
+    return false
+  }
   try {
-    const forum_id = await DiscourseModel.getForumId(user)
-    return {
-      forum_id,
-    }
+    return await DiscourseModel.isProfileValidated(address)
   } catch (error) {
-    throw new Error("Couldn't get the forum id. Error: " + error)
+    throw new Error('Error while fetching validation data ' + error)
   }
 }
 

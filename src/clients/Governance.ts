@@ -449,7 +449,7 @@ export class Governance extends API {
 
   async getValidationMessage() {
     const result = await this.fetch<ApiResponse<string>>(
-      '/validateProfile',
+      '/validate-profile',
       this.options().method('GET').authorization({ sign: true })
     )
 
@@ -458,17 +458,17 @@ export class Governance extends API {
 
   async validateProfile() {
     const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
-      '/validateProfile',
+      '/validate-profile',
       this.options().method('POST').authorization({ sign: true })
     )
 
     return result.data
   }
 
-  async getForumId() {
-    const result = await this.fetch<ApiResponse<{ forum_id: string | undefined }>>(
-      '/forumId',
-      this.options().method('GET').authorization({ sign: true })
+  async isProfileValidated(address: string) {
+    const result = await this.fetch<ApiResponse<boolean>>(
+      `/is-profile-validated/${address}`,
+      this.options().method('GET')
     )
 
     return result.data
@@ -476,7 +476,7 @@ export class Governance extends API {
 
   async removeVerification(address: string) {
     const result = await this.fetch<ApiResponse<unknown>>(
-      '/validateProfile',
+      '/validate-profile',
       this.options().method('DELETE').authorization({ sign: true }).json({ address })
     )
 

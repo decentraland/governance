@@ -13,7 +13,6 @@ import Identity from '../../Icon/Identity'
 import AccountsConnectModal from './AccountsConnectModal'
 import './IdentityConnectModal.css'
 
-const INITIAL_VALUE = { forum_id: null }
 const STORAGE_KEY = 'org.decentraland.governance.identity_modal.hide'
 const HIDE_TIME = 24 * 60 * 60 * 1000 // 24hs
 
@@ -32,29 +31,28 @@ function IdentityConnectModal() {
   }
   const handleCloseSetUp = () => setIsSetUpOpen(false)
 
-  const [response, responseState] = useAsyncMemo(
+  const [isProfileValidated, isProfileValidatedState] = useAsyncMemo(
     async () => {
       const timestamp = localStorage.getItem(STORAGE_KEY)
       if (!timestamp || new Date() > new Date(timestamp)) {
         if (user) {
-          return await Governance.get().getForumId()
+          return await Governance.get().isProfileValidated(user)
         }
       }
-      return INITIAL_VALUE
+      return null
     },
     [user],
     {
-      initialValue: { forum_id: null },
+      initialValue: null,
     }
   )
 
   useEffect(() => {
-    if (!responseState.loading && response.forum_id !== null) {
-      const { forum_id } = response
-      setIsModalOpen(!forum_id)
+    if (!isProfileValidatedState.loading && isProfileValidated !== null) {
+      setIsModalOpen(!isProfileValidated)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [responseState.loading])
+  }, [isProfileValidatedState.loading])
 
   return (
     <>

@@ -19,7 +19,7 @@ import ForumBlue from '../../Icon/ForumBlue'
 import LinkFailed from '../../Icon/LinkFailed'
 import LinkSucceded from '../../Icon/LinkSucceded'
 import Sign from '../../Icon/Sign'
-import VerifiedProfile from '../../Icon/VerifiedProfile'
+import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './AccountsConnectModal.css'
 
@@ -196,7 +196,6 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   const handleValidate = useCallback(() => {
     setIsValidating(true)
     openThread()
-    nextStep()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -318,7 +317,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
               <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_text`)}</Markdown>
               <div className="AccountsConnectModal__PostText--subtext">
                 <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_subtext`)}</Markdown>
-                {isValidated && <VerifiedProfile />}
+                {isValidated && <ValidatedProfile />}
               </div>
             </div>
             <div className="AccountsConnectModal__PostAction">

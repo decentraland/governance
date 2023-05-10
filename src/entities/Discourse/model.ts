@@ -25,10 +25,12 @@ export default class DiscourseModel extends Model<DiscourseAttributes> {
     return await this.namedQuery('get_addresses_by_forum_ids', query)
   }
 
-  static async getForumId(address: string): Promise<number | undefined> {
-    const query = SQL`SELECT forum_id FROM ${table(this)} WHERE address = ${address.toLowerCase()}`
+  static async isProfileValidated(address: string): Promise<boolean> {
+    const query = SQL`SELECT count(forum_id) as is_validated FROM ${table(
+      this
+    )} WHERE address = ${address.toLowerCase()}`
     const result = await this.namedQuery('get_forum_id', query)
-    return result[0]?.forum_id
+    return result[0]?.is_validated > 0
   }
 
   // TODO: REMOVE BEFORE PRODUCTION

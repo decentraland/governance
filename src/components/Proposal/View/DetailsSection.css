@@ -35,23 +35,23 @@
   align-items: flex-start;
 }
 
-.DetailsSection__Flex--Coauthors span {
+.DetailsSection__Flex--coauthors .Coauthor {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 @media (min-width: 1080px) {
-  .DetailsSection__Flex--Coauthors span {
+  .DetailsSection__Flex--coauthors .Coauthor {
     justify-content: flex-end;
   }
 }
 
-.DetailsSection__Flex--Coauthors span > svg {
+.DetailsSection__Flex--coauthors .Coauthor > svg {
   margin-left: 4px;
 }
 
-.DetailsSection__Flex--Coauthors span:not(:last-child) {
+.DetailsSection__Flex--coauthors .Coauthor:not(:last-child) {
   margin-bottom: 8px;
 }
 
@@ -112,9 +112,5 @@
 @media (min-width: 1080px) {
   .DetailsSection__Flex {
     flex-direction: row;
-  }
-
-  .DetailsSection__Flex--Coauthors span svg {
-    min-width: 10px;
   }
 }

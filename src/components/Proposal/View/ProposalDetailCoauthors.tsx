@@ -11,6 +11,7 @@ import Username from '../../User/Username'
 
 interface Props {
   coauthor: CoauthorAttributes
+  className?: string
 }
 
 interface CoauthorHelperConfiguration {
@@ -33,7 +34,7 @@ const helperConfig: Record<CoauthorStatus, CoauthorHelperConfiguration> = {
   },
 }
 
-function ProposalDetailCoauthors({ coauthor }: Props) {
+function ProposalDetailCoauthors({ coauthor, className }: Props) {
   const { address, status } = coauthor
   const t = useFormatMessage()
   return (
@@ -41,7 +42,7 @@ function ProposalDetailCoauthors({ coauthor }: Props) {
       content={<span>{t(helperConfig[status].helperKey)}</span>}
       position="top center"
       trigger={
-        <span>
+        <span className={className}>
           <Username address={address} linked />
           {helperConfig[status].icon}
         </span>

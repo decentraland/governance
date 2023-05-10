@@ -62,7 +62,7 @@
 
 .row.VoteList__Item.VotesList__DividerLine {
   display: flex;
-  align-items: baseline;
+  align-items: center;
 }
 
 .row.VoteList__Item.VoteList__Item--low-quality-active {

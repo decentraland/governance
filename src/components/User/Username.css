@@ -24,3 +24,7 @@ a.Username span.address {
 .Username .dcl.blockie-wrapper .dcl.blockie-children {
   margin-left: 0.5rem;
 }
+
+.Username svg {
+  margin-left: 4px;
+}
