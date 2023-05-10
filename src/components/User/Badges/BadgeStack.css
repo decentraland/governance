@@ -1,0 +1,34 @@
+.BadgeStack {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: -12px;
+}
+
+.BadgeStack__Counter {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: rgb(var(--dcl-primary-raw));
+  position: relative;
+  margin-left: 4px;
+}
+
+.BadgeStack__Icon {
+  width: 32px;
+  height: 32px;
+}
+
+.BadgeStack__Badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+}
+
+.BadgeStack__Overlapping {
+  position: relative;
+}

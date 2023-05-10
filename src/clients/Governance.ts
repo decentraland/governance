@@ -5,6 +5,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { GOVERNANCE_API } from '../constants'
+import { UserBadges } from '../entities/Badges/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
@@ -129,7 +130,6 @@ export class Governance extends API {
 
   async getGrants() {
     const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
-
     return proposals.data
   }
 
@@ -435,5 +435,10 @@ export class Governance extends API {
     )
 
     return result.data
+  }
+
+  async getBadges(address: string) {
+    const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
+    return response.data
   }
 }
