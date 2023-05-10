@@ -299,8 +299,7 @@ export default function ProposalPage() {
   const showProposalBudget =
     proposal?.type === ProposalType.Grant &&
     !isLegacyGrantCategory(proposal.configuration.category) &&
-    !isLoadingBudgetWithContestants &&
-    proposal.status === ProposalStatus.Active
+    !isLoadingBudgetWithContestants
   const showTenderProposals =
     proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
 
