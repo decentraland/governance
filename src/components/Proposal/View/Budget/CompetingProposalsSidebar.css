@@ -83,7 +83,7 @@
 }
 
 .ContestedLegend {
-  background: var(--fuchsia-raw-d);
+  background: var(--fuchsia-raw-d); /* TODO: This color doesn't exist */
 }
 
 .ContestedOverbudgetLegend {

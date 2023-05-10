@@ -4,7 +4,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ProposalType } from '../../../entities/Proposal/types'
 
-import ProposalProcess, { ProcessStatus } from './ProposalProcess'
+import ProposalProcess, { ProcessStatus, ProcessType } from './ProposalProcess'
 
 interface Props {
   proposalType: ProposalType
@@ -34,5 +34,7 @@ export default function GovernanceProcess({ proposalType }: Props) {
     [proposalType, t]
   )
 
-  return <ProposalProcess title={t('page.proposal_governance_process.title')} items={items} />
+  return (
+    <ProposalProcess title={t('page.proposal_governance_process.title')} items={items} type={ProcessType.Governance} />
+  )
 }
