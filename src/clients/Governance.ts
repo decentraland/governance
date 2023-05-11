@@ -8,7 +8,6 @@ import { GOVERNANCE_API } from '../constants'
 import { UserBadges } from '../entities/Badges/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { ValidationMessage } from '../entities/Discourse/types'
 import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
 import {
   CategorizedGrants,
@@ -86,15 +85,6 @@ export class Governance extends API {
 
     return this.Cache.get(baseUrl)!
   }
-
-  // private async trycatch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
-  //   try {
-  //     return await fn()
-  //   } catch (error) {
-  //     ErrorService.report('Failed Governance fetch', error)
-  //     return fallback
-  //   }
-  // }
 
   static get() {
     return this.from(env('GOVERNANCE_API', this.Url))

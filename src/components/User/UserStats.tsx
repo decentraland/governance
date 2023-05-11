@@ -11,7 +11,7 @@ import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import ValidatedProfile from '../Icon/ValidatedProfile'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
-import Settings from '../Profile/Settings'
+import ProfileSettings from '../Profile/ProfileSettings'
 
 import Badges from './Badges/Badges'
 
@@ -46,7 +46,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
             <Username address={address} size="medium" className="UserStats__Username" />
           </NotMobile>
           {isProfileValidated && <ValidatedProfile />}
-          {showSettings && <Settings />}
+          {showSettings && <ProfileSettings />}
         </div>
         <Badges address={address} />
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />

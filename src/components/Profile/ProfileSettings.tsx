@@ -9,18 +9,21 @@ import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import Gear from '../Icon/Gear'
 import GearNew from '../Icon/GearNew'
 
-function Settings() {
+import './ProfileSettings.css'
+
+function ProfileSettings() {
   const t = useFormatMessage()
   const { setIsModalOpen } = useIdentityModalContext()
   const [user] = useAuthContext()
-  const IsProfileValidated = useIsProfileValidated(user)
+  const isProfileValidated = useIsProfileValidated(user)
+  const showDot = isProfileValidated !== null && !isProfileValidated
 
   const handleLinkedProfilesClick = () => setIsModalOpen(true)
 
   return (
-    <Dropdown floating icon={IsProfileValidated ? <Gear /> : <GearNew />}>
+    <Dropdown className="ProfileSettings" floating icon={showDot ? <GearNew /> : <Gear />}>
       <Dropdown.Menu>
-        <Dropdown.Item onClick={handleLinkedProfilesClick} disabled={IsProfileValidated == null || IsProfileValidated}>
+        <Dropdown.Item onClick={handleLinkedProfilesClick} disabled={isProfileValidated == null || isProfileValidated}>
           {t('page.profile.settings.linked_profiles')}
         </Dropdown.Item>
       </Dropdown.Menu>
@@ -28,4 +31,4 @@ function Settings() {
   )
 }
 
-export default Settings
+export default ProfileSettings

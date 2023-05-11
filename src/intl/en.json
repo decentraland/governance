@@ -12,6 +12,10 @@
     "proposals": "Proposals",
     "grants": "Grants",
     "profile": "Profile",
+    "profile_pop_up": {
+      "label": "Link your third-party profiles here",
+      "button": "Dismiss"
+    },
     "enacted": "Enacted",
     "transparency": "Transparency",
     "debug": "Debug",
