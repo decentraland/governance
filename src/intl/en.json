@@ -1215,6 +1215,9 @@
           "label": "Co-authoring"
         },
         "button": "View more proposals"
+      },
+      "settings": {
+        "linked_profiles": "Linked profiles"
       }
     },
     "transparency": {

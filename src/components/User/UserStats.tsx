@@ -1,13 +1,17 @@
 import React, { Suspense } from 'react'
 
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import useIsProfileValidated from '../../hooks/useIsProfileValidated'
+import ValidatedProfile from '../Icon/ValidatedProfile'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
+import Settings from '../Profile/Settings'
 
 import Badges from './Badges/Badges'
 
@@ -26,17 +30,24 @@ const UserAvatar = React.lazy(() => import('./UserAvatar'))
 
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
+  const isProfileValidated = useIsProfileValidated(address)
+  const [user] = useAuthContext()
+  const showSettings = user && user === address.toLowerCase()
   const { total } = vpDistribution || { total: 0 }
 
   return (
     <Container className="UserStats__Container">
       <div className="UserStats__UserInfo">
-        <Mobile>
-          <Username address={address} size="small" className="UserStats__Username" />
-        </Mobile>
-        <NotMobile>
-          <Username address={address} size="medium" className="UserStats__Username" />
-        </NotMobile>
+        <div className="UserStats__UsernameContainer">
+          <Mobile>
+            <Username address={address} size="small" className="UserStats__Username" />
+          </Mobile>
+          <NotMobile>
+            <Username address={address} size="medium" className="UserStats__Username" />
+          </NotMobile>
+          {isProfileValidated && <ValidatedProfile />}
+          {showSettings && <Settings />}
+        </div>
         <Badges address={address} />
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
         {total > 0 && (

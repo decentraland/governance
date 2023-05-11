@@ -18,6 +18,7 @@ import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/Fe
 import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Navbar from './src/components/Layout/Navbar'
+import IdentityModalContextProvider from './src/components/Context/IdentityModalContext'
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
@@ -38,13 +39,15 @@ export const wrapRootElement = ({ element }) => {
 export const wrapPageElement = ({ element, props }) => {
   return (
     <IntlProvider {...props.pageContext.intl}>
-      <BurgerMenuStatusContextProvider>
-        <Layout {...props} rightMenu={<Navbar />}>
-          {element}
-        </Layout>
-      </BurgerMenuStatusContextProvider>
-      <ExternalLinkWarningModal />
-      <IdentityConnectModal />
+      <IdentityModalContextProvider>
+        <BurgerMenuStatusContextProvider>
+          <Layout {...props} rightMenu={<Navbar />}>
+            {element}
+          </Layout>
+        </BurgerMenuStatusContextProvider>
+        <ExternalLinkWarningModal />
+        <IdentityConnectModal />
+      </IdentityModalContextProvider>
     </IntlProvider>
   )
 }

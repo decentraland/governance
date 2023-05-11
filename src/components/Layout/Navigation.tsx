@@ -51,7 +51,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
             <Link href={locations.profile({ address: user })}>
               <Tabs.Tab active={activeTab === NavigationTab.Profile}>
                 {t('navigation.profile')}
-                {!isProfileValidated && <Dot />}
+                {isProfileValidated !== null && !isProfileValidated && <Dot />}
               </Tabs.Tab>
             </Link>
           )}

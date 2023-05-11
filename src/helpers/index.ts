@@ -1,4 +1,3 @@
-import { createHash } from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
@@ -89,17 +88,6 @@ export function addressShortener(address: string) {
 
 export function openUrl(url: string, newTab = true) {
   window?.open(url, newTab ? '_blank' : '_self')?.focus()
-}
-
-export function generateNonce(digits = 6) {
-  const randomNum = Math.round(Math.random() * Math.pow(10, digits))
-  return randomNum.toString().padStart(digits, '0')
-}
-
-export function generateHash(input: string): string {
-  const hash = createHash('sha256')
-  hash.update(input)
-  return hash.digest('hex')
 }
 
 export function capitalizeFirstLetter(string: string) {

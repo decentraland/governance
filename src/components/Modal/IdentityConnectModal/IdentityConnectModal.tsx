@@ -6,6 +6,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import useIdentityModalContext from '../../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import Identity from '../../Icon/Identity'
 
@@ -18,7 +19,7 @@ const HIDE_TIME = 24 * 60 * 60 * 1000 // 24hs
 function IdentityConnectModal() {
   const t = useFormatMessage()
   const [user] = useAuthContext()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { isModalOpen, setIsModalOpen } = useIdentityModalContext()
   const [isSetUpOpen, setIsSetUpOpen] = useState(false)
   const handleDismiss = () => {
     localStorage.setItem(STORAGE_KEY, new Date(new Date().getTime() + HIDE_TIME).toISOString())
@@ -35,10 +36,10 @@ function IdentityConnectModal() {
   const isProfileValidated = useIsProfileValidated(checkProfile ? user : null)
 
   useEffect(() => {
-    if (isProfileValidated !== null) {
+    if (!!setIsModalOpen && isProfileValidated !== null) {
       setIsModalOpen(!isProfileValidated)
     }
-  }, [isProfileValidated])
+  }, [isProfileValidated, setIsModalOpen])
 
   return (
     <>
