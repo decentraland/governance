@@ -1,24 +1,3 @@
-.ui.push.right.very.wide.visible.sidebar.CompetingProposalsSidebar {
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .ui.push.right.very.wide.visible.sidebar.CompetingProposalsSidebar {
-    width: 600px;
-  }
-}
-
-.CompetingProposalsSidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  background: var(--white-900);
-  padding-top: 26px;
-  padding-left: 27px;
-  padding-right: 24px;
-  cursor: default;
-}
-
 .CompetingProposalsSidebar__Content {
   width: 100%;
   display: flex;

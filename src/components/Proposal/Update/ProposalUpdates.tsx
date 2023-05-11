@@ -1,14 +1,13 @@
 import React from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../../entities/Updates/utils'
-import Divider from '../../Common/Divider'
+import Empty from '../../Common/Empty'
 import Megaphone from '../../Icon/Megaphone'
+import Section from '../View/Section'
 
 import ProposalUpdate from './ProposalUpdate'
 import './ProposalUpdates.css'
@@ -33,33 +32,26 @@ export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdat
   const hasUpdates = updates.length > 0
 
   return (
-    <div className="ProposalUpdates">
-      <Divider />
-      <div className="ProposalUpdates__Header">
-        <Header>{t('page.proposal_detail.grant.update_title')}</Header>
-      </div>
-      <div>
-        {!hasUpdates && (
-          <div className="ProposalUpdates__EmptyContainer">
-            <Megaphone className="ProposalUpdates__EmptyIcon" />
-            <Paragraph secondary className="ProposalUpdates__EmptyText">
-              {t('page.proposal_detail.grant.update_empty')}
-            </Paragraph>
-          </div>
-        )}
-        {hasUpdates &&
-          updates.map((item, index) => (
-            <ProposalUpdate
-              key={item.id}
-              index={updates.length - index}
-              proposal={proposal}
-              update={item}
-              expanded={index === 0}
-              isCoauthor={isCoauthor}
-              onUpdateDeleted={onUpdateDeleted}
-            />
-          ))}
-      </div>
-    </div>
+    <Section title={t('page.proposal_detail.grant.update_title')}>
+      {!hasUpdates && (
+        <Empty
+          className="ProposalUpdates__EmptyContainer"
+          icon={<Megaphone className="ProposalUpdates__EmptyIcon" />}
+          description={t('page.proposal_detail.grant.update_empty')}
+        />
+      )}
+      {hasUpdates &&
+        updates.map((item, index) => (
+          <ProposalUpdate
+            key={item.id}
+            index={updates.length - index}
+            proposal={proposal}
+            update={item}
+            expanded={index === 0}
+            isCoauthor={isCoauthor}
+            onUpdateDeleted={onUpdateDeleted}
+          />
+        ))}
+    </Section>
   )
 }

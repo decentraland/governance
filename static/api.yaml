@@ -16,7 +16,9 @@ tags:
   - name: Votes
     description: The Votes section of the API is focused on retrieving information related to the voting process associated with a specific proposal. Votes are the way community members express their support or opposition to a proposal.
   - name: Subscriptions (User Watchlist)
-    description: The Subscriptions section of the API is focused on retrieving information related to the subscriptions associated with a specific proposal. This feature is called Watchlist on the Governance dApp. Watchlists are usually used to have a closer look on updates or changes related to a proposal. 
+    description: The Subscriptions section of the API is focused on retrieving information related to the subscriptions associated with a specific proposal. This feature is called Watchlist on the Governance dApp. Watchlists are usually used to have a closer look on updates or changes related to a proposal.
+  - name: Badges
+    description: Endpoints related to user badges
 paths:
   /proposals:
     get:
@@ -240,6 +242,20 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+
+  /badges/{address}:
+    get:
+      tags:
+        - Badges
+      summary: Get badges for the given address
+      parameters:
+        - name: address
+          $ref: '#/components/parameters/address'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
 
 ############# COMPONENTS #############
 

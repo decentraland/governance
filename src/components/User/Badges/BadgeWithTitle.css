@@ -1,0 +1,36 @@
+.BadgeWithTitle {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: -12px;
+}
+
+.BadgeWithTitle:first-child {
+  margin-left: 0;
+}
+
+.BadgeWithTitle__Title {
+  background: var(--black-300);
+  display: flex;
+  height: 24px;
+  opacity: 0.56;
+  border-radius: 4px;
+  padding: 3px 6px 3px 24px;
+  position: relative;
+  right: 20px;
+  gap: 4px;
+}
+
+.BadgeWithTitle__Title:hover {
+  box-shadow: 0 0 8px rgb(var(--gray-raw-b));
+}
+
+.BadgeWithTitle__Title > span {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-800);
+}

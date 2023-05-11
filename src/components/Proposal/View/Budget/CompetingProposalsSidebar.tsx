@@ -13,6 +13,7 @@ import { CURRENCY_FORMAT_OPTIONS, getFormattedPercentage } from '../../../../hel
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import Pill, { PillColor } from '../../../Common/Pill'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
+import GovernanceSidebar from '../../../Sidebar/GovernanceSidebar'
 import ProposalCard from '../ProposalCard'
 
 import './CompetingProposalsSidebar.css'
@@ -176,18 +177,14 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   }
 
   return (
-    <Sidebar
-      className="CompetingProposalsSidebar"
-      animation={'push'}
+    <GovernanceSidebar
       onShow={() => {
         setShowPopups(true)
       }}
       onHide={() => {
         setShowPopups(false)
       }}
-      direction={'right'}
       visible={isSidebarVisible}
-      width={'very wide'}
     >
       {SHOW_DISTRIBUTION_BARS && (
         <div className="CompetingProposalsSidebar__Content">
@@ -313,6 +310,6 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
           </div>
         ))}
       </div>
-    </Sidebar>
+    </GovernanceSidebar>
   )
 }

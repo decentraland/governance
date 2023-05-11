@@ -14,6 +14,7 @@ import { readFileSync } from 'fs'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
+import badges from './entities/Badges/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import budget from './entities/Budget/routes'
 import coauthor from './entities/Coauthor/routes'
@@ -60,6 +61,7 @@ app.use('/api', [
   updates,
   coauthor,
   budget,
+  badges,
   common,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)

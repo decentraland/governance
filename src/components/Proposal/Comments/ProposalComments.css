@@ -15,18 +15,6 @@
   top: 25%;
 }
 
-.ProposalComments .ProposalComments__NoComments {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-content: space-around;
-  justify-content: space-around;
-}
-
-.ProposalComments__EmptyIcon {
-  margin-bottom: 16px;
-}
-
 .ProposalComments .ProposalComments__Content + .ProposalComments__Content {
   border-top: 1px solid var(--black-400);
 }

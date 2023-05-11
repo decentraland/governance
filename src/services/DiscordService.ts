@@ -9,7 +9,7 @@ import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/u
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
-import { inBackground } from '../helpers'
+import { capitalizeFirstLetter, inBackground } from '../helpers'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
@@ -41,10 +41,6 @@ type EmbedMessageProps = {
   action: string
   color: MessageColors
   url: string
-}
-
-function capitalizeFirstLetter(string: string) {
-  return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
 }
 
 function getChoices(choices: string[]): Field[] {

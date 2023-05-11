@@ -1,0 +1,51 @@
+.Badge {
+  z-index: 1;
+}
+
+.Badge__Icon {
+  border-radius: 50%;
+  background-size: 192px 192px;
+  background-repeat: no-repeat;
+}
+
+.Badge__Icon--primary {
+  width: 192px;
+  height: 192px;
+  background-size: contain;
+  background-position: 0 0;
+}
+
+.Badge__Icon--filled-mono {
+  width: 32px;
+  height: 32px;
+  background-position: left bottom;
+}
+
+.Badge__Icon--filled-mono-small {
+  width: 24px;
+  height: 24px;
+  background-size: 144px;
+  background-position: bottom left;
+}
+
+.Badge__Icon--filled-duo {
+  width: 32px;
+  height: 32px;
+  background-position: right top;
+}
+
+.Badge__Icon--outline-1px {
+  width: 32px;
+  height: 32px;
+  background-position: left top;
+}
+
+.Badge__Icon--outline-2px {
+  width: 32px;
+  height: 32px;
+  background-position: right bottom;
+}
+
+.Badge__Icon--revoked {
+  filter: grayscale(1);
+}

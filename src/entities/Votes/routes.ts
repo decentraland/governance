@@ -1,7 +1,9 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
@@ -79,6 +81,9 @@ export async function getVotes(proposal_id: string) {
 
 async function getAddressVotes(req: Request) {
   const address = req.params.address
+  if (!address || !isEthereumAddress(address)) {
+    throw new RequestError('Invalid address', RequestError.BadRequest)
+  }
   const first = Number(req.query.first)
   const skip = Number(req.query.skip)
 

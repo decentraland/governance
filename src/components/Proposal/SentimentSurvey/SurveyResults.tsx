@@ -1,15 +1,12 @@
 import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
 import { Reaction, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
-import Divider from '../../Common/Divider'
+import Section from '../View/Section'
 
-import './SurveyResults.css'
 import SurveyTopicResult from './SurveyTopicResult'
 
 interface Props {
@@ -67,26 +64,17 @@ const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTop
   }
 
   return (
-    <div className="SurveyResults">
-      <Divider />
-      {isLoadingSurveyTopics && <Loader />}
-      {!isLoadingSurveyTopics && (
-        <div>
-          <div className="SurveyResults__Header">
-            <Header>{t('survey.results.title')}</Header>
-          </div>
-          {topicIds.map((topicId: string, index: number) => {
-            return (
-              <SurveyTopicResult
-                key={`SurveyTopicResult__${index}`}
-                topicId={topicId}
-                topicResult={topicResults[topicId]}
-              />
-            )
-          })}
-        </div>
-      )}
-    </div>
+    <Section title={t('survey.results.title')} isLoading={isLoadingSurveyTopics}>
+      {topicIds.map((topicId: string, index: number) => {
+        return (
+          <SurveyTopicResult
+            key={`SurveyTopicResult__${index}`}
+            topicId={topicId}
+            topicResult={topicResults[topicId]}
+          />
+        )
+      })}
+    </Section>
   )
 }
 

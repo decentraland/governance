@@ -1,0 +1,9 @@
+.Badges__Container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 25px;
+}
+
+.Badges__Slider {
+  margin-bottom: 25px;
+}
