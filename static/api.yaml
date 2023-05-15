@@ -19,6 +19,8 @@ tags:
     description: The Subscriptions section of the API is focused on retrieving information related to the subscriptions associated with a specific proposal. This feature is called Watchlist on the Governance dApp. Watchlists are usually used to have a closer look on updates or changes related to a proposal.
   - name: Badges
     description: Endpoints related to user badges
+  - name: Users
+    description: These endpoints handle user validation
 paths:
   /proposals:
     get:
@@ -162,7 +164,7 @@ paths:
   /proposals/{proposal}/updates:
     get:
       tags:
-        - Updates
+        - Grant Updates
       summary: Get the updates from the given proposal
       parameters:
         - name: proposal
@@ -173,7 +175,7 @@ paths:
   /proposals/{update}/update:
     get:
       tags:
-        - Updates
+        - Grant Updates
       summary: Get the update details from the given update ID
       parameters:
         - name: update
@@ -185,7 +187,7 @@ paths:
   /committee:
     get:
       tags:
-        - Committee
+        - DAO Committee
       summary: Get the DAO Committee members addresses
       responses:
         '200':
@@ -201,8 +203,8 @@ paths:
           in: query
           description: Proposal ID
           required: true
-      schema:
-        type: string
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/200'
@@ -232,13 +234,11 @@ paths:
   /proposals/{proposal}/subscriptions:
     get:
       tags:
-        - Subscriptions
+        - Subscriptions (User Watchlist)
       summary: Get the subscriptions from a given proposal ID
       parameters:
         - name: proposal
           $ref: '#/components/parameters/proposalId'
-      schema:
-        type: string
       responses:
         '200':
           $ref: '#/components/responses/200'
@@ -257,6 +257,18 @@ paths:
         '400':
           $ref: '#/components/responses/400'
 
+  /user/{address}/is-validated:
+    get:
+      tags:
+        - Users
+      summary: Check if the given address is validated
+      parameters:
+        - name: address
+          $ref: '#/components/parameters/address'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+
 ############# COMPONENTS #############
 
 components:
@@ -270,7 +282,7 @@ components:
       pattern: '^0x[a-fA-F0-9]{40}$'
     proposalType:
       type: string
-      pattern: '(poi|catalyst|ban_name|grant|linked_wearables|poll|draft|governance)'
+      pattern: '(poi|catalyst|ban_name|grant|linked_wearables|poll|draft|governance|hiring)'
     proposalStatus:
       type: string
       pattern: '(pending|active|finished|rejected|passed|enacted|deleted)'

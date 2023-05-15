@@ -14,10 +14,10 @@ import { ValidationMessage } from './types'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/is-profile-validated/:address', handleAPI(isProfileValidated))
-  route.get('/validate-profile', withAuth, handleAPI(getValidationMessage))
-  route.post('/validate-profile', withAuth, handleAPI(checkValidationMessage))
-  route.delete('/validate-profile', withAuth, handleAPI(deleteValidation))
+  route.get('/user/:address/is-validated', handleAPI(isValidated))
+  route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
+  route.post('/user/validate', withAuth, handleAPI(checkValidationMessage))
+  route.delete('/user/validate', withAuth, handleAPI(deleteValidation))
 })
 
 const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
@@ -95,7 +95,7 @@ async function checkValidationMessage(req: WithAuth) {
   }
 }
 
-async function isProfileValidated(req: Request) {
+async function isValidated(req: Request) {
   const address = req.params.address
   if (!isEthereumAddress(address)) {
     return false

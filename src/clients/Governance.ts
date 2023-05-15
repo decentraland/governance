@@ -439,7 +439,7 @@ export class Governance extends API {
 
   async getValidationMessage() {
     const result = await this.fetch<ApiResponse<string>>(
-      '/validate-profile',
+      '/user/validate',
       this.options().method('GET').authorization({ sign: true })
     )
 
@@ -448,7 +448,7 @@ export class Governance extends API {
 
   async validateProfile() {
     const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
-      '/validate-profile',
+      '/user/validate',
       this.options().method('POST').authorization({ sign: true })
     )
 
@@ -456,17 +456,14 @@ export class Governance extends API {
   }
 
   async isProfileValidated(address: string) {
-    const result = await this.fetch<ApiResponse<boolean>>(
-      `/is-profile-validated/${address}`,
-      this.options().method('GET')
-    )
+    const result = await this.fetch<ApiResponse<boolean>>(`/user/${address}/is-validated`, this.options().method('GET'))
 
     return result.data
   }
 
   async removeVerification(address: string) {
     const result = await this.fetch<ApiResponse<unknown>>(
-      '/validate-profile',
+      '/user/validate',
       this.options().method('DELETE').authorization({ sign: true }).json({ address })
     )
 

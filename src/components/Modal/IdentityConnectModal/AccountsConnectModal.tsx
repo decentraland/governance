@@ -127,7 +127,14 @@ function getTimeFormatted(totalSeconds: number) {
 function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => void }) {
   const t = useFormatMessage()
   const [address] = useAuthContext()
-  const { getSignedMessage, copyMessageToClipboard, openThread, time, isValidated, reset } = useForumConnect()
+  const {
+    getSignedMessage,
+    copyMessageToClipboard,
+    openThread,
+    time,
+    isValidated,
+    reset: resetForumConnect,
+  } = useForumConnect()
 
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 
@@ -152,6 +159,11 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     }
     setModalState((state) => ({ ...state, stepsCurrentHelper: { ...state.stepsCurrentHelper, ...newHelpers } }))
   }
+  const resetState = (account: AccountType) => {
+    setModalState((state) => ({ ...state, currentStep: 1 }))
+    setIsValidating(false)
+    initializeStepHelpers(account)
+  }
   const isTimerExpired = time <= 0
 
   const timerTextKey = useMemo(
@@ -161,10 +173,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   useEffect(() => {
     if (isTimerExpired) {
-      setModalState((state) => ({ ...state, currentStep: 1 }))
-      setIsValidating(false)
-      initializeStepHelpers('forum')
+      resetState('forum')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTimerExpired])
 
   useEffect(() => {
@@ -251,7 +262,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     if (isValidated) {
       openUrl(locations.profile({ address: address || '' }), false)
     } else {
-      reset()
+      resetForumConnect()
       setModalState(INITIAL_STATE)
     }
   }
@@ -263,7 +274,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         className="AccountsConnectModal"
         size="tiny"
         onClose={() => {
-          reset()
+          resetForumConnect()
+          setIsTimerActive(false)
+          resetState('forum')
           onClose()
         }}
         closeIcon={<Close />}
