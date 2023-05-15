@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -31,18 +31,30 @@ export type NavigationProps = {
 
 const POP_UP_LOCAL_STORAGE_KEY = 'org.decentraland.governance.profile-pop-up-dismissed'
 
+type DismissState = {
+  isDismissClicked: boolean
+  isPopUpDismissed: boolean
+}
+
 const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
 
   const { isDebugAddress } = useIsDebugAddress(user)
   const isProfileValidated = useIsProfileValidated(user)
-  const [isDismissClicked, setIsDismissClicked] = useState(false)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const isPopUpDismissed = useMemo(() => !!localStorage.getItem(POP_UP_LOCAL_STORAGE_KEY), [isDismissClicked])
+  const [dismissState, setDismissState] = useState<DismissState>({
+    isDismissClicked: false,
+    isPopUpDismissed: false,
+  })
+
+  useEffect(
+    () => setDismissState((prev) => ({ ...prev, isPopUpDismissed: !!localStorage.getItem(POP_UP_LOCAL_STORAGE_KEY) })),
+    [dismissState.isDismissClicked]
+  )
+
   const handleDismissClick = () => {
     localStorage.setItem(POP_UP_LOCAL_STORAGE_KEY, 'true')
-    setIsDismissClicked(true)
+    setDismissState((prev) => ({ ...prev, isDismissClicked: true }))
   }
   const showDot = isProfileValidated !== null && !isProfileValidated
 
@@ -83,7 +95,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
                     {showDot && <Dot />}
                   </Tabs.Tab>
                 }
-                open={showDot && !isPopUpDismissed}
+                open={showDot && !dismissState.isPopUpDismissed}
               />
             </Link>
           )}

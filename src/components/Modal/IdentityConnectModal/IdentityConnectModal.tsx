@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -21,6 +21,7 @@ function IdentityConnectModal() {
   const [user] = useAuthContext()
   const { isModalOpen, setIsModalOpen } = useIdentityModalContext()
   const [isSetUpOpen, setIsSetUpOpen] = useState(false)
+  const [timestamp, setTimestamp] = useState<string | null>(null)
   const handleDismiss = () => {
     localStorage.setItem(STORAGE_KEY, new Date(new Date().getTime() + HIDE_TIME).toISOString())
     setIsModalOpen(false)
@@ -31,7 +32,6 @@ function IdentityConnectModal() {
   }
   const handleCloseSetUp = () => setIsSetUpOpen(false)
 
-  const timestamp = useMemo(() => localStorage.getItem(STORAGE_KEY), [])
   const checkProfile = !timestamp || new Date() > new Date(timestamp)
   const isProfileValidated = useIsProfileValidated(checkProfile ? user : null)
 
@@ -40,6 +40,10 @@ function IdentityConnectModal() {
       setIsModalOpen(!isProfileValidated)
     }
   }, [isProfileValidated, setIsModalOpen])
+
+  useEffect(() => {
+    setTimestamp(localStorage.getItem(STORAGE_KEY))
+  }, [])
 
   return (
     <>
