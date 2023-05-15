@@ -31,6 +31,10 @@ function clearValidationInProgress(user: string) {
   }
 }
 
+function formatValidationMessage(address: string, timestamp: string) {
+  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this Discourse forum account\n\nDate: ${timestamp}`
+}
+
 async function getValidationMessage(req: WithAuth) {
   const address = req.auth!
   const message = {
@@ -47,7 +51,7 @@ async function getValidationMessage(req: WithAuth) {
     messageTimeout,
   }
 
-  return JSON.stringify(message)
+  return formatValidationMessage(address, message.timestamp)
 }
 
 async function checkValidationMessage(req: WithAuth) {
@@ -60,19 +64,21 @@ async function checkValidationMessage(req: WithAuth) {
 
     const { address, timestamp } = messageProperties
 
-    const message = JSON.stringify({ address, timestamp })
-
     const comments = await DiscourseService.fetchAllComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
     const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
 
     const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
-    const regex = new RegExp(message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    const validComment = filteredComments.find((comment) => regex.test(comment.cooked.replace(/(“|”)/g, '"')))
+    const validComment = filteredComments.find((comment) => {
+      const addressRegex = new RegExp(address, 'i')
+      const dateRegex = new RegExp(timestamp, 'i')
+
+      return addressRegex.test(comment.cooked) && dateRegex.test(comment.cooked)
+    })
 
     if (validComment) {
       const signatureRegex = /0x([a-fA-F\d]{130})/
       const signature = '0x' + validComment.cooked.match(signatureRegex)?.[1]
-      const recoveredAddress = recoverAddress(hashMessage(message), signature)
+      const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp)), signature)
 
       if (recoveredAddress.toLowerCase() !== user) {
         throw new Error('Invalid signature')

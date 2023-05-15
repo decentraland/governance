@@ -81,7 +81,7 @@ export default function useForumConnect() {
   const copyMessageToClipboard = useCallback(() => {
     const { message, signature } = sign
     if (message && signature) {
-      clipboardState.copy(`${message}\n\nSignature: ${signature}`)
+      clipboardState.copy(`${message}\nSignature: ${signature}`)
     }
   }, [clipboardState, sign])
 
