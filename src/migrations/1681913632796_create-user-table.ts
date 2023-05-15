@@ -1,6 +1,6 @@
 import { MigrationBuilder } from 'node-pg-migrate'
 
-import Model from '../entities/Discourse/model'
+import Model from '../entities/User/model'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable(Model.tableName, {

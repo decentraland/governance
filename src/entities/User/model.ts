@@ -1,10 +1,10 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { DiscourseAttributes } from './types'
+import { UserAttributes } from './types'
 
-export default class DiscourseModel extends Model<DiscourseAttributes> {
-  static tableName = 'discourse'
+export default class UserModel extends Model<UserAttributes> {
+  static tableName = 'users'
   static withTimestamps = false
   static primaryKey = 'address'
 

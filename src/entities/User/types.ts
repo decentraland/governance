@@ -1,4 +1,4 @@
-export type DiscourseAttributes = {
+export type UserAttributes = {
   address: string
   forum_id: number
   verification_date: string

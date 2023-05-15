@@ -6,8 +6,8 @@ import useSign from 'decentraland-gatsby/dist/hooks/useSign'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Governance } from '../clients/Governance'
-import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/Discourse/constants'
-import { DISCOURSE_API } from '../entities/Discourse/utils'
+import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
+import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 
 import useTimer from './useTimer'

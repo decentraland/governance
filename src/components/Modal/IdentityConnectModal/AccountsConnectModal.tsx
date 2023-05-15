@@ -247,7 +247,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   const handlePostAction = () => {
     if (isValidated) {
-      onClose()
+      location.reload()
     } else {
       reset()
       setModalState(INITIAL_STATE)

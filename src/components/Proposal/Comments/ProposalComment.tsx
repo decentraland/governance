@@ -6,7 +6,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import DOMPurify from 'dompurify'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { getUserProfileUrl } from '../../../entities/Discourse/utils'
+import { getUserProfileUrl } from '../../../entities/User/utils'
 import useProfile from '../../../hooks/useProfile'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 

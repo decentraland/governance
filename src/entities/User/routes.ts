@@ -5,12 +5,11 @@ import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import { Request, Response } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { DiscourseService } from '../../services/DiscourseService'
 import isDebugAddress from '../Debug/isDebugAddress'
 
-import { DiscourseService } from './../../services/DiscourseService'
-
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
-import DiscourseModel from './model'
+import UserModel from './model'
 import { ValidationMessage } from './types'
 
 export default routes((route) => {
@@ -84,7 +83,7 @@ async function checkValidationMessage(req: WithAuth) {
         throw new Error('Invalid signature')
       }
 
-      await DiscourseModel.createConnection(user, validComment.user_id)
+      await UserModel.createConnection(user, validComment.user_id)
       clearValidationInProgress(user)
     }
 
@@ -102,7 +101,7 @@ async function isProfileValidated(req: Request) {
     return false
   }
   try {
-    return await DiscourseModel.isProfileValidated(address)
+    return await UserModel.isProfileValidated(address)
   } catch (error) {
     throw new Error('Error while fetching validation data ' + error)
   }
@@ -121,5 +120,5 @@ async function deleteValidation(req: WithAuth<Request<any, any, { address: strin
     res.send(400)
   }
 
-  return await DiscourseModel.deleteConnection(address)
+  return await UserModel.deleteConnection(address)
 }

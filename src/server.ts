@@ -21,7 +21,6 @@ import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
 import common from './entities/Common/routes'
 import debug from './entities/Debug/routes'
-import discourse from './entities/Discourse/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
 import proposalSurveyTopics from './entities/ProposalSurveyTopics/routes'
@@ -29,6 +28,7 @@ import sitemap from './entities/Sitemap/routes'
 import social from './entities/Social/routes'
 import subscription from './entities/Subscription/routes'
 import updates from './entities/Updates/routes'
+import users from './entities/User/routes'
 import score from './entities/Votes/routes'
 import filesystem from './modules/filesystem'
 import { DiscordService } from './services/DiscordService'
@@ -53,7 +53,7 @@ app.use('/api', [
   withBody(),
   committee,
   debug,
-  discourse,
+  users,
   proposal,
   proposalSurveyTopics,
   score,

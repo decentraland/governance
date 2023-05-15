@@ -22,11 +22,11 @@ import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
 import { hasOpenSlots } from '../Committee/utils'
-import DiscourseModel from '../Discourse/model'
-import { filterComments } from '../Discourse/utils'
 import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
+import UserModel from '../User/model'
+import { filterComments } from '../User/utils'
 import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
@@ -541,7 +541,7 @@ export async function proposalComments(req: Request<{ proposal: string }>): Prom
 
     const userIds = new Set(filteredComments.comments.map((comment) => comment.id))
 
-    const users = await DiscourseModel.getAddressesByForumId(Array.from(userIds))
+    const users = await UserModel.getAddressesByForumId(Array.from(userIds))
     const userMapping = users.reduce((map, user) => {
       map[user.forum_id] = user.address
       return map
