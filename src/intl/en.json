@@ -576,9 +576,9 @@
       "timer": "Time sensitive task. {time} left to complete",
       "timer_expired": "Signature expired. You'll have to start over.",
       "forum": {
-        "card_title": "Forum Account",
-        "card_description": "Make comments left on proposals link back to, and be displayed on your Governance profile.",
-        "title": "Link Forum Account",
+        "card_title": "Decentraland Forum",
+        "card_description": "Link your Decentraland profile to the comments you left on proposals.",
+        "title": "Decentraland Forum Account",
         "title_step_1": "1. Sign message",
         "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
         "action_step_1": "Sign",
@@ -592,7 +592,7 @@
         "action_step_3": "Open",
         "helper_step_3": "Finally, comment the signed message on the forum thread.",
         "card_helper": {
-          "step_1_start": "Will open up a modal",
+          "step_1_start": "Your web3 wallet will trigger a sign request",
           "step_1_active": "Awaiting signature…",
           "step_1_success": "Signed correctly",
           "step_1_error": "Something went wrong, try again",
@@ -602,9 +602,9 @@
         },
         "action": "Confirm link",
         "helper_loading": "Linking in progress...",
-        "success_text": "**Governance and Forum accounts linked successfully** 🎉\n\nNow your comments left on Proposals' forum threads will link back to, and be displayed on your Governance profile.",
+        "success_text": "**Decentraland and Forum accounts linked successfully** 🎉\n\nNow the comments you left on Proposals will link to your Decentraland profile. Happy governance!",
         "success_subtext": "Plus, you'll get a fancy icon next to your **username**",
-        "success_button": "Got it",
+        "success_button": "Take me to my Profile",
         "error_text": "**Governance and Forum accounts could not be linked**\n\nSomething happened. It must have been aliens, or a malevolent AI but we can't be sure.",
         "error_subtext": "Maybe just have a go at it one more time?",
         "error_button": "Retry"

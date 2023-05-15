@@ -8,7 +8,9 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { openUrl } from '../../../helpers'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
+import locations from '../../../modules/locations'
 import ActionCard, { ActionCardProps } from '../../ActionCard/ActionCard'
 import CircledDiscord from '../../Icon/CircledDiscord'
 import CircledForum from '../../Icon/CircledForum'
@@ -247,7 +249,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   const handlePostAction = () => {
     if (isValidated) {
-      location.reload()
+      openUrl(locations.profile({ address: address || '' }), false)
     } else {
       reset()
       setModalState(INITIAL_STATE)
