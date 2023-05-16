@@ -150,6 +150,10 @@ export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
 
+export function isBiddingAndTenderingProposal(type: ProposalType) {
+  return type === ProposalType.Pitch || type === ProposalType.Tender
+}
+
 export function isProposalStatus(value: string | null | undefined): boolean {
   switch (value) {
     case ProposalStatus.Pending:

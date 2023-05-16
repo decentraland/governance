@@ -47,6 +47,7 @@ import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
@@ -283,11 +284,6 @@ export default function ProposalPage() {
     !isMobile &&
     !!proposal &&
     proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
-  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender
-  const isGovernanceProposal =
-    proposal?.type === ProposalType.Poll ||
-    proposal?.type === ProposalType.Draft ||
-    proposal?.type === ProposalType.Governance
 
   if (proposalState.error) {
     return (
@@ -349,7 +345,7 @@ export default function ProposalPage() {
               )}
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
-              {proposal && isBiddingAndTenderingProposal && (
+              {proposal && isBiddingAndTenderingProposal(proposal.type) && (
                 <BiddingAndTenderingProcess
                   proposalId={proposal.id}
                   proposalType={proposal.type}
@@ -359,7 +355,9 @@ export default function ProposalPage() {
                   tenderProposalsTotal={tenderProposals?.total}
                 />
               )}
-              {proposal && isGovernanceProposal && <GovernanceProcess proposalType={proposal.type} />}
+              {proposal && isGovernanceProcessProposal(proposal.type) && (
+                <GovernanceProcess proposalType={proposal.type} />
+              )}
               {showProposalUpdates && (
                 <ProposalUpdates
                   proposal={proposal}
