@@ -21,6 +21,8 @@ tags:
     description: Endpoints related to user badges
   - name: Users
     description: These endpoints handle user validation
+  - name: Budgets
+    description: The Budgets section of the API is focused on retrieving information related to the grants program budgets.
 paths:
   /proposals:
     get:
@@ -161,6 +163,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+
   /proposals/{proposal}/updates:
     get:
       tags:
@@ -265,6 +268,41 @@ paths:
       parameters:
         - name: address
           $ref: '#/components/parameters/address'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+
+  /budget/current:
+    get:
+      tags:
+        - Budgets
+      summary: Get the budget for the current quarter
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /budget/contested/{proposal}:
+    get:
+      tags:
+        - Budgets
+      summary: Get the budget being contested for a given proposal and the contestants
+      parameters:
+        - name: proposal
+          $ref: '#/components/parameters/proposalId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /budget/{category}:
+    get:
+      tags:
+        - Budgets
+      summary: Get the available quarter budget for a given category
+      parameters:
+        - name: category
+          in: path
+          description: Budget category
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/200'
@@ -408,5 +446,7 @@ components:
   responses:
     '200':
       description: successful operation
+    '400':
+      description: bad request
     '404':
       description: not found
