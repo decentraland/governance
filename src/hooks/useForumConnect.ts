@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useSign from 'decentraland-gatsby/dist/hooks/useSign'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Governance } from '../clients/Governance'
+import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
@@ -20,6 +22,7 @@ const VALIDATION_CHECK_INTERVAL = 5 * 1000 // 5 seconds
 const getMessage = async () => Governance.get().getValidationMessage()
 export default function useForumConnect() {
   const [user, userState] = useAuthContext()
+  const track = useTrackContext()
   const [sign, signState] = useSign(user, userState.provider)
   const [copied, clipboardState] = useClipboardCopy(Time.Second)
   const [signatureResolution, setSignatureResolution] = useState<{
@@ -95,6 +98,7 @@ export default function useForumConnect() {
             clearInterval(validationChecker)
             resetTimer()
             setIsValidated(true)
+            track(SegmentEvent.IdentityCompleted, { address: user, account: 'forum' })
           }
         } catch (error) {
           console.error(error)

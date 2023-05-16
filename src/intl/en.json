@@ -598,7 +598,7 @@
           "step_1_error": "Something went wrong, try again",
           "step_2_start": "Signature required",
           "step_2_active": "Click to copy to clipboard",
-          "step_2_success": "Content copied"
+          "step_2_success": "Content copied. Click to copy again"
         },
         "action": "Confirm link",
         "helper_loading": "Linking in progress...",

@@ -8,14 +8,13 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useIdentityModalContext from '../../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
+import Identity from '../../Image/Identity'
 
 import AccountsConnectModal from './AccountsConnectModal'
 import './IdentityConnectModal.css'
 
 const IDENTITY_MODAL_KEY = 'org.decentraland.governance.identity_modal.hide'
 const HIDE_TIME = 24 * 60 * 60 * 1000 // 24hs
-
-const IDENTITY_IMAGE = require('../../../images/identity.png').default
 
 function IdentityConnectModal() {
   const t = useFormatMessage()
@@ -50,7 +49,7 @@ function IdentityConnectModal() {
     <>
       <Modal open={isModalOpen} className="IdentityConnectModal" size="tiny">
         <Modal.Header>
-          <img src={IDENTITY_IMAGE} alt="Identity" />
+          <Identity />
         </Modal.Header>
         <Modal.Content>
           <Markdown className="IdentityConnectModal__Description">{t('modal.identity_connect.description')}</Markdown>

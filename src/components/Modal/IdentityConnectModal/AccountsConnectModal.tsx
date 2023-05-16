@@ -3,15 +3,18 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { SegmentEvent } from '../../../entities/Events/types'
 import { openUrl } from '../../../helpers'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import locations from '../../../modules/locations'
 import ActionCard, { ActionCardProps } from '../../ActionCard/ActionCard'
+import CheckCircle from '../../Icon/CheckCircle'
 import CircledDiscord from '../../Icon/CircledDiscord'
 import CircledForum from '../../Icon/CircledForum'
 import CircledTwitter from '../../Icon/CircledTwitter'
@@ -20,6 +23,7 @@ import Copy from '../../Icon/Copy'
 import ForumBlue from '../../Icon/ForumBlue'
 import LinkFailed from '../../Icon/LinkFailed'
 import LinkSucceded from '../../Icon/LinkSucceded'
+import Lock from '../../Icon/Lock'
 import Sign from '../../Icon/Sign'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 
@@ -96,22 +100,40 @@ function getAccountActionSteps(
   icons: React.ReactNode[],
   actions: (() => void)[],
   currentStep: number,
+  t: ReturnType<typeof useFormatMessage>,
   stepHelpers?: Record<number, string>
 ): ActionCardProps[] {
   if (stepsAmount === 0 || (icons.length !== stepsAmount && actions.length !== stepsAmount)) {
-    console.error('Invalid steps amount')
     return []
   }
-  return Array.from({ length: stepsAmount }, (_, index) => ({
-    title: `modal.identity_setup.${account}.title_step_${index + 1}`,
-    description: `modal.identity_setup.${account}.description_step_${index + 1}`,
-    icon: icons[index],
-    actionTitle: `modal.identity_setup.${account}.action_step_${index + 1}`,
-    action: actions[index],
-    isDisabled: index + 1 > currentStep,
-    isCompleted: index + 1 < currentStep,
-    helper: stepHelpers?.[index + 1],
-  }))
+  return Array.from<unknown, ActionCardProps>({ length: stepsAmount }, (_, index) => {
+    const stepIdx = index + 1
+    const isDisabled = stepIdx > currentStep
+    const isCompleted = stepIdx < currentStep && stepIdx <= 1
+
+    let action = (
+      <Button basic onClick={actions[index]}>
+        {t(`modal.identity_setup.${account}.action_step_${stepIdx}`)}
+      </Button>
+    )
+
+    if (isCompleted) {
+      action = <CheckCircle size="24" outline />
+    }
+
+    if (isDisabled) {
+      action = <Lock />
+    }
+
+    return {
+      title: t(`modal.identity_setup.${account}.title_step_${stepIdx}`),
+      description: t(`modal.identity_setup.${account}.description_step_${stepIdx}`),
+      icon: icons[index],
+      action,
+      isDisabled,
+      helper: t(stepHelpers?.[stepIdx]),
+    }
+  })
 }
 
 function getHelperTexts(account: AccountType, stepsAmount: number): string[] {
@@ -130,6 +152,7 @@ function getTimeFormatted(totalSeconds: number) {
 function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => void }) {
   const t = useFormatMessage()
   const [address] = useAuthContext()
+  const track = useTrackContext()
   const {
     getSignedMessage,
     copyMessageToClipboard,
@@ -141,7 +164,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 
-  const nextStep = () => setModalState((state) => ({ ...state, currentStep: state.currentStep + 1 }))
+  const setCurrentStep = (currentStep: number) => setModalState((state) => ({ ...state, currentStep }))
   const setIsTimerActive = (isTimerActive: boolean) => setModalState((state) => ({ ...state, isTimerActive }))
   const setCurrentType = (currentType: ModalType) => setModalState((state) => ({ ...state, currentType }))
   const setIsValidating = (isValidating: boolean) => setModalState((state) => ({ ...state, isValidating }))
@@ -194,19 +217,20 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       setStepHelper(STEP_NUMBER, 'active')
       await getSignedMessage()
       setStepHelper(STEP_NUMBER, 'success')
-      nextStep()
+      setCurrentStep(STEP_NUMBER + 1)
+      track(SegmentEvent.IdentityStarted, { address, account: AccountType.FORUM })
     } catch (error) {
       setIsTimerActive(false)
       setStepHelper(STEP_NUMBER, 'error')
       console.error(error)
     }
-  }, [getSignedMessage])
+  }, [address, getSignedMessage, track])
 
   const handleCopy = useCallback(() => {
     const STEP_NUMBER = 2
     copyMessageToClipboard()
     setStepHelper(STEP_NUMBER, 'success')
-    nextStep()
+    setCurrentStep(STEP_NUMBER + 1)
   }, [copyMessageToClipboard])
 
   const handleValidate = useCallback(() => {
@@ -221,8 +245,8 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         title: 'modal.identity_setup.title',
         actions: [
           {
-            title: 'modal.identity_setup.forum.card_title',
-            description: 'modal.identity_setup.forum.card_description',
+            title: t('modal.identity_setup.forum.card_title'),
+            description: t('modal.identity_setup.forum.card_description'),
             icon: <CircledForum />,
             onCardClick: () => {
               setCurrentType(ModalType.FORUM)
@@ -230,13 +254,13 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             },
           },
           {
-            title: 'modal.identity_setup.discord.card_title',
-            description: 'modal.identity_setup.discord.card_description',
+            title: t('modal.identity_setup.discord.card_title'),
+            description: t('modal.identity_setup.discord.card_description'),
             icon: <CircledDiscord />,
           },
           {
-            title: 'modal.identity_setup.twitter.card_title',
-            description: 'modal.identity_setup.twitter.card_description',
+            title: t('modal.identity_setup.twitter.card_title'),
+            description: t('modal.identity_setup.twitter.card_description'),
             icon: <CircledTwitter />,
           },
         ],
@@ -249,12 +273,14 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           [<Sign key="sign" />, <Copy key="copy" />, <Comment key="comment" />],
           [handleSign, handleCopy, handleValidate],
           modalState.currentStep,
+          t,
           modalState.stepsCurrentHelper
         ),
         button: 'modal.identity_setup.forum.action',
         helperTexts: getHelperTexts(AccountType.FORUM, FORUM_CONNECT_STEPS_AMOUNT),
       },
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleCopy, handleSign, handleValidate, modalState.currentStep, modalState.stepsCurrentHelper]
   )
   const currentType = modalState.currentType
@@ -295,17 +321,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             </Modal.Header>
             <Modal.Content>
               {stateMap[currentType].actions.map((cardProps, index) => {
-                const { title, description, actionTitle, helper } = cardProps
-                return (
-                  <ActionCard
-                    key={`ActionCard--${index}`}
-                    {...cardProps}
-                    title={t(title)}
-                    description={t(description)}
-                    actionTitle={t(actionTitle)}
-                    helper={t(helper)}
-                  />
-                )
+                return <ActionCard key={`ActionCard--${index}`} {...cardProps} />
               })}
               <div className="AccountsConnectModal__HelperContainer">
                 {button && (

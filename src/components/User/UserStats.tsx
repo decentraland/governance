@@ -32,7 +32,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
   const t = useFormatMessage()
   const isProfileValidated = useIsProfileValidated(address)
   const [user] = useAuthContext()
-  const showSettings = user && user === address.toLowerCase()
+  const showSettings = user && user === address.toLowerCase() && !isProfileValidated
   const { total } = vpDistribution || { total: 0 }
 
   return (
