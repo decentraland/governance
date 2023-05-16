@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -8,13 +8,14 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useIdentityModalContext from '../../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
-import Identity from '../../Icon/Identity'
 
 import AccountsConnectModal from './AccountsConnectModal'
 import './IdentityConnectModal.css'
 
-const STORAGE_KEY = 'org.decentraland.governance.identity_modal.hide'
+const IDENTITY_MODAL_KEY = 'org.decentraland.governance.identity_modal.hide'
 const HIDE_TIME = 24 * 60 * 60 * 1000 // 24hs
+
+const IDENTITY_IMAGE = require('../../../images/identity.png').default
 
 function IdentityConnectModal() {
   const t = useFormatMessage()
@@ -23,7 +24,7 @@ function IdentityConnectModal() {
   const [isSetUpOpen, setIsSetUpOpen] = useState(false)
   const [timestamp, setTimestamp] = useState<string | null>(null)
   const handleDismiss = () => {
-    localStorage.setItem(STORAGE_KEY, new Date(new Date().getTime() + HIDE_TIME).toISOString())
+    localStorage.setItem(IDENTITY_MODAL_KEY, new Date(new Date().getTime() + HIDE_TIME).toISOString())
     setIsModalOpen(false)
   }
   const handleConnect = () => {
@@ -32,24 +33,24 @@ function IdentityConnectModal() {
   }
   const handleCloseSetUp = () => setIsSetUpOpen(false)
 
-  const checkProfile = !timestamp || new Date() > new Date(timestamp)
-  const isProfileValidated = useIsProfileValidated(checkProfile ? user : null)
+  const checkProfile = useMemo(() => !timestamp || new Date() > new Date(timestamp), [timestamp])
+  const isProfileValidated = useIsProfileValidated(user)
 
   useEffect(() => {
-    if (!!setIsModalOpen && isProfileValidated !== null) {
+    if (!!setIsModalOpen && user !== null && checkProfile) {
       setIsModalOpen(!isProfileValidated)
     }
-  }, [isProfileValidated, setIsModalOpen])
+  }, [checkProfile, isProfileValidated, setIsModalOpen, user])
 
   useEffect(() => {
-    setTimestamp(localStorage.getItem(STORAGE_KEY))
+    setTimestamp(localStorage.getItem(IDENTITY_MODAL_KEY))
   }, [])
 
   return (
     <>
       <Modal open={isModalOpen} className="IdentityConnectModal" size="tiny">
         <Modal.Header>
-          <Identity />
+          <img src={IDENTITY_IMAGE} alt="Identity" />
         </Modal.Header>
         <Modal.Content>
           <Markdown className="IdentityConnectModal__Description">{t('modal.identity_connect.description')}</Markdown>

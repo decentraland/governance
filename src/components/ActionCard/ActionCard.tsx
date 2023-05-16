@@ -6,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import CircledCheck from '../Icon/CircledCheck'
+import CheckCircle from '../Icon/CheckCircle'
 import Lock from '../Icon/Lock'
 
 import './ActionCard.css'
@@ -16,7 +16,7 @@ export interface ActionCardProps {
   title: string
   description: string
   action?: () => void
-  action_title?: string
+  actionTitle?: string
   onCardClick?: () => void
   isDisabled?: boolean
   isCompleted?: boolean
@@ -28,7 +28,7 @@ function ActionCard({
   title,
   description,
   action,
-  action_title,
+  actionTitle,
   onCardClick,
   isDisabled = false,
   isCompleted = false,
@@ -55,14 +55,14 @@ function ActionCard({
             </div>
             <div className="ActionCard__Action">
               {action &&
-                action_title &&
+                actionTitle &&
                 (isDisabled ? (
                   <Lock />
                 ) : isCompleted ? (
-                  <CircledCheck />
+                  <CheckCircle outline size="24" />
                 ) : (
                   <Button basic onClick={action}>
-                    {action_title}
+                    {actionTitle}
                   </Button>
                 ))}
             </div>

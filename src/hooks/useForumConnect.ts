@@ -22,7 +22,7 @@ export default function useForumConnect() {
   const [user, userState] = useAuthContext()
   const [sign, signState] = useSign(user, userState.provider)
   const [copied, clipboardState] = useClipboardCopy(Time.Second)
-  const [signResolveReject, setSignResolveReject] = useState<{
+  const [signatureResolution, setSignatureResolution] = useState<{
     resolve: (value: unknown) => void
     reject: (reason?: unknown) => void
   }>()
@@ -31,18 +31,18 @@ export default function useForumConnect() {
   const [isValidated, setIsValidated] = useState<boolean>()
 
   useEffect(() => {
-    if (signResolveReject) {
+    if (signatureResolution) {
       if (!signState.signing) {
         if (!signState.error) {
-          signResolveReject.resolve(undefined)
+          signatureResolution.resolve(undefined)
         } else {
           resetTimer()
-          signResolveReject.reject(signState.error)
+          signatureResolution.reject(signState.error)
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signResolveReject, signState])
+  }, [signatureResolution, signState])
 
   useEffect(() => {
     if (time <= 0) {
@@ -68,7 +68,7 @@ export default function useForumConnect() {
             startTimer()
             setIsValidated(undefined)
             signState.sign(message)
-            setSignResolveReject({ resolve, reject })
+            setSignatureResolution({ resolve, reject })
           } else {
             reject(new Error('No message'))
           }
@@ -116,9 +116,9 @@ export default function useForumConnect() {
   }, [resetTimer, validatingProfile])
 
   return {
-    getSignedMessage: getSignedMessage,
-    copyMessageToClipboard: copyMessageToClipboard,
-    openThread: openThread,
+    getSignedMessage,
+    copyMessageToClipboard,
+    openThread,
     time,
     isValidated,
     reset,

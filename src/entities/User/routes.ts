@@ -6,6 +6,7 @@ import { Request, Response } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
 import isDebugAddress from '../Debug/isDebugAddress'
 
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
@@ -103,7 +104,7 @@ async function isValidated(req: Request) {
   try {
     return await UserModel.isProfileValidated(address)
   } catch (error) {
-    throw new Error('Error while fetching validation data ' + error)
+    ErrorService.report('Error while fetching validation data', error)
   }
 }
 

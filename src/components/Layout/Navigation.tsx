@@ -29,7 +29,7 @@ export type NavigationProps = {
   activeTab?: NavigationTab
 }
 
-const POP_UP_LOCAL_STORAGE_KEY = 'org.decentraland.governance.profile-pop-up-dismissed'
+const PROFILE_POP_UP_LOCAL_STORAGE_KEY = 'org.decentraland.governance.profile-pop-up-dismissed'
 
 type DismissState = {
   isDismissClicked: boolean
@@ -48,15 +48,19 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   })
 
   useEffect(
-    () => setDismissState((prev) => ({ ...prev, isPopUpDismissed: !!localStorage.getItem(POP_UP_LOCAL_STORAGE_KEY) })),
+    () =>
+      setDismissState((prev) => ({
+        ...prev,
+        isPopUpDismissed: !!localStorage.getItem(PROFILE_POP_UP_LOCAL_STORAGE_KEY),
+      })),
     [dismissState.isDismissClicked]
   )
 
   const handleDismissClick = () => {
-    localStorage.setItem(POP_UP_LOCAL_STORAGE_KEY, 'true')
+    localStorage.setItem(PROFILE_POP_UP_LOCAL_STORAGE_KEY, 'true')
     setDismissState((prev) => ({ ...prev, isDismissClicked: true }))
   }
-  const showDot = isProfileValidated !== null && !isProfileValidated
+  const showDot = user !== null && !isProfileValidated
 
   return (
     <div className="Navigation">

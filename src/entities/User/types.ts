@@ -9,3 +9,8 @@ export type ValidationMessage = {
   timestamp: string
   messageTimeout: NodeJS.Timeout
 }
+
+export type ValidatedAccount = {
+  address: string
+  forum_id: number
+}

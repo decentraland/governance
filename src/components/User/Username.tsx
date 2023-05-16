@@ -53,14 +53,7 @@ function getBlockieScale(size?: string) {
   }
 }
 
-const Username = ({
-  address,
-  size = 'mini',
-  linked,
-  variant = UsernameVariant.Full,
-  strong = false,
-  className,
-}: Props) => {
+const Username = ({ address, size, linked, variant = UsernameVariant.Full, strong = false, className }: Props) => {
   const { profile, hasDclProfile } = useProfile(address)
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
   const blockieScale = getBlockieScale(size)
@@ -81,7 +74,7 @@ const Username = ({
         <>
           {hasDclProfile && (
             <>
-              <Avatar size={size} address={address} />
+              <Avatar size={size || 'mini'} address={address} />
               {profileHasName && !isAvatarVariant && <span>{profile!.name}</span>}
               {!profileHasName && !isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
             </>

@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { UserAttributes } from './types'
+import { UserAttributes, ValidatedAccount } from './types'
 
 export default class UserModel extends Model<UserAttributes> {
   static tableName = 'users'
@@ -15,7 +15,7 @@ export default class UserModel extends Model<UserAttributes> {
     return await this.namedQuery('create_connection', query)
   }
 
-  static async getAddressesByForumId(forum_ids: number[] | string[]): Promise<{ address: string; forum_id: number }[]> {
+  static async getAddressesByForumId(forum_ids: number[] | string[]): Promise<ValidatedAccount[]> {
     if (forum_ids.length === 0) return Promise.resolve([])
 
     const query = SQL`SELECT address, forum_id FROM ${table(this)} WHERE forum_id IN (${join(

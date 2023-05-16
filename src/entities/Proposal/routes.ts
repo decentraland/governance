@@ -537,27 +537,15 @@ export async function proposalComments(req: Request<{ proposal: string }>): Prom
   const proposal = await getProposal(req)
   try {
     const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
-    const filteredComments = filterComments(allComments)
-
-    const userIds = new Set(filteredComments.comments.map((comment) => comment.id))
-
+    const userIds = new Set(allComments.map((comment) => comment.user_id))
     const users = await UserModel.getAddressesByForumId(Array.from(userIds))
-    const userMapping = users.reduce((map, user) => {
-      map[user.forum_id] = user.address
-      return map
-    }, {} as Record<number, string>)
+    const filteredComments = filterComments(allComments, users)
 
-    return {
-      ...filteredComments,
-      comments: filteredComments.comments.map((comment) => {
-        comment.address = userMapping[comment.id]
-        return comment
-      }),
-    }
+    return filteredComments
   } catch (e) {
-    console.error(
-      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id} `,
-      e as Error
+    ErrorService.report(
+      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id}`,
+      e
     )
     return {
       comments: [],

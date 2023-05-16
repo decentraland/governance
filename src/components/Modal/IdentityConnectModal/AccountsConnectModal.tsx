@@ -37,7 +37,11 @@ enum ModalType {
   FORUM,
 }
 
-type AccountType = 'forum' | 'discord' | 'twitter'
+enum AccountType {
+  FORUM = 'forum',
+  DISCORD = 'discord',
+  TWITTER = 'twitter',
+}
 
 type ModalState = {
   currentType: ModalType
@@ -55,7 +59,7 @@ type CardHelperKeys = {
 }
 
 const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = {
-  forum: {
+  [AccountType.FORUM]: {
     1: {
       start: 'modal.identity_setup.forum.card_helper.step_1_start',
       active: 'modal.identity_setup.forum.card_helper.step_1_active',
@@ -73,8 +77,8 @@ const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = 
       success: THREAD_URL,
     },
   },
-  discord: {},
-  twitter: {},
+  [AccountType.DISCORD]: {},
+  [AccountType.TWITTER]: {},
 }
 
 const FORUM_CONNECT_STEPS_AMOUNT = 3
@@ -102,7 +106,7 @@ function getAccountActionSteps(
     title: `modal.identity_setup.${account}.title_step_${index + 1}`,
     description: `modal.identity_setup.${account}.description_step_${index + 1}`,
     icon: icons[index],
-    action_title: `modal.identity_setup.${account}.action_step_${index + 1}`,
+    actionTitle: `modal.identity_setup.${account}.action_step_${index + 1}`,
     action: actions[index],
     isDisabled: index + 1 > currentStep,
     isCompleted: index + 1 < currentStep,
@@ -112,7 +116,6 @@ function getAccountActionSteps(
 
 function getHelperTexts(account: AccountType, stepsAmount: number): string[] {
   if (stepsAmount === 0) {
-    console.error('Invalid steps amount')
     return []
   }
   return Array.from({ length: stepsAmount }, (_, index) => `modal.identity_setup.${account}.helper_step_${index + 1}`)
@@ -139,9 +142,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 
   const nextStep = () => setModalState((state) => ({ ...state, currentStep: state.currentStep + 1 }))
-  const setIsTimerActive = (value: boolean) => setModalState((state) => ({ ...state, isTimerActive: value }))
-  const setCurrentType = (value: ModalType) => setModalState((state) => ({ ...state, currentType: value }))
-  const setIsValidating = (value: boolean) => setModalState((state) => ({ ...state, isValidating: value }))
+  const setIsTimerActive = (isTimerActive: boolean) => setModalState((state) => ({ ...state, isTimerActive }))
+  const setCurrentType = (currentType: ModalType) => setModalState((state) => ({ ...state, currentType }))
+  const setIsValidating = (isValidating: boolean) => setModalState((state) => ({ ...state, isValidating }))
   const initializeStepHelpers = (account: AccountType) =>
     setModalState((state) => ({
       ...state,
@@ -151,9 +154,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       ),
     }))
   const setStepHelper = (step: number, helperState: keyof CardHelperKeys) => {
-    const value = STEPS_HELPERS_KEYS.forum[step][helperState]
-    if (!value) return
-    const newHelpers = { [step]: value }
+    const helperTextKey = STEPS_HELPERS_KEYS.forum[step][helperState]
+    if (!helperTextKey) return
+    const newHelpers = { [step]: helperTextKey }
     if (helperState === 'success') {
       newHelpers[step + 1] = STEPS_HELPERS_KEYS.forum[step + 1].active
     }
@@ -173,7 +176,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   useEffect(() => {
     if (isTimerExpired) {
-      resetState('forum')
+      resetState(AccountType.FORUM)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTimerExpired])
@@ -223,7 +226,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             icon: <CircledForum />,
             onCardClick: () => {
               setCurrentType(ModalType.FORUM)
-              initializeStepHelpers('forum')
+              initializeStepHelpers(AccountType.FORUM)
             },
           },
           {
@@ -241,7 +244,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       [ModalType.FORUM]: {
         title: 'modal.identity_setup.forum.title',
         actions: getAccountActionSteps(
-          'forum',
+          AccountType.FORUM,
           FORUM_CONNECT_STEPS_AMOUNT,
           [<Sign key="sign" />, <Copy key="copy" />, <Comment key="comment" />],
           [handleSign, handleCopy, handleValidate],
@@ -249,7 +252,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           modalState.stepsCurrentHelper
         ),
         button: 'modal.identity_setup.forum.action',
-        helperTexts: getHelperTexts('forum', FORUM_CONNECT_STEPS_AMOUNT),
+        helperTexts: getHelperTexts(AccountType.FORUM, FORUM_CONNECT_STEPS_AMOUNT),
       },
     }),
     [handleCopy, handleSign, handleValidate, modalState.currentStep, modalState.stepsCurrentHelper]
@@ -276,7 +279,8 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         onClose={() => {
           resetForumConnect()
           setIsTimerActive(false)
-          resetState('forum')
+          resetState(AccountType.FORUM)
+          setCurrentType(ModalType.CHOOSE_ACCOUNT)
           onClose()
         }}
         closeIcon={<Close />}
@@ -291,14 +295,14 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             </Modal.Header>
             <Modal.Content>
               {stateMap[currentType].actions.map((cardProps, index) => {
-                const { title, description, action_title, helper } = cardProps
+                const { title, description, actionTitle, helper } = cardProps
                 return (
                   <ActionCard
                     key={`ActionCard--${index}`}
                     {...cardProps}
                     title={t(title)}
                     description={t(description)}
-                    action_title={t(action_title)}
+                    actionTitle={t(actionTitle)}
                     helper={t(helper)}
                   />
                 )

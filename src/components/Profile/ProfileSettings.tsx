@@ -16,7 +16,7 @@ function ProfileSettings() {
   const { setIsModalOpen } = useIdentityModalContext()
   const [user] = useAuthContext()
   const isProfileValidated = useIsProfileValidated(user)
-  const showDot = isProfileValidated !== null && !isProfileValidated
+  const showDot = user !== null && !isProfileValidated
 
   const handleLinkedProfilesClick = () => setIsModalOpen(true)
 

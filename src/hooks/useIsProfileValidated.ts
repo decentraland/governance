@@ -8,11 +8,11 @@ function useIsProfileValidated(address: string | null) {
       if (address) {
         return await Governance.get().isProfileValidated(address)
       }
-      return null
+      return false
     },
     [address],
     {
-      initialValue: null,
+      initialValue: false,
     }
   )
 

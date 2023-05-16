@@ -4,6 +4,8 @@ import { env } from '../../modules/env'
 import locations from '../../modules/locations'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 
+import { ValidatedAccount } from './types'
+
 export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || env('GATSBY_DISCOURSE_USER') || ''
 export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || env('GATSBY_DISCOURSE_API') || ''
 const DEFAULT_AVATAR_SIZE = '45'
@@ -21,14 +23,17 @@ function getAvatarUrl(post: DiscoursePostInTopic) {
   return defaultSizeUrl.includes('letter') ? defaultSizeUrl : FORUM_URL + defaultSizeUrl
 }
 
-export function filterComments(posts: DiscoursePostInTopic[]): ProposalCommentsInDiscourse {
+export function filterComments(
+  posts: DiscoursePostInTopic[],
+  validatedAccounts?: ValidatedAccount[]
+): ProposalCommentsInDiscourse {
   const userPosts = posts.filter(
     (post) => ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase())
   )
 
-  const proposalComments: ProposalComment[] = userPosts.map((post) => {
+  let proposalComments: ProposalComment[] = userPosts.map((post) => {
     return {
-      id: post.user_id,
+      userForumId: post.user_id,
       username: post.username,
       avatar_url: getAvatarUrl(post),
       created_at: post.created_at,
@@ -36,8 +41,20 @@ export function filterComments(posts: DiscoursePostInTopic[]): ProposalCommentsI
     }
   })
 
+  if (validatedAccounts !== undefined && validatedAccounts.length > 0) {
+    const forumIdToAddressMap = validatedAccounts.reduce((map, user) => {
+      map[user.forum_id] = user.address
+      return map
+    }, {} as Record<number, string>)
+
+    proposalComments = proposalComments.map((comment) => {
+      comment.address = forumIdToAddressMap[comment.userForumId]
+      return comment
+    })
+  }
+
   return {
-    totalComments: userPosts.length,
+    totalComments: proposalComments.length,
     comments: proposalComments,
   }
 }
