@@ -8,8 +8,8 @@ export default class UserModel extends Model<UserAttributes> {
   static withTimestamps = false
   static primaryKey = 'address'
 
-  static async createConnection(address: string, forum_id: number) {
-    const query = SQL`INSERT INTO ${table(this)} (address, forum_id, verification_date) 
+  static async createForumConnection(address: string, forum_id: number) {
+    const query = SQL`INSERT INTO ${table(this)} (address, forum_id, forum_verification_date) 
     VALUES (${address.toLowerCase()}, ${forum_id}, ${new Date().toISOString()})`
 
     return await this.namedQuery('create_connection', query)
@@ -25,7 +25,7 @@ export default class UserModel extends Model<UserAttributes> {
     return await this.namedQuery('get_addresses_by_forum_ids', query)
   }
 
-  static async isProfileValidated(address: string): Promise<boolean> {
+  static async isForumValidated(address: string): Promise<boolean> {
     const query = SQL`SELECT count(forum_id) as is_validated FROM ${table(
       this
     )} WHERE address = ${address.toLowerCase()}`

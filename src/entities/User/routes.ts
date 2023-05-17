@@ -69,7 +69,7 @@ async function checkValidationMessage(req: WithAuth) {
         throw new Error('Validation failed')
       }
 
-      await UserModel.createConnection(user, validationComment.user_id)
+      await UserModel.createForumConnection(user, validationComment.user_id)
       clearValidationInProgress(user)
     }
 
@@ -84,12 +84,14 @@ async function checkValidationMessage(req: WithAuth) {
 async function isValidated(req: Request) {
   const address = req.params.address
   if (!isEthereumAddress(address)) {
-    return false
+    throw new Error('Invalid address')
   }
   try {
-    return await UserModel.isProfileValidated(address)
+    return await UserModel.isForumValidated(address)
   } catch (error) {
-    ErrorService.report('Error while fetching validation data', error)
+    const message = 'Error while fetching validation data'
+    ErrorService.report(message, error)
+    throw new Error(`${message}. ${error}`)
   }
 }
 

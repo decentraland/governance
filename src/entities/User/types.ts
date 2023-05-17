@@ -1,7 +1,7 @@
 export type UserAttributes = {
   address: string
   forum_id: number
-  verification_date: string
+  forum_verification_date: string
 }
 
 export type ValidationMessage = {

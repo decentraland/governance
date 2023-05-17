@@ -13,7 +13,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'INTEGER',
       notNull: true,
     },
-    verification_date: {
+    forum_verification_date: {
       type: 'TIMESTAMP',
       notNull: true,
     },

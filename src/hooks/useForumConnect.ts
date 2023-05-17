@@ -35,26 +35,21 @@ export default function useForumConnect() {
   const [isValidated, setIsValidated] = useState<boolean>()
 
   useEffect(() => {
-    if (signatureResolution) {
-      if (!signState.signing) {
-        if (!signState.error) {
-          signatureResolution.resolve(undefined)
-        } else {
-          resetTimer()
-          signatureResolution.reject(signState.error)
-        }
+    if (signatureResolution && !signState.signing) {
+      if (!signState.error) {
+        signatureResolution.resolve(undefined)
+      } else {
+        resetTimer()
+        signatureResolution.reject(signState.error)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signatureResolution, signState])
 
   useEffect(() => {
-    if (time <= 0) {
-      if (validatingProfile) {
-        clearInterval(validatingProfile)
-        setValidatingProfile(undefined)
-      }
-      console.error('Validation Time Expired')
+    if (time <= 0 && validatingProfile) {
+      clearInterval(validatingProfile)
+      setValidatingProfile(undefined)
     }
   }, [time, validatingProfile])
 
@@ -102,7 +97,6 @@ export default function useForumConnect() {
             track(SegmentEvent.IdentityCompleted, { address: user, account: AccountType.Forum })
           }
         } catch (error) {
-          console.error(error)
           clearInterval(validationChecker)
           setIsValidated(false)
         }

@@ -94,6 +94,18 @@ const INITIAL_STATE: ModalState = {
   isValidating: false,
 }
 
+function getActionComponent(action: JSX.Element, isCompleted: boolean, isDisabled: boolean) {
+  if (isCompleted) {
+    return <CheckCircle size="24" outline />
+  }
+
+  if (isDisabled) {
+    return <Lock />
+  }
+
+  return action
+}
+
 function getAccountActionSteps(
   account: AccountType,
   stepsAmount: number,
@@ -111,25 +123,17 @@ function getAccountActionSteps(
     const isDisabled = stepIdx > currentStep
     const isCompleted = stepIdx < currentStep && stepIdx <= 1
 
-    let action = (
+    const actionButton = (
       <Button basic onClick={actions[index]}>
         {t(`modal.identity_setup.${account}.action_step_${stepIdx}`)}
       </Button>
     )
 
-    if (isCompleted) {
-      action = <CheckCircle size="24" outline />
-    }
-
-    if (isDisabled) {
-      action = <Lock />
-    }
-
     return {
       title: t(`modal.identity_setup.${account}.title_step_${stepIdx}`),
       description: t(`modal.identity_setup.${account}.description_step_${stepIdx}`),
       icon: icons[index],
-      action,
+      action: getActionComponent(actionButton, isCompleted, isDisabled),
       isDisabled,
       helper: t(stepHelpers?.[stepIdx]),
     }
@@ -294,73 +298,71 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   }
 
   return (
-    <>
-      <Modal
-        open={open}
-        className="AccountsConnectModal"
-        size="tiny"
-        onClose={() => {
-          resetForumConnect()
-          setIsTimerActive(false)
-          resetState(AccountType.Forum)
-          setCurrentType(ModalType.ChooseAccount)
-          onClose()
-        }}
-        closeIcon={<Close />}
-      >
-        {isValidated === undefined && (
-          <>
-            <Modal.Header className="AccountsConnectModal__Header">
-              <div>{t(stateMap[currentType].title)}</div>
-              {modalState.isTimerActive && (
-                <div className="AccountsConnectModal__Timer">{t(timerTextKey, { time: getTimeFormatted(time) })}</div>
-              )}
-            </Modal.Header>
-            <Modal.Content>
-              {stateMap[currentType].actions.map((cardProps, index) => {
-                return <ActionCard key={`ActionCard--${index}`} {...cardProps} />
-              })}
-              <div className="AccountsConnectModal__HelperContainer">
-                {button && (
-                  <Button primary disabled loading={modalState.isValidating}>
-                    {t(button)}
-                  </Button>
-                )}
-                {helperTexts && helperTexts.length > 0 && (
-                  <div className="AccountsConnectModal__HelperText">
-                    {modalState.isValidating
-                      ? t('modal.identity_setup.forum.helper_loading')
-                      : t(helperTexts[modalState.currentStep - 1])}
-                  </div>
-                )}
-              </div>
-            </Modal.Content>
-          </>
-        )}
-        {/* TODO: Abstract this section when new connections become available */}
-        {isValidated !== undefined && (
+    <Modal
+      open={open}
+      className="AccountsConnectModal"
+      size="tiny"
+      onClose={() => {
+        resetForumConnect()
+        setIsTimerActive(false)
+        resetState(AccountType.Forum)
+        setCurrentType(ModalType.ChooseAccount)
+        onClose()
+      }}
+      closeIcon={<Close />}
+    >
+      {isValidated === undefined && (
+        <>
+          <Modal.Header className="AccountsConnectModal__Header">
+            <div>{t(stateMap[currentType].title)}</div>
+            {modalState.isTimerActive && (
+              <div className="AccountsConnectModal__Timer">{t(timerTextKey, { time: getTimeFormatted(time) })}</div>
+            )}
+          </Modal.Header>
           <Modal.Content>
-            <div className="AccountsConnectModal__PostIcons">
-              <Avatar address={address || undefined} size="huge" />
-              {isValidated ? <LinkSucceded /> : <LinkFailed />}
-              <ForumBlue />
-            </div>
-            <div className="AccountsConnectModal__PostText">
-              <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_text`)}</Markdown>
-              <div className="AccountsConnectModal__PostText--subtext">
-                <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_subtext`)}</Markdown>
-                {isValidated && <ValidatedProfile />}
-              </div>
-            </div>
-            <div className="AccountsConnectModal__PostAction">
-              <Button primary onClick={handlePostAction}>
-                {t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_button`)}
-              </Button>
+            {stateMap[currentType].actions.map((cardProps, index) => {
+              return <ActionCard key={`ActionCard--${index}`} {...cardProps} />
+            })}
+            <div className="AccountsConnectModal__HelperContainer">
+              {button && (
+                <Button primary disabled loading={modalState.isValidating}>
+                  {t(button)}
+                </Button>
+              )}
+              {helperTexts && helperTexts.length > 0 && (
+                <div className="AccountsConnectModal__HelperText">
+                  {modalState.isValidating
+                    ? t('modal.identity_setup.forum.helper_loading')
+                    : t(helperTexts[modalState.currentStep - 1])}
+                </div>
+              )}
             </div>
           </Modal.Content>
-        )}
-      </Modal>
-    </>
+        </>
+      )}
+      {/* TODO: Abstract this section when new connections become available */}
+      {isValidated !== undefined && (
+        <Modal.Content>
+          <div className="AccountsConnectModal__PostIcons">
+            <Avatar address={address || undefined} size="huge" />
+            {isValidated ? <LinkSucceded /> : <LinkFailed />}
+            <ForumBlue />
+          </div>
+          <div className="AccountsConnectModal__PostText">
+            <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_text`)}</Markdown>
+            <div className="AccountsConnectModal__PostText--subtext">
+              <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_subtext`)}</Markdown>
+              {isValidated && <ValidatedProfile />}
+            </div>
+          </div>
+          <div className="AccountsConnectModal__PostAction">
+            <Button primary onClick={handlePostAction}>
+              {t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_button`)}
+            </Button>
+          </div>
+        </Modal.Content>
+      )}
+    </Modal>
   )
 }
 
