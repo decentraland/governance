@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -13,21 +11,18 @@ import { SegmentEvent } from '../../../entities/Events/types'
 import { openUrl } from '../../../helpers'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import locations from '../../../modules/locations'
-import ActionCard, { ActionCardProps } from '../../ActionCard/ActionCard'
+import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
 import CircledDiscord from '../../Icon/CircledDiscord'
 import CircledForum from '../../Icon/CircledForum'
 import CircledTwitter from '../../Icon/CircledTwitter'
 import Comment from '../../Icon/Comment'
 import Copy from '../../Icon/Copy'
-import ForumBlue from '../../Icon/ForumBlue'
-import LinkFailed from '../../Icon/LinkFailed'
-import LinkSucceded from '../../Icon/LinkSucceded'
 import Lock from '../../Icon/Lock'
 import Sign from '../../Icon/Sign'
-import ValidatedProfile from '../../Icon/ValidatedProfile'
 
-import './AccountsConnectModal.css'
+import AccountConnection, { AccountConnectionProps } from './AccountConnection'
+import PostConnection from './PostConnection'
 
 export enum AccountType {
   Forum = 'forum',
@@ -35,12 +30,7 @@ export enum AccountType {
   Twitter = 'twitter',
 }
 
-type AccountModal = {
-  title: string
-  actions: ActionCardProps[]
-  button?: string
-  helperTexts?: string[]
-}
+type AccountModal = Omit<AccountConnectionProps, 'timerText'>
 
 enum ModalType {
   ChooseAccount,
@@ -140,11 +130,18 @@ function getAccountActionSteps(
   })
 }
 
-function getHelperTexts(account: AccountType, stepsAmount: number): string[] {
-  if (stepsAmount === 0) {
-    return []
-  }
-  return Array.from({ length: stepsAmount }, (_, index) => `modal.identity_setup.${account}.helper_step_${index + 1}`)
+function getForumHelperTextKey(currentStep: number): string | undefined {
+  return currentStep <= FORUM_CONNECT_STEPS_AMOUNT
+    ? `modal.identity_setup.${AccountType.Forum}.helper_step_${currentStep}`
+    : undefined
+}
+
+function getModalButton(text: string, isValidating: boolean) {
+  return (
+    <Button primary disabled loading={isValidating}>
+      {text}
+    </Button>
+  )
 }
 
 function getTimeFormatted(totalSeconds: number) {
@@ -196,8 +193,6 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   }
   const isTimerExpired = time <= 0
 
-  const timerTextKey = isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'
-
   useEffect(() => {
     if (isTimerExpired) {
       resetState(AccountType.Forum)
@@ -243,7 +238,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   const stateMap = useMemo<Record<ModalType, AccountModal>>(
     () => ({
       [ModalType.ChooseAccount]: {
-        title: 'modal.identity_setup.title',
+        title: t('modal.identity_setup.title'),
         actions: [
           {
             title: t('modal.identity_setup.forum.card_title'),
@@ -267,7 +262,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         ],
       },
       [ModalType.Forum]: {
-        title: 'modal.identity_setup.forum.title',
+        title: t('modal.identity_setup.forum.title'),
         actions: getAccountActionSteps(
           AccountType.Forum,
           FORUM_CONNECT_STEPS_AMOUNT,
@@ -277,16 +272,21 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           t,
           modalState.stepsCurrentHelper
         ),
-        button: 'modal.identity_setup.forum.action',
-        helperTexts: getHelperTexts(AccountType.Forum, FORUM_CONNECT_STEPS_AMOUNT),
+        button: getModalButton(t('modal.identity_setup.forum.action'), modalState.isValidating),
+        helperText: t(getForumHelperTextKey(modalState.currentStep)),
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [handleCopy, handleSign, handleValidate, modalState.currentStep, modalState.stepsCurrentHelper]
+    [
+      handleCopy,
+      handleSign,
+      handleValidate,
+      modalState.currentStep,
+      modalState.stepsCurrentHelper,
+      modalState.isValidating,
+    ]
   )
   const currentType = modalState.currentType
-  const button = stateMap[currentType].button
-  const helperTexts = stateMap[currentType].helperTexts
 
   const handlePostAction = () => {
     if (isValidated) {
@@ -297,10 +297,11 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     }
   }
 
+  const timerTextKey = isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'
+
   return (
     <Modal
       open={open}
-      className="AccountsConnectModal"
       size="tiny"
       onClose={() => {
         resetForumConnect()
@@ -311,56 +312,18 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       }}
       closeIcon={<Close />}
     >
-      {isValidated === undefined && (
-        <>
-          <Modal.Header className="AccountsConnectModal__Header">
-            <div>{t(stateMap[currentType].title)}</div>
-            {modalState.isTimerActive && (
-              <div className="AccountsConnectModal__Timer">{t(timerTextKey, { time: getTimeFormatted(time) })}</div>
-            )}
-          </Modal.Header>
-          <Modal.Content>
-            {stateMap[currentType].actions.map((cardProps, index) => {
-              return <ActionCard key={`ActionCard--${index}`} {...cardProps} />
-            })}
-            <div className="AccountsConnectModal__HelperContainer">
-              {button && (
-                <Button primary disabled loading={modalState.isValidating}>
-                  {t(button)}
-                </Button>
-              )}
-              {helperTexts && helperTexts.length > 0 && (
-                <div className="AccountsConnectModal__HelperText">
-                  {modalState.isValidating
-                    ? t('modal.identity_setup.forum.helper_loading')
-                    : t(helperTexts[modalState.currentStep - 1])}
-                </div>
-              )}
-            </div>
-          </Modal.Content>
-        </>
-      )}
-      {/* TODO: Abstract this section when new connections become available */}
-      {isValidated !== undefined && (
-        <Modal.Content>
-          <div className="AccountsConnectModal__PostIcons">
-            <Avatar address={address || undefined} size="huge" />
-            {isValidated ? <LinkSucceded /> : <LinkFailed />}
-            <ForumBlue />
-          </div>
-          <div className="AccountsConnectModal__PostText">
-            <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_text`)}</Markdown>
-            <div className="AccountsConnectModal__PostText--subtext">
-              <Markdown>{t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_subtext`)}</Markdown>
-              {isValidated && <ValidatedProfile />}
-            </div>
-          </div>
-          <div className="AccountsConnectModal__PostAction">
-            <Button primary onClick={handlePostAction}>
-              {t(`modal.identity_setup.forum.${isValidated ? 'success' : 'error'}_button`)}
-            </Button>
-          </div>
-        </Modal.Content>
+      {isValidated === undefined ? (
+        <AccountConnection
+          title={stateMap[currentType].title}
+          timerText={modalState.isTimerActive ? t(timerTextKey, { time: getTimeFormatted(time) }) : undefined}
+          actions={stateMap[currentType].actions}
+          button={stateMap[currentType].button}
+          helperText={
+            modalState.isValidating ? t('modal.identity_setup.forum.helper_loading') : stateMap[currentType].helperText
+          }
+        />
+      ) : (
+        <PostConnection address={address || undefined} isValidated={isValidated} onPostAction={handlePostAction} />
       )}
     </Modal>
   )

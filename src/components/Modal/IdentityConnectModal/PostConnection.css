@@ -1,0 +1,66 @@
+.PostConnection__Icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 34px;
+}
+
+.PostConnection__Icons > *:not(:last-child) {
+  margin-right: 16px;
+}
+
+.PostConnection__Text,
+.PostConnection__Action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.PostConnection__Text--subtext {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.PostConnection__Text--subtext > svg {
+  margin-left: 2px;
+}
+
+.PostConnection__Text .dg.Paragraph {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 8px;
+  max-width: 70%;
+}
+
+.PostConnection__Text .dg.Paragraph .Bold {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+}
+
+.PostConnection__Text--subtext .dg.Paragraph,
+.PostConnection__Text--subtext .dg.Paragraph .Bold {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--black-600);
+  max-width: 100%;
+  margin: 0;
+}
+
+.PostConnection__Text--subtext .dg.Paragraph .Bold {
+  font-weight: 600;
+}
+
+.PostConnection__Action .ui.primary.button {
+  width: 50%;
+  margin-top: 16px;
+}
