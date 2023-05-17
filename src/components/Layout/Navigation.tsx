@@ -41,7 +41,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const [user] = useAuthContext()
 
   const { isDebugAddress } = useIsDebugAddress(user)
-  const isProfileValidated = useIsProfileValidated(user)
+  const [isProfileValidated, isLoading] = useIsProfileValidated(user)
   const [dismissState, setDismissState] = useState<DismissState>({
     isDismissClicked: false,
     isPopUpDismissed: false,
@@ -60,7 +60,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
     localStorage.setItem(PROFILE_POP_UP_LOCAL_STORAGE_KEY, 'true')
     setDismissState((prev) => ({ ...prev, isDismissClicked: true }))
   }
-  const showDot = user !== null && !isProfileValidated
+  const showDot = !isLoading && !isProfileValidated
 
   return (
     <div className="Navigation">

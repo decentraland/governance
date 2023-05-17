@@ -15,15 +15,15 @@ function ProfileSettings() {
   const t = useFormatMessage()
   const { setIsModalOpen } = useIdentityModalContext()
   const [user] = useAuthContext()
-  const isProfileValidated = useIsProfileValidated(user)
-  const showDot = user !== null && !isProfileValidated
+  const [isProfileValidated, isLoading] = useIsProfileValidated(user)
+  const showDot = !isLoading && !isProfileValidated
 
   const handleLinkedProfilesClick = () => setIsModalOpen(true)
 
   return (
     <Dropdown className="ProfileSettings" floating icon={showDot ? <GearNew /> : <Gear />}>
       <Dropdown.Menu>
-        <Dropdown.Item onClick={handleLinkedProfilesClick} disabled={isProfileValidated == null || isProfileValidated}>
+        <Dropdown.Item onClick={handleLinkedProfilesClick} disabled={isLoading || isProfileValidated}>
           {t('page.profile.settings.linked_profiles')}
         </Dropdown.Item>
       </Dropdown.Menu>

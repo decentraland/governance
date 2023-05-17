@@ -23,7 +23,9 @@ function IdentityConnectModal() {
   const [isSetUpOpen, setIsSetUpOpen] = useState(false)
   const [timestamp, setTimestamp] = useState<string | null>(null)
   const handleDismiss = () => {
-    localStorage.setItem(IDENTITY_MODAL_KEY, new Date(new Date().getTime() + HIDE_TIME).toISOString())
+    const timestamp = new Date(new Date().getTime() + HIDE_TIME).toISOString()
+    localStorage.setItem(IDENTITY_MODAL_KEY, timestamp)
+    setTimestamp(timestamp)
     setIsModalOpen(false)
   }
   const handleConnect = () => {
@@ -33,13 +35,13 @@ function IdentityConnectModal() {
   const handleCloseSetUp = () => setIsSetUpOpen(false)
 
   const checkProfile = useMemo(() => !timestamp || new Date() > new Date(timestamp), [timestamp])
-  const isProfileValidated = useIsProfileValidated(user)
+  const [isProfileValidated, isLoading] = useIsProfileValidated(user)
 
   useEffect(() => {
-    if (!!setIsModalOpen && user !== null && checkProfile) {
-      setIsModalOpen(!isProfileValidated)
+    if (!!setIsModalOpen && !isLoading && checkProfile) {
+      setIsModalOpen(!isProfileValidated && !isSetUpOpen)
     }
-  }, [checkProfile, isProfileValidated, setIsModalOpen, user])
+  }, [checkProfile, isProfileValidated, setIsModalOpen, isLoading, isSetUpOpen])
 
   useEffect(() => {
     setTimestamp(localStorage.getItem(IDENTITY_MODAL_KEY))
