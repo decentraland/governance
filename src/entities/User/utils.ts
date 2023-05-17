@@ -1,9 +1,13 @@
+import { hashMessage, recoverAddress } from 'ethers/lib/utils'
+
 import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
 import { env } from '../../modules/env'
 import locations from '../../modules/locations'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
+import { isSameAddress } from '../Snapshot/utils'
 
+import { MESSAGE_TIMEOUT_TIME } from './constants'
 import { ValidatedAccount } from './types'
 
 export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || env('GATSBY_DISCOURSE_USER') || ''
@@ -33,7 +37,7 @@ export function filterComments(
 
   let proposalComments: ProposalComment[] = userPosts.map((post) => {
     return {
-      userForumId: post.user_id,
+      user_forum_id: post.user_id,
       username: post.username,
       avatar_url: getAvatarUrl(post),
       created_at: post.created_at,
@@ -48,7 +52,7 @@ export function filterComments(
     }, {} as Record<number, string>)
 
     proposalComments = proposalComments.map((comment) => {
-      comment.address = forumIdToAddressMap[comment.userForumId]
+      comment.address = forumIdToAddressMap[comment.user_forum_id]
       return comment
     })
   }
@@ -57,4 +61,29 @@ export function filterComments(
     totalComments: proposalComments.length,
     comments: proposalComments,
   }
+}
+
+export function formatValidationMessage(address: string, timestamp: string) {
+  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this Discourse forum account\n\nDate: ${timestamp}`
+}
+
+export function getValidationComment(comments: DiscoursePostInTopic[], address: string, timestamp: string) {
+  const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
+
+  const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
+
+  return filteredComments.find((comment) => {
+    const addressRegex = new RegExp(address, 'i')
+    const dateRegex = new RegExp(timestamp, 'i')
+
+    return addressRegex.test(comment.cooked) && dateRegex.test(comment.cooked)
+  })
+}
+
+export function validateComment(validationComment: DiscoursePostInTopic, address: string, timestamp: string) {
+  const signatureRegex = /0x([a-fA-F\d]{130})/
+  const signature = '0x' + validationComment.cooked.match(signatureRegex)?.[1]
+  const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp)), signature)
+
+  return isSameAddress(recoveredAddress, address)
 }

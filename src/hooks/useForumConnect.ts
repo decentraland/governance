@@ -7,6 +7,7 @@ import useSign from 'decentraland-gatsby/dist/hooks/useSign'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Governance } from '../clients/Governance'
+import { AccountType } from '../components/Modal/IdentityConnectModal/AccountsConnectModal'
 import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import { DISCOURSE_API } from '../entities/User/utils'
@@ -98,7 +99,7 @@ export default function useForumConnect() {
             clearInterval(validationChecker)
             resetTimer()
             setIsValidated(true)
-            track(SegmentEvent.IdentityCompleted, { address: user, account: 'forum' })
+            track(SegmentEvent.IdentityCompleted, { address: user, account: AccountType.Forum })
           }
         } catch (error) {
           console.error(error)

@@ -1,17 +1,18 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
-import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import { Request, Response } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import isDebugAddress from '../Debug/isDebugAddress'
+import { isSameAddress } from '../Snapshot/utils'
 
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
 import UserModel from './model'
 import { ValidationMessage } from './types'
+import { formatValidationMessage, getValidationComment, validateComment } from './utils'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -26,13 +27,9 @@ const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
 function clearValidationInProgress(user: string) {
   const validation = VALIDATIONS_IN_PROGRESS[user]
   if (validation) {
-    clearTimeout(validation.messageTimeout)
+    clearTimeout(validation.message_timeout)
     delete VALIDATIONS_IN_PROGRESS[user]
   }
-}
-
-function formatValidationMessage(address: string, timestamp: string) {
-  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this Discourse forum account\n\nDate: ${timestamp}`
 }
 
 async function getValidationMessage(req: WithAuth) {
@@ -42,13 +39,13 @@ async function getValidationMessage(req: WithAuth) {
     timestamp: new Date().toISOString(),
   }
 
-  const messageTimeout = setTimeout(() => {
+  const message_timeout = setTimeout(() => {
     delete VALIDATIONS_IN_PROGRESS[address]
   }, MESSAGE_TIMEOUT_TIME)
 
   VALIDATIONS_IN_PROGRESS[address] = {
     ...message,
-    messageTimeout,
+    message_timeout,
   }
 
   return formatValidationMessage(address, message.timestamp)
@@ -65,31 +62,19 @@ async function checkValidationMessage(req: WithAuth) {
     const { address, timestamp } = messageProperties
 
     const comments = await DiscourseService.fetchAllComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
-    const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
+    const validationComment = getValidationComment(comments, address, timestamp)
 
-    const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
-    const validComment = filteredComments.find((comment) => {
-      const addressRegex = new RegExp(address, 'i')
-      const dateRegex = new RegExp(timestamp, 'i')
-
-      return addressRegex.test(comment.cooked) && dateRegex.test(comment.cooked)
-    })
-
-    if (validComment) {
-      const signatureRegex = /0x([a-fA-F\d]{130})/
-      const signature = '0x' + validComment.cooked.match(signatureRegex)?.[1]
-      const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp)), signature)
-
-      if (recoveredAddress.toLowerCase() !== user) {
-        throw new Error('Invalid signature')
+    if (validationComment) {
+      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp)) {
+        throw new Error('Validation failed')
       }
 
-      await UserModel.createConnection(user, validComment.user_id)
+      await UserModel.createConnection(user, validationComment.user_id)
       clearValidationInProgress(user)
     }
 
     return {
-      valid: !!validComment,
+      valid: !!validationComment,
     }
   } catch (error) {
     throw new Error("Couldn't validate the user. " + error)

@@ -753,7 +753,7 @@ export const newProposalLinkedWearablesScheme = {
 }
 
 export type ProposalComment = {
-  userForumId: number
+  user_forum_id: number
   address?: string
   username: string
   avatar_url: string

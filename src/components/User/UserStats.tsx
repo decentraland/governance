@@ -7,6 +7,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import ValidatedProfile from '../Icon/ValidatedProfile'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
@@ -32,7 +33,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
   const t = useFormatMessage()
   const [isProfileValidated, isLoading] = useIsProfileValidated(address)
   const [user] = useAuthContext()
-  const showSettings = user && user === address.toLowerCase() && !isProfileValidated
+  const showSettings = isSameAddress(user, address) && !isLoading && !isProfileValidated
   const { total } = vpDistribution || { total: 0 }
 
   return (

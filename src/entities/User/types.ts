@@ -7,7 +7,7 @@ export type UserAttributes = {
 export type ValidationMessage = {
   address: string
   timestamp: string
-  messageTimeout: NodeJS.Timeout
+  message_timeout: NodeJS.Timeout
 }
 
 export type ValidatedAccount = {

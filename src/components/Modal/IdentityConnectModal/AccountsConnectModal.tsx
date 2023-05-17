@@ -29,6 +29,12 @@ import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './AccountsConnectModal.css'
 
+export enum AccountType {
+  Forum = 'forum',
+  Discord = 'discord',
+  Twitter = 'twitter',
+}
+
 type AccountModal = {
   title: string
   actions: ActionCardProps[]
@@ -37,14 +43,8 @@ type AccountModal = {
 }
 
 enum ModalType {
-  CHOOSE_ACCOUNT,
-  FORUM,
-}
-
-enum AccountType {
-  FORUM = 'forum',
-  DISCORD = 'discord',
-  TWITTER = 'twitter',
+  ChooseAccount,
+  Forum,
 }
 
 type ModalState = {
@@ -63,7 +63,7 @@ type CardHelperKeys = {
 }
 
 const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = {
-  [AccountType.FORUM]: {
+  [AccountType.Forum]: {
     1: {
       start: 'modal.identity_setup.forum.card_helper.step_1_start',
       active: 'modal.identity_setup.forum.card_helper.step_1_active',
@@ -81,14 +81,14 @@ const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = 
       success: THREAD_URL,
     },
   },
-  [AccountType.DISCORD]: {},
-  [AccountType.TWITTER]: {},
+  [AccountType.Discord]: {},
+  [AccountType.Twitter]: {},
 }
 
 const FORUM_CONNECT_STEPS_AMOUNT = 3
 
 const INITIAL_STATE: ModalState = {
-  currentType: ModalType.CHOOSE_ACCOUNT,
+  currentType: ModalType.ChooseAccount,
   currentStep: 1,
   isTimerActive: false,
   isValidating: false,
@@ -192,14 +192,11 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   }
   const isTimerExpired = time <= 0
 
-  const timerTextKey = useMemo(
-    () => (isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'),
-    [isTimerExpired]
-  )
+  const timerTextKey = isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'
 
   useEffect(() => {
     if (isTimerExpired) {
-      resetState(AccountType.FORUM)
+      resetState(AccountType.Forum)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTimerExpired])
@@ -218,7 +215,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       await getSignedMessage()
       setStepHelper(STEP_NUMBER, 'success')
       setCurrentStep(STEP_NUMBER + 1)
-      track(SegmentEvent.IdentityStarted, { address, account: AccountType.FORUM })
+      track(SegmentEvent.IdentityStarted, { address, account: AccountType.Forum })
     } catch (error) {
       setIsTimerActive(false)
       setStepHelper(STEP_NUMBER, 'error')
@@ -241,7 +238,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   const stateMap = useMemo<Record<ModalType, AccountModal>>(
     () => ({
-      [ModalType.CHOOSE_ACCOUNT]: {
+      [ModalType.ChooseAccount]: {
         title: 'modal.identity_setup.title',
         actions: [
           {
@@ -249,8 +246,8 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             description: t('modal.identity_setup.forum.card_description'),
             icon: <CircledForum />,
             onCardClick: () => {
-              setCurrentType(ModalType.FORUM)
-              initializeStepHelpers(AccountType.FORUM)
+              setCurrentType(ModalType.Forum)
+              initializeStepHelpers(AccountType.Forum)
             },
           },
           {
@@ -265,10 +262,10 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           },
         ],
       },
-      [ModalType.FORUM]: {
+      [ModalType.Forum]: {
         title: 'modal.identity_setup.forum.title',
         actions: getAccountActionSteps(
-          AccountType.FORUM,
+          AccountType.Forum,
           FORUM_CONNECT_STEPS_AMOUNT,
           [<Sign key="sign" />, <Copy key="copy" />, <Comment key="comment" />],
           [handleSign, handleCopy, handleValidate],
@@ -277,7 +274,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           modalState.stepsCurrentHelper
         ),
         button: 'modal.identity_setup.forum.action',
-        helperTexts: getHelperTexts(AccountType.FORUM, FORUM_CONNECT_STEPS_AMOUNT),
+        helperTexts: getHelperTexts(AccountType.Forum, FORUM_CONNECT_STEPS_AMOUNT),
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -305,8 +302,8 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         onClose={() => {
           resetForumConnect()
           setIsTimerActive(false)
-          resetState(AccountType.FORUM)
-          setCurrentType(ModalType.CHOOSE_ACCOUNT)
+          resetState(AccountType.Forum)
+          setCurrentType(ModalType.ChooseAccount)
           onClose()
         }}
         closeIcon={<Close />}
