@@ -31,9 +31,9 @@ const UserAvatar = React.lazy(() => import('./UserAvatar'))
 
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
-  const [isProfileValidated, isLoading] = useIsProfileValidated(address)
+  const [isProfileValidated, validationChecked] = useIsProfileValidated(address)
   const [user] = useAuthContext()
-  const showSettings = isSameAddress(user, address) && !isLoading && !isProfileValidated
+  const showSettings = isSameAddress(user, address) && validationChecked && !isProfileValidated
   const { total } = vpDistribution || { total: 0 }
 
   return (
@@ -46,7 +46,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
           <NotMobile>
             <Username address={address} size="medium" className="UserStats__Username" />
           </NotMobile>
-          {!isLoading && isProfileValidated && <ValidatedProfile />}
+          {validationChecked && isProfileValidated && <ValidatedProfile />}
           {showSettings && <ProfileSettings />}
         </div>
         <Badges address={address} />
