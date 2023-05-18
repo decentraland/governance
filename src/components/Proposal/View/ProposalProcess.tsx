@@ -14,13 +14,20 @@ export enum ProcessStatus {
   Default = 'default',
 }
 
+export enum ProcessType {
+  Governance = 'governance',
+  BiddingAndTendering = 'bidding-and-tendering',
+}
+
 interface Props {
   title: string
+  isNew?: boolean
+  type: ProcessType
   items: {
     title: string
     description: string
     status: ProcessStatus
-    statusText: string
+    statusText?: string
   }[]
 }
 
@@ -36,9 +43,9 @@ const VerticalLine = ({ position, isActive }: { position: 'top' | 'middle' | 'bo
   )
 }
 
-export default function ProposalProcess({ title, items }: Props) {
+export default function ProposalProcess({ title, items, isNew = false, type = ProcessType.Governance }: Props) {
   return (
-    <Section title={title} isNew>
+    <Section title={title} isNew={isNew}>
       {items.map(({ title, description, statusText, status }, index) => {
         const isActive = status === ProcessStatus.Active
         const isFirstItem = index === 0
@@ -47,7 +54,11 @@ export default function ProposalProcess({ title, items }: Props) {
 
         return (
           <div key={title} className="ProposalProcess__ItemContainer">
-            {isActive && <div className="ProposalProcess__ItemGradient" />}
+            {isActive && (
+              <div
+                className={TokenList.join(['ProposalProcess__ItemGradient', `ProposalProcess__ItemGradient--${type}`])}
+              />
+            )}
             <div className={TokenList.join(['ProposalProcess__Item', isActive && 'ProposalProcess__Item--selected'])}>
               <div className="ProposalProcess__ItemNumberContainer">
                 {isFirstItem && <VerticalLine position="top" isActive={isActive} />}
@@ -76,7 +87,7 @@ export default function ProposalProcess({ title, items }: Props) {
                 >
                   {description}
                 </p>
-                {statusText !== '' && (
+                {statusText && statusText !== '' && (
                   <span className="ProposalProcess___StatusTextContainer">
                     <Markdown
                       className={TokenList.join([

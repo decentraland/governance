@@ -39,12 +39,14 @@ import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
@@ -278,7 +280,6 @@ export default function ProposalPage() {
     surveyTopics.length > 0 &&
     !!proposal &&
     proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
-  const isBiddingAndTenderingProposal = proposal?.type === ProposalType.Pitch || proposal?.type === ProposalType.Tender
 
   if (proposalState.error) {
     return (
@@ -339,7 +340,7 @@ export default function ProposalPage() {
               </div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
-              {proposal && isBiddingAndTenderingProposal && (
+              {proposal && isBiddingAndTenderingProposal(proposal.type) && (
                 <BiddingAndTenderingProcess
                   proposalId={proposal.id}
                   proposalType={proposal.type}
@@ -348,6 +349,9 @@ export default function ProposalPage() {
                   linkedProposalId={proposal.configuration.linked_proposal_id}
                   tenderProposalsTotal={tenderProposals?.total}
                 />
+              )}
+              {proposal && isGovernanceProcessProposal(proposal.type) && (
+                <GovernanceProcess proposalType={proposal.type} />
               )}
               {showProposalUpdates && (
                 <ProposalUpdates

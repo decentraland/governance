@@ -6,7 +6,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import useProposal from '../../../hooks/useProposal'
 
-import ProposalProcess, { ProcessStatus } from './ProposalProcess'
+import ProposalProcess, { ProcessStatus, ProcessType } from './ProposalProcess'
 
 interface Props {
   proposalId?: ProposalAttributes['id']
@@ -140,5 +140,12 @@ export default function BiddingAndTenderingProcess({
     ]
   )
 
-  return <ProposalProcess title={t('page.proposal_bidding_tendering.title')} items={items} />
+  return (
+    <ProposalProcess
+      title={t('page.proposal_bidding_tendering.title')}
+      items={items}
+      isNew
+      type={ProcessType.BiddingAndTendering}
+    />
+  )
 }

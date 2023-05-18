@@ -787,6 +787,15 @@
       "initiative_rejected": "**Initiative rejected** {proposalEndDate}",
       "tbd": "**TBD**"
     },
+    "proposal_governance_process": {
+      "title": "About the governance process",
+      "poll_title": "Pre-proposal Poll",
+      "poll_description": "Gather community input on important matters through a non-binding proposal to kickstart the Governance process.",
+      "draft_title": "Draft Proposal",
+      "draft_description": "Present a potential policy to the community in a structured format and formalize the discussion about the proposal’s potential impacts and implementation pathways.",
+      "governance_title": "Governance Proposal",
+      "governance_description": "Finalize the decision-making process in a binding proposal by submitting a comprehensive proposal with all relevant details for implementation."
+    },
     "proposal_list": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
