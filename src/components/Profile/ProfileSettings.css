@@ -1,0 +1,5 @@
+.ui.dropdown.ProfileSettings > .menu,
+.ui.dropdown.ProfileSettings > .menu .item {
+  background: var(--black-700);
+  color: var(--white-900);
+}

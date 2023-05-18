@@ -10,3 +10,7 @@ export const DEBUG_ADDRESSES = (env('DEBUG_ADDRESSES', '') || '')
 const debugAddresses = new Set(DEBUG_ADDRESSES)
 
 debugAddresses.forEach((address) => console.log('debug address:', magenta(address)))
+
+export default function isDebugAddress(address: string) {
+  return debugAddresses.has(address.toLowerCase())
+}

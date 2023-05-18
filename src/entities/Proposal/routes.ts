@@ -22,10 +22,11 @@ import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
 import { hasOpenSlots } from '../Committee/utils'
-import { filterComments } from '../Discourse/utils'
 import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
 import { SNAPSHOT_DURATION } from '../Snapshot/constants'
 import UpdateModel from '../Updates/model'
+import UserModel from '../User/model'
+import { filterComments } from '../User/utils'
 import { getVotes } from '../Votes/routes'
 
 import { getUpdateMessage } from './templates/messages'
@@ -49,6 +50,7 @@ import {
   NewProposalTender,
   PoiType,
   ProposalAttributes,
+  ProposalCommentsInDiscourse,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
@@ -531,17 +533,24 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   return await ProposalService.removeProposal(proposal, user, updated_at, id)
 }
 
-export async function proposalComments(req: Request<{ proposal: string }>) {
+export async function proposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
   const proposal = await getProposal(req)
   try {
     const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
-    return filterComments(allComments)
+    const userIds = new Set(allComments.map((comment) => comment.user_id))
+    const users = await UserModel.getAddressesByForumId(Array.from(userIds))
+    const filteredComments = filterComments(allComments, users)
+
+    return filteredComments
   } catch (e) {
-    console.error(
-      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id} `,
-      e as Error
+    ErrorService.report(
+      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id}`,
+      e
     )
-    return []
+    return {
+      comments: [],
+      totalComments: 0,
+    }
   }
 }
 

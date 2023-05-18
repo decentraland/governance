@@ -34,9 +34,9 @@ export default function ProposalDetailSection({ proposal }: Props) {
         {coAuthors.length > 0 && (
           <div className="DetailsSection__Flex">
             <div>{t('page.proposal_detail.details_coauthors_label')}</div>
-            <div className="DetailsSection__Flex--Coauthors">
+            <div className="DetailsSection__Flex--coauthors">
               {coAuthors.map((coauthor) => (
-                <ProposalDetailCoauthors coauthor={coauthor} key={coauthor.address} />
+                <ProposalDetailCoauthors className="Coauthor" coauthor={coauthor} key={coauthor.address} />
               ))}
             </div>
           </div>

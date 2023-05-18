@@ -3,6 +3,11 @@
   display: none;
 }
 
+.Navigation .dcl.tab svg {
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 @media (min-width: 768px) {
   .Navigation .dcl.tabs {
     display: flex;
@@ -20,4 +25,19 @@
 .dcl.tabs-right {
   display: flex;
   align-items: center;
+}
+
+.NavigationProfilePopUp {
+  width: 152px;
+  overflow-wrap: break-word;
+}
+
+.NavigationProfilePopUp p,
+.NavigationProfilePopUp .ui.button.basic {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--white-900) !important;
+  margin-bottom: 0;
+  padding-left: 0;
 }

@@ -28,6 +28,7 @@ import sitemap from './entities/Sitemap/routes'
 import social from './entities/Social/routes'
 import subscription from './entities/Subscription/routes'
 import updates from './entities/Updates/routes'
+import users from './entities/User/routes'
 import score from './entities/Votes/routes'
 import filesystem from './modules/filesystem'
 import { DiscordService } from './services/DiscordService'
@@ -52,6 +53,7 @@ app.use('/api', [
   withBody(),
   committee,
   debug,
+  users,
   proposal,
   proposalSurveyTopics,
   score,

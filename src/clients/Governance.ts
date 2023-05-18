@@ -437,6 +437,30 @@ export class Governance extends API {
     return result.data
   }
 
+  async getValidationMessage() {
+    const result = await this.fetch<ApiResponse<string>>(
+      '/user/validate',
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async validateProfile() {
+    const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
+      '/user/validate',
+      this.options().method('POST').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async isProfileValidated(address: string) {
+    const result = await this.fetch<ApiResponse<boolean>>(`/user/${address}/is-validated`, this.options().method('GET'))
+
+    return result.data
+  }
+
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
     return response.data

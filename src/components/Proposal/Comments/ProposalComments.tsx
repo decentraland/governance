@@ -75,6 +75,7 @@ export default React.memo(function ProposalComments({ proposal }: ProposalCommen
                 user={comment.username}
                 createdAt={comment.created_at}
                 cooked={comment.cooked}
+                address={comment.address}
               />
             ))}
         </div>

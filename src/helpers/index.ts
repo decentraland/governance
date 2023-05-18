@@ -86,6 +86,10 @@ export function addressShortener(address: string) {
   return address.substring(0, 6) + '...' + address.substring(38, 42)
 }
 
+export function openUrl(url: string, newTab = true) {
+  window?.open(url, newTab ? '_blank' : '_self')?.focus()
+}
+
 export function capitalizeFirstLetter(string: string) {
   return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
 }

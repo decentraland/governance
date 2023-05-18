@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
+import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import locations from '../../modules/locations'
+import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
 
 import './Navigation.css'
@@ -25,11 +29,38 @@ export type NavigationProps = {
   activeTab?: NavigationTab
 }
 
+const PROFILE_POP_UP_LOCAL_STORAGE_KEY = 'org.decentraland.governance.profile-pop-up-dismissed'
+
+type DismissState = {
+  isDismissClicked: boolean
+  isPopUpDismissed: boolean
+}
+
 const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
 
   const { isDebugAddress } = useIsDebugAddress(user)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
+  const [dismissState, setDismissState] = useState<DismissState>({
+    isDismissClicked: false,
+    isPopUpDismissed: false,
+  })
+
+  useEffect(
+    () =>
+      setDismissState((prev) => ({
+        ...prev,
+        isPopUpDismissed: !!localStorage.getItem(PROFILE_POP_UP_LOCAL_STORAGE_KEY),
+      })),
+    [dismissState.isDismissClicked]
+  )
+
+  const handleDismissClick = () => {
+    localStorage.setItem(PROFILE_POP_UP_LOCAL_STORAGE_KEY, 'true')
+    setDismissState((prev) => ({ ...prev, isDismissClicked: true }))
+  }
+  const showDot = validationChecked && !isProfileValidated
 
   return (
     <div className="Navigation">
@@ -46,7 +77,32 @@ const Navigation = ({ activeTab }: NavigationProps) => {
           </Link>
           {user && (
             <Link href={locations.profile({ address: user })}>
-              <Tabs.Tab active={activeTab === NavigationTab.Profile}>{t('navigation.profile')}</Tabs.Tab>
+              <Popup
+                style={{ zIndex: 1000 }}
+                className="NavigationProfilePopUp"
+                content={
+                  <div>
+                    <p>{t('navigation.profile_pop_up.label')}</p>
+                    <Button
+                      basic
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDismissClick()
+                      }}
+                    >
+                      {t('navigation.profile_pop_up.button')}
+                    </Button>
+                  </div>
+                }
+                position="bottom center"
+                trigger={
+                  <Tabs.Tab active={activeTab === NavigationTab.Profile}>
+                    {t('navigation.profile')}
+                    {showDot && <Dot />}
+                  </Tabs.Tab>
+                }
+                open={showDot && !dismissState.isPopUpDismissed}
+              />
             </Link>
           )}
           <Link href={locations.transparency()}>
