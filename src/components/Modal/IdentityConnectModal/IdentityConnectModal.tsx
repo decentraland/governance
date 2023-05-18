@@ -38,7 +38,7 @@ function IdentityConnectModal() {
   }
 
   const checkProfile = useMemo(() => !timestamp || new Date() > new Date(timestamp), [timestamp])
-  const [isProfileValidated, validationChecked] = useIsProfileValidated(checkProfile ? user : null)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(checkProfile ? user : null)
 
   useEffect(() => {
     if (!!setIsModalOpen && validationChecked) {

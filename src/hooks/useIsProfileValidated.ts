@@ -19,7 +19,7 @@ function useIsProfileValidated(address: string | null) {
 
   const validationChecked = isProfileValidated !== null
 
-  return [!!isProfileValidated, validationChecked] as const
+  return { isProfileValidated: !!isProfileValidated, validationChecked }
 }
 
 export default useIsProfileValidated

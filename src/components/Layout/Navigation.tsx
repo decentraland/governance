@@ -41,7 +41,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const [user] = useAuthContext()
 
   const { isDebugAddress } = useIsDebugAddress(user)
-  const [isProfileValidated, validationChecked] = useIsProfileValidated(user)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
   const [dismissState, setDismissState] = useState<DismissState>({
     isDismissClicked: false,
     isPopUpDismissed: false,

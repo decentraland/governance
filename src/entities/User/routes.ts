@@ -1,12 +1,11 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
-import isDebugAddress from '../Debug/isDebugAddress'
 import { isSameAddress } from '../Snapshot/utils'
 
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
@@ -19,7 +18,6 @@ export default routes((route) => {
   route.get('/user/:address/is-validated', handleAPI(isValidated))
   route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
   route.post('/user/validate', withAuth, handleAPI(checkValidationMessage))
-  route.delete('/user/validate', withAuth, handleAPI(deleteValidation))
 })
 
 const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
@@ -93,20 +91,4 @@ async function isValidated(req: Request) {
     ErrorService.report(message, error)
     throw new Error(`${message}. ${error}`)
   }
-}
-
-// TODO: REMOVE BEFORE PRODUCTION
-async function deleteValidation(req: WithAuth<Request<any, any, { address: string }>>, res: Response) {
-  const user = req.auth!
-  const { address } = req.body
-
-  if (!isDebugAddress(user)) {
-    res.send(401)
-  }
-
-  if (!isEthereumAddress(address)) {
-    res.send(400)
-  }
-
-  return await UserModel.deleteConnection(address)
 }

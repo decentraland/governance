@@ -461,15 +461,6 @@ export class Governance extends API {
     return result.data
   }
 
-  async removeVerification(address: string) {
-    const result = await this.fetch<ApiResponse<unknown>>(
-      '/user/validate',
-      this.options().method('DELETE').authorization({ sign: true }).json({ address })
-    )
-
-    return result.data
-  }
-
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
     return response.data

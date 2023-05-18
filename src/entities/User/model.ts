@@ -32,10 +32,4 @@ export default class UserModel extends Model<UserAttributes> {
     const result = await this.namedQuery('get_forum_id', query)
     return result[0]?.is_validated > 0
   }
-
-  // TODO: REMOVE BEFORE PRODUCTION
-  static async deleteConnection(address: string) {
-    const query = SQL`DELETE FROM ${table(this)} WHERE address = ${address.toLowerCase()}`
-    return await this.namedQuery('delete_connection', query)
-  }
 }

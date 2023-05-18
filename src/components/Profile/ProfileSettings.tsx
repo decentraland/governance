@@ -15,7 +15,7 @@ function ProfileSettings() {
   const t = useFormatMessage()
   const { setIsModalOpen } = useIdentityModalContext()
   const [user] = useAuthContext()
-  const [isProfileValidated, validationChecked] = useIsProfileValidated(user)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
   const showDot = validationChecked && !isProfileValidated
 
   const handleLinkedProfilesClick = () => setIsModalOpen(true)
