@@ -56,7 +56,7 @@ export default function GrantsPage() {
   const type = params.get('type')
   const status = params.get('status')
 
-  const allGrants = useMemo(() => [...grants.current, ...grants.past], [grants])
+  const allGrants = useMemo(() => (grants ? [...grants.current, ...grants.past] : []), [grants])
   const displayableGrants = useMemo(() => filterDisplayableGrants(allGrants, type, status), [allGrants, type, status])
 
   const newGrantsCounter = useMemo(() => getCounter(allGrants, NewGrantCategory, status), [allGrants, status])
@@ -72,7 +72,7 @@ export default function GrantsPage() {
     )
   }
 
-  const isLoading = grants.total === 0 || isLoadingGrants
+  const isLoading = isLoadingGrants || grants?.total === 0
 
   return (
     <div>
