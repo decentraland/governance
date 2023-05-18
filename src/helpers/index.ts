@@ -33,6 +33,7 @@ export const getFormattedPercentage = (value: number, total: number, decimals = 
 export const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
 
 export function getUncappedRoundedPercentage(value: number, total: number): number {
+  if (total === 0) return 0
   return Math.round((value * 100) / total)
 }
 
