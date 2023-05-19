@@ -14,7 +14,7 @@ export const DAO_DISCORD_URL = 'https://dcl.gg/dao-discord'
 export const NEWSLETTER_URL = 'https://mailchi.mp/decentraland.org/decentraland-dao-weekly-newsletter'
 export const OPEN_CALL_FOR_DELEGATES_LINK = 'https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840'
 export const CANDIDATE_ADDRESSES = Candidates.map((delegate) => delegate.address)
-export const ROLLBAR_TOKEN = process.env.GATSBY_ROLLBAR_TOKEN || env('GATSBY_ROLLBAR_TOKEN') || ''
+export const ROLLBAR_TOKEN = process.env.GATSBY_ROLLBAR_TOKEN // TODO: Rename to process.env.ROLLBAR_TOKEN (server only)
 export const SEGMENT_KEY = env('GATSBY_SEGMENT_KEY') || ''
 export const LOCAL_ENV_VAR = env('GATSBY_LOCAL_ENV_VAR') || ''
 export const TEST_ENV_VAR = env('GATSBY_TEST_ENV_VAR') || ''
