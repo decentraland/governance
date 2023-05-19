@@ -37,7 +37,13 @@ const GrantCard = ({ grant, hoverable = false }: Props) => {
         {proposalInCliffPeriod ? <CliffProgress enactedAt={enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       <div className="GrantCard__UpdateContainer">
-        <ProposalUpdate proposal={grant} update={grant.update} expanded={false} index={grant.update?.index} />
+        <ProposalUpdate
+          proposal={grant}
+          update={grant.update}
+          expanded={false}
+          index={grant.update?.index}
+          isLinkable={false}
+        />
       </div>
     </Link>
   )

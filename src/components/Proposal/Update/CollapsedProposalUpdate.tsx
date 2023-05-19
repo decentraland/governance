@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
@@ -23,15 +23,26 @@ interface Props {
   update: UpdateAttributes
   index?: number
   isCoauthor?: boolean
+  isLinkable?: boolean
   onEditClick: () => void
   onDeleteUpdateClick: () => void
 }
 
-const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditClick, onDeleteUpdateClick }: Props) => {
+const CollapsedProposalUpdate = ({
+  proposal,
+  update,
+  index,
+  isCoauthor,
+  isLinkable,
+  onEditClick,
+  onDeleteUpdateClick,
+}: Props) => {
   const t = useFormatMessage()
-  const [account] = useAuthContext()
+  const [account] = useAuth()
 
   const { introduction, status, health, completion_date, due_date } = update
+  const updateLocation = locations.update(update.id)
+  const Component = isLinkable ? Link : 'div'
   const UpdateIcon = getStatusIcon(health, completion_date)
 
   const isAllowedToPostUpdate = account && (proposal.user === account || isCoauthor)
@@ -49,9 +60,18 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditCl
     [update.id, proposal.id]
   )
 
+  const handleUpdateClick = useCallback(
+    (e: React.MouseEvent<any>) => {
+      e.preventDefault()
+      navigate(updateLocation)
+    },
+    [updateLocation]
+  )
+
   return (
-    <Link
-      href={completion_date ? locations.update(update.id) : undefined}
+    <Component
+      href={completion_date ? updateLocation : undefined}
+      onClick={isLinkable ? undefined : handleUpdateClick}
       className={TokenList.join([
         'ProposalUpdate',
         status === UpdateStatus.Pending && 'ProposalUpdate--pending',
@@ -90,7 +110,7 @@ const CollapsedProposalUpdate = ({ proposal, update, index, isCoauthor, onEditCl
           {t('page.proposal_detail.grant.update_button')}
         </Button>
       )}
-    </Link>
+    </Component>
   )
 }
 
