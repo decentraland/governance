@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -24,6 +24,7 @@ import './index.css'
 
 export default function HomePage() {
   const t = useFormatMessage()
+  const [theme, setTheme] = useState('')
 
   const { proposals: endingSoonProposals, isLoadingProposals } = useProposals({
     order: 'ASC',
@@ -32,6 +33,20 @@ export default function HomePage() {
     page: 1,
     itemsPerPage: 5,
   })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setTheme(document.documentElement.getAttribute('data-theme') || 'light')
+    }
+  }, [])
+
+  const handleSwitchButton = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      const nextTheme = theme === 'light' ? 'dark' : 'light'
+      setTheme(nextTheme)
+      document.documentElement.setAttribute('data-theme', nextTheme)
+    }
+  }, [theme, setTheme])
 
   if (isUnderMaintenance()) {
     return (
@@ -55,6 +70,9 @@ export default function HomePage() {
       {endingSoonProposals && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Home}>
           <Container>
+            <button style={{ padding: '10px', margin: '10px' }} onClick={handleSwitchButton}>
+              click me
+            </button>
             <MainBanner />
           </Container>
           <MetricsCards />
