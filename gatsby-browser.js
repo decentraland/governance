@@ -22,16 +22,16 @@ import IdentityModalContextProvider from './src/components/Context/IdentityModal
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
-import Segment from "decentraland-gatsby/dist/components/Development/Segment"
+// import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar"
-import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants"
+import { ROLLBAR_TOKEN } from "./src/constants"
 
 export const wrapRootElement = ({ element }) => {
   return (
     <AuthProvider>
       <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
       {typeof window !== 'undefined' && ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
-      {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
+      {/* {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />} */}
     </AuthProvider>
   )
 }
