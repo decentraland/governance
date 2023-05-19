@@ -24,7 +24,7 @@ import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarning
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar"
-import { ROLLBAR_TOKEN } from "./src/constants"
+import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants"
 
 export const wrapRootElement = ({ element }) => {
   const isBrowser = typeof window !== 'undefined'
