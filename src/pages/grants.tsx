@@ -75,7 +75,7 @@ export default function GrantsPage() {
   const isLoading = grants.total === 0 || isLoadingGrants
 
   return (
-    <div>
+    <>
       <Head
         title={t('page.grants.title') || ''}
         description={t('page.grants.description') || ''}
@@ -86,10 +86,8 @@ export default function GrantsPage() {
       {!isLoading && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
           <Container>
+            <CurrentGrantsBanner />
             <Grid stackable>
-              <Grid.Row>
-                <CurrentGrantsBanner />
-              </Grid.Row>
               <Grid.Row>
                 <Grid.Column tablet="4">
                   <NotMobile>
@@ -116,6 +114,6 @@ export default function GrantsPage() {
           </Container>
         </BurgerMenuLayout>
       )}
-    </div>
+    </>
   )
 }
