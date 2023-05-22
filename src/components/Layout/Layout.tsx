@@ -60,7 +60,7 @@ export default function Layout({ children, pageContext, availableProviders, ...p
 
   return (
     <>
-      <Navbar onClickMenuOption={handleClickMenuOption} rightMenu={props.rightMenu} />
+      <Navbar activePage="dao" onClickMenuOption={handleClickMenuOption} rightMenu={props.rightMenu} />
       <main>{children}</main>
       <WrongNetworkModal
         currentNetwork={state.chainId}
