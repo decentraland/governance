@@ -12,7 +12,8 @@ import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
@@ -21,7 +22,6 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
-import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
@@ -283,9 +283,9 @@ export default function ProposalPage() {
 
   if (proposalState.error) {
     return (
-      <ContentLayout className="ProposalDetailPage">
+      <Container className="ProposalDetailPage">
         <NotFound />
-      </ContentLayout>
+      </Container>
     )
   }
 
@@ -315,15 +315,18 @@ export default function ProposalPage() {
         }
         image="https://decentraland.org/images/decentraland.png"
       />
-      <ContentLayout className="ProposalDetailPage">
-        <ContentSection>
+      <Container className="ProposalDetailPage">
+        <div className="ProposalDetailPage__Section">
+          <span className="ProposalDetailPage__Breadcrumb">
+            <Link href={locations.home()}>DCL DAO</Link> / <Link href={locations.proposals()}>PROPOSALS</Link>
+          </span>
           <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
           <Loader active={!proposal} />
           <div className="ProposalDetailPage__Labels">
             {proposal && <StatusPill isLink status={proposal.status} />}
             {proposal && <CategoryPill isLink proposalType={proposal.type} />}
           </div>
-        </ContentSection>
+        </div>
         <Grid stackable>
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
@@ -402,7 +405,7 @@ export default function ProposalPage() {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </ContentLayout>
+      </Container>
 
       {proposal && voteWithSurvey && (
         <VotingModal

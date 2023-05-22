@@ -5,7 +5,6 @@ import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
-import { ContentSection } from '../../../Layout/ContentLayout'
 
 import CategoryTotalCard from './CategoryTotalCard'
 import CompetingProposals from './CompetingProposals'
@@ -22,7 +21,7 @@ export default function ProposalBudget({ proposal, budget }: Props) {
   const contestantsAmount = (budget.categories[snakeCase(grantCategory)]?.contestants.length || 0) - 1
 
   return (
-    <ContentSection>
+    <div className="ProposalDetailPage__Section">
       <div className="ProposalBudget__Row">
         <RequestedBudgetCard proposal={proposal} budget={budget} />
         <CategoryTotalCard proposal={proposal} budget={budget} />
@@ -34,6 +33,6 @@ export default function ProposalBudget({ proposal, budget }: Props) {
           </div>
         )}
       </Desktop>
-    </ContentSection>
+    </div>
   )
 }
