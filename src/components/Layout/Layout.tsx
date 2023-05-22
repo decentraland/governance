@@ -1,14 +1,13 @@
 import React from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import type { ProviderType } from '@dcl/schemas/dist/dapps/provider-type'
 import WalletSelectorModal from 'decentraland-gatsby/dist/components/Modal/WalletSelectorModal'
 import WrongNetworkModal from 'decentraland-gatsby/dist/components/Modal/WrongNetworkModal'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { changeLocale } from 'decentraland-gatsby/dist/plugins/intl'
 import { DecentralandIntlContext } from 'decentraland-gatsby/dist/plugins/intl/types'
 import env from 'decentraland-gatsby/dist/utils/env'
-import { Footer, FooterProps } from 'decentraland-ui/dist/components/Footer/Footer'
+import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Locale } from 'decentraland-ui/dist/components/LanguageIcon/LanguageIcon'
 import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import type { PageProps } from 'gatsby'
@@ -25,19 +24,15 @@ export function getSupportedChainIds(): ChainId[] {
   return CHAIN_ID
 }
 
-export type LayoutProps = Omit<PageProps, 'children'> &
-  NavbarProps &
-  FooterProps & {
-    hideNavbar?: boolean
-    hideFooter?: boolean
-    pageContext?: {
-      intl?: DecentralandIntlContext
-    }
-    availableProviders?: ProviderType[]
-    children?: React.ReactNode
+export type LayoutProps = Omit<PageProps, 'children'> & {
+  rightMenu: NavbarProps['rightMenu']
+  pageContext?: {
+    intl?: DecentralandIntlContext
   }
+  children?: React.ReactNode
+}
 
-export default function Layout({ children, pageContext, availableProviders, ...props }: LayoutProps) {
+export default function Layout({ children, pageContext, ...props }: LayoutProps) {
   const locale = pageContext?.intl?.locale || 'en'
   const locales = pageContext?.intl?.locales || ['en']
   const [, state] = useAuthContext()
@@ -73,7 +68,6 @@ export default function Layout({ children, pageContext, availableProviders, ...p
         loading={state.loading}
         error={state.error}
         onConnect={(providerType, chainId) => state.connect(providerType, chainId)}
-        availableProviders={availableProviders}
         onClose={() => state.select(false)}
       />
       <Footer
