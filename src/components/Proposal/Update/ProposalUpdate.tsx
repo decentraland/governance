@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { Governance } from '../../../clients/Governance'
@@ -26,6 +26,7 @@ interface Props {
   index?: number
   onUpdateDeleted?: () => void
   isCoauthor?: boolean
+  isLinkable?: boolean
 }
 
 export const getStatusIcon = (
@@ -47,10 +48,18 @@ export const getStatusIcon = (
   }
 }
 
-const ProposalUpdate = ({ proposal, update, expanded, index, onUpdateDeleted, isCoauthor }: Props) => {
+const ProposalUpdate = ({
+  proposal,
+  update,
+  expanded,
+  index,
+  onUpdateDeleted,
+  isCoauthor,
+  isLinkable = true,
+}: Props) => {
   const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
   const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
-  const [account] = useAuthContext()
+  const [account] = useAuth()
 
   if (!update) {
     return <EmptyProposalUpdate />
@@ -89,6 +98,7 @@ const ProposalUpdate = ({ proposal, update, expanded, index, onUpdateDeleted, is
           update={update}
           index={index}
           isCoauthor={isCoauthor}
+          isLinkable={isLinkable}
         />
       )}
       <DeleteUpdateModal
