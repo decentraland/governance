@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
-import { DclData } from '../../clients/DclData'
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'
+import useTransparency from '../../hooks/useTransparency'
 import useVotesCountByDate from '../../hooks/useVotesCountByDate'
 import locations from '../../modules/locations'
 
@@ -21,15 +20,15 @@ const oneMonthAgo = Time(now).subtract(1, 'month').toDate()
 
 const MetricsCards = () => {
   const t = useFormatMessage()
-  const [transparencyData, transparencyState] = useAsyncMemo(async () => DclData.get().getData())
+  const { data, isLoadingTransparencyData } = useTransparency()
   const treasuryAmount = useMemo(
     () =>
-      transparencyData?.balances
+      data?.balances
         .reduce((acc, obj) => {
           return acc + Number(obj.amount) * obj.rate
         }, 0)
         .toFixed(2),
-    [transparencyData?.balances]
+    [data?.balances]
   )
 
   const { proposals: endingSoonProposals, isLoadingProposals: isLoadingEndingSoonProposals } = useProposals({
@@ -73,7 +72,7 @@ const MetricsCards = () => {
     <MetricsCard
       href={locations.transparency()}
       key="page.home.metrics.treasury_amount"
-      isLoading={transparencyState.loading}
+      isLoading={isLoadingTransparencyData}
       loadingLabel={t('page.home.metrics.fetching_treasury_data')}
       category={t('page.home.metrics.treasury')}
       title={`$${t('general.number', { value: treasuryAmount })}`}

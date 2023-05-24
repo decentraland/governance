@@ -11,6 +11,10 @@ import 'balloon-css/balloon.min.css'
 import 'decentraland-ui/dist/themes/base-theme.css'
 import 'decentraland-ui/dist/themes/alternative/light-theme.css'
 import './src/theme.css'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
 import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
@@ -26,6 +30,8 @@ import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar"
 import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants"
 
+const queryClient = new QueryClient()
+
 export const wrapRootElement = ({ element }) => {
   return (
     <AuthProvider>
@@ -38,17 +44,19 @@ export const wrapRootElement = ({ element }) => {
 
 export const wrapPageElement = ({ element, props }) => {
   return (
-    <IntlProvider {...props.pageContext.intl}>
-      <IdentityModalContextProvider>
-        <BurgerMenuStatusContextProvider>
-          <Layout {...props} rightMenu={<Navbar />}>
-            {element}
-          </Layout>
-        </BurgerMenuStatusContextProvider>
-        <ExternalLinkWarningModal />
-        <IdentityConnectModal />
-      </IdentityModalContextProvider>
-    </IntlProvider>
+    <QueryClientProvider client={queryClient}>
+      <IntlProvider {...props.pageContext.intl}>
+        <IdentityModalContextProvider>
+          <BurgerMenuStatusContextProvider>
+            <Layout {...props} rightMenu={<Navbar />}>
+              {element}
+            </Layout>
+          </BurgerMenuStatusContextProvider>
+          <ExternalLinkWarningModal />
+          <IdentityConnectModal />
+        </IdentityModalContextProvider>
+      </IntlProvider>
+    </QueryClientProvider>
   )
 }
 

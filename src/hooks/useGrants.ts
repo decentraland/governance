@@ -1,25 +1,18 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { CategorizedGrants } from '../entities/Proposal/types'
 
-const initialValue: CategorizedGrants = {
-  current: [],
-  past: [],
-  total: 0,
-}
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 export default function useGrants() {
-  const [response, state] = useAsyncMemo(
-    async () => {
-      return Governance.get().getGrants()
-    },
-    [],
-    { initialValue }
-  )
+  const { data, isLoading } = useQuery({
+    queryKey: ['grants'],
+    queryFn: () => Governance.get().getGrants(),
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
 
   return {
-    grants: response,
-    isLoadingGrants: state.loading,
+    grants: data,
+    isLoadingGrants: isLoading,
   }
 }
