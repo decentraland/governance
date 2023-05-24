@@ -18,6 +18,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
+import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
@@ -63,7 +64,6 @@ import useSurveyTopics from '../hooks/useSurveyTopics'
 import { useTenderProposals } from '../hooks/useTenderProposals'
 import locations from '../modules/locations'
 import { isUnderMaintenance } from '../modules/maintenance'
-import { ErrorService } from '../services/ErrorService'
 
 import './proposal.css'
 
@@ -180,7 +180,7 @@ export default function ProposalPage() {
           })
           votesState.reload()
         } catch (err) {
-          ErrorService.report('Unable to vote: ', err)
+          ErrorClient.report('Unable to vote: ', err)
           console.error(err, { ...(err as Error) })
           if ((err as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({

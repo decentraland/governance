@@ -4,7 +4,8 @@ import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/G
 import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
-import { ErrorService } from '../services/ErrorService'
+
+import { ErrorClient } from './ErrorClient'
 
 export type Detail = {
   name: string
@@ -151,7 +152,7 @@ export class DclData extends API {
     try {
       return await fn()
     } catch (error) {
-      ErrorService.report('Failed DclData fetch', error)
+      ErrorClient.report('Failed DclData fetch', error)
       return fallback
     }
   }
