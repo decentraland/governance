@@ -1,0 +1,19 @@
+.ProposalDetailCoauthors {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+@media (min-width: 1080px) {
+  .ProposalDetailCoauthors {
+    justify-content: flex-end;
+  }
+}
+
+.ProposalDetailCoauthors > svg {
+  margin-left: 4px;
+}
+
+.ProposalDetailCoauthors:not(:last-child) {
+  margin-bottom: 8px;
+}

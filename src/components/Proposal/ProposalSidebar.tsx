@@ -128,7 +128,6 @@ export default function ProposalSidebar({
         {showProposalThresholdsSummary && (
           <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
         )}
-        {proposal && <ProposalDetailSection proposal={proposal} />}
         <ForumButton loading={proposalLoading} proposal={proposal} />
         <SubscribeButton
           loading={proposalLoading || subscriptionsLoading || subscribing}
@@ -136,6 +135,7 @@ export default function ProposalSidebar({
           subscribed={subscribed}
           onClick={() => subscribe(!subscribed)}
         />
+        {proposal && <ProposalDetailSection proposal={proposal} />}
         {proposal && (
           <ProposalActions
             proposal={proposal}

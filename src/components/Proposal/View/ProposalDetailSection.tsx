@@ -19,12 +19,14 @@ interface Props {
   proposal: ProposalAttributes
 }
 
+const formatDate = (date: Date) => Time.from(date).format('MMM DD HH:mm')
+
 export default function ProposalDetailSection({ proposal }: Props) {
   const t = useFormatMessage()
   const coAuthors = useCoAuthorsByProposal(proposal)
 
   return (
-    <div className="DetailsSection">
+    <div className="DetailsSection DetailsSection--no-border">
       <div className="DetailsSection__Content">
         <SidebarHeaderLabel>{t('page.proposal_detail.details_label')}</SidebarHeaderLabel>
         <div className="DetailsSection__Flex">
@@ -34,23 +36,29 @@ export default function ProposalDetailSection({ proposal }: Props) {
         {coAuthors.length > 0 && (
           <div className="DetailsSection__Flex">
             <div>{t('page.proposal_detail.details_coauthors_label')}</div>
-            <div className="DetailsSection__Flex--coauthors">
+            <div>
               {coAuthors.map((coauthor) => (
-                <ProposalDetailCoauthors className="Coauthor" coauthor={coauthor} key={coauthor.address} />
+                <ProposalDetailCoauthors coauthor={coauthor} key={coauthor.address} />
               ))}
             </div>
           </div>
         )}
         <div className="DetailsSection__Flex">
+          <div>{t('page.proposal_detail.details_created_label')}</div>
+          <div className="DetailsSection__Value">
+            <DateTooltip date={proposal.created_at}>{formatDate(proposal.created_at)}</DateTooltip>
+          </div>
+        </div>
+        <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_start_label')}</div>
           <div className="DetailsSection__Value">
-            <DateTooltip date={proposal.start_at}>{Time.from(proposal.start_at).format('MMM DD HH:mm')}</DateTooltip>
+            <DateTooltip date={proposal.start_at}>{formatDate(proposal.start_at)}</DateTooltip>
           </div>
         </div>
         <div className="DetailsSection__Flex">
           <div>{t('page.proposal_detail.details_finish_label')}</div>
           <div className="DetailsSection__Value">
-            <DateTooltip date={proposal.finish_at}>{Time.from(proposal.finish_at).format('MMM DD HH:mm')}</DateTooltip>
+            <DateTooltip date={proposal.finish_at}>{formatDate(proposal.finish_at)}</DateTooltip>
           </div>
         </div>
         <div className="DetailsSection__Flex">

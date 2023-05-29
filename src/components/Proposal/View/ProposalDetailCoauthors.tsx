@@ -9,6 +9,8 @@ import Check from '../../Icon/Check'
 import Warning from '../../Icon/Warning'
 import Username from '../../User/Username'
 
+import './ProposalDetailCoauthors.css'
+
 interface Props {
   coauthor: CoauthorAttributes
   className?: string
@@ -34,15 +36,16 @@ const helperConfig: Record<CoauthorStatus, CoauthorHelperConfiguration> = {
   },
 }
 
-function ProposalDetailCoauthors({ coauthor, className }: Props) {
+function ProposalDetailCoauthors({ coauthor }: Props) {
   const { address, status } = coauthor
   const t = useFormatMessage()
+
   return (
     <Popup
       content={<span>{t(helperConfig[status].helperKey)}</span>}
       position="top center"
       trigger={
-        <span className={className}>
+        <span className="ProposalDetailCoauthors">
           <Username address={address} linked />
           {helperConfig[status].icon}
         </span>
