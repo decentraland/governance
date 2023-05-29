@@ -5,7 +5,6 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { PROMOTE_PITCH_ENABLED } from '../../../constants'
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import locations from '../../../modules/locations'
 import Pill from '../../Common/Pill'
@@ -80,7 +79,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
         size="small"
         loading={loading}
         onClick={() => handlePromoteClick()}
-        disabled={(type === ProposalType.Pitch && !PROMOTE_PITCH_ENABLED) || type === ProposalType.Tender}
+        disabled={type === ProposalType.Tender}
       >
         {t(buttonLabel)}
       </Button>
