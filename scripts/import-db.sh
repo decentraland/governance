@@ -29,8 +29,19 @@ fi
 echo "Creating new database $DATABASE_NAME..."
 psql -U $USERNAME -c "CREATE DATABASE $DATABASE_NAME;"
 
-# Restore dump file
-echo "Restoring $DUMP_FILE to $DATABASE_NAME..."
-pg_restore --verbose --clean --no-acl --no-owner -U $USERNAME -d $DATABASE_NAME $DUMP_FILE
+# Check the dump file format
+dump_format=$(file -b --mime-type $DUMP_FILE)
+
+# Restore dump file based on format
+if [[ $dump_format == "application/octet-stream" ]]; then
+  echo "Restoring $DUMP_FILE to $DATABASE_NAME using pg_restore..."
+  pg_restore --verbose --clean --no-acl --no-owner -U $USERNAME -d $DATABASE_NAME $DUMP_FILE
+elif [[ $dump_format == "text/plain" ]]; then
+  echo "Restoring $DUMP_FILE to $DATABASE_NAME using psql..."
+  psql -U $USERNAME -d $DATABASE_NAME -f $DUMP_FILE
+else
+  echo "Unsupported dump file format: $dump_format"
+  exit 1
+fi
 
 echo "Done."
