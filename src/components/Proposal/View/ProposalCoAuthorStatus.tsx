@@ -102,9 +102,9 @@ function ProposalCoAuthorStatus({ proposalId, proposalFinishDate }: Props) {
             <p>
               {t(labelConfig[status].description)}{' '}
               {status !== CoauthorStatus.PENDING && isUpdatable && (
-                <a href="src/components/Proposal/View/ProposalCoAuthorStatus" onClick={revertAction}>
+                <span className="CoAuthorStatus__RevertButton" role="button" onClick={revertAction}>
                   {t('page.coauthor_detail.revert_label')}
-                </a>
+                </span>
               )}
             </p>
             {isPending && (
