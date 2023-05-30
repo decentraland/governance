@@ -407,9 +407,16 @@ export async function createProposalTender(req: WithAuth) {
   await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Pitch)
   await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_TENDER)
 
-  // TODO: Check if there is another tender proposals from same linked_proposal_id
-  // TODO: Use first tender proposal start_at if that's true
-  const start_at = Time().add(30, 'days').toDate()
+  const tenderProposals = await ProposalModel.getProposalList({
+    linkedProposalId: configuration.linked_proposal_id,
+    order: 'ASC',
+  })
+
+  if (tenderProposals.find((proposal) => proposal.status === ProposalStatus.Passed)) {
+    throw new RequestError('Pitch proposal already has an approved tender')
+  }
+
+  const start_at = tenderProposals.length > 0 ? tenderProposals[0].start_at : Time().add(30, 'days').toDate()
   const finish_at = Time(start_at).add(Number(process.env.GATSBY_DURATION_TENDER), 'seconds').toDate()
 
   return createProposal({
@@ -574,6 +581,8 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
       RequestError.Forbidden
     )
   }
+
+  return linkedProposal
 }
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {
