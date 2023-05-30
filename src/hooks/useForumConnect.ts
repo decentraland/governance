@@ -18,7 +18,7 @@ import useTimer from './useTimer'
 export const THREAD_URL = `${DISCOURSE_API}${
   DISCOURSE_API.endsWith('/') ? '' : '/'
 }t/${GATSBY_DISCOURSE_CONNECT_THREAD}/10000`
-const VALIDATION_CHECK_INTERVAL = 5 * 1000 // 5 seconds
+const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
 
 const getMessage = async () => Governance.get().getValidationMessage()
 export default function useForumConnect() {
