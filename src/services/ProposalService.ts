@@ -20,13 +20,18 @@ import { DiscordService } from './DiscordService'
 import { DiscourseService } from './DiscourseService'
 import { SnapshotService } from './SnapshotService'
 
-export type ProposalInCreation = Pick<
-  ProposalAttributes,
-  'type' | 'user' | 'configuration' | 'required_to_pass' | 'finish_at'
->
+export type ProposalInCreation = {
+  type: ProposalAttributes['type']
+  user: ProposalAttributes['user']
+  configuration: ProposalAttributes['configuration']
+  required_to_pass: ProposalAttributes['required_to_pass']
+  finish_at: ProposalAttributes['finish_at']
+  start_at?: ProposalAttributes['start_at']
+}
 
 export type ProposalLifespan = {
-  start: Time.Dayjs
+  created: Date
+  start: Date
   end: Date
 }
 
@@ -98,9 +103,13 @@ export class ProposalService {
   }
 
   private static getLifespan(proposalInCreation: ProposalInCreation): ProposalLifespan {
-    const start: Time.Dayjs = Time.utc().set('seconds', 0)
-    const end = proposalInCreation.finish_at
-    return { start, end }
+    const now = Time.utc().set('seconds', 0).toDate()
+
+    return {
+      created: now,
+      start: proposalInCreation.start_at || now,
+      end: proposalInCreation.finish_at,
+    }
   }
 
   static async removeProposal(proposal: ProposalAttributes, user: string, updated_at: Date, id: string) {
@@ -168,8 +177,8 @@ export class ProposalService {
       passed_description: null,
       rejected_by: null,
       rejected_description: null,
-      created_at: proposalLifespan.start.toJSON() as any,
-      updated_at: proposalLifespan.start.toJSON() as any,
+      created_at: proposalLifespan.created.toJSON() as any,
+      updated_at: proposalLifespan.created.toJSON() as any,
       textsearch: ProposalModel.textsearch(title, description, data.user, null),
     }
 

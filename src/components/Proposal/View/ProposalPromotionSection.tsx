@@ -34,7 +34,7 @@ const getSectionConfig = (type: ProposalType) => {
       }
     case ProposalType.Pitch:
       return {
-        pillLabel: 'page.proposal_detail.promotion.coming_soon_label',
+        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
         description: 'page.proposal_detail.promotion.tender_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_tender_label',
         promotedType: ProposalType.Tender,

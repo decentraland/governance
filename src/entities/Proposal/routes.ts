@@ -5,6 +5,7 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -406,11 +407,17 @@ export async function createProposalTender(req: WithAuth) {
   await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Pitch)
   await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_TENDER)
 
+  // TODO: Check if there is another tender proposals from same linked_proposal_id
+  // TODO: Use first tender proposal start_at if that's true
+  const start_at = Time().add(30, 'days').toDate()
+  const finish_at = Time(start_at).add(Number(process.env.GATSBY_DURATION_TENDER), 'seconds').toDate()
+
   return createProposal({
     user,
     type: ProposalType.Tender,
     required_to_pass: ProposalRequiredVP[ProposalType.Tender],
-    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_TENDER)),
+    start_at,
+    finish_at,
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
