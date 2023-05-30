@@ -412,10 +412,20 @@ export async function createProposalTender(req: WithAuth) {
     order: 'ASC',
   })
 
-  if (tenderProposals.find((proposal) => proposal.status === ProposalStatus.Passed)) {
-    throw new RequestError('Pitch proposal already has an approved tender')
+  if (
+    tenderProposals.find(
+      (proposal) => proposal.status === ProposalStatus.Passed || proposal.status === ProposalStatus.Rejected
+    )
+  ) {
+    throw new RequestError('Pitch proposal already went through the tender process')
   }
 
+  const hasStartedTenderProcess = Time(tenderProposals[0].start_at).isBefore(Time())
+  if (hasStartedTenderProcess) {
+    throw new RequestError('Tender process already started for this pitch proposal')
+  }
+
+  // TODO: Change '30' to seconds, move to env var so it can be testeable
   const start_at = tenderProposals.length > 0 ? tenderProposals[0].start_at : Time().add(30, 'days').toDate()
   const finish_at = Time(start_at).add(Number(process.env.GATSBY_DURATION_TENDER), 'seconds').toDate()
 
