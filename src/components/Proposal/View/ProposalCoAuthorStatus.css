@@ -39,3 +39,9 @@
   line-height: 24px;
   padding-right: 5px;
 }
+
+.CoAuthorStatus__RevertButton {
+  color: var(--dcl-primary);
+  font-weight: 500;
+  cursor: pointer;
+}
