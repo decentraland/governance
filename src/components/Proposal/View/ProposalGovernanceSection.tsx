@@ -55,7 +55,8 @@ export default function ProposalGovernanceSection({
   const [showResults, setShowResults] = useState(finished)
   const [userAddress] = useAuth()
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
-  const showResultsButton = !hasVoted && !finished
+  const hasVotingStarted = Time(proposal?.start_at).isBefore(Time())
+  const showResultsButton = !hasVoted && !finished && hasVotingStarted
   const showPromotionSection =
     proposal && proposal.status === ProposalStatus.Passed && PROMOTABLE_PROPOSALS.includes(proposal.type)
 
@@ -67,6 +68,7 @@ export default function ProposalGovernanceSection({
     <div
       className={TokenList.join([
         'DetailsSection',
+        'DetailsSection--with-shadow',
         disabled && 'DetailsSection--disabled',
         loading && 'DetailsSection--loading',
         showPromotionSection && 'DetailsSection--shiny',
@@ -128,6 +130,7 @@ export default function ProposalGovernanceSection({
           updatePageState={updatePageState}
           onChangeVote={onChangeVote}
           hasVoted={hasVoted}
+          hasVotingStarted={hasVotingStarted}
         />
       )}
     </div>

@@ -44,17 +44,18 @@ export function getVotingSectionConfig(
 ): VotingSectionConfigProps {
   const vote = (account && votes?.[account]) || null
   const delegateVote = (delegate && votes?.[delegate]) || null
-  const hasDelegators = delegators && delegators.length > 0
+  const hasDelegators = !!delegators && delegators.length > 0
   const hasChoices = choices.length > 0
-  const configuration: VotingSectionConfigProps = {
-    vote: vote,
-    delegateVote: delegateVote,
-    showChoiceButtons: false,
-    delegationsLabel: null,
-    votedChoice: null,
-  }
 
-  if (!account || !hasChoices) return configuration
+  if (!account || !hasChoices) {
+    return {
+      vote,
+      delegateVote,
+      showChoiceButtons: false,
+      delegationsLabel: null,
+      votedChoice: null,
+    }
+  }
 
   const votedChoice = new VotedChoiceBuilder(vote, delegateVote, choices, votes, account, delegate, delegators).build()
   const delegationsLabel = new DelegationsLabelBuilder(
@@ -68,12 +69,13 @@ export function getVotingSectionConfig(
     votes
   ).build()
 
-  if (votedChoice) configuration.votedChoice = votedChoice
-  if (delegationsLabel) configuration.delegationsLabel = delegationsLabel
-  if (!vote && (!delegate || !delegateVote || hasDelegators)) {
-    configuration.showChoiceButtons = true
+  return {
+    vote,
+    delegateVote,
+    votedChoice: votedChoice || null,
+    delegationsLabel: delegationsLabel || null,
+    showChoiceButtons: !vote && (!delegate || !delegateVote || hasDelegators),
   }
-  return configuration
 }
 
 export function getPartyVotes(
@@ -86,7 +88,7 @@ export function getPartyVotes(
 
   if (delegators.length === 0) return { votesByChoices, totalVotes }
 
-  choices.map((value, index) => (votesByChoices[index] = 0))
+  choices.map((_value, index) => (votesByChoices[index] = 0))
 
   delegators.map((delegator) => {
     if (votes && votes[delegator]) {

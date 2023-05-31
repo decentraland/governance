@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
-import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
@@ -37,6 +38,7 @@ interface Props {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
+  hasVotingStarted: boolean
 }
 
 const ProposalVotingSection = ({
@@ -53,9 +55,9 @@ const ProposalVotingSection = ({
   proposalPageState,
   updatePageState,
   finished,
+  hasVotingStarted,
 }: Props) => {
   const t = useFormatMessage()
-  const intl = useIntl()
   const [account, accountState] = useAuthContext()
   const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
   const delegate: string | null = delegation?.delegatedTo[0]?.delegate
@@ -130,7 +132,7 @@ const ProposalVotingSection = ({
             <>
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-              {(showChoiceButtons || proposalPageState.changingVote) && (
+              {hasVotingStarted && (showChoiceButtons || proposalPageState.changingVote) && (
                 <ChoiceButtons
                   choices={choices}
                   vote={vote}
@@ -149,18 +151,26 @@ const ProposalVotingSection = ({
 
               {votedChoice && !proposalPageState.changingVote && <VotedChoiceButton {...votedChoice} />}
 
-              <VotingSectionFooter
-                vote={vote}
-                delegateVote={delegateVote}
-                startAt={proposal?.start_at}
-                finishAt={proposal?.finish_at}
-                account={account}
-                proposalPageState={proposalPageState}
-                onChangeVote={onChangeVote}
-                delegators={delegators}
-                totalVpOnProposal={totalVpOnProposal}
-                hasEnoughToVote={hasEnoughToVote}
-              />
+              {hasVotingStarted && (
+                <VotingSectionFooter
+                  vote={vote}
+                  delegateVote={delegateVote}
+                  startAt={proposal?.start_at}
+                  finishAt={proposal?.finish_at}
+                  account={account}
+                  proposalPageState={proposalPageState}
+                  onChangeVote={onChangeVote}
+                  delegators={delegators}
+                  totalVpOnProposal={totalVpOnProposal}
+                  hasEnoughToVote={hasEnoughToVote}
+                />
+              )}
+
+              {!hasVotingStarted && (
+                <Markdown className="ProposalVotingSection__VotingBegins">
+                  {t('page.proposal_detail.voting_begins', { date: Time(proposal?.start_at).fromNow(true) })}
+                </Markdown>
+              )}
             </>
           )}
           {proposal && account && proposalPageState.showSnapshotRedirect && (

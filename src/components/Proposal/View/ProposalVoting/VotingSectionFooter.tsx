@@ -40,6 +40,7 @@ const VotingSectionFooter = ({
   hasEnoughToVote,
 }: VotingSectionFooterProps) => {
   const t = useFormatMessage()
+  const [userAddress] = useAuthContext()
   const now = Time.utc()
   const untilStart = useCountdown(Time.utc(startAt) || now)
   const untilFinish = useCountdown(Time.utc(finishAt) || now)
@@ -47,14 +48,13 @@ const VotingSectionFooter = ({
   const finished = untilFinish.time === 0
   const showVotingPowerInfo = started && account
   const hasDelegators = !!delegators && delegators.length > 0
-
-  const [userAddress] = useAuthContext()
+  const { changingVote, showVotingError } = proposalPageState
 
   return (
-    <div className={'VotingSectionFooter'}>
-      {!proposalPageState.showVotingError && (
+    <div className="VotingSectionFooter">
+      {!showVotingError && (
         <>
-          <div className={'VotingSectionFooter__VP'}>
+          <div className="VotingSectionFooter__VP">
             {showVotingPowerInfo && (
               <VoteVotingPowerInfo
                 accountVotingPower={totalVpOnProposal}
@@ -63,7 +63,7 @@ const VotingSectionFooter = ({
               />
             )}
           </div>
-          <div className={'VotingSectionFooter__Actions'}>
+          <div className="VotingSectionFooter__Actions">
             {showVotingPowerInfo && userAddress && !hasEnoughToVote && (
               <Link href={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
             )}
@@ -74,14 +74,14 @@ const VotingSectionFooter = ({
                 hasDelegators={hasDelegators}
                 started={started}
                 finished={finished}
-                changingVote={proposalPageState.changingVote}
+                changingVote={changingVote}
                 onChangeVote={onChangeVote}
               />
             )}
           </div>
         </>
       )}
-      {proposalPageState.showVotingError && (
+      {showVotingError && (
         <span className="VotingSectionFooter__VotingFailedMessage">
           {t('page.proposal_detail.voting_section.voting_failed')}
         </span>

@@ -879,6 +879,7 @@
       "vote_change": "Change Vote",
       "vote_overrule": "Overrule Vote",
       "vote_manage": "Manage",
+      "voting_begins": "Voting begins in **{date}**",
       "get_vp": "Get VP",
       "vote_choice": "Vote {choice}",
       "cast_vote": "Cast Vote",
