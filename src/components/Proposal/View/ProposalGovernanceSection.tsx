@@ -19,12 +19,12 @@ import SidebarHeaderLabel from './SidebarHeaderLabel'
 
 const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft, ProposalType.Pitch, ProposalType.Tender]
 
-type ProposalGovernanceSectionProps = {
+interface Props {
   proposal?: ProposalAttributes | null
   votes?: Record<string, Vote> | null
   partialResults: ChoiceProgressProps[]
   choices: string[]
-  loading?: boolean
+  loading: boolean
   disabled?: boolean
   onChangeVote?: (e: React.MouseEvent<unknown>, changing: boolean) => void
   voteWithSurvey: boolean
@@ -47,7 +47,7 @@ export default function ProposalGovernanceSection({
   voteWithSurvey,
   proposalPageState,
   updatePageState,
-}: ProposalGovernanceSectionProps) {
+}: Props) {
   const t = useFormatMessage()
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)

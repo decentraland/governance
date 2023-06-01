@@ -40,6 +40,7 @@ import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
@@ -303,6 +304,7 @@ export default function ProposalPage() {
     !isLoadingBudgetWithContestants
   const showTenderProposals =
     proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
+  const showCompetingTenders = !!proposal && proposal.type === ProposalType.Tender
 
   return (
     <>
@@ -329,6 +331,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
+              {showCompetingTenders && <CompetingTenders proposal={proposal} />}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <div className="ProposalDetailPage__Body">

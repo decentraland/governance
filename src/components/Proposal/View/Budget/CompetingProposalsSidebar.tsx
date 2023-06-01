@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
-import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
@@ -118,7 +117,7 @@ function getBarItems(
   }
 }
 
-type Props = {
+interface Props {
   proposal: ProposalAttributes
   budget: BudgetWithContestants
   isSidebarVisible: boolean
@@ -151,39 +150,11 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   }, [categoryBudget, highlightedContestant, proposal, t, intl])
   const [showPopups, setShowPopups] = useState(false)
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const sidebar = document.querySelector('.CompetingProposalsSidebar')
-      if (sidebar && !sidebar.contains(event.target as Node)) {
-        onClose()
-      }
-    }
-
-    if (isSidebarVisible) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isSidebarVisible, onClose])
-
-  function handleClose(e: React.MouseEvent<unknown>) {
-    e.preventDefault()
-    e.stopPropagation()
-    onClose()
-  }
-
   return (
     <GovernanceSidebar
-      onShow={() => {
-        setShowPopups(true)
-      }}
-      onHide={() => {
-        setShowPopups(false)
-      }}
+      onShow={() => setShowPopups(true)}
+      onHide={() => setShowPopups(false)}
+      onClose={onClose}
       visible={isSidebarVisible}
     >
       {SHOW_DISTRIBUTION_BARS && (
@@ -194,7 +165,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
                 category: toNewGrantCategory(grantCategory),
               })}
             </span>
-            <Close onClick={handleClose} />
+            <Close onClick={onClose} />
           </div>
           <GrantRequestSectionCard
             title={
@@ -292,7 +263,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
               category: toNewGrantCategory(grantCategory),
             })}
           </span>
-          <Close onClick={handleClose} />
+          <Close onClick={onClose} />
         </div>
 
         {contestants.map((contestant) => (

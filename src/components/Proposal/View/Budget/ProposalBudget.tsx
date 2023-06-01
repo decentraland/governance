@@ -8,7 +8,7 @@ import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { ContentSection } from '../../../Layout/ContentLayout'
 
 import CategoryTotalCard from './CategoryTotalCard'
-import CompetingProposals from './CompetingProposals'
+import CompetingGrants from './CompetingGrants'
 import './ProposalBudget.css'
 import RequestedBudgetCard from './RequestedBudgetCard'
 
@@ -30,7 +30,7 @@ export default function ProposalBudget({ proposal, budget }: Props) {
       <Desktop>
         {contestantsAmount > 0 && (
           <div className="ProposalBudget__Row">
-            <CompetingProposals proposal={proposal} budget={budget} />
+            <CompetingGrants proposal={proposal} budget={budget} />
           </div>
         )}
       </Desktop>

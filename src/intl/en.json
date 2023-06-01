@@ -766,7 +766,7 @@
     },
     "proposal_bidding_tendering": {
       "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
-      "escalated_tender_proposals": "Escalated Tender Propsoals",
+      "escalated_tender_proposals": "Escalated Tender Proposals",
       "title": "About the bidding and tendering process",
       "pitch_proposal_title": "Validate by pitching",
       "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
@@ -952,6 +952,10 @@
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal",
         "promote_to_tender_label": "Escalate to Tender"
+      },
+      "competing_tenders": {
+        "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
+        "sidebar_title": "Competing tender proposals"
       },
       "grant": {
         "requested_budget": {
