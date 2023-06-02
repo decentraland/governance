@@ -11,46 +11,53 @@ import 'balloon-css/balloon.min.css'
 import 'decentraland-ui/dist/themes/base-theme.css'
 import 'decentraland-ui/dist/themes/alternative/light-theme.css'
 import './src/theme.css'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
 import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
-import Layout from 'decentraland-gatsby/dist/components/Layout/Layout'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
+import Layout from './src/components/Layout/Layout'
 import Navbar from './src/components/Layout/Navbar'
 import IdentityModalContextProvider from './src/components/Context/IdentityModalContext'
 import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
-import Rollbar from "decentraland-gatsby/dist/components/Development/Rollbar"
-import { ROLLBAR_TOKEN, SEGMENT_KEY } from "./src/constants"
+import { SEGMENT_KEY } from "./src/constants"
+
+const queryClient = new QueryClient()
 
 export const wrapRootElement = ({ element }) => {
-  const isBrowser = typeof window !== 'undefined'
+  const isWindowDefined = typeof window !== 'undefined'
    
   return (
     <AuthProvider>
       <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
-      {isBrowser && ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
-      {isBrowser && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
+      {isWindowDefined && ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
+      {isWindowDefined && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
   )
 }
 
 export const wrapPageElement = ({ element, props }) => {
   return (
-    <IntlProvider {...props.pageContext.intl}>
-      <IdentityModalContextProvider>
-        <BurgerMenuStatusContextProvider>
-          <Layout {...props} rightMenu={<Navbar />}>
-            {element}
-          </Layout>
-        </BurgerMenuStatusContextProvider>
-        <ExternalLinkWarningModal />
-        <IdentityConnectModal />
-      </IdentityModalContextProvider>
-    </IntlProvider>
+    <QueryClientProvider client={queryClient}>
+      <IntlProvider {...props.pageContext.intl}>
+        <IdentityModalContextProvider>
+          <BurgerMenuStatusContextProvider>
+            <Layout {...props} rightMenu={<Navbar />}>
+              {element}
+            </Layout>
+          </BurgerMenuStatusContextProvider>
+          <ExternalLinkWarningModal />
+          <IdentityConnectModal />
+        </IdentityModalContextProvider>
+      </IntlProvider>
+    </QueryClientProvider>
   )
 }
 

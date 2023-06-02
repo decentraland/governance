@@ -26,7 +26,7 @@ import { DOCS_URL, OPEN_CALL_FOR_DELEGATES_LINK } from '../constants'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
-import useDclData from '../hooks/useDclData'
+import useTransparency from '../hooks/useTransparency'
 import locations from '../modules/locations'
 
 import './transparency.css'
@@ -39,7 +39,7 @@ const WEARABLE_CURATORS_URL = 'https://forum.decentraland.org/t/wearables-curati
 
 export default function TransparencyPage() {
   const t = useFormatMessage()
-  const [data] = useDclData()
+  const { data } = useTransparency()
   const balances = useMemo(() => (data && aggregateBalances(data.balances)) || [], [data])
 
   return (

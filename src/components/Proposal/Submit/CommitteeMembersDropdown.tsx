@@ -6,7 +6,7 @@ import type { DropdownItemProps } from 'decentraland-ui'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 import { CommitteeName } from '../../../clients/DclData'
-import useDclData from '../../../hooks/useDclData'
+import useTransparency from '../../../hooks/useTransparency'
 
 interface ExtendedController extends React.ComponentProps<typeof Controller> {
   committee?: CommitteeName | null
@@ -20,7 +20,7 @@ interface ExtendedController extends React.ComponentProps<typeof Controller> {
 type Props = Omit<ExtendedController, 'render'>
 
 function CommitteeMembersDropdown({ committee, control, disabled, loading, error, onOptionClick, ...props }: Props) {
-  const [data] = useDclData()
+  const { data } = useTransparency({ shouldRevalidate: true })
   const committees = useMemo(() => data?.committees || [], [data])
   const t = useFormatMessage()
 

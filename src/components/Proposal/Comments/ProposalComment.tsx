@@ -2,6 +2,7 @@ import React from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
+import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import DOMPurify from 'dompurify'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -41,24 +42,25 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked, ad
   }
 
   const discourseUserUrl = getUserProfileUrl(user, address)
-
   const { displayableAddress } = useProfile(address)
+  const linkTarget = address ? undefined : '_blank'
+  const linkRel = address ? undefined : 'noopener noreferrer'
 
   return (
     <div className="ProposalComment">
       <div className="ProposalComment__ProfileImage">
-        <a href={discourseUserUrl} target="_blank" rel="noopener noreferrer">
+        <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
           {address ? <Avatar address={address} size="medium" /> : <Avatar size="medium" src={avatarUrl} />}
-        </a>
+        </Link>
       </div>
       <div className="ProposalComment__Content">
         <div className="ProposalComment__Author">
-          <a href={discourseUserUrl} target="_blank" rel="noopener noreferrer">
+          <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
             <Paragraph bold>
               {displayableAddress && !isEthereumAddress(displayableAddress) ? displayableAddress : user}
               {address && <ValidatedProfile />}
             </Paragraph>
-          </a>
+          </Link>
           <span>
             <Paragraph secondary>{Time.from(createdAt).fromNow()}</Paragraph>
           </span>

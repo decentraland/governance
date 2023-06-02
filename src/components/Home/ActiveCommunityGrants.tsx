@@ -31,14 +31,15 @@ const ActiveCommunityGrants = () => {
       )}
       {!isLoadingGrants && (
         <div className="ActiveCommunityGrants__Container">
-          {grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant, index) => (
-            <div
-              className={TokenList.join(['HoverableCardContainer', index <= 1 && 'HoverableCardContainer__FirstRow'])}
-              key={`HoverableCard__${grant.id}`}
-            >
-              <GrantCard grant={grant} hoverable />
-            </div>
-          ))}
+          {grants &&
+            grants.current?.slice(0, CURRENT_GRANTS_PER_PAGE).map((grant, index) => (
+              <div
+                className={TokenList.join(['HoverableCardContainer', index <= 1 && 'HoverableCardContainer__FirstRow'])}
+                key={`HoverableCard__${grant.id}`}
+              >
+                <GrantCard grant={grant} hoverable />
+              </div>
+            ))}
         </div>
       )}
       <FullWidthButton link={locations.grants()}>

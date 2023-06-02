@@ -5,8 +5,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { DAO_DISCORD_URL, FORUM_URL, NEWSLETTER_URL } from '../../../constants'
 import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import useAbbreviatedFormatter from '../../../hooks/useAbbreviatedFormatter'
-import useDclData from '../../../hooks/useDclData'
 import useProposals from '../../../hooks/useProposals'
+import useTransparency from '../../../hooks/useTransparency'
 import Discord from '../../Icon/Discord'
 import EmailFilled from '../../Icon/EmailFilled'
 import Megaphone from '../../Icon/Megaphone'
@@ -38,7 +38,7 @@ const ACTIONS: Record<string, ActionProps> = {
 
 function BottomBanner() {
   const t = useFormatMessage()
-  const [data] = useDclData()
+  const { data } = useTransparency()
   const fundingFormatter = useAbbreviatedFormatter()
 
   const { proposals: grantsList } = useProposals({
