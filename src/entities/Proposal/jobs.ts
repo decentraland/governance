@@ -21,12 +21,6 @@ type Outcome = {
 
 type ProposalWithOutcome = ProposalAttributes & Outcome
 
-// TODO: Delete this and all proposal pending status
-export async function activateProposals(context: JobContext) {
-  const activatedProposals = await ProposalModel.activateProposals()
-  context.log(activatedProposals === 0 ? `No activated proposals` : `Activated ${activatedProposals} proposals...`)
-}
-
 async function updateRejectedProposals(rejectedProposals: ProposalWithOutcome[], context: JobContext) {
   if (rejectedProposals.length > 0) {
     context.log(`Rejecting ${rejectedProposals.length} proposals...`)

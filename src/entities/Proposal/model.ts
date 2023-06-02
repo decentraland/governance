@@ -143,19 +143,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.query(query)
   }
 
-  static async activateProposals() {
-    const query = SQL`
-        UPDATE ${table(ProposalModel)}
-        SET "status"     = ${ProposalStatus.Active},
-            "updated_at" = now()
-        WHERE "deleted" = FALSE
-          AND "status" = ${ProposalStatus.Pending}
-          AND "start_at" >= now()
-    `
-
-    return this.rowCount(query)
-  }
-
   static async getActiveGrantProposals(from?: Date, to?: Date) {
     const query = SQL`
         SELECT *
@@ -192,7 +179,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SELECT *
         FROM ${table(ProposalModel)}
         WHERE "deleted" = FALSE
-          AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
+          AND "status" IN (${ProposalStatus.Active})
           AND "finish_at" <= (now() + interval '1 minute')
           ORDER BY created_at ASC
     `
@@ -214,7 +201,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SET "status"     = ${status},
             "updated_at" = ${new Date()}
         WHERE "deleted" = FALSE
-          AND "status" IN (${ProposalStatus.Active}, ${ProposalStatus.Pending})
+          AND "status" IN (${ProposalStatus.Active})
           AND "id" IN (${join(ids)})
     `
 

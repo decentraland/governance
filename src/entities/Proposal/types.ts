@@ -67,7 +67,6 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
 }
 
 export enum ProposalStatus {
-  Pending = 'pending',
   Active = 'active',
   Finished = 'finished',
   Rejected = 'rejected',
