@@ -21,6 +21,7 @@ type Outcome = {
 
 type ProposalWithOutcome = ProposalAttributes & Outcome
 
+// TODO: Delete this and all proposal pending status
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
   context.log(activatedProposals === 0 ? `No activated proposals` : `Activated ${activatedProposals} proposals...`)
@@ -119,10 +120,12 @@ async function categorizeProposals(
       case ProposalOutcome.REJECTED:
         rejectedProposals.push(proposalWithOutcome)
         break
+      case ProposalOutcome.FINISHED:
+        finishedProposals.push(proposalWithOutcome)
+        break
       case ProposalOutcome.ACCEPTED:
         if (proposalWithOutcome.type !== ProposalType.Grant || proposalWithOutcome.start_at < BUDGETING_START_DATE) {
           acceptedProposals.push(proposalWithOutcome)
-          break
         } else {
           const budgetForProposal = getBudgetForProposal(updatedBudgets, proposalWithOutcome)
           if (!budgetForProposal) {
@@ -136,11 +139,9 @@ async function categorizeProposals(
             outOfBudgetProposals.push(proposalWithOutcome)
           }
         }
-        break
-      case ProposalOutcome.FINISHED:
-        finishedProposals.push(proposalWithOutcome)
     }
   }
+
   return {
     finishedProposals,
     acceptedProposals,
@@ -169,7 +170,7 @@ export async function finishProposal(context: JobContext) {
   await updateRejectedProposals(rejectedProposals, context)
   await BudgetService.updateBudgets(updatedBudgets)
 
-  const proposals: ProposalWithOutcome[] = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
+  const proposals = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
   context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
   for (const { id, title, winnerChoice, outcomeStatus } of proposals) {
     commentProposalUpdateInDiscourse(id)
