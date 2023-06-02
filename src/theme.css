@@ -5,7 +5,6 @@
   --green-raw-c: 0, 182, 138;
   --red-raw: 216, 0, 39;
   --red-raw-b: 255, 0, 46;
-  --red-raw-c: 216, 0, 39;
   --blue-raw: 72, 136, 238;
   --gray-raw-b: 115, 110, 125;
   --orange-raw: 255, 116, 57;
@@ -19,7 +18,7 @@
 
   --gradient-green: linear-gradient(90deg, rgba(var(--green-raw-b), 1) 0%, rgba(0, 191, 217, 1) 100%);
   --gradient-red-1: linear-gradient(90deg, rgba(var(--red-raw-b), 1) 0%, rgba(64, 95, 205, 1) 100%);
-  --gradient-red-2: linear-gradient(90deg, rgba(var(--red-raw-c), 1) 0%, rgba(var(--red-raw-b), 1) 100%);
+  --gradient-red-2: linear-gradient(90deg, rgba(var(--red-raw), 1) 0%, rgba(var(--red-raw-b), 1) 100%);
   --gradient-purple-1: linear-gradient(90deg, rgba(var(--purple-raw-b), 1) 0%, rgba(64, 95, 205, 1) 100%);
   --gradient-purple-2: linear-gradient(90deg, rgba(var(--purple-raw-c), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
   --gradient-purple-3: linear-gradient(90deg, rgba(var(--purple-raw-e), 1) 0%, rgba(var(--purple-raw-d), 1) 100%);
