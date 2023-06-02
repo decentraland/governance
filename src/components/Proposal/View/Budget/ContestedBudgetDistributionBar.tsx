@@ -5,6 +5,7 @@ import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { getFormattedPercentage } from '../../../../helpers'
 import DistributionBarItem, { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
+import ArrowMarker from '../../../Icon/ArrowMarker'
 
 import './ContestedBudgetDistributionBar.css'
 
@@ -68,6 +69,8 @@ const ContestedBudgetDistributionBar = ({
             className={availableOverBudgetItem.className}
             style={{ width: getFormattedPercentage(availableOverBudgetItem.value, total) }}
           />
+          <ArrowMarker />
+          <span className="HundredPercent">100%</span>
         </div>
       )}
     </div>
