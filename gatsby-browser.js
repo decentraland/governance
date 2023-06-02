@@ -37,7 +37,6 @@ export const wrapRootElement = ({ element }) => {
   return (
     <AuthProvider>
       <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
-      {isWindowDefined && ROLLBAR_TOKEN && <Rollbar key="rollbar" accessToken={ROLLBAR_TOKEN} />}
       {isWindowDefined && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
   )
