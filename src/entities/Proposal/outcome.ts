@@ -56,6 +56,7 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
 
     return {
       winnerChoice,
+      winnerVotingPower,
       outcomeStatus: getOutcomeStatus(winnerChoice, winnerVotingPower, choices, results, proposal.required_to_pass),
     }
   } catch (e) {

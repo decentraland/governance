@@ -1,11 +1,11 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
+import { orderBy } from 'lodash'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
 import { Budget } from '../Budget/types'
-import { BUDGETING_START_DATE } from '../Grant/constants'
 import UpdateModel from '../Updates/model'
 
 import ProposalModel from './model'
@@ -92,6 +92,21 @@ function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: 
   budgetForProposal.allocated += size
 }
 
+async function getProposalsWithOutcome(proposals: ProposalAttributes[], context: JobContext) {
+  const pendingProposalsWithOutcome = []
+
+  for (const proposal of proposals) {
+    const outcome = await calculateOutcome(proposal, context)
+    if (!outcome) {
+      continue
+    }
+
+    pendingProposalsWithOutcome.push({ ...proposal, ...outcome })
+  }
+
+  return pendingProposalsWithOutcome
+}
+
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
   currentBudgets: Budget[],
@@ -102,35 +117,38 @@ async function categorizeProposals(
   const outOfBudgetProposals: ProposalWithOutcome[] = []
   const rejectedProposals: ProposalWithOutcome[] = []
   const updatedBudgets = [...currentBudgets]
+  const pendingProposalsWithOutcome = await getProposalsWithOutcome(pendingProposals, context)
 
-  for (const proposal of pendingProposals) {
-    const outcome = await calculateOutcome(proposal, context)
-    if (!outcome) {
-      continue
-    }
-
-    const proposalWithOutcome = { ...proposal, ...outcome }
-    switch (outcome.outcomeStatus) {
+  for (const proposal of pendingProposalsWithOutcome) {
+    switch (proposal.outcomeStatus) {
       case ProposalOutcome.REJECTED:
-        rejectedProposals.push(proposalWithOutcome)
+        rejectedProposals.push(proposal)
         break
       case ProposalOutcome.FINISHED:
-        finishedProposals.push(proposalWithOutcome)
+        finishedProposals.push(proposal)
         break
       case ProposalOutcome.ACCEPTED:
-        if (proposalWithOutcome.type !== ProposalType.Grant || proposalWithOutcome.start_at < BUDGETING_START_DATE) {
-          acceptedProposals.push(proposalWithOutcome)
+        if (proposal.type !== ProposalType.Grant && proposal.type !== ProposalType.Tender) {
+          acceptedProposals.push(proposal)
+        } else if (proposal.type === ProposalType.Tender) {
+          const tenderProposals = pendingProposalsWithOutcome.filter((item) => item.type === ProposalType.Tender)
+          const winnerTenderProposal = orderBy(tenderProposals, 'winnerVotingPower', 'desc')[0]
+          if (winnerTenderProposal.id === proposal.id) {
+            acceptedProposals.push(proposal)
+          } else {
+            rejectedProposals.push(proposal)
+          }
         } else {
-          const budgetForProposal = getBudgetForProposal(updatedBudgets, proposalWithOutcome)
+          const budgetForProposal = getBudgetForProposal(updatedBudgets, proposal)
           if (!budgetForProposal) {
             ErrorService.report(`Unable to find corresponding quarter budget for ${proposal.id}`)
             break
           }
-          if (grantCanBeFunded(proposalWithOutcome, budgetForProposal)) {
-            updateCategoryBudget(proposalWithOutcome, budgetForProposal)
-            acceptedProposals.push(proposalWithOutcome)
+          if (grantCanBeFunded(proposal, budgetForProposal)) {
+            updateCategoryBudget(proposal, budgetForProposal)
+            acceptedProposals.push(proposal)
           } else {
-            outOfBudgetProposals.push(proposalWithOutcome)
+            outOfBudgetProposals.push(proposal)
           }
         }
     }
