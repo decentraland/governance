@@ -82,7 +82,7 @@ function getBarItems(
   const requestedBudgetItem = {
     value: requestedBudget,
     className: isOverBudget ? 'ThisInitiativeOverbudgetBar' : 'ThisInitiativeBar',
-    selected: true,
+    selected: !highlightedContestant,
     popupContent: {
       title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
       content: <span>{intl.formatNumber(requestedBudget, CURRENCY_FORMAT_OPTIONS)}</span>,

@@ -31,7 +31,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  /*border-radius: 4px;*/
   height: 6px;
   min-width: 6px;
   margin: 0;
