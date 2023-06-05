@@ -425,9 +425,11 @@ export async function createProposalTender(req: WithAuth) {
     throw new RequestError('Tender process already started for this pitch proposal')
   }
 
-  // TODO: Change '30' to seconds, move to env var so it can be testeable
-  const start_at = tenderProposals.length > 0 ? tenderProposals[0].start_at : Time().add(30, 'days').toDate()
-  const finish_at = Time(start_at).add(Number(process.env.GATSBY_DURATION_TENDER), 'seconds').toDate()
+  const start_at =
+    tenderProposals.length > 0
+      ? tenderProposals[0].start_at
+      : Time().add(Number(process.env.START_DATE_GAP_DURATION_TENDER), 'seconds').toDate()
+  const finish_at = Time(start_at).add(Number(process.env.DURATION_TENDER), 'seconds').toDate()
 
   return createProposal({
     user,
