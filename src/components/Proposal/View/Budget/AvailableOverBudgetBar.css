@@ -19,8 +19,8 @@
 }
 
 .AvailableOverBudgetBar__Allocated {
-  background: transparent !important;
-  height: 2px !important;
+  background: transparent;
+  height: 2px;
 }
 
 .AvailableOverBudgetBar__ArrowMarker {
