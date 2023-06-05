@@ -3,10 +3,9 @@ import Skeleton from 'react-loading-skeleton'
 
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
-import { getFormattedPercentage } from '../../../../helpers'
 import DistributionBarItem, { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
-import ArrowMarker from '../../../Icon/ArrowMarker'
 
+import AvailableOverBudgetBar from './AvailableOverBudgetBar'
 import './ContestedBudgetDistributionBar.css'
 
 interface Props {
@@ -60,18 +59,11 @@ const ContestedBudgetDistributionBar = ({
         )}
       </div>
       {availableOverBudgetItem && (
-        <div className={'AvailableOverBudgetDistributionBar'}>
-          <div
-            className={'TransparentBar'}
-            style={{ width: getFormattedPercentage(allocatedBudgetItem.value, total) }}
-          />
-          <div
-            className={availableOverBudgetItem.className}
-            style={{ width: getFormattedPercentage(availableOverBudgetItem.value, total) }}
-          />
-          <ArrowMarker />
-          <span className="HundredPercent">100%</span>
-        </div>
+        <AvailableOverBudgetBar
+          allocatedBudget={allocatedBudgetItem.value}
+          availableOverBudgetItem={availableOverBudgetItem}
+          total={total}
+        />
       )}
     </div>
   )

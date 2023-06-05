@@ -1,122 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { toNewGrantCategory } from '../../../../entities/QuarterCategoryBudget/utils'
-import { CURRENCY_FORMAT_OPTIONS, getFormattedPercentage } from '../../../../helpers'
-import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
-import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 import GovernanceSidebar from '../../../Sidebar/GovernanceSidebar'
 import ProposalCard from '../ProposalCard'
 
 import './CompetingProposalsSidebar.css'
-import ContestedBudgetDistributionBar from './ContestedBudgetDistributionBar'
-import ContestedBudgetCardLabel from './ContestedBudgetLabel'
-import ContestedBudgetSubLabel from './ContestedBudgetSubLabel'
-
-/* eslint-disable @typescript-eslint/ban-types */
-function getContestingProposalsItems(
-  t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
-  intl: any,
-  proposal: ProposalAttributes,
-  categoryBudget: CategoryBudgetWithContestants,
-  highlightedContestant: string | null,
-  setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void,
-  isOverBudget: boolean
-) {
-  const items: DistributionBarItemProps[] = []
-  categoryBudget?.contestants.forEach((contestant) => {
-    if (contestant.id !== proposal.id) {
-      items.push({
-        value: contestant.size,
-        className: isOverBudget ? 'CompetingProposalOverbudgetBar' : 'CompetingProposalBudgetBar',
-        selected: highlightedContestant === contestant.id,
-        onHover: (e: React.MouseEvent<unknown>) => {
-          setHighlightedContestant(contestant.id)
-        },
-        onBlur: () => {
-          setHighlightedContestant(null)
-        },
-        popupContent: {
-          title: contestant.title,
-          content: <span>{intl.formatNumber(contestant.size, CURRENCY_FORMAT_OPTIONS)}</span>,
-          position: 'bottom center',
-        },
-      })
-    }
-  })
-  return items
-}
-
-function getBarItems(
-  t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
-  intl: any,
-  proposal: ProposalAttributes,
-  categoryBudget: CategoryBudgetWithContestants,
-  highlightedContestant: string | null,
-  setHighlightedContestant: (value: ((prevState: string | null) => string | null) | string | null) => void
-) {
-  const contestedBudget = categoryBudget.contested || 0
-  const requestedBudget = proposal.configuration.size
-  const availableBudget = categoryBudget?.available || 0
-  const uncontestedTotalBudget = availableBudget - contestedBudget
-  const isOverBudget = uncontestedTotalBudget < 0
-  const uncontestedTotalBudgetDisplayed = !isOverBudget ? uncontestedTotalBudget : 0
-  const allocatedBudget = categoryBudget?.allocated || 0
-
-  const allocatedBudgetItem = {
-    value: allocatedBudget,
-    className: TokenList.join(['GrantedFundsBar', isOverBudget && 'GrantedFundsBarOverbudget']),
-  }
-
-  const contestingProposalsItems = getContestingProposalsItems(
-    t,
-    intl,
-    proposal,
-    categoryBudget,
-    highlightedContestant,
-    setHighlightedContestant,
-    isOverBudget
-  )
-
-  const requestedBudgetItem = {
-    value: requestedBudget,
-    className: isOverBudget ? 'ThisInitiativeOverbudgetBar' : 'ThisInitiativeBar',
-    selected: true,
-    popupContent: {
-      title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
-      content: <span>{intl.formatNumber(requestedBudget, CURRENCY_FORMAT_OPTIONS)}</span>,
-    },
-  }
-
-  const uncontestedTotalBudgetItem = isOverBudget
-    ? undefined
-    : {
-        value: uncontestedTotalBudgetDisplayed,
-        className: 'UncontestedBudgetBar',
-      }
-
-  const availableOverBudgetItem = isOverBudget
-    ? {
-        value: availableBudget,
-        className: 'AvailableOverBudgetBar',
-      }
-    : undefined
-
-  return {
-    allocatedBudgetItem,
-    contestingProposalsItems,
-    availableOverBudgetItem,
-    requestedBudgetItem,
-    uncontestedTotalBudgetItem,
-    isOverBudget,
-  }
-}
+import ContestedBudgetCard from './ContestedBudgetCard'
 
 type Props = {
   proposal: ProposalAttributes
@@ -125,28 +20,21 @@ type Props = {
   onClose: () => void
 }
 
-export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible, onClose }: Props) {
-  const t = useFormatMessage()
-  const intl = useIntl()
-  const grantCategory = proposal.configuration.category
-  const categoryBudget = budget.categories[snakeCase(grantCategory)]
-  const totalCategoryBudget = categoryBudget?.total || 0
+function getIsOverBudget(categoryBudget: CategoryBudgetWithContestants) {
   const contestedBudget = categoryBudget.contested || 0
   const availableBudget = categoryBudget?.available || 0
   const uncontestedTotalBudget = availableBudget - contestedBudget
-  const uncontestedTotalBudgetDisplayed = uncontestedTotalBudget > 0 ? uncontestedTotalBudget : 0
+  const isOverBudget = uncontestedTotalBudget < 0
+  return isOverBudget
+}
+
+export default function CompetingProposalsSidebar({ proposal, budget, isSidebarVisible, onClose }: Props) {
+  const t = useFormatMessage()
+  const grantCategory = proposal.configuration.category
+  const categoryBudget = budget.categories[snakeCase(grantCategory)]
+  const isOverBudget = useMemo(() => getIsOverBudget(categoryBudget), [categoryBudget])
   const contestants = categoryBudget.contestants.filter((contestant) => contestant.id !== proposal.id)
   const [highlightedContestant, setHighlightedContestant] = useState<string | null>(null)
-  const {
-    allocatedBudgetItem,
-    contestingProposalsItems,
-    availableOverBudgetItem,
-    requestedBudgetItem,
-    uncontestedTotalBudgetItem,
-    isOverBudget,
-  } = useMemo(() => {
-    return getBarItems(t, intl, proposal, categoryBudget, highlightedContestant, setHighlightedContestant)
-  }, [categoryBudget, highlightedContestant, proposal, t, intl])
   const [showPopups, setShowPopups] = useState(false)
 
   useEffect(() => {
@@ -194,55 +82,12 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
           </span>
           <Close onClick={handleClose} />
         </div>
-        <GrantRequestSectionCard
-          title={
-            <div className="ContestedBudgetCard__Title">
-              <ContestedBudgetCardLabel
-                title={t('page.proposal_detail.grant.competing_proposals.sidebar.competing_proposals_bar_title')}
-                legend={isOverBudget ? 'ContestedOverbudgetLegend' : 'ContestedLegend'}
-                amount={contestedBudget}
-              />
-              {isOverBudget && (
-                <ContestedBudgetCardLabel
-                  title={t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds_label')}
-                  legend={'AvailableOverBudgetLegend'}
-                  amount={availableBudget}
-                  percentage={getFormattedPercentage(availableBudget, categoryBudget.total, 0)}
-                />
-              )}
-            </div>
-          }
-          content={
-            <div className="ContestedBudgetCard">
-              <ContestedBudgetDistributionBar
-                allocatedBudgetItem={allocatedBudgetItem}
-                contestingProposalsItems={contestingProposalsItems}
-                availableOverBudgetItem={availableOverBudgetItem}
-                requestedBudgetItem={requestedBudgetItem}
-                uncontestedTotalBudgetItem={uncontestedTotalBudgetItem}
-                total={isOverBudget ? categoryBudget.allocated + categoryBudget.contested : totalCategoryBudget}
-                showPopups={showPopups}
-              />
-            </div>
-          }
-          subtitle={
-            <div className="ContestedBudgetCard__Row">
-              <ContestedBudgetSubLabel
-                title={t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds_label')}
-                amount={categoryBudget.allocated}
-                legend={'GrantedFundsLegend'}
-                percentage={getFormattedPercentage(categoryBudget.allocated, categoryBudget.total, 0)}
-              />
-              {uncontestedTotalBudgetDisplayed > 0 && (
-                <ContestedBudgetSubLabel
-                  title={t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds_label')}
-                  amount={uncontestedTotalBudgetDisplayed}
-                  legend={'UncontestedFundsLegend'}
-                  percentage={getFormattedPercentage(uncontestedTotalBudgetDisplayed, categoryBudget.total, 0)}
-                />
-              )}
-            </div>
-          }
+        <ContestedBudgetCard
+          proposal={proposal}
+          categoryBudget={categoryBudget}
+          highlightedContestant={highlightedContestant}
+          setHighlightedContestant={setHighlightedContestant}
+          showPopups={showPopups}
         />
       </div>
 
@@ -257,7 +102,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
 
         {contestants.map((contestant) => (
           <div
-            className="ContestedBudgetCard__Row"
+            className="CompetingProposalsSidebar__CardRow"
             key={`contestant-${contestant.id}`}
             onMouseEnter={() => setHighlightedContestant(contestant.id)}
             onMouseLeave={() => setHighlightedContestant(null)}
