@@ -87,7 +87,7 @@ function getBarItems(
   const requestedBudgetItem = {
     value: requestedBudget,
     className: isOverBudget ? 'ThisInitiativeOverbudgetBar' : 'ThisInitiativeBar',
-    selected: !highlightedContestant,
+    selected: true,
     popupContent: {
       title: t('page.proposal_detail.grant.competing_proposals.sidebar.this_initiative_title'),
       content: <span>{intl.formatNumber(requestedBudget, CURRENCY_FORMAT_OPTIONS)}</span>,
@@ -176,6 +176,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
 
   return (
     <GovernanceSidebar
+      className="CompetingProposalsSidebar"
       onShow={() => {
         setShowPopups(true)
       }}

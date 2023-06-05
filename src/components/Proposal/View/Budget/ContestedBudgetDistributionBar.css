@@ -30,8 +30,8 @@
 svg.ArrowMarker {
   position: relative;
   overflow: visible;
-  left: -1px;
-  top: -4px;
+  right: 3px;
+  bottom: 4px;
 }
 
 .HundredPercent {
@@ -42,6 +42,6 @@ svg.ArrowMarker {
   color: var(--black-600);
   opacity: 0.45;
   position: relative;
-  left: -26px;
+  right: 28px;
   top: 20px;
 }

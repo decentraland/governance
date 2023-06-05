@@ -6,6 +6,6 @@
 
 .DistributionBarItem--selected {
   height: 8px !important;
-  scale: 1.05 1;
+  scale: 1.03 1;
   border-radius: 10px !important;
 }

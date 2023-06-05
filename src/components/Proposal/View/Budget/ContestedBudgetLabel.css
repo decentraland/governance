@@ -1,0 +1,46 @@
+.ContestedBudgetLabel {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  font-family: var(--font-family);
+}
+
+.ContestedBudgetLabel__Title {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--black-600);
+  margin-bottom: 4px;
+}
+
+.ContestedBudgetLabel__Content {
+  display: flex;
+  align-items: center;
+}
+
+.ContestedBudgetLabel__Legend {
+  width: 8px;
+  height: 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+
+.ContestedBudgetLabel__Amount {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 20px;
+  letter-spacing: 0.4px;
+  color: var(--black-700);
+}
+
+.ContestedBudgetLabel__Percentage {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--black-600);
+  line-height: 24px;
+  opacity: 0.45;
+  margin-left: 5px;
+}

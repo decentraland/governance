@@ -2,7 +2,9 @@
   background-color: var(--background-popup);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
-  opacity: 0.8;
+  opacity: 1;
+  text-align: center;
+  max-width: 200px;
 }
 
 .DistributionBarPopup__Title {
@@ -12,6 +14,10 @@
   text-transform: uppercase;
   font-style: normal;
   color: var(--white-900);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 150px;
 }
 
 .DistributionBarPopup__Sub {
