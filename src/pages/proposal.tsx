@@ -344,14 +344,7 @@ export default function ProposalPage() {
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {proposal && isBiddingAndTenderingProposal(proposal.type) && (
-                <BiddingAndTenderingProcess
-                  proposalId={proposal.id}
-                  proposalType={proposal.type}
-                  proposalStatus={proposal.status}
-                  proposalFinishAt={proposal.finish_at}
-                  linkedProposalId={proposal.configuration.linked_proposal_id}
-                  tenderProposalsTotal={tenderProposals?.total}
-                />
+                <BiddingAndTenderingProcess proposal={proposal} tenderProposalsTotal={tenderProposals?.total} />
               )}
               {proposal && isGovernanceProcessProposal(proposal.type) && (
                 <GovernanceProcess proposalType={proposal.type} />

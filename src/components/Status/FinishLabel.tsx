@@ -9,7 +9,7 @@ import DateTooltip from '../Common/DateTooltip'
 
 import './FinishLabel.css'
 
-export type FinishLabelProps = {
+interface Props {
   date: Date
 }
 
@@ -17,7 +17,7 @@ function getTimeLabel(timeout: Countdown, time: Time.Dayjs, format?: 'short') {
   return timeout.time > 0 ? time.fromNow() : format === 'short' ? time.format('MM/DD/YY') : time.format('MMM DD, YYYY')
 }
 
-export default React.memo(function FinishLabel({ date }: FinishLabelProps) {
+export default function FinishLabel({ date }: Props) {
   const time = useMemo(() => Time.from(date), [date])
   const timeout = useCountdown(date)
   const t = useFormatMessage()
@@ -28,17 +28,13 @@ export default React.memo(function FinishLabel({ date }: FinishLabelProps) {
     : `${t('page.proposal_list.finish_label.ended')} `
 
   return (
-    <>
+    <span className="FinishLabel">
       <Mobile>
-        <span className="FinishLabel">
-          <DateTooltip date={date}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
-        </span>
+        <DateTooltip date={date}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
       </Mobile>
       <NotMobile>
-        <span className="FinishLabel">
-          <DateTooltip date={date}>{`${label} ${getTimeLabel(timeout, time)}`}</DateTooltip>
-        </span>
+        <DateTooltip date={date}>{`${label} ${getTimeLabel(timeout, time)}`}</DateTooltip>
       </NotMobile>
-    </>
+    </span>
   )
-})
+}

@@ -9,11 +9,7 @@ import useProposal from '../../../hooks/useProposal'
 import ProposalProcess, { ProcessStatus, ProcessType } from './ProposalProcess'
 
 interface Props {
-  proposalId?: ProposalAttributes['id']
-  proposalType: ProposalType
-  proposalStatus: ProposalStatus
-  proposalFinishAt: ProposalAttributes['finish_at']
-  linkedProposalId?: string
+  proposal: ProposalAttributes
   tenderProposalsTotal?: number
 }
 
@@ -39,7 +35,12 @@ const getPitchConfig = (type: ProposalType, status: ProposalStatus) => {
   return { status: ProcessStatus.Default, statusText: '' }
 }
 
-const getTenderConfig = (type: ProposalType, status: ProposalStatus, tenderProposalsTotal?: number) => {
+const getTenderConfig = (
+  type: ProposalType,
+  status: ProposalStatus,
+  startAt: ProposalAttributes['start_at'],
+  tenderProposalsTotal?: number
+) => {
   if (type === ProposalType.Pitch && status === ProposalStatus.Passed) {
     return {
       status: ProcessStatus.Pending,
@@ -52,7 +53,8 @@ const getTenderConfig = (type: ProposalType, status: ProposalStatus, tenderPropo
 
   if (type === ProposalType.Tender) {
     if (status === ProposalStatus.Active) {
-      return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
+      const timeKey = Time().isAfter(startAt) ? 'voting_ends' : 'voting_starts'
+      return { status: ProcessStatus.Active, statusText: `page.proposal_bidding_tendering.${timeKey}` }
     }
 
     if (status === ProposalStatus.Passed) {
@@ -75,22 +77,18 @@ const getOpenForBidsConfig = (type: ProposalType, status: ProposalStatus) => {
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
 }
 
-export default function BiddingAndTenderingProcess({
-  proposalType,
-  proposalStatus,
-  proposalFinishAt,
-  linkedProposalId,
-  tenderProposalsTotal,
-}: Props) {
+export default function BiddingAndTenderingProcess({ proposal, tenderProposalsTotal }: Props) {
   const t = useFormatMessage()
-  const [pitchProposal] = useProposal(linkedProposalId)
+  const { configuration, start_at, finish_at, type, status } = proposal
+  const { linked_proposal_id } = configuration
+  const [pitchProposal] = useProposal(linked_proposal_id)
 
-  const finishAt = linkedProposalId ? pitchProposal?.finish_at : proposalFinishAt
-  const pitchConfig = getPitchConfig(proposalType, proposalStatus)
-  const tenderConfig = getTenderConfig(proposalType, proposalStatus, tenderProposalsTotal)
-  const openForBidsConfig = getOpenForBidsConfig(proposalType, proposalStatus)
+  const finishAt = linked_proposal_id ? pitchProposal?.finish_at : finish_at
+  const pitchConfig = getPitchConfig(type, status)
+  const tenderConfig = getTenderConfig(type, status, start_at, tenderProposalsTotal)
+  const openForBidsConfig = getOpenForBidsConfig(type, status)
   const formattedDate = Time(finishAt).fromNow()
-  const formattedProposalDate = Time(proposalFinishAt).fromNow()
+  const formattedProposalDate = Time(finish_at).fromNow()
 
   const items = useMemo(
     () => [

@@ -2,10 +2,10 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
 import locations from '../../../modules/locations'
 import ChevronRight from '../../Icon/ChevronRight'
@@ -19,14 +19,11 @@ interface Props {
   isOverBudget?: boolean
 }
 
-const ProposalCard = ({ proposal, highlight, isOverBudget }: Props) => {
+export default function ProposalCard({ proposal, highlight, isOverBudget }: Props) {
   const t = useFormatMessage()
-  const { id, title, user, finish_at } = proposal
+  const { id, title, user, start_at, finish_at } = proposal
   const { votes } = useProposalVotes(id)
-
-  const dateText = t(`page.home.open_proposals.${Time().isBefore(Time(finish_at)) ? 'ends_date' : 'ended_date'}`, {
-    value: Time(finish_at).fromNow(),
-  })
+  const dateText = useProposalDateText(start_at, finish_at)
 
   return (
     <Link
@@ -56,5 +53,3 @@ const ProposalCard = ({ proposal, highlight, isOverBudget }: Props) => {
     </Link>
   )
 }
-
-export default ProposalCard
