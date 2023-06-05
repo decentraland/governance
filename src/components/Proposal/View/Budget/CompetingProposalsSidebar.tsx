@@ -204,7 +204,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
               />
               {isOverBudget && (
                 <ContestedBudgetCardLabel
-                  title={t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds')}
+                  title={t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds_label')}
                   legend={'AvailableOverBudgetLegend'}
                   amount={availableBudget}
                   percentage={getFormattedPercentage(availableBudget, categoryBudget.total, 0)}
@@ -228,14 +228,14 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
           subtitle={
             <div className="ContestedBudgetCard__Row">
               <ContestedBudgetSubLabel
-                title={t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds')}
+                title={t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds_label')}
                 amount={categoryBudget.allocated}
                 legend={'GrantedFundsLegend'}
                 percentage={getFormattedPercentage(categoryBudget.allocated, categoryBudget.total, 0)}
               />
               {uncontestedTotalBudgetDisplayed > 0 && (
                 <ContestedBudgetSubLabel
-                  title={t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds')}
+                  title={t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds_label')}
                   amount={uncontestedTotalBudgetDisplayed}
                   legend={'UncontestedFundsLegend'}
                   percentage={getFormattedPercentage(uncontestedTotalBudgetDisplayed, categoryBudget.total, 0)}
