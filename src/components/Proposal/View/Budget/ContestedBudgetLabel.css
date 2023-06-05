@@ -20,13 +20,6 @@
   align-items: center;
 }
 
-.ContestedBudgetLabel__Legend {
-  width: 8px;
-  height: 8px;
-  border-radius: 6px;
-  margin-right: 6px;
-}
-
 .ContestedBudgetLabel__Amount {
   font-style: normal;
   font-weight: 600;
@@ -43,4 +36,35 @@
   line-height: 24px;
   opacity: 0.45;
   margin-left: 5px;
+}
+
+.ContestedBudgetLabel__Legend {
+  width: 8px;
+  height: 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+
+.ContestedBudgetCard__Legend--contested {
+  background: rgb(var(--purple-raw-e));
+}
+
+.ContestedBudgetCard__Legend--contested_overbudget {
+  background: var(--red-800);
+}
+
+.ContestedBudgetCard__Legend--granted {
+  background: var(--black-600);
+}
+
+.ContestedBudgetCard__Legend--uncontested {
+  background: var(--alpha-black-300);
+}
+
+.ContestedBudgetCard__Legend--available_overbudget {
+  background: var(--white-900);
+  border: 2px solid var(--red-800);
+  width: 19px !important;
+  height: 6px !important;
+  border-radius: 5px;
 }

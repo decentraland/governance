@@ -17,7 +17,9 @@ export default function ContestedBudgetSubLabel({ title, amount, legend, percent
 
   return (
     <div className="ContestedBudgetSubLabel">
-      {legend && <div className={TokenList.join(['ContestedBudgetLabel__Legend', legend])} />}
+      {legend && (
+        <div className={TokenList.join(['ContestedBudgetLabel__Legend', `ContestedBudgetCard__Legend--${legend}`])} />
+      )}
       <span className="ContestedBudgetSubLabel__Text">{title}</span>
       <span className="ContestedBudgetSubLabel__Text">${t('general.number', { value: amount })}</span>
       {percentage && <span className="ContestedBudgetLabel__Percentage">{`(${percentage})`}</span>}

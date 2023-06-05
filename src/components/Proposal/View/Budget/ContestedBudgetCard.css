@@ -17,37 +17,6 @@
   margin-bottom: 2px;
 }
 
-.ContestedBudgetCard__Legend {
-  width: 8px;
-  height: 8px;
-  border-radius: 6px;
-  margin-right: 6px;
-}
-
-.ContestedLegend {
-  background: rgb(var(--purple-raw-e));
-}
-
-.ContestedOverbudgetLegend {
-  background: var(--red-800);
-}
-
-.GrantedFundsLegend {
-  background: var(--black-600);
-}
-
-.UncontestedFundsLegend {
-  background: var(--alpha-black-300);
-}
-
-.AvailableOverBudgetLegend {
-  background: var(--white-900);
-  border: 2px solid var(--red-800);
-  width: 19px !important;
-  height: 6px !important;
-  border-radius: 5px;
-}
-
 .GrantedFundsBar {
   background: var(--black-600);
   border-radius: 4px;

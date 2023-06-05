@@ -152,13 +152,13 @@ export default function ContestedBudgetCard({
         <div className="ContestedBudgetCard__Title">
           <ContestedBudgetCardLabel
             title={t('page.proposal_detail.grant.competing_proposals.sidebar.competing_proposals_bar_title')}
-            legend={isOverBudget ? 'ContestedOverbudgetLegend' : 'ContestedLegend'}
+            legend={isOverBudget ? 'contested_overbudget' : 'contested'}
             amount={contestedBudget}
           />
           {isOverBudget && (
             <ContestedBudgetCardLabel
               title={t('page.proposal_detail.grant.competing_proposals.sidebar.available_funds_label')}
-              legend={'AvailableOverBudgetLegend'}
+              legend={'available_overbudget'}
               amount={availableBudget}
               percentage={getFormattedPercentage(availableBudget, categoryBudget.total, 0)}
             />
@@ -183,14 +183,14 @@ export default function ContestedBudgetCard({
           <ContestedBudgetSubLabel
             title={t('page.proposal_detail.grant.competing_proposals.sidebar.granted_funds_label')}
             amount={categoryBudget.allocated}
-            legend={'GrantedFundsLegend'}
+            legend={'granted'}
             percentage={getFormattedPercentage(categoryBudget.allocated, categoryBudget.total, 0)}
           />
           {uncontestedTotalBudgetDisplayed > 0 && (
             <ContestedBudgetSubLabel
               title={t('page.proposal_detail.grant.competing_proposals.sidebar.uncontested_funds_label')}
               amount={uncontestedTotalBudgetDisplayed}
-              legend={'UncontestedFundsLegend'}
+              legend={'uncontested'}
               percentage={getFormattedPercentage(uncontestedTotalBudgetDisplayed, categoryBudget.total, 0)}
             />
           )}
