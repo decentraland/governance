@@ -17,14 +17,17 @@ const TEST_PROPOSAL_USER = '0xProposalCreatorUserAddress'
 
 export const REJECTED_OUTCOME = {
   winnerChoice: DEFAULT_CHOICES[1],
+  winnerVotingPower: 100,
   outcomeStatus: ProposalOutcome.REJECTED,
 }
 export const ACCEPTED_OUTCOME = {
   winnerChoice: DEFAULT_CHOICES[0],
+  winnerVotingPower: 200,
   outcomeStatus: ProposalOutcome.ACCEPTED,
 }
 export const FINISHED_OUTCOME = {
   winnerChoice: DEFAULT_CHOICES[0],
+  winnerVotingPower: 200,
   outcomeStatus: ProposalOutcome.FINISHED,
 }
 

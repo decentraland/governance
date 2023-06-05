@@ -16,6 +16,7 @@ import { asNumber } from './utils'
 
 type Outcome = {
   winnerChoice: string
+  winnerVotingPower: number
   outcomeStatus?: ProposalOutcome
 }
 
