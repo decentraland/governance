@@ -1,5 +1,5 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
-import { orderBy } from 'lodash'
+import orderBy from 'lodash/orderBy'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetService } from '../../services/BudgetService'
