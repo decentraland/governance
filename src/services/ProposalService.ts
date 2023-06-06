@@ -112,6 +112,10 @@ export class ProposalService {
     }
   }
 
+  private static getInitialStatus(type: ProposalType) {
+    return type === ProposalType.Tender ? ProposalStatus.Pending : ProposalStatus.Active
+  }
+
   static async removeProposal(proposal: ProposalAttributes, user: string, updated_at: Date, id: string) {
     this.validateRemoval(proposal, user)
     await this.markAsDeleted(user, updated_at, id)
@@ -156,7 +160,7 @@ export class ProposalService {
       title,
       description,
       configuration: JSON.stringify(data.configuration),
-      status: ProposalStatus.Active,
+      status: this.getInitialStatus(data.type),
       snapshot_id: snapshotId,
       snapshot_space: SNAPSHOT_SPACE,
       snapshot_proposal: JSON.stringify(snapshotContent),

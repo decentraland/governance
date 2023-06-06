@@ -18,6 +18,7 @@ type Props = {
 }
 
 const ColorsConfig: Record<ProposalStatus, PillColor> = {
+  [ProposalStatus.Pending]: PillColor.Gray,
   [ProposalStatus.Active]: PillColor.Gray,
   [ProposalStatus.Finished]: PillColor.Gray,
   [ProposalStatus.Passed]: PillColor.Green,

@@ -22,6 +22,13 @@ type Outcome = {
 
 type ProposalWithOutcome = ProposalAttributes & Outcome
 
+export async function activateProposals(context: JobContext) {
+  const activatedProposals = await ProposalModel.activateProposals()
+  if (activatedProposals > 0) {
+    context.log(`Activated ${activatedProposals} proposals...`)
+  }
+}
+
 async function updateRejectedProposals(rejectedProposals: ProposalWithOutcome[], context: JobContext) {
   if (rejectedProposals.length > 0) {
     context.log(`Rejecting ${rejectedProposals.length} proposals...`)
@@ -189,7 +196,6 @@ async function categorizeProposals(
 export async function finishProposal(context: JobContext) {
   const pendingProposals = await ProposalModel.getFinishedProposals()
   if (pendingProposals.length === 0) {
-    context.log(`No finished proposals...`)
     return
   }
 

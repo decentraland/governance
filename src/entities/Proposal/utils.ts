@@ -156,6 +156,7 @@ export function isBiddingAndTenderingProposal(type: ProposalType) {
 
 export function isProposalStatus(value: string | null | undefined): boolean {
   switch (value) {
+    case ProposalStatus.Pending:
     case ProposalStatus.Finished:
     case ProposalStatus.Active:
     case ProposalStatus.Rejected:
@@ -174,7 +175,7 @@ export function toProposalStatus(value: string | null | undefined, orElse: () =>
 }
 
 export function isProposalDeletable(proposalStatus?: ProposalStatus) {
-  return proposalStatus === ProposalStatus.Active
+  return proposalStatus === ProposalStatus.Active || proposalStatus === ProposalStatus.Pending
 }
 
 export function isProposalEnactable(proposalStatus: ProposalStatus) {

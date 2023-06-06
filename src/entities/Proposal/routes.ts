@@ -420,7 +420,7 @@ export async function createProposalTender(req: WithAuth) {
     throw new RequestError('Pitch proposal already went through the tender process')
   }
 
-  const hasStartedTenderProcess = Time(tenderProposals[0].start_at).isBefore(Time())
+  const hasStartedTenderProcess = tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
   if (hasStartedTenderProcess) {
     throw new RequestError('Tender process already started for this pitch proposal')
   }

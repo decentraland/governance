@@ -143,6 +143,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.query(query)
   }
 
+  static async activateProposals() {
+    const query = SQL`
+        UPDATE ${table(ProposalModel)}
+        SET "status" = ${ProposalStatus.Active},
+            "updated_at" = now()
+        WHERE "deleted" = FALSE
+          AND "status" = ${ProposalStatus.Pending}
+          AND "start_at" <= now()
+    `
+
+    return this.rowCount(query)
+  }
+
   static async getActiveGrantProposals(from?: Date, to?: Date) {
     const query = SQL`
         SELECT *

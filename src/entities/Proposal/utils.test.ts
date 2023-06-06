@@ -55,8 +55,9 @@ describe('isValidUpdateProposalStatus', () => {
     expect(isValidUpdateProposalStatus(ProposalStatus.Deleted, ProposalStatus.Enacted)).toBe(false)
   })
 
-  it('returns false for Active, Rejected, OutOfBudget and Deleted statuses', () => {
+  it('returns false for Pending, Active, Rejected, OutOfBudget and Deleted statuses', () => {
     Object.values(ProposalStatus).forEach((status) => {
+      expect(isValidUpdateProposalStatus(ProposalStatus.Pending, status)).toBe(false)
       expect(isValidUpdateProposalStatus(ProposalStatus.Active, status)).toBe(false)
       expect(isValidUpdateProposalStatus(ProposalStatus.Rejected, status)).toBe(false)
       expect(isValidUpdateProposalStatus(ProposalStatus.OutOfBudget, status)).toBe(false)
@@ -66,12 +67,13 @@ describe('isValidUpdateProposalStatus', () => {
 })
 
 describe('proposalCanBeDeleted', () => {
-  it('should return true for active proposals', () => {
+  it('should return true for active or pending proposals', () => {
     expect(isProposalDeletable(ProposalStatus.Active)).toBe(true)
+    expect(isProposalDeletable(ProposalStatus.Pending)).toBe(true)
   })
   it('should return false for all status other than active or pending', () => {
     Object.values(ProposalStatus)
-      .filter((status) => status !== ProposalStatus.Active)
+      .filter((status) => status !== ProposalStatus.Active && status !== ProposalStatus.Pending)
       .forEach((status) => {
         expect(isProposalDeletable(status)).toBe(false)
       })
