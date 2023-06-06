@@ -132,7 +132,11 @@ async function categorizeProposals(
         if (proposal.type !== ProposalType.Grant && proposal.type !== ProposalType.Tender) {
           acceptedProposals.push(proposal)
         } else if (proposal.type === ProposalType.Tender) {
-          const tenderProposals = pendingProposalsWithOutcome.filter((item) => item.type === ProposalType.Tender)
+          const tenderProposals = pendingProposalsWithOutcome.filter(
+            (item) =>
+              item.type === ProposalType.Tender &&
+              item.configuration.linked_proposal_id === proposal.configuration.linked_proposal_id
+          )
           const winnerTenderProposal = orderBy(tenderProposals, 'winnerVotingPower', 'desc')[0]
           if (winnerTenderProposal.id === proposal.id) {
             acceptedProposals.push(proposal)
