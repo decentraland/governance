@@ -115,7 +115,7 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   return pendingProposalsWithOutcome
 }
 
-async function getFinishedTenderProposals(pendingProposals: ProposalAttributes[]) {
+async function getFinishableTenderProposals(pendingProposals: ProposalAttributes[]) {
   let pendingTenderProposals = pendingProposals.filter((item) => item.type === ProposalType.Tender)
   if (pendingTenderProposals.length > 0) {
     const linkedProposalIds = [...new Set(pendingTenderProposals.map((item) => item.configuration.linked_proposal_id))]
@@ -129,6 +129,15 @@ async function getFinishedTenderProposals(pendingProposals: ProposalAttributes[]
   return pendingTenderProposals
 }
 
+function getWinnerTender(pendingProposalsWithOutcome: any[], proposal: ProposalWithOutcome) {
+  const tenderProposals = pendingProposalsWithOutcome.filter(
+    (item) =>
+      item.type === ProposalType.Tender &&
+      item.configuration.linked_proposal_id === proposal.configuration.linked_proposal_id
+  )
+  return orderBy(tenderProposals, 'winnerVotingPower', 'desc')[0]
+}
+
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
   currentBudgets: Budget[],
@@ -139,7 +148,7 @@ async function categorizeProposals(
   const outOfBudgetProposals: ProposalWithOutcome[] = []
   const rejectedProposals: ProposalWithOutcome[] = []
   const updatedBudgets = [...currentBudgets]
-  const finishedTenderProposals = await getFinishedTenderProposals(pendingProposals)
+  const finishedTenderProposals = await getFinishableTenderProposals(pendingProposals)
   const pendingProposalsWithOutcome = await getProposalsWithOutcome(
     [...pendingProposals, ...finishedTenderProposals],
     context
@@ -157,12 +166,7 @@ async function categorizeProposals(
         if (proposal.type !== ProposalType.Grant && proposal.type !== ProposalType.Tender) {
           acceptedProposals.push(proposal)
         } else if (proposal.type === ProposalType.Tender) {
-          const tenderProposals = pendingProposalsWithOutcome.filter(
-            (item) =>
-              item.type === ProposalType.Tender &&
-              item.configuration.linked_proposal_id === proposal.configuration.linked_proposal_id
-          )
-          const winnerTenderProposal = orderBy(tenderProposals, 'winnerVotingPower', 'desc')[0]
+          const winnerTenderProposal = getWinnerTender(pendingProposalsWithOutcome, proposal)
           if (winnerTenderProposal.id === proposal.id) {
             acceptedProposals.push(proposal)
           } else {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -19,8 +19,12 @@ export default function CompetingTenders({ proposal }: Props) {
   const t = useFormatMessage()
   const [isSiderbarOpen, setIsSidebarOpen] = useState(false)
   const { tenderProposals } = useTenderProposals(proposal.configuration.linked_proposal_id, proposal?.type)
+  const filteredTenderProposals = useMemo(
+    () => tenderProposals?.data?.filter((item) => item.id !== proposal.id),
+    [proposal.id, tenderProposals?.data]
+  )
 
-  if (!tenderProposals?.data) {
+  if (filteredTenderProposals?.length === 0) {
     return null
   }
 
@@ -30,7 +34,7 @@ export default function CompetingTenders({ proposal }: Props) {
     <>
       <ContentSection>
         <CompetingButton onClick={() => setIsSidebarOpen(true)}>
-          {t('page.proposal_detail.competing_tenders.show_sidebar_label', { amount: tenderProposals?.total })}
+          {t('page.proposal_detail.competing_tenders.show_sidebar_label', { amount: filteredTenderProposals?.length })}
         </CompetingButton>
       </ContentSection>
       <GovernanceSidebar visible={isSiderbarOpen} onClose={handleSidebarClose}>
@@ -41,7 +45,7 @@ export default function CompetingTenders({ proposal }: Props) {
           <Close onClick={handleSidebarClose} />
         </div>
         <div>
-          {tenderProposals.data.map((item) => (
+          {filteredTenderProposals?.map((item) => (
             <ProposalCard key={item.id} proposal={item} />
           ))}
         </div>

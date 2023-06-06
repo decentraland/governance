@@ -78,7 +78,7 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
             {thresholdReached && t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="ProposalThresholdsSummary__Title">
-            <Bold>{t('page.proposal_detail.time_left_label', { countdown: endDate.fromNow() })}</Bold>
+            <Bold>{t('page.proposal_detail.voting_ends', { countdown: endDate.fromNow() })}</Bold>
           </div>
         </div>
       )}

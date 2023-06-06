@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
@@ -90,15 +89,13 @@ export default function ProposalSidebar({
     }
   }
 
-  const hasStarted = Time().isAfter(proposal?.start_at)
-
   const showProposalUpdatesActions =
     isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
   const showProposalThresholdsSummary = !!(
     proposal &&
     proposal?.required_to_pass !== null &&
     proposal?.required_to_pass >= 0 &&
-    hasStarted &&
+    proposal.status !== ProposalStatus.Pending &&
     !(proposal.status === ProposalStatus.Passed)
   )
 

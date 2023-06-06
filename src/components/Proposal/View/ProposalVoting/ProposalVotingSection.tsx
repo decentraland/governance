@@ -7,7 +7,7 @@ import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
@@ -38,7 +38,6 @@ interface Props {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
-  hasVotingStarted: boolean
 }
 
 const ProposalVotingSection = ({
@@ -55,7 +54,6 @@ const ProposalVotingSection = ({
   proposalPageState,
   updatePageState,
   finished,
-  hasVotingStarted,
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -98,6 +96,7 @@ const ProposalVotingSection = ({
 
   const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
   const showGetInvolvedQuestion = !!proposal && !proposalVotingSectionLoading && !hasVoted && !finished
+  const isPendingStatus = proposal?.status === ProposalStatus.Pending
 
   return (
     <div className="DetailsSection__Content ProposalVotingSection">
@@ -132,7 +131,7 @@ const ProposalVotingSection = ({
             <>
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-              {hasVotingStarted && (showChoiceButtons || proposalPageState.changingVote) && (
+              {!isPendingStatus && (showChoiceButtons || proposalPageState.changingVote) && (
                 <ChoiceButtons
                   choices={choices}
                   vote={vote}
@@ -151,7 +150,7 @@ const ProposalVotingSection = ({
 
               {votedChoice && !proposalPageState.changingVote && <VotedChoiceButton {...votedChoice} />}
 
-              {hasVotingStarted && (
+              {!isPendingStatus && (
                 <VotingSectionFooter
                   vote={vote}
                   delegateVote={delegateVote}
@@ -166,7 +165,7 @@ const ProposalVotingSection = ({
                 />
               )}
 
-              {!hasVotingStarted && (
+              {!isPendingStatus && (
                 <Markdown className="ProposalVotingSection__VotingBegins">
                   {t('page.proposal_detail.voting_begins', { date: Time(proposal?.start_at).fromNow(true) })}
                 </Markdown>
