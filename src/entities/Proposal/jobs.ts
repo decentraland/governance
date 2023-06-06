@@ -114,7 +114,7 @@ async function getFinishedTenderProposals(pendingProposals: ProposalAttributes[]
     const linkedProposalIds = [...new Set(pendingTenderProposals.map((item) => item.configuration.linked_proposal_id))]
     pendingTenderProposals = []
     for (const id of linkedProposalIds) {
-      const tenderProposals = await ProposalModel.getProposalList({ linkedProposalId: id })
+      const tenderProposals = await ProposalModel.getProposalList({ type: ProposalType.Tender, linkedProposalId: id })
       pendingTenderProposals = [...pendingTenderProposals, ...tenderProposals]
     }
   }
