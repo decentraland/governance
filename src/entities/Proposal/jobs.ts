@@ -108,6 +108,20 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   return pendingProposalsWithOutcome
 }
 
+async function getFinishedTenderProposals(pendingProposals: ProposalAttributes[]) {
+  let pendingTenderProposals = pendingProposals.filter((item) => item.type === ProposalType.Tender)
+  if (pendingTenderProposals.length > 0) {
+    const linkedProposalIds = [...new Set(pendingTenderProposals.map((item) => item.configuration.linked_proposal_id))]
+    pendingTenderProposals = []
+    for (const id of linkedProposalIds) {
+      const tenderProposals = await ProposalModel.getProposalList({ linkedProposalId: id })
+      pendingTenderProposals = [...pendingTenderProposals, ...tenderProposals]
+    }
+  }
+
+  return pendingTenderProposals
+}
+
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
   currentBudgets: Budget[],
@@ -118,7 +132,11 @@ async function categorizeProposals(
   const outOfBudgetProposals: ProposalWithOutcome[] = []
   const rejectedProposals: ProposalWithOutcome[] = []
   const updatedBudgets = [...currentBudgets]
-  const pendingProposalsWithOutcome = await getProposalsWithOutcome(pendingProposals, context)
+  const finishedTenderProposals = await getFinishedTenderProposals(pendingProposals)
+  const pendingProposalsWithOutcome = await getProposalsWithOutcome(
+    [...pendingProposals, ...finishedTenderProposals],
+    context
+  )
 
   for (const proposal of pendingProposalsWithOutcome) {
     switch (proposal.outcomeStatus) {
