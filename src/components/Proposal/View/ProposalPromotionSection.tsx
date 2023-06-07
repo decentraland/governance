@@ -60,7 +60,7 @@ const getSectionConfig = (type: ProposalType) => {
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
-  const { hasTenderProcessStarted, hasTenderProcessFinished } = useTenderProposals(proposal.id, proposal.type)
+  const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -70,9 +70,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
     }
   }
 
-  const isPromoteDisabled =
-    (type === ProposalType.Pitch && (hasTenderProcessFinished || hasTenderProcessStarted)) ||
-    type === ProposalType.Tender
+  const isPromoteDisabled = (type === ProposalType.Pitch && hasTenderProcessStarted) || type === ProposalType.Tender
 
   return (
     <div className="ProposalPromotionSection">

@@ -96,7 +96,7 @@ const ProposalVotingSection = ({
 
   const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
   const showGetInvolvedQuestion = !!proposal && !proposalVotingSectionLoading && !hasVoted && !finished
-  const isPendingStatus = proposal?.status === ProposalStatus.Pending
+  const isProposalPending = proposal?.status === ProposalStatus.Pending
 
   return (
     <div className="DetailsSection__Content ProposalVotingSection">
@@ -131,7 +131,7 @@ const ProposalVotingSection = ({
             <>
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-              {!isPendingStatus && (showChoiceButtons || proposalPageState.changingVote) && (
+              {!isProposalPending && (showChoiceButtons || proposalPageState.changingVote) && (
                 <ChoiceButtons
                   choices={choices}
                   vote={vote}
@@ -150,7 +150,7 @@ const ProposalVotingSection = ({
 
               {votedChoice && !proposalPageState.changingVote && <VotedChoiceButton {...votedChoice} />}
 
-              {!isPendingStatus && (
+              {!isProposalPending && (
                 <VotingSectionFooter
                   vote={vote}
                   delegateVote={delegateVote}
@@ -165,7 +165,7 @@ const ProposalVotingSection = ({
                 />
               )}
 
-              {isPendingStatus && (
+              {isProposalPending && (
                 <Markdown className="ProposalVotingSection__VotingBegins">
                   {t('page.proposal_detail.voting_begins', { date: Time(proposal?.start_at).fromNow(true) })}
                 </Markdown>
