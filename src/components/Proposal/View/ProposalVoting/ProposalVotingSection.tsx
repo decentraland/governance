@@ -165,7 +165,7 @@ const ProposalVotingSection = ({
                 />
               )}
 
-              {!isPendingStatus && (
+              {isPendingStatus && (
                 <Markdown className="ProposalVotingSection__VotingBegins">
                   {t('page.proposal_detail.voting_begins', { date: Time(proposal?.start_at).fromNow(true) })}
                 </Markdown>
