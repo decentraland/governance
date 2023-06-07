@@ -104,6 +104,9 @@ async function getAddressVotes(req: Request) {
 
   for (const vote of votes) {
     const currentProposal = proposals.find((item) => item.snapshot_id === vote.proposal!.id)
+    if (!currentProposal) {
+      continue
+    }
 
     votesWithProposalData.push({
       ...vote,
