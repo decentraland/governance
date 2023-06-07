@@ -16,6 +16,10 @@
   opacity: 0.45;
 }
 
+.ui.dropdown > .text {
+  color: var(--black-800);
+}
+
 .dcl.field .ui.sub.header,
 .dcl.select-field .ui.sub.header {
   text-transform: none;
