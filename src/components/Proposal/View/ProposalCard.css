@@ -19,7 +19,7 @@
 }
 
 .ProposalCard--highlight {
-  border: 1px solid var(--purple-raw-d);
+  border: 1px solid rgb(var(--purple-raw-e));
 }
 
 .ProposalCard--overbudget {

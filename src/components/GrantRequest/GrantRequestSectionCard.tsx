@@ -28,8 +28,10 @@ export const GrantRequestSectionCard = ({
   error,
   href,
 }: Props) => {
+  const Component = href ? Link : 'div'
+
   return (
-    <Link
+    <Component
       className={TokenList.join([
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
@@ -56,6 +58,6 @@ export const GrantRequestSectionCard = ({
       >
         {subtitle}
       </div>
-    </Link>
+    </Component>
   )
 }
