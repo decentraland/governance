@@ -979,9 +979,9 @@
           "sidebar": {
             "title": "{category} Budget",
             "competing_proposals_bar_title": "Contested",
-            "granted_funds": "Granted Funds ${amount}",
-            "uncontested_funds": "Uncontested ${amount}",
-            "available_funds": "Available ${amount}",
+            "granted_funds_label": "Granted Funds",
+            "uncontested_funds_label": "Uncontested",
+            "available_funds_label": "Available",
             "this_initiative_title": "This Initiative",
             "other_initiatives_title": "Other {category} Initiatives"
           }
