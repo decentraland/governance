@@ -16,19 +16,13 @@ import '../ProposalModal.css'
 import { VoteListItem } from './VoteListItem'
 import './VotesList.css'
 
-export type VotesListModalProps = Omit<ModalProps, 'children'> & {
+type Props = Omit<ModalProps, 'children'> & {
   proposal?: ProposalAttributes | null
   highQualityVotes?: Record<string, Vote> | null
   lowQualityVotes?: Record<string, Vote> | null
 }
 
-export function VotesListModal({
-  proposal,
-  highQualityVotes,
-  lowQualityVotes,
-  onClose,
-  ...props
-}: VotesListModalProps) {
+export default function VotesListModal({ proposal, highQualityVotes, lowQualityVotes, onClose, ...props }: Props) {
   const t = useFormatMessage()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const [showLowQualityVotes, setShowLowQualityVotes] = useState(false)

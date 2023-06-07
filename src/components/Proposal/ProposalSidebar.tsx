@@ -8,8 +8,8 @@ import { Survey } from '../../entities/SurveyTopic/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
+import { calculateResult } from '../../entities/Votes/utils'
 import { ProposalPageState } from '../../pages/proposal'
-import { ChoiceProgressProps } from '../Status/ChoiceProgress'
 
 import ForumButton from './View/ForumButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
@@ -23,7 +23,9 @@ import VestingContract from './View/VestingContract'
 import ProposalActions from './ProposalActions'
 import './ProposalSidebar.css'
 
-type ProposalSidebarProps = {
+const EMPTY_VOTE_CHOICES: string[] = []
+
+type Props = {
   proposal: ProposalAttributes | null
   proposalLoading: boolean
   deleting: boolean
@@ -40,10 +42,9 @@ type ProposalSidebarProps = {
   subscribe: (subscribe?: boolean) => void
   subscriptions: SubscriptionAttributes[] | null
   subscriptionsLoading: boolean
-  partialResults: ChoiceProgressProps[]
   votes: Record<string, Vote> | null
   votesLoading: boolean
-  choices: string[]
+  highQualityVotes: Record<string, Vote> | null
   isOwner: boolean
   isCoauthor: boolean
 }
@@ -65,18 +66,19 @@ export default function ProposalSidebar({
   subscribe,
   subscriptions,
   subscriptionsLoading,
-  partialResults,
+  highQualityVotes,
   votes,
   votesLoading,
-  choices,
   isOwner,
   isCoauthor,
-}: ProposalSidebarProps) {
+}: Props) {
   const [account] = useAuthContext()
   const subscribed = useMemo(
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
   )
+  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
+  const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
 
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
     if (voteWithSurvey) {

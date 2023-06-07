@@ -73,6 +73,8 @@ import {
   MIN_PROPOSAL_OFFSET,
   canLinkProposal,
   getProposalEndDate,
+  hasTenderProcessFinished,
+  hasTenderProcessStarted,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
@@ -412,16 +414,11 @@ export async function createProposalTender(req: WithAuth) {
     order: 'ASC',
   })
 
-  if (
-    tenderProposals.find(
-      (proposal) => proposal.status === ProposalStatus.Passed || proposal.status === ProposalStatus.Rejected
-    )
-  ) {
+  if (hasTenderProcessFinished(tenderProposals)) {
     throw new RequestError('Pitch proposal already went through the tender process')
   }
 
-  const hasStartedTenderProcess = tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
-  if (hasStartedTenderProcess) {
+  if (hasTenderProcessStarted(tenderProposals)) {
     throw new RequestError('Tender process already started for this pitch proposal')
   }
 

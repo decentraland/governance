@@ -1,4 +1,5 @@
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
+import { hasTenderProcessFinished, hasTenderProcessStarted } from '../entities/Proposal/utils'
 
 import useProposals from './useProposals'
 
@@ -14,5 +15,7 @@ export function useTenderProposals(
   return {
     tenderProposals: proposals,
     isLoadingTenderProposals: isLoadingProposals,
+    hasTenderProcessStarted: !!proposals?.data && hasTenderProcessStarted(proposals?.data),
+    hasTenderProcessFinished: !!proposals?.data && proposals?.total > 0 && hasTenderProcessFinished(proposals.data),
   }
 }

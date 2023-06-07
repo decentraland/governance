@@ -6,6 +6,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import locations from '../../../modules/locations'
 import Pill from '../../Common/Pill'
 
@@ -59,6 +60,7 @@ const getSectionConfig = (type: ProposalType) => {
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
+  const { hasTenderProcessStarted, hasTenderProcessFinished } = useTenderProposals(proposal.id, proposal.type)
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -68,19 +70,17 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
     }
   }
 
+  const isPromoteDisabled =
+    (type === ProposalType.Pitch && (hasTenderProcessFinished || hasTenderProcessStarted)) ||
+    type === ProposalType.Tender
+
   return (
     <div className="ProposalPromotionSection">
       <Pill color="green" style="shiny">
         {t(pillLabel)}
       </Pill>
       <Markdown className="smallMarkdown">{t(description)}</Markdown>
-      <Button
-        primary
-        size="small"
-        loading={loading}
-        onClick={() => handlePromoteClick()}
-        disabled={type === ProposalType.Tender}
-      >
+      <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()} disabled={isPromoteDisabled}>
         {t(buttonLabel)}
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (
