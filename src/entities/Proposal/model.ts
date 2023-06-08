@@ -187,7 +187,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return result.map(ProposalModel.parse)
   }
 
-  static async getFinishedProposals() {
+  static async getFinishableProposals() {
     const query = SQL`
         SELECT *
         FROM ${table(ProposalModel)}
