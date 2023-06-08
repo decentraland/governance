@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import useCountdown, { Countdown } from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -14,12 +14,13 @@ interface Props {
   finishAt: Date
 }
 
-function getTimeLabel(timeout: Countdown, time: Time.Dayjs, format?: 'short') {
+function getTimeLabel(timeout: Countdown, date: Date, format?: 'short') {
+  const time = Time(date)
+
   return timeout.time > 0 ? time.fromNow() : format === 'short' ? time.format('MM/DD/YY') : time.format('MMM DD, YYYY')
 }
 
 export default function FinishLabel({ startAt, finishAt }: Props) {
-  const time = useMemo(() => Time.from(finishAt), [finishAt])
   const timeout = useCountdown(finishAt)
   const t = useFormatMessage()
   const isCountdownRunning = timeout.time > 0
@@ -29,6 +30,7 @@ export default function FinishLabel({ startAt, finishAt }: Props) {
     ? `${t('page.proposal_list.finish_label.ends')} `
     : `${t('page.proposal_list.finish_label.ended')} `
   const label = hasStarted ? `${t('page.proposal_list.finish_label.starts')} ` : endLabel
+  const time = hasStarted ? finishAt : startAt
 
   return (
     <span className="FinishLabel">
