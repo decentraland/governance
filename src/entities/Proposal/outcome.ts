@@ -86,7 +86,6 @@ export function getWinnerTender(pendingProposalsWithOutcome: ProposalWithOutcome
 
   const sortedProposals = orderBy(tenderProposals, 'winnerVotingPower', 'desc')
   const highestVotingPower = sortedProposals[0]?.winnerVotingPower
-
   const hasMultipleHighest = sortedProposals.filter((item) => item.winnerVotingPower === highestVotingPower).length > 1
 
   if (hasMultipleHighest) {

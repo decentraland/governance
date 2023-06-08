@@ -206,12 +206,12 @@ describe('calculateOutcome for legacy options', () => {
   })
 })
 
-describe.only('getWinnerTender', () => {
+describe('getWinnerTender', () => {
   test('should return the matching tender proposal when there is only one matching proposal', () => {
-    const pendingProposalsWithOutcome = [
+    const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(pendingProposalsWithOutcome, '123')
+    const result = getWinnerTender(proposals, '123')
 
     expect(result).toEqual({
       type: ProposalType.Tender,
@@ -221,12 +221,12 @@ describe.only('getWinnerTender', () => {
   })
 
   test('should return the tender proposal with highest winnerVotingPower when there are multiple matching proposals', () => {
-    const pendingProposalsWithOutcome = [
+    const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(pendingProposalsWithOutcome, '123')
+    const result = getWinnerTender(proposals, '123')
 
     expect(result).toEqual({
       type: ProposalType.Tender,
@@ -236,23 +236,23 @@ describe.only('getWinnerTender', () => {
   })
 
   test('should return undefined when there are no matching tender proposals', () => {
-    const pendingProposalsWithOutcome = [
+    const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '456' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(pendingProposalsWithOutcome, '123')
+    const result = getWinnerTender(proposals, '123')
 
     expect(result).toBeUndefined()
   })
 
   test('should return the correct proposal when there are tender proposals from different pitch proposals', () => {
-    const pendingProposalsWithOutcome = [
+    const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '456' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(pendingProposalsWithOutcome, '123')
+    const result = getWinnerTender(proposals, '123')
 
     expect(result).toEqual({
       type: ProposalType.Tender,
@@ -262,13 +262,13 @@ describe.only('getWinnerTender', () => {
   })
 
   test('should return undefined with there are multiple proposals with the same highest voting power', () => {
-    const pendingProposalsWithOutcome = [
+    const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '456' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(pendingProposalsWithOutcome, '123')
+    const result = getWinnerTender(proposals, '123')
 
     expect(result).toBeUndefined()
   })
