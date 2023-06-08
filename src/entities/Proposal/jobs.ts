@@ -106,7 +106,7 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   return pendingProposalsWithOutcome
 }
 
-async function getFinishableTenderProposals(pendingProposals: ProposalAttributes[]) {
+export async function getFinishableTenderProposals(pendingProposals: ProposalAttributes[]) {
   let pendingTenderProposals = pendingProposals.filter((item) => item.type === ProposalType.Tender)
   if (pendingTenderProposals.length > 0) {
     const linkedProposalIds = [...new Set(pendingTenderProposals.map((item) => item.configuration.linked_proposal_id))]
@@ -183,7 +183,7 @@ async function categorizeProposals(
 }
 
 export async function finishProposal(context: JobContext) {
-  const pendingProposals = await ProposalModel.getFinishedProposals()
+  const pendingProposals = await ProposalModel.getFinishableProposals()
   if (pendingProposals.length === 0) {
     return
   }

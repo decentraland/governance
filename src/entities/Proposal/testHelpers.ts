@@ -88,38 +88,54 @@ export function createTestProposal(
   const testProposalConfiguration = getTestProposalConfiguration(proposalType, grantSize, grantCategory)
   const id = uuid()
   return {
+    ...BASIC_ATTRIBUTES,
     id: `id-${proposalType.toString()}-${proposalStatus.toString()}-${id}`,
     type: proposalType,
-    user: TEST_PROPOSAL_USER,
     required_to_pass: getRequiredToPassThreshold(proposalType, testProposalConfiguration?.size),
     configuration: testProposalConfiguration,
     title: `Test Proposal-${id}`,
-    description: 'Test proposal description',
     status: proposalStatus,
-    snapshot_id: 'snapshot id',
-    snapshot_space: 'snapshot space',
-    snapshot_proposal: null,
-    snapshot_network: 'snapshot network',
-    discourse_id: 333,
-    discourse_topic_id: 444,
-    discourse_topic_slug: 'discourse test topic slug',
-    start_at: Time.utc(start).toDate(),
-    finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toDate(),
-    deleted: false,
-    deleted_by: null,
-    enacted: false,
-    enacted_by: null,
-    enacted_description: null,
-    enacting_tx: null,
-    vesting_address: null,
-    passed_by: null,
-    passed_description: null,
-    rejected_by: null,
-    rejected_description: null,
-    created_at: Time.utc(start).toDate(),
-    updated_at: Time.utc(start).toDate(),
-    textsearch: null,
   }
+}
+
+export function createTestTender(id: string, linkedProposalId: string, status?: ProposalStatus): ProposalAttributes {
+  return {
+    id: id,
+    type: ProposalType.Tender,
+    configuration: { linked_proposal_id: linkedProposalId },
+    required_to_pass: 1,
+    title: `Test Tender-${id}`,
+    status: status || ProposalStatus.Active,
+    ...BASIC_ATTRIBUTES,
+  }
+}
+
+const BASIC_ATTRIBUTES = {
+  user: TEST_PROPOSAL_USER,
+  description: 'Test proposal description',
+  snapshot_id: 'snapshot id',
+  snapshot_space: 'snapshot space',
+  snapshot_proposal: null,
+  snapshot_network: 'snapshot network',
+  discourse_id: 333,
+  discourse_topic_id: 444,
+  discourse_topic_slug: 'discourse test topic slug',
+  start_at: Time.utc(start).toDate(),
+  finish_at: Time.utc(start).add(SNAPSHOT_DURATION, 'seconds').toDate(),
+  deleted: false,
+  deleted_by: null,
+  enacted: false,
+  enacted_by: null,
+  enacted_description: null,
+  enacting_tx: null,
+  vesting_address: null,
+  passed_by: null,
+  passed_description: null,
+  rejected_by: null,
+  rejected_description: null,
+  created_at: Time.utc(start).toDate(),
+  updated_at: Time.utc(start).toDate(),
+  textsearch: null,
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
