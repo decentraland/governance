@@ -425,7 +425,7 @@ export async function createProposalTender(req: WithAuth) {
   const start_at =
     tenderProposals.length > 0
       ? tenderProposals[0].start_at
-      : Time().add(Number(process.env.START_DATE_GAP_DURATION_TENDER), 'seconds').toDate()
+      : Time().add(Number(process.env.SUBMISSION_WINDOW_DURATION_TENDER), 'seconds').toDate()
   const finish_at = Time(start_at).add(Number(process.env.DURATION_TENDER), 'seconds').toDate()
 
   return createProposal({
