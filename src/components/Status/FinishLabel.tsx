@@ -24,21 +24,20 @@ export default function FinishLabel({ startAt, finishAt }: Props) {
   const timeout = useCountdown(finishAt)
   const t = useFormatMessage()
   const isCountdownRunning = timeout.time > 0
-  const hasStarted = Time().isBefore(startAt)
-  const tooltipDate = hasStarted ? startAt : finishAt
+  const hasStarted = Time().isAfter(startAt)
   const endLabel = isCountdownRunning
     ? `${t('page.proposal_list.finish_label.ends')} `
     : `${t('page.proposal_list.finish_label.ended')} `
-  const label = hasStarted ? `${t('page.proposal_list.finish_label.starts')} ` : endLabel
+  const label = hasStarted ? endLabel : `${t('page.proposal_list.finish_label.starts')} `
   const time = hasStarted ? finishAt : startAt
 
   return (
     <span className="FinishLabel">
       <Mobile>
-        <DateTooltip date={tooltipDate}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
+        <DateTooltip date={time}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
       </Mobile>
       <NotMobile>
-        <DateTooltip date={tooltipDate}>{`${label} ${getTimeLabel(timeout, time)}`}</DateTooltip>
+        <DateTooltip date={time}>{`${label} ${getTimeLabel(timeout, time)}`}</DateTooltip>
       </NotMobile>
     </span>
   )
