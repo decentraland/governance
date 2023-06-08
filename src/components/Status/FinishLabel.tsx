@@ -10,30 +10,33 @@ import DateTooltip from '../Common/DateTooltip'
 import './FinishLabel.css'
 
 interface Props {
-  date: Date
+  startAt: Date
+  finishAt: Date
 }
 
 function getTimeLabel(timeout: Countdown, time: Time.Dayjs, format?: 'short') {
   return timeout.time > 0 ? time.fromNow() : format === 'short' ? time.format('MM/DD/YY') : time.format('MMM DD, YYYY')
 }
 
-export default function FinishLabel({ date }: Props) {
-  const time = useMemo(() => Time.from(date), [date])
-  const timeout = useCountdown(date)
+export default function FinishLabel({ startAt, finishAt }: Props) {
+  const time = useMemo(() => Time.from(finishAt), [finishAt])
+  const timeout = useCountdown(finishAt)
   const t = useFormatMessage()
   const isCountdownRunning = timeout.time > 0
-
-  const label = isCountdownRunning
+  const hasStarted = Time().isBefore(startAt)
+  const tooltipDate = hasStarted ? startAt : finishAt
+  const endLabel = isCountdownRunning
     ? `${t('page.proposal_list.finish_label.ends')} `
     : `${t('page.proposal_list.finish_label.ended')} `
+  const label = hasStarted ? `${t('page.proposal_list.finish_label.starts')} ` : endLabel
 
   return (
     <span className="FinishLabel">
       <Mobile>
-        <DateTooltip date={date}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
+        <DateTooltip date={tooltipDate}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
       </Mobile>
       <NotMobile>
-        <DateTooltip date={date}>{`${label} ${getTimeLabel(timeout, time)}`}</DateTooltip>
+        <DateTooltip date={tooltipDate}>{`${label} ${getTimeLabel(timeout, time)}`}</DateTooltip>
       </NotMobile>
     </span>
   )

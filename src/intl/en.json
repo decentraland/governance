@@ -807,6 +807,7 @@
       "no_proposals_yet": "No proposals have been sent by community members yet.",
       "votes": "{total} {total, plural, one {vote} other {votes}}",
       "finish_label": {
+        "starts": "Starts",
         "ends": "Ends",
         "ended": "Ended"
       }
