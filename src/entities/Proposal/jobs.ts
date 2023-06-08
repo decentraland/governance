@@ -1,5 +1,4 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
-import orderBy from 'lodash/orderBy'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetService } from '../../services/BudgetService'
@@ -9,18 +8,10 @@ import { Budget } from '../Budget/types'
 import UpdateModel from '../Updates/model'
 
 import ProposalModel from './model'
-import { ProposalOutcome, calculateOutcome } from './outcome'
+import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerTender } from './outcome'
 import { commentProposalUpdateInDiscourse } from './routes'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { asNumber } from './utils'
-
-type Outcome = {
-  winnerChoice: string
-  winnerVotingPower: number
-  outcomeStatus?: ProposalOutcome
-}
-
-type ProposalWithOutcome = ProposalAttributes & Outcome
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -129,15 +120,6 @@ async function getFinishableTenderProposals(pendingProposals: ProposalAttributes
   return pendingTenderProposals
 }
 
-function getWinnerTender(pendingProposalsWithOutcome: any[], proposal: ProposalWithOutcome) {
-  const tenderProposals = pendingProposalsWithOutcome.filter(
-    (item) =>
-      item.type === ProposalType.Tender &&
-      item.configuration.linked_proposal_id === proposal.configuration.linked_proposal_id
-  )
-  return orderBy(tenderProposals, 'winnerVotingPower', 'desc')[0]
-}
-
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
   currentBudgets: Budget[],
@@ -148,9 +130,9 @@ async function categorizeProposals(
   const outOfBudgetProposals: ProposalWithOutcome[] = []
   const rejectedProposals: ProposalWithOutcome[] = []
   const updatedBudgets = [...currentBudgets]
-  const finishedTenderProposals = await getFinishableTenderProposals(pendingProposals)
+  const finishableTenderProposals = await getFinishableTenderProposals(pendingProposals)
   const pendingProposalsWithOutcome = await getProposalsWithOutcome(
-    [...pendingProposals, ...finishedTenderProposals],
+    [...pendingProposals.filter((item) => item.type !== ProposalType.Tender), ...finishableTenderProposals],
     context
   )
 
@@ -166,8 +148,11 @@ async function categorizeProposals(
         if (proposal.type !== ProposalType.Grant && proposal.type !== ProposalType.Tender) {
           acceptedProposals.push(proposal)
         } else if (proposal.type === ProposalType.Tender) {
-          const winnerTenderProposal = getWinnerTender(pendingProposalsWithOutcome, proposal)
-          if (winnerTenderProposal.id === proposal.id) {
+          const winnerTenderProposal = getWinnerTender(
+            pendingProposalsWithOutcome,
+            proposal.configuration.linked_proposal_id
+          )
+          if (winnerTenderProposal?.id === proposal.id) {
             acceptedProposals.push(proposal)
           } else {
             rejectedProposals.push(proposal)
