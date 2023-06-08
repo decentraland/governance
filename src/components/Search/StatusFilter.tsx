@@ -33,7 +33,7 @@ export default React.memo(function StatusFilter({
       <FilterLabel label={t(`status.all`)} href={getUrlFilters(FILTER_KEY, params)} active={!status} />
       {Object.values(statusType).map((value, index) => {
         const label = toSnakeCase(value)
-        if (![ProposalStatus.Deleted, ProposalStatus.Pending].includes(value)) {
+        if (ProposalStatus.Deleted !== value) {
           return (
             <FilterLabel
               key={'status_filter' + index}

@@ -6,10 +6,11 @@ import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { BUDGETING_START_DATE } from '../Grant/constants'
+import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 import UpdateModel from '../Updates/model'
 
-import { finishProposal } from './jobs'
+import { finishProposal, getFinishableTenderProposals } from './jobs'
 import ProposalModel from './model'
 import * as calculateOutcome from './outcome'
 import * as routes from './routes'
@@ -25,9 +26,11 @@ import {
   JOB_CONTEXT_MOCK,
   POI_PROPOSAL,
   REJECTED_OUTCOME,
+  createTestProposal,
+  createTestTender,
   getTestBudgetWithAvailableSize,
 } from './testHelpers'
-import { ProposalStatus } from './types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 jest.mock('../../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
@@ -52,7 +55,7 @@ describe('finishProposals', () => {
   })
   describe('for a grant proposal with ACTIVE status', () => {
     beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([GRANT_PROPOSAL_1])
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([GRANT_PROPOSAL_1])
     })
     describe('when the outcome is REJECTED', () => {
       beforeEach(() => {
@@ -169,7 +172,7 @@ describe('finishProposals', () => {
 
   describe('for an accepted proposal that is not a grant', () => {
     beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([POI_PROPOSAL])
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([POI_PROPOSAL])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
       jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     })
@@ -185,7 +188,7 @@ describe('finishProposals', () => {
     OLD_GRANT.start_at = Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate()
 
     beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([OLD_GRANT])
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([OLD_GRANT])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
       jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     })
@@ -199,7 +202,7 @@ describe('finishProposals', () => {
 
   describe('for several grant proposals of the same category', () => {
     beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([GRANT_PROPOSAL_1, GRANT_PROPOSAL_2])
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([GRANT_PROPOSAL_1, GRANT_PROPOSAL_2])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
     })
 
@@ -261,7 +264,7 @@ describe('finishProposals', () => {
 
   describe('for several grant proposals of different categories', () => {
     beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([GRANT_PROPOSAL_1, GRANT_PROPOSAL_3])
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([GRANT_PROPOSAL_1, GRANT_PROPOSAL_3])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
     })
 
@@ -303,7 +306,7 @@ describe('finishProposals', () => {
     BUDGET_2.id = 'DATE_2_BUDGET'
 
     beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishedProposals').mockResolvedValue([PROPOSAL_OF_DATE_1, PROPOSAL_OF_DATE_2])
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([PROPOSAL_OF_DATE_1, PROPOSAL_OF_DATE_2])
       jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
       jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([BUDGET_1, BUDGET_2])
     })
@@ -327,5 +330,36 @@ describe('finishProposals', () => {
       )
       expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET_1, EXPECTED_BUDGET_2])
     })
+  })
+})
+
+describe('getFinishableTenderProposals', () => {
+  const pendingProposals: ProposalAttributes<any>[] = [
+    createTestTender('1', '123'),
+    createTestTender('2', '123'),
+    createTestTender('3', '123'),
+    createTestTender('4', '456'),
+    createTestTender('7', '789'),
+    createTestProposal(ProposalType.Grant, ProposalStatus.Active, 200, NewGrantCategory.Accelerator),
+  ]
+
+  const proposalsList: ProposalAttributes<any>[] = [
+    ...pendingProposals,
+    createTestTender('5', '456'),
+    createTestTender('6', '456'),
+    createTestTender('8', '789'),
+  ]
+  beforeAll(() => {
+    // @ts-ignore
+    jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
+      return proposalsList.filter((p) => {
+        return p.configuration.linked_proposal_id === filter.linkedProposalId && p.type === ProposalType.Tender
+      })
+    })
+  })
+
+  it('does not return duplicate proposals', async () => {
+    const finishableTenderProposals = await getFinishableTenderProposals(pendingProposals)
+    expect(finishableTenderProposals.length).toEqual(8)
   })
 })

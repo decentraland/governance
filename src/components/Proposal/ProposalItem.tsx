@@ -87,7 +87,7 @@ export default function ProposalItem({
                   </span>
                 </Desktop>
               )}
-              <FinishLabel date={proposal.finish_at} />
+              <FinishLabel startAt={proposal.start_at} finishAt={proposal.finish_at} />
             </div>
           </div>
           {winner.votes > 0 && (

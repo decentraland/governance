@@ -29,7 +29,7 @@ import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
-import { VotesListModal } from '../components/Modal/Votes/VotesList'
+import VotesListModal from '../components/Modal/Votes/VotesList'
 import { VotingModal } from '../components/Modal/Votes/VotingModal/VotingModal'
 import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -40,6 +40,7 @@ import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
@@ -52,7 +53,6 @@ import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
-import { calculateResult } from '../entities/Votes/utils'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
@@ -68,7 +68,6 @@ import { isUnderMaintenance } from '../modules/maintenance'
 import './proposal.css'
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
-const EMPTY_VOTE_CHOICES: string[] = []
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
 const SURVEY_TOPICS_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
@@ -153,8 +152,6 @@ export default function ProposalPage() {
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
   const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)
 
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
-  const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
@@ -303,6 +300,7 @@ export default function ProposalPage() {
     !isLoadingBudgetWithContestants
   const showTenderProposals =
     proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
+  const showCompetingTenders = !!proposal && proposal.type === ProposalType.Tender
 
   return (
     <>
@@ -329,6 +327,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailDescription">
               <Loader active={proposalState.loading} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
+              {showCompetingTenders && <CompetingTenders proposal={proposal} />}
               <ProposalHeaderPoi proposal={proposal} />
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <div className="ProposalDetailPage__Body">
@@ -341,14 +340,7 @@ export default function ProposalPage() {
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {proposal && isBiddingAndTenderingProposal(proposal.type) && (
-                <BiddingAndTenderingProcess
-                  proposalId={proposal.id}
-                  proposalType={proposal.type}
-                  proposalStatus={proposal.status}
-                  proposalFinishAt={proposal.finish_at}
-                  linkedProposalId={proposal.configuration.linked_proposal_id}
-                  tenderProposalsTotal={tenderProposals?.total}
-                />
+                <BiddingAndTenderingProcess proposal={proposal} tenderProposalsTotal={tenderProposals?.total} />
               )}
               {proposal && isGovernanceProcessProposal(proposal.type) && (
                 <GovernanceProcess proposalType={proposal.type} />
@@ -392,8 +384,7 @@ export default function ProposalPage() {
                 subscribe={subscribe}
                 subscriptions={subscriptions}
                 subscriptionsLoading={subscriptionsState.loading}
-                partialResults={partialResults}
-                choices={choices}
+                highQualityVotes={highQualityVotes}
                 votes={votes}
                 votesLoading={votesState.loading}
                 isCoauthor={isCoauthor}

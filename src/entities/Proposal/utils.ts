@@ -175,7 +175,7 @@ export function toProposalStatus(value: string | null | undefined, orElse: () =>
 }
 
 export function isProposalDeletable(proposalStatus?: ProposalStatus) {
-  return proposalStatus === ProposalStatus.Pending || proposalStatus === ProposalStatus.Active
+  return proposalStatus === ProposalStatus.Active || proposalStatus === ProposalStatus.Pending
 }
 
 export function isProposalEnactable(proposalStatus: ProposalStatus) {
@@ -209,4 +209,17 @@ export function isGrantProposalSubmitEnabled(now: number) {
 
 export function getProposalCategory(proposalType: ProposalType, proposalConfiguration: any): string | null {
   return proposalType === ProposalType.Grant ? proposalConfiguration.category : null
+}
+
+export function hasTenderProcessFinished(tenderProposals: ProposalAttributes[]) {
+  return !!tenderProposals?.find(
+    (proposal) =>
+      proposal.status === ProposalStatus.Enacted ||
+      proposal.status === ProposalStatus.Passed ||
+      proposal.status === ProposalStatus.Rejected
+  )
+}
+
+export function hasTenderProcessStarted(tenderProposals: ProposalAttributes[]) {
+  return tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
 }

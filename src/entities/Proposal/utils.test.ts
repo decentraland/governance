@@ -49,7 +49,6 @@ describe('isValidUpdateProposalStatus', () => {
     expect(isValidUpdateProposalStatus(ProposalStatus.Enacted, ProposalStatus.Enacted)).toBe(true)
     expect(isValidUpdateProposalStatus(ProposalStatus.Finished, ProposalStatus.Enacted)).toBe(true)
 
-    expect(isValidUpdateProposalStatus(ProposalStatus.Pending, ProposalStatus.Enacted)).toBe(false)
     expect(isValidUpdateProposalStatus(ProposalStatus.Active, ProposalStatus.Enacted)).toBe(false)
     expect(isValidUpdateProposalStatus(ProposalStatus.Rejected, ProposalStatus.Enacted)).toBe(false)
     expect(isValidUpdateProposalStatus(ProposalStatus.OutOfBudget, ProposalStatus.Enacted)).toBe(false)

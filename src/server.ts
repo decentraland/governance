@@ -34,9 +34,9 @@ import filesystem from './modules/filesystem'
 import { DiscordService } from './services/DiscordService'
 
 const jobs = manager()
-jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@daily', updateGovernanceBudgets)
+jobs.cron('@eachMinute', activateProposals)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)

@@ -1,12 +1,21 @@
 import { Env } from '@dcl/ui-env'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
+import orderBy from 'lodash/orderBy'
 
 import { config } from '../../config'
 import { Scores } from '../Votes/utils'
 
 import { calculateWinnerChoice, getVotingResults, sameOptions } from './outcomeUtils'
-import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes } from './types'
+import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
+
+export type Outcome = {
+  winnerChoice: string
+  winnerVotingPower: number
+  outcomeStatus?: ProposalOutcome
+}
+
+export type ProposalWithOutcome = ProposalAttributes & Outcome
 
 export const enum ProposalOutcome {
   REJECTED = 'REJECTED',
@@ -56,6 +65,7 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
 
     return {
       winnerChoice,
+      winnerVotingPower,
       outcomeStatus: getOutcomeStatus(winnerChoice, winnerVotingPower, choices, results, proposal.required_to_pass),
     }
   } catch (e) {
@@ -67,4 +77,20 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
       )
     }
   }
+}
+
+export function getWinnerTender(pendingProposalsWithOutcome: ProposalWithOutcome[], linkedProposalId: string) {
+  const tenderProposals = pendingProposalsWithOutcome.filter(
+    (item) => item.type === ProposalType.Tender && item.configuration.linked_proposal_id === linkedProposalId
+  )
+
+  const sortedProposals = orderBy(tenderProposals, 'winnerVotingPower', 'desc')
+  const highestVotingPower = sortedProposals[0]?.winnerVotingPower
+  const hasMultipleHighest = sortedProposals.filter((item) => item.winnerVotingPower === highestVotingPower).length > 1
+
+  if (hasMultipleHighest) {
+    return undefined
+  }
+
+  return sortedProposals[0]
 }

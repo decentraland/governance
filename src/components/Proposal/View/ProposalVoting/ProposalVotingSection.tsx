@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react'
 
+import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
-import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
@@ -55,7 +56,6 @@ const ProposalVotingSection = ({
   finished,
 }: Props) => {
   const t = useFormatMessage()
-  const intl = useIntl()
   const [account, accountState] = useAuthContext()
   const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
   const delegate: string | null = delegation?.delegatedTo[0]?.delegate
@@ -96,6 +96,7 @@ const ProposalVotingSection = ({
 
   const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
   const showGetInvolvedQuestion = !!proposal && !proposalVotingSectionLoading && !hasVoted && !finished
+  const isProposalPending = proposal?.status === ProposalStatus.Pending
 
   return (
     <div className="DetailsSection__Content ProposalVotingSection">
@@ -130,7 +131,7 @@ const ProposalVotingSection = ({
             <>
               {delegationsLabel && <DelegationsLabel {...delegationsLabel} />}
 
-              {(showChoiceButtons || proposalPageState.changingVote) && (
+              {!isProposalPending && (showChoiceButtons || proposalPageState.changingVote) && (
                 <ChoiceButtons
                   choices={choices}
                   vote={vote}
@@ -149,18 +150,26 @@ const ProposalVotingSection = ({
 
               {votedChoice && !proposalPageState.changingVote && <VotedChoiceButton {...votedChoice} />}
 
-              <VotingSectionFooter
-                vote={vote}
-                delegateVote={delegateVote}
-                startAt={proposal?.start_at}
-                finishAt={proposal?.finish_at}
-                account={account}
-                proposalPageState={proposalPageState}
-                onChangeVote={onChangeVote}
-                delegators={delegators}
-                totalVpOnProposal={totalVpOnProposal}
-                hasEnoughToVote={hasEnoughToVote}
-              />
+              {!isProposalPending && (
+                <VotingSectionFooter
+                  vote={vote}
+                  delegateVote={delegateVote}
+                  startAt={proposal?.start_at}
+                  finishAt={proposal?.finish_at}
+                  account={account}
+                  proposalPageState={proposalPageState}
+                  onChangeVote={onChangeVote}
+                  delegators={delegators}
+                  totalVpOnProposal={totalVpOnProposal}
+                  hasEnoughToVote={hasEnoughToVote}
+                />
+              )}
+
+              {isProposalPending && (
+                <Markdown className="ProposalVotingSection__VotingBegins">
+                  {t('page.proposal_detail.voting_begins', { date: Time(proposal?.start_at).fromNow(true) })}
+                </Markdown>
+              )}
             </>
           )}
           {proposal && account && proposalPageState.showSnapshotRedirect && (

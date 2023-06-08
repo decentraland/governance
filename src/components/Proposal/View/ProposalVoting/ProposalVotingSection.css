@@ -9,3 +9,21 @@
 .ProposalVotingSection__HeaderLabel {
   margin: 10px 0 8px 0;
 }
+
+.ProposalVotingSection__VotingBegins {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px;
+  border-radius: 6px;
+  font-style: normal;
+  font-weight: 400;
+  background-color: var(--black-200);
+  text-align: center;
+}
+
+.ProposalVotingSection__VotingBegins .dg.Paragraph {
+  color: var(--black-600);
+  font-size: 13px;
+  line-height: 18px;
+}

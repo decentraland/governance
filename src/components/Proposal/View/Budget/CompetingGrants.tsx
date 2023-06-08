@@ -5,9 +5,8 @@ import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
-import ChevronRightCircleOutline from '../../../Icon/ChevronRightCircleOutline'
+import CompetingButton from '../CompetingButton'
 
-import './CompetingProposals.css'
 import CompetingProposalsSidebar from './CompetingProposalsSidebar'
 
 interface Props {
@@ -24,11 +23,10 @@ export default function CompetingProposals({ proposal, budget }: Props) {
   if (!contestantsAmount || contestantsAmount < 1) return null
 
   return (
-    <button className={'CompetingProposals'} onClick={() => setSidebarOpen(true)}>
-      <span className={'CompetingProposals__Title'}>
+    <>
+      <CompetingButton onClick={() => setSidebarOpen(true)}>
         {t('page.proposal_detail.grant.competing_proposals.show_sidebar_label', { amount: contestantsAmount })}
-      </span>
-      <ChevronRightCircleOutline />
+      </CompetingButton>
       <CompetingProposalsSidebar
         proposal={proposal}
         budget={budget}
@@ -37,6 +35,6 @@ export default function CompetingProposals({ proposal, budget }: Props) {
           setSidebarOpen(false)
         }}
       />
-    </button>
+    </>
   )
 }

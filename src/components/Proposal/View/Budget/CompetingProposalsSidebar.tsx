@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -13,7 +13,7 @@ import ProposalCard from '../ProposalCard'
 import './CompetingProposalsSidebar.css'
 import ContestedBudgetCard from './ContestedBudgetCard'
 
-type Props = {
+interface Props {
   proposal: ProposalAttributes
   budget: BudgetWithContestants
   isSidebarVisible: boolean
@@ -37,34 +37,9 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
   const [highlightedContestant, setHighlightedContestant] = useState<string | null>(null)
   const [showPopups, setShowPopups] = useState(false)
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const sidebar = document.querySelector('.CompetingProposalsSidebar')
-      if (sidebar && !sidebar.contains(event.target as Node)) {
-        onClose()
-      }
-    }
-
-    if (isSidebarVisible) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isSidebarVisible, onClose])
-
-  function handleClose(e: React.MouseEvent<unknown>) {
-    e.preventDefault()
-    e.stopPropagation()
-    onClose()
-  }
-
   return (
     <GovernanceSidebar
-      className="CompetingProposalsSidebar"
+      onClose={onClose}
       onShow={() => {
         setShowPopups(true)
       }}
@@ -80,7 +55,7 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
               category: toNewGrantCategory(grantCategory),
             })}
           </span>
-          <Close onClick={handleClose} />
+          <Close onClick={onClose} />
         </div>
         <ContestedBudgetCard
           proposal={proposal}

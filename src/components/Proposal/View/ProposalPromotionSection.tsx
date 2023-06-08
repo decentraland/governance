@@ -5,8 +5,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { PROMOTE_PITCH_ENABLED } from '../../../constants'
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import locations from '../../../modules/locations'
 import Pill from '../../Common/Pill'
 
@@ -35,7 +35,7 @@ const getSectionConfig = (type: ProposalType) => {
       }
     case ProposalType.Pitch:
       return {
-        pillLabel: 'page.proposal_detail.promotion.coming_soon_label',
+        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
         description: 'page.proposal_detail.promotion.tender_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_tender_label',
         promotedType: ProposalType.Tender,
@@ -60,6 +60,7 @@ const getSectionConfig = (type: ProposalType) => {
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
+  const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -69,19 +70,15 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
     }
   }
 
+  const isPromoteDisabled = (type === ProposalType.Pitch && hasTenderProcessStarted) || type === ProposalType.Tender
+
   return (
     <div className="ProposalPromotionSection">
       <Pill color="green" style="shiny">
         {t(pillLabel)}
       </Pill>
       <Markdown className="smallMarkdown">{t(description)}</Markdown>
-      <Button
-        primary
-        size="small"
-        loading={loading}
-        onClick={() => handlePromoteClick()}
-        disabled={(type === ProposalType.Pitch && !PROMOTE_PITCH_ENABLED) || type === ProposalType.Tender}
-      >
+      <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()} disabled={isPromoteDisabled}>
         {t(buttonLabel)}
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (

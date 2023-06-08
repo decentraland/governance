@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
-import { CancelProposal, Proposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/dist/sign/types'
+import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/dist/sign/types'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
@@ -100,9 +100,8 @@ export class SnapshotApi {
     proposalLifespan: ProposalLifespan,
     blockNumber: number
   ) {
-    let snapshotProposal: Proposal
     try {
-      snapshotProposal = {
+      return {
         space: SnapshotApi.getSpaceName(),
         type: SNAPSHOT_PROPOSAL_TYPE,
         title: proposalTitle,
@@ -118,8 +117,6 @@ export class SnapshotApi {
     } catch (err) {
       throw new Error('Error building the proposal creation message', err as Error)
     }
-
-    return snapshotProposal
   }
 
   public async removeProposal(snapshotId: string) {

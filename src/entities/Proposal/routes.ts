@@ -5,6 +5,7 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
+import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -12,7 +13,6 @@ import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
-import { PROMOTE_PITCH_ENABLED } from '../../constants'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
@@ -73,6 +73,8 @@ import {
   MIN_PROPOSAL_OFFSET,
   canLinkProposal,
   getProposalEndDate,
+  hasTenderProcessFinished,
+  hasTenderProcessStarted,
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
@@ -404,18 +406,34 @@ export async function createProposalTender(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalTender>(newProposalTenderValidator, req.body || {})
 
-  if (!PROMOTE_PITCH_ENABLED) {
-    throw new RequestError('Forbidden', RequestError.Forbidden)
-  }
-
   await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Pitch)
   await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_TENDER)
+
+  const tenderProposals = await ProposalModel.getProposalList({
+    linkedProposalId: configuration.linked_proposal_id,
+    order: 'ASC',
+  })
+
+  if (hasTenderProcessFinished(tenderProposals)) {
+    throw new RequestError('Pitch proposal already went through the tender process')
+  }
+
+  if (hasTenderProcessStarted(tenderProposals)) {
+    throw new RequestError('Tender process already started for this pitch proposal')
+  }
+
+  const start_at =
+    tenderProposals.length > 0
+      ? tenderProposals[0].start_at
+      : Time().add(Number(process.env.SUBMISSION_WINDOW_DURATION_TENDER), 'seconds').toDate()
+  const finish_at = Time(start_at).add(Number(process.env.DURATION_TENDER), 'seconds').toDate()
 
   return createProposal({
     user,
     type: ProposalType.Tender,
     required_to_pass: ProposalRequiredVP[ProposalType.Tender],
-    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_TENDER)),
+    start_at,
+    finish_at,
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
@@ -572,6 +590,8 @@ async function validateLinkedProposal(linkedProposalId: string, expectedProposal
       RequestError.Forbidden
     )
   }
+
+  return linkedProposal
 }
 
 async function validateSubmissionThreshold(user: string, submissionThreshold?: string) {

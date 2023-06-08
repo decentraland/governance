@@ -677,6 +677,7 @@
         "by_user": "By ",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
         "comments": "{total} {total, plural, one {comment} other {comments}}",
+        "starts_date": "Starts {value}",
         "ends_date": "Ends {value}",
         "ended_date": "Ended {value}",
         "threshold_not_met": "Threshold still not met",
@@ -766,7 +767,7 @@
     },
     "proposal_bidding_tendering": {
       "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
-      "escalated_tender_proposals": "Escalated Tender Propsoals",
+      "escalated_tender_proposals": "Escalated Tender Proposals",
       "title": "About the bidding and tendering process",
       "pitch_proposal_title": "Validate by pitching",
       "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
@@ -781,6 +782,7 @@
       "open_for_bids_requires": "**Requires Tender to Pass**",
       "project_assignation_title": "Project assignation",
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
+      "voting_starts": "**Voting starts** {proposalEndDate}",
       "voting_ends": "**Voting ends** {proposalEndDate}",
       "initiative_passed": "**This initiative passed** {proposalEndDate}",
       "initiative_passed_title": "**{title}** passed {date}",
@@ -805,6 +807,7 @@
       "no_proposals_yet": "No proposals have been sent by community members yet.",
       "votes": "{total} {total, plural, one {vote} other {votes}}",
       "finish_label": {
+        "starts": "Starts",
         "ends": "Ends",
         "ended": "Ended"
       }
@@ -856,6 +859,7 @@
         "voting_failed": "Failed to cast vote",
         "voting_open": "Open for votes",
         "voting_closed": "Voting closed",
+        "voting_starts": "Voting starts {timeElapsed}",
         "voting_finished": "Voting finished {timeElapsed}",
         "vote_count_title": "Voting Activity",
         "vote_count": "{voteCount} total votes"
@@ -879,6 +883,7 @@
       "vote_change": "Change Vote",
       "vote_overrule": "Overrule Vote",
       "vote_manage": "Manage",
+      "voting_begins": "Voting begins in **{date}**",
       "get_vp": "Get VP",
       "vote_choice": "Vote {choice}",
       "cast_vote": "Cast Vote",
@@ -911,20 +916,22 @@
         "user_voted_no_delegate_some_delegators_voted": "Take into consideration that the accounts you represent may choose to vote by themselves at any time",
         "user_voted_no_delegate_delegators_have_not_voted": "Take into consideration that the accounts you represent may choose to vote by themselves at any time."
       },
-      "details_label": "Details",
-      "details_user_label": "Created by",
+      "details_label": "Proposal Details",
+      "details_user_label": "Author",
       "details_coauthors_label": "Co-authors",
       "details_coauthor_accepted_helper": "This user has accepted the co-author request",
       "details_coauthor_rejected_helper": "This user has declined the co-author request",
       "details_coauthor_pending_helper": "This user has a pending co-author request",
-      "details_start_label": "Started",
-      "details_finish_label": "Ends",
+      "details_created_label": "Created",
+      "details_start_label": "Voting begins",
+      "details_finish_label": "Voting ends",
       "details_snapshot_label": "Snapshot",
       "required_vp": "Acceptance Threshold",
       "needed_for_acceptance": "Needed for Acceptance",
       "threshold_reached": "{threshold} VP Threshold reached",
       "threshold_not_reached": "{threshold} VP Threshold not reached",
-      "time_left_label": "Voting ends {countdown}",
+      "voting_starts": "Voting starts {countdown}",
+      "voting_ends": "Voting ends {countdown}",
       "proposal_status": "Proposal {status}",
       "enact": "Enact proposal",
       "edit_enacted_data": "Edit enacted data",
@@ -950,6 +957,10 @@
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal",
         "promote_to_tender_label": "Escalate to Tender"
+      },
+      "competing_tenders": {
+        "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
+        "sidebar_title": "Competing tender proposals"
       },
       "grant": {
         "requested_budget": {

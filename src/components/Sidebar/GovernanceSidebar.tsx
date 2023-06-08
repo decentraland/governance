@@ -1,28 +1,48 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Sidebar, { SidebarProps } from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
+import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 
 import './GovernanceSidebar.css'
 
 type Props = {
   visible?: boolean
-  className?: string
   children: React.ReactNode
-  onShow?: (event: React.MouseEvent<HTMLElement>, data: SidebarProps) => void
-  onHide?: (event: React.MouseEvent<HTMLElement>, data: SidebarProps) => void
+  onShow?: () => void
+  onHide?: () => void
+  onClose?: () => void
 }
 
-export default function GovernanceSidebar({ visible, onShow, onHide, className, children }: Props) {
+export default function GovernanceSidebar({ visible, onShow, onHide, onClose, children }: Props) {
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const sidebar = document.querySelector('.GovernanceSidebar')
+      if (sidebar && !sidebar.contains(event.target as Node) && !!onClose) {
+        event.preventDefault()
+        event.stopPropagation()
+        onClose()
+      }
+    }
+
+    if (visible) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [visible, onClose])
+
   return (
     <Sidebar
-      className={TokenList.join(['GovernanceSidebar', className])}
-      animation={'push'}
+      className="GovernanceSidebar"
+      animation="push"
       onShow={onShow}
       onHide={onHide}
-      direction={'right'}
+      direction="right"
       visible={visible}
-      width={'very wide'}
+      width="very wide"
     >
       {children}
     </Sidebar>

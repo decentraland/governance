@@ -2,12 +2,12 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import { useProposalDateText } from '../../hooks/useProposalDateText'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import locations from '../../modules/locations'
 import { abbreviateTimeDifference } from '../../modules/time'
@@ -26,11 +26,8 @@ interface Props {
 
 function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }: Props) {
   const t = useFormatMessage()
-  const { finish_at, title, status, type, id } = proposal
-  const dateText = t(`page.home.open_proposals.${Time().isBefore(Time(finish_at)) ? 'ends_date' : 'ended_date'}`, {
-    value: Time(finish_at).fromNow(),
-  })
-
+  const { start_at, finish_at, title, status, type, id } = proposal
+  const dateText = useProposalDateText(start_at, finish_at)
   const { votes } = useProposalVotes(proposal.id)
 
   return (
