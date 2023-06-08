@@ -32,12 +32,10 @@ import { SEGMENT_KEY } from "./src/constants"
 const queryClient = new QueryClient()
 
 export const wrapRootElement = ({ element }) => {
-  const isWindowDefined = typeof window !== 'undefined'
-   
   return (
     <AuthProvider>
       <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
-      {isWindowDefined && SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
+      {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
   )
 }
