@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import toNumber from 'lodash/toNumber'
 import type { AccordionTitleProps } from 'semantic-ui-react'
@@ -30,7 +29,6 @@ const formatUrl = (url: string) => (isHttpsURL(url) ? url : `//${url}`)
 
 function BreakdownAccordion({ items }: Props) {
   const [activeAccordionItem, setActiveAccordionItem] = useState(UNSELECTED_ITEM)
-  const t = useFormatMessage()
 
   const handleClick = (titleProps: AccordionTitleProps) => {
     const { index } = titleProps

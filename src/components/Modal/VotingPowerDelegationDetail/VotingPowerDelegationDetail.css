@@ -171,7 +171,7 @@
   padding: 2px 10px;
   border-radius: 12px;
   min-width: auto;
-  background-color: var(--gray) !important;
+  background-color: var(--black-600) !important;
   color: white;
   font-weight: 400;
 }
@@ -181,7 +181,7 @@
   bottom: -0.9em;
   width: 100%;
   opacity: 0.23;
-  border: 1px solid var(--gray);
+  border: 1px solid var(--black-600);
 }
 
 .VotingPowerDelegationDetail__Content .stats .header {

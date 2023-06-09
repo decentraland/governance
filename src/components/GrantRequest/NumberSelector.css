@@ -5,7 +5,7 @@
 .NumberSelector__InputContainer {
   display: flex;
   justify-content: space-between;
-  border: 1px solid rgba(115, 110, 125, 0.32);
+  border: 1px solid var(--alpha-black-400);
   border-radius: 6px;
   margin-bottom: 7px;
 }
@@ -20,7 +20,7 @@
   line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
-  border-left: 1px solid rgba(115, 110, 125, 0.32);
+  border-left: 1px solid var(--alpha-black-400);
 }
 
 .NumberSelector__Input {

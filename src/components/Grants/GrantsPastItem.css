@@ -23,7 +23,7 @@
   font-weight: 600;
   font-size: 12px;
   line-height: 24px;
-  color: rgba(115, 110, 125, 1);
+  color: var(--black-600);
 }
 
 .GrantsPastItem__Separator {
