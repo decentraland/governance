@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -9,8 +8,9 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../../../clients/Governance'
-import { CoauthorAttributes, CoauthorStatus } from '../../../entities/Coauthor/types'
+import { CoauthorStatus } from '../../../entities/Coauthor/types'
 import { isCoauthoringUpdatable } from '../../../entities/Coauthor/utils'
+import useCoauthors from '../../../hooks/useCoauthors'
 import Helper from '../../Helper/Helper'
 import Cancel from '../../Icon/Cancel'
 import Check from '../../Icon/Check'
@@ -49,14 +49,12 @@ function ProposalCoAuthorStatus({ proposalId, proposalFinishDate }: Props) {
   const [user] = useAuthContext()
   const isUpdatable = isCoauthoringUpdatable(proposalFinishDate)
 
-  const [coAuthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposalId), [], {
-    initialValue: [] as CoauthorAttributes[],
-  })
+  const coAuthors = useCoauthors(proposalId)
 
   const [status, setStatus] = useState<CoauthorStatus | undefined>(undefined)
 
   useEffect(() => {
-    if (user) {
+    if (user && coAuthors) {
       setStatus(coAuthors.find((coauthor) => coauthor.address.toLowerCase() === user.toLowerCase())?.status)
     }
   }, [user, coAuthors])

@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { AsyncStateResultState } from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
@@ -17,7 +16,7 @@ interface Props {
   profileAddress: string | null
   userAddress: string | null
   delegation: DelegationResult
-  delegationState: AsyncStateResultState<DelegationResult, DelegationResult>
+  isLoadingDelegation: boolean
   scores: DetailedScores
   isLoadingScores: boolean
 }
@@ -26,7 +25,7 @@ export default function VpDelegatorsBox({
   profileAddress,
   userAddress,
   delegation,
-  delegationState,
+  isLoadingDelegation,
   scores,
   isLoadingScores,
 }: Props) {
@@ -61,7 +60,7 @@ export default function VpDelegatorsBox({
           <DelegationCards
             delegation={delegation}
             scores={scores}
-            isLoading={delegationState.loading || isLoadingScores}
+            isLoading={isLoadingDelegation || isLoadingScores}
             isUserProfile={isLoggedUserProfile}
             loggedUserVpDistribution={loggedUserVpDistribution}
             profileAddress={profileAddress}

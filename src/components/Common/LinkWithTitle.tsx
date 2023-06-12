@@ -1,6 +1,6 @@
 import React from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { Governance } from '../../clients/Governance'
@@ -15,7 +15,7 @@ interface Props {
 const fetchTitle = async (url: string) => {
   try {
     const response = await Governance.get().checkUrlTitle(url)
-    return response.title
+    return response.title || ''
   } catch (error) {
     console.error(error)
   }
@@ -23,7 +23,11 @@ const fetchTitle = async (url: string) => {
 
 function LinkWithTitle({ url }: Props) {
   const t = useFormatMessage()
-  const [title] = useAsyncMemo(() => fetchTitle(url), [url], { initialValue: undefined })
+  const { data: title } = useQuery({
+    queryKey: [`title#${url}`],
+    queryFn: () => fetchTitle(url),
+    staleTime: 3.6e6, // 1 hour
+  })
 
   return (
     <a href={url} target="_blank" rel="noopener noreferrer" className="LinkWithTitle">

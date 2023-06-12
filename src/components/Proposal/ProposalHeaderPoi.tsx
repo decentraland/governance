@@ -1,8 +1,8 @@
 import React from 'react'
 
+import { useQuery } from '@tanstack/react-query'
 import ImgFixed from 'decentraland-gatsby/dist/components/Image/ImgFixed'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -29,31 +29,41 @@ export default React.memo(function ProposalHeaderPoi({ proposal }: ProposalHeade
   )
 })
 
+const fetchSceneImg = async (x: number, y: number) => {
+  const scenes = await Catalyst.get().getEntityScenes([[x, y]])
+  const scene = scenes[0]
+  if (!scene) {
+    return null
+  }
+
+  let image = scene?.metadata?.display?.navmapThumbnail || ''
+  if (image && !image.startsWith('https://')) {
+    const list = scene.content || []
+    const content = list.find((content) => content.file === image)
+    if (content) {
+      image = Catalyst.get().getContentUrl(content.hash)
+    }
+  }
+
+  if (!image || !image.startsWith('https://')) {
+    return null
+  }
+
+  return image
+}
+
 // eslint-disable-next-line react/display-name
 const ImgPOI = React.memo(function ({ x, y }: { x: number; y: number }) {
-  const [tile] = useAsyncMemo(() => Land.get().getTile([x, y]), [x, y])
-  const [sceneImg] = useAsyncMemo(async () => {
-    const scenes = await Catalyst.get().getEntityScenes([[x, y]])
-    const scene = scenes[0]
-    if (!scene) {
-      return null
-    }
-
-    let image = scene?.metadata?.display?.navmapThumbnail || ''
-    if (image && !image.startsWith('https://')) {
-      const list = scene.content || []
-      const content = list.find((content) => content.file === image)
-      if (content) {
-        image = Catalyst.get().getContentUrl(content.hash)
-      }
-    }
-
-    if (!image || !image.startsWith('https://')) {
-      return null
-    }
-
-    return image
-  }, [x, y])
+  const { data: tile } = useQuery({
+    queryKey: [`tile#${x},${y}`],
+    queryFn: () => Land.get().getTile([x, y]),
+    staleTime: 3.6e6, // 1 hour
+  })
+  const { data: sceneImg } = useQuery({
+    queryKey: [`sceneImg#${x},${y}`],
+    queryFn: () => fetchSceneImg(x, y),
+    staleTime: 3.6e6, // 1 hour
+  })
 
   if (!sceneImg) {
     return (

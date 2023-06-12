@@ -1,35 +1,36 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 import max from 'lodash/max'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 
 export type VoteHistory = { lastVoted: number; timesVoted: number }
 
-export default function useAddressesVotesTotals(addresses: string[]) {
-  const [addressesVotesTotals, state] = useAsyncMemo(
-    async () => {
-      const addressesVotesByDate = await SnapshotGraphql.get().getAddressesVotes(addresses)
-      const aggregatedVotes: Record<string, VoteHistory> = {}
-      addressesVotesByDate.map((voteByDate) => {
-        const voter = voteByDate.voter.toLowerCase()
-        if (aggregatedVotes[voter]) {
-          aggregatedVotes[voter].timesVoted += 1
-          aggregatedVotes[voter].lastVoted = max([aggregatedVotes[voter].lastVoted, voteByDate.created]) || 0
-        } else {
-          aggregatedVotes[voter] = {
-            lastVoted: voteByDate.created,
-            timesVoted: 1,
-          }
-        }
-      })
-      return aggregatedVotes
-    },
-    [JSON.stringify(addresses)],
-    { initialValue: {} as Record<string, VoteHistory>, callWithTruthyDeps: true }
-  )
+const fetchVotes = async (addresses: string[]) => {
+  const addressesVotesByDate = await SnapshotGraphql.get().getAddressesVotes(addresses)
+  const aggregatedVotes: Record<string, VoteHistory> = {}
+  addressesVotesByDate.map((voteByDate) => {
+    const voter = voteByDate.voter.toLowerCase()
+    if (aggregatedVotes[voter]) {
+      aggregatedVotes[voter].timesVoted += 1
+      aggregatedVotes[voter].lastVoted = max([aggregatedVotes[voter].lastVoted, voteByDate.created]) || 0
+    } else {
+      aggregatedVotes[voter] = {
+        lastVoted: voteByDate.created,
+        timesVoted: 1,
+      }
+    }
+  })
+  return aggregatedVotes
+}
 
+export default function useAddressesVotesTotals(addresses: string[]) {
+  const { data: addressesVotesTotals, isLoading } = useQuery({
+    queryKey: [`votes#${addresses.join('-')}`],
+    queryFn: () => fetchVotes(addresses),
+    staleTime: 1.2e6, // 20 minutes
+  })
   return {
-    addressesVotesTotals,
-    isLoadingAddressesVotesTotals: state.loading,
+    addressesVotesTotals: addressesVotesTotals ?? {},
+    isLoadingAddressesVotesTotals: isLoading,
   }
 }

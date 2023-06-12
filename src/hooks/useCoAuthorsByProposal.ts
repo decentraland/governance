@@ -1,27 +1,26 @@
 import { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 
-import { Governance } from '../clients/Governance'
-import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes } from '../entities/Proposal/types'
+
+import useCoauthors from './useCoauthors'
 
 function useCoAuthorsByProposal(proposal: ProposalAttributes | null) {
   const [account] = useAuthContext()
-  const [allCoauthors] = useAsyncMemo(() => Governance.get().getCoAuthorsByProposal(proposal!.id), [proposal], {
-    initialValue: [] as CoauthorAttributes[],
-    callWithTruthyDeps: true,
-  })
+  const allCoauthors = useCoauthors(proposal?.id || '')
   return useMemo(() => {
     if (proposal && proposal.user.toLowerCase() === account?.toLowerCase()) {
       return allCoauthors
     }
 
-    return allCoauthors.filter(
-      (coauthor) =>
-        coauthor.status === CoauthorStatus.APPROVED || coauthor.address.toLowerCase() === account?.toLowerCase()
-    )
+    return allCoauthors
+      ? allCoauthors.filter(
+          (coauthor) =>
+            coauthor.status === CoauthorStatus.APPROVED || coauthor.address.toLowerCase() === account?.toLowerCase()
+        )
+      : []
   }, [allCoauthors, account, proposal])
 }
 

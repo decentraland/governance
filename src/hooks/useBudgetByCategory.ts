@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { Governance } from '../clients/Governance'
@@ -24,7 +24,11 @@ function convertPercentageToInt(percentage: number): number {
 }
 
 export default function useBudgetByCategory(category: ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL) {
-  const [currentBudget] = useAsyncMemo(() => Governance.get().getCurrentBudget(), [])
+  const { data: currentBudget } = useQuery({
+    queryKey: [`budget`],
+    queryFn: () => Governance.get().getCurrentBudget(),
+    staleTime: 3.6e6, // 1 hour
+  })
   const [budget, setBudget] = useState(INITIAL_BUDGET)
 
   useEffect(() => {

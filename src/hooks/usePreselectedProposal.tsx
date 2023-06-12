@@ -1,11 +1,12 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
 export default function usePreselectedProposal(proposalId: ProposalAttributes['id'] | null) {
-  const [preselectedProposal] = useAsyncMemo(
-    async () => {
+  const { data: preselectedProposal } = useQuery({
+    queryKey: [`preselected-proposal#${proposalId}`],
+    queryFn: async () => {
       if (!proposalId) {
         return undefined
       }
@@ -23,9 +24,8 @@ export default function usePreselectedProposal(proposalId: ProposalAttributes['i
         },
       ]
     },
-    [],
-    { initialValue: undefined }
-  )
+    staleTime: 3.6e6, // 1 hour
+  })
 
   return preselectedProposal
 }

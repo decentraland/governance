@@ -1,4 +1,4 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 import { CategoryBudget } from '../entities/Budget/types'
@@ -11,18 +11,19 @@ const EMPTY_CATEGORY_BUDGET: CategoryBudget = {
 }
 
 export default function useCategoryBudget(category?: ProposalGrantCategory | null) {
-  const [data] = useAsyncMemo(
-    async () => (category ? await Governance.get().getCategoryBudget(category) : EMPTY_CATEGORY_BUDGET),
-    [category],
-    {
-      initialValue: EMPTY_CATEGORY_BUDGET,
-      callWithTruthyDeps: true,
-    }
-  )
+  const { data } = useQuery({
+    queryKey: [`categoryBudget#${category}`],
+    queryFn: async () => (category ? await Governance.get().getCategoryBudget(category) : EMPTY_CATEGORY_BUDGET),
+    staleTime: 3.6e6, // 1 hour
+  })
+
+  const totalCategoryBudget = data?.total ?? EMPTY_CATEGORY_BUDGET.total
+  const availableCategoryBudget = data?.available ?? EMPTY_CATEGORY_BUDGET.available
+  const allocatedCategoryBudget = data?.allocated ?? EMPTY_CATEGORY_BUDGET.allocated
 
   return {
-    totalCategoryBudget: data.total,
-    availableCategoryBudget: data.available,
-    allocatedCategoryBudget: data.allocated,
+    totalCategoryBudget,
+    availableCategoryBudget,
+    allocatedCategoryBudget,
   }
 }
