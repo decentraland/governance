@@ -56,7 +56,7 @@ const initialState: HiringState = {
   evidence: '',
 }
 
-function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Props) {
+export default function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Props) {
   const [account, accountState] = useAuthContext()
   const preventNavigation = useRef(false)
   const action = getHiringTypeAction(type)
@@ -306,5 +306,3 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
     </ContentLayout>
   )
 }
-
-export default ProposalSubmitHiringPage
