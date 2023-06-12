@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import VotingPower from '../Token/VotingPower'
 import Username from '../User/Username'
@@ -19,7 +19,7 @@ export default function VotingPowerListItem({
   ...props
 }: VotingPowerListModalItemProps) {
   return (
-    <div className={TokenList.join(['VotingPowerListItem', className])} {...props}>
+    <div className={classNames('VotingPowerListItem', className)} {...props}>
       <div className="VotingPowerListModalItem__Profile">
         <Username address={address} size={'tiny'} linked />
       </div>

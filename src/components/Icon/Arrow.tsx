@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 type ArrowProps = {
   filled: boolean
@@ -14,7 +14,7 @@ function Arrow({ filled, className, color = 'var(--black-400)' }: ArrowProps) {
 
   return (
     <svg
-      className={TokenList.join(['Arrow', className])}
+      className={classNames('Arrow', className)}
       width="16"
       height="16"
       viewBox="0 0 16 16"

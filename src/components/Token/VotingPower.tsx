@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './VotingPower.css'
 
@@ -18,13 +18,13 @@ export default function VotingPower({ value, size, secondary, bold, ...props }: 
   return (
     <div
       {...props}
-      className={TokenList.join([
+      className={classNames(
         'VotingPower',
         secondary && `VotingPower--secondary`,
         bold && `VotingPower--bold`,
         size && `VotingPower--${size}`,
-        props.className,
-      ])}
+        props.className
+      )}
     >
       {value !== undefined && <div>{t('general.number', { value })}</div>}
       <svg width="43" height="29" viewBox="0 0 43 29" fill="none">

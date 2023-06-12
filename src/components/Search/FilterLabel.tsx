@@ -1,8 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './FilterLabel.css'
 
@@ -30,7 +30,7 @@ export default React.memo(function FilterLabel({ active, label, className, ...pr
     <a
       {...props}
       onClick={handleClick}
-      className={TokenList.join(['FilterLabel', active && 'FilterLabel--active', className])}
+      className={classNames('FilterLabel', active && 'FilterLabel--active', className)}
     >
       <span>
         <Paragraph tiny semiBold>

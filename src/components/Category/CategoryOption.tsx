@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { useLocation } from '@reach/router'
+import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
@@ -115,12 +115,12 @@ export default React.memo(function CategoryOption({
       <a
         {...props}
         onClick={handleClick}
-        className={TokenList.join([
+        className={classNames(
           'CategoryOption',
           `CategoryOption--${type}`,
           active && 'CategoryOption--active',
-          className,
-        ])}
+          className
+        )}
       >
         <span className="CategoryOption__TitleContainer">
           <span>
@@ -131,7 +131,7 @@ export default React.memo(function CategoryOption({
           </span>
           {hasSubtypes && (
             <span
-              className={TokenList.join(['CategoryOption__Arrow', isSubtypesOpen && 'CategoryOption__Arrow--active'])}
+              className={classNames('CategoryOption__Arrow', isSubtypesOpen && 'CategoryOption__Arrow--active')}
               onClick={(e) => {
                 e.preventDefault()
                 setIsSubtypesOpen((prev) => !prev)
@@ -142,25 +142,25 @@ export default React.memo(function CategoryOption({
           )}
         </span>
         {isNumber(count) && (
-          <span className={TokenList.join(['CategoryOption__Counter', active && 'CategoryOption__Counter--active'])}>
+          <span className={classNames('CategoryOption__Counter', active && 'CategoryOption__Counter--active')}>
             {count}
           </span>
         )}
       </a>
       {hasSubtypes && (
         <div
-          className={TokenList.join([
+          className={classNames(
             'CategoryOption__Subcategories',
-            isSubtypesOpen && 'CategoryOption__Subcategories--active',
-          ])}
+            isSubtypesOpen && 'CategoryOption__Subcategories--active'
+          )}
         >
           {subtypes.map((subtype, index) => {
             return (
               <a
-                className={TokenList.join([
+                className={classNames(
                   'CategoryOption__SubcategoryItem',
-                  isSubtypeActive(subtype) && 'CategoryOption__SubcategoryItem--active',
-                ])}
+                  isSubtypeActive(subtype) && 'CategoryOption__SubcategoryItem--active'
+                )}
                 key={subtype + `-${index}`}
                 onClick={(e) => {
                   e.preventDefault()

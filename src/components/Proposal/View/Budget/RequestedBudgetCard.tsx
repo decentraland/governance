@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
@@ -43,11 +43,11 @@ function allocatedRequestedAndRemainingItems(
   return [
     {
       value: allocatedCategoryBudget,
-      className: TokenList.join(['AllocatedBudgetBar', isOverBudget && 'AllocatedBudgetBar--overbudget']),
+      className: classNames('AllocatedBudgetBar', isOverBudget && 'AllocatedBudgetBar--overbudget'),
     },
     {
       value: isOverBudget ? categoryBudget.available : requestedBudget,
-      className: TokenList.join(['RequestedBudgetBar', isOverBudget && 'RequestedBudgetBar--overbudget']),
+      className: classNames('RequestedBudgetBar', isOverBudget && 'RequestedBudgetBar--overbudget'),
       selected: true,
     },
     {

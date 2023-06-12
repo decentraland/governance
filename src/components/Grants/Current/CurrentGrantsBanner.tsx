@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import BannerItem from '../BannerItem'
 
@@ -40,7 +40,7 @@ export default function CurrentGrantsBanner() {
   const description = t('page.grants.current_banner.description')
 
   return (
-    <div className={TokenList.join(['GrantsBanner', `GrantsBanner--current`])}>
+    <div className={classNames('GrantsBanner', `GrantsBanner--current`)}>
       <div className="GrantsBannerItem_Text">
         <h2 className="GrantsBanner__Title">{title}</h2>
         <p className="GrantsBanner__Description">{description}</p>

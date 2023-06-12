@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import ChevronRight from '../Icon/ChevronRight'
 
@@ -19,7 +19,7 @@ const BannerItem = ({ title, description, url, showDivider }: Props) => {
       <a
         href={url || ''}
         target="_blank"
-        className={TokenList.join([!url && 'GrantsBannerItem--noUrl'])}
+        className={classNames(!url && 'GrantsBannerItem--noUrl')}
         rel="noopener noreferrer"
       >
         <div className="GrantsBannerItem">

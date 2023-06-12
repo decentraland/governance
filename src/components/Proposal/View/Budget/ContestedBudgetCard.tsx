@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
@@ -66,7 +66,7 @@ function getBarItems(
 
   const allocatedBudgetItem = {
     value: allocatedBudget,
-    className: TokenList.join(['GrantedFundsBar', isOverBudget && 'GrantedFundsBarOverbudget']),
+    className: classNames('GrantedFundsBar', isOverBudget && 'GrantedFundsBarOverbudget'),
   }
 
   const contestingProposalsItems = getContestingProposalsItems(

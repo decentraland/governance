@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import { BadgeStatus, Badge as GovernanceBadge } from '../../../entities/Badges/types'
 
@@ -43,14 +43,14 @@ export default function Badge({ badge, className, iconClassName, variant = Badge
   const isRevoked = badge.status === BadgeStatus.Revoked
 
   return (
-    <div className={TokenList.join(['Badge', className])}>
+    <div className={classNames('Badge', className)}>
       <div
-        className={TokenList.join([
+        className={classNames(
           'Badge__Icon',
           getVariantClass(variant),
           isRevoked && 'Badge__Icon--revoked',
-          iconClassName,
-        ])}
+          iconClassName
+        )}
         style={{ backgroundImage: `url(${badge.image})` }}
       />
     </div>

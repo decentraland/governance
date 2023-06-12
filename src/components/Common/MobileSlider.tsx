@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import Flickity, { FlickityOptions } from 'react-flickity-component'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import './MobileSlider.css'
@@ -30,7 +30,7 @@ export default function MobileSlider({ children, className, containerClassName }
     <>
       <Mobile>
         <Flickity
-          className={TokenList.join(['MobileSlider', className])}
+          className={classNames('MobileSlider', className)}
           options={flickityOptions}
           flickityRef={(ref) => (flickity.current = ref)}
         >

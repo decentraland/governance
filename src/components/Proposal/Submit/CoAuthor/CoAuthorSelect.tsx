@@ -2,9 +2,9 @@ import React, { KeyboardEventHandler, useEffect, useState } from 'react'
 import { InputActionMeta, OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
+import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import Username from '../../../User/Username'
@@ -145,7 +145,7 @@ function CoAuthorSelect({ setCoAuthors, isDisabled }: CoAuthorProps) {
   }
 
   return (
-    <div className={TokenList.join(['CoAuthorSelect dcl field', state.errorKey && 'error'])}>
+    <div className={classNames('CoAuthorSelect dcl field', state.errorKey && 'error')}>
       <CreatableSelect
         components={components}
         inputValue={state.inputValue}

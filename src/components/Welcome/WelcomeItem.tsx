@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import './WelcomeItem.css'
@@ -19,7 +19,7 @@ export default function WelcomeItem(props: WelcomeItemProps) {
   }
 
   return (
-    <div {...props} className={TokenList.join(['WelcomeItem', props.className])}>
+    <div {...props} className={classNames('WelcomeItem', props.className)}>
       {props.onClose && <Close onClick={handleClose} />}
       <div className="WelcomeItem__Content">{props.children}</div>
     </div>

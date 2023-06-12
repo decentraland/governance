@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './ChevronRightCircleOutline.css'
 
@@ -20,7 +20,7 @@ function ChevronRightCircleOutline({ className, resizable, size = 24 }: Props) {
       height={size}
       viewBox="0 0 100 100"
       preserveAspectRatio="xMidYMid meet"
-      className={TokenList.join([!resizable && 'ChevronRightCircleOutline__FixedSize', className])}
+      className={classNames(!resizable && 'ChevronRightCircleOutline__FixedSize', className)}
     >
       <clipPath id="clip-path-202210-0615-2828-02987f6e-2a6a-4a00-87b8-69dcd369a988">
         <circle cx="50" cy="50" r="50" stroke="#FFFFFF" className="svg-fill-white"></circle>

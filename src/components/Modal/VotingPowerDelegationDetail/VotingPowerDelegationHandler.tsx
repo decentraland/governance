@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
+import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
@@ -54,7 +54,7 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
   }
 
   return (
-    <span className={TokenList.join(['DelegateButton__Container', vertical && 'DelegateButton__VerticalDisplay'])}>
+    <span className={classNames('DelegateButton__Container', vertical && 'DelegateButton__VerticalDisplay')}>
       {userAddress && (
         <>
           <Header sub size="tiny">

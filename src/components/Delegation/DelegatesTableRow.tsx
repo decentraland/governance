@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
+import classNames from 'classnames'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
@@ -37,7 +37,7 @@ function DelegateRow({ delegate, onDelegateSelected }: Props) {
       onMouseLeave={() => setIsFilled(false)}
       onClick={() => onDelegateSelected(delegate)}
     >
-      <Table.Cell className={TokenList.join(['DelegatesTable__CandidateName', 'DelegatesTable__Sticky'])}>
+      <Table.Cell className={classNames('DelegatesTable__CandidateName', 'DelegatesTable__Sticky')}>
         <Username address={delegateAddress} size={isMobile ? 'tiny' : 'small'} />
         <Arrow filled={isFilled} className="DelegatesTable__UsernameArrow" />
       </Table.Cell>

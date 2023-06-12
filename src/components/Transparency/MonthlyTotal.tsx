@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -42,7 +42,7 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
   }
 
   return (
-    <div className={TokenList.join(['MonthlyTotal', detailsVisibility])}>
+    <div className={classNames('MonthlyTotal', detailsVisibility)}>
       <Card>
         <Card.Content className="MonthlyTotal_Headers">
           <div>
@@ -53,11 +53,11 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
             </Header>
             <Header sub className="MonthlyTotal__Sub">
               <strong
-                className={TokenList.join([
+                className={classNames(
                   'Number',
                   monthlyTotal.previous < 0 && belowZeroColor,
-                  monthlyTotal.previous >= 0 && zeroOrOverColor,
-                ])}
+                  monthlyTotal.previous >= 0 && zeroOrOverColor
+                )}
               >
                 {formatBalance(monthlyTotal.previous) + '% '}
               </strong>
@@ -65,7 +65,7 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
             </Header>
           </div>
         </Card.Content>
-        <Card.Content className={TokenList.join(['MonthlyTotal__Detail', detailsVisibility])}>
+        <Card.Content className={classNames('MonthlyTotal__Detail', detailsVisibility)}>
           <div className="ItemsList">
             {monthlyTotal.details &&
               monthlyTotal.details.map((detail, index) => {

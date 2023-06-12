@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './ActionableLayout.css'
 
@@ -17,7 +17,7 @@ export default function ActionableLayout({
   ...props
 }: ActionableLayoutProps) {
   return (
-    <div {...props} className={TokenList.join(['ActionableLayout', className])}>
+    <div {...props} className={classNames('ActionableLayout', className)}>
       <div className="ActionableLayout__Action">
         <div className="ActionableLayout__Left">{leftAction}</div>
         <div className="ActionableLayout__Right">{rightAction}</div>
