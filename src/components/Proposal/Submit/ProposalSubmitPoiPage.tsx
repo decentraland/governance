@@ -16,7 +16,6 @@ import { Governance } from '../../../clients/Governance'
 import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
-import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
 import ErrorMessage from '../../Error/ErrorMessage'
@@ -121,7 +120,6 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
         y,
       })
 
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })

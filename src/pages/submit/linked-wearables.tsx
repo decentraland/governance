@@ -29,7 +29,6 @@ import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../helpers'
 import { isHttpsURL } from '../../helpers'
-import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './submit.css'
@@ -333,7 +332,6 @@ export default function SubmitLinkedWearables() {
               })
             })
             .then((proposal) => {
-              loader.proposals.set(proposal.id, proposal)
               navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
             })
             .catch((err) => {

@@ -26,7 +26,6 @@ import {
   newProposalHiringScheme,
 } from '../../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
 import SubLabel from '../../Common/SubLabel'
@@ -109,7 +108,6 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
 
     try {
       const proposal = await Governance.get().createProposalHiring({ type, ...data, committee: data.committee! })
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })

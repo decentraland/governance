@@ -28,7 +28,6 @@ import { SUBMISSION_THRESHOLD_GOVERNANCE } from '../../entities/Proposal/constan
 import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './submit.css'
@@ -225,7 +224,6 @@ export default function SubmitGovernanceProposal() {
           })
         })
         .then((proposal) => {
-          loader.proposals.set(proposal.id, proposal)
           navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
         })
         .catch((err) => {

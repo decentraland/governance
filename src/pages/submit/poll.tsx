@@ -29,7 +29,6 @@ import { SUBMISSION_THRESHOLD_POLL } from '../../entities/Proposal/constants'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './poll.css'
@@ -156,7 +155,6 @@ export default function SubmitPoll() {
           choices,
         })
         .then((proposal) => {
-          loader.proposals.set(proposal.id, proposal)
           navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
         })
         .catch((err) => {

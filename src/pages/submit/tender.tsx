@@ -29,7 +29,6 @@ import { NewProposalTender, newProposalTenderScheme } from '../../entities/Propo
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './submit.css'
@@ -106,7 +105,6 @@ export default function SubmitTenderProposal() {
         ...data,
       })
 
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })

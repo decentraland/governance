@@ -24,7 +24,6 @@ import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
 import { NewProposalPitch, newProposalPitchScheme } from '../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './submit.css'
@@ -72,7 +71,6 @@ export default function SubmitPitchProposal() {
         ...data,
       })
 
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })

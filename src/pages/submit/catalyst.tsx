@@ -25,7 +25,6 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalCatalystScheme } from '../../entities/Proposal/types'
 import { isValidDomainName, userModifiedForm } from '../../entities/Proposal/utils'
-import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
 import './catalyst.css'
@@ -144,7 +143,6 @@ export default function SubmitCatalyst() {
           return Governance.get().createProposalCatalyst(state.value)
         })
         .then((proposal) => {
-          loader.proposals.set(proposal.id, proposal)
           navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
         })
         .catch((err) => {
