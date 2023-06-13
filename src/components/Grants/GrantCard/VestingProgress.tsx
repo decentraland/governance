@@ -1,8 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { Grant } from '../../../entities/Proposal/types'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
@@ -46,9 +46,7 @@ const VestingProgress = ({ grant, basic }: Props) => {
           </div>
           <div className="VestingProgress__ReleasedInfo VestingProgress__Ellipsis">
             {contract && <div className="VestingProgress__ReleasedInfoLabel" />}
-            <span
-              className={TokenList.join(['VestingProgress__Ellipsis', !contract && 'VestingProgressBar__LightText'])}
-            >
+            <span className={classNames('VestingProgress__Ellipsis', !contract && 'VestingProgressBar__LightText')}>
               {releasedText}
             </span>
           </div>

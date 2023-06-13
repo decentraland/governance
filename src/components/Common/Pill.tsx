@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './Pill.css'
 
@@ -27,7 +27,7 @@ export type Props = {
 
 const Pill = ({ children, size = 'default', style = 'shiny', color = PillColor.Green, className, icon }: Props) => {
   return (
-    <div className={TokenList.join([`Pill`, `Pill--${size}`, `Pill--${style}-${color}`, className])}>
+    <div className={classNames(`Pill`, `Pill--${size}`, `Pill--${style}-${color}`, className)}>
       {icon}
       <span>{children}</span>
     </div>

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import snakeCase from 'lodash/snakeCase'
 
 import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
@@ -43,7 +43,7 @@ function BudgetBanner({ category, status, counter }: Props) {
   )
   const showProgress = !status || status === GrantStatus.InProgress
   return (
-    <div className={TokenList.join(['BudgetBanner', !showProgress && 'BudgetBanner--start'])}>
+    <div className={classNames('BudgetBanner', !showProgress && 'BudgetBanner--start')}>
       <div className="BudgetBanner__LabelWithIcon">
         {category !== PROPOSAL_GRANT_CATEGORY_ALL && (
           <span>{getCategoryIcon(snakeCase(category), CategoryIconVariant.Circled, 48)}</span>

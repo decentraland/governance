@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react'
 
+import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -68,12 +68,7 @@ export function VotingModalSurvey({
             {t('page.proposal_detail.skip_and_cast_vote')}
           </Button>
         )}
-        <div
-          className={TokenList.join([
-            'VotingModal__ErrorNotice',
-            !showVotingError && 'VotingModal__ErrorNotice--hidden',
-          ])}
-        >
+        <div className={classNames('VotingModal__ErrorNotice', !showVotingError && 'VotingModal__ErrorNotice--hidden')}>
           {t('page.proposal_detail.voting_section.voting_failed')}
         </div>
         <Button

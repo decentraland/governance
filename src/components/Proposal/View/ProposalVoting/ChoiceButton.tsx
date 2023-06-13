@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Button, ButtonProps } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ChoiceColor } from '../../../../entities/Votes/types'
@@ -32,21 +32,18 @@ export default function ChoiceButton({
   return (
     <Button
       {...props}
-      className={TokenList.join([
+      className={classNames(
         'ChoiceButton',
         selected && 'ChoiceButton--selected',
         voted && `ChoiceButton--voted`,
         typeof color === 'string' && `ChoiceButton--${color}`,
         typeof color === 'number' && `ChoiceButton--status-${color % 8}`,
-        props.className,
-      ])}
+        props.className
+      )}
     >
       {percentage && (
         <div
-          className={TokenList.join([
-            'ChoiceButton__Background',
-            percentage === '100%' && 'ChoiceButton__BackgroundFull',
-          ])}
+          className={classNames('ChoiceButton__Background', percentage === '100%' && 'ChoiceButton__BackgroundFull')}
           style={{ width: percentage }}
         />
       )}

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import Open from '../../Icon/Open'
@@ -24,13 +24,13 @@ function SidebarLinkButton({ loading, disabled, href, isExternal = true, childre
       href={href}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
-      className={TokenList.join([
+      className={classNames(
         'DetailsSection',
         'SectionButton',
         'SidebarLinkButton',
         loading && 'SectionButton--loading',
-        disabled && 'SectionButton--disabled',
-      ])}
+        disabled && 'SectionButton--disabled'
+      )}
     >
       <div className="SectionButton__Container">
         <Loader active={loading} size="small" />

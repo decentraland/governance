@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -39,7 +39,7 @@ export default function VotesListModal({ proposal, highQualityVotes, lowQualityV
     <Modal
       {...props}
       size="tiny"
-      className={TokenList.join(['GovernanceContentModal', 'ProposalModal', 'VotesList', props.className])}
+      className={classNames('GovernanceContentModal', 'ProposalModal', 'VotesList', props.className)}
       closeIcon={<Close />}
       onClose={() => {
         setShowLowQualityVotes(false)

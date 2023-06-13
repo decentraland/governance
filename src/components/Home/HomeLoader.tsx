@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import './HomeLoader.css'
@@ -13,9 +13,9 @@ interface Props {
 
 const HomeLoader = ({ children, className, size = 'large' }: Props) => {
   return (
-    <div className={TokenList.join(['HomeLoader__Container', className])}>
+    <div className={classNames('HomeLoader__Container', className)}>
       <Loader className="HomeLoader__Loader" active size={size} />
-      <span className={TokenList.join(['HomeLoader__Text', `HomeLoader__Text--${size}`])}>{children}</span>
+      <span className={classNames('HomeLoader__Text', `HomeLoader__Text--${size}`)}>{children}</span>
     </div>
   )
 }

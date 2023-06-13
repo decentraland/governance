@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import toNumber from 'lodash/toNumber'
 import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
@@ -10,6 +10,7 @@ import LinkWithTitle from '../Common/LinkWithTitle'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BreakdownAccordion.css'
+
 
 const UNSELECTED_ITEM = -1
 
@@ -55,10 +56,10 @@ function BreakdownAccordion({ items }: Props) {
               {value && <span>{value}</span>}
               <span>
                 <ChevronRightCircleOutline
-                  className={TokenList.join([
+                  className={classNames(
                     'BreakdownAccordion__Arrow',
-                    activeAccordionItem === accordionNumber && 'BreakdownAccordion__Arrow--selected',
-                  ])}
+                    activeAccordionItem === accordionNumber && 'BreakdownAccordion__Arrow--selected'
+                  )}
                 />
               </span>
             </div>

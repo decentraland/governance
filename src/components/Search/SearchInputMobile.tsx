@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useLocation } from '@reach/router'
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
@@ -66,7 +66,7 @@ export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivEle
     <div className={'SearchContainerMobile'}>
       <input
         {...props}
-        className={TokenList.join(['SearchInputMobile', open && 'SearchInputMobile--open', props.className])}
+        className={classNames('SearchInputMobile', open && 'SearchInputMobile--open', props.className)}
         value={searchText}
         placeholder={placeholder}
         onChange={handleChange}

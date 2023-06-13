@@ -1,8 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
@@ -27,10 +27,10 @@ export default function ProposalCard({ proposal, highlight, isOverBudget }: Prop
 
   return (
     <Link
-      className={TokenList.join([
+      className={classNames(
         'ProposalCard',
-        highlight && (isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight'),
-      ])}
+        highlight && (isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight')
+      )}
       href={locations.proposal(id)}
     >
       <div className="ProposalCard__Container">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import './CollapsibleFilter.css'
@@ -31,11 +31,11 @@ function CollapsibleFilter({ title, children, startOpen, onChange }: Collapsible
           {title}
         </Header>
         <div className="PlusMinusContainer">
-          <div className={TokenList.join(['PlusMinus', !open && 'PlusMinus--closed'])} />
+          <div className={classNames('PlusMinus', !open && 'PlusMinus--closed')} />
           <div className="PlusMinus" />
         </div>
       </div>
-      <div className={TokenList.join(['FilterContent', open && 'FilterContent--open'])}>{children}</div>
+      <div className={classNames('FilterContent', open && 'FilterContent--open')}>{children}</div>
     </div>
   )
 }
