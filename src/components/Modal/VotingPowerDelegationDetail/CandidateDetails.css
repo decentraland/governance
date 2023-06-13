@@ -7,6 +7,7 @@
 }
 
 .CandidateDetails__Content.Paragraph--small {
+  color: var(--black-600);
   font-size: 15px !important;
 }
 
@@ -29,9 +30,9 @@
   margin-right: 4px;
 }
 
-.CandidateDetails__Content--skills .Chip {
+.CandidateDetails__Chip {
   opacity: 0.67;
-  border: 1px solid var(--gray);
+  border: 1px solid var(--black-600);
   box-sizing: border-box;
   border-radius: 12px;
   padding: 0px 5px;

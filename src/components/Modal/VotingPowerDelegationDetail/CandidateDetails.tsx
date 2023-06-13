@@ -44,7 +44,7 @@ function CandidateDetails({ title, content, links, skills }: Props) {
           ))}
         {skills &&
           skills.map((skill, idx) => (
-            <span className="Chip" key={`skills_${idx}`}>
+            <span className="CandidateDetails__Chip" key={`skills_${idx}`}>
               {skill.toUpperCase()}
             </span>
           ))}

@@ -125,7 +125,7 @@
 }
 
 .CategoryBanner--hiring .NewBadge {
-  background-color: rgb(var(--green-raw-c));
+  background-color: var(--aqua-800);
 }
 
 .CategoryBanner--hiring.CategoryBanner--active {
