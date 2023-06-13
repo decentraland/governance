@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import { getFormattedPercentage } from '../../../helpers'
 
@@ -26,12 +26,12 @@ const DistributionBarItem = ({ item, total, showPopup }: Props) => {
 
   const horizontalBar = (
     <div
-      className={TokenList.join([
+      className={classNames(
         'DistributionBarItem',
         !!selected && 'DistributionBarItem--selected',
         className,
-        !!selected && `${className}--selected`,
-      ])}
+        !!selected && `${className}--selected`
+      )}
       style={{ width: getFormattedPercentage(value, total) }}
       onMouseEnter={onHover}
       onMouseLeave={onBlur}

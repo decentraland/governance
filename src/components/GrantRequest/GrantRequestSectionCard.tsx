@@ -1,8 +1,8 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
+import classNames from 'classnames'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
@@ -32,11 +32,11 @@ export const GrantRequestSectionCard = ({
 
   return (
     <Component
-      className={TokenList.join([
+      className={classNames(
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
-        href && 'GrantRequestSectionCard__Hoverable',
-      ])}
+        href && 'GrantRequestSectionCard__Hoverable'
+      )}
       href={href}
     >
       <div className="GrantRequestSectionCard__Header">

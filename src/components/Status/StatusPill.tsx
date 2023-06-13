@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
+import classNames from 'classnames'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
@@ -30,7 +30,7 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
 
 const StatusPill = ({ className, status, size, isLink }: Props) => {
   const style = status === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'
-  const classNames = TokenList.join(['StatusPill', className])
+  const pillClassNames = classNames('StatusPill', className)
   const colorsConfig = ColorsConfig[status]
   const showIcon = status === ProposalStatus.Enacted || status === ProposalStatus.Passed
   const iconColor = status === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
@@ -43,14 +43,14 @@ const StatusPill = ({ className, status, size, isLink }: Props) => {
     <>
       <Mobile>
         <Wrapper href={href}>
-          <Pill size={'small'} style={style} className={classNames} color={colorsConfig} icon={icon}>
+          <Pill size={'small'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
             {getProposalStatusShortName(status)}
           </Pill>
         </Wrapper>
       </Mobile>
       <NotMobile>
         <Wrapper href={href}>
-          <Pill size={size || 'default'} style={style} className={classNames} color={colorsConfig} icon={icon}>
+          <Pill size={size || 'default'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
             {getProposalStatusDisplayName(status)}
           </Pill>
         </Wrapper>

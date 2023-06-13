@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 
 import Badge, { BadgeVariant } from './Badge'
 import './BadgeStack.css'
-import { MAX_DISPLAYED_BADGES } from './Badges'
 
 interface Props {
   badges: GovernanceBadge[]
@@ -30,7 +29,7 @@ export default function BadgeStack({ badges, onClick, total }: Props) {
       {badgesToShow.map((badge, index) => {
         return (
           <div
-            className={TokenList.join(['BadgeStack__Icon', index > 0 && 'BadgeStack__Overlapping'])}
+            className={classNames('BadgeStack__Icon', index > 0 && 'BadgeStack__Overlapping')}
             key={`${badge.name}-id`}
             style={{ zIndex: index, right: `${index * 16}px` }}
           >

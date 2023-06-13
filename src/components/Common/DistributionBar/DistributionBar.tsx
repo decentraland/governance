@@ -1,7 +1,7 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './DistributionBar.css'
 import DistributionBarItem, { DistributionBarItemProps } from './DistributionBarItem'
@@ -18,14 +18,14 @@ const DistributionBar = ({ items, total, isLoading, showPopups = true, className
   if (isLoading) {
     return (
       <div className={className}>
-        <Skeleton className={TokenList.join(['DistributionBar', 'DistributionBar__Loading'])} />
+        <Skeleton className={classNames('DistributionBar', 'DistributionBar__Loading')} />
       </div>
     )
   }
 
   return (
     <div className={className}>
-      <div className={TokenList.join(['DistributionBar', total <= 0 && 'DistributionBar--empty'])}>
+      <div className={classNames('DistributionBar', total <= 0 && 'DistributionBar--empty')}>
         {total > 0 &&
           items.map((item, index) => (
             <DistributionBarItem

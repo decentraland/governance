@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { useBurgerMenu } from '../../../hooks/useBurgerMenu'
@@ -91,7 +91,7 @@ function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps
 
   return (
     <div
-      className={TokenList.join(['BurgerMenuContent', 'Animated', navigationOnly && 'BurgerMenuContent--Padded'])}
+      className={classNames('BurgerMenuContent', 'Animated', navigationOnly && 'BurgerMenuContent--Padded')}
       style={(!open && { transform: 'translateY(-200%)' }) || {}}
     >
       {navigationOnly ? (

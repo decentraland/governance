@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './PercentageLabel.css'
 
@@ -10,7 +10,7 @@ export type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
 }
 
 const PercentageLabel = ({ percentage, color }: Props) => {
-  return <span className={TokenList.join([`PercentageLabel`, `PercentageLabel--${color}`])}>{percentage}%</span>
+  return <span className={classNames(`PercentageLabel`, `PercentageLabel--${color}`)}>{percentage}%</span>
 }
 
 export default PercentageLabel

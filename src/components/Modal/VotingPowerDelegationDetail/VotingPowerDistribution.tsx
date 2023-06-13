@@ -1,8 +1,8 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
@@ -24,7 +24,7 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
   if (isLoading) {
     return (
       <div className={className}>
-        <Skeleton className={TokenList.join(['VotingPowerDistributionBar', 'VotingPowerDistributionBar__Loading'])} />
+        <Skeleton className={classNames('VotingPowerDistributionBar', 'VotingPowerDistributionBar__Loading')} />
         <VotingPowerDistributionLabels vpDistribution={vpDistribution} />
       </div>
     )
@@ -32,9 +32,7 @@ const VotingPowerDistribution = ({ vpDistribution, isLoading, className }: Props
 
   return (
     <div className={className}>
-      <div
-        className={TokenList.join(['VotingPowerDistributionBar', total <= 0 && 'VotingPowerDistributionBar--Empty'])}
-      >
+      <div className={classNames('VotingPowerDistributionBar', total <= 0 && 'VotingPowerDistributionBar--Empty')}>
         <VotingPowerDistributionBarWithPopup
           value={mana}
           total={total}

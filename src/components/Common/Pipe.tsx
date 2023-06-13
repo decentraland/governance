@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './Pipe.css'
 
@@ -9,5 +9,5 @@ interface Props {
 }
 
 export default function Pipe({ className }: Props) {
-  return <div className={TokenList.join(['Pipe', className])} />
+  return <div className={classNames('Pipe', className)} />
 }

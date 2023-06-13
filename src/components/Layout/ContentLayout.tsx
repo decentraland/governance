@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
@@ -36,11 +36,11 @@ export default function ContentLayout({
   usePreventNavigation(!!preventNavigation)
 
   return (
-    <Container className={TokenList.join(['ContentLayout', className])}>
+    <Container className={classNames('ContentLayout', className)}>
       <div className="ContentLayout__Back">
         <Back onClick={handleBack} />
       </div>
-      <div className={TokenList.join(['ContentLayout__Container', small && 'ContentLayout__Container--small'])}>
+      <div className={classNames('ContentLayout__Container', small && 'ContentLayout__Container--small')}>
         {children}
       </div>
     </Container>
@@ -48,5 +48,5 @@ export default function ContentLayout({
 }
 
 export function ContentSection(props: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...props} className={TokenList.join(['ContentLayout__Section', props.className])} />
+  return <div {...props} className={classNames('ContentLayout__Section', props.className)} />
 }

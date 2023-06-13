@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 
+import classNames from 'classnames'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import camelCase from 'lodash/camelCase'
@@ -204,7 +204,7 @@ export default function SubmitGrant() {
       <Container className="GrantRequest__Head">
         <div className="GrantRequest__Header">
           <DecentralandLogo
-            className={TokenList.join(['GrantRequest__Logo', hasScrolled && 'GrantRequest__Logo--visible'])}
+            className={classNames('GrantRequest__Logo', hasScrolled && 'GrantRequest__Logo--visible')}
           />
           <h1 className="GrantRequest_HeaderTitle">{title}</h1>
         </div>

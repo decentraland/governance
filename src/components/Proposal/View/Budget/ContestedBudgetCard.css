@@ -34,7 +34,7 @@
   height: 6px;
   min-width: 6px;
   margin: 0;
-  background: rgb(var(--purple-raw-e));
+  background: rgb(165, 36, 179); /* TODO: use color from theme */
   border-radius: 4px 3px 3px 4px;
 }
 
@@ -44,7 +44,7 @@
 
 .CompetingProposalBudgetBar--selected {
   background: var(--gradient-purple-2);
-  box-shadow: 0 1px 4px rgb(var(--purple-raw-e));
+  box-shadow: 0 1px 4px rgb(165, 36, 179); /* TODO: use color from theme */
   z-index: 3;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .DistributionBarItem--selected.CompetingProposalOverbudgetBar--selected {
-  box-shadow: 0 1px 4px var(--purple-raw-b) !important;
+  box-shadow: 0 1px 4px rgb(198, 64, 205) !important;
   border-radius: 10px !important;
   height: 10px !important;
 }

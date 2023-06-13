@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import HelperText from '../../Helper/HelperText'
@@ -19,7 +19,7 @@ const VotingPowerDistributionLabel = ({ labelText, tooltipText, subtitleText, cl
     <>
       <Mobile>
         <div className="VotingPowerDistributionLabel__Mobile">
-          <div className={TokenList.join(['VotingPowerDistributionLabel__Circle', className])} />
+          <div className={classNames('VotingPowerDistributionLabel__Circle', className)} />
           <div className="VotingPowerDistributionLabel__FullLabel">
             <span className="VotingPowerDistributionLabel__Title">{labelText}</span>
             <span className="VotingPowerDistributionLabel__Subtitle">{subtitleText}</span>
@@ -28,7 +28,7 @@ const VotingPowerDistributionLabel = ({ labelText, tooltipText, subtitleText, cl
       </Mobile>
       <NotMobile>
         <div className="VotingPowerDistributionLabel">
-          <div className={TokenList.join(['VotingPowerDistributionLabel__Circle', className])} />
+          <div className={classNames('VotingPowerDistributionLabel__Circle', className)} />
           <HelperText labelText={labelText} tooltipText={tooltipText} position="bottom center" />
         </div>
       </NotMobile>

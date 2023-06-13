@@ -1,8 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -22,7 +22,7 @@ export function DeleteUpdateModal({ onClickAccept, loading, ...props }: DeleteUp
     <Modal
       {...props}
       size="tiny"
-      className={TokenList.join(['GovernanceActionModal', 'ProposalModal', props.className])}
+      className={classNames('GovernanceActionModal', 'ProposalModal', props.className)}
       closeIcon={<Close />}
     >
       <Modal.Content>

@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ChoiceColor } from '../../entities/Votes/types'
 import ChevronRight from '../Icon/ChevronRight'
@@ -25,7 +25,7 @@ export default function ChoiceProgress({ choice, progress, power, color, votes, 
 
   return (
     <div
-      className={TokenList.join(['ChoiceProgress', hasVotes && 'ChoiceProgress--clickable'])}
+      className={classNames('ChoiceProgress', hasVotes && 'ChoiceProgress--clickable')}
       onClick={hasVotes ? onClick : undefined}
     >
       <div className="ChoiceProgress__Description">

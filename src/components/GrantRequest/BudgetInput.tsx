@@ -1,8 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { disableOnWheelInput } from '../../helpers'
 import Label from '../Common/Label'
@@ -31,18 +31,13 @@ const BudgetInput = ({ error, label, subtitle, ...props }: Props & React.HTMLPro
           open={!!showError}
           icon={
             <div
-              className={TokenList.join([
-                'BudgetInput__InputContainer',
-                showError && 'BudgetInput__InputContainer--error',
-              ])}
+              className={classNames('BudgetInput__InputContainer', showError && 'BudgetInput__InputContainer--error')}
             >
-              <div
-                className={TokenList.join(['BudgetInput__Description', showError && 'BudgetInput__Description--error'])}
-              >
+              <div className={classNames('BudgetInput__Description', showError && 'BudgetInput__Description--error')}>
                 USD
               </div>
               <input
-                className={TokenList.join(['BudgetInput__Input', showError && 'BudgetInput__Input--error'])}
+                className={classNames('BudgetInput__Input', showError && 'BudgetInput__Input--error')}
                 type="number"
                 onWheel={disableOnWheelInput}
                 {...props}

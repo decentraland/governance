@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react'
 
+import classNames from 'classnames'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
@@ -112,7 +112,7 @@ export function NewsletterSubscriptionModal({
     <Modal
       {...props}
       size="tiny"
-      className={TokenList.join(['GovernanceActionModal', 'ProposalModal', 'NewsletterSubscriptionModal'])}
+      className={classNames('GovernanceActionModal', 'ProposalModal', 'NewsletterSubscriptionModal')}
       closeIcon={<Close />}
     >
       {!subscribed && (
