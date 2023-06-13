@@ -4,11 +4,11 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Vote } from '../../../../entities/Votes/types'
 import locations from '../../../../modules/locations'
 import { ProposalPageState } from '../../../../pages/proposal'
+import Time from '../../../../utils/date/Time'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'

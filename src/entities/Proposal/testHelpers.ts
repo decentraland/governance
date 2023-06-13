@@ -1,7 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 
+import Time from '../../utils/date/Time'
 import { Budget } from '../Budget/types'
 import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'

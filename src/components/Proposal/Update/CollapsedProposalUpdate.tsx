@@ -11,7 +11,7 @@ import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import locations from '../../../modules/locations'
-import { formatDate } from '../../../modules/time'
+import { formatDate } from '../../../utils/date/Time'
 import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'

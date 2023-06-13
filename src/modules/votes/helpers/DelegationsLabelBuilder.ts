@@ -1,8 +1,8 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import intersection from 'lodash/intersection'
 
 import { DelegationsLabelProps } from '../../../components/Proposal/View/ProposalVoting/DelegationsLabel'
 import { Vote } from '../../../entities/Votes/types'
+import Time from '../../../utils/date/Time'
 
 export class DelegationsLabelBuilder {
   private readonly votes: Record<string, Vote> | null | undefined

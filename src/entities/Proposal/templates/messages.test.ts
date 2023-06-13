@@ -1,6 +1,6 @@
 import { def, get } from 'bdd-lazy-var/getter'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
+import Time from '../../../utils/date/Time'
 import { GrantTier } from '../../Grant/GrantTier'
 import { GrantTierType, NewGrantCategory, OldGrantCategory } from '../../Grant/types'
 import VotesModel from '../../Votes/model'

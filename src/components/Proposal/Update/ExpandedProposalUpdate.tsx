@@ -7,7 +7,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import locations from '../../../modules/locations'
-import { formatDate } from '../../../modules/time'
+import { formatDate } from '../../../utils/date/Time'
 import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'

@@ -10,7 +10,7 @@ import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/type
 import { useProposalDateText } from '../../hooks/useProposalDateText'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import locations from '../../modules/locations'
-import { abbreviateTimeDifference } from '../../modules/time'
+import { abbreviateTimeDifference } from '../../utils/date/Time'
 import CategoryPill from '../Category/CategoryPill'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import StatusPill from '../Status/StatusPill'

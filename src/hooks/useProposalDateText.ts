@@ -1,5 +1,6 @@
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
+
+import Time from '../utils/date/Time'
 
 export function getDateKey(startAt: Date, finishAt: Date) {
   const now = Time()

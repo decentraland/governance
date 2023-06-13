@@ -1,12 +1,12 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import Time from '../../utils/date/Time'
 import ProposalModel from '../Proposal/model'
 import { getProposal } from '../Proposal/routes'
 import { ProposalAttributes } from '../Proposal/types'

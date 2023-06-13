@@ -1,5 +1,3 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-
 import {
   INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET,
   INVALID_CATEGORIES_NAME_TRANSPARENCY_BUDGET,
@@ -7,6 +5,7 @@ import {
   VALID_TRANSPARENCY_BUDGET_1,
   VALID_TRANSPARENCY_BUDGET_2,
 } from '../../services/BudgetService.test'
+import Time from '../../utils/date/Time'
 import QuarterCategoryBudgetModel from '../QuarterCategoryBudget/model'
 
 import QuarterBudgetModel from './model'

@@ -2,12 +2,12 @@ import React from 'react'
 
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
 import { Scores } from '../../../../entities/Votes/utils'
 import { ProposalPageState } from '../../../../pages/proposal'
+import Time from '../../../../utils/date/Time'
 
 import ChoiceButton from './ChoiceButton'
 

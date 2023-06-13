@@ -10,7 +10,7 @@ import { TransparencyGrantsTiers } from '../../clients/DclData'
 import { Grant } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
-import { abbreviateTimeDifference, formatDate } from '../../modules/time'
+import { abbreviateTimeDifference, formatDate } from '../../utils/date/Time'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 

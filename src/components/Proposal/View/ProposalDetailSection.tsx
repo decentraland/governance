@@ -2,11 +2,11 @@ import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../../../hooks/useCoAuthorsByProposal'
+import Time from '../../../utils/date/Time'
 import DateTooltip from '../../Common/DateTooltip'
 import Open from '../../Icon/Open'
 import Username from '../../User/Username'
