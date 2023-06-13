@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -17,33 +16,26 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
-import { newProposalCatalystScheme } from '../../entities/Proposal/types'
+import { NewProposalCatalyst, newProposalCatalystScheme } from '../../entities/Proposal/types'
 import { isAlreadyACatalyst, isValidDomainName } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 
 import './catalyst.css'
 import './submit.css'
 
-type CatalystState = {
-  owner: string
-  domain: string
-  description: string
-  coAuthors?: string[]
-}
-
-const schema = newProposalCatalystScheme.properties
-
-const initialState: CatalystState = {
+const initialState: NewProposalCatalyst = {
   owner: '',
   domain: '',
   description: '',
 }
+const schema = newProposalCatalystScheme.properties
 
 export default function SubmitCatalyst() {
   const t = useFormatMessage()
@@ -55,7 +47,7 @@ export default function SubmitCatalyst() {
     setValue,
     watch,
     setError: setFormError,
-  } = useForm<CatalystState>({ defaultValues: initialState, mode: 'onTouched' })
+  } = useForm<NewProposalCatalyst>({ defaultValues: initialState, mode: 'onTouched' })
   const [error, setError] = useState('')
   const [domain, setDomain] = useState('')
 
@@ -89,7 +81,7 @@ export default function SubmitCatalyst() {
     preventNavigation.current = isDirty
   }, [isDirty])
 
-  const onSubmit: SubmitHandler<CatalystState> = async (data) => {
+  const onSubmit: SubmitHandler<NewProposalCatalyst> = async (data) => {
     const errors = [commsState.error, contentState.error, lambdaState.error].filter(Boolean)
     if (errors.length > 0) {
       setFormError('domain', { message: t('error.catalyst.server_invalid_status') })
@@ -225,7 +217,7 @@ export default function SubmitCatalyst() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_catalyst.description_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="description"
             rules={{
@@ -239,23 +231,16 @@ export default function SubmitCatalyst() {
                 message: t('error.catalyst.description_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={formDisabled}
-                error={!!errors.description}
-                message={
-                  (errors.description?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('description').length,
-                    limit: schema.description.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={formDisabled}
+            error={!!errors.description}
+            message={
+              (errors.description?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('description').length,
+                limit: schema.description.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

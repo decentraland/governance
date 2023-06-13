@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -14,6 +13,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -136,7 +136,7 @@ export default function SubmitBanName() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_ban_name.description_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="description"
             rules={{
@@ -150,23 +150,16 @@ export default function SubmitBanName() {
                 message: t('error.ban_name.description_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={formDisabled}
-                error={!!errors.description}
-                message={
-                  (errors.description?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('description').length,
-                    limit: schema.description.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={formDisabled}
+            error={!!errors.description}
+            message={
+              (errors.description?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('description').length,
+                limit: schema.description.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

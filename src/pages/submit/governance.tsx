@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -17,6 +16,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { Governance } from '../../clients/Governance'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -140,7 +140,6 @@ export default function SubmitGovernanceProposal() {
         <ContentSection className="MarkdownSection--tiny">
           <Markdown>{t('page.submit_governance.description')}</Markdown>
         </ContentSection>
-
         <ContentSection>
           <Label>{t('page.submit_governance.linked_proposal_label')}</Label>
           <SelectField
@@ -153,7 +152,6 @@ export default function SubmitGovernanceProposal() {
             loading={isLoadingVpDistribution}
           />
         </ContentSection>
-
         <ContentSection>
           <Label>{t('page.submit_governance.title_label')}</Label>
           <Field
@@ -178,7 +176,6 @@ export default function SubmitGovernanceProposal() {
             }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.summary_label')}
@@ -187,7 +184,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.summary_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="summary"
             rules={{
@@ -201,27 +198,19 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.summary_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.summary_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.summary}
-                message={
-                  (errors.summary?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('summary').length,
-                    limit: schema.summary.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.summary_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.summary}
+            message={
+              (errors.summary?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('summary').length,
+                limit: schema.summary.maxLength,
+              })
+            }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.abstract_label')}
@@ -230,7 +219,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.abstract_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="abstract"
             rules={{
@@ -244,27 +233,19 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.abstract_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.abstract_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.abstract}
-                message={
-                  (errors.abstract?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('abstract').length,
-                    limit: schema.abstract.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.abstract_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.abstract}
+            message={
+              (errors.abstract?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('abstract').length,
+                limit: schema.abstract.maxLength,
+              })
+            }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.motivation_label')}
@@ -273,7 +254,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.motivation_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="motivation"
             rules={{
@@ -287,27 +268,19 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.motivation_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.motivation_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.motivation}
-                message={
-                  (errors.motivation?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('motivation').length,
-                    limit: schema.motivation.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.motivation_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.motivation}
+            message={
+              (errors.motivation?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('motivation').length,
+                limit: schema.motivation.maxLength,
+              })
+            }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.specification_label')}
@@ -316,7 +289,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.specification_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="specification"
             rules={{
@@ -330,27 +303,19 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.specification_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.specification_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.specification}
-                message={
-                  (errors.specification?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('specification').length,
-                    limit: schema.specification.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.specification_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.specification}
+            message={
+              (errors.specification?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('specification').length,
+                limit: schema.specification.maxLength,
+              })
+            }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.impacts_label')}
@@ -359,7 +324,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.impacts_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="impacts"
             rules={{
@@ -373,27 +338,19 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.impacts_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.impacts_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.impacts}
-                message={
-                  (errors.impacts?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('impacts').length,
-                    limit: schema.impacts.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.impacts_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.impacts}
+            message={
+              (errors.impacts?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('impacts').length,
+                limit: schema.impacts.maxLength,
+              })
+            }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.implementation_pathways_label')}
@@ -402,7 +359,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.implementation_pathways_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="implementation_pathways"
             rules={{
@@ -416,27 +373,19 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.implementation_pathways_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.implementation_pathways_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.implementation_pathways}
-                message={
-                  (errors.implementation_pathways?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('implementation_pathways').length,
-                    limit: schema.implementation_pathways.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.implementation_pathways_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.implementation_pathways}
+            message={
+              (errors.implementation_pathways?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('implementation_pathways').length,
+                limit: schema.implementation_pathways.maxLength,
+              })
+            }
           />
         </ContentSection>
-
         <ContentSection>
           <Label>
             {t('page.submit_governance.conclusion_label')}
@@ -445,7 +394,7 @@ export default function SubmitGovernanceProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_governance.conclusion_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="conclusion"
             rules={{
@@ -459,24 +408,17 @@ export default function SubmitGovernanceProposal() {
                 message: t('error.governance.conclusion_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t('page.submit_governance.conclusion_placeholder')}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.conclusion}
-                message={
-                  (errors.conclusion?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('conclusion').length,
-                    limit: schema.conclusion.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t('page.submit_governance.conclusion_placeholder')}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.conclusion}
+            message={
+              (errors.conclusion?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('conclusion').length,
+                limit: schema.conclusion.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

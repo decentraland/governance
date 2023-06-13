@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -16,6 +15,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -161,7 +161,7 @@ export default function SubmitDraftProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_draft.summary_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="summary"
             rules={{
@@ -175,23 +175,16 @@ export default function SubmitDraftProposal() {
                 message: t('error.draft.summary_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.summary}
-                message={
-                  (errors.summary?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('summary').length,
-                    limit: schema.summary.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.summary}
+            message={
+              (errors.summary?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('summary').length,
+                limit: schema.summary.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -202,7 +195,7 @@ export default function SubmitDraftProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_draft.abstract_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="abstract"
             rules={{
@@ -216,23 +209,16 @@ export default function SubmitDraftProposal() {
                 message: t('error.draft.abstract_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.abstract}
-                message={
-                  (errors.abstract?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('abstract').length,
-                    limit: schema.abstract.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.abstract}
+            message={
+              (errors.abstract?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('abstract').length,
+                limit: schema.abstract.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -243,7 +229,7 @@ export default function SubmitDraftProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_draft.motivation_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="motivation"
             rules={{
@@ -257,23 +243,16 @@ export default function SubmitDraftProposal() {
                 message: t('error.draft.motivation_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.motivation}
-                message={
-                  (errors.motivation?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('motivation').length,
-                    limit: schema.motivation.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.motivation}
+            message={
+              (errors.motivation?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('motivation').length,
+                limit: schema.motivation.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -284,7 +263,7 @@ export default function SubmitDraftProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_draft.specification_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="specification"
             rules={{
@@ -298,23 +277,16 @@ export default function SubmitDraftProposal() {
                 message: t('error.draft.specification_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.specification}
-                message={
-                  (errors.specification?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('specification').length,
-                    limit: schema.specification.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.specification}
+            message={
+              (errors.specification?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('specification').length,
+                limit: schema.specification.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -325,7 +297,7 @@ export default function SubmitDraftProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_draft.conclusion_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="conclusion"
             rules={{
@@ -339,23 +311,16 @@ export default function SubmitDraftProposal() {
                 message: t('error.draft.conclusion_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.conclusion}
-                message={
-                  (errors.conclusion?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('conclusion').length,
-                    limit: schema.conclusion.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.conclusion}
+            message={
+              (errors.conclusion?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('conclusion').length,
+                limit: schema.conclusion.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

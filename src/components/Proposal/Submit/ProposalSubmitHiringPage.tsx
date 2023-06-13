@@ -4,7 +4,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import classNames from 'classnames'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -28,6 +27,7 @@ import {
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
+import MarkdownField from '../../Common/Form/MarkdownField'
 import SubLabel from '../../Common/SubLabel'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
@@ -215,7 +215,7 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
         <ContentSection className="SubmitHiring__ReasonsSection">
           <Label>{t(`page.submit_hiring.${action}.reasons_title`)}</Label>
           <SubLabel>{t(`page.submit_hiring.${action}.reasons_description`)}</SubLabel>
-          <Controller
+          <MarkdownField
             control={control}
             name="reasons"
             rules={{
@@ -223,30 +223,23 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
               minLength: { value: schema.reasons.minLength, message: t('page.submit_hiring.error.reasons_min_length') },
               maxLength: { value: schema.reasons.maxLength, message: t('page.submit_hiring.error.reasons_max_length') },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={formDisabled}
-                loading={isLoadingVpDistribution}
-                error={!!errors.reasons}
-                message={
-                  t(errors.reasons?.message) +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('reasons', '').length,
-                    limit: schema.reasons.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={formDisabled}
+            loading={isLoadingVpDistribution}
+            error={!!errors.reasons}
+            message={
+              t(errors.reasons?.message) +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('reasons', '').length,
+                limit: schema.reasons.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection className="SubmitHiring__EvidenceSection">
           <Label>{t(`page.submit_hiring.${action}.evidence_title`)}</Label>
           <SubLabel>{t(`page.submit_hiring.${action}.evidence_description`)}</SubLabel>
-          <Controller
+          <MarkdownField
             control={control}
             name="evidence"
             rules={{
@@ -260,24 +253,17 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
                 message: t('page.submit_hiring.error.evidence_max_length'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={formDisabled}
-                loading={isLoadingVpDistribution}
-                error={!!errors.evidence}
-                message={
-                  t(errors.evidence?.message) +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('evidence', '').length,
-                    limit: schema.evidence.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={formDisabled}
+            loading={isLoadingVpDistribution}
+            error={!!errors.evidence}
+            message={
+              t(errors.evidence?.message) +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('evidence', '').length,
+                limit: schema.evidence.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -18,6 +17,7 @@ import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../.
 import { disableOnWheelInput } from '../../../helpers'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
+import MarkdownField from '../../Common/Form/MarkdownField'
 import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
@@ -217,7 +217,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
           <Paragraph tiny secondary className="details">
             {t(`page.submit_poi.${action}.description_detail`)}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="description"
             rules={{
@@ -225,23 +225,17 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
               minLength: { value: schema.description.minLength, message: t('error.poi.description_too_short') },
               maxLength: { value: schema.description.maxLength, message: t('error.poi.description_too_large') },
             }}
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                placeholder={t(`page.submit_poi.${action}.description_placeholder`)}
-                disabled={formDisabled}
-                error={!!errors.description}
-                message={
-                  (errors.description?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('description').length,
-                    limit: schema.description.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            placeholder={t(`page.submit_poi.${action}.description_placeholder`)}
+            disabled={formDisabled}
+            error={!!errors.description}
+            message={
+              (errors.description?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('description').length,
+                limit: schema.description.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

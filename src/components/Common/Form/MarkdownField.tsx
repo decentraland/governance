@@ -1,7 +1,8 @@
 import React from 'react'
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
-import { Field as DCLField, FieldProps } from 'decentraland-ui/dist/components/Field/Field'
+import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
+import { FieldProps } from 'decentraland-ui/dist/components/Field/Field'
 
 interface Props<T extends FieldValues> extends FieldProps {
   control: Control<T>
@@ -10,7 +11,13 @@ interface Props<T extends FieldValues> extends FieldProps {
   rules?: any
 }
 
-export default function Field<T extends FieldValues>({ control, name, defaultValue, rules, ...rest }: Props<T>) {
+export default function MarkdownField<T extends FieldValues>({
+  control,
+  name,
+  defaultValue,
+  rules,
+  ...rest
+}: Props<T>) {
   return (
     <Controller
       control={control}
@@ -18,7 +25,7 @@ export default function Field<T extends FieldValues>({ control, name, defaultVal
       defaultValue={defaultValue}
       rules={rules}
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      render={({ field: { ref, ...field } }) => <DCLField {...field} {...rest} />}
+      render={({ field: { ref, ...field } }) => <MarkdownTextarea minHeight={175} {...field} {...rest} />}
     />
   )
 }

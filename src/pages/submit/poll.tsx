@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -18,6 +17,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -227,7 +227,7 @@ export default function SubmitPoll() {
             <MarkdownNotice />
           </Label>
           <SubLabel>{t('page.submit_poll.description_detail')}</SubLabel>
-          <Controller
+          <MarkdownField
             control={control}
             name="description"
             rules={{
@@ -241,23 +241,16 @@ export default function SubmitPoll() {
                 message: t('error.poll.description_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.description}
-                message={
-                  (errors.description?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('description').length,
-                    limit: schema.description.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.description}
+            message={
+              (errors.description?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('description').length,
+                limit: schema.description.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
