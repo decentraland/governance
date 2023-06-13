@@ -1,22 +1,24 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
+import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import omit from 'lodash/omit'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Governance } from '../../clients/Governance'
+import Field from '../../components/Common/Form/Field'
 import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -27,7 +29,6 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_POLL } from '../../entities/Proposal/constants'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
-import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import locations from '../../modules/locations'
 
@@ -52,33 +53,11 @@ const initialState: PollState = {
   },
 }
 
-const edit = (state: PollState, props: Partial<PollState>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
-
 const validate = createValidator<PollState>({
-  title: (state) => ({
-    title: assert(state.title.length <= schema.title.maxLength, 'error.poll.title_too_large'),
-  }),
-  description: (state) => ({
-    description: assert(state.description.length <= schema.description.maxLength, 'error.poll.description_too_large'),
-  }),
   '*': (state) => {
     const choices = Object.values(state.choices)
     return {
-      title:
-        assert(state.title.length > 0, 'error.poll.title_empty') ||
-        assert(state.title.length >= schema.title.minLength, 'error.poll.title_too_short') ||
-        assert(state.title.length <= schema.title.maxLength, 'error.poll.title_too_large'),
-      description:
-        assert(state.description.length > 0, 'error.poll.description_empty') ||
-        assert(state.description.length >= schema.description.minLength, 'error.poll.description_too_short') ||
-        assert(state.description.length <= schema.description.maxLength, 'error.poll.description_too_large'),
       choices:
-        assert(choices.length >= schema.choices.minItems, 'error.poll.choices_insufficient') ||
         assert(
           choices.every((option) => option !== ''),
           'error.poll.choices_empty'
@@ -98,7 +77,16 @@ const validate = createValidator<PollState>({
 export default function SubmitPoll() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialState)
+  const {
+    handleSubmit,
+    formState: { isDirty, isSubmitting, errors },
+    control,
+    setValue,
+    setError: setFormError,
+    watch,
+    clearErrors,
+  } = useForm<PollState>({ defaultValues: initialState, mode: 'onTouched' })
+  const [error, setError] = useState('')
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
     () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_POLL),
@@ -107,63 +95,98 @@ export default function SubmitPoll() {
   const [formDisabled, setFormDisabled] = useState(false)
   const preventNavigation = useRef(false)
 
-  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+  const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
+  const values = useWatch({ control })
 
-  function handleAddOption() {
-    editor.set({
-      ...state.value,
-      choices: {
-        ...state.value.choices,
-        [Date.now()]: '',
-      },
+  function handleAddOption(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    clearErrors('choices')
+    setValue('choices', {
+      ...values.choices,
+      [Date.now()]: '',
     })
   }
 
   function handleRemoveOption(i: string) {
-    const choices = omit(state.value.choices, [i]) as Record<string, string>
+    clearErrors('choices')
+    const choices = omit(values.choices, [i]) as Record<string, string>
     if (Object.keys(choices).length < 2) {
       choices[Date.now()] = ''
     }
-
-    editor.set({
-      ...state.value,
-      choices,
-    })
+    setValue('choices', choices)
   }
 
   function handleEditOption(i: string, value: string) {
-    editor.set({
-      ...state.value,
-      choices: {
-        ...state.value.choices,
-        [i]: value,
-      },
-    })
+    clearErrors('choices')
+    const choices = {
+      ...values.choices,
+      [i]: value,
+    } as Record<string, string>
+    setValue('choices', choices)
   }
 
   useEffect(() => {
-    preventNavigation.current = userModifiedForm(state.value, initialState)
+    preventNavigation.current = isDirty
+  }, [isDirty])
 
-    if (state.validated) {
-      const choices = Object.keys(state.value.choices)
-        .sort()
-        .map((key) => state.value.choices[key])
+  const isValidChoices = useCallback(
+    (choices: Record<string, string>) => {
+      const choicesValues = Object.values(choices)
+      console.log('c', choicesValues)
+
+      if (choicesValues.every((option) => option === '')) {
+        setFormError('choices', { message: t('error.poll.choices_empty') })
+
+        return false
+      }
+
+      if (choicesValues.length < schema.choices.minItems) {
+        setFormError('choices', { message: t('error.poll.choices_insufficient') })
+
+        return false
+      }
+
+      if (choicesValues.some((option) => option.length <= schema.choices.items.minLength)) {
+        setFormError('choices', { message: t('error.poll.choices_too_short') })
+
+        return false
+      }
+
+      if (choicesValues.some((option) => option.length >= schema.choices.items.maxLength)) {
+        setFormError('choices', { message: t('error.poll.choices_too_long') })
+
+        return false
+      }
+
+      return true
+    },
+    [setFormError, t]
+  )
+
+  const onSubmit: SubmitHandler<PollState> = useCallback(
+    async (data) => {
+      if (!isValidChoices(data.choices)) {
+        return
+      }
+
       setFormDisabled(true)
-      Governance.get()
-        .createProposalPoll({
-          ...state.value,
+      const choices = Object.keys(data.choices)
+        .sort()
+        .map((key) => data.choices[key])
+
+      try {
+        const proposal = await Governance.get().createProposalPoll({
+          ...data,
           choices,
         })
-        .then((proposal) => {
-          navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-        })
-        .catch((err) => {
-          console.error(err, { ...err })
-          editor.error({ '*': err.body?.error || err.message })
-          setFormDisabled(false)
-        })
-    }
-  }, [editor, state.validated, state.value])
+        navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+      } catch (error: any) {
+        setError(error.body?.error || error.message)
+        setFormDisabled(false)
+      }
+    },
+    [isValidChoices]
+  )
 
   if (accountState.loading) {
     return <LoadingView />
@@ -182,124 +205,149 @@ export default function SubmitPoll() {
       />
       <Helmet title={t('page.submit_poll.title') || ''} />
 
-      <ContentSection>
-        <Header size="huge">{t('page.submit_poll.title')}</Header>
-      </ContentSection>
-      <ContentSection className="MarkdownSection--tiny">
-        <Markdown>{t('page.submit_poll.description')}</Markdown>
-      </ContentSection>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ContentSection>
+          <Header size="huge">{t('page.submit_poll.title')}</Header>
+        </ContentSection>
+        <ContentSection className="MarkdownSection--tiny">
+          <Markdown>{t('page.submit_poll.description')}</Markdown>
+        </ContentSection>
 
-      <ContentSection>
-        <Label>{t('page.submit_poll.title_label')}</Label>
-        <SubLabel>{t('page.submit_poll.title_detail')}</SubLabel>
-        <Field
-          value={state.value.title}
-          placeholder={t('page.submit_poll.title_placeholder') || ''}
-          onChange={(_, { value }) => editor.set({ title: value })}
-          onBlur={() => editor.set({ title: state.value.title.trim() })}
-          error={!!state.error.title}
-          message={
-            t(state.error.title) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.title.length,
-              limit: schema.title.maxLength,
-            })
-          }
-          loading={isLoadingVpDistribution}
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>
-          {t('page.submit_poll.description_label')}
-          <MarkdownNotice />
-        </Label>
-        <SubLabel>{t('page.submit_poll.description_detail')}</SubLabel>
-        <MarkdownTextarea
-          minHeight={175}
-          placeholder={t('page.submit_poll.description_placeholder') || ''}
-          value={state.value.description}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
-          onBlur={() => editor.set({ description: state.value.description.trim() })}
-          error={!!state.error.description || state.value.description.length > schema.description.maxLength}
-          message={
-            t(state.error.description) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.description.length,
-              limit: schema.description.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>{t('page.submit_poll.choices_label')}</Label>
-        <Paragraph tiny secondary className="details">
-          {' '}
-        </Paragraph>
-        <Paragraph small primary>
-          {t(state.error.choices)}
-        </Paragraph>
-        <div className="Poll__Options">
-          {Object.keys(state.value.choices)
-            .sort()
-            .map((key, i) => (
-              <Field
-                key={key}
-                placeholder={'choice ' + String(i + 1)}
-                value={state.value.choices[key]}
-                action={<Icon name="x" />}
-                onAction={() => handleRemoveOption(key)}
-                onChange={(_, { value }) => handleEditOption(key, value)}
-                disabled={submissionVpNotMet || formDisabled}
-              />
-            ))}
+        <ContentSection>
+          <Label>{t('page.submit_poll.title_label')}</Label>
+          <SubLabel>{t('page.submit_poll.title_detail')}</SubLabel>
           <Field
-            readOnly
-            value={INVALID_PROPOSAL_POLL_OPTIONS}
-            className="input--disabled"
-            action={
-              <Popup
-                content={t('page.submit_poll.mandatory_option')}
-                position="top center"
-                trigger={<Icon name="x" />}
-                on="hover"
-              />
+            name="title"
+            control={control}
+            error={!!errors.title}
+            rules={{
+              required: { value: true, message: t('error.poll.title_empty') },
+              minLength: {
+                value: schema.title.minLength,
+                message: t('error.poll.title_too_short'),
+              },
+              maxLength: {
+                value: schema.title.maxLength,
+                message: t('error.poll.title_too_large'),
+              },
+            }}
+            message={
+              t(errors.title?.message) +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('title').length,
+                limit: schema.title.maxLength,
+              })
             }
-            onAction={() => null}
+            loading={isLoadingVpDistribution}
+            disabled={submissionVpNotMet || formDisabled}
           />
-          <Button basic fluid onClick={handleAddOption}>
-            {t('page.submit_poll.choices_add')}
-          </Button>
-        </div>
-      </ContentSection>
-      <ContentSection>
-        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
-      </ContentSection>
-      <ContentSection>
-        <Button
-          primary
-          disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || isLoadingVpDistribution}
-          onClick={() => editor.validate()}
-        >
-          {t('page.submit.button_submit')}
-        </Button>
-      </ContentSection>
-      {submissionVpNotMet && (
+        </ContentSection>
         <ContentSection>
-          <Paragraph small primary>
-            {t('error.poll.submission_vp_not_met')}
+          <Label>
+            {t('page.submit_poll.description_label')}
+            <MarkdownNotice />
+          </Label>
+          <SubLabel>{t('page.submit_poll.description_detail')}</SubLabel>
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: { value: true, message: t('error.poll.description_empty') },
+              minLength: {
+                value: schema.description.minLength,
+                message: t('error.poll.description_too_short'),
+              },
+              maxLength: {
+                value: schema.description.maxLength,
+                message: t('error.poll.description_too_large'),
+              },
+            }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            render={({ field: { ref, ...field } }) => (
+              <MarkdownTextarea
+                minHeight={175}
+                loading={isLoadingVpDistribution}
+                disabled={submissionVpNotMet || formDisabled}
+                error={!!errors.description}
+                message={
+                  (errors.description?.message || '') +
+                  ' ' +
+                  t('page.submit.character_counter', {
+                    current: watch('description').length,
+                    limit: schema.description.maxLength,
+                  })
+                }
+                {...field}
+              />
+            )}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>{t('page.submit_poll.choices_label')}</Label>
+          <Paragraph tiny secondary className="details">
+            {' '}
           </Paragraph>
+          {errors && (
+            <Paragraph small primary>
+              {errors.choices?.message}
+            </Paragraph>
+          )}
+          <div className="Poll__Options">
+            {values.choices &&
+              Object.keys(values.choices)
+                .sort()
+                .map((key, i) => (
+                  <DCLField
+                    key={key}
+                    placeholder={'choice ' + String(i + 1)}
+                    value={values.choices?.[key]}
+                    action={<Icon name="x" />}
+                    onAction={() => handleRemoveOption(key)}
+                    onChange={(_, { value }) => handleEditOption(key, value)}
+                    disabled={submissionVpNotMet || formDisabled}
+                  />
+                ))}
+            <DCLField
+              readOnly
+              value={INVALID_PROPOSAL_POLL_OPTIONS}
+              className="input--disabled"
+              action={
+                <Popup
+                  content={t('page.submit_poll.mandatory_option')}
+                  position="top center"
+                  trigger={<Icon name="x" />}
+                  on="hover"
+                />
+              }
+              onAction={() => null}
+            />
+            <Button basic fluid onClick={handleAddOption}>
+              {t('page.submit_poll.choices_add')}
+            </Button>
+          </div>
         </ContentSection>
-      )}
-      {state.error['*'] && (
         <ContentSection>
-          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
+          <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
         </ContentSection>
-      )}
+        <ContentSection>
+          <Button type="submit" primary disabled={formDisabled || submissionVpNotMet} loading={isSubmitting}>
+            {t('page.submit.button_submit')}
+          </Button>
+        </ContentSection>
+        {submissionVpNotMet && (
+          <ContentSection>
+            <Paragraph small primary>
+              {t('error.poll.submission_vp_not_met')}
+            </Paragraph>
+          </ContentSection>
+        )}
+        {error && (
+          <ContentSection>
+            <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(error) || error} />
+          </ContentSection>
+        )}
+      </form>
     </ContentLayout>
   )
 }
