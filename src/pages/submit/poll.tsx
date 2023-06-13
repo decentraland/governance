@@ -245,7 +245,6 @@ export default function SubmitPoll() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.description}
                 message={

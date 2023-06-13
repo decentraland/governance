@@ -121,7 +121,7 @@ export default function SubmitDraftProposal() {
           <Label>{t('page.submit_draft.linked_proposal_label')}</Label>
           <SelectField
             value={watch('linked_proposal_id') || undefined}
-            options={preselectedProposal}
+            options={preselectedProposal?.selectOption}
             error={!!errors.linked_proposal_id}
             message={errors.linked_proposal_id?.message}
             rules={{ required: { value: true, message: t('error.draft.linked_proposal_empty') } }}
@@ -179,7 +179,6 @@ export default function SubmitDraftProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.summary}
                 message={
@@ -221,7 +220,6 @@ export default function SubmitDraftProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.abstract}
                 message={
@@ -263,7 +261,6 @@ export default function SubmitDraftProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.motivation}
                 message={
@@ -305,7 +302,6 @@ export default function SubmitDraftProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.specification}
                 message={
@@ -347,7 +343,6 @@ export default function SubmitDraftProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.conclusion}
                 message={

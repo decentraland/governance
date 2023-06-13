@@ -158,7 +158,6 @@ export default function SubmitPitchProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.target_audience}
                 message={
@@ -200,7 +199,6 @@ export default function SubmitPitchProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.problem_statement}
                 message={
@@ -242,7 +240,6 @@ export default function SubmitPitchProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.proposed_solution}
                 message={
@@ -284,7 +281,6 @@ export default function SubmitPitchProposal() {
             render={({ field: { ref, ...field } }) => (
               <MarkdownTextarea
                 minHeight={175}
-                loading={isLoadingVpDistribution}
                 disabled={submissionVpNotMet || formDisabled}
                 error={!!errors.relevance}
                 message={
