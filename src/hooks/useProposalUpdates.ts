@@ -1,10 +1,22 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 
 export default function useProposalUpdates(proposalId?: string | null) {
-  const [updates, state] = useAsyncMemo(() => Governance.get().getProposalUpdates(proposalId!), [proposalId], {
-    callWithTruthyDeps: true,
+  const {
+    data: updates,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: [`proposalUpdates#${proposalId}`],
+    queryFn: async () => {
+      if (!proposalId) {
+        return undefined
+      }
+      return Governance.get().getProposalUpdates(proposalId)
+    },
+    staleTime: 3.6e6, // 1 hour
   })
 
   return {
@@ -12,7 +24,8 @@ export default function useProposalUpdates(proposalId?: string | null) {
     pendingUpdates: updates?.pendingUpdates,
     nextUpdate: updates?.nextUpdate,
     currentUpdate: updates?.currentUpdate,
-    state,
-    refetchUpdates: state.reload,
+    isLoading,
+    isError,
+    refetchUpdates: refetch,
   }
 }

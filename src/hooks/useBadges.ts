@@ -16,7 +16,7 @@ export default function useBadges(address?: string) {
   })
 
   return {
-    badges,
+    badges: badges ?? NULL_USER_BADGES,
     isLoadingBadges,
   }
 }

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 import compact from 'lodash/compact'
 import orderBy from 'lodash/orderBy'
 
@@ -9,10 +9,15 @@ import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import useProposals from './useProposals'
 
 export default function useProposalsByParticipatingVP(start: Date, end: Date) {
-  const [snapshotProposals, snapshotProposalsState] = useAsyncMemo(async () => {
-    const pendingProposals = await SnapshotGraphql.get().getPendingProposals(start, end, ['id'], 5)
-    return orderBy(pendingProposals, ['scores_total'], ['desc'])
+  const { data: snapshotProposals, isLoading: isLoadingSnapshotProposals } = useQuery({
+    queryKey: [`snapshotProposals#${start}#${end}`],
+    queryFn: async () => {
+      const pendingProposals = await SnapshotGraphql.get().getPendingProposals(start, end, ['id'], 5)
+      return orderBy(pendingProposals, ['scores_total'], ['desc'])
+    },
+    staleTime: 3.6e6, // 1 hour
   })
+
   const snapshotIds = useMemo(() => snapshotProposals?.map((item) => item.id).join(','), [snapshotProposals])
   const { proposals, isLoadingProposals } = useProposals({ snapshotIds, load: !!snapshotIds })
 
@@ -28,6 +33,6 @@ export default function useProposalsByParticipatingVP(start: Date, end: Date) {
 
   return {
     proposals: orderedProposals,
-    isLoadingProposals: snapshotProposalsState.loading || isLoadingProposals,
+    isLoadingProposals: isLoadingSnapshotProposals || isLoadingProposals,
   }
 }

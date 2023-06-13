@@ -8,7 +8,7 @@ function useCoauthors(proposalId: string, status?: CoauthorStatus) {
     queryKey: [`coauthors-${proposalId}`],
     queryFn: () => Governance.get().getCoAuthorsByProposal(proposalId, status),
   })
-  return coAuthors
+  return coAuthors ?? []
 }
 
 export default useCoauthors

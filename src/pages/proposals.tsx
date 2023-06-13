@@ -91,7 +91,7 @@ export default function ProposalsPage() {
   }, [handlePageFilter, page, proposals])
 
   const [user] = useAuthContext()
-  const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
+  const { requestsStatus } = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -209,9 +209,7 @@ export default function ProposalsPage() {
                           <ProposalItem
                             key={proposal.id}
                             proposal={proposal}
-                            hasCoauthorRequest={
-                              !!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)
-                            }
+                            hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
                             votes={votes ? votes[proposal.id] : undefined}
                             subscribing={subscriptionsState.subscribing.includes(proposal.id)}
                             subscribed={

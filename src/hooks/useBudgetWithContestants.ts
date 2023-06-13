@@ -10,12 +10,11 @@ export default function useBudgetWithContestants(id?: string) {
       if (!id || id.length < 1) return NULL_CONTESTED_BUDGET
       return await Governance.get().getBudgetWithContestants(id)
     },
-    initialData: NULL_CONTESTED_BUDGET,
     staleTime: 3.6e6, // 1 hour
   })
 
   return {
-    budgetWithContestants,
+    budgetWithContestants: budgetWithContestants ?? NULL_CONTESTED_BUDGET,
     isLoadingBudgetWithContestants,
   }
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useLocation } from '@reach/router'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
@@ -92,6 +93,13 @@ type VoteSegmentation = {
   lowQualityVotes: Record<string, Vote>
 }
 
+type UpdateProps = {
+  status: ProposalStatus
+  vesting_contract: string | null
+  enactingTx: string | null
+  description: string
+}
+
 function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation {
   const highQualityVotes: Record<string, Vote> = {}
   const lowQualityVotes: Record<string, Vote> = {}
@@ -134,14 +142,14 @@ export default function ProposalPage() {
     retryTimer: SECONDS_FOR_VOTING_RETRY,
     selectedChoice: EMPTY_VOTE_CHOICE_SELECTION,
   })
+  const [account, { provider }] = useAuthContext()
+  const { isDAOCommittee } = useIsDAOCommittee(account)
   const [errorCounter, setErrorCounter] = useState(0)
   const updatePageStateRef = useRef(updatePageState)
-  const [account, { provider }] = useAuthContext()
-  const [proposal, proposalState] = useProposal(params.get('id'))
-  const { isDAOCommittee } = useIsDAOCommittee(account)
+  const { proposal, isLoadingProposal, isErrorOnProposal, proposalKey } = useProposal(params.get('id'))
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
-  const { votes, votesState } = useProposalVotes(proposal?.id)
+  const { votes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
   const [subscriptions, subscriptionsState] = useAsyncMemo(
@@ -175,7 +183,7 @@ export default function ProposalPage() {
             showVotingError: false,
             confirmSubscription: !votes![account!],
           })
-          votesState.reload()
+          reloadVotes()
         } catch (err) {
           ErrorClient.report('Unable to vote: ', err)
           console.error(err, { ...(err as Error) })
@@ -216,22 +224,28 @@ export default function ProposalPage() {
     [proposal, subscriptionsState]
   )
 
-  const [updatingStatus, updateProposalStatus] = useAsyncTask(
-    async (status: ProposalStatus, vesting_address: string | null, enactingTx: string | null, description: string) => {
+  const queryClient = useQueryClient()
+  const { mutate, isLoading: isUpdating } = useMutation({
+    mutationFn: async (updateProps: UpdateProps) => {
+      const { status, vesting_contract, enactingTx, description } = updateProps
       if (proposal && isDAOCommittee) {
         const updateProposal = await Governance.get().updateProposalStatus(
           proposal.id,
           status,
-          vesting_address,
+          vesting_contract,
           enactingTx,
           description
         )
-        proposalState.set(updateProposal)
         updatePageState({ confirmStatusUpdate: false })
+        return updateProposal
       }
     },
-    [proposal, account, isDAOCommittee, proposalState, updatePageState]
-  )
+    onSuccess: (proposal) => {
+      if (proposal) {
+        queryClient.setQueryData([proposalKey], proposal)
+      }
+    },
+  })
 
   const [deleting, deleteProposal] = useAsyncTask(async () => {
     if (proposal && account && (proposal.user === account || isDAOCommittee)) {
@@ -278,7 +292,7 @@ export default function ProposalPage() {
     !!proposal &&
     proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
 
-  if (proposalState.error) {
+  if (isErrorOnProposal) {
     return (
       <ContentLayout className="ProposalDetailPage">
         <NotFound />
@@ -293,7 +307,7 @@ export default function ProposalPage() {
   }
 
   const showImagesPreview =
-    !proposalState.loading && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
+    !isLoadingProposal && proposal?.type === ProposalType.LinkedWearables && !!proposal.configuration.image_previews
   const showProposalBudget =
     proposal?.type === ProposalType.Grant &&
     !isLegacyGrantCategory(proposal.configuration.category) &&
@@ -325,7 +339,7 @@ export default function ProposalPage() {
         <Grid stackable>
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailDescription">
-              <Loader active={proposalState.loading} />
+              <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
               <ProposalHeaderPoi proposal={proposal} />
@@ -357,7 +371,7 @@ export default function ProposalPage() {
                 <Desktop>
                   <SurveyResults
                     votes={votes}
-                    isLoadingVotes={votesState.loading}
+                    isLoadingVotes={isLoadingVotes}
                     surveyTopics={surveyTopics}
                     isLoadingSurveyTopics={isLoadingSurveyTopics}
                   />
@@ -369,7 +383,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="4" className="ProposalDetailActions">
               <ProposalSidebar
                 proposal={proposal}
-                proposalLoading={proposalState.loading}
+                proposalLoading={isLoadingProposal}
                 deleting={deleting}
                 proposalPageState={proposalPageState}
                 updatePageState={updatePageState}
@@ -379,14 +393,14 @@ export default function ProposalPage() {
                 castingVote={castingVote}
                 castVote={castVote}
                 voteWithSurvey={voteWithSurvey}
-                updatingStatus={updatingStatus}
+                updatingStatus={isUpdating}
                 subscribing={subscribing}
                 subscribe={subscribe}
                 subscriptions={subscriptions}
                 subscriptionsLoading={subscriptionsState.loading}
                 highQualityVotes={highQualityVotes}
                 votes={votes}
-                votesLoading={votesState.loading}
+                votesLoading={isLoadingVotes}
                 isCoauthor={isCoauthor}
                 isOwner={isOwner}
               />
@@ -432,9 +446,9 @@ export default function ProposalPage() {
         open={!!proposalPageState.confirmStatusUpdate}
         proposal={proposal}
         status={proposalPageState.confirmStatusUpdate || null}
-        loading={updatingStatus}
+        loading={isUpdating}
         onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
-          updateProposalStatus(status, vesting_contract, enactingTx, description)
+          mutate({ status, vesting_contract, enactingTx, description })
         }
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />
@@ -443,7 +457,7 @@ export default function ProposalPage() {
         onDismiss={closeProposalSuccessModal}
         onClose={closeProposalSuccessModal}
         proposal={proposal}
-        loading={proposalState.loading}
+        loading={isLoadingProposal}
       />
       <UpdateSuccessModal
         open={proposalPageState.showUpdateSuccessModal}
@@ -451,7 +465,7 @@ export default function ProposalPage() {
         onClose={closeUpdateSuccessModal}
         proposalId={proposal?.id}
         updateId={publicUpdates?.[0]?.id}
-        loading={proposalState.loading}
+        loading={isLoadingProposal}
       />
     </>
   )
