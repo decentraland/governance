@@ -20,19 +20,13 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
-import { newProposalBanNameScheme } from '../../entities/Proposal/types'
+import { NewProposalBanName, newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isAlreadyBannedName, isValidName } from '../../entities/Proposal/utils'
 import locations from '../../modules/locations'
 
 import './submit.css'
 
-type BanNameState = {
-  name: string
-  description: string
-  coAuthors?: string[]
-}
-
-const initialState: BanNameState = {
+const initialState: NewProposalBanName = {
   name: '',
   description: '',
 }
@@ -48,7 +42,7 @@ export default function SubmitBanName() {
     control,
     setValue,
     watch,
-  } = useForm<BanNameState>({ defaultValues: initialState, mode: 'onTouched' })
+  } = useForm<NewProposalBanName>({ defaultValues: initialState, mode: 'onTouched' })
   const [error, setError] = useState('')
 
   const [formDisabled, setFormDisabled] = useState(false)
@@ -60,7 +54,7 @@ export default function SubmitBanName() {
     preventNavigation.current = isDirty
   }, [isDirty])
 
-  const onSubmit: SubmitHandler<BanNameState> = async (data) => {
+  const onSubmit: SubmitHandler<NewProposalBanName> = async (data) => {
     setFormDisabled(true)
 
     try {

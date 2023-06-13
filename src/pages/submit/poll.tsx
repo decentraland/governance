@@ -7,7 +7,6 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -52,27 +51,6 @@ const initialState: PollState = {
     '1': '',
   },
 }
-
-const validate = createValidator<PollState>({
-  '*': (state) => {
-    const choices = Object.values(state.choices)
-    return {
-      choices:
-        assert(
-          choices.every((option) => option !== ''),
-          'error.poll.choices_empty'
-        ) ||
-        assert(
-          choices.every((option) => option.length >= schema.choices.items.minLength),
-          'error.poll.choices_too_short'
-        ) ||
-        assert(
-          choices.every((option) => option.length <= schema.choices.items.maxLength),
-          'error.poll.choices_too_long'
-        ),
-    }
-  },
-})
 
 export default function SubmitPoll() {
   const t = useFormatMessage()

@@ -79,7 +79,7 @@ export default function SubmitTenderProposal() {
 
   const {
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: { isDirty, isSubmitting, errors },
     control,
     setValue,
     watch,
@@ -408,7 +408,7 @@ export default function SubmitTenderProposal() {
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={submissionVpNotMet || formDisabled} />
         </ContentSection>
         <ContentSection>
-          <Button type="submit" primary loading={formDisabled} disabled={formDisabled}>
+          <Button type="submit" primary loading={isSubmitting} disabled={submissionVpNotMet || formDisabled}>
             {t('page.submit.button_submit')}
           </Button>
         </ContentSection>
