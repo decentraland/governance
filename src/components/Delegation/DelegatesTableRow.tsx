@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
 import { abbreviateTimeDifference } from '../../modules/time'
@@ -25,8 +24,7 @@ interface Props {
 
 function DelegateRow({ delegate, onDelegateSelected }: Props) {
   const intl = useIntl()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isMobile = useMobileMediaQuery()
   const delegateAddress = delegate.address.toLowerCase()
   const [isFilled, setIsFilled] = useState(false)
 

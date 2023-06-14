@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { useMobileMediaQuery, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Autoplay, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/bundle'
@@ -21,9 +20,8 @@ interface Props {
 const NO_IMAGE = require('../../images/no-image.png').default
 
 function ImageGallery({ className, imageUrls }: Props) {
-  const responsive = useResponsive()
-  const isNarrowScreen = responsive({ maxWidth: 991 })
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isNarrowScreen = useTabletAndBelowMediaQuery()
+  const isMobile = useMobileMediaQuery()
   const [openFullscreen, setOpenFullscreen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
 
