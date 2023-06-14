@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@reach/router'
+import { useQuery } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -61,11 +61,12 @@ export default function ProposalsPage() {
     order,
     itemsPerPage: ITEMS_PER_PAGE,
   })
-  const [votes, votesState] = useAsyncMemo(
-    () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
-    [proposals],
-    { callWithTruthyDeps: true }
-  )
+  const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
+  const { data: votes, isLoading: isLoadingVotes } = useQuery({
+    queryKey: [`porposalVotes#${proposalIds.join('-')}`],
+    queryFn: () => Governance.get().getVotes(proposalIds),
+    staleTime: 3.6e6, // 1 hour
+  })
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const responsive = useResponsive()
   const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
@@ -115,7 +116,7 @@ export default function ProposalsPage() {
     )
   }
 
-  const isLoading = !proposals || (isLoadingProposals && votesState.loading)
+  const isLoading = !proposals || (isLoadingProposals && isLoadingVotes)
 
   return (
     <>
@@ -211,7 +212,7 @@ export default function ProposalsPage() {
                             proposal={proposal}
                             hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
                             votes={votes ? votes[proposal.id] : undefined}
-                            subscribing={subscriptionsState.subscribing.includes(proposal.id)}
+                            subscribing={subscriptionsState.isSubscribing}
                             subscribed={
                               !!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)
                             }

@@ -20,8 +20,6 @@ export default function Badges({ address }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [badgeInDetail, setBadgeInDetail] = useState<Badge | null>(null)
 
-  console.log(badges)
-
   const displayedBadges = useMemo(() => badges.currentBadges.slice(0, MAX_DISPLAYED_BADGES) ?? [], [badges])
   const stackedBadges = useMemo(
     () => [...badges.currentBadges.slice(MAX_DISPLAYED_BADGES), ...badges.expiredBadges],

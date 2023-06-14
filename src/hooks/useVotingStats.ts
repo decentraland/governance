@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { SnapshotGraphql, getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
@@ -47,28 +47,28 @@ export default function useVotingStats(address: string, userAddress: string | nu
   const now = useMemo(() => new Date(), [])
   const aMonthAgo = useMemo(() => new Date(now.getFullYear(), now.getMonth() - 1, now.getDay()), [now])
 
-  const [last30DaysProposals, proposalsState] = useAsyncMemo(
-    async () => {
+  const { data: last30DaysProposals, isLoading: isLoadingProposals } = useQuery({
+    queryKey: [`last30DaysProposals#${aMonthAgo.getTime()}`],
+    queryFn: async () => {
       return await SnapshotGraphql.get().getProposals(aMonthAgo, now, ['id', 'choices', 'scores'])
     },
-    [],
-    { initialValue: [] as Partial<SnapshotProposal>[], callWithTruthyDeps: true }
-  )
+    staleTime: 3.6e6, // 1 hour
+  })
 
-  const [votes, votesState] = useAsyncMemo(
-    async () => {
+  const { data: votes, isLoading: isLoadingVotes } = useQuery({
+    queryKey: [`votes#${address}${userAddress ? `-${userAddress}` : ''}`],
+    queryFn: async () => {
       const addresses = [address]
       if (userAddress) addresses.push(userAddress)
       return await SnapshotGraphql.get().getAddressesVotes(addresses)
     },
-    [address],
-    { initialValue: [] as SnapshotVote[], callWithTruthyDeps: true }
-  )
+    staleTime: 3.6e6, // 1 hour
+  })
 
-  const { addressVotes, userVotes } = useMemo(() => sortAddressesVotes(votes, userAddress), [votes, userAddress])
+  const { addressVotes, userVotes } = useMemo(() => sortAddressesVotes(votes ?? [], userAddress), [votes, userAddress])
 
   const { participationTotal, participationPercentage } = useMemo(
-    () => getParticipation(last30DaysProposals, addressVotes, aMonthAgo),
+    () => getParticipation(last30DaysProposals ?? [], addressVotes, aMonthAgo),
     [last30DaysProposals, addressVotes, aMonthAgo]
   )
 
@@ -79,6 +79,6 @@ export default function useVotingStats(address: string, userAddress: string | nu
     participationTotal,
     personalMatchPercentage: userAddress ? matchResult.percentage : 100,
     outcomeMatchPercentage: outcomeMatch(addressVotes).outcomeMatch,
-    isLoading: proposalsState.loading || votesState.loading,
+    isLoading: isLoadingProposals || isLoadingVotes,
   }
 }

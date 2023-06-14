@@ -1,4 +1,4 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/SnapshotGraphqlTypes'
@@ -27,8 +27,9 @@ export default function useVotingPowerOnProposal(
   proposal?: ProposalAttributes | null
 ) {
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address, proposal?.snapshot_id)
-  const [vpOnProposal, vpOnProposalState] = useAsyncMemo(
-    async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: [`vpDistribution#${address}#${proposal?.snapshot_id}`],
+    queryFn: async () => {
       if (!address || !proposal || isLoadingDelegators || isLoadingVpDistribution || !vpDistribution) {
         return initialVotingPowerOnProposal
       }
@@ -37,16 +38,16 @@ export default function useVotingPowerOnProposal(
       const addressVp = vpDistribution.own || 0
       return { addressVp, delegatedVp }
     },
-    [votes, address, proposal, vpDistribution, delegators],
-    { initialValue: initialVotingPowerOnProposal, callWithTruthyDeps: true }
-  )
+    staleTime: 3.6e6, // 1 hour
+  })
+  const vpOnProposal = data ?? initialVotingPowerOnProposal
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
-  const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !vpOnProposalState.loading
+  const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !isLoading
   return {
     totalVpOnProposal,
     ...vpOnProposal,
     hasEnoughToVote,
-    isLoadingVp: isLoadingVpDistribution || vpOnProposalState.loading,
+    isLoadingVp: isLoadingVpDistribution || isLoading,
   }
 }
 

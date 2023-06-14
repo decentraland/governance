@@ -3,13 +3,12 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useLocation } from '@reach/router'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
@@ -152,11 +151,12 @@ export default function ProposalPage() {
   const { votes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
-  const [subscriptions, subscriptionsState] = useAsyncMemo(
-    () => Governance.get().getSubscriptions(proposal!.id),
-    [proposal],
-    { callWithTruthyDeps: true }
-  )
+  const subscriptionsQueryKey = `subscriptions#${proposal?.id || ''}`
+  const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
+    queryKey: [subscriptionsQueryKey],
+    queryFn: () => Governance.get().getSubscriptions(proposal!.id),
+    staleTime: 3.6e6, // 1 hour
+  })
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
   const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)
 
@@ -204,28 +204,27 @@ export default function ProposalPage() {
     },
     [proposal, account, provider, votes, proposalPageState.selectedChoice]
   )
+  const queryClient = useQueryClient()
 
-  const [subscribing, subscribe] = useAsyncTask<[subscribe?: boolean | undefined]>(
-    async (subscribe = true) => {
+  const { mutate: updateSubscription, isLoading: isUpdatingSubscription } = useMutation({
+    mutationFn: async (subscribe: boolean) => {
       if (proposal) {
         if (subscribe) {
           const newSubscription = await Governance.get().subscribe(proposal.id)
-          subscriptionsState.set((current) => [...(current || []), newSubscription])
+          return [...(subscriptions ?? []), newSubscription]
         } else {
           await Governance.get().unsubscribe(proposal.id)
-          subscriptionsState.set((current) =>
-            (current || []).filter((subscription) => subscription.proposal_id !== proposal.id)
-          )
+          return (subscriptions ?? []).filter((subscription) => subscription.proposal_id !== proposal.id)
         }
-
-        updatePageState({ confirmSubscription: false })
       }
     },
-    [proposal, subscriptionsState]
-  )
+    onSuccess: (updatedSubscriptions) => {
+      if (!proposal) return
+      queryClient.setQueryData([subscriptionsQueryKey], updatedSubscriptions)
+    },
+  })
 
-  const queryClient = useQueryClient()
-  const { mutate, isLoading: isUpdating } = useMutation({
+  const { mutate: updateProposal, isLoading: isUpdating } = useMutation({
     mutationFn: async (updateProps: UpdateProps) => {
       const { status, vesting_contract, enactingTx, description } = updateProps
       if (proposal && isDAOCommittee) {
@@ -394,10 +393,10 @@ export default function ProposalPage() {
                 castVote={castVote}
                 voteWithSurvey={voteWithSurvey}
                 updatingStatus={isUpdating}
-                subscribing={subscribing}
-                subscribe={subscribe}
-                subscriptions={subscriptions}
-                subscriptionsLoading={subscriptionsState.loading}
+                subscribing={isUpdatingSubscription}
+                subscribe={updateSubscription}
+                subscriptions={subscriptions ?? []}
+                subscriptionsLoading={isSubscriptionsLoading}
                 highQualityVotes={highQualityVotes}
                 votes={votes}
                 votesLoading={isLoadingVotes}
@@ -431,9 +430,9 @@ export default function ProposalPage() {
         onClose={() => updatePageState({ showVotesList: false })}
       />
       <VoteRegisteredModal
-        loading={subscribing}
+        loading={isUpdatingSubscription}
         open={proposalPageState.confirmSubscription}
-        onClickAccept={() => subscribe()}
+        onClickAccept={() => updateSubscription(true)}
         onClose={() => updatePageState({ confirmSubscription: false })}
       />
       <DeleteProposalModal
@@ -448,7 +447,7 @@ export default function ProposalPage() {
         status={proposalPageState.confirmStatusUpdate || null}
         loading={isUpdating}
         onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
-          mutate({ status, vesting_contract, enactingTx, description })
+          updateProposal({ status, vesting_contract, enactingTx, description })
         }
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />

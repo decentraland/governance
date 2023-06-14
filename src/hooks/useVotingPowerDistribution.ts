@@ -1,9 +1,9 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { VpDistribution } from '../clients/SnapshotGraphqlTypes'
 
-export const EMPTY_DISTRIBUTION = {
+export const EMPTY_DISTRIBUTION: VpDistribution = {
   total: 0,
   own: 0,
   wMana: 0,
@@ -17,14 +17,14 @@ export const EMPTY_DISTRIBUTION = {
 }
 
 export default function useVotingPowerDistribution(address?: string | null, proposalSnapshotId?: string) {
-  const [vpDistribution, state] = useAsyncMemo<VpDistribution>(
-    async () => {
+  const { data: vpDistribution, isLoading } = useQuery({
+    queryKey: [`vpDistribution#${address}#${proposalSnapshotId}`],
+    queryFn: async () => {
       if (!address) return EMPTY_DISTRIBUTION
       return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
     },
-    [address],
-    { callWithTruthyDeps: true, initialValue: EMPTY_DISTRIBUTION }
-  )
+    staleTime: 3.6e6, // 1 hour
+  })
 
-  return { vpDistribution: vpDistribution, isLoadingVpDistribution: state.loading }
+  return { vpDistribution: vpDistribution ?? EMPTY_DISTRIBUTION, isLoadingVpDistribution: isLoading }
 }
