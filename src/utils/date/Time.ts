@@ -18,6 +18,8 @@ import isYesterday from 'dayjs/plugin/isYesterday'
 import 'dayjs/plugin/isYesterday'
 import pluralGetSet from 'dayjs/plugin/pluralGetSet'
 import 'dayjs/plugin/pluralGetSet'
+import 'dayjs/plugin/quarterOfYear'
+import quarterOfYear from 'dayjs/plugin/quarterOfYear'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/plugin/relativeTime'
 import timezone from 'dayjs/plugin/timezone'
@@ -38,6 +40,7 @@ Time.extend(pluralGetSet)
 Time.extend(customParseFormat)
 Time.extend(relativeTime)
 Time.extend(timezone)
+Time.extend(quarterOfYear)
 Time.extend(duration)
 Time.extend((_options, Dayjs, factory) => {
   const Constants = {
