@@ -1,24 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
+import { assert } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
+import isNil from 'lodash/isNil'
 import omit from 'lodash/omit'
+import omitBy from 'lodash/omitBy'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
+import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -26,7 +30,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
-import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
+import { asNumber, isValidImage } from '../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../helpers'
 import { isHttpsURL } from '../../helpers'
 import locations from '../../modules/locations'
@@ -35,8 +39,8 @@ import './submit.css'
 
 type LinkedWearablesState = {
   name: string
-  image_previews: Record<string, string>
   marketplace_link: string
+  image_previews: Record<string, string>
   links: Record<string, string>
   nft_collections: string
   items: number
@@ -58,10 +62,10 @@ type ListSectionValidator = (input: string) => string | undefined
 
 const initialState: LinkedWearablesState = {
   name: '',
+  marketplace_link: '',
   image_previews: {
     '0': '',
   },
-  marketplace_link: '',
   links: {
     '0': '',
   },
@@ -82,105 +86,9 @@ const initialState: LinkedWearablesState = {
 const schema = newProposalLinkedWearablesScheme.properties
 const MAX_IMAGES = schema.image_previews.maxItems
 
-const edit = (state: LinkedWearablesState, props: Partial<LinkedWearablesState>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
-
-const validate = createValidator<LinkedWearablesState>({
-  name: (state) => ({
-    name: assert(state.name.length <= schema.name.maxLength, 'error.linked_wearables.name_too_large'),
-  }),
-  nft_collections: (state) => ({
-    nft_collections: assert(
-      state.nft_collections.length <= schema.nft_collections.maxLength,
-      'error.linked_wearables.nft_collections_too_large'
-    ),
-  }),
-  governance: (state) => ({
-    governance: assert(
-      state.governance.length <= schema.governance.maxLength,
-      'error.linked_wearables.governance_too_large'
-    ),
-  }),
-  motivation: (state) => ({
-    motivation: assert(
-      state.motivation.length <= schema.motivation.maxLength,
-      'error.linked_wearables.motivation_too_large'
-    ),
-  }),
-  method: (state) => ({
-    method: assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large'),
-  }),
-  '*': (state) => {
-    const image_previews = Object.values(state.image_previews)
-    const links = Object.values(state.links)
-    const smart_contract = Object.values(state.smart_contract)
-    const managers = Object.values(state.managers)
-    return {
-      name:
-        assert(state.name.length > 0, 'error.linked_wearables.name_empty') ||
-        assert(state.name.length >= schema.name.minLength, 'error.linked_wearables.name_too_short') ||
-        assert(state.name.length <= schema.name.maxLength, 'error.linked_wearables.name_too_large'),
-      image_previews: assert(
-        image_previews.some((option) => option !== ''),
-        'error.linked_wearables.links_empty'
-      ),
-      marketplace_link:
-        assert(state.marketplace_link.length > 0, 'error.linked_wearables.single_url_empty') ||
-        assert(isHttpsURL(state.marketplace_link), 'error.linked_wearables.single_url_invalid'),
-      links: assert(
-        links.some((option) => option !== ''),
-        'error.linked_wearables.links_empty'
-      ),
-      nft_collections:
-        assert(state.nft_collections.length > 0, 'error.linked_wearables.nft_collections_empty') ||
-        assert(
-          state.nft_collections.length >= schema.nft_collections.minLength,
-          'error.linked_wearables.nft_collections_too_short'
-        ) ||
-        assert(
-          state.nft_collections.length <= schema.nft_collections.maxLength,
-          'error.linked_wearables.nft_collections_too_large'
-        ),
-      items:
-        assert(Number.isFinite(asNumber(state.items)), 'error.linked_wearables.items_invalid') ||
-        assert(asNumber(state.items) >= schema.items.minimum, 'error.linked_wearables.items_too_low') ||
-        assert(asNumber(state.items) <= schema.items.maximum, 'error.linked_wearables.items_too_high'),
-      smart_contract: assert(
-        smart_contract.some((option) => option !== ''),
-        'error.linked_wearables.smart_contract_empty'
-      ),
-      governance:
-        assert(state.governance.length > 0, 'error.linked_wearables.governance_empty') ||
-        assert(state.governance.length >= schema.governance.minLength, 'error.linked_wearables.governance_too_short') ||
-        assert(state.governance.length <= schema.governance.maxLength, 'error.linked_wearables.governance_too_large'),
-      motivation:
-        assert(state.motivation.length > 0, 'error.linked_wearables.motivation_empty') ||
-        assert(state.motivation.length >= schema.motivation.minLength, 'error.linked_wearables.motivation_too_short') ||
-        assert(state.motivation.length <= schema.motivation.maxLength, 'error.linked_wearables.motivation_too_large'),
-      method: assert(state.method.length <= schema.method.maxLength, 'error.linked_wearables.method_too_large'),
-      managers: assert(
-        managers.some((option) => option !== ''),
-        'error.linked_wearables.managers_empty'
-      ),
-    }
-  },
-})
-
 const removeEmptyStrings = (array: string[]) => array.filter((item) => item)
 
-const urlValidator: ListSectionValidator = (input: string) => {
-  return assert(isHttpsURL(input), 'error.linked_wearables.url_invalid')
-}
-
-const addressValidator: ListSectionValidator = (input: string) => {
-  return assert(isEthereumAddress(input), 'error.linked_wearables.address_invalid')
-}
-
-const imagesValidator = async (urls: Record<string, string>) => {
+const getImagesValidation = async (urls: Record<string, string>) => {
   const errors: string[] = []
   for (const [key, value] of Object.entries(urls)) {
     if (value) {
@@ -191,55 +99,61 @@ const imagesValidator = async (urls: Record<string, string>) => {
     }
   }
 
-  return errors
+  return {
+    isValid: errors.length === 0,
+    errors,
+  }
 }
 
 export default function SubmitLinkedWearables() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialState)
+  const {
+    handleSubmit,
+    formState: { isDirty, isSubmitting, errors },
+    control,
+    setValue,
+    setError: setFormError,
+    clearErrors,
+    watch,
+  } = useForm<LinkedWearablesState>({ defaultValues: initialState, mode: 'onTouched' })
   const [formDisabled, setFormDisabled] = useState(false)
   const [formErrorKeys, setFormErrorKeys] = useState('')
-  const [listSectionErrors, setListSectionErrors] = useState<Record<ListSectionType['section'], string[]>>({
-    image_previews: [],
-    links: [],
-    smart_contract: [],
-    managers: [],
-  })
+  const [error, setError] = useState('')
   const preventNavigation = useRef(false)
+  const values = useWatch({ control })
 
-  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+  const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
+
+  useEffect(() => {
+    preventNavigation.current = isDirty
+  }, [isDirty])
+
+  const handleAddOption = (e: React.MouseEvent<HTMLButtonElement>, field: ListSectionType['section']) => {
+    e.preventDefault()
+    clearErrors(field)
+    setValue(field, {
+      ...values[field],
+      [Date.now()]: '',
+    })
+  }
 
   const handleRemoveOption = (field: ListSectionType['section'], i: string) => {
-    const addresses = omit(state.value[field], [i]) as Record<string, string>
+    clearErrors(field)
+    const addresses = omit(values[field], [i]) as Record<string, string>
     if (Object.keys(addresses).length < 1) {
       addresses[Date.now()] = ''
     }
 
-    editor.set({
-      ...state.value,
-      [field]: addresses,
-    })
+    setValue(field, addresses)
   }
 
   const handleEditOption = (field: ListSectionType['section'], i: string, value: string) => {
-    editor.set({
-      ...state.value,
-      [field]: {
-        ...state.value[field],
-        [i]: value,
-      },
-    })
-  }
-
-  const handleAddOption = (field: ListSectionType['section']) => {
-    editor.set({
-      ...state.value,
-      [field]: {
-        ...state.value[field],
-        [Date.now()]: '',
-      },
-    })
+    clearErrors(field)
+    setValue(field, {
+      ...values[field],
+      [i]: value,
+    } as Record<string, string>)
   }
 
   const handleErrorOption = (
@@ -250,25 +164,20 @@ export default function SubmitLinkedWearables() {
   ) => {
     const error = validator(input)
     if (input !== '' && error) {
-      setListSectionErrors({
-        ...listSectionErrors,
-        [field]: [...listSectionErrors[field], fieldKey],
-      })
-      editor.error({ [field]: state.error[field] || error })
-    } else {
-      setListSectionErrors({
-        ...listSectionErrors,
-        [field]: listSectionErrors[field].filter((key) => key !== fieldKey),
-      })
-      editor.error({ [field]: undefined })
+      setFormError(field, { message: (errors[field]?.message as unknown as string) || error })
     }
   }
 
   const handleProgrammaticallyGeneratedOption = () => {
-    editor.set({
-      ...state.value,
-      programmatically_generated: !state.value.programmatically_generated,
-    })
+    setValue('programmatically_generated', !values.programmatically_generated)
+  }
+
+  const urlValidator: ListSectionValidator = (input: string) => {
+    return assert(isHttpsURL(input), t('error.linked_wearables.url_invalid'))
+  }
+
+  const addressValidator: ListSectionValidator = (input: string) => {
+    return assert(isEthereumAddress(input), t('error.linked_wearables.address_invalid'))
   }
 
   const getListSection = (
@@ -277,7 +186,8 @@ export default function SubmitLinkedWearables() {
     detailOptions?: Record<string, unknown>,
     maxAmount?: number
   ) => {
-    const items = Object.values(state.value[params.section])
+    const sectionValue = values[params.section] as Record<string, string>
+    const items = Object.values(sectionValue)
     const canAdd = !maxAmount || maxAmount < 0 || (items.length < maxAmount && maxAmount !== 1)
     return (
       <ContentSection>
@@ -285,27 +195,30 @@ export default function SubmitLinkedWearables() {
         <Paragraph tiny secondary className="details">
           {t(`page.submit_linked_wearables.${params.section}_detail`, detailOptions)}
         </Paragraph>
-        <Paragraph small primary>
-          {t(state.error[params.section])}
-        </Paragraph>
+        {errors && (
+          <Paragraph small primary>
+            {errors[params.section]?.message}
+          </Paragraph>
+        )}
         <div className="SectionList">
-          {Object.keys(state.value[params.section])
-            .sort()
-            .map((key) => (
-              <Field
-                key={key}
-                placeholder={t(`page.submit_linked_wearables.${params.type}_placeholder`)}
-                value={state.value[params.section][key]}
-                action={<Icon name="x" />}
-                onAction={() => handleRemoveOption(params.section, key)}
-                onChange={(_, { value }) => handleEditOption(params.section, key, value)}
-                disabled={formDisabled}
-                error={listSectionErrors[params.section].includes(key)}
-                onBlur={() => handleErrorOption(state.value[params.section][key], key, params.section, validator)}
-              />
-            ))}
+          {values &&
+            Object.keys(sectionValue)
+              .sort()
+              .map((key) => (
+                <DCLField
+                  key={key}
+                  placeholder={t(`page.submit_linked_wearables.${params.type}_placeholder`)}
+                  value={sectionValue?.[key]}
+                  action={<Icon name="x" />}
+                  onAction={() => handleRemoveOption(params.section, key)}
+                  onChange={(_, { value }) => handleEditOption(params.section, key, value)}
+                  disabled={formDisabled}
+                  error={!!errors[params.section]?.message}
+                  onBlur={() => handleErrorOption(sectionValue[key], key, params.section, validator)}
+                />
+              ))}
           {canAdd && (
-            <Button basic onClick={() => handleAddOption(params.section)}>
+            <Button basic onClick={(e) => handleAddOption(e, params.section)}>
               {t(`page.submit_linked_wearables.${params.type}_add`)}
             </Button>
           )}
@@ -314,60 +227,78 @@ export default function SubmitLinkedWearables() {
     )
   }
 
-  useEffect(() => {
-    preventNavigation.current = userModifiedForm(state.value, initialState)
+  const onSubmit: SubmitHandler<LinkedWearablesState> = async (data) => {
+    clearErrors()
 
-    if (state.validated) {
-      setFormDisabled(true)
-      imagesValidator(state.value.image_previews).then((errors) => {
-        if (errors.length === 0) {
-          Promise.resolve()
-            .then(async () => {
-              return Governance.get().createProposalLinkedWearables({
-                ...state.value,
-                links: removeEmptyStrings(Object.values(state.value.links)),
-                smart_contract: removeEmptyStrings(Object.values(state.value.smart_contract)),
-                managers: removeEmptyStrings(Object.values(state.value.managers)),
-                image_previews: removeEmptyStrings(Object.values(state.value.image_previews)),
-              })
-            })
-            .then((proposal) => {
-              navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-            })
-            .catch((err) => {
-              console.error(err, { ...err })
-              editor.error({ '*': err.body?.error || err.message })
-              setFormDisabled(false)
-            })
-        } else {
-          setListSectionErrors((prev) => ({ ...prev, image_previews: errors }))
-          editor.error({ image_previews: 'error.linked_wearables.image_type_invalid' })
-          setFormDisabled(false)
-        }
-      })
+    if (Object.values(data.image_previews).some((option) => option === '')) {
+      setFormError('image_previews', { message: t('error.linked_wearables.links_empty') })
+
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+
+    if (Object.values(data.links).some((option) => option === '')) {
+      setFormError('links', { message: t('error.linked_wearables.links_empty') })
+
+      return
+    }
+
+    if (Object.values(data.smart_contract).some((option) => option === '')) {
+      setFormError('smart_contract', { message: t('error.linked_wearables.smart_contract_empty') })
+
+      return
+    }
+
+    if (Object.values(data.managers).some((option) => option === '')) {
+      setFormError('managers', { message: t('error.linked_wearables.managers_empty') })
+
+      return
+    }
+
+    setFormDisabled(true)
+    const imagesValidaton = await getImagesValidation(data.image_previews)
+    if (!imagesValidaton.isValid) {
+      setFormError('image_previews', { message: t('error.linked_wearables.image_type_invalid') })
+      setFormDisabled(false)
+
+      return
+    }
+
+    try {
+      const proposal = await Governance.get().createProposalLinkedWearables({
+        ...data,
+        links: removeEmptyStrings(Object.values(data.links)),
+        smart_contract: removeEmptyStrings(Object.values(data.smart_contract)),
+        managers: removeEmptyStrings(Object.values(data.managers)),
+        image_previews: removeEmptyStrings(Object.values(data.image_previews)),
+      })
+
+      navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+    } catch (error: any) {
+      setError(error.body?.error || error.message)
+      setFormDisabled(false)
+    }
+  }
 
   useEffect(() => {
-    const errorFields = Object.keys(state.error) as (keyof LinkedWearablesState | '*')[]
+    const errorFields = Object.keys(omitBy(errors, isNil)) as (keyof LinkedWearablesState)[]
     const errorFieldsStr = JSON.stringify(errorFields)
+    console.log('errors', errors)
+    console.log('fields', formErrorKeys, errorFields)
     if (errorFields.length > 0 && errorFieldsStr !== formErrorKeys) {
-      editor.error({
-        '*': `${errorFields
+      setError(
+        `${errorFields
           .map((key) =>
-            key !== '*' ? `${t(`page.submit_linked_wearables.${key}_label`)}: ${t(state.error[key])}` : ''
+            errors[key]?.message ? `${t(`page.submit_linked_wearables.${key}_label`)}: ${errors[key]?.message}` : ''
           )
-          .join('\n')}`,
-      })
+          .join('\n')}`
+      )
       setFormErrorKeys(errorFieldsStr)
     }
 
     if (errorFields.length === 0) {
       setFormErrorKeys('')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.error])
+  }, [errors, formErrorKeys, t])
 
   if (accountState.loading) {
     return <LoadingView />
@@ -390,219 +321,287 @@ export default function SubmitLinkedWearables() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Helmet title={t('page.submit_linked_wearables.title') || ''} />
-      <ContentSection>
-        <Header size="huge">{t('page.submit_linked_wearables.title')}</Header>
-      </ContentSection>
-      <ContentSection className="MarkdownSection--tiny">
-        <Markdown>{t('page.submit_linked_wearables.description')}</Markdown>
-      </ContentSection>
-      <ContentSection>
-        <Label>{t('page.submit_linked_wearables.name_label')}</Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.name_detail')}
-        </Paragraph>
-        <Field
-          value={state.value.name}
-          placeholder={t('page.submit_linked_wearables.name_placeholder')}
-          onChange={(_, { value }) => editor.set({ name: value })}
-          onBlur={() => editor.set({ name: state.value.name.trim() })}
-          error={!!state.error.name}
-          message={
-            t(state.error.name) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.name.length,
-              limit: schema.name.maxLength,
-            })
-          }
-          disabled={formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>{t('page.submit_linked_wearables.marketplace_link_label')}</Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.marketplace_link_detail')}
-        </Paragraph>
-        <Field
-          value={state.value.marketplace_link}
-          placeholder={t('page.submit_linked_wearables.url_placeholder')}
-          onChange={(_, { value }) => editor.set({ marketplace_link: value })}
-          onBlur={() => editor.set({ marketplace_link: state.value.marketplace_link.trim() })}
-          error={!!state.error.marketplace_link}
-          message={t(state.error.marketplace_link)}
-          disabled={formDisabled}
-        />
-      </ContentSection>
-      {getListSection({ section: 'links', type: 'url' }, urlValidator)}
-      {getListSection({ section: 'image_previews', type: 'image' }, urlValidator, { amount: MAX_IMAGES }, MAX_IMAGES)}
-      <ContentSection>
-        <Label>
-          {t('page.submit_linked_wearables.nft_collections_label')}
-          <MarkdownNotice />
-        </Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.nft_collections_detail')}
-        </Paragraph>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.nft_collections}
-          placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ nft_collections: value })}
-          onBlur={() => editor.set({ nft_collections: state.value.nft_collections.trim() })}
-          error={!!state.error.nft_collections}
-          message={
-            t(state.error.nft_collections) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.nft_collections.length,
-              limit: schema.nft_collections.maxLength,
-            })
-          }
-          disabled={formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>
-          {t('page.submit_linked_wearables.motivation_label')}
-          <MarkdownNotice />
-        </Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.motivation_detail')}
-        </Paragraph>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.motivation}
-          placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
-          onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
-          error={!!state.error.motivation}
-          message={
-            t(state.error.motivation) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.motivation.length,
-              limit: schema.motivation.maxLength,
-            })
-          }
-          disabled={formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>{t('page.submit_linked_wearables.items_label')}</Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.items_detail')}
-        </Paragraph>
-        <Field
-          type="number"
-          value={state.value.items}
-          onChange={(_, { value }) => editor.set({ items: value ? Number(value) : undefined })}
-          error={!!state.error.items}
-          onAction={() => null}
-          message={t(state.error.items)}
-          disabled={formDisabled}
-          onWheel={disableOnWheelInput}
-        />
-      </ContentSection>
-      <ContentSection>
-        <Label>
-          {t('page.submit_linked_wearables.governance_label')}
-          <MarkdownNotice />
-        </Label>
-        <Paragraph tiny secondary className="details">
-          {t('page.submit_linked_wearables.governance_detail')}
-        </Paragraph>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.governance}
-          placeholder={t('page.submit_linked_wearables.governance_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ governance: value })}
-          onBlur={() => editor.set({ governance: state.value.governance.trim() })}
-          error={!!state.error.governance}
-          message={
-            t(state.error.governance) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.governance.length,
-              limit: schema.governance.maxLength,
-            })
-          }
-          disabled={formDisabled}
-        />
-      </ContentSection>
-      {getListSection({ section: 'smart_contract', type: 'address' }, addressValidator)}
-      {getListSection({ section: 'managers', type: 'address' }, addressValidator)}
-      <ContentSection>
-        <Label>{t('page.submit_linked_wearables.programmatically_generated_label')}</Label>
-        <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
-          {t('page.submit_linked_wearables.programmatically_generated_description')}
-        </Paragraph>
-        <div className="ProgrammaticallyGeneratedRadioButtons">
-          <Radio
-            checked={state.value.programmatically_generated}
-            label={
-              <label>
-                <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
-              </label>
-            }
-            onChange={handleProgrammaticallyGeneratedOption}
-          />
-          <Radio
-            checked={!state.value.programmatically_generated}
-            label={
-              <label>
-                <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
-              </label>
-            }
-            onChange={handleProgrammaticallyGeneratedOption}
-          />
-        </div>
-        <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
-          <Markdown className="tinyMarkdown">
-            {t('page.submit_linked_wearables.programmatically_generated_note') || ''}
-          </Markdown>
-        </Paragraph>
-      </ContentSection>
-      {state.value.programmatically_generated && (
+      <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Label>
-            {t('page.submit_linked_wearables.method_label')}
-            <MarkdownNotice />
-          </Label>
+          <Header size="huge">{t('page.submit_linked_wearables.title')}</Header>
+        </ContentSection>
+        <ContentSection className="MarkdownSection--tiny">
+          <Markdown>{t('page.submit_linked_wearables.description')}</Markdown>
+        </ContentSection>
+        <ContentSection>
+          <Label>{t('page.submit_linked_wearables.name_label')}</Label>
           <Paragraph tiny secondary className="details">
-            {t('page.submit_linked_wearables.method_detail')}
+            {t('page.submit_linked_wearables.name_detail')}
           </Paragraph>
-          <MarkdownTextarea
-            minHeight={175}
-            value={state.value.method}
-            placeholder={t('page.submit_linked_wearables.method_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ method: value })}
-            onBlur={() => editor.set({ method: state.value.method.trim() })}
-            error={!!state.error.method}
+          <Field
+            control={control}
+            name="name"
+            placeholder={t('page.submit_linked_wearables.name_placeholder')}
+            rules={{
+              required: { value: true, message: t('error.linked_wearables.name_empty') },
+              minLength: {
+                value: schema.name.minLength,
+                message: t('error.linked_wearables.name_too_short'),
+              },
+              maxLength: {
+                value: schema.name.maxLength,
+                message: t('error.linked_wearables.name_too_large'),
+              },
+            }}
+            error={!!errors.name}
             message={
-              t(state.error.method) +
+              (errors.name?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.method.length,
-                limit: schema.method.maxLength,
+                current: watch('name').length,
+                limit: schema.name.maxLength,
               })
             }
             disabled={formDisabled}
           />
         </ContentSection>
-      )}
-      <ContentSection>
-        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
-      </ContentSection>
-      <ContentSection>
-        <Button primary disabled={state.validated} loading={state.validated} onClick={() => editor.validate()}>
-          {t('page.submit.button_submit')}
-        </Button>
-      </ContentSection>
-      {state.error['*'] && (
         <ContentSection>
-          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
+          <Label>{t('page.submit_linked_wearables.marketplace_link_label')}</Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_linked_wearables.marketplace_link_detail')}
+          </Paragraph>
+          <Field
+            name="marketplace_link"
+            control={control}
+            rules={{
+              required: { value: true, message: t('error.linked_wearables.single_url_empty') },
+              validate: (value: string) => {
+                if (!isHttpsURL(value)) {
+                  return t('error.linked_wearables.single_url_invalid')
+                }
+              },
+            }}
+            placeholder={t('page.submit_linked_wearables.url_placeholder')}
+            error={!!errors.marketplace_link}
+            message={errors.marketplace_link?.message}
+            disabled={formDisabled}
+          />
         </ContentSection>
-      )}
+        {getListSection({ section: 'links', type: 'url' }, urlValidator)}
+        {getListSection({ section: 'image_previews', type: 'image' }, urlValidator, { amount: MAX_IMAGES }, MAX_IMAGES)}
+        <ContentSection>
+          <Label>
+            {t('page.submit_linked_wearables.nft_collections_label')}
+            <MarkdownNotice />
+          </Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_linked_wearables.nft_collections_detail')}
+          </Paragraph>
+          <MarkdownField
+            name="nft_collections"
+            control={control}
+            rules={{
+              required: { value: true, message: t('error.linked_wearables.nft_collections_empty') },
+              minLength: {
+                value: schema.nft_collections.minLength,
+                message: t('error.linked_wearables.nft_collections_too_short'),
+              },
+              maxLength: {
+                value: schema.nft_collections.maxLength,
+                message: t('error.linked_wearables.nft_collections_too_large'),
+              },
+            }}
+            placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
+            error={!!errors.nft_collections}
+            message={
+              (errors.nft_collections?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('nft_collections').length,
+                limit: schema.nft_collections.maxLength,
+              })
+            }
+            disabled={formDisabled}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_linked_wearables.motivation_label')}
+            <MarkdownNotice />
+          </Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_linked_wearables.motivation_detail')}
+          </Paragraph>
+          <MarkdownField
+            name="motivation"
+            control={control}
+            placeholder={t('page.submit_linked_wearables.motivation_placeholder')}
+            rules={{
+              required: { value: true, message: t('error.linked_wearables.motivation_empty') },
+              minLength: {
+                value: schema.motivation.minLength,
+                message: t('error.linked_wearables.motivation_too_short'),
+              },
+              maxLength: {
+                value: schema.motivation.maxLength,
+                message: t('error.linked_wearables.motivation_too_large'),
+              },
+            }}
+            error={!!errors.motivation}
+            message={
+              (errors.motivation?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('motivation').length,
+                limit: schema.motivation.maxLength,
+              })
+            }
+            disabled={formDisabled}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>{t('page.submit_linked_wearables.items_label')}</Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_linked_wearables.items_detail')}
+          </Paragraph>
+          <Field
+            control={control}
+            type="number"
+            name="items"
+            rules={{
+              validate: (value: string) => {
+                if (!Number.isFinite(asNumber(value))) {
+                  return t('error.linked_wearables.items_invalid')
+                }
+                if (asNumber(value) < schema.items.minimum) {
+                  return t('error.linked_wearables.items_too_low')
+                }
+                if (asNumber(value) > schema.items.maximum) {
+                  return t('error.linked_wearables.items_too_high')
+                }
+              },
+            }}
+            error={!!errors.items}
+            onAction={() => null}
+            message={errors.items?.message}
+            disabled={formDisabled}
+            onWheel={disableOnWheelInput}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_linked_wearables.governance_label')}
+            <MarkdownNotice />
+          </Label>
+          <Paragraph tiny secondary className="details">
+            {t('page.submit_linked_wearables.governance_detail')}
+          </Paragraph>
+          <MarkdownField
+            control={control}
+            name="governance"
+            placeholder={t('page.submit_linked_wearables.governance_placeholder')}
+            rules={{
+              required: { value: true, message: t('error.linked_wearables.governance_empty') },
+              minLength: {
+                value: schema.governance.minLength,
+                message: t('error.linked_wearables.governance_too_short'),
+              },
+              maxLength: {
+                value: schema.governance.maxLength,
+                message: t('error.linked_wearables.governance_too_large'),
+              },
+            }}
+            error={!!errors.governance}
+            message={
+              (errors.governance?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('governance').length,
+                limit: schema.governance.maxLength,
+              })
+            }
+            disabled={formDisabled}
+          />
+        </ContentSection>
+        {getListSection({ section: 'smart_contract', type: 'address' }, addressValidator)}
+        {getListSection({ section: 'managers', type: 'address' }, addressValidator)}
+        <ContentSection>
+          <Label>{t('page.submit_linked_wearables.programmatically_generated_label')}</Label>
+          <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
+            {t('page.submit_linked_wearables.programmatically_generated_description')}
+          </Paragraph>
+          <div className="ProgrammaticallyGeneratedRadioButtons">
+            <Radio
+              checked={watch('programmatically_generated')}
+              label={
+                <label>
+                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
+                </label>
+              }
+              onChange={handleProgrammaticallyGeneratedOption}
+            />
+            <Radio
+              checked={!watch('programmatically_generated')}
+              label={
+                <label>
+                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
+                </label>
+              }
+              onChange={handleProgrammaticallyGeneratedOption}
+            />
+          </div>
+          <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
+            <Markdown className="tinyMarkdown">
+              {t('page.submit_linked_wearables.programmatically_generated_note') || ''}
+            </Markdown>
+          </Paragraph>
+        </ContentSection>
+        {values.programmatically_generated && (
+          <ContentSection>
+            <Label>
+              {t('page.submit_linked_wearables.method_label')}
+              <MarkdownNotice />
+            </Label>
+            <Paragraph tiny secondary className="details">
+              {t('page.submit_linked_wearables.method_detail')}
+            </Paragraph>
+            <MarkdownField
+              control={control}
+              name="method"
+              placeholder={t('page.submit_linked_wearables.method_placeholder')}
+              rules={{
+                required: { value: true, message: t('error.linked_wearables.method_empty') },
+                minLength: {
+                  value: schema.method.minLength,
+                  message: t('error.linked_wearables.method_too_short'),
+                },
+                maxLength: {
+                  value: schema.method.maxLength,
+                  message: t('error.linked_wearables.method_too_large'),
+                },
+              }}
+              error={!!errors.method}
+              message={
+                (errors.method?.message || '') +
+                ' ' +
+                t('page.submit.character_counter', {
+                  current: watch('method').length,
+                  limit: schema.method.maxLength,
+                })
+              }
+              disabled={formDisabled}
+            />
+          </ContentSection>
+        )}
+        <ContentSection>
+          <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+        </ContentSection>
+        <ContentSection>
+          <Button type="submit" primary disabled={formDisabled} loading={isSubmitting}>
+            {t('page.submit.button_submit')}
+          </Button>
+        </ContentSection>
+        {error && (
+          <ContentSection>
+            <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(error) || error} />
+          </ContentSection>
+        )}
+      </form>
     </ContentLayout>
   )
 }

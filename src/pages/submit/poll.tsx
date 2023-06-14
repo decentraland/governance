@@ -110,7 +110,6 @@ export default function SubmitPoll() {
   const isValidChoices = useCallback(
     (choices: Record<string, string>) => {
       const choicesValues = Object.values(choices)
-      console.log('c', choicesValues)
 
       if (choicesValues.every((option) => option === '')) {
         setFormError('choices', { message: t('error.poll.choices_empty') })

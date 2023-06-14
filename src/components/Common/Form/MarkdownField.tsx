@@ -16,7 +16,7 @@ export default function MarkdownField<T extends FieldValues>({
   name,
   defaultValue,
   rules,
-  ...rest
+  ...markdownProps
 }: Props<T>) {
   return (
     <Controller
@@ -25,7 +25,7 @@ export default function MarkdownField<T extends FieldValues>({
       defaultValue={defaultValue}
       rules={rules}
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      render={({ field: { ref, ...field } }) => <MarkdownTextarea minHeight={175} {...field} {...rest} />}
+      render={({ field: { ref, ...field } }) => <MarkdownTextarea minHeight={175} {...field} {...markdownProps} />}
     />
   )
 }
