@@ -1,5 +1,6 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
+
+import Time from '../../utils/date/Time'
 
 import { ProjectHealth, UpdateAttributes, UpdateStatus } from './types'
 import { getCurrentUpdate, getNextPendingUpdate, getPendingUpdates, getPublicUpdates } from './utils'

@@ -10,8 +10,8 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { Reaction, Survey, Topic } from '../../../../entities/SurveyTopic/types'
 import { SelectedVoteChoice } from '../../../../entities/Votes/types'
-import { formatChoice } from '../../../../modules/votes/utils'
 import { ProposalPageState } from '../../../../pages/proposal'
+import { formatChoice } from '../../../../utils/votes/utils'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
 

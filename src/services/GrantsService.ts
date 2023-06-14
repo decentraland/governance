@@ -1,5 +1,4 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
@@ -21,7 +20,8 @@ import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
-import { isProdEnv } from '../modules/governanceEnvs'
+import Time from '../utils/date/Time'
+import { isProdEnv } from '../utils/governanceEnvs'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'

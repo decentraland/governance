@@ -7,7 +7,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { useProposalsSearchParams } from '../../hooks/useSearchParams'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './SearchInput.css'
 

@@ -11,7 +11,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './LogIn.css'
 

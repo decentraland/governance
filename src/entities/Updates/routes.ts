@@ -2,10 +2,10 @@ import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Request } from 'express'
 
 import { DiscordService } from '../../services/DiscordService'
+import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import ProposalModel from '../Proposal/model'

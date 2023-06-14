@@ -28,8 +28,8 @@ import { userModifiedForm } from '../../entities/Proposal/utils'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import loader from '../../utils/loader'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

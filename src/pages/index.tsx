@@ -18,7 +18,7 @@ import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { ProposalStatus } from '../entities/Proposal/types'
 import useProposals from '../hooks/useProposals'
-import { isUnderMaintenance } from '../modules/maintenance'
+import { isUnderMaintenance } from '../utils/maintenance'
 
 import './index.css'
 

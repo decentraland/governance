@@ -2,7 +2,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Rollbar from 'rollbar'
 
 import { GOVERNANCE_API, ROLLBAR_TOKEN } from '../constants'
-import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from '../modules/governanceEnvs'
+import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from '../utils/governanceEnvs'
 
 export class ErrorService {
   static client = new Rollbar({

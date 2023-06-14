@@ -1,4 +1,4 @@
-import { formatChoice } from '../../../modules/votes/utils'
+import { formatChoice } from '../../../utils/votes/utils'
 import { Vote } from '../../Votes/types'
 import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'

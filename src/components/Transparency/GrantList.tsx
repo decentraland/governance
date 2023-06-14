@@ -8,7 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { formatBalance } from '../../entities/Proposal/utils'
 import useProposals from '../../hooks/useProposals'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 import { DetailItem } from '../Proposal/View/DetailItem'
 
 import './GrantList.css'

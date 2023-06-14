@@ -1,12 +1,12 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
-import { env } from '../../modules/env'
+import Time from '../../utils/date/Time'
+import { env } from '../../utils/env'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 import { DISCOURSE_API } from '../User/utils'
 

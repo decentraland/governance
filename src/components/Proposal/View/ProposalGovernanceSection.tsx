@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
 import { ProposalPageState } from '../../../pages/proposal'
+import Time from '../../../utils/date/Time'
 import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'

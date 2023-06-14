@@ -9,7 +9,7 @@ import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
 

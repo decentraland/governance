@@ -28,8 +28,8 @@ import { SUBMISSION_THRESHOLD_GOVERNANCE } from '../../entities/Proposal/constan
 import { NewProposalDraft, newProposalGovernanceScheme } from '../../entities/Proposal/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import loader from '../../utils/loader'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

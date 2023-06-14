@@ -7,7 +7,7 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import ChevronRight from '../../Icon/ChevronRight'
 import Username from '../../User/Username'
 

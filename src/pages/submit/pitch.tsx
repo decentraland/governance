@@ -24,8 +24,8 @@ import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
 import { NewProposalPitch, newProposalPitchScheme } from '../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import loader from '../../utils/loader'
+import locations from '../../utils/locations'
 
 import './submit.css'
 
