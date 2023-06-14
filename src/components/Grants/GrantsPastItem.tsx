@@ -6,8 +6,8 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { ProposalGrantCategory } from '../../entities/Grant/types'
 import { Grant } from '../../entities/Proposal/types'
-import locations from '../../modules/locations'
 import Time from '../../utils/date/Time'
+import locations from '../../utils/locations'
 import ChevronRight from '../Icon/ChevronRight'
 
 import GrantPill from './GrantPill'

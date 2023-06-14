@@ -7,7 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import Pill from '../../Common/Pill'
 
 import './ProposalPromotionSection.css'

@@ -12,8 +12,8 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Pr
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
-import { getEnvironmentChainId } from '../modules/votes/utils'
 import Time from '../utils/date/Time'
+import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import CatalystService from './CatalystService'
 import { DiscordService } from './DiscordService'

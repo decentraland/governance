@@ -4,7 +4,7 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { env } from '../../../modules/env'
+import { env } from '../../../utils/env'
 import Pill from '../../Common/Pill'
 
 import './DetailsSection.css'

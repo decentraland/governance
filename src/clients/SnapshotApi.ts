@@ -8,9 +8,9 @@ import env from 'decentraland-gatsby/dist/utils/env'
 
 import { SNAPSHOT_ADDRESS, SNAPSHOT_PRIVATE_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
-import { getEnvironmentChainId } from '../modules/votes/utils'
 import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 import Time from '../utils/date/Time'
+import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import { SnapshotGraphql } from './SnapshotGraphql'
 import { SnapshotStrategy } from './SnapshotGraphqlTypes'

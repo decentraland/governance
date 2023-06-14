@@ -1,6 +1,6 @@
 import { JsonRpcProvider, getNetwork } from '@ethersproject/providers'
 
-import { getEnvironmentChainId } from '../modules/votes/utils'
+import { getEnvironmentChainId } from '../utils/votes/utils'
 
 export default class DclRpcService {
   static async getBlockNumber(): Promise<number> {

@@ -23,8 +23,8 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isValidName, userModifiedForm } from '../../entities/Proposal/utils'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import loader from '../../utils/loader'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

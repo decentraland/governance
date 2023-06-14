@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { useLocation } from '@reach/router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import { FilterProps } from './CategoryFilter'
 import CollapsibleFilter from './CollapsibleFilter'

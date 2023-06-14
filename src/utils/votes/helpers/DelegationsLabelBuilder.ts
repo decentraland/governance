@@ -2,7 +2,7 @@ import intersection from 'lodash/intersection'
 
 import { DelegationsLabelProps } from '../../../components/Proposal/View/ProposalVoting/DelegationsLabel'
 import { Vote } from '../../../entities/Votes/types'
-import Time from '../../../utils/date/Time'
+import Time from '../../date/Time'
 
 export class DelegationsLabelBuilder {
   private readonly votes: Record<string, Vote> | null | undefined

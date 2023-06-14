@@ -7,8 +7,8 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
-import locations from '../../../modules/locations'
 import Time from '../../../utils/date/Time'
+import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Helper from '../../Helper/Helper'
 

@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import useGrants from '../../hooks/useGrants'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 import FullWidthButton from '../Common/FullWidthButton'
 import GrantCard from '../Grants/GrantCard/GrantCard'
 

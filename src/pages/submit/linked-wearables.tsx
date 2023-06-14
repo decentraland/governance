@@ -29,8 +29,8 @@ import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../helpers'
 import { isHttpsURL } from '../../helpers'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import loader from '../../utils/loader'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

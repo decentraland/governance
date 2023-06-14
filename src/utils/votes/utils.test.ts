@@ -21,7 +21,7 @@ import {
 
 describe('getVotingSectionConfig', () => {
   let votes: Record<string, Vote> = {}
-  let account = USER_ACCOUNT
+  const account = USER_ACCOUNT
   let delegate: string | null = null
   let delegateVote: Vote | null = null
   let delegators: string[] | null = null
