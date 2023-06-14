@@ -1,21 +1,11 @@
 /* eslint-disable import/no-duplicates */
 import Time from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import 'dayjs/plugin/customParseFormat'
 import duration from 'dayjs/plugin/duration'
 import 'dayjs/plugin/duration'
-import isBetween from 'dayjs/plugin/isBetween'
-import 'dayjs/plugin/isBetween'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import 'dayjs/plugin/isSameOrBefore'
-import isToday from 'dayjs/plugin/isToday'
-import 'dayjs/plugin/isToday'
-import isTomorrow from 'dayjs/plugin/isTomorrow'
-import 'dayjs/plugin/isTomorrow'
-import isYesterday from 'dayjs/plugin/isYesterday'
-import 'dayjs/plugin/isYesterday'
 import pluralGetSet from 'dayjs/plugin/pluralGetSet'
 import 'dayjs/plugin/pluralGetSet'
 import 'dayjs/plugin/quarterOfYear'
@@ -30,14 +20,9 @@ import 'dayjs/plugin/utc'
 import './plugin'
 
 Time.extend(utc)
-Time.extend(isToday)
-Time.extend(isTomorrow)
-Time.extend(isYesterday)
-Time.extend(isBetween)
 Time.extend(isSameOrAfter)
 Time.extend(isSameOrBefore)
 Time.extend(pluralGetSet)
-Time.extend(customParseFormat)
 Time.extend(relativeTime)
 Time.extend(timezone)
 Time.extend(quarterOfYear)
