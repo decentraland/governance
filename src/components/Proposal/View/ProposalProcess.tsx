@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './ProposalProcess.css'
 import Section from './Section'
@@ -34,11 +34,11 @@ interface Props {
 const VerticalLine = ({ position, isActive }: { position: 'top' | 'middle' | 'bottom'; isActive: boolean }) => {
   return (
     <div
-      className={TokenList.join([
+      className={classNames(
         'ProposalProcess__VerticalLine',
         `ProposalProcess__VerticalLine--${position}`,
-        isActive && `ProposalProcess__VerticalLine--selected-${position}`,
-      ])}
+        isActive && `ProposalProcess__VerticalLine--selected-${position}`
+      )}
     />
   )
 }
@@ -55,45 +55,38 @@ export default function ProposalProcess({ title, items, isNew = false, type = Pr
         return (
           <div key={title} className="ProposalProcess__ItemContainer">
             {isActive && (
-              <div
-                className={TokenList.join(['ProposalProcess__ItemGradient', `ProposalProcess__ItemGradient--${type}`])}
-              />
+              <div className={classNames('ProposalProcess__ItemGradient', `ProposalProcess__ItemGradient--${type}`)} />
             )}
-            <div className={TokenList.join(['ProposalProcess__Item', isActive && 'ProposalProcess__Item--selected'])}>
+            <div className={classNames('ProposalProcess__Item', isActive && 'ProposalProcess__Item--selected')}>
               <div className="ProposalProcess__ItemNumberContainer">
                 {isFirstItem && <VerticalLine position="top" isActive={isActive} />}
                 {isMiddleItem && <VerticalLine position="middle" isActive={isActive} />}
                 {isLastItem && <VerticalLine position="bottom" isActive={isActive} />}
-                <div
-                  className={TokenList.join(['ProposalProcess__ItemNumber', `ProposalProcess__ItemNumber--${status}`])}
-                >
+                <div className={classNames('ProposalProcess__ItemNumber', `ProposalProcess__ItemNumber--${status}`)}>
                   {index + 1}
                 </div>
               </div>
               <div>
                 <h3
-                  className={TokenList.join([
+                  className={classNames(
                     'ProposalProcess__ItemTitle',
-                    isActive && 'ProposalProcess__ItemTitle--selected',
-                  ])}
+                    isActive && 'ProposalProcess__ItemTitle--selected'
+                  )}
                 >
                   {title}
                 </h3>
                 <p
-                  className={TokenList.join([
+                  className={classNames(
                     'ProposalProcess__ItemDescription',
-                    isActive && 'ProposalProcess__ItemDescription--selected',
-                  ])}
+                    isActive && 'ProposalProcess__ItemDescription--selected'
+                  )}
                 >
                   {description}
                 </p>
                 {statusText && statusText !== '' && (
                   <span className="ProposalProcess___StatusTextContainer">
                     <Markdown
-                      className={TokenList.join([
-                        'ProposalProcess___StatusText',
-                        `ProposalProcess___StatusText--${status}`,
-                      ])}
+                      className={classNames('ProposalProcess___StatusText', `ProposalProcess___StatusText--${status}`)}
                     >
                       {statusText}
                     </Markdown>

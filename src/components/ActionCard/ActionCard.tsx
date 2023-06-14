@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
@@ -22,7 +22,7 @@ function ActionCard({ icon, title, description, action, onCardClick, isDisabled 
   const isImplemented = !!action || !!onCardClick
   return (
     <Card
-      className={TokenList.join(['ActionCard', (!isImplemented || isDisabled) && 'ActionCard--disabled'])}
+      className={classNames('ActionCard', (!isImplemented || isDisabled) && 'ActionCard--disabled')}
       onClick={onCardClick}
     >
       <Grid>

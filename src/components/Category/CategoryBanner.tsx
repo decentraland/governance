@@ -1,11 +1,11 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
@@ -81,9 +81,9 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
     <Component
       href={href}
       onClick={handleClick}
-      className={TokenList.join(['CategoryBanner', `CategoryBanner--${type}`, active && 'CategoryBanner--active'])}
+      className={classNames('CategoryBanner', `CategoryBanner--${type}`, active && 'CategoryBanner--active')}
     >
-      <div className={TokenList.join(['CategoryBanner__Icon', !active && 'CategoryBanner__Icon--inactive'])}>
+      <div className={classNames('CategoryBanner__Icon', !active && 'CategoryBanner__Icon--inactive')}>
         <Icon />
       </div>
       <div>

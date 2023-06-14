@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 type Props = {
   className?: string
@@ -9,7 +9,7 @@ type Props = {
 function ArrowMarker({ className }: Props) {
   return (
     <svg
-      className={TokenList.join(['ArrowMarker', className])}
+      className={classNames('ArrowMarker', className)}
       width="16"
       height="16"
       viewBox="0 0 16 16"

@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 
 type Props = Pick<PopupProps, 'position'> & {
@@ -19,10 +19,10 @@ function IconHelper({ position, text, containerClassName, icon }: Props) {
       trigger={<div className={'IconHelper__Container'}>{icon}</div>}
       on="hover"
       hoverable
-      className={TokenList.join([
+      className={classNames(
         hasContainerClassName && `${containerClassName}--Popup`,
-        !hasContainerClassName && 'Helper__Container--Popup',
-      ])}
+        !hasContainerClassName && 'Helper__Container--Popup'
+      )}
     />
   )
 }

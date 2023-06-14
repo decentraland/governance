@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import { getFormattedPercentage } from '../../../helpers'
 
@@ -21,7 +21,7 @@ const VotingPowerDistributionBarWithPopup = ({ value, className, label, total }:
       {value > 0 && (
         <VotingPowerDistributionPopup amount={value} percentage={valuePercentage} label={label}>
           <div
-            className={TokenList.join(['VotingPowerDistributionBarWithPopup', className])}
+            className={classNames('VotingPowerDistributionBarWithPopup', className)}
             style={{ width: valuePercentage }}
           />
         </VotingPowerDistributionPopup>

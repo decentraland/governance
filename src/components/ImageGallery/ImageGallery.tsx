@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { useMobileMediaQuery, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Autoplay, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
@@ -41,7 +41,7 @@ function ImageGallery({ className, imageUrls }: Props) {
             pagination={{ clickable: true }}
             navigation={!isMobile}
             autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-            className={TokenList.join(['ImageGallery__Carousel', className])}
+            className={classNames('ImageGallery__Carousel', className)}
           >
             {imageUrls.map((imageUrl, index) => (
               <SwiperSlide key={index} onClick={() => imageClickHandler(index)}>
@@ -50,7 +50,7 @@ function ImageGallery({ className, imageUrls }: Props) {
             ))}
           </Swiper>
           <ImageGalleryFullscreen
-            className={TokenList.join(['ImageGallery__Carousel--fullscreen', className])}
+            className={classNames('ImageGallery__Carousel--fullscreen', className)}
             open={openFullscreen}
             imageUrls={imageUrls}
             onClose={() => setOpenFullscreen(false)}

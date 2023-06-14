@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import Divider from '../Common/Divider'
 import Helper from '../Helper/Helper'
@@ -17,8 +17,8 @@ interface Props {
 
 export function ProfileBox({ children, title, info, action, className }: Props) {
   return (
-    <div className={TokenList.join(['ProfileBox__Container', className])}>
-      <div className={TokenList.join(['ProfileBox__Header', 'ProfileBox__Padded'])}>
+    <div className={classNames('ProfileBox__Container', className)}>
+      <div className={classNames('ProfileBox__Header', 'ProfileBox__Padded')}>
         <div className="ProfileBox__HeaderTitle">
           <span>{title}</span>
           {info && <Helper text={info} size="12" position="right center" />}

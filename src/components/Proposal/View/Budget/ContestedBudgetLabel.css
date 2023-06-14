@@ -46,7 +46,7 @@
 }
 
 .ContestedBudgetCard__Legend--contested {
-  background: rgb(var(--purple-raw-e));
+  background: rgb(165, 36, 179);
 }
 
 .ContestedBudgetCard__Legend--contested_overbudget {

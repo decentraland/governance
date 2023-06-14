@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import './ContestedBudgetLabel.css'
 
@@ -19,7 +19,7 @@ export default function ContestedBudgetLabel({ title, amount, legend, percentage
     <div className="ContestedBudgetLabel">
       <span className="ContestedBudgetLabel__Title">{title}</span>
       <div className="ContestedBudgetLabel__Content">
-        <div className={TokenList.join(['ContestedBudgetLabel__Legend', `ContestedBudgetCard__Legend--${legend}`])} />
+        <div className={classNames('ContestedBudgetLabel__Legend', `ContestedBudgetCard__Legend--${legend}`)} />
         <span className="ContestedBudgetLabel__Amount">${t('general.number', { value: amount })}</span>
         {percentage && <span className="ContestedBudgetLabel__Percentage">{`(${percentage})`}</span>}
       </div>

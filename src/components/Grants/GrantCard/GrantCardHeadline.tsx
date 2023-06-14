@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
@@ -18,12 +18,12 @@ const GrantCardHeadline = ({ grant, hoverable = false, expanded = false }: Grant
   const { title, user } = grant
 
   return (
-    <div className={TokenList.join(['GrantCardHeadline', !expanded && 'GrantCardHeadline__Slim'])}>
+    <div className={classNames('GrantCardHeadline', !expanded && 'GrantCardHeadline__Slim')}>
       <Header
-        className={TokenList.join([
+        className={classNames(
           'GrantCardHeadline__Title',
-          (!hoverable || !expanded) && 'GrantCardHeadline__TwoLineEllipsis',
-        ])}
+          (!hoverable || !expanded) && 'GrantCardHeadline__TwoLineEllipsis'
+        )}
       >
         {title}
       </Header>

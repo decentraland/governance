@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import { ChoiceColor } from '../../entities/Votes/types'
 
@@ -14,11 +14,11 @@ interface Props {
 export default function Progress({ color, progress }: Props) {
   return (
     <div
-      className={TokenList.join([
+      className={classNames(
         'Progress',
         typeof color === 'string' && `Progress--${color}`,
-        typeof color === 'number' && `Progress--status-${color % 8}`,
-      ])}
+        typeof color === 'number' && `Progress--status-${color % 8}`
+      )}
     >
       <div className="Progress--bar" style={{ width: (progress || 0) + `%` }} />
     </div>

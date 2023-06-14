@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
+import classNames from 'classnames'
 import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
@@ -35,7 +35,7 @@ function DelegateRow({ delegate, onDelegateSelected }: Props) {
       onMouseLeave={() => setIsFilled(false)}
       onClick={() => onDelegateSelected(delegate)}
     >
-      <Table.Cell className={TokenList.join(['DelegatesTable__CandidateName', 'DelegatesTable__Sticky'])}>
+      <Table.Cell className={classNames('DelegatesTable__CandidateName', 'DelegatesTable__Sticky')}>
         <Username address={delegateAddress} size={isMobile ? 'tiny' : 'small'} />
         <Arrow filled={isFilled} className="DelegatesTable__UsernameArrow" />
       </Table.Cell>

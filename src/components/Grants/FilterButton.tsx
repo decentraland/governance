@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './FilterButton.css'
 
@@ -13,14 +13,9 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 const FilterButton = ({ onClick, children, selected = false, count, className }: Props) => {
   return (
-    <div
-      className={TokenList.join(['FilterButton', selected && 'FilterButton--selected', className])}
-      onClick={onClick}
-    >
+    <div className={classNames('FilterButton', selected && 'FilterButton--selected', className)} onClick={onClick}>
       <span>{children}</span>
-      <span className={TokenList.join(['FilterButton__Count', selected && 'FilterButton__Count--selected'])}>
-        {count}
-      </span>
+      <span className={classNames('FilterButton__Count', selected && 'FilterButton__Count--selected')}>{count}</span>
     </div>
   )
 }
