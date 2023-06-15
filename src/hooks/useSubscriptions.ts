@@ -1,8 +1,9 @@
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
-import useAsyncTasks from 'decentraland-gatsby/dist/hooks/useAsyncTasks'
 
 import { Governance } from '../clients/Governance'
+
+import useAsyncTask from './useAsyncTask'
 
 export default function useSubscriptions() {
   const [account] = useAuthContext()
@@ -10,7 +11,7 @@ export default function useSubscriptions() {
     callWithTruthyDeps: true,
     initialValue: [],
   })
-  const [subscribing, subscribe] = useAsyncTasks(
+  const [subscribing, subscribe] = useAsyncTask(
     async (id: string) => {
       if (account && subscriptions) {
         if (subscriptions.find((subscription) => subscription.proposal_id === id)) {
