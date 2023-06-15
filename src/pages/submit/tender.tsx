@@ -18,6 +18,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -182,9 +183,9 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.summary_description')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="summary"
@@ -223,9 +224,9 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.problem_statement_description')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="problem_statement"
@@ -264,9 +265,9 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.technical_specification_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.technical_specification_description')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="technical_specification"
@@ -305,9 +306,9 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.use_cases_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.use_cases_description')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="use_cases"
@@ -346,9 +347,9 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.deliverables_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.deliverables_description')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="deliverables"
@@ -384,9 +385,9 @@ export default function SubmitTenderProposal() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_tender.target_release_quarter_label')}</Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.target_release_quarter_description')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="target_release_quarter"

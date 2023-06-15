@@ -38,6 +38,10 @@
   margin-bottom: 2px;
 }
 
+.ProposalSubmit__DescriptionDetails {
+  margin-bottom: 2px;
+}
+
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox label {
   font-size: 17px;
 }

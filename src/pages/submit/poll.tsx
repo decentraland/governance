@@ -19,6 +19,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import { Governance } from '../../clients/Governance'
 import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -238,9 +239,9 @@ export default function SubmitPoll() {
       </ContentSection>
       <ContentSection>
         <Label>{t('page.submit_poll.choices_label')}</Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {' '}
-        </Paragraph>
+        </Text>
         <Paragraph small primary>
           {t(state.error.choices)}
         </Paragraph>

@@ -18,6 +18,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { Governance } from '../../clients/Governance'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -305,9 +306,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.summary_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.summary_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.summary}
@@ -332,9 +333,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.abstract_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.abstract_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.abstract}
@@ -359,9 +360,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.motivation_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.motivation_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.motivation}
@@ -386,9 +387,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.specification_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.specification_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.specification}
@@ -413,9 +414,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.impacts_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.impacts_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.impacts}
@@ -440,9 +441,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.implementation_pathways_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.implementation_pathways_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.implementation_pathways}
@@ -467,9 +468,9 @@ export default function SubmitGovernanceProposal() {
           {t('page.submit_governance.conclusion_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_governance.conclusion_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.conclusion}

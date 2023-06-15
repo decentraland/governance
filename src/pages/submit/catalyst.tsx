@@ -17,6 +17,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -249,9 +250,9 @@ export default function SubmitCatalyst() {
           {t('page.submit_catalyst.description_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_catalyst.description_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}

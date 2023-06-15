@@ -19,6 +19,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../clients/Governance'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -27,8 +28,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage, userModifiedForm } from '../../entities/Proposal/utils'
-import { disableOnWheelInput } from '../../helpers'
-import { isHttpsURL } from '../../helpers'
+import { disableOnWheelInput, isHttpsURL } from '../../helpers'
 import loader from '../../modules/loader'
 import locations from '../../modules/locations'
 
@@ -283,12 +283,12 @@ export default function SubmitLinkedWearables() {
     return (
       <ContentSection>
         <Label>{t(`page.submit_linked_wearables.${params.section}_label`)}</Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t(`page.submit_linked_wearables.${params.section}_detail`, detailOptions)}
-        </Paragraph>
-        <Paragraph small primary>
+        </Text>
+        <Text size="lg" color="primary">
           {t(state.error[params.section])}
-        </Paragraph>
+        </Text>
         <div className="SectionList">
           {Object.keys(state.value[params.section])
             .sort()
@@ -400,9 +400,9 @@ export default function SubmitLinkedWearables() {
       </ContentSection>
       <ContentSection>
         <Label>{t('page.submit_linked_wearables.name_label')}</Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_linked_wearables.name_detail')}
-        </Paragraph>
+        </Text>
         <Field
           value={state.value.name}
           placeholder={t('page.submit_linked_wearables.name_placeholder')}
@@ -422,9 +422,9 @@ export default function SubmitLinkedWearables() {
       </ContentSection>
       <ContentSection>
         <Label>{t('page.submit_linked_wearables.marketplace_link_label')}</Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_linked_wearables.marketplace_link_detail')}
-        </Paragraph>
+        </Text>
         <Field
           value={state.value.marketplace_link}
           placeholder={t('page.submit_linked_wearables.url_placeholder')}
@@ -442,9 +442,9 @@ export default function SubmitLinkedWearables() {
           {t('page.submit_linked_wearables.nft_collections_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_linked_wearables.nft_collections_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.nft_collections}
@@ -468,9 +468,9 @@ export default function SubmitLinkedWearables() {
           {t('page.submit_linked_wearables.motivation_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_linked_wearables.motivation_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.motivation}
@@ -491,9 +491,9 @@ export default function SubmitLinkedWearables() {
       </ContentSection>
       <ContentSection>
         <Label>{t('page.submit_linked_wearables.items_label')}</Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_linked_wearables.items_detail')}
-        </Paragraph>
+        </Text>
         <Field
           type="number"
           value={state.value.items}
@@ -510,9 +510,9 @@ export default function SubmitLinkedWearables() {
           {t('page.submit_linked_wearables.governance_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_linked_wearables.governance_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.governance}
@@ -570,9 +570,9 @@ export default function SubmitLinkedWearables() {
             {t('page.submit_linked_wearables.method_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_linked_wearables.method_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownTextarea
             minHeight={175}
             value={state.value.method}

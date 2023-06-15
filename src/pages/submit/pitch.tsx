@@ -15,6 +15,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -139,9 +140,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.target_audience_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.target_audience_detail')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="target_audience"
@@ -181,9 +182,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.problem_statement_detail')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="problem_statement"
@@ -223,9 +224,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.proposed_solution_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.proposed_solution_detail')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="proposed_solution"
@@ -265,9 +266,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.relevance_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.relevance_detail')}
-          </Paragraph>
+          </Text>
           <Controller
             control={control}
             name="relevance"

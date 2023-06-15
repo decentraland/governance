@@ -4,7 +4,6 @@ import Helmet from 'react-helmet'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -15,6 +14,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../clients/Governance'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -137,7 +137,7 @@ export default function SubmitBanName() {
         <Header size="huge">{t('page.submit_ban_name.title')}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{t('page.submit_ban_name.description')}</Paragraph>
+        <Text size="lg">{t('page.submit_ban_name.description')}</Text>
       </ContentSection>
       <ContentSection>
         <Label>{t('page.submit_ban_name.name_label')}</Label>
@@ -162,9 +162,9 @@ export default function SubmitBanName() {
           {t('page.submit_ban_name.description_label')}
           <MarkdownNotice />
         </Label>
-        <Paragraph tiny secondary className="details">
+        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {t('page.submit_ban_name.description_detail')}
-        </Paragraph>
+        </Text>
         <MarkdownTextarea
           minHeight={175}
           value={state.value.description}
