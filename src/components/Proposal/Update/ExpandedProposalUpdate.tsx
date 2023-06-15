@@ -1,13 +1,13 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
-import locations from '../../../modules/locations'
-import { formatDate } from '../../../modules/time'
+import { formatDate } from '../../../utils/date/Time'
+import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'
@@ -34,14 +34,14 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
   return (
     <Link
       href={locations.update(update.id)}
-      className={TokenList.join(['ProposalUpdate', 'ProposalUpdate--expanded', `ProposalUpdate--${status}`])}
+      className={classNames('ProposalUpdate', 'ProposalUpdate--expanded', `ProposalUpdate--${status}`)}
     >
       <div className="ProposalUpdate__Heading">
         <div className="ProposalUpdate__Left">
           <div className="ProposalUpdate__IconContainer">
             <UpdateIcon size="16" />
           </div>
-          <span className={TokenList.join(['ProposalUpdate__Index', `ProposalUpdate__Index--expanded`])}>
+          <span className={classNames('ProposalUpdate__Index', `ProposalUpdate__Index--expanded`)}>
             {t('page.proposal_detail.grant.update_index', { index })}
           </span>
         </div>
@@ -62,7 +62,7 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
       <div className="ProposalUpdate__Description--expanded">
         <span>{introduction}</span>
       </div>
-      <div className={TokenList.join(['ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${health}`])}>
+      <div className={classNames('ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${health}`)}>
         {t('page.proposal_detail.grant.update_keep_reading')}
         <Icon name="chevron right" />
       </div>

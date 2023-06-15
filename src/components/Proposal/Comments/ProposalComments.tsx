@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
@@ -58,7 +58,7 @@ export default React.memo(function ProposalComments({ proposal }: ProposalCommen
         )
       }
     >
-      <div className={TokenList.join(['ProposalComments', isLoadingComments && 'ProposalComments--loading'])}>
+      <div className={classNames('ProposalComments', isLoadingComments && 'ProposalComments--loading')}>
         <div className="ProposalComments__Content">
           {!renderComments && (
             <Empty

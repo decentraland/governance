@@ -23,7 +23,7 @@
 }
 
 .BadgeWithTitle__Title:hover {
-  box-shadow: 0 0 8px rgb(var(--gray-raw-b));
+  box-shadow: 0 0 8px var(--black-600);
 }
 
 .BadgeWithTitle__Title > span {

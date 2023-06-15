@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import QuestionCircleIcon from '../../Icon/QuestionCircle'
 
@@ -11,7 +11,7 @@ const EmptyProposalUpdate = () => {
   const t = useFormatMessage()
 
   return (
-    <div className={TokenList.join(['ProposalUpdate', 'ProposalUpdate--pending'])}>
+    <div className={classNames('ProposalUpdate', 'ProposalUpdate--pending')}>
       <div className="ProposalUpdate__Left">
         <div className="ProposalUpdate__IconContainer">
           <QuestionCircleIcon size="16" className="EmptyProposalUpdate__Icon" />

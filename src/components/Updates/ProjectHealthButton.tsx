@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import { ProjectHealth } from '../../entities/Updates/types'
 
@@ -21,7 +21,7 @@ const ProjectHealthButton = ({ children, type, selectedValue, onClick, disabled 
     <button
       onClick={() => onClick(type)}
       disabled={disabled}
-      className={TokenList.join(['ProjectHealthButton', isSelected && `ProjectHealthButton--${type}`])}
+      className={classNames('ProjectHealthButton', isSelected && `ProjectHealthButton--${type}`)}
     >
       {children}
     </button>

@@ -2,8 +2,8 @@ import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 
 import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
-import { env } from '../../modules/env'
-import locations from '../../modules/locations'
+import { env } from '../../utils/env'
+import locations from '../../utils/locations'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'
 

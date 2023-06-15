@@ -1,15 +1,15 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import { Size, SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
 import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './Username.css'
 
@@ -94,14 +94,11 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
   return (
     <>
       {linked ? (
-        <Link
-          className={TokenList.join(['Username', className])}
-          href={locations.profile({ address: checksumAddress })}
-        >
+        <Link className={classNames('Username', className)} href={locations.profile({ address: checksumAddress })}>
           {userElement}
         </Link>
       ) : (
-        <span className={TokenList.join(['Username', className])}>{userElement}</span>
+        <span className={classNames('Username', className)}>{userElement}</span>
       )}
     </>
   )

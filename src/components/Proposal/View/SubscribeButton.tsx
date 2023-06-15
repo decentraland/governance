@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import Subscribe from '../../Icon/Subscribe'
@@ -23,12 +23,12 @@ export default function SubscribeButton({ loading, disabled, subscribed, onClick
   return (
     <button
       onClick={onClick}
-      className={TokenList.join([
+      className={classNames(
         'DetailsSection',
         'SectionButton',
         loading && 'SectionButton--loading',
-        disabled && 'SectionButton--disabled',
-      ])}
+        disabled && 'SectionButton--disabled'
+      )}
     >
       <div className="SectionButton__Container">
         <Loader active={loading} size="small" />

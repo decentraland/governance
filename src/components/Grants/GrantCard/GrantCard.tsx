@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
+import classNames from 'classnames'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
 
 import CliffProgress from './CliffProgress'
@@ -29,7 +29,7 @@ const GrantCard = ({ grant, hoverable = false }: Props) => {
       href={locations.proposal(id)}
       onMouseEnter={() => hoverable && setExpanded(true)}
       onMouseLeave={() => hoverable && setExpanded(false)}
-      className={TokenList.join(['GrantCard', hoverable && 'GrantCard__Expanded'])}
+      className={classNames('GrantCard', hoverable && 'GrantCard__Expanded')}
     >
       <div>
         <GrantCardHeader grant={grant} />

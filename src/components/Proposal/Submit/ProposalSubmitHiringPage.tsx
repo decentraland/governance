@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
+import classNames from 'classnames'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -9,7 +10,6 @@ import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
@@ -26,8 +26,8 @@ import {
   newProposalHiringScheme,
 } from '../../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import loader from '../../../modules/loader'
-import locations from '../../../modules/locations'
+import loader from '../../../utils/loader'
+import locations from '../../../utils/locations'
 import Field from '../../Common/Form/Field'
 import SubLabel from '../../Common/SubLabel'
 import ErrorMessage from '../../Error/ErrorMessage'
@@ -173,7 +173,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
             <span className="SubmitHiring__AddDetail">{t('page.submit_hiring.target_description')}</span>
           )}
         </ContentSection>
-        <ContentSection className={TokenList.join([type === HiringType.Add && 'SubmitHiring__AddressSection'])}>
+        <ContentSection className={classNames(type === HiringType.Add && 'SubmitHiring__AddressSection')}>
           <Label>{t(`page.submit_hiring.${action}.address_title`)}</Label>
           {type === HiringType.Add ? (
             <>

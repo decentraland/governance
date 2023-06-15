@@ -24,7 +24,7 @@ import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 import './update.css'

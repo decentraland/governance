@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { ProjectHealth } from '../../entities/Updates/types'
@@ -34,10 +34,10 @@ const ProjectHealthStatus = ({ health }: Props) => {
   const Icon = getIconComponent(health)
 
   return (
-    <div className={TokenList.join(['ProjectHealthStatus', `ProjectHealthStatus--${health}`])}>
+    <div className={classNames('ProjectHealthStatus', `ProjectHealthStatus--${health}`)}>
       <Icon className="ProjectHealthStatus__Icon" />
       <div>
-        <span className={TokenList.join(['ProjectHealthStatus__Title', `ProjectHealthStatus__Title--${health}`])}>
+        <span className={classNames('ProjectHealthStatus__Title', `ProjectHealthStatus__Title--${health}`)}>
           {titleText}
         </span>
         <p className="ProjectHealthStatus__Description">{descriptionText}</p>

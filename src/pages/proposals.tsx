@@ -40,8 +40,8 @@ import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useProposalsSearchParams } from '../hooks/useSearchParams'
 import useSubscriptions from '../hooks/useSubscriptions'
-import locations from '../modules/locations'
-import { isUnderMaintenance } from '../modules/maintenance'
+import locations from '../utils/locations'
+import { isUnderMaintenance } from '../utils/maintenance'
 
 import './proposals.css'
 

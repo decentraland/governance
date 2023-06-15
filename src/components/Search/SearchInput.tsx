@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useLocation } from '@reach/router'
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { useProposalsSearchParams } from '../../hooks/useSearchParams'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './SearchInput.css'
 
@@ -71,7 +71,7 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>)
     <div className={'SearchContainer'}>
       <input
         {...props}
-        className={TokenList.join(['SearchInput', open && 'SearchInput--open', props.className])}
+        className={classNames('SearchInput', open && 'SearchInput--open', props.className)}
         value={searchText}
         placeholder={props.placeholder || t('navigation.search.placeholder') || ''}
         onChange={handleChange}

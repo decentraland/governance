@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -12,7 +12,7 @@ import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
 import { calculateResultWinner } from '../../entities/Votes/utils'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
 import Subscribe from '../Icon/Subscribe'
 import Subscribed from '../Icon/Subscribed'
@@ -58,11 +58,11 @@ export default function ProposalItem({
     <Card
       as={Link}
       href={locations.proposal(proposal.id)}
-      className={TokenList.join([
+      className={classNames(
         'ProposalItem',
         subscribed && 'ProposalItem--subscribed',
-        hasCoauthorRequest && 'ProposalItem--coauthor',
-      ])}
+        hasCoauthorRequest && 'ProposalItem--coauthor'
+      )}
     >
       <Card.Content>
         <div className="ProposalItem__Title">

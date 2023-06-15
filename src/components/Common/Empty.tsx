@@ -1,8 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -39,7 +39,7 @@ export default function Empty({
 }: Props) {
   const showAction = !!linkText && (onLinkClick || linkHref)
   return (
-    <div className={TokenList.join(['Empty', className])}>
+    <div className={classNames('Empty', className)}>
       {icon ? icon : <Watermelon />}
       {!!title && <Header>{title}</Header>}
       {!!description && <Markdown>{description}</Markdown>}

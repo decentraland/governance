@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
+import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -87,9 +87,9 @@ function ProposalCoAuthorStatus({ proposalId, proposalFinishDate }: Props) {
   return (
     <>
       {status && (
-        <div className={TokenList.join(['CoAuthorStatus DetailsSection', pendingClassName])}>
+        <div className={classNames('CoAuthorStatus DetailsSection', pendingClassName)}>
           <div className="DetailsSection__Content">
-            <span className={TokenList.join(['Title', pendingClassName])}>
+            <span className={classNames('Title', pendingClassName)}>
               <Header sub>{t(labelConfig[status].title)}</Header>
               {isPending ? (
                 <Helper text={t('page.coauthor_detail.pending_helper')} position="top center" size="14" />

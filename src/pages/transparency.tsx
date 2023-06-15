@@ -27,7 +27,7 @@ import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
 import useTransparency from '../hooks/useTransparency'
-import locations from '../modules/locations'
+import locations from '../utils/locations'
 
 import './transparency.css'
 

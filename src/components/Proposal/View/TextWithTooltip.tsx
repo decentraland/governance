@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import './TextWithTooltip.css'
@@ -17,7 +17,7 @@ export default function TextWithTooltip({ className, children }: React.HTMLAttri
           className={'TextWithTooltip'}
           content={children}
           position="bottom left"
-          trigger={<span className={TokenList.join([className, 'TextWithTooltip__Trigger'])}>{children}</span>}
+          trigger={<span className={classNames(className, 'TextWithTooltip__Trigger')}>{children}</span>}
           on="hover"
         />
       )}

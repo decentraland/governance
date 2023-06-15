@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -13,6 +12,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { VotedProposal } from '../../../entities/Votes/types'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
+import Time from '../../../utils/date/Time'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import VotingPower from '../../Token/VotingPower'
 import Username from '../../User/Username'
@@ -89,10 +89,7 @@ function VotingPowerDelegationDetail({
   return (
     <>
       <Modal.Header
-        className={TokenList.join([
-          'VotingPowerDelegationCandidatesList__Header',
-          'VotingPowerDelegationDetail__Header',
-        ])}
+        className={classNames('VotingPowerDelegationCandidatesList__Header', 'VotingPowerDelegationDetail__Header')}
       >
         <div className="VotingPowerDelegationDetail__CandidateName">
           <Button basic aria-label={t('modal.vp_delegation.backButtonLabel')} onClick={onBackClick}>
@@ -109,7 +106,7 @@ function VotingPowerDelegationDetail({
         />
       </Modal.Header>
       <Modal.Content className="VotingPowerDelegationDetail__Content">
-        <div className={TokenList.join(['Info', isExpanded && 'Info--expanded'])}>
+        <div className={classNames('Info', isExpanded && 'Info--expanded')}>
           <div className="CandidateDetails__Container">
             <div>
               <CandidateDetails title={t('modal.vp_delegation.details.about_title')} content={candidate.bio} />
@@ -135,7 +132,7 @@ function VotingPowerDelegationDetail({
               />
             </div>
           </div>
-          <div className={TokenList.join(['Fadeout', !showFadeout && 'Fadeout--hidden'])} />
+          <div className={classNames('Fadeout', !showFadeout && 'Fadeout--hidden')} />
         </div>
         <div className="ShowMore">
           <div className="Divider" />

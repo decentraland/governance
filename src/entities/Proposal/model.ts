@@ -9,11 +9,11 @@ import {
   offset as offsetQuery,
   table,
 } from 'decentraland-gatsby/dist/entities/Database/utils'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { QueryPart } from 'decentraland-server/dist/db/types'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { OldGrantCategory, SubtypeAlternativeOptions, isGrantSubtype } from '../Grant/types'

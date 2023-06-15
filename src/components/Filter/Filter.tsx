@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 
 import './Filter.css'
 
@@ -10,7 +10,7 @@ export type FilterProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export default function Filter({ active, ...props }: FilterProps) {
   return (
-    <div {...props} className={TokenList.join(['Filter', active && 'Filter--active'])}>
+    <div {...props} className={classNames('Filter', active && 'Filter--active')}>
       <span>{props.children}</span>
     </div>
   )

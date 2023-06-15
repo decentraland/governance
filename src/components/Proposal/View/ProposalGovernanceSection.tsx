@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
+import classNames from 'classnames'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
 import { ProposalPageState } from '../../../pages/proposal'
+import Time from '../../../utils/date/Time'
 import ChoiceProgress, { ChoiceProgressProps } from '../../Status/ChoiceProgress'
 
 import ProposalVotingSection from './ProposalVoting/ProposalVotingSection'
@@ -65,13 +65,13 @@ export default function ProposalGovernanceSection({
 
   return (
     <div
-      className={TokenList.join([
+      className={classNames(
         'DetailsSection',
         'DetailsSection--with-shadow',
         disabled && 'DetailsSection--disabled',
         loading && 'DetailsSection--loading',
-        showPromotionSection && 'DetailsSection--shiny',
-      ])}
+        showPromotionSection && 'DetailsSection--shiny'
+      )}
     >
       <div>
         <div className="ProposalGovernanceSection__Container">
@@ -91,10 +91,10 @@ export default function ProposalGovernanceSection({
         </div>
         {showResults && (
           <div
-            className={TokenList.join([
+            className={classNames(
               'ProposalGovernanceSection__Results',
-              !finished && 'ProposalGovernanceSection__Results--current',
-            ])}
+              !finished && 'ProposalGovernanceSection__Results--current'
+            )}
           >
             {partialResults.map((result) => {
               return (

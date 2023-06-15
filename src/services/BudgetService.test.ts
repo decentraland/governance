@@ -1,5 +1,4 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { cloneDeep } from 'lodash'
 
 import { DclData } from '../clients/DclData'
@@ -11,6 +10,7 @@ import { CURRENT_TEST_BUDGET, GRANT_PROPOSAL_1, GRANT_PROPOSAL_2 } from '../enti
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 import { getUncappedRoundedPercentage } from '../helpers'
+import Time from '../utils/date/Time'
 
 import { BudgetService } from './BudgetService'
 

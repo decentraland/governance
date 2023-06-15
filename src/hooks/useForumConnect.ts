@@ -4,7 +4,6 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useSign from 'decentraland-gatsby/dist/hooks/useSign'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Governance } from '../clients/Governance'
 import { AccountType } from '../components/Modal/IdentityConnectModal/AccountsConnectModal'
@@ -12,6 +11,7 @@ import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
+import Time from '../utils/date/Time'
 
 import useTimer from './useTimer'
 

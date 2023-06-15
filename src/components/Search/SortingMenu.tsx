@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
+import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
@@ -26,7 +26,7 @@ export default function SortingMenu() {
 
   return (
     <Dropdown
-      className={TokenList.join(['SortingMenu', arrowDirection])}
+      className={classNames('SortingMenu', arrowDirection)}
       direction={isMobile ? 'left' : 'right'}
       text={t(`navigation.search.sorting.${order}`) || ''}
     >

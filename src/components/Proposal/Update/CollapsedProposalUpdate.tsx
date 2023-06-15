@@ -1,17 +1,17 @@
 import React, { useCallback } from 'react'
 
+import classNames from 'classnames'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
-import locations from '../../../modules/locations'
-import { formatDate } from '../../../modules/time'
+import { formatDate } from '../../../utils/date/Time'
+import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'
@@ -72,11 +72,11 @@ const CollapsedProposalUpdate = ({
     <Component
       href={completion_date ? updateLocation : undefined}
       onClick={isLinkable ? undefined : handleUpdateClick}
-      className={TokenList.join([
+      className={classNames(
         'ProposalUpdate',
         status === UpdateStatus.Pending && 'ProposalUpdate--pending',
-        !completion_date && 'ProposalUpdate--missed',
-      ])}
+        !completion_date && 'ProposalUpdate--missed'
+      )}
     >
       <div className="ProposalUpdate__Left">
         <div className="ProposalUpdate__IconContainer">

@@ -14,7 +14,7 @@ import { getUpdateNumber } from '../entities/Updates/utils'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposalUpdates from '../hooks/useProposalUpdates'
-import locations from '../modules/locations'
+import locations from '../utils/locations'
 
 import './update.css'
 

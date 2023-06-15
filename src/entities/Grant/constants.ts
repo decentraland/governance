@@ -1,5 +1,6 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
+
+import Time from '../../utils/date/Time'
 
 export const GRANT_PROPOSAL_DURATION_IN_SECONDS =
   process.env.GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS || env('GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS', '1209600')

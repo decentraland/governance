@@ -7,7 +7,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
 
 import { SNAPSHOT_DELEGATE_CONTRACT_ADDRESS, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-import DelegateABI from '../modules/contracts/abi/Delegate.abi.json'
+import DelegateABI from '../utils/contracts/abi/Delegate.abi.json'
 
 export enum DelegateContractStatusCode {
   TRANSACTION_CANCELED_BY_USER = 4001,

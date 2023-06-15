@@ -19,7 +19,7 @@
 }
 
 .ProposalCard--highlight {
-  border: 1px solid rgb(var(--purple-raw-e));
+  border: 1px solid rgb(165, 36, 179); /* TODO: Move color to theme */
 }
 
 .ProposalCard--overbudget {

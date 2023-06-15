@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 
+import classNames from 'classnames'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
@@ -116,12 +116,7 @@ export function UpdateProposalStatusModal({
       {...props}
       open={open && !!status}
       size="small"
-      className={TokenList.join([
-        'GovernanceActionModal',
-        'ProposalModal',
-        'UpdateProposalStatusModal',
-        props.className,
-      ])}
+      className={classNames('GovernanceActionModal', 'ProposalModal', 'UpdateProposalStatusModal', props.className)}
       closeIcon={<Close />}
     >
       <Modal.Content>

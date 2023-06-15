@@ -1,6 +1,6 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import snakeCase from 'lodash/snakeCase'
 
+import Time from '../../utils/date/Time'
 import { NewGrantCategory } from '../Grant/types'
 import { GrantProposalConfiguration, ProposalAttributes } from '../Proposal/types'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'

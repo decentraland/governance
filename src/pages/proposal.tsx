@@ -62,8 +62,8 @@ import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
 import { useTenderProposals } from '../hooks/useTenderProposals'
-import locations from '../modules/locations'
-import { isUnderMaintenance } from '../modules/maintenance'
+import locations from '../utils/locations'
+import { isUnderMaintenance } from '../utils/maintenance'
 
 import './proposal.css'
 

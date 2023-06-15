@@ -4,7 +4,7 @@
 
 .BudgetInput__InputContainer {
   display: inline-flex;
-  border: 1px solid rgba(115, 110, 125, 0.32);
+  border: 1px solid var(--alpha-black-400);
   border-radius: 6px;
   position: relative;
   margin-bottom: 7px;
@@ -22,7 +22,7 @@
   line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
-  border-right: 1px solid rgba(115, 110, 125, 0.32);
+  border-right: 1px solid var(--alpha-black-400);
 }
 
 .BudgetInput__Description--error {

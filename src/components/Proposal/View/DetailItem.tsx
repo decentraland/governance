@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 
 import Helper from '../../Helper/Helper'
 
@@ -15,7 +15,7 @@ export type DetailItemProps = React.HTMLProps<HTMLDivElement> & {
 
 export function DetailItem({ name, value, description, ...props }: DetailItemProps) {
   return (
-    <div {...props} className={TokenList.join(['DetailItem', props.className])}>
+    <div {...props} className={classNames('DetailItem', props.className)}>
       <Paragraph small secondary className="DetailItem__Name">
         {name}
       </Paragraph>

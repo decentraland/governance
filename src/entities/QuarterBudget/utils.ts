@@ -1,11 +1,7 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-
 import { TransparencyBudget } from '../../clients/DclData'
+import Time from '../../utils/date/Time'
 
 import { QuarterBudgetAttributes } from './types'
-
-dayjs.extend(utc)
 
 function isUTCFormat(date: string) {
   const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/
@@ -25,7 +21,7 @@ export function thereAreNoOverlappingBudgets(
 }
 
 export function getQuarterEndDate(quarterStartDate: Date) {
-  return new Date(dayjs.utc(quarterStartDate.toISOString()).add(3, 'months').toISOString())
+  return new Date(Time.utc(quarterStartDate.toISOString()).add(3, 'months').toISOString())
 }
 
 export function getQuarterStartDate(quarterStartDate: string) {
@@ -33,7 +29,7 @@ export function getQuarterStartDate(quarterStartDate: string) {
     throw new Error(`Invalid date format. Expected UTC format. Received ${quarterStartDate}`)
   }
   const startDate = new Date(quarterStartDate)
-  return new Date(dayjs.utc(startDate).startOf('day').toISOString())
+  return new Date(Time.utc(startDate).startOf('day').toISOString())
 }
 
 export function getSortedBudgets(transparencyBudgets: TransparencyBudget[]) {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
+import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import './FullWidthButton.css'
@@ -18,7 +18,7 @@ const FullWidthButton = ({ onClick, children, className, link, newWindow = false
     <Button
       primary
       fluid
-      className={TokenList.join(['FullWidthButton', className])}
+      className={classNames('FullWidthButton', className)}
       onClick={onClick}
       target={newWindow ? '_blank' : ''}
       rel={newWindow ? 'noopener noreferrer' : ''}

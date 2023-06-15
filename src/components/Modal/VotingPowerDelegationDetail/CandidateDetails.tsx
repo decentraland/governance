@@ -1,7 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import TokenList from 'decentraland-gatsby/dist/utils/dom/TokenList'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import LinkIcon from '../../Icon/LinkIcon'
@@ -18,22 +18,22 @@ interface Props {
 function CandidateDetails({ title, content, links, skills }: Props) {
   return (
     <div
-      className={TokenList.join([
+      className={classNames(
         'CandidateDetails',
         links && links.length === 0 && 'CandidateDetails--hidden',
-        skills && skills.length === 0 && 'CandidateDetails--hidden',
-      ])}
+        skills && skills.length === 0 && 'CandidateDetails--hidden'
+      )}
     >
       <Header size="tiny" sub className="CandidateDetails__Title">
         {title}
       </Header>
       <Paragraph
         small
-        className={TokenList.join([
+        className={classNames(
           'CandidateDetails__Content',
           skills && 'CandidateDetails__Content--skills',
-          links && 'CandidateDetails__Content--links',
-        ])}
+          links && 'CandidateDetails__Content--links'
+        )}
       >
         {content}
         {links &&
@@ -44,7 +44,7 @@ function CandidateDetails({ title, content, links, skills }: Props) {
           ))}
         {skills &&
           skills.map((skill, idx) => (
-            <span className="Chip" key={`skills_${idx}`}>
+            <span className="CandidateDetails__Chip" key={`skills_${idx}`}>
               {skill.toUpperCase()}
             </span>
           ))}

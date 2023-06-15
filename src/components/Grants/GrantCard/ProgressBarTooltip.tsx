@@ -1,12 +1,11 @@
 import React from 'react'
 
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { Grant } from '../../../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
-import { formatDate } from '../../../modules/time'
+import Time, { formatDate } from '../../../utils/date/Time'
 
 interface Props {
   grant: Grant
