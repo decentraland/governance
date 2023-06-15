@@ -6,16 +6,14 @@ import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Governance } from '../clients/Governance'
@@ -67,8 +65,7 @@ export default function ProposalsPage() {
     { callWithTruthyDeps: true }
   )
   const [subscriptions, subscriptionsState] = useSubscriptions()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isMobile = useMobileMediaQuery()
   const { status: burgerStatus } = useBurgerMenu()
   const { open } = burgerStatus
 

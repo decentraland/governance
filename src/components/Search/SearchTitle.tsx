@@ -2,11 +2,10 @@ import React from 'react'
 
 import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { useProposalsSearchParams } from '../../hooks/useSearchParams'
 import locations from '../../utils/locations'
@@ -15,9 +14,8 @@ import './SearchTitle.css'
 
 export function SearchTitle() {
   const t = useFormatMessage()
-  const responsive = useResponsive()
   const { search } = useProposalsSearchParams()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isMobile = useMobileMediaQuery()
 
   return (
     <>
