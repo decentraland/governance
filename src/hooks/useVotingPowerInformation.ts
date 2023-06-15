@@ -4,15 +4,15 @@ import useVotingPowerDistribution from './useVotingPowerDistribution'
 
 export default function useVotingPowerInformation(address?: string | null) {
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)
-  const { delegationResult, isDelegationResultLoading } = useDelegation(address)
-  const delegatorsToAddress = delegationResult?.delegatedFrom.map((d) => d.delegator)
+  const { delegation, isDelegationLoading } = useDelegation(address)
+  const delegatorsToAddress = delegation?.delegatedFrom.map((d) => d.delegator)
   const { votingPower: scores, isLoadingVotingPower: isLoadingScores } = useVotingPowerBalanceList(delegatorsToAddress)
 
   return {
     vpDistribution,
     isLoadingVpDistribution,
-    delegation: delegationResult,
-    isDelegationLoading: isDelegationResultLoading,
+    delegation,
+    isDelegationLoading,
     isLoadingScores,
     scores,
   }
