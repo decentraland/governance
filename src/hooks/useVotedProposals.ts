@@ -5,6 +5,8 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from './../clients/Governance'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 function useVotedProposals(address: string, first?: number) {
   const [skip, setSkip] = useState(0)
 
@@ -16,7 +18,7 @@ function useVotedProposals(address: string, first?: number) {
       }
       return await Governance.get().getAddressVotes(address, first, skip)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const [votes, setVotes] = useState(responseVotes ?? [])

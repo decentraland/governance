@@ -7,6 +7,7 @@ import { isSameAddress } from '../entities/Snapshot/utils'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
 import { Vote } from '../entities/Votes/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
 import useVotingPowerDistribution from './useVotingPowerDistribution'
 
 interface CurrentVPOnProposal {
@@ -38,7 +39,7 @@ export default function useVotingPowerOnProposal(
       const addressVp = vpDistribution.own || 0
       return { addressVp, delegatedVp }
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const vpOnProposal = data ?? initialVotingPowerOnProposal
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp

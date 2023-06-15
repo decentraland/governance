@@ -52,6 +52,7 @@ import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
+import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
@@ -154,7 +155,7 @@ export default function ProposalPage() {
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
     queryKey: [subscriptionsQueryKey],
     queryFn: () => Governance.get().getSubscriptions(proposal!.id),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
   const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)

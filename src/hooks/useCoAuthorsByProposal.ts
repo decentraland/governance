@@ -9,7 +9,7 @@ import useCoauthors from './useCoauthors'
 
 function useCoAuthorsByProposal(proposal: ProposalAttributes | null) {
   const [account] = useAuthContext()
-  const allCoauthors = useCoauthors(proposal?.id || '')
+  const allCoauthors = useCoauthors(proposal?.id)
   return useMemo(() => {
     if (proposal && proposal.user.toLowerCase() === account?.toLowerCase()) {
       return allCoauthors

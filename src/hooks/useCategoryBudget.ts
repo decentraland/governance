@@ -4,6 +4,8 @@ import { Governance } from '../clients/Governance'
 import { CategoryBudget } from '../entities/Budget/types'
 import { ProposalGrantCategory } from '../entities/Grant/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 const EMPTY_CATEGORY_BUDGET: CategoryBudget = {
   total: 0,
   allocated: 0,
@@ -14,7 +16,7 @@ export default function useCategoryBudget(category?: ProposalGrantCategory | nul
   const { data } = useQuery({
     queryKey: [`categoryBudget#${category}`],
     queryFn: async () => (category ? await Governance.get().getCategoryBudget(category) : EMPTY_CATEGORY_BUDGET),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const totalCategoryBudget = data?.total ?? EMPTY_CATEGORY_BUDGET.total

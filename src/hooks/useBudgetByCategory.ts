@@ -7,6 +7,8 @@ import { Governance } from '../clients/Governance'
 import { ProposalGrantCategory } from '../entities/Grant/types'
 import { PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 type Budget = {
   allocatedPercentage: number
   allocated: number
@@ -27,7 +29,7 @@ export default function useBudgetByCategory(category: ProposalGrantCategory | ty
   const { data: currentBudget } = useQuery({
     queryKey: [`budget`],
     queryFn: () => Governance.get().getCurrentBudget(),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const [budget, setBudget] = useState(INITIAL_BUDGET)
 

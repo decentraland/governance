@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 const EMPTY_VALUE = {
   proposal: null,
   selectOption: [
@@ -16,7 +18,7 @@ const EMPTY_VALUE = {
 
 export default function usePreselectedProposal(proposalId: ProposalAttributes['id'] | null) {
   const { data: preselectedProposal } = useQuery({
-    queryKey: [`preselected-proposal#${proposalId}`],
+    queryKey: [`preselectedProposal#${proposalId}`],
     queryFn: async () => {
       if (!proposalId) {
         return EMPTY_VALUE
@@ -38,7 +40,7 @@ export default function usePreselectedProposal(proposalId: ProposalAttributes['i
         ],
       }
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return preselectedProposal

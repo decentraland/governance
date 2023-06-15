@@ -5,6 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Governance } from '../clients/Governance'
 import { CategorizedGrants } from '../entities/Proposal/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useGrantsByUser(address: string | null, coauthoring?: boolean) {
   const initialValue: CategorizedGrants = { current: [], past: [], total: 0 }
   const { data: grants } = useQuery({
@@ -16,7 +18,7 @@ export default function useGrantsByUser(address: string | null, coauthoring?: bo
 
       return await Governance.get().getGrantsByUser(address, coauthoring)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return useMemo(() => {

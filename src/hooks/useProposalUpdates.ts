@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useProposalUpdates(proposalId?: string | null) {
   const {
     data: updates,
@@ -16,7 +18,7 @@ export default function useProposalUpdates(proposalId?: string | null) {
       }
       return Governance.get().getProposalUpdates(proposalId)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

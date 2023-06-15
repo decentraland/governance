@@ -3,6 +3,8 @@ import max from 'lodash/max'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 
+import { TWENTY_MINUTES_MS } from './constants'
+
 export type VoteHistory = { lastVoted: number; timesVoted: number }
 
 const fetchVotes = async (addresses: string[]) => {
@@ -27,7 +29,7 @@ export default function useAddressesVotesTotals(addresses: string[]) {
   const { data: addressesVotesTotals, isLoading } = useQuery({
     queryKey: [`votes#${addresses.join('-')}`],
     queryFn: () => fetchVotes(addresses),
-    staleTime: 1.2e6, // 20 minutes
+    staleTime: TWENTY_MINUTES_MS,
   })
   return {
     addressesVotesTotals: addressesVotesTotals ?? {},

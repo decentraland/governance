@@ -33,6 +33,7 @@ import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
@@ -63,7 +64,7 @@ export default function ProposalsPage() {
   const { data: votes, isLoading: isLoadingVotes } = useQuery({
     queryKey: [`porposalVotes#${proposalIds.join('-')}`],
     queryFn: () => Governance.get().getVotes(proposalIds),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()

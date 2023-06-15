@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { Governance } from '../../clients/Governance'
+import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import Open from '../Icon/Open'
 
 import './LinkWithTitle.css'
@@ -26,7 +27,7 @@ function LinkWithTitle({ url }: Props) {
   const { data: title } = useQuery({
     queryKey: [`title#${url}`],
     queryFn: () => fetchTitle(url),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return (

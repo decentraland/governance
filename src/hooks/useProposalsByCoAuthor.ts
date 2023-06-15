@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Governance } from '../clients/Governance'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 function useProposalsByCoAuthor(coauthor?: string | null, status?: CoauthorStatus) {
   const { data: requestsStatus, isLoading } = useQuery({
     queryKey: [`proposalsByCoAuthor#${coauthor}#${status}`],
@@ -12,7 +14,7 @@ function useProposalsByCoAuthor(coauthor?: string | null, status?: CoauthorStatu
       }
       return Governance.get().getProposalsByCoAuthor(coauthor, status)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

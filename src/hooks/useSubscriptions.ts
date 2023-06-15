@@ -3,6 +3,8 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 
 import { Governance } from '../clients/Governance'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useSubscriptions() {
   const [account] = useAuthContext()
   const queryKey = `subscriptions#${account}`
@@ -11,7 +13,7 @@ export default function useSubscriptions() {
     queryFn: async () => {
       return await Governance.get().getUserSubscriptions()
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const queryClient = useQueryClient()
   const { mutate: subscribe, isLoading: isSubscribing } = useMutation({

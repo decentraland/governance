@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 const useProposalComments = (proposalId?: ProposalAttributes['id']) => {
   const { data: comments, isLoading: isLoadingComments } = useQuery({
     queryKey: [`proposalComments#${proposalId}`],
@@ -12,7 +14,7 @@ const useProposalComments = (proposalId?: ProposalAttributes['id']) => {
       }
       return Governance.get().getProposalComments(proposalId)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return { comments, isLoadingComments }

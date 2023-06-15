@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 
 import { getScores } from '../entities/Votes/utils'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useVotingPowerBalanceList(addresses: string[]) {
   const { data: votingPower, isLoading: isLoadingVotingPower } = useQuery({
     queryKey: [`votingPower#${JSON.stringify(addresses)}`],
@@ -9,7 +11,7 @@ export default function useVotingPowerBalanceList(addresses: string[]) {
       if (addresses.length < 1) return {}
       return await getScores(addresses)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { VOTES_VP_THRESHOLD } from '../constants'
 
+import { FIVE_MINUTES_MS } from './constants'
 import { useSortingByKey } from './useSortingByKey'
 
 type Voters = {
@@ -25,7 +26,7 @@ export default function useTopVoters(start: Date, end: Date, limit: number) {
 
       return Object.entries(votesByUser).map<Voters>(([address, votes]) => ({ address, votes }))
     },
-    staleTime: 3e5, // 5 minutes
+    staleTime: FIVE_MINUTES_MS,
   })
 
   const { sorted, isDescendingSort, changeSort } = useSortingByKey(votes ?? [], 'votes')

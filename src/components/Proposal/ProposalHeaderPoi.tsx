@@ -8,6 +8,7 @@ import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import Pin from '../Icon/Pin'
 
 import './ProposalHeaderPoi.css'
@@ -45,12 +46,12 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
   const { data: tile } = useQuery({
     queryKey: [`tile#${x},${y}`],
     queryFn: () => Land.get().getTile([x, y]),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const { data: sceneImg } = useQuery({
     queryKey: [`sceneImg#${x},${y}`],
     queryFn: () => fetchSceneImg(x, y),
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   if (!sceneImg) {

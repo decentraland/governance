@@ -5,6 +5,8 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../clients/Governance'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 function useIsProfileValidated(address: string | null) {
   const { data: isProfileValidated } = useQuery({
     queryKey: [`isProfileValidated#${address}`],
@@ -14,7 +16,7 @@ function useIsProfileValidated(address: string | null) {
       }
       return null
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const validationChecked = useMemo(() => {

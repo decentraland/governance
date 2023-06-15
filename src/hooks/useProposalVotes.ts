@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
+import { FIVE_MINUTES_MS } from './constants'
+
 const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
   const {
     data: votes,
@@ -16,7 +18,7 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
       }
       return Governance.get().getProposalVotes(proposalId)
     },
-    staleTime: 3e5, // 5 minutes
+    staleTime: FIVE_MINUTES_MS,
   })
 
   return { votes: votes ?? null, isLoadingVotes, reloadVotes }

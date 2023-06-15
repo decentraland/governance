@@ -4,6 +4,8 @@ import { Governance } from '../clients/Governance'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { calculateMatch } from '../entities/Snapshot/utils'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useVotesMatch(userAccount: string | null, otherAccount: string | null) {
   const { data: userVotes, isLoading: userVotesLoading } = useQuery({
     queryKey: [`userVotes#${userAccount}`],
@@ -13,7 +15,7 @@ export default function useVotesMatch(userAccount: string | null, otherAccount: 
       }
       return SnapshotGraphql.get().getAddressesVotes([userAccount])
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const { data: otherAccountVotes, isLoading: otherAccountVotesLoading } = useQuery({
@@ -24,7 +26,7 @@ export default function useVotesMatch(userAccount: string | null, otherAccount: 
       }
       return Governance.get().getAddressVotes(otherAccount)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

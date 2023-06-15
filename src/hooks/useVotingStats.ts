@@ -7,6 +7,8 @@ import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getFormattedPercentage } from '../helpers'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 function sortAddressesVotes(votes: SnapshotVote[], userAddress: string | null) {
   const addressVotes: SnapshotVote[] = []
   const userVotes: SnapshotVote[] = []
@@ -52,7 +54,7 @@ export default function useVotingStats(address: string, userAddress: string | nu
     queryFn: async () => {
       return await SnapshotGraphql.get().getProposals(aMonthAgo, now, ['id', 'choices', 'scores'])
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const { data: votes, isLoading: isLoadingVotes } = useQuery({
@@ -62,7 +64,7 @@ export default function useVotingStats(address: string, userAddress: string | nu
       if (userAddress) addresses.push(userAddress)
       return await SnapshotGraphql.get().getAddressesVotes(addresses)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const { addressVotes, userVotes } = useMemo(() => sortAddressesVotes(votes ?? [], userAddress), [votes, userAddress])

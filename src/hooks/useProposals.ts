@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { GetProposalsFilter, Governance } from '../clients/Governance'
 import { MAX_PROPOSAL_LIMIT } from '../entities/Proposal/utils'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export type UseProposalsFilter = Omit<GetProposalsFilter, 'subscribed' | 'limit' | 'offset'> & {
   subscribed: string | boolean
   page: number
@@ -63,7 +65,7 @@ export default function useProposals(filter: Partial<UseProposalsFilter> = {}) {
 
       return Governance.get().getProposals({ ...params, limit, offset })
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

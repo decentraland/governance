@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { VpDistribution } from '../clients/SnapshotGraphqlTypes'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export const EMPTY_DISTRIBUTION: VpDistribution = {
   total: 0,
   own: 0,
@@ -23,7 +25,7 @@ export default function useVotingPowerDistribution(address?: string | null, prop
       if (!address) return EMPTY_DISTRIBUTION
       return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return { vpDistribution: vpDistribution ?? EMPTY_DISTRIBUTION, isLoadingVpDistribution: isLoading }

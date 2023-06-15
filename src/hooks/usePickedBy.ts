@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { SnapshotSubgraph } from '../clients/SnapshotSubgraph'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 function usePickedBy(addresses: string[]) {
   const { data: pickedByResults, isLoading: isLoadingPickedBy } = useQuery({
     queryKey: [`pickedBy#${SNAPSHOT_SPACE}#${addresses.join(',')}`],
@@ -14,7 +16,7 @@ function usePickedBy(addresses: string[]) {
         return []
       }
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return { pickedByResults: pickedByResults ?? [], isLoadingPickedBy }

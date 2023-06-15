@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useSurveyTopics(proposalId?: string) {
   const { data: surveyTopics, isLoading: isLoadingSurveyTopics } = useQuery({
     queryKey: [`surveyTopics#${proposalId}`],
@@ -11,7 +13,7 @@ export default function useSurveyTopics(proposalId?: string) {
       }
       return Governance.get().getSurveyTopics(proposalId)
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

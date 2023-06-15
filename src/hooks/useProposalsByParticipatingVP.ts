@@ -6,6 +6,7 @@ import orderBy from 'lodash/orderBy'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
 import useProposals from './useProposals'
 
 export default function useProposalsByParticipatingVP(start: Date, end: Date) {
@@ -15,7 +16,7 @@ export default function useProposalsByParticipatingVP(start: Date, end: Date) {
       const pendingProposals = await SnapshotGraphql.get().getPendingProposals(start, end, ['id'], 5)
       return orderBy(pendingProposals, ['scores_total'], ['desc'])
     },
-    staleTime: 3.6e6, // 1 hour
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const snapshotIds = useMemo(() => snapshotProposals?.map((item) => item.id).join(','), [snapshotProposals])
