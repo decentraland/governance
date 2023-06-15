@@ -2,11 +2,13 @@ import React from 'react'
 
 import classNames from 'classnames'
 
-export type FontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-type FontWeight = 'bold' | 'semi-bold' | 'normal'
+const DEFAULT_COLOR = 'default'
+const DEFAULT_FONT_WEIGHT = 'normal'
+const DEFAULT_FONT_SIZE = 'md'
+export type FontSize = 'xs' | 'sm' | typeof DEFAULT_FONT_SIZE | 'lg'
+type FontWeight = 'bold' | 'semi-bold' | typeof DEFAULT_FONT_WEIGHT
+type TextColor = typeof DEFAULT_COLOR | 'primary' | 'secondary'
 type TextTransform = 'uppercase' | 'lowercase'
-const TextColorDefault = 'primary'
-type TextColor = typeof TextColorDefault | 'secondary'
 
 interface Props {
   children?: React.ReactNode
@@ -17,18 +19,20 @@ interface Props {
   span?: boolean
   className?: string
 }
-const Text = ({ children, size, weight, transform, color, span, className }: Props) => {
-  color = color || TextColorDefault
+export default function Text({ children, size, weight, transform, color, span, className }: Props) {
+  color = color || DEFAULT_COLOR
+  size = size || DEFAULT_FONT_SIZE
+  weight = weight || DEFAULT_FONT_WEIGHT
 
   return (
     <p
       className={classNames(
         'Text',
         className,
-        size && `Text--size-${size}`,
-        weight && `Text--weight-${weight}`,
-        transform && `Text--transform-${transform}`,
-        `Text--color-${color}`
+        `Text--size-${size}`,
+        `Text--weight-${weight}`,
+        `Text--color-${color}`,
+        transform && `Text--transform-${transform}`
       )}
     >
       {children}
