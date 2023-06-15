@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
-import locations from '../../modules/locations'
+import Time from '../../utils/date/Time'
+import locations from '../../utils/locations'
 import BoxTabs from '../Common/BoxTabs'
 import BoxTabsContainer from '../Common/BoxTabsContainer'
 import Empty from '../Common/Empty'

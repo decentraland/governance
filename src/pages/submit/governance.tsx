@@ -27,7 +27,7 @@ import { SUBMISSION_THRESHOLD_GOVERNANCE } from '../../entities/Proposal/constan
 import { NewProposalDraft, NewProposalGovernance, newProposalGovernanceScheme } from '../../entities/Proposal/types'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

@@ -5,7 +5,7 @@ import { navigate } from 'decentraland-gatsby/dist/plugins/intl/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalType } from '../../entities/Proposal/types'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './RequestBanner.css'
 

@@ -22,7 +22,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalBanName, newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isAlreadyBannedName, isValidName } from '../../entities/Proposal/utils'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

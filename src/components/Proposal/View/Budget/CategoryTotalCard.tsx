@@ -6,7 +6,7 @@ import snakeCase from 'lodash/snakeCase'
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../../../helpers/styles'
-import locations from '../../../../modules/locations'
+import locations from '../../../../utils/locations'
 import { getCategoryIcon } from '../../../Category/CategoryOption'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 

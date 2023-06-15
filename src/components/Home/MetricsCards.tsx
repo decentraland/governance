@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
@@ -9,7 +8,8 @@ import { ProposalStatus } from '../../entities/Proposal/types'
 import useProposals from '../../hooks/useProposals'
 import useTransparency from '../../hooks/useTransparency'
 import useVotesCountByDate from '../../hooks/useVotesCountByDate'
-import locations from '../../modules/locations'
+import Time from '../../utils/date/Time'
+import locations from '../../utils/locations'
 
 import MetricsCard from './MetricsCard'
 import './MetricsCards.css'

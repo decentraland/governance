@@ -38,7 +38,7 @@ import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './grant.css'
 import './submit.css'

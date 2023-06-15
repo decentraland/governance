@@ -2,8 +2,7 @@ import React, { useRef, useState } from 'react'
 import Flickity from 'react-flickity-component'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
 import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
@@ -48,8 +47,7 @@ const CurrentGrantsCategoryFilters = ({ currentGrantsFilteredByCategory, onSelec
   const t = useFormatMessage()
   const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
   const flickity = useRef<Flickity>()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isMobile = useMobileMediaQuery()
 
   const handleSelectedCategoryChange = (newCategory: GrantCategoryFilter) => {
     setSelectedCategory(newCategory)

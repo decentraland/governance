@@ -4,14 +4,13 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './LogIn.css'
 
@@ -33,8 +32,7 @@ const IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
 function LogIn({ title, description }: LogInProps) {
   const [, accountState] = useAuthContext()
   const t = useFormatMessage()
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isMobile = useMobileMediaQuery()
 
   if (isMobile) {
     return (

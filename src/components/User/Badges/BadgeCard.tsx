@@ -1,9 +1,9 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
+import Time from '../../../utils/date/Time'
 
 import Badge from './Badge'
 import './BadgeCard.css'

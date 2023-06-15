@@ -5,7 +5,7 @@ import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
 
 import CliffProgress from './CliffProgress'

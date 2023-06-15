@@ -6,7 +6,7 @@ import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import { getProposalStatusDisplayName, getProposalStatusShortName } from '../../entities/Proposal/utils'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Check from '../Icon/Check'
 

@@ -29,7 +29,7 @@ import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_POLL } from '../../entities/Proposal/constants'
 import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './poll.css'
 import './submit.css'

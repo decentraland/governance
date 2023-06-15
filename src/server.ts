@@ -30,8 +30,8 @@ import subscription from './entities/Subscription/routes'
 import updates from './entities/Updates/routes'
 import users from './entities/User/routes'
 import score from './entities/Votes/routes'
-import filesystem from './modules/filesystem'
 import { DiscordService } from './services/DiscordService'
+import filesystem from './utils/filesystem'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)

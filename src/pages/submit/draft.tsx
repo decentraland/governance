@@ -27,7 +27,7 @@ import { NewProposalDraft, newProposalDraftScheme } from '../../entities/Proposa
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

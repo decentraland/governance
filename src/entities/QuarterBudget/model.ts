@@ -1,10 +1,10 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import snakeCase from 'lodash/snakeCase'
 import { v1 as uuid } from 'uuid'
 
 import { TransparencyBudget } from '../../clients/DclData'
+import Time from '../../utils/date/Time'
 import { Budget, CategoryBudget } from '../Budget/types'
 import { NewGrantCategory } from '../Grant/types'
 import { asNumber } from '../Proposal/utils'

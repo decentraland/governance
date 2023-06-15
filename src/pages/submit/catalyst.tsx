@@ -25,7 +25,7 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalCatalyst, newProposalCatalystScheme } from '../../entities/Proposal/types'
 import { isAlreadyACatalyst, isValidDomainName } from '../../entities/Proposal/utils'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './catalyst.css'
 import './submit.css'

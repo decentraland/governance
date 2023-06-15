@@ -1,4 +1,4 @@
-import { env } from '../../modules/env'
+import { env } from '../../utils/env'
 
 // Backend-only constants
 export const SNAPSHOT_PRIVATE_KEY = process.env.SNAPSHOT_PRIVATE_KEY || ''

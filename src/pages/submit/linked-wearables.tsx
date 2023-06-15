@@ -33,7 +33,7 @@ import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage } from '../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../helpers'
 import { isHttpsURL } from '../../helpers'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

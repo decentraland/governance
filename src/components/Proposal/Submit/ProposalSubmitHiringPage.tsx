@@ -25,7 +25,7 @@ import {
   newProposalHiringScheme,
 } from '../../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import SubLabel from '../../Common/SubLabel'

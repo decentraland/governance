@@ -2,9 +2,9 @@ import React from 'react'
 
 import useCountdown, { Countdown } from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
+import Time from '../../utils/date/Time'
 import DateTooltip from '../Common/DateTooltip'
 
 import './FinishLabel.css'

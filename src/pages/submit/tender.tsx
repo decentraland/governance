@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import dayjs from 'dayjs'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
@@ -29,11 +28,10 @@ import { NewProposalTender, newProposalTenderScheme } from '../../entities/Propo
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import locations from '../../modules/locations'
+import Time from '../../utils/date/Time'
+import locations from '../../utils/locations'
 
 import './submit.css'
-
-dayjs.extend(require('dayjs/plugin/quarterOfYear'))
 
 const initialState: NewProposalTender = {
   linked_proposal_id: '',
@@ -48,7 +46,7 @@ const initialState: NewProposalTender = {
 const schema = newProposalTenderScheme.properties
 
 function getQuarters(onClick: (quarter: string) => void) {
-  const now = dayjs() as any
+  const now = Time.utc()
   const currentQuarter = now.quarter()
   const currentYear = now.year()
   const quarters = []
