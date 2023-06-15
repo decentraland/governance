@@ -1,4 +1,3 @@
-// @ts-ignore
 import dayjs from 'dayjs'
 
 declare module 'dayjs' {

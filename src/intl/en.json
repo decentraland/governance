@@ -128,8 +128,7 @@
       "name_invalid": "Name field is invalid",
       "description_empty": "Description field is empty",
       "description_too_short": "Description field is too short",
-      "description_too_large": "Description field is too large",
-      "fetching_names": "Error fetching names"
+      "description_too_large": "Description field is too large"
     },
     "poi": {
       "coordinates_incomplete": "The coordinates are incomplete",

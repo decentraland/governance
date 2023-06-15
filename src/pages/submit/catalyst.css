@@ -1,14 +1,14 @@
 .Catalyst__Loading {
   display: block;
-  color: #676370;
+  color: var(--black-600);
 }
 
 .Catalyst__Error {
   display: block;
-  color: #ff0000;
+  color: var(--red-800);
 }
 
 .Catalyst__Success {
   display: block;
-  color: #59a14f;
+  color: var(--green-900);
 }

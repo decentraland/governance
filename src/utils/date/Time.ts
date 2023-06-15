@@ -1,4 +1,3 @@
-/* eslint-disable import/no-duplicates */
 import Time from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import 'dayjs/plugin/duration'

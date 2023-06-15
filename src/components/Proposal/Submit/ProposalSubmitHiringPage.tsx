@@ -4,7 +4,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import classNames from 'classnames'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -26,9 +25,9 @@ import {
   newProposalHiringScheme,
 } from '../../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import loader from '../../../utils/loader'
 import locations from '../../../utils/locations'
 import Field from '../../Common/Form/Field'
+import MarkdownField from '../../Common/Form/MarkdownField'
 import SubLabel from '../../Common/SubLabel'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
@@ -56,7 +55,7 @@ const initialState: HiringState = {
   evidence: '',
 }
 
-function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Props) {
+export default function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Props) {
   const [account, accountState] = useAuthContext()
   const preventNavigation = useRef(false)
   const action = getHiringTypeAction(type)
@@ -109,7 +108,6 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
 
     try {
       const proposal = await Governance.get().createProposalHiring({ type, ...data, committee: data.committee! })
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })
@@ -217,7 +215,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
         <ContentSection className="SubmitHiring__ReasonsSection">
           <Label>{t(`page.submit_hiring.${action}.reasons_title`)}</Label>
           <SubLabel>{t(`page.submit_hiring.${action}.reasons_description`)}</SubLabel>
-          <Controller
+          <MarkdownField
             control={control}
             name="reasons"
             rules={{
@@ -225,30 +223,23 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
               minLength: { value: schema.reasons.minLength, message: t('page.submit_hiring.error.reasons_min_length') },
               maxLength: { value: schema.reasons.maxLength, message: t('page.submit_hiring.error.reasons_max_length') },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={formDisabled}
-                loading={isLoadingVpDistribution}
-                error={!!errors.reasons}
-                message={
-                  t(errors.reasons?.message) +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('reasons', '').length,
-                    limit: schema.reasons.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={formDisabled}
+            loading={isLoadingVpDistribution}
+            error={!!errors.reasons}
+            message={
+              t(errors.reasons?.message) +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('reasons', '').length,
+                limit: schema.reasons.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection className="SubmitHiring__EvidenceSection">
           <Label>{t(`page.submit_hiring.${action}.evidence_title`)}</Label>
           <SubLabel>{t(`page.submit_hiring.${action}.evidence_description`)}</SubLabel>
-          <Controller
+          <MarkdownField
             control={control}
             name="evidence"
             rules={{
@@ -262,24 +253,17 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
                 message: t('page.submit_hiring.error.evidence_max_length'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                disabled={formDisabled}
-                loading={isLoadingVpDistribution}
-                error={!!errors.evidence}
-                message={
-                  t(errors.evidence?.message) +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('evidence', '').length,
-                    limit: schema.evidence.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={formDisabled}
+            loading={isLoadingVpDistribution}
+            error={!!errors.evidence}
+            message={
+              t(errors.evidence?.message) +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('evidence', '').length,
+                limit: schema.evidence.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -306,5 +290,3 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
     </ContentLayout>
   )
 }
-
-export default ProposalSubmitHiringPage

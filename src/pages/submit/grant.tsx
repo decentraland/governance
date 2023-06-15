@@ -38,7 +38,6 @@ import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
-import loader from '../../utils/loader'
 import locations from '../../utils/locations'
 
 import './grant.css'
@@ -151,7 +150,6 @@ export default function SubmitGrant() {
           return Governance.get().createProposalGrant(grantRequest)
         })
         .then((proposal) => {
-          loader.proposals.set(proposal.id, proposal)
           navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
         })
         .catch((err) => {

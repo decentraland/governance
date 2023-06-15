@@ -350,6 +350,7 @@ describe('getFinishableTenderProposals', () => {
     createTestTender('8', '789'),
   ]
   beforeAll(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
       return proposalsList.filter((p) => {
