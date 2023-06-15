@@ -1,0 +1,44 @@
+.Text {
+  font-size: 21px;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.81;
+  letter-spacing: 0.3px;
+}
+
+/*tiny*/
+.Text.Text--size-xs {
+  font-size: 11px;
+}
+
+.Text.Text--size-sm {
+  font-size: 17px;
+}
+
+.Text.Text--color-default {
+  color: var(--text);
+}
+.Text.Text--color-primary {
+  color: var(--primary);
+}
+
+.Text.Text--color-secondary {
+  color: var(--secondary-text);
+}
+
+.Text.Paragraph--semi-bold {
+  font-weight: 400;
+}
+
+.Text.Paragraph--bold {
+  font-weight: 700;
+}
+
+.Text.Paragraph--italic {
+  font-style: italic;
+}
+
+.Text.Paragraph--underline {
+  text-decoration: underline;
+}
