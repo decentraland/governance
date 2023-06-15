@@ -5,7 +5,7 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { VotedProposal } from '../../../entities/Votes/types'
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import Cancel from '../../Icon/Cancel'
 import CheckCircle from '../../Icon/CheckCircle'
 import QuestionCircle from '../../Icon/QuestionCircle'

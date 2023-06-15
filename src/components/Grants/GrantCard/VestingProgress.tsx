@@ -2,9 +2,9 @@ import React from 'react'
 
 import classNames from 'classnames'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { Grant } from '../../../entities/Proposal/types'
+import Time from '../../../utils/date/Time'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
 import PercentageLabel from './PercentageLabel'

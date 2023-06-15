@@ -3,12 +3,12 @@ import React from 'react'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import DOMPurify from 'dompurify'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { getUserProfileUrl } from '../../../entities/User/utils'
 import useProfile from '../../../hooks/useProfile'
+import Time from '../../../utils/date/Time'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './ProposalComment.css'

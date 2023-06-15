@@ -8,7 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { useProposalsSearchParams } from '../../hooks/useSearchParams'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './SearchTitle.css'
 

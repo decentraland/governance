@@ -5,9 +5,9 @@ import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import Time from '../../utils/date/Time'
 import ErrorNotice from '../Icon/ErrorNotice'
 
 import './ErrorMessage.css'

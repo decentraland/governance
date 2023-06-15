@@ -7,8 +7,8 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Vote } from '../../../entities/Votes/types'
 import { abbreviateNumber } from '../../../entities/Votes/utils'
-import locations from '../../../modules/locations'
-import { formatChoice } from '../../../modules/votes/utils'
+import locations from '../../../utils/locations'
+import { formatChoice } from '../../../utils/votes/utils'
 import Username from '../../User/Username'
 
 export type VoteListItemModalProps = {

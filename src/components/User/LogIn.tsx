@@ -10,7 +10,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './LogIn.css'
 

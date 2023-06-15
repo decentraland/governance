@@ -6,7 +6,7 @@ import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import usePreventNavigation from '../../hooks/usePreventNavigation'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './ContentLayout.css'
 

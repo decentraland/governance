@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 

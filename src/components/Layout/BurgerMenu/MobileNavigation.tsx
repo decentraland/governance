@@ -7,7 +7,7 @@ import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import locations from '../../../modules/locations'
+import locations from '../../../utils/locations'
 import { NavigationProps, NavigationTab } from '../Navigation'
 
 import './MobileNavigation.css'

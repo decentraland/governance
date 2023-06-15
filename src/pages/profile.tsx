@@ -20,7 +20,7 @@ import LogIn from '../components/User/LogIn'
 import UserStats from '../components/User/UserStats'
 import useProfile from '../hooks/useProfile'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
-import { isUnderMaintenance } from '../modules/maintenance'
+import { isUnderMaintenance } from '../utils/maintenance'
 
 import './profile.css'
 

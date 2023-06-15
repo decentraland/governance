@@ -4,7 +4,7 @@ import { globalHistory, useLocation } from '@gatsbyjs/reach-router'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
-import locations from '../modules/locations'
+import locations from '../utils/locations'
 
 function usePreventNavigation(isActive: boolean) {
   const currentLocation = useLocation()
