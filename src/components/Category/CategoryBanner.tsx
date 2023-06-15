@@ -3,11 +3,11 @@ import React from 'react'
 import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
+import Text from '../Common/Text/Text'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
 import BanName from '../Icon/ProposalCategories/BanName'
 import Catalyst from '../Icon/ProposalCategories/Catalyst'
@@ -88,9 +88,9 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
       </div>
       <div>
         <div className="CategoryBanner__TitleContainer">
-          <Paragraph small semiBold>
+          <Text size="lg" weight="semi-bold">
             {t(`category.${type}_title`)}
-          </Paragraph>
+          </Text>
           {isNew && <span className="CategoryBanner__Badge NewBadge">{t(`category.new`)}</span>}
           {!active && (
             <span className="CategoryBanner__Badge CategoryBanner__PausedBadge">
@@ -98,7 +98,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
             </span>
           )}
         </div>
-        <Paragraph tiny>{t(`category.${type}_description`)}</Paragraph>
+        <Text size="md">{t(`category.${type}_description`)}</Text>
         {!active && <Markdown className="CategoryBanner__PausedText">{t(`category.${type}_paused`)}</Markdown>}
       </div>
     </Component>

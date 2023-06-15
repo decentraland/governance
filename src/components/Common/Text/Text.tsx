@@ -2,10 +2,12 @@ import React from 'react'
 
 import classNames from 'classnames'
 
+import './Text.css'
+
 const DEFAULT_COLOR = 'default'
 const DEFAULT_FONT_WEIGHT = 'normal'
 const DEFAULT_FONT_SIZE = 'md'
-export type FontSize = 'xs' | 'sm' | typeof DEFAULT_FONT_SIZE | 'lg'
+export type FontSize = 'xs' | 'sm' | typeof DEFAULT_FONT_SIZE | 'lg' | 'xl'
 type FontWeight = 'bold' | 'semi-bold' | typeof DEFAULT_FONT_WEIGHT
 type TextColor = typeof DEFAULT_COLOR | 'primary' | 'secondary'
 type TextTransform = 'uppercase' | 'lowercase'

@@ -20,6 +20,10 @@
   font-size: 17px;
   line-height: 26px;
 }
+.Text.Text--size-xl {
+  font-size: 21px;
+  line-height: 1.81px;
+}
 
 .Text.Text--weight-normal {
   font-weight: 300;
