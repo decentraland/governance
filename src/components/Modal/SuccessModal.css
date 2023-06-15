@@ -29,12 +29,8 @@ div.SuccessModal__Banner.CopyLink {
   background-color: #cdf1b8;
 }
 
-.SuccessModal__Banner .dg.Paragraph {
+.SuccessModal__BannerTitle {
   margin-bottom: 0;
-}
-
-.SuccessModal__Banner .dg.Paragraph.Paragraph--tiny {
-  font-size: 15px;
 }
 
 .SuccessModal__Banner .Button {

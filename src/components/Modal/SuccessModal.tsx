@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Time from 'decentraland-gatsby/dist/utils/date/Time'
@@ -11,6 +10,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
+import Text from '../Common/Text/Text'
 
 import './ProposalModal.css'
 import './SuccessModal.css'
@@ -51,18 +51,18 @@ export function SuccessModal({
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{title}</Header>
-          <Paragraph small className="SuccessModal__Description">
+          <Text size="lg" className="SuccessModal__Description">
             {description}
-          </Paragraph>
-          <Paragraph small>{t('modal.success.sub')}</Paragraph>
+          </Text>
+          <Text size="lg">{t('modal.success.sub')}</Text>
         </div>
-        {!!linkToForum && (
+        {!!linkToCopy && (
           <div className={classNames('SuccessModal__Banner', 'JoinTheDiscussion')}>
             <div className="Description">
-              <Paragraph small semiBold>
+              <Text size="lg" weight="semi-bold" className="SuccessModal__BannerTitle">
                 {t('modal.success.view_on_forum_title')}
-              </Paragraph>
-              <Paragraph tiny>{t('modal.success.view_on_forum_description')}</Paragraph>
+              </Text>
+              <Text size="md">{t('modal.success.view_on_forum_description')}</Text>
             </div>
             <Button
               className={classNames('Button', 'JoinTheDiscussion')}
@@ -79,10 +79,10 @@ export function SuccessModal({
         )}
         <div className={classNames('SuccessModal__Banner', 'Discord')}>
           <div className="Description">
-            <Paragraph small semiBold>
+            <Text size="lg" weight="semi-bold" className="SuccessModal__BannerTitle">
               {t('modal.success.join_discord_title')}
-            </Paragraph>
-            <Paragraph tiny>{t('modal.success.join_discord_description')}</Paragraph>
+            </Text>
+            <Text size="md">{t('modal.success.join_discord_description')}</Text>
           </div>
           <Button
             className={classNames('Button', 'Discord')}
@@ -98,10 +98,10 @@ export function SuccessModal({
         {!!linkToCopy && (
           <div className={classNames('SuccessModal__Banner', 'CopyLink')}>
             <div className="Description">
-              <Paragraph small semiBold>
+              <Text size="lg" weight="semi-bold" className="SuccessModal__BannerTitle">
                 {t('modal.success.copy_link_title')}
-              </Paragraph>
-              <Paragraph tiny>{t('modal.success.copy_link_description')}</Paragraph>
+              </Text>
+              <Text size="md">{t('modal.success.copy_link_description')}</Text>
             </div>
             <Button
               className={classNames('Button', 'CopyLink')}
