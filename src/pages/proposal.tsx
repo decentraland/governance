@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
-import { useLocation } from '@reach/router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
@@ -62,6 +61,7 @@ import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
 import { useTenderProposals } from '../hooks/useTenderProposals'
+import useURLSearchParams from '../hooks/useURLSearchParams'
 import locations from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
@@ -125,8 +125,7 @@ function isLegacyGrantCategory(category: string) {
 
 export default function ProposalPage() {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const params = useURLSearchParams()
   const [proposalPageState, updatePageState] = usePatchState<ProposalPageState>({
     changingVote: false,
     confirmSubscription: false,
@@ -186,7 +185,6 @@ export default function ProposalPage() {
           reloadVotes()
         } catch (err) {
           ErrorClient.report('Unable to vote: ', err)
-          console.error(err, { ...(err as Error) })
           if ((err as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({
               changingVote: false,
@@ -341,7 +339,7 @@ export default function ProposalPage() {
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
-              <ProposalHeaderPoi proposal={proposal} />
+              {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <div className="ProposalDetailPage__Body">
                 {proposal?.type === ProposalType.Grant ? (

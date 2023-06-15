@@ -1,9 +1,8 @@
 import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
-import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 
@@ -21,8 +20,7 @@ export default function StatusMenu(props: StatusMenu) {
     }
   }
 
-  const responsive = useResponsive()
-  const isMobile = responsive({ maxWidth: Responsive.onlyMobile.maxWidth })
+  const isMobile = useMobileMediaQuery()
 
   return (
     <Dropdown
