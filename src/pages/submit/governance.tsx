@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -17,6 +16,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
+import Label from '../../components/Common/Label'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'

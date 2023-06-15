@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
 import classNames from 'classnames'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncTask from 'decentraland-gatsby/dist/hooks/useAsyncTask'
@@ -15,6 +14,7 @@ import isEmail from 'validator/lib/isEmail'
 
 import { Decentraland } from '../../../clients/Decentraland'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../Banner/Subscription/SubscriptionBanner'
+import Label from '../../Common/Label'
 import CheckCloud from '../../Icon/CheckCloud'
 import '../ProposalModal.css'
 
