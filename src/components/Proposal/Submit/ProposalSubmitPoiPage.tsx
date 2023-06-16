@@ -161,7 +161,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
           <Header size="huge">{t(`page.submit_poi.${action}.title`)}</Header>
         </ContentSection>
         <ContentSection>
-          <Paragraph small>{t('page.submit_poi.description')}</Paragraph>
+          <Text size="lg">{t('page.submit_poi.description')}</Text>
         </ContentSection>
         <ContentSection className="CoordinatesField">
           <Label>{t(`page.submit_poi.${action}.coordinates_label`)}</Label>

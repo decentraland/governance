@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -30,6 +29,7 @@ import loader from '../../../modules/loader'
 import locations from '../../../modules/locations'
 import Field from '../../Common/Form/Field'
 import SubLabel from '../../Common/SubLabel'
+import Text from '../../Common/Text/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 import LoadingView from '../../Layout/LoadingView'
@@ -145,7 +145,7 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
           <Header size="huge">{TITLE}</Header>
         </ContentSection>
         <ContentSection>
-          <Paragraph small>{DESCRIPTION}</Paragraph>
+          <Text size="lg">{DESCRIPTION}</Text>
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_hiring.target_title')}</Label>
@@ -292,9 +292,9 @@ function ProposalSubmitHiringPage({ type, committees, isCommitteesLoading }: Pro
         </ContentSection>
         {!isLoadingVpDistribution && submissionVpNotMet && (
           <ContentSection>
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {t('page.submit_hiring.error.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_HIRING })}
-            </Paragraph>
+            </Text>
           </ContentSection>
         )}
         {error && (
