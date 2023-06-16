@@ -39,7 +39,7 @@ type Props = {
   voteWithSurvey: boolean
   updatingStatus: boolean
   subscribing: boolean
-  subscribe: (subscribe?: boolean) => void
+  subscribe: (subscribe: boolean) => void
   subscriptions: SubscriptionAttributes[] | null
   subscriptionsLoading: boolean
   votes: Record<string, Vote> | null

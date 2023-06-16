@@ -1,13 +1,14 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
-import { PickedByResult, SnapshotSubgraph } from '../clients/SnapshotSubgraph'
+import { SnapshotSubgraph } from '../clients/SnapshotSubgraph'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
-const INITIAL_VALUE: PickedByResult[] = []
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 function usePickedBy(addresses: string[]) {
-  const [pickedByResults, state] = useAsyncMemo(
-    async () => {
+  const { data: pickedByResults, isLoading: isLoadingPickedBy } = useQuery({
+    queryKey: [`pickedBy#${SNAPSHOT_SPACE}#${addresses.join(',')}`],
+    queryFn: async () => {
       try {
         return await SnapshotSubgraph.get().getPickedBy({ address: addresses, space: SNAPSHOT_SPACE })
       } catch (error) {
@@ -15,11 +16,10 @@ function usePickedBy(addresses: string[]) {
         return []
       }
     },
-    [],
-    { initialValue: INITIAL_VALUE }
-  )
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
 
-  return { pickedByResults, isLoadingPickedBy: state.loading }
+  return { pickedByResults: pickedByResults ?? [], isLoadingPickedBy }
 }
 
 export default usePickedBy

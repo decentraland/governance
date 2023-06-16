@@ -1,20 +1,22 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 import { NULL_CONTESTED_BUDGET } from '../entities/Budget/types'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useBudgetWithContestants(id?: string) {
-  const [budgetWithContestants, state] = useAsyncMemo(
-    async () => {
+  const { data: budgetWithContestants, isLoading: isLoadingBudgetWithContestants } = useQuery({
+    queryKey: [`budgetWithContestants#${id}`],
+    queryFn: async () => {
       if (!id || id.length < 1) return NULL_CONTESTED_BUDGET
       return await Governance.get().getBudgetWithContestants(id)
     },
-    [id],
-    { initialValue: NULL_CONTESTED_BUDGET }
-  )
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
 
   return {
-    budgetWithContestants,
-    isLoadingBudgetWithContestants: state.loading,
+    budgetWithContestants: budgetWithContestants ?? NULL_CONTESTED_BUDGET,
+    isLoadingBudgetWithContestants,
   }
 }

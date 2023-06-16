@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
@@ -15,6 +14,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -24,7 +24,6 @@ import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
 import { NewProposalPitch, newProposalPitchScheme } from '../../entities/Proposal/types'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../utils/loader'
 import locations from '../../utils/locations'
 
 import './submit.css'
@@ -72,7 +71,6 @@ export default function SubmitPitchProposal() {
         ...data,
       })
 
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })
@@ -142,7 +140,7 @@ export default function SubmitPitchProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_pitch.target_audience_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="target_audience"
             rules={{
@@ -156,24 +154,16 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.target_audience_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.target_audience}
-                message={
-                  (errors.target_audience?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('target_audience').length,
-                    limit: schema.target_audience.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.target_audience}
+            message={
+              (errors.target_audience?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('target_audience').length,
+                limit: schema.target_audience.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -184,7 +174,7 @@ export default function SubmitPitchProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_pitch.problem_statement_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="problem_statement"
             rules={{
@@ -198,24 +188,16 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.problem_statement_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.problem_statement}
-                message={
-                  (errors.problem_statement?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('problem_statement').length,
-                    limit: schema.problem_statement.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.problem_statement}
+            message={
+              (errors.problem_statement?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('problem_statement').length,
+                limit: schema.problem_statement.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -226,7 +208,7 @@ export default function SubmitPitchProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_pitch.proposed_solution_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="proposed_solution"
             rules={{
@@ -240,24 +222,16 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.proposed_solution_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.proposed_solution}
-                message={
-                  (errors.proposed_solution?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('proposed_solution').length,
-                    limit: schema.proposed_solution.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.proposed_solution}
+            message={
+              (errors.proposed_solution?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('proposed_solution').length,
+                limit: schema.proposed_solution.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -268,7 +242,7 @@ export default function SubmitPitchProposal() {
           <Paragraph tiny secondary className="details">
             {t('page.submit_pitch.relevance_detail')}
           </Paragraph>
-          <Controller
+          <MarkdownField
             control={control}
             name="relevance"
             rules={{
@@ -282,24 +256,16 @@ export default function SubmitPitchProposal() {
                 message: t('error.pitch.relevance_too_large'),
               },
             }}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.relevance}
-                message={
-                  (errors.relevance?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('relevance').length,
-                    limit: schema.relevance.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.relevance}
+            message={
+              (errors.relevance?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('relevance').length,
+                limit: schema.relevance.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>

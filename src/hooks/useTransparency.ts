@@ -10,7 +10,7 @@ type Options = {
 
 function useTransparency({ shouldRevalidate }: Options = {}) {
   const { data, isLoading: isLoadingTransparencyData } = useQuery({
-    queryKey: ['transparency-data'],
+    queryKey: ['transparencyData'],
     queryFn: () => DclData.get().getData(),
     staleTime: shouldRevalidate ? 0 : DEFAULT_QUERY_STALE_TIME,
   })

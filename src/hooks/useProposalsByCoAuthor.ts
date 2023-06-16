@@ -1,20 +1,26 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
+import { CoauthorStatus } from '../entities/Coauthor/types'
+
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 function useProposalsByCoAuthor(coauthor?: string | null, status?: CoauthorStatus) {
-  return useAsyncMemo(
-    () => {
-      if (coauthor) {
-        return Governance.get().getProposalsByCoAuthor(coauthor, status)
+  const { data: requestsStatus, isLoading } = useQuery({
+    queryKey: [`proposalsByCoAuthor#${coauthor}#${status}`],
+    queryFn: async () => {
+      if (!coauthor) {
+        return []
       }
-
-      return Promise.resolve([] as CoauthorAttributes[])
+      return Governance.get().getProposalsByCoAuthor(coauthor, status)
     },
-    [coauthor, status],
-    { initialValue: [] as CoauthorAttributes[] }
-  )
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
+
+  return {
+    requestsStatus: requestsStatus ?? [],
+    isLoading,
+  }
 }
 
 export default useProposalsByCoAuthor

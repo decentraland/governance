@@ -38,7 +38,7 @@ export default function ProfilePage() {
     navigate(`/profile/?address=${userAddress}`, { replace: true })
   }
   const { displayableAddress } = useProfile(address)
-  const { delegation, delegationState, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
+  const { delegation, isDelegationLoading, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
 
   if (isUnderMaintenance()) {
@@ -74,7 +74,7 @@ export default function ProfilePage() {
         <VpDelegationBox
           address={address}
           delegation={delegation}
-          isLoadingDelegations={delegationState.loading}
+          isLoadingDelegation={isDelegationLoading}
           ownVp={vpDistribution?.own}
           isLoadingOwnVp={isLoadingVpDistribution}
         />
@@ -82,7 +82,7 @@ export default function ProfilePage() {
           profileAddress={address}
           userAddress={userAddress}
           delegation={delegation}
-          delegationState={delegationState}
+          isLoadingDelegation={isDelegationLoading}
           scores={scores}
           isLoadingScores={isLoadingScores}
         />

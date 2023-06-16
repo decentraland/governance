@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@reach/router'
+import { useQuery } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
@@ -33,6 +33,7 @@ import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
@@ -59,11 +60,12 @@ export default function ProposalsPage() {
     order,
     itemsPerPage: ITEMS_PER_PAGE,
   })
-  const [votes, votesState] = useAsyncMemo(
-    () => Governance.get().getVotes((proposals?.data || []).map((proposal) => proposal.id)),
-    [proposals],
-    { callWithTruthyDeps: true }
-  )
+  const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
+  const { data: votes, isLoading: isLoadingVotes } = useQuery({
+    queryKey: [`porposalVotes#${proposalIds.join('-')}`],
+    queryFn: () => Governance.get().getVotes(proposalIds),
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()
   const { status: burgerStatus } = useBurgerMenu()
@@ -88,7 +90,7 @@ export default function ProposalsPage() {
   }, [handlePageFilter, page, proposals])
 
   const [user] = useAuthContext()
-  const [pendingCoauthorRequests] = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
+  const { requestsStatus } = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
 
   if (isUnderMaintenance()) {
     return (
@@ -112,7 +114,7 @@ export default function ProposalsPage() {
     )
   }
 
-  const isLoading = !proposals || (isLoadingProposals && votesState.loading)
+  const isLoading = !proposals || (isLoadingProposals && isLoadingVotes)
 
   return (
     <>
@@ -206,11 +208,9 @@ export default function ProposalsPage() {
                           <ProposalItem
                             key={proposal.id}
                             proposal={proposal}
-                            hasCoauthorRequest={
-                              !!pendingCoauthorRequests.find((req) => req.proposal_id === proposal.id)
-                            }
+                            hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
                             votes={votes ? votes[proposal.id] : undefined}
-                            subscribing={subscriptionsState.subscribing.includes(proposal.id)}
+                            subscribing={subscriptionsState.isSubscribing}
                             subscribed={
                               !!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)
                             }

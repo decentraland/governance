@@ -21,16 +21,16 @@ import { ProfileBox } from './ProfileBox'
 interface Props {
   address: string | null
   delegation: DelegationResult
-  isLoadingDelegations: boolean
+  isLoadingDelegation: boolean
   ownVp: number | undefined
   isLoadingOwnVp: boolean
 }
 
-function VpDelegationBox({ address, delegation, isLoadingDelegations, ownVp, isLoadingOwnVp }: Props) {
+function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLoadingOwnVp }: Props) {
   const t = useFormatMessage()
   const [userAddress] = useAuthContext()
   const isLoggedUserProfile = isSameAddress(userAddress, address)
-  const isLoading = isLoadingDelegations || isLoadingOwnVp
+  const isLoading = isLoadingDelegation || isLoadingOwnVp
   const { delegatedTo } = delegation
   const [openDelegationModal, setOpenDelegationModal] = useState(false)
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address)

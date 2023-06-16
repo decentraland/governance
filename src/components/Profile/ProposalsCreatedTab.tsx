@@ -38,7 +38,9 @@ const ProposalsCreatedTab = ({ address }: Props) => {
       {!isLoadingProposals && (
         <>
           {proposals.length > 0 ? (
-            proposals.map((proposal) => <ProposalCreatedItem key={proposal.id} proposal={proposal} />)
+            proposals.map((proposal) => (
+              <ProposalCreatedItem key={`${proposal.id}#${Math.random()}`} proposal={proposal} />
+            ))
           ) : (
             <Empty className="ActivityBox__Empty" icon={<Watermelon />} description={t(emptyDescriptionKey)} />
           )}

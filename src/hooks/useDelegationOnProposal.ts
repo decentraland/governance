@@ -1,15 +1,22 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { EMPTY_DELEGATION } from '../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { getDelegations } from '../entities/Snapshot/utils'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useDelegationOnProposal(proposal?: ProposalAttributes | null, address?: string | null) {
-  return useAsyncMemo(
-    async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: [`delegationsOnProposal#${address}#${proposal?.snapshot_proposal.snapshot}`],
+    queryFn: async () => {
       return await getDelegations(address, proposal?.snapshot_proposal.snapshot)
     },
-    [address, proposal],
-    { initialValue: EMPTY_DELEGATION, callWithTruthyDeps: true }
-  )
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
+
+  return {
+    delegationResult: data ?? EMPTY_DELEGATION,
+    isDelegationResultLoading: isLoading,
+  }
 }
