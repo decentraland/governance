@@ -19,11 +19,13 @@ interface Props {
   className?: string
 }
 
-export default function Text({ children, size, weight, color, className }: Props) {
-  color = color || DEFAULT_COLOR
-  size = size || DEFAULT_FONT_SIZE
-  weight = weight || DEFAULT_FONT_WEIGHT
-
+export default function Text({
+  children,
+  size = DEFAULT_FONT_SIZE,
+  weight = DEFAULT_FONT_WEIGHT,
+  color = DEFAULT_COLOR,
+  className,
+}: Props) {
   return (
     <p
       className={classNames('Text', className, `Text--size-${size}`, `Text--weight-${weight}`, `Text--color-${color}`)}
