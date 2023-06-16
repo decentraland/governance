@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import Text from '../../Common/Text/Text'
 import LinkIcon from '../../Icon/LinkIcon'
 
 import './CandidateDetails.css'
@@ -27,8 +28,8 @@ function CandidateDetails({ title, content, links, skills }: Props) {
       <Header size="tiny" sub className="CandidateDetails__Title">
         {title}
       </Header>
-      <Paragraph
-        small
+      <Text
+        size="md"
         className={classNames(
           'CandidateDetails__Content',
           skills && 'CandidateDetails__Content--skills',
@@ -48,7 +49,7 @@ function CandidateDetails({ title, content, links, skills }: Props) {
               {skill.toUpperCase()}
             </span>
           ))}
-      </Paragraph>
+      </Text>
     </div>
   )
 }

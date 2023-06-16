@@ -1,7 +1,6 @@
 import React from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import useResponsive from 'decentraland-gatsby/dist/hooks/useResponsive'
@@ -12,6 +11,7 @@ import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 
 import locations from '../../modules/locations'
+import Text from '../Common/Text/Text'
 
 import './LogIn.css'
 
@@ -41,12 +41,12 @@ function LogIn({ title, description }: LogInProps) {
       <Container className="LoginMobile__Container">
         <Head title={title} description={description} image={IMAGE_URL} />
         <img src={IMAGE_URL} className="LoginMobile__Logo" />
-        <Paragraph semiBold className="LoginMobile__Title">
+        <Text weight="semi-bold" className="LoginMobile__Title">
           {t(`mobile_login.exclamation`)}
-        </Paragraph>
-        <Paragraph semiBold className="LoginMobile__Message">
+        </Text>
+        <Text size="lg" weight="semi-bold" className="LoginMobile__Message">
           {t(`mobile_login.message`)}
-        </Paragraph>
+        </Text>
         <Button primary onClick={handleBack}>
           {t(`mobile_login.button`)}
         </Button>
