@@ -6,7 +6,6 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -504,9 +503,9 @@ export default function SubmitGovernanceProposal() {
       </ContentSection>
       {submissionVpNotMet && (
         <ContentSection>
-          <Paragraph small primary>
+          <Text size="lg" color="primary">
             {t('error.governance.submission_vp_not_met')}
-          </Paragraph>
+          </Text>
         </ContentSection>
       )}
       {state.error['*'] && (

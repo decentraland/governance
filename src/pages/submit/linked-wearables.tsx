@@ -5,7 +5,6 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -535,9 +534,9 @@ export default function SubmitLinkedWearables() {
       {getListSection({ section: 'managers', type: 'address' }, addressValidator)}
       <ContentSection>
         <Label>{t('page.submit_linked_wearables.programmatically_generated_label')}</Label>
-        <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
+        <Text size="md" color="secondary" className="ProgrammaticallyGeneratedLabel">
           {t('page.submit_linked_wearables.programmatically_generated_description')}
-        </Paragraph>
+        </Text>
         <div className="ProgrammaticallyGeneratedRadioButtons">
           <Radio
             checked={state.value.programmatically_generated}
@@ -558,11 +557,11 @@ export default function SubmitLinkedWearables() {
             onChange={handleProgrammaticallyGeneratedOption}
           />
         </div>
-        <Paragraph tiny secondary className="ProgrammaticallyGeneratedLabel">
+        <Text size="md" color="secondary" className="ProgrammaticallyGeneratedLabel">
           <Markdown className="tinyMarkdown">
             {t('page.submit_linked_wearables.programmatically_generated_note') || ''}
           </Markdown>
-        </Paragraph>
+        </Text>
       </ContentSection>
       {state.value.programmatically_generated && (
         <ContentSection>

@@ -34,10 +34,6 @@
   font-size: 15px;
 }
 
-.ContentLayout .ContentLayout__Section .dg.Paragraph.details {
-  margin-bottom: 2px;
-}
-
 .ProposalSubmit__DescriptionDetails {
   margin-bottom: 2px;
 }
@@ -90,11 +86,6 @@
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
-}
-
-.ProgrammaticallyGeneratedLabel .dg.Paragraph {
-  font-size: 15px;
-  color: var(--secondary-text);
 }
 
 .Input__PostLabel {

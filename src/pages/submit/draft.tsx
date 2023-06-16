@@ -5,7 +5,6 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -369,9 +368,9 @@ export default function SubmitDraftProposal() {
       </ContentSection>
       {submissionVpNotMet && (
         <ContentSection>
-          <Paragraph small primary>
+          <Text size="lg" color="primary">
             {t('error.draft.submission_vp_not_met')}
-          </Paragraph>
+          </Text>
         </ContentSection>
       )}
       {state.error['*'] && (

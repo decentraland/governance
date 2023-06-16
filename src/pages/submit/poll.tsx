@@ -4,7 +4,6 @@ import Helmet from 'react-helmet'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -242,9 +241,9 @@ export default function SubmitPoll() {
         <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
           {' '}
         </Text>
-        <Paragraph small primary>
+        <Text size="lg" color="primary">
           {t(state.error.choices)}
-        </Paragraph>
+        </Text>
         <div className="Poll__Options">
           {Object.keys(state.value.choices)
             .sort()
@@ -293,9 +292,9 @@ export default function SubmitPoll() {
       </ContentSection>
       {submissionVpNotMet && (
         <ContentSection>
-          <Paragraph small primary>
+          <Text size="lg" color="primary">
             {t('error.poll.submission_vp_not_met')}
-          </Paragraph>
+          </Text>
         </ContentSection>
       )}
       {state.error['*'] && (

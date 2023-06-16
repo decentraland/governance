@@ -4,7 +4,6 @@ import Helmet from 'react-helmet'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -181,8 +180,8 @@ export default function SubmitCatalyst() {
         <Header size="huge">{t('page.submit_catalyst.title')}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{t('page.submit_catalyst.description')}</Paragraph>
-        <Paragraph small>{t('page.submit_catalyst.description_2')}</Paragraph>
+        <Text size="lg">{t('page.submit_catalyst.description')}</Text>
+        <Text size="lg">{t('page.submit_catalyst.description_2')}</Text>
       </ContentSection>
       <ContentSection>
         <Label>{t('page.submit_catalyst.owner_label')}</Label>
@@ -213,7 +212,7 @@ export default function SubmitCatalyst() {
         />
         {!!domain && (
           <div>
-            <Paragraph tiny>
+            <Text size="md">
               {commsState.loading && (
                 <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
               )}
@@ -241,7 +240,7 @@ export default function SubmitCatalyst() {
               {!lambdaState.loading && !lambdaState.error && (
                 <span className="Catalyst__Success">{t('page.submit_catalyst.domain_lambda_ok')}</span>
               )}
-            </Paragraph>
+            </Text>
           </div>
         )}
       </ContentSection>
