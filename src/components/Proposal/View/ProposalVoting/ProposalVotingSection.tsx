@@ -57,11 +57,11 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
-  const delegate: string | null = delegation?.delegatedTo[0]?.delegate
+  const { delegationResult, isDelegationResultLoading } = useDelegationOnProposal(proposal, account)
+  const delegate: string | null = delegationResult.delegatedTo[0]?.delegate
   const delegators: string[] = useMemo(
-    () => delegation?.delegatedFrom.map((delegator) => delegator.delegator),
-    [delegation?.delegatedFrom]
+    () => delegationResult.delegatedFrom.map((delegator) => delegator.delegator),
+    [delegationResult.delegatedFrom]
   )
 
   const {
@@ -70,7 +70,7 @@ const ProposalVotingSection = ({
     totalVpOnProposal,
     hasEnoughToVote,
     isLoadingVp,
-  } = useVotingPowerOnProposal(account, delegators, delegationState.loading, votes, proposal)
+  } = useVotingPowerOnProposal(account, delegators, isDelegationResultLoading, votes, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
   const voteDifference = matchResult.voteDifference
@@ -94,7 +94,7 @@ const ProposalVotingSection = ({
     [delegators, votes, choices]
   )
 
-  const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
+  const proposalVotingSectionLoading = loading || accountState.loading || isDelegationResultLoading || isLoadingVp
   const showGetInvolvedQuestion = !!proposal && !proposalVotingSectionLoading && !hasVoted && !finished
   const isProposalPending = proposal?.status === ProposalStatus.Pending
 

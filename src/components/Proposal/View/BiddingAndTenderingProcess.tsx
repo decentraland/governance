@@ -81,7 +81,7 @@ export default function BiddingAndTenderingProcess({ proposal, tenderProposalsTo
   const t = useFormatMessage()
   const { configuration, start_at, finish_at, type, status } = proposal
   const { linked_proposal_id } = configuration
-  const [pitchProposal] = useProposal(linked_proposal_id)
+  const { proposal: pitchProposal } = useProposal(linked_proposal_id)
 
   const finishAt = linked_proposal_id ? pitchProposal?.finish_at : finish_at
   const pitchConfig = getPitchConfig(type, status)

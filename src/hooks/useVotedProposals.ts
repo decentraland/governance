@@ -1,28 +1,29 @@
 import { useEffect, useState } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from './../clients/Governance'
-import { VotedProposal } from './../entities/Votes/types'
 
-const INITIAL_VALUE = [] as VotedProposal[]
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 function useVotedProposals(address: string, first?: number) {
   const [skip, setSkip] = useState(0)
-  const [responseVotes, state] = useAsyncMemo(
-    async () => {
+
+  const { data: responseVotes, isLoading } = useQuery({
+    queryKey: [`votedProposals#${address}#${first}`],
+    queryFn: async () => {
       if (!isEthereumAddress(address)) {
-        return INITIAL_VALUE
+        return []
       }
       return await Governance.get().getAddressVotes(address, first, skip)
     },
-    [address, first, skip],
-    { initialValue: INITIAL_VALUE }
-  )
-  const [votes, setVotes] = useState(responseVotes)
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
+
+  const [votes, setVotes] = useState(responseVotes ?? [])
   useEffect(() => {
-    if (responseVotes.length > 0) {
+    if (responseVotes && responseVotes.length > 0) {
       setVotes((prev) => [...prev, ...responseVotes])
     }
   }, [responseVotes])
@@ -31,9 +32,9 @@ function useVotedProposals(address: string, first?: number) {
 
   return {
     votes,
-    isLoading: state.loading,
+    isLoading,
     handleViewMore,
-    hasMoreProposals: responseVotes.length === first,
+    hasMoreProposals: responseVotes?.length === first,
   }
 }
 

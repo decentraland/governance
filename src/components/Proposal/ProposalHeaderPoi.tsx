@@ -1,13 +1,14 @@
 import React from 'react'
 
+import { useQuery } from '@tanstack/react-query'
 import ImgFixed from 'decentraland-gatsby/dist/components/Image/ImgFixed'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import Pin from '../Icon/Pin'
 
 import './ProposalHeaderPoi.css'
@@ -19,8 +20,7 @@ interface Props {
 export default function ProposalHeaderPoi({ configuration }: Props) {
   const { x, y } = configuration
 
-  const [tile] = useAsyncMemo(() => Land.get().getTile([x, y]), [x, y])
-  const [sceneImg] = useAsyncMemo(async () => {
+  const fetchSceneImg = async (x: number, y: number) => {
     const scenes = await Catalyst.get().getEntityScenes([[x, y]])
     const scene = scenes[0]
     if (!scene) {
@@ -41,7 +41,18 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
     }
 
     return image
-  }, [x, y])
+  }
+
+  const { data: tile } = useQuery({
+    queryKey: [`tile#${x},${y}`],
+    queryFn: () => Land.get().getTile([x, y]),
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
+  const { data: sceneImg } = useQuery({
+    queryKey: [`sceneImg#${x},${y}`],
+    queryFn: () => fetchSceneImg(x, y),
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
 
   if (!sceneImg) {
     return (
@@ -73,7 +84,7 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
               {x},{y}
             </span>
           </div>
-          <ImgFixed dimension="standard" size="cover" src={sceneImg!} />
+          <ImgFixed dimension="standard" size="cover" src={sceneImg} />
         </div>
         <div className="PoiImageContainer">
           <ImgFixed dimension="standard" size="initial" src={Land.get().getParcelImage([x, y])} />

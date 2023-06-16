@@ -19,6 +19,7 @@
   "GATSBY_SNAPSHOT_DELEGATE_CONTRACT_ADDRESS": "0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446",
   "GATSBY_SNAPSHOT_API": "https://hub.snapshot.org/",
   "GATSBY_SNAPSHOT_DURATION": "172800",
+  "GATSBY_GRANT_PROPOSAL_DURATION_IN_SECONDS": "300",
   "GATSBY_SNAPSHOT_SPACE": "lemu.dcl.eth",
   "GATSBY_SNAPSHOT_URL": "https://snapshot.org/",
   "GATSBY_SNAPSHOT_QUERY_ENDPOINT": "https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot",

@@ -1,22 +1,23 @@
 import { useMemo } from 'react'
 
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
-import { SnapshotProposal } from '../clients/SnapshotGraphqlTypes'
 import { groupProposalsByMonth, median } from '../entities/Snapshot/utils'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 export default function useVotesPerProposal(start: Date, end: Date) {
-  const [proposals, state] = useAsyncMemo(
-    async () => {
+  const { data: proposals, isLoading } = useQuery({
+    queryKey: [`proposals#${start}#${end}`],
+    queryFn: async () => {
       return await SnapshotGraphql.get().getProposals(start, end, ['created', 'votes'])
     },
-    [],
-    { initialValue: [] as Partial<SnapshotProposal>[], callWithTruthyDeps: true }
-  )
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
 
   const votesPerProposal = useMemo(() => {
-    const proposalsGroup = groupProposalsByMonth(proposals, 'votes')
+    const proposalsGroup = groupProposalsByMonth(proposals ?? [], 'votes')
     return Object.entries(proposalsGroup).reduce(
       (acc, [key, vps]) => ({ ...acc, [key]: Math.round(median(vps)) }),
       {} as Record<string, number>
@@ -24,6 +25,6 @@ export default function useVotesPerProposal(start: Date, end: Date) {
   }, [proposals])
   return {
     votesPerProposal,
-    isLoadingVotesPerProposal: state.loading,
+    isLoadingVotesPerProposal: isLoading,
   }
 }
