@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useQuery } from '@tanstack/react-query'
 import isBoolean from 'lodash/isBoolean'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -20,7 +18,7 @@ function useIsProfileValidated(address: string | null) {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  const validationChecked = useMemo(() => isBoolean(isProfileValidated), [isProfileValidated])
+  const validationChecked = isBoolean(isProfileValidated)
 
   return { isProfileValidated: !!isProfileValidated, validationChecked }
 }
