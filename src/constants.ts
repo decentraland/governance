@@ -1,5 +1,5 @@
-import Candidates from './modules/delegates/candidates.json'
-import { env } from './modules/env'
+import Candidates from './utils/delegates/candidates.json'
+import { env } from './utils/env'
 
 function getBooleanStringVar(variableName: string, defaultValue: boolean) {
   const enabled = env(variableName)

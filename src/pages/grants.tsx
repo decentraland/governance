@@ -22,7 +22,7 @@ import { GrantStatus, NewGrantCategory, OldGrantCategory } from '../entities/Gra
 import { toGrantStatus, toProposalGrantCategory } from '../entities/Grant/utils'
 import { GrantWithUpdate } from '../entities/Proposal/types'
 import useGrants from '../hooks/useGrants'
-import { isUnderMaintenance } from '../modules/maintenance'
+import { isUnderMaintenance } from '../utils/maintenance'
 
 function filterDisplayableGrants(grants: GrantWithUpdate[], type: string | null, status: string | null) {
   return status || type

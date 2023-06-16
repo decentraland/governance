@@ -14,7 +14,7 @@ import { getUpdateNumber } from '../entities/Updates/utils'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposalUpdates from '../hooks/useProposalUpdates'
-import locations from '../modules/locations'
+import locations from '../utils/locations'
 
 import './update.css'
 
@@ -23,11 +23,15 @@ export default function UpdateDetail() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const updateId = params.get('id')
-  const { update, state: updateState } = useProposalUpdate(updateId)
-  const [proposal, proposalState] = useProposal(update?.proposal_id)
-  const { publicUpdates, state: updatesState } = useProposalUpdates(update?.proposal_id)
+  const { update, isLoadingUpdate, isErrorOnUpdate } = useProposalUpdate(updateId)
+  const { proposal, isErrorOnProposal, isLoadingProposal } = useProposal(update?.proposal_id)
+  const {
+    publicUpdates,
+    isLoading: isLoadingPublicUpdates,
+    isError: isErrorOnPublicUpdates,
+  } = useProposalUpdates(update?.proposal_id)
 
-  if (updateState.error || proposalState.error || updatesState.error) {
+  if (isErrorOnUpdate || isErrorOnProposal || isErrorOnPublicUpdates) {
     return (
       <ContentLayout>
         <NotFound />
@@ -35,7 +39,7 @@ export default function UpdateDetail() {
     )
   }
 
-  if (!update || !publicUpdates || updateState.loading || updatesState.loading || proposalState.loading) {
+  if (!update || !publicUpdates || isLoadingUpdate || isLoadingPublicUpdates || isLoadingProposal) {
     return <LoadingView />
   }
 

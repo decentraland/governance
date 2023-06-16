@@ -1,6 +1,5 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
@@ -31,6 +30,7 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
+import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
 
@@ -359,6 +359,9 @@ export class Governance extends API {
   }
 
   async getCoAuthorsByProposal(id: string, status?: CoauthorStatus) {
+    if (!id) {
+      return []
+    }
     const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}${status ? `/${status}` : ''}`)
     return result.data
   }

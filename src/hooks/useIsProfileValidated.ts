@@ -1,23 +1,24 @@
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
+import { useQuery } from '@tanstack/react-query'
+import isBoolean from 'lodash/isBoolean'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../clients/Governance'
 
+import { DEFAULT_QUERY_STALE_TIME } from './constants'
+
 function useIsProfileValidated(address: string | null) {
-  const [isProfileValidated] = useAsyncMemo(
-    async () => {
+  const { data: isProfileValidated } = useQuery({
+    queryKey: [`isProfileValidated#${address}`],
+    queryFn: async () => {
       if (address && isEthereumAddress(address)) {
         return await Governance.get().isProfileValidated(address)
       }
       return null
     },
-    [address],
-    {
-      initialValue: null,
-    }
-  )
+    staleTime: DEFAULT_QUERY_STALE_TIME,
+  })
 
-  const validationChecked = isProfileValidated !== null
+  const validationChecked = isBoolean(isProfileValidated)
 
   return { isProfileValidated: !!isProfileValidated, validationChecked }
 }

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { SubtypeOptions, toGrantSubtype } from '../entities/Grant/types'
 import { ProposalStatus, ProposalType, toProposalType } from '../entities/Proposal/types'
 import { toProposalStatus } from '../entities/Proposal/utils'
-import { toProposalListPage } from '../modules/locations'
+import { toProposalListPage } from '../utils/locations'
 
 import useURLSearchParams from './useURLSearchParams'
 

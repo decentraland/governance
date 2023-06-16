@@ -14,7 +14,7 @@ import {
 import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
 import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 

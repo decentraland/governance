@@ -1,10 +1,9 @@
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
-
 import {
   VALID_TRANSPARENCY_BUDGET_1,
   VALID_TRANSPARENCY_BUDGET_2,
   VALID_TRANSPARENCY_BUDGET_3,
 } from '../../services/BudgetService.test'
+import Time from '../../utils/date/Time'
 
 import { QuarterBudgetAttributes } from './types'
 import {

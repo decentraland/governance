@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { cloneDeep } from 'lodash'
 
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
+import Time from '../../utils/date/Time'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
@@ -350,6 +350,7 @@ describe('getFinishableTenderProposals', () => {
     createTestTender('8', '789'),
   ]
   beforeAll(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
       return proposalsList.filter((p) => {

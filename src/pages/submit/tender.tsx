@@ -2,9 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import dayjs from 'dayjs'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -17,6 +15,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -29,12 +28,10 @@ import { NewProposalTender, newProposalTenderScheme } from '../../entities/Propo
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import Time from '../../utils/date/Time'
+import locations from '../../utils/locations'
 
 import './submit.css'
-
-dayjs.extend(require('dayjs/plugin/quarterOfYear'))
 
 const initialState: NewProposalTender = {
   linked_proposal_id: '',
@@ -49,7 +46,7 @@ const initialState: NewProposalTender = {
 const schema = newProposalTenderScheme.properties
 
 function getQuarters(onClick: (quarter: string) => void) {
-  const now = dayjs() as any
+  const now = Time.utc()
   const currentQuarter = now.quarter()
   const currentYear = now.year()
   const quarters = []
@@ -80,7 +77,7 @@ export default function SubmitTenderProposal() {
 
   const {
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: { isDirty, isSubmitting, errors },
     control,
     setValue,
     watch,
@@ -106,7 +103,6 @@ export default function SubmitTenderProposal() {
         ...data,
       })
 
-      loader.proposals.set(proposal.id, proposal)
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })
@@ -145,7 +141,7 @@ export default function SubmitTenderProposal() {
           <Label>{t('page.submit_tender.linked_proposal_label')}</Label>
           <SelectField
             value={watch('linked_proposal_id') || undefined}
-            options={preselectedProposal}
+            options={preselectedProposal?.selectOption}
             error={!!errors.linked_proposal_id}
             message={errors.linked_proposal_id?.message}
             rules={{ required: { value: true, message: t('error.tender.linked_proposal_empty') } }}
@@ -185,7 +181,7 @@ export default function SubmitTenderProposal() {
           <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.summary_description')}
           </Text>
-          <Controller
+          <MarkdownField
             control={control}
             name="summary"
             rules={{
@@ -199,23 +195,16 @@ export default function SubmitTenderProposal() {
                 message: t('error.tender.summary_too_large'),
               },
             }}
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.summary}
-                message={
-                  (errors.summary?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('summary').length,
-                    limit: schema.summary.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.summary}
+            message={
+              (errors.summary?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('summary').length,
+                limit: schema.summary.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -226,7 +215,7 @@ export default function SubmitTenderProposal() {
           <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.problem_statement_description')}
           </Text>
-          <Controller
+          <MarkdownField
             control={control}
             name="problem_statement"
             rules={{
@@ -240,23 +229,17 @@ export default function SubmitTenderProposal() {
                 message: t('error.tender.problem_statement_too_large'),
               },
             }}
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.problem_statement}
-                message={
-                  (errors.problem_statement?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('problem_statement').length,
-                    limit: schema.problem_statement.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            loading={isLoadingVpDistribution}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.problem_statement}
+            message={
+              (errors.problem_statement?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('problem_statement').length,
+                limit: schema.problem_statement.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -267,7 +250,7 @@ export default function SubmitTenderProposal() {
           <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.technical_specification_description')}
           </Text>
-          <Controller
+          <MarkdownField
             control={control}
             name="technical_specification"
             rules={{
@@ -281,23 +264,16 @@ export default function SubmitTenderProposal() {
                 message: t('error.tender.technical_specification_too_large'),
               },
             }}
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.technical_specification}
-                message={
-                  (errors.technical_specification?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('technical_specification').length,
-                    limit: schema.technical_specification.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.technical_specification}
+            message={
+              (errors.technical_specification?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('technical_specification').length,
+                limit: schema.technical_specification.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -308,7 +284,7 @@ export default function SubmitTenderProposal() {
           <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.use_cases_description')}
           </Text>
-          <Controller
+          <MarkdownField
             control={control}
             name="use_cases"
             rules={{
@@ -322,23 +298,17 @@ export default function SubmitTenderProposal() {
                 message: t('error.tender.use_cases_too_large'),
               },
             }}
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.use_cases}
-                message={
-                  (errors.use_cases?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('use_cases').length,
-                    limit: schema.use_cases.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            minHeight={175}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.use_cases}
+            message={
+              (errors.use_cases?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('use_cases').length,
+                limit: schema.use_cases.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -349,7 +319,7 @@ export default function SubmitTenderProposal() {
           <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.deliverables_description')}
           </Text>
-          <Controller
+          <MarkdownField
             control={control}
             name="deliverables"
             rules={{
@@ -363,23 +333,18 @@ export default function SubmitTenderProposal() {
                 message: t('error.tender.deliverables_too_large'),
               },
             }}
-            render={({ field: { ref, ...field } }) => (
-              <MarkdownTextarea
-                minHeight={175}
-                loading={isLoadingVpDistribution}
-                disabled={submissionVpNotMet || formDisabled}
-                error={!!errors.deliverables}
-                message={
-                  (errors.deliverables?.message || '') +
-                  ' ' +
-                  t('page.submit.character_counter', {
-                    current: watch('deliverables').length,
-                    limit: schema.deliverables.maxLength,
-                  })
-                }
-                {...field}
-              />
-            )}
+            minHeight={175}
+            loading={isLoadingVpDistribution}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.deliverables}
+            message={
+              (errors.deliverables?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('deliverables').length,
+                limit: schema.deliverables.maxLength,
+              })
+            }
           />
         </ContentSection>
         <ContentSection>
@@ -410,7 +375,7 @@ export default function SubmitTenderProposal() {
           <CoAuthors setCoAuthors={setCoAuthors} isDisabled={submissionVpNotMet || formDisabled} />
         </ContentSection>
         <ContentSection>
-          <Button type="submit" primary loading={formDisabled} disabled={formDisabled}>
+          <Button type="submit" primary loading={isSubmitting} disabled={submissionVpNotMet || formDisabled}>
             {t('page.submit.button_submit')}
           </Button>
         </ContentSection>

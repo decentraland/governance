@@ -6,8 +6,8 @@ import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
-import locations from '../../../modules/locations'
-import { formatDate } from '../../../modules/time'
+import { formatDate } from '../../../utils/date/Time'
+import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 
 import { getStatusIcon } from './ProposalUpdate'

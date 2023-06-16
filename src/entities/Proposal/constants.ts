@@ -1,4 +1,4 @@
-import { env } from '../../modules/env'
+import { env } from '../../utils/env'
 
 export const MIN_NAME_SIZE = 2
 export const MAX_NAME_SIZE = 15

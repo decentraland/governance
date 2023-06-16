@@ -2,11 +2,10 @@ import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
-import { formatDate } from '../../modules/time'
+import Time, { formatDate } from '../../utils/date/Time'
 import DateTooltip from '../Common/DateTooltip'
 import Divider from '../Common/Divider'
 import Text from '../Common/Text/Text'

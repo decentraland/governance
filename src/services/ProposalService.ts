@@ -1,5 +1,4 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { v1 as uuid } from 'uuid'
 import isUUID from 'validator/lib/isUUID'
 
@@ -13,7 +12,8 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Pr
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
-import { getEnvironmentChainId } from '../modules/votes/utils'
+import Time from '../utils/date/Time'
+import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import CatalystService from './CatalystService'
 import { DiscordService } from './DiscordService'

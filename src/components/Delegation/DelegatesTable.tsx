@@ -5,7 +5,7 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
-import Candidates from '../../modules/delegates/candidates.json'
+import Candidates from '../../utils/delegates/candidates.json'
 import Sort from '../Icon/Sort'
 import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 

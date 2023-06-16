@@ -24,7 +24,7 @@ import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 import './update.css'
@@ -143,7 +143,7 @@ export default function Update({ isEdit }: Props) {
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
   const [projectHealth, setProjectHealth] = useState(initialState.health)
-  const { update, state: updateState } = useProposalUpdate(updateId)
+  const { update, isLoadingUpdate, isErrorOnUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update])
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isEditAccepted, setIsEditAccepted] = useState(false)
@@ -236,14 +236,14 @@ export default function Update({ isEdit }: Props) {
     }
   }, [state.validated, isEdit, isEditAccepted])
 
-  if (accountState.loading || updateState.loading) {
+  if (accountState.loading || isLoadingUpdate) {
     return <LoadingView />
   }
 
   const isDisabled =
     !isEdit &&
     updateId &&
-    (updateState.error || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)
+    (isErrorOnUpdate || update?.status === UpdateStatus.Late || update?.status === UpdateStatus.Done)
 
   const isUserEnabledToEdit = update?.author === account
 

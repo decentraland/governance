@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import useProposal from '../../../hooks/useProposal'
+import Time from '../../../utils/date/Time'
 
 import ProposalProcess, { ProcessStatus, ProcessType } from './ProposalProcess'
 
@@ -81,7 +81,7 @@ export default function BiddingAndTenderingProcess({ proposal, tenderProposalsTo
   const t = useFormatMessage()
   const { configuration, start_at, finish_at, type, status } = proposal
   const { linked_proposal_id } = configuration
-  const [pitchProposal] = useProposal(linked_proposal_id)
+  const { proposal: pitchProposal } = useProposal(linked_proposal_id)
 
   const finishAt = linked_proposal_id ? pitchProposal?.finish_at : finish_at
   const pitchConfig = getPitchConfig(type, status)

@@ -11,7 +11,6 @@ import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BreakdownAccordion.css'
 
-
 const UNSELECTED_ITEM = -1
 
 export interface BreakdownItem {

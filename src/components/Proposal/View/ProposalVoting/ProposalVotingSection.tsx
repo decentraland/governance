@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import Time from 'decentraland-gatsby/dist/utils/date/Time'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
@@ -12,8 +11,9 @@ import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
 import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal'
-import { getPartyVotes, getVotingSectionConfig } from '../../../../modules/votes/utils'
 import { ProposalPageState } from '../../../../pages/proposal'
+import Time from '../../../../utils/date/Time'
+import { getPartyVotes, getVotingSectionConfig } from '../../../../utils/votes/utils'
 import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
@@ -57,11 +57,11 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [delegation, delegationState] = useDelegationOnProposal(proposal, account)
-  const delegate: string | null = delegation?.delegatedTo[0]?.delegate
+  const { delegationResult, isDelegationResultLoading } = useDelegationOnProposal(proposal, account)
+  const delegate: string | null = delegationResult.delegatedTo[0]?.delegate
   const delegators: string[] = useMemo(
-    () => delegation?.delegatedFrom.map((delegator) => delegator.delegator),
-    [delegation?.delegatedFrom]
+    () => delegationResult.delegatedFrom.map((delegator) => delegator.delegator),
+    [delegationResult.delegatedFrom]
   )
 
   const {
@@ -70,7 +70,7 @@ const ProposalVotingSection = ({
     totalVpOnProposal,
     hasEnoughToVote,
     isLoadingVp,
-  } = useVotingPowerOnProposal(account, delegators, delegationState.loading, votes, proposal)
+  } = useVotingPowerOnProposal(account, delegators, isDelegationResultLoading, votes, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
   const voteDifference = matchResult.voteDifference
@@ -94,7 +94,7 @@ const ProposalVotingSection = ({
     [delegators, votes, choices]
   )
 
-  const proposalVotingSectionLoading = loading || accountState.loading || delegationState.loading || isLoadingVp
+  const proposalVotingSectionLoading = loading || accountState.loading || isDelegationResultLoading || isLoadingVp
   const showGetInvolvedQuestion = !!proposal && !proposalVotingSectionLoading && !hasVoted && !finished
   const isProposalPending = proposal?.status === ProposalStatus.Pending
 

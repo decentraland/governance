@@ -10,16 +10,15 @@ interface Props<T extends FieldValues> extends FieldProps {
   rules?: any
 }
 
-function Field<T extends FieldValues>({ control, name, defaultValue, rules, ...rest }: Props<T>) {
+export default function Field<T extends FieldValues>({ control, name, defaultValue, rules, ...fieldProps }: Props<T>) {
   return (
     <Controller
       control={control}
       name={name}
       defaultValue={defaultValue}
       rules={rules}
-      render={({ field: { ref, ...field } }) => <DCLField {...field} {...rest} />}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      render={({ field: { ref, ...field } }) => <DCLField {...field} {...fieldProps} />}
     />
   )
 }
-
-export default Field

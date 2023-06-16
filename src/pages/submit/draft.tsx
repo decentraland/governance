@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { Governance } from '../../clients/Governance'
+import Field from '../../components/Common/Form/Field'
+import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -23,28 +23,16 @@ import LoadingView from '../../components/Layout/LoadingView'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_DRAFT } from '../../entities/Proposal/constants'
-import { newProposalDraftScheme } from '../../entities/Proposal/types'
-import { userModifiedForm } from '../../entities/Proposal/utils'
+import { NewProposalDraft, newProposalDraftScheme } from '../../entities/Proposal/types'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import loader from '../../modules/loader'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './submit.css'
 
-type DraftState = {
-  linked_proposal_id: string | null
-  title: string
-  summary: string
-  abstract: string
-  motivation: string
-  specification: string
-  conclusion: string
-  coAuthors?: string[]
-}
-const initialState: DraftState = {
-  linked_proposal_id: null,
+const initialState: NewProposalDraft = {
+  linked_proposal_id: '',
   title: '',
   summary: '',
   abstract: '',
@@ -53,64 +41,6 @@ const initialState: DraftState = {
   conclusion: '',
 }
 const schema = newProposalDraftScheme.properties
-const edit = (state: DraftState, props: Partial<DraftState>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
-
-const validate = createValidator<DraftState>({
-  title: (state) => ({
-    title: assert(state.title.length <= schema.title.maxLength, 'error.draft.title_too_large') || undefined,
-  }),
-  summary: (state) => ({
-    summary: assert(state.summary.length <= schema.summary.maxLength, 'error.draft.summary_too_large') || undefined,
-  }),
-  abstract: (state) => ({
-    abstract: assert(state.abstract.length <= schema.abstract.maxLength, 'error.draft.abstract_too_large') || undefined,
-  }),
-  motivation: (state) => ({
-    motivation:
-      assert(state.motivation.length <= schema.motivation.maxLength, 'error.draft.motivation_too_large') || undefined,
-  }),
-  specification: (state) => ({
-    specification:
-      assert(state.specification.length <= schema.specification.maxLength, 'error.draft.specification_too_large') ||
-      undefined,
-  }),
-  conclusion: (state) => ({
-    conclusion:
-      assert(state.conclusion.length <= schema.conclusion.maxLength, 'error.draft.conclusion_too_large') || undefined,
-  }),
-  '*': (state) => ({
-    linked_proposal_id: assert(!!state.linked_proposal_id, 'error.draft.linked_proposal_empty'),
-    title:
-      assert(state.title.length > 0, 'error.draft.title_empty') ||
-      assert(state.title.length >= schema.title.minLength, 'error.draft.title_too_short') ||
-      assert(state.title.length <= schema.title.maxLength, 'error.draft.title_too_large'),
-    summary:
-      assert(state.summary.length > 0, 'error.draft.summary_empty') ||
-      assert(state.summary.length >= schema.summary.minLength, 'error.draft.summary_too_short') ||
-      assert(state.summary.length <= schema.summary.maxLength, 'error.draft.summary_too_large'),
-    abstract:
-      assert(state.abstract.length > 0, 'error.draft.abstract_empty') ||
-      assert(state.abstract.length >= schema.abstract.minLength, 'error.draft.abstract_too_short') ||
-      assert(state.abstract.length <= schema.abstract.maxLength, 'error.draft.abstract_too_large'),
-    motivation:
-      assert(state.motivation.length > 0, 'error.draft.motivation_empty') ||
-      assert(state.motivation.length >= schema.motivation.minLength, 'error.draft.motivation_too_short') ||
-      assert(state.motivation.length <= schema.motivation.maxLength, 'error.draft.motivation_too_large'),
-    specification:
-      assert(state.specification.length > 0, 'error.draft.specification_empty') ||
-      assert(state.specification.length >= schema.specification.minLength, 'error.draft.specification_too_short') ||
-      assert(state.specification.length <= schema.specification.maxLength, 'error.draft.specification_too_large'),
-    conclusion:
-      assert(state.conclusion.length > 0, 'error.draft.conclusion_empty') ||
-      assert(state.conclusion.length >= schema.conclusion.minLength, 'error.draft.conclusion_too_short') ||
-      assert(state.conclusion.length <= schema.conclusion.maxLength, 'error.draft.conclusion_too_large'),
-  }),
-})
 
 export default function SubmitDraftProposal() {
   const t = useFormatMessage()
@@ -123,43 +53,46 @@ export default function SubmitDraftProposal() {
     [vpDistribution]
   )
   const preselectedProposal = usePreselectedProposal(preselectedLinkedProposalId)
-  const [state, editor] = useEditor(edit, validate, initialState)
+  const {
+    handleSubmit,
+    formState: { isDirty, isSubmitting, errors },
+    control,
+    setValue,
+    watch,
+  } = useForm<NewProposalDraft>({ defaultValues: initialState, mode: 'onTouched' })
+  const [error, setError] = useState('')
   const [formDisabled, setFormDisabled] = useState(false)
   const preventNavigation = useRef(false)
 
-  const setCoAuthors = (addresses?: string[]) => editor.set({ coAuthors: addresses })
+  const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
+
+  useEffect(() => {
+    preventNavigation.current = isDirty
+  }, [isDirty])
 
   useEffect(() => {
     if (preselectedLinkedProposalId) {
-      editor.set({ linked_proposal_id: preselectedLinkedProposalId })
+      setValue('linked_proposal_id', preselectedLinkedProposalId)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preselectedLinkedProposalId])
+  }, [preselectedLinkedProposalId, setValue])
 
-  useEffect(() => {
-    preventNavigation.current = userModifiedForm(state.value, initialState)
+  const onSubmit: SubmitHandler<NewProposalDraft> = async (data) => {
+    setFormDisabled(true)
 
-    if (state.validated) {
-      setFormDisabled(true)
-      Promise.resolve()
-        .then(async () => {
-          return Governance.get().createProposalDraft({
-            ...state.value,
-            linked_proposal_id: state.value.linked_proposal_id!,
-          })
-        })
-        .then((proposal) => {
-          loader.proposals.set(proposal.id, proposal)
-          navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-        })
-        .catch((err) => {
-          console.error(err, { ...err })
-          editor.error({ '*': err.body?.error || err.message })
-          setFormDisabled(false)
-        })
+    try {
+      const proposal = await Governance.get().createProposalDraft({
+        ...data,
+        linked_proposal_id: data.linked_proposal_id,
+      })
+
+      navigate(locations.proposal(proposal.id, { new: 'true' }), {
+        replace: true,
+      })
+    } catch (error: any) {
+      setError(error.body?.error || error.message)
+      setFormDisabled(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+  }
 
   if (accountState.loading) {
     return <LoadingView />
@@ -177,207 +110,240 @@ export default function SubmitDraftProposal() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Helmet title={t('page.submit_draft.title') || ''} />
-
-      <ContentSection>
-        <Header size="huge">{t('page.submit_draft.title')}</Header>
-      </ContentSection>
-      <ContentSection className="MarkdownSection--tiny">
-        <Markdown>{t('page.submit_draft.description')}</Markdown>
-      </ContentSection>
-
-      <ContentSection>
-        <Label>{t('page.submit_draft.linked_proposal_label')}</Label>
-        <SelectField
-          value={state.value.linked_proposal_id || undefined}
-          onChange={(_, { value }) => editor.set({ linked_proposal_id: String(value) })}
-          options={preselectedProposal}
-          error={!!state.error.linked_proposal_id}
-          message={t(state.error.linked_proposal_id)}
-          disabled
-          loading={isLoadingVpDistribution}
-        />
-      </ContentSection>
-
-      <ContentSection>
-        <Label>{t('page.submit_draft.title_label')}</Label>
-        <Field
-          value={state.value.title}
-          placeholder={t('page.submit_draft.title_placeholder')}
-          onChange={(_, { value }) => editor.set({ title: value })}
-          onBlur={() => editor.set({ title: state.value.title.trim() })}
-          error={!!state.error.title}
-          message={
-            t(state.error.title) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.title.length,
-              limit: schema.title.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-          loading={isLoadingVpDistribution}
-        />
-      </ContentSection>
-
-      <ContentSection>
-        <Label>
-          {t('page.submit_draft.summary_label')}
-          <MarkdownNotice />
-        </Label>
-        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
-          {t('page.submit_draft.summary_detail')}
-        </Text>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.summary}
-          placeholder={t('page.submit_draft.summary_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ summary: value })}
-          onBlur={() => editor.set({ summary: state.value.summary.trim() })}
-          error={!!state.error.summary}
-          message={
-            t(state.error.summary) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.summary.length,
-              limit: schema.summary.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-
-      <ContentSection>
-        <Label>
-          {t('page.submit_draft.abstract_label')}
-          <MarkdownNotice />
-        </Label>
-        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
-          {t('page.submit_draft.abstract_detail')}
-        </Text>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.abstract}
-          placeholder={t('page.submit_draft.abstract_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ abstract: value })}
-          onBlur={() => editor.set({ abstract: state.value.abstract.trim() })}
-          error={!!state.error.abstract}
-          message={
-            t(state.error.abstract) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.abstract.length,
-              limit: schema.abstract.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-
-      <ContentSection>
-        <Label>
-          {t('page.submit_draft.motivation_label')}
-          <MarkdownNotice />
-        </Label>
-        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
-          {t('page.submit_draft.motivation_detail')}
-        </Text>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.motivation}
-          placeholder={t('page.submit_draft.motivation_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ motivation: value })}
-          onBlur={() => editor.set({ motivation: state.value.motivation.trim() })}
-          error={!!state.error.motivation}
-          message={
-            t(state.error.motivation) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.motivation.length,
-              limit: schema.motivation.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-
-      <ContentSection>
-        <Label>
-          {t('page.submit_draft.specification_label')}
-          <MarkdownNotice />
-        </Label>
-        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
-          {t('page.submit_draft.specification_detail')}
-        </Text>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.specification}
-          placeholder={t('page.submit_draft.specification_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ specification: value })}
-          onBlur={() => editor.set({ specification: state.value.specification.trim() })}
-          error={!!state.error.specification}
-          message={
-            t(state.error.specification) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.specification.length,
-              limit: schema.specification.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-
-      <ContentSection>
-        <Label>
-          {t('page.submit_draft.conclusion_label')}
-          <MarkdownNotice />
-        </Label>
-        <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
-          {t('page.submit_draft.conclusion_detail')}
-        </Text>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.conclusion}
-          placeholder={t('page.submit_draft.conclusion_placeholder')}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ conclusion: value })}
-          onBlur={() => editor.set({ conclusion: state.value.conclusion.trim() })}
-          error={!!state.error.conclusion}
-          message={
-            t(state.error.conclusion) +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: state.value.conclusion.length,
-              limit: schema.specification.maxLength,
-            })
-          }
-          disabled={submissionVpNotMet || formDisabled}
-        />
-      </ContentSection>
-      <ContentSection>
-        <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
-      </ContentSection>
-      <ContentSection>
-        <Button
-          primary
-          disabled={state.validated || submissionVpNotMet}
-          loading={state.validated || isLoadingVpDistribution}
-          onClick={() => editor.validate()}
-        >
-          {t('page.submit.button_submit')}
-        </Button>
-      </ContentSection>
-      {submissionVpNotMet && (
+      <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Text size="lg" color="primary">
-            {t('error.draft.submission_vp_not_met')}
+          <Header size="huge">{t('page.submit_draft.title')}</Header>
+        </ContentSection>
+        <ContentSection className="MarkdownSection--tiny">
+          <Markdown>{t('page.submit_draft.description')}</Markdown>
+        </ContentSection>
+        <ContentSection>
+          <Label>{t('page.submit_draft.linked_proposal_label')}</Label>
+          <SelectField
+            value={watch('linked_proposal_id') || undefined}
+            options={preselectedProposal?.selectOption}
+            error={!!errors.linked_proposal_id}
+            message={errors.linked_proposal_id?.message}
+            rules={{ required: { value: true, message: t('error.draft.linked_proposal_empty') } }}
+            disabled
+            loading={isLoadingVpDistribution}
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>{t('page.submit_draft.title_label')}</Label>
+          <Field
+            control={control}
+            placeholder={t('page.submit_draft.title_placeholder')}
+            name="title"
+            rules={{
+              required: { value: true, message: t('error.draft.title_empty') },
+              min: { value: schema.title.minLength, message: t('error.draft.title_too_short') },
+              max: { value: schema.title.maxLength, message: t('error.draft.title_too_long') },
+            }}
+            error={!!errors.title}
+            loading={isLoadingVpDistribution}
+            disabled={submissionVpNotMet || formDisabled}
+            message={
+              (errors.title?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('title').length,
+                limit: schema.title.maxLength,
+              })
+            }
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_draft.summary_label')}
+            <MarkdownNotice />
+          </Label>
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+            {t('page.submit_draft.summary_detail')}
           </Text>
+          <MarkdownField
+            control={control}
+            name="summary"
+            rules={{
+              required: { value: true, message: t('error.draft.summary_empty') },
+              minLength: {
+                value: schema.summary.minLength,
+                message: t('error.draft.summary_too_short'),
+              },
+              maxLength: {
+                value: schema.summary.maxLength,
+                message: t('error.draft.summary_too_large'),
+              },
+            }}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.summary}
+            message={
+              (errors.summary?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('summary').length,
+                limit: schema.summary.maxLength,
+              })
+            }
+          />
         </ContentSection>
-      )}
-      {state.error['*'] && (
         <ContentSection>
-          <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
+          <Label>
+            {t('page.submit_draft.abstract_label')}
+            <MarkdownNotice />
+          </Label>
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+            {t('page.submit_draft.abstract_detail')}
+          </Text>
+          <MarkdownField
+            control={control}
+            name="abstract"
+            rules={{
+              required: { value: true, message: t('error.draft.abstract_empty') },
+              minLength: {
+                value: schema.abstract.minLength,
+                message: t('error.draft.abstract_too_short'),
+              },
+              maxLength: {
+                value: schema.abstract.maxLength,
+                message: t('error.draft.abstract_too_large'),
+              },
+            }}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.abstract}
+            message={
+              (errors.abstract?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('abstract').length,
+                limit: schema.abstract.maxLength,
+              })
+            }
+          />
         </ContentSection>
-      )}
+        <ContentSection>
+          <Label>
+            {t('page.submit_draft.motivation_label')}
+            <MarkdownNotice />
+          </Label>
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+            {t('page.submit_draft.motivation_detail')}
+          </Text>
+          <MarkdownField
+            control={control}
+            name="motivation"
+            rules={{
+              required: { value: true, message: t('error.draft.motivation_empty') },
+              minLength: {
+                value: schema.motivation.minLength,
+                message: t('error.draft.motivation_too_short'),
+              },
+              maxLength: {
+                value: schema.motivation.maxLength,
+                message: t('error.draft.motivation_too_large'),
+              },
+            }}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.motivation}
+            message={
+              (errors.motivation?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('motivation').length,
+                limit: schema.motivation.maxLength,
+              })
+            }
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_draft.specification_label')}
+            <MarkdownNotice />
+          </Label>
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+            {t('page.submit_draft.specification_detail')}
+          </Text>
+          <MarkdownField
+            control={control}
+            name="specification"
+            rules={{
+              required: { value: true, message: t('error.draft.specification_empty') },
+              minLength: {
+                value: schema.specification.minLength,
+                message: t('error.draft.specification_too_short'),
+              },
+              maxLength: {
+                value: schema.specification.maxLength,
+                message: t('error.draft.specification_too_large'),
+              },
+            }}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.specification}
+            message={
+              (errors.specification?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('specification').length,
+                limit: schema.specification.maxLength,
+              })
+            }
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_draft.conclusion_label')}
+            <MarkdownNotice />
+          </Label>
+          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+            {t('page.submit_draft.conclusion_detail')}
+          </Text>
+          <MarkdownField
+            control={control}
+            name="conclusion"
+            rules={{
+              required: { value: true, message: t('error.draft.conclusion_empty') },
+              minLength: {
+                value: schema.conclusion.minLength,
+                message: t('error.draft.conclusion_too_short'),
+              },
+              maxLength: {
+                value: schema.conclusion.maxLength,
+                message: t('error.draft.conclusion_too_large'),
+              },
+            }}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.conclusion}
+            message={
+              (errors.conclusion?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('conclusion').length,
+                limit: schema.conclusion.maxLength,
+              })
+            }
+          />
+        </ContentSection>
+        <ContentSection>
+          <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+        </ContentSection>
+        <ContentSection>
+          <Button type="submit" primary loading={isSubmitting} disabled={submissionVpNotMet || formDisabled}>
+            {t('page.submit.button_submit')}
+          </Button>
+        </ContentSection>
+        {submissionVpNotMet && (
+          <ContentSection>
+            <Text size="lg" color="primary">
+              {t('error.draft.submission_vp_not_met')}
+            </Text>
+          </ContentSection>
+        )}
+        {error && (
+          <ContentSection>
+            <ErrorMessage label={t('page.submit.error_label')} errorMessage={t(error) || error} />
+          </ContentSection>
+        )}
+      </form>
     </ContentLayout>
   )
 }

@@ -9,7 +9,7 @@ import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
 import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
-import locations from '../../modules/locations'
+import locations from '../../utils/locations'
 
 import './Username.css'
 
