@@ -5,7 +5,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -205,9 +204,9 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
 
             {(errors.x || errors.y) && (
               <div className="CoordinatesField__Error">
-                <Paragraph tiny primary>
+                <Text size="md" color="primary">
                   {t(errors.x?.message || '') || t(errors.y?.message || '')}
-                </Paragraph>
+                </Text>
               </div>
             )}
           </div>

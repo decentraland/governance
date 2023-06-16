@@ -30,14 +30,6 @@
   background-color: #444;
 }
 
-.FilterLabel .dg.Paragraph {
+.FilterLabel__Text {
   margin-bottom: 0;
-}
-
-.FilterLabel .dg.Paragraph.Paragraph--tiny {
-  font-size: 15px;
-}
-
-.FilterLabel--active .dg.Paragraph.Paragraph--tiny {
-  font-weight: 500;
 }
