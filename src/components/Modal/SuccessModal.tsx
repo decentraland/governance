@@ -62,7 +62,7 @@ export function SuccessModal({
               <Text size="lg" weight="semi-bold" className="SuccessModal__BannerTitle">
                 {t('modal.success.view_on_forum_title')}
               </Text>
-              <Text size="md">{t('modal.success.view_on_forum_description')}</Text>
+              <Text>{t('modal.success.view_on_forum_description')}</Text>
             </div>
             <Button
               className={classNames('Button', 'JoinTheDiscussion')}
@@ -82,7 +82,7 @@ export function SuccessModal({
             <Text size="lg" weight="semi-bold" className="SuccessModal__BannerTitle">
               {t('modal.success.join_discord_title')}
             </Text>
-            <Text size="md">{t('modal.success.join_discord_description')}</Text>
+            <Text>{t('modal.success.join_discord_description')}</Text>
           </div>
           <Button
             className={classNames('Button', 'Discord')}
@@ -101,7 +101,7 @@ export function SuccessModal({
               <Text size="lg" weight="semi-bold" className="SuccessModal__BannerTitle">
                 {t('modal.success.copy_link_title')}
               </Text>
-              <Text size="md">{t('modal.success.copy_link_description')}</Text>
+              <Text>{t('modal.success.copy_link_description')}</Text>
             </div>
             <Button
               className={classNames('Button', 'CopyLink')}

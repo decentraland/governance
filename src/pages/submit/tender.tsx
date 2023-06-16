@@ -178,7 +178,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.summary_description')}
           </Text>
           <MarkdownField
@@ -212,7 +212,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.problem_statement_description')}
           </Text>
           <MarkdownField
@@ -247,7 +247,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.technical_specification_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.technical_specification_description')}
           </Text>
           <MarkdownField
@@ -281,7 +281,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.use_cases_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.use_cases_description')}
           </Text>
           <MarkdownField
@@ -316,7 +316,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.deliverables_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.deliverables_description')}
           </Text>
           <MarkdownField
@@ -349,7 +349,7 @@ export default function SubmitTenderProposal() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_tender.target_release_quarter_label')}</Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_tender.target_release_quarter_description')}
           </Text>
           <Controller

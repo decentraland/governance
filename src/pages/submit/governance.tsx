@@ -181,7 +181,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.summary_detail')}
           </Text>
           <MarkdownField
@@ -216,7 +216,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.abstract_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.abstract_detail')}
           </Text>
           <MarkdownField
@@ -251,7 +251,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.motivation_detail')}
           </Text>
           <MarkdownField
@@ -286,7 +286,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.specification_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.specification_detail')}
           </Text>
           <MarkdownField
@@ -321,7 +321,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.impacts_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.impacts_detail')}
           </Text>
           <MarkdownField
@@ -356,7 +356,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.implementation_pathways_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.implementation_pathways_detail')}
           </Text>
           <MarkdownField
@@ -391,7 +391,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.conclusion_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.conclusion_detail')}
           </Text>
           <MarkdownField

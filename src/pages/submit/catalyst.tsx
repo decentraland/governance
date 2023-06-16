@@ -175,7 +175,7 @@ export default function SubmitCatalyst() {
           />
           {!!domain && (
             <div>
-              <Text size="md">
+              <Text>
                 {isCommsStatusLoading && (
                   <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
                 )}
@@ -212,7 +212,7 @@ export default function SubmitCatalyst() {
             {t('page.submit_catalyst.description_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_catalyst.description_detail')}
           </Text>
           <MarkdownField

@@ -158,7 +158,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_draft.summary_detail')}
           </Text>
           <MarkdownField
@@ -192,7 +192,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.abstract_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_draft.abstract_detail')}
           </Text>
           <MarkdownField
@@ -226,7 +226,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_draft.motivation_detail')}
           </Text>
           <MarkdownField
@@ -260,7 +260,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.specification_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_draft.specification_detail')}
           </Text>
           <MarkdownField
@@ -294,7 +294,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.conclusion_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_draft.conclusion_detail')}
           </Text>
           <MarkdownField

@@ -34,7 +34,7 @@ export default React.memo(function FilterLabel({ active, label, className, ...pr
       className={classNames('FilterLabel', active && 'FilterLabel--active', className)}
     >
       <span>
-        <Text size="md" weight="semi-bold" className="FilterLabel__Text">
+        <Text weight="semi-bold" className="FilterLabel__Text">
           {label}
         </Text>
       </span>

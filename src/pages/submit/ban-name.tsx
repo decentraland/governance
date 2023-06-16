@@ -133,7 +133,7 @@ export default function SubmitBanName() {
             {t('page.submit_ban_name.description_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_ban_name.description_detail')}
           </Text>
           <MarkdownField

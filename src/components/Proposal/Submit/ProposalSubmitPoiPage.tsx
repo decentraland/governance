@@ -162,7 +162,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
         </ContentSection>
         <ContentSection className="CoordinatesField">
           <Label>{t(`page.submit_poi.${action}.coordinates_label`)}</Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_poi.coordinates_detail')}
           </Text>
           <div className="CoordinatesField__Inputs">
@@ -202,9 +202,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
 
             {(errors.x || errors.y) && (
               <div className="CoordinatesField__Error">
-                <Text size="md" color="primary">
-                  {t(errors.x?.message || '') || t(errors.y?.message || '')}
-                </Text>
+                <Text color="primary">{t(errors.x?.message || '') || t(errors.y?.message || '')}</Text>
               </div>
             )}
           </div>
@@ -214,7 +212,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
             {t('page.submit_poi.description_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t(`page.submit_poi.${action}.description_detail`)}
           </Text>
           <MarkdownField

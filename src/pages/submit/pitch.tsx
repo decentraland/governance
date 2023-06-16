@@ -137,7 +137,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.target_audience_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.target_audience_detail')}
           </Text>
           <MarkdownField
@@ -171,7 +171,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.problem_statement_detail')}
           </Text>
           <MarkdownField
@@ -205,7 +205,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.proposed_solution_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.proposed_solution_detail')}
           </Text>
           <MarkdownField
@@ -239,7 +239,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.relevance_label')}
             <MarkdownNotice />
           </Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.relevance_detail')}
           </Text>
           <MarkdownField

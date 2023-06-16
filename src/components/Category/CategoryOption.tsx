@@ -125,9 +125,7 @@ export default React.memo(function CategoryOption({
         <span className="CategoryOption__TitleContainer">
           <span>
             {getCategoryIcon(type, CategoryIconVariant.Circled)}
-            <Text size="md" weight="semi-bold">
-              {t(`category.${type}_title`)}
-            </Text>
+            <Text weight="semi-bold">{t(`category.${type}_title`)}</Text>
           </span>
           {hasSubtypes && (
             <span

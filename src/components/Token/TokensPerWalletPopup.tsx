@@ -43,9 +43,7 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onClose }:
               <div className="TokensPerWalletPopup__Block TokensPerWalletPopup__RightBlock">
                 <div className={'TokensPerWalletPopup__Balance'}>
                   <Header>{t('general.number', { value: tokenInWallet.amount })}</Header>
-                  <Text size="md" className="TokensPerWalletPopup__Symbol">
-                    {tokenInWallet.symbol}
-                  </Text>
+                  <Text className="TokensPerWalletPopup__Symbol">{tokenInWallet.symbol}</Text>
                 </div>
                 <Header sub className="TokensPerWalletPopup__Link">
                   {t('page.transparency.mission.audit', { service_name: explorerLink.name })}

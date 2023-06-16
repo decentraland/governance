@@ -254,7 +254,7 @@ export default function SubmitPoll() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_poll.choices_label')}</Label>
-          <Text size="md" color="secondary" className="ProposalSubmit__DescriptionDetails">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {' '}
           </Text>
           {errors && (
