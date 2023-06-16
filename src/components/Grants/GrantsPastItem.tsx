@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { ProposalGrantCategory } from '../../entities/Grant/types'
 import { Grant } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import ChevronRight from '../Icon/ChevronRight'

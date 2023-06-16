@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import { ContentSection } from '../../Layout/ContentLayout'
 import GovernanceSidebar from '../../Sidebar/GovernanceSidebar'

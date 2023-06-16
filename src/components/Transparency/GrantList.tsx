@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link } from '@reach/router'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { formatBalance } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposals from '../../hooks/useProposals'
 import locations from '../../utils/locations'
 import { DetailItem } from '../Proposal/View/DetailItem'
@@ -52,10 +52,7 @@ export default React.memo(function GrantList({ status, title }: GrantListProps) 
                 )
               })}
             {additionalGrants > 0 && (
-              <Link
-                href={locations.proposals({ type: ProposalType.Grant, status: status })}
-                className="GrantList__Link"
-              >
+              <Link to={locations.proposals({ type: ProposalType.Grant, status: status })} className="GrantList__Link">
                 {t('page.transparency.funding.view_more', { count: additionalGrants })}
               </Link>
             )}

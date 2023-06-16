@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { CANDIDATE_ADDRESSES } from '../../constants'
 import useDelegatesInfo from '../../hooks/useDelegatesInfo'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import FullWidthButton from '../Common/FullWidthButton'
 import DelegatesTable from '../Delegation/DelegatesTable'

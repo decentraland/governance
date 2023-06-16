@@ -7,7 +7,6 @@ import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -24,6 +23,7 @@ import {
   getHiringTypeAction,
   newProposalHiringScheme,
 } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import locations from '../../../utils/locations'
 import Field from '../../Common/Form/Field'

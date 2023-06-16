@@ -1,10 +1,10 @@
 import React from 'react'
 
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { NewProposalPOI } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import JumpIn from '../Icon/JumpIn'
 
 import './ProposalFooterPoi.css'

@@ -1,7 +1,7 @@
 import React from 'react'
 
+import { Link } from '@reach/router'
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
@@ -40,24 +40,23 @@ function getProposalTypeLabel(proposalType: ProposalType) {
 const CategoryPill = ({ className, proposalType, size = 'default', isLink }: Props) => {
   const colorsConfig = ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
-  const Wrapper = isLink ? Link : 'div'
-  const href = isLink ? locations.proposals({ type: proposalType }) : undefined
+  const href = isLink ? locations.proposals({ type: proposalType }) : ''
 
   return (
     <>
       <Mobile>
-        <Wrapper href={href}>
+        <Link to={href}>
           <Pill style="light" color={colorsConfig} className={pillClassNames} size="small">
             {getProposalTypeShortLabel(proposalType)}
           </Pill>
-        </Wrapper>
+        </Link>
       </Mobile>
       <NotMobile>
-        <Wrapper href={href}>
+        <Link to={href}>
           <Pill style="light" color={colorsConfig} className={pillClassNames} size={size}>
             {getProposalTypeLabel(proposalType)}
           </Pill>
-        </Wrapper>
+        </Link>
       </NotMobile>
     </>
   )

@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import ActionableLayout from '../Layout/ActionableLayout'
 
 import CategoryOption from './CategoryOption'

@@ -4,9 +4,9 @@ import CreatableSelect from 'react-select/creatable'
 
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import Username from '../../../User/Username'
 
 import './CoAuthorSelect.css'

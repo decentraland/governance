@@ -2,10 +2,10 @@ import React from 'react'
 
 import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'

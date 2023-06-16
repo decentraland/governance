@@ -21,8 +21,8 @@ function useNewsletterSubscription() {
       const subscriptions: string[] = JSON.parse(localStorage.getItem(NEWSLETTER_SUBSCRIPTION_KEY) || '[]')
       setShowBanner(
         localStorage.getItem(HIDE_NEWSLETTER_SUBSCRIPTION_KEY) != 'true' &&
-        ((!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION)) ||
-          (!!account && !subscriptions.includes(account)))
+          ((!account && !subscriptions.includes(ANONYMOUS_USR_SUBSCRIPTION)) ||
+            (!!account && !subscriptions.includes(account)))
       )
     }
   }, [account, loading])

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { TeamMember } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 

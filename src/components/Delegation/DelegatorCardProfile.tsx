@@ -1,8 +1,9 @@
 import React from 'react'
+import { useIntl } from 'react-intl'
 
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link } from '@reach/router'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
@@ -19,7 +20,7 @@ function DelegatorCardProfile({ address, vp }: Props) {
   const intl = useIntl()
 
   return (
-    <Link className="DelegatorCardProfile" href={locations.profile({ address })}>
+    <Link className="DelegatorCardProfile" to={locations.profile({ address })}>
       <div className="DelegatorCardProfile__Section">
         <Username className="DelegatorCardProfile__Avatar" address={address} variant="avatar" size="medium" />
         <div>

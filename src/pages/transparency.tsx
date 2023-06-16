@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -26,6 +25,7 @@ import { DOCS_URL, OPEN_CALL_FOR_DELEGATES_LINK } from '../constants'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { JOIN_DISCORD_URL, formatBalance } from '../entities/Proposal/utils'
 import { aggregateBalances } from '../entities/Transparency/utils'
+import useFormatMessage from '../hooks/useFormatMessage'
 import useTransparency from '../hooks/useTransparency'
 import locations from '../utils/locations'
 

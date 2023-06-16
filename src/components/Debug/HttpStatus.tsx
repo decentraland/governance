@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 
 import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { HttpStat } from '../../clients/HttpStat'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 

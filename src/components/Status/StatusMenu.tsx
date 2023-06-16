@@ -1,10 +1,10 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 export type StatusMenu = {
   style?: React.CSSProperties

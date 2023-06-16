@@ -1,12 +1,12 @@
 import React from 'react'
 
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { HiringType, PoiType } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import CategoryBanner from '../../Category/CategoryBanner'
 import '../ProposalModal.css'
 

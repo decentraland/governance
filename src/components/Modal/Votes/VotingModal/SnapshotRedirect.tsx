@@ -1,10 +1,10 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
 import VotingDisabled from '../../../Icon/VotingDisabled'
 import '../../ProposalModal.css'

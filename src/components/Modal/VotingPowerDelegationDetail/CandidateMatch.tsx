@@ -1,9 +1,9 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
 import { MatchResult } from '../../../entities/Snapshot/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Helper from '../../Helper/Helper'
 
 import './CandidateMatch.css'

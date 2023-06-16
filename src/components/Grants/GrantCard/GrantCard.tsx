@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
+import { Link } from '@reach/router'
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
@@ -26,7 +26,7 @@ const GrantCard = ({ grant, hoverable = false }: Props) => {
 
   return (
     <Link
-      href={locations.proposal(id)}
+      to={locations.proposal(id)}
       onMouseEnter={() => hoverable && setExpanded(true)}
       onMouseLeave={() => hoverable && setExpanded(false)}
       className={classNames('GrantCard', hoverable && 'GrantCard__Expanded')}

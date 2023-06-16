@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
+import { Link } from '@reach/router'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import locations from '../../utils/locations'
@@ -66,17 +66,17 @@ const Navigation = ({ activeTab }: NavigationProps) => {
     <div className="Navigation">
       <Tabs>
         <Tabs.Left>
-          <Link href={locations.home()}>
+          <Link to={locations.home()}>
             <Tabs.Tab active={activeTab === NavigationTab.Home}>{t('navigation.home')}</Tabs.Tab>
           </Link>
-          <Link href={locations.proposals()}>
+          <Link to={locations.proposals()}>
             <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
           </Link>
-          <Link href={locations.grants()}>
+          <Link to={locations.grants()}>
             <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
           </Link>
           {user && (
-            <Link href={locations.profile({ address: user })}>
+            <Link to={locations.profile({ address: user })}>
               <Popup
                 style={{ zIndex: 1000 }}
                 className="NavigationProfilePopUp"
@@ -105,11 +105,11 @@ const Navigation = ({ activeTab }: NavigationProps) => {
               />
             </Link>
           )}
-          <Link href={locations.transparency()}>
+          <Link to={locations.transparency()}>
             <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
           </Link>
           {user && isDebugAddress && (
-            <Link href={locations.debug()}>
+            <Link to={locations.debug()}>
               <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
             </Link>
           )}

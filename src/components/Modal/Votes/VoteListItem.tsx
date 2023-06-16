@@ -1,12 +1,12 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { Vote } from '../../../entities/Votes/types'
 import { abbreviateNumber } from '../../../entities/Votes/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
 import { formatChoice } from '../../../utils/votes/utils'
 import Username from '../../User/Username'

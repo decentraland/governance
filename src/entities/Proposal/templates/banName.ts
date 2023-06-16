@@ -1,5 +1,6 @@
-import { NewProposalBanName } from "../types";
-import { formatMarkdown, template } from "./utils";
+import { NewProposalBanName } from '../types'
+
+import { formatMarkdown, template } from './utils'
 
 export const title = (proposal: NewProposalBanName) => `Ban the name ${proposal.name}`
 

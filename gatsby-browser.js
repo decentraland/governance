@@ -17,7 +17,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
-import { IntlProvider } from 'decentraland-gatsby/dist/plugins/intl'
+import { IntlProvider } from "react-intl"
 import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
@@ -29,6 +29,8 @@ import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarning
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import { SEGMENT_KEY } from "./src/constants"
+import { flattenMessages } from "./src/utils/intl"
+import en from "./src/intl/en.json"
 
 const queryClient = new QueryClient()
 
@@ -44,7 +46,7 @@ export const wrapRootElement = ({ element }) => {
 export const wrapPageElement = ({ element, props }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <IntlProvider {...props.pageContext.intl}>
+      <IntlProvider defaultLocale='en' locale='en' messages={flattenMessages(en)}>
         <IdentityModalContextProvider>
           <BurgerMenuStatusContextProvider>
             <Layout {...props} rightMenu={<Navbar />}>

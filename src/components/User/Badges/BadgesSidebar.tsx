@@ -1,9 +1,9 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { Badge, UserBadges } from '../../../entities/Badges/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import GovernanceSidebar from '../../Sidebar/GovernanceSidebar'
 

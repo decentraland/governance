@@ -1,8 +1,7 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import DateTooltip from '../../Common/DateTooltip'
 import InfoCircle from '../../Icon/InfoCircle'

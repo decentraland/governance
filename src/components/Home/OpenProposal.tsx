@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react'
 
+import { Link } from '@reach/router'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { calculateResult } from '../../entities/Votes/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalComments from '../../hooks/useProposalComments'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import Time from '../../utils/date/Time'
@@ -51,7 +51,7 @@ const OpenProposal = ({ proposal }: Props) => {
   })
 
   return (
-    <Link className="OpenProposal" href={locations.proposal(proposal.id)}>
+    <Link className="OpenProposal" to={locations.proposal(proposal.id)}>
       <div className="OpenProposal__Section">
         <Username className="OpenProposal__Avatar" address={user} variant="avatar" size="medium" />
         <div>

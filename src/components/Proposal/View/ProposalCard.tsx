@@ -1,10 +1,10 @@
 import React from 'react'
 
+import { Link } from '@reach/router'
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
 import locations from '../../../utils/locations'
@@ -31,7 +31,7 @@ export default function ProposalCard({ proposal, highlight, isOverBudget }: Prop
         'ProposalCard',
         highlight && (isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight')
       )}
-      href={locations.proposal(id)}
+      to={locations.proposal(id)}
     >
       <div className="ProposalCard__Container">
         <span className="ProposalCard__Title">{title}</span>

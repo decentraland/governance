@@ -1,12 +1,12 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
+import { Link } from '@reach/router'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import { useProposalDateText } from '../../hooks/useProposalDateText'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import { abbreviateTimeDifference } from '../../utils/date/Time'

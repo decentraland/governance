@@ -1,9 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { Match } from '../../../entities/Snapshot/utils'
 import { VotedProposal } from '../../../entities/Votes/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 
 import VotedInitiative from './VotedInitiative'
 import './VotedInitiativeList.css'

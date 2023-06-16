@@ -1,9 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { Reaction } from '../../../entities/SurveyTopic/types'
 import { REACTION_LIST } from '../../../entities/SurveyTopic/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import IconHelper from '../../Helper/IconHelper'
 
 interface Props {

@@ -1,10 +1,9 @@
 import React from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import WalletSelectorModal from 'decentraland-gatsby/dist/components/Modal/WalletSelectorModal'
-import WrongNetworkModal from 'decentraland-gatsby/dist/components/Modal/WrongNetworkModal'
+// import WalletSelectorModal from 'decentraland-gatsby/dist/components/Modal/WalletSelectorModal'
+// import WrongNetworkModal from 'decentraland-gatsby/dist/components/Modal/WrongNetworkModal'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { changeLocale } from 'decentraland-gatsby/dist/plugins/intl'
 import { DecentralandIntlContext } from 'decentraland-gatsby/dist/plugins/intl/types'
 import env from 'decentraland-gatsby/dist/utils/env'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
@@ -38,7 +37,8 @@ export default function Layout({ children, pageContext, ...props }: LayoutProps)
   const [, state] = useAuthContext()
 
   const handleChangeLocal = function (_: React.SyntheticEvent<HTMLElement>, data: DropdownProps) {
-    changeLocale(data.value as string)
+    // TODO: implement
+    return
   }
 
   const handleClickMenuOption = function (event: React.MouseEvent, section: string) {
@@ -57,19 +57,19 @@ export default function Layout({ children, pageContext, ...props }: LayoutProps)
     <>
       <Navbar activePage="dao" onClickMenuOption={handleClickMenuOption} rightMenu={props.rightMenu} />
       <main>{children}</main>
-      <WrongNetworkModal
+      {/* <WrongNetworkModal
         currentNetwork={state.chainId}
         expectedNetwork={getSupportedChainIds()}
         onSwitchNetwork={(chainId) => state.switchTo(chainId)}
         providerType={state.providerType}
-      />
-      <WalletSelectorModal
+      /> */}
+      {/* <WalletSelectorModal
         open={state.selecting}
         loading={state.loading}
         error={state.error}
         onConnect={(providerType, chainId) => state.connect(providerType, chainId)}
         onClose={() => state.select(false)}
-      />
+      /> */}
       <Footer
         locale={locale as Locale}
         locales={locales as Locale[]}

@@ -1,7 +1,7 @@
 import React from 'react'
 
+import { Link } from '@reach/router'
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
@@ -37,19 +37,19 @@ const StatusPill = ({ className, status, size, isLink }: Props) => {
   const icon = showIcon ? <Check color={iconColor} /> : null
 
   const Wrapper = isLink ? Link : 'div'
-  const href = isLink ? locations.proposals({ status: status }) : undefined
+  const href = isLink ? locations.proposals({ status: status }) : ''
 
   return (
     <>
       <Mobile>
-        <Wrapper href={href}>
+        <Wrapper to={href}>
           <Pill size={'small'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
             {getProposalStatusShortName(status)}
           </Pill>
         </Wrapper>
       </Mobile>
       <NotMobile>
-        <Wrapper href={href}>
+        <Wrapper to={href}>
           <Pill size={size || 'default'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
             {getProposalStatusDisplayName(status)}
           </Pill>

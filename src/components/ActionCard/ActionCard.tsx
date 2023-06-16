@@ -1,9 +1,10 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import './ActionCard.css'
 

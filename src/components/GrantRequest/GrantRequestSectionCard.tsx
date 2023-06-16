@@ -1,8 +1,8 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
+import { Link } from '@reach/router'
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
@@ -28,16 +28,14 @@ export const GrantRequestSectionCard = ({
   error,
   href,
 }: Props) => {
-  const Component = href ? Link : 'div'
-
   return (
-    <Component
+    <Link
       className={classNames(
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
         href && 'GrantRequestSectionCard__Hoverable'
       )}
-      href={href}
+      to={href || ''}
     >
       <div className="GrantRequestSectionCard__Header">
         <div className="GrantRequestSectionCard__HeaderTitle">
@@ -58,6 +56,6 @@ export const GrantRequestSectionCard = ({
       >
         {subtitle}
       </div>
-    </Component>
+    </Link>
   )
 }

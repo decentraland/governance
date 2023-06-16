@@ -1,8 +1,8 @@
 import React from 'react'
 
 import Title from 'decentraland-gatsby/dist/components/Text/Title'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import ImageGallery from '../../ImageGallery/ImageGallery'
 
 interface Props {

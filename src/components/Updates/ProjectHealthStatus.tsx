@@ -1,10 +1,10 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { ProjectHealth } from '../../entities/Updates/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Cancel from '../Icon/Cancel'
 import CheckCircle from '../Icon/CheckCircle'
 import Warning from '../Icon/Warning'
