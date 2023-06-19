@@ -40,23 +40,24 @@ function getProposalTypeLabel(proposalType: ProposalType) {
 const CategoryPill = ({ className, proposalType, size = 'default', isLink }: Props) => {
   const colorsConfig = ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
-  const href = isLink ? locations.proposals({ type: proposalType }) : ''
+  const Wrapper = isLink ? Link : 'div'
+  const href = isLink ? locations.proposals({ type: proposalType }) : undefined
 
   return (
     <>
       <Mobile>
-        <Link href={href}>
+        <Wrapper href={href}>
           <Pill style="light" color={colorsConfig} className={pillClassNames} size="small">
             {getProposalTypeShortLabel(proposalType)}
           </Pill>
-        </Link>
+        </Wrapper>
       </Mobile>
       <NotMobile>
-        <Link href={href}>
+        <Wrapper href={href}>
           <Pill style="light" color={colorsConfig} className={pillClassNames} size={size}>
             {getProposalTypeLabel(proposalType)}
           </Pill>
-        </Link>
+        </Wrapper>
       </NotMobile>
     </>
   )
