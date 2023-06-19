@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
@@ -10,6 +9,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
+import Link from '../Common/Link'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import StatusPill from '../Status/StatusPill'
 

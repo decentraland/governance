@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
@@ -8,6 +7,7 @@ import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
 import locations from '../../../utils/locations'
+import Link from '../../Common/Link'
 import ChevronRight from '../../Icon/ChevronRight'
 import Username from '../../User/Username'
 
@@ -31,7 +31,7 @@ export default function ProposalCard({ proposal, highlight, isOverBudget }: Prop
         'ProposalCard',
         highlight && (isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight')
       )}
-      to={locations.proposal(id)}
+      href={locations.proposal(id)}
     >
       <div className="ProposalCard__Container">
         <span className="ProposalCard__Title">{title}</span>

@@ -33,7 +33,8 @@
       "<rootDir>/src/"
     ],
     "moduleNameMapper": {
-      "\\.(css|less|sass|scss|gif|ttf|eot|svg)$": "<rootDir>/src/__mocks__/files.ts"
+      "\\.(css|less|sass|scss|gif|ttf|eot|svg)$": "<rootDir>/src/__mocks__/files.ts",
+      "^gatsby-page-utils/(.*)$": "gatsby-page-utils/dist/$1"
     }
   },
   "repository": {
@@ -64,6 +65,7 @@
     "ethers": "^5.7.1",
     "flickity": "^2.3.0",
     "gatsby": "^4.10.1",
+    "gatsby-link": "^4.23.0",
     "gatsby-plugin-image": "^2.10.0",
     "gatsby-plugin-manifest": "^4.10.1",
     "gatsby-plugin-offline": "^5.10.1",

@@ -7,7 +7,6 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -24,7 +23,7 @@ import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
 import { NewProposalPitch, newProposalPitchScheme } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import locations from '../../utils/locations'
+import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
 

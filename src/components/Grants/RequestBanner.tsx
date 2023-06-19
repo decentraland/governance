@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl/utils'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import locations from '../../utils/locations'
+import locations, { navigate } from '../../utils/locations'
 
 import './RequestBanner.css'
 

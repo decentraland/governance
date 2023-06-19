@@ -1,9 +1,9 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 
+import Link from '../Common/Link'
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
 import './GrantRequestSectionCard.css'
@@ -35,7 +35,7 @@ export const GrantRequestSectionCard = ({
         error && 'GrantRequestSectionCard__Error',
         href && 'GrantRequestSectionCard__Hoverable'
       )}
-      to={href || ''}
+      href={href || ''}
     >
       <div className="GrantRequestSectionCard__Header">
         <div className="GrantRequestSectionCard__HeaderTitle">

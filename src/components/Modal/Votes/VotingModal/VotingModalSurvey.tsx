@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -12,6 +11,7 @@ import { SelectedVoteChoice } from '../../../../entities/Votes/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import { ProposalPageState } from '../../../../pages/proposal'
 import { formatChoice } from '../../../../utils/votes/utils'
+import Link from '../../../Common/Link'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
 

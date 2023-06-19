@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
+
+import Link from '../Common/Link'
 
 import HomeLoader from './HomeLoader'
 import './MetricsCard.css'
@@ -17,7 +18,7 @@ interface Props {
 
 const MetricsCard = ({ href, category, title, description, isLoading, loadingLabel }: Props) => {
   return (
-    <Card as={Link} to={href} className="MetricsCard">
+    <Card as={Link} href={href} className="MetricsCard">
       {!isLoading && (
         <div className="MetricsCard__Container">
           <p className="MetricsCard__Category">{category}</p>

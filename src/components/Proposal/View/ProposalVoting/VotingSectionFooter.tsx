@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 
@@ -9,6 +8,7 @@ import useFormatMessage from '../../../../hooks/useFormatMessage'
 import { ProposalPageState } from '../../../../pages/proposal'
 import Time from '../../../../utils/date/Time'
 import locations from '../../../../utils/locations'
+import Link from '../../../Common/Link'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'
@@ -65,7 +65,7 @@ const VotingSectionFooter = ({
           </div>
           <div className="VotingSectionFooter__Actions">
             {showVotingPowerInfo && userAddress && !hasEnoughToVote && (
-              <Link to={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
+              <Link href={locations.profile({ address: userAddress })}>{t('page.proposal_detail.get_vp')}</Link>
             )}
             {hasEnoughToVote && (
               <ChangeVoteButton

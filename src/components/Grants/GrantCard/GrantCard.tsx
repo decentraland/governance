@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
 import locations from '../../../utils/locations'
+import Link from '../../Common/Link'
 import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
 
 import CliffProgress from './CliffProgress'
@@ -26,7 +26,7 @@ const GrantCard = ({ grant, hoverable = false }: Props) => {
 
   return (
     <Link
-      to={locations.proposal(id)}
+      href={locations.proposal(id)}
       onMouseEnter={() => hoverable && setExpanded(true)}
       onMouseLeave={() => hoverable && setExpanded(false)}
       className={classNames('GrantCard', hoverable && 'GrantCard__Expanded')}

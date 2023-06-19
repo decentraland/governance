@@ -2,7 +2,8 @@ import React from 'react'
 
 import classNames from 'classnames'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+
+import { navigate } from '../../utils/locations'
 
 import './FilterLabel.css'
 

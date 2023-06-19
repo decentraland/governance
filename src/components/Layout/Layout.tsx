@@ -4,7 +4,6 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 // import WalletSelectorModal from 'decentraland-gatsby/dist/components/Modal/WalletSelectorModal'
 // import WrongNetworkModal from 'decentraland-gatsby/dist/components/Modal/WrongNetworkModal'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { DecentralandIntlContext } from 'decentraland-gatsby/dist/plugins/intl/types'
 import env from 'decentraland-gatsby/dist/utils/env'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Locale } from 'decentraland-ui/dist/components/LanguageIcon/LanguageIcon'
@@ -25,15 +24,10 @@ export function getSupportedChainIds(): ChainId[] {
 
 export type LayoutProps = Omit<PageProps, 'children'> & {
   rightMenu: NavbarProps['rightMenu']
-  pageContext?: {
-    intl?: DecentralandIntlContext
-  }
   children?: React.ReactNode
 }
 
-export default function Layout({ children, pageContext, ...props }: LayoutProps) {
-  const locale = pageContext?.intl?.locale || 'en'
-  const locales = pageContext?.intl?.locales || ['en']
+export default function Layout({ children, ...props }: LayoutProps) {
   const [, state] = useAuthContext()
 
   const handleChangeLocal = function (_: React.SyntheticEvent<HTMLElement>, data: DropdownProps) {
@@ -70,12 +64,7 @@ export default function Layout({ children, pageContext, ...props }: LayoutProps)
         onConnect={(providerType, chainId) => state.connect(providerType, chainId)}
         onClose={() => state.select(false)}
       /> */}
-      <Footer
-        locale={locale as Locale}
-        locales={locales as Locale[]}
-        isFullWidth={false}
-        onChange={handleChangeLocal}
-      />
+      <Footer locale="en" locales={['en']} isFullWidth={false} onChange={handleChangeLocal} />
     </>
   )
 }

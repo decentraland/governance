@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
 import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
-import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
@@ -11,8 +10,9 @@ import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
-import locations from '../../../utils/locations'
+import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
+import Link from '../../Common/Link'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'

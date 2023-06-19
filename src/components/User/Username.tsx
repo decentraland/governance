@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 import { Size, SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
@@ -10,6 +9,7 @@ import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 
 import './Username.css'
 
@@ -94,7 +94,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
   return (
     <>
       {linked ? (
-        <Link className={classNames('Username', className)} to={locations.profile({ address: checksumAddress })}>
+        <Link className={classNames('Username', className)} href={locations.profile({ address: checksumAddress })}>
           {userElement}
         </Link>
       ) : (

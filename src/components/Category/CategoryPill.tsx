@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 import Pill, { PillColor } from '../Common/Pill'
 
 const ColorsConfig: Record<ProposalType, PillColor> = {
@@ -45,14 +45,14 @@ const CategoryPill = ({ className, proposalType, size = 'default', isLink }: Pro
   return (
     <>
       <Mobile>
-        <Link to={href}>
+        <Link href={href}>
           <Pill style="light" color={colorsConfig} className={pillClassNames} size="small">
             {getProposalTypeShortLabel(proposalType)}
           </Pill>
         </Link>
       </Mobile>
       <NotMobile>
-        <Link to={href}>
+        <Link href={href}>
           <Pill style="light" color={colorsConfig} className={pillClassNames} size={size}>
             {getProposalTypeLabel(proposalType)}
           </Pill>

@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import DOMPurify from 'dompurify'
@@ -9,6 +8,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { getUserProfileUrl } from '../../../entities/User/utils'
 import useProfile from '../../../hooks/useProfile'
 import Time from '../../../utils/date/Time'
+import Link from '../../Common/Link'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './ProposalComment.css'
@@ -49,13 +49,13 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked, ad
   return (
     <div className="ProposalComment">
       <div className="ProposalComment__ProfileImage">
-        <Link to={discourseUserUrl} target={linkTarget} rel={linkRel}>
+        <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
           {address ? <Avatar address={address} size="medium" /> : <Avatar size="medium" src={avatarUrl} />}
         </Link>
       </div>
       <div className="ProposalComment__Content">
         <div className="ProposalComment__Author">
-          <Link to={discourseUserUrl} target={linkTarget} rel={linkRel}>
+          <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
             <Paragraph bold>
               {displayableAddress && !isEthereumAddress(displayableAddress) ? displayableAddress : user}
               {address && <ValidatedProfile />}

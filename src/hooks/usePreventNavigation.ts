@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react'
 
 import { globalHistory, useLocation } from '@reach/router'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
-import locations from '../utils/locations'
+import locations, { navigate } from '../utils/locations'
 
 import useFormatMessage from './useFormatMessage'
 

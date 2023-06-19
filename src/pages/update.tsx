@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import { Link } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import Link from '../components/Common/Link'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
@@ -56,7 +56,7 @@ export default function UpdateDetail() {
       <ContentLayout navigateHref={proposalHref} small>
         <ContentSection className="UpdateDetail__Header">
           <span className="UpdateDetail__ProjectTitle">
-            {t('page.update_detail.project_title', { title: <Link to={proposalHref}>{proposal?.title}</Link> })}
+            {t('page.update_detail.project_title', { title: <Link href={proposalHref}>{proposal?.title}</Link> })}
           </span>
           <Header size="huge">{t('page.update_detail.title', { index })}</Header>
         </ContentSection>

@@ -19,6 +19,7 @@ const fetchTitle = async (url: string) => {
     return response.title || ''
   } catch (error) {
     console.error(error)
+    return ''
   }
 }
 

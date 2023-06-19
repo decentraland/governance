@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { Link } from '@reach/router'
 import classNames from 'classnames'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import { getProposalStatusDisplayName, getProposalStatusShortName } from '../../entities/Proposal/utils'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Check from '../Icon/Check'
 
@@ -42,14 +42,14 @@ const StatusPill = ({ className, status, size, isLink }: Props) => {
   return (
     <>
       <Mobile>
-        <Wrapper to={href}>
+        <Wrapper href={href}>
           <Pill size={'small'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
             {getProposalStatusShortName(status)}
           </Pill>
         </Wrapper>
       </Mobile>
       <NotMobile>
-        <Wrapper to={href}>
+        <Wrapper href={href}>
           <Pill size={size || 'default'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
             {getProposalStatusDisplayName(status)}
           </Pill>
