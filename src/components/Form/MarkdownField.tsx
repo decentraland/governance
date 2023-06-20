@@ -1,9 +1,9 @@
 import React from 'react'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import { TextareaProps } from 'decentraland-gatsby/dist/components/Form/Textarea'
 
+import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import MarkdownNotice from './MarkdownNotice'

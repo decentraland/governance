@@ -4,12 +4,12 @@ import classNames from 'classnames'
 
 import './Text.css'
 
-const DEFAULT_COLOR = 'default'
-const DEFAULT_FONT_WEIGHT = 'normal'
-const DEFAULT_FONT_SIZE = 'md'
-type FontSize = 'xs' | 'sm' | typeof DEFAULT_FONT_SIZE | 'lg' | 'xl'
-type FontWeight = 'bold' | 'semi-bold' | typeof DEFAULT_FONT_WEIGHT
-type TextColor = typeof DEFAULT_COLOR | 'primary' | 'secondary'
+const DEFAULT_COLOR: TextColor = 'default'
+const DEFAULT_FONT_WEIGHT: FontWeight = 'normal'
+const DEFAULT_FONT_SIZE: FontSize = 'md'
+type FontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+type FontWeight = 'bold' | 'semi-bold' | 'normal'
+type TextColor = 'default' | 'primary' | 'secondary'
 
 interface Props {
   children?: React.ReactNode

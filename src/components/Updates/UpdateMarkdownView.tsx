@@ -2,10 +2,10 @@ import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import Time, { formatDate } from '../../utils/date/Time'
+import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import DateTooltip from '../Common/DateTooltip'
 import Divider from '../Common/Divider'
 import Text from '../Common/Text/Text'
@@ -29,17 +29,17 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
   return (
     <ContentSection className="UpdateDetail__Content">
       {update?.health && <ProjectHealthStatus health={update.health} />}
-      <Header as="h2">{t('page.update_detail.introduction')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.introduction')}</ArticleSectionHeading>
       <Markdown>{update?.introduction || ''}</Markdown>
-      <Header as="h2">{t('page.update_detail.highlights')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.highlights')}</ArticleSectionHeading>
       <Markdown>{update?.highlights || ''}</Markdown>
-      <Header as="h2">{t('page.update_detail.blockers')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.blockers')}</ArticleSectionHeading>
       <Markdown>{update?.blockers || ''}</Markdown>
-      <Header as="h2">{t('page.update_detail.next_steps')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.next_steps')}</ArticleSectionHeading>
       <Markdown>{update?.next_steps || ''}</Markdown>
       {update?.additional_notes && (
         <>
-          <Header as="h2">{t('page.update_detail.additional_notes')}</Header>
+          <ArticleSectionHeading>{t('page.update_detail.additional_notes')}</ArticleSectionHeading>
           <Markdown>{update?.additional_notes}</Markdown>
         </>
       )}
