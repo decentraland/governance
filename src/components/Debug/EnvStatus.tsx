@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
@@ -18,6 +17,7 @@ import {
   SEGMENT_KEY,
   TEST_ENV_VAR,
 } from '../../constants'
+import Label from '../Common/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
