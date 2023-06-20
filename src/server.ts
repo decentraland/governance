@@ -1,8 +1,8 @@
-import metricsDatabase from 'decentraland-gatsby/dist/entities/Database/routes'
 import { databaseInitializer } from 'decentraland-gatsby/dist/entities/Database/utils'
 import manager from 'decentraland-gatsby/dist/entities/Job/index'
 import { jobInitializer } from 'decentraland-gatsby/dist/entities/Job/utils'
-import metrics from 'decentraland-gatsby/dist/entities/Prometheus/routes'
+import { gatsbyRegister } from 'decentraland-gatsby/dist/entities/Prometheus/metrics'
+import metrics from 'decentraland-gatsby/dist/entities/Prometheus/routes/utils'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handle, { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
 import { withBody, withCors, withDDosProtection, withLogs } from 'decentraland-gatsby/dist/entities/Route/middleware'
@@ -11,6 +11,7 @@ import { initializeServices } from 'decentraland-gatsby/dist/entities/Server/han
 import { serverInitializer } from 'decentraland-gatsby/dist/entities/Server/utils'
 import express from 'express'
 import { readFileSync } from 'fs'
+import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
@@ -68,14 +69,7 @@ app.use('/api', [
   }),
 ])
 
-app.use(metrics)
-app.use(metricsDatabase)
-app.get(
-  '/metrics/*',
-  handle(async () => {
-    throw new RequestError('NotFound', RequestError.NotFound)
-  })
-)
+app.use(metrics([gatsbyRegister, register]))
 
 app.use(sitemap)
 app.use('/', social)
