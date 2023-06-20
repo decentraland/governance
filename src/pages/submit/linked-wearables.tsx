@@ -22,11 +22,13 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import PostLabel from '../../components/PostLabel'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
@@ -191,9 +193,7 @@ export default function SubmitLinkedWearables() {
     return (
       <ContentSection>
         <Label>{t(`page.submit_linked_wearables.${params.section}_label`)}</Label>
-        <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-          {t(`page.submit_linked_wearables.${params.section}_detail`, detailOptions)}
-        </Text>
+        <SubLabel>{t(`page.submit_linked_wearables.${params.section}_detail`, detailOptions)}</SubLabel>
         {errors && (
           <Text size="lg" color="primary">
             {errors[params.section]?.message}
@@ -329,9 +329,7 @@ export default function SubmitLinkedWearables() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_linked_wearables.name_label')}</Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_linked_wearables.name_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.name_detail')}</SubLabel>
           <Field
             control={control}
             name="name"
@@ -361,9 +359,7 @@ export default function SubmitLinkedWearables() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_linked_wearables.marketplace_link_label')}</Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_linked_wearables.marketplace_link_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.marketplace_link_detail')}</SubLabel>
           <Field
             name="marketplace_link"
             control={control}
@@ -388,9 +384,7 @@ export default function SubmitLinkedWearables() {
             {t('page.submit_linked_wearables.nft_collections_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_linked_wearables.nft_collections_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.nft_collections_detail')}</SubLabel>
           <MarkdownField
             name="nft_collections"
             control={control}
@@ -423,9 +417,7 @@ export default function SubmitLinkedWearables() {
             {t('page.submit_linked_wearables.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_linked_wearables.motivation_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.motivation_detail')}</SubLabel>
           <MarkdownField
             name="motivation"
             control={control}
@@ -455,9 +447,7 @@ export default function SubmitLinkedWearables() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_linked_wearables.items_label')}</Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_linked_wearables.items_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.items_detail')}</SubLabel>
           <Field
             control={control}
             type="number"
@@ -487,9 +477,7 @@ export default function SubmitLinkedWearables() {
             {t('page.submit_linked_wearables.governance_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_linked_wearables.governance_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.governance_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="governance"
@@ -521,9 +509,7 @@ export default function SubmitLinkedWearables() {
         {getListSection({ section: 'managers', type: 'address' }, addressValidator)}
         <ContentSection>
           <Label>{t('page.submit_linked_wearables.programmatically_generated_label')}</Label>
-          <Text color="secondary" className="ProgrammaticallyGeneratedLabel">
-            {t('page.submit_linked_wearables.programmatically_generated_description')}
-          </Text>
+          <SubLabel>{t('page.submit_linked_wearables.programmatically_generated_description')}</SubLabel>
           <div className="ProgrammaticallyGeneratedRadioButtons">
             <Radio
               checked={watch('programmatically_generated')}
@@ -544,11 +530,7 @@ export default function SubmitLinkedWearables() {
               onChange={handleProgrammaticallyGeneratedOption}
             />
           </div>
-          <Text color="secondary" className="ProgrammaticallyGeneratedLabel">
-            <Markdown className="tinyMarkdown">
-              {t('page.submit_linked_wearables.programmatically_generated_note') || ''}
-            </Markdown>
-          </Text>
+          <PostLabel>{t('page.submit_linked_wearables.programmatically_generated_note')}</PostLabel>
         </ContentSection>
         {values.programmatically_generated && (
           <ContentSection>
@@ -556,9 +538,7 @@ export default function SubmitLinkedWearables() {
               {t('page.submit_linked_wearables.method_label')}
               <MarkdownNotice />
             </Label>
-            <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-              {t('page.submit_linked_wearables.method_detail')}
-            </Text>
+            <SubLabel>{t('page.submit_linked_wearables.method_detail')}</SubLabel>
             <MarkdownField
               control={control}
               name="method"

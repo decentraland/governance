@@ -16,6 +16,7 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -178,9 +179,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_tender.summary_description')}
-          </Text>
+          <SubLabel>{t('page.submit_tender.summary_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="summary"
@@ -212,9 +211,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_tender.problem_statement_description')}
-          </Text>
+          <SubLabel>{t('page.submit_tender.problem_statement_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="problem_statement"
@@ -247,9 +244,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.technical_specification_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_tender.technical_specification_description')}
-          </Text>
+          <SubLabel>{t('page.submit_tender.technical_specification_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="technical_specification"
@@ -281,9 +276,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.use_cases_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_tender.use_cases_description')}
-          </Text>
+          <SubLabel>{t('page.submit_tender.use_cases_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="use_cases"
@@ -316,9 +309,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.deliverables_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_tender.deliverables_description')}
-          </Text>
+          <SubLabel>{t('page.submit_tender.deliverables_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="deliverables"
@@ -349,9 +340,7 @@ export default function SubmitTenderProposal() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_tender.target_release_quarter_label')}</Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_tender.target_release_quarter_description')}
-          </Text>
+          <SubLabel>{t('page.submit_tender.target_release_quarter_description')}</SubLabel>
           <Controller
             control={control}
             name="target_release_quarter"

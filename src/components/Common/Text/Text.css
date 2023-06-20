@@ -1,6 +1,5 @@
 .Text {
   font-stretch: normal;
-  font-style: normal;
   letter-spacing: 0.3px;
 }
 
@@ -43,4 +42,11 @@
 }
 .Text.Text--color-secondary {
   color: var(--secondary-text);
+}
+
+.Text.Text--style-normal {
+  font-style: normal;
+}
+.Text.Text--style-italic {
+  font-style: italic;
 }

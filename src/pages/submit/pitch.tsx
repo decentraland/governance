@@ -14,11 +14,13 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import PostLabel from '../../components/PostLabel'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
@@ -130,16 +132,14 @@ export default function SubmitPitchProposal() {
               })
             }
           />
-          <span className="Input__PostLabel">{t('page.submit_pitch.initiative_name_postlabel')}</span>
+          <PostLabel>{t('page.submit_pitch.initiative_name_postlabel')}</PostLabel>
         </ContentSection>
         <ContentSection>
           <Label>
             {t('page.submit_pitch.target_audience_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_pitch.target_audience_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_pitch.target_audience_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="target_audience"
@@ -171,9 +171,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_pitch.problem_statement_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_pitch.problem_statement_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="problem_statement"
@@ -205,9 +203,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.proposed_solution_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_pitch.proposed_solution_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_pitch.proposed_solution_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="proposed_solution"
@@ -239,9 +235,7 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.relevance_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_pitch.relevance_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_pitch.relevance_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="relevance"
