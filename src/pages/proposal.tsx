@@ -4,7 +4,6 @@ import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import { formatDescription } from 'decentraland-gatsby/dist/components/Head/utils'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -122,6 +121,13 @@ function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): Vo
 
 function isLegacyGrantCategory(category: string) {
   return Object.values(OldGrantCategory).includes(category as OldGrantCategory)
+}
+
+function formatDescription(description: string) {
+  const value = description.trim()
+  const position = value.indexOf(`\n\n`)
+
+  return position > 0 ? value.slice(0, position).trim() : value
 }
 
 export default function ProposalPage() {
@@ -319,7 +325,7 @@ export default function ProposalPage() {
       <Head
         title={proposal?.title || t('page.proposal_detail.title') || ''}
         description={
-          (proposal?.description && formatDescription(proposal?.description)) ||
+          (proposal?.description && formatDescription(proposal.description)) ||
           t('page.proposal_detail.description') ||
           ''
         }
