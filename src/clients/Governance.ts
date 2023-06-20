@@ -359,6 +359,9 @@ export class Governance extends API {
   }
 
   async getCoAuthorsByProposal(id: string, status?: CoauthorStatus) {
+    if (!id) {
+      return []
+    }
     const result = await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}${status ? `/${status}` : ''}`)
     return result.data
   }

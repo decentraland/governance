@@ -33,7 +33,7 @@ const ActivityBox = ({ address }: Props) => {
   const [activeTab, setActiveTab] = useState(Tab.MyProposals)
 
   const isLoggedUserProfile = isSameAddress(account, address || '')
-  const [pendingCoauthorRequests] = useProposalsByCoAuthor(isLoggedUserProfile ? account : null, CoauthorStatus.PENDING)
+  const { requestsStatus } = useProposalsByCoAuthor(isLoggedUserProfile ? account : null, CoauthorStatus.PENDING)
 
   return (
     <Container>
@@ -52,7 +52,7 @@ const ActivityBox = ({ address }: Props) => {
             )}
             <BoxTabs.Tab onClick={() => setActiveTab(Tab.CoAuthoring)} active={activeTab === Tab.CoAuthoring}>
               {t('page.profile.activity.coauthoring.title')}
-              {pendingCoauthorRequests.length > 0 && <Dot className="ActivityBox__DotIcon" />}
+              {requestsStatus.length > 0 && <Dot className="ActivityBox__DotIcon" />}
             </BoxTabs.Tab>
           </BoxTabs.Left>
         </BoxTabs>
@@ -60,7 +60,7 @@ const ActivityBox = ({ address }: Props) => {
           {activeTab === Tab.MyProposals && <ProposalsCreatedTab address={address} />}
           {activeTab === Tab.Watchlist && isLoggedUserProfile && <WatchlistTab />}
           {activeTab === Tab.CoAuthoring && (
-            <CoAuthoringTab address={address} pendingCoauthorRequests={pendingCoauthorRequests} />
+            <CoAuthoringTab address={address} pendingCoauthorRequests={requestsStatus} />
           )}
         </BoxTabsContentContainer>
       </BoxTabsContainer>

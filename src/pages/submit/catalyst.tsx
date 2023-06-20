@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
+import { useQuery } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useAsyncMemo from 'decentraland-gatsby/dist/hooks/useAsyncMemo'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
@@ -51,29 +51,27 @@ export default function SubmitCatalyst() {
   const [error, setError] = useState('')
   const [domain, setDomain] = useState('')
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_commsStatus, commsState] = useAsyncMemo(
-    async () => (domain ? Catalyst.from('https://' + domain).getCommsStatus() : null),
-    [domain]
-  )
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_contentStatus, contentState] = useAsyncMemo(
-    async () => (domain ? Catalyst.from('https://' + domain).getContentStatus() : null),
-    [domain]
-  )
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_lambdaStatus, lambdaState] = useAsyncMemo(
-    async () => (domain ? Catalyst.from('https://' + domain).getLambdasStatus() : null),
-    [domain]
-  )
+  const { isLoading: isCommsStatusLoading, isError: isErrorOnCommsStatus } = useQuery({
+    queryKey: [`commsStatus#${domain}`],
+    queryFn: () => (domain ? Catalyst.from('https://' + domain).getCommsStatus() : null),
+  })
+  const { isLoading: isContentStatusLoading, isError: isErrorOnContentStatus } = useQuery({
+    queryKey: [`contentStatus#${domain}`],
+    queryFn: () => (domain ? Catalyst.from('https://' + domain).getContentStatus() : null),
+  })
+  const { isLoading: isLambdasStatusLoading, isError: isErrorOnLambdasStatus } = useQuery({
+    queryKey: [`lambdasStatus#${domain}`],
+    queryFn: () => (domain ? Catalyst.from('https://' + domain).getLambdasStatus() : null),
+  })
+
   const [formDisabled, setFormDisabled] = useState(false)
   const preventNavigation = useRef(false)
 
   useEffect(() => {
-    if (!errors.domain && (commsState.error || contentState.error || lambdaState.error)) {
+    if (!errors.domain && (isErrorOnCommsStatus || isErrorOnContentStatus || isErrorOnLambdasStatus)) {
       setFormError('domain', { message: t('error.catalyst.server_invalid_status') })
     }
-  }, [commsState.error, contentState.error, lambdaState.error, errors.domain, setFormError, t])
+  }, [isErrorOnCommsStatus, isErrorOnContentStatus, isErrorOnLambdasStatus, errors.domain, setFormError, t])
 
   const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
 
@@ -82,7 +80,7 @@ export default function SubmitCatalyst() {
   }, [isDirty])
 
   const onSubmit: SubmitHandler<NewProposalCatalyst> = async (data) => {
-    const errors = [commsState.error, contentState.error, lambdaState.error].filter(Boolean)
+    const errors = [isErrorOnCommsStatus, isErrorOnContentStatus, isErrorOnLambdasStatus].filter(Boolean)
     if (errors.length > 0) {
       setFormError('domain', { message: t('error.catalyst.server_invalid_status') })
       setError('error.catalyst.server_invalid_status')
@@ -90,7 +88,7 @@ export default function SubmitCatalyst() {
       return
     }
 
-    const loading = [commsState.loading, contentState.loading, lambdaState.loading].filter(Boolean)
+    const loading = [isCommsStatusLoading, isContentStatusLoading, isLambdasStatusLoading].filter(Boolean)
     if (loading.length > 0) {
       return
     }
@@ -178,31 +176,31 @@ export default function SubmitCatalyst() {
           {!!domain && (
             <div>
               <Paragraph tiny>
-                {commsState.loading && (
+                {isCommsStatusLoading && (
                   <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
                 )}
-                {commsState.error && (
+                {isErrorOnCommsStatus && (
                   <span className="Catalyst__Error">{t('page.submit_catalyst.domain_comms_failed')}</span>
                 )}
-                {!commsState.loading && !commsState.error && (
+                {!isCommsStatusLoading && !isErrorOnCommsStatus && (
                   <span className="Catalyst__Success">{t('page.submit_catalyst.domain_comms_ok')}</span>
                 )}
-                {contentState.loading && (
+                {isContentStatusLoading && (
                   <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_content_checking')}</span>
                 )}
-                {contentState.error && (
+                {isErrorOnContentStatus && (
                   <span className="Catalyst__Error">{t('page.submit_catalyst.domain_content_failed')}</span>
                 )}
-                {!contentState.loading && !contentState.error && (
+                {!isContentStatusLoading && !isErrorOnContentStatus && (
                   <span className="Catalyst__Success">{t('page.submit_catalyst.domain_content_ok')}</span>
                 )}
-                {lambdaState.loading && (
+                {isLambdasStatusLoading && (
                   <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_lambda_checking')}</span>
                 )}
-                {lambdaState.error && (
+                {isErrorOnLambdasStatus && (
                   <span className="Catalyst__Error">{t('page.submit_catalyst.domain_lambda_failed')}</span>
                 )}
-                {!lambdaState.loading && !lambdaState.error && (
+                {!isLambdasStatusLoading && !isErrorOnLambdasStatus && (
                   <span className="Catalyst__Success">{t('page.submit_catalyst.domain_lambda_ok')}</span>
                 )}
               </Paragraph>
@@ -249,8 +247,8 @@ export default function SubmitCatalyst() {
         <ContentSection>
           <Button
             primary
-            disabled={formDisabled || commsState.loading || contentState.loading || lambdaState.loading}
-            loading={isSubmitting || commsState.loading || contentState.loading || lambdaState.loading}
+            disabled={formDisabled || isCommsStatusLoading || isContentStatusLoading || isLambdasStatusLoading}
+            loading={isSubmitting || isCommsStatusLoading || isContentStatusLoading || isLambdasStatusLoading}
           >
             {t('page.submit.button_submit')}
           </Button>
