@@ -2,8 +2,8 @@ import React from 'react'
 
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
-import ImageGallery from '../../ImageGallery/ImageGallery'
 import ArticleSectionHeading from '../../Common/ArticleSectionHeading'
+import ImageGallery from '../../ImageGallery/ImageGallery'
 
 interface Props {
   imageUrls: string[]

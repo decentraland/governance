@@ -1,15 +1,15 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import Time, { formatDate } from '../../utils/date/Time'
+import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import DateTooltip from '../Common/DateTooltip'
 import Divider from '../Common/Divider'
+import Text from '../Common/Text/Text'
 import { ContentSection } from '../Layout/ContentLayout'
-import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import Username from '../User/Username'
 
 import ProjectHealthStatus from './ProjectHealthStatus'
@@ -46,22 +46,20 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
       {author && update.completion_date && (
         <>
           <Divider size="small" />
-          <div className="UpdateDetail__Date">
+          <div className="UpdateDetail__Dates">
             <div className="UpdateDetail__CompletionDate">
-              <Paragraph>
+              <Text className="UpdateDetail__CompletionDateText">
                 <DateTooltip date={update.completion_date}>
                   {t('page.update_detail.completion_date', { date: formattedCompletionDate })}
                 </DateTooltip>
-              </Paragraph>
+              </Text>
               {author && <Username address={author} linked />}
             </div>
             {update.updated_at !== update.created_at && (
               <div className="UpdateDetail__LastEdit">
-                <Paragraph>
-                  <DateTooltip date={update.updated_at}>
-                    <Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>
-                  </DateTooltip>
-                </Paragraph>
+                <DateTooltip date={update.updated_at}>
+                  <Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>
+                </DateTooltip>
               </div>
             )}
             {update?.status === UpdateStatus.Late && (

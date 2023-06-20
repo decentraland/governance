@@ -1,12 +1,12 @@
 import React from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import Text from '../../Common/Text/Text'
 import '../ProposalModal.css'
 
 export type VoteRegisteredModalProps = Omit<ModalProps, 'children'> & {
@@ -22,7 +22,7 @@ export function VoteRegisteredModal({ onClickAccept, loading, ...props }: VoteRe
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.vote_registered.title')}</Header>
-          <Paragraph small>{t('modal.vote_registered.description')}</Paragraph>
+          <Text size="lg">{t('modal.vote_registered.description')}</Text>
         </div>
         <div className="ProposalModal__Actions">
           <Button fluid primary onClick={onClickAccept} loading={loading}>

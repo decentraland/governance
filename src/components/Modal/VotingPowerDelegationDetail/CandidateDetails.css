@@ -6,12 +6,8 @@
   font-size: 12px !important;
 }
 
-.CandidateDetails__Content.Paragraph--small {
-  color: var(--black-600);
-  font-size: 15px !important;
-}
-
 .CandidateDetails__Content {
+  color: var(--black-600) !important;
   margin-bottom: 24px !important;
 }
 

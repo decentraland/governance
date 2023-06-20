@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -17,6 +16,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -181,9 +181,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.summary_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="summary"
@@ -216,9 +216,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.abstract_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.abstract_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="abstract"
@@ -251,9 +251,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.motivation_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="motivation"
@@ -286,9 +286,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.specification_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.specification_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="specification"
@@ -321,9 +321,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.impacts_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.impacts_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="impacts"
@@ -356,9 +356,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.implementation_pathways_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.implementation_pathways_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="implementation_pathways"
@@ -391,9 +391,9 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.conclusion_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_governance.conclusion_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="conclusion"
@@ -431,9 +431,9 @@ export default function SubmitGovernanceProposal() {
         </ContentSection>
         {submissionVpNotMet && (
           <ContentSection>
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {t('error.governance.submission_vp_not_met')}
-            </Paragraph>
+            </Text>
           </ContentSection>
         )}
         {error && (

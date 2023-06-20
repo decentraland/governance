@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -18,6 +17,7 @@ import locations from '../../../utils/locations'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Label'
+import Text from '../../Common/Text/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
@@ -158,13 +158,13 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
           <Header size="huge">{t(`page.submit_poi.${action}.title`)}</Header>
         </ContentSection>
         <ContentSection>
-          <Paragraph small>{t('page.submit_poi.description')}</Paragraph>
+          <Text size="lg">{t('page.submit_poi.description')}</Text>
         </ContentSection>
         <ContentSection className="CoordinatesField">
           <Label>{t(`page.submit_poi.${action}.coordinates_label`)}</Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_poi.coordinates_detail')}
-          </Paragraph>
+          </Text>
           <div className="CoordinatesField__Inputs">
             <Field
               control={control}
@@ -202,9 +202,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
 
             {(errors.x || errors.y) && (
               <div className="CoordinatesField__Error">
-                <Paragraph tiny primary>
-                  {t(errors.x?.message || '') || t(errors.y?.message || '')}
-                </Paragraph>
+                <Text color="primary">{t(errors.x?.message || '') || t(errors.y?.message || '')}</Text>
               </div>
             )}
           </div>
@@ -214,9 +212,9 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
             {t('page.submit_poi.description_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t(`page.submit_poi.${action}.description_detail`)}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="description"

@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -8,6 +7,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { TokenInWallet } from '../../entities/Transparency/types'
 import { blockExplorerLink } from '../../entities/Transparency/utils'
+import Text from '../Common/Text/Text'
 import Info from '../Icon/Info'
 
 import './TokensPerWalletPopup.css'
@@ -43,7 +43,7 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onClose }:
               <div className="TokensPerWalletPopup__Block TokensPerWalletPopup__RightBlock">
                 <div className={'TokensPerWalletPopup__Balance'}>
                   <Header>{t('general.number', { value: tokenInWallet.amount })}</Header>
-                  <Paragraph tiny>{tokenInWallet.symbol}</Paragraph>
+                  <Text className="TokensPerWalletPopup__Symbol">{tokenInWallet.symbol}</Text>
                 </div>
                 <Header sub className="TokensPerWalletPopup__Link">
                   {t('page.transparency.mission.audit', { service_name: explorerLink.name })}

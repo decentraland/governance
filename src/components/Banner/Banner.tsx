@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
+
+import Text from '../Common/Text/Text'
 
 import './Banner.css'
 
@@ -50,10 +51,10 @@ function Banner({
           <div className="Banner__Icon">{icon}</div>
           <div className="Banner__Content">
             <div className="Banner__Description">
-              <Paragraph small semiBold>
+              <Text size="lg" weight="semi-bold">
                 {title}
-              </Paragraph>
-              <Paragraph tiny>{description}</Paragraph>
+              </Text>
+              <Text>{description}</Text>
             </div>
             <div className="Banner__ButtonContainer">
               <Button

@@ -4,7 +4,6 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -15,6 +14,7 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -137,9 +137,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.target_audience_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.target_audience_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="target_audience"
@@ -171,9 +171,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.problem_statement_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="problem_statement"
@@ -205,9 +205,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.proposed_solution_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.proposed_solution_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="proposed_solution"
@@ -239,9 +239,9 @@ export default function SubmitPitchProposal() {
             {t('page.submit_pitch.relevance_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
+          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
             {t('page.submit_pitch.relevance_detail')}
-          </Paragraph>
+          </Text>
           <MarkdownField
             control={control}
             name="relevance"
@@ -278,9 +278,9 @@ export default function SubmitPitchProposal() {
         </ContentSection>
         {submissionVpNotMet && (
           <ContentSection>
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {t('error.pitch.submission_vp_not_met')}
-            </Paragraph>
+            </Text>
           </ContentSection>
         )}
         {error && (

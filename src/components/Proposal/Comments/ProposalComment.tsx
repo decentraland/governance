@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import DOMPurify from 'dompurify'
@@ -9,6 +8,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { getUserProfileUrl } from '../../../entities/User/utils'
 import useProfile from '../../../hooks/useProfile'
 import Time from '../../../utils/date/Time'
+import Text from '../../Common/Text/Text'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './ProposalComment.css'
@@ -56,13 +56,13 @@ export default function ProposalComment({ user, avatarUrl, createdAt, cooked, ad
       <div className="ProposalComment__Content">
         <div className="ProposalComment__Author">
           <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
-            <Paragraph bold>
+            <Text weight="bold">
               {displayableAddress && !isEthereumAddress(displayableAddress) ? displayableAddress : user}
               {address && <ValidatedProfile />}
-            </Paragraph>
+            </Text>
           </Link>
           <span>
-            <Paragraph secondary>{Time.from(createdAt).fromNow()}</Paragraph>
+            <Text color="secondary">{Time.from(createdAt).fromNow()}</Text>
           </span>
         </div>
         <div className="ProposalComment__Cooked" dangerouslySetInnerHTML={createMarkup(cooked)} />
