@@ -16,6 +16,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -181,9 +182,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.summary_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.summary_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="summary"
@@ -216,9 +215,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.abstract_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.abstract_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.abstract_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="abstract"
@@ -251,9 +248,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.motivation_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.motivation_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="motivation"
@@ -286,9 +281,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.specification_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.specification_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.specification_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="specification"
@@ -321,9 +314,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.impacts_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.impacts_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.impacts_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="impacts"
@@ -356,9 +347,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.implementation_pathways_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.implementation_pathways_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.implementation_pathways_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="implementation_pathways"
@@ -391,9 +380,7 @@ export default function SubmitGovernanceProposal() {
             {t('page.submit_governance.conclusion_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_governance.conclusion_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_governance.conclusion_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="conclusion"

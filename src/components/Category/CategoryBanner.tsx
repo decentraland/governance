@@ -88,7 +88,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
       </div>
       <div>
         <div className="CategoryBanner__TitleContainer">
-          <Text size="lg" weight="semi-bold">
+          <Text className="CategoryBanner__Title" size="lg" weight="semi-bold">
             {t(`category.${type}_title`)}
           </Text>
           {isNew && <span className="CategoryBanner__Badge NewBadge">{t(`category.new`)}</span>}

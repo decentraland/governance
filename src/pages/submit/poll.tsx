@@ -254,9 +254,6 @@ export default function SubmitPoll() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_poll.choices_label')}</Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {' '}
-          </Text>
           {errors && (
             <Text size="lg" color="primary">
               {errors.choices?.message}

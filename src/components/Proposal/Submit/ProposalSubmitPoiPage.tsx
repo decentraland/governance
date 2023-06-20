@@ -17,6 +17,7 @@ import locations from '../../../utils/locations'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Label'
+import SubLabel from '../../Common/SubLabel'
 import Text from '../../Common/Text/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
@@ -162,9 +163,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
         </ContentSection>
         <ContentSection className="CoordinatesField">
           <Label>{t(`page.submit_poi.${action}.coordinates_label`)}</Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_poi.coordinates_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_poi.coordinates_detail')}</SubLabel>
           <div className="CoordinatesField__Inputs">
             <Field
               control={control}
@@ -212,9 +211,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
             {t('page.submit_poi.description_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t(`page.submit_poi.${action}.description_detail`)}
-          </Text>
+          <SubLabel>{t(`page.submit_poi.${action}.description_detail`)}</SubLabel>
           <MarkdownField
             control={control}
             name="description"

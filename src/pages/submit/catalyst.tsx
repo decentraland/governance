@@ -16,6 +16,7 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -212,9 +213,7 @@ export default function SubmitCatalyst() {
             {t('page.submit_catalyst.description_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_catalyst.description_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_catalyst.description_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="description"

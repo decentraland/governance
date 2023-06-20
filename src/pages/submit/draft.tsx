@@ -15,6 +15,7 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
@@ -158,9 +159,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_draft.summary_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_draft.summary_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="summary"
@@ -192,9 +191,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.abstract_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_draft.abstract_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_draft.abstract_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="abstract"
@@ -226,9 +223,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_draft.motivation_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_draft.motivation_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="motivation"
@@ -260,9 +255,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.specification_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_draft.specification_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_draft.specification_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="specification"
@@ -294,9 +287,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.conclusion_label')}
             <MarkdownNotice />
           </Label>
-          <Text color="secondary" className="ProposalSubmit__DescriptionDetails">
-            {t('page.submit_draft.conclusion_detail')}
-          </Text>
+          <SubLabel>{t('page.submit_draft.conclusion_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="conclusion"
