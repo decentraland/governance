@@ -19,7 +19,7 @@ export default function useProposalUpdates(proposalId?: string | null) {
       }
       return Governance.get().getProposalUpdates(proposalId)
     },
-    // staleTime: DEFAULT_QUERY_STALE_TIME,
+    staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {

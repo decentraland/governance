@@ -14,7 +14,7 @@ export default function useProposalUpdate(updateId?: string | null) {
     queryKey: [`proposalUpdate#${updateId}`],
     queryFn: async () => {
       if (!updateId) {
-        return undefined
+        return null
       }
       return Governance.get().getProposalUpdate(updateId)
     },

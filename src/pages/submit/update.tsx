@@ -248,8 +248,6 @@ export default function Update({ isEdit }: Props) {
   const isUserEnabledToEdit = update?.author === account
 
   if (isDisabled || (isEdit && !isUserEnabledToEdit)) {
-    console.log('isDisabled', isDisabled, 'isEdit', isEdit, 'isUserEnabledToEdit', isUserEnabledToEdit)
-
     return (
       <ContentLayout>
         <NotFound />
