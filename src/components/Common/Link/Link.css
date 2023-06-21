@@ -1,0 +1,14 @@
+.Link {
+  color: var(--primary);
+}
+
+.Link--pointer {
+  cursor: pointer;
+}
+
+/* TODO: check font sizes are ok */
+.Link .icon {
+  font-size: 15px;
+  line-height: 24px;
+  vertical-align: middle;
+}
