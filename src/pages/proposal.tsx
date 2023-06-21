@@ -164,7 +164,7 @@ export default function ProposalPage() {
       if (proposal) {
         return Governance.get().getSubscriptions(proposal.id)
       }
-      return Promise.resolve([])
+      return []
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
