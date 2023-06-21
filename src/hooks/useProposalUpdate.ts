@@ -9,11 +9,12 @@ export default function useProposalUpdate(updateId?: string | null) {
     data: update,
     isLoading: isLoadingUpdate,
     isError: isErrorOnUpdate,
+    refetch: refetchUpdate,
   } = useQuery({
     queryKey: [`proposalUpdate#${updateId}`],
     queryFn: async () => {
       if (!updateId) {
-        return undefined
+        return null
       }
       return Governance.get().getProposalUpdate(updateId)
     },
@@ -24,5 +25,6 @@ export default function useProposalUpdate(updateId?: string | null) {
     update,
     isLoadingUpdate,
     isErrorOnUpdate,
+    refetchUpdate,
   }
 }

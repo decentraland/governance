@@ -160,7 +160,12 @@ export default function ProposalPage() {
   const subscriptionsQueryKey = `subscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
     queryKey: [subscriptionsQueryKey],
-    queryFn: () => Governance.get().getSubscriptions(proposal!.id),
+    queryFn: () => {
+      if (proposal) {
+        return Governance.get().getSubscriptions(proposal.id)
+      }
+      return []
+    },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
@@ -224,6 +229,7 @@ export default function ProposalPage() {
       }
     },
     onSuccess: (updatedSubscriptions) => {
+      updatePageState({ confirmSubscription: false })
       if (!proposal) return
       queryClient.setQueryData([subscriptionsQueryKey], updatedSubscriptions)
     },
@@ -263,8 +269,12 @@ export default function ProposalPage() {
   }, [params])
 
   useEffect(() => {
-    updatePageStateRef.current({ showUpdateSuccessModal: params.get('newUpdate') === 'true' })
-  }, [params])
+    const isNewUpdate = params.get('newUpdate') === 'true'
+    if (isNewUpdate) {
+      refetchUpdates()
+    }
+    updatePageStateRef.current({ showUpdateSuccessModal: isNewUpdate })
+  }, [params, refetchUpdates])
 
   useEffect(() => {
     if (proposalPageState.showVotingError) {
