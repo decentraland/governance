@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import ReactMarkdown, { Components, Options } from 'react-markdown'
 
 import classNames from 'classnames'
@@ -12,9 +12,9 @@ import Link from '../Link/Link'
 import Heading from '../Text/Heading'
 import Text from '../Text/Text'
 
-export const plugins = [gfm, emoji] as any
+const plugins = [gfm, emoji] as any
 type MarkdownKey = keyof Components
-export type MarkdownProps = Omit<Options, 'renders' | 'linkTarget' | 'astPlugins' | 'plugins'> & {
+type MarkdownProps = Omit<Options, 'renders' | 'linkTarget' | 'astPlugins' | 'plugins'> & {
   componentsClassNames: Record<MarkdownKey, string>
 }
 
@@ -64,5 +64,6 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
 }
 
 export default function Markdown(props: MarkdownProps) {
-  return <ReactMarkdown {...props} components={getComponents(props)} remarkPlugins={plugins} />
+  const components = useMemo(() => getComponents(props), [props])
+  return <ReactMarkdown {...props} components={components} remarkPlugins={plugins} />
 }
