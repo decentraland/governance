@@ -1,7 +1,7 @@
 .Link {
   font-size: inherit;
   line-height: inherit;
-  color: var(--primary);
+  color: var(--dcl-primary);
 }
 
 .Link.Link--pointer {

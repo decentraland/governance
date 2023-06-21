@@ -35,7 +35,7 @@ export const GrantRequestSectionCard = ({
         error && 'GrantRequestSectionCard__Error',
         href && 'GrantRequestSectionCard__Hoverable'
       )}
-      href={href || ''}
+      href={href}
     >
       <div className="GrantRequestSectionCard__Header">
         <div className="GrantRequestSectionCard__HeaderTitle">

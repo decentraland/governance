@@ -6,10 +6,8 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import env from 'decentraland-gatsby/dist/utils/env'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
-import { Locale } from 'decentraland-ui/dist/components/LanguageIcon/LanguageIcon'
 import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import type { PageProps } from 'gatsby'
-import type { DropdownProps } from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 
 import './Layout.css'
 
@@ -29,11 +27,6 @@ export type LayoutProps = Omit<PageProps, 'children'> & {
 
 export default function Layout({ children, ...props }: LayoutProps) {
   const [, state] = useAuthContext()
-
-  const handleChangeLocal = function (_: React.SyntheticEvent<HTMLElement>, data: DropdownProps) {
-    // TODO: implement
-    return
-  }
 
   const handleClickMenuOption = function (event: React.MouseEvent, section: string) {
     if (!event.defaultPrevented) {
@@ -64,7 +57,7 @@ export default function Layout({ children, ...props }: LayoutProps) {
         onConnect={(providerType, chainId) => state.connect(providerType, chainId)}
         onClose={() => state.select(false)}
       /> */}
-      <Footer locale="en" locales={['en']} isFullWidth={false} onChange={handleChangeLocal} />
+      <Footer locale="en" locales={['en']} isFullWidth={false} />
     </>
   )
 }

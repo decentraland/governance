@@ -1,38 +1,41 @@
-import React, { useCallback, useMemo } from 'react'
+import React from 'react'
 
 import classNames from 'classnames'
 
-import { isLocalLink, navigate } from '../../utils/locations'
+import { navigate } from '../../utils/locations'
 
 import './Link.css'
 
-export type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
+type Props = React.AnchorHTMLAttributes<HTMLAnchorElement>
 
-export default React.memo(function Link({ target, rel, href, onClick, ...props }: LinkProps) {
-  const isLocal = useMemo(() => isLocalLink(href), [href])
-  const linkTarget = useMemo(() => (!target && !isLocal ? '_blank' : target || undefined), [isLocal, target])
-  const linkRel = useMemo(() => (!isLocal ? classNames(rel, 'noopener', 'noreferrer') : rel), [isLocal, rel])
-  const onClickHandler = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (onClick) {
-        onClick(e)
-      }
-      if (isLocal && href) {
-        e.preventDefault()
-        navigate(href)
-      }
-    },
-    [href, isLocal, onClick]
+function isLocalLink(href?: string | null) {
+  return (
+    typeof href === 'string' && !href.startsWith('https://') && !href.startsWith('http://') && !href.startsWith('//')
   )
+}
+
+export default function Link({ target, rel, href, onClick, className, ...props }: Props) {
+  const isLocal = isLocalLink(href)
+  const linkTarget = !target && !isLocal ? '_blank' : target || undefined
+  const linkRel = !isLocal ? classNames(rel, 'noopener', 'noreferrer') : rel
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onClick) {
+      onClick(e)
+    }
+    if (isLocal && href) {
+      e.preventDefault()
+      navigate(href)
+    }
+  }
 
   return (
     <a
       {...props}
-      className={classNames('Link', (onClick || href) && 'Link--pointer', props.className)}
+      className={classNames('Link', (onClick || href) && 'Link--pointer', className)}
       target={linkTarget}
       rel={linkRel}
       href={href}
-      onClick={onClickHandler}
+      onClick={handleClick}
     />
   )
-})
+}

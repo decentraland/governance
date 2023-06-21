@@ -70,12 +70,6 @@ export default {
   },
 }
 
-export function isLocalLink(href?: string | null) {
-  return (
-    typeof href === 'string' && !href.startsWith('https://') && !href.startsWith('http://') && !href.startsWith('//')
-  )
-}
-
 export function navigate(to: string, options?: NavigateOptions<any>) {
   if (typeof window === 'undefined') {
     return
