@@ -143,7 +143,7 @@ export default function Update({ isEdit }: Props) {
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
   const [projectHealth, setProjectHealth] = useState(initialState.health)
-  const { update, isLoadingUpdate, isErrorOnUpdate } = useProposalUpdate(updateId)
+  const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update])
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isEditAccepted, setIsEditAccepted] = useState(false)
@@ -217,7 +217,7 @@ export default function Update({ isEdit }: Props) {
         } else {
           await Governance.get().createProposalUpdate(newUpdate)
         }
-
+        await refetchUpdate()
         navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
       } catch (err) {
         if (err instanceof Error) {
@@ -248,6 +248,8 @@ export default function Update({ isEdit }: Props) {
   const isUserEnabledToEdit = update?.author === account
 
   if (isDisabled || (isEdit && !isUserEnabledToEdit)) {
+    console.log('isDisabled', isDisabled, 'isEdit', isEdit, 'isUserEnabledToEdit', isUserEnabledToEdit)
+
     return (
       <ContentLayout>
         <NotFound />

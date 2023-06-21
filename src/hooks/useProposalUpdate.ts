@@ -9,6 +9,7 @@ export default function useProposalUpdate(updateId?: string | null) {
     data: update,
     isLoading: isLoadingUpdate,
     isError: isErrorOnUpdate,
+    refetch: refetchUpdate,
   } = useQuery({
     queryKey: [`proposalUpdate#${updateId}`],
     queryFn: async () => {
@@ -24,5 +25,6 @@ export default function useProposalUpdate(updateId?: string | null) {
     update,
     isLoadingUpdate,
     isErrorOnUpdate,
+    refetchUpdate,
   }
 }
