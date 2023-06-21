@@ -2,10 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
@@ -15,6 +13,9 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
+import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -177,9 +178,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.summary_description')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_tender.summary_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="summary"
@@ -211,9 +210,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.problem_statement_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.problem_statement_description')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_tender.problem_statement_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="problem_statement"
@@ -246,9 +243,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.technical_specification_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.technical_specification_description')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_tender.technical_specification_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="technical_specification"
@@ -280,9 +275,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.use_cases_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.use_cases_description')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_tender.use_cases_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="use_cases"
@@ -315,9 +308,7 @@ export default function SubmitTenderProposal() {
             {t('page.submit_tender.deliverables_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.deliverables_description')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_tender.deliverables_description')}</SubLabel>
           <MarkdownField
             control={control}
             name="deliverables"
@@ -348,9 +339,7 @@ export default function SubmitTenderProposal() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_tender.target_release_quarter_label')}</Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_tender.target_release_quarter_description')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_tender.target_release_quarter_description')}</SubLabel>
           <Controller
             control={control}
             name="target_release_quarter"
@@ -380,9 +369,9 @@ export default function SubmitTenderProposal() {
         </ContentSection>
         {submissionVpNotMet && (
           <ContentSection>
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {t('error.tender.submission_vp_not_met')}
-            </Paragraph>
+            </Text>
           </ContentSection>
         )}
         {error && (

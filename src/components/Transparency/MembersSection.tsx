@@ -6,6 +6,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { Member } from '../../clients/DclData'
+import Text from '../Common/Text/Text'
 import Info from '../Icon/Info'
 
 import MemberCard from './MemberCard'
@@ -24,11 +25,7 @@ export default function MembersSection({ title, description, members }: Props) {
         {title}
         <Popup
           className="MembersPopup"
-          content={
-            <Paragraph secondary className={'MembersPopup__Content'}>
-              {description}
-            </Paragraph>
-          }
+          content={<Text className="MembersPopup__Content">{description}</Text>}
           position="bottom center"
           trigger={
             <div className="MembersPopup__Icon">

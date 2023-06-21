@@ -1,9 +1,9 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 
 import { navigate } from '../../utils/locations'
+import Text from '../Common/Text/Text'
 
 import './FilterLabel.css'
 
@@ -34,9 +34,9 @@ export default React.memo(function FilterLabel({ active, label, className, ...pr
       className={classNames('FilterLabel', active && 'FilterLabel--active', className)}
     >
       <span>
-        <Paragraph tiny semiBold>
+        <Text weight="semi-bold" className="FilterLabel__Text">
           {label}
-        </Paragraph>
+        </Text>
       </span>
     </a>
   )

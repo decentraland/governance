@@ -1,13 +1,13 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Text from '../../Common/Text/Text'
 import '../ProposalModal.css'
 
 type Props = Omit<ModalProps, 'children'> & {
@@ -27,7 +27,7 @@ export function EditUpdateModal({ onClickAccept, loading, ...props }: Props) {
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.edit_update.title')}</Header>
-          <Paragraph small>{t('modal.edit_update.description')}</Paragraph>
+          <Text size="lg">{t('modal.edit_update.description')}</Text>
         </div>
         <div>
           <Button fluid primary onClick={onClickAccept} loading={loading}>

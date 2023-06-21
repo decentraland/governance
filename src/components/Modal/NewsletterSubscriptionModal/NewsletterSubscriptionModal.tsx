@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
 import classNames from 'classnames'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -15,6 +13,8 @@ import { Decentraland } from '../../../clients/Decentraland'
 import useAsyncTask from '../../../hooks/useAsyncTask'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../Banner/Subscription/SubscriptionBanner'
+import Label from '../../Common/Label'
+import Text from '../../Common/Text/Text'
 import CheckCloud from '../../Icon/CheckCloud'
 import '../ProposalModal.css'
 
@@ -119,10 +119,10 @@ export function NewsletterSubscriptionModal({
         <Modal.Content>
           <div className="ProposalModal__Title">
             <Header>{t('modal.newsletter_subscription.title')}</Header>
-            <Paragraph small className="NewsletterSubscriptionModal__Description">
+            <Text size="lg" className="NewsletterSubscriptionModal__Description">
               {t('modal.newsletter_subscription.description')}
-            </Paragraph>
-            <Paragraph small>{t('modal.newsletter_subscription.description_sub')}</Paragraph>
+            </Text>
+            <Text size="lg">{t('modal.newsletter_subscription.description_sub')}</Text>
           </div>
           <div className="ProposalModal__Form">
             <Label>{t('modal.newsletter_subscription.email_label')}</Label>
@@ -146,10 +146,10 @@ export function NewsletterSubscriptionModal({
         <Modal.Content className="NewsletterSubscriptionModal__Subscribed">
           <CheckCloud />
           <Header>{t('modal.newsletter_subscription.subscribed')}</Header>
-          <Paragraph small className="NewsletterSubscriptionModal__Description">
+          <Text size="lg" className="NewsletterSubscriptionModal__Description">
             {t('modal.newsletter_subscription.thanks')}
-          </Paragraph>
-          <Paragraph small>{t('modal.newsletter_subscription.heads_up')}</Paragraph>
+          </Text>
+          <Text size="lg">{t('modal.newsletter_subscription.heads_up')}</Text>
         </Modal.Content>
       )}
     </Modal>

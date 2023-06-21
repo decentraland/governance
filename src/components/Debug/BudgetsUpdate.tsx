@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import { Governance } from '../../clients/Governance'
 import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
+import Label from '../Common/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import MarkdownField from '../Form/MarkdownField'
 import { ContentSection } from '../Layout/ContentLayout'

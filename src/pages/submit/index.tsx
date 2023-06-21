@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import CategoryBanner from '../../components/Category/CategoryBanner'
+import Text from '../../components/Common/Text/Text'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import {
   AddRemoveProposalModal,
@@ -60,7 +60,7 @@ export default function NewProposalPage() {
       <ContentLayout className="ProposalDetailPage">
         <ContentSection>
           <Header size="huge">{t('page.submit.title')} &nbsp;</Header>
-          <Paragraph>{t('page.submit.description') || ''}</Paragraph>
+          <Text size="xl">{t('page.submit.description') || ''}</Text>
         </ContentSection>
         <ContentSection>
           <Header sub className="ProposalDetailPage_SubHeader">

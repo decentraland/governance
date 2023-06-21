@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import classNames from 'classnames'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
@@ -16,6 +15,7 @@ import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Label from '../../Common/Label'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'

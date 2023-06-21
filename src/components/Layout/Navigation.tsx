@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
@@ -46,6 +47,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
     isDismissClicked: false,
     isPopUpDismissed: false,
   })
+  const isMobile = useMobileMediaQuery()
 
   useEffect(
     () =>
@@ -101,7 +103,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
                     {showDot && <Dot />}
                   </Tabs.Tab>
                 }
-                open={showDot && !dismissState.isPopUpDismissed}
+                open={!isMobile && showDot && !dismissState.isPopUpDismissed}
               />
             </Link>
           )}

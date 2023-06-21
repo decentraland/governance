@@ -3,9 +3,7 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useQuery } from '@tanstack/react-query'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -15,6 +13,9 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
+import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -130,8 +131,8 @@ export default function SubmitCatalyst() {
           <Header size="huge">{t('page.submit_catalyst.title')}</Header>
         </ContentSection>
         <ContentSection>
-          <Paragraph small>{t('page.submit_catalyst.description')}</Paragraph>
-          <Paragraph small>{t('page.submit_catalyst.description_2')}</Paragraph>
+          <Text size="lg">{t('page.submit_catalyst.description')}</Text>
+          <Text size="lg">{t('page.submit_catalyst.description_2')}</Text>
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_catalyst.owner_label')}</Label>
@@ -174,7 +175,7 @@ export default function SubmitCatalyst() {
           />
           {!!domain && (
             <div>
-              <Paragraph tiny>
+              <Text>
                 {isCommsStatusLoading && (
                   <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
                 )}
@@ -202,7 +203,7 @@ export default function SubmitCatalyst() {
                 {!isLambdasStatusLoading && !isErrorOnLambdasStatus && (
                   <span className="Catalyst__Success">{t('page.submit_catalyst.domain_lambda_ok')}</span>
                 )}
-              </Paragraph>
+              </Text>
             </div>
           )}
         </ContentSection>
@@ -211,9 +212,7 @@ export default function SubmitCatalyst() {
             {t('page.submit_catalyst.description_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_catalyst.description_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_catalyst.description_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="description"

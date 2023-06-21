@@ -1,13 +1,13 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Text from '../../Common/Text/Text'
 import '../ProposalModal.css'
 
 export type DeleteUpdateModal = Omit<ModalProps, 'children'> & {
@@ -28,7 +28,7 @@ export function DeleteUpdateModal({ onClickAccept, loading, ...props }: DeleteUp
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.delete_update.title')}</Header>
-          <Paragraph small>{t('modal.delete_update.description')}</Paragraph>
+          <Text size="lg">{t('modal.delete_update.description')}</Text>
         </div>
         <div>
           <Button fluid primary onClick={onClickAccept} loading={loading}>

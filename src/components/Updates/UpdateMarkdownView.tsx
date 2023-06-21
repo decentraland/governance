@@ -1,14 +1,14 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time, { formatDate } from '../../utils/date/Time'
+import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import DateTooltip from '../Common/DateTooltip'
 import Divider from '../Common/Divider'
+import Text from '../Common/Text/Text'
 import { ContentSection } from '../Layout/ContentLayout'
 import Username from '../User/Username'
 
@@ -29,39 +29,37 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
   return (
     <ContentSection className="UpdateDetail__Content">
       {update?.health && <ProjectHealthStatus health={update.health} />}
-      <Header as="h2">{t('page.update_detail.introduction')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.introduction')}</ArticleSectionHeading>
       <Markdown>{update?.introduction || ''}</Markdown>
-      <Header as="h2">{t('page.update_detail.highlights')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.highlights')}</ArticleSectionHeading>
       <Markdown>{update?.highlights || ''}</Markdown>
-      <Header as="h2">{t('page.update_detail.blockers')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.blockers')}</ArticleSectionHeading>
       <Markdown>{update?.blockers || ''}</Markdown>
-      <Header as="h2">{t('page.update_detail.next_steps')}</Header>
+      <ArticleSectionHeading>{t('page.update_detail.next_steps')}</ArticleSectionHeading>
       <Markdown>{update?.next_steps || ''}</Markdown>
       {update?.additional_notes && (
         <>
-          <Header as="h2">{t('page.update_detail.additional_notes')}</Header>
+          <ArticleSectionHeading>{t('page.update_detail.additional_notes')}</ArticleSectionHeading>
           <Markdown>{update?.additional_notes}</Markdown>
         </>
       )}
       {author && update.completion_date && (
         <>
           <Divider size="small" />
-          <div className="UpdateDetail__Date">
+          <div className="UpdateDetail__Dates">
             <div className="UpdateDetail__CompletionDate">
-              <Paragraph>
+              <Text className="UpdateDetail__CompletionDateText">
                 <DateTooltip date={update.completion_date}>
                   {t('page.update_detail.completion_date', { date: formattedCompletionDate })}
                 </DateTooltip>
-              </Paragraph>
+              </Text>
               {author && <Username address={author} linked />}
             </div>
             {update.updated_at !== update.created_at && (
               <div className="UpdateDetail__LastEdit">
-                <Paragraph>
-                  <DateTooltip date={update.updated_at}>
-                    <Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>
-                  </DateTooltip>
-                </Paragraph>
+                <DateTooltip date={update.updated_at}>
+                  <Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>
+                </DateTooltip>
               </div>
             )}
             {update?.status === UpdateStatus.Late && (

@@ -33,6 +33,10 @@
   align-items: center;
 }
 
+.CategoryBanner__Title {
+  margin-bottom: 0;
+}
+
 .CategoryBanner__Badge {
   margin-left: 8px;
   border-radius: 4px;

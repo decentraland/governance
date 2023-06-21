@@ -34,13 +34,6 @@
   margin-bottom: 0;
 }
 
-.ui.container.TransparencyContainer {
-  display: flex;
-  justify-content: space-between;
-  align-content: stretch;
-  flex-wrap: wrap;
-}
-
 .ui.container.TransparencyContainer .ActionableLayout {
   position: relative;
   margin-top: 40px;

@@ -63,7 +63,7 @@
 .ProposalComments aside.quote {
   display: flex;
   flex-direction: column;
-  border-left: 5px solid var(--primary-low);
+  border-left: 5px solid var(--black-600);
   padding: 12px 12px 12px 12px;
   background-color: var(--black-200);
   margin-top: 1em;

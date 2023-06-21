@@ -2,10 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
 
 import { useLocation } from '@reach/router'
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -14,6 +12,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import { Governance } from '../../clients/Governance'
+import Label from '../../components/Common/Label'
+import Text from '../../components/Common/Text/Text'
 import MarkdownField from '../../components/Form/MarkdownField'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
@@ -280,7 +280,7 @@ export default function Update({ isEdit }: Props) {
         <Header size="huge">{title}</Header>
       </ContentSection>
       <ContentSection>
-        <Paragraph small>{description}</Paragraph>
+        <Text size="lg">{description}</Text>
       </ContentSection>
       {!isPreviewMode && (
         <>
@@ -361,9 +361,9 @@ export default function Update({ isEdit }: Props) {
       </ContentSection>
       {state.error['*'] && (
         <ContentSection>
-          <Paragraph small primary>
+          <Text size="lg" color="primary">
             {t(state.error['*']) || state.error['*']}
-          </Paragraph>
+          </Text>
         </ContentSection>
       )}
       {isEdit && (

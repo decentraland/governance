@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -12,6 +10,9 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
+import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -92,7 +93,7 @@ export default function SubmitBanName() {
           <Header size="huge">{t('page.submit_ban_name.title')}</Header>
         </ContentSection>
         <ContentSection>
-          <Paragraph small>{t('page.submit_ban_name.description')}</Paragraph>
+          <Text size="lg">{t('page.submit_ban_name.description')}</Text>
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_ban_name.name_label')}</Label>
@@ -132,9 +133,7 @@ export default function SubmitBanName() {
             {t('page.submit_ban_name.description_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_ban_name.description_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_ban_name.description_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="description"

@@ -4,7 +4,6 @@ import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
@@ -18,6 +17,7 @@ import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -253,13 +253,10 @@ export default function SubmitPoll() {
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_poll.choices_label')}</Label>
-          <Paragraph tiny secondary className="details">
-            {' '}
-          </Paragraph>
           {errors && (
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {errors.choices?.message}
-            </Paragraph>
+            </Text>
           )}
           <div className="Poll__Options">
             {values.choices &&
@@ -305,9 +302,9 @@ export default function SubmitPoll() {
         </ContentSection>
         {submissionVpNotMet && (
           <ContentSection>
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {t('error.poll.submission_vp_not_met')}
-            </Paragraph>
+            </Text>
           </ContentSection>
         )}
         {error && (

@@ -2,10 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import Label from 'decentraland-gatsby/dist/components/Form/Label'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -14,6 +12,9 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
+import Label from '../../components/Common/Label'
+import SubLabel from '../../components/Common/SubLabel'
+import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -157,9 +158,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.summary_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_draft.summary_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_draft.summary_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="summary"
@@ -191,9 +190,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.abstract_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_draft.abstract_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_draft.abstract_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="abstract"
@@ -225,9 +222,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.motivation_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_draft.motivation_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_draft.motivation_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="motivation"
@@ -259,9 +254,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.specification_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_draft.specification_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_draft.specification_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="specification"
@@ -293,9 +286,7 @@ export default function SubmitDraftProposal() {
             {t('page.submit_draft.conclusion_label')}
             <MarkdownNotice />
           </Label>
-          <Paragraph tiny secondary className="details">
-            {t('page.submit_draft.conclusion_detail')}
-          </Paragraph>
+          <SubLabel>{t('page.submit_draft.conclusion_detail')}</SubLabel>
           <MarkdownField
             control={control}
             name="conclusion"
@@ -332,9 +323,9 @@ export default function SubmitDraftProposal() {
         </ContentSection>
         {submissionVpNotMet && (
           <ContentSection>
-            <Paragraph small primary>
+            <Text size="lg" color="primary">
               {t('error.draft.submission_vp_not_met')}
-            </Paragraph>
+            </Text>
           </ContentSection>
         )}
         {error && (

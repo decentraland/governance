@@ -1,7 +1,7 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import { getProposalStatusDisplayName, getProposalStatusShortName } from '../../entities/Proposal/utils'
@@ -9,6 +9,8 @@ import locations from '../../utils/locations'
 import Link from '../Common/Link'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Check from '../Icon/Check'
+
+import './StatusPill.css'
 
 type Props = {
   className?: string
@@ -29,33 +31,29 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
 }
 
 const StatusPill = ({ className, status, size, isLink }: Props) => {
+  const isMobile = useMobileMediaQuery()
+
   const style = status === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'
-  const pillClassNames = classNames('StatusPill', className)
-  const colorsConfig = ColorsConfig[status]
   const showIcon = status === ProposalStatus.Enacted || status === ProposalStatus.Passed
   const iconColor = status === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
   const icon = showIcon ? <Check color={iconColor} /> : null
-
   const Wrapper = isLink ? Link : 'div'
-  const href = isLink ? locations.proposals({ status: status }) : ''
+  const href = isLink ? locations.proposals({ status: status }) : undefined
+  const name = isMobile ? getProposalStatusShortName(status) : getProposalStatusDisplayName(status)
+  const pillSize = isMobile ? 'small' : size || 'default'
 
   return (
-    <>
-      <Mobile>
-        <Wrapper href={href}>
-          <Pill size={'small'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
-            {getProposalStatusShortName(status)}
-          </Pill>
-        </Wrapper>
-      </Mobile>
-      <NotMobile>
-        <Wrapper href={href}>
-          <Pill size={size || 'default'} style={style} className={pillClassNames} color={colorsConfig} icon={icon}>
-            {getProposalStatusDisplayName(status)}
-          </Pill>
-        </Wrapper>
-      </NotMobile>
-    </>
+    <Wrapper href={href} className="StatusPill">
+      <Pill
+        size={pillSize}
+        style={style}
+        className={classNames('StatusPill', className)}
+        color={ColorsConfig[status]}
+        icon={icon}
+      >
+        {name}
+      </Pill>
+    </Wrapper>
   )
 }
 

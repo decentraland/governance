@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -12,6 +11,7 @@ import useFormatMessage from '../../../../hooks/useFormatMessage'
 import { ProposalPageState } from '../../../../pages/proposal'
 import { formatChoice } from '../../../../utils/votes/utils'
 import Link from '../../../Common/Link'
+import Text from '../../../Common/Text/Text'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
 
@@ -44,10 +44,10 @@ export function VotingModalSurvey({
     <Modal.Content>
       <div className="ProposalModal__Title">
         <Header>{t('modal.voting_modal_survey.title')}</Header>
-        <Paragraph small>
+        <Text size="lg">
           {t('modal.voting_modal_survey.selected_choice')}
           <span className="VotingModal__Choice">{formatChoice(selectedChoice.choice!)}</span>
-        </Paragraph>
+        </Text>
       </div>
       <SentimentSurvey
         survey={survey}

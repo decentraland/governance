@@ -34,10 +34,6 @@
   font-size: 15px;
 }
 
-.ContentLayout .ContentLayout__Section .dg.Paragraph.details {
-  margin-bottom: 2px;
-}
-
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox label {
   font-size: 17px;
 }
@@ -86,17 +82,4 @@
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
-}
-
-.ProgrammaticallyGeneratedLabel .dg.Paragraph {
-  font-size: 15px;
-  color: var(--secondary-text);
-}
-
-.Input__PostLabel {
-  font-style: italic;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 17px;
-  color: var(--black-600);
 }

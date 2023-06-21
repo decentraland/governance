@@ -1,0 +1,52 @@
+.Text {
+  font-stretch: normal;
+  letter-spacing: 0.3px;
+}
+
+.Text.Text--size-xs {
+  font-size: 11px;
+  line-height: 16px;
+}
+.Text.Text--size-sm {
+  font-size: 13px;
+  line-height: 18px;
+}
+.Text.Text--size-md {
+  font-size: 15px;
+  line-height: 24px;
+}
+.Text.Text--size-lg {
+  font-size: 17px;
+  line-height: 26px;
+}
+.Text.Text--size-xl {
+  font-size: 21px;
+  line-height: 1.81px;
+}
+
+.Text.Text--weight-normal {
+  font-weight: 300;
+}
+.Text.Text--weight-semi-bold {
+  font-weight: 400;
+}
+.Text.Text--weight-bold {
+  font-weight: 700;
+}
+
+.Text.Text--color-default {
+  color: var(--text);
+}
+.Text.Text--color-primary {
+  color: var(--primary);
+}
+.Text.Text--color-secondary {
+  color: var(--secondary-text);
+}
+
+.Text.Text--style-normal {
+  font-style: normal;
+}
+.Text.Text--style-italic {
+  font-style: italic;
+}

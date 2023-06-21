@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { useLocation } from '@reach/router'
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
@@ -12,6 +11,7 @@ import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { navigate } from '../../utils/locations'
+import Text from '../Common/Text/Text'
 import Arrow from '../Icon/Arrow'
 import All from '../Icon/ProposalCategories/All'
 import Grant from '../Icon/ProposalCategories/Grant'
@@ -125,9 +125,7 @@ export default React.memo(function CategoryOption({
         <span className="CategoryOption__TitleContainer">
           <span>
             {getCategoryIcon(type, CategoryIconVariant.Circled)}
-            <Paragraph tiny semiBold>
-              {t(`category.${type}_title`)}
-            </Paragraph>
+            <Text weight="semi-bold">{t(`category.${type}_title`)}</Text>
           </span>
           {hasSubtypes && (
             <span

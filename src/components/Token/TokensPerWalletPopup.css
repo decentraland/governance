@@ -38,8 +38,8 @@
 }
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Block .ui.header,
-.TokensPerWalletPopup .TokensPerWalletPopup__Block .dg.Paragraph {
-  color: var(--white-900);
+.TokensPerWalletPopup__Symbol {
+  color: var(--white-900) !important;
 }
 
 .TokensPerWalletPopup .TokensPerWalletPopup__Balance {
