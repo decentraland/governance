@@ -1,8 +1,7 @@
 import React from 'react'
+import { FieldValues } from 'react-hook-form'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import { TextareaProps } from 'decentraland-gatsby/dist/components/Form/Textarea'
-
+import DAOMarkdownField, { MarkdownFieldProps } from '../Common/Form/MarkdownField'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -13,16 +12,18 @@ interface Props {
   showMarkdownNotice?: boolean
 }
 
-const MarkdownField = ({ label, showMarkdownNotice = true, ...props }: Props & TextareaProps) => {
+export default function MarkdownField<T extends FieldValues>({
+  label,
+  showMarkdownNotice = true,
+  ...props
+}: Props & MarkdownFieldProps<T>) {
   return (
     <ContentSection>
       <Label>
         {label}
         {showMarkdownNotice && <MarkdownNotice />}
       </Label>
-      <MarkdownTextarea minHeight={140} {...props} />
+      <DAOMarkdownField {...props} />
     </ContentSection>
   )
 }
-
-export default MarkdownField
