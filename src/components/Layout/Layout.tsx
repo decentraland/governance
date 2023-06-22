@@ -2,7 +2,6 @@ import React from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import WalletSelectorModal from 'decentraland-gatsby/dist/components/Modal/WalletSelectorModal'
-import WrongNetworkModal from 'decentraland-gatsby/dist/components/Modal/WrongNetworkModal'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { changeLocale } from 'decentraland-gatsby/dist/plugins/intl'
 import { DecentralandIntlContext } from 'decentraland-gatsby/dist/plugins/intl/types'
@@ -12,6 +11,8 @@ import { Locale } from 'decentraland-ui/dist/components/LanguageIcon/LanguageIco
 import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import type { PageProps } from 'gatsby'
 import type { DropdownProps } from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
+
+import WrongNetworkModal from '../Modal/WrongNetworkModal'
 
 import './Layout.css'
 
@@ -59,7 +60,7 @@ export default function Layout({ children, pageContext, ...props }: LayoutProps)
       <main>{children}</main>
       <WrongNetworkModal
         currentNetwork={state.chainId}
-        expectedNetwork={getSupportedChainIds()}
+        expectedNetworks={getSupportedChainIds()}
         onSwitchNetwork={(chainId) => state.switchTo(chainId)}
         providerType={state.providerType}
       />
