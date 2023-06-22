@@ -71,11 +71,7 @@ export default function WalletSelectorModal({ chainId, onConnect, onClose, error
       open={open}
       onClose={onClose}
       className="WalletSelectorModal"
-      message={
-        <small className="message">
-          <Markdown>{t('modal.wallet_selector.trezor')}</Markdown>
-        </small>
-      }
+      message={<Markdown>{t('modal.wallet_selector.trezor')}</Markdown>}
       hasError={!!error}
       loading={loading}
     >
