@@ -35,7 +35,7 @@ const queryClient = new QueryClient()
 export const wrapRootElement = ({ element }) => {
   return (
     <AuthProvider>
-      <FeatureFlagProvider endpoint="https://feature-flags.decentraland.org/dao.json">{element}</FeatureFlagProvider>
+      <FeatureFlagProvider applicationName={["dao", "dapps"]}>{element}</FeatureFlagProvider>
       {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
   )
