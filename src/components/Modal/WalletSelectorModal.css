@@ -1,0 +1,18 @@
+.ui.modal.dcl.login-modal {
+  width: 90%;
+  max-width: 520px;
+}
+
+.ui.modal.dcl.login-modal .content {
+  margin: 28px 32px;
+}
+
+.ui.modal.dcl.login-modal .dcl.option {
+  width: 100%;
+  max-width: 360px;
+}
+
+.ui.modal.dcl.login-modal small p.dg.Paragraph {
+  font-size: 13px;
+  line-height: 1.5;
+}

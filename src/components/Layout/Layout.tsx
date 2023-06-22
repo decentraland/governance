@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import WalletSelectorModal from 'decentraland-gatsby/dist/components/Modal/WalletSelectorModal'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { changeLocale } from 'decentraland-gatsby/dist/plugins/intl'
 import { DecentralandIntlContext } from 'decentraland-gatsby/dist/plugins/intl/types'
@@ -12,6 +11,7 @@ import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navb
 import type { PageProps } from 'gatsby'
 import type { DropdownProps } from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 
+import WalletSelectorModal from '../Modal/WalletSelectorModal'
 import WrongNetworkModal from '../Modal/WrongNetworkModal'
 
 import './Layout.css'
@@ -67,6 +67,7 @@ export default function Layout({ children, pageContext, ...props }: LayoutProps)
       <WalletSelectorModal
         open={state.selecting}
         loading={state.loading}
+        chainId={getSupportedChainIds()[0]}
         error={state.error}
         onConnect={(providerType, chainId) => state.connect(providerType, chainId)}
         onClose={() => state.select(false)}
