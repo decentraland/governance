@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
+import Avatar from '../Common/Avatar'
 
 import './MemberCard.css'
 
