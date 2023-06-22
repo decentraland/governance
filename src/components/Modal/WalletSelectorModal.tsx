@@ -8,12 +8,7 @@ import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { useFeatureFlagContext } from 'decentraland-gatsby/dist/context/FeatureFlag'
 import useAnchor from 'decentraland-gatsby/dist/hooks/useAnchor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { LoginModal, LoginModalOptionType } from 'decentraland-ui/dist/components/LoginModal/LoginModal'
-import 'decentraland-ui/dist/components/LoginModal/LoginModal.css'
-import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
-import { ModalNavigation } from 'decentraland-ui/dist/components/ModalNavigation/ModalNavigation'
-import ModalContent from 'semantic-ui-react/dist/commonjs/modules/Modal/ModalContent'
 
 import './WalletSelectorModal.css'
 
@@ -72,34 +67,29 @@ export default function WalletSelectorModal({ chainId, onConnect, onClose, error
   )
 
   return (
-    <Modal open={open} className="dcl login-modal">
-      <ModalNavigation
-        title={t('modal.wallet_selector.title')}
-        subtitle={t('modal.wallet_selector.subtitle')}
-        onClose={onClose}
-      />
-      <ModalContent>
-        <LoginModal.Option type={provider} onClick={handleConnectInjected} />
-        {availableProviders.has(ProviderType.FORTMATIC) && (
-          <LoginModal.Option type={LoginModalOptionType.FORTMATIC} onClick={handleConnectFortmatic} />
-        )}
-        {availableProviders.has(ProviderType.WALLET_CONNECT) && (
-          <LoginModal.Option type={LoginModalOptionType.WALLET_CONNECT} onClick={handleConnectWalletConnect} />
-        )}
-        {availableProviders.has(ProviderType.WALLET_LINK) && (
-          <LoginModal.Option type={LoginModalOptionType.WALLET_LINK} onClick={handleConnectWalletLink} />
-        )}
+    <LoginModal
+      open={open}
+      onClose={onClose}
+      className="WalletSelectorModal"
+      message={
         <small className="message">
           <Markdown>{t('modal.wallet_selector.trezor')}</Markdown>
         </small>
-      </ModalContent>
+      }
+      hasError={!!error}
+      loading={loading}
+    >
+      <LoginModal.Option type={provider} onClick={handleConnectInjected} />
+      {availableProviders.has(ProviderType.FORTMATIC) && (
+        <LoginModal.Option type={LoginModalOptionType.FORTMATIC} onClick={handleConnectFortmatic} />
+      )}
+      {availableProviders.has(ProviderType.WALLET_CONNECT) && (
+        <LoginModal.Option type={LoginModalOptionType.WALLET_CONNECT} onClick={handleConnectWalletConnect} />
+      )}
+      {availableProviders.has(ProviderType.WALLET_LINK) && (
+        <LoginModal.Option type={LoginModalOptionType.WALLET_LINK} onClick={handleConnectWalletLink} />
+      )}
       {error && <p className="error visible">{error}</p>}
-      {loading ? (
-        <>
-          <Loader size="big" active />
-          <div className="loader-background"></div>
-        </>
-      ) : null}
-    </Modal>
+    </LoginModal>
   )
 }
