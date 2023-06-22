@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+// import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
@@ -31,21 +31,21 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
     <ContentSection className="UpdateDetail__Content">
       {update?.health && <ProjectHealthStatus health={update.health} />}
       <ArticleSectionHeading>{t('page.update_detail.introduction')}</ArticleSectionHeading>
-      <Markdown>{update?.introduction || ''}</Markdown>
+      {/*<Markdown>{update?.introduction || ''}</Markdown>*/}
       <Markdown2>{update?.introduction || ''}</Markdown2>
       <ArticleSectionHeading>{t('page.update_detail.highlights')}</ArticleSectionHeading>
-      <Markdown>{update?.highlights || ''}</Markdown>
+      {/*<Markdown>{update?.highlights || ''}</Markdown>*/}
       <Markdown2>{update?.highlights || ''}</Markdown2>
       <ArticleSectionHeading>{t('page.update_detail.blockers')}</ArticleSectionHeading>
-      <Markdown>{update?.blockers || ''}</Markdown>
+      {/*<Markdown>{update?.blockers || ''}</Markdown>*/}
       <Markdown2>{update?.blockers || ''}</Markdown2>
       <ArticleSectionHeading>{t('page.update_detail.next_steps')}</ArticleSectionHeading>
-      <Markdown>{update?.next_steps || ''}</Markdown>
+      {/*<Markdown>{update?.next_steps || ''}</Markdown>*/}
       <Markdown2>{update?.next_steps || ''}</Markdown2>
       {update?.additional_notes && (
         <>
           <ArticleSectionHeading>{t('page.update_detail.additional_notes')}</ArticleSectionHeading>
-          <Markdown>{update?.additional_notes}</Markdown>
+          {/*<Markdown>{update?.additional_notes}</Markdown>*/}
           <Markdown2>{update?.additional_notes}</Markdown2>
         </>
       )}
@@ -64,13 +64,13 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
             {update.updated_at !== update.created_at && (
               <div className="UpdateDetail__LastEdit">
                 <DateTooltip date={update.updated_at}>
-                  <Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>
+                  {/*<Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>*/}
                   <Markdown2>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown2>
                 </DateTooltip>
               </div>
             )}
             {update?.status === UpdateStatus.Late && (
-              <Markdown>{t('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown>
+              <Markdown2>{t('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown2>
             )}
           </div>
         </>

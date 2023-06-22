@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import ReactMarkdown, { Components, Options } from 'react-markdown'
 
 import classNames from 'classnames'
+import List, { ListItem } from 'decentraland-gatsby/dist/components/Text/List'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import omit from 'lodash/omit'
@@ -23,62 +24,80 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
     h1: (props) => (
       <Heading
         as="h1"
-        {...omit(props, ['node'])}
+        {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['h1']])}
       />
     ),
     h2: (props) => (
       <Heading
-        {...omit(props, ['node'])}
+        {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['h2']])}
       />
     ),
     h3: (props) => (
       <Heading
         as="h3"
-        {...omit(props, ['node'])}
+        {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['h3']])}
       />
     ),
-    p: (props) => <Text className={classNames([props.className, componentsClassNames && componentsClassNames['p']])} />,
+    p: (props) => (
+      <Text className={classNames([props.className, componentsClassNames && componentsClassNames['p']])}>
+        {props.children}
+      </Text>
+    ),
     strong: (props) => (
       <Text
+        as="span"
         weight="bold"
         className={classNames([props.className, componentsClassNames && componentsClassNames['strong']])}
-      />
+      >
+        {props.children}
+      </Text>
     ),
     em: (props) => (
       <Text
+        as="span"
         style="italic"
         className={classNames([props.className, componentsClassNames && componentsClassNames['em']])}
+      >
+        {props.children}
+      </Text>
+    ),
+    a: (props) => (
+      <Link
+        {...omit(props, ['node', 'componentsClassNames'])}
+        className={classNames([props.className, componentsClassNames && componentsClassNames['a']])}
       />
     ),
-    a: (props) => <Link className={classNames([props.className, componentsClassNames && componentsClassNames['a']])} />,
     pre: (props) => (
       <pre
-        {...omit(props, ['node'])}
+        {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['pre']])}
       />
     ),
+    ol: (props) => <List {...omit(props, ['node', 'componentsClassNames'])} />,
+    ul: (props) => <List {...omit(props, ['node', 'componentsClassNames'])} />,
+    li: (props) => <ListItem {...omit(props, ['node', 'componentsClassNames'])} />,
     blockquote: (props) => (
       <blockquote
-        {...props}
+        {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['blockquote']])}
       />
     ),
     input: ({ disabled, ...props }) => (
       <Radio
         readOnly={disabled}
-        {...omit(props as any, ['node'])}
+        {...omit(props as any, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['input']])}
       />
     ),
     table: (props) => <Table basic="very">{props.children}</Table>,
-    tbody: (props) => <Table.Body {...omit(props, ['node'])} />,
-    thead: (props) => <Table.Header {...omit(props, ['node'])} />,
-    tr: (props) => <Table.Row {...omit(props, ['node'])} />,
-    th: (props) => <Table.HeaderCell {...omit(props as any, ['node', 'isHeader'])} />,
-    td: (props) => <Table.Cell {...omit(props as any, ['node', 'isHeader'])} />,
+    tbody: (props) => <Table.Body {...omit(props, ['node', 'componentsClassNames'])} />,
+    thead: (props) => <Table.Header {...omit(props, ['node', 'componentsClassNames'])} />,
+    tr: (props) => <Table.Row {...omit(props, ['node', 'componentsClassNames'])} />,
+    th: (props) => <Table.HeaderCell {...omit(props as any, ['node', 'isHeader', 'componentsClassNames'])} />,
+    td: (props) => <Table.Cell {...omit(props as any, ['node', 'isHeader', 'componentsClassNames'])} />,
   }
 }
 

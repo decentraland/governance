@@ -20,6 +20,7 @@ interface Props {
   weight?: FontWeight
   color?: TextColor
   style?: FontStyle
+  as?: 'span'
 }
 
 export default function Text({
@@ -29,19 +30,19 @@ export default function Text({
   color = DEFAULT_COLOR,
   style = DEFAULT_FONT_STYLE,
   className,
+  as,
 }: Props) {
-  return (
-    <p
-      className={classNames(
-        'Text',
-        `Text--size-${size}`,
-        `Text--weight-${weight}`,
-        `Text--color-${color}`,
-        `Text--style-${style}`,
-        className
-      )}
-    >
-      {children}
-    </p>
+  const componentClassNames = classNames(
+    'Text',
+    `Text--size-${size}`,
+    `Text--weight-${weight}`,
+    `Text--color-${color}`,
+    `Text--style-${style}`,
+    className
+  )
+  return as === 'span' ? (
+    <span className={componentClassNames}>{children}</span>
+  ) : (
+    <p className={componentClassNames}>{children}</p>
   )
 }

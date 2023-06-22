@@ -88,7 +88,7 @@
     "react-flickity-component": "^3.6.2",
     "react-hook-form": "^7.43.5",
     "react-loading-skeleton": "^3.1.0",
-    "react-markdown": "^8.0.7",
+    "react-markdown": "^7.1.2",
     "react-select": "^5.3.2",
     "remark-parse": "^9.0.0",
     "remark-stringify": "^9.0.1",
