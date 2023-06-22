@@ -28,7 +28,7 @@ import {
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
-import { ProjectHealth, UpdateAttributes } from '../entities/Updates/types'
+import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
@@ -229,14 +229,7 @@ export class Governance extends API {
   }
 
   async getProposalUpdates(proposal_id: string) {
-    const result = await this.fetch<
-      ApiResponse<{
-        publicUpdates: UpdateAttributes[]
-        pendingUpdates: UpdateAttributes[]
-        nextUpdate: UpdateAttributes
-        currentUpdate: UpdateAttributes | null
-      }>
-    >(`/proposals/${proposal_id}/updates`)
+    const result = await this.fetch<ApiResponse<UpdateResponse>>(`/proposals/${proposal_id}/updates`)
     return result.data
   }
 

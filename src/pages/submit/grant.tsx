@@ -106,7 +106,10 @@ export default function SubmitGrant() {
     const params = new URLSearchParams(location.search)
     let category: NewGrantCategory | null = null
     try {
-      category = toNewGrantCategory(params.get('category'))
+      const categoryParam = params.get('category')
+      if (categoryParam) {
+        category = toNewGrantCategory(categoryParam)
+      }
     } catch (error) {
       console.error(error)
     } finally {

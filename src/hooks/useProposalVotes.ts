@@ -14,7 +14,7 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
     queryKey: [`proposalVotes#${proposalId}`],
     queryFn: async () => {
       if (!proposalId) {
-        return undefined
+        return null
       }
       return Governance.get().getProposalVotes(proposalId)
     },

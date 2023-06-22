@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
+import { UpdateResponse } from '../entities/Updates/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -14,7 +15,7 @@ export default function useProposalUpdates(proposalId?: string | null) {
     queryKey: [`proposalUpdates#${proposalId}`],
     queryFn: async () => {
       if (!proposalId) {
-        return undefined
+        return {} as UpdateResponse
       }
       return Governance.get().getProposalUpdates(proposalId)
     },

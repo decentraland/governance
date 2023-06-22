@@ -30,3 +30,10 @@ export enum ProjectHealth {
   AtRisk = 'atRisk',
   OffTrack = 'offTrack',
 }
+
+export type UpdateResponse = {
+  publicUpdates: UpdateAttributes[]
+  pendingUpdates: UpdateAttributes[]
+  nextUpdate: UpdateAttributes
+  currentUpdate: UpdateAttributes | null
+}
