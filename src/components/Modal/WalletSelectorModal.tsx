@@ -7,8 +7,9 @@ import { toModalOptionType } from 'decentraland-dapps/dist/containers/LoginModal
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { useFeatureFlagContext } from 'decentraland-gatsby/dist/context/FeatureFlag'
 import useAnchor from 'decentraland-gatsby/dist/hooks/useAnchor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { LoginModal, LoginModalOptionType } from 'decentraland-ui/dist/components/LoginModal/LoginModal'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import './WalletSelectorModal.css'
 
