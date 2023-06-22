@@ -617,6 +617,18 @@
         "card_description": "Let the world know that you are behind those witty tweets about the Metaverse."
       },
       "soon": "Soon"
+    },
+    "wallet_selector": {
+      "title": "Sign In",
+      "subtitle": "Choose a method to connect",
+      "trezor": "Trezor and smart contract wallets (like Dapper or Argent) cannot interact Polygon. Read more about the Trezor support status [here](https://github.com/trezor/trezor-firmware/pull/1568)"
+    },
+    "wrong_network": {
+      "header": "Wrong Network",
+      "message": "You need to be connected to {expectedChainName} to use this app, but you are currently connected to {currentChainName}.",
+      "change_chain": "switch to {expectedChainName}",
+      "separator": " or ",
+      "unknown_chain": "Unknown"
     }
   },
   "component": {
