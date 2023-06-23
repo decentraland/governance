@@ -29,10 +29,8 @@
   margin-bottom: 8px !important;
 }
 
-.SnapshotRedirect__Suggestion > p.dg.Paragraph {
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 24px !important;
+.SnapshotRedirect__Suggestion {
+  font-weight: 400 !important;
   letter-spacing: 0 !important;
   text-align: center;
   margin-bottom: 24px;
