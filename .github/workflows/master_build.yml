@@ -28,8 +28,6 @@ jobs:
         run: npm ci
 
       - name: build image
-        env:
-            NODE_OPTIONS: "--max-old-space-size=4096"
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
