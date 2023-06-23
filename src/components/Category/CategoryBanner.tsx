@@ -99,7 +99,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
           )}
         </div>
         <Text>{t(`category.${type}_description`)}</Text>
-        {true && (
+        {!active && (
           <Markdown componentsClassNames={{ p: 'CategoryBanner__PausedText' }}>{t(`category.${type}_paused`)}</Markdown>
         )}
       </div>

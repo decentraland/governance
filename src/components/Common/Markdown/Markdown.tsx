@@ -11,15 +11,16 @@ import gfm from 'remark-gfm'
 import Link from '../Link/Link'
 import Heading from '../Text/Heading'
 import List, { ListItem } from '../Text/List'
-import Text from '../Text/Text'
+import Text, { FontSize } from '../Text/Text'
 
 const plugins = [gfm, emoji] as any
 type MarkdownKey = keyof Components
 type MarkdownProps = Omit<Options, 'renders' | 'linkTarget' | 'astPlugins' | 'plugins'> & {
   componentsClassNames?: Partial<Record<MarkdownKey, string>>
+  size?: FontSize
 }
 
-function getComponents({ componentsClassNames }: MarkdownProps): Components {
+function getComponents({ size, componentsClassNames }: MarkdownProps): Components {
   return {
     h1: (props) => (
       <Heading
@@ -42,7 +43,7 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
       />
     ),
     p: (props) => (
-      <Text className={classNames([props.className, componentsClassNames && componentsClassNames['p']])}>
+      <Text size={size} className={classNames([props.className, componentsClassNames && componentsClassNames['p']])}>
         {props.children}
       </Text>
     ),
@@ -50,6 +51,7 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
       <Text
         as="span"
         weight="bold"
+        size={size}
         className={classNames([props.className, componentsClassNames && componentsClassNames['strong']])}
       >
         {props.children}
@@ -59,6 +61,7 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
       <Text
         as="span"
         style="italic"
+        size={size}
         className={classNames([props.className, componentsClassNames && componentsClassNames['em']])}
       >
         {props.children}
