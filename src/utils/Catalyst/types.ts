@@ -1,17 +1,20 @@
 export type Avatar = {
   userId: string
-  email: string | null | undefined
-  name: string | null | undefined
-  hasClaimedName: boolean
-  description: string | null | undefined
+  name: string
+  description: string
   ethAddress: string
   version: number
+  tutorialStep: number
+  email?: string
+  blocked?: string[]
+  interests?: string[]
+  hasClaimedName: boolean
   avatar: {
     bodyShape: string
     snapshots: {
-      face?: string
-      face128?: string
-      face256?: string
+      face: string
+      face128: string
+      face256: string
       body: string
     }
     eyes: Color
@@ -22,8 +25,6 @@ export type Avatar = {
     version?: number
   }
   inventory?: string[]
-  blocked?: string[]
-  tutorialStep: number
   hasConnectedWeb3?: boolean
 }
 

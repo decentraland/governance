@@ -12,10 +12,10 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Pr
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
+import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 import { getEnvironmentChainId } from '../utils/votes/utils'
 
-import CatalystService from './CatalystService'
 import { DiscordService } from './DiscordService'
 import { DiscourseService } from './DiscourseService'
 import { SnapshotService } from './SnapshotService'
@@ -49,7 +49,7 @@ export class ProposalService {
       delete proposalInCreation.configuration.coAuthors
     }
 
-    const profile = await CatalystService.getProfile(proposalInCreation.user)
+    const profile = await getProfile(proposalInCreation.user)
 
     const { snapshotId, snapshotUrl, snapshotContent } = await SnapshotService.createProposal(
       proposalInCreation,

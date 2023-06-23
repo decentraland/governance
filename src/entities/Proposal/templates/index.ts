@@ -1,5 +1,4 @@
-import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
-
+import { Avatar } from '../../../utils/Catalyst/types'
 import {
   GrantProposalConfiguration,
   NewProposalBanName,

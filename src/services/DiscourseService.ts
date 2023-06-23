@@ -1,11 +1,11 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { Discourse, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
 import * as templates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import { inBackground } from '../helpers'
+import { Avatar } from '../utils/Catalyst/types'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
