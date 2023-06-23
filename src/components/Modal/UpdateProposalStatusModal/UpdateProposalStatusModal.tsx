@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 
 import classNames from 'classnames'
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -16,6 +15,7 @@ import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import Label from '../../Common/Label'
+import Markdown from '../../Common/Markdown/Markdown'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'
@@ -114,7 +114,7 @@ export function UpdateProposalStatusModal({
   return (
     <Modal
       {...props}
-      open={open && !!status}
+      open={true}
       size="small"
       className={classNames('GovernanceActionModal', 'ProposalModal', 'UpdateProposalStatusModal', props.className)}
       closeIcon={<Close />}
@@ -122,7 +122,7 @@ export function UpdateProposalStatusModal({
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.update_status_proposal.title', { status })}</Header>
-          <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
+          <Markdown size="lg">{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
         </div>
 
         {proposal && proposal.type === ProposalType.Grant && (
