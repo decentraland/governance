@@ -2,11 +2,11 @@ import React from 'react'
 
 import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
+import Markdown from '../Common/Markdown/Markdown'
 import Text from '../Common/Text/Text'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
 import BanName from '../Icon/ProposalCategories/BanName'
@@ -99,7 +99,9 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
           )}
         </div>
         <Text>{t(`category.${type}_description`)}</Text>
-        {!active && <Markdown className="CategoryBanner__PausedText">{t(`category.${type}_paused`)}</Markdown>}
+        {true && (
+          <Markdown componentsClassNames={{ p: 'CategoryBanner__PausedText' }}>{t(`category.${type}_paused`)}</Markdown>
+        )}
       </div>
     </Component>
   )
