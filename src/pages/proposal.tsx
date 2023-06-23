@@ -5,7 +5,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
@@ -19,6 +18,7 @@ import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
+import Markdown from '../components/Common/Markdown/Markdown'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -71,6 +71,12 @@ const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, cho
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
 const SURVEY_TOPICS_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
+export const PROPOSAL_DESCRIPTION_MARKDOWN_STYLES = {
+  h2: 'ProposalDetailPage__Description__Title',
+  h3: 'ProposalDetailPage__Description__SubTitle',
+  p: 'ProposalDetailPage__Description__Text',
+  li: 'ProposalDetailPage__Description__ListItem',
+}
 
 export type ProposalPageState = {
   changingVote: boolean
@@ -352,7 +358,7 @@ export default function ProposalPage() {
         </ContentSection>
         <Grid stackable>
           <Grid.Row>
-            <Grid.Column tablet="12" className="ProposalDetailDescription">
+            <Grid.Column tablet="12" className="ProposalDetailPage__Description">
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
@@ -362,7 +368,9 @@ export default function ProposalPage() {
                 {proposal?.type === ProposalType.Grant ? (
                   <GrantProposalView config={proposal.configuration} />
                 ) : (
-                  <Markdown>{proposal?.description || ''}</Markdown>
+                  <Markdown componentsClassNames={PROPOSAL_DESCRIPTION_MARKDOWN_STYLES}>
+                    {proposal?.description || ''}
+                  </Markdown>
                 )}
               </div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}

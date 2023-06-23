@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import toNumber from 'lodash/toNumber'
 
 import { BudgetBreakdownConcept } from '../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
+import { PROPOSAL_DESCRIPTION_MARKDOWN_STYLES } from '../../pages/proposal'
+import Markdown from '../Common/Markdown/Markdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 
@@ -30,7 +31,9 @@ function BudgetBreakdownView({ breakdown }: Props) {
   )
   return (
     <>
-      <Markdown>{`## ${t('page.proposal_view.grant.breakdown_title')}`}</Markdown>
+      <Markdown componentsClassNames={PROPOSAL_DESCRIPTION_MARKDOWN_STYLES}>{`## ${t(
+        'page.proposal_view.grant.breakdown_title'
+      )}`}</Markdown>
       <BreakdownAccordion items={items} />
     </>
   )
