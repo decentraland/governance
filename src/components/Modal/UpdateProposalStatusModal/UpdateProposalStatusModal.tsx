@@ -114,7 +114,7 @@ export function UpdateProposalStatusModal({
   return (
     <Modal
       {...props}
-      open={true}
+      open={open && !!status}
       size="small"
       className={classNames('GovernanceActionModal', 'ProposalModal', 'UpdateProposalStatusModal', props.className)}
       closeIcon={<Close />}

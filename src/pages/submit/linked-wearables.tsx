@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { assert } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
@@ -22,6 +21,7 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import Markdown from '../../components/Common/Markdown/Markdown'
 import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -324,7 +324,7 @@ export default function SubmitLinkedWearables() {
         <ContentSection>
           <Header size="huge">{t('page.submit_linked_wearables.title')}</Header>
         </ContentSection>
-        <ContentSection className="MarkdownSection--tiny">
+        <ContentSection>
           <Markdown>{t('page.submit_linked_wearables.description')}</Markdown>
         </ContentSection>
         <ContentSection>
@@ -515,7 +515,9 @@ export default function SubmitLinkedWearables() {
               checked={watch('programmatically_generated')}
               label={
                 <label>
-                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
+                  <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
+                    {t('modal.votes_list.voted_yes') || ''}
+                  </Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}
@@ -524,7 +526,9 @@ export default function SubmitLinkedWearables() {
               checked={!watch('programmatically_generated')}
               label={
                 <label>
-                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
+                  <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
+                    {t('modal.votes_list.voted_no') || ''}
+                  </Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}

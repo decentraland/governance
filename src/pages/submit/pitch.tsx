@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
@@ -14,6 +13,7 @@ import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
 import Label from '../../components/Common/Label'
+import Markdown from '../../components/Common/Markdown/Markdown'
 import SubLabel from '../../components/Common/SubLabel'
 import Text from '../../components/Common/Text/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
@@ -103,7 +103,7 @@ export default function SubmitPitchProposal() {
         <ContentSection>
           <Header size="huge">{t('page.submit_pitch.title')}</Header>
         </ContentSection>
-        <ContentSection className="MarkdownSection--tiny">
+        <ContentSection>
           <Markdown>{t('page.submit_pitch.description')}</Markdown>
         </ContentSection>
 
