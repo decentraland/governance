@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
@@ -7,7 +8,7 @@ import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import { getSnapshotStatusAndSpace } from '../../entities/Snapshot/utils'
 import Label from '../Common/Label'
 import ErrorMessage from '../Error/ErrorMessage'
-import MarkdownField from '../Form/MarkdownField'
+import MarkdownFieldSection from '../Form/MarkdownFieldSection'
 import { ContentSection } from '../Layout/ContentLayout'
 
 interface Props {
@@ -19,6 +20,8 @@ export default function SnapshotStatus({ className }: Props) {
   const [snapshotStatus, setSnapshotStatus] = useState<any>()
   const [snapshotSpace, setSnapshotSpace] = useState<any>()
   const [errorMessage, setErrorMessage] = useState<any>()
+
+  const { control } = useForm()
 
   async function handleFetchClick() {
     setErrorMessage('')
@@ -43,7 +46,9 @@ export default function SnapshotStatus({ className }: Props) {
           </Button>
         </div>
       </ContentSection>
-      <MarkdownField
+      <MarkdownFieldSection
+        name="snapshotStatus"
+        control={control}
         showMarkdownNotice={false}
         label="Snapshot Status"
         readOnly={true}
@@ -52,7 +57,9 @@ export default function SnapshotStatus({ className }: Props) {
         value={JSON.stringify(snapshotStatus)}
         preview={true}
       />
-      <MarkdownField
+      <MarkdownFieldSection
+        name="snapshotSpace"
+        control={control}
         showMarkdownNotice={false}
         label="Snapshot Space"
         readOnly={true}

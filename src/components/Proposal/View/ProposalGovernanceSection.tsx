@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
-import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
@@ -53,7 +53,7 @@ export default function ProposalGovernanceSection({
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
   const [showResults, setShowResults] = useState(finished)
-  const [userAddress] = useAuth()
+  const [userAddress] = useAuthContext()
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
   const showResultsButton = !hasVoted && !finished && proposal?.status !== ProposalStatus.Pending
   const showPromotionSection =
