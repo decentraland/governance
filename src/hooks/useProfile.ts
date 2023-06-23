@@ -1,21 +1,32 @@
 import { useQuery } from '@tanstack/react-query'
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
+
+import { ErrorClient } from '../clients/ErrorClient'
+import { createDefaultAvatar, getProfile } from '../utils/Catalyst'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 export default function useProfile(address?: string | null) {
   const fetchProfile = async () => {
     if (!address) return null
-    return profiles.load(address)
+
+    try {
+      const profile = await getProfile(address)
+      return { profile: profile || createDefaultAvatar(address), isDefaultProfile: !profile }
+    } catch (error) {
+      ErrorClient.report(`Error fetching profile ${address}`, error)
+      return null
+    }
   }
-  const { data: profile, isLoading: isLoadingProfile } = useQuery({
+  const { data, isLoading: isLoadingProfile } = useQuery({
     queryKey: [`userProfile#${address?.toLowerCase()}`],
     queryFn: () => fetchProfile(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  const hasDclProfile = !!profile && !profile.isDefaultProfile
-  const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
+  const { profile, isDefaultProfile } = data || {}
+
+  const hasDclProfile = !!profile && !isDefaultProfile
+  const profileHasName = hasDclProfile && !!profile.name && profile.name.length > 0
   const displayableAddress = profileHasName ? profile.name : address
 
   return { profile, hasDclProfile, displayableAddress, isLoadingProfile }

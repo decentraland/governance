@@ -1,5 +1,4 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import type { EmbedBuilder } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
@@ -10,6 +9,7 @@ import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
 import { capitalizeFirstLetter, inBackground } from '../helpers'
+import { getProfile } from '../utils/Catalyst'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
@@ -127,16 +127,15 @@ export class DiscordService {
 
     if (user) {
       try {
-        const profile = await profiles.load(user)
-        const hasDclProfile = !!profile && !profile.isDefaultProfile
-        const profileHasName = hasDclProfile && !!profile.name && profile.name.length > 0
+        const profile = await getProfile(user)
+        const profileHasName = !!profile && !!profile.name && profile.name.length > 0
         const displayableUser = profileHasName ? profile.name! : user
 
         const hasAvatar = !!profile && !!profile.avatar
 
         embed.setAuthor({
           name: displayableUser,
-          iconURL: hasAvatar ? profile.avatar?.snapshots.face256 : DEFAULT_AVATAR,
+          iconURL: hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR,
           url: getProfileUrl(user),
         })
       } catch (error) {
