@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import ReactMarkdown, { Components, Options } from 'react-markdown'
 
 import classNames from 'classnames'
-import List, { ListItem } from 'decentraland-gatsby/dist/components/Text/List'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import omit from 'lodash/omit'
@@ -11,12 +10,13 @@ import gfm from 'remark-gfm'
 
 import Link from '../Link/Link'
 import Heading from '../Text/Heading'
+import List, { ListItem } from '../Text/List'
 import Text from '../Text/Text'
 
 const plugins = [gfm, emoji] as any
 type MarkdownKey = keyof Components
 type MarkdownProps = Omit<Options, 'renders' | 'linkTarget' | 'astPlugins' | 'plugins'> & {
-  componentsClassNames?: Record<MarkdownKey, string>
+  componentsClassNames?: Partial<Record<MarkdownKey, string>>
 }
 
 function getComponents({ componentsClassNames }: MarkdownProps): Components {
@@ -76,9 +76,25 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
         className={classNames([props.className, componentsClassNames && componentsClassNames['pre']])}
       />
     ),
-    ol: (props) => <List {...omit(props, ['node', 'componentsClassNames'])} />,
-    ul: (props) => <List {...omit(props, ['node', 'componentsClassNames'])} />,
-    li: (props) => <ListItem {...omit(props, ['node', 'componentsClassNames'])} />,
+    ol: (props) => (
+      <List
+        {...omit(props, ['node', 'componentsClassNames'])}
+        className={classNames([props.className, componentsClassNames && componentsClassNames['ol']])}
+        ordered
+      />
+    ),
+    ul: (props) => (
+      <List
+        {...omit(props, ['node', 'componentsClassNames'])}
+        className={classNames([props.className, componentsClassNames && componentsClassNames['ul']])}
+      />
+    ),
+    li: (props) => (
+      <ListItem
+        {...omit(props, ['node', 'componentsClassNames'])}
+        className={classNames([props.className, componentsClassNames && componentsClassNames['li']])}
+      />
+    ),
     blockquote: (props) => (
       <blockquote
         {...omit(props, ['node', 'componentsClassNames'])}
@@ -101,9 +117,9 @@ function getComponents({ componentsClassNames }: MarkdownProps): Components {
   }
 }
 
-function Markdown2(props: MarkdownProps) {
+function Markdown(props: MarkdownProps) {
   const components = useMemo(() => getComponents(props), [props])
   return <ReactMarkdown {...props} components={components} remarkPlugins={plugins} />
 }
 
-export default Markdown2
+export default Markdown
