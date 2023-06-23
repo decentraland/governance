@@ -8,17 +8,14 @@
   color: var(--black-600) !important;
 }
 
-.UpdateDetail__Content .dg.ListItem {
+.UpdateDetail__ContentText,
+.UpdateDetail__ListItem {
   font-size: 15px !important;
-}
-
-.UpdateDetail__Content .dg.Paragraph {
-  font-size: 15px !important;
-  line-height: 26px;
+  line-height: 26px !important;
   overflow-wrap: break-word;
 }
 
-.UpdateDetail__Content .dg.Paragraph img {
+.UpdateDetail__ContentText img {
   max-width: 100%;
 }
 
@@ -30,21 +27,18 @@
 
 .UpdateDetail__Dates a {
   font-size: 15px !important;
-  line-height: 24px !important;
   margin-left: 5px;
 }
 
-.UpdateDetail__CompletionDate,
-.UpdateDetail__LastEdit {
+.UpdateDetail__CompletionDate {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
 }
 
-.UpdateDetail__CompletionDateText,
-.UpdateDetail__LastEdit .dg.Paragraph {
+.UpdateDetail__CompletionDateText {
+  color: var(--black-400) !important;
   font-size: 15px !important;
   line-height: 24px !important;
-  color: var(--black-400) !important;
   margin-bottom: 0;
 }
