@@ -47,11 +47,11 @@
   text-align: left;
 }
 
-.GrantRequest__HeaderDescription p.dg.Paragraph {
+.GrantRequest__HeaderDescription {
   margin-left: 61px;
-  font-size: 17px;
-  line-height: 26px;
-  letter-spacing: -0.2px;
+  font-size: 17px !important;
+  line-height: 26px !important;
+  letter-spacing: -0.2px !important;
   text-align: left;
 }
 
