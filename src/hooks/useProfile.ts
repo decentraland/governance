@@ -8,7 +8,7 @@ export default function useProfile(address?: string | null) {
     if (!address) return null
     return profiles.load(address)
   }
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: [`userProfile#${address?.toLowerCase()}`],
     queryFn: () => fetchProfile(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
@@ -18,5 +18,5 @@ export default function useProfile(address?: string | null) {
   const profileHasName = hasDclProfile && profile!.name && profile!.name.length > 0
   const displayableAddress = profileHasName ? profile.name : address
 
-  return { profile, hasDclProfile, displayableAddress }
+  return { profile, hasDclProfile, displayableAddress, isLoadingProfile }
 }
