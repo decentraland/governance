@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -11,6 +10,7 @@ import { CANDIDATE_ADDRESSES } from '../../../constants'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
+import Markdown from '../../Common/Markdown/Markdown'
 import DelegatesTable from '../../Delegation/DelegatesTable'
 
 import './VotingPowerDelegationCandidatesList.css'
@@ -54,7 +54,7 @@ function VotingPowerDelegationCandidatesList({
         {t('modal.vp_delegation.title')}
       </Modal.Header>
       <Modal.Description className="VotingPowerDelegationCandidatesList__Description">
-        <Markdown>
+        <Markdown componentsClassNames={{ a: 'VotingPowerDelegationCandidatesList__DescriptionLink' }}>
           {(userAddress && vpDistribution
             ? t('modal.vp_delegation.description', { vp: vpDistribution.own })
             : t('modal.vp_delegation.description_generic')) + t('modal.vp_delegation.read_more')}

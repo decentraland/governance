@@ -6,20 +6,16 @@
   line-height: 36px !important;
 }
 
-.VotingPowerDelegationCandidatesList__Description {
-  margin: 0 0 32px 0 !important;
-}
-
 .VotingPowerDelegationCandidatesList > .dcl.close,
 .ui.modal > .dcl.close {
   top: 22px; /* TODO: Can this be a property to override in all modals? */
 }
 
-.VotingPowerDelegationCandidatesList .description .dg.Paragraph {
-  font-size: 15px;
+.VotingPowerDelegationCandidatesList__Description {
+  margin: 0 0 32px 0 !important;
 }
 
-.VotingPowerDelegationCandidatesList .description .dg.Paragraph .dg.Link {
+.VotingPowerDelegationCandidatesList__DescriptionLink {
   color: var(--blue-800);
 }
 
