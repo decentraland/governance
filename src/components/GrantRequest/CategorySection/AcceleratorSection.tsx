@@ -1,9 +1,7 @@
-import React, { forwardRef, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import {
   AcceleratorQuestions,
@@ -12,7 +10,8 @@ import {
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
-import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import Field from '../../Common/Form/Field'
+import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 
@@ -23,123 +22,108 @@ const INITIAL_ACCELERATOR_QUESTIONS: AcceleratorQuestions = {
 }
 
 const schema = AcceleratorQuestionsSchema
-const validate = createValidator<AcceleratorQuestions>({
-  revenueGenerationModel: (state) => ({
-    revenueGenerationModel:
-      assert(
-        state.revenueGenerationModel.length <= schema.revenueGenerationModel.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(state.revenueGenerationModel.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        state.revenueGenerationModel.length >= schema.revenueGenerationModel.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-  returnOfInvestmentPlan: (state) => ({
-    returnOfInvestmentPlan:
-      assert(
-        state.returnOfInvestmentPlan.length <= schema.returnOfInvestmentPlan.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(state.returnOfInvestmentPlan.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        state.returnOfInvestmentPlan.length >= schema.returnOfInvestmentPlan.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-  investmentRecoveryTime: (state) => ({
-    investmentRecoveryTime:
-      assert(
-        Number.isInteger(asNumber(state.investmentRecoveryTime)),
-        'error.grant.category_assessment.field_invalid'
-      ) ||
-      assert(
-        asNumber(state.investmentRecoveryTime) >= schema.investmentRecoveryTime.minimum,
-        'error.grant.category_assessment.field_too_low'
-      ) ||
-      undefined,
-  }),
-})
-
-const edit = (state: AcceleratorQuestions, props: Partial<AcceleratorQuestions>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean, isEdited: boolean) => void
   isFormDisabled: boolean
 }
 
-const AcceleratorSection = forwardRef(function AcceleratorSection({ onValidation, isFormDisabled }: Props, ref) {
+export default function AcceleratorSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_ACCELERATOR_QUESTIONS)
+  const {
+    formState: { isValid, errors, isDirty },
+    control,
+    watch,
+  } = useForm<AcceleratorQuestions>({
+    defaultValues: INITIAL_ACCELERATOR_QUESTIONS,
+    mode: 'onTouched',
+  })
 
-  useGrantCategoryEditor(ref, editor, state, INITIAL_ACCELERATOR_QUESTIONS)
+  const values = useWatch({ control })
 
   useEffect(() => {
-    onValidation({ accelerator: { ...state.value } }, state.validated)
+    onValidation({ accelerator: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+  }, [isValid, isDirty, values])
+
+  const getMarkdownFieldRules = useCallback(
+    (field: 'revenueGenerationModel' | 'returnOfInvestmentPlan') => ({
+      required: { value: true, message: t('error.grant.category_assessment.field_empty') },
+      minLength: {
+        value: schema[field].minLength,
+        message: t('error.grant.category_assessment.field_too_short'),
+      },
+      maxLength: {
+        value: schema[field].maxLength,
+        message: t('error.grant.category_assessment.field_too_large'),
+      },
+    }),
+    [t]
+  )
 
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.revenue_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.revenueGenerationModel}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ revenueGenerationModel: value })}
-          error={!!state.error.revenueGenerationModel}
+        <MarkdownField
+          name="revenueGenerationModel"
+          control={control}
+          error={!!errors.revenueGenerationModel}
           message={
-            t(state.error.revenueGenerationModel) +
+            (errors.revenueGenerationModel?.message || '') +
             ' ' +
             t('page.submit.character_counter', {
-              current: state.value.revenueGenerationModel.length,
+              current: watch('revenueGenerationModel').length,
               limit: schema.revenueGenerationModel.maxLength,
             })
           }
           disabled={isFormDisabled}
+          rules={getMarkdownFieldRules('revenueGenerationModel')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.return_of_investment_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.returnOfInvestmentPlan}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ returnOfInvestmentPlan: value })}
-          error={!!state.error.returnOfInvestmentPlan}
+        <MarkdownField
+          name="returnOfInvestmentPlan"
+          control={control}
+          error={!!errors.returnOfInvestmentPlan}
           message={
-            t(state.error.returnOfInvestmentPlan) +
+            (errors.returnOfInvestmentPlan?.message || '') +
             ' ' +
             t('page.submit.character_counter', {
-              current: state.value.returnOfInvestmentPlan.length,
+              current: watch('returnOfInvestmentPlan').length,
               limit: schema.returnOfInvestmentPlan.maxLength,
             })
           }
           disabled={isFormDisabled}
+          rules={getMarkdownFieldRules('returnOfInvestmentPlan')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.investment_recovery_label')}</Label>
         <Field
+          name="investmentRecoveryTime"
+          control={control}
           type="number"
           min="0"
-          value={state.value.investmentRecoveryTime}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ investmentRecoveryTime: value })}
-          error={!!state.error.investmentRecoveryTime}
-          message={t(state.error.investmentRecoveryTime)}
+          error={!!errors.investmentRecoveryTime}
+          message={errors.investmentRecoveryTime?.message}
           disabled={isFormDisabled}
           onWheel={disableOnWheelInput}
+          rules={{
+            required: { value: true, message: t('error.grant.category_assessment.field_invalid') },
+            validate: (value: string) => {
+              if (!Number.isInteger(asNumber(value))) {
+                return t('error.grant.category_assessment.field_invalid')
+              }
+            },
+            min: {
+              value: schema.investmentRecoveryTime.minimum,
+              message: t('error.grant.category_assessment.field_too_low'),
+            },
+          }}
         />
       </ContentSection>
     </div>
   )
-})
-
-export default AcceleratorSection
+}

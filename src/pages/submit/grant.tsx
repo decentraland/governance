@@ -103,6 +103,7 @@ function handleCancel() {
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     let category: NewGrantCategory | null = null
