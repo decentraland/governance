@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react'
 
 import classNames from 'classnames'
 import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import Time from '../../utils/date/Time'
+import Markdown from '../Common/Markdown/Markdown'
 import ErrorNotice from '../Icon/ErrorNotice'
 
 import './ErrorMessage.css'
@@ -46,7 +46,17 @@ export default function ErrorMessage({ label, errorMessage }: Props) {
             <span>{copied ? t('error.message.copied') : t('error.message.copy')}</span>
           </Button>
         </div>
-        <Markdown className="ErrorMessage__CallForAction">{t('error.message.call_for_action')}</Markdown>
+        <Markdown
+          size="sm"
+          className="ErrorMessage__CallForAction"
+          componentsClassNames={{
+            p: 'ErrorMessage__CallForActionText',
+            em: 'ErrorMessage__CallForActionText',
+            a: 'ErrorMessage__CallForActionLink',
+          }}
+        >
+          {t('error.message.call_for_action')}
+        </Markdown>
       </div>
     </div>
   )

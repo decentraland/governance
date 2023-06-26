@@ -77,16 +77,15 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   margin-right: 10px;
 }
 
-.ErrorMessage__CallForAction a.dg.Link.Link--pointer {
-  font-weight: 700;
-}
-
-.ErrorMessage__CallForAction p.dg.Paragraph {
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 20px;
+.ErrorMessage__CallForAction {
   margin-left: 16px;
-  color: var(--background-popup);
+}
+.ErrorMessage__CallForActionText {
+  font-weight: 400 !important;
+  color: var(--background-popup) !important;
+}
+.ErrorMessage__CallForActionLink {
+  font-weight: 700;
 }
 
 .ErrorMessage__Content {
