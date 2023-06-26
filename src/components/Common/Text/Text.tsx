@@ -6,10 +6,10 @@ import './Text.css'
 
 const DEFAULT_COLOR: TextColor = 'default'
 const DEFAULT_FONT_WEIGHT: FontWeight = 'normal'
-export const DEFAULT_FONT_SIZE: FontSize = 'md'
+const DEFAULT_FONT_SIZE: FontSize = 'md'
 const DEFAULT_FONT_STYLE: FontStyle = 'normal'
 export type FontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-type FontWeight = 'bold' | 'semi-bold' | 'normal'
+export type FontWeight = 'bold' | 'semi-bold' | 'normal'
 type TextColor = 'default' | 'primary' | 'secondary'
 type FontStyle = 'normal' | 'italic'
 

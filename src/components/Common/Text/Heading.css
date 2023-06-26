@@ -1,45 +1,54 @@
 .Heading {
   color: var(--text);
-  font-weight: bold;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
 }
 
-.Heading--xl,
-.Heading--lg {
+.Heading--xl {
   font-size: 64px;
   line-height: 1.13;
 }
-
-.Heading--md {
+.Heading--lg {
   font-size: 48px;
   line-height: 1.17;
 }
-
-.Heading--sm {
+.Heading--md {
   font-size: 28px;
   line-height: 1.21;
   letter-spacing: 0.3px;
 }
-
+.Heading--sm {
+  font-size: 20px;
+  line-height: 28px;
+}
 .Heading--xs {
   font-size: 17px;
   line-height: 26px;
   letter-spacing: 0.3px;
 }
 
+.Heading--weight-normal{
+  font-weight: 300;
+}
+.Heading--weight-semi-bold{
+  font-weight: 500;
+}
+.Heading--weight-bold {
+  font-weight: 700;
+}
+
 @media only screen and (max-width: 767px) {
-  .Heading--xl,
-  .Heading--lg {
+  .Heading--xl {
     font-size: 64px;
   }
-  .Heading--md {
+  .Heading--lg {
     font-size: 40px;
   }
-  .Heading--sm {
+  .Heading--md {
     font-size: 28px;
   }
+  .Heading--sm,
   .Heading--xs {
     font-size: 15px;
     line-height: 24px;
@@ -47,16 +56,16 @@
 }
 
 @media only screen and (max-width: 375px) {
-  .Heading--xl,
-  .Heading--lg {
+  .Heading--xl {
     font-size: 48px;
   }
-  .Heading--md {
+  .Heading--lg {
     font-size: 34px;
   }
-  .Heading--sm {
+  .Heading--md {
     font-size: 21px;
   }
+  .Heading--sm,
   .Heading--xs {
     font-size: 13px;
     line-height: 18px;

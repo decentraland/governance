@@ -25,7 +25,7 @@ function getComponents({ size, componentsClassNames }: MarkdownProps): Component
     h1: (props) => (
       <Heading
         as="h1"
-        size="lg"
+        size="xl"
         {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['h1']])}
       />
@@ -39,7 +39,7 @@ function getComponents({ size, componentsClassNames }: MarkdownProps): Component
     h3: (props) => (
       <Heading
         as="h3"
-        size="sm"
+        size="md"
         {...omit(props, ['node', 'componentsClassNames'])}
         className={classNames([props.className, componentsClassNames && componentsClassNames['h3']])}
       />
