@@ -63,8 +63,6 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
 
   const values = useWatch({ control })
 
-  console.log('v', values)
-
   useEffect(() => {
     onValidation({ sponsorship: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
     // eslint-disable-next-line react-hooks/exhaustive-deps

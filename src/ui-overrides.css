@@ -77,6 +77,32 @@
   padding: 8px 8px 8px;
 }
 
+.dcl.text-area textarea {
+  border-width: 1px !important;
+  font-size: 20px !important;
+  line-height: 28px !important;
+}
+
+.dcl.text-area .message {
+  text-align: right;
+}
+
+.dcl.text-area > textarea {
+  border-color: var(--border-color-default) !important;
+}
+
+.dcl.text-area.error > textarea {
+  border-color: var(--red-800) !important;
+}
+
+.dcl.text-area .info {
+  display: none;
+}
+
+.dcl.text-area.info > .message {
+  color: var(--black-600) !important;
+}
+
 .dcl.select-field.select-field .ui.dropdown.visible .menu {
   border-radius: 0 0 6px 6px;
   margin: 1px 0 0 0;
