@@ -64,7 +64,7 @@ function ExternalLinkWarningModal() {
     <Modal open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={handleDismiss}>
       <Modal.Content>
         <div className={'ExternalLinkWarningModal__Title'}>
-          <Heading size="xs" className="ExternalLinkWarningModal__TitleHeader">
+          <Heading size="xs" weight="semi-bold">
             {t('modal.external_link_warning.title')}
           </Heading>
           <Markdown

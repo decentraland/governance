@@ -7,10 +7,6 @@
   white-space: pre-line;
 }
 
-.ExternalLinkWarningModal__TitleHeader {
-  font-weight: 500;
-}
-
 .ExternalLinkWarningModal__Link {
   color: var(--black-800);
   pointer-events: none;
