@@ -1,7 +1,6 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-
+import Markdown from './Markdown/Markdown'
 import Text from './Text/Text'
 
 import './SubLabel.css'
@@ -13,7 +12,11 @@ interface Props {
 
 const SubLabel = ({ children, isMarkdown }: Props) => {
   if (isMarkdown) {
-    return <Markdown className="SubLabel">{children}</Markdown>
+    return (
+      <Markdown className="SubLabel" componentsClassNames={{ p: 'SubLabel', strong: 'SubLabel__Strong' }}>
+        {children}
+      </Markdown>
+    )
   }
 
   return (
