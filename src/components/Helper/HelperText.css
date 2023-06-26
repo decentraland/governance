@@ -5,9 +5,11 @@
 }
 
 .HelperText__Content {
-  letter-spacing: 0.4px !important;
-  color: var(--black-200) !important;
   margin-bottom: 0 !important;
+}
+
+.HelperText__ContentText {
+  color: var(--black-200) !important;
 }
 
 .HelperText__Pointer {

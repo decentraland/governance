@@ -50,10 +50,8 @@
   color: var(--black-600);
 }
 
-.CategorySelector__Documentation p.dg.Paragraph {
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 26px;
+.CategorySelector__DocumentationText {
+  font-weight: 400 !important;
   letter-spacing: -0.2px;
-  color: var(--black-600);
+  color: var(--black-600) !important;
 }

@@ -1,8 +1,7 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-
 import { Checkbox } from '../Checkbox/Checkbox'
+import Markdown from '../Common/Markdown/Markdown'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import './CheckboxField.css'
@@ -18,7 +17,9 @@ const CheckboxField = ({ onClick, checked, disabled, children }: Props) => {
   return (
     <ContentSection className="CheckboxField" onClick={onClick}>
       <Checkbox checked={checked} disabled={disabled} />
-      <Markdown>{children}</Markdown>
+      <Markdown size="lg" componentsClassNames={{ p: 'CheckboxField__Text' }}>
+        {children}
+      </Markdown>
     </ContentSection>
   )
 }

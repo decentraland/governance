@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -8,6 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import locations from '../../../utils/locations'
+import Markdown from '../../Common/Markdown/Markdown'
 import Pill from '../../Common/Pill'
 
 import './ProposalPromotionSection.css'
@@ -77,12 +77,16 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       <Pill color="green" style="shiny">
         {t(pillLabel)}
       </Pill>
-      <Markdown className="smallMarkdown">{t(description)}</Markdown>
+      <Markdown className="ProposalPromotionSection__Text" size="sm">
+        {t(description)}
+      </Markdown>
       <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()} disabled={isPromoteDisabled}>
         {t(buttonLabel)}
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (
-        <Markdown className="tinyMarkdown">{t('page.proposal_detail.promotion.info_text') || ''}</Markdown>
+        <Markdown className="ProposalPromotionSection__Text" size="xs">
+          {t('page.proposal_detail.promotion.info_text') || ''}
+        </Markdown>
       )}
     </div>
   )

@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -14,6 +13,7 @@ import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal
 import { ProposalPageState } from '../../../../pages/proposal'
 import Time from '../../../../utils/date/Time'
 import { getPartyVotes, getVotingSectionConfig } from '../../../../utils/votes/utils'
+import Markdown from '../../../Common/Markdown/Markdown'
 import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'
@@ -166,7 +166,14 @@ const ProposalVotingSection = ({
               )}
 
               {isProposalPending && (
-                <Markdown className="ProposalVotingSection__VotingBegins">
+                <Markdown
+                  size="sm"
+                  className="ProposalVotingSection__VotingBegins"
+                  componentsClassNames={{
+                    p: 'ProposalVotingSection__VotingBeginsText',
+                    strong: 'ProposalVotingSection__VotingBeginsStrong',
+                  }}
+                >
                   {t('page.proposal_detail.voting_begins', { date: Time(proposal?.start_at).fromNow(true) })}
                 </Markdown>
               )}

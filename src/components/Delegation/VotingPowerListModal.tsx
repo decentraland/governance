@@ -1,9 +1,10 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+
+import Markdown from '../Common/Markdown/Markdown'
 
 import VotingPowerListItem from './VotingPowerListItem'
 import './VotingPowerListModal.css'
