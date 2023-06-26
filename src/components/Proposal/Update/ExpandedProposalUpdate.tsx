@@ -1,7 +1,6 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
@@ -9,6 +8,7 @@ import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
+import Link from '../../Common/Link'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'

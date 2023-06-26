@@ -21,7 +21,7 @@
   padding-right: 8px;
 }
 
-a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
+a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   height: 20px;
   text-transform: uppercase;
   font-weight: 600;
@@ -77,7 +77,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   margin-right: 10px;
 }
 
-.ErrorMessage__CallForAction a.dg.Link.Link--pointer {
+.ErrorMessage__CallForAction a.Link.Link--pointer {
   font-weight: 700;
 }
 

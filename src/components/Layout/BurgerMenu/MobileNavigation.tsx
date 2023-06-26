@@ -1,12 +1,12 @@
 import React from 'react'
 
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
+import Link from '../../Common/Link'
 import { NavigationProps, NavigationTab } from '../Navigation'
 
 import './MobileNavigation.css'

@@ -1,11 +1,11 @@
 import React from 'react'
 
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { VotedProposal } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
+import Link from '../../Common/Link'
 import Cancel from '../../Icon/Cancel'
 import CheckCircle from '../../Icon/CheckCircle'
 import QuestionCircle from '../../Icon/QuestionCircle'

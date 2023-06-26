@@ -12,3 +12,8 @@
   font-size: 19px;
   vertical-align: middle;
 }
+
+.Link i.icon {
+  font-size: 1em;
+  vertical-align: text-top;
+}
