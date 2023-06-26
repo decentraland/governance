@@ -1,20 +1,21 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
+import snakeCase from 'lodash/snakeCase'
 
 import { Governance } from '../../clients/Governance'
 import Label from '../../components/Common/Label'
 import Text from '../../components/Common/Text/Text'
-import MarkdownField from '../../components/Form/MarkdownField'
+import MarkdownField from '../../components/Form/MarkdownFieldSection'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
@@ -28,7 +29,7 @@ import locations, { navigate } from '../../utils/locations'
 import './submit.css'
 import './update.css'
 
-type updateFormState = {
+type UpdateFormState = {
   health: ProjectHealth
   introduction: string
   highlights: string
@@ -37,7 +38,7 @@ type updateFormState = {
   additionalNotes: string
 }
 
-const initialState: updateFormState = {
+const initialState: UpdateFormState = {
   health: ProjectHealth.OnTrack,
   introduction: '',
   highlights: '',
@@ -84,48 +85,6 @@ const updateSchema = {
 
 const schema = updateSchema.properties
 
-const edit = (state: updateFormState, props: Partial<updateFormState>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
-
-const validate = createValidator<updateFormState>({
-  health: (state) => ({
-    health: assert(!!state.health, 'error.proposal_update.description_empty'),
-  }),
-  introduction: (state) => ({
-    introduction:
-      assert(state.introduction.length > 0, 'error.proposal_update.introduction_empty') ||
-      assert(
-        state.introduction.length <= schema.introduction.maxLength,
-        'error.proposal_update.introduction_too_large'
-      ),
-  }),
-  highlights: (state) => ({
-    highlights:
-      assert(state.highlights.length > 0, 'error.proposal_update.highlights_empty') ||
-      assert(state.highlights.length <= schema.highlights.maxLength, 'error.proposal_update.highlights_too_large'),
-  }),
-  blockers: (state) => ({
-    blockers:
-      assert(state.blockers.length > 0, 'error.proposal_update.blockers_empty') ||
-      assert(state.blockers.length <= schema.blockers.maxLength, 'error.proposal_update.blockers_too_large'),
-  }),
-  nextSteps: (state) => ({
-    nextSteps:
-      assert(state.nextSteps.length > 0, 'error.proposal_update.next_steps_empty') ||
-      assert(state.nextSteps.length <= schema.nextSteps.maxLength, 'error.proposal_update.next_steps_too_large'),
-  }),
-  additionalNotes: (state) => ({
-    additionalNotes: assert(
-      state.additionalNotes.length <= schema.additionalNotes.maxLength,
-      'error.proposal_update.additional_notes_too_large'
-    ),
-  }),
-})
-
 interface Props {
   isEdit?: boolean
 }
@@ -135,105 +94,139 @@ const NOW = new Date()
 export default function Update({ isEdit }: Props) {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [state, editor] = useEditor(edit, validate, initialState)
+
+  const {
+    handleSubmit,
+    formState: { isDirty, errors, isSubmitting },
+    control,
+    setValue,
+    watch,
+  } = useForm<UpdateFormState>({ defaultValues: initialState, mode: 'onTouched' })
+
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
-  const [projectHealth, setProjectHealth] = useState(initialState.health)
   const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
-  const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update])
+  const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update, params])
+  const [error, setError] = useState('')
+  const preventNavigation = useRef(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [isEditAccepted, setIsEditAccepted] = useState(false)
+  const [projectHealth, setProjectHealth] = useState(initialState.health)
+
+  useEffect(() => {
+    preventNavigation.current = isDirty
+  }, [isDirty])
 
   useEffect(() => {
     if (isEdit && !!update) {
       const { health, introduction, highlights, blockers, next_steps, additional_notes } = update
-      if (health && introduction && highlights && blockers && next_steps) {
-        setProjectHealth(health)
-        editor.set({ introduction, highlights, blockers, nextSteps: next_steps, additionalNotes: additional_notes })
+      if (!!health && !!introduction && !!highlights && !!blockers && !!next_steps) {
+        setValue('health', health)
+        setValue('introduction', introduction)
+        setValue('highlights', highlights)
+        setValue('blockers', blockers)
+        setValue('nextSteps', next_steps)
+        setValue('additionalNotes', additional_notes || '')
       } else {
         console.error('Update is missing required fields', JSON.stringify(update))
       }
     }
-  }, [isEdit, update])
+  }, [isEdit, update, setValue])
 
-  const getFieldProps = (fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes') => ({
-    value: state.value[fieldName],
-    onChange: (_: unknown, { value }: { value: string }) => editor.set({ [fieldName]: value }),
-    onBlur: () => editor.set({ [fieldName]: state.value[fieldName].trim() }),
-    error: !!state.error[fieldName],
+  const getFieldProps = (
+    fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes',
+    isRequired = true
+  ) => ({
+    control,
+    name: fieldName,
+    error: !!errors[fieldName],
+    rules: {
+      ...(isRequired && {
+        required: { value: true, message: t(`error.proposal_update.${snakeCase(fieldName)}_empty`) },
+      }),
+      minLength: {
+        value: schema[fieldName].minLength,
+        message: t(`error.proposal_update.${snakeCase(fieldName)}_too_short`),
+      },
+      maxLength: {
+        value: schema[fieldName].maxLength,
+        message: t(`error.proposal_update.${snakeCase(fieldName)}_too_large`),
+      },
+    },
     message:
-      t(state.error[fieldName]) +
+      t(errors[fieldName]?.message || '') +
       ' ' +
       t('page.submit.character_counter', {
-        current: state.value[fieldName].length,
+        current: watch(fieldName).length,
         limit: schema[fieldName].maxLength,
       }),
   })
 
-  const previewUpdate = {
-    health: projectHealth,
-    introduction: state.value.introduction,
-    highlights: state.value.highlights,
-    blockers: state.value.blockers,
-    next_steps: state.value.nextSteps,
-    additional_notes: state.value.additionalNotes,
-    status: UpdateStatus.Pending,
-    created_at: NOW,
-    updated_at: NOW,
+  const values = useWatch({ control })
+
+  const previewUpdate = useMemo(
+    () => ({
+      health: values.health,
+      introduction: values.introduction,
+      highlights: values.highlights,
+      blockers: values.blockers,
+      next_steps: values.nextSteps,
+      additional_notes: values.additionalNotes,
+      status: UpdateStatus.Pending,
+      created_at: NOW,
+      updated_at: NOW,
+    }),
+    [values]
+  )
+
+  const submitUpdate = async (data: UpdateFormState) => {
+    if (!proposalId) {
+      return
+    }
+
+    setFormDisabled(true)
+
+    const newUpdate = {
+      proposal_id: proposalId,
+      author: account!,
+      id: updateId,
+      health: data.health,
+      introduction: data.introduction,
+      highlights: data.highlights,
+      blockers: data.blockers,
+      next_steps: data.nextSteps,
+      additional_notes: data.additionalNotes,
+      status: UpdateStatus.Pending,
+    }
+
+    try {
+      if (updateId) {
+        await Governance.get().updateProposalUpdate(newUpdate)
+        if (isEdit) {
+          setIsEditModalOpen(false)
+        }
+      } else {
+        await Governance.get().createProposalUpdate(newUpdate)
+      }
+      await refetchUpdate()
+      navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message)
+        setFormDisabled(false)
+      }
+    }
   }
 
-  useEffect(() => {
-    const submitUpdate = async () => {
-      if (!proposalId) {
-        console.log('No proposal ID')
-        return
-      }
-
-      setFormDisabled(true)
-
-      const newUpdate = {
-        proposal_id: proposalId,
-        author: account!,
-        id: updateId,
-        health: projectHealth,
-        introduction: state.value.introduction,
-        highlights: state.value.highlights,
-        blockers: state.value.blockers,
-        next_steps: state.value.nextSteps,
-        additional_notes: state.value.additionalNotes,
-        status: UpdateStatus.Pending,
-      }
-
-      try {
-        if (updateId) {
-          await Governance.get().updateProposalUpdate(newUpdate)
-          if (isEdit) {
-            setIsEditModalOpen(false)
-          }
-        } else {
-          await Governance.get().createProposalUpdate(newUpdate)
-        }
-        await refetchUpdate()
-        navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
-      } catch (err) {
-        if (err instanceof Error) {
-          editor.error({ '*': err.message })
-          setFormDisabled(false)
-        }
-      }
+  const onSubmit: SubmitHandler<UpdateFormState> = (data) => {
+    if (isEdit) {
+      setIsEditModalOpen(true)
+    } else {
+      submitUpdate(data)
     }
-
-    if (state.validated) {
-      if (isEdit && !isEditAccepted) {
-        setIsEditModalOpen(true)
-      } else {
-        submitUpdate()
-      }
-    }
-  }, [state.validated, isEdit, isEditAccepted])
+  }
 
   if (accountState.loading || isLoadingUpdate) {
     return <LoadingView />
@@ -266,10 +259,14 @@ export default function Update({ isEdit }: Props) {
     )
   }
 
-  const isLoading = isEdit ? isEditAccepted && state.validated : state.validated
   const handleEditModalClose = () => {
     setIsEditModalOpen(false)
     setFormDisabled(false)
+  }
+
+  const handleHealthChange = (value: ProjectHealth) => {
+    setValue('health', value)
+    setProjectHealth(value)
   }
 
   return (
@@ -282,95 +279,97 @@ export default function Update({ isEdit }: Props) {
       <ContentSection>
         <Text size="lg">{description}</Text>
       </ContentSection>
-      {!isPreviewMode && (
-        <>
-          <ContentSection>
-            <Label>{t('page.proposal_update.health_label')}</Label>
-            <div className="UpdateSubmit__ProjectHealthContainer">
-              <ProjectHealthButton
-                type={ProjectHealth.OnTrack}
-                selectedValue={projectHealth}
-                onClick={setProjectHealth}
-                disabled={formDisabled}
-              >
-                {t('page.proposal_update.on_track_label') || ''}
-              </ProjectHealthButton>
-              <ProjectHealthButton
-                type={ProjectHealth.AtRisk}
-                selectedValue={projectHealth}
-                onClick={setProjectHealth}
-                disabled={formDisabled}
-              >
-                {t('page.proposal_update.at_risk_label') || ''}
-              </ProjectHealthButton>
-              <ProjectHealthButton
-                type={ProjectHealth.OffTrack}
-                selectedValue={projectHealth}
-                onClick={setProjectHealth}
-                disabled={formDisabled}
-              >
-                {t('page.proposal_update.off_track_label') || ''}
-              </ProjectHealthButton>
-            </div>
-          </ContentSection>
-          <MarkdownField
-            showMarkdownNotice={false}
-            label={t('page.proposal_update.introduction_label')}
-            disabled={formDisabled}
-            minHeight={77}
-            {...getFieldProps('introduction')}
-          />
-          <MarkdownField
-            showMarkdownNotice={false}
-            label={t('page.proposal_update.highlights_label')}
-            placeholder={t('page.proposal_update.highlights_placeholder')}
-            disabled={formDisabled}
-            {...getFieldProps('highlights')}
-          />
-          <MarkdownField
-            showMarkdownNotice={false}
-            label={t('page.proposal_update.blockers_label')}
-            placeholder={t('page.proposal_update.blockers_placeholder')}
-            disabled={formDisabled}
-            {...getFieldProps('blockers')}
-          />
-          <MarkdownField
-            showMarkdownNotice={false}
-            label={t('page.proposal_update.next_steps_label')}
-            placeholder={t('page.proposal_update.next_steps_placeholder')}
-            disabled={formDisabled}
-            {...getFieldProps('nextSteps')}
-          />
-          <MarkdownField
-            showMarkdownNotice={false}
-            label={t('page.proposal_update.additional_notes_label')}
-            placeholder={t('page.proposal_update.additional_notes_placeholder')}
-            disabled={formDisabled}
-            {...getFieldProps('additionalNotes')}
-          />
-        </>
-      )}
-      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
-      <ContentSection className="UpdateSubmit__Actions">
-        <Button primary disabled={isLoading} loading={isLoading} onClick={() => editor.validate()}>
-          {t('page.proposal_update.publish_update')}
-        </Button>
-        <Button basic disabled={isLoading} onClick={() => setPreviewMode((prev) => !prev)}>
-          {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}
-        </Button>
-      </ContentSection>
-      {state.error['*'] && (
-        <ContentSection>
-          <Text size="lg" color="primary">
-            {t(state.error['*']) || state.error['*']}
-          </Text>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {!isPreviewMode && (
+          <>
+            <ContentSection>
+              <Label>{t('page.proposal_update.health_label')}</Label>
+              <div className="UpdateSubmit__ProjectHealthContainer">
+                <ProjectHealthButton
+                  type={ProjectHealth.OnTrack}
+                  selectedValue={projectHealth}
+                  onClick={handleHealthChange}
+                  disabled={formDisabled}
+                >
+                  {t('page.proposal_update.on_track_label') || ''}
+                </ProjectHealthButton>
+                <ProjectHealthButton
+                  type={ProjectHealth.AtRisk}
+                  selectedValue={projectHealth}
+                  onClick={handleHealthChange}
+                  disabled={formDisabled}
+                >
+                  {t('page.proposal_update.at_risk_label') || ''}
+                </ProjectHealthButton>
+                <ProjectHealthButton
+                  type={ProjectHealth.OffTrack}
+                  selectedValue={projectHealth}
+                  onClick={handleHealthChange}
+                  disabled={formDisabled}
+                >
+                  {t('page.proposal_update.off_track_label') || ''}
+                </ProjectHealthButton>
+              </div>
+            </ContentSection>
+            <MarkdownField
+              showMarkdownNotice={false}
+              label={t('page.proposal_update.introduction_label')}
+              disabled={formDisabled}
+              minHeight={77}
+              {...getFieldProps('introduction')}
+            />
+            <MarkdownField
+              showMarkdownNotice={false}
+              label={t('page.proposal_update.highlights_label')}
+              placeholder={t('page.proposal_update.highlights_placeholder')}
+              disabled={formDisabled}
+              {...getFieldProps('highlights')}
+            />
+            <MarkdownField
+              showMarkdownNotice={false}
+              label={t('page.proposal_update.blockers_label')}
+              placeholder={t('page.proposal_update.blockers_placeholder')}
+              disabled={formDisabled}
+              {...getFieldProps('blockers')}
+            />
+            <MarkdownField
+              showMarkdownNotice={false}
+              label={t('page.proposal_update.next_steps_label')}
+              placeholder={t('page.proposal_update.next_steps_placeholder')}
+              disabled={formDisabled}
+              {...getFieldProps('nextSteps')}
+            />
+            <MarkdownField
+              showMarkdownNotice={false}
+              label={t('page.proposal_update.additional_notes_label')}
+              placeholder={t('page.proposal_update.additional_notes_placeholder')}
+              disabled={formDisabled}
+              {...getFieldProps('additionalNotes', false)}
+            />
+          </>
+        )}
+        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
+        <ContentSection className="UpdateSubmit__Actions">
+          <Button type="submit" primary disabled={formDisabled} loading={isSubmitting}>
+            {t('page.proposal_update.publish_update')}
+          </Button>
+          <Button basic disabled={isSubmitting} onClick={() => setPreviewMode((prev) => !prev)}>
+            {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}
+          </Button>
         </ContentSection>
-      )}
+        {error && (
+          <ContentSection>
+            <Text size="lg" color="primary">
+              {t(error) || error}
+            </Text>
+          </ContentSection>
+        )}
+      </form>
       {isEdit && (
         <EditUpdateModal
-          onClickAccept={() => setIsEditAccepted(true)}
           open={isEditModalOpen}
           onClose={handleEditModalClose}
+          onClickAccept={() => submitUpdate(values as UpdateFormState)}
         />
       )}
     </ContentLayout>

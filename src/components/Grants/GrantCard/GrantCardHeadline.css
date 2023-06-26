@@ -39,8 +39,8 @@
     margin-right: 0 !important;
   }
 
-  .GrantCardHeadline__Avatar .dg.dcl-avatar,
-  .dg.dcl-avatar.dcl-avatar--medium {
+  .GrantCardHeadline__Avatar .Avatar,
+  .Avatar.Avatar--medium {
     width: 44px;
     margin-right: 0;
   }

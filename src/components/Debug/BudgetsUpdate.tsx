@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
@@ -7,7 +8,7 @@ import { Governance } from '../../clients/Governance'
 import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
 import Label from '../Common/Label'
 import ErrorMessage from '../Error/ErrorMessage'
-import MarkdownField from '../Form/MarkdownField'
+import MarkdownFieldSection from '../Form/MarkdownFieldSection'
 import { ContentSection } from '../Layout/ContentLayout'
 
 interface Props {
@@ -19,6 +20,7 @@ export default function BudgetsUpdate({ className }: Props) {
   const [governanceBudgets, setGovernanceBudgets] = useState<QuarterBudgetAttributes[]>([])
   const [errorMessage, setErrorMessage] = useState<any>()
   const [formDisabled, setFormDisabled] = useState(false)
+  const { control } = useForm()
 
   async function handleFetchBudgets() {
     await submit<TransparencyBudget[]>(async () => Governance.get().getTransparencyBudgets(), setTransparencyBudgets)
@@ -60,7 +62,9 @@ export default function BudgetsUpdate({ className }: Props) {
             {'Fetch Transparency Budgets'}
           </Button>
         </div>
-        <MarkdownField
+        <MarkdownFieldSection
+          name="transparencyBudgets"
+          control={control}
           showMarkdownNotice={false}
           label="Transparency Budgets"
           readOnly={true}
@@ -79,7 +83,9 @@ export default function BudgetsUpdate({ className }: Props) {
             {'Update Governance Budgets'}
           </Button>
         </div>
-        <MarkdownField
+        <MarkdownFieldSection
+          name="governanceBudgets"
+          control={control}
           showMarkdownNotice={false}
           label="Governance Budgets"
           readOnly={true}

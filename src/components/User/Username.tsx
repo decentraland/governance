@@ -1,14 +1,13 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { Size, SizeProps } from 'decentraland-gatsby/dist/components/Props/types'
-import Avatar from 'decentraland-gatsby/dist/components/User/Avatar'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
 import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../utils/locations'
+import Avatar, { AvatarSize } from '../Common/Avatar'
 import Link from '../Common/Link'
 
 import './Username.css'
@@ -19,7 +18,8 @@ enum UsernameVariant {
   Full = 'full',
 }
 
-type Props = SizeProps & {
+type Props = {
+  size?: `${AvatarSize}`
   address: string
   linked?: boolean
   className?: string
@@ -30,23 +30,23 @@ type Props = SizeProps & {
 function getBlockieScale(size?: string) {
   const DEFAULT_BLOCKIE_SCALE = 3.35
   switch (size) {
-    case Size.Mini:
+    case AvatarSize.Mini:
       return 3
-    case Size.Tiny:
+    case AvatarSize.Tiny:
       return DEFAULT_BLOCKIE_SCALE
-    case Size.Small:
+    case AvatarSize.Small:
       return 4.9
-    case Size.Medium:
+    case AvatarSize.Medium:
       return 7
-    case Size.Large:
+    case AvatarSize.Large:
       return 8.4
-    case Size.Big:
+    case AvatarSize.Big:
       return 10.5
-    case Size.Huge:
+    case AvatarSize.Huge:
       return 14.5
-    case Size.Massive:
+    case AvatarSize.Massive:
       return 20
-    case Size.Full:
+    case AvatarSize.Full:
       return 42.5
     default:
       return DEFAULT_BLOCKIE_SCALE
@@ -74,7 +74,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
         <>
           {hasDclProfile && (
             <>
-              <Avatar size={size || 'mini'} address={address} />
+              <Avatar size={size} address={address} />
               {profileHasName && !isAvatarVariant && <span>{profile!.name}</span>}
               {!profileHasName && !isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
             </>

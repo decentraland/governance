@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { Governance } from '../../../clients/Governance'
 import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
@@ -58,7 +58,7 @@ const ProposalUpdate = ({
 }: Props) => {
   const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
   const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
-  const [account] = useAuth()
+  const [account] = useAuthContext()
 
   if (!update) {
     return <EmptyProposalUpdate />

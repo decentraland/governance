@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
-import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
@@ -38,7 +38,7 @@ const CollapsedProposalUpdate = ({
   onDeleteUpdateClick,
 }: Props) => {
   const t = useFormatMessage()
-  const [account] = useAuth()
+  const [account] = useAuthContext()
 
   const { introduction, status, health, completion_date, due_date } = update
   const updateLocation = locations.update(update.id)

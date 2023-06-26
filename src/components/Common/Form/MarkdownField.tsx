@@ -4,7 +4,7 @@ import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-fo
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import { FieldProps } from 'decentraland-ui/dist/components/Field/Field'
 
-interface Props<T extends FieldValues> extends FieldProps {
+export interface MarkdownFieldProps<T extends FieldValues> extends FieldProps {
   control: Control<T>
   name: Path<T>
   defaultValue?: PathValue<T, Path<T>> | undefined
@@ -17,7 +17,7 @@ export default function MarkdownField<T extends FieldValues>({
   defaultValue,
   rules,
   ...markdownProps
-}: Props<T>) {
+}: MarkdownFieldProps<T>) {
   return (
     <Controller
       control={control}
