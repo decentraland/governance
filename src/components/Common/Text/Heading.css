@@ -6,42 +6,59 @@
   letter-spacing: normal;
 }
 
-.Heading--h1 {
+.Heading--xl,
+.Heading--lg {
   font-size: 64px;
   line-height: 1.13;
 }
 
-.Heading--h2 {
+.Heading--md {
   font-size: 48px;
   line-height: 1.17;
 }
 
-.Heading--h3 {
+.Heading--sm {
   font-size: 28px;
   line-height: 1.21;
   letter-spacing: 0.3px;
 }
 
+.Heading--xs {
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: 0.3px;
+}
+
 @media only screen and (max-width: 767px) {
-  .Heading--h1 {
+  .Heading--xl,
+  .Heading--lg {
     font-size: 64px;
   }
-  .Heading--h2 {
+  .Heading--md {
     font-size: 40px;
   }
-  .Heading--h3 {
+  .Heading--sm {
     font-size: 28px;
+  }
+  .Heading--xs {
+    font-size: 15px;
+    line-height: 24px;
   }
 }
 
 @media only screen and (max-width: 375px) {
-  .Heading--h1 {
+  .Heading--xl,
+  .Heading--lg {
     font-size: 48px;
   }
-  .Heading--h2 {
+  .Heading--md {
     font-size: 34px;
   }
-  .Heading--h3 {
+  .Heading--sm {
     font-size: 21px;
+  }
+  .Heading--xs {
+    font-size: 13px;
+    line-height: 18px;
   }
 }

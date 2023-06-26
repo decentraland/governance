@@ -4,27 +4,21 @@
 
 .ExternalLinkWarningModal__Title * {
   text-align: center;
-}
-
-.ExternalLinkWarningModal__Title .dg.Paragraph {
-  font-size: 15px;
-  line-height: 24px;
   white-space: pre-line;
 }
 
-.ExternalLinkWarningModal__Title .dg.Paragraph a {
+.ExternalLinkWarningModal__TitleHeader {
+  font-weight: 500;
+}
+
+.ExternalLinkWarningModal__Link {
   color: var(--black-800);
   pointer-events: none;
   cursor: default;
   overflow-wrap: break-word;
 }
 
-.ExternalLinkWarningModal__Title .ui.header {
-  font-size: 17px;
-  line-height: 26px;
-}
-
-.ExternalLinkWarningModal__Title .dg.Paragraph,
+.ExternalLinkWarningModal__Description,
 .ExternalLinkWarningModal__Actions {
   padding: 0 50px;
 }

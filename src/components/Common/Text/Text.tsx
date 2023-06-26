@@ -6,7 +6,7 @@ import './Text.css'
 
 const DEFAULT_COLOR: TextColor = 'default'
 const DEFAULT_FONT_WEIGHT: FontWeight = 'normal'
-const DEFAULT_FONT_SIZE: FontSize = 'md'
+export const DEFAULT_FONT_SIZE: FontSize = 'md'
 const DEFAULT_FONT_STYLE: FontStyle = 'normal'
 export type FontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type FontWeight = 'bold' | 'semi-bold' | 'normal'
@@ -40,9 +40,6 @@ export default function Text({
     `Text--style-${style}`,
     className
   )
-  return as === 'span' ? (
-    <span className={componentClassNames}>{children}</span>
-  ) : (
-    <p className={componentClassNames}>{children}</p>
-  )
+  const Component = as ?? 'p'
+  return <Component className={componentClassNames}>{children}</Component>
 }

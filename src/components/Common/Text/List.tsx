@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import './List.css'
 
-export type ListProps = (React.HTMLAttributes<HTMLUListElement> | React.HTMLAttributes<HTMLOListElement>) & {
+type ListProps = (React.HTMLAttributes<HTMLUListElement> | React.HTMLAttributes<HTMLOListElement>) & {
   ordered?: boolean
   depth?: number
 }
@@ -17,8 +17,8 @@ export default function List(props: ListProps) {
   }
 }
 
-export type ListItem = React.LiHTMLAttributes<HTMLLIElement>
+type ListItemProps = React.LiHTMLAttributes<HTMLLIElement>
 
-export function ListItem(props: ListItem) {
+export function ListItem(props: ListItemProps) {
   return <li {...props} className={classNames('ListItem', props.className)} />
 }
