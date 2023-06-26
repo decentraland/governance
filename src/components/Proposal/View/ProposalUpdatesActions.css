@@ -1,13 +1,8 @@
-.ProposalUpdatesActions__UpdateDescription .dg.Bold {
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 24px;
-}
-
-.ProposalUpdatesActions__UpdateDescription .dg.Paragraph {
+.ProposalUpdatesActions__UpdateDescription {
   margin-bottom: 8px;
-  font-size: 15px;
-  line-height: 24px;
+}
+.ProposalUpdatesActions__UpdateDescriptionBold {
+  font-weight: 500 !important;
 }
 
 .ProposalUpdatesActions__UpdateButton {
@@ -20,11 +15,6 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-}
-
-.ProposalUpdatesActions__DueDate .dg.Paragraph {
-  font-size: 13px;
-  line-height: 18px;
 }
 
 .ProposalUpdatesActions__DueDate .ProposalUpdatesActions__InfoIconContainer {

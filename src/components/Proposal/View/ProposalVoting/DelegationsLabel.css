@@ -15,10 +15,12 @@
   color: var(--white-900) !important;
 }
 
-.DelegationsLabel__Text p.dg.Paragraph {
-  font-size: 13px;
-  letter-spacing: 0;
+.DelegationsLabel__Text {
   padding-left: 4px;
+}
+
+.DelegationsLabel__TextSpacing {
+  letter-spacing: 0 !important;
 }
 
 .DelegationsLabel .DelegationsLabel__HelperContainer {

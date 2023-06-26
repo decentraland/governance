@@ -13,8 +13,8 @@ type Props = Pick<PopupProps, 'position'> & {
 }
 
 export const HELPER_TEXT_MARKDOWN_STYLES = {
-  p: 'HelperText__Content',
-  strong: 'HelperText__Content',
+  p: 'HelperText__ContentText',
+  strong: 'HelperText__ContentText',
   a: 'HelperText__Pointer',
 }
 

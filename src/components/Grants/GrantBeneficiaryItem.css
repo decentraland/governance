@@ -60,17 +60,17 @@ a.ui.card:hover,
   max-width: 280px;
 }
 
+.GrantBeneficiaryItem__GrantInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .GrantBeneficiaryItem__Details {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 11px;
-}
-
-.GrantBeneficiaryItem__GrantInfo {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
 }
 
 .GrantBeneficiaryItem__Details .dg.Paragraph {

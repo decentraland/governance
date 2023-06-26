@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -10,6 +9,7 @@ import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
+import Markdown from '../../Common/Markdown/Markdown'
 import Helper from '../../Helper/Helper'
 
 import './ProposalUpdatesActions.css'
@@ -38,9 +38,13 @@ export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, prop
   return (
     <div className="DetailsSection">
       <div className="DetailsSection__Content">
-        <span className="ProposalUpdatesActions__UpdateDescription">
-          <Markdown>{t('page.proposal_detail.grant.update_description')}</Markdown>
-        </span>
+        <Markdown
+          size="md"
+          className="ProposalUpdatesActions__UpdateDescription"
+          componentsClassNames={{ strong: 'ProposalUpdatesActions__UpdateDescriptionBold' }}
+        >
+          {t('page.proposal_detail.grant.update_description')}
+        </Markdown>
         <Button
           disabled={hasSubmittedUpdate}
           onClick={onPostUpdateClick}
@@ -52,7 +56,7 @@ export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, prop
         {!hasSubmittedUpdate && nextUpdate?.due_date && currentUpdate?.due_date && (
           <span className="ProposalUpdatesActions__DueDate">
             <DateTooltip date={currentUpdate.due_date}>
-              <Markdown>
+              <Markdown size="sm">
                 {t('page.proposal_detail.grant.current_update_due_date', {
                   date: Time(currentUpdate.due_date).fromNow(true),
                 })}
@@ -69,7 +73,7 @@ export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, prop
         {hasSubmittedUpdate && nextUpdate?.due_date && currentUpdate?.due_date && (
           <span className="ProposalUpdatesActions__DueDate">
             <DateTooltip date={nextUpdate.due_date}>
-              <Markdown>
+              <Markdown size="sm">
                 {t('page.proposal_detail.grant.next_update_due_date', {
                   date: Time(nextUpdate.due_date).fromNow(true),
                 })}
