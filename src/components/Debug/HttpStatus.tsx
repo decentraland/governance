@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { HttpStat } from '../../clients/HttpStat'
+import Field from '../Common/Form/Field'
 import Label from '../Common/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
@@ -20,27 +20,7 @@ const initialState: TestState = {
   sleepTime: 0,
 }
 
-const edit = (state: TestState, props: Partial<TestState>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
-
 const MAX_SLEEP_TIME = 300000 // 5 minutes
-
-const validate = createValidator<TestState>({
-  httpStatus: (state) => ({
-    httpStatus: assert(state.httpStatus.length === 3, 'error.debug.invalid_http_status'),
-  }),
-  sleepTime: (state) => ({
-    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.debug.invalid_sleep_time'),
-  }),
-  '*': (state) => ({
-    httpStatus: assert(state.httpStatus.length === 3, 'error.debug.invalid_http_status'),
-    sleepTime: assert(state.sleepTime >= 0 && state.sleepTime <= MAX_SLEEP_TIME, 'error.debug.invalid_sleep_time'),
-  }),
-})
 
 interface Props {
   className?: string
@@ -48,68 +28,75 @@ interface Props {
 
 export default function HttpStatus({ className }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, initialState)
   const [formDisabled, setFormDisabled] = useState(false)
+  const {
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    control,
+  } = useForm<TestState>({ defaultValues: initialState, mode: 'onTouched' })
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    if (state.validated) {
-      setFormDisabled(true)
-      Promise.resolve()
-        .then(async () => {
-          return HttpStat.get().fetchResponse(state.value.httpStatus, state.value.sleepTime)
-        })
-        .then((result) => {
-          console.log('result', result)
-          editor.error({ '*': '' })
-          setFormDisabled(false)
-        })
-        .catch((err) => {
-          console.error(err, { ...err })
-          editor.error({ '*': err.body?.error || err.message })
-          setFormDisabled(false)
-        })
+  const onSubmit: SubmitHandler<TestState> = async (data) => {
+    try {
+      const result = await HttpStat.get().fetchResponse(data.httpStatus, data.sleepTime)
+      console.log('result', result)
+      setFormDisabled(false)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error(err, { ...err })
+      setError(err.body?.error || err.message)
+      setFormDisabled(false)
     }
-  }, [editor, state.validated, state.value])
+  }
 
   return (
-    <div className={className}>
+    <form className={className} onSubmit={handleSubmit(onSubmit)}>
       <ContentSection>
         <Label>{'Http Status'}</Label>
         <Field
-          value={state.value.httpStatus}
-          onChange={(_, { value }) => editor.set({ httpStatus: value })}
-          onBlur={() => editor.set({ httpStatus: state.value.httpStatus.trim() })}
-          error={!!state.error.httpStatus}
+          name="httpStatus"
+          control={control}
+          error={!!errors.httpStatus}
+          message={errors.httpStatus?.message}
           disabled={formDisabled}
-          message={t(state.error.httpStatus)}
+          rules={{
+            required: { value: true, message: t('error.draft.title_empty') },
+            validate: (value: string) => {
+              if (value.length !== 3) {
+                return t('error.debug.invalid_http_status')
+              }
+            },
+          }}
         />
       </ContentSection>
       <ContentSection>
         <Label>{'Sleep'}</Label>
         <Field
-          value={state.value.sleepTime}
-          onChange={(_, { value }) => editor.set({ sleepTime: value ? Number(value) : undefined })}
-          onBlur={() => editor.set({ sleepTime: state.value.sleepTime })}
-          error={!!state.error.sleepTime}
-          message={t(state.error.sleepTime)}
+          name="sleepTime"
+          control={control}
+          error={!!errors.sleepTime}
+          message={errors.sleepTime?.message}
           disabled={formDisabled}
+          rules={{
+            required: { value: true, message: t('error.draft.title_empty') },
+            validate: (value: string) => {
+              if (Number(value) >= 0 && Number(value) <= MAX_SLEEP_TIME) {
+                return t('error.debug.invalid_sleep_time')
+              }
+            },
+          }}
         />
       </ContentSection>
       <ContentSection className="DebugPage__Submit">
-        <Button
-          primary
-          disabled={state.validated || formDisabled}
-          loading={state.validated || formDisabled}
-          onClick={() => editor.validate()}
-        >
+        <Button type="submit" primary disabled={formDisabled} loading={isSubmitting}>
           {t('page.submit.button_submit')}
         </Button>
       </ContentSection>
-      {state.error['*'] && (
+      {error && (
         <ContentSection>
-          <ErrorMessage label={t('page.debug.error_label')} errorMessage={t(state.error['*']) || state.error['*']} />
+          <ErrorMessage label={t('page.debug.error_label')} errorMessage={t(error) || error} />
         </ContentSection>
       )}
-    </div>
+    </form>
   )
 }
