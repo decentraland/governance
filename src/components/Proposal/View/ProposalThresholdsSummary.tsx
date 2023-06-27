@@ -2,13 +2,13 @@ import React, { useRef } from 'react'
 import Flickity from 'react-flickity-component'
 
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
-import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import 'flickity/css/flickity.css'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { getProposalStatusDisplayName } from '../../../entities/Proposal/utils'
 import useAbbreviatedFormatter from '../../../hooks/useAbbreviatedFormatter'
+import useCountdown from '../../../hooks/useCountdown'
 import Time from '../../../utils/date/Time'
 import { ChoiceProgressProps } from '../../Status/ChoiceProgress'
 
