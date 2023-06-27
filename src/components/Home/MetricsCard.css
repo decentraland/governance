@@ -27,7 +27,7 @@
 }
 
 .MetricsCard__Category {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
@@ -36,7 +36,7 @@
 }
 
 .MetricsCard__Title {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 20px;
   line-height: 24px;
   color: var(--black-800);
@@ -44,7 +44,7 @@
 }
 
 .MetricsCard__Description {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 12px;
   line-height: 18px;
   text-transform: uppercase;

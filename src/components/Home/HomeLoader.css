@@ -21,13 +21,13 @@
 }
 
 .HomeLoader__Text--small {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 12px;
   line-height: 18px;
 }
 
 .HomeLoader__Text--large {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
 }

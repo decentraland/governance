@@ -9,7 +9,7 @@
   border: 2px dashed var(--black-300);
   border-radius: 8px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   font-size: 15px;
   line-height: 28px;
   letter-spacing: 0.4px;

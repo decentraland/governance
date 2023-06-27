@@ -4,7 +4,7 @@
 }
 
 .CommunityEngagement .CommunityEngagement__Header p {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
 }

@@ -1,5 +1,5 @@
 .CandidateMatch .CandidateMatch__StatsValue {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 17px;
   line-height: 32px;
   letter-spacing: 0.4px;

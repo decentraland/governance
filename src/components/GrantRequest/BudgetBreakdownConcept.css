@@ -14,7 +14,7 @@
 
 .BudgetBreakdownConcept__Concept {
   margin: 0;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   font-size: 15px;
   letter-spacing: 0.4px;
   color: var(--black-700);
@@ -22,7 +22,7 @@
 
 .BudgetBreakdownConcept__Duration {
   margin: 0;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
 }
 
 .BudgetBreakdownConcept__Budget {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 28px;
   display: flex;

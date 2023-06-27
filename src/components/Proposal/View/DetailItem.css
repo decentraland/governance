@@ -7,7 +7,7 @@
 
 .DetailItem .DetailItem__Value {
   text-align: right;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   display: inline-flex;
   align-items: center;
 }

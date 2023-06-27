@@ -31,7 +31,7 @@
 }
 
 .ProjectHealthStatus__Title {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 17px;
   line-height: 24px;
 }

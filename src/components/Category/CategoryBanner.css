@@ -40,7 +40,7 @@
   border-radius: 4px;
   z-index: 1;
   padding: 4px 5px;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 10px;
   line-height: 5px;
   letter-spacing: -0.2px;

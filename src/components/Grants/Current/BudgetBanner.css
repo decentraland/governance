@@ -38,7 +38,7 @@
 
 .BudgetBanner__ProgressLabel div {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -47,7 +47,7 @@
 
 .BudgetBanner__ProgressLabel .BudgetBanner__Amount,
 .BudgetBanner__ProgressLabel .BudgetBanner__Percentage {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
 }
 
 .BudgetBanner__LabelWithIcon {

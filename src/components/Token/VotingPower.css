@@ -6,27 +6,27 @@
 }
 
 .VotingPower.VotingPower--secondary {
-  color: var(--secondary-text)
+  color: var(--secondary-text);
 }
 
 .VotingPower.VotingPower--bold {
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
 }
 
 .VotingPower.VotingPower--huge {
   font-size: 48px;
   line-height: 56px;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
 }
 
 .VotingPower.VotingPower--large {
   font-size: 34px;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   line-height: 42px;
   letter-spacing: 0.4px;
 }
 
-.VotingPower.VotingPower--medium{
+.VotingPower.VotingPower--medium {
   font-size: 21px;
   line-height: 30px;
   letter-spacing: 0.315px;
@@ -39,7 +39,7 @@
 }
 
 .VotingPower svg {
-  margin-left: .2em;
+  margin-left: 0.2em;
   height: 1em;
   width: auto;
 }

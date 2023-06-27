@@ -35,7 +35,7 @@
 .NavigationProfilePopUp p,
 .NavigationProfilePopUp .ui.button.basic {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   color: var(--white-900) !important;
   margin-bottom: 0;

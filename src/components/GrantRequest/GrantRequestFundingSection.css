@@ -33,10 +33,10 @@
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   text-align: left;
 }
 
 .GrantRequestFundingSection__Radio > a.dg.Link.Link--pointer {
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
 }

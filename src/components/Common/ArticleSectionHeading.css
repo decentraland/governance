@@ -2,6 +2,6 @@
   margin-bottom: 1rem;
   font-size: 13px;
   color: var(--black-600);
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   text-transform: uppercase;
 }

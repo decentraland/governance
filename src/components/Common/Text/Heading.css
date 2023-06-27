@@ -9,45 +9,54 @@
   font-size: 64px;
   line-height: 1.13;
 }
+
 .Heading--lg {
   font-size: 48px;
   line-height: 1.17;
 }
+
 .Heading--md {
   font-size: 28px;
   line-height: 1.21;
   letter-spacing: 0.3px;
 }
+
 .Heading--sm {
   font-size: 20px;
   line-height: 28px;
 }
+
 .Heading--xs {
   font-size: 17px;
   line-height: 26px;
   letter-spacing: 0.3px;
 }
 
-.Heading--weight-normal{
-  font-weight: 300;
+.Heading--weight-normal {
+  font-weight: var(--weight-normal);
 }
-.Heading--weight-semi-bold{
-  font-weight: 500;
+
+.Heading--weight-semi-bold {
+  font-weight: var(--weight-boldemort);
 }
+
 .Heading--weight-bold {
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 @media only screen and (max-width: 767px) {
   .Heading--xl {
     font-size: 64px;
   }
+
   .Heading--lg {
     font-size: 40px;
   }
+
   .Heading--md {
     font-size: 28px;
   }
+
   .Heading--sm,
   .Heading--xs {
     font-size: 15px;
@@ -59,12 +68,15 @@
   .Heading--xl {
     font-size: 48px;
   }
+
   .Heading--lg {
     font-size: 34px;
   }
+
   .Heading--md {
     font-size: 21px;
   }
+
   .Heading--sm,
   .Heading--xs {
     font-size: 13px;

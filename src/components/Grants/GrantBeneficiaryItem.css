@@ -52,7 +52,7 @@ a.ui.card:hover,
   padding-right: 20px;
   font-size: 15px;
   line-height: 26px;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   letter-spacing: -0.2px;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -9,7 +9,7 @@
   color: var(--black-600);
   text-transform: none;
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   letter-spacing: -0.2px;
   mix-blend-mode: normal;
 }
@@ -26,7 +26,7 @@
 
 .SubmitHiring__AddDetail {
   font-style: italic;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 24px;
   color: var(--black-600);

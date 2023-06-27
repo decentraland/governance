@@ -7,7 +7,7 @@
 
 .ContestedBudgetSubLabel__Text {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
@@ -19,7 +19,7 @@
 }
 
 .ContestedBudgetSubLabel__Percentage {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   color: var(--black-600);
   line-height: 18px;

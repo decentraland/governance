@@ -33,7 +33,7 @@
 
 .BadgeCard__Title {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   font-size: 15px;
   line-height: 28px;
   letter-spacing: 0.4px;
@@ -46,7 +46,7 @@
 }
 
 .BadgeCard__MintDate {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 24px;
   letter-spacing: 0.4px;

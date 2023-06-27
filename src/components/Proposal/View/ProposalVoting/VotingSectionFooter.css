@@ -6,7 +6,7 @@
   margin-top: 15px;
   font-size: 13px;
   font-style: normal;
-  font-weight: 300;
+  font-weight: var(--weight-normal);
   letter-spacing: 0;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .VotingSectionFooter__VotingFailedMessage {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-align: center;

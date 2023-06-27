@@ -19,7 +19,7 @@
   margin-bottom: 0;
   letter-spacing: 0.3px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
 }
 
 .GrantCardHeadline__Avatar {

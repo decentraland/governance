@@ -76,6 +76,12 @@
   --dao-footer-height: 156px;
   --dao-header-height: 64px;
   --dao-navigation-height: 89px;
+
+  /* Font Weights */
+  --weight-normal: 300;
+  --weight-semi-bold: 400;
+  --weight-boldemort: 600;
+  --weight-bold: 700;
 }
 
 body {

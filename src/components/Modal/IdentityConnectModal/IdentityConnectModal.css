@@ -36,5 +36,5 @@
   text-transform: none;
   font-size: 15px;
   line-height: 24px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
 }

@@ -14,7 +14,7 @@
 }
 
 .ErrorMessage__Header span {
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   line-height: 20px;
   font-size: 15px;
   padding-left: 8px;
@@ -24,7 +24,7 @@
 a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   height: 20px;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 13px;
   line-height: 20px;
   color: var(--red-800) !important;
@@ -41,7 +41,7 @@ a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   flex-wrap: wrap;
   flex-direction: column;
   padding-left: 16px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -63,7 +63,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   text-align: center;
   vertical-align: middle;
   padding: 0 6px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -80,12 +80,14 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
 .ErrorMessage__CallForAction {
   margin-left: 16px;
 }
+
 .ErrorMessage__CallForActionText {
   font-weight: 400 !important;
   color: var(--background-popup) !important;
 }
+
 .ErrorMessage__CallForActionLink {
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .ErrorMessage__Content {

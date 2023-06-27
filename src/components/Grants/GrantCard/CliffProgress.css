@@ -28,7 +28,7 @@
 }
 
 .CliffProgress__Bold {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   padding-right: 2px;
 }
 
@@ -67,7 +67,7 @@
 
 .CliffProgress__EnactedAt span {
   padding-right: 3px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
 }
 
 .CliffProgress__EnactedDate {
@@ -78,12 +78,15 @@
   .CliffProgress {
     margin-bottom: 16px;
   }
+
   .CliffProgress__CliffDuration {
     font-size: 15px !important;
   }
+
   .CliffProgress__CliffRemaining {
     font-size: 13px !important;
   }
+
   .CliffProgress__Dates {
     font-size: 13px !important;
   }

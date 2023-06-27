@@ -11,7 +11,7 @@
 
 .CurrentGrants__Title {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;

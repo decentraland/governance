@@ -5,7 +5,7 @@
 .SentimentSurvey__Header {
   display: flex;
   justify-content: space-between;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 24px;
   text-transform: uppercase;

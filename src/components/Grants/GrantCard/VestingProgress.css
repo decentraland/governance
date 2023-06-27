@@ -41,7 +41,7 @@
 }
 
 .VestingProgress__Bold {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   padding-right: 2px;
 }
 
@@ -101,7 +101,7 @@
 
 .VestingProgress__VestedAt span {
   padding-right: 3px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
 }
 
 .VestingProgress__VestedDate {
@@ -118,15 +118,19 @@
   .VestingProgress {
     margin-bottom: 16px;
   }
+
   .VestingProgress__VestedInfo {
     font-size: 15px !important;
   }
+
   .VestingProgress__ReleasedInfo {
     font-size: 13px !important;
   }
+
   .VestingProgress__Dates {
     font-size: 13px !important;
   }
+
   .VestingProgress__Bar {
     margin-bottom: 8px;
   }

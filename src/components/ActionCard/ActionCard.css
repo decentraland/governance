@@ -16,14 +16,14 @@
 
 .ui.card.ActionCard h3 {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 15px;
   margin: 0;
 }
 
 .ui.card.ActionCard p {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   margin: 0;
@@ -53,7 +53,7 @@
   border-radius: 4px;
   color: var(--white-900);
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 10px;
   letter-spacing: -0.2px;
   text-transform: uppercase;

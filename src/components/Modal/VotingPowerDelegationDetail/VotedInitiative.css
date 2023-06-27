@@ -24,7 +24,7 @@
 .VotedInitiative__Vote {
   max-width: 65px;
   margin: 0 5px;
-  font-weight: 400;
+  font-weight: var(--weight-semi-bold);
   font-size: 10px;
   line-height: 24px;
   text-transform: uppercase;
@@ -47,7 +47,7 @@
 }
 
 .VotedInitiative__Vote--highlight {
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
 }
 
 .VotedInitiative__PopupVote {

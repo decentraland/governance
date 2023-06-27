@@ -6,7 +6,7 @@
 .VotedInitiativeList__Title {
   display: flex;
   margin-bottom: 10px;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 11px;
   line-height: 18px;
   text-transform: uppercase;

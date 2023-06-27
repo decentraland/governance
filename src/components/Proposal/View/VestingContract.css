@@ -5,6 +5,6 @@
 }
 
 .VestingContract .dg.Paragraph .dg.Bold {
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   letter-spacing: -0.1px;
 }

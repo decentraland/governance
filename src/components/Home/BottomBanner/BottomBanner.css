@@ -15,7 +15,7 @@
 
 .BottomBanner .BottomBanner__Title {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-boldemort);
   font-size: 30px;
   line-height: 36px;
   letter-spacing: -1px;

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   font-size: 11px;
   line-height: 18px;
   text-transform: uppercase;
@@ -32,7 +32,7 @@
   display: flex;
   flex-direction: column;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   line-height: 18px;
   letter-spacing: 0;
   text-align: left;

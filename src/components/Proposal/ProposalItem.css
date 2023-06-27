@@ -31,15 +31,19 @@
   .ProposalItem .ProposalItem__Status {
     flex-direction: row;
   }
+
   .ProposalItem .ProposalItem__Title {
     padding-right: 0;
   }
+
   .ProposalItem .ProposalItem__Title .ui.header {
     font-size: 17px;
   }
+
   .ActionableLayout .ActionableLayout__Content .ui.card > .content {
     padding: 12px;
   }
+
   .dg.Paragraph.Paragraph--small {
     font-size: 14px;
   }
@@ -95,7 +99,7 @@
 }
 
 .ProposalItem__Votes {
-  font-weight: 500;
+  font-weight: var(--weight-boldemort);
   font-size: 12px;
   line-height: 26px;
   text-transform: uppercase;
